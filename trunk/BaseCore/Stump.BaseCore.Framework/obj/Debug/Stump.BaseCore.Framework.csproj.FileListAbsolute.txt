@@ -1,6 +1,0 @@
-C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\BaseCore\Stump.BaseCore.Framework\bin\Debug\Stump.BaseCore.Framework.dll
-C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\BaseCore\Stump.BaseCore.Framework\bin\Debug\Stump.BaseCore.Framework.pdb
-C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\BaseCore\Stump.BaseCore.Framework\bin\Debug\NLog.dll
-C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\BaseCore\Stump.BaseCore.Framework\obj\Debug\ResolveAssemblyReference.cache
-C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\BaseCore\Stump.BaseCore.Framework\obj\Debug\Stump.BaseCore.Framework.dll
-C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\BaseCore\Stump.BaseCore.Framework\obj\Debug\Stump.BaseCore.Framework.pdb
