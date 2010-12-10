@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Database
         public static void LoadCharacters(WorldClient client)
         {
             client.Characters =
-                new List<CharacterRecord>(CharacterRecord.FindCharactersByAccountName(client.Account.Name));
+                new List<CharacterRecord>(CharacterRecord.FindCharactersByAccountName(client.Account.Login));
         }
 
         public static bool CreateCharacter(CharacterRecord character, WorldClient client)

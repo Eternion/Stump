@@ -34,7 +34,9 @@
     <Reference Include="Castle.ActiveRecord">
       <HintPath>..\..\Library\Castle.ActiveRecord.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Core, Version=1.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL" />
+    <Reference Include="Castle.Core, Version=1.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\..\Library\Castle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\..\Library\NLog.dll</HintPath>
     </Reference>

@@ -201,7 +201,7 @@ namespace Stump.Server.AuthServer.Handlers
         {
             client.Send(new IdentificationSuccessMessage(
                             client.Account.Nickname,
-                            (uint) client.Account.Id,
+                            client.Account.Id,
                             0, // community ID ? ( se trouve dans le d2p, utilisé pour trouver les serveurs de la communauté )
                             client.Account.Role >= RoleEnum.Moderator,
                             client.Account.SecretQuestion,

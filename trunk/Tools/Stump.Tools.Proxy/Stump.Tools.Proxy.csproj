@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NLog">
-      <HintPath>..\..\ServerCore\Stump.Server.BaseServer\bin\Debug\NLog.dll</HintPath>
+      <HintPath>..\..\Library\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -94,11 +94,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Config\proxy_config.xml" />
+    <Content Include="proxy_config.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Config\proxy_config.xsd">
+    <None Include="proxy_config.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>

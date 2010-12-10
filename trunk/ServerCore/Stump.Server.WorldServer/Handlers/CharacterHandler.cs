@@ -93,7 +93,7 @@ namespace Stump.Server.WorldServer.Handlers
                     Skins = charskins,
                     Scale = breed.Scale,
                     Colors = charcolors,
-                    AccountName = client.Account.Name,
+                    AccountName = client.Account.Login,
                     Kamas = breed.StartKamas,
                     MapId = (int) breed.StartMap,
                     CellId = breed.StartCellId,
@@ -134,7 +134,7 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof(CharactersListRequestMessage))]
         public static void HandleCharacterListRequest(WorldClient client, CharactersListRequestMessage message)
         {
-            if (client.Account != null && client.Account.Name != "")
+            if (client.Account != null && client.Account.Login != "")
             {
                 CharacterDatabase.LoadCharacters(client);
                 SendCharactersListMessage(client);
@@ -155,7 +155,7 @@ namespace Stump.Server.WorldServer.Handlers
             uint characterId = message.characterId;
 
             CharacterRecord characterRecord = client.Characters.Find(o => o.Id == characterId &&
-                o.AccountName.ToLower() == client.Account.Name.ToLower());
+                o.AccountName.ToLower() == client.Account.Login.ToLower());
 
             if (characterId < 0 || characterRecord == null) // Incorrect Value.
             {
@@ -165,8 +165,8 @@ namespace Stump.Server.WorldServer.Handlers
 
             string secretAnswerHash = message.secretAnswerHash;
 
-            if (characterRecord.Level <= 20 || ( client.Account.QAnswer != null &&
-                secretAnswerHash == StringUtils.GetMd5(characterId + "~" + client.Account.QAnswer) ))
+            if (characterRecord.Level <= 20 || ( client.Account.SecretAnswer != null &&
+                secretAnswerHash == StringUtils.GetMd5(characterId + "~" + client.Account.SecretAnswer) ))
             {
                 CharacterDatabase.DeleteCharacter(characterRecord, client);
 

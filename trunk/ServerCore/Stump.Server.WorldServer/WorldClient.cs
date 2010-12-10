@@ -87,7 +87,7 @@ namespace Stump.Server.WorldServer
 
         public override string ToString()
         {
-            return base.ToString() + (Account != null ? " <" + Account.Name + ">" : "");
+            return base.ToString() + (Account != null ? " <" + Account.Login + ">" : "");
         }
     }
 }
