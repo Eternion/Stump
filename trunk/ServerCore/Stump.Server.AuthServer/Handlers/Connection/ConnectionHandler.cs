@@ -29,7 +29,7 @@ using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.AuthServer.Handlers
 {
-    public class ConnectionHandler : AuthHandlerContainer
+    public partial class ConnectionHandler : AuthHandlerContainer
     {
         public ConnectionHandler()
         {
@@ -213,54 +213,5 @@ namespace Stump.Server.AuthServer.Handlers
         {
             client.Send(new IdentificationFailedMessage((uint) reason));
         }
-
-        [AuthHandler(typeof(NicknameChoiceRequestMessage))]
-        public static void HandleNicknameChoiceRequestMessage(AuthClient client, NicknameChoiceRequestMessage message)
-        {
-            string nickname = message.nickname;
-
-            /* Check the Username */
-            if (!CheckNickName(nickname))
-            {
-                client.Send(new NicknameRefusedMessage((uint)NicknameErrorEnum.INVALID_NICK));
-                return;
-            }
-
-            /* Same as Login */
-            if (nickname == client.Account.Login)
-            {
-                client.Send(new NicknameRefusedMessage((uint)NicknameErrorEnum.SAME_AS_LOGIN));
-                return;
-            }
-
-            /* Look like Login */
-            if (client.Account.Login.Contains(nickname))
-            {
-                client.Send(new NicknameRefusedMessage((uint)NicknameErrorEnum.TOO_SIMILAR_TO_LOGIN));
-                return;
-            }
-
-            /* Already Used */
-            if (AccountRecord.FindByNickname(nickname) != null)
-            {
-                client.Send(new NicknameRefusedMessage((uint)NicknameErrorEnum.ALREADY_USED));
-                return;
-            }
-
-            /* Ok, it's good */
-            client.Account.Nickname = nickname;
-            client.Save();
-            client.Send(new NicknameAcceptedMessage());
-            SendIdentificationSuccessMessage(client, false);
-            SendServersListMessage(client);
-        }
-
-        public static bool CheckNickName(string nickName)
-        {
-            string nickNamePattern = @"^[a-zA-Z]{4,18}$";
-            return System.Text.RegularExpressions.Regex.IsMatch(nickName, nickNamePattern);
-        }
-       
-
     }
 }

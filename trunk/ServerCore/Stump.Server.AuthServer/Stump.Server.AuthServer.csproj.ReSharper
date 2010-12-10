@@ -1,0 +1,5 @@
+<Configuration>
+  <NamespaceFolders>
+    <SkipFolder>DBF77B90-0AAF-4EEC-B997-478E88CEEDB4/d:Handlers/d:Connection</SkipFolder>
+  </NamespaceFolders>
+</Configuration>

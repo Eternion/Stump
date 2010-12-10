@@ -132,10 +132,52 @@
     <Compile Include="Groups\GroupManager.cs" />
     <Compile Include="Groups\MonsterGroup.cs" />
     <Compile Include="Groups\PartyGroup.cs" />
-    <Compile Include="Handlers\BasicHandler.cs" />
-    <Compile Include="Handlers\CharacterHandler.cs" />
-    <Compile Include="Handlers\ChatHandler.cs" />
-    <Compile Include="Handlers\LoginHandler.cs" />
+    <Compile Include="Handlers\Achievement\AchievementHandler.cs" />
+    <Compile Include="Handlers\Actions\ActionsFightHandler.cs" />
+    <Compile Include="Handlers\Actions\ActionsHandler.cs" />
+    <Compile Include="Handlers\Actions\ActionsSequenceHandler.cs" />
+    <Compile Include="Handlers\Approach\ApproachHandler.cs" />
+    <Compile Include="Handlers\Atlas\AtlasCompassHandler.cs" />
+    <Compile Include="Handlers\Atlas\AtlasHandler.cs" />
+    <Compile Include="Handlers\Basic\BasicHandler.cs" />
+    <Compile Include="Handlers\Character\CharacterChoiceHandler.cs" />
+    <Compile Include="Handlers\Character\CharacterCreationHandler.cs" />
+    <Compile Include="Handlers\Character\CharacterDeletionHandler.cs" />
+    <Compile Include="Handlers\Character\CharacterHandler.cs" />
+    <Compile Include="Handlers\Character\CharacterReplayHandler.cs" />
+    <Compile Include="Handlers\Character\CharacterStatsHandler.cs" />
+    <Compile Include="Handlers\Chat\ChatChannelHandler.cs" />
+    <Compile Include="Handlers\Chat\ChatHandler.cs" />
+    <Compile Include="Handlers\Chat\ChatReportHandler.cs" />
+    <Compile Include="Handlers\Chat\ChatSmileyHandler.cs" />
+    <Compile Include="Handlers\Context\ContextDisplayHandler.cs" />
+    <Compile Include="Handlers\Context\ContextFightHandler.cs" />
+    <Compile Include="Handlers\Context\ContextHandler.cs" />
+    <Compile Include="Handlers\Context\ContextMountHandler.cs" />
+    <Compile Include="Handlers\Context\ContextNotificationHandler.cs" />
+    <Compile Include="Handlers\Context\RolePlay\ContextRoleplayStatsHandler.cs" />
+    <Compile Include="Handlers\Dialog\DialogHandler.cs" />
+    <Compile Include="Handlers\Friend\FriendHandler.cs" />
+    <Compile Include="Handlers\Guild\GuildHandler.cs" />
+    <Compile Include="Handlers\Guild\GuildTaxHandler.cs" />
+    <Compile Include="Handlers\Initialization\InitializationHandler.cs" />
+    <Compile Include="Handlers\Interactive\InteractiveHandler.cs" />
+    <Compile Include="Handlers\Interactive\InteractiveZaapHandler.cs" />
+    <Compile Include="Handlers\Inventory\InventoryExchangesHandler.cs" />
+    <Compile Include="Handlers\Inventory\InventoryHandler.cs" />
+    <Compile Include="Handlers\Inventory\InventoryItemsHandler.cs" />
+    <Compile Include="Handlers\Inventory\InventoryPresetHandler.cs" />
+    <Compile Include="Handlers\Inventory\InventorySpellsHandler.cs" />
+    <Compile Include="Handlers\Inventory\InventoryStorageHandler.cs" />
+    <Compile Include="Handlers\Moderation\ModerationHandler.cs" />
+    <Compile Include="Handlers\Packs\PacksHandler.cs" />
+    <Compile Include="Handlers\Prism\PrismHandler.cs" />
+    <Compile Include="Handlers\Pvp\PvpHandler.cs" />
+    <Compile Include="Handlers\Report\ReportHandler.cs" />
+    <Compile Include="Handlers\Script\ScriptHandler.cs" />
+    <Compile Include="Handlers\Social\SocialHandler.cs" />
+    <Compile Include="Handlers\Startup\StartupHandler.cs" />
+    <Compile Include="Handlers\Subscriber\SubscriberHandler.cs" />
     <Compile Include="Handlers\WorldHandlerContainer.cs" />
     <Compile Include="Items\Inventory.cs" />
     <Compile Include="Items\Item.cs" />
@@ -193,6 +235,7 @@
       <Name>Stump.Server.BaseServer</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -16,37 +16,20 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System.Linq;
 using Stump.DofusProtocol.Messages;
 
 namespace Stump.Server.WorldServer.Handlers
 {
-    public class BasicHandler : WorldHandlerContainer
+    public partial class ContextHandler : WorldHandlerContainer
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="msgType"></param>
-        /// <param name="msgId"></param>
-        /// <param name="arguments"></param>
-        /// <remarks>Message id = <paramref name="msgType"/> * 10000 + <paramref name="msgId"/></remarks>
-        public static void SendTextInformationMessage(WorldClient client, uint msgType, uint msgId, params string[] arguments)
+        public static void SendGameContextCreateMessage(WorldClient client, byte context)
         {
-            client.Send(new TextInformationMessage(msgType, msgId, arguments.ToList()));
+            client.Send(new GameContextCreateMessage(context));
         }
 
-        public static void SendBasicTimeMessage(WorldClient client)
+        public static void SendGameContextDestroyMessage(WorldClient client)
         {
-            client.Send(new BasicTimeMessage(
-                            1000000000, // time
-                            900 // timezone
-                            ));
-        }
-
-        public static void SendBasicNoOperationMessage(WorldClient client)
-        {
-            client.Send(new BasicNoOperationMessage());
+            client.Send(new GameContextDestroyMessage());
         }
     }
 }

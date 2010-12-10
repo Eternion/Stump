@@ -16,23 +16,9 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using Stump.DofusProtocol.Messages;
-
 namespace Stump.Server.WorldServer.Handlers
 {
-    public class LoginHandler : WorldHandlerContainer
+    public partial class ActionsHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof (AuthenticationTicketMessage))]
-        public static void HandleAuthenticationTicketMessage(WorldClient client, AuthenticationTicketMessage message)
-        {
-            if (!client.CheckTicket(message.ticket))
-            {
-                client.Send(new AuthenticationTicketRefusedMessage());
-
-                client.Disconnect();
-            }
-
-            client.Send(new AuthenticationTicketAcceptedMessage());
-        }
     }
 }

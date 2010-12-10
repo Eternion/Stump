@@ -63,8 +63,9 @@
     <Compile Include="Commands\ShutdownCommand.cs" />
     <Compile Include="Definitions.cs" />
     <Compile Include="Handlers\AuthHandlerContainer.cs" />
-    <Compile Include="Handlers\ConnectionHandler.cs" />
+    <Compile Include="Handlers\Connection\ConnectionHandler.cs" />
     <Compile Include="Handlers\AuthHandler.cs" />
+    <Compile Include="Handlers\Connection\ConnectionActionsHandler.cs" />
     <Compile Include="Handlers\Predicates.cs" />
     <Compile Include="IPC\IpcOperations.cs" />
     <Compile Include="IPC\IpcServer.cs" />
