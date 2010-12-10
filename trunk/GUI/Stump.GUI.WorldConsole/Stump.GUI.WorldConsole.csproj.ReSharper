@@ -1,0 +1,5 @@
+<Configuration>
+  <NamespaceFolders>
+    <SkipFolder>53C844EC-189B-4803-8128-48ED9964ADA8/d:sql_update</SkipFolder>
+  </NamespaceFolders>
+</Configuration>

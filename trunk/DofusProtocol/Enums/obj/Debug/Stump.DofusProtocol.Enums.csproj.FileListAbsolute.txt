@@ -1,0 +1,5 @@
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\DofusProtocol\Enums\bin\Debug\Stump.DofusProtocol.Enums.dll
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\DofusProtocol\Enums\bin\Debug\Stump.DofusProtocol.Enums.pdb
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\DofusProtocol\Enums\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\DofusProtocol\Enums\obj\Debug\Stump.DofusProtocol.Enums.dll
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\DofusProtocol\Enums\obj\Debug\Stump.DofusProtocol.Enums.pdb

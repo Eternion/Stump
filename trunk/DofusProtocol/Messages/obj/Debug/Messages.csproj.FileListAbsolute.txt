@@ -1,0 +1,5 @@
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\StaticProtocol\Messages\bin\Debug\Messages.dll
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\StaticProtocol\Messages\bin\Debug\Messages.pdb
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\StaticProtocol\Messages\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\StaticProtocol\Messages\obj\Debug\Messages.dll
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\StaticProtocol\Messages\obj\Debug\Messages.pdb

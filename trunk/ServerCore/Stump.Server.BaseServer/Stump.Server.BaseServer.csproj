@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{011FBAFC-7720-4D36-9C59-71BAE6163C9E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Stump.Server.BaseServer</RootNamespace>
+    <AssemblyName>Stump.Server.BaseServer</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.ActiveRecord">
+      <HintPath>..\..\Library\Castle.ActiveRecord.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Core">
+      <HintPath>..\..\Library\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.2.2.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Library\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate">
+      <HintPath>..\..\Library\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\..\Library\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="zlib.net">
+      <HintPath>..\..\Library\zlib.net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\CommandParameter.cs" />
+    <Compile Include="Commands\CommandsManager.cs" />
+    <Compile Include="Commands\DummyCommandException.cs" />
+    <Compile Include="Commands\ExecuterBase.cs" />
+    <Compile Include="Commands\ICommandParameter.cs" />
+    <Compile Include="Commands\SubCommand.cs" />
+    <Compile Include="Commands\TriggerBase.cs" />
+    <Compile Include="ConsoleBase.cs" />
+    <Compile Include="Data\DataLoader.cs" />
+    <Compile Include="Data\D2oTool\D2oClassDefinition.cs" />
+    <Compile Include="Data\D2oTool\D2oFieldDefinition.cs" />
+    <Compile Include="Data\D2oTool\D2oFile.cs" />
+    <Compile Include="Data\D2oTool\I18nFile.cs" />
+    <Compile Include="Data\MapTool\Compressor.cs" />
+    <Compile Include="Data\MapTool\MapRipper.cs" />
+    <Compile Include="Data\MapTool\PakFile.cs" />
+    <Compile Include="Database\DatabaseAccessor.cs" />
+    <Compile Include="Database\DatabaseConfiguration.cs" />
+    <Compile Include="Definitions.cs" />
+    <Compile Include="Handler\IHandlerContainer.cs" />
+    <Compile Include="Initializing\StageStep.cs" />
+    <Compile Include="Initializing\StageManager.cs" />
+    <Compile Include="IPC\IRemoteOperationsAuth.cs" />
+    <Compile Include="IPC\IRemoteOperationsWorld.cs" />
+    <Compile Include="Manager\IInstance.cs" />
+    <Compile Include="Manager\InstanceManager.cs" />
+    <Compile Include="Network\BaseClient.cs" />
+    <Compile Include="Handler\HandlerManager.cs" />
+    <Compile Include="Handler\Handler.cs" />
+    <Compile Include="Network\ClientVersion.cs" />
+    <Compile Include="Network\MessageListener.cs" />
+    <Compile Include="Network\QueueDispatcher.cs" />
+    <Compile Include="Network\Worker.cs" />
+    <Compile Include="Network\WorkerManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerBase.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="IPC\WorldServerInformation.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\BaseCore\Stump.BaseCore.Framework\Stump.BaseCore.Framework.csproj">
+      <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
+      <Name>Stump.BaseCore.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Database\Stump.Database\Stump.Database.csproj">
+      <Project>{D0C51923-20CC-4B7B-ACF2-BA56ACB06232}</Project>
+      <Name>Stump.Database</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DofusProtocol\Classes\Stump.DofusProtocol.Classes.csproj">
+      <Project>{10884165-D492-4895-B3EF-32429F7A7F55}</Project>
+      <Name>Stump.DofusProtocol.Classes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DofusProtocol\Enums\Stump.DofusProtocol.Enums.csproj">
+      <Project>{D7BFF8ED-065B-4A53-9805-595DFEA75A0A}</Project>
+      <Name>Stump.DofusProtocol.Enums</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DofusProtocol\Messages\Stump.DofusProtocol.Messages.csproj">
+      <Project>{53092D2E-8F37-4889-B6B7-B359E093E3F4}</Project>
+      <Name>Stump.DofusProtocol.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DofusProtocol\D2oClasses\Stump.DofusProtocol.D2oClasses.csproj">
+      <Project>{33093793-C4BA-4B89-AC82-6E9D00437452}</Project>
+      <Name>Stump.DofusProtocol.D2oClasses</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

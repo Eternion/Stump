@@ -1,0 +1,5 @@
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\StaticProtocol\Classes\bin\Debug\Classes.dll
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\StaticProtocol\Classes\bin\Debug\Classes.pdb
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\StaticProtocol\Classes\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\StaticProtocol\Classes\obj\Debug\Classes.dll
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\StaticProtocol\Classes\obj\Debug\Classes.pdb

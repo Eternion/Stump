@@ -1,0 +1,5 @@
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\Plugins\Stump.Plugins.IRC\bin\Debug\Stump.Modules.IRC.dll
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\Plugins\Stump.Plugins.IRC\bin\Debug\Stump.Modules.IRC.pdb
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\Plugins\Stump.Plugins.IRC\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\Plugins\Stump.Plugins.IRC\obj\Debug\Stump.Modules.IRC.dll
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\Plugins\Stump.Plugins.IRC\obj\Debug\Stump.Modules.IRC.pdb

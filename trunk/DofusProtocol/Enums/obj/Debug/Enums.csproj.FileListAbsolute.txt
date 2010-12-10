@@ -1,0 +1,5 @@
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\StaticProtocol\Enums\bin\Debug\Enums.dll
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\StaticProtocol\Enums\bin\Debug\Enums.pdb
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\StaticProtocol\Enums\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\StaticProtocol\Enums\obj\Debug\Enums.dll
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\StaticProtocol\Enums\obj\Debug\Enums.pdb

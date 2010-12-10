@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D7BFF8ED-065B-4A53-9805-595DFEA75A0A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Stump.DofusProtocol.Enums</RootNamespace>
+    <AssemblyName>Stump.DofusProtocol.Enums</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AlignmentSideEnum.cs" />
+    <Compile Include="BreedEnum.cs" />
+    <Compile Include="BuildTypeEnum.cs" />
+    <Compile Include="CharacterCreationResultEnum.cs" />
+    <Compile Include="CharacterDeletionErrorEnum.cs" />
+    <Compile Include="CharacterInventoryPositionEnum.cs" />
+    <Compile Include="CharacterSpellModificationTypeEnum.cs" />
+    <Compile Include="ChatActivableChannelsEnum.cs" />
+    <Compile Include="ChatErrorEnum.cs" />
+    <Compile Include="CompassTypeEnum.cs" />
+    <Compile Include="ConsoleMessageTypeEnum.cs" />
+    <Compile Include="CrafterDirectoryParamBitEnum.cs" />
+    <Compile Include="CraftResultEnum.cs" />
+    <Compile Include="Custom\ContinentIdEnum.cs" />
+    <Compile Include="Custom\EffectsEnum.cs" />
+    <Compile Include="Custom\EmotesEnum.cs" />
+    <Compile Include="Custom\ItemCategoryEnum.cs" />
+    <Compile Include="Custom\ItemIdEnum.cs" />
+    <Compile Include="Custom\ItemType.cs" />
+    <Compile Include="Custom\MapIdEnum.cs" />
+    <Compile Include="Custom\MapNeighbourEnum.cs" />
+    <Compile Include="Custom\MonsterIdEnum.cs" />
+    <Compile Include="Custom\MonsterRaceIdEnum.cs" />
+    <Compile Include="Custom\RegionIdEnum.cs" />
+    <Compile Include="Custom\RoleEnum.cs" />
+    <Compile Include="Custom\SexTypeEnum.cs" />
+    <Compile Include="Custom\CaracteristicsIdEnum.cs" />
+    <Compile Include="Custom\SpellIdEnum.cs" />
+    <Compile Include="Custom\SpellStatesEnum.cs" />
+    <Compile Include="Custom\SpellTypesEnum.cs" />
+    <Compile Include="Custom\ZoneIdEnum.cs" />
+    <Compile Include="DebugLevelEnum.cs" />
+    <Compile Include="DirectionsEnum.cs" />
+    <Compile Include="DownloadPriorityEnum.cs" />
+    <Compile Include="ExchangeErrorEnum.cs" />
+    <Compile Include="ExchangeReplayStopReasonEnum.cs" />
+    <Compile Include="ExchangeTypeEnum.cs" />
+    <Compile Include="FightDispellableEnum.cs" />
+    <Compile Include="FighterRefusedReasonEnum.cs" />
+    <Compile Include="FightOptionsEnum.cs" />
+    <Compile Include="FightOutcomeEnum.cs" />
+    <Compile Include="FightSpellCastCriticalEnum.cs" />
+    <Compile Include="FightTypeEnum.cs" />
+    <Compile Include="GameActionFightInvisibilityStateEnum.cs" />
+    <Compile Include="GameActionMarkTypeEnum.cs" />
+    <Compile Include="GameContextEnum.cs" />
+    <Compile Include="GameHierarchyEnum.cs" />
+    <Compile Include="GuildCreationResultEnum.cs" />
+    <Compile Include="GuildInformationsTypeEnum.cs" />
+    <Compile Include="GuildInvitationStateEnum.cs" />
+    <Compile Include="HardcoreDeathStateEnum.cs" />
+    <Compile Include="IdentificationFailureReasonEnum.cs" />
+    <Compile Include="ListAddFailureEnum.cs" />
+    <Compile Include="MapObstacleStateEnum.cs" />
+    <Compile Include="MountEquipedErrorEnum.cs" />
+    <Compile Include="NicknameErrorEnum.cs" />
+    <Compile Include="NicknameGeneratingFailureEnum.cs" />
+    <Compile Include="NumericalValueTypeEnum.cs" />
+    <Compile Include="ObjectErrorEnum.cs" />
+    <Compile Include="PartStateEnum.cs" />
+    <Compile Include="PartyJoinErrorEnum.cs" />
+    <Compile Include="PaymentTypeEnum.cs" />
+    <Compile Include="PlayableBreedEnum.cs" />
+    <Compile Include="PlayerLifeStatusEnum.cs" />
+    <Compile Include="PlayerStateEnum.cs" />
+    <Compile Include="PresetDeleteResultEnum.cs" />
+    <Compile Include="PresetSaveResultEnum.cs" />
+    <Compile Include="PresetSaveUpdateErrorEnum.cs" />
+    <Compile Include="PresetUseResultEnum.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SequenceTypeEnum.cs" />
+    <Compile Include="ServerConnectionErrorEnum.cs" />
+    <Compile Include="ServerStatusEnum.cs" />
+    <Compile Include="SocialContactCategoryEnum.cs" />
+    <Compile Include="SubEntityBindingPointCategoryEnum.cs" />
+    <Compile Include="SubscriptionRequiredEnum.cs" />
+    <Compile Include="TaxCollectorErrorReasonEnum.cs" />
+    <Compile Include="TeamEnum.cs" />
+    <Compile Include="TeamTypeEnum.cs" />
+    <Compile Include="TextInformationTypeEnum.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,10 @@
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\DofusProtocol\Classes\bin\Debug\Stump.DofusProtocol.Classes.dll
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\DofusProtocol\Classes\bin\Debug\Stump.DofusProtocol.Classes.pdb
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\DofusProtocol\Classes\bin\Debug\Stump.BaseCore.Framework.dll
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\DofusProtocol\Classes\bin\Debug\Stump.DofusProtocol.Enums.dll
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\DofusProtocol\Classes\bin\Debug\NLog.dll
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\DofusProtocol\Classes\bin\Debug\Stump.BaseCore.Framework.pdb
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\DofusProtocol\Classes\bin\Debug\Stump.DofusProtocol.Enums.pdb
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\DofusProtocol\Classes\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\DofusProtocol\Classes\obj\Debug\Stump.DofusProtocol.Classes.dll
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\DofusProtocol\Classes\obj\Debug\Stump.DofusProtocol.Classes.pdb

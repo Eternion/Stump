@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Stump.BaseCore.Framework</RootNamespace>
+    <AssemblyName>Stump.BaseCore.Framework</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NLog">
+      <HintPath>..\..\Library\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Attributes\Variable.cs" />
+    <Compile Include="Collections\BlockingQueue.cs" />
+    <Compile Include="Collections\LockFreeQueue.cs" />
+    <Compile Include="Collections\TimedDictionary.cs" />
+    <Compile Include="Collections\TimedList.cs" />
+    <Compile Include="Cryptography\Cryptography.cs" />
+    <Compile Include="Threading\TaskCompletionSourceExtensions.cs" />
+    <Compile Include="Threading\TaskExtensions.cs" />
+    <Compile Include="Threading\TaskFactoryExtensions.cs" />
+    <Compile Include="Threading\TaskSchedulerExtensions.cs" />
+    <Compile Include="IO\BigEndianReader.cs" />
+    <Compile Include="IO\BigEndianWriter.cs" />
+    <Compile Include="IO\NLogHelper.cs" />
+    <Compile Include="IO\StringStream.cs" />
+    <Compile Include="Pool\BufferManager.cs" />
+    <Compile Include="Threading\Messages.cs" />
+    <Compile Include="Pool\SocketAsyncEventArgsPool.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\AsyncRandom.cs" />
+    <Compile Include="Threading\AsyncTaskPool.cs" />
+    <Compile Include="Utils\BooleanByteWrapper.cs" />
+    <Compile Include="Utils\ConditionWaiter.cs" />
+    <Compile Include="Extensions\Extensions.cs" />
+    <Compile Include="Utils\FormatterHelper.cs" />
+    <Compile Include="Utils\Node.cs" />
+    <Compile Include="Utils\Singleton.cs" />
+    <Compile Include="Utils\StringUtils.cs" />
+    <Compile Include="XmlUtils\XmlConfigFile.cs" />
+    <Compile Include="XmlUtils\Serializer.cs" />
+    <Compile Include="XmlUtils\XmlParser.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

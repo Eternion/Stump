@@ -1,0 +1,5 @@
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\Modules\StumpMessenger\bin\Debug\StumpMessenger.dll
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\Modules\StumpMessenger\bin\Debug\StumpMessenger.pdb
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\Modules\StumpMessenger\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\Modules\StumpMessenger\obj\Debug\StumpMessenger.dll
+C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\Stump\Stump\Modules\StumpMessenger\obj\Debug\StumpMessenger.pdb

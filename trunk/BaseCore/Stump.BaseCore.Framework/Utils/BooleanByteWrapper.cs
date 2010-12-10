@@ -1,0 +1,71 @@
+﻿// /*************************************************************************
+//  *
+//  *  Copyright (C) 2010 - 2011 Stump Team
+//  *
+//  *  This program is free software: you can redistribute it and/or modify
+//  *  it under the terms of the GNU General Public License as published by
+//  *  the Free Software Foundation, either version 3 of the License, or
+//  *  (at your option) any later version.
+//  *
+//  *  This program is distributed in the hope that it will be useful,
+//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  *  GNU General Public License for more details.
+//  *
+//  *  You should have received a copy of the GNU General Public License
+//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  *
+//  *************************************************************************/
+using System;
+
+namespace Stump.BaseCore.Framework.Utils
+{
+    public static class BooleanByteWrapper
+    {
+        public static byte SetFlag(byte flag, byte offset, bool value)
+        {
+            if (offset >= 8)
+                throw new ArgumentException("offset must be lesser than 8");
+
+            byte result = flag;
+
+            if (value)
+            {
+                result = (byte) (flag | (1 << offset));
+            }
+            else
+            {
+                result = (byte) (flag & 255 - (1 << offset));
+            }
+
+            return result;
+        }
+
+        public static byte SetFlag(int flag, byte offset, bool value)
+        {
+            if (offset >= 8)
+                throw new ArgumentException("offset must be lesser than 8");
+
+            var result = (byte) flag;
+
+            if (value)
+            {
+                result = (byte) (flag | (1 << offset));
+            }
+            else
+            {
+                result = (byte) (flag & 255 - (1 << offset));
+            }
+
+            return result;
+        }
+
+        public static bool GetFlag(byte flag, byte offset)
+        {
+            if (offset >= 8)
+                throw new ArgumentException("offset must be lesser than 8");
+
+            return !((flag & (byte) (1 << offset)) == 0);
+        }
+    }
+}

@@ -1,0 +1,7 @@
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\Plugins\Stump.Plugins.Messenger\bin\Debug\Stump.Modules.Messenger.dll
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\Plugins\Stump.Plugins.Messenger\bin\Debug\Stump.Modules.Messenger.pdb
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\Plugins\Stump.Plugins.Messenger\bin\Debug\MSNPSharp.dll
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\Plugins\Stump.Plugins.Messenger\bin\Debug\MSNPSharp.XmlSerializers.dll
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\Plugins\Stump.Plugins.Messenger\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\Plugins\Stump.Plugins.Messenger\obj\Debug\Stump.Modules.Messenger.dll
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\Plugins\Stump.Plugins.Messenger\obj\Debug\Stump.Modules.Messenger.pdb

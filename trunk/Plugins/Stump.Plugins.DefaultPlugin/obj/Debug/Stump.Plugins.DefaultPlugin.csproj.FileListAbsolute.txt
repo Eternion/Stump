@@ -1,0 +1,5 @@
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\Plugins\Stump.Plugins.DefaultPlugin\bin\Debug\Stump.Plugins.DefaultPlugin.dll
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\Plugins\Stump.Plugins.DefaultPlugin\bin\Debug\Stump.Plugins.DefaultPlugin.pdb
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\Plugins\Stump.Plugins.DefaultPlugin\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\Plugins\Stump.Plugins.DefaultPlugin\obj\Debug\Stump.Plugins.DefaultPlugin.dll
+C:\Documents and Settings\Thomas\Desktop\Programming\C#\Projet STUMP (Assembla)\trunk\Plugins\Stump.Plugins.DefaultPlugin\obj\Debug\Stump.Plugins.DefaultPlugin.pdb

@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A753FDB3-2D64-4993-8BF1-621240F18108}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Stump.Server.WorldServer</RootNamespace>
+    <AssemblyName>Stump.Server.WorldServer</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.ActiveRecord">
+      <HintPath>..\..\Library\Castle.ActiveRecord.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Core, Version=1.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL" />
+    <Reference Include="NLog">
+      <HintPath>..\..\Library\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Breeds\BaseBreed.cs" />
+    <Compile Include="Breeds\BreedManager.cs" />
+    <Compile Include="Breeds\CraBreed.cs" />
+    <Compile Include="Breeds\EcaflipBreed.cs" />
+    <Compile Include="Breeds\EniripsaBreed.cs" />
+    <Compile Include="Breeds\EnutrofBreed.cs" />
+    <Compile Include="Breeds\FecaBreed.cs" />
+    <Compile Include="Breeds\IopBreed.cs" />
+    <Compile Include="Breeds\OsamodasBreed.cs" />
+    <Compile Include="Breeds\PandawaBreed.cs" />
+    <Compile Include="Breeds\SacrieurBreed.cs" />
+    <Compile Include="Breeds\SadidaBreed.cs" />
+    <Compile Include="Breeds\SramBreed.cs" />
+    <Compile Include="Breeds\XelorBreed.cs" />
+    <Compile Include="Chat\Channel.cs" />
+    <Compile Include="Chat\ChatManager.cs" />
+    <Compile Include="Commands\TriggerChat.cs" />
+    <Compile Include="Database\AccountDatabase.cs" />
+    <Compile Include="Database\CharacterDatabase.cs" />
+    <Compile Include="Data\ItemLoader.cs" />
+    <Compile Include="Data\MonsterLoader.cs" />
+    <Compile Include="Dialog\IDialog.cs" />
+    <Compile Include="Dialog\IDialoger.cs" />
+    <Compile Include="Dialog\IDialogRequest.cs" />
+    <Compile Include="Effects\EffectBase.cs" />
+    <Compile Include="Effects\EffectContext.cs" />
+    <Compile Include="Effects\EffectCreature.cs" />
+    <Compile Include="Effects\EffectDate.cs" />
+    <Compile Include="Effects\EffectDice.cs" />
+    <Compile Include="Effects\EffectDuration.cs" />
+    <Compile Include="Effects\EffectHandleAttribute.cs" />
+    <Compile Include="Effects\EffectLadder.cs" />
+    <Compile Include="Effects\EffectMax.cs" />
+    <Compile Include="Effects\EffectManager.cs" />
+    <Compile Include="Effects\EffectMount.cs" />
+    <Compile Include="Effects\EffectString.cs" />
+    <Compile Include="Effects\EffectTemplate.cs" />
+    <Compile Include="Effects\EffectValue.cs" />
+    <Compile Include="Effects\Executor\FightDamage.cs" />
+    <Compile Include="Effects\Executor\FightEffectAttribute.cs" />
+    <Compile Include="Effects\Executor\FightEffectExecutor.cs" />
+    <Compile Include="Entities\Character.cs" />
+    <Compile Include="Entities\Character.Fields.cs" />
+    <Compile Include="Entities\Character.Stats.cs" />
+    <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Entities\ICharacterContainer.cs" />
+    <Compile Include="Entities\IEntity.cs" />
+    <Compile Include="Entities\IEntityContainer.cs" />
+    <Compile Include="Entities\IMovable.cs" />
+    <Compile Include="Entities\IOwned.cs" />
+    <Compile Include="Entities\Monster.cs" />
+    <Compile Include="Entities\MonsterGrade.cs" />
+    <Compile Include="Entities\Npc.cs" />
+    <Compile Include="Entities\StatsData.cs" />
+    <Compile Include="Entities\StatsFields.cs" />
+    <Compile Include="Entities\StatsHealth.cs" />
+    <Compile Include="Exchange\Trade.cs" />
+    <Compile Include="Exchange\TradeManager.cs" />
+    <Compile Include="Exchange\Trader.cs" />
+    <Compile Include="Exchange\TradeRequest.cs" />
+    <Compile Include="Fights\Fight.cs" />
+    <Compile Include="Fights\FightManager.cs" />
+    <Compile Include="Fights\FightRequest.cs" />
+    <Compile Include="Fights\TimeLine.cs" />
+    <Compile Include="Global\Continent.cs" />
+    <Compile Include="Global\Location.cs" />
+    <Compile Include="Global\Maps\CellData.cs" />
+    <Compile Include="Global\Maps\Map.cs" />
+    <Compile Include="Data\MapLoader.cs" />
+    <Compile Include="Global\Region.cs" />
+    <Compile Include="Global\World.cs" />
+    <Compile Include="Global\World.Init.cs" />
+    <Compile Include="Global\WorldSpace.cs" />
+    <Compile Include="Global\WorldSpace.Type.cs" />
+    <Compile Include="Global\Zone.cs" />
+    <Compile Include="Groups\FightGroup.cs" />
+    <Compile Include="Groups\FightGroupMember.cs" />
+    <Compile Include="Groups\Group.cs" />
+    <Compile Include="Groups\GroupMember.cs" />
+    <Compile Include="Groups\GroupManager.cs" />
+    <Compile Include="Groups\MonsterGroup.cs" />
+    <Compile Include="Groups\PartyGroup.cs" />
+    <Compile Include="Handlers\BasicHandler.cs" />
+    <Compile Include="Handlers\CharacterHandler.cs" />
+    <Compile Include="Handlers\ChatHandler.cs" />
+    <Compile Include="Handlers\LoginHandler.cs" />
+    <Compile Include="Handlers\WorldHandlerContainer.cs" />
+    <Compile Include="Items\Inventory.cs" />
+    <Compile Include="Items\Item.cs" />
+    <Compile Include="Items\ItemManager.cs" />
+    <Compile Include="Items\ItemStored.cs" />
+    <Compile Include="Items\ItemTemplate.cs" />
+    <Compile Include="Items\Weapon.cs" />
+    <Compile Include="Items\WeaponTemplate.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Spells\Spell.cs" />
+    <Compile Include="Spells\SpellCollection.cs" />
+    <Compile Include="Spells\SpellLevel.cs" />
+    <Compile Include="Spells\SpellManager.cs" />
+    <Compile Include="WorldConsole.cs" />
+    <Compile Include="Commands\WorldCommand.cs" />
+    <Compile Include="Commands\WorldConsoleTrigger.cs" />
+    <Compile Include="Commands\WorldSubCommand.cs" />
+    <Compile Include="Commands\ParametersConverter.cs" />
+    <Compile Include="Definitions.cs" />
+    <Compile Include="Handlers\WorldHandler.cs" />
+    <Compile Include="Handlers\Predicates.cs" />
+    <Compile Include="IPC\IpcAccessor.cs" />
+    <Compile Include="IPC\IpcOperations.cs" />
+    <Compile Include="WorldClient.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WorldServer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\BaseCore\Stump.BaseCore.Framework\Stump.BaseCore.Framework.csproj">
+      <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
+      <Name>Stump.BaseCore.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Database\Stump.Database\Stump.Database.csproj">
+      <Project>{D0C51923-20CC-4B7B-ACF2-BA56ACB06232}</Project>
+      <Name>Stump.Database</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DofusProtocol\Classes\Stump.DofusProtocol.Classes.csproj">
+      <Project>{10884165-D492-4895-B3EF-32429F7A7F55}</Project>
+      <Name>Stump.DofusProtocol.Classes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DofusProtocol\Enums\Stump.DofusProtocol.Enums.csproj">
+      <Project>{D7BFF8ED-065B-4A53-9805-595DFEA75A0A}</Project>
+      <Name>Stump.DofusProtocol.Enums</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DofusProtocol\Messages\Stump.DofusProtocol.Messages.csproj">
+      <Project>{53092D2E-8F37-4889-B6B7-B359E093E3F4}</Project>
+      <Name>Stump.DofusProtocol.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DofusProtocol\D2oClasses\Stump.DofusProtocol.D2oClasses.csproj">
+      <Project>{33093793-C4BA-4B89-AC82-6E9D00437452}</Project>
+      <Name>Stump.DofusProtocol.D2oClasses</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Stump.Server.BaseServer\Stump.Server.BaseServer.csproj">
+      <Project>{011FBAFC-7720-4D36-9C59-71BAE6163C9E}</Project>
+      <Name>Stump.Server.BaseServer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
