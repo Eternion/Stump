@@ -16,22 +16,19 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Collections.Generic;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.WorldServer.Breeds;
 
 namespace Stump.Server.WorldServer.Handlers
 {
-    public partial class ChatHandler : WorldHandlerContainer
+    public partial class ContextHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof(ChannelEnablingMessage))]
-        public static void HandleChannelEnablingMessage(WorldClient client, ChannelEnablingMessage message)
+        public static void SendSpellForgottenMessage(WorldClient client)
         {
-           
-        }
-
-        public static void SendEnabledChannelsMessage(WorldClient client, List<uint> allows, List<uint> disallows)
-        {
-            client.Send(new EnabledChannelsMessage(allows, disallows));
+            client.Send(new SpellForgottenMessage(new List<uint>(), 0));
         }
     }
 }

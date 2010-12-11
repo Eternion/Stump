@@ -34,3 +34,10 @@
 /trunk/ServerCore/Stump.Server.WorldServer/obj
 /trunk/Tools/Stump.Tools.Proxy/obj
 /trunk/Tools/Stump.Tools.Proxy/bin
+
+#
+# VS Sulution user file
+#
+*.suo
+*.user
+
