@@ -12,7 +12,7 @@ namespace Stump.Tools.Proxy.Messages
 
 
         [Handler(typeof(TeleportDestinationsListMessage))]
-        static void HandleTeleportDestinationsListMessage(TeleportDestinationsListMessage message, DerivedConnexion sender)
+        public static void HandleTeleportDestinationsListMessage(TeleportDestinationsListMessage message, DerivedConnexion sender)
         {
             var lMessage = sender.LastClientMessage as TeleportRequestMessage;
 

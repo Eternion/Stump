@@ -31,15 +31,15 @@ namespace Stump.Tools.Proxy
                 /* Display how many players are connected */
                 case ("COUNT"):
                     {
-                        sender.SendClientChatMessage(Proxy.DerivedConnexionList.Count + " connecté(s).");
+                        sender.SendClientChatMessage(Proxy.clientList.Count + " connecté(s).");
                         break;
                     }
                 /* Display message foreach connected players */
                 case ("ALL"):
                     {
                         if (data.Length < 2) return;
-                        foreach (DerivedConnexion conn in Proxy.DerivedConnexionList.Where(dc => dc.Client.Infos != null))
-                            sender.SendClientChatMessage(sender.Client.Infos.name + " => " + data[1]);
+                        foreach (WorldDerivedConnexion conn in Proxy.clientList.Where(dc => dc.Infos != null))
+                            sender.SendClientChatMessage((sender as WorldDerivedConnexion).Infos.name + " => " + data[1]);
                         break;
                     }
             }

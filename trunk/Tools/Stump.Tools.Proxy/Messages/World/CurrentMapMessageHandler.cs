@@ -12,7 +12,7 @@ namespace Stump.Tools.Proxy.Messages
 
 
         [Handler(typeof(CurrentMapMessage))]
-        static void HandleCurrentMapMessage(CurrentMapMessage message, DerivedConnexion sender)
+        public static void HandleCurrentMapMessage(CurrentMapMessage message, DerivedConnexion sender)
         {
             (sender as WorldDerivedConnexion).MapId = message.mapId;
 

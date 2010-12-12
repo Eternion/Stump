@@ -73,7 +73,7 @@ namespace Stump.Tools.Proxy
                     if (
                         method.GetParameters().Count(
                             entry =>
-                            (entry.ParameterType.IsEquivalentTo(typeof(Message)) ||
+                            (entry.ParameterType.IsSubclassOf(typeof(Message)) ||
                              entry.ParameterType.IsEquivalentTo(typeof(DerivedConnexion)))) != 2)
                         throw new ArgumentException("Incorrect delegate parameters");
 

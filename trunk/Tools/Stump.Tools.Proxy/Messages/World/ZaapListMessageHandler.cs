@@ -12,7 +12,7 @@ namespace Stump.Tools.Proxy.Messages
 
 
         [Handler(typeof(ZaapListMessage))]
-        static void HandleZaapListMessage(ZaapListMessage message, DerivedConnexion sender)
+        public static void HandleZaapListMessage(ZaapListMessage message, DerivedConnexion sender)
         {
          
 

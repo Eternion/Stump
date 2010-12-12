@@ -66,7 +66,7 @@ namespace Stump.Tools.Proxy
         public bool CanReceive
         {
             get;
-            protected set;
+            set;
         }
 
         public bool Connected

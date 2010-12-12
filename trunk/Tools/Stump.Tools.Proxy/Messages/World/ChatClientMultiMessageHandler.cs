@@ -6,11 +6,11 @@ using Stump.DofusProtocol.Messages;
 
 namespace Stump.Tools.Proxy.Messages
 {
-    class ChatAbstractClientMessageHandler
+    class ChatClientMultiMessageHandler
     {
         /* In order to process player commands */
-        [Handler(typeof(ChatAbstractClientMessage))]
-        static void ChatAbstractClientMessage(ChatAbstractClientMessage message, DerivedConnexion sender)
+        [Handler(typeof(ChatClientMultiMessage))]
+        public static void ChatAbstractClientMessage(ChatClientMultiMessage message, DerivedConnexion sender)
         {
             if ((sender as WorldDerivedConnexion).Infos != null)
             {

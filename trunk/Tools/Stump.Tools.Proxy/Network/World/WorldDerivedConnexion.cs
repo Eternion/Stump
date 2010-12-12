@@ -41,10 +41,16 @@ namespace Stump.Tools.Proxy
         public uint MapId
         { get; set; }
 
+        public string Ticket
+        { get; set; }
+
         public WorldDerivedConnexion(Client client)
             : base(client)
         {
+            client.Send(new ProtocolRequired().initProtocolRequired(1304, 1304));
+            Console.WriteLine("Have Send False Protocol Required");
             client.Send(new HelloGameMessage().initHelloGameMessage());
+            Console.WriteLine("Have Send False Hello Game");
         }
 
     }

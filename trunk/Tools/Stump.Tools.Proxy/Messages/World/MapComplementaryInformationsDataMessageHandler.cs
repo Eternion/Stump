@@ -10,7 +10,7 @@ namespace Stump.Tools.Proxy.Messages
     {
 
         [Handler(typeof(MapComplementaryInformationsDataMessage))]
-        static void HandleMapComplementaryInformationsDataMessage(MapComplementaryInformationsDataMessage message, DerivedConnexion sender)
+        public static void HandleMapComplementaryInformationsDataMessage(MapComplementaryInformationsDataMessage message, DerivedConnexion sender)
         {
           
 

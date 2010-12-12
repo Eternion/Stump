@@ -11,7 +11,7 @@ namespace Stump.Tools.Proxy.Messages
 
         /* In order to save select player infos */
         [Handler(typeof(CharacterSelectedSuccessMessage))]
-        static void ChatAbstractClientMessage(CharacterSelectedSuccessMessage message, DerivedConnexion sender)
+        public static void ChatAbstractClientMessage(CharacterSelectedSuccessMessage message, DerivedConnexion sender)
         {
              (sender as WorldDerivedConnexion).Infos = message.infos;
 

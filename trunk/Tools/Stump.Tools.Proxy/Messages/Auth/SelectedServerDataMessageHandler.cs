@@ -11,15 +11,25 @@ namespace Stump.Tools.Proxy.Messages
 
         /* Intercept and modify adress & port of the server */
         [Handler(typeof(SelectedServerDataMessage))]
-        static void HandleSelectedServerDataMessage(SelectedServerDataMessage message, DerivedConnexion sender)
+        public static void HandleSelectedServerDataMessage(SelectedServerDataMessage message, DerivedConnexion sender)
         {
              WorldDerivedConnexion.Tickets.Add(message.ticket, message);
 
-             message.address = ClientListener.Host;
+             var mess = new SelectedServerDataMessage();
 
-             message.port = (uint)ClientListener.Port;
+             mess.canCreateNewCharacter = true;
 
-             sender.Client.Send(message);
+             mess.serverId = message.serverId;
+
+             mess.ticket = message.ticket;
+
+             mess.address = Proxy.worldClientListener.Host;
+
+             mess.port = (uint)Proxy.worldClientListener.Port;
+
+             sender.Client.Send(mess);
+
+             sender.Client.Disconnect();
         }
 
     }

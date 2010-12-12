@@ -58,7 +58,7 @@ namespace Stump.DofusProtocol.Messages
                 Initialize();
 
             if (!Messages.ContainsKey(id))
-                throw new KeyNotFoundException("This Message doesn't exist");
+               throw new KeyNotFoundException("This Message doesn't exist");
 
             Type type = Messages[id];
             ConstructorInfo ci = type.GetConstructor(new Type[0] {});

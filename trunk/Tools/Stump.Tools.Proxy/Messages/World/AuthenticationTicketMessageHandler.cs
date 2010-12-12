@@ -12,12 +12,13 @@ namespace Stump.Tools.Proxy.Messages
 
 
         [Handler(typeof(AuthenticationTicketMessage))]
-        static void HandleAuthenticationTicketMessage(AuthenticationTicketMessage message, DerivedConnexion sender)
+        public static void HandleAuthenticationTicketMessage(AuthenticationTicketMessage message, DerivedConnexion sender)
         {
              if (WorldDerivedConnexion.Tickets.ContainsKey(message.ticket))
              {
                  SelectedServerDataMessage mess = WorldDerivedConnexion.Tickets[message.ticket];
                  WorldDerivedConnexion.Tickets.Remove(message.ticket);
+                 (sender as WorldDerivedConnexion).Ticket = mess.ticket;
                  sender.BindToServer(new IPEndPoint(IPAddress.Parse(mess.address), (int)mess.port));
              }
              else

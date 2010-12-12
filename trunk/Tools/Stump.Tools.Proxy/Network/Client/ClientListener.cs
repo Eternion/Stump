@@ -29,17 +29,14 @@ namespace Stump.Tools.Proxy
 {
     public sealed class ClientListener
     {
-        [Variable]
-        public static string Host = "localhost";
 
-        [Variable]
-        public static int Port = 5555;
+        public string Host = "localhost";
 
-        [Variable]
-        public static int MaxConcurrentConnections = 2000;
+        public int Port = 5555;
 
-        [Variable]
-        public static int MaxPendingConnections = 100;
+        public int MaxConcurrentConnections = 2000;
+
+        public int MaxPendingConnections = 100;
 
         [Variable(DefinableByConfig = false, DefinableRunning = false)]
         public static int BufferSize = 8192;
@@ -64,11 +61,14 @@ namespace Stump.Tools.Proxy
         private readonly int m_readBufferSize;
         private readonly SocketAsyncEventArgsPool m_writeAsyncEventArgsPool;
 
-        public ClientListener()
-        {
-            m_ipEndPoint = new IPEndPoint(IPAddress.Parse(Host), Port);
+        public ClientListener(string host, int port, int maxConcurrentConnexions, int maxPendingConnections)
+        {  
+            m_ipEndPoint = new IPEndPoint(IPAddress.Parse(host), port);
             m_readBufferSize = BufferSize;
-            m_maxConcurrentConnexion = MaxConcurrentConnections;
+            Host = host;
+            Port = port;
+            MaxPendingConnections = maxPendingConnections;
+            m_maxConcurrentConnexion = maxConcurrentConnexions;
 
             m_readBufferManager = new BufferManager(m_maxConcurrentConnexion*m_readBufferSize, m_readBufferSize);
 
@@ -151,7 +151,7 @@ namespace Stump.Tools.Proxy
 
             readAsyncEventArgs.UserToken = client;
 
-            logger.Info("Client connected <{0}>", client.IP);
+            Console.WriteLine("Client connected <{0}>", client.IP);
 
             m_clientList.Add(client);
 
@@ -219,6 +219,8 @@ namespace Stump.Tools.Proxy
                 m_clientList.Remove(client);
             }
             m_clientSemaphore.Release();
+
+            Console.WriteLine("Client disconnected");
 
             client = null;
 

@@ -31,15 +31,15 @@ using Stump.Tools.Proxy.Messages;
 
 namespace Stump.Tools.Proxy
 {
-    public static class Proxy
+    static class Proxy
     {
         private static Dictionary<string, Assembly> m_loadedAssemblies;
         private static Logger logger;
         private static XmlConfigFile m_configFile;
         public static HandlerManager HandlerManager= new HandlerManager();
-
-        private static ClientListener m_authClientListener;
-        private static ClientListener m_worldClientListener;
+        public static List<WorldDerivedConnexion> clientList = new List<WorldDerivedConnexion>();
+        public static ClientListener authClientListener;
+        public static ClientListener worldClientListener;
 
 
         public static void Initialize()
@@ -47,39 +47,46 @@ namespace Stump.Tools.Proxy
             /* Initialize Config File */
             m_loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToDictionary(entry => entry.GetName().Name);
             m_configFile = new XmlConfigFile("proxy_config.xml", "proxy_config.xsd");
-            m_configFile.DefinesVariables(ref m_loadedAssemblies);
+           // m_configFile.DefinesVariables(ref m_loadedAssemblies);
 
             /*Initialize HandlerManager */
             HandlerManager.RegisterAll(typeof(IdentificationSuccessMessageHandler).Assembly);
 
-            /* Initialize AuthClient Listener */
-            m_authClientListener.Init();
+            /* Create Auth et World Client Listener */
+            authClientListener = new ClientListener("127.0.0.1", 5555,2000,2000);
+            worldClientListener = new ClientListener("127.0.0.1", 5556, 2000, 2000);
 
+            /* Initialize AuthClient Listener */
+            authClientListener.Init();
+           
             /* Handle AuthClient Connexion */
-            m_authClientListener.onClientConnexion += onNewAuthClient;
+            authClientListener.onClientConnexion += onNewAuthClient;
 
             /* Initialize WorldClient Listener */
-            m_worldClientListener.Init();
+            worldClientListener.Init();
 
             /* Handle WorldClient Connexion */
-            m_worldClientListener.onClientConnexion += onNewWorldClient;
+            worldClientListener.onClientConnexion += onNewWorldClient;
 
             /* Start AuthClient Listener */
-            m_authClientListener.Start();
+            authClientListener.Start();
 
             /* Start WorldClient Listener */
-            m_worldClientListener.Start();
+            worldClientListener.Start();
         }
 
 
         public static void onNewAuthClient(Client client)
-        {
-            DerivedConnexion derivedConnexion = new AuthDerivedConnexion(new IPEndPoint(IPAddress.Parse(AuthHost),AuthPort), client);
+        {//"213.248.126.180"
+            Console.WriteLine("New Auth Client <{0}>", client.IP);
+            DerivedConnexion derivedConnexion = new AuthDerivedConnexion(new IPEndPoint(IPAddress.Parse("193.238.148.207"),5555), client);
         }
 
         public static void onNewWorldClient(Client client)
         {
-            DerivedConnexion derivedConnexion = new WorldDerivedConnexion(client);
+            Console.WriteLine("New World Client <{0}>", client.IP);
+            WorldDerivedConnexion derivedConnexion = new WorldDerivedConnexion(client);
+            clientList.Add(derivedConnexion);
         }
 
     }

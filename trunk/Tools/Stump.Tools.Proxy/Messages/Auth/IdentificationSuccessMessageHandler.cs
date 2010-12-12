@@ -12,12 +12,13 @@ namespace Stump.Tools.Proxy.Messages
         
         /* In order to set player Admin and give him console access*/
         [Handler(typeof(IdentificationSuccessMessage))]
-        static void HandleIdentificationSuccessMessage(IdentificationSuccessMessage message, DerivedConnexion sender)
+      public  static void HandleIdentificationSuccessMessage(IdentificationSuccessMessage message, DerivedConnexion sender)
         {
-
+            message.accountId = 1;
+            message.nickname = "MegaAdmin";
             message.hasRights = true;
-
-             sender.Client.Send(message);
+         
+            sender.Client.Send(message);
         }
 
     }

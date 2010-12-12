@@ -55,6 +55,7 @@ namespace Stump.Tools.Proxy
         public DerivedConnexion(Client client)
         {
             Client = client;
+            Client.CanReceive = true;
 
             /* Set Default Values */
             Analyse = true;
@@ -63,16 +64,18 @@ namespace Stump.Tools.Proxy
             /* Handle Client Message */
             Client.onMessageReceived += new Client.MessageReceived(Client_onMessageReceived);
             Client.onDisconnected += new Tools.Proxy.Client.Disconnected(Client_onDisconnected);
-
-            /* Handle Server Message */
-            Server.OnConnected += new ServerConnexion.Connected(Server_OnConnected);
-            Server.onMessageReceived += new ServerConnexion.MessageReceived(ServerConnexion_onMessageReceived);
-            Server.OnDisconnected += new ServerConnexion.Disconnected(Server_OnDisconnected);
         }
 
         public void BindToServer(IPEndPoint serverEndPoint)
         {
+            Console.WriteLine("Bind Client {0} to server {1}", Client.IP, serverEndPoint.Address.ToString());
+
             Server = new ServerConnexion(serverEndPoint);
+
+            /* Handle Server Message */
+            Server.OnConnected += new ServerConnexion.Connected(Server_OnConnected);
+            Server.onMessageReceived += new ServerConnexion.MessageReceived(Server_onMessageReceived);
+            Server.OnDisconnected += new ServerConnexion.Disconnected(Server_OnDisconnected);
 
             Server.Connect();
         }
@@ -80,10 +83,14 @@ namespace Stump.Tools.Proxy
         void Server_OnConnected()
         {
             isBind = true;
+            Console.WriteLine("Client is now binded to server");
         }
 
-        void ServerConnexion_onMessageReceived(DofusProtocol.Messages.Message message)
+        void Server_onMessageReceived(DofusProtocol.Messages.Message message)
         {
+            /*Debug */
+            Console.WriteLine("Receive {0} from Server", message.GetType().Name);
+
             /* Set last Message */
             LastServerMessage = message;
 
@@ -98,12 +105,15 @@ namespace Stump.Tools.Proxy
         }
 
         void Server_OnDisconnected()
-        {    
+        {
             isBind = false;
         }
 
         void Client_onMessageReceived(DofusProtocol.Messages.Message message)
         {
+            /*Debug */
+            Console.WriteLine("Receive {0} from Client", message.GetType().Name);
+
             /* Set last Message */
             LastClientMessage = message;
 
@@ -125,7 +135,7 @@ namespace Stump.Tools.Proxy
 
         public void SendClientChatMessage(string message)
         {
-            Client.Send(new ChatServerMessage().initChatServerMessage((uint)ChatActivableChannelsEnum.CHANNEL_ADMIN, message, 0, "", 0, "PROXY", 0));
+            Client.Send(new ChatServerMessage().initChatServerMessage((uint)ChatActivableChannelsEnum.CHANNEL_GLOBAL, message, 445232,"ufufeiu", 45232, "PROXY", 46332));
         }
 
     }

@@ -47,11 +47,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Messages\World\ChatAbstractClientMessageHandler.cs" />
+    <Compile Include="Messages\World\ChatClientMultiMessageHandler.cs" />
     <Compile Include="Messages\World\CharacterSelectedSuccessMessageHandler.cs" />
     <Compile Include="Messages\Auth\SelectedServerDataMessageHandler.cs" />
     <Compile Include="Messages\World\AuthenticationTicketMessageHandler.cs" />
     <Compile Include="Messages\Auth\IdentificationSuccessMessageHandler.cs" />
+    <Compile Include="Messages\World\ProtocolRequiredMessageHandler.cs" />
+    <Compile Include="Messages\World\HelloGameMessageHandler.cs" />
     <Compile Include="Messages\World\CurrentMapMessageHandler.cs" />
     <Compile Include="Messages\World\NpcDialogQuestionMessageHandler.cs" />
     <Compile Include="Messages\World\ZaapListMessageHandler.cs" />
@@ -97,12 +99,10 @@
     <Content Include="proxy_config.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="proxy_config.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

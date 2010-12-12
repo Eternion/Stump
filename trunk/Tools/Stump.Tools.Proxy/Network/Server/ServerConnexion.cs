@@ -77,8 +77,6 @@ namespace Stump.Tools.Proxy
         public Int32 BytesSended
         { get { return bytesSended; } }
 
-        private BigEndianReader reader = new BigEndianReader();
-
         #endregion
 
         #region Initialisation
@@ -107,7 +105,7 @@ namespace Stump.Tools.Proxy
             }
             catch (SocketException ex)
             {
-                logger.Log(LogLevel.Error, ex.Message);
+              Console.WriteLine(ex.Message);
             }
         }
 
@@ -119,11 +117,11 @@ namespace Stump.Tools.Proxy
 
                 if (bytesReaded > 0)
                 {
-                    reader.Add(buffer, 0, bytesReaded);
-
-                    Receive();
+                    m_buffer.Add(buffer, 0, bytesReaded);
 
                     this.bytesReaded += bytesReaded;
+
+                    Receive();
 
                     AsyncReceive();
                 }
@@ -134,7 +132,7 @@ namespace Stump.Tools.Proxy
             }
             catch (SocketException ex)
             {
-                logger.Log(LogLevel.Error, ex.Message);
+               Console.WriteLine( ex.Message);
                 Disconnect();
             }
 
@@ -148,7 +146,7 @@ namespace Stump.Tools.Proxy
             }
             catch (SocketException ex)
             {
-                logger.Log(LogLevel.Error, ex.Message);
+               Console.WriteLine( ex.Message);
                 Disconnect();
             }
         }

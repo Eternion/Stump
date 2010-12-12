@@ -10,6 +10,8 @@ namespace Stump.Tools.Proxy
         static void Main(string[] args)
         {
             Proxy.Initialize();
+            Console.WriteLine("Proxy enabled");
+            Console.ReadLine();
         }
     }
 }

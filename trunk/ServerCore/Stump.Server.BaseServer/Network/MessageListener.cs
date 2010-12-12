@@ -162,7 +162,7 @@ namespace Stump.Server.BaseServer.Network
         {
             if (m_activeIpRestriction && GetSameIPNumber((e.AcceptSocket.RemoteEndPoint as IPEndPoint).Address) > m_maxIpConnexion)
             {
-                logger.Log(LogLevel.Error, "Client {0} try to connect more {1} time",e.AcceptSocket.RemoteEndPoint.ToString(), m_maxIpConnexion);
+                logger.Error("Client {0} try to connect more {1} time",e.AcceptSocket.RemoteEndPoint.ToString(), m_maxIpConnexion);
                 m_clientSemaphore.Release();
                 StartAccept();
                 return;

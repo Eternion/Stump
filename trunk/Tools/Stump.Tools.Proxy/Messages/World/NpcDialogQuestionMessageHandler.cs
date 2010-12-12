@@ -12,7 +12,7 @@ namespace Stump.Tools.Proxy.Messages
 
 
         [Handler(typeof(NpcDialogQuestionMessage))]
-        static void HandleNpcDialogQuestionMessage(NpcDialogQuestionMessage message, DerivedConnexion sender)
+        public static void HandleNpcDialogQuestionMessage(NpcDialogQuestionMessage message, DerivedConnexion sender)
         {
             var lMessage = (sender.LastClientMessage as NpcDialogCreationMessage);
 
