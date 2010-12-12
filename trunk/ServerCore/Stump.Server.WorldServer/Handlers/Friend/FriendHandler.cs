@@ -16,9 +16,25 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using Stump.DofusProtocol.Messages;
+
 namespace Stump.Server.WorldServer.Handlers
 {
     public class FriendHandler : WorldHandlerContainer
     {
+        public static void SendFriendWarnOnLevelGainStateMessage(WorldClient client, bool enable)
+        {
+            client.Send(new FriendWarnOnLevelGainStateMessage(enable));
+        }
+
+        public static void SendGuildMemberWarnOnConnectionStateMessage(WorldClient client, bool enable)
+        {
+            client.Send(new GuildMemberWarnOnConnectionStateMessage(enable));
+        }
+
+        public static void SendFriendWarnOnConnectionStateMessage(WorldClient client, bool enable)
+        {
+            client.Send(new FriendWarnOnConnectionStateMessage(enable));
+        }
     }
 }

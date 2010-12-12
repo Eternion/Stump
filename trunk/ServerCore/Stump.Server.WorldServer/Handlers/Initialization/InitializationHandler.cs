@@ -23,6 +23,11 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public class InitializationHandler : WorldHandlerContainer
     {
+        public static void SendOnConnectionEventMessage(WorldClient client, uint eventType)
+        {
+            client.Send(new OnConnectionEventMessage(eventType));
+        }
+
         public static void SendSetCharacterRestrictionsMessage(WorldClient client)
         {
             client.Send(new SetCharacterRestrictionsMessage(

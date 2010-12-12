@@ -156,6 +156,7 @@
     <Compile Include="Handlers\Context\ContextMountHandler.cs" />
     <Compile Include="Handlers\Context\ContextNotificationHandler.cs" />
     <Compile Include="Handlers\Context\RolePlay\ContextRoleplayStatsHandler.cs" />
+    <Compile Include="Handlers\Context\RolePlay\ContextRoleplaySpellHandler.cs" />
     <Compile Include="Handlers\Dialog\DialogHandler.cs" />
     <Compile Include="Handlers\Friend\FriendHandler.cs" />
     <Compile Include="Handlers\Guild\GuildHandler.cs" />

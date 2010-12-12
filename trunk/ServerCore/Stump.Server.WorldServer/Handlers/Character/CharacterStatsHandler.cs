@@ -25,6 +25,19 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public partial class CharacterHandler : WorldHandlerContainer
     {
+        public static void SendLifePointsRegenEndMessage(WorldClient client)
+        {
+            client.Send(new LifePointsRegenEndMessage(
+                (uint) client.ActiveCharacter.Stats["Health"].Total,
+                (uint) ( (StatsHealth) client.ActiveCharacter.Stats["Health"] ).TotalMax,
+                0));
+        }
+
+        public static void SendLifePointsRegenBeginMessage(WorldClient client, uint regenLife)
+        {
+            client.Send(new LifePointsRegenBeginMessage(regenLife));
+        }
+
         public static void SendCharacterStatsListMessage(WorldClient client)
         {
             client.Send(
