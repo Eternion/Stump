@@ -17,12 +17,11 @@
 //  *
 //  *************************************************************************/
 using System;
-using Stump.Server.BaseServer.Network;
 
 namespace Stump.Tools.Proxy
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
-    sealed class Handler : Attribute
+    internal sealed class Handler : Attribute
     {
         public Handler(Type type)
         {
@@ -37,7 +36,7 @@ namespace Stump.Tools.Proxy
 
         public override bool Match(object obj)
         {
-            return Type==obj;
+            return ReferenceEquals(Type, obj);
         }
     }
 }

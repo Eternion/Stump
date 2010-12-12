@@ -33,9 +33,9 @@ namespace Stump.Server.WorldServer.Handlers
                 0));
         }
 
-        public static void SendLifePointsRegenBeginMessage(WorldClient client, uint regenLife)
+        public static void SendLifePointsRegenBeginMessage(WorldClient client, uint regenRate)
         {
-            client.Send(new LifePointsRegenBeginMessage(regenLife));
+            client.Send(new LifePointsRegenBeginMessage(regenRate));
         }
 
         public static void SendCharacterStatsListMessage(WorldClient client)

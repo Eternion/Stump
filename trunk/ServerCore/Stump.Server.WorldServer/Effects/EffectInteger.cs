@@ -17,23 +17,24 @@
 //  *
 //  *************************************************************************/
 using System;
+using Stump.DofusProtocol.Classes;
 using EffectValueEx = Stump.DofusProtocol.D2oClasses.EffectInstanceInteger;
 
 
 namespace Stump.Server.WorldServer.Effects
 {
     [Serializable]
-    public class EffectValue : EffectBase
+    public class EffectInteger : EffectBase
     {
         protected int m_value;
 
-        public EffectValue(int id, int value)
+        public EffectInteger(int id, int value)
             : base(id)
         {
             m_value = value;
         }
 
-        public EffectValue(EffectValueEx effect)
+        public EffectInteger(EffectValueEx effect)
             : base(effect.effectId)
         {
             m_value = effect.value;
@@ -55,14 +56,19 @@ namespace Stump.Server.WorldServer.Effects
             return new object[] {(short) Value};
         }
 
-        public override bool Equals(object obj)
+        public override ObjectEffect ToNetworkEffect()
         {
-            if (!(obj is EffectValue))
-                return false;
-            return base.Equals(obj) && m_value == (obj as EffectValue).m_value;
+            return new ObjectEffectInteger((uint)EffectId, (uint) Value);
         }
 
-        public static bool operator ==(EffectValue a, EffectValue b)
+        public override bool Equals(object obj)
+        {
+            if (!(obj is EffectInteger))
+                return false;
+            return base.Equals(obj) && m_value == (obj as EffectInteger).m_value;
+        }
+
+        public static bool operator ==(EffectInteger a, EffectInteger b)
         {
             if (ReferenceEquals(a, b))
                 return true;
@@ -73,12 +79,12 @@ namespace Stump.Server.WorldServer.Effects
             return a.Equals(b);
         }
 
-        public static bool operator !=(EffectValue a, EffectValue b)
+        public static bool operator !=(EffectInteger a, EffectInteger b)
         {
             return !(a == b);
         }
 
-        public bool Equals(EffectValue other)
+        public bool Equals(EffectInteger other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;

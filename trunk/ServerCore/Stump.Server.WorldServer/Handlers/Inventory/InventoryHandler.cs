@@ -16,9 +16,15 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using Stump.DofusProtocol.Messages;
+
 namespace Stump.Server.WorldServer.Handlers
 {
     public partial class InventoryHandler : WorldHandlerContainer
     {
+        public static void SendKamasUpdateMessage(WorldClient client, int kamasAmount)
+        {
+            client.Send(new KamasUpdateMessage(kamasAmount));
+        }
     }
 }

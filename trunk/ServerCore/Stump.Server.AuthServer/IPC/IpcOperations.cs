@@ -187,7 +187,7 @@ namespace Stump.Server.AuthServer.IPC
 
         public void AddAccountCharacter(WorldServerInformation wsi, uint accountid, uint characterId)
         {
-            WorldCharacterRecord record = new WorldCharacterRecord
+            var record = new WorldCharacterRecord
             {
                 ServerId = wsi.Id,
                 AccountId = accountid,

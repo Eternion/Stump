@@ -120,10 +120,10 @@ namespace Stump.Server.WorldServer.Entities
             string stat;
             Action action;
             EffectBase generatedeffect = effect.GenerateEffect();
-            if (generatedeffect is EffectValue &&
+            if (generatedeffect is EffectInteger &&
                 GetEffectCharacteristicBonus(generatedeffect, out stat))
             {
-                int value = (generatedeffect as EffectValue).Value;
+                int value = ( generatedeffect as EffectInteger ).Value;
 
                 if (context == EffectContext.Fight)
                     this[stat].Bonus += value;

@@ -18,6 +18,7 @@
 //  *************************************************************************/
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Stump.Database;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
@@ -44,35 +45,25 @@ namespace Stump.Server.WorldServer.Handlers
 
         public static void SendCharactersListMessage(WorldClient client)
         {
-            CharacterDatabase.UpdateCharactersCount(client); // Recount characters number and set it in Database
-
             var list = new List<CharacterBaseInformations>();
 
-            foreach (CharacterRecord cr in client.Characters)
+            foreach (CharacterRecord characterRecord in client.Characters)
             {
-                var colors = new List<int>();
-                for (int i = 0; i < cr.Colors.Count; i++)
-                {
-                    // print format : 0x{colorheader}[red][green][blue]
-                    // e.g : 0x5000000 is color black for the head
-
-                    string hexColor = (i + 1) + cr.Colors[i].ToString("X6");
-
-                    colors.Add(int.Parse(hexColor, NumberStyles.HexNumber));
-                }
+                List<int> colors = characterRecord.Colors.Select(
+                    (color, index) => int.Parse((index + 1) + color.ToString("X6"), NumberStyles.HexNumber)).ToList();
 
                 list.Add(new CharacterBaseInformations(
                              CharacterBaseInformations.protocolId,
-                             (uint) cr.Level,
-                             cr.Name,
+                             (uint) characterRecord.Level,
+                             characterRecord.Name,
                              new EntityLook(
                                  1, // bonesId
                                  new List<uint>(), // skins
                                  colors,
-                                 new List<int>(cr.Scale),
+                                 new List<int>(characterRecord.Scale),
                                  new List<SubEntity>()),
-                             cr.Classe,
-                             cr.SexId != 0));
+                             characterRecord.Classe,
+                             characterRecord.SexId != 0));
             }
 
 

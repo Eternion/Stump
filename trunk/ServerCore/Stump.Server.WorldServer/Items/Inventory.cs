@@ -23,6 +23,7 @@ using Stump.Database;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Effects;
 using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.Handlers;
 
 namespace Stump.Server.WorldServer.Items
 {
@@ -62,6 +63,11 @@ namespace Stump.Server.WorldServer.Items
                                                             (current, item) =>
                                                             current + (uint) item.Template.Weight*item.Stack);
             }
+        }
+
+        public uint WeightTotal
+        {
+            get { return 1000; }
         }
 
         public uint WeaponCriticalHit

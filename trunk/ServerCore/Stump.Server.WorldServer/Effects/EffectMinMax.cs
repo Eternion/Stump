@@ -18,25 +18,26 @@
 //  *************************************************************************/
 using System;
 using Stump.BaseCore.Framework.Utils;
+using Stump.DofusProtocol.Classes;
 using EffectMaxEx = Stump.DofusProtocol.D2oClasses.EffectInstanceMinMax;
 
 
 namespace Stump.Server.WorldServer.Effects
 {
     [Serializable]
-    public class EffectMax : EffectBase
+    public class EffectMinMax : EffectBase
     {
         protected uint m_maxvalue;
         protected uint m_minvalue;
 
-        public EffectMax(int id, uint valuemin, uint valuemax)
+        public EffectMinMax(int id, uint valuemin, uint valuemax)
             : base(id)
         {
             m_minvalue = valuemin;
             m_maxvalue = valuemax;
         }
 
-        public EffectMax(EffectMaxEx effect)
+        public EffectMinMax(EffectMaxEx effect)
             : base(effect.effectId)
         {
             m_maxvalue = effect.max;
@@ -65,13 +66,18 @@ namespace Stump.Server.WorldServer.Effects
             return new object[] {(short) ValueMin, (short) ValueMax};
         }
 
+        public override ObjectEffect ToNetworkEffect()
+        {
+            return new ObjectEffectMinMax((uint)EffectId, ValueMin, ValueMax);
+        }
+
         public override EffectBase GenerateEffect()
         {
             if (EffectManager.IsEffectRandomable(EffectId))
             {
                 var rand = new AsyncRandom();
 
-                return new EffectValue(m_id, rand.NextInt((int) ValueMin, (int) ValueMax + 1));
+                return new EffectInteger(m_id, rand.NextInt((int) ValueMin, (int) ValueMax + 1));
             }
 
             return this;
@@ -79,13 +85,13 @@ namespace Stump.Server.WorldServer.Effects
 
         public override bool Equals(object obj)
         {
-            if (!(obj is EffectMax))
+            if (!(obj is EffectMinMax))
                 return false;
-            var b = obj as EffectMax;
+            var b = obj as EffectMinMax;
             return base.Equals(obj) && m_minvalue == b.m_minvalue && m_maxvalue == b.m_maxvalue;
         }
 
-        public static bool operator ==(EffectMax a, EffectMax b)
+        public static bool operator ==(EffectMinMax a, EffectMinMax b)
         {
             if (ReferenceEquals(a, b))
                 return true;
@@ -96,12 +102,12 @@ namespace Stump.Server.WorldServer.Effects
             return a.Equals(b);
         }
 
-        public static bool operator !=(EffectMax a, EffectMax b)
+        public static bool operator !=(EffectMinMax a, EffectMinMax b)
         {
             return !(a == b);
         }
 
-        public bool Equals(EffectMax other)
+        public bool Equals(EffectMinMax other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;

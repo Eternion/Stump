@@ -16,9 +16,21 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System.Collections.Generic;
+using Stump.DofusProtocol.Messages;
+
 namespace Stump.Server.WorldServer.Handlers
 {
     public class PvpHandler : WorldHandlerContainer
     {
+        public static void SendAlignmentSubAreasListMessage(WorldClient client)
+        {
+            client.Send(new AlignmentSubAreasListMessage(new List<int>(), new List<int>()));
+        }
+
+        public static void SendAlignmentRankUpdateMessage(WorldClient client)
+        {
+            client.Send(new AlignmentRankUpdateMessage(0, false));
+        }
     }
 }

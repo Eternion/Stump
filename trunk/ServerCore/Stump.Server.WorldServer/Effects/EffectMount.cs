@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System;
+using Stump.DofusProtocol.Classes;
 using EffectMountEx = Stump.DofusProtocol.D2oClasses.EffectInstanceMount;
 
 
@@ -45,6 +46,11 @@ namespace Stump.Server.WorldServer.Effects
         public override object[] GetValues()
         {
             return new object[] {m_mountId, m_date, m_modelId};
+        }
+
+        public override ObjectEffect ToNetworkEffect()
+        {
+            return new ObjectEffectMount((uint) EffectId, (uint) m_mountId, m_date, (uint) m_modelId);
         }
 
         public override bool Equals(object obj)

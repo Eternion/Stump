@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System;
+using Stump.DofusProtocol.Classes;
 using EffectLadderEx = Stump.DofusProtocol.D2oClasses.EffectInstanceLadder;
 
 
@@ -26,6 +27,12 @@ namespace Stump.Server.WorldServer.Effects
     public class EffectLadder : EffectCreature
     {
         protected uint m_monsterCount;
+
+        public uint MonsterCount
+        {
+            get { return m_monsterCount; }
+            set { m_monsterCount = value; }
+        }
 
         public EffectLadder(int id, uint monsterfamily, uint monstercount)
             : base(id, monsterfamily)
@@ -47,6 +54,11 @@ namespace Stump.Server.WorldServer.Effects
         public override object[] GetValues()
         {
             return new object[] {(short) m_monsterCount};
+        }
+
+        public override ObjectEffect ToNetworkEffect()
+        {
+            return new ObjectEffectLadder((uint)EffectId, MonsterFamily, MonsterCount);
         }
 
         public override bool Equals(object obj)

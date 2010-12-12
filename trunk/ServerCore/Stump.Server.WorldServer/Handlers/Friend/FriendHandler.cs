@@ -16,12 +16,27 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System.Collections.Generic;
+using System.Linq;
+using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Messages;
 
 namespace Stump.Server.WorldServer.Handlers
 {
     public class FriendHandler : WorldHandlerContainer
     {
+        [WorldHandler(typeof(IgnoredGetListMessage))]
+        public static void HandleIgnoredGetListMessage(WorldClient client, IgnoredGetListMessage message)
+        {
+            SendIgnoredListMessage(client, new List<IgnoredInformations>());
+        }
+
+        [WorldHandler(typeof(FriendsGetListMessage))]
+        public static void HandleFriendsGetListMessage(WorldClient client, FriendsGetListMessage message)
+        {
+            SendFriendsListMessage(client, new List<FriendInformations>());
+        }
+
         public static void SendFriendWarnOnLevelGainStateMessage(WorldClient client, bool enable)
         {
             client.Send(new FriendWarnOnLevelGainStateMessage(enable));
@@ -35,6 +50,16 @@ namespace Stump.Server.WorldServer.Handlers
         public static void SendFriendWarnOnConnectionStateMessage(WorldClient client, bool enable)
         {
             client.Send(new FriendWarnOnConnectionStateMessage(enable));
+        }
+
+        public static void SendIgnoredListMessage(WorldClient client, IEnumerable<IgnoredInformations> ignoreds)
+        {
+            client.Send(new IgnoredListMessage(ignoreds.ToList()));
+        }
+
+        public static void SendFriendsListMessage(WorldClient client, IEnumerable<FriendInformations> friends)
+        {
+            client.Send(new FriendsListMessage(friends.ToList()));
         }
     }
 }

@@ -35,10 +35,10 @@ namespace Stump.Server.WorldServer.Effects.Executor
         public static void ExecuteEffect_Damage(SpellLevel spellLevel, EffectBase generatedEffect, Fight fight,
                                                 FightGroupMember caster, CellData cell, bool critical)
         {
-            if (!(generatedEffect is EffectValue))
+            if (!(generatedEffect is EffectInteger))
                 return;
 
-            var damage = unchecked((ushort) (generatedEffect as EffectValue).Value);
+            var damage = unchecked((ushort) (generatedEffect as EffectInteger).Value);
             FightGroupMember target = fight.GetOneFighter(cell);
 
             if (target != null)

@@ -159,8 +159,8 @@ namespace Stump.Server.WorldServer.Fights
             // TODO : Show "swords"
             charac.Map.OnFightEnter(charac);
 
-            CharacterHandler.SendGameContextDestroyMessage(charac.Client);
-            CharacterHandler.SendGameContextCreateMessage(charac.Client, 2);
+            ContextHandler.SendGameContextDestroyMessage(charac.Client);
+            ContextHandler.SendGameContextCreateMessage(charac.Client, 2);
 
             FightHandler.SendGameFightStartingMessage(charac.Client);
             FightHandler.SendGameFightJoinMessage(charac.Client);
@@ -260,7 +260,7 @@ namespace Stump.Server.WorldServer.Fights
         /// <param name = "character"></param>
         /// <param name = "cellId"></param>
         /// <param name = "keyMovements"></param>
-        public void MoveFighter(Character character, int cellId, List<int> keyMovements)
+        public void MoveFighter(Character character, int cellId, List<uint> keyMovements)
         {
             FightGroupMember fighter = GetGroupMemberByCharacter((int) character.Id);
 
@@ -279,7 +279,7 @@ namespace Stump.Server.WorldServer.Fights
             Action<Character> action = (Character charac) =>
             {
                 FightHandler.SendSequenceStartMessage(charac.Client, SequenceTypeEnum.SEQUENCE_MOVE);
-                MovementHandler.SendGameMapMovementMessage(charac.Client, keyMovements, character);
+                ContextHandler.SendGameMapMovementMessage(charac.Client, keyMovements, character);
                 FightHandler.SendGameActionFightPointsVariation(charac.Client, character, delta);
                 FightHandler.SendSequenceEndMessage(charac.Client, SequenceTypeEnum.SEQUENCE_MOVE);
             };
@@ -359,13 +359,13 @@ namespace Stump.Server.WorldServer.Fights
             {
                 FightHandler.SendGameFightEndMessage(charac.Client, this);
 
-                CharacterHandler.SendGameContextDestroyMessage(charac.Client);
-                CharacterHandler.SendGameContextCreateMessage(charac.Client, 1);
+                ContextHandler.SendGameContextDestroyMessage(charac.Client);
+                ContextHandler.SendGameContextCreateMessage(charac.Client, 1);
                 CharacterHandler.SendCharacterStatsListMessage(charac.Client);
-                CharacterHandler.SendLifePointsRegenBeginMessage(charac.Client);
+                CharacterHandler.SendLifePointsRegenBeginMessage(charac.Client, 60); // todo : use config to define regen rate
 
                 charac.Map.OnFightLeave(charac);
-                MapHandler.SendCurrentMapMessage(charac.Client, charac.Map.Id);
+                ContextHandler.SendCurrentMapMessage(charac.Client, charac.Map.Id);
             });
 
             GroupManager.RemoveGroup(SourceGroup);

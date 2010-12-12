@@ -218,7 +218,7 @@ namespace Stump.Server.BaseServer.Database
             if (m_version == null)
             {
                 logger.Error(
-                    "Table 'version' is empty, do you want to re-create the schema ? [EXIT IN 60 SECONDS] (y/n)");
+                    "Table 'version' is empty, do you want to re-create the schema ? IT WILL ERASE YOUR DATABASE [EXIT IN 60 SECONDS] (y/n)");
 
                 // Wait that user enter any characters
                 if (ConditionWaiter.WaitFor(() => Console.KeyAvailable, 60*1000, 35))
@@ -238,7 +238,29 @@ namespace Stump.Server.BaseServer.Database
             {
                 if (m_version.Revision < m_databaseRevision)
                 {
-                    ExecuteUpdateAndCreateSchema();
+                    try
+                    {
+                        ExecuteUpdateAndCreateSchema();
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        logger.Error(
+                            "Update File doesn't exists, do you want to re-create the schema ? IT WILL ERASE YOUR DATABASE [EXIT IN 60 SECONDS] (y/n)");
+
+                        // Wait that user enter any characters
+                        if (ConditionWaiter.WaitFor(() => Console.KeyAvailable, 60 * 1000, 35))
+                        {
+                            // wait 'enter'
+                            var response = (char)Console.In.Peek();
+
+                            if (response == 'y')
+                                CreateSchema();
+                            else
+                                throw;
+                        }
+                        else
+                            throw;
+                    }
                 }
                 else if (m_version.Revision > m_databaseRevision)
                 {
@@ -291,7 +313,7 @@ namespace Stump.Server.BaseServer.Database
                 while (currentVersion != m_databaseRevision)
                 {
                     if (revisionfiles.Count() <= 0)
-                        throw new Exception("The update file isn't found");
+                        throw new FileNotFoundException("The update file isn't found");
 
                     ActiveRecordStarter.CreateSchemaFromFile(revisionfiles.First());
                     currentVersion = uint.Parse(revisionfiles.First().Split('_').Last());
@@ -307,7 +329,7 @@ namespace Stump.Server.BaseServer.Database
                 files = files.OrderByDescending(SortSqlUpdateFile);
 
                 if (files.Count() == 0)
-                    throw new Exception("The update file isn't found");
+                    throw new FileNotFoundException("The update file isn't found");
 
                 ActiveRecordStarter.CreateSchemaFromFile(files.First());
             }

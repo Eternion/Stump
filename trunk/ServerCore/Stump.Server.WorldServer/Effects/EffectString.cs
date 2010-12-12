@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System;
+using Stump.DofusProtocol.Classes;
 using EffectStringEx = Stump.DofusProtocol.D2oClasses.EffectInstanceString;
 
 
@@ -47,6 +48,11 @@ namespace Stump.Server.WorldServer.Effects
         public override object[] GetValues()
         {
             return new object[] {m_value};
+        }
+
+        public override ObjectEffect ToNetworkEffect()
+        {
+            return new ObjectEffectString((uint)EffectId, m_value);
         }
 
         public override bool Equals(object obj)

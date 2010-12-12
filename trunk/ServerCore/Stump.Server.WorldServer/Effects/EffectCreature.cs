@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System;
+using Stump.DofusProtocol.Classes;
 using EffectCreateEx = Stump.DofusProtocol.D2oClasses.EffectInstanceCreature;
 
 
@@ -52,6 +53,11 @@ namespace Stump.Server.WorldServer.Effects
         public override object[] GetValues()
         {
             return new object[] {(short) m_monsterfamily};
+        }
+
+        public override ObjectEffect ToNetworkEffect()
+        {
+            return new ObjectEffectCreature((uint) EffectId, MonsterFamily);
         }
 
         public override bool Equals(object obj)

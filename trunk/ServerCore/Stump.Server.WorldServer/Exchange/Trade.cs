@@ -21,6 +21,7 @@ using System.Linq;
 using Stump.Server.BaseServer.Manager;
 using Stump.Server.WorldServer.Dialog;
 using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.Handlers;
 using Stump.Server.WorldServer.Items;
 
 namespace Stump.Server.WorldServer.Exchange
@@ -65,8 +66,8 @@ namespace Stump.Server.WorldServer.Exchange
                 }
                 else // cancel trade
                 {
-                    ExchangeHandler.SendExchangeLeaveMessage(((Character) SourceTrader.Entity).Client, false);
-                    ExchangeHandler.SendExchangeLeaveMessage(((Character) TargetTrader.Entity).Client, false);
+                    InventoryHandler.SendExchangeLeaveMessage(((Character) SourceTrader.Entity).Client, false);
+                    InventoryHandler.SendExchangeLeaveMessage(((Character) TargetTrader.Entity).Client, false);
                 }
             }
             catch
@@ -119,10 +120,12 @@ namespace Stump.Server.WorldServer.Exchange
                     {
                         presentsItems.First().Stack += amount;
 
-                        ExchangeHandler.SendExchangeObjectModifiedMessage(((Character) SourceTrader.Entity).Client,
-                                                                          presentsItems.First());
-                        ExchangeHandler.SendExchangeObjectModifiedMessage(((Character) TargetTrader.Entity).Client,
-                                                                          presentsItems.First());
+                        InventoryHandler.SendExchangeObjectModifiedMessage(((Character) SourceTrader.Entity).Client,
+                                                                           false,
+                                                                           presentsItems.First());
+                        InventoryHandler.SendExchangeObjectModifiedMessage(((Character) TargetTrader.Entity).Client,
+                                                                           false,
+                                                                           presentsItems.First());
                     }
                 }
                 else
@@ -130,10 +133,10 @@ namespace Stump.Server.WorldServer.Exchange
                     var itemcopy = new Item(trader.Entity, (trader.Entity as Character).Inventory.GetItem(guid), amount);
                     trader.Items.Add(itemcopy);
 
-                    ExchangeHandler.SendExchangeObjectAddedMessage(((Character) SourceTrader.Entity).Client,
-                                                                   itemcopy);
-                    ExchangeHandler.SendExchangeObjectAddedMessage(((Character) TargetTrader.Entity).Client,
-                                                                   itemcopy);
+                    InventoryHandler.SendExchangeObjectAddedMessage(((Character) SourceTrader.Entity).Client, false,
+                                                                    itemcopy);
+                    InventoryHandler.SendExchangeObjectAddedMessage(((Character) TargetTrader.Entity).Client, false,
+                                                                    itemcopy);
                 }
             }
         }
@@ -161,19 +164,19 @@ namespace Stump.Server.WorldServer.Exchange
                 {
                     item.Stack -= amount;
 
-                    ExchangeHandler.SendExchangeObjectModifiedMessage(((Character) SourceTrader.Entity).Client,
-                                                                      item);
-                    ExchangeHandler.SendExchangeObjectModifiedMessage(((Character) TargetTrader.Entity).Client,
-                                                                      item);
+                    InventoryHandler.SendExchangeObjectModifiedMessage(((Character) SourceTrader.Entity).Client, false,
+                                                                       item);
+                    InventoryHandler.SendExchangeObjectModifiedMessage(((Character) TargetTrader.Entity).Client, false,
+                                                                       item);
                 }
                 else // delete
                 {
                     trader.Items.Remove(item);
 
-                    ExchangeHandler.SendExchangeObjectRemovedMessage(((Character) SourceTrader.Entity).Client,
-                                                                     (int) item.Guid);
-                    ExchangeHandler.SendExchangeObjectRemovedMessage(((Character) TargetTrader.Entity).Client,
-                                                                     (int) item.Guid);
+                    InventoryHandler.SendExchangeObjectRemovedMessage(((Character) SourceTrader.Entity).Client, false,
+                                                                      (int) item.Guid);
+                    InventoryHandler.SendExchangeObjectRemovedMessage(((Character) TargetTrader.Entity).Client, false,
+                                                                      (int) item.Guid);
                 }
             }
         }
@@ -194,10 +197,10 @@ namespace Stump.Server.WorldServer.Exchange
 
                 trader.Kamas = kamas;
 
-                ExchangeHandler.SendExchangeKamaModifiedMessage(((Character) SourceTrader.Entity).Client,
-                                                                kamas);
-                ExchangeHandler.SendExchangeKamaModifiedMessage(((Character) TargetTrader.Entity).Client,
-                                                                kamas);
+                InventoryHandler.SendExchangeKamaModifiedMessage(((Character) SourceTrader.Entity).Client, false,
+                                                                 kamas);
+                InventoryHandler.SendExchangeKamaModifiedMessage(((Character) TargetTrader.Entity).Client, false,
+                                                                 kamas);
             }
         }
 
@@ -215,10 +218,10 @@ namespace Stump.Server.WorldServer.Exchange
             if (trader.Ready != state)
             {
                 trader.Ready = state;
-                ExchangeHandler.SendExchangeIsReadyMessage(((Character) SourceTrader.Entity).Client,
-                                                           (int) trader.Entity.Id, state);
-                ExchangeHandler.SendExchangeIsReadyMessage(((Character) TargetTrader.Entity).Client,
-                                                           (int) trader.Entity.Id, state);
+                InventoryHandler.SendExchangeIsReadyMessage(((Character) SourceTrader.Entity).Client,
+                                                            trader, state);
+                InventoryHandler.SendExchangeIsReadyMessage(((Character) TargetTrader.Entity).Client,
+                                                            trader, state);
             }
 
             if (SourceTrader.Ready && TargetTrader.Ready)
@@ -264,8 +267,8 @@ namespace Stump.Server.WorldServer.Exchange
             InventoryHandler.SendInventoryWeightMessage(((Character) TargetTrader.Entity).Client);
 
             // Exchange ended
-            ExchangeHandler.SendExchangeLeaveMessage(((Character) SourceTrader.Entity).Client, true);
-            ExchangeHandler.SendExchangeLeaveMessage(((Character) TargetTrader.Entity).Client, true);
+            InventoryHandler.SendExchangeLeaveMessage(((Character) SourceTrader.Entity).Client, true);
+            InventoryHandler.SendExchangeLeaveMessage(((Character) TargetTrader.Entity).Client, true);
         }
     }
 }

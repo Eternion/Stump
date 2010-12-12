@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System;
+using Stump.DofusProtocol.Classes;
 using EffectDateEx = Stump.DofusProtocol.D2oClasses.EffectInstanceDate;
 
 
@@ -69,6 +70,11 @@ namespace Stump.Server.WorldServer.Effects
         public DateTime GetDate()
         {
             return new DateTime((int) m_year, (int) m_month, (int) m_day, (int) m_hour, (int) m_minute, 0);
+        }
+
+        public override ObjectEffect ToNetworkEffect()
+        {
+            return new ObjectEffectDate((uint)EffectId, m_year, m_month, m_day, m_hour, m_minute);
         }
 
         public override bool Equals(object obj)

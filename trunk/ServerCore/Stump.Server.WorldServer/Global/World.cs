@@ -137,7 +137,7 @@ namespace Stump.Server.WorldServer.Global
             return m_charactersName.TryGetValue(name, out chr) ? chr : null;
         }
 
-        public Character GetCharacter(int id)
+        public Character GetCharacter(long id)
         {
             Character[] result = m_charactersName.Values.Where(entry => entry.Id == id).ToArray();
 

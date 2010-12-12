@@ -19,24 +19,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Reflection;
 using System.Net;
-using System.Runtime;
+using System.Reflection;
 using NLog;
-using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.XmlUtils;
-using Stump.Server.BaseServer;
 using Stump.Tools.Proxy.Messages;
 
 namespace Stump.Tools.Proxy
 {
-    static class Proxy
+    internal static class Proxy
     {
         private static Dictionary<string, Assembly> m_loadedAssemblies;
         private static Logger logger;
         private static XmlConfigFile m_configFile;
-        public static HandlerManager HandlerManager= new HandlerManager();
+        public static HandlerManager HandlerManager = new HandlerManager();
         public static List<WorldDerivedConnexion> clientList = new List<WorldDerivedConnexion>();
         public static ClientListener authClientListener;
         public static ClientListener worldClientListener;
@@ -47,18 +43,18 @@ namespace Stump.Tools.Proxy
             /* Initialize Config File */
             m_loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToDictionary(entry => entry.GetName().Name);
             m_configFile = new XmlConfigFile("proxy_config.xml", "proxy_config.xsd");
-           // m_configFile.DefinesVariables(ref m_loadedAssemblies);
+            // m_configFile.DefinesVariables(ref m_loadedAssemblies);
 
             /*Initialize HandlerManager */
-            HandlerManager.RegisterAll(typeof(IdentificationSuccessMessageHandler).Assembly);
+            HandlerManager.RegisterAll(typeof (IdentificationSuccessMessageHandler).Assembly);
 
             /* Create Auth et World Client Listener */
-            authClientListener = new ClientListener("127.0.0.1", 5555,2000,2000);
+            authClientListener = new ClientListener("127.0.0.1", 5555, 2000, 2000);
             worldClientListener = new ClientListener("127.0.0.1", 5556, 2000, 2000);
 
             /* Initialize AuthClient Listener */
             authClientListener.Init();
-           
+
             /* Handle AuthClient Connexion */
             authClientListener.onClientConnexion += onNewAuthClient;
 
@@ -77,17 +73,18 @@ namespace Stump.Tools.Proxy
 
 
         public static void onNewAuthClient(Client client)
-        {//"213.248.126.180"
+        {
+//"213.248.126.180"
             Console.WriteLine("New Auth Client <{0}>", client.IP);
-            DerivedConnexion derivedConnexion = new AuthDerivedConnexion(new IPEndPoint(IPAddress.Parse("193.238.148.207"),5555), client);
+            DerivedConnexion derivedConnexion =
+                new AuthDerivedConnexion(new IPEndPoint(IPAddress.Parse("193.238.148.207"), 5555), client);
         }
 
         public static void onNewWorldClient(Client client)
         {
             Console.WriteLine("New World Client <{0}>", client.IP);
-            WorldDerivedConnexion derivedConnexion = new WorldDerivedConnexion(client);
+            var derivedConnexion = new WorldDerivedConnexion(client);
             clientList.Add(derivedConnexion);
         }
-
     }
 }

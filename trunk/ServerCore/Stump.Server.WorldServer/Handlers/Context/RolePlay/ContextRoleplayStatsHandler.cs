@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Handlers
             client.ActiveCharacter.Stats[statsid.ToString()].Base += boost;
 
             SendStatsUpgradeResultMessage(client, message.boostPoint);
-            SendCharacterStatsListMessage(client);
+            CharacterHandler.SendCharacterStatsListMessage(client);
         }
 
         public static void SendStatsUpgradeResultMessage(WorldClient client, uint usedpts)

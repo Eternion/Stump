@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System.Collections.Generic;
+using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.WorldServer.Spells
@@ -68,6 +69,11 @@ namespace Stump.Server.WorldServer.Spells
         public Spell()
         {
             ByLevel = new Dictionary<int, SpellLevel>();
+        }
+
+        public SpellItem ToNetworkSpell()
+        {
+            return new SpellItem((uint) Position, (int) Id, CurrentLevel);
         }
     }
 }

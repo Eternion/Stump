@@ -18,13 +18,14 @@
 //  *************************************************************************/
 using System;
 using Stump.BaseCore.Framework.Utils;
+using Stump.DofusProtocol.Classes;
 using EffectDiceEx = Stump.DofusProtocol.D2oClasses.EffectInstanceDice;
 
 
 namespace Stump.Server.WorldServer.Effects
 {
     [Serializable]
-    public class EffectDice : EffectValue
+    public class EffectDice : EffectInteger
     {
         protected int m_diceface;
         protected int m_dicenum;
@@ -63,6 +64,11 @@ namespace Stump.Server.WorldServer.Effects
             return new object[] {(short) DiceNum, (short) DiceFace, (short) Value};
         }
 
+        public override ObjectEffect ToNetworkEffect()
+        {
+            return new ObjectEffectDice((uint)EffectId, (uint) DiceNum, (uint) DiceFace, (uint) Value);
+        }
+
         public override EffectBase GenerateEffect()
         {
             var random = new AsyncRandom();
@@ -73,7 +79,7 @@ namespace Stump.Server.WorldServer.Effects
                 result += random.NextInt(1, m_diceface + 2);
             }
 
-            return new EffectValue(m_id, result);
+            return new EffectInteger(m_id, result);
         }
 
         public override bool Equals(object obj)

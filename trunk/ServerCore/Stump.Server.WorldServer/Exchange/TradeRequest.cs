@@ -18,6 +18,7 @@
 //  *************************************************************************/
 using Stump.Server.WorldServer.Dialog;
 using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.Handlers;
 
 namespace Stump.Server.WorldServer.Exchange
 {
@@ -60,9 +61,9 @@ namespace Stump.Server.WorldServer.Exchange
 
                 TradeManager.CreateTrade(trade);
 
-                ExchangeHandler.SendExchangeStartedWithPodsMessage((trade.SourceTrader.Entity as Character).Client,
+                InventoryHandler.SendExchangeStartedWithPodsMessage(((Character) trade.SourceTrader.Entity).Client,
                                                                    trade);
-                ExchangeHandler.SendExchangeStartedWithPodsMessage((trade.TargetTrader.Entity as Character).Client,
+                InventoryHandler.SendExchangeStartedWithPodsMessage(( (Character) trade.TargetTrader.Entity ).Client,
                                                                    trade);
             }
             catch
@@ -80,8 +81,8 @@ namespace Stump.Server.WorldServer.Exchange
         {
             try
             {
-                ExchangeHandler.SendExchangeLeaveMessage(Source.Client, false);
-                ExchangeHandler.SendExchangeLeaveMessage(Target.Client, false);
+                InventoryHandler.SendExchangeLeaveMessage(Source.Client, false);
+                InventoryHandler.SendExchangeLeaveMessage(Target.Client, false);
             }
             catch
             {

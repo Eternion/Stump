@@ -23,7 +23,7 @@ namespace Stump.Server.AuthServer
     /// </summary>
     public static class Definitions
     {
-        public const uint DatabaseRevision = 2;
+        public const uint DatabaseRevision = 3;
 
         public static string ConfigFilePath = "./auth_config.xml";
         public static string SchemaFilePath = "./auth_config.xsd";

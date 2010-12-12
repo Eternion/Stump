@@ -18,7 +18,10 @@
 //  *************************************************************************/
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using NLog;
+using Stump.DofusProtocol.Classes;
 using Stump.Server.WorldServer.Fights;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Global.Maps;
@@ -66,6 +69,28 @@ namespace Stump.Server.WorldServer.Entities
         public virtual bool IsVisible()
         {
             return true;
+        }
+
+        public virtual EntityLook ToNetworkEntityLook()
+        {
+            return new EntityLook(
+                1, // bones id
+                Skins.Cast<uint>().ToList(),
+                ColorsIndexed,
+                Scales,
+                new List<SubEntity>());
+        }
+
+        public virtual GameRolePlayActorInformations ToNetworkActor()
+        {
+            return new GameRolePlayActorInformations((int) Id,
+                                                     ToNetworkEntityLook(),
+                                                     GetEntityDisposition());
+        }
+
+        public virtual EntityDispositionInformations GetEntityDisposition()
+        {
+            return new EntityDispositionInformations(CellId, (uint) Direction);
         }
 
         #region Properties
@@ -139,10 +164,25 @@ namespace Stump.Server.WorldServer.Entities
             set;
         }
 
+        public List<int> ColorsIndexed
+        {
+            get
+            {
+                return
+                    Colors.Select(
+                        (color, index) => int.Parse((index + 1) + color.ToString("X6"), NumberStyles.HexNumber)).ToList();
+            }
+        }
+
         public int Scale
         {
             get;
             set;
+        }
+
+        public List<int> Scales
+        {
+            get { return new List<int> {Scale}; }
         }
 
         public int Direction

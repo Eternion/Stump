@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Effects
                 {typeof (EffectDiceEx), typeof (EffectDice)},
                 {typeof (EffectDurationEx), typeof (EffectDuration)},
                 {typeof (EffectLadderEx), typeof (EffectLadder)},
-                {typeof (EffectMaxEx), typeof (EffectMax)},
+                {typeof (EffectMaxEx), typeof (EffectMinMax)},
                 {typeof (EffectMountEx), typeof (EffectMount)},
                 {typeof (EffectStringEx), typeof (EffectString)},
                 {typeof (EffectValueEx), typeof (EffectString)},

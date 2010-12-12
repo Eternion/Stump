@@ -129,11 +129,11 @@ namespace Stump.Server.WorldServer.Global.Maps
             m_mapsAround.Add(RightNeighbourId, MapNeighbour.Right);
         }
 
-        public void HandleCharacterMovement(Character character, List<int> keymovements)
+        public void HandleCharacterMovement(Character character, List<uint> keymovements)
         {
             Action<Character> action = (Character charac) =>
             {
-                MovementHandler.SendGameMapMovementMessage(charac.Client, keymovements, character);
+                ContextHandler.SendGameMapMovementMessage(charac.Client, keymovements, character);
                 BasicHandler.SendBasicNoOperationMessage(charac.Client);
             };
 
@@ -157,7 +157,7 @@ namespace Stump.Server.WorldServer.Global.Maps
             ParentSpace.OnEnter(entity);
 
             Action<Character> action =
-                (Character charac) => { MapHandler.SendGameRolePlayShowActorMessage(charac.Client, entity); };
+                charac => ContextHandler.SendGameRolePlayShowActorMessage(charac.Client, entity);
 
             CallOnAllCharactersWithoutFighters(action);
         }
@@ -168,7 +168,7 @@ namespace Stump.Server.WorldServer.Global.Maps
             ParentSpace.OnLeave(entity);
 
             Action<Character> action =
-                (Character charac) => { MapHandler.SendGameContextRemoveElementMessage(charac.Client, entity); };
+                charac => ContextHandler.SendGameContextRemoveElementMessage(charac.Client, entity);
 
             CallOnAllCharactersWithoutFighters(action);
 
@@ -181,7 +181,7 @@ namespace Stump.Server.WorldServer.Global.Maps
         public void OnFightEnter(Entity entity)
         {
             Action<Character> action =
-                (Character charac) => { MapHandler.SendGameContextRemoveElementMessage(charac.Client, entity); };
+                charac => ContextHandler.SendGameContextRemoveElementMessage(charac.Client, entity);
 
             CallOnAllCharactersWithoutFighters(action);
         }
@@ -189,7 +189,7 @@ namespace Stump.Server.WorldServer.Global.Maps
         public void OnFightLeave(Entity entity)
         {
             Action<Character> action =
-                charac => { MapHandler.SendGameRolePlayShowActorMessage(charac.Client, entity); };
+                charac => ContextHandler.SendGameRolePlayShowActorMessage(charac.Client, entity);
 
             CallOnAllCharactersWithoutFighters(action);
         }

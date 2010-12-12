@@ -17,15 +17,19 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.BaseCore.Framework.Utils;
 using Stump.Database;
+using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Global;
+using Stump.Server.WorldServer.Global.Maps;
 using Stump.Server.WorldServer.Handlers;
 using Stump.Server.WorldServer.Items;
 using Stump.Server.WorldServer.Spells;
+using Item = Stump.Server.WorldServer.Items.Item;
 
 namespace Stump.Server.WorldServer.Entities
 {
@@ -102,27 +106,24 @@ namespace Stump.Server.WorldServer.Entities
             }
         }
 
-        /// <summary>
-        ///   Custom change map function.
-        ///   Currently used ONLY on teleportation command.
-        /// </summary>
-        /// <param name = "mapid"></param>
-        /// <returns></returns>
-        public bool ChangeMap(int mapid)
+        public void ChangeMap(Map nextMap)
         {
-            if (!World.Instance.Maps.ContainsKey(mapid))
-            {
-                return false;
-            }
+            Map lastMap = Map;
 
-            Client.ActiveCharacter.NextMap = World.Instance.Maps[mapid];
+            NextMap = nextMap;
             Map.OnLeave(this);
 
-            Map = Client.ActiveCharacter.NextMap;
-            MapHandler.SendCurrentMapMessage(Client, mapid);
-            Map.OnEnter(this);
+            Map = nextMap;
+            CellId = Map.GetCellAfterChangeMap(CellId, lastMap.GetMapNeighbourByMapid(nextMap.Id));
 
-            return true;
+            Map.OnEnter(this);
+        }
+
+
+        public void SetKamas(int amount)
+        {
+            Kamas = amount;
+            InventoryHandler.SendKamasUpdateMessage(Client, amount);
         }
 
         public void LogOut()
@@ -153,10 +154,38 @@ namespace Stump.Server.WorldServer.Entities
             Client.Send(message);
         }
 
-        public void SetKamas(int amount)
+        public override GameRolePlayActorInformations ToNetworkActor()
         {
-            Kamas = amount;
-            CharacterHandler.SendKamasUpdateMessage((Client));
+            return new GameRolePlayCharacterInformations(
+                (int) Id,
+                ToNetworkEntityLook(),
+                GetEntityDisposition(),
+                Name,
+                GetHumanInformations(),
+                GetActorAlignmentInformations());
+        }
+
+        // todo : complete this
+        public HumanInformations GetHumanInformations()
+        {
+            return new HumanInformations(
+                new List<EntityLook>(),
+                0,
+                0,
+                new ActorRestrictionsInformations(),
+                0,
+                "");
+        }
+
+        // todo : complete this
+        public ActorAlignmentInformations GetActorAlignmentInformations()
+        {
+            return new ActorAlignmentInformations(
+                0,
+                0,
+                0,
+                0,
+                0);
         }
 
         #region Save

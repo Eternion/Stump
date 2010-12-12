@@ -18,6 +18,7 @@
 //  *************************************************************************/
 using System;
 using Stump.BaseCore.Framework.Utils;
+using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using EffectBaseEx = Stump.DofusProtocol.D2oClasses.EffectInstance;
 
@@ -73,6 +74,11 @@ namespace Stump.Server.WorldServer.Effects
         public virtual EffectBase GenerateEffect()
         {
             return this;
+        }
+
+        public virtual ObjectEffect ToNetworkEffect()
+        {
+            return new ObjectEffect((uint) EffectId);
         }
 
         public override bool Equals(object obj)

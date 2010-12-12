@@ -53,10 +53,11 @@ namespace Stump.Server.WorldServer.Database
                 client.Characters = new List<CharacterRecord>();
             character.Save();
 
-            // is there a better way ?
-            client.Characters = new[] {character}.Concat(client.Characters).ToList();
+            client.Characters.Insert(0, character);
 
-            UpdateCharactersCount(client);
+            IpcAccessor.Instance.ProxyObject.AddAccountCharacter(WorldServer.ServerInformation,
+                                                                 client.Account.Id,
+                                                                 (uint) character.Id);
 
             return true;
         }
@@ -68,16 +69,11 @@ namespace Stump.Server.WorldServer.Database
             {
                 character.DeleteAssociatedRecords();
                 character.Delete();
+
+                IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(WorldServer.ServerInformation,
+                                                                        client.Account.Id,
+                                                                        (uint) character.Id);
             });
-
-            UpdateCharactersCount(client);
-        }
-
-        public static void UpdateCharactersCount(WorldClient client)
-        {
-            IpcAccessor.Instance.ProxyObject.SetAccountCharactersCount(WorldServer.ServerInformation,
-                                                                       client.Account.Id,
-                                                                       (byte) client.Characters.Count);
         }
     }
 }

@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.BaseCore.Framework.Extensions;
 using Stump.Database;
+using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Effects;
 using Stump.Server.WorldServer.Entities;
@@ -151,6 +152,18 @@ namespace Stump.Server.WorldServer.Items
                 return;
 
             m_stack -= amount;
+        }
+
+        public ObjectItem ToNetworkItem()
+        {
+            return new ObjectItem(
+                (uint) Position,
+                (uint) ItemId,
+                0, // todo : power rate
+                false, // todo : over max
+                m_effects.Select(entry => entry.ToNetworkEffect()).ToList(),
+                (uint) Guid,
+                Stack);
         }
 
         public override string ToString()

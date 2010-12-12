@@ -16,12 +16,55 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System.Collections.Generic;
+using System.Linq;
+using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.Global;
+using Stump.Server.WorldServer.Global.Maps;
 
 namespace Stump.Server.WorldServer.Handlers
 {
     public partial class ContextHandler : WorldHandlerContainer
     {
+        [WorldHandler(typeof(GameMapChangeOrientationRequestMessage))]
+        public static void HandleGameMapChangeOrientationRequestMessage(WorldClient client, GameMapChangeOrientationRequestMessage message)
+        {
+            client.ActiveCharacter.Direction = (int) message.direction;
+            client.ActiveCharacter.Map.CallOnAllCharactersWithoutFighters(charac => SendGameMapChangeOrientationMessage(charac.Client, client.ActiveCharacter));
+        }
+
+        [WorldHandler(typeof(GameMapMovementRequestMessage))]
+        public static void HandleGameMapMovementRequestMessage(WorldClient client, GameMapMovementRequestMessage message)
+        {
+            var cellid = (int) (message.keyMovements[message.keyMovements.Count - 1] & 0x0FFF);
+
+            if (client.ActiveCharacter.IsInFight)
+            {
+                client.ActiveCharacter.CurrentFight.MoveFighter(client.ActiveCharacter, cellid, message.keyMovements);
+            }
+            else
+            {
+                client.ActiveCharacter.CellId = cellid;
+                client.ActiveCharacter.Map.HandleCharacterMovement(client.ActiveCharacter, message.keyMovements);
+            }
+        }
+
+        [WorldHandler(typeof(GameMapMovementConfirmMessage))]
+        public static void HandleGameMapMovementConfirmMessage(WorldClient client, GameMapMovementConfirmMessage message)
+        {
+
+        }
+
+        [WorldHandler(typeof(GameMapMovementCancelMessage))]
+        public static void HandleGameMapMovementCancelMessage(WorldClient client, GameMapMovementCancelMessage message)
+        {
+            // todo : check if cell is available and if moving
+
+            client.ActiveCharacter.CellId = (int) message.cellId;
+        }
+
         public static void SendGameContextCreateMessage(WorldClient client, byte context)
         {
             client.Send(new GameContextCreateMessage(context));
@@ -30,6 +73,26 @@ namespace Stump.Server.WorldServer.Handlers
         public static void SendGameContextDestroyMessage(WorldClient client)
         {
             client.Send(new GameContextDestroyMessage());
+        }
+
+        public static void SendGameMapChangeOrientationMessage(WorldClient client, Entity entity)
+        {
+            client.Send(new GameMapChangeOrientationMessage(new ActorOrientation((int) entity.Id, (uint) entity.Direction)));
+        }
+
+        public static void SendGameContextRemoveElementMessage(WorldClient client, Entity entity)
+        {
+            client.Send(new GameContextRemoveElementMessage((int) entity.Id));
+        }
+
+        public static void SendGameContextRefreshEntityLookMessage(WorldClient client, Entity entity)
+        {
+            client.Send(new GameContextRefreshEntityLookMessage((int) entity.Id, entity.ToNetworkEntityLook()));
+        }
+
+        public static void SendGameMapMovementMessage(WorldClient client, List<uint> keymovements, Entity entity)
+        {
+            client.Send(new GameMapMovementMessage(keymovements, (int) entity.Id));
         }
     }
 }

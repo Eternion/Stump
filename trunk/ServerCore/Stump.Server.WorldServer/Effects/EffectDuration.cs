@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System;
+using Stump.DofusProtocol.Classes;
 using EffectDurationEx = Stump.DofusProtocol.D2oClasses.EffectInstanceDuration;
 
 
@@ -54,6 +55,11 @@ namespace Stump.Server.WorldServer.Effects
         public override object[] GetValues()
         {
             return new object[] {(short) m_days, (short) m_hours, (short) m_minutes};
+        }
+
+        public override ObjectEffect ToNetworkEffect()
+        {
+            return new ObjectEffectDuration((uint) EffectId, m_days, m_hours, m_minutes);
         }
 
         public TimeSpan GetTimeSpan()
