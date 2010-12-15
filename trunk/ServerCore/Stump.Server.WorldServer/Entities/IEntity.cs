@@ -32,9 +32,9 @@ namespace Stump.Server.WorldServer.Entities
         }
 
         /// <summary>
-        ///   Representation of Entity's World Position. (2D)
+        ///   Representation of Entity's World Position
         /// </summary>
-        Location Position
+        VectorIso Position
         {
             get;
             set;

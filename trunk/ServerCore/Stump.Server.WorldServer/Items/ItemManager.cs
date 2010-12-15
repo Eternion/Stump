@@ -62,7 +62,7 @@ namespace Stump.Server.WorldServer.Items
 
         #region Creator
 
-        public static Item Create(int id, Entity owner, uint amount)
+        public static Item Create(int id, LivingEntity owner, uint amount)
         {
             long itemguid = ItemGuidGenerator.Next();
 
@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.Items
             return newitem;
         }
 
-        public static Item Create(int id, Entity owner, uint amount, List<EffectBase> effects)
+        public static Item Create(int id, LivingEntity owner, uint amount, List<EffectBase> effects)
         {
             long itemguid = ItemGuidGenerator.Next();
 
@@ -88,7 +88,7 @@ namespace Stump.Server.WorldServer.Items
             return newitem;
         }
 
-        public static Item RegisterAnItemCopy(Item copy, Entity owner, uint amount)
+        public static Item RegisterAnItemCopy(Item copy, LivingEntity owner, uint amount)
         {
             long itemguid = ItemGuidGenerator.Next();
 
@@ -215,7 +215,7 @@ namespace Stump.Server.WorldServer.Items
         /// <param name = "owner"></param>
         /// <param name = "record"></param>
         /// <returns></returns>
-        public static Item LoadItem(Entity owner, CharacterItemRecord record)
+        public static Item LoadItem(LivingEntity owner, CharacterItemRecord record)
         {
             if (m_loadedItems.ContainsKey(record.Guid))
             {
@@ -237,7 +237,7 @@ namespace Stump.Server.WorldServer.Items
             return item;
         }
 
-        public static Item[] LoadItem(Entity owner, CharacterItemRecord[] records)
+        public static Item[] LoadItem(LivingEntity owner, CharacterItemRecord[] records)
         {
             var result = new Item[records.Length];
 

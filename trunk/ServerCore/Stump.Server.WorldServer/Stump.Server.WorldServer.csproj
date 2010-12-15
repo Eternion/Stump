@@ -64,7 +64,7 @@
     <Compile Include="Breeds\SadidaBreed.cs" />
     <Compile Include="Breeds\SramBreed.cs" />
     <Compile Include="Breeds\XelorBreed.cs" />
-    <Compile Include="Chat\Channel.cs" />
+    <Compile Include="Chat\ChannelId.cs" />
     <Compile Include="Chat\ChatManager.cs" />
     <Compile Include="Commands\TriggerChat.cs" />
     <Compile Include="Database\AccountDatabase.cs" />
@@ -95,11 +95,14 @@
     <Compile Include="Entities\Character.Fields.cs" />
     <Compile Include="Entities\Character.Stats.cs" />
     <Compile Include="Entities\Entity.cs" />
-    <Compile Include="Entities\ICharacterContainer.cs" />
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\IEntityContainer.cs" />
+    <Compile Include="Entities\IEntityLook.cs" />
+    <Compile Include="Entities\ILivingEntity.cs" />
     <Compile Include="Entities\IMovable.cs" />
+    <Compile Include="Entities\INamedEntity.cs" />
     <Compile Include="Entities\IOwned.cs" />
+    <Compile Include="Entities\LivingEntity.cs" />
     <Compile Include="Entities\Monster.cs" />
     <Compile Include="Entities\MonsterGrade.cs" />
     <Compile Include="Entities\Npc.cs" />
@@ -115,14 +118,16 @@
     <Compile Include="Fights\FightRequest.cs" />
     <Compile Include="Fights\TimeLine.cs" />
     <Compile Include="Global\Continent.cs" />
-    <Compile Include="Global\Location.cs" />
+    <Compile Include="Global\VectorIso.cs" />
     <Compile Include="Global\Maps\CellData.cs" />
     <Compile Include="Global\Maps\Map.cs" />
     <Compile Include="Data\MapLoader.cs" />
+    <Compile Include="Global\Maps\Map.Events.cs" />
     <Compile Include="Global\Region.cs" />
     <Compile Include="Global\World.cs" />
     <Compile Include="Global\World.Init.cs" />
     <Compile Include="Global\WorldSpace.cs" />
+    <Compile Include="Global\WorldSpace.Events.cs" />
     <Compile Include="Global\WorldSpace.Type.cs" />
     <Compile Include="Global\Zone.cs" />
     <Compile Include="Groups\FightGroup.cs" />
@@ -156,6 +161,7 @@
     <Compile Include="Handlers\Context\ContextMountHandler.cs" />
     <Compile Include="Handlers\Context\ContextNotificationHandler.cs" />
     <Compile Include="Handlers\Context\RolePlay\ContextRoleplayEmoteHandler.cs" />
+    <Compile Include="Handlers\Context\RolePlay\ContextRoleplayFightHandler.cs" />
     <Compile Include="Handlers\Context\RolePlay\ContextRoleplayHandler.cs" />
     <Compile Include="Handlers\Context\RolePlay\ContextRoleplayQuestHandler.cs" />
     <Compile Include="Handlers\Context\RolePlay\ContextRoleplayStatsHandler.cs" />
@@ -202,7 +208,7 @@
     <Compile Include="Commands\ParametersConverter.cs" />
     <Compile Include="Definitions.cs" />
     <Compile Include="Handlers\WorldHandler.cs" />
-    <Compile Include="Handlers\Predicates.cs" />
+    <Compile Include="Handlers\PredicatesDefinitions.cs" />
     <Compile Include="IPC\IpcAccessor.cs" />
     <Compile Include="IPC\IpcOperations.cs" />
     <Compile Include="WorldClient.cs" />
@@ -239,7 +245,9 @@
       <Name>Stump.Server.BaseServer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Entities\LivingEntity.Events.cs" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

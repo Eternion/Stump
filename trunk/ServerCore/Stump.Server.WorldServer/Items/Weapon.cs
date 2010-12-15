@@ -24,23 +24,23 @@ namespace Stump.Server.WorldServer.Items
 {
     public class Weapon : Item
     {
-        public Weapon(Entity owner, WeaponTemplate template, long guid)
+        public Weapon(LivingEntity owner, WeaponTemplate template, long guid)
             : base(owner, template, guid)
         {
         }
 
-        public Weapon(Entity owner, WeaponTemplate template, long guid, CharacterInventoryPositionEnum position)
+        public Weapon(LivingEntity owner, WeaponTemplate template, long guid, CharacterInventoryPositionEnum position)
             : base(owner, template, guid, position)
         {
         }
 
-        public Weapon(Entity owner, WeaponTemplate template, long guid, CharacterInventoryPositionEnum position,
+        public Weapon(LivingEntity owner, WeaponTemplate template, long guid, CharacterInventoryPositionEnum position,
                       uint stack)
             : base(owner, template, guid, position, stack)
         {
         }
 
-        public Weapon(Entity owner, CharacterItemRecord record)
+        public Weapon(LivingEntity owner, CharacterItemRecord record)
             : base(owner, record)
         {
         }

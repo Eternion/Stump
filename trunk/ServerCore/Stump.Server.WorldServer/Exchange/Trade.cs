@@ -130,7 +130,7 @@ namespace Stump.Server.WorldServer.Exchange
                 }
                 else
                 {
-                    var itemcopy = new Item(trader.Entity, (trader.Entity as Character).Inventory.GetItem(guid), amount);
+                    var itemcopy = new Item(trader.Entity as LivingEntity, (trader.Entity as Character).Inventory.GetItem(guid), amount);
                     trader.Items.Add(itemcopy);
 
                     InventoryHandler.SendExchangeObjectAddedMessage(((Character) SourceTrader.Entity).Client, false,

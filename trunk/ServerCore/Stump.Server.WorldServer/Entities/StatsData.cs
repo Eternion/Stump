@@ -23,16 +23,16 @@ namespace Stump.Server.WorldServer.Entities
 {
     public class StatsData
     {
-        protected Func<Entity, int, int, int, int, int> m_formule;
+        protected Func<LivingEntity, int, int, int, int, int> m_formule;
         protected int m_valueBase;
         protected int m_valueBonus;
         protected int m_valueEquiped;
         protected int m_valueGiven;
 
-        public StatsData(Entity owner, string name, int valueBase)
+        public StatsData(LivingEntity owner, string name, int valueBase)
             : this(
                 owner, name, valueBase,
-                delegate(Entity _owner, int valuebase, int valueequiped, int valuegiven, int valuebonus)
+                delegate(LivingEntity _owner, int valuebase, int valueequiped, int valuegiven, int valuebonus)
                 {
                     if (_owner == null) throw new ArgumentNullException("_owner");
                     return valuebase + valuegiven + valuebonus;
@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Entities
         {
         }
 
-        public StatsData(Entity owner, string name, int valueBase, Func<Entity, int, int, int, int, int> formule)
+        public StatsData(LivingEntity owner, string name, int valueBase, Func<LivingEntity, int, int, int, int, int> formule)
         {
             m_valueBase = valueBase;
             m_formule = formule;
@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Entities
             Owner = owner;
         }
 
-        public Entity Owner
+        public LivingEntity Owner
         {
             get;
             protected set;

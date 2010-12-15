@@ -196,7 +196,7 @@ namespace Stump.Server.WorldServer.Breeds
         /// <summary>
         ///   This is where you begin.
         /// </summary>
-        public virtual int StartCellId
+        public virtual ushort StartCellId
         {
             get { return 257; }
         }

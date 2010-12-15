@@ -38,14 +38,17 @@ namespace Stump.Server.WorldServer.Data
         /// </summary>
         public static IEnumerable<Map> LoadMaps()
         {
-            var mapDirectory = new DirectoryInfo(Settings.ContentPath + MapsDir);
-
-            foreach (FileInfo file in mapDirectory.GetFiles("*.map", SearchOption.AllDirectories))
+            foreach (string file in Directory.GetFiles(Settings.ContentPath + MapsDir, "*.map", SearchOption.AllDirectories))
             {
-                var reader = new BigEndianReader(file.Open(FileMode.Open));
+                var reader = new BigEndianReader(File.OpenRead(file));
 
                 yield return reader.ReadMap();
             }
+        }
+
+        public static int GetMapFilesCount()
+        {
+            return Directory.GetFiles(Settings.ContentPath + MapsDir, "*.map", SearchOption.AllDirectories).Length;
         }
 
         // todo : extract d2p file and rips the maps

@@ -57,10 +57,22 @@ namespace Stump.Server.BaseServer.Handler
         /// <param name = "type">the type to search through for packet handlers</param>
         public void Register(Type type)
         {
-            if(!type.GetInterfaces().Contains(typeof(IHandlerContainer)))
+            if(type.IsAbstract || !type.GetInterfaces().Contains(typeof(IHandlerContainer)))
                 return;
             
             MethodInfo[] methods = type.GetMethods(BindingFlags.Static | BindingFlags.Public);
+
+            IHandlerContainer handlerContainer;
+
+            try
+            {
+                handlerContainer = (IHandlerContainer)Activator.CreateInstance(type, true);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Unable to create HandlerContainer " + type.Name +
+                                    ".\n " + e.Message);
+            }
 
             foreach (MethodInfo method in methods)
             {
@@ -81,7 +93,7 @@ namespace Stump.Server.BaseServer.Handler
                         throw new ArgumentException("Incorrect delegate parameters");
 
                     Delegate handlerDelegate = Delegate.CreateDelegate(method.GetActionType(), method);
-                    var handlerContainer = (IHandlerContainer)Activator.CreateInstance(type);
+                    
 
                     foreach (object attribute in attributes)
                     {

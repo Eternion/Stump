@@ -20,6 +20,7 @@ using System.Linq;
 using Stump.Server.WorldServer.Dialog;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Groups;
+using Stump.Server.WorldServer.Handlers;
 
 namespace Stump.Server.WorldServer.Fights
 {
@@ -63,7 +64,7 @@ namespace Stump.Server.WorldServer.Fights
         {
             try
             {
-                FightHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Source.Client, GroupTarget.Fight, true);
+                ContextHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Source.Client, GroupTarget.Fight, true);
                 GroupTarget.Fight.StartingFight();
             }
             catch
@@ -81,7 +82,7 @@ namespace Stump.Server.WorldServer.Fights
         {
             try
             {
-                FightHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Source.Client, GroupTarget.Fight, false);
+                ContextHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Source.Client, GroupTarget.Fight, false);
                 GroupTarget.Fight.CancelFight(GroupSource.Id);
             }
             catch
@@ -107,7 +108,7 @@ namespace Stump.Server.WorldServer.Fights
                                     ? fight.TargetGroup.Members.First().Entity as Character
                                     : fight.SourceGroup.Members.First().Entity as Character;
 
-                FightHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(chr.Client, fight, false);
+                ContextHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(chr.Client, fight, false);
                 fight.CancelFight(groupId);
             }
             catch

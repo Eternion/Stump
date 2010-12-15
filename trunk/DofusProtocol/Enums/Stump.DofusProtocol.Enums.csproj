@@ -53,6 +53,7 @@
     <Compile Include="ConsoleMessageTypeEnum.cs" />
     <Compile Include="CrafterDirectoryParamBitEnum.cs" />
     <Compile Include="CraftResultEnum.cs" />
+    <Compile Include="Custom\ActionsEnum.cs" />
     <Compile Include="Custom\ContinentIdEnum.cs" />
     <Compile Include="Custom\EffectsEnum.cs" />
     <Compile Include="Custom\EmotesEnum.cs" />

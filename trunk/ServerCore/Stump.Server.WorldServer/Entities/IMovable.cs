@@ -16,6 +16,8 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System.Collections.Generic;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Global;
 
 namespace Stump.Server.WorldServer.Entities
@@ -28,24 +30,50 @@ namespace Stump.Server.WorldServer.Entities
         bool IsMoving
         {
             get;
-            set;
         }
+
+        bool CanMove();
 
         /// <summary>
         ///   Move the entity.
         /// </summary>
-        void Move();
+        // todo : use a class like 'PathBuilder'
+        void Move(List<uint> movementKeys);
 
         /// <summary>
-        ///   Make entity jump to a given location
+        ///   Move the entity.
         /// </summary>
-        /// <param name = "to"></param>
-        void Jump(Location to);
+        void Move(VectorIso to);
 
         /// <summary>
-        ///   Make character stop his movement or not.
+        ///   Move the entity.
         /// </summary>
-        /// <param name = "b"></param>
-        void Stop(bool b);
+        void Move(ushort cellId);
+
+        /// <summary>
+        ///   Move the entity.
+        /// </summary>
+        void Move(ushort cellId, DirectionsEnum direction);
+
+        /// <summary>
+        ///   Teleport instantly the entity.
+        /// </summary>
+        /// <param name="to"></param>
+        void MoveInstant(VectorIso to);
+
+        /// <summary>
+        ///   Teleport instantly the entity.
+        /// </summary>
+        void MoveInstant(ushort cellId);
+
+
+        /// <summary>
+        ///   Teleport instantly the entity.
+        /// </summary>
+        void MoveInstant(ushort cellId, DirectionsEnum direction);
+
+        void MovementEnded();
+
+        void StopMove(VectorIso currentVectorIso);
     }
 }

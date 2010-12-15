@@ -99,6 +99,8 @@ namespace Stump.Server.BaseServer
             Console.ForegroundColor = color;
         }
 
+
+
         protected virtual void Process()
         {
         }

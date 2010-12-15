@@ -20,10 +20,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.BaseCore.Framework.Utils;
+using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Data;
 using Stump.Server.BaseServer.Initializing;
-using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Groups;
 using MonsterGradeTemplate = Stump.DofusProtocol.D2oClasses.MonsterGrade;
 using MonsterRaceTemplate = Stump.DofusProtocol.D2oClasses.MonsterRace;
@@ -31,7 +31,7 @@ using MonsterTemplate = Stump.DofusProtocol.D2oClasses.Monster;
 
 namespace Stump.Server.WorldServer.Entities
 {
-    public class Monster : Entity, IMovable
+    public class Monster : LivingEntity
     {
         #region Fields
 
@@ -64,13 +64,10 @@ namespace Stump.Server.WorldServer.Entities
         [StageStep(Stages.Two, "Loaded Monsters")]
         public static void LoadAll()
         {
-            var monsterstemplates = new List<MonsterTemplate>();
-            var mobsraces = new List<MonsterRaceTemplate>();
+            var monstertemplates = DataLoader.LoadData<MonsterTemplate>();
+            var monsterRaces = DataLoader.LoadData<MonsterRaceTemplate>();
 
-            DataLoader.LoadData(ref monsterstemplates);
-            DataLoader.LoadData(ref mobsraces);
-
-            foreach (MonsterTemplate monstertemplate in monsterstemplates)
+            foreach (MonsterTemplate monstertemplate in monstertemplates)
             {
                 var monster = new Monster(monstertemplate.id)
                     {
@@ -80,9 +77,10 @@ namespace Stump.Server.WorldServer.Entities
                         BonesId = 1
                     };
 
-                MonsterRaceTemplate mrt = mobsraces.Find(o => o.id == monster.Id);
-                if (mrt != null)
-                    monster.ParentMonsterId = (MonsterRaceIdEnum) mrt.superRaceId;
+                // todo : this is totally wrong !
+                MonsterRaceTemplate race = monsterRaces.SingleOrDefault(monsterRace => monsterRace.id == monster.Id);
+                if (race != null)
+                    monster.ParentMonsterId = (MonsterRaceIdEnum) race.superRaceId;
 
                 foreach (MonsterGradeTemplate grade in monstertemplate.grades)
                 {
@@ -149,34 +147,6 @@ namespace Stump.Server.WorldServer.Entities
 
         #endregion
 
-        #region Movements
-
-        /// <summary>
-        ///   Indicate or set if entity is moving.
-        /// </summary>
-        public bool IsMoving
-        {
-            get;
-            set;
-        }
-
-        public void Jump(Location to)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Move()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Stop(bool b)
-        {
-            // todo
-        }
-
-        #endregion
-
         #region Properties
 
         public int GfxId
@@ -214,6 +184,16 @@ namespace Stump.Server.WorldServer.Entities
         public override string ToString()
         {
             return String.Format("Monster \"{0}\" <Id:{1}>", Enum.GetName(typeof (MonsterIdEnum), Id), Id);
+        }
+
+        public override FightTeamMemberInformations ToNetworkTeamMember()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override GameFightFighterInformations ToNetworkFighter()
+        {
+            throw new NotImplementedException();
         }
     }
 }

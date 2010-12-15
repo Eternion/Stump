@@ -35,7 +35,7 @@ namespace Stump.Server.AuthServer.Handlers
         {
             Predicates = new Dictionary<Type, Predicate<AuthClient>>
                 {
-                    {typeof (ServerSelectionMessage), Handlers.Predicates.IsLookingOfServers},
+                    {typeof (ServerSelectionMessage), Handlers.PredicatesDefinitions.IsLookingOfServers},
                 };
         }
 

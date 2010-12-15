@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Entities
 
         #region Formules
 
-        private static readonly Func<Entity, int, int, int, int, int> FormuleInitiative =
+        private static readonly Func<LivingEntity, int, int, int, int, int> FormuleInitiative =
             (owner, valueBase, valueEquiped, valueGiven, valueBonus) =>
             {
                 return owner.DamageTaken <= 0
@@ -50,13 +50,13 @@ namespace Stump.Server.WorldServer.Entities
                                   TotalMax);
             };
 
-        private static readonly Func<Entity, int, int, int, int, int> FormuleProspecting =
+        private static readonly Func<LivingEntity, int, int, int, int, int> FormuleProspecting =
             (owner, valueBase, valueEquiped, valueGiven, valueBonus) =>
             valueBase + valueEquiped + valueBonus + (int) (owner.Stats["Chance"]/10d);
 
         #endregion
 
-        public StatsFields(Entity owner)
+        public StatsFields(LivingEntity owner)
         {
             Owner = owner;
 
@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.Entities
             private set;
         }
 
-        public Entity Owner
+        public LivingEntity Owner
         {
             get;
             private set;
@@ -216,10 +216,10 @@ namespace Stump.Server.WorldServer.Entities
         {
             Fields = new Dictionary<string, StatsData>
                 {
-                    {"Health", new StatsHealth(Owner, Owner.BaseHealth, Owner.DamageTaken)},
+                    {"Health", new StatsHealth(Owner, ((Character) Owner).Record.BaseHealth, ((Character) Owner).Record.DamageTaken)},
                     {"Initiative", new StatsData(Owner, "Initiative", 0, FormuleInitiative)},
                     {"Prospecting", new StatsData(Owner, "Prospecting", 100, FormuleProspecting)},
-                    {"AP", new StatsData(Owner, "AP", Owner.Level >= 100 ? 7 : 6)},
+                    {"AP", new StatsData(Owner, "AP", ((Character) Owner).Record.Level >= 100 ? 7 : 6)},
                     {"MP", new StatsData(Owner, "MP", 3)},
                     {"Strength", new StatsData(Owner, "Strength", 0)},
                     {"Vitality", new StatsData(Owner, "Vitality", 0)},

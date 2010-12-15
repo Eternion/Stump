@@ -89,7 +89,9 @@ namespace Stump.Server.BaseServer.Data.D2oTool
 
         private void CheckClass()
         {
-            ClassType = Type.GetType(typeof (AttributeAssociatedFile).Assembly.GetName().Name + "." + Name, false);
+            ClassType =
+                typeof (AttributeAssociatedFile).Assembly.GetType(typeof (AttributeAssociatedFile).Namespace + "." +
+                                                                  Name);
 
             if (ClassType == null)
                 throw new Exception(string.Format("Unknown class \'{0}\'", Name));
@@ -118,106 +120,53 @@ namespace Stump.Server.BaseServer.Data.D2oTool
             }
         }
 
-        internal T BuildClassObject<T>(BigEndianReader reader)
+        private static IList BuildList(object obj, Type expectedType)
         {
-            // call constructor
-            var result = (T) typeof (T).GetConstructor(new Type[0]).Invoke(new object[0]);
+            if (!(obj is List<object>))
+                return null;
 
-            Type resultType = typeof (T);
+            Type convertType = expectedType.GetGenericArguments()[0];
 
-            foreach (var field in Fields)
+            Type objType = typeof (List<>).MakeGenericType(convertType);
+            var objList = (IList) Assembly.GetAssembly(objType).CreateInstance(objType.FullName);
+
+            foreach (object item in (List<object>) obj)
             {
-                var obj = field.Value.ReadValue<object>(reader);
-
-                // can manage only 2 dimensions
-                if (obj is List<object>)
-                {
-                    Type convertType = ClassType.GetField(field.Key).FieldType.GetGenericArguments()[0];
-                    Type listType = typeof (List<>).MakeGenericType(convertType);
-                    var objList = (IList) Assembly.GetAssembly(listType).CreateInstance(listType.FullName);
-
-                    foreach (object item in (List<object>) obj)
-                    {
-                        if (item is List<object>)
-                        {
-                            Type _convertType = convertType.GetGenericArguments()[0];
-                            Type _listType = typeof (List<>).MakeGenericType(_convertType);
-                            var _obj_list = (IList) Assembly.GetAssembly(_listType).CreateInstance(_listType.FullName);
-
-                            foreach (object _item in (List<object>) item)
-                            {
-                                if (_item is IConvertible)
-                                    _obj_list.Add(Convert.ChangeType(_item, _convertType));
-                                else
-                                    _obj_list.Add(_item);
-                            }
-
-                            objList.Add(_obj_list);
-                        }
-                        else
-                        {
-                            if (item is IConvertible)
-                                objList.Add(Convert.ChangeType(item, convertType));
-                            else
-                                objList.Add(item);
-                        }
-                    }
-
-                    ClassType.GetField(field.Key).SetValue(result, objList);
-                }
+                if (item is List<object>)
+                    objList.Add(BuildList(item, convertType));
                 else
-                    ClassType.GetField(field.Key).SetValue(result, obj);
+                {
+                    if (item is IConvertible)
+                        objList.Add(Convert.ChangeType(item, convertType));
+                    else
+                    {
+                        objList.Add(item);
+                    }
+                }
             }
 
-            return result;
+            return objList;
         }
 
-        internal object BuildClassObject(Type objType, BigEndianReader reader)
+        internal T BuildClassObject<T>(BigEndianReader reader)
+        {
+            return (T)BuildClassObject(reader, typeof (T));
+        }
+
+        internal object BuildClassObject(BigEndianReader reader, Type objType)
         {
             // call constructor
             object result = objType.GetConstructor(new Type[0]).Invoke(new object[0]);
 
-            Type resultType = objType;
-
             foreach (var field in Fields)
             {
                 var obj = field.Value.ReadValue<object>(reader);
 
-                // can manage only 2 dimensions
                 if (obj is List<object>)
                 {
-                    Type convertType = ClassType.GetField(field.Key).FieldType.GetGenericArguments()[0];
-                    Type listType = typeof (List<>).MakeGenericType(convertType);
-                    var obj_list = (IList) Assembly.GetAssembly(listType).CreateInstance(listType.FullName);
+                    IList objList = BuildList(obj, ClassType.GetField(field.Key).FieldType);
 
-                    foreach (object item in (List<object>) obj)
-                    {
-                        if (item is List<object>)
-                        {
-                            Type _convertType = convertType.GetGenericArguments()[0];
-                            Type _listType = typeof (List<>).MakeGenericType(_convertType);
-                            var _obj_list = (IList) Assembly.GetAssembly(_listType).CreateInstance(_listType.FullName);
-
-                            foreach (object _item in (List<object>) item)
-                            {
-                                if (_item is IConvertible)
-                                    _obj_list.Add(Convert.ChangeType(_item, _convertType));
-                                else
-                                    _obj_list.Add(_item);
-                            }
-
-                            obj_list.Add(_obj_list);
-                        }
-                        else
-                        {
-                            if (item is IConvertible)
-                                obj_list.Add(Convert.ChangeType(item, convertType));
-                            else
-                                obj_list.Add(item);
-                        }
-                    }
-
-                    ClassType.GetField(field.Key).SetValue(result, obj_list);
+                    ClassType.GetField(field.Key).SetValue(result, objList);
                 }
                 else
                     ClassType.GetField(field.Key).SetValue(result, obj);

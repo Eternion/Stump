@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Stump.BaseCore.Framework.IO;
 using Stump.DofusProtocol.D2oClasses;
 
@@ -126,28 +127,7 @@ namespace Stump.Server.BaseServer.Data.D2oTool
         /// <returns></returns>
         public Dictionary<int, T> ReadObjects<T>()
         {
-            if (typeof (T).GetCustomAttributes(false) == null ||
-                typeof (T).GetCustomAttributes(false).Count(entry =>
-                                                            entry is AttributeAssociatedFile &&
-                                                            (entry as AttributeAssociatedFile).FilesName.Contains(
-                                                                FileName)) == 0)
-                throw new Exception("Targeted class hasn't correct AttributeAssociatedFile");
-
-            var result = new Dictionary<int, T>();
-
-            foreach (var index in m_indextable)
-            {
-                var reader = new BigEndianReader(new MemoryStream(m_filebuffer));
-                int offset = index.Value;
-                reader.Seek(offset, SeekOrigin.Begin);
-
-                int classid = reader.ReadInt();
-
-                if (m_classes[classid].ClassType == typeof (T))
-                    result.Add(index.Key, m_classes[classid].BuildClassObject<T>(reader));
-            }
-
-            return result;
+            return ReadObjects<T>(false);
         }
 
         /// <summary>
@@ -166,8 +146,7 @@ namespace Stump.Server.BaseServer.Data.D2oTool
                 throw new Exception("Targeted class hasn't correct AttributeAssociatedFile");
 
             var result = new Dictionary<int, T>();
-
-            foreach (var index in m_indextable)
+            Parallel.ForEach(m_indextable, index =>
             {
                 var reader = new BigEndianReader(new MemoryStream(m_filebuffer));
                 int offset = index.Value;
@@ -175,7 +154,8 @@ namespace Stump.Server.BaseServer.Data.D2oTool
 
                 int classid = reader.ReadInt();
 
-                if (m_classes[classid].ClassType.IsSubclassOf(typeof (T)))
+                if (m_classes[classid].ClassType == typeof (T) ||
+                    m_classes[classid].ClassType.IsSubclassOf(typeof (T)))
                 {
                     try
                     {
@@ -184,12 +164,78 @@ namespace Stump.Server.BaseServer.Data.D2oTool
                     catch
                     {
                         if (allownulled)
-                            return null;
+                            result.Add(index.Key, default(T));
                         else
                             throw;
                     }
                 }
-            }
+
+                reader.Dispose();
+            });
+
+            return result;
+        }
+
+        /// <summary>
+        ///   Get all objects that corresponding to T associated to his index
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<int, object> ReadObjects()
+        {
+            return ReadObjects(false);
+        }
+
+        /// <summary>
+        ///   Get all objects that corresponding to T associated to his index
+        /// </summary>
+        /// <param name = "allownulled">True to adding null instead of throwing an exception</param>
+        /// <returns></returns>
+        public Dictionary<int, object> ReadObjects(bool allownulled)
+        {
+            var result = new Dictionary<int, object>();
+            Parallel.ForEach(m_indextable, index =>
+            {
+                var reader = new BigEndianReader(new MemoryStream(m_filebuffer));
+                int offset = index.Value;
+                reader.Seek(offset, SeekOrigin.Begin);
+
+                int classid = reader.ReadInt();
+
+                try
+                {
+                    result.Add(index.Key, m_classes[classid].BuildClassObject(reader, m_classes[classid].ClassType));
+                }
+                catch
+                {
+                    if (allownulled)
+                        result.Add(index.Key, null);
+                    else
+                        throw;
+                }
+
+
+                reader.Dispose();
+            });
+
+            return result;
+        }
+
+        /// <summary>
+        ///   Get an object from his index
+        /// </summary>
+        /// <param name = "index"></param>
+        /// <returns></returns>
+        public object ReadObject(int index)
+        {
+            var reader = new BigEndianReader(new MemoryStream(m_filebuffer));
+            int offset = m_indextable[index];
+            reader.Seek(offset, SeekOrigin.Begin);
+
+            int classid = reader.ReadInt();
+
+            object result = m_classes[classid].BuildClassObject(reader, m_classes[classid].ClassType);
+
+            reader.Dispose();
 
             return result;
         }
@@ -216,11 +262,14 @@ namespace Stump.Server.BaseServer.Data.D2oTool
 
             int classid = reader.ReadInt();
 
-            if (m_classes[classid].ClassType != typeof (T))
-                throw new Exception(string.Format("Wrong type, try to read with a {1} instead of a {0}",
+            if (m_classes[classid].ClassType != typeof (T) &&
+                !m_classes[classid].ClassType.IsSubclassOf(typeof (T)))
+                throw new Exception(string.Format("Wrong type, try to read object with {1} instead of {0}",
                                                   typeof (T).Name, m_classes[classid].ClassType.Name));
 
             var result = m_classes[classid].BuildClassObject<T>(reader);
+
+            reader.Dispose();
 
             return result;
         }
@@ -237,6 +286,8 @@ namespace Stump.Server.BaseServer.Data.D2oTool
             reader.Seek(offset, SeekOrigin.Begin);
 
             int classid = reader.ReadInt();
+
+            reader.Dispose();
 
             return m_classes[classid];
         }

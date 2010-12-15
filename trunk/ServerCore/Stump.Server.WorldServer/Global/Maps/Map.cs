@@ -80,7 +80,7 @@ namespace Stump.Server.WorldServer.Global.Maps
 
             map.PresetId = map.UseReverb ? reader.ReadInt() : -1;
 
-            for (short i = 0; i < 560; i++)
+            for (short i = 0; i < Map.MaximumCellsCount; i++)
             {
                 CellData celldata = reader.ReadCell();
                 celldata.Id = i;
@@ -98,8 +98,10 @@ namespace Stump.Server.WorldServer.Global.Maps
     /// <summary>
     ///   Represents a map where entities can walk for instance.
     /// </summary>
-    public class Map : WorldSpace
+    public partial class Map : WorldSpace
     {
+        public const uint MaximumCellsCount = 560;
+
         #region Fields
 
         private readonly Dictionary<int, MapNeighbour> m_mapsAround;
@@ -113,8 +115,10 @@ namespace Stump.Server.WorldServer.Global.Maps
         {
             CellsData = new List<CellData>();
             m_mapsAround = new Dictionary<int, MapNeighbour>();
-        }
 
+            EntityAdded += WorldSpaceEntityAdded;
+            EntityRemoved += WorldSpaceEntityRemoved;
+        }
 
         public override WorldSpaceType Type
         {
@@ -129,16 +133,54 @@ namespace Stump.Server.WorldServer.Global.Maps
             m_mapsAround.Add(RightNeighbourId, MapNeighbour.Right);
         }
 
-        public void HandleCharacterMovement(Character character, List<uint> keymovements)
+        private void WorldSpaceEntityRemoved(Entity entity)
         {
-            Action<Character> action = (Character charac) =>
+            if (entity is LivingEntity)
             {
-                ContextHandler.SendGameMapMovementMessage(charac.Client, keymovements, character);
+                (entity as LivingEntity).EntityCompressedMovingStart -= EntityCompressedMovingStart;
+                (entity as LivingEntity).EntityMovingStart -= EntityMovingStart;
+                (entity as LivingEntity).EntityMovingStop -= EntityMovingStop;
+                (entity as LivingEntity).EntityMovingEnd -= EntityMovingEnd;
+            }
+        }
+
+        private void WorldSpaceEntityAdded(Entity entity)
+        {
+            if (entity is LivingEntity)
+            {
+                (entity as LivingEntity).EntityCompressedMovingStart += EntityCompressedMovingStart;
+                (entity as LivingEntity).EntityMovingStart += EntityMovingStart;
+                (entity as LivingEntity).EntityMovingStop += EntityMovingStop;
+                (entity as LivingEntity).EntityMovingEnd += EntityMovingEnd;
+            }
+        }
+
+        private void EntityCompressedMovingStart(LivingEntity entity, List<uint> movementkeys)
+        {
+            Action<Character> action = charac =>
+            {
+                ContextHandler.SendGameMapMovementMessage(charac.Client, movementkeys, entity);
                 BasicHandler.SendBasicNoOperationMessage(charac.Client);
             };
 
             CallOnAllCharactersWithoutFighters(action);
         }
+
+        private void EntityMovingStart(LivingEntity entity, VectorIso positioninfo)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void EntityMovingStop(LivingEntity entity, VectorIso positioninfo)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void EntityMovingEnd(LivingEntity entity, VectorIso positioninfo)
+        {
+            throw new NotImplementedException();
+        }
+
 
         public override void OnMonsterSpawning()
         {
@@ -160,6 +202,8 @@ namespace Stump.Server.WorldServer.Global.Maps
                 charac => ContextHandler.SendGameRolePlayShowActorMessage(charac.Client, entity);
 
             CallOnAllCharactersWithoutFighters(action);
+
+            NotifySpawnedEntity(entity);
         }
 
         public override void OnLeave(Entity entity)
@@ -176,6 +220,8 @@ namespace Stump.Server.WorldServer.Global.Maps
             {
                 (entity as Character).NextMap = null;
             }
+
+            NotifyUnSpawnedEntity(entity);
         }
 
         public void OnFightEnter(Entity entity)
@@ -196,36 +242,39 @@ namespace Stump.Server.WorldServer.Global.Maps
 
         public MapNeighbour GetMapNeighbourByMapid(int mapid)
         {
+            if (!m_mapsAround.ContainsKey(mapid))
+                return MapNeighbour.None;
+
             return m_mapsAround[mapid];
         }
 
         /// <summary>
         ///   Calculate which cell our character will walk on once map changed.
         /// </summary>
-        public int GetCellAfterChangeMap(int currentCell, MapNeighbour mapneighbour)
+        public ushort GetCellAfterChangeMap(ushort currentCell, MapNeighbour mapneighbour)
         {
-            int cell = 0;
+            ushort cell = 0;
 
             switch (mapneighbour)
             {
                 case MapNeighbour.Top:
                 {
-                    cell = currentCell + 532;
+                    cell = (ushort) (currentCell + 532);
                     break;
                 }
                 case MapNeighbour.Bottom:
                 {
-                    cell = currentCell - 532;
+                    cell = (ushort) (currentCell - 532);
                     break;
                 }
                 case MapNeighbour.Right:
                 {
-                    cell = currentCell - 13;
+                    cell = (ushort) (currentCell - 13);
                     break;
                 }
                 case MapNeighbour.Left:
                 {
-                    cell = currentCell + 13;
+                    cell = (ushort) (currentCell + 13);
                     break;
                 }
             }
@@ -234,8 +283,8 @@ namespace Stump.Server.WorldServer.Global.Maps
 
         public CellData GetCell(int index)
         {
-            if (index < 0 || index > 560)
-                throw new Exception("Index en dehors des limites : " + index);
+            if (index < 0 || index >= MaximumCellsCount)
+                throw new Exception("Index out of bounds : " + index);
 
             return CellsData[index];
         }
@@ -243,7 +292,7 @@ namespace Stump.Server.WorldServer.Global.Maps
         public List<Character> GetAllCharactersWithoutFighters()
         {
             return
-                Entities.Values.Where(entity => entity is Character && !entity.IsInFight).Cast<Character>().ToList();
+                Entities.Values.Where(entity => entity is Character && !(entity as Character).IsInFight).Cast<Character>().ToList();
         }
 
 
@@ -256,6 +305,16 @@ namespace Stump.Server.WorldServer.Global.Maps
             List<Character> chars = GetAllCharactersWithoutFighters();
 
             Parallel.For(0, chars.Count, i => action(chars[i]));
+        }
+
+        public static bool operator ==(Map map1, Map map2)
+        {
+            return ReferenceEquals(map1, map2);
+        }
+
+        public static bool operator !=(Map map1, Map map2)
+        {
+            return !(map1 == map2);
         }
 
         #region Properties

@@ -18,6 +18,8 @@
 //  *************************************************************************/
 using System;
 using System.Linq;
+using Stump.DofusProtocol.Classes;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Fights;
 
@@ -25,13 +27,22 @@ namespace Stump.Server.WorldServer.Groups
 {
     public sealed class FightGroup : Group
     {
+        public FightGroup()
+        {
+        }
+
+        public FightGroup(LivingEntity entity)
+        {
+            AddMember(entity);
+        }
+
         public int TeamId
         {
             get;
             set;
         }
 
-        public short[] Positions
+        public ushort[] Positions
         {
             get;
             set;
@@ -84,7 +95,7 @@ namespace Stump.Server.WorldServer.Groups
         ///   Add a new member to this group.
         /// </summary>
         /// <param name = "ent"></param>
-        public override GroupMember AddMember(Entity ent)
+        public override GroupMember AddMember(LivingEntity ent)
         {
             GroupMember newMember = null;
 
@@ -96,9 +107,11 @@ namespace Stump.Server.WorldServer.Groups
                 {
                     newMember = new FightGroupMember(ent, this);
                     Members.Add(newMember);
-                    OnAddMember(newMember);
+
                     if (m_leaderId < 0)
-                        m_leaderId = (int) ent.Id;
+                        m_leaderId = (int)ent.Id;
+
+                    NotifyMemberAdded(newMember);
                 }
             }
             catch (Exception e)
@@ -118,7 +131,7 @@ namespace Stump.Server.WorldServer.Groups
         /// <summary>
         ///   Remove member from this Group.
         /// </summary>
-        public override void RemoveMember(GroupMember group)
+        public override void RemoveMember(GroupMember member)
         {
             if (Count <= MinGroupMemberCount)
             {
@@ -131,10 +144,12 @@ namespace Stump.Server.WorldServer.Groups
                 try
                 {
                     // ToDo : Some logic (change leaders, update stuff like group level etc.
-                    Members.Remove(group);
-                    OnMemberRemoved(group);
-                    if (group.Entity.Id == m_leaderId)
-                        m_leaderId = (int) Members.First().Entity.Id;
+                    Members.Remove(member);
+
+                    if (member.Entity.Id == m_leaderId)
+                        m_leaderId = (int)Members.First().Entity.Id;
+
+                    NotifyMemberRemoved(member);
                 }
                 finally
                 {
@@ -143,6 +158,16 @@ namespace Stump.Server.WorldServer.Groups
             }
 
             // send update to all (?)
+        }
+
+        public FightTeamInformations ToNetworkFightTeam()
+        {
+            return new FightTeamInformations(
+                (uint) Id,
+                (int) Leader.Entity.Id,
+                (int) AlignmentSideEnum.ALIGNMENT_WITHOUT,
+                (uint) TeamEnum.TEAM_CHALLENGER,
+                Members.Select(entry=> entry.Entity.ToNetworkTeamMember()).ToList());
         }
     }
 }

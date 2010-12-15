@@ -24,8 +24,11 @@ using Stump.Database;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer.Network;
+using Stump.Server.WorldServer.Chat;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Global.Maps;
+using Stump.Server.WorldServer.Groups;
 using Stump.Server.WorldServer.Handlers;
 using Stump.Server.WorldServer.Items;
 using Stump.Server.WorldServer.Spells;
@@ -33,7 +36,7 @@ using Item = Stump.Server.WorldServer.Items.Item;
 
 namespace Stump.Server.WorldServer.Entities
 {
-    public partial class Character : Entity, IMovable
+    public partial class Character : LivingEntity, IPacketReceiver
     {
         /// <summary>
         ///   Constructor called when a character has been successfully selected.
@@ -51,15 +54,13 @@ namespace Stump.Server.WorldServer.Entities
             BreedId = (BreedEnum) cr.Classe;
             Sex = (SexTypeEnum) cr.SexId;
             Kamas = cr.Kamas;
-            BaseHealth = cr.BaseHealth;
-            DamageTaken = cr.DamageTaken;
             StatsPoint = cr.StatsPoints;
             SpellsPoints = cr.SpellsPoints;
             EmoteId = 0;
 
-            Map = World.Instance.Maps[cr.MapId];
-            CellId = cr.CellId;
-            Position = Location.Empty;
+            Position.Map = World.Instance.Maps[cr.MapId];
+            Position.CellId = cr.CellId;
+            Position.Direction = cr.Direction;
             InWorld = false;
 
 
@@ -88,8 +89,6 @@ namespace Stump.Server.WorldServer.Entities
                 Spells[sr.SpellId].CurrentLevel = sr.Level;
                 Spells[sr.SpellId].Position = sr.Position;
             }
-
-            Zone = World.Instance.RetrieveZoneByMapId(Map.Id);
         }
 
         /// <summary>
@@ -99,7 +98,7 @@ namespace Stump.Server.WorldServer.Entities
         {
             if (!InWorld)
             {
-                Map.OnEnter(this);
+                Position.Map.OnEnter(this);
 
                 InWorld = true;
                 World.Instance.AddCharacter(this);
@@ -113,8 +112,8 @@ namespace Stump.Server.WorldServer.Entities
             NextMap = nextMap;
             Map.OnLeave(this);
 
-            Map = nextMap;
-            CellId = Map.GetCellAfterChangeMap(CellId, lastMap.GetMapNeighbourByMapid(nextMap.Id));
+            Position.Map = nextMap;
+            Position.CellId = Map.GetCellAfterChangeMap(Position.CellId, lastMap.GetMapNeighbourByMapid(nextMap.Id));
 
             Map.OnEnter(this);
         }
@@ -143,13 +142,13 @@ namespace Stump.Server.WorldServer.Entities
 
         public void SendChatMessage(string msg, string from)
         {
-            ChatHandler.SendCustomServerMessage(Client, StringUtils.HtmlEntities(msg), from);
+            ChatHandler.SendChatServerCopyMessage(Client, Client.ActiveCharacter, ChannelId.Information, StringUtils.HtmlEntities(msg));
         }
 
         /// <summary>
         ///   Send a packet to this character.
         /// </summary>
-        public void SendPacket(Message message)
+        public void Send(Message message)
         {
             Client.Send(message);
         }
@@ -201,26 +200,26 @@ namespace Stump.Server.WorldServer.Entities
         /// </summary>
         public void SaveNow()
         {
-            m_record.Kamas = Kamas;
-            m_record.Level = Level;
+            Record.Kamas = Kamas;
+            Record.Level = Level;
 
             if (Map != null)
-                m_record.MapId = Map.Id;
+                Record.MapId = Position.Map.Id;
 
-            m_record.CellId = CellId;
-            m_record.BaseHealth = BaseHealth;
-            m_record.DamageTaken = DamageTaken;
-            m_record.StatsPoints = StatsPoint;
-            m_record.SpellsPoints = SpellsPoints;
+            Record.CellId = Position.CellId;
+            Record.BaseHealth = BaseHealth;
+            Record.DamageTaken = DamageTaken;
+            Record.StatsPoints = StatsPoint;
+            Record.SpellsPoints = SpellsPoints;
 
             if (Stats != null)
             {
-                m_record.Strength = Stats["Strength"].Base;
-                m_record.Vitality = Stats["Vitality"].Base;
-                m_record.Wisdom = Stats["Wisdom"].Base;
-                m_record.Intelligence = Stats["Intelligence"].Base;
-                m_record.Chance = Stats["Chance"].Base;
-                m_record.Agility = Stats["Agility"].Base;
+                Record.Strength = Stats["Strength"].Base;
+                Record.Vitality = Stats["Vitality"].Base;
+                Record.Wisdom = Stats["Wisdom"].Base;
+                Record.Intelligence = Stats["Intelligence"].Base;
+                Record.Chance = Stats["Chance"].Base;
+                Record.Agility = Stats["Agility"].Base;
             }
 
             try
@@ -232,9 +231,9 @@ namespace Stump.Server.WorldServer.Entities
                         item.SaveNow();
                     }
 
-                    m_record.SaveSpells();
+                    Record.SaveSpells();
 
-                    m_record.Save();
+                    Record.Save();
 
                     saveScope.Flush();
                 }
@@ -242,36 +241,8 @@ namespace Stump.Server.WorldServer.Entities
             catch (Exception e)
             {
                 logger.Error("Exception occurred while Saving character {0}. {1}", Name, e.Message);
-                m_record.Save();
+                Record.Save();
             }
-        }
-
-        #endregion
-
-        #region Movements
-
-        /// <summary>
-        ///   Indicate or set if entity is moving.
-        /// </summary>
-        public bool IsMoving
-        {
-            get;
-            set;
-        }
-
-        public void Jump(Location to)
-        {
-            throw new NotImplementedException("You can't jump with your character yet.");
-        }
-
-        public void Move()
-        {
-            throw new NotImplementedException("You can't {really} move with your character yet.");
-        }
-
-        public void Stop(bool b)
-        {
-            // todo
         }
 
         #endregion
@@ -286,13 +257,13 @@ namespace Stump.Server.WorldServer.Entities
         public void AddSpell(Spell spell)
         {
             Spells.AddSpell(spell);
-            m_record.AddSpell((uint) spell.Id, spell.Position, spell.CurrentLevel);
+            Record.AddSpell((uint)spell.Id, spell.Position, spell.CurrentLevel);
         }
 
         public void ModifySpellPos(SpellIdEnum spellId, int newPos)
         {
             Spells.MoveSpell(spellId, newPos);
-            m_record.ModifySpellPosition((int) spellId, newPos);
+            Record.ModifySpellPosition((int)spellId, newPos);
         }
 
         public void RemoveSpell(SpellIdEnum spellid)
@@ -301,5 +272,33 @@ namespace Stump.Server.WorldServer.Entities
         }
 
         #endregion
+
+        public override FightTeamMemberInformations ToNetworkTeamMember()
+        {
+            if (!IsInFight)
+                return null;
+
+            return new FightTeamMemberCharacterInformations(
+                (int) Id,
+                Name,
+                (uint) Level);
+        }
+
+        public override GameFightFighterInformations ToNetworkFighter()
+        {
+            if (!IsInFight)
+                return null;
+
+            return new GameFightCharacterInformations(
+                (int)Id,
+                ToNetworkEntityLook(),
+                GetEntityDisposition(),
+                (uint)( (FightGroup)Group ).TeamId,
+                !( CurrentFighter.IsDead || CurrentFighter.IsReady ),
+                CurrentFighter.GetFightMinimalStats(),
+                Name,
+                (uint)Level,
+                GetActorAlignmentInformations());
+        }
     }
 }

@@ -22,12 +22,12 @@ namespace Stump.Server.WorldServer.Entities
 {
     public class StatsHealth : StatsData
     {
-        private static readonly Func<Entity, int, int, int, int, int, int> FormuleLife =
-            (owner, valueBase, valueEquiped, valueGiven, valueBonus, damageTaken) => { return valueBase + valueEquiped + valueBonus + owner.Stats["Vitality"] - damageTaken; };
+        private static readonly Func<LivingEntity, int, int, int, int, int, int> FormuleLife =
+            (owner, valueBase, valueEquiped, valueGiven, valueBonus, damageTaken) => valueBase + valueEquiped + valueBonus + owner.Stats["Vitality"] - damageTaken;
 
-        protected new Func<Entity, int, int, int, int, int, int> m_formule;
+        protected new Func<LivingEntity, int, int, int, int, int, int> m_formule;
 
-        public StatsHealth(Entity owner, int valueBase, int damageTaken)
+        public StatsHealth(LivingEntity owner, int valueBase, int damageTaken)
             : base(owner, "Health", valueBase)
         {
             m_formule = FormuleLife;

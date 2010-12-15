@@ -49,6 +49,7 @@
     <Compile Include="Collections\TimedDictionary.cs" />
     <Compile Include="Collections\TimedList.cs" />
     <Compile Include="Cryptography\Cryptography.cs" />
+    <Compile Include="IO\ConsoleProcent.cs" />
     <Compile Include="Threading\TaskCompletionSourceExtensions.cs" />
     <Compile Include="Threading\TaskExtensions.cs" />
     <Compile Include="Threading\TaskFactoryExtensions.cs" />

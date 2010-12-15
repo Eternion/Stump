@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System.Collections.Generic;
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Data;
 using Stump.Server.BaseServer.Initializing;
@@ -34,7 +35,7 @@ namespace Stump.Server.WorldServer.Breeds
         /// <summary>
         ///   List containing every data for each breed.
         /// </summary>
-        private static List<BreedData> m_breedsData = new List<BreedData>();
+        private static BreedData[] m_breedsData;
 
         /// <summary>
         ///   Load breeds data from database.
@@ -43,7 +44,7 @@ namespace Stump.Server.WorldServer.Breeds
         [StageStep(Stages.Two, "Loaded Breeds")]
         public static void LoadBreedsData()
         {
-            DataLoader.LoadData(ref m_breedsData);
+            m_breedsData = DataLoader.LoadData<BreedData>().ToArray();
 
             InitBreed(new FecaBreed());
             InitBreed(new EcaflipBreed());
@@ -65,7 +66,7 @@ namespace Stump.Server.WorldServer.Breeds
         /// <param name = "breed">breed to initialize</param>
         private static void InitBreed(BaseBreed breed)
         {
-            breed.Initialize(m_breedsData.Find(o => (BreedEnum) o.id == breed.Id));
+            breed.Initialize(m_breedsData.Single(breedData => (BreedEnum) breedData.id == breed.Id));
             BaseBreeds[(int) breed.Id] = breed;
         }
 

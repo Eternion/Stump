@@ -33,7 +33,6 @@ namespace Stump.Server.WorldServer.Global
             base.OnEnter(entity);
 
             ParentSpace.OnEnter(entity);
-            entity.Zone = this;
         }
 
         public override void OnLeave(Entity entity)

@@ -16,9 +16,23 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Messages;
+using Stump.Server.WorldServer.Entities;
+
 namespace Stump.Server.WorldServer.Handlers
 {
     public partial class ActionsHandler : WorldHandlerContainer
     {
+        public static void SendSequenceStartMessage(WorldClient client, Entity entity, SequenceTypeEnum sequenceType)
+        {
+            client.Send(new SequenceStartMessage((int) entity.Id, (int) sequenceType));
+        }
+
+        public static void SendSequenceEndMessage(WorldClient client, Entity entity, SequenceTypeEnum sequenceType)
+        {
+            // todo : check action id 
+            client.Send(new SequenceEndMessage(8 - (uint) sequenceType, (int) entity.Id, (int) sequenceType));
+        }
     }
 }

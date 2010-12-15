@@ -90,6 +90,7 @@
     <Compile Include="Handler\HandlerManager.cs" />
     <Compile Include="Handler\Handler.cs" />
     <Compile Include="Network\ClientVersion.cs" />
+    <Compile Include="Network\IPacketReceiver.cs" />
     <Compile Include="Network\MessageListener.cs" />
     <Compile Include="Network\QueueDispatcher.cs" />
     <Compile Include="Network\Worker.cs" />

@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Groups
     {
         #region  Properties
 
-        public Entity Entity
+        public LivingEntity Entity
         {
             get;
             set;
@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Groups
 
         #endregion
 
-        public GroupMember(Entity ent, Group groupOwner)
+        public GroupMember(LivingEntity ent, Group groupOwner)
         {
             Entity = ent;
             GroupOwner = groupOwner;

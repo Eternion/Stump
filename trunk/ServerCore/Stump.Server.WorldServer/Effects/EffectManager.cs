@@ -58,8 +58,7 @@ namespace Stump.Server.WorldServer.Effects
         [StageStep(Stages.Three, "Loaded Effects")]
         public static void LoadEffectsData()
         {
-            var templatesEx = new List<EffectTemplateEx>();
-            DataLoader.LoadData(ref templatesEx);
+            var templatesEx = DataLoader.LoadData<EffectTemplateEx>();
 
             foreach (EffectTemplateEx template in templatesEx)
             {

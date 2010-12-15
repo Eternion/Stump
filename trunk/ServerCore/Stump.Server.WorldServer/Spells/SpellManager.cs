@@ -41,15 +41,13 @@ namespace Stump.Server.WorldServer.Spells
         [StageStep(Stages.One, "Loaded Spells")]
         public static void LoadSpells()
         {
-            var spellslevels = new List<SpellLevelTemplate>();
-            DataLoader.LoadData(ref spellslevels);
+            var spellslevels = DataLoader.LoadData<SpellLevelTemplate>(false, true);
 
-            var spells = new List<SpellTemplate>();
-            DataLoader.LoadData(ref spells);
+            var spells = DataLoader.LoadData<SpellTemplate>(false, false);
 
-            foreach (SpellTemplate st in spells)
+            foreach (SpellTemplate spell in spells)
             {
-                InitSpell(st, spellslevels.FindAll(o => o.spellId == st.id));
+                InitSpell(spell, spellslevels.Where(spellLevel => spellLevel.spellId == spell.id));
             }
         }
 

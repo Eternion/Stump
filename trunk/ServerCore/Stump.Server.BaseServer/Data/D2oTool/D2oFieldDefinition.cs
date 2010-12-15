@@ -184,7 +184,7 @@ namespace Stump.Server.BaseServer.Data.D2oTool
                 return null;
 
             if (m_file.Classes.Keys.Contains(classid))
-                return m_file.Classes[classid].BuildClassObject(m_file.Classes[classid].ClassType, reader);
+                return m_file.Classes[classid].BuildClassObject(reader, m_file.Classes[classid].ClassType);
             else
                 return null;
         }

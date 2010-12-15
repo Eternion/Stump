@@ -106,6 +106,9 @@ namespace Stump.Server.WorldServer.Groups
             m_syncLock = new ReaderWriterLockSlim();
             GroupLevel = 0;
             Members = new List<GroupMember>();
+
+            MemberAdded += OnAddMember;
+            MemberRemoved += OnMemberRemoved;
         }
 
         #region Group Member Management
@@ -117,7 +120,7 @@ namespace Stump.Server.WorldServer.Groups
                 .FirstOrDefault();
         }
 
-        public Entity GetEntityById(int id)
+        public LivingEntity GetEntityById(int id)
         {
             return Members.Where(entry => entry.Entity.Id == id)
                 .Select(entry => entry.Entity)
@@ -130,9 +133,9 @@ namespace Stump.Server.WorldServer.Groups
                 .FirstOrDefault();
         }
 
-        public void AddMembers(Entity[] ents)
+        public void AddMembers(LivingEntity[] ents)
         {
-            foreach (Entity ent in ents)
+            foreach (LivingEntity ent in ents)
                 AddMember(ent);
         }
 
@@ -140,7 +143,7 @@ namespace Stump.Server.WorldServer.Groups
         ///   Add a new member to this group.
         /// </summary>
         /// <param name = "ent"></param>
-        public virtual GroupMember AddMember(Entity ent)
+        public virtual GroupMember AddMember(LivingEntity ent)
         {
             GroupMember newMember = null;
 
@@ -152,9 +155,11 @@ namespace Stump.Server.WorldServer.Groups
                 {
                     newMember = new GroupMember(ent, this);
                     Members.Add(newMember);
-                    OnAddMember(newMember);
+
                     if (m_leaderId < 0)
                         m_leaderId = (int) ent.Id;
+
+                    NotifyMemberAdded(newMember);
                 }
             }
             catch (Exception e)
@@ -188,9 +193,11 @@ namespace Stump.Server.WorldServer.Groups
                 {
                     // ToDo : Some logic (change leaders, update stuff like group level etc.
                     Members.Remove(member);
-                    OnMemberRemoved(member);
+                    
                     if (member.Entity.Id == m_leaderId)
                         m_leaderId = (int) Members.First().Entity.Id;
+
+                    NotifyMemberRemoved(member);
                 }
                 finally
                 {
@@ -205,12 +212,29 @@ namespace Stump.Server.WorldServer.Groups
 
         #region Group Events
 
-        public virtual void OnAddMember(GroupMember member)
+        public event Action<Group, GroupMember> MemberAdded;
+
+        public void NotifyMemberAdded(GroupMember groupMember)
+        {
+            Action<Group, GroupMember> handler = MemberAdded;
+            if (handler != null) handler(this, groupMember);
+        }
+
+        public event Action<Group, GroupMember> MemberRemoved;
+
+        public void NotifyMemberRemoved(GroupMember groupMember)
+        {
+            Action<Group, GroupMember> handler = MemberRemoved;
+            if (handler != null) handler(this, groupMember);
+        }
+
+
+        public virtual void OnAddMember(Group group, GroupMember member)
         {
             GroupLevel += member.Entity.Level;
         }
 
-        public virtual void OnMemberRemoved(GroupMember member)
+        public virtual void OnMemberRemoved(Group group, GroupMember member)
         {
             GroupLevel -= member.Entity.Level;
 
@@ -224,7 +248,7 @@ namespace Stump.Server.WorldServer.Groups
             try
             {
                 // send to everyone group has been destroyed.
-                Parallel.ForEach(Members, member => member.Entity.GroupMember = null);
+                Parallel.ForEach(Members, RemoveMember);
 
                 Members.Clear();
                 // Dispose this group.

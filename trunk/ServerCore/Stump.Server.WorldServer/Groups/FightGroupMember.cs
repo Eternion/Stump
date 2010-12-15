@@ -16,6 +16,8 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using Stump.DofusProtocol.Classes;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global.Maps;
 
@@ -23,7 +25,7 @@ namespace Stump.Server.WorldServer.Groups
 {
     public sealed class FightGroupMember : GroupMember
     {
-        public FightGroupMember(Entity ent, FightGroup groupOwner)
+        public FightGroupMember(LivingEntity ent, FightGroup groupOwner)
             : base(ent, groupOwner)
         {
             IsReady = false;
@@ -98,7 +100,7 @@ namespace Stump.Server.WorldServer.Groups
 
         public bool IsInTurn
         {
-            get { return Equals((GroupOwner as FightGroup).Fight.CurrentFighter); }
+            get { return Equals(((FightGroup) GroupOwner).Fight.FighterPlaying); }
         }
 
         public void ResetUsedProperties()
@@ -116,6 +118,25 @@ namespace Stump.Server.WorldServer.Groups
             DamageTaken += damage;
 
             return damage;
+        }
+
+        public GameFightMinimalStats GetFightMinimalStats()
+        {
+            return new GameFightMinimalStats(
+                (uint)CurrentHealth,
+                (uint)Entity.MaxHealth,
+                TotalAp,
+                TotalMp,
+                Entity.Stats["SummonLimit"].Total,
+                Entity.Stats["NeutralResistPercent"].Total,
+                Entity.Stats["EarthResistPercent"].Total,
+                Entity.Stats["WaterResistPercent"].Total,
+                Entity.Stats["AirResistPercent"].Total,
+                Entity.Stats["FireResistPercent"].Total,
+                (uint)Entity.Stats["DodgeAPProbability"].Total,
+                (uint)Entity.Stats["DodgeMPProbability"].Total,
+                0, // tackleblock
+                (int)GameActionFightInvisibilityStateEnum.VISIBLE);
         }
     }
 }

@@ -17,8 +17,11 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using NLog;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.DofusProtocol.D2oClasses;
@@ -49,133 +52,98 @@ namespace Stump.Server.BaseServer.Data
             get { return m_i18nFile ?? (m_i18nFile = new I18nFile(DataPath + I18NDir + I18NFileName)); }
         }
 
-        public static void LoadData<T>(ref List<T> items) where T : class
+        /// <summary>
+        ///   Load a D2O file with a class constraint
+        /// </summary>
+        /// <typeparam name = "T">Constraint class</typeparam>
+        /// <returns></returns>
+        public static IEnumerable<T> LoadData<T>() where T : class
         {
-            object[] attributes = typeof (T).GetType().GetCustomAttributes(typeof (AttributeAssociatedFile), false);
-
-            if (attributes.Length <= 0)
-                throw new Exception(string.Format("This file is not associated to the class {0}", typeof (T)));
-
-            string name = attributes.Cast<AttributeAssociatedFile>().First().FilesName.First();
-            var datafile = new D2oFile(DataPath + D2ODir + name + ".d2o");
-
-            items.AddRange(from data in datafile.ReadObjects<T>(true)
-                           where data.Value != null
-                           select data.Value);
+            return LoadData<T>(false);
         }
 
-        public static void LoadData<T, TC>(ref List<T> items1, ref List<TC> items2) where T : class
+        /// <summary>
+        ///   Load a D2O file with a class constraint
+        /// </summary>
+        /// <typeparam name = "T">Constraint class</typeparam>
+        /// <returns></returns>
+        public static IEnumerable<T> LoadData<T>(bool ignoreException) where T : class
         {
-            object[] attributes = typeof (T).GetType().GetCustomAttributes(typeof (AttributeAssociatedFile), false);
+            object[] attributes = typeof (T).GetCustomAttributes(typeof (AttributeAssociatedFile), false);
 
             if (attributes.Length <= 0)
-                throw new Exception(string.Format("This file is not associated to the class {0}", typeof (T)));
+                throw new Exception(string.Format("This class '{0}' hasn't any associated d2o file", typeof (T)));
 
             string name = attributes.Cast<AttributeAssociatedFile>().First().FilesName.First();
             var datafile = new D2oFile(DataPath + D2ODir + name + ".d2o");
 
             Dictionary<int, D2oClassDefinition> classes = datafile.GetClasses();
 
-            foreach (var @class in classes)
-            {
-                if (@class.Value.ClassType.IsSubclassOf(typeof (T)))
-                {
-                    var data = datafile.ReadObject<T>(@class.Key);
-                    items1.Add(data);
-                }
-                else if (@class.Value.ClassType.IsSubclassOf(typeof (TC)))
-                {
-                    var data = datafile.ReadObject<TC>(@class.Key);
-                    items2.Add(data);
-                }
-            }
-        }
-
-        public static void LoadData<T>(ref List<T> items, bool ignoreException) where T : class
-        {
-            if (!ignoreException)
-            {
-                LoadData(ref items);
-                return;
-            }
-
-            object[] attributes = typeof (T).GetType().GetCustomAttributes(typeof (AttributeAssociatedFile), false);
-
-            if (attributes.Length <= 0)
-                throw new Exception(string.Format("This file is not associated to the class {0}", typeof (T)));
-
-            string name = attributes.Cast<AttributeAssociatedFile>().First().FilesName.First();
-            var datafile = new D2oFile(DataPath + D2ODir + name + ".d2o");
-
-            Dictionary<int, D2oClassDefinition> classes = datafile.GetClasses();
-
-
-            foreach (var @class in classes)
+            var copy = new ConcurrentStack<T>();
+            Parallel.ForEach(classes, @class =>
             {
                 try
                 {
-                    if (@class.Value.ClassType.IsSubclassOf(typeof (T)))
+                    if (@class.Value.ClassType == typeof (T))
                     {
                         var data = datafile.ReadObject<T>(@class.Key);
 
                         if (data != null)
-                            items.Add(data);
+                        {
+                            copy.Push(data);
+                        }
                     }
                 }
                 catch
                 {
                     logger.Warn("Error thrown when parsing {0} <id:{1}>", typeof (T).Name, @class.Key);
                 }
-            }
+            });
+
+            return copy;
         }
 
-        public static void LoadData<T, TC>(ref List<T> items1, ref List<TC> items2, bool ignoreException)
-            where T : class
+        /// <summary>
+        ///   Load a D2O file
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<object> LoadData(string fileName)
         {
-            if (!ignoreException)
-            {
-                LoadData(ref items1, ref items2);
-                return;
-            }
+            return LoadData(fileName, false);
+        }
 
-            object[] attributes = typeof (T).GetType().GetCustomAttributes(typeof (AttributeAssociatedFile), false);
-
-            if (attributes.Length <= 0)
-                throw new Exception(string.Format("This file is not associated to the class {0}", typeof (T)));
-
-            string name = attributes.Cast<AttributeAssociatedFile>().First().FilesName.First();
-            var datafile = new D2oFile(DataPath + D2ODir + name + ".d2o");
+        /// <summary>
+        ///   Load a D2O file
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<object> LoadData(string fileName, bool ignoreException)
+        {
+            var datafile = new D2oFile(DataPath + D2ODir + fileName + ".d2o");
 
             Dictionary<int, D2oClassDefinition> classes = datafile.GetClasses();
 
-            foreach (var @class in classes)
+            var copy = new ConcurrentStack<object>();
+            Parallel.ForEach(classes, @class =>
             {
                 try
                 {
-                    if (@class.Value.ClassType.IsSubclassOf(typeof (T)))
-                    {
-                        var data = datafile.ReadObject<T>(@class.Key);
-                        items1.Add(data);
-                    }
-                    else if (@class.Value.ClassType.IsSubclassOf(typeof (TC)))
-                    {
-                        var data = datafile.ReadObject<TC>(@class.Key);
-                        items2.Add(data);
-                    }
+                    object data = datafile.ReadObject(@class.Key);
+
+                    if (data != null)
+                        copy.Push(data);
                 }
                 catch
                 {
-                    logger.Warn("Error thrown when parsing {0} or {1} <id:{2}>", typeof (T).Name, typeof (TC).Name,
-                                @class.Key);
+                    logger.Warn("Error thrown when parsing (?) <id:{0}>", @class.Key);
                 }
-            }
+            });
+
+            return copy;
         }
 
         public static T[] LoadDataById<T>(Func<T, int> idSelector) where T : class
         {
-            var items = new List<T>();
-
-            LoadData(ref items);
+            IEnumerable<T> items = LoadData<T>(); 
 
             var result = new T[items.Max(idSelector) + 1];
 
@@ -190,11 +158,15 @@ namespace Stump.Server.BaseServer.Data
         public static Dictionary<TKey, TValue> LoadDataByIdAsDictionary<TKey, TValue>(Func<TValue, TKey> idSelector)
             where TValue : class
         {
+            object[] attributes = typeof (TValue).GetCustomAttributes(typeof (AttributeAssociatedFile), false);
+
+            if (attributes.Length <= 0)
+                throw new Exception(string.Format("This class '{0}' hasn't any associated d2o file", typeof (TValue)));
+
+            string name = attributes.Cast<AttributeAssociatedFile>().First().FilesName.First();
             var items = new List<TValue>();
 
-            LoadData(ref items);
-
-            return items.ToDictionary(idSelector);
+            return LoadData(name).ToDictionary(entry => idSelector((entry as TValue)), entry => entry as TValue);
         }
 
         public static string GetI18NText(int id)

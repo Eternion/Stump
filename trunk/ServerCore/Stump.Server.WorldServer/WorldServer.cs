@@ -142,7 +142,6 @@ namespace Stump.Server.WorldServer
 
             logger.Info("Starting Authenfication Server Communication on " + IpcAccessor.IpcAuthPort + "/" +
                         IpcAccessor.IpcWorldPort + "...");
-
             IpcAccessor.Instance.Start();
         }
 

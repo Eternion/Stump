@@ -102,7 +102,6 @@ namespace Stump.Server.WorldServer.Global
             base.OnEnter(entity);
 
             ParentSpace.OnEnter(entity);
-            entity.Region = this;
 
             if (!m_running)
             {

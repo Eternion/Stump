@@ -33,12 +33,12 @@ namespace Stump.Server.WorldServer.Spells
 
         #endregion
 
-        public SpellCollection(Entity owner)
+        public SpellCollection(LivingEntity owner)
             : this(owner, true)
         {
         }
 
-        protected SpellCollection(Entity owner, bool initDictionary)
+        protected SpellCollection(LivingEntity owner, bool initDictionary)
         {
             if (initDictionary)
                 m_spellsbyId = new Dictionary<uint, Spell>(60);

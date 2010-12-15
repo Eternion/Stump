@@ -134,7 +134,14 @@ namespace Stump.Database
         }
 
         [Property("CellId")]
-        public int CellId
+        public ushort CellId
+        {
+            get;
+            set;
+        }
+
+        [Property("Direction")]
+        public DirectionsEnum Direction
         {
             get;
             set;

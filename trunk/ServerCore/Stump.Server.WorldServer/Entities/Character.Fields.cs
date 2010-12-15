@@ -28,15 +28,6 @@ namespace Stump.Server.WorldServer.Entities
 {
     public partial class Character
     {
-        #region Fields
-
-        /// <summary>
-        ///   Record corresponding this character.
-        /// </summary>
-        internal CharacterRecord m_record;
-
-        #endregion
-
         #region Properties
 
         /// <summary>
@@ -94,8 +85,8 @@ namespace Stump.Server.WorldServer.Entities
         /// </summary>
         public CharacterRecord Record
         {
-            get { return m_record; }
-            private set { m_record = value; }
+            get;
+            private set;
         }
 
         /// <summary>

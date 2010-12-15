@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Items
         private readonly object m_sync = new object();
         private Dictionary<long, Item> m_items = new Dictionary<long, Item>();
 
-        public Inventory(Entity owner)
+        public Inventory(LivingEntity owner)
         {
             Owner = owner;
         }
@@ -88,7 +88,7 @@ namespace Stump.Server.WorldServer.Items
 
         #region IOwned Members
 
-        public Entity Owner
+        public LivingEntity Owner
         {
             get;
             set;

@@ -9,64 +9,68 @@
   </SettingsComponent>
   <RecentFiles>
     <RecentFiles>
-      <File id="4B1F615A-F1E0-4132-8E4B-542B7A453FE9/d:Handler/f:HandlerManager.cs" caret="925" fromTop="0" />
-      <File id="4B1F615A-F1E0-4132-8E4B-542B7A453FE9/d:Handler/f:Handler.cs" caret="1271" fromTop="20" />
-      <File id="4B1F615A-F1E0-4132-8E4B-542B7A453FE9/d:Network/f:DerivedConnexion.cs" caret="1178" fromTop="0" />
-      <File id="4B1F615A-F1E0-4132-8E4B-542B7A453FE9/d:Network/d:Server/f:ServerConnexion.cs" caret="1168" fromTop="8" />
-      <File id="4B1F615A-F1E0-4132-8E4B-542B7A453FE9/d:Network/d:Client/f:Client.cs" caret="1163" fromTop="0" />
-      <File id="4B1F615A-F1E0-4132-8E4B-542B7A453FE9/d:Network/d:Client/f:ClientListener.cs" caret="1174" fromTop="0" />
-      <File id="4B1F615A-F1E0-4132-8E4B-542B7A453FE9/d:Core/f:Proxy.cs" caret="3051" fromTop="36" />
-      <File id="10884165-D492-4895-B3EF-32429F7A7F55/d:Types/d:game/d:startup/f:StartupActionAddObject.cs" caret="1113" fromTop="0" />
-      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:Utils/f:StringUtils.cs" caret="1875" fromTop="22" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Achievement/f:AchievementHandler.cs" caret="1053" fromTop="7" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Basic/f:BasicHandler.cs" caret="1225" fromTop="11" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Character/f:CharacterCreationHandler.cs" caret="5730" fromTop="13" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Character/f:CharacterDeletionHandler.cs" caret="3068" fromTop="13" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Initialization/f:InitializationHandler.cs" caret="1358" fromTop="16" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Character/f:CharacterChoiceHandler.cs" caret="3509" fromTop="35" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Character/f:CharacterStatsHandler.cs" caret="7595" fromTop="0" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/d:RolePlay/f:ContextRoleplayStatsHandler.cs" caret="2722" fromTop="11" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/f:ContextHandler.cs" caret="1425" fromTop="32" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/f:ContextDisplayHandler.cs" caret="0" fromTop="0" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Character/f:CharacterHandler.cs" caret="1059" fromTop="10" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Startup/f:StartupHandler.cs" caret="1342" fromTop="29" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Chat/f:ChatHandler.cs" caret="2202" fromTop="24" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Approach/f:ApproachHandler.cs" caret="1559" fromTop="24" />
-      <File id="DBF77B90-0AAF-4EEC-B997-478E88CEEDB4/d:Handlers/d:Connection/f:ConnectionHandler.cs" caret="8935" fromTop="43" />
-      <File id="DBF77B90-0AAF-4EEC-B997-478E88CEEDB4/d:Handlers/d:Connection/f:ConnectionActionsHandler.cs" caret="1686" fromTop="26" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Dialog/f:DialogHandler.cs" caret="1167" fromTop="25" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Entities/f:Character.cs" caret="2524" fromTop="36" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/f:ServerBase.cs" caret="6179" fromTop="24" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:IPC/f:IpcAccessor.cs" caret="4155" fromTop="0" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/f:WorldServer.cs" caret="4353" fromTop="27" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/f:ContextFightHandler.cs" caret="1388" fromTop="22" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/d:RolePlay/f:ContextRoleplayStatsHandler.cs" caret="1210" fromTop="16" />
+      <File id="DBF77B90-0AAF-4EEC-B997-478E88CEEDB4/d:Handlers/d:Connection/f:ConnectionHandler.cs" caret="1249" fromTop="13" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/f:ContextHandler.cs" caret="1403" fromTop="24" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Handler/f:HandlerManager.cs" caret="2445" fromTop="15" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/f:Settings.cs" caret="1190" fromTop="24" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Data/f:MonsterLoader.cs" caret="1624" fromTop="38" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/f:SpellLevel.cs" caret="976" fromTop="14" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Breeds/f:BaseBreed.cs" caret="2593" fromTop="0" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/d:D2oTool/f:D2oFieldDefinition.cs" caret="2345" fromTop="26" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/d:D2oTool/f:D2oClassDefinition.cs" caret="2135" fromTop="0" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/d:D2oTool/f:D2oFile.cs" caret="6692" fromTop="139" />
+      <File id="4B1F615A-F1E0-4132-8E4B-542B7A453FE9/d:Core/f:Proxy.cs" caret="1317" fromTop="24" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Breeds/f:BreedManager.cs" caret="1896" fromTop="24" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Effects/f:EffectManager.cs" caret="3407" fromTop="30" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/f:ConsoleBase.cs" caret="3483" fromTop="38" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Items/f:ItemManager.cs" caret="4107" fromTop="9" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Entities/f:Monster.cs" caret="2395" fromTop="5" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Data/f:MapLoader.cs" caret="1658" fromTop="22" />
+      <File id="53C844EC-189B-4803-8128-48ED9964ADA8/f:Program.cs" caret="460" fromTop="17" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Initializing/f:StageManager.cs" caret="3657" fromTop="17" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/f:World.Init.cs" caret="2386" fromTop="18" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Spells/f:SpellManager.cs" caret="1842" fromTop="14" />
+      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="732" fromTop="27" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Data/f:ItemLoader.cs" caret="312" fromTop="11" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="2534" fromTop="0" />
     </RecentFiles>
     <RecentEdits>
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Character/f:CharacterStatsHandler.cs" caret="7595" fromTop="20" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Character/f:CharacterStatsHandler.cs" caret="7595" fromTop="0" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Character/f:CharacterStatsHandler.cs" caret="7595" fromTop="37" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Character/f:CharacterStatsHandler.cs" caret="7595" fromTop="37" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Character/f:CharacterStatsHandler.cs" caret="7595" fromTop="0" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Character/f:CharacterStatsHandler.cs" caret="7595" fromTop="34" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Character/f:CharacterStatsHandler.cs" caret="7595" fromTop="13" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/d:RolePlay/f:ContextRoleplayStatsHandler.cs" caret="2722" fromTop="22" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/d:RolePlay/f:ContextRoleplayStatsHandler.cs" caret="2722" fromTop="6" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/d:RolePlay/f:ContextRoleplayStatsHandler.cs" caret="2722" fromTop="16" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/f:ContextHandler.cs" caret="1096" fromTop="22" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/f:ContextHandler.cs" caret="1425" fromTop="32" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Character/f:CharacterHandler.cs" caret="1059" fromTop="20" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/d:RolePlay/f:ContextRoleplayStatsHandler.cs" caret="2722" fromTop="21" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Character/f:CharacterHandler.cs" caret="1059" fromTop="20" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Dialog/f:DialogHandler.cs" caret="1590" fromTop="22" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Dialog/f:DialogHandler.cs" caret="1590" fromTop="35" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Dialog/f:DialogHandler.cs" caret="1590" fromTop="19" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Dialog/f:DialogHandler.cs" caret="1590" fromTop="33" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Character/f:CharacterHandler.cs" caret="1059" fromTop="10" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Startup/f:StartupHandler.cs" caret="1342" fromTop="29" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Chat/f:ChatHandler.cs" caret="2202" fromTop="47" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Approach/f:ApproachHandler.cs" caret="1559" fromTop="22" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Approach/f:ApproachHandler.cs" caret="1559" fromTop="35" />
-      <File id="DBF77B90-0AAF-4EEC-B997-478E88CEEDB4/d:Handlers/d:Connection/f:ConnectionHandler.cs" caret="1317" fromTop="31" />
-      <File id="DBF77B90-0AAF-4EEC-B997-478E88CEEDB4/d:Handlers/d:Connection/f:ConnectionActionsHandler.cs" caret="2830" fromTop="9" />
-      <File id="DBF77B90-0AAF-4EEC-B997-478E88CEEDB4/d:Handlers/d:Connection/f:ConnectionActionsHandler.cs" caret="2830" fromTop="57" />
-      <File id="DBF77B90-0AAF-4EEC-B997-478E88CEEDB4/d:Handlers/d:Connection/f:ConnectionHandler.cs" caret="8935" fromTop="43" />
-      <File id="DBF77B90-0AAF-4EEC-B997-478E88CEEDB4/d:Handlers/d:Connection/f:ConnectionActionsHandler.cs" caret="2830" fromTop="44" />
-      <File id="DBF77B90-0AAF-4EEC-B997-478E88CEEDB4/d:Handlers/d:Connection/f:ConnectionActionsHandler.cs" caret="2830" fromTop="26" />
+      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="648" fromTop="40" />
+      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="613" fromTop="35" />
+      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="1106" fromTop="34" />
+      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="1433" fromTop="33" />
+      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="1334" fromTop="34" />
+      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="277" fromTop="12" />
+      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="245" fromTop="11" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/f:World.Init.cs" caret="5074" fromTop="26" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/f:World.Init.cs" caret="5074" fromTop="144" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/f:World.Init.cs" caret="1994" fromTop="19" />
+      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="118" fromTop="6" />
+      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="614" fromTop="9" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/f:World.Init.cs" caret="2386" fromTop="25" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/f:World.Init.cs" caret="2054" fromTop="3" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="6333" fromTop="31" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="6333" fromTop="27" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="6333" fromTop="24" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="6333" fromTop="187" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="5128" fromTop="18" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="5128" fromTop="30" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="5128" fromTop="23" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="5128" fromTop="20" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Spells/f:SpellManager.cs" caret="1842" fromTop="14" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="2262" fromTop="0" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="3772" fromTop="43" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="3090" fromTop="18" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="3520" fromTop="7" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="4487" fromTop="39" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="4746" fromTop="47" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="2534" fromTop="0" />
     </RecentEdits>
   </RecentFiles>
   <NAntValidationSettings>
@@ -82,70 +86,70 @@
   </UnitTestRunnerNUnit>
   <CompletionStatisticsManager>
     <ItemStatistics item="Default">
-      <Item value="public" priority="77" />
-      <Item value="ctor" priority="8" />
-      <Item value="abstract" priority="4" />
-      <Item value="void" priority="22" />
-      <Item value="string" priority="61" />
+      <Item value="public" priority="115" />
+      <Item value="ctor" priority="11" />
+      <Item value="abstract" priority="6" />
+      <Item value="void" priority="30" />
+      <Item value="string" priority="68" />
       <Item value="propg" priority="0" />
-      <Item value="prop" priority="10" />
-      <Item value="bool" priority="12" />
-      <Item value="object" priority="2" />
-      <Item value="T`0" priority="11" />
-      <Item value="IConvertible`0" priority="1" />
+      <Item value="prop" priority="12" />
+      <Item value="bool" priority="30" />
+      <Item value="object" priority="5" />
+      <Item value="T`0" priority="16" />
+      <Item value="IConvertible`0" priority="2" />
       <Item value="ICustomFormatter`0" priority="0" />
-      <Item value="default" priority="6" />
-      <Item value="return" priority="65" />
-      <Item value="if" priority="65" />
-      <Item value="typeof" priority="18" />
-      <Item value="is" priority="9" />
+      <Item value="default" priority="7" />
+      <Item value="return" priority="108" />
+      <Item value="if" priority="94" />
+      <Item value="typeof" priority="22" />
+      <Item value="is" priority="17" />
       <Item value="Convert`0" priority="0" />
       <Item value="str" priority="3" />
-      <Item value="else" priority="18" />
+      <Item value="else" priority="23" />
       <Item value="Converter" priority="5" />
       <Item value="Value" priority="13" />
       <Item value="TypeConverter`0" priority="0" />
-      <Item value="throw" priority="8" />
-      <Item value="new" priority="65" />
+      <Item value="throw" priority="12" />
+      <Item value="new" priority="126" />
       <Item value="Exception" priority="5" />
       <Item value="DefaultValue" priority="6" />
       <Item value="converter" priority="0" />
-      <Item value="override" priority="8" />
+      <Item value="override" priority="12" />
       <Item value="SetStringValue`0" priority="0" />
-      <Item value="value" priority="6" />
-      <Item value="private" priority="22" />
-      <Item value="name" priority="1" />
-      <Item value="Name" priority="6" />
+      <Item value="value" priority="10" />
+      <Item value="private" priority="24" />
+      <Item value="name" priority="2" />
+      <Item value="Name" priority="8" />
       <Item value="ShortName" priority="4" />
       <Item value="StringComparison`0" priority="1" />
       <Item value="userRole" priority="0" />
-      <Item value="internal" priority="3" />
+      <Item value="internal" priority="5" />
       <Item value="ICommandParameter" priority="3" />
-      <Item value="while" priority="3" />
+      <Item value="while" priority="4" />
       <Item value="Args" priority="0" />
       <Item value="word" priority="6" />
-      <Item value="var" priority="12" />
+      <Item value="var" priority="16" />
       <Item value="Regex`0" priority="0" />
       <Item value="matchIsNamed" priority="2" />
       <Item value="parameters" priority="2" />
-      <Item value="using" priority="9" />
-      <Item value="System" priority="4" />
-      <Item value="Linq" priority="4" />
-      <Item value="entry" priority="26" />
-      <Item value="static" priority="29" />
-      <Item value="true" priority="16" />
+      <Item value="using" priority="16" />
+      <Item value="System" priority="10" />
+      <Item value="Linq" priority="8" />
+      <Item value="entry" priority="41" />
+      <Item value="static" priority="31" />
+      <Item value="true" priority="21" />
       <Item value="CommandBase`0" priority="8" />
-      <Item value="foreach" priority="8" />
+      <Item value="foreach" priority="10" />
       <Item value="commandParameters" priority="3" />
       <Item value="TriggerBase`0" priority="6" />
-      <Item value="virtual" priority="2" />
+      <Item value="virtual" priority="6" />
       <Item value="trigger" priority="27" />
-      <Item value="false" priority="17" />
+      <Item value="false" priority="29" />
       <Item value="inQuote" priority="0" />
       <Item value="m_str" priority="5" />
       <Item value="m_pos" priority="1" />
       <Item value="CommandsParameters" priority="3" />
-      <Item value="List" priority="1" />
+      <Item value="List" priority="15" />
       <Item value="List&lt;ICommandParameter&lt;object&gt;&gt;" priority="0" />
       <Item value="matchingParams" priority="3" />
       <Item value="forr" priority="0" />
@@ -154,31 +158,31 @@
       <Item value="Reply`0" priority="2" />
       <Item value="undefinedParameter" priority="3" />
       <Item value="readonly" priority="5" />
-      <Item value="Type`0" priority="8" />
-      <Item value="as" priority="13" />
+      <Item value="Type`0" priority="10" />
+      <Item value="as" priority="19" />
       <Item value="SubCommand`0" priority="4" />
-      <Item value="protected" priority="4" />
+      <Item value="protected" priority="7" />
       <Item value="List&lt;SubCommand&gt;" priority="0" />
       <Item value="Dictionary&lt;string,CommandBase&gt;" priority="0" />
       <Item value="callAsm" priority="1" />
       <Item value="GetTypes`0" priority="0" />
-      <Item value="null" priority="9" />
+      <Item value="null" priority="23" />
       <Item value="asm" priority="1" />
       <Item value="m_commandsByAlias" priority="5" />
       <Item value="thr" priority="2" />
       <Item value="ArgumentException`0" priority="0" />
       <Item value="subcmd" priority="3" />
-      <Item value="Action`0" priority="1" />
-      <Item value="message" priority="15" />
+      <Item value="Action`0" priority="4" />
+      <Item value="message" priority="54" />
       <Item value="Parameters" priority="4" />
       <Item value="CommandParameter&lt;object&gt;" priority="1" />
       <Item value="CommandParameter" priority="2" />
-      <Item value="IEnumerable" priority="1" />
+      <Item value="IEnumerable" priority="5" />
       <Item value="ICommandParameter`0" priority="5" />
-      <Item value="this" priority="24" />
+      <Item value="this" priority="31" />
       <Item value="CommandsManager`0" priority="1" />
       <Item value="CommandManager" priority="3" />
-      <Item value="Console`0" priority="18" />
+      <Item value="Console`0" priority="20" />
       <Item value="text" priority="0" />
       <Item value="AuthCommand`0" priority="0" />
       <Item value="AuthConsoleTrigger`0" priority="1" />
@@ -187,9 +191,9 @@
       <Item value="Usage" priority="3" />
       <Item value="RequiredRole" priority="1" />
       <Item value="Administrator" priority="0" />
-      <Item value="ListAddFailureEnum`0" priority="1" />
+      <Item value="ListAddFailureEnum`0" priority="2" />
       <Item value="CommandParameter&lt;&gt;" priority="4" />
-      <Item value="int" priority="22" />
+      <Item value="int" priority="43" />
       <Item value="AuthSubCommand`0" priority="1" />
       <Item value="StringStream" priority="0" />
       <Item value="ThreadStaticAttribute`0" priority="0" />
@@ -218,16 +222,16 @@
       <Item value="commandStr" priority="0" />
       <Item value="ConsoleInterface" priority="1" />
       <Item value="AuthConsole`0" priority="0" />
-      <Item value="logger" priority="8" />
+      <Item value="logger" priority="10" />
       <Item value="Running" priority="0" />
-      <Item value="for" priority="0" />
+      <Item value="for" priority="1" />
       <Item value="startIndex" priority="1" />
       <Item value="containerChar" priority="1" />
       <Item value="inContainer" priority="2" />
-      <Item value="index" priority="4" />
+      <Item value="index" priority="5" />
       <Item value="searchedChar" priority="2" />
       <Item value="CustomIndexOf`0" priority="0" />
-      <Item value="ArgumentException" priority="2" />
+      <Item value="ArgumentException" priority="3" />
       <Item value="NewsStyleUriParser`0" priority="1" />
       <Item value="Array`0" priority="1" />
       <Item value="ICloneable`0" priority="0" />
@@ -237,7 +241,7 @@
       <Item value="DarkCyan" priority="0" />
       <Item value="color" priority="0" />
       <Item value="MessageListener" priority="4" />
-      <Item value="class" priority="2" />
+      <Item value="class" priority="4" />
       <Item value="None" priority="0" />
       <Item value="ParentCommand" priority="0" />
       <Item value="ShutdownCommand`0" priority="0" />
@@ -249,32 +253,32 @@
       <Item value="DisplayFullSubCommandDescription`0" priority="1" />
       <Item value="DisplaySubCommandDescription`0" priority="1" />
       <Item value="DisplayCommandDescription`0" priority="0" />
-      <Item value="EntryPointNotFoundException`0" priority="6" />
-      <Item value="Dictionary" priority="0" />
-      <Item value="client" priority="26" />
+      <Item value="EntryPointNotFoundException`0" priority="7" />
+      <Item value="Dictionary" priority="1" />
+      <Item value="client" priority="53" />
       <Item value="Key" priority="2" />
-      <Item value="Stump" priority="4" />
+      <Item value="Stump" priority="6" />
       <Item value="BaseCore.Framework" priority="1" />
       <Item value="Utils" priority="1" />
-      <Item value="DofusProtocol" priority="2" />
+      <Item value="DofusProtocol" priority="5" />
       <Item value="Messages" priority="1" />
       <Item value="ProtocolRequired`0" priority="1" />
       <Item value="ClientVersion`0" priority="3" />
-      <Item value="where" priority="5" />
+      <Item value="where" priority="7" />
       <Item value="Message`0" priority="2" />
       <Item value="params" priority="0" />
-      <Item value="Activator`0" priority="1" />
-      <Item value="type" priority="6" />
+      <Item value="Activator`0" priority="2" />
+      <Item value="type" priority="9" />
       <Item value="messageArgs" priority="0" />
       <Item value="Send`1" priority="2" />
-      <Item value="obj" priority="0" />
+      <Item value="obj" priority="5" />
       <Item value="NullReferenceException" priority="0" />
       <Item value="BaseCore" priority="0" />
       <Item value="Framework" priority="0" />
       <Item value="Xml" priority="0" />
       <Item value="XmlUtils" priority="0" />
       <Item value="XMLConfigFile`0" priority="0" />
-      <Item value="const" priority="1" />
+      <Item value="const" priority="2" />
       <Item value="ConfigFile" priority="0" />
       <Item value="XMLConfigFile" priority="0" />
       <Item value="m_xr" priority="5" />
@@ -284,26 +288,26 @@
       <Item value="DataGridViewElementStates`0" priority="0" />
       <Item value="node" priority="5" />
       <Item value="Application`0" priority="0" />
-      <Item value="Parallel`0" priority="0" />
+      <Item value="Parallel`0" priority="1" />
       <Item value="Predicate" priority="7" />
       <Item value="BaseClient`0" priority="7" />
-      <Item value="delegate" priority="2" />
+      <Item value="delegate" priority="3" />
       <Item value="AuthClient`0" priority="9" />
       <Item value="EventHandler`0" priority="0" />
       <Item value="Handler`0" priority="1" />
       <Item value="predicate" priority="1" />
       <Item value="Tuple&lt;Handler,Action&lt;BaseClient,Message&gt;&gt;" priority="0" />
-      <Item value="handler" priority="1" />
+      <Item value="handler" priority="2" />
       <Item value="IP" priority="0" />
       <Item value="Account" priority="0" />
       <Item value="GetType`0" priority="0" />
-      <Item value="ToString`0" priority="1" />
+      <Item value="ToString`0" priority="2" />
       <Item value="HandlerAuth" priority="0" />
       <Item value="IdentificationFailedMessage`0" priority="1" />
       <Item value="StringUtils`0" priority="1" />
       <Item value="account" priority="2" />
       <Item value="AccountManager`0" priority="0" />
-      <Item value="ServersListMessage`0" priority="0" />
+      <Item value="ServersListMessage`0" priority="4" />
       <Item value="List&lt;GameServerInformations&gt;" priority="0" />
       <Item value="Enum`0" priority="8" />
       <Item value="AssemblyFileVersionAttribute`0" priority="1" />
@@ -324,25 +328,25 @@
       <Item value="DummyCommandException`0" priority="0" />
       <Item value="RoleEnum`0" priority="7" />
       <Item value="Converter&lt;string,RoleEnum&gt;" priority="0" />
-      <Item value="byte" priority="1" />
+      <Item value="byte" priority="5" />
       <Item value="ParametersConverter`0" priority="0" />
       <Item value="Role`0" priority="0" />
       <Item value="accname" priority="0" />
       <Item value="continue" priority="0" />
       <Item value="files" priority="0" />
       <Item value="m_version" priority="0" />
-      <Item value="File`0" priority="0" />
+      <Item value="File`0" priority="1" />
       <Item value="SelectAllSqlUpdateFileOf" priority="0" />
       <Item value="currentVersion" priority="0" />
       <Item value="revisionfile" priority="0" />
       <Item value="Last`1" priority="0" />
       <Item value="wasAlreadyConnected" priority="0" />
       <Item value="HandlerAuth`0" priority="0" />
-      <Item value="handle" priority="2" />
-      <Item value="send" priority="6" />
-      <Item value="reason" priority="0" />
+      <Item value="handle" priority="34" />
+      <Item value="send" priority="77" />
+      <Item value="reason" priority="2" />
       <Item value="AIServer" priority="0" />
-      <Item value="WorldServer`0" priority="6" />
+      <Item value="WorldServer`0" priority="7" />
       <Item value="HelloGameMessage`0" priority="0" />
       <Item value="Extensions" priority="0" />
       <Item value="IpcRemoteClient`0" priority="0" />
@@ -350,7 +354,7 @@
       <Item value="Instance" priority="2" />
       <Item value="SingletonAllocator`0" priority="0" />
       <Item value="Singleton" priority="0" />
-      <Item value="WorldClient`0" priority="3" />
+      <Item value="WorldClient`0" priority="5" />
       <Item value="WorldConsole`0" priority="0" />
       <Item value="element" priority="2" />
       <Item value="FormatterServices`0" priority="0" />
@@ -370,7 +374,7 @@
       <Item value="IdGenerator`0" priority="0" />
       <Item value="WorldServerInformation" priority="0" />
       <Item value="ServerName" priority="0" />
-      <Item value="ushort" priority="0" />
+      <Item value="ushort" priority="3" />
       <Item value="IpcServer`0" priority="2" />
       <Item value="IpcOperations`0" priority="0" />
       <Item value="WorldServerManager`0" priority="5" />
@@ -378,8 +382,8 @@
       <Item value="IpcAccessor`0" priority="5" />
       <Item value="IsRegister`0" priority="0" />
       <Item value="DatabaseRevision" priority="0" />
-      <Item value="uint" priority="2" />
-      <Item value="Directory`0" priority="0" />
+      <Item value="uint" priority="13" />
+      <Item value="Directory`0" priority="2" />
       <Item value="UpdateFileDir" priority="0" />
       <Item value="ConsoleColor`0" priority="3" />
       <Item value="Random`0" priority="0" />
@@ -399,7 +403,7 @@
       <Item value="worldServerInformation" priority="5" />
       <Item value="WorldRecord" priority="0" />
       <Item value="BlockedToPlayer" priority="1" />
-      <Item value="Id" priority="0" />
+      <Item value="Id" priority="8" />
       <Item value="Ip" priority="0" />
       <Item value="Port" priority="0" />
       <Item value="CharCapacity" priority="0" />
@@ -417,18 +421,18 @@
       <Item value="Completion" priority="0" />
       <Item value="Connected" priority="0" />
       <Item value="IdentificationMessageWithServerIdMessage`0" priority="0" />
-      <Item value="WorldHandlerContainer`0" priority="7" />
-      <Item value="Handlers" priority="0" />
-      <Item value="CellData`0" priority="2" />
+      <Item value="WorldHandlerContainer`0" priority="8" />
+      <Item value="Handlers" priority="1" />
+      <Item value="CellData`0" priority="4" />
       <Item value="BigEndianReader`0" priority="1" />
       <Item value="CellData" priority="0" />
       <Item value="BigEndianBitConverter" priority="0" />
-      <Item value="reader" priority="4" />
+      <Item value="reader" priority="6" />
       <Item value="celldata" priority="1" />
       <Item value="i" priority="0" />
       <Item value="BigEndianWriter`0" priority="1" />
-      <Item value="Map`0" priority="2" />
-      <Item value="Map" priority="0" />
+      <Item value="Map`0" priority="16" />
+      <Item value="Map" priority="9" />
       <Item value="map" priority="2" />
       <Item value="TopNeighbourId" priority="0" />
       <Item value="BottomNeighbourId" priority="0" />
@@ -440,25 +444,25 @@
       <Item value="FileMode`0" priority="0" />
       <Item value="SexTypeEnum`0" priority="1" />
       <Item value="ConsoleMessageTypeEnum`0" priority="1" />
-      <Item value="Client" priority="0" />
+      <Item value="Client" priority="2" />
       <Item value="Settings`0" priority="0" />
       <Item value="attributes" priority="0" />
-      <Item value="Length" priority="0" />
-      <Item value="Cast`1" priority="0" />
+      <Item value="Length" priority="2" />
+      <Item value="Cast`1" priority="1" />
       <Item value="AttributeAssociatedFile`0" priority="0" />
       <Item value="D2oDir" priority="1" />
       <Item value="datafile" priority="0" />
       <Item value="handleException" priority="0" />
       <Item value="LoadContent`1" priority="0" />
-      <Item value="ref" priority="1" />
-      <Item value="classes" priority="0" />
+      <Item value="ref" priority="4" />
+      <Item value="classes" priority="2" />
       <Item value="IList" priority="0" />
       <Item value="ContentPath" priority="0" />
       <Item value="I18nDir" priority="0" />
       <Item value="I18nFile" priority="0" />
       <Item value="i18nfile" priority="1" />
       <Item value="Close`0" priority="0" />
-      <Item value="id" priority="0" />
+      <Item value="id" priority="2" />
       <Item value="D2oClasses" priority="0" />
       <Item value="Breed`0" priority="0" />
       <Item value="Dictionary&lt;CaracteristicsIdEnum,PropertyInfo&gt;" priority="0" />
@@ -470,13 +474,286 @@
       <Item value="channel" priority="1" />
       <Item value="msg" priority="0" />
       <Item value="sender" priority="3" />
-      <Item value="SequenceTypeEnum`0" priority="0" />
-      <Item value="BasicHandler`0" priority="1" />
+      <Item value="SequenceTypeEnum`0" priority="1" />
+      <Item value="BasicHandler`0" priority="3" />
       <Item value="GameContextCreateMessage`0" priority="0" />
       <Item value="context" priority="0" />
       <Item value="WorldHandler" priority="0" />
       <Item value="List&lt;StartupActionAddObject&gt;" priority="0" />
       <Item value="StartupActionAddObject" priority="0" />
+      <Item value="SendChatServerMessage`0" priority="1" />
+      <Item value="allows" priority="0" />
+      <Item value="disallows" priority="0" />
+      <Item value="List&lt;uint&gt;" priority="3" />
+      <Item value="EntityTalkMessage`0" priority="2" />
+      <Item value="entity" priority="25" />
+      <Item value="smileyId" priority="0" />
+      <Item value="ChatErrorMessage`0" priority="0" />
+      <Item value="ChatErrorEnum`0" priority="0" />
+      <Item value="nguid" priority="0" />
+      <Item value="ChatManager`0" priority="1" />
+      <Item value="emote" priority="0" />
+      <Item value="duration" priority="0" />
+      <Item value="source" priority="2" />
+      <Item value="target" priority="3" />
+      <Item value="ExchangeTypeEnum`0" priority="0" />
+      <Item value="trade" priority="2" />
+      <Item value="Character`0" priority="6" />
+      <Item value="ItemCategoryEnum`0" priority="0" />
+      <Item value="item" priority="10" />
+      <Item value="ObjectItem" priority="0" />
+      <Item value="FightResultFighterListEntry`0" priority="2" />
+      <Item value="ObjectEffect`0" priority="0" />
+      <Item value="List&lt;ObjectEffect&gt;" priority="0" />
+      <Item value="ObjectEffect" priority="1" />
+      <Item value="t" priority="0" />
+      <Item value="EffectId" priority="1" />
+      <Item value="ObjectEffectCreature`0" priority="0" />
+      <Item value="MonsterFamily" priority="1" />
+      <Item value="ObjectEffectDate`0" priority="0" />
+      <Item value="m_year" priority="0" />
+      <Item value="m_month" priority="0" />
+      <Item value="m_day" priority="0" />
+      <Item value="m_hour" priority="0" />
+      <Item value="m_minute" priority="0" />
+      <Item value="ObjectEffectDice`0" priority="0" />
+      <Item value="DiceNum" priority="0" />
+      <Item value="DiceFace" priority="0" />
+      <Item value="ObjectEffectDuration`0" priority="0" />
+      <Item value="m_days" priority="0" />
+      <Item value="m_hours" priority="0" />
+      <Item value="m_minutes" priority="0" />
+      <Item value="ObjectEffectLadder`0" priority="0" />
+      <Item value="ObjectEffectMinMax`0" priority="0" />
+      <Item value="ObjectEffectMount`0" priority="0" />
+      <Item value="m_mountId" priority="0" />
+      <Item value="m_date" priority="0" />
+      <Item value="m_modelId" priority="0" />
+      <Item value="ObjectEffectString`0" priority="0" />
+      <Item value="m_value" priority="1" />
+      <Item value="ObjectEffectInteger`0" priority="1" />
+      <Item value="Guid`0" priority="0" />
+      <Item value="Guid" priority="0" />
+      <Item value="remote" priority="2" />
+      <Item value="Item`0" priority="3" />
+      <Item value="Trader`0" priority="0" />
+      <Item value="trader" priority="2" />
+      <Item value="ready" priority="0" />
+      <Item value="errorEnum" priority="1" />
+      <Item value="List&lt;IgnoredInformations&gt;" priority="0" />
+      <Item value="FriendInformations`0" priority="0" />
+      <Item value="IgnoredAddedMessage`0" priority="0" />
+      <Item value="FileNotFoundException`0" priority="1" />
+      <Item value="ItemNoMoreAvailableMessage`0" priority="1" />
+      <Item value="addeditems" priority="0" />
+      <Item value="ObjectsAddedMessage`0" priority="0" />
+      <Item value="long" priority="0" />
+      <Item value="guids" priority="0" />
+      <Item value="modifieditem" priority="1" />
+      <Item value="CharacterSpellModificationTypeEnum`0" priority="0" />
+      <Item value="CharacterInventoryPositionEnum`0" priority="0" />
+      <Item value="ActorOrientation" priority="0" />
+      <Item value="EntityLook" priority="0" />
+      <Item value="EntityLook`0" priority="0" />
+      <Item value="Skins" priority="0" />
+      <Item value="Colors" priority="1" />
+      <Item value="ColorsIndexed" priority="0" />
+      <Item value="List&lt;int&gt;" priority="3" />
+      <Item value="Scale" priority="0" />
+      <Item value="Scales" priority="0" />
+      <Item value="List&lt;SubEntity&gt;" priority="0" />
+      <Item value="Entity`0" priority="9" />
+      <Item value="CharacterBaseInformations`0" priority="1" />
+      <Item value="GameRolePlayActorInformations`0" priority="0" />
+      <Item value="GameRolePlayActorInformations" priority="0" />
+      <Item value="EntityDispositionInformations`0" priority="0" />
+      <Item value="EntityDispositionInformations" priority="0" />
+      <Item value="Direction" priority="2" />
+      <Item value="ToNetworkEntityLook`0" priority="1" />
+      <Item value="GetEntityDisposition`0" priority="1" />
+      <Item value="HumanInformations`0" priority="0" />
+      <Item value="HumanInformations" priority="0" />
+      <Item value="List&lt;EntityLook&gt;" priority="0" />
+      <Item value="ActorRestrictionsInformations" priority="0" />
+      <Item value="ActorAlignmentInformations`0" priority="0" />
+      <Item value="ActorAlignmentInformations" priority="0" />
+      <Item value="HouseInformations`0" priority="0" />
+      <Item value="InteractiveElement`0" priority="0" />
+      <Item value="StatedElement`0" priority="0" />
+      <Item value="MapObstacle`0" priority="1" />
+      <Item value="FightCommonInformations`0" priority="0" />
+      <Item value="MapHandler" priority="0" />
+      <Item value="NextMap" priority="0" />
+      <Item value="nextMap" priority="3" />
+      <Item value="CellId" priority="2" />
+      <Item value="lastMap" priority="0" />
+      <Item value="keymovements" priority="0" />
+      <Item value="SpellItem" priority="0" />
+      <Item value="Position" priority="8" />
+      <Item value="CurrentLevel" priority="0" />
+      <Item value="spellId" priority="0" />
+      <Item value="ContextHandler`0" priority="5" />
+      <Item value="Server" priority="0" />
+      <Item value="WorldServer" priority="0" />
+      <Item value="DialogHandler`0" priority="0" />
+      <Item value="InteractiveHandler`0" priority="0" />
+      <Item value="InventoryHandler`0" priority="1" />
+      <Item value="kamasAmount" priority="0" />
+      <Item value="character" priority="0" />
+      <Item value="cr" priority="1" />
+      <Item value="EffectInteger`0" priority="0" />
+      <Item value="groupId" priority="0" />
+      <Item value="fight" priority="9" />
+      <Item value="accepted" priority="0" />
+      <Item value="Enums" priority="2" />
+      <Item value="FightTypeEnum`0" priority="4" />
+      <Item value="fightTypeEnum" priority="3" />
+      <Item value="ExchangeMultiCraftCrafterCanUseHisRessourcesMessage`0" priority="0" />
+      <Item value="canBeCancelled" priority="0" />
+      <Item value="canSayReady" priority="0" />
+      <Item value="isSpectator" priority="0" />
+      <Item value="isFightStarted" priority="0" />
+      <Item value="timeMaxBeforeFightStart" priority="0" />
+      <Item value="IsInFight" priority="2" />
+      <Item value="GameFightCharacterInformations" priority="0" />
+      <Item value="IServiceProvider`0" priority="0" />
+      <Item value="IsInGroup" priority="0" />
+      <Item value="GroupMember" priority="0" />
+      <Item value="CurrentFighter" priority="6" />
+      <Item value="Group" priority="0" />
+      <Item value="GetGameFightMinimalStatsPreparation" priority="0" />
+      <Item value="GameFightMinimalStatsPreparation" priority="0" />
+      <Item value="CurrentHealth" priority="0" />
+      <Item value="Maps" priority="1" />
+      <Item value="MaximumCellsCount" priority="0" />
+      <Item value="DirectionsEnum`0" priority="5" />
+      <Item value="Zone`0" priority="0" />
+      <Item value="Zone" priority="0" />
+      <Item value="Location`0" priority="7" />
+      <Item value="ILivingEntity`0" priority="2" />
+      <Item value="Stats" priority="1" />
+      <Item value="Record" priority="0" />
+      <Item value="interface" priority="0" />
+      <Item value="LivingEntity`0" priority="5" />
+      <Item value="MarshalByRefObject`0" priority="0" />
+      <Item value="event" priority="3" />
+      <Item value="NotifyEntityMovingStart`0" priority="0" />
+      <Item value="Location" priority="2" />
+      <Item value="cell" priority="0" />
+      <Item value="direction" priority="0" />
+      <Item value="NotifyEntityTeleport`0" priority="0" />
+      <Item value="NotifyEntityMovingStop`0" priority="0" />
+      <Item value="IsMoving" priority="0" />
+      <Item value="currentLocation" priority="1" />
+      <Item value="location" priority="5" />
+      <Item value="EntityRemoved" priority="1" />
+      <Item value="EntityAdded" priority="2" />
+      <Item value="NotifyEntityCompressedMovingStart`0" priority="0" />
+      <Item value="to" priority="0" />
+      <Item value="DIRECTION_EAST" priority="0" />
+      <Item value="MovingPath" priority="0" />
+      <Item value="NotifySpawnedEntity`0" priority="0" />
+      <Item value="NotifyUnSpawnedEntity`0" priority="0" />
+      <Item value="m_mapsAround" priority="0" />
+      <Item value="GameFightMinimalStats`0" priority="0" />
+      <Item value="GetFightMinimalStats" priority="0" />
+      <Item value="GameFightMinimalStats" priority="0" />
+      <Item value="MaxHealth" priority="0" />
+      <Item value="GameActionFightInvisibilityStateEnum`0" priority="0" />
+      <Item value="Entity" priority="1" />
+      <Item value="GroupOwner" priority="0" />
+      <Item value="FightGroup`0" priority="1" />
+      <Item value="GetFightMinimalStats`0" priority="0" />
+      <Item value="fighter" priority="3" />
+      <Item value="GameFightFighterInformations" priority="0" />
+      <Item value="GetGameFightFighterInformations" priority="0" />
+      <Item value="ToNetworkFightCharacter`0" priority="0" />
+      <Item value="Fight`0" priority="3" />
+      <Item value="FightTeamInformations" priority="1" />
+      <Item value="Leader" priority="0" />
+      <Item value="AlignmentSideEnum`0" priority="0" />
+      <Item value="TeamEnum`0" priority="0" />
+      <Item value="FightTeamMemberInformations`0" priority="0" />
+      <Item value="FightTeamMemberInformations" priority="0" />
+      <Item value="FightTeamMemberCharacterInformations`0" priority="0" />
+      <Item value="Members" priority="0" />
+      <Item value="team" priority="0" />
+      <Item value="entities" priority="0" />
+      <Item value="IdentifiedEntityDispositionInformations`0" priority="0" />
+      <Item value="FightGroupMember`0" priority="2" />
+      <Item value="sequenceType" priority="2" />
+      <Item value="ActionsEnum`0" priority="1" />
+      <Item value="delta" priority="0" />
+      <Item value="operator" priority="0" />
+      <Item value="map1" priority="3" />
+      <Item value="map2" priority="3" />
+      <Item value="DBNull`0" priority="0" />
+      <Item value="ReferenceEquals`0" priority="0" />
+      <Item value="GroupMember`0" priority="3" />
+      <Item value="OnAddMember`0" priority="0" />
+      <Item value="MemberRemoved" priority="0" />
+      <Item value="OnMemberRemoved`0" priority="0" />
+      <Item value="groupMember" priority="1" />
+      <Item value="FightManager`0" priority="1" />
+      <Item value="group2" priority="1" />
+      <Item value="fightId" priority="0" />
+      <Item value="group1" priority="0" />
+      <Item value="m_timeline" priority="0" />
+      <Item value="Predicates" priority="0" />
+      <Item value="Dictionary&lt;Type,Predicate&lt;WorldClient&gt;&gt;" priority="0" />
+      <Item value="hctor" priority="3" />
+      <Item value="PredicatesDefinitions`0" priority="0" />
+      <Item value="CallOnAllCharacters`0" priority="0" />
+      <Item value="fightType" priority="0" />
+      <Item value="FightType" priority="0" />
+      <Item value="GetAllEntities`0" priority="0" />
+      <Item value="charac" priority="0" />
+      <Item value="ActionsHandler`0" priority="1" />
+      <Item value="ACTION_CHARACTER_LIFE_POINTS_LOST" priority="0" />
+      <Item value="Information" priority="0" />
+      <Item value="e" priority="0" />
+      <Item value="m_i18nFile" priority="0" />
+      <Item value="localStageStep" priority="0" />
+      <Item value="ex" priority="0" />
+      <Item value="ClassType" priority="0" />
+      <Item value="SpellLevel`0" priority="0" />
+      <Item value="ReflectionTypeLoadException`0" priority="0" />
+      <Item value="objList" priority="3" />
+      <Item value="BuildList`0" priority="0" />
+      <Item value="IList`0" priority="0" />
+      <Item value="convertType" priority="0" />
+      <Item value="BuildClassObject`0" priority="0" />
+      <Item value="ParallelEnumerable`0" priority="0" />
+      <Item value="List&lt;T&gt;" priority="0" />
+      <Item value="items1" priority="1" />
+      <Item value="copy1" priority="0" />
+      <Item value="items2" priority="1" />
+      <Item value="ignoreException" priority="0" />
+      <Item value="items" priority="0" />
+      <Item value="m_reader" priority="0" />
+      <Item value="DataLoader`0" priority="0" />
+      <Item value="TCValue`0" priority="0" />
+      <Item value="TValue`0" priority="1" />
+      <Item value="TKey`0" priority="0" />
+      <Item value="yield return" priority="0" />
+      <Item value="BreedData" priority="0" />
+      <Item value="Where`1" priority="0" />
+      <Item value="Single`1" priority="0" />
+      <Item value="float" priority="1" />
+      <Item value="m_lastValue" priority="1" />
+      <Item value="MapLoader`0" priority="0" />
+      <Item value="PositionX" priority="0" />
+      <Item value="cleaner" priority="0" />
+      <Item value="consoleProcent" priority="3" />
+      <Item value="ConsoleProcent" priority="1" />
+      <Item value="count" priority="0" />
+      <Item value="idSelector" priority="1" />
+      <Item value="Func" priority="0" />
+      <Item value="copy" priority="2" />
+      <Item value="Debug`0" priority="0" />
+      <Item value="data" priority="0" />
+      <Item value="ConcurrentStack" priority="0" />
+      <Item value="procentDisplay" priority="2" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.Convert">
       <Item value="ChangeType`0" priority="0" />
@@ -486,6 +763,7 @@
     </ItemStatistics>
     <ItemStatistics item="Qualified:T">
       <Item value="ToString`0" priority="0" />
+      <Item value="Id" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.String">
       <Item value="ToLower`0" priority="2" />
@@ -518,18 +796,22 @@
       <Item value="Value" priority="1" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Collections.Generic.IEnumerable`1">
-      <Item value="Where`1" priority="1" />
+      <Item value="Where`1" priority="3" />
       <Item value="GetEnumerator`0" priority="0" />
-      <Item value="Count`1" priority="5" />
+      <Item value="Count`1" priority="6" />
       <Item value="SkipWhile`1" priority="1" />
       <Item value="First`1" priority="2" />
       <Item value="FirstOrDefault`1" priority="1" />
       <Item value="TakeWhile`1" priority="0" />
-      <Item value="Select`2" priority="1" />
+      <Item value="Select`2" priority="4" />
       <Item value="OrderBy`2" priority="0" />
       <Item value="OrderByDescending`2" priority="1" />
       <Item value="Concat`1" priority="0" />
       <Item value="ElementAt`1" priority="0" />
+      <Item value="ToList`1" priority="10" />
+      <Item value="Cast`1" priority="0" />
+      <Item value="ToArray`1" priority="1" />
+      <Item value="Single`1" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Stump.Server.BaseServer.Commands.ICommandParameter`1">
       <Item value="IsRightName`0" priority="0" />
@@ -553,11 +835,16 @@
       <Item value="ArgumentExists`1" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Collections.Generic.List`1">
-      <Item value="Add`0" priority="3" />
-      <Item value="Count" priority="3" />
-      <Item value="Contains`0" priority="0" />
+      <Item value="Add`0" priority="4" />
+      <Item value="Count" priority="4" />
+      <Item value="Contains`0" priority="2" />
       <Item value="OrderBy`2" priority="0" />
       <Item value="Exists`0" priority="0" />
+      <Item value="Select`2" priority="3" />
+      <Item value="Cast`1" priority="0" />
+      <Item value="Insert`0" priority="0" />
+      <Item value="FindIndex`0" priority="0" />
+      <Item value="AddRange`0" priority="1" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Stump.Server.BaseServer.Commands.CommandBase">
       <Item value="RequieredRole" priority="0" />
@@ -584,15 +871,17 @@
       <Item value="Where`1" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Type">
-      <Item value="Assembly" priority="1" />
-      <Item value="IsSubclassOf`0" priority="4" />
+      <Item value="Assembly" priority="2" />
+      <Item value="IsSubclassOf`0" priority="5" />
       <Item value="FindInterfaces`0" priority="0" />
-      <Item value="Name" priority="2" />
+      <Item value="Name" priority="3" />
       <Item value="GetCustomAttributes`0" priority="0" />
       <Item value="GetProperty`0" priority="0" />
+      <Item value="IsAbstract" priority="0" />
+      <Item value="Namespace" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Reflection.Assembly">
-      <Item value="GetType`0" priority="1" />
+      <Item value="GetType`0" priority="2" />
       <Item value="FullName" priority="0" />
       <Item value="GetName`0" priority="0" />
     </ItemStatistics>
@@ -628,7 +917,7 @@
       <Item value="ReadLine`0" priority="0" />
       <Item value="ForegroundColor" priority="2" />
       <Item value="BackgroundColor" priority="0" />
-      <Item value="BufferWidth" priority="0" />
+      <Item value="BufferWidth" priority="1" />
       <Item value="KeyAvailable" priority="2" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Int32">
@@ -653,6 +942,7 @@
       <Item value="IsNullOrEmpty`0" priority="3" />
       <Item value="Join`0" priority="2" />
       <Item value="Format`0" priority="5" />
+      <Item value="Empty" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Stump.Server.AuthServer.AuthConsole">
       <Item value="Cmd" priority="0" />
@@ -673,7 +963,7 @@
     <ItemStatistics item="Qualified:NLog.Logger">
       <Item value="Info`0" priority="3" />
       <Item value="Warn`0" priority="2" />
-      <Item value="Error`0" priority="0" />
+      <Item value="Error`0" priority="2" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Threading.Timer">
       <Item value="Change`0" priority="1" />
@@ -688,8 +978,8 @@
       <Item value="Port" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Collections.Generic.KeyValuePair`2">
-      <Item value="Value" priority="2" />
-      <Item value="Key" priority="2" />
+      <Item value="Value" priority="3" />
+      <Item value="Key" priority="3" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Linq.IOrderedEnumerable`1">
       <Item value="ToDictionary`3" priority="1" />
@@ -713,7 +1003,7 @@
       <Item value="ClientVersionRequired" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.Activator">
-      <Item value="CreateInstance`0" priority="1" />
+      <Item value="CreateInstance`0" priority="2" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.HelloConnectMessage">
       <Item value="initHelloConnectMessage`0" priority="0" />
@@ -742,12 +1032,13 @@
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Object">
       <Item value="ToString`0" priority="1" />
+      <Item value="GetType`0" priority="2" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.Windows.Forms.Application">
       <Item value="DoEvents`0" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.Threading.Tasks.Parallel">
-      <Item value="ForEach`2" priority="1" />
+      <Item value="ForEach`2" priority="5" />
       <Item value="Invoke`0" priority="1" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Stump.Server.AuthServer.AuthClient">
@@ -771,7 +1062,7 @@
     <ItemStatistics item="Qualified:Stump.Database.AccountRecord">
       <Item value="Name" priority="0" />
       <Item value="Password" priority="0" />
-      <Item value="Id" priority="2" />
+      <Item value="Id" priority="5" />
       <Item value="MasterAccount" priority="0" />
       <Item value="Question" priority="0" />
       <Item value="Role" priority="0" />
@@ -780,7 +1071,8 @@
       <Item value="SecretAnswer" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Exception">
-      <Item value="Message" priority="1" />
+      <Item value="Message" priority="2" />
+      <Item value="ToString`0" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.IdentificationMessage">
       <Item value="version" priority="1" />
@@ -929,6 +1221,7 @@
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.IO.Directory">
       <Item value="Exists`0" priority="0" />
+      <Item value="GetFiles`0" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Array">
       <Item value="Cast`1" priority="0" />
@@ -950,7 +1243,7 @@
     </ItemStatistics>
     <ItemStatistics item="Qualified:@Stump.Server.WorldServer.WorldServer">
       <Item value="Instance" priority="3" />
-      <Item value="ServerInformation" priority="3" />
+      <Item value="ServerInformation" priority="4" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Stump.Server.WorldServer.WorldServer">
       <Item value="Running" priority="3" />
@@ -982,9 +1275,11 @@
     </ItemStatistics>
     <ItemStatistics item="Qualified:Stump.Server.WorldServer.WorldClient">
       <Item value="CheckTicket`0" priority="0" />
-      <Item value="Send`0" priority="4" />
+      <Item value="Send`0" priority="7" />
       <Item value="Disconnect`0" priority="0" />
-      <Item value="Account" priority="0" />
+      <Item value="Account" priority="3" />
+      <Item value="ActiveCharacter" priority="25" />
+      <Item value="Characters" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.AuthenticationTicketMessage">
       <Item value="ticket" priority="0" />
@@ -999,7 +1294,7 @@
       <Item value="ReadCell`0" priority="0" />
       <Item value="ReadMap`0" priority="0" />
       <Item value="ReadUShort`0" priority="0" />
-      <Item value="Dispose`0" priority="1" />
+      <Item value="Dispose`0" priority="2" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Stump.Server.WorldServer.Global.Maps.CellData">
       <Item value="ParrentMap" priority="0" />
@@ -1021,7 +1316,16 @@
       <Item value="UseReverb" priority="3" />
       <Item value="m_presetId" priority="0" />
       <Item value="PresetId" priority="1" />
-      <Item value="CellsData" priority="1" />
+      <Item value="CellsData" priority="4" />
+      <Item value="Id" priority="5" />
+      <Item value="Entities" priority="0" />
+      <Item value="OnLeave`0" priority="1" />
+      <Item value="GetCellAfterChangeMap`0" priority="0" />
+      <Item value="GetMapNeighbourByMapid`0" priority="0" />
+      <Item value="OnEnter`0" priority="0" />
+      <Item value="ParentSpace" priority="0" />
+      <Item value="CallOnAllCharactersWithoutFighters`0" priority="0" />
+      <Item value="Equals`0" priority="2" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Stump.BaseCore.Framework.IO.BigEndianWriter">
       <Item value="WriteBoolean`0" priority="1" />
@@ -1071,42 +1375,316 @@
       <Item value="GetType`0" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Stump.Server.WorldServer.Entities.Character">
-      <Item value="Id" priority="0" />
+      <Item value="Id" priority="6" />
       <Item value="Name" priority="0" />
-      <Item value="CellId" priority="0" />
+      <Item value="CellId" priority="1" />
+      <Item value="Inventory" priority="2" />
+      <Item value="Kamas" priority="0" />
+      <Item value="Zone" priority="0" />
+      <Item value="Map" priority="4" />
+      <Item value="NextMap" priority="0" />
+      <Item value="ChangeMap`0" priority="0" />
+      <Item value="Spells" priority="0" />
+      <Item value="Move`0" priority="1" />
+      <Item value="CanMove`0" priority="0" />
+      <Item value="End`0" priority="0" />
+      <Item value="MovementEnd`0" priority="0" />
+      <Item value="StopMove`0" priority="0" />
+      <Item value="Position" priority="1" />
+      <Item value="GetActorAlignmentInformations`0" priority="0" />
+      <Item value="CurrentFighter" priority="1" />
+      <Item value="IsInFight" priority="0" />
+      <Item value="IsInTrade" priority="0" />
+      <Item value="IsInDialog" priority="0" />
+      <Item value="IsInGroup" priority="0" />
+      <Item value="IsMoving" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@Stump.DofusProtocol.Enums.SequenceTypeEnum">
       <Item value="SEQUENCE_CHARACTER_DEATH" priority="0" />
       <Item value="SEQUENCE_MOVE" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@Stump.Server.WorldServer.Handlers.BasicHandler">
-      <Item value="SendBasicNoOperationMessage`0" priority="1" />
+      <Item value="SendBasicNoOperationMessage`0" priority="2" />
+      <Item value="SendBasicTimeMessage`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.WorldServer.Entities.Entity">
+      <Item value="Id" priority="16" />
+      <Item value="Direction" priority="0" />
+      <Item value="ToNetworkEntityLook`0" priority="0" />
+      <Item value="ToNetworkActor`0" priority="1" />
+      <Item value="Position" priority="0" />
+      <Item value="GetEntityDisposition`0" priority="0" />
+      <Item value="GetIdentifiedEntityDisposition`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.ChatClientPrivateMessage">
+      <Item value="receiver" priority="0" />
+      <Item value="content" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Stump.DofusProtocol.Enums.ChatErrorEnum">
+      <Item value="CHAT_ERROR_RECEIVER_NOT_FOUND" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.ChatClientMultiMessage">
+      <Item value="channel" priority="2" />
+      <Item value="content" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Stump.Server.WorldServer.Chat.ChatManager">
+      <Item value="ChatHandlers" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.ChatSmileyRequestMessage">
+      <Item value="smileyId" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.EmotePlayRequestMessage">
+      <Item value="emoteId" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Stump.DofusProtocol.Enums.EmotesEnum">
+      <Item value="EMOTE_SIT" priority="0" />
+      <Item value="EMOTE_REST" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Stump.DofusProtocol.Enums.ExchangeTypeEnum">
+      <Item value="PLAYER_TRADE" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.WorldServer.Exchange.Trade">
+      <Item value="SourceTrader" priority="2" />
+      <Item value="TargetTrader" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.WorldServer.Exchange.Trader">
+      <Item value="Entity" priority="3" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.WorldServer.Items.Inventory">
+      <Item value="Weight" priority="1" />
+      <Item value="WeightTotal" priority="1" />
+      <Item value="Items" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.WorldServer.Items.Item">
+      <Item value="Position" priority="1" />
+      <Item value="ItemId" priority="0" />
+      <Item value="m_effects" priority="0" />
+      <Item value="ToNetworkItem`0" priority="4" />
+      <Item value="Guid" priority="1" />
+      <Item value="Stack" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.WorldServer.Effects.EffectBase">
+      <Item value="EffectId" priority="0" />
+      <Item value="GetNetworkEffect`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.ExchangePlayerRequestMessage">
+      <Item value="exchangeType" priority="0" />
+      <Item value="target" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.ExchangeObjectMoveKamaMessage">
+      <Item value="quantity" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.ExchangeObjectMoveMessage">
+      <Item value="objectUID" priority="0" />
+      <Item value="quantity" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.ExchangeReadyMessage">
+      <Item value="ready" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.ObjectSetPositionMessage">
+      <Item value="position" priority="0" />
+      <Item value="objectUID" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.ObjectDeleteMessage">
+      <Item value="objectUID" priority="0" />
+      <Item value="quantity" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Stump.DofusProtocol.Classes.EntityLook">
+      <Item value="protocolId" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.WorldServer.Global.Zone">
+      <Item value="Id" priority="0" />
+      <Item value="ParentSpace" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.WorldServer.Global.World">
+      <Item value="GetMap`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.ChangeMapMessage">
+      <Item value="mapId" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.GameMapMovementCancelMessage">
+      <Item value="cellId" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.GameMapChangeOrientationRequestMessage">
+      <Item value="direction" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.GameMapMovementRequestMessage">
+      <Item value="keyMovements" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.WorldServer.Spells.SpellCollection">
+      <Item value="SpellsById" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Collections.Generic.Dictionary`2">
+      <Item value="Values" priority="0" />
+      <Item value="ContainsKey`0" priority="0" />
+      <Item value="Add`0" priority="0" />
+      <Item value="Count" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.WorldServer.Spells.Spell">
+      <Item value="ToNetworkSpell`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.SpellMoveMessage">
+      <Item value="position" priority="2" />
+      <Item value="spellId" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.BaseServer.IPC.IRemoteOperationsAuth">
+      <Item value="AddAccountCharacter`0" priority="0" />
+      <Item value="DeleteAccountCharacter`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Database.CharacterRecord">
+      <Item value="Id" priority="0" />
+      <Item value="Colors" priority="0" />
+      <Item value="Direction" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.WorldServer.Fights.Fight">
+      <Item value="SourceGroup" priority="3" />
+      <Item value="TargetGroup" priority="0" />
+      <Item value="Id" priority="1" />
+      <Item value="GetAlivesIds`0" priority="0" />
+      <Item value="GetDeadsIds`0" priority="0" />
+      <Item value="GetAllEntities`0" priority="2" />
+      <Item value="GetAllFighters`0" priority="0" />
+      <Item value="Duration" priority="0" />
+      <Item value="AgeBonus" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.WorldServer.Groups.FightGroup">
+      <Item value="Id" priority="5" />
+      <Item value="Leader" priority="2" />
+      <Item value="Positions" priority="0" />
+      <Item value="TeamId" priority="0" />
+      <Item value="ToNetworkFightTeam`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.WorldServer.Groups.GroupMember">
+      <Item value="Entity" priority="3" />
+      <Item value="GroupOwner" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.WorldServer.Groups.FightGroupMember">
+      <Item value="IsDead" priority="0" />
+      <Item value="IsReady" priority="1" />
+      <Item value="CurrentHealth" priority="0" />
+      <Item value="TotalAp" priority="0" />
+      <Item value="TotalMp" priority="0" />
+      <Item value="ToNetworkFightCharacter`0" priority="0" />
+      <Item value="ToNetworkFightFighter`0" priority="0" />
+      <Item value="Entity" priority="2" />
+      <Item value="IsInTurn" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Stump.Server.WorldServer.Global.Maps.Map">
+      <Item value="MaximumCellsCount" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.WorldServer.Global.Location">
+      <Item value="Direction" priority="4" />
+      <Item value="Map" priority="4" />
+      <Item value="CellId" priority="1" />
+      <Item value="ChangeLocation`0" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.WorldServer.Entities.StatsData">
+      <Item value="Total" priority="1" />
+      <Item value="Base" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.WorldServer.Entities.StatsHealth">
+      <Item value="TotalMax" priority="0" />
+      <Item value="DamageTaken" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.WorldServer.Entities.LivingEntity">
+      <Item value="EntityMovingStart" priority="0" />
+      <Item value="EntityMovingStop" priority="0" />
+      <Item value="EntityCompressedMovingStart" priority="0" />
+      <Item value="Name" priority="0" />
+      <Item value="Level" priority="0" />
+      <Item value="Id" priority="1" />
+      <Item value="ToNetworkTeamMember`0" priority="0" />
+      <Item value="ToNetworkFighter`0" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Stump.DofusProtocol.Enums.GameActionFightInvisibilityStateEnum">
+      <Item value="VISIBLE" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Stump.DofusProtocol.Enums.AlignmentSideEnum">
+      <Item value="ALIGNMENT_WITHOUT" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Stump.DofusProtocol.Enums.TeamEnum">
+      <Item value="TEAM_CHALLENGER" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Stump.DofusProtocol.Enums.ActionsEnum">
+      <Item value="ACTION_CHARACTER_LIFE_POINTS_LOST" priority="0" />
+      <Item value="ACTION_CHARACTER_MOVEMENT" priority="0" />
+      <Item value="ACTION_CHARACTER_DEATH" priority="0" />
+      <Item value="ACTION_CHARACTER_MOVEMENT_POINTS_LOST" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.GameRolePlayPlayerFightFriendlyAnswerMessage">
+      <Item value="accept" priority="0" />
+      <Item value="fightId" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.GameRolePlayPlayerFightRequestMessage">
+      <Item value="targetId" priority="0" />
+      <Item value="friendly" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Stump.Server.WorldServer.Groups.GroupManager">
+      <Item value="CreateGroup`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Stump.Server.WorldServer.Fights.FightManager">
+      <Item value="GetFightById`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.GameFightPlacementPositionRequestMessage">
+      <Item value="cellId" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.GameFightReadyMessage">
+      <Item value="isReady" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.WorldServer.Fights.TimeLine">
+      <Item value="Current" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.Messages.GameActionFightCastRequestMessage">
+      <Item value="cellId" priority="0" />
+      <Item value="spellId" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Stump.Server.WorldServer.Handlers.PredicatesDefinitions">
+      <Item value="IsFighting" priority="0" />
+      <Item value="IsNotAway" priority="0" />
+      <Item value="IsDialogRequested" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Stump.Server.WorldServer.Handlers.ActionsHandler">
+      <Item value="SendGameActionFightPointsVariationMessage`0" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Stump.DofusProtocol.Enums.FightTypeEnum">
+      <Item value="FIGHT_TYPE_CHALLENGE" priority="0" />
+      <Item value="FIGHT_TYPE_AGRESSION" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Stump.Server.WorldServer.Handlers.ChatHandler">
+      <Item value="SendChatServerCopyMessage`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.BaseServer.Initializing.StageStep">
+      <Item value="Method" priority="0" />
+      <Item value="LogMessage" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Collections.IList">
+      <Item value="Add`0" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.DofusProtocol.D2oClasses.MonsterRace">
+      <Item value="id" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.IO.File">
+      <Item value="OpenRead`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Stump.Server.WorldServer.Data.MapLoader">
+      <Item value="GetMapFilesCount`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.BaseCore.Framework.IO.ConsoleProcent">
+      <Item value="Update`0" priority="2" />
+      <Item value="End`0" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Diagnostics.Debug">
+      <Item value="WriteLine`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:">
+      <Item value="ToString`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Collections.Concurrent.ConcurrentStack`1">
+      <Item value="Push`0" priority="0" />
+      <Item value="Count" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Boolean">
+      <Item value="Equals`0" priority="0" />
     </ItemStatistics>
   </CompletionStatisticsManager>
-  <UserSolutionTemplateManager>
-    <LiveTemplates>
-      <Template uid="f13f2dc4-79d5-443b-9bd9-c9636b08ecda" shortcut="handle" description="Handle function" text="[$SERVER$Handler(typeof($NAME$))]&#xD;&#xA;public static void Handle$NAME$($SERVER$Client client, $NAME$ message)&#xD;&#xA;{&#xD;&#xA;&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
-        <Context>
-          <CSharpContext context="Everywhere" minimumLanguageVersion="2.0" />
-        </Context>
-        <Categories />
-        <Variables>
-          <Variable name="NAME" expression="" initialRange="0" />
-          <Variable name="SERVER" expression="list(&quot;World, Auth&quot;)" initialRange="0" />
-        </Variables>
-        <CustomProperties />
-      </Template>
-      <Template uid="ef5fc430-3828-4122-ad0c-0bd3f7463ca5" shortcut="send" description="Send function" text="public static void Send$NAME$($SERVER$Client client)&#xD;&#xA;{&#xD;&#xA;	client.Send(new $NAME$($END$));&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
-        <Context>
-          <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
-        </Context>
-        <Categories />
-        <Variables>
-          <Variable name="NAME" expression="" initialRange="0" />
-          <Variable name="SERVER" expression="list(&quot;World, Auth&quot;)" initialRange="0" />
-        </Variables>
-        <CustomProperties />
-      </Template>
-    </LiveTemplates>
-  </UserSolutionTemplateManager>
 </Configuration>

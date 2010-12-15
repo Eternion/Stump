@@ -30,10 +30,9 @@ namespace Stump.Server.BaseServer.Manager
                 Interlocked.Increment(ref NextId);
             }
 
-            instance.Id = id;
-
             if (m_instances.TryAdd(id, instance))
             {
+                instance.Id = id;
                 return id;
             }
 
@@ -47,6 +46,7 @@ namespace Stump.Server.BaseServer.Manager
             T outvalue;
             if (m_instances.TryRemove(id, out outvalue))
             {
+                instance.Id = -1;
                 m_freeIds.Push(id);
                 return true;
             }

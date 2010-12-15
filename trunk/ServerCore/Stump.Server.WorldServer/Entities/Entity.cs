@@ -30,16 +30,12 @@ using Stump.Server.WorldServer.Spells;
 
 namespace Stump.Server.WorldServer.Entities
 {
-    public class Entity : IEntity
+    public abstract class  Entity : IEntity, IEntityLook, INamedEntity
     {
         #region Fields
 
         protected static Logger logger = LogManager.GetCurrentClassLogger();
 
-        /// <summary>
-        ///   Name of the character.
-        /// </summary>
-        private string m_name;
 
         #endregion
 
@@ -48,21 +44,22 @@ namespace Stump.Server.WorldServer.Entities
         /// </summary>
         protected Entity()
         {
-            BaseHealth = 0;
-            DamageTaken = 0;
+            Colors = new List<int>();
+            Skins = new List<short>();
+        }
+
+        /// <summary>
+        ///   Constructor
+        /// </summary>
+        protected Entity(int id)
+        {
+            Id = id;
+
             Colors = new List<int>();
             Skins = new List<short>();
         }
 
         public virtual void OnCreate()
-        {
-        }
-
-        public virtual void OnDamage()
-        {
-        }
-
-        public virtual void OnDeath()
         {
         }
 
@@ -88,23 +85,40 @@ namespace Stump.Server.WorldServer.Entities
                                                      GetEntityDisposition());
         }
 
+        public virtual IdentifiedEntityDispositionInformations GetIdentifiedEntityDisposition()
+        {
+            return new IdentifiedEntityDispositionInformations(Position.CellId, (uint)Position.Direction, (int) Id);
+        }
+
         public virtual EntityDispositionInformations GetEntityDisposition()
         {
-            return new EntityDispositionInformations(CellId, (uint) Direction);
+            return new EntityDispositionInformations(Position.CellId, (uint) Position.Direction);
         }
 
         #region Properties
 
         /// <summary>
-        ///   Set or get Level of the character.
+        ///   The Id of this character.
         /// </summary>
-        public int Level
+        public long Id
         {
             get;
             set;
         }
 
-        public int BonesId
+        /// <summary>
+        ///   Indicate or set if this entity is currently in world.
+        /// </summary>
+        public bool InWorld
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        ///   Representation of Entity's World Position
+        /// </summary>
+        public VectorIso Position
         {
             get;
             set;
@@ -112,24 +126,24 @@ namespace Stump.Server.WorldServer.Entities
 
         public Map Map
         {
-            get;
-            set;
+            get { return Position.Map; }
+            set { Position.Map = value; }
         }
 
         public Zone Zone
         {
-            get;
-            set;
+            get { return (Zone) Map.ParentSpace;  }
         }
 
         public Region Region
         {
-            get;
-            set;
+            get { return (Region) Zone.ParentSpace; }
         }
 
+        private string m_name;
+
         /// <summary>
-        ///   The name of this character.
+        ///   The name of this entity.
         /// </summary>
         public string Name
         {
@@ -137,16 +151,13 @@ namespace Stump.Server.WorldServer.Entities
             set
             {
                 if (InWorld)
-                    throw new NotImplementedException("Dynamic renaming of Characters is not implemented.");
+                    throw new NotImplementedException("Dynamic renaming of Entity is not implemented.");
 
                 m_name = value;
             }
         }
 
-        /// <summary>
-        ///   Indicate or set if this character is currently in world.
-        /// </summary>
-        public bool InWorld
+        public int BonesId
         {
             get;
             set;
@@ -183,105 +194,6 @@ namespace Stump.Server.WorldServer.Entities
         public List<int> Scales
         {
             get { return new List<int> {Scale}; }
-        }
-
-        public int Direction
-        {
-            get;
-            set;
-        }
-
-        public int CellId
-        {
-            get;
-            set;
-        }
-
-        public int BaseHealth
-        {
-            get;
-            set;
-        }
-
-        public int DamageTaken
-        {
-            get;
-            set;
-        }
-
-        public StatsFields Stats
-        {
-            get;
-            protected set;
-        }
-
-        /// <summary>
-        ///   Spell container of this entity.
-        /// </summary>
-        public SpellCollection Spells
-        {
-            get;
-            protected set;
-        }
-
-        public GroupMember GroupMember
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        ///   Indicate if the character is in a group.
-        /// </summary>
-        public bool IsInGroup
-        {
-            get { return GroupMember != null; }
-        }
-
-        public bool IsInFight
-        {
-            get
-            {
-                return GroupMember != null && GroupMember is FightGroupMember &&
-                       (((FightGroup) (GroupMember as FightGroupMember).GroupOwner).Fight.FightState ==
-                        FightState.Fighting ||
-                        ((GroupMember as FightGroupMember).GroupOwner as FightGroup).Fight.FightState ==
-                        FightState.PreparePosition);
-            }
-        }
-
-        public Fight CurrentFight
-        {
-            get { return !IsInFight ? null : ((FightGroup) GroupMember.GroupOwner).Fight; }
-        }
-
-        public FightGroupMember CurrentFighter
-        {
-            get
-            {
-                if (!IsInFight)
-                    return null;
-
-                return (GroupMember as FightGroupMember);
-            }
-        }
-
-        /// <summary>
-        ///   unused ?
-        /// </summary>
-        public Location Position
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        ///   The Id of this character.
-        /// </summary>
-        public virtual long Id
-        {
-            get;
-            set;
         }
 
         #endregion

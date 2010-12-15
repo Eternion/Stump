@@ -18,6 +18,7 @@
 //  *************************************************************************/
 using System;
 using System.Collections.Generic;
+using Stump.BaseCore.Framework.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Data;
 using Stump.Server.WorldServer.Data;
@@ -51,13 +52,21 @@ namespace Stump.Server.WorldServer.Global
         {
             try
             {
+                int count = MapLoader.GetMapFilesCount();
+
+                var consoleProcent = new ConsoleProcent();
+
                 foreach (Map map in MapLoader.LoadMaps())
                 {
                     map.ParentSpace = GetZone((int) map.ZoneId);
                     map.ParentSpace.Childrens.Add(map);
 
                     Maps.Add(map.Id, map);
+
+                    consoleProcent.Update((int)(((double)Maps.Count/count)*100));
                 }
+
+                consoleProcent.End();
             }
             catch (Exception ex)
             {
@@ -74,8 +83,7 @@ namespace Stump.Server.WorldServer.Global
 
         public void LoadContinents()
         {
-            var parentareaslist = new List<SuperAreaTemplate>();
-            DataLoader.LoadData(ref parentareaslist);
+            IEnumerable<SuperAreaTemplate> parentareaslist = DataLoader.LoadData<SuperAreaTemplate>();
 
             foreach (SuperAreaTemplate parentarea in parentareaslist)
             {

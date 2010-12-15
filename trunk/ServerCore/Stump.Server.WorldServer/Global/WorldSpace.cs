@@ -27,7 +27,7 @@ using Stump.Server.WorldServer.Entities;
 
 namespace Stump.Server.WorldServer.Global
 {
-    public abstract class WorldSpace : IEntityContainer
+    public abstract partial class WorldSpace : IEntityContainer
     {
         #region Fields
 
@@ -61,6 +61,7 @@ namespace Stump.Server.WorldServer.Global
 
         public virtual void OnMonsterSpawning()
         {
+            // todo : use reals events ...
             foreach (WorldSpace child in Childrens)
             {
                 child.OnMonsterSpawning();
@@ -72,23 +73,32 @@ namespace Stump.Server.WorldServer.Global
             if (Entities.ContainsKey(entity.Id))
             {
                 // WorldSpace change...
-                Entity dummyent;
-                Entities.TryRemove(entity.Id, out dummyent);
+                Entity removedEntity;
+                Entities.TryRemove(entity.Id, out removedEntity);
+
+                if (EntityRemoved != null)
+                    EntityRemoved(removedEntity);
             }
 
             if (!Entities.TryAdd(entity.Id, entity))
             {
                 throw new Exception("Couldn't add entity in world space");
             }
+
+            if (EntityAdded != null)
+                EntityAdded(entity);
         }
 
         public virtual void OnLeave(Entity entity)
         {
-            Entity tmp;
-            if (!Entities.TryRemove(entity.Id, out tmp))
+            Entity removedEntity;
+            if (!Entities.TryRemove(entity.Id, out removedEntity))
             {
                 throw new Exception("Couldn't remove entity in world space");
             }
+
+            if (EntityRemoved != null)
+                EntityRemoved(removedEntity);
         }
 
         #endregion
@@ -99,7 +109,7 @@ namespace Stump.Server.WorldServer.Global
         ///   Find and returns all entities in this world space.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<IEntity> FindAll()
+        public IEnumerable<Entity> FindAll()
         {
             return Entities.Values;
         }
@@ -109,14 +119,14 @@ namespace Stump.Server.WorldServer.Global
         /// </summary>
         /// <param name = "id"></param>
         /// <returns></returns>
-        public IEntity Get(long id)
+        public Entity Get(long id)
         {
             return Entities[id];
         }
 
-        public List<Character> GetAllCharacters()
+        public IEnumerable<Character> GetAllCharacters()
         {
-            return Entities.Values.OfType<Character>().ToList();
+            return Entities.Values.OfType<Character>();
         }
 
         /// <summary>
@@ -125,9 +135,7 @@ namespace Stump.Server.WorldServer.Global
         /// <param name = "action"></param>
         public void CallOnAllCharacters(Action<Character> action)
         {
-            List<Character> chars = GetAllCharacters();
-
-            Parallel.For(0, chars.Count, i => action(chars[i]));
+            Parallel.ForEach(GetAllCharacters(), action);
         }
 
         #endregion

@@ -75,7 +75,17 @@ namespace Stump.Server.BaseServer.Initializing
                     var task = Task.Factory.StartNew(() =>
                     {
                         var localStageStep = stageStep;
-                        localStageStep.Execute();
+
+                        try
+                        {
+                            localStageStep.Execute();
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Error("Exception occured when executing task '{0}'", localStageStep.LogMessage);
+                            logger.Error(ex.ToString());
+                            throw;
+                        }
                     });
 
                     task.Wait(WaitTime);

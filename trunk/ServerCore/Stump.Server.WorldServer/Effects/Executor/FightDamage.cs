@@ -20,6 +20,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Fights;
 using Stump.Server.WorldServer.Global.Maps;
 using Stump.Server.WorldServer.Groups;
+using Stump.Server.WorldServer.Handlers;
 using Stump.Server.WorldServer.Spells;
 
 namespace Stump.Server.WorldServer.Effects.Executor
@@ -56,7 +57,7 @@ namespace Stump.Server.WorldServer.Effects.Executor
             var delta = (short) -damage;
 
             fight.CallOnAllCharacters(entry =>
-                                      FightHandler.SendGameActionFightLifePointsVariationMessage(entry.Client,
+                                      ActionsHandler.SendGameActionFightPointsVariationMessage(entry.Client, ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST,
                                                                                                  caster.Entity,
                                                                                                  target.Entity, delta));
         }

@@ -44,32 +44,32 @@ namespace Stump.Server.WorldServer.Items
 
         #region Constructors
 
-        public Item(Entity owner, Item item)
+        public Item(LivingEntity owner, Item item)
             : this(owner, item, item.Stack)
         {
         }
 
-        public Item(Entity owner, Item item, uint stack)
+        public Item(LivingEntity owner, Item item, uint stack)
             : this(owner, item.Template, item.Guid, item.Position, stack, item.Effects)
         {
         }
 
-        public Item(Entity owner, ItemTemplate template, long guid)
+        public Item(LivingEntity owner, ItemTemplate template, long guid)
             : this(owner, template, guid, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
         {
         }
 
-        public Item(Entity owner, ItemTemplate template, long guid, CharacterInventoryPositionEnum position)
+        public Item(LivingEntity owner, ItemTemplate template, long guid, CharacterInventoryPositionEnum position)
             : this(owner, template, guid, position, 1)
         {
         }
 
-        public Item(Entity owner, ItemTemplate template, long guid, CharacterInventoryPositionEnum position, uint stack)
+        public Item(LivingEntity owner, ItemTemplate template, long guid, CharacterInventoryPositionEnum position, uint stack)
             : this(owner, template, guid, position, stack, new List<EffectBase>())
         {
         }
 
-        public Item(Entity owner, ItemTemplate template, long guid, CharacterInventoryPositionEnum position, uint stack,
+        public Item(LivingEntity owner, ItemTemplate template, long guid, CharacterInventoryPositionEnum position, uint stack,
                     List<EffectBase> effects)
         {
             Owner = owner;
@@ -89,7 +89,7 @@ namespace Stump.Server.WorldServer.Items
                 };
         }
 
-        public Item(Entity owner, CharacterItemRecord record)
+        public Item(LivingEntity owner, CharacterItemRecord record)
         {
             m_record = record;
 
@@ -209,7 +209,7 @@ namespace Stump.Server.WorldServer.Items
             set { m_effects = value; }
         }
 
-        public Entity Owner
+        public LivingEntity Owner
         {
             get;
             set;
