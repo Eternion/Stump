@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Entities;
@@ -26,12 +27,34 @@ namespace Stump.Server.WorldServer.Spells
     {
         #region Fields
 
-        /// <summary>
-        ///   Container for our spells.
-        /// </summary>
-        private Dictionary<uint, Spell> m_spellsbyId;
+        #endregion
+
+        #region Events
+
+        public delegate void SpellEventHandler(SpellCollection sender, Spell addedSpell);
+
+        public event SpellEventHandler SpellAdded;
+
+        public void NotifySpellAdded(Spell addedspell)
+        {
+            SpellEventHandler handler = SpellAdded;
+
+            if (handler != null)
+                handler(this, addedspell);
+        }
+
+        public event SpellEventHandler SpellRemoved;
+
+        public void NotifySpellRemoved(Spell removedSpell)
+        {
+            SpellEventHandler handler = SpellRemoved;
+
+            if (handler != null)
+                handler(this, removedSpell);
+        }
 
         #endregion
+
 
         public SpellCollection(LivingEntity owner)
             : this(owner, true)
@@ -41,9 +64,11 @@ namespace Stump.Server.WorldServer.Spells
         protected SpellCollection(LivingEntity owner, bool initDictionary)
         {
             if (initDictionary)
-                m_spellsbyId = new Dictionary<uint, Spell>(60);
+                SpellsById = new Dictionary<uint, Spell>(60);
 
             Owner = owner;
+
+            SpellAdded += OnAdd;
         }
 
         #region Properties
@@ -59,7 +84,7 @@ namespace Stump.Server.WorldServer.Spells
         /// </summary>
         public int Count
         {
-            get { return m_spellsbyId.Count; }
+            get { return SpellsById.Count; }
         }
 
         /// <summary>
@@ -67,13 +92,13 @@ namespace Stump.Server.WorldServer.Spells
         /// </summary>
         public bool HasSpells
         {
-            get { return m_spellsbyId.Count > 0; }
+            get { return SpellsById.Count > 0; }
         }
 
         public Dictionary<uint, Spell> SpellsById
         {
-            get { return m_spellsbyId; }
-            internal set { m_spellsbyId = value; }
+            get;
+            internal set;
         }
 
         #endregion
@@ -83,7 +108,7 @@ namespace Stump.Server.WorldServer.Spells
             get
             {
                 Spell spell;
-                m_spellsbyId.TryGetValue((uint) id, out spell);
+                SpellsById.TryGetValue((uint) id, out spell);
                 return spell;
             }
         }
@@ -93,7 +118,7 @@ namespace Stump.Server.WorldServer.Spells
             get
             {
                 Spell spell;
-                m_spellsbyId.TryGetValue(id, out spell);
+                SpellsById.TryGetValue(id, out spell);
                 return spell;
             }
         }
@@ -132,16 +157,15 @@ namespace Stump.Server.WorldServer.Spells
         /// </summary>
         public void AddSpell(Spell spell)
         {
-            m_spellsbyId[(uint) spell.Id] = spell;
-            //Owner.Record.AddSpell((uint)spell.Id);
-            OnAdd(spell);
+            SpellsById[(uint) spell.Id] = spell;
+
+            NotifySpellAdded(spell);
         }
 
         /// <summary>
         ///   Happens when a spell has been added to collection.
         /// </summary>
-        /// <param name = "spell"></param>
-        private void OnAdd(Spell spell)
+        private void OnAdd(SpellCollection sender, Spell addedSpell)
         {
         }
 
@@ -185,7 +209,7 @@ namespace Stump.Server.WorldServer.Spells
         /// <returns></returns>
         public bool Contains(uint id)
         {
-            return m_spellsbyId.ContainsKey(id);
+            return SpellsById.ContainsKey(id);
         }
 
         /// <summary>
@@ -195,7 +219,7 @@ namespace Stump.Server.WorldServer.Spells
         /// <returns></returns>
         public bool Contains(SpellIdEnum id)
         {
-            return m_spellsbyId.ContainsKey((uint) id);
+            return SpellsById.ContainsKey((uint) id);
         }
 
 
@@ -213,6 +237,8 @@ namespace Stump.Server.WorldServer.Spells
         public void Remove(Spell spell)
         {
             Replace(spell, null);
+
+            NotifySpellRemoved(spell);
         }
 
         /// <summary>
@@ -220,7 +246,7 @@ namespace Stump.Server.WorldServer.Spells
         /// </summary>
         public void Clear()
         {
-            m_spellsbyId.Clear();
+            SpellsById.Clear();
         }
 
         /// <summary>
@@ -229,7 +255,7 @@ namespace Stump.Server.WorldServer.Spells
         public void Replace(SpellIdEnum oldSpellId, SpellIdEnum newSpellId)
         {
             Spell oldSpell, newSpell = SpellManager.GetSpell(newSpellId);
-            if (m_spellsbyId.TryGetValue((uint) oldSpellId, out oldSpell))
+            if (SpellsById.TryGetValue((uint) oldSpellId, out oldSpell))
             {
                 Replace(oldSpell, newSpell);
             }
@@ -241,8 +267,8 @@ namespace Stump.Server.WorldServer.Spells
         public void Replace(Spell oldSpell, Spell newSpell)
         {
             var oldspellid = (uint) oldSpell.Id;
-            m_spellsbyId.Remove(oldspellid);
-            //Owner.Record.RemoveSpell(oldspellid);
+            SpellsById.Remove(oldspellid);
+
             if (newSpell != null)
             {
                 AddSpell(newSpell);
@@ -258,7 +284,7 @@ namespace Stump.Server.WorldServer.Spells
 
         public IEnumerator<Spell> GetEnumerator()
         {
-            return ((IEnumerable<Spell>) m_spellsbyId.Values).GetEnumerator();
+            return ((IEnumerable<Spell>) SpellsById.Values).GetEnumerator();
         }
     }
 }

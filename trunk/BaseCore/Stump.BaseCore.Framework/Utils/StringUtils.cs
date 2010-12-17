@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System.Collections;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -24,15 +25,60 @@ namespace Stump.BaseCore.Framework.Utils
 {
     public static class StringUtils
     {
+        public static string[] Split(string expression, string delimiter)
+        {
+            return Split(expression, delimiter, "", false);
+        }
+
+        public static string[] Split(string expression, string delimiter,
+                                     string qualifier)
+        {
+            return Split(expression, delimiter, qualifier, false);
+        }
+
+        public static string[] Split(string expression, string delimiter,
+                                     string qualifier, bool ignoreCase)
+        {
+            bool qualifierState = false;
+            int startIndex = 0;
+            var values = new ArrayList();
+
+            for (int charIndex = 0; charIndex < expression.Length - 1; charIndex++)
+            {
+                if (qualifier != null)
+                    if (string.Compare(expression.Substring
+                                           (charIndex, qualifier.Length), qualifier, ignoreCase) == 0)
+                    {
+                        qualifierState = !(qualifierState);
+                    }
+                    else if (!(qualifierState) & (delimiter != null)
+                             & (string.Compare(expression.Substring
+                                                   (charIndex, delimiter.Length), delimiter, ignoreCase) == 0))
+                    {
+                        values.Add(expression.Substring
+                                       (startIndex, charIndex - startIndex));
+                        startIndex = charIndex + 1;
+                    }
+            }
+
+            if (startIndex < expression.Length)
+                values.Add(expression.Substring
+                               (startIndex, expression.Length - startIndex));
+
+            var returnValues = new string[values.Count];
+            values.CopyTo(returnValues);
+            return returnValues;
+        }
+
         public static string EscapeString(string str)
         {
             return str == null ? null : Regex.Replace(str, @"[\r\n\x00\x1a\\'""]", @"\$0");
         }
 
         /// <summary>
-        /// Convert html chars to HTML entities 
+        ///   Convert html chars to HTML entities
         /// </summary>
-        /// <param name="str"></param>
+        /// <param name = "str"></param>
         /// <returns></returns>
         public static string HtmlEntities(string str)
         {
@@ -43,9 +89,9 @@ namespace Stump.BaseCore.Framework.Utils
         }
 
         /// <summary>
-        /// Return a string with the first letter upper
+        ///   Return a string with the first letter upper
         /// </summary>
-        /// <param name="str"></param>
+        /// <param name = "str"></param>
         /// <returns></returns>
         public static string FirstLetterUpper(string str)
         {

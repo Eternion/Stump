@@ -4,6 +4,10 @@ using Stump.Server.WorldServer.Global.Maps;
 
 namespace Stump.Server.WorldServer.Global
 {
+    /// <summary>
+    /// Represent a vector on a 2D isometric plan.
+    /// </summary>
+    /// <remarks>Can be attached to a map but is not necessary</remarks>
     public class VectorIso
     {
         public VectorIso(ushort cell, DirectionsEnum direction)

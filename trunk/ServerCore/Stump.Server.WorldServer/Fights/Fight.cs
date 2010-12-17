@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Stump.BaseCore.Framework.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Manager;
 using Stump.Server.WorldServer.Effects.Executor;
@@ -42,15 +43,21 @@ namespace Stump.Server.WorldServer.Fights
 
     public class Fight : IInstance
     {
+        [Variable]
+        public static int TurnTime = 35000;
+
+        [Variable]
+        public static int TurnEndTimeOut = 5000; // 5s
+
         #region Fields
 
-        private const int TurnTime = 35000; // 35s
-        private const int TurnEndTimeOut = 5000; // 5s
 
         private bool m_hasPassed;
         private DateTime m_startTime;
         private Task m_task;
         private TimeLine m_timeline;
+
+        private Timer m_forceEndTurnTimer;
 
         #endregion
 
@@ -70,7 +77,6 @@ namespace Stump.Server.WorldServer.Fights
             TargetGroup = target;
             TargetGroup.TeamId = 1;
             TargetGroup.Fight = this;
-            Started = false;
 
             FightType = fightType;
 
@@ -80,6 +86,64 @@ namespace Stump.Server.WorldServer.Fights
         #endregion
 
         #region Methods
+
+        /// <summary>
+        ///   Prepare to Fight method, Showing cells and characters.
+        /// </summary>
+        /// <param name = "charac"></param>
+        /// <param name = "group"></param>
+        private void PrepareFight(Character charac, FightGroup group)
+        {
+            var chrSource = SourceGroup.Leader.Entity as Character;
+            var chrTarget = TargetGroup.Leader.Entity as Character;
+
+            // TODO : Show "swords", use events
+            charac.Map.OnFightEnter(charac);
+
+            ContextHandler.SendGameContextDestroyMessage(charac.Client);
+            ContextHandler.SendGameContextCreateMessage(charac.Client, 2);
+
+            ContextHandler.SendGameFightStartingMessage(charac.Client, FightType);
+            ContextHandler.SendGameFightJoinMessage(charac.Client, true, true, false, false, 0, FightType); // todo : define this
+            ContextHandler.SendGameFightPlacementPossiblePositionsMessage(charac.Client, this, group.TeamId);
+
+            CharacterHandler.SendLifePointsRegenEndMessage(charac.Client);
+
+            ContextHandler.SendGameFightShowFighterMessage(charac.Client, chrTarget.CurrentFighter);
+            ContextHandler.SendGameFightShowFighterMessage(charac.Client, chrSource.CurrentFighter);
+
+            ContextHandler.SendGameEntitiesDispositionMessage(charac.Client, GetAllEntities());
+
+            ContextHandler.SendGameFightUpdateTeamMessage(charac.Client, this, SourceGroup);
+            ContextHandler.SendGameFightUpdateTeamMessage(charac.Client, this, TargetGroup);
+        }
+
+        /// <summary>
+        ///   Starting a fight, from map to preparation time in fight
+        /// </summary>
+        public void StartingFight()
+        {
+            var group = new[] {SourceGroup, TargetGroup};
+
+            SourceGroup.Positions = new ushort[] {370, 355, 354};
+            // TODO : write a routine that found correct pre-fight placements
+            TargetGroup.Positions = new ushort[] {328, 356, 357};
+
+            ChangePosition(SourceGroup.Members.First() as FightGroupMember, SourceGroup.Positions.First());
+            ChangePosition(TargetGroup.Members.First() as FightGroupMember, TargetGroup.Positions.First());
+
+            SetFightState(FightState.PreparePosition);
+            Parallel.For(0, 2, i => PrepareFight(group[i].Members.First().Entity as Character, group[i]));
+        }
+
+        /// <summary>
+        ///   Cancel a fight by remove it
+        /// </summary>
+        /// <param name = "groupId">Group that have cancelled the fight</param>
+        public void CancelFight(int groupId)
+        {
+            EndFight();
+        }
 
         /// <summary>
         ///   Set the ready state of a character
@@ -105,15 +169,6 @@ namespace Stump.Server.WorldServer.Fights
         }
 
         /// <summary>
-        ///   Cancel a fight by remove it
-        /// </summary>
-        /// <param name = "groupId">Group that have cancelled the fight</param>
-        public void CancelFight(int groupId)
-        {
-            EndFight();
-        }
-
-        /// <summary>
         ///   Start a fight, in combat time.
         /// </summary>
         private void StartFight()
@@ -130,88 +185,117 @@ namespace Stump.Server.WorldServer.Fights
                 ContextHandler.SendGameFightSynchronizeMessage(charac.Client, this);
                 CharacterHandler.SendCharacterStatsListMessage(charac.Client);
             });
-            TurnStart();
+
+            m_timeline = new TimeLine(this);
+            m_timeline.TurnEnded += OnTurnEnded;
+            m_timeline.TurnStarted += OnTurnStarted;
+
+            m_timeline.UpdateToNextFighter();
+            m_timeline.StartTurnTimer();
         }
 
-        /// <summary>
-        ///   Starting a fight, from map to preparation time in fight
-        /// </summary>
-        public void StartingFight()
+        public void QuitFight(FightGroupMember fighter)
         {
-            var group = new[] {SourceGroup, TargetGroup};
-
-            SourceGroup.Positions = new ushort[] {370, 355, 354};
-            // TODO : write a routine that found correct pre-fight placements
-            TargetGroup.Positions = new ushort[] {328, 356, 357};
-
-            ChangePosition(SourceGroup.Members.First() as FightGroupMember, SourceGroup.Positions.First());
-            ChangePosition(TargetGroup.Members.First() as FightGroupMember, TargetGroup.Positions.First());
-
-            SetFightState(FightState.PreparePosition);
-            Parallel.For(0, 2, i => PrepareFight(group[i].Members.First().Entity as Character, group[i]));
-        }
-
-        /// <summary>
-        ///   Prepare to Fight method, Showing cells and characters.
-        /// </summary>
-        /// <param name = "charac"></param>
-        /// <param name = "group"></param>
-        private void PrepareFight(Character charac, FightGroup group)
-        {
-            var chrSource = SourceGroup.Leader.Entity as Character;
-            var chrTarget = TargetGroup.Leader.Entity as Character;
-
-            // TODO : Show "swords"
-            charac.Map.OnFightEnter(charac);
-
-            ContextHandler.SendGameContextDestroyMessage(charac.Client);
-            ContextHandler.SendGameContextCreateMessage(charac.Client, 2);
-
-            ContextHandler.SendGameFightStartingMessage(charac.Client, FightType);
-            ContextHandler.SendGameFightJoinMessage(charac.Client, true, true, false, false, 0, FightType); // todo : define this
-            ContextHandler.SendGameFightPlacementPossiblePositionsMessage(charac.Client, this, group.TeamId);
-
-            CharacterHandler.SendLifePointsRegenEndMessage(charac.Client);
-
-            ContextHandler.SendGameFightShowFighterMessage(charac.Client, chrTarget.CurrentFighter);
-            ContextHandler.SendGameFightShowFighterMessage(charac.Client, chrSource.CurrentFighter);
-
-            ContextHandler.SendGameEntitiesDispositionMessage(charac.Client, GetAllEntities());
-
-            ContextHandler.SendGameFightUpdateTeamMessage(charac.Client, this, SourceGroup);
-            ContextHandler.SendGameFightUpdateTeamMessage(charac.Client, this, TargetGroup);
-        }
-
-        public void FinishTurn(FightGroupMember fighter)
-        {
-            if (m_timeline.Current.IsInTurn)
-                m_hasPassed = true;
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name = "character"></param>
-        public void QuitFight(Character character)
-        {
-            FightGroupMember fighter = GetGroupMemberByCharacter((int) character.Id);
-            if (fighter == null)
-            {
-                // error
-                return;
-            }
-
             if (!fighter.IsDead)
             {
                 CallOnAllCharacters(entity =>
                 {
-                    ActionsHandler.SendSequenceStartMessage(entity.Client, character, SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH);
-                    ActionsHandler.SendGameActionFightDeathMessage(entity.Client, character);
-                    ActionsHandler.SendSequenceEndMessage(entity.Client, character, SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH);
+                    ActionsHandler.SendSequenceStartMessage(entity.Client, fighter.Entity, SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH);
+                    ActionsHandler.SendGameActionFightDeathMessage(entity.Client, fighter.Entity);
+                    ActionsHandler.SendSequenceEndMessage(entity.Client, fighter.Entity, SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH);
                 });
                 fighter.HasLeft = true;
             }
 
             CheckIfEnd();
+        }
+
+        private void OnTurnStarted(TimeLine sender, FightGroupMember currentfighter)
+        {
+            CallOnAllCharacters(charac =>
+                                ContextHandler.SendGameFightTurnStartMessage(charac.Client, (int)currentfighter.Entity.Id, (uint) TurnTime));
+        }
+
+        private void OnTurnEnded(TimeLine sender, FightGroupMember oldFighter, FightGroupMember newFighter)
+        {
+            CallOnAllCharacters(charac =>
+            {
+                ContextHandler.SendGameFightTurnEndMessage(charac.Client, oldFighter.Entity);
+                ContextHandler.SendGameFightTurnReadyRequestMessage(charac.Client, oldFighter.Entity);
+            });
+
+            /* ... WAIT IF ACTION ... */
+            m_forceEndTurnTimer = new Timer(TurnEndConfirm, oldFighter, TurnEndTimeOut, Timeout.Infinite);
+        }
+
+        public void FinishTurn(FightGroupMember fighter)
+        {
+            m_timeline.EndTurn(fighter);
+        }
+
+        public void TurnEndConfirm(FightGroupMember fighter)
+        {
+            TurnEndConfirm((object)fighter);
+        }
+
+        // todo : not thread safe
+        private void TurnEndConfirm(object args)
+        {
+            m_forceEndTurnTimer.Dispose();
+
+            if (args != null &&
+                args is FightGroupMember &&
+                m_timeline.State == TimeLineState.TurnEndRequest)
+            {
+                var fighter = args as FightGroupMember;
+
+                fighter.ResetUsedProperties();
+
+                CallOnAllCharacters(
+                    charac => ContextHandler.SendGameFightSynchronizeMessage(charac.Client, this));
+
+                m_timeline.StartTurnTimer();
+            }
+        }
+
+        public bool CheckIfEnd()
+        {
+            if (SourceGroup.GetAlivesIds().Length == 0 || TargetGroup.GetAlivesIds().Length == 0)
+            {
+                EndFight();
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public void EndFight()
+        {
+            SetFightState(FightState.Ended);
+
+            CallOnAllCharacters(charac =>
+            {
+                ContextHandler.SendGameFightEndMessage(charac.Client, this);
+
+                ContextHandler.SendGameContextDestroyMessage(charac.Client);
+                ContextHandler.SendGameContextCreateMessage(charac.Client, 1);
+                CharacterHandler.SendCharacterStatsListMessage(charac.Client);
+                CharacterHandler.SendLifePointsRegenBeginMessage(charac.Client, 60); // todo : use config to define regen rate, use events
+
+                charac.Map.OnFightLeave(charac);
+                ContextHandler.SendCurrentMapMessage(charac.Client, charac.Map.Id);
+            });
+
+            GroupManager.RemoveGroup(SourceGroup);
+            GroupManager.RemoveGroup(TargetGroup);
+
+            FightManager.RemoveFight(this);
+        }
+
+        public bool CanCastSpell(FightGroupMember caster, CellData cell, SpellLevel spell)
+        {
+            return true;
         }
 
         /// <summary>
@@ -252,11 +336,6 @@ namespace Stump.Server.WorldServer.Fights
             }
         }
 
-        public bool CanCastSpell(FightGroupMember caster, CellData cell, SpellLevel spell)
-        {
-            return true;
-        }
-
         /// <summary>
         ///   Move the fighter.
         /// </summary>
@@ -290,100 +369,12 @@ namespace Stump.Server.WorldServer.Fights
         }
 
         /// <summary>
-        ///   Create the TimeLine and Start the fight.
-        /// </summary>
-        public void TurnStart()
-        {
-            m_timeline = new TimeLine(this);
-            m_task = new Task(() =>
-            {
-                while (true)
-                {
-                    FightGroupMember next = m_timeline.GetNext();
-                    CallOnAllCharacters(
-                        charac =>
-                        ContextHandler.SendGameFightTurnStartMessage(charac.Client, (int) next.Entity.Id, TurnTime));
-
-                    // start turn ...
-
-                    m_hasPassed = false;
-                    DateTime startTime = DateTime.Now;
-                    do
-                    {
-                        Thread.Sleep(10);
-                    } while (!(m_hasPassed || (DateTime.Now - startTime).TotalMilliseconds > TurnTime));
-
-                    m_hasPassed = false;
-
-                    CallOnAllCharacters((Character charac) =>
-                    {
-                        ContextHandler.SendGameFightTurnEndMessage(charac.Client, next.Entity);
-                        ContextHandler.SendGameFightTurnReadyRequestMessage(charac.Client, next.Entity);
-                    });
-
-                    // turn ended now -> request if ready to start next turn
-
-                    next.ReadyTurnEnd = false;
-                    startTime = DateTime.Now;
-                    do
-                    {
-                        Thread.Sleep(10);
-                    } while (!(next.ReadyTurnEnd || (DateTime.Now - startTime).TotalMilliseconds > TurnEndTimeOut));
-
-                    // reset properties and send fighters info (hp, ap, mp ...)
-
-                    next.ResetUsedProperties();
-
-                    CallOnAllCharacters(
-                        charac => ContextHandler.SendGameFightSynchronizeMessage(charac.Client, this));
-                }
-            });
-            m_task.Start();
-            m_startTime = DateTime.Now;
-        }
-
-        public bool CheckIfEnd()
-        {
-            if (SourceGroup.GetAlivesIds().Length == 0 || TargetGroup.GetAlivesIds().Length == 0)
-            {
-                EndFight();
-
-                return true;
-            }
-
-            return false;
-        }
-
-        public void EndFight()
-        {
-            SetFightState(FightState.Ended);
-
-            CallOnAllCharacters(charac =>
-            {
-                ContextHandler.SendGameFightEndMessage(charac.Client, this);
-
-                ContextHandler.SendGameContextDestroyMessage(charac.Client);
-                ContextHandler.SendGameContextCreateMessage(charac.Client, 1);
-                CharacterHandler.SendCharacterStatsListMessage(charac.Client);
-                CharacterHandler.SendLifePointsRegenBeginMessage(charac.Client, 60); // todo : use config to define regen rate
-
-                charac.Map.OnFightLeave(charac);
-                ContextHandler.SendCurrentMapMessage(charac.Client, charac.Map.Id);
-            });
-
-            GroupManager.RemoveGroup(SourceGroup);
-            GroupManager.RemoveGroup(TargetGroup);
-
-            FightManager.RemoveFight(this);
-        }
-
-        /// <summary>
         ///   Change the actual state of the fight
         /// </summary>
         /// <param name = "state"></param>
         public void SetFightState(FightState state)
         {
-            FightState = state;
+            State = state;
         }
 
         /// <summary>
@@ -392,7 +383,7 @@ namespace Stump.Server.WorldServer.Fights
         /// <returns></returns>
         public int[] GetAlivesIds()
         {
-            if (!Started)
+            if (State == FightState.PreparePosition)
                 return new int[0];
 
             var result = new List<int>();
@@ -426,7 +417,7 @@ namespace Stump.Server.WorldServer.Fights
         /// <returns>If change is possible</returns>
         public bool CanChangePosition(FightGroupMember fighter, ushort cellId)
         {
-            if (FightState != FightState.PreparePosition && FightState != FightState.AskingForDuel)
+            if (State != FightState.PreparePosition && State != FightState.AskingForDuel)
                 return false;
 
             return ((FightGroup) fighter.GroupOwner).Positions.Contains(cellId);
@@ -564,27 +555,37 @@ namespace Stump.Server.WorldServer.Fights
 
         #region Properties
 
+        /// <summary>
+        ///   FightId of this fight
+        /// </summary>
+        public int Id
+        {
+            get;
+            set;
+        }
+
         public FightTypeEnum FightType
         {
             get;
             private set;
         }
 
-        /// <summary>
-        ///   The age bonus (stars) of the fight.
-        /// </summary>
-        public int AgeBonus
+        public FightState State
         {
             get;
-            private set;
+            set;
         }
 
         /// <summary>
-        ///   Duration of the fight.
+        ///   Combat is started or in prepare.
         /// </summary>
-        public int Duration
+        public bool Started
         {
-            get { return (int) (DateTime.Now - m_startTime).TotalMilliseconds; }
+            get
+            {
+                return State != FightState.AskingForDuel &&
+                       State != FightState.PreparePosition;
+            }
         }
 
         /// <summary>
@@ -606,21 +607,6 @@ namespace Stump.Server.WorldServer.Fights
         }
 
         /// <summary>
-        ///   Combat is started or in prepare.
-        /// </summary>
-        public bool Started
-        {
-            get;
-            private set;
-        }
-
-        public FightState FightState
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
         /// Get the fighter who is playing his turn
         /// </summary>
         public FightGroupMember FighterPlaying
@@ -629,12 +615,20 @@ namespace Stump.Server.WorldServer.Fights
         }
 
         /// <summary>
-        ///   FightId of this fight
+        ///   The age bonus (stars) of the fight.
         /// </summary>
-        public int Id
+        public int AgeBonus
         {
             get;
-            set;
+            private set;
+        }
+
+        /// <summary>
+        ///   Duration of the fight.
+        /// </summary>
+        public int Duration
+        {
+            get { return (int) (DateTime.Now - m_startTime).TotalMilliseconds; }
         }
 
         #endregion

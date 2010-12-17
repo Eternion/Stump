@@ -98,7 +98,7 @@ namespace Stump.Server.WorldServer.Entities
         {
             if (!InWorld)
             {
-                Position.Map.OnEnter(this);
+                Position.Map.AddEntity(this);
 
                 InWorld = true;
                 World.Instance.AddCharacter(this);
@@ -110,12 +110,12 @@ namespace Stump.Server.WorldServer.Entities
             Map lastMap = Map;
 
             NextMap = nextMap;
-            Map.OnLeave(this);
+            Map.RemoveEntity(this);
 
             Position.Map = nextMap;
             Position.CellId = Map.GetCellAfterChangeMap(Position.CellId, lastMap.GetMapNeighbourByMapid(nextMap.Id));
 
-            Map.OnEnter(this);
+            Map.AddEntity(this);
         }
 
 
@@ -133,7 +133,7 @@ namespace Stump.Server.WorldServer.Entities
                 SaveNow();
 
                 if (Map != null)
-                    Map.OnLeave(this);
+                    Map.RemoveEntity(this);
 
                 World.Instance.RemoveCharacter(this);
                 InWorld = false;

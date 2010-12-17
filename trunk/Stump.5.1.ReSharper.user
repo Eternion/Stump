@@ -9,8 +9,6 @@
   </SettingsComponent>
   <RecentFiles>
     <RecentFiles>
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Entities/f:Character.cs" caret="2524" fromTop="36" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/f:ServerBase.cs" caret="6179" fromTop="24" />
       <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:IPC/f:IpcAccessor.cs" caret="4155" fromTop="0" />
       <File id="A753FDB3-2D64-4993-8BF1-621240F18108/f:WorldServer.cs" caret="4353" fromTop="27" />
       <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/f:ContextFightHandler.cs" caret="1388" fromTop="22" />
@@ -39,10 +37,10 @@
       <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="732" fromTop="27" />
       <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Data/f:ItemLoader.cs" caret="312" fromTop="11" />
       <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="2534" fromTop="0" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Spells/f:Spell.cs" caret="2118" fromTop="63" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Spells/f:SpellCollection.cs" caret="1076" fromTop="17" />
     </RecentFiles>
     <RecentEdits>
-      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="648" fromTop="40" />
-      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="613" fromTop="35" />
       <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="1106" fromTop="34" />
       <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="1433" fromTop="33" />
       <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="1334" fromTop="34" />
@@ -71,6 +69,8 @@
       <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="4487" fromTop="39" />
       <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="4746" fromTop="47" />
       <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="2534" fromTop="0" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Spells/f:SpellCollection.cs" caret="3734" fromTop="5" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Spells/f:SpellCollection.cs" caret="1465" fromTop="16" />
     </RecentEdits>
   </RecentFiles>
   <NAntValidationSettings>
@@ -86,10 +86,10 @@
   </UnitTestRunnerNUnit>
   <CompletionStatisticsManager>
     <ItemStatistics item="Default">
-      <Item value="public" priority="115" />
+      <Item value="public" priority="117" />
       <Item value="ctor" priority="11" />
       <Item value="abstract" priority="6" />
-      <Item value="void" priority="30" />
+      <Item value="void" priority="31" />
       <Item value="string" priority="68" />
       <Item value="propg" priority="0" />
       <Item value="prop" priority="12" />
@@ -291,7 +291,7 @@
       <Item value="Parallel`0" priority="1" />
       <Item value="Predicate" priority="7" />
       <Item value="BaseClient`0" priority="7" />
-      <Item value="delegate" priority="3" />
+      <Item value="delegate" priority="4" />
       <Item value="AuthClient`0" priority="9" />
       <Item value="EventHandler`0" priority="0" />
       <Item value="Handler`0" priority="1" />
@@ -636,7 +636,7 @@
       <Item value="interface" priority="0" />
       <Item value="LivingEntity`0" priority="5" />
       <Item value="MarshalByRefObject`0" priority="0" />
-      <Item value="event" priority="3" />
+      <Item value="event" priority="5" />
       <Item value="NotifyEntityMovingStart`0" priority="0" />
       <Item value="Location" priority="2" />
       <Item value="cell" priority="0" />
@@ -754,6 +754,9 @@
       <Item value="data" priority="0" />
       <Item value="ConcurrentStack" priority="0" />
       <Item value="procentDisplay" priority="2" />
+      <Item value="SpellCollection`0" priority="0" />
+      <Item value="Spell`0" priority="0" />
+      <Item value="SpellAddedHandler`0" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.Convert">
       <Item value="ChangeType`0" priority="0" />

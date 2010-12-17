@@ -41,9 +41,9 @@ namespace Stump.Server.WorldServer.Spells
         [StageStep(Stages.One, "Loaded Spells")]
         public static void LoadSpells()
         {
-            var spellslevels = DataLoader.LoadData<SpellLevelTemplate>(false, true);
+            var spellslevels = DataLoader.LoadData<SpellLevelTemplate>();
 
-            var spells = DataLoader.LoadData<SpellTemplate>(false, false);
+            var spells = DataLoader.LoadData<SpellTemplate>();
 
             foreach (SpellTemplate spell in spells)
             {

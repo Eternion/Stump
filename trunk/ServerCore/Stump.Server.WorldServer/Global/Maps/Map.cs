@@ -168,17 +168,17 @@ namespace Stump.Server.WorldServer.Global.Maps
 
         private void EntityMovingStart(LivingEntity entity, VectorIso positioninfo)
         {
-            throw new NotImplementedException();
+
         }
 
         private void EntityMovingStop(LivingEntity entity, VectorIso positioninfo)
         {
-            throw new NotImplementedException();
+
         }
 
         private void EntityMovingEnd(LivingEntity entity, VectorIso positioninfo)
         {
-            throw new NotImplementedException();
+
         }
 
 
@@ -189,14 +189,14 @@ namespace Stump.Server.WorldServer.Global.Maps
 //             MonsterGroup monsters = Monster.GenerateGroup((MapId)this.Id);
 //             foreach (GroupMember member in monsters.Members)
 //             {
-//                 OnEnter(member.Entity);
+//                 AddEntity(member.Entity);
 //             }
         }
 
-        public override void OnEnter(Entity entity)
+        public override void AddEntity(Entity entity)
         {
-            base.OnEnter(entity);
-            ParentSpace.OnEnter(entity);
+            base.AddEntity(entity);
+            ParentSpace.AddEntity(entity);
 
             Action<Character> action =
                 charac => ContextHandler.SendGameRolePlayShowActorMessage(charac.Client, entity);
@@ -206,10 +206,10 @@ namespace Stump.Server.WorldServer.Global.Maps
             NotifySpawnedEntity(entity);
         }
 
-        public override void OnLeave(Entity entity)
+        public override void RemoveEntity(Entity entity)
         {
-            base.OnLeave(entity);
-            ParentSpace.OnLeave(entity);
+            base.RemoveEntity(entity);
+            ParentSpace.RemoveEntity(entity);
 
             Action<Character> action =
                 charac => ContextHandler.SendGameContextRemoveElementMessage(charac.Client, entity);

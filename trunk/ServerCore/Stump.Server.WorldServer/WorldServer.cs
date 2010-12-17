@@ -21,6 +21,8 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using Stump.BaseCore.Framework.Attributes;
+using Stump.BaseCore.Framework.Utils;
+using Stump.BaseCore.Framework.XmlUtils;
 using Stump.Database;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Database;

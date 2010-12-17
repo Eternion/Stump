@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.BaseCore.Framework.Extensions;
@@ -32,12 +33,55 @@ namespace Stump.Server.WorldServer.Items
     /// </summary>
     public class Inventory : IOwned
     {
+        #region Events
+
+        public delegate void ItemAddedEventHandler(Inventory sender, Item item);
+        public delegate void ItemRemovedEventHandler(Inventory sender, long guid);
+        public delegate void ItemMovedEventHandler(Inventory sender, Item item, CharacterInventoryPositionEnum oldPosition);
+        public delegate void ItemStackChangedEventHandler(Inventory sender, Item item, uint oldStack);
+
+        public event ItemAddedEventHandler ItemAdded;
+
+        public void NotifyItemAdded(Item item)
+        {
+            ItemAddedEventHandler handler = ItemAdded;
+            if (handler != null) handler(this, item);
+        }
+
+        public event ItemRemovedEventHandler ItemRemoved;
+
+        public void NotifyItemRemoved(long guid)
+        {
+            ItemRemovedEventHandler handler = ItemRemoved;
+            if (handler != null) handler(this, guid);
+        }
+
+        public event ItemMovedEventHandler ItemMoved;
+
+        public void NotifyItemMoved(Item item, CharacterInventoryPositionEnum oldPosition)
+        {
+            ItemMovedEventHandler handler = ItemMoved;
+            if (handler != null) handler(this, item, oldPosition);
+        }
+
+        public event ItemStackChangedEventHandler ItemStackChanged;
+
+        public void NotifyItemStackChanged(Item item, uint oldstack)
+        {
+            ItemStackChangedEventHandler handler = ItemStackChanged;
+            if (handler != null) handler(this, item, oldstack);
+        }
+
+        #endregion
+
         private readonly object m_sync = new object();
         private Dictionary<long, Item> m_items = new Dictionary<long, Item>();
 
-        public Inventory(LivingEntity owner)
+        public Inventory(Character owner)
         {
             Owner = owner;
+
+            ItemMoved += OnItemMove;
         }
 
         public Item[] Items
@@ -78,7 +122,7 @@ namespace Stump.Server.WorldServer.Items
                 if ((weapon = GetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON)) != null)
                 {
                     return weapon.Template is WeaponTemplate
-                               ? (uint)(weapon.Template as WeaponTemplate).CriticalHitBonus
+                               ? (uint) (weapon.Template as WeaponTemplate).CriticalHitBonus
                                : 0;
                 }
 
@@ -88,13 +132,20 @@ namespace Stump.Server.WorldServer.Items
 
         #region IOwned Members
 
-        public LivingEntity Owner
+        Entity IOwned.Owner
+        {
+            get { return Owner; }
+        }
+
+        public Character Owner
         {
             get;
             set;
         }
 
         #endregion
+
+    
 
         public void LoadInventory()
         {
@@ -156,11 +207,12 @@ namespace Stump.Server.WorldServer.Items
                     return null;
                 }
 
-                else
-                    m_items.Add(newitem.Guid, newitem);
+                m_items.Add(newitem.Guid, newitem);
+
+                NotifyItemAdded(newitem);
             }
 
-            InventoryHandler.SendObjectAddedMessage(((Character) Owner).Client, newitem);
+            InventoryHandler.SendObjectAddedMessage(Owner.Client, newitem);
             return newitem;
         }
 
@@ -184,25 +236,22 @@ namespace Stump.Server.WorldServer.Items
                     return null;
                 }
 
-                else
-                    m_items.Add(newitem.Guid, newitem);
+                m_items.Add(newitem.Guid, newitem);
+
+                NotifyItemAdded(newitem);
             }
 
-            InventoryHandler.SendObjectAddedMessage(((Character) Owner).Client, newitem);
+            InventoryHandler.SendObjectAddedMessage(Owner.Client, newitem);
             return newitem;
         }
 
         public void DeleteItem(long guid)
         {
-            lock (m_sync)
+            if (m_items.ContainsKey(guid))
             {
-                if (m_items.ContainsKey(guid))
-                    m_items.Remove(guid);
-                else return;
+                DeleteItem(guid, m_items[guid].Stack);
             }
-
-            ItemManager.RemoveItem(guid);
-            InventoryHandler.SendObjectDeletedMessage(((Character) Owner).Client, guid);
+            else return;
         }
 
         public void DeleteItem(long guid, uint amount)
@@ -220,7 +269,9 @@ namespace Stump.Server.WorldServer.Items
                         m_items.Remove(guid);
 
                         ItemManager.RemoveItem(guid);
-                        InventoryHandler.SendObjectDeletedMessage(((Character) Owner).Client, guid);
+                        InventoryHandler.SendObjectDeletedMessage(Owner.Client, guid);
+
+                        NotifyItemRemoved(guid);
                     }
                 }
                 else return;
@@ -231,6 +282,8 @@ namespace Stump.Server.WorldServer.Items
         {
             if (!m_items.ContainsKey(guid))
                 return;
+
+            var oldPosition = m_items[guid].Position;
 
             Item equipedItem = null;
             if (position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED &&
@@ -259,17 +312,21 @@ namespace Stump.Server.WorldServer.Items
             }
             else // else we just move the item
             {
+                
+
                 itemToMove.Position = position;
-                InventoryHandler.SendObjectMovementMessage(((Character) Owner).Client, itemToMove);
+                InventoryHandler.SendObjectMovementMessage(Owner.Client, itemToMove);
 
                 itemToMove.Save();
+
+                
             }
 
-            OnItemMove();
+            NotifyItemMoved(itemToMove, oldPosition);
         }
 
         // TODO : Get binded skin to item
-        public void OnItemMove()
+        private void OnItemMove(Inventory sender, Item item, CharacterInventoryPositionEnum oldPosition)
         {
             // Update entity skin
             List<short> newskins = Owner.Skins.Take(1).ToList();
@@ -297,8 +354,8 @@ namespace Stump.Server.WorldServer.Items
             Owner.Skins = newskins;
 
             ApplyItemsEffect();
-            InventoryHandler.SendInventoryWeightMessage(((Character) Owner).Client);
-            CharacterHandler.SendCharacterStatsListMessage(((Character) Owner).Client);
+            InventoryHandler.SendInventoryWeightMessage(Owner.Client);
+            CharacterHandler.SendCharacterStatsListMessage(Owner.Client);
         }
 
         public void ChangeItemOwner(Character newOwner, long guid, uint amount)
@@ -326,19 +383,27 @@ namespace Stump.Server.WorldServer.Items
 
         public void StackItem(Item item, uint amount)
         {
+            var oldStack = item.Stack;
+
             item.StackItem(amount);
-            InventoryHandler.SendObjectQuantityMessage(((Character) Owner).Client, item);
+            InventoryHandler.SendObjectQuantityMessage(Owner.Client, item);
 
             item.Save();
+
+            NotifyItemStackChanged(item, oldStack);
         }
 
 
         public void UnStackItem(Item item, uint amount)
         {
+            var oldStack = item.Stack;
+
             item.UnStackItem(amount);
-            InventoryHandler.SendObjectQuantityMessage(((Character) Owner).Client, item);
+            InventoryHandler.SendObjectQuantityMessage(Owner.Client, item);
 
             item.Save();
+
+            NotifyItemStackChanged(item, oldStack);
         }
 
         public Item CutItem(Item item, uint amount)
@@ -356,7 +421,7 @@ namespace Stump.Server.WorldServer.Items
             }
 
 
-            InventoryHandler.SendObjectAddedMessage(((Character) Owner).Client, newitem);
+            InventoryHandler.SendObjectAddedMessage(Owner.Client, newitem);
             return newitem;
         }
 

@@ -68,7 +68,7 @@ namespace Stump.Server.WorldServer.Global
             }
         }
 
-        public virtual void OnEnter(Entity entity)
+        public virtual void AddEntity(Entity entity)
         {
             if (Entities.ContainsKey(entity.Id))
             {
@@ -89,7 +89,7 @@ namespace Stump.Server.WorldServer.Global
                 EntityAdded(entity);
         }
 
-        public virtual void OnLeave(Entity entity)
+        public virtual void RemoveEntity(Entity entity)
         {
             Entity removedEntity;
             if (!Entities.TryRemove(entity.Id, out removedEntity))
@@ -121,7 +121,21 @@ namespace Stump.Server.WorldServer.Global
         /// <returns></returns>
         public Entity Get(long id)
         {
-            return Entities[id];
+            return !Entities.ContainsKey(id) ? null : Entities[id];
+        }
+
+        /// <summary>
+        ///   Get an entity with the given id.
+        /// </summary>
+        /// <param name = "id"></param>
+        /// <returns></returns>
+        public T Get<T>(long id) where T : Entity
+        {
+            Entity entity;
+            if ((entity = Get(id)) != null && entity is T)
+                return entity as T;
+
+            else return default(T);
         }
 
         public IEnumerable<Character> GetAllCharacters()

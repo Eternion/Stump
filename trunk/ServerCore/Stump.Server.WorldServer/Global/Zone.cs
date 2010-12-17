@@ -28,18 +28,18 @@ namespace Stump.Server.WorldServer.Global
             get { return WorldSpaceType.Zone; }
         }
 
-        public override void OnEnter(Entity entity)
+        public override void AddEntity(Entity entity)
         {
-            base.OnEnter(entity);
+            base.AddEntity(entity);
 
-            ParentSpace.OnEnter(entity);
+            ParentSpace.AddEntity(entity);
         }
 
-        public override void OnLeave(Entity entity)
+        public override void RemoveEntity(Entity entity)
         {
-            base.OnLeave(entity);
+            base.RemoveEntity(entity);
 
-            ParentSpace.OnLeave(entity);
+            ParentSpace.RemoveEntity(entity);
         }
 
         #region Properties
