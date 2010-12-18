@@ -16,37 +16,22 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using Stump.BaseCore.Framework.IO;
-using Stump.DofusProtocol.Enums;
-using Stump.Server.BaseServer.Commands;
-using Stump.Server.WorldServer.Entities;
-using Stump.Server.WorldServer.Handlers;
-
-namespace Stump.Server.WorldServer.Commands
+namespace Stump.Tools.UtilityBot.FileParser
 {
-    public class TriggerChat : TriggerBase
+    public enum ExecutionType
     {
-        public TriggerChat(StringStream args, Character character)
-            : base(args, character == null ? RoleEnum.Administrator : character.Client.Account.Role)
-        {
-            Character = character;
-        }
+        FunctionCall,
+        VariableAssignation,
+        ControlSequence,
+        ControlSequenceEnd,
+        Unknown,
+    }
 
-        public TriggerChat(StringStream args, RoleEnum role)
-            : base(args, role)
-        {
-            Character = null;
-        }
-
-        public Character Character
+    public interface IExecution
+    {
+        ExecutionType Type
         {
             get;
-            private set;
-        }
-
-        public override void Reply(string text)
-        {
-            ChatHandler.SendChatServerMessage(Character.Client, text);
         }
     }
 }

@@ -92,37 +92,11 @@ namespace Stump.Server.WorldServer.Entities
         }
 
         /// <summary>
-        ///   Spawn the character on the map. It can be called once.
+        ///   Send a packet to this character.
         /// </summary>
-        public void FirstSpawnCharacter()
+        public void Send(Message message)
         {
-            if (!InWorld)
-            {
-                Position.Map.AddEntity(this);
-
-                InWorld = true;
-                World.Instance.AddCharacter(this);
-            }
-        }
-
-        public void ChangeMap(Map nextMap)
-        {
-            Map lastMap = Map;
-
-            NextMap = nextMap;
-            Map.RemoveEntity(this);
-
-            Position.Map = nextMap;
-            Position.CellId = Map.GetCellAfterChangeMap(Position.CellId, lastMap.GetMapNeighbourByMapid(nextMap.Id));
-
-            Map.AddEntity(this);
-        }
-
-
-        public void SetKamas(int amount)
-        {
-            Kamas = amount;
-            InventoryHandler.SendKamasUpdateMessage(Client, amount);
+            Client.Send(message);
         }
 
         public void LogOut()
@@ -140,17 +114,57 @@ namespace Stump.Server.WorldServer.Entities
             }
         }
 
-        public void SendChatMessage(string msg, string from)
+        /// <summary>
+        ///   Spawn the character on the map. It can be called once.
+        /// </summary>
+        public void FirstSpawn()
         {
-            ChatHandler.SendChatServerCopyMessage(Client, Client.ActiveCharacter, ChannelId.Information, StringUtils.HtmlEntities(msg));
+            if (!InWorld)
+            {
+                Position.Map.AddEntity(this);
+
+                InWorld = true;
+                World.Instance.AddCharacter(this);
+            }
         }
 
-        /// <summary>
-        ///   Send a packet to this character.
-        /// </summary>
-        public void Send(Message message)
+        public void ChangeMap(Map nextMap)
         {
-            Client.Send(message);
+            Map lastMap = Map;
+
+            NextMap = nextMap;
+            Map.RemoveEntity(this);
+
+            var neighbour = lastMap.GetMapNeighbourByMapid(nextMap.Id);
+
+            Position.Map = nextMap;
+
+            if (neighbour != MapNeighbour.None)
+                Position.CellId = Map.GetCellAfterChangeMap(Position.CellId, neighbour);
+
+            Map.AddEntity(this);
+        }
+
+
+        public void ChangeMap(Map nextMap, ushort cellId)
+        {
+            Map lastMap = Map;
+
+            NextMap = nextMap;
+            Map.RemoveEntity(this);
+
+            var neighbour = lastMap.GetMapNeighbourByMapid(nextMap.Id);
+
+            Position.Map = nextMap;
+            Position.CellId = cellId;
+
+            Map.AddEntity(this);
+        }
+
+        public void SetKamas(int amount)
+        {
+            Kamas = amount;
+            InventoryHandler.SendKamasUpdateMessage(Client, amount);
         }
 
         public override GameRolePlayActorInformations ToNetworkActor()
@@ -164,7 +178,36 @@ namespace Stump.Server.WorldServer.Entities
                 GetActorAlignmentInformations());
         }
 
+        public override FightTeamMemberInformations ToNetworkTeamMember()
+        {
+            if (!IsInFight)
+                return null;
+
+            return new FightTeamMemberCharacterInformations(
+                (int) Id,
+                Name,
+                (uint) Level);
+        }
+
+        public override GameFightFighterInformations ToNetworkFighter()
+        {
+            if (!IsInFight)
+                return null;
+
+            return new GameFightCharacterInformations(
+                (int)Id,
+                ToNetworkEntityLook(),
+                GetEntityDisposition(),
+                (uint)( (FightGroup)Group ).TeamId,
+                !( CurrentFighter.IsDead || CurrentFighter.IsReady ),
+                CurrentFighter.GetFightMinimalStats(),
+                Name,
+                (uint)Level,
+                GetActorAlignmentInformations());
+        }
+
         // todo : complete this
+
         public HumanInformations GetHumanInformations()
         {
             return new HumanInformations(
@@ -177,6 +220,7 @@ namespace Stump.Server.WorldServer.Entities
         }
 
         // todo : complete this
+
         public ActorAlignmentInformations GetActorAlignmentInformations()
         {
             return new ActorAlignmentInformations(
@@ -272,33 +316,5 @@ namespace Stump.Server.WorldServer.Entities
         }
 
         #endregion
-
-        public override FightTeamMemberInformations ToNetworkTeamMember()
-        {
-            if (!IsInFight)
-                return null;
-
-            return new FightTeamMemberCharacterInformations(
-                (int) Id,
-                Name,
-                (uint) Level);
-        }
-
-        public override GameFightFighterInformations ToNetworkFighter()
-        {
-            if (!IsInFight)
-                return null;
-
-            return new GameFightCharacterInformations(
-                (int)Id,
-                ToNetworkEntityLook(),
-                GetEntityDisposition(),
-                (uint)( (FightGroup)Group ).TeamId,
-                !( CurrentFighter.IsDead || CurrentFighter.IsReady ),
-                CurrentFighter.GetFightMinimalStats(),
-                Name,
-                (uint)Level,
-                GetActorAlignmentInformations());
-        }
     }
 }

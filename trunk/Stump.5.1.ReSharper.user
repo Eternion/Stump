@@ -9,68 +9,65 @@
   </SettingsComponent>
   <RecentFiles>
     <RecentFiles>
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:IPC/f:IpcAccessor.cs" caret="4155" fromTop="0" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/f:WorldServer.cs" caret="4353" fromTop="27" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/f:ContextFightHandler.cs" caret="1388" fromTop="22" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/d:RolePlay/f:ContextRoleplayStatsHandler.cs" caret="1210" fromTop="16" />
-      <File id="DBF77B90-0AAF-4EEC-B997-478E88CEEDB4/d:Handlers/d:Connection/f:ConnectionHandler.cs" caret="1249" fromTop="13" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/f:ContextHandler.cs" caret="1403" fromTop="24" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Handler/f:HandlerManager.cs" caret="2445" fromTop="15" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/f:Settings.cs" caret="1190" fromTop="24" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Data/f:MonsterLoader.cs" caret="1624" fromTop="38" />
-      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/f:SpellLevel.cs" caret="976" fromTop="14" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Breeds/f:BaseBreed.cs" caret="2593" fromTop="0" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/d:D2oTool/f:D2oFieldDefinition.cs" caret="2345" fromTop="26" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/d:D2oTool/f:D2oClassDefinition.cs" caret="2135" fromTop="0" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/d:D2oTool/f:D2oFile.cs" caret="6692" fromTop="139" />
       <File id="4B1F615A-F1E0-4132-8E4B-542B7A453FE9/d:Core/f:Proxy.cs" caret="1317" fromTop="24" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Breeds/f:BreedManager.cs" caret="1896" fromTop="24" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Effects/f:EffectManager.cs" caret="3407" fromTop="30" />
       <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/f:ConsoleBase.cs" caret="3483" fromTop="38" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Items/f:ItemManager.cs" caret="4107" fromTop="9" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Entities/f:Monster.cs" caret="2395" fromTop="5" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Data/f:MapLoader.cs" caret="1658" fromTop="22" />
       <File id="53C844EC-189B-4803-8128-48ED9964ADA8/f:Program.cs" caret="460" fromTop="17" />
       <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Initializing/f:StageManager.cs" caret="3657" fromTop="17" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/f:World.Init.cs" caret="2386" fromTop="18" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Spells/f:SpellManager.cs" caret="1842" fromTop="14" />
       <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="732" fromTop="27" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Data/f:ItemLoader.cs" caret="312" fromTop="11" />
       <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="2534" fromTop="0" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Spells/f:Spell.cs" caret="2118" fromTop="63" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Spells/f:SpellCollection.cs" caret="1076" fromTop="17" />
+      <File id="23616127-D1F0-4AB8-B1E8-EC42C1578F6D/f:FormMain.cs" caret="5995" fromTop="10" />
+      <File id="23616127-D1F0-4AB8-B1E8-EC42C1578F6D/f:Parser.cs" caret="1162" fromTop="11" />
+      <File id="23616127-D1F0-4AB8-B1E8-EC42C1578F6D/f:Program.cs" caret="1211" fromTop="26" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:MapPoint.cs" caret="508" fromTop="23" />
+      <File id="23616127-D1F0-4AB8-B1E8-EC42C1578F6D/f:Sniffer.cs" caret="1174" fromTop="0" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/f:QuestRewardKamas.cs" caret="896" fromTop="17" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/f:SuperArea.cs" caret="1216" fromTop="27" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/f:SubArea.cs" caret="976" fromTop="20" />
+      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:XmlUtils/f:XmlConfigFile.cs" caret="4365" fromTop="21" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/f:utilitybot_config.xml" caret="175" fromTop="3" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/f:utilitybot_config.xsd" caret="281" fromTop="5" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:VariableAssignation.cs" caret="2138" fromTop="16" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Unknown.cs" caret="0" fromTop="0" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:FunctionCall.cs" caret="4299" fromTop="22" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:ControlSequence.cs" caret="2062" fromTop="12" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileWriter/f:FileWriter.cs" caret="2153" fromTop="14" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileWriter/f:CsFileWriter.cs" caret="6596" fromTop="16" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/f:Program.cs" caret="1352" fromTop="21" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="5765" fromTop="3" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="28754" fromTop="9" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/f:Bot.cs" caret="2666" fromTop="48" />
     </RecentFiles>
     <RecentEdits>
-      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="1106" fromTop="34" />
-      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="1433" fromTop="33" />
-      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="1334" fromTop="34" />
-      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="277" fromTop="12" />
-      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="245" fromTop="11" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/f:World.Init.cs" caret="5074" fromTop="26" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/f:World.Init.cs" caret="5074" fromTop="144" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/f:World.Init.cs" caret="1994" fromTop="19" />
-      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="118" fromTop="6" />
-      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:IO/f:ConsoleProcent.cs" caret="614" fromTop="9" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/f:World.Init.cs" caret="2386" fromTop="25" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/f:World.Init.cs" caret="2054" fromTop="3" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="6333" fromTop="31" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="6333" fromTop="27" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="6333" fromTop="24" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="6333" fromTop="187" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="5128" fromTop="18" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="5128" fromTop="30" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="5128" fromTop="23" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="5128" fromTop="20" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Spells/f:SpellManager.cs" caret="1842" fromTop="14" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="2262" fromTop="0" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="3772" fromTop="43" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="3090" fromTop="18" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="3520" fromTop="7" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="4487" fromTop="39" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="4746" fromTop="47" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="2534" fromTop="0" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Spells/f:SpellCollection.cs" caret="3734" fromTop="5" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Spells/f:SpellCollection.cs" caret="1465" fromTop="16" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:VariableAssignation.cs" caret="3054" fromTop="20" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:VariableAssignation.cs" caret="3701" fromTop="34" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="27476" fromTop="10" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="27894" fromTop="24" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="28330" fromTop="29" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="24" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:FunctionCall.cs" caret="2317" fromTop="10" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:FunctionCall.cs" caret="2679" fromTop="21" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:FunctionCall.cs" caret="3189" fromTop="30" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:FunctionCall.cs" caret="3519" fromTop="14" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:FunctionCall.cs" caret="4299" fromTop="31" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="7" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="7" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="19" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="25" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="31" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="31" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="22" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="13" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="7" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="22" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="32" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="20" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="13" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="6328" fromTop="12" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="6561" fromTop="22" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="4" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="23" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26557" fromTop="24" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/f:Bot.cs" caret="2117" fromTop="30" />
     </RecentEdits>
   </RecentFiles>
   <NAntValidationSettings>
@@ -86,21 +83,21 @@
   </UnitTestRunnerNUnit>
   <CompletionStatisticsManager>
     <ItemStatistics item="Default">
-      <Item value="public" priority="117" />
-      <Item value="ctor" priority="11" />
+      <Item value="public" priority="130" />
+      <Item value="ctor" priority="12" />
       <Item value="abstract" priority="6" />
-      <Item value="void" priority="31" />
-      <Item value="string" priority="68" />
+      <Item value="void" priority="35" />
+      <Item value="string" priority="78" />
       <Item value="propg" priority="0" />
       <Item value="prop" priority="12" />
-      <Item value="bool" priority="30" />
+      <Item value="bool" priority="33" />
       <Item value="object" priority="5" />
       <Item value="T`0" priority="16" />
       <Item value="IConvertible`0" priority="2" />
       <Item value="ICustomFormatter`0" priority="0" />
       <Item value="default" priority="7" />
-      <Item value="return" priority="108" />
-      <Item value="if" priority="94" />
+      <Item value="return" priority="111" />
+      <Item value="if" priority="99" />
       <Item value="typeof" priority="22" />
       <Item value="is" priority="17" />
       <Item value="Convert`0" priority="0" />
@@ -110,14 +107,14 @@
       <Item value="Value" priority="13" />
       <Item value="TypeConverter`0" priority="0" />
       <Item value="throw" priority="12" />
-      <Item value="new" priority="126" />
+      <Item value="new" priority="130" />
       <Item value="Exception" priority="5" />
       <Item value="DefaultValue" priority="6" />
       <Item value="converter" priority="0" />
       <Item value="override" priority="12" />
       <Item value="SetStringValue`0" priority="0" />
       <Item value="value" priority="10" />
-      <Item value="private" priority="24" />
+      <Item value="private" priority="26" />
       <Item value="name" priority="2" />
       <Item value="Name" priority="8" />
       <Item value="ShortName" priority="4" />
@@ -125,31 +122,31 @@
       <Item value="userRole" priority="0" />
       <Item value="internal" priority="5" />
       <Item value="ICommandParameter" priority="3" />
-      <Item value="while" priority="4" />
+      <Item value="while" priority="5" />
       <Item value="Args" priority="0" />
       <Item value="word" priority="6" />
-      <Item value="var" priority="16" />
+      <Item value="var" priority="17" />
       <Item value="Regex`0" priority="0" />
       <Item value="matchIsNamed" priority="2" />
       <Item value="parameters" priority="2" />
       <Item value="using" priority="16" />
       <Item value="System" priority="10" />
       <Item value="Linq" priority="8" />
-      <Item value="entry" priority="41" />
-      <Item value="static" priority="31" />
-      <Item value="true" priority="21" />
+      <Item value="entry" priority="43" />
+      <Item value="static" priority="38" />
+      <Item value="true" priority="22" />
       <Item value="CommandBase`0" priority="8" />
-      <Item value="foreach" priority="10" />
+      <Item value="foreach" priority="13" />
       <Item value="commandParameters" priority="3" />
       <Item value="TriggerBase`0" priority="6" />
       <Item value="virtual" priority="6" />
       <Item value="trigger" priority="27" />
-      <Item value="false" priority="29" />
+      <Item value="false" priority="30" />
       <Item value="inQuote" priority="0" />
       <Item value="m_str" priority="5" />
       <Item value="m_pos" priority="1" />
       <Item value="CommandsParameters" priority="3" />
-      <Item value="List" priority="15" />
+      <Item value="List" priority="17" />
       <Item value="List&lt;ICommandParameter&lt;object&gt;&gt;" priority="0" />
       <Item value="matchingParams" priority="3" />
       <Item value="forr" priority="0" />
@@ -166,7 +163,7 @@
       <Item value="Dictionary&lt;string,CommandBase&gt;" priority="0" />
       <Item value="callAsm" priority="1" />
       <Item value="GetTypes`0" priority="0" />
-      <Item value="null" priority="23" />
+      <Item value="null" priority="25" />
       <Item value="asm" priority="1" />
       <Item value="m_commandsByAlias" priority="5" />
       <Item value="thr" priority="2" />
@@ -177,9 +174,9 @@
       <Item value="Parameters" priority="4" />
       <Item value="CommandParameter&lt;object&gt;" priority="1" />
       <Item value="CommandParameter" priority="2" />
-      <Item value="IEnumerable" priority="5" />
+      <Item value="IEnumerable" priority="10" />
       <Item value="ICommandParameter`0" priority="5" />
-      <Item value="this" priority="31" />
+      <Item value="this" priority="33" />
       <Item value="CommandsManager`0" priority="1" />
       <Item value="CommandManager" priority="3" />
       <Item value="Console`0" priority="20" />
@@ -193,10 +190,10 @@
       <Item value="Administrator" priority="0" />
       <Item value="ListAddFailureEnum`0" priority="2" />
       <Item value="CommandParameter&lt;&gt;" priority="4" />
-      <Item value="int" priority="43" />
+      <Item value="int" priority="44" />
       <Item value="AuthSubCommand`0" priority="1" />
       <Item value="StringStream" priority="0" />
-      <Item value="ThreadStaticAttribute`0" priority="0" />
+      <Item value="ThreadStaticAttribute`0" priority="1" />
       <Item value="Timeout`0" priority="3" />
       <Item value="key" priority="0" />
       <Item value="char" priority="3" />
@@ -224,7 +221,7 @@
       <Item value="AuthConsole`0" priority="0" />
       <Item value="logger" priority="10" />
       <Item value="Running" priority="0" />
-      <Item value="for" priority="1" />
+      <Item value="for" priority="2" />
       <Item value="startIndex" priority="1" />
       <Item value="containerChar" priority="1" />
       <Item value="inContainer" priority="2" />
@@ -241,7 +238,7 @@
       <Item value="DarkCyan" priority="0" />
       <Item value="color" priority="0" />
       <Item value="MessageListener" priority="4" />
-      <Item value="class" priority="4" />
+      <Item value="class" priority="5" />
       <Item value="None" priority="0" />
       <Item value="ParentCommand" priority="0" />
       <Item value="ShutdownCommand`0" priority="0" />
@@ -317,7 +314,7 @@
       <Item value="ActiveRecordMediator`0" priority="0" />
       <Item value="C`0" priority="0" />
       <Item value="Delegate`0" priority="1" />
-      <Item value="method" priority="1" />
+      <Item value="method" priority="2" />
       <Item value="Count`1" priority="1" />
       <Item value="Contains`1" priority="0" />
       <Item value="base" priority="8" />
@@ -339,7 +336,7 @@
       <Item value="SelectAllSqlUpdateFileOf" priority="0" />
       <Item value="currentVersion" priority="0" />
       <Item value="revisionfile" priority="0" />
-      <Item value="Last`1" priority="0" />
+      <Item value="Last`1" priority="1" />
       <Item value="wasAlreadyConnected" priority="0" />
       <Item value="HandlerAuth`0" priority="0" />
       <Item value="handle" priority="34" />
@@ -356,7 +353,7 @@
       <Item value="Singleton" priority="0" />
       <Item value="WorldClient`0" priority="5" />
       <Item value="WorldConsole`0" priority="0" />
-      <Item value="element" priority="2" />
+      <Item value="element" priority="3" />
       <Item value="FormatterServices`0" priority="0" />
       <Item value="SerializableAttribute`0" priority="0" />
       <Item value="XmlSerializer`0" priority="0" />
@@ -370,7 +367,7 @@
       <Item value="Definitions" priority="5" />
       <Item value="XmlElement`0" priority="2" />
       <Item value="ReadElement`0" priority="0" />
-      <Item value="Variable" priority="6" />
+      <Item value="Variable" priority="9" />
       <Item value="IdGenerator`0" priority="0" />
       <Item value="WorldServerInformation" priority="0" />
       <Item value="ServerName" priority="0" />
@@ -447,7 +444,7 @@
       <Item value="Client" priority="2" />
       <Item value="Settings`0" priority="0" />
       <Item value="attributes" priority="0" />
-      <Item value="Length" priority="2" />
+      <Item value="Length" priority="4" />
       <Item value="Cast`1" priority="1" />
       <Item value="AttributeAssociatedFile`0" priority="0" />
       <Item value="D2oDir" priority="1" />
@@ -757,6 +754,47 @@
       <Item value="SpellCollection`0" priority="0" />
       <Item value="Spell`0" priority="0" />
       <Item value="SpellAddedHandler`0" priority="0" />
+      <Item value="IrcConnection" priority="0" />
+      <Item value="BotChannels" priority="0" />
+      <Item value="FileWriter`0" priority="1" />
+      <Item value="Stream`0" priority="0" />
+      <Item value="WriteAccessModifier`0" priority="0" />
+      <Item value="modifier" priority="0" />
+      <Item value="enumName" priority="0" />
+      <Item value="IncreaseIntendation`0" priority="0" />
+      <Item value="WriteComment`0" priority="0" />
+      <Item value="comment" priority="2" />
+      <Item value="NameReplacementRules" priority="1" />
+      <Item value="IDictionary" priority="0" />
+      <Item value="namesReplacementsRule" priority="1" />
+      <Item value="BeforeParsingReplacementRules" priority="0" />
+      <Item value="beforeParsingReplacementsRule" priority="1" />
+      <Item value="AfterParsingReplacementRules" priority="0" />
+      <Item value="afterParsingReplacementsRule" priority="1" />
+      <Item value="IgnoredLinesRules" priority="0" />
+      <Item value="ignoredLinesRules" priority="1" />
+      <Item value="filename" priority="0" />
+      <Item value="Match`0" priority="1" />
+      <Item value="match_constructor" priority="1" />
+      <Item value="IExecution`0" priority="0" />
+      <Item value="BuildMethodInfoFromMatch`0" priority="0" />
+      <Item value="matchMethods" priority="0" />
+      <Item value="BuildMethodElementsFromMatch`0" priority="0" />
+      <Item value="Select`2" priority="0" />
+      <Item value="Bot`0" priority="1" />
+      <Item value="m_replaceRules" priority="0" />
+      <Item value="m_beforeParsingRules" priority="0" />
+      <Item value="m_afterParsingRules" priority="0" />
+      <Item value="m_ignoredLines" priority="0" />
+      <Item value="Bot" priority="0" />
+      <Item value="BotSingleton" priority="0" />
+      <Item value="Thread`0" priority="0" />
+      <Item value="AsParser`0" priority="1" />
+      <Item value="parser" priority="5" />
+      <Item value="namesReplacementsRules" priority="0" />
+      <Item value="beforeParsingReplacementsRules" priority="0" />
+      <Item value="afterParsingReplacementsRules" priority="0" />
+      <Item value="IgnoreMethods" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.Convert">
       <Item value="ChangeType`0" priority="0" />
@@ -780,6 +818,7 @@
       <Item value="Split`0" priority="0" />
       <Item value="PadLeft`0" priority="0" />
       <Item value="PadRight`0" priority="0" />
+      <Item value="Trim`0" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.StringComparison">
       <Item value="InvariantCultureIgnoreCase" priority="0" />
@@ -838,7 +877,7 @@
       <Item value="ArgumentExists`1" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Collections.Generic.List`1">
-      <Item value="Add`0" priority="4" />
+      <Item value="Add`0" priority="5" />
       <Item value="Count" priority="4" />
       <Item value="Contains`0" priority="2" />
       <Item value="OrderBy`2" priority="0" />
@@ -848,6 +887,9 @@
       <Item value="Insert`0" priority="0" />
       <Item value="FindIndex`0" priority="0" />
       <Item value="AddRange`0" priority="1" />
+      <Item value="Clear`0" priority="0" />
+      <Item value="Where`1" priority="0" />
+      <Item value="RemoveAll`0" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Stump.Server.BaseServer.Commands.CommandBase">
       <Item value="RequieredRole" priority="0" />
@@ -927,7 +969,7 @@
       <Item value="ToString`0" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.Threading.Thread">
-      <Item value="Sleep`0" priority="1" />
+      <Item value="Sleep`0" priority="2" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.Threading.Timeout">
       <Item value="Infinite" priority="4" />
@@ -981,8 +1023,8 @@
       <Item value="Port" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Collections.Generic.KeyValuePair`2">
-      <Item value="Value" priority="3" />
-      <Item value="Key" priority="3" />
+      <Item value="Value" priority="6" />
+      <Item value="Key" priority="6" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Linq.IOrderedEnumerable`1">
       <Item value="ToDictionary`3" priority="1" />
@@ -1520,8 +1562,9 @@
     <ItemStatistics item="Qualified:System.Collections.Generic.Dictionary`2">
       <Item value="Values" priority="0" />
       <Item value="ContainsKey`0" priority="0" />
-      <Item value="Add`0" priority="0" />
-      <Item value="Count" priority="1" />
+      <Item value="Add`0" priority="3" />
+      <Item value="Count" priority="2" />
+      <Item value="Clear`0" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Stump.Server.WorldServer.Spells.Spell">
       <Item value="ToNetworkSpell`0" priority="0" />
@@ -1688,6 +1731,19 @@
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Boolean">
       <Item value="Equals`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Stump.Tools.UtilityBot.Bot">
+      <Item value="DofusSourcePath" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Tools.UtilityBot.FileParser.AsParser">
+      <Item value="Methods" priority="0" />
+      <Item value="MethodsElements" priority="0" />
+      <Item value="Constructor" priority="0" />
+      <Item value="ConstructorElements" priority="0" />
+      <Item value="Fields" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Tools.UtilityBot.FileWriter.FieldInfo">
+      <Item value="Name" priority="1" />
     </ItemStatistics>
   </CompletionStatisticsManager>
 </Configuration>

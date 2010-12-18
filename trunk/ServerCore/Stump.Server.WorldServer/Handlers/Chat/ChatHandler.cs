@@ -61,6 +61,11 @@ namespace Stump.Server.WorldServer.Handlers
             }
         }
 
+        public static void SendChatServerMessage(WorldClient client, string message)
+        {
+            SendChatServerMessage(client, ChannelId.Information, message, 0, "", 0, "Server", 0);
+        }
+
         public static void SendChatServerMessage(WorldClient client, Character sender, ChannelId channel, string message)
         {
             SendChatServerMessage(client, sender, channel, message, 0, "");
@@ -80,6 +85,19 @@ namespace Stump.Server.WorldServer.Handlers
                             (int)sender.Id,
                             sender.Name,
                             (int)sender.Client.Account.Id));
+        }
+
+        public static void SendChatServerMessage(WorldClient client, ChannelId channel, string message,
+                                         int timestamp, string fingerprint, int senderId, string senderName, int accountId)
+        {
+            client.Send(new ChatServerMessage(
+                            (uint)channel,
+                            message,
+                            (uint)timestamp,
+                            fingerprint,
+                            senderId,
+                            senderName,
+                            accountId));
         }
 
         public static void SendChatServerCopyMessage(WorldClient client, Character receiver, ChannelId channel,

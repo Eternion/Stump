@@ -16,37 +16,25 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using Stump.BaseCore.Framework.IO;
-using Stump.DofusProtocol.Enums;
-using Stump.Server.BaseServer.Commands;
-using Stump.Server.WorldServer.Entities;
-using Stump.Server.WorldServer.Handlers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using Stump.BaseCore.Framework.XmlUtils;
 
-namespace Stump.Server.WorldServer.Commands
+namespace Stump.Tools.UtilityBot
 {
-    public class TriggerChat : TriggerBase
+    internal class Program
     {
-        public TriggerChat(StringStream args, Character character)
-            : base(args, character == null ? RoleEnum.Administrator : character.Client.Account.Role)
-        {
-            Character = character;
-        }
+        public static Bot BotSingleton;
 
-        public TriggerChat(StringStream args, RoleEnum role)
-            : base(args, role)
+        private static void Main(string[] args)
         {
-            Character = null;
-        }
+            BotSingleton = new Bot();
 
-        public Character Character
-        {
-            get;
-            private set;
-        }
-
-        public override void Reply(string text)
-        {
-            ChatHandler.SendChatServerMessage(Character.Client, text);
+            while (true)
+                Thread.Sleep(10);
         }
     }
 }
