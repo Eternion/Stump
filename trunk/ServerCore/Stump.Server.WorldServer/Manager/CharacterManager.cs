@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Database;
@@ -26,12 +27,6 @@ namespace Stump.Server.WorldServer.Database
 {
     public static class CharacterManager
     {
-        public static bool CharacterExists(string charactername)
-        {
-            CharacterRecord cr = CharacterRecord.FindCharacterByCharacterName(charactername);
-
-            return cr != null;
-        }
 
         public static List<CharacterRecord> GetCharactersByAccount(WorldClient client)
         {
@@ -48,13 +43,19 @@ namespace Stump.Server.WorldServer.Database
             return characters;
         }
 
+        public static int GetCharactersNumberByAccount(WorldClient client)
+        {
+            return IpcAccessor.Instance.ProxyObject.GetAccountCharacterCount(WorldServer.ServerInformation, client.Account.Id);
+        }
+
         public static bool CreateCharacter(CharacterRecord character, WorldClient client)
         {
             if (client.Characters == null)
                 client.Characters = new List<CharacterRecord>(5);
+
             character.Save();
 
-            client.Characters.Insert(0, character);
+            client.Characters.Add(character);
 
             IpcAccessor.Instance.ProxyObject.AddAccountCharacter(WorldServer.ServerInformation,
                                                                  client.Account.Id,
@@ -66,6 +67,7 @@ namespace Stump.Server.WorldServer.Database
         public static void DeleteCharacter(CharacterRecord character, WorldClient client)
         {
             client.Characters.Remove(character);
+
             World.Instance.TaskPool.EnqueueTask(() =>
             {
                 character.DeleteAssociatedRecords();
@@ -76,5 +78,45 @@ namespace Stump.Server.WorldServer.Database
                                                                         (uint) character.Id);
             });
         }
+
+
+        #region Character Name Random Generation
+
+        private const string voyelles = "aeiouy";
+
+        private const string consonnes = "bcdfghjklmnpqrstvwxz";
+
+        public static string GenerateName()
+        {
+            string name;
+
+            do
+            {
+                var rand = new Random();
+                int namelen = rand.Next(5, 10);
+                name = string.Empty;
+
+                name += char.ToUpper(RandomConsonne(rand));
+
+                for (int i = 0; i < namelen - 1; i++)
+                {
+                    name += (i % 2 == 1) ? RandomConsonne(rand) : RandomVoyelle(rand);
+                }
+            } while (CharacterRecord.IsNameExists(name));
+
+            return name;
+        }
+
+        private static char RandomVoyelle(Random rand)
+        {
+            return voyelles[rand.Next(0, voyelles.Length - 1)];
+        }
+
+        private static char RandomConsonne(Random rand)
+        {
+            return consonnes[rand.Next(0, consonnes.Length - 1)];
+        }
+
+        #endregion
     }
 }

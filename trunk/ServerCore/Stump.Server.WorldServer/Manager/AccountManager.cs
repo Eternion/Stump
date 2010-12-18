@@ -26,6 +26,11 @@ namespace Stump.Server.WorldServer.Database
 {
     public static partial class AccountManager
     {
+        public static AccountRecord GetAccountByTicket(string ticket)
+        {
+            return IpcAccessor.Instance.ProxyObject.GetAccountRecord(WorldServer.ServerInformation, ticket);
+        }
+
         public static AccountRecord GetAccountByName(string accName)
         {
             if (!IpcAccessor.Instance.Connected ||

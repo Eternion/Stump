@@ -34,17 +34,20 @@ namespace Stump.Server.WorldServer.Handlers
             //////////////////////////////////////////////////////////////////////////
 
             uint characterId = message.characterId;
-
+            
             CharacterRecord characterRecord = client.Characters.Find(o => o.Id == characterId);
 
-            if (characterId < 0 || characterRecord == null) // Incorrect Value.
+            /* Le personnage n'existe pas */
+            if (characterRecord == null)
             {
                 client.Send(new CharacterDeletionErrorMessage((int) CharacterDeletionErrorEnum.DEL_ERR_NO_REASON));
                 client.Disconnect();
+                return;
             }
 
             string secretAnswerHash = message.secretAnswerHash;
 
+            /* Vérification de la réponse secrete si level > 20 */
             if (characterRecord.Level <= 20 || (client.Account.SecretAnswer != null &&
                                                 secretAnswerHash ==
                                                 StringUtils.GetMd5(characterId + "~" + client.Account.SecretAnswer)))
