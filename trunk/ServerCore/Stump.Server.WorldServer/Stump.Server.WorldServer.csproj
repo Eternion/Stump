@@ -42,6 +42,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -118,6 +119,12 @@
     <Compile Include="Fights\FightRequest.cs" />
     <Compile Include="Fights\TimeLine.cs" />
     <Compile Include="Global\Continent.cs" />
+    <Compile Include="Global\Maps\MapPoint.cs" />
+    <Compile Include="Global\Pathfinding\CellInfo.cs" />
+    <Compile Include="Global\Pathfinding\MapMovementAdapter.cs" />
+    <Compile Include="Global\Pathfinding\MovementPath.cs" />
+    <Compile Include="Global\Pathfinding\PathElement.cs" />
+    <Compile Include="Global\Pathfinding\Pathfinding.cs" />
     <Compile Include="Global\VectorIso.cs" />
     <Compile Include="Global\Maps\CellData.cs" />
     <Compile Include="Global\Maps\Map.cs" />
