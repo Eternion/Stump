@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Entities
         /// <summary>
         ///   Representation of Entity's World Position
         /// </summary>
-        VectorIso Position
+        VectorIsometric Position
         {
             get;
             set;

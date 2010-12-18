@@ -19,6 +19,7 @@
 using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Global;
+using Stump.Server.WorldServer.Global.Pathfinding;
 
 namespace Stump.Server.WorldServer.Entities
 {
@@ -37,43 +38,16 @@ namespace Stump.Server.WorldServer.Entities
         /// <summary>
         ///   Move the entity.
         /// </summary>
-        // todo : use a class like 'PathBuilder'
-        void Move(List<uint> movementKeys);
-
-        /// <summary>
-        ///   Move the entity.
-        /// </summary>
-        void Move(VectorIso to);
-
-        /// <summary>
-        ///   Move the entity.
-        /// </summary>
-        void Move(ushort cellId);
-
-        /// <summary>
-        ///   Move the entity.
-        /// </summary>
-        void Move(ushort cellId, DirectionsEnum direction);
+        void Move(MovementPath movementPath);
 
         /// <summary>
         ///   Teleport instantly the entity.
         /// </summary>
         /// <param name="to"></param>
-        void MoveInstant(VectorIso to);
-
-        /// <summary>
-        ///   Teleport instantly the entity.
-        /// </summary>
-        void MoveInstant(ushort cellId);
-
-
-        /// <summary>
-        ///   Teleport instantly the entity.
-        /// </summary>
-        void MoveInstant(ushort cellId, DirectionsEnum direction);
+        void MoveInstant(VectorIsometric to);
 
         void MovementEnded();
 
-        void StopMove(VectorIso currentVectorIso);
+        void StopMove(VectorIsometric currentVectorIsometric);
     }
 }

@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using Stump.BaseCore.Framework.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.Global.Pathfinding;
 using Stump.Server.WorldServer.Handlers;
 
 namespace Stump.Server.WorldServer.Global.Maps
@@ -80,7 +81,7 @@ namespace Stump.Server.WorldServer.Global.Maps
 
             map.PresetId = map.UseReverb ? reader.ReadInt() : -1;
 
-            for (short i = 0; i < Map.MaximumCellsCount; i++)
+            for (ushort i = 0; i < Map.MaximumCellsCount; i++)
             {
                 CellData celldata = reader.ReadCell();
                 celldata.Id = i;
@@ -155,28 +156,30 @@ namespace Stump.Server.WorldServer.Global.Maps
             }
         }
 
-        private void EntityCompressedMovingStart(LivingEntity entity, List<uint> movementkeys)
+        private void EntityCompressedMovingStart(LivingEntity entity, MovementPath movementPath)
         {
+            var movementsKey = MapMovementAdapter.GetServerMovement(movementPath);
+
             Action<Character> action = charac =>
             {
-                ContextHandler.SendGameMapMovementMessage(charac.Client, movementkeys, entity);
+                ContextHandler.SendGameMapMovementMessage(charac.Client, movementsKey, entity);
                 BasicHandler.SendBasicNoOperationMessage(charac.Client);
             };
 
             CallOnAllCharactersWithoutFighters(action);
         }
 
-        private void EntityMovingStart(LivingEntity entity, VectorIso positioninfo)
+        private void EntityMovingStart(LivingEntity entity, VectorIsometric positioninfo)
         {
 
         }
 
-        private void EntityMovingStop(LivingEntity entity, VectorIso positioninfo)
+        private void EntityMovingStop(LivingEntity entity, VectorIsometric positioninfo)
         {
 
         }
 
-        private void EntityMovingEnd(LivingEntity entity, VectorIso positioninfo)
+        private void EntityMovingEnd(LivingEntity entity, VectorIsometric positioninfo)
         {
 
         }

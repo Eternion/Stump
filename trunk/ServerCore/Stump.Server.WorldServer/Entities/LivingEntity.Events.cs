@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Global.Maps;
+using Stump.Server.WorldServer.Global.Pathfinding;
 
 namespace Stump.Server.WorldServer.Entities
 {
@@ -29,24 +30,24 @@ namespace Stump.Server.WorldServer.Entities
 
         public delegate void EntityChangingMapHandler(LivingEntity entity, Map lastMap);
 
-        public delegate void EntityMoveOperationHandler(LivingEntity entity, VectorIso positionInfo);
-        public delegate void EntityCompressedMoveOperationHandler(LivingEntity entity, List<uint> movementKeys);
+        public delegate void EntityMoveOperationHandler(LivingEntity entity, VectorIsometric positionInfo);
+        public delegate void EntityCompressedMoveOperationHandler(LivingEntity entity, MovementPath movementPath);
 
         #endregion
 
         public event EntityCompressedMoveOperationHandler EntityCompressedMovingStart;
 
-        public void NotifyEntityCompressedMovingStart(List<uint> movementKeys)
+        public void NotifyEntityCompressedMovingStart(MovementPath movementPath)
         {
             EntityCompressedMoveOperationHandler handler = EntityCompressedMovingStart;
 
             if (handler != null)
-                handler(this, movementKeys);
+                handler(this, movementPath);
         }
 
         public event EntityMoveOperationHandler EntityMovingStart;
 
-        public void NotifyEntityMovingStart(VectorIso positioninfo)
+        public void NotifyEntityMovingStart(VectorIsometric positioninfo)
         {
             EntityMoveOperationHandler handler = EntityMovingStart;
 
@@ -56,7 +57,7 @@ namespace Stump.Server.WorldServer.Entities
 
         public event EntityMoveOperationHandler EntityMovingEnd;
 
-        public void NotifyEntityMovingEnd(VectorIso positioninfo)
+        public void NotifyEntityMovingEnd(VectorIsometric positioninfo)
         {
             EntityMoveOperationHandler handler = EntityMovingEnd;
 
@@ -66,7 +67,7 @@ namespace Stump.Server.WorldServer.Entities
 
         public event EntityMoveOperationHandler EntityMovingStop;
 
-        public void NotifyEntityMovingStop(VectorIso positioninfo)
+        public void NotifyEntityMovingStop(VectorIsometric positioninfo)
         {
             EntityMoveOperationHandler handler = EntityMovingStop;
 
@@ -76,7 +77,7 @@ namespace Stump.Server.WorldServer.Entities
 
         public event EntityMoveOperationHandler EntityTeleport;
 
-        public void NotifyEntityTeleport(VectorIso positioninfo)
+        public void NotifyEntityTeleport(VectorIsometric positioninfo)
         {
             EntityMoveOperationHandler handler = EntityTeleport;
 

@@ -21,6 +21,7 @@ using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Fights;
 using Stump.Server.WorldServer.Global;
+using Stump.Server.WorldServer.Global.Pathfinding;
 using Stump.Server.WorldServer.Groups;
 using Stump.Server.WorldServer.Spells;
 
@@ -129,7 +130,7 @@ namespace Stump.Server.WorldServer.Entities
         #region Movements
 
         private bool m_isMoving;
-        private VectorIso m_movingPath;
+        private MovementPath m_movingPath;
 
         public bool IsMoving
         {
@@ -147,40 +148,18 @@ namespace Stump.Server.WorldServer.Entities
             return !IsMoving;
         }
 
-        public void Move(List<uint> movementKeys)
+        public void Move(MovementPath movementPath)
         {
             if (!CanMove())
                 return;
 
-            NotifyEntityCompressedMovingStart(movementKeys);
+            NotifyEntityCompressedMovingStart(movementPath);
 
             IsMoving = true;
-            m_movingPath = new VectorIso((ushort) (movementKeys[movementKeys.Count - 1] & 0x0FFF),
-                                         DirectionsEnum.DIRECTION_EAST, Map);
+            m_movingPath = movementPath;
         }
 
-        public virtual void Move(VectorIso to)
-        {
-            if (!CanMove())
-                return;
-
-            NotifyEntityMovingStart(to);
-
-            IsMoving = true;
-            m_movingPath = to;
-        }
-
-        public virtual void Move(ushort cellId)
-        {
-            Move(new VectorIso(cellId, Position.Direction));
-        }
-
-        public virtual void Move(ushort cellId, DirectionsEnum direction)
-        {
-            Move(new VectorIso(cellId, direction));
-        }
-
-        public virtual void MoveInstant(VectorIso to)
+        public virtual void MoveInstant(VectorIsometric to)
         {
             if (!CanMove())
                 return;
@@ -188,34 +167,24 @@ namespace Stump.Server.WorldServer.Entities
             NotifyEntityTeleport(to);
         }
 
-        public virtual void MoveInstant(ushort cellId)
-        {
-            MoveInstant(new VectorIso(cellId, Position.Direction));
-        }
-
-        public virtual void MoveInstant(ushort cellId, DirectionsEnum direction)
-        {
-            MoveInstant(new VectorIso(cellId, direction));
-        }
-
         public virtual void MovementEnded()
         {
             if (!IsMoving)
                 return;
 
-            Position.ChangeLocation(m_movingPath);
-            NotifyEntityMovingStop(m_movingPath);
+            Position.ChangeLocation(m_movingPath.End);
+            NotifyEntityMovingStop(m_movingPath.End);
 
             IsMoving = false;
         }
 
-        public virtual void StopMove(VectorIso currentVectorIso)
+        public virtual void StopMove(VectorIsometric currentVectorIsometric)
         {
             if (!IsMoving)
                 return;
 
-            Position.ChangeLocation(currentVectorIso);
-            NotifyEntityMovingStop(currentVectorIso);
+            Position.ChangeLocation(currentVectorIsometric);
+            NotifyEntityMovingStop(currentVectorIsometric);
 
             IsMoving = false;
         }

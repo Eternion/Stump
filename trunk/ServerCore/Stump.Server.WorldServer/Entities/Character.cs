@@ -58,11 +58,8 @@ namespace Stump.Server.WorldServer.Entities
             SpellsPoints = cr.SpellsPoints;
             EmoteId = 0;
 
-            Position.Map = World.Instance.Maps[cr.MapId];
-            Position.CellId = cr.CellId;
-            Position.Direction = cr.Direction;
+            Position = new VectorIsometric(World.Instance.Maps[cr.MapId], cr.CellId, cr.Direction);
             InWorld = false;
-
 
             // -> entity look
             Skins = cr.Skins;
@@ -137,10 +134,13 @@ namespace Stump.Server.WorldServer.Entities
 
             var neighbour = lastMap.GetMapNeighbourByMapid(nextMap.Id);
 
-            Position.Map = nextMap;
-
+            var cellId = Position.CellId;
             if (neighbour != MapNeighbour.None)
-                Position.CellId = Map.GetCellAfterChangeMap(Position.CellId, neighbour);
+            {
+                cellId = Map.GetCellAfterChangeMap(Position.CellId, neighbour);
+            }
+
+            Position.ChangeLocation(nextMap, cellId);
 
             Map.AddEntity(this);
         }
@@ -148,15 +148,10 @@ namespace Stump.Server.WorldServer.Entities
 
         public void ChangeMap(Map nextMap, ushort cellId)
         {
-            Map lastMap = Map;
-
             NextMap = nextMap;
             Map.RemoveEntity(this);
 
-            var neighbour = lastMap.GetMapNeighbourByMapid(nextMap.Id);
-
-            Position.Map = nextMap;
-            Position.CellId = cellId;
+            Position.ChangeLocation(nextMap, cellId);
 
             Map.AddEntity(this);
         }

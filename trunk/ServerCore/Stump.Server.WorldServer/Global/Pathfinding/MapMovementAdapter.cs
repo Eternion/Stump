@@ -1,61 +1,61 @@
-﻿using System;
+﻿// /*************************************************************************
+//  *
+//  *  Copyright (C) 2010 - 2011 Stump Team
+//  *
+//  *  This program is free software: you can redistribute it and/or modify
+//  *  it under the terms of the GNU General Public License as published by
+//  *  the Free Software Foundation, either version 3 of the License, or
+//  *  (at your option) any later version.
+//  *
+//  *  This program is distributed in the hope that it will be useful,
+//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  *  GNU General Public License for more details.
+//  *
+//  *  You should have received a copy of the GNU General Public License
+//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  *
+//  *************************************************************************/
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Global.Maps;
 
-namespace Stump.Server.WorldServer.Global
+namespace Stump.Server.WorldServer.Global.Pathfinding
 {
-    class MapMovementAdapter
+    internal class MapMovementAdapter
     {
-        public static List<int> getServerMovement(MovementPath movement)
+        public static List<uint> GetServerMovement(MovementPath movement)
         {
-            byte orientation = 0;
-            List<int> keys = new List<int>(movement.Path.Count);
+            var keys = new List<uint>(movement.Path.Count);
 
             movement.Compress();
 
-            foreach (PathElement pathElement in movement.Path)
-            {
-                orientation = (byte)pathElement.Orientation;
-                keys.Add((orientation & 7) << 12 | pathElement.Step.CellId & 4095);
-            }
-
-            keys.Add((orientation & 7) << 12 | movement.End.CellId & 4095);
+            keys.AddRange(from vectorIsometric in movement.Path
+                          let orientation = (byte) vectorIsometric.Direction
+                          select (uint) ((orientation & 7) << 12 | vectorIsometric.Point.CellId & 4095));
 
             return keys;
         }
 
-        public static MovementPath getClientMovement(List<int> keys)
+        public static MovementPath GetClientMovement(Map map, List<uint> keys)
         {
-            PathElement last=null;
-            MovementPath movementPath = new MovementPath();
+            VectorIsometric last = null;
+            var movementPath = new MovementPath(map);
 
-            for (int i = 0; i < keys.Count  ;i++ )
+            for (int i = 0; i < keys.Count; i++)
             {
-                MapPoint mapPoint = MapPoint.FromCellId(keys[i] & 4095);
-                PathElement pathElement = new PathElement();
-                pathElement.Step = mapPoint;
+                var mapPoint = new MapPoint(map, (ushort) (keys[i] & 4095));
+                var pathElement = new VectorIsometric(mapPoint);
 
-                if (i == 0)
-                    movementPath.Start = mapPoint;
-                else
-                    last.Orientation = last.Step.OrientationTo(pathElement.Step);
-                
-                if (i == keys.Count - 1)
-                {
-                    movementPath.End = mapPoint;
-                    break;
-                }
+                if (i > 0 && last != null)
+                    last.Direction = last.Point.OrientationTo(pathElement.Point);
 
                 movementPath.Path.Add(pathElement);
                 last = pathElement;
             }
 
-           // movementPath.fill();
+            // movementPath.fill();
             return movementPath;
         }
-
     }
 }

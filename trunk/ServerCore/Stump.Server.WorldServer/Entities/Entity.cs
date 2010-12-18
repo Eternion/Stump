@@ -118,7 +118,7 @@ namespace Stump.Server.WorldServer.Entities
         /// <summary>
         ///   Representation of Entity's World Position
         /// </summary>
-        public VectorIso Position
+        public VectorIsometric Position
         {
             get;
             set;
@@ -127,7 +127,7 @@ namespace Stump.Server.WorldServer.Entities
         public Map Map
         {
             get { return Position.Map; }
-            set { Position.Map = value; }
+            set { Position = new VectorIsometric(value, Position); }
         }
 
         public Zone Zone

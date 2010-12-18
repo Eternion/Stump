@@ -65,7 +65,7 @@ namespace Stump.Server.WorldServer.Global.Maps
             set;
         }
 
-        public short Id
+        public ushort Id
         {
             get;
             set;

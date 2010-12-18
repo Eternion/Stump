@@ -26,6 +26,7 @@ using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Fights;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Global.Maps;
+using Stump.Server.WorldServer.Global.Pathfinding;
 
 namespace Stump.Server.WorldServer.Handlers
 {
@@ -70,7 +71,7 @@ namespace Stump.Server.WorldServer.Handlers
             }
             else
             {
-                client.ActiveCharacter.Move(message.keyMovements);
+                client.ActiveCharacter.Move(MapMovementAdapter.GetClientMovement(client.ActiveCharacter.Map, message.keyMovements));
             }
         }
 
@@ -85,7 +86,7 @@ namespace Stump.Server.WorldServer.Handlers
         {
             // todo : check if cell is available and if moving
 
-            client.ActiveCharacter.StopMove(new VectorIso((ushort) message.cellId, client.ActiveCharacter.Position.Direction, client.ActiveCharacter.Map));
+            client.ActiveCharacter.StopMove(new VectorIsometric(client.ActiveCharacter.Map, (ushort) message.cellId, client.ActiveCharacter.Position.Direction));
         }
 
         public static void SendGameContextCreateMessage(WorldClient client, byte context)
@@ -113,9 +114,9 @@ namespace Stump.Server.WorldServer.Handlers
             client.Send(new GameContextRefreshEntityLookMessage((int) entity.Id, entity.ToNetworkEntityLook()));
         }
 
-        public static void SendGameMapMovementMessage(WorldClient client, List<uint> keymovements, Entity entity)
+        public static void SendGameMapMovementMessage(WorldClient client, List<uint> movementsKey, Entity entity)
         {
-            client.Send(new GameMapMovementMessage(keymovements, (int) entity.Id));
+            client.Send(new GameMapMovementMessage(movementsKey, (int)entity.Id));
         }
 
         public static void SendGameEntitiesDispositionMessage(WorldClient client, IEnumerable<Entity> entities)

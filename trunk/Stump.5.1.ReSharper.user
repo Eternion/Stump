@@ -18,56 +18,34 @@
       <File id="23616127-D1F0-4AB8-B1E8-EC42C1578F6D/f:FormMain.cs" caret="5995" fromTop="10" />
       <File id="23616127-D1F0-4AB8-B1E8-EC42C1578F6D/f:Parser.cs" caret="1162" fromTop="11" />
       <File id="23616127-D1F0-4AB8-B1E8-EC42C1578F6D/f:Program.cs" caret="1211" fromTop="26" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:MapPoint.cs" caret="508" fromTop="23" />
       <File id="23616127-D1F0-4AB8-B1E8-EC42C1578F6D/f:Sniffer.cs" caret="1174" fromTop="0" />
       <File id="33093793-C4BA-4B89-AC82-6E9D00437452/f:QuestRewardKamas.cs" caret="896" fromTop="17" />
       <File id="33093793-C4BA-4B89-AC82-6E9D00437452/f:SuperArea.cs" caret="1216" fromTop="27" />
       <File id="33093793-C4BA-4B89-AC82-6E9D00437452/f:SubArea.cs" caret="976" fromTop="20" />
-      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:XmlUtils/f:XmlConfigFile.cs" caret="4365" fromTop="21" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/f:utilitybot_config.xml" caret="175" fromTop="3" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/f:utilitybot_config.xsd" caret="281" fromTop="5" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:VariableAssignation.cs" caret="2138" fromTop="16" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Unknown.cs" caret="0" fromTop="0" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:FunctionCall.cs" caret="4299" fromTop="22" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:ControlSequence.cs" caret="2062" fromTop="12" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileWriter/f:FileWriter.cs" caret="2153" fromTop="14" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileWriter/f:CsFileWriter.cs" caret="6596" fromTop="16" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/f:Program.cs" caret="1352" fromTop="21" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="5765" fromTop="3" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="28754" fromTop="9" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/f:Bot.cs" caret="2666" fromTop="48" />
+      <File id="8AC12413-BD4F-4C35-B61A-5E5894D33AFB/d:XmlUtils/f:XmlConfigFile.cs" caret="4659" fromTop="28" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Pathfinding/f:MovementPath.cs" caret="1390" fromTop="0" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Pathfinding/f:PathElement.cs" caret="507" fromTop="20" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Pathfinding/f:MapMovementAdapter.cs" caret="1632" fromTop="47" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:CellData.cs" caret="1291" fromTop="0" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:Map.cs" caret="3055" fromTop="12" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:MapPoint.cs" caret="1119" fromTop="19" />
     </RecentFiles>
     <RecentEdits>
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:VariableAssignation.cs" caret="3054" fromTop="20" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:VariableAssignation.cs" caret="3701" fromTop="34" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="27476" fromTop="10" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="27894" fromTop="24" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="28330" fromTop="29" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="24" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:FunctionCall.cs" caret="2317" fromTop="10" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:FunctionCall.cs" caret="2679" fromTop="21" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:FunctionCall.cs" caret="3189" fromTop="30" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:FunctionCall.cs" caret="3519" fromTop="14" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:FunctionCall.cs" caret="4299" fromTop="31" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="7" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="7" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="19" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="25" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="31" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="31" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="22" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="13" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="7" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="22" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="32" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="20" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="13" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="6328" fromTop="12" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="6561" fromTop="22" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="4" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26930" fromTop="23" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26557" fromTop="24" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/f:Bot.cs" caret="2117" fromTop="30" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:MapPoint.cs" caret="11569" fromTop="6" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:MapPoint.cs" caret="11569" fromTop="16" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:MapPoint.cs" caret="11569" fromTop="343" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:MapPoint.cs" caret="3331" fromTop="8" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:MapPoint.cs" caret="3468" fromTop="12" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:MapPoint.cs" caret="3594" fromTop="16" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:MapPoint.cs" caret="3730" fromTop="14" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:MapPoint.cs" caret="3855" fromTop="18" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:MapPoint.cs" caret="3989" fromTop="22" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:MapPoint.cs" caret="4113" fromTop="26" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:MapPoint.cs" caret="4266" fromTop="31" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:MapPoint.cs" caret="2991" fromTop="3" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:MapPoint.cs" caret="10335" fromTop="13" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:MapPoint.cs" caret="1758" fromTop="29" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:MapPoint.cs" caret="1175" fromTop="20" />
     </RecentEdits>
   </RecentFiles>
   <NAntValidationSettings>

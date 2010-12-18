@@ -1,45 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Global.Maps;
 
-namespace Stump.Server.WorldServer.Global
+namespace Stump.Server.WorldServer.Global.Pathfinding
 {
-    class MovementPath
+    public class MovementPath
     {
-        private MapPoint m_start = new MapPoint();
-        public MapPoint Start
+        public Map Map
         {
-            get { return m_start; }
-            set { m_start = value; }
+            get;
+            set;
         }
 
-        private MapPoint m_end = new MapPoint();
-        public MapPoint End
+        public VectorIsometric Start
         {
-            get { return m_end; }
-            set { m_end = value; }
+            get
+            {
+                return Path.FirstOrDefault();
+            }
         }
 
-        private List<PathElement> m_path = new List<PathElement>(100);
-        public List<PathElement> Path
+        public VectorIsometric End
         {
-            get { return m_path; }
-            set { m_path = value; }
+            get
+            {
+                return Path.LastOrDefault();
+            }
+        }
+
+        public MovementPath(Map map)
+        {
+            Path = new List<VectorIsometric>(100);
+            Map = map;
+        }
+
+        public List<VectorIsometric> Path
+        {
+            get;
+            set;
         }
 
         public void Compress()
         {
-            int i = 0;
-            if (m_path.Count > 0)
+            if (Path.Count > 0)
             {
-                i = m_path.Count - 1;
+                var i = Path.Count - 1;
                 while (i > 0)
                 {
-                    if (m_path[i].Orientation == m_path[i - 1].Orientation)
-                        m_path.RemoveAt(i);
+                    if (Path[i].Direction == Path[i - 1].Direction)
+                        Path.RemoveAt(i);
                     i--;
                 }
             }
@@ -65,25 +75,21 @@ namespace Stump.Server.WorldServer.Global
             // m_path.pop();
         }
 
-        public List<int> getCells()
+        public IEnumerable<ushort> GetCells()
         {
-            List<int> cells = new List<int>(m_path.Count);
-            for (int i = 0; i < m_path.Count; i++)
-                cells.Add(m_path[i].Step.CellId);
-
-            cells.Add(m_end.CellId);
-            return cells;
+            return Path.Select(t => t.Point.CellId);
         }
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Depart : [" + m_start.X + ", " + m_start.Y + "]");
-            sb.AppendLine("Arrivée : [" + m_end.X + ", " + m_end.Y + "]");
-            sb.AppendLine("Chemin :");
-            for (int i = 0; i < m_path.Count; i++)
+            var sb = new StringBuilder();
+            sb.AppendLine("Start : [" + Start.Point.X + ", " + Start.Point.Y + "]");
+            sb.AppendLine("End : [" + End.Point.X + ", " + End.Point.Y + "]");
+            sb.AppendLine("Path :");
+
+            foreach (var element in Path)
             {
-                sb.AppendLine("[" + m_path[i].Step.X + ", " + m_path[i].Step.Y + ", " + m_path[i].Orientation + "]");
+                sb.AppendLine("[" + element.Point.X + ", " + element.Point.Y + ", " + element.Direction + "]");
             }
             return sb.ToString();
         }
