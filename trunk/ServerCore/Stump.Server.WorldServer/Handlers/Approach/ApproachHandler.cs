@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using Stump.Server.WorldServer.Database;
 using Stump.DofusProtocol.Messages;
 
 namespace Stump.Server.WorldServer.Handlers
@@ -28,9 +29,12 @@ namespace Stump.Server.WorldServer.Handlers
             if (!client.CheckTicket(message.ticket))
             {
                 client.Send(new AuthenticationTicketRefusedMessage());
-
+       
                 client.Disconnect();
             }
+
+            /* Load Characters */
+            client.Characters = CharacterManager.GetCharactersByAccount(client);
 
             client.Send(new AuthenticationTicketAcceptedMessage());
         }

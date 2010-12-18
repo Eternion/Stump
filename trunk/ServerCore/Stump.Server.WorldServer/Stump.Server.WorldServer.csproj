@@ -68,8 +68,8 @@
     <Compile Include="Chat\ChannelId.cs" />
     <Compile Include="Chat\ChatManager.cs" />
     <Compile Include="Commands\TriggerChat.cs" />
-    <Compile Include="Database\AccountDatabase.cs" />
-    <Compile Include="Database\CharacterDatabase.cs" />
+    <Compile Include="Manager\AccountManager.cs" />
+    <Compile Include="Manager\CharacterManager.cs" />
     <Compile Include="Data\ItemLoader.cs" />
     <Compile Include="Data\MonsterLoader.cs" />
     <Compile Include="Dialog\IDialog.cs" />

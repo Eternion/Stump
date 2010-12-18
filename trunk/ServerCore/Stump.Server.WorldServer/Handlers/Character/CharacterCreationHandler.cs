@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Handlers
 
             // 1) Check if client has reached his character's creation number
             if (
-                IpcAccessor.Instance.ProxyObject.GetCharacterAccountCount(WorldServer.ServerInformation,
+                IpcAccessor.Instance.ProxyObject.GetAccountCharacterCount(WorldServer.ServerInformation,
                                                                           client.Account.Id) >= World.MaxCharacterSlot)
             {
                 client.Send(new CharacterCreationResultMessage((int) CharacterCreationResultEnum.ERR_TOO_MANY_CHARACTERS));
@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Handlers
             string characterName = message.name;
 
             // 3) Check if character name exists
-            if (CharacterDatabase.CharacterExists(characterName))
+            if (CharacterManager.CharacterExists(characterName))
             {
                 client.Send(new CharacterCreationResultMessage((int) CharacterCreationResultEnum.ERR_NAME_ALREADY_EXISTS));
                 return;
@@ -84,6 +84,7 @@ namespace Stump.Server.WorldServer.Handlers
             var record = new CharacterRecord
                 {
                     New = true,
+                    Account = client.Account,
                     Level = breed.StartLevel,
                     Name = characterName,
                     Classe = message.breed,
@@ -91,7 +92,6 @@ namespace Stump.Server.WorldServer.Handlers
                     Skins = charskins,
                     Scale = breed.Scale,
                     Colors = charcolors,
-                    AccountName = client.Account.Login,
                     Kamas = breed.StartKamas,
                     MapId = (int) breed.StartMap,
                     CellId = breed.StartCellId,
@@ -107,7 +107,7 @@ namespace Stump.Server.WorldServer.Handlers
                     Agility = 0
                 };
 
-            CharacterDatabase.CreateCharacter(record, client);
+            CharacterManager.CreateCharacter(record, client);
 
             // then we save the spells
             foreach (SpellIdEnum spellId in breed.StartSpells.Keys)

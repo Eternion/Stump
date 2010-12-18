@@ -35,9 +35,7 @@ namespace Stump.Server.WorldServer.Handlers
 
             uint characterId = message.characterId;
 
-            CharacterRecord characterRecord = client.Characters.Find(o => o.Id == characterId &&
-                                                                          o.AccountName.ToLower() ==
-                                                                          client.Account.Login.ToLower());
+            CharacterRecord characterRecord = client.Characters.Find(o => o.Id == characterId);
 
             if (characterId < 0 || characterRecord == null) // Incorrect Value.
             {
@@ -51,7 +49,7 @@ namespace Stump.Server.WorldServer.Handlers
                                                 secretAnswerHash ==
                                                 StringUtils.GetMd5(characterId + "~" + client.Account.SecretAnswer)))
             {
-                CharacterDatabase.DeleteCharacter(characterRecord, client);
+                CharacterManager.DeleteCharacter(characterRecord, client);
 
                 SendCharactersListMessage(client);
                 BasicHandler.SendBasicNoOperationMessage(client);

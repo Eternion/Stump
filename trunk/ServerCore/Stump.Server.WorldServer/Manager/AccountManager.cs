@@ -24,7 +24,7 @@ using Stump.Server.WorldServer.IPC;
 
 namespace Stump.Server.WorldServer.Database
 {
-    public static partial class AccountDatabase
+    public static partial class AccountManager
     {
         public static AccountRecord GetAccountByName(string accName)
         {
