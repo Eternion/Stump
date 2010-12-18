@@ -97,11 +97,11 @@ namespace Stump.Server.WorldServer.Global
         ///   Called when a entity enter this region. (Actually only characters)
         /// </summary>
         /// <param name = "entity"></param>
-        public override void OnEnter(Entity entity)
+        public override void AddEntity(Entity entity)
         {
-            base.OnEnter(entity);
+            base.AddEntity(entity);
 
-            ParentSpace.OnEnter(entity);
+            ParentSpace.AddEntity(entity);
 
             if (!m_running)
             {
@@ -111,11 +111,11 @@ namespace Stump.Server.WorldServer.Global
             Interlocked.Increment(ref m_charactercount);
         }
 
-        public override void OnLeave(Entity entity)
+        public override void RemoveEntity(Entity entity)
         {
-            base.OnLeave(entity);
+            base.RemoveEntity(entity);
 
-            ParentSpace.OnLeave(entity);
+            ParentSpace.RemoveEntity(entity);
             if (entity is Character)
             {
                 Interlocked.Decrement(ref m_charactercount);

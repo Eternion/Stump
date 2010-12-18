@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
@@ -6,6 +7,24 @@ namespace Stump.Server.BaseServer.Manager
 {
     public abstract class InstanceManager<T> where T : IInstance
     {
+        public delegate void InstanceEventHandler(T instance);
+
+        public static event InstanceEventHandler InstanceAdded;
+
+        public static void NotifyInstanceAdded(T instance)
+        {
+            InstanceEventHandler handler = InstanceAdded;
+            if (handler != null) handler(instance);
+        }
+
+        public static event InstanceEventHandler InstanceRemoved;
+
+        public static void NotifyInstanceRemoved(T instance)
+        {
+            InstanceEventHandler handler = InstanceRemoved;
+            if (handler != null) handler(instance);
+        }
+
         private static readonly ConcurrentStack<int> m_freeIds = new ConcurrentStack<int>();
 
         protected static ConcurrentDictionary<int, T> m_instances= new ConcurrentDictionary<int, T>();
@@ -33,6 +52,8 @@ namespace Stump.Server.BaseServer.Manager
             if (m_instances.TryAdd(id, instance))
             {
                 instance.Id = id;
+
+                NotifyInstanceAdded(instance);
                 return id;
             }
 
@@ -48,6 +69,8 @@ namespace Stump.Server.BaseServer.Manager
             {
                 instance.Id = -1;
                 m_freeIds.Push(id);
+
+                NotifyInstanceRemoved(outvalue);
                 return true;
             }
 

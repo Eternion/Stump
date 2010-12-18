@@ -20,10 +20,9 @@ namespace Stump.Server.WorldServer.Entities
 {
     public interface IOwned
     {
-        LivingEntity Owner
+        Entity Owner
         {
             get;
-            set;
         }
     }
 }

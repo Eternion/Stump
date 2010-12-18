@@ -18,33 +18,135 @@
 //  *************************************************************************/
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Stump.Server.WorldServer.Groups;
 
 namespace Stump.Server.WorldServer.Fights
 {
+    public enum TimeLineState
+    {
+        Sleeping,
+        TurnInProgress,
+        TurnEndRequest
+    }
+
     public class TimeLine
     {
-        private readonly Fight m_fight;
-        private readonly List<FightGroupMember> m_timeline;
-        private int m_index;
+        #region Events
+
+        public delegate void TurnStartedHandler(TimeLine sender, FightGroupMember currentFighter);
+        public event TurnStartedHandler TurnStarted;
+
+
+        public delegate void TurnEndedHandler(TimeLine sender, FightGroupMember oldFighter, FightGroupMember newFighter);
+        public event TurnEndedHandler TurnEnded;
+
+        #endregion
+
+        private Timer m_turnEndTimer;
 
         public TimeLine(Fight fight)
         {
-            m_fight = fight;
-            m_timeline = new List<FightGroupMember>();
+            Fighters = new List<FightGroupMember>();
+            Index = -1;
+            State = TimeLineState.Sleeping;
+
+            Fight = fight;
+            
             CreateTimeLine();
-            m_index = -1;
+        }
+
+        public Fight Fight
+        {
+            get;
+            private set;
+        }
+
+        public TimeLineState State
+        {
+            get;
+            private set;
+        }
+
+        public List<FightGroupMember> Fighters
+        {
+            get;
+            private set;
+        }
+
+        public int Index
+        {
+            get;
+            private set;
         }
 
         public FightGroupMember Current
         {
             get
             {
-                if (m_index < 0 || m_index >= m_timeline.Count)
+                if (Index < 0 || Index >= Fighters.Count)
                     return null;
 
-                return m_timeline[m_index];
+                return Fighters[Index];
             }
+        }
+
+        /// <summary>
+        /// Change the current fighter and select the next fighter on the timeline
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>You must not call it to change the turn. Use it wisely !</remarks>
+        public FightGroupMember UpdateToNextFighter()
+        {
+            Index = (Index + 1) < Fighters.Count ? Index + 1 : 0;
+
+            return Current;
+        }
+
+        public FightGroupMember GetLastFighter()
+        {
+            int index = (Index - 1) < 0 ? 0 : Index - 1;
+
+            return Fighters[index];
+        }
+
+        public FightGroupMember GetNextFighter()
+        {
+            int index = (Index + 1) < Fighters.Count ? Index + 1 : 0;
+
+            return Fighters[index];
+        }
+
+        public void StartTurnTimer()
+        {
+            m_turnEndTimer = new Timer(TurnEndReached, true, Fight.TurnTime, Timeout.Infinite);
+
+            State = TimeLineState.TurnInProgress;
+
+            if (TurnStarted != null)
+                TurnStarted(this, Current);
+        }
+
+        public bool EndTurn(FightGroupMember fighter)
+        {
+            if(fighter != Current)
+                return false;
+
+            TurnEndReached(false);
+
+            return true;
+        }
+
+        private void TurnEndReached(object timerEnded)
+        {
+            m_turnEndTimer.Dispose();
+
+            UpdateToNextFighter();
+
+            State = TimeLineState.TurnEndRequest;
+
+            if (TurnEnded != null)
+                TurnEnded(this, GetLastFighter(), Current);
         }
 
         private void CreateTimeLine()
@@ -52,32 +154,24 @@ namespace Stump.Server.WorldServer.Fights
             int sourceIndex = 0;
             int targetIndex = 0;
 
-            List<GroupMember> sortedSourceGroup =
-                m_fight.SourceGroup.Members.OrderByDescending(entry => entry.Entity.Stats["Initiative"].Total).ToList();
-            List<GroupMember> sortedTargetGroup =
-                m_fight.TargetGroup.Members.OrderByDescending(entry => entry.Entity.Stats["Initiative"].Total).ToList();
+            var sortedSourceGroup =
+                Fight.SourceGroup.Members.OrderByDescending(entry => entry.Entity.Stats["Initiative"].Total).OfType<FightGroupMember>();
+            var sortedTargetGroup =
+                Fight.TargetGroup.Members.OrderByDescending(entry => entry.Entity.Stats["Initiative"].Total).OfType<FightGroupMember>();
 
             bool sourceStart = SourceIsFirst(sortedSourceGroup, sortedTargetGroup);
 
-            while (sourceIndex < sortedSourceGroup.Count || targetIndex < sortedTargetGroup.Count)
+            while (sourceIndex < sortedSourceGroup.Count() || targetIndex < sortedTargetGroup.Count())
             {
                 FightGroupMember next = sourceStart
-                                            ? GetNextMember(sortedSourceGroup, sourceIndex++)
-                                            : GetNextMember(sortedTargetGroup, targetIndex++);
+                                            ? sortedSourceGroup.ElementAtOrDefault(sourceIndex++)
+                                            : sortedTargetGroup.ElementAtOrDefault(targetIndex++);
 
                 if (next != null)
-                    m_timeline.Add(next);
+                    Fighters.Add(next);
 
                 sourceStart = !sourceStart;
             }
-        }
-
-        private static FightGroupMember GetNextMember(List<GroupMember> groupMembers, int index)
-        {
-            if (index >= groupMembers.Count)
-                return null;
-
-            return groupMembers[index] as FightGroupMember;
         }
 
         private static bool SourceIsFirst(IEnumerable<GroupMember> sortedSourceMembers,
@@ -85,13 +179,6 @@ namespace Stump.Server.WorldServer.Fights
         {
             return (sortedSourceMembers.First().Entity.Stats["Initiative"].Total >=
                     sortedTargetMember.First().Entity.Stats["Initiative"].Total);
-        }
-
-        public FightGroupMember GetNext()
-        {
-            m_index = (m_index + 1) < m_timeline.Count ? m_index + 1 : 0;
-
-            return Current;
         }
     }
 }

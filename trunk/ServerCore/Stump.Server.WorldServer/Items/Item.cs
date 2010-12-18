@@ -209,6 +209,11 @@ namespace Stump.Server.WorldServer.Items
             set { m_effects = value; }
         }
 
+        Entity IOwned.Owner
+        {
+            get { return Owner; }
+        }
+
         public LivingEntity Owner
         {
             get;

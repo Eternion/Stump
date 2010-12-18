@@ -97,9 +97,9 @@ namespace Stump.Server.WorldServer.Entities
             get
             {
                 return GroupMember != null && GroupMember is FightGroupMember &&
-                       (((FightGroup) (GroupMember as FightGroupMember).GroupOwner).Fight.FightState ==
+                       (((FightGroup) (GroupMember as FightGroupMember).GroupOwner).Fight.State ==
                         FightState.Fighting ||
-                        ((GroupMember as FightGroupMember).GroupOwner as FightGroup).Fight.FightState ==
+                        ((GroupMember as FightGroupMember).GroupOwner as FightGroup).Fight.State ==
                         FightState.PreparePosition);
             }
         }

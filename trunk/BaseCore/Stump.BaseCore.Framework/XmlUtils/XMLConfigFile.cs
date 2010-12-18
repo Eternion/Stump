@@ -24,7 +24,6 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Schema;
-using System.Xml.Serialization;
 using NLog;
 using Stump.BaseCore.Framework.Attributes;
 
@@ -115,7 +114,7 @@ namespace Stump.BaseCore.Framework.XmlUtils
         {
             if (node.NodeType == XmlNodeType.Element && node.HasChildNodes)
             {
-                stackPath.Push((node as XmlElement).Name);
+                stackPath.Push(node.Name);
 
                 foreach (XmlNode child in node.ChildNodes)
                 {
@@ -149,14 +148,17 @@ namespace Stump.BaseCore.Framework.XmlUtils
             {
                 if (field != null)
                 {
-                    object[] attributes = field.GetCustomAttributes(typeof (Variable), false);
+                    IEnumerable<Variable> attributes =
+                        field.GetCustomAttributes(typeof (Variable), false).OfType<Variable>();
 
                     if (attributes.Count() > 0)
                     {
-                        var attribute = attributes.First() as Variable;
+                        Variable attribute = attributes.First();
 
                         if (attribute.DefinableByConfig)
+                        {
                             field.SetValue(null, ReadElement(value, field.FieldType));
+                        }
                     }
                     else
                     {
@@ -165,14 +167,17 @@ namespace Stump.BaseCore.Framework.XmlUtils
                 }
                 else if (property != null)
                 {
-                    object[] attributes = property.GetCustomAttributes(typeof (Variable), false);
+                    IEnumerable<Variable> attributes =
+                        property.GetCustomAttributes(typeof (Variable), false).OfType<Variable>();
 
                     if (attributes.Count() > 0)
                     {
-                        var attribute = attributes.First() as Variable;
+                        Variable attribute = attributes.First();
 
                         if (attribute.DefinableByConfig)
+                        {
                             property.SetValue(null, ReadElement(value, property.PropertyType), null);
+                        }
                     }
                     else
                     {
@@ -186,8 +191,13 @@ namespace Stump.BaseCore.Framework.XmlUtils
             }
             catch (InvalidCastException)
             {
-                logger.Warn("Type of " + className + "." + variableName + " isn't correct. Excepted Type : " +
-                            (field != null ? field.FieldType : property.PropertyType));
+                logger.Warn(string.Format("Type of {0}.{1} isn't correct. Expected Type : {2}", className, variableName,
+                                          (field != null ? field.FieldType : property.PropertyType)));
+            }
+            catch
+            {
+                logger.Warn(string.Format("Cannot define the variable {0}.{1} with value {2}", className, variableName,
+                                          value.ToString()));
             }
         }
 
@@ -200,7 +210,9 @@ namespace Stump.BaseCore.Framework.XmlUtils
         /// <returns></returns>
         public T Read<T>(params string[] nodes)
         {
-            var root = nodes.Aggregate(m_document.DocumentElement, (current, node) => current.GetElementsByTagName(node).Item(0) as XmlElement);
+            XmlElement root = nodes.Aggregate(m_document.DocumentElement,
+                                              (current, node) =>
+                                              current.GetElementsByTagName(node).Item(0) as XmlElement);
 
             try
             {
@@ -218,12 +230,7 @@ namespace Stump.BaseCore.Framework.XmlUtils
         /// <returns></returns>
         internal object ReadElement(object value, Type type)
         {
-            if (type.IsSubclassOf(typeof(Enum)))
-            {
-                return Enum.IsDefined(type, value) ? Enum.Parse(type, value.ToString()) : Enum.ToObject(type, value);
-            }
-
-            return Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+            return XmlVariableConverters.FoundConverter(value.ToString(), type);
         }
 
         /// <summary>

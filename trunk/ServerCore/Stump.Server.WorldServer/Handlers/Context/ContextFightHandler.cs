@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof (GameContextQuitMessage))]
         public static void HandleGameContextQuitMessage(WorldClient client, GameContextQuitMessage message)
         {
-            client.ActiveCharacter.CurrentFight.QuitFight(client.ActiveCharacter);
+            client.ActiveCharacter.CurrentFight.QuitFight(client.ActiveCharacter.CurrentFighter);
         }
 
         [WorldHandler(typeof (GameActionFightCastRequestMessage))]
@@ -48,7 +48,13 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof (GameFightTurnReadyMessage))]
         public static void HandleGameFightTurnReadyMessage(WorldClient client, GameFightTurnReadyMessage message)
         {
-            client.ActiveCharacter.CurrentFight.FinishTurn(client.ActiveCharacter.CurrentFighter);
+            if (message.isReady && client.ActiveCharacter.CurrentFighter.IsInTurn)
+                client.ActiveCharacter.CurrentFight.TurnEndConfirm(client.ActiveCharacter.CurrentFighter);
+            else
+            {
+                client.ActiveCharacter.CurrentFight.CallOnAllCharacters(charac =>
+                    SendGameFightTurnReadyRequestMessage(charac.Client,client.ActiveCharacter.GroupMember.Entity));
+            }        
         }
 
         [WorldHandler(typeof (GameFightReadyMessage))]

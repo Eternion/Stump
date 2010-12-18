@@ -49,6 +49,7 @@
     <Compile Include="Collections\TimedDictionary.cs" />
     <Compile Include="Collections\TimedList.cs" />
     <Compile Include="Cryptography\Cryptography.cs" />
+    <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="IO\ConsoleProcent.cs" />
     <Compile Include="Threading\TaskCompletionSourceExtensions.cs" />
     <Compile Include="Threading\TaskExtensions.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="XmlUtils\XmlConfigFile.cs" />
     <Compile Include="XmlUtils\Serializer.cs" />
     <Compile Include="XmlUtils\XmlParser.cs" />
+    <Compile Include="XmlUtils\XmlVariableConverters.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
