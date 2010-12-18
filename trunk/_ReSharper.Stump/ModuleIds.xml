@@ -17,4 +17,5 @@
   <Module PersistentId="33093793-C4BA-4B89-AC82-6E9D00437452" ModuleId="Stump.DofusProtocol.D2oClasses" />
   <Module PersistentId="d:Miscellaneous Files" ModuleId="System.Windows.Forms" />
   <Module PersistentId="4B1F615A-F1E0-4132-8E4B-542B7A453FE9" ModuleId="Stump.Tools.Proxy" />
+  <Module PersistentId="68C437A3-289B-44C1-8081-12F27EE7651E" ModuleId="UtilityBot" />
 </Modules>
