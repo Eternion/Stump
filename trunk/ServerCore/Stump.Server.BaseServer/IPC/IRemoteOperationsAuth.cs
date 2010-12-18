@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System.Collections.Generic;
 using Stump.Database;
 
 namespace Stump.Server.BaseServer.IPC
@@ -93,7 +94,15 @@ namespace Stump.Server.BaseServer.IPC
         ///   Get the number of characters from an account
         /// </summary>
         /// <returns></returns>
-        int GetCharacterAccountCount(WorldServerInformation wsi, uint accountid);
+        int GetAccountCharacterCount(WorldServerInformation wsi, uint accountid);
+
+        /// <summary>
+        /// Get the list of CharacterId of the specified Account
+        /// </summary>
+        /// <param name="wsi"></param>
+        /// <param name="accountid"></param>
+        /// <returns></returns>
+        IEnumerable<uint> GetAccountCharacters(WorldServerInformation wsi, uint accountid);
 
         /// <summary>
         /// Add a new Character to the account

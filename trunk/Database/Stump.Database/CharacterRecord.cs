@@ -40,6 +40,12 @@ namespace Stump.Database
         public bool New;
 
         /// <summary>
+        /// Account of the character
+        /// </summary>
+        public AccountRecord Account
+        { get; set; }
+
+        /// <summary>
         ///   Constructor
         /// </summary>
         public CharacterRecord()
@@ -51,20 +57,6 @@ namespace Stump.Database
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
         public int Id
-        {
-            get;
-            set;
-        }
-
-        [Property("ServerId")]
-        public int ServerId
-        {
-            get;
-            set;
-        }
-
-        [Property("AccountName", Length = 24)]
-        public string AccountName
         {
             get;
             set;
@@ -342,12 +334,7 @@ namespace Stump.Database
 
         public static CharacterRecord FindCharacterById(int CharacterId)
         {
-            return FindOne(Restrictions.Eq("Id", CharacterId));
-        }
-
-        public static CharacterRecord[] FindCharactersByAccountName(string AccountName)
-        {
-            return FindAll(Restrictions.Eq("AccountName", AccountName));
+            return FindByPrimaryKey(CharacterId);
         }
 
         public static int GetCount()

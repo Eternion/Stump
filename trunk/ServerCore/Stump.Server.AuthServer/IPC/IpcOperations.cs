@@ -180,7 +180,12 @@ namespace Stump.Server.AuthServer.IPC
             }
         }
 
-        public int GetCharacterAccountCount(WorldServerInformation wsi, uint accountid)
+        public IEnumerable<uint> GetAccountCharacters(WorldServerInformation wsi, uint accountid)
+        {
+            return AccountManager.GetCharactersByAccount(accountid).Select(record => record.CharacterId);
+        }
+
+        public int GetAccountCharacterCount(WorldServerInformation wsi, uint accountid)
         {
             return AccountManager.GetCharactersByAccount(accountid).Length;
         }

@@ -33,9 +33,8 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof (CharactersListRequestMessage))]
         public static void HandleCharacterListRequest(WorldClient client, CharactersListRequestMessage message)
         {
-            if (client.Account != null && client.Account.Login != "")
+            if (client.Account != null && client.Account.Login != "" && client.Characters!=null)
             {
-                CharacterDatabase.LoadCharacters(client);
                 SendCharactersListMessage(client);
             }
             else

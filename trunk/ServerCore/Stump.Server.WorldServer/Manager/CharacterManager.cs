@@ -24,7 +24,7 @@ using Stump.Server.WorldServer.IPC;
 
 namespace Stump.Server.WorldServer.Database
 {
-    public static class CharacterDatabase
+    public static class CharacterManager
     {
         public static bool CharacterExists(string charactername)
         {
@@ -33,24 +33,25 @@ namespace Stump.Server.WorldServer.Database
             return cr != null;
         }
 
-
-        public static int GetCharacterNumber(WorldClient client)
+        public static List<CharacterRecord> GetCharactersByAccount(WorldClient client)
         {
-            LoadCharacters(client);
+            var characters = new List<CharacterRecord>(5);
+            var ids = IpcAccessor.Instance.ProxyObject.GetAccountCharacters(WorldServer.ServerInformation,
+                                                                            client.Account.Id);
+            foreach(uint id in ids)
+            {
+                var character = CharacterRecord.FindCharacterById((int)id);
+                if (character != null)
+                    characters.Add(character);
+            }
 
-            return client.Characters.Count;
-        }
-
-        public static void LoadCharacters(WorldClient client)
-        {
-            client.Characters =
-                new List<CharacterRecord>(CharacterRecord.FindCharactersByAccountName(client.Account.Login));
+            return characters;
         }
 
         public static bool CreateCharacter(CharacterRecord character, WorldClient client)
         {
             if (client.Characters == null)
-                client.Characters = new List<CharacterRecord>();
+                client.Characters = new List<CharacterRecord>(5);
             character.Save();
 
             client.Characters.Insert(0, character);
