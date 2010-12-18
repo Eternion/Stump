@@ -227,13 +227,13 @@ namespace Stump.Database
                 if (Spells.ContainsKey(spellId))
                 {
                     logger.Error("Spell ({0}, Id: {1}) added twice to Character {2} (Breed: {3})",
-                                 (SpellIdEnum) spellId,
+                                 (SpellIdEnum)spellId,
                                  spellId,
                                  this,
-                                 (BreedEnum) Classe);
+                                 (BreedEnum)Classe);
                 }
 
-                var record = new SpellRecord(spellId, (uint) Id, position, level);
+                var record = new SpellRecord(spellId, (uint)Id, position, level);
                 Spells.Add(spellId, record);
                 record.Save();
             }
@@ -246,17 +246,17 @@ namespace Stump.Database
         {
             if (Spells != null)
             {
-                if (Spells.ContainsKey((uint) spellId))
+                if (Spells.ContainsKey((uint)spellId))
                 {
                     logger.Error("Spell ({0}, Id: {1}) added twice to Character {2} (Breed: {3})",
                                  spellId,
                                  spellId,
                                  this,
-                                 (BreedEnum) Classe);
+                                 (BreedEnum)Classe);
                 }
 
-                var record = new SpellRecord((uint) spellId, (uint) Id, position, level);
-                Spells.Add((uint) spellId, record);
+                var record = new SpellRecord((uint)spellId, (uint)Id, position, level);
+                Spells.Add((uint)spellId, record);
                 record.Save();
             }
         }
@@ -280,9 +280,9 @@ namespace Stump.Database
 
         public void ModifySpellPosition(int spellid, int newpos)
         {
-            if (Spells.ContainsKey((uint) spellid))
+            if (Spells.ContainsKey((uint)spellid))
             {
-                Spells[(uint) spellid].Position = newpos;
+                Spells[(uint)spellid].Position = newpos;
             }
         }
 
@@ -299,7 +299,7 @@ namespace Stump.Database
             if (!New)
             {
                 Spells = new Dictionary<uint, SpellRecord>();
-                SpellRecord[] dbSpells = SpellRecord.FindAll(Restrictions.Eq("OwnerId", (uint) Id));
+                SpellRecord[] dbSpells = SpellRecord.FindAll(Restrictions.Eq("OwnerId", (uint)Id));
                 foreach (SpellRecord spell in dbSpells)
                 {
                     try
@@ -327,11 +327,31 @@ namespace Stump.Database
 
         #endregion
 
-        public static CharacterRecord FindCharacterByCharacterName(string CharacterName)
+        /// <summary>
+        /// Find a character by his name
+        /// </summary>
+        /// <param name="CharacterName">name</param>
+        /// <returns></returns>
+        public static CharacterRecord FindCharacterByName(string CharacterName)
         {
             return FindOne(Restrictions.Eq("Name", CharacterName));
         }
 
+        /// <summary>
+        /// True if the name exist else false
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static bool IsNameExists(string name)
+        {
+            return Exists(Restrictions.Eq("Name", name));
+        }
+
+        /// <summary>
+        /// Find a character by his id
+        /// </summary>
+        /// <param name="CharacterId"></param>
+        /// <returns></returns>
         public static CharacterRecord FindCharacterById(int CharacterId)
         {
             return FindByPrimaryKey(CharacterId);
@@ -342,43 +362,5 @@ namespace Stump.Database
             return Count();
         }
 
-        #region Character Name Random Generation
-
-        private static string voyelles = "aeiouy";
-
-        private static string consonnes = "bcdfghjklmnpqrstvwxz";
-
-        public static string GenerateName()
-        {
-            string name;
-
-            do
-            {
-                var rand = new Random();
-                int namelen = rand.Next(5, 10);
-                name = string.Empty;
-
-                name += char.ToUpper(RandomConsonne(rand));
-
-                for (int i = 0; i < namelen - 1; i++)
-                {
-                    name += (i%2 == 1) ? RandomConsonne(rand) : RandomVoyelle(rand);
-                }
-            } while (FindCharacterByCharacterName(name) != null);
-
-            return name;
-        }
-
-        private static char RandomVoyelle(Random rand)
-        {
-            return voyelles[rand.Next(0, voyelles.Length - 1)];
-        }
-
-        private static char RandomConsonne(Random rand)
-        {
-            return consonnes[rand.Next(0, consonnes.Length - 1)];
-        }
-
-        #endregion
     }
 }

@@ -63,18 +63,6 @@ namespace Stump.Server.WorldServer
             set;
         }
 
-        public bool CheckTicket(string ticket)
-        {
-            AccountRecord acc = IpcAccessor.Instance.ProxyObject.GetAccountRecord(WorldServer.ServerInformation, ticket);
-            if (acc == null)
-            {
-                // This ticket does not exists !
-                return false;
-            }
-            Account = acc;
-            return true;
-        }
-
         public override void OnDisconnect()
         {
             IpcAccessor.Instance.ProxyObject.DecrementConnectedChars(WorldServer.ServerInformation);

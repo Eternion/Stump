@@ -15,7 +15,7 @@
 //  *  You should have received a copy of the GNU General Public License
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
-//  *************************************************************************/
+using Stump.Database;
 using Stump.Server.WorldServer.Database;
 using Stump.DofusProtocol.Messages;
 
@@ -26,14 +26,21 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof (AuthenticationTicketMessage))]
         public static void HandleAuthenticationTicketMessage(WorldClient client, AuthenticationTicketMessage message)
         {
-            if (!client.CheckTicket(message.ticket))
+            /* On récupère le compte associé au ticket */
+            AccountRecord ticketAccount = AccountManager.GetAccountByTicket(message.ticket);
+
+            /* S'il n'y en avait pas */
+            if (ticketAccount == null)
             {
-                client.Send(new AuthenticationTicketRefusedMessage());
-       
+                client.Send(new AuthenticationTicketRefusedMessage()); 
                 client.Disconnect();
+                return;
             }
 
-            /* Load Characters */
+            /* On associe le Client avec ce compte */
+            client.Account = ticketAccount;
+
+            /* On associe les personnages */
             client.Characters = CharacterManager.GetCharactersByAccount(client);
 
             client.Send(new AuthenticationTicketAcceptedMessage());

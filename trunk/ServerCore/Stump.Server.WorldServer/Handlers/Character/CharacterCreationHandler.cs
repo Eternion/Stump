@@ -31,37 +31,33 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public partial class CharacterHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof (CharacterCreationRequestMessage))]
+        [WorldHandler(typeof(CharacterCreationRequestMessage))]
         public static void HandleCharacterCreateRequest(WorldClient client, CharacterCreationRequestMessage message)
         {
             // 0) Check if we can create characters on this server
             /*         [ToDo]       */
 
-            // 1) Check if client has reached his character's creation number
-            if (
-                IpcAccessor.Instance.ProxyObject.GetAccountCharacterCount(WorldServer.ServerInformation,
-                                                                          client.Account.Id) >= World.MaxCharacterSlot)
+
+            /* Nombre maximum de personnages sur le compte atteint */
+            if (CharacterManager.GetCharactersNumberByAccount(client) >= World.MaxCharacterSlot)
             {
-                client.Send(new CharacterCreationResultMessage((int) CharacterCreationResultEnum.ERR_TOO_MANY_CHARACTERS));
+                client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.ERR_TOO_MANY_CHARACTERS));
                 return;
             }
 
-            // 2) Get char name
-            string characterName = message.name;
-
-            // 3) Check if character name exists
-            if (CharacterManager.CharacterExists(characterName))
+            /* Le Nom existe déja */
+            if (CharacterRecord.IsNameExists(message.name))
             {
-                client.Send(new CharacterCreationResultMessage((int) CharacterCreationResultEnum.ERR_NAME_ALREADY_EXISTS));
+                client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.ERR_NAME_ALREADY_EXISTS));
                 return;
             }
 
-            // 4) Check name format/modify it if necessary (First upper next lower...)
-            characterName = StringUtils.FirstLetterUpper(characterName.ToLower());
+            string characterName = StringUtils.FirstLetterUpper(message.name.ToLower());
 
+            /* have bad name */
             if (!Regex.IsMatch(characterName, "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$"))
             {
-                client.Send(new CharacterCreationResultMessage((int) CharacterCreationResultEnum.ERR_INVALID_NAME));
+                client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.ERR_INVALID_NAME));
                 return;
             }
 
@@ -70,18 +66,17 @@ namespace Stump.Server.WorldServer.Handlers
             var charcolors = new List<int>();
             for (int i = 0; i < message.colors.Count; i++)
             {
-                if (message.colors[i] == -1) // we must change base color (-1) by the real color
-                {
+                // On remplace -1 par les couleurs par défaut
+                if (message.colors[i] == -1)
                     charcolors.Add(!message.sex ? breed.MaleColors[i] : breed.FemaleColors[i]);
-                }
                 else
                     charcolors.Add(message.colors[i]);
             }
 
-            var charskins = new List<short> {(short) (message.breed*10 + (message.sex ? 1 : 0))};
+            var charskins = new List<short> { (short)(message.breed * 10 + (message.sex ? 1 : 0)) };
 
-            // 5) Insert character in db
-            var record = new CharacterRecord
+            /* Create Character */
+            var character = new CharacterRecord
                 {
                     New = true,
                     Account = client.Account,
@@ -93,7 +88,7 @@ namespace Stump.Server.WorldServer.Handlers
                     Scale = breed.Scale,
                     Colors = charcolors,
                     Kamas = breed.StartKamas,
-                    MapId = (int) breed.StartMap,
+                    MapId = (int)breed.StartMap,
                     CellId = breed.StartCellId,
                     BaseHealth = breed.StartHealthPoint,
                     DamageTaken = 0,
@@ -107,25 +102,26 @@ namespace Stump.Server.WorldServer.Handlers
                     Agility = 0
                 };
 
-            CharacterManager.CreateCharacter(record, client);
+            /* Save it */
+            CharacterManager.CreateCharacter(character, client);
 
-            // then we save the spells
+            /* Add Spell */
             foreach (SpellIdEnum spellId in breed.StartSpells.Keys)
             {
                 int position = breed.StartSpells[spellId];
-                record.AddSpell(spellId, position, 1);
+                character.AddSpell(spellId, position, 1);
             }
 
             BasicHandler.SendBasicNoOperationMessage(client);
-            client.Send(new CharacterCreationResultMessage((int) CharacterCreationResultEnum.OK));
+            client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.OK));
             SendCharactersListMessage(client);
         }
 
-        [WorldHandler(typeof (CharacterNameSuggestionRequestMessage))]
-        public static void CharacterNameSuggestionRequest(WorldClient client,
-                                                          CharacterNameSuggestionRequestMessage message)
+
+        [WorldHandler(typeof(CharacterNameSuggestionRequestMessage))]
+        public static void CharacterNameSuggestionRequest(WorldClient client, CharacterNameSuggestionRequestMessage message)
         {
-            string generatedName = CharacterRecord.GenerateName();
+            string generatedName = CharacterManager.GenerateName();
 
             client.Send(new CharacterNameSuggestionSuccessMessage(generatedName));
         }
