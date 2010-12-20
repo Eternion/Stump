@@ -84,6 +84,12 @@ namespace Stump.Server.AuthServer
             m_registeredWorlds = new List<WorldServerInformation>();
             m_realmlist = WorldRecord.FindAll().ToDictionary(entry => entry.Id) ?? new Dictionary<int, WorldRecord>();
 
+            foreach (var worldRecord in m_realmlist)
+            {
+                if (worldRecord.Value.Status == ServerStatusEnum.ONLINE)
+                    worldRecord.Value.Status = ServerStatusEnum.OFFLINE;
+            }
+
             m_sync = new object();
         }
 

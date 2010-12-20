@@ -9,68 +9,68 @@
   </SettingsComponent>
   <RecentFiles>
     <RecentFiles>
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Exchange/f:TradeRequest.cs" caret="2878" fromTop="42" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Fights/f:FightRequest.cs" caret="2160" fromTop="19" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="2870" fromTop="21" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/d:Maps/f:Map.cs" caret="10110" fromTop="21" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Inventory/f:InventoryItemsHandler.cs" caret="3696" fromTop="19" />
-      <File id="10884165-D492-4895-B3EF-32429F7A7F55/d:Types/d:game/d:context/f:EntityDispositionInformations.cs" caret="1001" fromTop="14" />
-      <File id="10884165-D492-4895-B3EF-32429F7A7F55/d:Types/d:game/d:context/f:IdentifiedEntityDispositionInformations.cs" caret="1589" fromTop="14" />
-      <File id="53092D2E-8F37-4889-B6B7-B359E093E3F4/d:Messages/d:game/d:context/f:GameEntitiesDispositionMessage.cs" caret="1300" fromTop="16" />
-      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Network/f:BaseClient.cs" caret="5934" fromTop="8" />
-      <File id="DBF77B90-0AAF-4EEC-B997-478E88CEEDB4/f:AuthentificationServer.cs" caret="4051" fromTop="19" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Entities/f:LivingEntity.cs" caret="3830" fromTop="13" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Global/f:VectorIsometric.cs" caret="2557" fromTop="17" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Entities/f:IEntityContainer.cs" caret="0" fromTop="0" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Entities/f:IMovable.cs" caret="1330" fromTop="19" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Entities/f:Entity.cs" caret="2793" fromTop="25" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Entities/f:Character.cs" caret="6210" fromTop="20" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Groups/f:FightGroupMember.cs" caret="3433" fromTop="17" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Entities/f:ILocableIdentified.cs" caret="252" fromTop="10" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Entities/f:ILocable.cs" caret="300" fromTop="10" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Fights/f:TimeLine.cs" caret="4111" fromTop="84" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Fights/f:Fight.cs" caret="2822" fromTop="30" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/f:ContextFightHandler.cs" caret="2220" fromTop="17" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/f:ContextHandler.cs" caret="1065" fromTop="0" />
-      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/f:Appearance.cs" caret="1143" fromTop="27" />
-      <File id="DBF77B90-0AAF-4EEC-B997-478E88CEEDB4/f:AuthClient.cs" caret="415" fromTop="8" />
-      <File id="DBF77B90-0AAF-4EEC-B997-478E88CEEDB4/d:Handlers/f:AuthHandler.cs" caret="0" fromTop="0" />
-      <File id="DBF77B90-0AAF-4EEC-B997-478E88CEEDB4/d:Handlers/d:Connection/f:ConnectionActionsHandler.cs" caret="0" fromTop="0" />
-      <File id="DBF77B90-0AAF-4EEC-B997-478E88CEEDB4/d:Handlers/d:Connection/f:ConnectionHandler.cs" caret="7167" fromTop="28" />
-      <File id="10884165-D492-4895-B3EF-32429F7A7F55/d:Types/d:version/f:Version.cs" caret="545" fromTop="21" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="8927" fromTop="18" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/d:Classes/d:spells/f:SpellLevel.cs" caret="494" fromTop="4" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileWriter/f:PropertyInfo.cs" caret="178" fromTop="7" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileWriter/f:CsFileWriter.cs" caret="8738" fromTop="58" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileWriter/f:MethodInfo.cs" caret="1201" fromTop="0" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/d:Classes/d:abuse/f:AbuseReasons.cs" caret="0" fromTop="0" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/d:Classes/d:alignments/f:AlignmentBalance.cs" caret="0" fromTop="0" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/d:Classes/d:alignments/f:AlignmentGift.cs" caret="0" fromTop="0" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/d:Classes/d:alignments/f:AlignmentRank.cs" caret="0" fromTop="0" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/d:Classes/d:alignments/f:AlignmentSide.cs" caret="0" fromTop="0" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/d:Classes/d:alignments/f:AlignmentTitle.cs" caret="0" fromTop="0" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/d:Classes/d:ambientSounds/f:AmbientSound.cs" caret="0" fromTop="0" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/d:Classes/d:items/d:criterion/f:AccountRightsItemCriterion.cs" caret="0" fromTop="0" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/d:Classes/d:items/d:criterion/f:ItemCriterion.cs" caret="0" fromTop="0" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/d:Classes/d:items/d:criterion/f:MonthItemCriterion.cs" caret="0" fromTop="0" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/d:Classes/d:items/d:criterion/f:AlignmentLevelItemCriterion.cs" caret="0" fromTop="0" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:FunctionCall.cs" caret="1418" fromTop="23" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/d:Classes/d:items/d:criterion/f:AlignmentItemCriterion.cs" caret="0" fromTop="0" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/f:Program.cs" caret="1352" fromTop="12" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/d:Classes/d:documents/f:Document.cs" caret="454" fromTop="21" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="10450" fromTop="16" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/d:Classes/d:effects/f:EffectInstance.cs" caret="544" fromTop="17" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Initializing/f:StageManager.cs" caret="3701" fromTop="12" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Spells/f:SpellManager.cs" caret="1728" fromTop="11" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/d:D2oTool/f:D2oFile.cs" caret="8782" fromTop="3" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/d:D2oTool/f:D2oFieldDefinition.cs" caret="2248" fromTop="12" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/f:DataLoader.cs" caret="3612" fromTop="16" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/d:D2oTool/f:D2oClassDefinition.cs" caret="2969" fromTop="8" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/f:Point.cs" caret="161" fromTop="8" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/f:Rectangle.cs" caret="348" fromTop="13" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="8137" fromTop="17" />
     </RecentFiles>
     <RecentEdits>
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Entities/f:Entity.cs" caret="1386" fromTop="26" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Entities/f:IMovable.cs" caret="1190" fromTop="13" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Entities/f:Entity.cs" caret="3023" fromTop="18" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Entities/f:ILocableIdentified.cs" caret="350" fromTop="15" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Entities/f:Entity.cs" caret="2793" fromTop="25" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Groups/f:FightGroupMember.cs" caret="1223" fromTop="27" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Groups/f:FightGroupMember.cs" caret="3418" fromTop="12" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Groups/f:FightGroupMember.cs" caret="3646" fromTop="20" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/f:ContextHandler.cs" caret="6697" fromTop="32" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/f:ContextFightHandler.cs" caret="11713" fromTop="18" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Fights/f:Fight.cs" caret="4232" fromTop="23" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Fights/f:Fight.cs" caret="6767" fromTop="23" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/f:ContextFightHandler.cs" caret="4528" fromTop="23" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Fights/f:Fight.cs" caret="2004" fromTop="10" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Fights/f:Fight.cs" caret="19030" fromTop="28" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Fights/f:Fight.cs" caret="18985" fromTop="27" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/f:ContextFightHandler.cs" caret="2449" fromTop="20" />
-      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/f:ContextHandler.cs" caret="1793" fromTop="27" />
-      <File id="DBF77B90-0AAF-4EEC-B997-478E88CEEDB4/f:AuthClient.cs" caret="1534" fromTop="38" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="2700" fromTop="28" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="2851" fromTop="32" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="5213" fromTop="27" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="7641" fromTop="25" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="1290" fromTop="25" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="3665" fromTop="11" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="5957" fromTop="14" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="2397" fromTop="22" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="4760" fromTop="32" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="7188" fromTop="12" />
-      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="9584" fromTop="30" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileWriter/f:CsFileWriter.cs" caret="8824" fromTop="45" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileWriter/f:CsFileWriter.cs" caret="8189" fromTop="16" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileWriter/f:CsFileWriter.cs" caret="8369" fromTop="23" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileWriter/f:CsFileWriter.cs" caret="8467" fromTop="31" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileWriter/f:CsFileWriter.cs" caret="8604" fromTop="37" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileWriter/f:CsFileWriter.cs" caret="8738" fromTop="37" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26872" fromTop="40" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26872" fromTop="10" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26872" fromTop="14" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26872" fromTop="14" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26872" fromTop="7" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26872" fromTop="26" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="12570" fromTop="29" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:FunctionCall.cs" caret="1380" fromTop="20" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26872" fromTop="16" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26872" fromTop="14" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26872" fromTop="21" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26872" fromTop="29" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:FileParser/f:Parser.cs" caret="26872" fromTop="671" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/d:Classes/d:effects/f:EffectInstance.cs" caret="544" fromTop="18" />
+      <File id="A753FDB3-2D64-4993-8BF1-621240F18108/d:Spells/f:SpellManager.cs" caret="2008" fromTop="12" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/d:D2oTool/f:D2oClassDefinition.cs" caret="8473" fromTop="246" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/d:D2oTool/f:D2oClassDefinition.cs" caret="6429" fromTop="15" />
+      <File id="011FBAFC-7720-4D36-9C59-71BAE6163C9E/d:Data/d:D2oTool/f:D2oClassDefinition.cs" caret="3008" fromTop="8" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="9633" fromTop="16" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="8802" fromTop="6" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/f:Point.cs" caret="151" fromTop="6" />
+      <File id="33093793-C4BA-4B89-AC82-6E9D00437452/f:Rectangle.cs" caret="379" fromTop="14" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="8694" fromTop="37" />
+      <File id="68C437A3-289B-44C1-8081-12F27EE7651E/d:Commands/f:CodeParserCommands.cs" caret="8648" fromTop="28" />
     </RecentEdits>
   </RecentFiles>
   <NAntValidationSettings>
@@ -86,11 +86,11 @@
   </UnitTestRunnerNUnit>
   <CompletionStatisticsManager>
     <ItemStatistics item="Default">
-      <Item value="public" priority="148" />
+      <Item value="public" priority="156" />
       <Item value="ctor" priority="12" />
       <Item value="abstract" priority="6" />
-      <Item value="void" priority="40" />
-      <Item value="string" priority="81" />
+      <Item value="void" priority="42" />
+      <Item value="string" priority="83" />
       <Item value="propg" priority="0" />
       <Item value="prop" priority="12" />
       <Item value="bool" priority="33" />
@@ -99,27 +99,27 @@
       <Item value="IConvertible`0" priority="2" />
       <Item value="ICustomFormatter`0" priority="0" />
       <Item value="default" priority="7" />
-      <Item value="return" priority="123" />
-      <Item value="if" priority="113" />
-      <Item value="typeof" priority="24" />
+      <Item value="return" priority="126" />
+      <Item value="if" priority="125" />
+      <Item value="typeof" priority="28" />
       <Item value="is" priority="17" />
       <Item value="Convert`0" priority="0" />
       <Item value="str" priority="3" />
-      <Item value="else" priority="26" />
+      <Item value="else" priority="29" />
       <Item value="Converter" priority="5" />
       <Item value="Value" priority="13" />
       <Item value="TypeConverter`0" priority="0" />
       <Item value="throw" priority="13" />
-      <Item value="new" priority="151" />
+      <Item value="new" priority="154" />
       <Item value="Exception" priority="6" />
       <Item value="DefaultValue" priority="6" />
       <Item value="converter" priority="0" />
       <Item value="override" priority="22" />
       <Item value="SetStringValue`0" priority="0" />
       <Item value="value" priority="14" />
-      <Item value="private" priority="31" />
+      <Item value="private" priority="32" />
       <Item value="name" priority="2" />
-      <Item value="Name" priority="9" />
+      <Item value="Name" priority="10" />
       <Item value="ShortName" priority="4" />
       <Item value="StringComparison`0" priority="1" />
       <Item value="userRole" priority="0" />
@@ -128,23 +128,23 @@
       <Item value="while" priority="5" />
       <Item value="Args" priority="0" />
       <Item value="word" priority="6" />
-      <Item value="var" priority="21" />
+      <Item value="var" priority="24" />
       <Item value="Regex`0" priority="0" />
       <Item value="matchIsNamed" priority="2" />
       <Item value="parameters" priority="2" />
       <Item value="using" priority="17" />
       <Item value="System" priority="11" />
       <Item value="Linq" priority="9" />
-      <Item value="entry" priority="49" />
+      <Item value="entry" priority="51" />
       <Item value="static" priority="41" />
       <Item value="true" priority="22" />
       <Item value="CommandBase`0" priority="8" />
-      <Item value="foreach" priority="13" />
+      <Item value="foreach" priority="14" />
       <Item value="commandParameters" priority="3" />
       <Item value="TriggerBase`0" priority="6" />
       <Item value="virtual" priority="6" />
       <Item value="trigger" priority="29" />
-      <Item value="false" priority="33" />
+      <Item value="false" priority="34" />
       <Item value="inQuote" priority="0" />
       <Item value="m_str" priority="5" />
       <Item value="m_pos" priority="1" />
@@ -157,7 +157,7 @@
       <Item value="next" priority="2" />
       <Item value="Reply`0" priority="2" />
       <Item value="undefinedParameter" priority="3" />
-      <Item value="readonly" priority="6" />
+      <Item value="readonly" priority="7" />
       <Item value="Type`0" priority="10" />
       <Item value="as" priority="19" />
       <Item value="SubCommand`0" priority="4" />
@@ -166,7 +166,7 @@
       <Item value="Dictionary&lt;string,CommandBase&gt;" priority="0" />
       <Item value="callAsm" priority="1" />
       <Item value="GetTypes`0" priority="0" />
-      <Item value="null" priority="28" />
+      <Item value="null" priority="30" />
       <Item value="asm" priority="1" />
       <Item value="m_commandsByAlias" priority="5" />
       <Item value="thr" priority="2" />
@@ -177,9 +177,9 @@
       <Item value="Parameters" priority="4" />
       <Item value="CommandParameter&lt;object&gt;" priority="1" />
       <Item value="CommandParameter" priority="2" />
-      <Item value="IEnumerable" priority="12" />
+      <Item value="IEnumerable" priority="14" />
       <Item value="ICommandParameter`0" priority="5" />
-      <Item value="this" priority="36" />
+      <Item value="this" priority="37" />
       <Item value="CommandsManager`0" priority="1" />
       <Item value="CommandManager" priority="3" />
       <Item value="Console`0" priority="23" />
@@ -271,7 +271,7 @@
       <Item value="type" priority="9" />
       <Item value="messageArgs" priority="0" />
       <Item value="Send`1" priority="2" />
-      <Item value="obj" priority="5" />
+      <Item value="obj" priority="8" />
       <Item value="NullReferenceException" priority="0" />
       <Item value="BaseCore" priority="0" />
       <Item value="Framework" priority="0" />
@@ -317,7 +317,7 @@
       <Item value="ActiveRecordMediator`0" priority="0" />
       <Item value="C`0" priority="0" />
       <Item value="Delegate`0" priority="1" />
-      <Item value="method" priority="2" />
+      <Item value="method" priority="11" />
       <Item value="Count`1" priority="1" />
       <Item value="Contains`1" priority="0" />
       <Item value="base" priority="8" />
@@ -332,7 +332,7 @@
       <Item value="ParametersConverter`0" priority="0" />
       <Item value="Role`0" priority="0" />
       <Item value="accname" priority="0" />
-      <Item value="continue" priority="0" />
+      <Item value="continue" priority="3" />
       <Item value="files" priority="0" />
       <Item value="m_version" priority="0" />
       <Item value="File`0" priority="2" />
@@ -382,7 +382,7 @@
       <Item value="IpcAccessor`0" priority="5" />
       <Item value="IsRegister`0" priority="0" />
       <Item value="DatabaseRevision" priority="0" />
-      <Item value="uint" priority="14" />
+      <Item value="uint" priority="15" />
       <Item value="Directory`0" priority="2" />
       <Item value="UpdateFileDir" priority="0" />
       <Item value="ConsoleColor`0" priority="3" />
@@ -438,7 +438,7 @@
       <Item value="BottomNeighbourId" priority="0" />
       <Item value="LeftNeighbourId" priority="0" />
       <Item value="RightNeighbourId" priority="0" />
-      <Item value="writer" priority="0" />
+      <Item value="writer" priority="8" />
       <Item value="BigEndianReader" priority="0" />
       <Item value="file" priority="0" />
       <Item value="FileMode`0" priority="0" />
@@ -467,7 +467,7 @@
       <Item value="Breed`0" priority="0" />
       <Item value="Dictionary&lt;CaracteristicsIdEnum,PropertyInfo&gt;" priority="0" />
       <Item value="CaracteristicsIdEnum`0" priority="1" />
-      <Item value="PropertyInfo`0" priority="0" />
+      <Item value="PropertyInfo`0" priority="5" />
       <Item value="m_statsThresholds" priority="0" />
       <Item value="stats" priority="0" />
       <Item value="DofusProtocol.Enums" priority="0" />
@@ -797,7 +797,7 @@
       <Item value="namesReplacementsRules" priority="0" />
       <Item value="beforeParsingReplacementsRules" priority="0" />
       <Item value="afterParsingReplacementsRules" priority="0" />
-      <Item value="IgnoreMethods" priority="0" />
+      <Item value="IgnoreMethods" priority="2" />
       <Item value="SetFromCellId`0" priority="1" />
       <Item value="SetFromCoords`0" priority="0" />
       <Item value="cellData" priority="4" />
@@ -868,9 +868,32 @@
       <Item value="ILocableIdentified`0" priority="1" />
       <Item value="GetIdentifiedEntityDispositionInformations" priority="0" />
       <Item value="GetAllFighters`0" priority="1" />
+      <Item value="Dictionary&lt;Type,Type&gt;" priority="0" />
+      <Item value="nativeField" priority="1" />
+      <Item value="field" priority="5" />
+      <Item value="ToleratedType" priority="0" />
+      <Item value="MethodInfo`0" priority="1" />
+      <Item value="AccessModifiers`0" priority="1" />
+      <Item value="Properties" priority="1" />
+      <Item value="propertyInfos" priority="0" />
+      <Item value="propertyExisting" priority="0" />
+      <Item value="AccessModifier" priority="0" />
+      <Item value="PropertyType" priority="0" />
+      <Item value="property" priority="0" />
+      <Item value="ConstructorElements" priority="0" />
+      <Item value="elements" priority="0" />
+      <Item value="MethodsElements" priority="0" />
+      <Item value="propertyInfo" priority="2" />
+      <Item value="WriteElements`0" priority="1" />
+      <Item value="List&lt;PropertyInfo&gt;" priority="0" />
+      <Item value="Fields" priority="0" />
+      <Item value="fields" priority="0" />
+      <Item value="PROTECTED" priority="0" />
+      <Item value="FieldInfo`0" priority="0" />
+      <Item value="PUBLIC" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.Convert">
-      <Item value="ChangeType`0" priority="0" />
+      <Item value="ChangeType`0" priority="1" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.ICustomFormatter">
       <Item value="Format`0" priority="0" />
@@ -880,19 +903,19 @@
       <Item value="Id" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.String">
-      <Item value="ToLower`0" priority="2" />
+      <Item value="ToLower`0" priority="5" />
       <Item value="CompareTo`0" priority="0" />
       <Item value="Equals`0" priority="0" />
       <Item value="Length" priority="3" />
-      <Item value="StartsWith`0" priority="0" />
+      <Item value="StartsWith`0" priority="1" />
       <Item value="EndsWith`0" priority="0" />
-      <Item value="Remove`0" priority="1" />
+      <Item value="Remove`0" priority="2" />
       <Item value="ToString`0" priority="0" />
       <Item value="Split`0" priority="1" />
       <Item value="PadLeft`0" priority="0" />
       <Item value="PadRight`0" priority="0" />
       <Item value="Trim`0" priority="1" />
-      <Item value="Contains`0" priority="0" />
+      <Item value="Contains`0" priority="1" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.StringComparison">
       <Item value="InvariantCultureIgnoreCase" priority="0" />
@@ -906,17 +929,17 @@
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Text.RegularExpressions.Match">
       <Item value="Success" priority="1" />
-      <Item value="Groups" priority="1" />
+      <Item value="Groups" priority="2" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Text.RegularExpressions.Group">
-      <Item value="Value" priority="1" />
+      <Item value="Value" priority="2" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Collections.Generic.IEnumerable`1">
       <Item value="Where`1" priority="3" />
       <Item value="GetEnumerator`0" priority="0" />
-      <Item value="Count`1" priority="8" />
+      <Item value="Count`1" priority="10" />
       <Item value="SkipWhile`1" priority="1" />
-      <Item value="First`1" priority="3" />
+      <Item value="First`1" priority="5" />
       <Item value="FirstOrDefault`1" priority="1" />
       <Item value="TakeWhile`1" priority="0" />
       <Item value="Select`2" priority="5" />
@@ -953,7 +976,7 @@
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Collections.Generic.List`1">
       <Item value="Add`0" priority="6" />
-      <Item value="Count" priority="12" />
+      <Item value="Count" priority="13" />
       <Item value="Contains`0" priority="2" />
       <Item value="OrderBy`2" priority="0" />
       <Item value="Exists`0" priority="0" />
@@ -963,7 +986,7 @@
       <Item value="FindIndex`0" priority="0" />
       <Item value="AddRange`0" priority="1" />
       <Item value="Clear`0" priority="0" />
-      <Item value="Where`1" priority="1" />
+      <Item value="Where`1" priority="4" />
       <Item value="RemoveAll`0" priority="0" />
       <Item value="First`1" priority="0" />
     </ItemStatistics>
@@ -1060,7 +1083,7 @@
       <Item value="HasFlag`0" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.String">
-      <Item value="IsNullOrEmpty`0" priority="3" />
+      <Item value="IsNullOrEmpty`0" priority="4" />
       <Item value="Join`0" priority="3" />
       <Item value="Format`0" priority="5" />
       <Item value="Empty" priority="0" />
@@ -1100,7 +1123,7 @@
       <Item value="Port" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Collections.Generic.KeyValuePair`2">
-      <Item value="Value" priority="6" />
+      <Item value="Value" priority="10" />
       <Item value="Key" priority="6" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Linq.IOrderedEnumerable`1">
@@ -1155,7 +1178,7 @@
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Object">
       <Item value="ToString`0" priority="1" />
-      <Item value="GetType`0" priority="2" />
+      <Item value="GetType`0" priority="3" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.Windows.Forms.Application">
       <Item value="DoEvents`0" priority="0" />
@@ -1646,7 +1669,7 @@
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Collections.Generic.Dictionary`2">
       <Item value="Values" priority="0" />
-      <Item value="ContainsKey`0" priority="0" />
+      <Item value="ContainsKey`0" priority="1" />
       <Item value="Add`0" priority="3" />
       <Item value="Count" priority="2" />
       <Item value="Clear`0" priority="0" />
@@ -1837,7 +1860,8 @@
       <Item value="Fields" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Stump.Tools.UtilityBot.FileWriter.FieldInfo">
-      <Item value="Name" priority="1" />
+      <Item value="Name" priority="4" />
+      <Item value="Modifiers" priority="2" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Stump.Server.WorldServer.Global.Maps.MapPoint">
       <Item value="CellId" priority="4" />
@@ -1917,6 +1941,34 @@
     </ItemStatistics>
     <ItemStatistics item="Qualified:Stump.Server.WorldServer.Entities.ILocableIdentified">
       <Item value="GetIdentifiedEntityDisposition`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Server.BaseServer.Data.D2oTool.D2oFieldDefinition">
+      <Item value="KnowType" priority="3" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Reflection.FieldInfo">
+      <Item value="FieldType" priority="2" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Tools.UtilityBot.FileWriter.MethodInfo">
+      <Item value="Name" priority="2" />
+      <Item value="AccessModifier" priority="0" />
+      <Item value="ReturnType" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Tools.UtilityBot.FileWriter.PropertyInfo">
+      <Item value="MethodGet" priority="1" />
+      <Item value="MethodSet" priority="0" />
+      <Item value="PropertyType" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Stump.Tools.UtilityBot.FileWriter.CsFileWriter">
+      <Item value="StartProperty`0" priority="0" />
+      <Item value="StartGetProperty`0" priority="0" />
+      <Item value="EndGetProperty`0" priority="0" />
+      <Item value="StartSetProperty`0" priority="0" />
+      <Item value="EndSetProperty`0" priority="0" />
+      <Item value="EndProperty`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Stump.Tools.UtilityBot.FileWriter.AccessModifiers">
+      <Item value="PUBLIC" priority="0" />
+      <Item value="PROTECTED" priority="0" />
     </ItemStatistics>
   </CompletionStatisticsManager>
 </Configuration>

@@ -22,9 +22,9 @@
       </MessageListener>
       <ClientVersion>
         <Severity>Medium</Severity>
-        <VersionRequired>2.2.3.36341.1</VersionRequired>
-        <ActualVersion>1280</ActualVersion>
-        <RequiredVersion>1285</RequiredVersion>
+        <VersionRequired>2.3.0.37697.1</VersionRequired>
+        <ActualVersion>1304</ActualVersion>
+        <RequiredVersion>1280</RequiredVersion>
       </ClientVersion>
       <WorkerManager>
         <AutoWorkerNumber>true</AutoWorkerNumber>

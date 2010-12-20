@@ -78,7 +78,7 @@ namespace Stump.Server.AuthServer.Handlers
                 SendIdentificationSuccessMessage(client, wasAlreadyConnected);
 
 
-                if (client.AutoConnect && WorldServerManager.Worlds.Count > 0 && client.Account.LastServer != 0)
+                if (message.autoconnect && WorldServerManager.Worlds.Count > 0 && client.Account.LastServer != 0)
                 {
                     SendSelectServerData(client);
 
