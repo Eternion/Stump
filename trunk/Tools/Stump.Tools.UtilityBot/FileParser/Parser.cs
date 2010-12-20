@@ -58,24 +58,20 @@ namespace Stump.Tools.UtilityBot.FileParser
             {
             };
 
-        private readonly string[] m_fileLines;
-        private readonly string m_fileText;
+        private string[] m_fileLines;
+        private string m_fileText;
 
         public AsParser(string filename)
         {
             FileName = filename;
 
-            m_fileText = ExecuteBeforeParsingReplacement(File.ReadAllText(FileName));
-            m_fileLines = m_fileText.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            m_fileText = File.ReadAllText(FileName);
         }
 
         public AsParser(string filename, bool ignoreMethods)
+            : this(filename)
         {
-            FileName = filename;
-            IgnoreMethods = ignoreMethods;
-
-            m_fileText = ExecuteBeforeParsingReplacement(File.ReadAllText(FileName));
-            m_fileLines = m_fileText.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            IgnoreMethods = ignoreMethods;   
         }
 
         public AsParser(string filename, bool ignoreMethods, IEnumerable<KeyValuePair<string, string>> namesReplacementsRules,
@@ -161,6 +157,9 @@ namespace Stump.Tools.UtilityBot.FileParser
 
         public void ParseFile()
         {
+            m_fileText = ExecuteBeforeParsingReplacement(m_fileText);
+            m_fileLines = m_fileText.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+
             Class = new ClassInfo
                 {
                     Name = ExecuteNameReplacement(GetMatch(@"public class (\w+)\s")),
@@ -182,8 +181,7 @@ namespace Stump.Tools.UtilityBot.FileParser
         private void ParseConstructor()
         {
             Match matchConstructor = Regex.Match(m_fileText,
-                                                 @"(?<acces>public|protected|private|internal)\s*function\s*" +
-                                                 Class.Name + @"\((?<argument>[^,)]+,?)*\)");
+                                                 string.Format(@"(?<acces>public|protected|private|internal)\s*function\s*(?<name>{0})\((?<argument>[^,)]+,?)*\)", Class.Name));
 
             if (matchConstructor.Success)
             {

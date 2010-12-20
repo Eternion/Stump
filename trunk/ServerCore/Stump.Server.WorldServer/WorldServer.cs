@@ -24,6 +24,7 @@ using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.Utils;
 using Stump.BaseCore.Framework.XmlUtils;
 using Stump.Database;
+using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initializing;
@@ -38,11 +39,6 @@ namespace Stump.Server.WorldServer
     public class WorldServer : ServerBase<WorldServer>
     {
         public static WorldServerInformation ServerInformation;
-
-        /// <summary>
-        ///   Indicate if we need to register to authserver.
-        /// </summary>
-        private static bool m_isRegister;
 
         public WorldServer()
             : base(Definitions.ConfigFilePath, Definitions.SchemaFilePath)
@@ -119,13 +115,16 @@ namespace Stump.Server.WorldServer
             logger.Info("Opening Database...");
             DatabaseAccessor.OpenDatabase();
 
+            logger.Info("Register Messages...");
+            MessageReceiver.Initialize();
+
             logger.Info("Register Packet Handlers...");
             HandlerManager.RegisterAll(typeof (WorldServer).Assembly);
 
             logger.Info("Register Commands...");
             CommandManager.RegisterAll<WorldCommand, WorldSubCommand>();
 
-            logger.Info("Start Parallel Initializion Procedure...");
+            logger.Info("Start Parallel Initialization Procedure...");
             StageManager.Initialize(GetType().Assembly);
 
             logger.Info("Build World...");
@@ -149,9 +148,6 @@ namespace Stump.Server.WorldServer
 
         public override void Update()
         {
-            if (IpcAccessor.Instance.Connected && !IsRegister())
-                RegisterWorld();
-
             base.Update();
         }
 
@@ -162,33 +158,6 @@ namespace Stump.Server.WorldServer
 
         public override void OnShutdown()
         {
-        }
-
-        /// <summary>
-        ///   Register this world to AuthService
-        /// </summary>
-        private void RegisterWorld()
-        {
-            // todo : use a secret key to confirm world server access
-            if (IpcAccessor.Instance.ProxyObject.RegisterWorld(ServerInformation, IpcAccessor.IpcWorldPort))
-            {
-                m_isRegister = true;
-            }
-            else
-            {
-                logger.Error("The authentication server has denied the access of this server.");
-                Shutdown();
-            }
-        }
-
-        public static void NotifyConnectionLost()
-        {
-            m_isRegister = false;
-        }
-
-        public bool IsRegister()
-        {
-            return m_isRegister;
         }
 
         public IEnumerable<WorldClient> GetClientsUsingAccount(AccountRecord account)

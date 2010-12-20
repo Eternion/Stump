@@ -16,14 +16,16 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Global.Maps;
 
 namespace Stump.Server.WorldServer.Groups
 {
-    public sealed class FightGroupMember : GroupMember
+    public sealed class FightGroupMember : GroupMember, ILocableIdentified
     {
         public FightGroupMember(LivingEntity ent, FightGroup groupOwner)
             : base(ent, groupOwner)
@@ -33,6 +35,9 @@ namespace Stump.Server.WorldServer.Groups
             UsedAp = 0;
             UsedMp = 0;
             DamageTaken = 0;
+
+            // copy the position of the owner entity
+            Position = new VectorIsometric(ent.Position.Point, ent.Position.Direction);
         }
 
         public int TotalAp
@@ -68,7 +73,7 @@ namespace Stump.Server.WorldServer.Groups
             set;
         }
 
-        public CellData Cell
+        public VectorIsometric Position
         {
             get;
             set;
@@ -118,6 +123,22 @@ namespace Stump.Server.WorldServer.Groups
             DamageTaken += damage;
 
             return damage;
+        }
+
+        public long Id
+        {
+            get { return Entity.Id;  }
+            set { Entity.Id = value; }
+        }
+
+        public IdentifiedEntityDispositionInformations GetIdentifiedEntityDisposition()
+        {
+            return new IdentifiedEntityDispositionInformations(Position.CellId, (uint)Position.Direction, (int)Id);
+        }
+
+        public EntityDispositionInformations GetEntityDisposition()
+        {
+            return new EntityDispositionInformations(Position.CellId, (uint)Position.Direction);
         }
 
         public GameFightMinimalStats GetFightMinimalStats()

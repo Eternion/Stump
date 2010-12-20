@@ -22,7 +22,7 @@ using Stump.Database;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.IPC;
 
-namespace Stump.Server.WorldServer.Database
+namespace Stump.Server.WorldServer.Manager
 {
     public static partial class AccountManager
     {

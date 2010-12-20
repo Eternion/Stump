@@ -167,6 +167,10 @@ namespace Stump.Server.AuthServer
                 {
                     Worlds.Add(world);
                     m_realmlist[world.Id].Connected = true;
+
+                    if (m_realmlist[world.Id].Status == ServerStatusEnum.OFFLINE)
+                        m_realmlist[world.Id].Status = ServerStatusEnum.ONLINE;
+
                     logger.Info("Registered World : \"{0}\" <Id : {1}> <{2}>", world.Name, world.Id, world.Address);
 
                     OnServerListChange();
@@ -227,7 +231,9 @@ namespace Stump.Server.AuthServer
                     if (m_realmlist.ContainsKey(world.Id))
                     {
                         m_realmlist[world.Id].Connected = false;
-                        m_realmlist[world.Id].Status = ServerStatusEnum.OFFLINE;
+
+                        if(m_realmlist[world.Id].Status == ServerStatusEnum.ONLINE)
+                            m_realmlist[world.Id].Status = ServerStatusEnum.OFFLINE;
 
                         OnServerListChange();
                     }

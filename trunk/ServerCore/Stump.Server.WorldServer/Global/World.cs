@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Global
 
         #region Variables
 
-        private static long m_worldUpdateInterval;
+        private static long m_worldUpdateInterval = 100;
 
         [Variable(DefinableRunning = true)]
         public static string MessageOfTheDay = "Bienvenue. Ce serveur est propulsé par Stump.";

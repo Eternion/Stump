@@ -46,7 +46,7 @@ namespace Stump.Server.BaseServer.Network
         [Variable]
         public static uint RequiredVersion = 1285;
 
-        public static ClientVersion ClientVersionRequired = Parse("2.2.3.36341.1");
+        public static ClientVersion ClientVersionRequired = Parse(VersionRequired);
                                     // version can be found in games_base.xml
 
 

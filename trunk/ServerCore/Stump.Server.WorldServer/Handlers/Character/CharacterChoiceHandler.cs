@@ -16,20 +16,63 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Stump.Database;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Entities;
 
 namespace Stump.Server.WorldServer.Handlers
 {
     public partial class CharacterHandler
     {
+        [WorldHandler(typeof (CharacterSelectionMessage))]
+        public static void HandleCharacterSelectionMessage(WorldClient client, CharacterSelectionMessage message)
+        {
+            IEnumerable<CharacterRecord> characters = client.Characters.Where(entry => entry.Id == message.id);
+
+            if (characters.Count() != 1)
+            {
+                client.Send(new CharacterSelectedErrorMessage());
+                return;
+            }
+
+            client.ActiveCharacter = new Character(characters.First(), client);
+
+
+            SendCharacterSelectedSuccessMessage(client);
+
+            InventoryHandler.SendInventoryContentMessage(client);
+            InventoryHandler.SendInventoryWeightMessage(client);
+
+            InventoryHandler.SendSpellListMessage(client, true);
+            ContextHandler.SendSpellForgottenMessage(client);
+            ContextHandler.SendNotificationListMessage(client, new List<int>());
+
+            ContextHandler.SendEmoteListMessage(client, new List<uint>());
+            ChatHandler.SendEnabledChannelsMessage(client, new List<uint>(), new List<uint>());
+
+            PvpHandler.SendAlignmentRankUpdateMessage(client);
+            PvpHandler.SendAlignmentSubAreasListMessage(client);
+
+            InitializationHandler.SendSetCharacterRestrictionsMessage(client);
+
+            FriendHandler.SendFriendWarnOnConnectionStateMessage(client, false);
+            FriendHandler.SendFriendWarnOnLevelGainStateMessage(client, false);
+
+            BasicHandler.SendTextInformationMessage(client, 1, 89);
+            BasicHandler.SendTextInformationMessage(client, 0, 152,
+                                                    client.Account.LastLogin.Year.ToString(),
+                                                    client.Account.LastLogin.Month.ToString(),
+                                                    client.Account.LastLogin.Day.ToString(),
+                                                    client.Account.LastLogin.Hour.ToString(),
+                                                    client.Account.LastLogin.Minute.ToString(),
+                                                    client.Account.LastIP ?? "(null)");
+
+            InitializationHandler.SendOnConnectionEventMessage(client, 2);
+        }
 
         [WorldHandler(typeof (CharactersListRequestMessage))]
         public static void HandleCharacterListRequest(WorldClient client, CharactersListRequestMessage message)
@@ -46,26 +89,20 @@ namespace Stump.Server.WorldServer.Handlers
 
         public static void SendCharactersListMessage(WorldClient client)
         {
-            var list = new List<CharacterBaseInformations>();
-
-            foreach (CharacterRecord characterRecord in client.Characters)
-            {
-                List<int> colors = characterRecord.Colors.Select(
-                    (color, index) => int.Parse((index + 1) + color.ToString("X6"), NumberStyles.HexNumber)).ToList();
-
-                list.Add(new CharacterBaseInformations(
-                             CharacterBaseInformations.protocolId,
-                             (uint) characterRecord.Level,
-                             characterRecord.Name,
-                             new EntityLook(
-                                 1, // bonesId
-                                 new List<uint>(), // skins
-                                 colors,
-                                 new List<int>(characterRecord.Scale),
-                                 new List<SubEntity>()),
-                             characterRecord.Classe,
-                             characterRecord.SexId != 0));
-            }
+            List<CharacterBaseInformations> list = client.Characters.Select(
+                characterRecord =>
+                new CharacterBaseInformations(
+                    (uint) characterRecord.Id,
+                    (uint) characterRecord.Level,
+                    characterRecord.Name,
+                    new EntityLook(
+                        1, // bonesId
+                        characterRecord.Skins, // skins
+                        characterRecord.ColorsIndexed,
+                        new List<int>(characterRecord.Scale),
+                        new List<SubEntity>()),
+                    characterRecord.Classe,
+                    characterRecord.SexId != 0)).ToList();
 
 
             client.Send(new CharactersListMessage(
@@ -73,6 +110,11 @@ namespace Stump.Server.WorldServer.Handlers
                             false, // tutorialsavailable
                             list
                             ));
+        }
+
+        public static void SendCharacterSelectedSuccessMessage(WorldClient client)
+        {
+            client.Send(new CharacterSelectedSuccessMessage(client.ActiveCharacter.GetBaseInformations()));
         }
     }
 }

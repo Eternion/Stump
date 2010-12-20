@@ -68,6 +68,8 @@
     <Compile Include="Chat\ChannelId.cs" />
     <Compile Include="Chat\ChatManager.cs" />
     <Compile Include="Commands\TriggerChat.cs" />
+    <Compile Include="Entities\ILocable.cs" />
+    <Compile Include="Entities\ILocableIdentified.cs" />
     <Compile Include="Manager\AccountManager.cs" />
     <Compile Include="Manager\CharacterManager.cs" />
     <Compile Include="Data\ItemLoader.cs" />
@@ -96,7 +98,6 @@
     <Compile Include="Entities\Character.Fields.cs" />
     <Compile Include="Entities\Character.Stats.cs" />
     <Compile Include="Entities\Entity.cs" />
-    <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\IEntityContainer.cs" />
     <Compile Include="Entities\IEntityLook.cs" />
     <Compile Include="Entities\ILivingEntity.cs" />

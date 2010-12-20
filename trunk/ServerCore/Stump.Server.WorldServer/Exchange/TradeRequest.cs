@@ -66,10 +66,6 @@ namespace Stump.Server.WorldServer.Exchange
                 InventoryHandler.SendExchangeStartedWithPodsMessage(( (Character) trade.TargetTrader.Entity ).Client,
                                                                    trade);
             }
-            catch
-            {
-                /* ... */
-            }
             finally
             {
                 Source.DialogRequest = null;
@@ -83,10 +79,6 @@ namespace Stump.Server.WorldServer.Exchange
             {
                 InventoryHandler.SendExchangeLeaveMessage(Source.Client, false);
                 InventoryHandler.SendExchangeLeaveMessage(Target.Client, false);
-            }
-            catch
-            {
-                /* ... */
             }
             finally
             {

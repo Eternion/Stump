@@ -100,6 +100,8 @@ namespace Stump.Server.BaseServer.Network
                 logger.Error("Source : {0} Method : {1}", ex.Source, ex.TargetSite);
                 logger.Error("Stack Trace : " + ex.StackTrace);
 #endif
+
+                Disconnect();
             }
         }
 
@@ -189,6 +191,10 @@ namespace Stump.Server.BaseServer.Network
                 {
                     m_argsPool.Push(args);
                 }
+
+#if DEBUG
+                Console.WriteLine(string.Format("{0} >> {1}", this, message.GetType().Name));
+#endif
             }
         }
 

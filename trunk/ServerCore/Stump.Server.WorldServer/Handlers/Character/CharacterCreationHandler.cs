@@ -23,9 +23,9 @@ using Stump.Database;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Breeds;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.IPC;
+using Stump.Server.WorldServer.Manager;
 
 namespace Stump.Server.WorldServer.Handlers
 {
@@ -36,16 +36,12 @@ namespace Stump.Server.WorldServer.Handlers
         {
             // 0) Check if we can create characters on this server
             /*         [ToDo]       */
-
-
-            /* Nombre maximum de personnages sur le compte atteint */
             if (CharacterManager.GetCharactersNumberByAccount(client) >= World.MaxCharacterSlot)
             {
                 client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.ERR_TOO_MANY_CHARACTERS));
                 return;
             }
 
-            /* Le Nom existe déja */
             if (CharacterRecord.IsNameExists(message.name))
             {
                 client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.ERR_NAME_ALREADY_EXISTS));
@@ -64,16 +60,17 @@ namespace Stump.Server.WorldServer.Handlers
             BaseBreed breed = BreedManager.GetBreed(message.breed);
 
             var charcolors = new List<int>();
-            for (int i = 0; i < message.colors.Count; i++)
+            for (int i = 0; i < 5; i++) // we ignore the sixth color
             {
-                // On remplace -1 par les couleurs par défaut
-                if (message.colors[i] == -1)
+                if (message.colors[i] == -1 &&
+                    breed.MaleColors.Count > i &&
+                    breed.FemaleColors.Count > i)
                     charcolors.Add(!message.sex ? breed.MaleColors[i] : breed.FemaleColors[i]);
                 else
                     charcolors.Add(message.colors[i]);
             }
 
-            var charskins = new List<short> { (short)(message.breed * 10 + (message.sex ? 1 : 0)) };
+            var charskins = new List<uint> { (uint) (message.breed * 10 + (message.sex ? 1 : 0)) };
 
             /* Create Character */
             var character = new CharacterRecord

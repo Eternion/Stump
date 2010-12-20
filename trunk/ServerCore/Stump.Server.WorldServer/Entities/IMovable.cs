@@ -23,7 +23,7 @@ using Stump.Server.WorldServer.Global.Pathfinding;
 
 namespace Stump.Server.WorldServer.Entities
 {
-    public interface IMovable : IEntity
+    public interface IMovable : ILocableIdentified
     {
         /// <summary>
         ///   Indicate or set if entity is moving.

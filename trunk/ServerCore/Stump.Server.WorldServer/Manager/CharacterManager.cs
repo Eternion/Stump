@@ -23,29 +23,24 @@ using Stump.Database;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.IPC;
 
-namespace Stump.Server.WorldServer.Database
+namespace Stump.Server.WorldServer.Manager
 {
     public static class CharacterManager
     {
-
         public static List<CharacterRecord> GetCharactersByAccount(WorldClient client)
         {
-            var characters = new List<CharacterRecord>(5);
-            var ids = IpcAccessor.Instance.ProxyObject.GetAccountCharacters(WorldServer.ServerInformation,
-                                                                            client.Account.Id);
-            foreach(uint id in ids)
-            {
-                var character = CharacterRecord.FindCharacterById((int)id);
-                if (character != null)
-                    characters.Add(character);
-            }
-
+            var characters = new List<CharacterRecord>();
+            uint[] ids = IpcAccessor.Instance.ProxyObject.GetAccountCharacters(WorldServer.ServerInformation,
+                                                                               client.Account.Id);
+            characters.AddRange(
+                ids.Select(id => CharacterRecord.FindCharacterById((int) id)).Where(character => character != null));
             return characters;
         }
 
         public static int GetCharactersNumberByAccount(WorldClient client)
         {
-            return IpcAccessor.Instance.ProxyObject.GetAccountCharacterCount(WorldServer.ServerInformation, client.Account.Id);
+            return IpcAccessor.Instance.ProxyObject.GetAccountCharacterCount(WorldServer.ServerInformation,
+                                                                             client.Account.Id);
         }
 
         public static bool CreateCharacter(CharacterRecord character, WorldClient client)
@@ -53,7 +48,8 @@ namespace Stump.Server.WorldServer.Database
             if (client.Characters == null)
                 client.Characters = new List<CharacterRecord>(5);
 
-            character.Save();
+            character.Id = (int) CharacterRecord.GetNextId();
+            character.Create();
 
             client.Characters.Add(character);
 
@@ -79,7 +75,6 @@ namespace Stump.Server.WorldServer.Database
             });
         }
 
-
         #region Character Name Random Generation
 
         private const string voyelles = "aeiouy";
@@ -100,7 +95,7 @@ namespace Stump.Server.WorldServer.Database
 
                 for (int i = 0; i < namelen - 1; i++)
                 {
-                    name += (i % 2 == 1) ? RandomConsonne(rand) : RandomVoyelle(rand);
+                    name += (i%2 == 1) ? RandomConsonne(rand) : RandomVoyelle(rand);
                 }
             } while (CharacterRecord.IsNameExists(name));
 

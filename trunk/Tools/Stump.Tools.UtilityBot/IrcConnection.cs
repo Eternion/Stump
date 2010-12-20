@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Squishy.Irc;
 using Squishy.Irc.Commands;
@@ -154,9 +155,10 @@ namespace Stump.Tools.UtilityBot
             if (base.MayTriggerCommand(trigger, cmd))
             {
                 // default case (No User set (meaning its not a remote request) amongst others)
-                return true;
+                return Bot.AllowedUserNicks.Count(entry => entry == trigger.User.Nick) > 0;
             }
-            return true;
+
+            return Bot.AllowedUserNicks.Count(entry => entry == trigger.User.Nick) > 0;
         }
 
         /// <summary>

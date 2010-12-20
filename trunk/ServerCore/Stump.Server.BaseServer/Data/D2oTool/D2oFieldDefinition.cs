@@ -150,7 +150,7 @@ namespace Stump.Server.BaseServer.Data.D2oTool
                     return ReadUInt;
                 case -99:
                     // found Array type
-                    string vectorTypename = reader.ReadUTF(); // useless
+                    /*string vectorTypename = */reader.ReadUTF(); // useless
                     int vectorTypeid = reader.ReadInt();
 
                     m_tempVectorMethod.Insert(0, GetMethodByType(vectorTypeid, reader));
@@ -206,8 +206,7 @@ namespace Stump.Server.BaseServer.Data.D2oTool
 
         private static object ReadUTF(BigEndianReader reader, int vectorDimension)
         {
-            string r = reader.ReadUTF();
-            return r;
+            return reader.ReadUTF();
         }
 
         private static object ReadDouble(BigEndianReader reader, int vectorDimension)

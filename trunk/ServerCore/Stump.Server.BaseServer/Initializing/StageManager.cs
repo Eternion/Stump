@@ -72,9 +72,10 @@ namespace Stump.Server.BaseServer.Initializing
                     continue;
                 try
                 {
+                    StageStep step = stageStep;
                     var task = Task.Factory.StartNew(() =>
                     {
-                        var localStageStep = stageStep;
+                        var localStageStep = step;
 
                         try
                         {

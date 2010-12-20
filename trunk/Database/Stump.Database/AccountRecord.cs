@@ -30,7 +30,6 @@ namespace Stump.Database
     {
         #region Fields
 
-        private uint m_id;
         private string m_name = "";
 
         #endregion
@@ -42,8 +41,8 @@ namespace Stump.Database
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
         public uint Id
         {
-            get { return m_id; }
-            set { m_id = value; }
+            get;
+            set;
         }
 
         /// <summary>

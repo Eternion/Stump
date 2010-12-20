@@ -200,14 +200,14 @@ namespace Stump.Tools.UtilityBot.Commands
                 {@"(Write|Read)Unsigned([^B])", @"$1U$2"},
             };
 
-        internal static Dictionary<string, string> m_afterParsingRules = new Dictionary<string, string>
+        internal static Dictionary<string, string> m_beforeParsingRules = new Dictionary<string, string>
             {
                 {@"this\.serialize\(loc1\);", @"this.serialize(arg1);"},
                 {@"writePacket\(arg1, this\.getMessageId\(\), loc1\);", @"writePacket(arg1, this.getMessageId());"},
             };
 
 
-        internal static Dictionary<string, string> m_beforeParsingRules = new Dictionary<string, string>
+        internal static Dictionary<string, string> m_afterParsingRules = new Dictionary<string, string>
             {
                 {@"WriteByte\(", @"WriteByte((byte)"},
                 {@"WriteShort\(", @"WriteShort((short)"},
@@ -217,6 +217,7 @@ namespace Stump.Tools.UtilityBot.Commands
                 {@"WriteFloat\(", @"WriteFloat((uint)"},
                 {@"WriteUTF\(", @"WriteUTF((string)"},
                 {@"(?<!(?:class\s|public\s))\bVersion\b", "Stump.DofusProtocol.Classes.Version"},
+                {@"(?<!(?:class\s\s))\bVersion\b([^;]+);", @"Stump.DofusProtocol.Classes.Version$1;"},
                 {@"(\w+) = new ([\w_]+)\(\)\)\.deserialize\(", "(($1 = new $2()) as $2).deserialize("},
                 {@"= (\w+)\.ReadUShort\(\);", @"= (ushort)$1.ReadUShort();"},
                 {@"ReadUnsignedByte", @"ReadByte"},
@@ -236,6 +237,7 @@ namespace Stump.Tools.UtilityBot.Commands
                 {@"this\.base", @"this.@base"},
                 {@"this\.object", @"this.@object"},
                 {@"this.breed (<|>) (Feca|Pandawa)", @"this.breed $1 (int)Stump.DofusProtocol.Enums.BreedEnum.$2"},
+                {@"new List<(\w+)>\((\d+)\)", "new List<$1>(new $1[$2])"}
             };
 
         internal static List<string> m_ignoredLines = new List<string>

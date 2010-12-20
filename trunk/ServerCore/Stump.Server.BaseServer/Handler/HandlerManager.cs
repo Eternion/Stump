@@ -130,24 +130,36 @@ namespace Stump.Server.BaseServer.Handler
             Tuple<IHandlerContainer, Handler, Delegate> handler;
             if (m_handlers.TryGetValue(message.GetType(), out handler))
             {
-                //////////////////////////////////////////////////////////////////////////
-                // The following should be benchmarked.
-                // What is the best when you have to handle a large amount of packets
-                // Parallel stuff sounds good but need a serious benchmarking
-                // since this is some kind of critical stuff we have there...
-                //////////////////////////////////////////////////////////////////////////
-
-                if (!handler.Item1.PredicateSuccess(client, message.GetType()))
+                try
                 {
-                    logger.Warn(client + " tried to send " + message + " but predicate didn't success");
-                    return;
-                }
+                    //////////////////////////////////////////////////////////////////////////
+                    // The following should be benchmarked.
+                    // What is the best when you have to handle a large amount of packets
+                    // Parallel stuff sounds good but need a serious benchmarking
+                    // since this is some kind of critical stuff we have there...
+                    //////////////////////////////////////////////////////////////////////////
 
-                handler.Item3.DynamicInvoke(client, message);
+                    if (!handler.Item1.PredicateSuccess(client, message.GetType()))
+                    {
+                        logger.Warn(client + " tried to send " + message + " but predicate didn't success");
+                        return;
+                    }
 
-                /*handler.Item3.GetInvocationList()
+#if DEBUG
+                    Console.WriteLine(string.Format("{0} << {1}", client, message.GetType().Name));
+#endif
+
+                    handler.Item3.DynamicInvoke(client, message);
+
+                    /*handler.Item3.GetInvocationList()
                     .AsParallel().AsOrdered()
                     .Select(d => d.DynamicInvoke(client, message));*/
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(string.Format("[Handler : {0}] Force disconnection of client {1} : {2}", message.GetType().Name, client, ex));
+                    client.Disconnect();
+                }
             }
             else
             {

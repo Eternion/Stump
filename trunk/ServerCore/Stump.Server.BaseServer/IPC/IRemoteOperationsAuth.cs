@@ -102,7 +102,7 @@ namespace Stump.Server.BaseServer.IPC
         /// <param name="wsi"></param>
         /// <param name="accountid"></param>
         /// <returns></returns>
-        IEnumerable<uint> GetAccountCharacters(WorldServerInformation wsi, uint accountid);
+        uint[] GetAccountCharacters(WorldServerInformation wsi, uint accountid);
 
         /// <summary>
         /// Add a new Character to the account

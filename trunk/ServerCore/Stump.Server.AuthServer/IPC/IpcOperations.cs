@@ -171,8 +171,8 @@ namespace Stump.Server.AuthServer.IPC
 
                     return AccountManager.DeleteAccount(record);
                 }
-                else
-                    return false;
+
+                return false;
             }
             catch (Exception)
             {
@@ -180,9 +180,9 @@ namespace Stump.Server.AuthServer.IPC
             }
         }
 
-        public IEnumerable<uint> GetAccountCharacters(WorldServerInformation wsi, uint accountid)
+        public uint[] GetAccountCharacters(WorldServerInformation wsi, uint accountid)
         {
-            return AccountManager.GetCharactersByAccount(accountid).Select(record => record.CharacterId);
+            return AccountManager.GetCharactersByAccount(accountid).Select(record => record.CharacterId).ToArray();
         }
 
         public int GetAccountCharacterCount(WorldServerInformation wsi, uint accountid)

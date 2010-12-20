@@ -20,7 +20,7 @@ using Stump.BaseCore.Framework.Utils;
 using Stump.Database;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Manager;
 
 namespace Stump.Server.WorldServer.Handlers
 {

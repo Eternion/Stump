@@ -30,7 +30,7 @@ using Stump.Server.WorldServer.Spells;
 
 namespace Stump.Server.WorldServer.Entities
 {
-    public abstract class  Entity : IEntity, IEntityLook, INamedEntity
+    public abstract class  Entity : ILocableIdentified, IEntityLook, INamedEntity
     {
         #region Fields
 
@@ -45,7 +45,7 @@ namespace Stump.Server.WorldServer.Entities
         protected Entity()
         {
             Colors = new List<int>();
-            Skins = new List<short>();
+            Skins = new List<uint>();
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Stump.Server.WorldServer.Entities
             Id = id;
 
             Colors = new List<int>();
-            Skins = new List<short>();
+            Skins = new List<uint>();
         }
 
         public virtual void OnCreate()
@@ -72,7 +72,7 @@ namespace Stump.Server.WorldServer.Entities
         {
             return new EntityLook(
                 1, // bones id
-                Skins.Cast<uint>().ToList(),
+                Skins,
                 ColorsIndexed,
                 Scales,
                 new List<SubEntity>());
@@ -163,7 +163,7 @@ namespace Stump.Server.WorldServer.Entities
             set;
         }
 
-        public List<short> Skins
+        public List<uint> Skins
         {
             get;
             set;

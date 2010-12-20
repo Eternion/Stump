@@ -10,7 +10,7 @@ namespace Stump.Server.WorldServer.Entities
             set;
         }
 
-        List<short> Skins
+        List<uint> Skins
         {
             get;
             set;

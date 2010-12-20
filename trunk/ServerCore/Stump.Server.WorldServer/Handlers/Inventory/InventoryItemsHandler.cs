@@ -85,7 +85,7 @@ namespace Stump.Server.WorldServer.Handlers
 
         public static void SendObjectsDeletedMessage(WorldClient client, IEnumerable<long> guids)
         {
-            client.Send(new ObjectsDeletedMessage(guids.Cast<uint>().ToList()));
+            client.Send(new ObjectsDeletedMessage(guids.Select(entry => (uint)entry).ToList()));
         }
 
         public static void SendObjectModifiedMessage(WorldClient client, Item item)

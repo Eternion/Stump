@@ -29,7 +29,7 @@ namespace Stump.Server.BaseServer.Data.D2oTool
     {
         private readonly Dictionary<int, int> m_indextable = new Dictionary<int, int>();
         private readonly Dictionary<string, int> m_texttable = new Dictionary<string, int>();
-        private FileStream m_fileFs;
+        private Stream m_stream;
         private BigEndianReader m_reader;
 
 
@@ -53,9 +53,9 @@ namespace Stump.Server.BaseServer.Data.D2oTool
 
         private void Init()
         {
-            m_fileFs = File.Open(FilePath, FileMode.Open);
+            m_stream = new MemoryStream(File.ReadAllBytes(FilePath));
 
-            m_reader = new BigEndianReader(m_fileFs);
+            m_reader = new BigEndianReader(m_stream);
 
             int headeroffset = m_reader.ReadInt();
             m_reader.Seek(headeroffset, SeekOrigin.Begin);
@@ -87,7 +87,7 @@ namespace Stump.Server.BaseServer.Data.D2oTool
 
         public void Close()
         {
-            m_fileFs.Close();
+            m_stream.Close();
         }
 
         public string ReadText(int index)

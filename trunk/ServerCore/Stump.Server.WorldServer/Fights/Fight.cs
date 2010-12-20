@@ -51,13 +51,12 @@ namespace Stump.Server.WorldServer.Fights
 
         #region Fields
 
-
-        private bool m_hasPassed;
         private DateTime m_startTime;
-        private Task m_task;
         private TimeLine m_timeline;
 
         private Timer m_forceEndTurnTimer;
+
+        private IEnumerable<FightGroupMember> m_fighters;
 
         #endregion
 
@@ -112,7 +111,7 @@ namespace Stump.Server.WorldServer.Fights
             ContextHandler.SendGameFightShowFighterMessage(charac.Client, chrTarget.CurrentFighter);
             ContextHandler.SendGameFightShowFighterMessage(charac.Client, chrSource.CurrentFighter);
 
-            ContextHandler.SendGameEntitiesDispositionMessage(charac.Client, GetAllEntities());
+            ContextHandler.SendGameEntitiesDispositionMessage(charac.Client, GetAllFighters());
 
             ContextHandler.SendGameFightUpdateTeamMessage(charac.Client, this, SourceGroup);
             ContextHandler.SendGameFightUpdateTeamMessage(charac.Client, this, TargetGroup);
@@ -175,7 +174,7 @@ namespace Stump.Server.WorldServer.Fights
         {
             CallOnAllCharacters(charac =>
             {
-                ContextHandler.SendGameEntitiesDispositionMessage(charac.Client, GetAllEntities());
+                ContextHandler.SendGameEntitiesDispositionMessage(charac.Client, GetAllFighters());
 
                 ContextHandler.SendGameFightStartMessage(charac.Client);
                 ContextHandler.SendGameFightTurnListMessage(charac.Client, this);
@@ -356,9 +355,9 @@ namespace Stump.Server.WorldServer.Fights
             fighter.UsedMp += requiredMp;
             var delta = (short) -requiredMp;
 
-            fighter.Cell = fighter.Entity.Map.CellsData[cellId];
+            fighter.Position.ChangeLocation(fighter.Entity.Map.CellsData[cellId]);
 
-            Action<Character> action = (Character charac) =>
+            Action<Character> action = charac =>
             {
                 ActionsHandler.SendSequenceStartMessage(charac.Client, character, SequenceTypeEnum.SEQUENCE_MOVE);
                 ContextHandler.SendGameMapMovementMessage(charac.Client, keyMovements, character);
@@ -427,7 +426,7 @@ namespace Stump.Server.WorldServer.Fights
         {
             if (CanChangePosition(fighter, cellId))
             {
-                fighter.Cell = fighter.Entity.Map.CellsData[cellId];
+                fighter.Position.ChangeLocation(fighter.Entity.Map.CellsData[cellId]);
 
                 return true;
             }
@@ -508,10 +507,14 @@ namespace Stump.Server.WorldServer.Fights
 
         public IEnumerable<FightGroupMember> GetAllFighters()
         {
-            return
-                SourceGroup.Members.Select(entry => (FightGroupMember) entry).Concat(
+            if (m_fighters == null ||
+                m_fighters.Count() == 0)
+                m_fighters = SourceGroup.Members.Select(entry => (FightGroupMember) entry).Concat(
                     TargetGroup.Members.Select(entry => (FightGroupMember) entry));
+
+            return m_fighters;
         }
+
 
         public IEnumerable<FightGroupMember> GetAllFighters(Func<FightGroupMember, bool> predicate)
         {
@@ -520,7 +523,7 @@ namespace Stump.Server.WorldServer.Fights
 
         public IEnumerable<FightGroupMember> GetAllFighters(CellData cell)
         {
-            return GetAllFighters(entry => entry.Cell == cell);
+            return GetAllFighters(entry => entry.Position.Cell == cell);
         }
 
         public FightGroupMember GetOneFighter(Func<FightGroupMember, bool> predicate)
@@ -530,7 +533,7 @@ namespace Stump.Server.WorldServer.Fights
 
         public FightGroupMember GetOneFighter(CellData cell)
         {
-            return GetOneFighter(entry => entry.Cell == cell);
+            return GetOneFighter(entry => entry.Position.Cell == cell);
         }
 
         /// <summary>
