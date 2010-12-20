@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Effects
         protected uint m_hours;
         protected uint m_minutes;
 
-        public EffectDuration(int id, uint days, uint hours, uint minutes)
+        public EffectDuration(uint id, uint days, uint hours, uint minutes)
             : base(id)
         {
             m_days = days;

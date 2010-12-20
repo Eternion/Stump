@@ -40,19 +40,19 @@ namespace Stump.Server.WorldServer.Spells
             set;
         }
 
-        public int ApCost
+        public uint ApCost
         {
             get;
             set;
         }
 
-        public int MinRange
+        public uint MinRange
         {
             get;
             set;
         }
 
-        public int Range
+        public uint Range
         {
             get;
             set;
@@ -70,13 +70,13 @@ namespace Stump.Server.WorldServer.Spells
             set;
         }
 
-        public int CriticalHitProbability
+        public uint CriticalHitProbability
         {
             get;
             set;
         }
 
-        public int CriticalFailureProbability
+        public uint CriticalFailureProbability
         {
             get;
             set;
@@ -100,25 +100,25 @@ namespace Stump.Server.WorldServer.Spells
             set;
         }
 
-        public int MaxCastPerTurn
+        public uint MaxCastPerTurn
         {
             get;
             set;
         }
 
-        public int MaxCastPerTarget
+        public uint MaxCastPerTarget
         {
             get;
             set;
         }
 
-        public int MinCastInterval
+        public uint MinCastInterval
         {
             get;
             set;
         }
 
-        public int MinPlayerLevel
+        public uint MinPlayerLevel
         {
             get;
             set;
@@ -150,7 +150,7 @@ namespace Stump.Server.WorldServer.Spells
 
         #endregion
 
-        public void SetEffects(IEnumerable<EffectInstance> effects)
+        public void SetEffects(IEnumerable<EffectInstanceDice> effects)
         {
             m_effects = EffectManager.ConvertExportedEffect(effects);
         }

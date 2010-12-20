@@ -21,10 +21,10 @@ namespace Stump.DofusProtocol.Messages
 			this.unusableCharacters = new List<int>();
 		}
 		
-		public CharactersListWithModificationsMessage(Boolean arg1, Boolean arg2, List<CharacterBaseInformations> arg3, List<CharacterToRecolorInformation> arg4, List<int> arg5, List<int> arg6)
+		public CharactersListWithModificationsMessage(Boolean arg1, List<CharacterBaseInformations> arg2, List<CharacterToRecolorInformation> arg3, List<int> arg4, List<int> arg5)
 			: this()
 		{
-			initCharactersListWithModificationsMessage(arg1, arg2, arg3, arg4, arg5, arg6);
+			initCharactersListWithModificationsMessage(arg1, arg2, arg3, arg4, arg5);
 		}
 		
 		public override uint getMessageId()
@@ -32,12 +32,12 @@ namespace Stump.DofusProtocol.Messages
 			return 6120;
 		}
 		
-		public CharactersListWithModificationsMessage initCharactersListWithModificationsMessage(Boolean arg1 = false, Boolean arg2 = false, List<CharacterBaseInformations> arg3 = null, List<CharacterToRecolorInformation> arg4 = null, List<int> arg5 = null, List<int> arg6 = null)
+		public CharactersListWithModificationsMessage initCharactersListWithModificationsMessage(Boolean arg1 = false, List<CharacterBaseInformations> arg2 = null, List<CharacterToRecolorInformation> arg3 = null, List<int> arg4 = null, List<int> arg5 = null)
 		{
-			base.initCharactersListMessage(arg1, arg2, arg3);
-			this.charactersToRecolor = arg4;
-			this.charactersToRename = arg5;
-			this.unusableCharacters = arg6;
+			base.initCharactersListMessage(arg1, arg2);
+			this.charactersToRecolor = arg3;
+			this.charactersToRename = arg4;
+			this.unusableCharacters = arg5;
 			this._isInitialized = true;
 			return this;
 		}

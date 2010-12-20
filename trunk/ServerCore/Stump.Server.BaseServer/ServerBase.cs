@@ -181,7 +181,7 @@ namespace Stump.Server.BaseServer
 
         public void HandleCrashException(Exception e)
         {
-            logger.Fatal("An exception occurred ! Exception : " + e.Message);
+            logger.Fatal("An exception occurred ! {0} : {1}", e.GetType().Name, e.Message);
             logger.Fatal("Source : {0} Method : {1}", e.Source, e.TargetSite);
             logger.Fatal("Stack Trace : " + e.StackTrace);
         }

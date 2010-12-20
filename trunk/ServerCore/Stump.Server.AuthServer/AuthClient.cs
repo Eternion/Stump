@@ -35,8 +35,8 @@ namespace Stump.Server.AuthServer
         {
             Key = new Random().RandomString(32);
 
-            Send(new ProtocolRequired().initProtocolRequired(ClientVersion.ActualVersion, ClientVersion.RequiredVersion));
-            Send(new HelloConnectMessage().initHelloConnectMessage(1, Key));
+            Send(new ProtocolRequired(ClientVersion.ActualVersion, ClientVersion.RequiredVersion));
+            Send(new HelloConnectMessage(1, Key));
 
             CanReceive = true;
         }

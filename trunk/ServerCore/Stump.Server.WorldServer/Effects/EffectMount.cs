@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Effects
         protected int m_modelId;
         protected int m_mountId;
 
-        public EffectMount(int id, int mountid, double date, int modelid)
+        public EffectMount(uint id, int mountid, double date, int modelid)
             : base(id)
         {
             m_mountId = mountid;

@@ -21,7 +21,7 @@ using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Effects;
 using EffectInstanceEx = Stump.DofusProtocol.D2oClasses.EffectInstance;
-using ItemSuperType = System.Int32;
+using ItemSuperType = System.UInt32;
 using ItemTemplateEx = Stump.DofusProtocol.D2oClasses.Item;
 using ItemTypeEx = Stump.DofusProtocol.D2oClasses.ItemType;
 
@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Items
 {
     public class ItemTemplate
     {
-        public static Dictionary<ItemSuperType, ItemCategoryEnum> LinkedCategory = new Dictionary<int, ItemCategoryEnum>
+        public static Dictionary<ItemSuperType, ItemCategoryEnum> LinkedCategory = new Dictionary<ItemSuperType, ItemCategoryEnum>
             {
                 {0, ItemCategoryEnum.Other},
                 {1, ItemCategoryEnum.Equipement},
@@ -56,7 +56,7 @@ namespace Stump.Server.WorldServer.Items
                 {22, ItemCategoryEnum.Equipement},
             };
 
-        public static ItemSuperType[] SupertypeNotEquipable = new[] {9, 14, 15, 16, 17, 18, 6, 19, 21, 20, 8, 22};
+        public static ItemSuperType[] SupertypeNotEquipable = new uint[] {9, 14, 15, 16, 17, 18, 6, 19, 21, 20, 8, 22};
 
         protected ItemTemplateEx m_basedclass;
 
@@ -81,7 +81,7 @@ namespace Stump.Server.WorldServer.Items
             set;
         }
 
-        public int NameId
+        public uint NameId
         {
             get { return m_basedclass.nameId; }
         }
@@ -107,17 +107,17 @@ namespace Stump.Server.WorldServer.Items
             }
         }
 
-        public int Level
+        public uint Level
         {
             get { return m_basedclass.level; }
         }
 
-        public int Price
+        public uint Price
         {
             get { return m_basedclass.price; }
         }
 
-        public int Weight
+        public uint Weight
         {
             get { return m_basedclass.weight; }
         }
@@ -142,7 +142,7 @@ namespace Stump.Server.WorldServer.Items
             get { return m_basedclass.etheral; }
         }
 
-        public int AppearanceId
+        public uint AppearanceId
         {
             get { return m_basedclass.appearanceId; }
         }
@@ -152,7 +152,7 @@ namespace Stump.Server.WorldServer.Items
             get { return m_basedclass.criteria; }
         }
 
-        public List<int> RecipeIds
+        public List<uint> RecipeIds
         {
             get { return m_basedclass.recipeIds; }
         }

@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Effects
         protected uint m_maxvalue;
         protected uint m_minvalue;
 
-        public EffectMinMax(int id, uint valuemin, uint valuemax)
+        public EffectMinMax(uint id, uint valuemin, uint valuemax)
             : base(id)
         {
             m_minvalue = valuemin;

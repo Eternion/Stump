@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Effects
     {
         protected string m_value;
 
-        public EffectString(int id, string value)
+        public EffectString(uint id, string value)
             : base(id)
         {
             m_value = value;

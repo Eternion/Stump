@@ -8,13 +8,13 @@ namespace Stump.DofusProtocol.Classes
 	public class PaddockAbandonnedInformations : PaddockBuyableInformations
 	{
 		public const uint protocolId = 133;
-		public uint guildId = 0;
+		public int guildId = 0;
 		
 		public PaddockAbandonnedInformations()
 		{
 		}
 		
-		public PaddockAbandonnedInformations(uint arg1, uint arg2, uint arg3, uint arg4)
+		public PaddockAbandonnedInformations(uint arg1, uint arg2, uint arg3, int arg4)
 			: this()
 		{
 			initPaddockAbandonnedInformations(arg1, arg2, arg3, arg4);
@@ -25,7 +25,7 @@ namespace Stump.DofusProtocol.Classes
 			return 133;
 		}
 		
-		public PaddockAbandonnedInformations initPaddockAbandonnedInformations(uint arg1 = 0, uint arg2 = 0, uint arg3 = 0, uint arg4 = 0)
+		public PaddockAbandonnedInformations initPaddockAbandonnedInformations(uint arg1 = 0, uint arg2 = 0, uint arg3 = 0, int arg4 = 0)
 		{
 			base.initPaddockBuyableInformations(arg1, arg2, arg3);
 			this.guildId = arg4;
@@ -46,10 +46,6 @@ namespace Stump.DofusProtocol.Classes
 		public void serializeAs_PaddockAbandonnedInformations(BigEndianWriter arg1)
 		{
 			base.serializeAs_PaddockBuyableInformations(arg1);
-			if ( this.guildId < 0 )
-			{
-				throw new Exception("Forbidden value (" + this.guildId + ") on element guildId.");
-			}
 			arg1.WriteInt((int)this.guildId);
 		}
 		
@@ -61,11 +57,7 @@ namespace Stump.DofusProtocol.Classes
 		public void deserializeAs_PaddockAbandonnedInformations(BigEndianReader arg1)
 		{
 			base.deserialize(arg1);
-			this.guildId = (uint)arg1.ReadInt();
-			if ( this.guildId < 0 )
-			{
-				throw new Exception("Forbidden value (" + this.guildId + ") on element of PaddockAbandonnedInformations.guildId.");
-			}
+			this.guildId = (int)arg1.ReadInt();
 		}
 		
 	}

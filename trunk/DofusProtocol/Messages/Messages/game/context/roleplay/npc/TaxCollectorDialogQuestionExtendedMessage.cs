@@ -19,7 +19,7 @@ namespace Stump.DofusProtocol.Messages
 		{
 		}
 		
-		public TaxCollectorDialogQuestionExtendedMessage(String arg1, uint arg2, uint arg3, uint arg4, uint arg5)
+		public TaxCollectorDialogQuestionExtendedMessage(BasicGuildInformations arg1, uint arg2, uint arg3, uint arg4, uint arg5)
 			: this()
 		{
 			initTaxCollectorDialogQuestionExtendedMessage(arg1, arg2, arg3, arg4, arg5);
@@ -30,7 +30,7 @@ namespace Stump.DofusProtocol.Messages
 			return 5615;
 		}
 		
-		public TaxCollectorDialogQuestionExtendedMessage initTaxCollectorDialogQuestionExtendedMessage(String arg1 = "", uint arg2 = 0, uint arg3 = 0, uint arg4 = 0, uint arg5 = 0)
+		public TaxCollectorDialogQuestionExtendedMessage initTaxCollectorDialogQuestionExtendedMessage(BasicGuildInformations arg1 = null, uint arg2 = 0, uint arg3 = 0, uint arg4 = 0, uint arg5 = 0)
 		{
 			base.initTaxCollectorDialogQuestionBasicMessage(arg1);
 			this.pods = arg2;

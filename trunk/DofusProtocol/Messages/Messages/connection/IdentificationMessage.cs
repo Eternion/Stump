@@ -10,7 +10,7 @@ namespace Stump.DofusProtocol.Messages
 	{
 		public const uint protocolId = 4;
 		internal Boolean _isInitialized = false;
-        public Stump.DofusProtocol.Classes.Version version;
+		public Stump.DofusProtocol.Classes.Version version;
 		public String login = "";
 		public String password = "";
 		public Boolean autoconnect = false;

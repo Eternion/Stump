@@ -10,7 +10,7 @@ namespace Stump.DofusProtocol.Messages
 	{
 		public const uint protocolId = 21;
 		internal Boolean _isInitialized = false;
-        public Stump.DofusProtocol.Classes.Version requiredVersion;
+		public Stump.DofusProtocol.Classes.Version requiredVersion;
 		
 		public IdentificationFailedForBadVersionMessage()
 		{

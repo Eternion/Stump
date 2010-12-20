@@ -65,7 +65,7 @@ namespace Stump.Server.WorldServer.Handlers
                 if (message.colors[i] == -1 &&
                     breed.MaleColors.Count > i &&
                     breed.FemaleColors.Count > i)
-                    charcolors.Add(!message.sex ? breed.MaleColors[i] : breed.FemaleColors[i]);
+                    charcolors.Add((int) (!message.sex ? breed.MaleColors[i] : breed.FemaleColors[i]));
                 else
                     charcolors.Add(message.colors[i]);
             }

@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Effects
 {
     public static class EffectManager
     {
-        private static readonly Dictionary<int, EffectTemplate> EffectTemplates = new Dictionary<int, EffectTemplate>();
+        private static readonly Dictionary<uint, EffectTemplate> EffectTemplates = new Dictionary<uint, EffectTemplate>();
 
         private static readonly Dictionary<Type, Type> LinkedEffectType = new Dictionary<Type, Type>
             {
@@ -62,7 +62,7 @@ namespace Stump.Server.WorldServer.Effects
 
             foreach (EffectTemplateEx template in templatesEx)
             {
-                EffectTemplates.Add(template.id, new EffectTemplate(template));
+                EffectTemplates.Add((uint) template.id, new EffectTemplate(template));
             }
 
             FightEffectExecutor.Initialize();
@@ -99,7 +99,7 @@ namespace Stump.Server.WorldServer.Effects
             return effects.Select(ConvertExportedEffect).ToArray();
         }
 
-        public static EffectTemplate GetTemplate(int id)
+        public static EffectTemplate GetTemplate(uint id)
         {
             return !EffectTemplates.ContainsKey(id) ? null : EffectTemplates[id];
         }

@@ -10,19 +10,18 @@ namespace Stump.DofusProtocol.Messages
 	{
 		public const uint protocolId = 5564;
 		internal Boolean _isInitialized = false;
-		public String guildName = "";
-		public GuildEmblem guildEmblem;
+		public GuildInformations guildInfo;
 		public uint memberRights = 0;
 		
 		public GuildJoinedMessage()
 		{
-			this.guildEmblem = new GuildEmblem();
+			this.guildInfo = new GuildInformations();
 		}
 		
-		public GuildJoinedMessage(String arg1, GuildEmblem arg2, uint arg3)
+		public GuildJoinedMessage(GuildInformations arg1, uint arg2)
 			: this()
 		{
-			initGuildJoinedMessage(arg1, arg2, arg3);
+			initGuildJoinedMessage(arg1, arg2);
 		}
 		
 		public override uint getMessageId()
@@ -30,19 +29,17 @@ namespace Stump.DofusProtocol.Messages
 			return 5564;
 		}
 		
-		public GuildJoinedMessage initGuildJoinedMessage(String arg1 = "", GuildEmblem arg2 = null, uint arg3 = 0)
+		public GuildJoinedMessage initGuildJoinedMessage(GuildInformations arg1 = null, uint arg2 = 0)
 		{
-			this.guildName = arg1;
-			this.guildEmblem = arg2;
-			this.memberRights = arg3;
+			this.guildInfo = arg1;
+			this.memberRights = arg2;
 			this._isInitialized = true;
 			return this;
 		}
 		
 		public override void reset()
 		{
-			this.guildName = "";
-			this.guildEmblem = new GuildEmblem();
+			this.guildInfo = new GuildInformations();
 			this._isInitialized = false;
 		}
 		
@@ -64,8 +61,7 @@ namespace Stump.DofusProtocol.Messages
 		
 		public void serializeAs_GuildJoinedMessage(BigEndianWriter arg1)
 		{
-			arg1.WriteUTF((string)this.guildName);
-			this.guildEmblem.serializeAs_GuildEmblem(arg1);
+			this.guildInfo.serializeAs_GuildInformations(arg1);
 			if ( this.memberRights < 0 || this.memberRights > 4294967295 )
 			{
 				throw new Exception("Forbidden value (" + this.memberRights + ") on element memberRights.");
@@ -80,9 +76,8 @@ namespace Stump.DofusProtocol.Messages
 		
 		public void deserializeAs_GuildJoinedMessage(BigEndianReader arg1)
 		{
-			this.guildName = (String)arg1.ReadUTF();
-			this.guildEmblem = new GuildEmblem();
-			this.guildEmblem.deserialize(arg1);
+			this.guildInfo = new GuildInformations();
+			this.guildInfo.deserialize(arg1);
 			this.memberRights = (uint)arg1.ReadUInt();
 			if ( this.memberRights < 0 || this.memberRights > 4294967295 )
 			{

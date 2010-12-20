@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Effects
     {
         protected uint m_monsterfamily;
 
-        public EffectCreature(int id, uint monsterfamily)
+        public EffectCreature(uint id, uint monsterfamily)
             : base(id)
         {
             m_monsterfamily = monsterfamily;

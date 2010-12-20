@@ -97,9 +97,9 @@ namespace Stump.Server.AuthServer.Handlers
         }
 
         // called when client choose option "change character"
-        [AuthHandler(typeof (IdentificationMessageWithServerIdMessage))]
+        [AuthHandler(typeof (IdentificationWithServerIdMessage))]
         public static void HandleIdentificationMessageWithServerIdMessage(AuthClient client,
-                                                                          IdentificationMessageWithServerIdMessage
+                                                                          IdentificationWithServerIdMessage
                                                                               message)
         {
             if (!ClientVersion.ClientVersionRequired.CompareVersion(message.version))

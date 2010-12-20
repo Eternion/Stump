@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.IO;
 using System.Text;
 
@@ -31,7 +32,7 @@ namespace Stump.Tools.UtilityBot.FileWriter
         RETURN
     } ;
 
-    public class FileWriter
+    public class FileWriter : IDisposable
     {
         protected StringBuilder m_indentation = new StringBuilder();
         protected TextWriter m_writer;
@@ -50,6 +51,15 @@ namespace Stump.Tools.UtilityBot.FileWriter
 
         //releases stream in case one is open
         ~FileWriter()
+        {
+            if (m_writer != null)
+            {
+                m_writer.Close();
+                m_writer = null;
+            }
+        }
+
+        public void Dispose()
         {
             if (m_writer != null)
             {

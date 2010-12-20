@@ -34,13 +34,20 @@ namespace Stump.DofusProtocol.Messages
         {
             Assembly asm = Assembly.GetAssembly(typeof(MessageReceiver));
 
-            foreach (Type type in asm.GetTypes())
-            {
-                FieldInfo fi = type.GetField("protocolId");
+                foreach (Type type in asm.GetTypes())
+                {
+                    try
+                    {
+                        FieldInfo fi = type.GetField("protocolId");
 
-                if (fi != null)
-                    Messages.Add((uint) fi.GetValue(type), type);
-            }
+                        if (fi != null)
+                            Messages.Add((uint) fi.GetValue(type), type);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                }
         }
 
         /// <summary>

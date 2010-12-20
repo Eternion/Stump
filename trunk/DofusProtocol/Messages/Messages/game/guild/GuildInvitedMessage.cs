@@ -12,13 +12,14 @@ namespace Stump.DofusProtocol.Messages
 		internal Boolean _isInitialized = false;
 		public uint recruterId = 0;
 		public String recruterName = "";
-		public String guildName = "";
+		public BasicGuildInformations guildInfo;
 		
 		public GuildInvitedMessage()
 		{
+			this.guildInfo = new BasicGuildInformations();
 		}
 		
-		public GuildInvitedMessage(uint arg1, String arg2, String arg3)
+		public GuildInvitedMessage(uint arg1, String arg2, BasicGuildInformations arg3)
 			: this()
 		{
 			initGuildInvitedMessage(arg1, arg2, arg3);
@@ -29,11 +30,11 @@ namespace Stump.DofusProtocol.Messages
 			return 5552;
 		}
 		
-		public GuildInvitedMessage initGuildInvitedMessage(uint arg1 = 0, String arg2 = "", String arg3 = "")
+		public GuildInvitedMessage initGuildInvitedMessage(uint arg1 = 0, String arg2 = "", BasicGuildInformations arg3 = null)
 		{
 			this.recruterId = arg1;
 			this.recruterName = arg2;
-			this.guildName = arg3;
+			this.guildInfo = arg3;
 			this._isInitialized = true;
 			return this;
 		}
@@ -42,7 +43,7 @@ namespace Stump.DofusProtocol.Messages
 		{
 			this.recruterId = 0;
 			this.recruterName = "";
-			this.guildName = "";
+			this.guildInfo = new BasicGuildInformations();
 			this._isInitialized = false;
 		}
 		
@@ -70,7 +71,7 @@ namespace Stump.DofusProtocol.Messages
 			}
 			arg1.WriteInt((int)this.recruterId);
 			arg1.WriteUTF((string)this.recruterName);
-			arg1.WriteUTF((string)this.guildName);
+			this.guildInfo.serializeAs_BasicGuildInformations(arg1);
 		}
 		
 		public virtual void deserialize(BigEndianReader arg1)
@@ -86,7 +87,8 @@ namespace Stump.DofusProtocol.Messages
 				throw new Exception("Forbidden value (" + this.recruterId + ") on element of GuildInvitedMessage.recruterId.");
 			}
 			this.recruterName = (String)arg1.ReadUTF();
-			this.guildName = (String)arg1.ReadUTF();
+			this.guildInfo = new BasicGuildInformations();
+			this.guildInfo.deserialize(arg1);
 		}
 		
 	}

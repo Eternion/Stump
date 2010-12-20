@@ -104,6 +104,7 @@
     <Compile Include="Types\game\context\fight\GameFightMonsterInformations.cs" />
     <Compile Include="Types\game\context\fight\GameFightMonsterWithAlignmentInformations.cs" />
     <Compile Include="Types\game\context\fight\GameFightMutantInformations.cs" />
+    <Compile Include="Types\game\context\fight\GameFightResumeSlaveInfo.cs" />
     <Compile Include="Types\game\context\fight\GameFightSpellCooldown.cs" />
     <Compile Include="Types\game\context\fight\GameFightTaxCollectorInformations.cs" />
     <Compile Include="Types\game\context\GameContextActorInformations.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Types\game\context\MapCoordinates.cs" />
     <Compile Include="Types\game\context\MapCoordinatesExtended.cs" />
     <Compile Include="Types\game\context\roleplay\AtlasPointsInformations.cs" />
+    <Compile Include="Types\game\context\roleplay\BasicGuildInformations.cs" />
     <Compile Include="Types\game\context\roleplay\GameRolePlayActorInformations.cs" />
     <Compile Include="Types\game\context\roleplay\GameRolePlayCharacterInformations.cs" />
     <Compile Include="Types\game\context\roleplay\GameRolePlayGroupMonsterInformations.cs" />

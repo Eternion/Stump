@@ -88,7 +88,7 @@ namespace Stump.DofusProtocol.Messages
 		{
 			this.name = (String)arg1.ReadUTF();
 			this.breed = (int)arg1.ReadByte();
-			if ( this.breed < (int)Stump.DofusProtocol.Enums.BreedEnum.Feca || this.breed > (int)Stump.DofusProtocol.Enums.BreedEnum.Pandawa )
+			if ( this.breed < (int)Stump.DofusProtocol.Enums.BreedEnum.Feca || this.breed > (int)Stump.DofusProtocol.Enums.BreedEnum.Zobal )
 			{
 				throw new Exception("Forbidden value (" + this.breed + ") on element of CharacterCreationRequestMessage.breed.");
 			}

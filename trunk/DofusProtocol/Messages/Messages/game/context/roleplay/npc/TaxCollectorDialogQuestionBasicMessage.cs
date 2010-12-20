@@ -10,13 +10,14 @@ namespace Stump.DofusProtocol.Messages
 	{
 		public const uint protocolId = 5619;
 		internal Boolean _isInitialized = false;
-		public String guildName = "";
+		public BasicGuildInformations guildInfo;
 		
 		public TaxCollectorDialogQuestionBasicMessage()
 		{
+			this.guildInfo = new BasicGuildInformations();
 		}
 		
-		public TaxCollectorDialogQuestionBasicMessage(String arg1)
+		public TaxCollectorDialogQuestionBasicMessage(BasicGuildInformations arg1)
 			: this()
 		{
 			initTaxCollectorDialogQuestionBasicMessage(arg1);
@@ -27,16 +28,16 @@ namespace Stump.DofusProtocol.Messages
 			return 5619;
 		}
 		
-		public TaxCollectorDialogQuestionBasicMessage initTaxCollectorDialogQuestionBasicMessage(String arg1 = "")
+		public TaxCollectorDialogQuestionBasicMessage initTaxCollectorDialogQuestionBasicMessage(BasicGuildInformations arg1 = null)
 		{
-			this.guildName = arg1;
+			this.guildInfo = arg1;
 			this._isInitialized = true;
 			return this;
 		}
 		
 		public override void reset()
 		{
-			this.guildName = "";
+			this.guildInfo = new BasicGuildInformations();
 			this._isInitialized = false;
 		}
 		
@@ -58,7 +59,7 @@ namespace Stump.DofusProtocol.Messages
 		
 		public void serializeAs_TaxCollectorDialogQuestionBasicMessage(BigEndianWriter arg1)
 		{
-			arg1.WriteUTF((string)this.guildName);
+			this.guildInfo.serializeAs_BasicGuildInformations(arg1);
 		}
 		
 		public virtual void deserialize(BigEndianReader arg1)
@@ -68,7 +69,8 @@ namespace Stump.DofusProtocol.Messages
 		
 		public void deserializeAs_TaxCollectorDialogQuestionBasicMessage(BigEndianReader arg1)
 		{
-			this.guildName = (String)arg1.ReadUTF();
+			this.guildInfo = new BasicGuildInformations();
+			this.guildInfo.deserialize(arg1);
 		}
 		
 	}

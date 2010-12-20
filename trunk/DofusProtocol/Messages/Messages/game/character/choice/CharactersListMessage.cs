@@ -11,7 +11,6 @@ namespace Stump.DofusProtocol.Messages
 		public const uint protocolId = 151;
 		internal Boolean _isInitialized = false;
 		public Boolean hasStartupActions = false;
-		public Boolean tutorielAvailable = false;
 		public List<CharacterBaseInformations> characters;
 		
 		public CharactersListMessage()
@@ -19,10 +18,10 @@ namespace Stump.DofusProtocol.Messages
 			this.characters = new List<CharacterBaseInformations>();
 		}
 		
-		public CharactersListMessage(Boolean arg1, Boolean arg2, List<CharacterBaseInformations> arg3)
+		public CharactersListMessage(Boolean arg1, List<CharacterBaseInformations> arg2)
 			: this()
 		{
-			initCharactersListMessage(arg1, arg2, arg3);
+			initCharactersListMessage(arg1, arg2);
 		}
 		
 		public override uint getMessageId()
@@ -30,11 +29,10 @@ namespace Stump.DofusProtocol.Messages
 			return 151;
 		}
 		
-		public CharactersListMessage initCharactersListMessage(Boolean arg1 = false, Boolean arg2 = false, List<CharacterBaseInformations> arg3 = null)
+		public CharactersListMessage initCharactersListMessage(Boolean arg1 = false, List<CharacterBaseInformations> arg2 = null)
 		{
 			this.hasStartupActions = arg1;
-			this.tutorielAvailable = arg2;
-			this.characters = arg3;
+			this.characters = arg2;
 			this._isInitialized = true;
 			return this;
 		}
@@ -42,7 +40,6 @@ namespace Stump.DofusProtocol.Messages
 		public override void reset()
 		{
 			this.hasStartupActions = false;
-			this.tutorielAvailable = false;
 			this.characters = new List<CharacterBaseInformations>();
 			this._isInitialized = false;
 		}
@@ -65,17 +62,14 @@ namespace Stump.DofusProtocol.Messages
 		
 		public void serializeAs_CharactersListMessage(BigEndianWriter arg1)
 		{
-			var loc1 = 0;
-			BooleanByteWrapper.SetFlag(loc1, 0, this.hasStartupActions);
-			BooleanByteWrapper.SetFlag(loc1, 1, this.tutorielAvailable);
-			arg1.WriteByte((byte)loc1);
+			arg1.WriteBoolean(this.hasStartupActions);
 			arg1.WriteShort((short)this.characters.Count);
-			var loc2 = 0;
-			while ( loc2 < this.characters.Count )
+			var loc1 = 0;
+			while ( loc1 < this.characters.Count )
 			{
-				arg1.WriteShort((short)this.characters[loc2].getTypeId());
-				this.characters[loc2].serialize(arg1);
-				++loc2;
+				arg1.WriteShort((short)this.characters[loc1].getTypeId());
+				this.characters[loc1].serialize(arg1);
+				++loc1;
 			}
 		}
 		
@@ -86,19 +80,17 @@ namespace Stump.DofusProtocol.Messages
 		
 		public void deserializeAs_CharactersListMessage(BigEndianReader arg1)
 		{
-			var loc4 = 0;
-			object loc5 = null;
-			var loc1 = arg1.ReadByte();
-			this.hasStartupActions = (Boolean)BooleanByteWrapper.GetFlag(loc1, 0);
-			this.tutorielAvailable = (Boolean)BooleanByteWrapper.GetFlag(loc1, 1);
-			var loc2 = (ushort)arg1.ReadUShort();
 			var loc3 = 0;
-			while ( loc3 < loc2 )
+			object loc4 = null;
+			this.hasStartupActions = (Boolean)arg1.ReadBoolean();
+			var loc1 = (ushort)arg1.ReadUShort();
+			var loc2 = 0;
+			while ( loc2 < loc1 )
 			{
-				loc4 = (ushort)arg1.ReadUShort();
-				(( loc5 = ProtocolTypeManager.GetInstance<CharacterBaseInformations>((uint)loc4)) as CharacterBaseInformations).deserialize(arg1);
-				this.characters.Add((CharacterBaseInformations)loc5);
-				++loc3;
+				loc3 = (ushort)arg1.ReadUShort();
+				(( loc4 = ProtocolTypeManager.GetInstance<CharacterBaseInformations>((uint)loc3)) as CharacterBaseInformations).deserialize(arg1);
+				this.characters.Add((CharacterBaseInformations)loc4);
+				++loc2;
 			}
 		}
 		

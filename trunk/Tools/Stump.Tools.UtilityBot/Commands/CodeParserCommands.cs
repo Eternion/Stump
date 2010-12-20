@@ -20,12 +20,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Squishy.Irc.Commands;
+using Stump.BaseCore.Framework.Attributes;
 using Stump.Tools.UtilityBot.FileParser;
+using Stump.Tools.UtilityBot.FileWriter;
 
 namespace Stump.Tools.UtilityBot.Commands
 {
     public class PacketGeneratorCommand : Command
     {
+        [Variable]
+        public static string Output = "./../../../DofusProtocol/Messages/Messages/";
+
         public PacketGeneratorCommand()
             : base("genpackets")
         {
@@ -45,12 +50,19 @@ namespace Stump.Tools.UtilityBot.Commands
             {
                 var parser = new AsParser(file, SharedRules.m_replaceRules, SharedRules.m_beforeParsingRules,
                                           SharedRules.m_afterParsingRules, SharedRules.m_ignoredLines);
-                parser.ParseFile();
+                try
+                {
+                    parser.ParseFile();
+                }
+                catch
+                {
+                    continue;
+                }
 
                 string[] splitPath = file.Split('\\');
-                splitPath = splitPath.SkipWhile(entry => entry != "messages").ToArray();
+                splitPath = splitPath.SkipWhile(entry => entry != "messages").Skip(1).ToArray();
 
-                string dirPath = Path.GetFullPath("./") + "/";
+                string dirPath = Path.GetFullPath(Output) + "/";
                 foreach (string dir in splitPath)
                 {
                     if (dirPath.Contains(".as"))
@@ -62,7 +74,7 @@ namespace Stump.Tools.UtilityBot.Commands
                     dirPath += dir + "/";
                 }
 
-                string path = ("./" + string.Join("/", splitPath));
+                string path = (Output + string.Join("/", splitPath));
 
                 parser.ToCSharp(path.Remove(path.Length - 2, 2) + "cs", "Stump.DofusProtocol.Messages",
                                 new[]
@@ -81,6 +93,9 @@ namespace Stump.Tools.UtilityBot.Commands
 
     public class ClassesGeneratorCommand : Command
     {
+        [Variable]
+        public static string Output = "./../../../DofusProtocol/Classes/Types/";
+
         public ClassesGeneratorCommand()
             : base("genclasses")
         {
@@ -100,12 +115,19 @@ namespace Stump.Tools.UtilityBot.Commands
             {
                 var parser = new AsParser(file, SharedRules.m_replaceRules, SharedRules.m_beforeParsingRules,
                                           SharedRules.m_afterParsingRules, SharedRules.m_ignoredLines);
-                parser.ParseFile();
+                try
+                {
+                    parser.ParseFile();
+                }
+                catch
+                {
+                    continue;
+                }
 
                 string[] splitPath = file.Split('\\');
-                splitPath = splitPath.SkipWhile(entry => entry != "types").ToArray();
+                splitPath = splitPath.SkipWhile(entry => entry != "types").Skip(1).ToArray();
 
-                string dirPath = Path.GetFullPath("./") + "/";
+                string dirPath = Path.GetFullPath(Output) + "/";
                 foreach (string dir in splitPath)
                 {
                     if (dirPath.Contains(".as"))
@@ -117,7 +139,7 @@ namespace Stump.Tools.UtilityBot.Commands
                     dirPath += dir + "/";
                 }
 
-                string path = ("./" + string.Join("/", splitPath));
+                string path = (Output + string.Join("/", splitPath));
 
                 parser.ToCSharp(path.Remove(path.Length - 2, 2) + "cs", "Stump.DofusProtocol.Classes",
                                 new[]
@@ -135,6 +157,10 @@ namespace Stump.Tools.UtilityBot.Commands
 
     public class D2OClassesGeneratorCommand : Command
     {
+        [Variable]
+        public static string Output = "./../../../DofusProtocol/D2oClasses/Classes/";
+
+
         public D2OClassesGeneratorCommand()
             : base("gend2oclasses")
         {
@@ -154,15 +180,46 @@ namespace Stump.Tools.UtilityBot.Commands
             {
                 var parser = new AsParser(file, true, SharedRules.m_replaceRules, SharedRules.m_beforeParsingRules,
                                           SharedRules.m_afterParsingRules, SharedRules.m_ignoredLines);
-                parser.ParseFile();
+                try
+                {
+                    parser.ParseFile();
+                }
+                catch
+                {
+                    continue;
+                }
+
+                FieldInfo modulefield = parser.Fields.Where(entry => entry.Name == "MODULE").FirstOrDefault();
+
+                if (modulefield != null)
+                    parser.Class.CustomAttribute = "[AttributeAssociatedFile(" + modulefield.Value + ")]";
 
                 // remove logger field
-                parser.Fields.RemoveAll(entry => entry.Name == "Logger");
+                parser.Fields.RemoveAll(entry => entry.Name == "_log");
+                // remove internal fields that aren't arrays
+                parser.Fields.RemoveAll(
+                    entry =>
+                    entry.Modifiers == AccessModifiers.INTERNAL && entry.Stereotype != "const" && entry.Type != "Array");
+
+                foreach (
+                    FieldInfo field in
+                        parser.Fields.Where(entry => entry.Stereotype == "const" && entry.Type == "Array"))
+                {
+                    field.Stereotype = "static";
+                }
+
+                foreach (
+                    FieldInfo field in
+                        parser.Fields.Where(entry => entry.Name.StartsWith("_") && entry.Modifiers == AccessModifiers.PROTECTED))
+                {
+                    field.Name = field.Name.Remove(0, 1);
+                    field.Modifiers = AccessModifiers.PUBLIC;
+                }
 
                 string[] splitPath = file.Split('\\');
-                splitPath = splitPath.SkipWhile(entry => entry != "datacenter").ToArray();
+                splitPath = splitPath.SkipWhile(entry => entry != "datacenter").Skip(1).ToArray();
 
-                string dirPath = Path.GetFullPath("./") + "/";
+                string dirPath = Path.GetFullPath(Output) + "/";
                 foreach (string dir in splitPath)
                 {
                     if (dirPath.Contains(".as"))
@@ -174,17 +231,68 @@ namespace Stump.Tools.UtilityBot.Commands
                     dirPath += dir + "/";
                 }
 
-                string path = ( "./" + string.Join("/", splitPath) );
+                string path = (Output + string.Join("/", splitPath));
 
                 parser.ToCSharp(path.Remove(path.Length - 2, 2) + "cs", "Stump.DofusProtocol.D2oClasses",
                                 new[]
                                     {
                                         "System",
-                                        "System.Collections.Generic",
+                                        "System.Collections.Generic"
                                     });
             }
 
             trigger.Reply("Generated classes.");
+        }
+    }
+
+    public class GenEnumsCommand : Command
+    {
+        [Variable]
+        public static string Output = "./../../../DofusProtocol/Enums/Export/";
+
+        public GenEnumsCommand()
+            : base("genenums")
+        {
+            Description = "Generates enum's files";
+        }
+
+        public override void Process(CmdTrigger trigger)
+        {
+            IEnumerable<string> files =
+                Directory.EnumerateFiles(
+                    Bot.DofusSourcePath + @"\Scripts\ActionScript 3.0\com\ankamagames\dofus\network\enums\",
+                    "*", SearchOption.AllDirectories);
+
+            var enumsDict = new Dictionary<string, string[]>();
+
+            foreach (string file in files)
+            {
+                string[] lines = File.ReadAllLines(file);
+
+                string classname = lines.Where(entry => entry.Contains("class")).First().Trim().Split(' ')[2];
+
+                IEnumerable<string> enums = from entry in lines
+                                            where entry.Contains("public static const")
+                                            select
+                                                entry.Trim().Replace(";", "").Replace("public static const ", "").
+                                                Replace(":int", "").Replace(":uint", "");
+
+                enumsDict.Add(classname, enums.ToArray());
+
+                using (var writer = new CsFileWriter(Output + classname + ".cs", new List<string>()))
+                {
+                    writer.StartNamespace("Stump.DofusProtocol.Enums");
+                    writer.StartEnum(AccessModifiers.PUBLIC, classname);
+
+                    foreach (string value in enums)
+                        writer.WriteEnumElement(value);
+
+                    writer.EndEnum();
+                    writer.EndNamespace();
+                }
+            }
+
+            trigger.Reply("Enums were generated sucessfully !");
         }
     }
 
@@ -204,6 +312,7 @@ namespace Stump.Tools.UtilityBot.Commands
             {
                 {@"this\.serialize\(loc1\);", @"this.serialize(arg1);"},
                 {@"writePacket\(arg1, this\.getMessageId\(\), loc1\);", @"writePacket(arg1, this.getMessageId());"},
+                {@"int\(([\w_\d]+)\)", @"int.Parse($1)"}
             };
 
 
@@ -217,7 +326,10 @@ namespace Stump.Tools.UtilityBot.Commands
                 {@"WriteFloat\(", @"WriteFloat((uint)"},
                 {@"WriteUTF\(", @"WriteUTF((string)"},
                 {@"(?<!(?:class\s|public\s))\bVersion\b", "Stump.DofusProtocol.Classes.Version"},
-                {@"(?<!(?:class\s\s))\bVersion\b([^;]+);", @"Stump.DofusProtocol.Classes.Version$1;"},
+                {
+                    @"(?<!(?:class\s\s))\b(?<!Stump\.DofusProtocol\.Classes\.)Version\b([^;\n\r]+);",
+                    @"Stump.DofusProtocol.Classes.Version$1;"
+                    },
                 {@"(\w+) = new ([\w_]+)\(\)\)\.deserialize\(", "(($1 = new $2()) as $2).deserialize("},
                 {@"= (\w+)\.ReadUShort\(\);", @"= (ushort)$1.ReadUShort();"},
                 {@"ReadUnsignedByte", @"ReadByte"},
@@ -236,8 +348,16 @@ namespace Stump.Tools.UtilityBot.Commands
                 {@"int base", @"int @base"},
                 {@"this\.base", @"this.@base"},
                 {@"this\.object", @"this.@object"},
-                {@"this.breed (<|>) (Feca|Pandawa)", @"this.breed $1 (int)Stump.DofusProtocol.Enums.BreedEnum.$2"},
-                {@"new List<(\w+)>\((\d+)\)", "new List<$1>(new $1[$2])"}
+                {@"this.breed (<|>) (Feca|Zobal)", @"this.breed $1 (int)Stump.DofusProtocol.Enums.BreedEnum.$2"},
+                {@"new List<(\w+)>\((\d+)\)", "new List<$1>(new $1[$2])"},
+                {@"public (\w+) operator", "public $1 @operator"},
+                {@"Array ([\w\d_]+) = \[((?:(?:.+)(?:, )?)+)\];", "Array $1 = new [] { $2 };"},
+                {@"flash.geom.", ""},
+                {@"int\.MIN_VALUE", @"int.MinValue"},
+                {
+                    @"		internal const DataStoreType DST = new DataStoreType\(MODULE, true, LOCATION_LOCAL, BIND_COMPUTER\);"
+                    , ""
+                    },
             };
 
         internal static List<string> m_ignoredLines = new List<string>
@@ -245,6 +365,7 @@ namespace Stump.Tools.UtilityBot.Commands
                 "var loc1:*=new flash.utils.ByteArray();",
                 "super();",
                 "return;",
+                "new DataStoreType(MODULE, true, LOCATION_LOCAL, BIND_COMPUTER);"
             };
     }
 }

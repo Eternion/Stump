@@ -12,7 +12,7 @@ namespace Stump.Tools.Proxy.Messages
 
 
         [Handler(typeof(HelloGameMessage))]
-        public static void HelloGameMessage(HelloGameMessage message, DerivedConnexion sender)
+        public static void HandleHelloGameMessage(HelloGameMessage message, DerivedConnexion sender)
         {
 
             sender.Server.Send(new AuthenticationTicketMessage("fr",(sender as WorldDerivedConnexion).Ticket));

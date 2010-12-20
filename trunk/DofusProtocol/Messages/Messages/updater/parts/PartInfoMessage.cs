@@ -8,29 +8,31 @@ namespace Stump.DofusProtocol.Messages
 	
 	public class PartInfoMessage : Message
 	{
-		public const uint protocolId = 1507;
+		public const uint protocolId = 1508;
 		internal Boolean _isInitialized = false;
 		public ContentPart part;
+		public double installationPercent = 0;
 		
 		public PartInfoMessage()
 		{
 			this.part = new ContentPart();
 		}
 		
-		public PartInfoMessage(ContentPart arg1)
+		public PartInfoMessage(ContentPart arg1, double arg2)
 			: this()
 		{
-			initPartInfoMessage(arg1);
+			initPartInfoMessage(arg1, arg2);
 		}
 		
 		public override uint getMessageId()
 		{
-			return 1507;
+			return 1508;
 		}
 		
-		public PartInfoMessage initPartInfoMessage(ContentPart arg1 = null)
+		public PartInfoMessage initPartInfoMessage(ContentPart arg1 = null, double arg2 = 0)
 		{
 			this.part = arg1;
+			this.installationPercent = arg2;
 			this._isInitialized = true;
 			return this;
 		}
@@ -60,6 +62,7 @@ namespace Stump.DofusProtocol.Messages
 		public void serializeAs_PartInfoMessage(BigEndianWriter arg1)
 		{
 			this.part.serializeAs_ContentPart(arg1);
+			arg1.WriteFloat((uint)this.installationPercent);
 		}
 		
 		public virtual void deserialize(BigEndianReader arg1)
@@ -71,6 +74,7 @@ namespace Stump.DofusProtocol.Messages
 		{
 			this.part = new ContentPart();
 			this.part.deserialize(arg1);
+			this.installationPercent = (double)arg1.ReadFloat();
 		}
 		
 	}

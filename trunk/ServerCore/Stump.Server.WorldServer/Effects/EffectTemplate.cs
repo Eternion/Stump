@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Effects
 {
     public class EffectTemplate
     {
-        private readonly int m_category;
+        private readonly uint m_category;
         private readonly int m_characteristic;
         private readonly int m_id;
         private readonly string m_operator;
@@ -46,7 +46,7 @@ namespace Stump.Server.WorldServer.Effects
             get { return (EffectsEnum) Id; }
         }
 
-        public int Category
+        public uint Category
         {
             get { return m_category; }
         }

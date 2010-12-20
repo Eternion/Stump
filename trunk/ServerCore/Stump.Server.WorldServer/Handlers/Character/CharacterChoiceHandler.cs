@@ -107,7 +107,6 @@ namespace Stump.Server.WorldServer.Handlers
 
             client.Send(new CharactersListMessage(
                             true, // HasStartupActions
-                            false, // tutorialsavailable
                             list
                             ));
         }

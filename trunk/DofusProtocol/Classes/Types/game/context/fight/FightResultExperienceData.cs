@@ -20,15 +20,16 @@ namespace Stump.DofusProtocol.Classes
 		public Boolean showExperienceForGuild = false;
 		public uint experienceForMount = 0;
 		public Boolean showExperienceForMount = false;
+		public Boolean isIncarnationExperience = false;
 		
 		public FightResultExperienceData()
 		{
 		}
 		
-		public FightResultExperienceData(double arg1, Boolean arg2, double arg3, Boolean arg4, double arg5, Boolean arg6, int arg7, Boolean arg8, uint arg9, Boolean arg10, uint arg11, Boolean arg12)
+		public FightResultExperienceData(double arg1, Boolean arg2, double arg3, Boolean arg4, double arg5, Boolean arg6, int arg7, Boolean arg8, uint arg9, Boolean arg10, uint arg11, Boolean arg12, Boolean arg13)
 			: this()
 		{
-			initFightResultExperienceData(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12);
+			initFightResultExperienceData(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13);
 		}
 		
 		public override uint getTypeId()
@@ -36,7 +37,7 @@ namespace Stump.DofusProtocol.Classes
 			return 192;
 		}
 		
-		public FightResultExperienceData initFightResultExperienceData(double arg1 = 0, Boolean arg2 = false, double arg3 = 0, Boolean arg4 = false, double arg5 = 0, Boolean arg6 = false, int arg7 = 0, Boolean arg8 = false, uint arg9 = 0, Boolean arg10 = false, uint arg11 = 0, Boolean arg12 = false)
+		public FightResultExperienceData initFightResultExperienceData(double arg1 = 0, Boolean arg2 = false, double arg3 = 0, Boolean arg4 = false, double arg5 = 0, Boolean arg6 = false, int arg7 = 0, Boolean arg8 = false, uint arg9 = 0, Boolean arg10 = false, uint arg11 = 0, Boolean arg12 = false, Boolean arg13 = false)
 		{
 			this.experience = arg1;
 			this.showExperience = arg2;
@@ -50,6 +51,7 @@ namespace Stump.DofusProtocol.Classes
 			this.showExperienceForGuild = arg10;
 			this.experienceForMount = arg11;
 			this.showExperienceForMount = arg12;
+			this.isIncarnationExperience = arg13;
 			return this;
 		}
 		
@@ -67,6 +69,7 @@ namespace Stump.DofusProtocol.Classes
 			this.showExperienceForGuild = false;
 			this.experienceForMount = 0;
 			this.showExperienceForMount = false;
+			this.isIncarnationExperience = false;
 		}
 		
 		public override void serialize(BigEndianWriter arg1)
@@ -84,6 +87,7 @@ namespace Stump.DofusProtocol.Classes
 			BooleanByteWrapper.SetFlag(loc1, 3, this.showExperienceFightDelta);
 			BooleanByteWrapper.SetFlag(loc1, 4, this.showExperienceForGuild);
 			BooleanByteWrapper.SetFlag(loc1, 5, this.showExperienceForMount);
+			BooleanByteWrapper.SetFlag(loc1, 6, this.isIncarnationExperience);
 			arg1.WriteByte((byte)loc1);
 			if ( this.experience < 0 )
 			{
@@ -128,6 +132,7 @@ namespace Stump.DofusProtocol.Classes
 			this.showExperienceFightDelta = (Boolean)BooleanByteWrapper.GetFlag(loc1, 3);
 			this.showExperienceForGuild = (Boolean)BooleanByteWrapper.GetFlag(loc1, 4);
 			this.showExperienceForMount = (Boolean)BooleanByteWrapper.GetFlag(loc1, 5);
+			this.isIncarnationExperience = (Boolean)BooleanByteWrapper.GetFlag(loc1, 6);
 			this.experience = (double)arg1.ReadDouble();
 			if ( this.experience < 0 )
 			{

@@ -15,7 +15,7 @@ namespace Stump.DofusProtocol.Classes
 		
 		public FightExternalInformations()
 		{
-			this.fightTeams = new List<FightTeamLightInformations>(2);
+			this.fightTeams = new List<FightTeamLightInformations>(new FightTeamLightInformations[2]);
 		}
 		
 		public FightExternalInformations(int arg1, uint arg2, Boolean arg3, List<FightTeamLightInformations> arg4)
@@ -43,7 +43,7 @@ namespace Stump.DofusProtocol.Classes
 			this.fightId = 0;
 			this.fightStart = 0;
 			this.fightSpectatorLocked = false;
-			this.fightTeams = new List<FightTeamLightInformations>(2);
+			this.fightTeams = new List<FightTeamLightInformations>(new FightTeamLightInformations[2]);
 		}
 		
 		public virtual void serialize(BigEndianWriter arg1)

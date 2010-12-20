@@ -217,10 +217,21 @@ namespace Stump.Server.WorldServer.Global
         }
 
         /// <summary>
+        ///   Get map with the given map id.
+        /// </summary>
+        /// <returns></returns>
+        public Map GetMap(uint mapid)
+        {
+            Map map;
+
+            return Maps.TryGetValue((int) mapid, out map) ? map : null;
+        }
+
+        /// <summary>
         ///   Get maps with the given map's id list.
         /// </summary>
         /// <returns></returns>
-        public Map[] GetMaps(IEnumerable<int> mapsids)
+        public Map[] GetMaps(IEnumerable<uint> mapsids)
         {
             return mapsids.Select(GetMap).Where(map => map != null).ToArray();
         }

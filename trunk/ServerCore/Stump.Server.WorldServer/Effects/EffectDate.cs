@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Effects
         protected uint m_month;
         protected uint m_year;
 
-        public EffectDate(int id, uint year, uint month, uint day, uint hour, uint minute)
+        public EffectDate(uint id, uint year, uint month, uint day, uint hour, uint minute)
             : base(id)
         {
             m_year = year;

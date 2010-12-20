@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Classes
 		{
 		}
 		
-		public FriendSpouseOnlineInformations(uint arg1, String arg2, uint arg3, int arg4, int arg5, EntityLook arg6, String arg7, int arg8, uint arg9, uint arg10, Boolean arg11, Boolean arg12, Boolean arg13)
+		public FriendSpouseOnlineInformations(uint arg1, String arg2, uint arg3, int arg4, int arg5, EntityLook arg6, BasicGuildInformations arg7, int arg8, uint arg9, uint arg10, Boolean arg11, Boolean arg12, Boolean arg13)
 			: this()
 		{
 			initFriendSpouseOnlineInformations(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13);
@@ -29,7 +29,7 @@ namespace Stump.DofusProtocol.Classes
 			return 93;
 		}
 		
-		public FriendSpouseOnlineInformations initFriendSpouseOnlineInformations(uint arg1 = 0, String arg2 = "", uint arg3 = 0, int arg4 = 0, int arg5 = 0, EntityLook arg6 = null, String arg7 = "", int arg8 = 0, uint arg9 = 0, uint arg10 = 0, Boolean arg11 = false, Boolean arg12 = false, Boolean arg13 = false)
+		public FriendSpouseOnlineInformations initFriendSpouseOnlineInformations(uint arg1 = 0, String arg2 = "", uint arg3 = 0, int arg4 = 0, int arg5 = 0, EntityLook arg6 = null, BasicGuildInformations arg7 = null, int arg8 = 0, uint arg9 = 0, uint arg10 = 0, Boolean arg11 = false, Boolean arg12 = false, Boolean arg13 = false)
 		{
 			base.initFriendSpouseInformations(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
 			this.mapId = arg9;

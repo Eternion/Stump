@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Effects
             set { m_monsterCount = value; }
         }
 
-        public EffectLadder(int id, uint monsterfamily, uint monstercount)
+        public EffectLadder(uint id, uint monsterfamily, uint monstercount)
             : base(id, monsterfamily)
         {
             m_monsterCount = monstercount;
