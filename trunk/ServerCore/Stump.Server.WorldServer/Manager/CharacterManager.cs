@@ -23,7 +23,7 @@ using Stump.Database;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.IPC;
 
-namespace Stump.Server.WorldServer.Database
+namespace Stump.Server.WorldServer.Manager
 {
     public static class CharacterManager
     {

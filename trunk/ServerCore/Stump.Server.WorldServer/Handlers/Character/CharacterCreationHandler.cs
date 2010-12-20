@@ -23,7 +23,7 @@ using Stump.Database;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Breeds;
-using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Manager;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.IPC;
 
