@@ -120,6 +120,11 @@ namespace Stump.Server.BaseServer.Network
             return false;
         }
 
+        public Version ToVersion()
+        {
+            return new Version(Major, Minor, Release, Revision, Patch, BuildType);
+        }
+
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;

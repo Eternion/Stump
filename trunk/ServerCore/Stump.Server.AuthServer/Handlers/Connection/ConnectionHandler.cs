@@ -39,7 +39,6 @@ namespace Stump.Server.AuthServer.Handlers
                 };
         }
 
-
         #region Identification
 
         [AuthHandler(typeof(IdentificationMessage))]
@@ -84,8 +83,8 @@ namespace Stump.Server.AuthServer.Handlers
             /* Wrong Version */
             if (!ClientVersion.ClientVersionRequired.CompareVersion(message.version))
             {
-                SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.BAD_VERSION);
-                client.Disconnect();
+                SendIdentificationFailedForBadVersionMessage(client,ClientVersion.ClientVersionRequired.ToVersion());
+                client.DisconnectLater(1000);
                 return false;
             }
 
@@ -100,6 +99,7 @@ namespace Stump.Server.AuthServer.Handlers
             if (account == null || StringUtils.EncryptPassword(account.Password, client.Key) != client.Password)
             {
                 SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.WRONG_CREDENTIALS);
+                client.DisconnectLater(1000);
                 return false;
             }
 
@@ -116,11 +116,19 @@ namespace Stump.Server.AuthServer.Handlers
                 {
                     SendIdentificationFailedBannedMessage(client);
                 }
+                client.DisconnectLater(1000);
                 return false;
             }
 
 
             bool wasAlreadyConnected = AuthentificationServer.Instance.DisconnectClientsUsingAccount(account);
+
+            /* Already connected on this account */
+            if (wasAlreadyConnected)
+            {
+                client.Send(new AlreadyConnectedMessage());
+                return false;
+            }
 
             client.Account = account;
             client.Characters = AccountManager.GetCharactersByAccount(account.Id);
@@ -154,6 +162,11 @@ namespace Stump.Server.AuthServer.Handlers
         public static void SendIdentificationFailedMessage(AuthClient client, IdentificationFailureReasonEnum reason)
         {
             client.Send(new IdentificationFailedMessage((uint)reason));
+        }
+
+        public static void SendIdentificationFailedForBadVersionMessage(AuthClient client,DofusProtocol.Classes.Version version)
+        {
+            client.Send(new IdentificationFailedForBadVersionMessage((uint)IdentificationFailureReasonEnum.BAD_VERSION,version));
         }
 
         public static void SendIdentificationFailedBannedMessage(AuthClient client)

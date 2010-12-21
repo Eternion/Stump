@@ -23,6 +23,7 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public class ApproachHandler : WorldHandlerContainer
     {
+
         [WorldHandler(typeof (AuthenticationTicketMessage))]
         public static void HandleAuthenticationTicketMessage(WorldClient client, AuthenticationTicketMessage message)
         {
@@ -36,7 +37,7 @@ namespace Stump.Server.WorldServer.Handlers
                 client.Disconnect();
                 return;
             }
-
+          
             /* On associe le Client avec ce compte */
             client.Account = ticketAccount;
 
@@ -44,6 +45,18 @@ namespace Stump.Server.WorldServer.Handlers
             client.Characters = CharacterManager.GetCharactersByAccount(client);
 
             client.Send(new AuthenticationTicketAcceptedMessage());
+            BasicHandler.SendBasicTimeMessage(client);
+            SendAccountCapabilitiesMessage(client);
+            BasicHandler.SendBasicNoOperationMessage(client);
         }
+
+
+        public static void SendAccountCapabilitiesMessage(WorldClient client)
+        {
+
+        }
+
+
+
     }
 }

@@ -17,8 +17,10 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Threading.Tasks;
 using System.Net.Sockets;
 using NLog;
+using Stump.BaseCore.Framework.Threading;
 using Stump.BaseCore.Framework.IO;
 using Stump.BaseCore.Framework.Pool;
 using Stump.DofusProtocol.Messages;
@@ -42,6 +44,7 @@ namespace Stump.Server.BaseServer.Network
         private uint m_splittedPacketId;
         private uint m_splittedPacketLength;
         private int m_staticHeader;
+
 
         protected BaseClient(Socket socket)
         {
@@ -166,7 +169,7 @@ namespace Stump.Server.BaseServer.Network
             }
         }
 
-        public void Send(Message message)
+        public void Send(DofusProtocol.Messages.Message message)
         {
             /*if (!message._isInitialized)
 			{
@@ -247,6 +250,15 @@ namespace Stump.Server.BaseServer.Network
             OnDisconnect();
 
             Close();
+        }
+
+        /// <summary>
+        /// Disconnect the Client after a time
+        /// </summary>
+        /// <param name="timeToWait"></param>
+        public void DisconnectLater(int timeToWait)
+        {
+            Task.Factory.StartNewDelayed(timeToWait, Disconnect);
         }
 
         public virtual void OnDisconnect()
