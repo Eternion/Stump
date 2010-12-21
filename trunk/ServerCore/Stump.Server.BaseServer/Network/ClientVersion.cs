@@ -38,15 +38,15 @@ namespace Stump.Server.BaseServer.Network
         public static VersionCheckingSeverity Severity = VersionCheckingSeverity.Medium;
 
         [Variable]
-        public static string VersionRequired = "2.2.3.36341.1";
+        public static string VersionRequired = "2.3.0.37697.1";
 
         [Variable]
-        public static uint ActualVersion = 1280;
+        public static uint ActualVersion = 1304;
 
         [Variable]
-        public static uint RequiredVersion = 1285;
+        public static uint RequiredVersion = 1304;
 
-        public static ClientVersion ClientVersionRequired = Parse("2.2.3.36341.1");
+        public static ClientVersion ClientVersionRequired = Parse(VersionRequired);
                                     // version can be found in games_base.xml
 
 

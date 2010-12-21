@@ -107,6 +107,11 @@ namespace Stump.Server.WorldServer.Global
             Point = mapPoint;
         }
 
+        public void ChangeLocation(CellData cellData)
+        {
+            Point = new MapPoint(cellData);
+        }
+
         public void ChangeLocation(Map map)
         {
             Point = new MapPoint(map, Point.CellId);

@@ -37,21 +37,58 @@ namespace Stump.Tools.UtilityBot.FileWriter
             set;
         }
 
+        public void StartNamespace(string name)
+        {
+            WriteLineWithIndent("namespace " + name);
+            WriteLineWithIndent("{");
+            m_inNamespace = true;
+
+            IncreaseIntendation();
+        }
+
+        public void EndNamespace()
+        {
+            DecreaseIntendation();
+            WriteLineWithIndent("}");
+
+            m_inNamespace = false;
+        }
+
         public void StartClass(ClassInfo classInfo)
+        {
+            if(string.IsNullOrEmpty(classInfo.CustomAttribute))
+                WriteLineWithIndent(classInfo.CustomAttribute);
+
+            WriteAccessModifier(classInfo.AccessModifier);
+            WriteClassModifier(classInfo.ClassModifier);
+
+            m_writer.WriteLine("class " + classInfo.Name +
+                               ( !string.IsNullOrEmpty(classInfo.Heritage) ? " : " + classInfo.Heritage : "" ));
+            WriteLineWithIndent("{");
+
+            IncreaseIntendation();
+        }
+
+        public void EndClass()
+        {
+            DecreaseIntendation();
+            WriteLineWithIndent("}");
+        }
+
+        public void StartClassWithNamespace(ClassInfo classInfo)
         {
             if (!string.IsNullOrEmpty(classInfo.Namespace))
             {
                 foreach (string str in Namespaces)
                     WriteLineWithIndent("using " + str + ";");
 
-                WriteLineWithIndent("namespace " + classInfo.Namespace);
-                WriteLineWithIndent("{");
-                m_inNamespace = true;
-
-                IncreaseIntendation();
+                StartNamespace(classInfo.Namespace);
             }
 
             WriteLineWithIndent();
+
+            if (!string.IsNullOrEmpty(classInfo.CustomAttribute))
+                WriteLineWithIndent(classInfo.CustomAttribute);
 
             WriteAccessModifier(classInfo.AccessModifier);
             WriteClassModifier(classInfo.ClassModifier);
@@ -63,17 +100,14 @@ namespace Stump.Tools.UtilityBot.FileWriter
             IncreaseIntendation();
         }
 
-        public void EndClass()
+        public void EndClassWithNamespace()
         {
             DecreaseIntendation();
             WriteLineWithIndent("}");
 
             if (m_inNamespace)
             {
-                DecreaseIntendation();
-                WriteLineWithIndent("}");
-
-                m_inNamespace = false;
+                EndNamespace();
             }
 
             m_writer.Close();
@@ -195,10 +229,57 @@ namespace Stump.Tools.UtilityBot.FileWriter
             WriteLineWithIndent();
         }
 
+
+        public void StartProperty(PropertyInfo info)
+        {
+            WriteAccessModifier(info.AccessModifier);
+
+            if (!string.IsNullOrEmpty(info.PropertyType))
+                WriteReturnType(info.PropertyType, false);
+
+            m_writer.Write(info.Name);
+
+            WriteLineWithIndent("{");
+            IncreaseIntendation();
+        }
+
+        public void StartGetProperty()
+        {
+            WriteLineWithIndent("get");
+            WriteLineWithIndent("{");
+            IncreaseIntendation();
+        }
+
+        public void StartSetProperty()
+        {
+            WriteLineWithIndent("set");
+            WriteLineWithIndent("{");
+            IncreaseIntendation();
+        }
+
+        public void EndSetProperty()
+        {
+            DecreaseIntendation();
+            WriteLineWithIndent("}");
+        }
+
+        public void EndGetProperty()
+        {
+            DecreaseIntendation();
+            WriteLineWithIndent("}");
+        }
+
+        public void EndProperty()
+        {
+            DecreaseIntendation();
+            WriteLineWithIndent("}");
+            WriteLineWithIndent();
+        }
+
         public void StartEnum(AccessModifiers modifier, string enumName)
         {
             WriteAccessModifier(modifier);
-            WriteLineWithIndent(enumName);
+            WriteLineWithIndent("enum " + enumName);
             WriteLineWithIndent("{");
 
             IncreaseIntendation();

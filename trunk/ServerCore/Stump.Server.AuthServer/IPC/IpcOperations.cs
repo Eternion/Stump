@@ -59,6 +59,14 @@ namespace Stump.Server.AuthServer.IPC
             WorldServerManager.RemoveWorld(wsi);
         }
 
+        public void ChangeState(WorldServerInformation wsi, DofusProtocol.Enums.ServerStatusEnum state)
+        {
+              if (WorldServerManager.Realmlist.ContainsKey(wsi.Id))
+              {
+                  WorldServerManager.Realmlist[wsi.Id].Status = state;
+              }
+        }
+
         public void IncrementConnectedChars(WorldServerInformation wsi)
         {
             if (WorldServerManager.Realmlist.ContainsKey(wsi.Id))
@@ -102,7 +110,7 @@ namespace Stump.Server.AuthServer.IPC
             return true;
         }
 
-        public AccountRecord GetAccountRecord(WorldServerInformation wsi, string ticket)
+        public AccountRecord GetAccountRecordByTicket(WorldServerInformation wsi, string ticket)
         {
             AccountRecord acc = AccountManager.GetAccountByTicket(ticket);
             return acc;
@@ -171,8 +179,8 @@ namespace Stump.Server.AuthServer.IPC
 
                     return AccountManager.DeleteAccount(record);
                 }
-                else
-                    return false;
+
+                return false;
             }
             catch (Exception)
             {
@@ -180,9 +188,9 @@ namespace Stump.Server.AuthServer.IPC
             }
         }
 
-        public IEnumerable<uint> GetAccountCharacters(WorldServerInformation wsi, uint accountid)
+        public uint[] GetAccountCharacters(WorldServerInformation wsi, uint accountid)
         {
-            return AccountManager.GetCharactersByAccount(accountid).Select(record => record.CharacterId);
+            return AccountManager.GetCharactersByAccount(accountid).Select(record => record.CharacterId).ToArray();
         }
 
         public int GetAccountCharacterCount(WorldServerInformation wsi, uint accountid)

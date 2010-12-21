@@ -27,58 +27,54 @@ namespace Stump.Tools.UtilityBot.FileParser
 {
     public class AsParser
     {
-        private readonly Dictionary<string, string> NameReplacementRules = new Dictionary<string, string>
-            {
-                {@"__AS3__\.vec\.Vector\.", @"List"},
-                {@"Vector\.", @"List"},
-                {@"\bError\b", @"Exception"},
-                {@"push", @"Add"},
-                {@"\bNumber", @"double"},
-                {@"ByteArray", @"byte[]"},
-                {@"\bsuper", @"base"},
-                {@"\bobject\b", @"@object"},
-            };
-
-        private readonly Dictionary<string, string> BeforeParsingReplacementRules = new Dictionary
-            <string, string>
-            {
-                {@"\.length", @".Count"},
-                {@"com\.(?:[\w_]+\.)*(\w+)(\b|\s)", @"$1$2"},
-                {@"\(\s*([\w\.]+)\[(\w+)\] as (\w+)\s*\)", @"$1[$2]"},
-            };
-
-
         private readonly Dictionary<string, string> AfterParsingReplacementRules = new Dictionary<string, string>
             {
                 {@"var (\w+) = null;", "object $1 = null;"},
                 {@"new List<(\w+)>\((\w+), (?:true|false)\);", @"new List<$1>($2);"},
             };
 
+        private readonly Dictionary<string, string> BeforeParsingReplacementRules = new Dictionary
+            <string, string>
+            {
+                {@"__AS3__\.vec\.Vector\.", @"List"},
+                {@"\.length", @".Count"},
+                {@"com\.(?:[\w_]+\.)*(\w+)(\b|\s)", @"$1$2"},
+                {@"\(\s*([\w\.]+)\[(\w+)\] as (\w+)\s*\)", @"$1[$2]"},
+            };
+
         private readonly List<string> IgnoredLinesRules = new List<string>
             {
             };
 
-        private readonly string[] m_fileLines;
-        private readonly string m_fileText;
+        private readonly Dictionary<string, string> NameReplacementRules = new Dictionary<string, string>
+            {
+                {@"Vector\.", @"List"},
+                {@"\bError\b", @"Exception"},
+                {@"push", @"Add"},
+                {@"\bNumber", @"double"},
+                {@"ByteArray", @"byte[]"},
+                {@"\bsuper(?![^\.])", @"base"},
+                {@"\bobject\b", @"@object"},
+            };
+
+        private string[] m_fileLines;
+        private string m_fileText;
 
         public AsParser(string filename)
         {
             FileName = filename;
 
-            m_fileText = ExecuteBeforeParsingReplacement(File.ReadAllText(FileName));
-            m_fileLines = m_fileText.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            m_fileText = File.ReadAllText(FileName);
         }
 
         public AsParser(string filename, bool ignoreMethods)
+            : this(filename)
         {
-            FileName = filename;
             IgnoreMethods = ignoreMethods;
-
-            m_fileText = ExecuteBeforeParsingReplacement(File.ReadAllText(FileName));
-            m_fileLines = m_fileText.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public AsParser(string filename, bool ignoreMethods, IEnumerable<KeyValuePair<string, string>> namesReplacementsRules,
+        public AsParser(string filename, bool ignoreMethods,
+                        IEnumerable<KeyValuePair<string, string>> namesReplacementsRules,
                         IEnumerable<KeyValuePair<string, string>> beforeParsingReplacementsRules,
                         IEnumerable<KeyValuePair<string, string>> afterParsingReplacementsRules,
                         IEnumerable<string> ignoredLinesRules)
@@ -106,9 +102,10 @@ namespace Stump.Tools.UtilityBot.FileParser
                         IEnumerable<KeyValuePair<string, string>> beforeParsingReplacementsRules,
                         IEnumerable<KeyValuePair<string, string>> afterParsingReplacementsRules,
                         IEnumerable<string> ignoredLinesRules)
-            : this(filename, false, namesReplacementsRules, beforeParsingReplacementsRules, afterParsingReplacementsRules, ignoredLinesRules)
+            : this(
+                filename, false, namesReplacementsRules, beforeParsingReplacementsRules, afterParsingReplacementsRules,
+                ignoredLinesRules)
         {
-
         }
 
         public ClassInfo Class
@@ -147,6 +144,12 @@ namespace Stump.Tools.UtilityBot.FileParser
             internal set;
         }
 
+        public List<PropertyInfo> Properties
+        {
+            get;
+            internal set;
+        }
+
         public string FileName
         {
             get;
@@ -161,29 +164,35 @@ namespace Stump.Tools.UtilityBot.FileParser
 
         public void ParseFile()
         {
+            m_fileText = ExecuteBeforeParsingReplacement(m_fileText);
+            m_fileLines = m_fileText.Split(new[] {"\r\n"}, StringSplitOptions.RemoveEmptyEntries);
+
             Class = new ClassInfo
                 {
                     Name = ExecuteNameReplacement(GetMatch(@"public class (\w+)\s")),
-                    Heritage = ExecuteNameReplacement(GetMatch(@"extends (?:[\w_]\.)*(\w+)\s")),
+                    Heritage = ExecuteNameReplacement(GetMatch(@"extends (?:[\w_]+\.)*(\w+)")),
                     AccessModifier = AccessModifiers.PUBLIC,
                     // we don't mind about this
                     ClassModifier = ClassInfo.ClassModifiers.NONE
                 };
+
+            if (Class.Name == "")
+                throw new Exception("This file does not contain a class");
 
             if (!IgnoreMethods)
                 ParseConstructor();
 
             ParseFields();
 
-            if (!IgnoreMethods)
-                ParseMethods();
+            ParseMethods();
         }
 
         private void ParseConstructor()
         {
             Match matchConstructor = Regex.Match(m_fileText,
-                                                 @"(?<acces>public|protected|private|internal)\s*function\s*" +
-                                                 Class.Name + @"\((?<argument>[^,)]+,?)*\)");
+                                                 string.Format(
+                                                     @"(?<acces>public|protected|private|internal)\s*function\s*(?<name>{0})\((?<argument>[^,)]+,?)*\)",
+                                                     Class.Name));
 
             if (matchConstructor.Success)
             {
@@ -197,14 +206,14 @@ namespace Stump.Tools.UtilityBot.FileParser
             Fields = new List<FieldInfo>();
 
             Match matchConst = Regex.Match(m_fileText,
-                                           @"(?<acces>public|protected|private|internal)\s*(?<static>static)?\s*const\s*(?<name>\w+):(?<type>[\w_\.]+(?:<(?:\w+\.)*(?<generictype>\w+)>)?)(?<value>\s*=\s*.*)?;");
+                                           @"(?<acces>public|protected|private|internal)\s*(?<static>static)?\s*const\s*(?<name>\w+):(?<type>[\w_\.]+(?:<(?:\w+\.)*(?<generictype>[\w_<>]+)>)?)(?<value>\s*=\s*.*)?;");
             while (matchConst.Success)
             {
                 var field = new FieldInfo
                     {
                         Modifiers =
                             (AccessModifiers)
-                            Enum.Parse(typeof(AccessModifiers),
+                            Enum.Parse(typeof (AccessModifiers),
                                        ExecuteNameReplacement(matchConst.Groups["acces"].Value),
                                        true),
                         Name = ExecuteNameReplacement(matchConst.Groups["name"].Value),
@@ -222,14 +231,14 @@ namespace Stump.Tools.UtilityBot.FileParser
             }
 
             Match matchVar = Regex.Match(m_fileText,
-                                         @"(?<acces>public|protected|private|internal)\s*(?<static>static)?\s*var\s*(?<name>\w+):(?<type>[\w_\.]+(?:<(?:\w+\.)*(?<generictype>\w+)>)?)(?<value>\s*=\s*.*)?;");
+                                         @"(?<acces>public|protected|private|internal)\s*(?<static>static)?\s*var\s*(?<name>\w+):(?<type>[\w_\.]+(?:<(?:\w+\.)*(?<generictype>[\w_<>]+)>)?)(?<value>\s*=\s*.*)?;");
             while (matchVar.Success)
             {
                 var field = new FieldInfo
                     {
                         Modifiers =
                             (AccessModifiers)
-                            Enum.Parse(typeof(AccessModifiers), ExecuteNameReplacement(matchVar.Groups["acces"].Value),
+                            Enum.Parse(typeof (AccessModifiers), ExecuteNameReplacement(matchVar.Groups["acces"].Value),
                                        true),
                         Name = ExecuteNameReplacement(matchVar.Groups["name"].Value),
                         Type =
@@ -249,15 +258,24 @@ namespace Stump.Tools.UtilityBot.FileParser
         private void ParseMethods()
         {
             Methods = new List<MethodInfo>();
+            Properties = new List<PropertyInfo>();
             MethodsElements = new Dictionary<MethodInfo, IEnumerable<IExecution>>();
 
             Match matchMethods = Regex.Match(m_fileText,
-                                             @"(?<acces>public|protected|private|internal)\s*(?<override>override)?\s*function\s*(?<name>\w+)\((?<argument>[^,)]+,?)*\):(?:\w+\.)*(?<=\.|:)(?<returntype>\w+)");
+                                             @"(?<acces>public|protected|private|internal)\s*(?<override>override)?\s*function\s+(?<prop>get|set)?\s+(?<name>\w+)\((?<argument>[^,)]+,?)*\):(?:\w+\.)*(?<=\.|:)(?<returntype>\w+)");
             while (matchMethods.Success)
             {
+                // do not support properties
+                if (!string.IsNullOrEmpty(matchMethods.Groups["prop"].Value))
+                {
+                    matchMethods = matchMethods.NextMatch();
+                    continue;
+                }
+
                 MethodInfo method = BuildMethodInfoFromMatch(matchMethods, false);
 
                 Methods.Add(method);
+
                 MethodsElements.Add(method, BuildMethodElementsFromMatch(matchMethods));
 
                 matchMethods = matchMethods.NextMatch();
@@ -270,21 +288,21 @@ namespace Stump.Tools.UtilityBot.FileParser
                 {
                     AccessModifier =
                         (AccessModifiers)
-                        Enum.Parse(typeof(AccessModifiers),
+                        Enum.Parse(typeof (AccessModifiers),
                                    ExecuteNameReplacement(match.Groups["acces"].Value), true),
                     Name = ExecuteNameReplacement(match.Groups["name"].Value),
                     Modifiers = match.Groups["override"].Value == "override"
-                                    ? new List<MethodInfo.MethodModifiers>(new[] { MethodInfo.MethodModifiers.OVERRIDE })
-                                    : new List<MethodInfo.MethodModifiers>(new[] { MethodInfo.MethodModifiers.NONE }),
+                                    ? new List<MethodInfo.MethodModifiers>(new[] {MethodInfo.MethodModifiers.OVERRIDE})
+                                    : new List<MethodInfo.MethodModifiers>(new[] {MethodInfo.MethodModifiers.NONE}),
                     ReturnType = constructor ? "" : ExecuteNameReplacement(match.Groups["returntype"].Value),
                     ReturnsArray = false
                 };
 
             // todo : hard code, find a better way
-            if (( method.Name == "reset" ||
+            if ((method.Name == "reset" ||
                  method.Name == "getTypeId" ||
                  method.Name == "serialize" ||
-                 method.Name == "deserialize" ) &&
+                 method.Name == "deserialize") &&
                 method.Modifiers.Contains(MethodInfo.MethodModifiers.NONE))
             {
                 method.Modifiers.Clear();
@@ -328,6 +346,35 @@ namespace Stump.Tools.UtilityBot.FileParser
             method.Args = args.ToArray();
             method.ArgsType = argsType.ToArray();
             method.ArgsDefaultValue = argsDefaultValue.ToArray();
+
+            if (!string.IsNullOrEmpty(match.Groups["prop"].Value))
+            {
+                PropertyInfo property;
+
+                IEnumerable<PropertyInfo> propertiesExisting;
+                if ((propertiesExisting = Properties.Where(entry => entry.Name == method.Name)).Count() > 0)
+                {
+                    property = propertiesExisting.First();
+                }
+                else
+                {
+                    property = new PropertyInfo
+                        {
+                            Name = method.Name,
+                            AccessModifier = method.AccessModifier,
+                        };
+                }
+
+                if (match.Groups["prop"].Value == "get")
+                {
+                    property.MethodGet = method;
+                    property.PropertyType = method.ReturnType;
+                }
+                else if (match.Groups["prop"].Value == "set")
+                {
+                    property.MethodSet = method;
+                }
+            }
 
             return method;
         }
@@ -390,29 +437,29 @@ namespace Stump.Tools.UtilityBot.FileParser
                 else if (Regex.IsMatch(line, FunctionCall.Pattern))
                 {
                     execution = FunctionCall.Parse(line, this);
-                    if (!string.IsNullOrEmpty(( execution as FunctionCall ).ReturnVariableAssignation) &&
-                        string.IsNullOrEmpty(( execution as FunctionCall ).Stereotype) &&
-                        Fields.Count(entry => entry.Name == ( (FunctionCall)execution ).ReturnVariableAssignation) > 0)
+                    if (!string.IsNullOrEmpty((execution as FunctionCall).ReturnVariableAssignation) &&
+                        string.IsNullOrEmpty((execution as FunctionCall).Stereotype) &&
+                        Fields.Count(entry => entry.Name == ((FunctionCall) execution).ReturnVariableAssignation) > 0)
                     {
-                        ( execution as FunctionCall ).Stereotype = "(" +
+                        (execution as FunctionCall).Stereotype = "(" +
                                                                  Fields.Where(
                                                                      entry =>
                                                                      entry.Name ==
-                                                                     ( (FunctionCall)execution ).
+                                                                     ((FunctionCall) execution).
                                                                          ReturnVariableAssignation).First().Type + ")";
                     }
 
                     // cast to generic type
-                    if (!string.IsNullOrEmpty(( execution as FunctionCall ).Target) &&
-                        ( execution as FunctionCall ).Name == "Add" &&
-                        Fields.Count(entry => entry.Name == ( (FunctionCall)execution ).Target.Split('.').Last()) > 0)
+                    if (!string.IsNullOrEmpty((execution as FunctionCall).Target) &&
+                        (execution as FunctionCall).Name == "Add" &&
+                        Fields.Count(entry => entry.Name == ((FunctionCall) execution).Target.Split('.').Last()) > 0)
                     {
                         string generictype =
-                            Fields.Where(entry => entry.Name == ( (FunctionCall)execution ).Target.Split('.').Last()).
+                            Fields.Where(entry => entry.Name == ((FunctionCall) execution).Target.Split('.').Last()).
                                 First().Type.Split('<').Last().Split('>').First();
 
-                        ( execution as FunctionCall ).Args[0] = "(" + generictype + ")" +
-                                                              ( execution as FunctionCall ).Args[0];
+                        (execution as FunctionCall).Args[0] = "(" + generictype + ")" +
+                                                              (execution as FunctionCall).Args[0];
                     }
                 }
 
@@ -438,7 +485,7 @@ namespace Stump.Tools.UtilityBot.FileParser
             var writer = new CsFileWriter(destFileName, usings);
 
             Class.Namespace = @namespace;
-            writer.StartClass(Class);
+            writer.StartClassWithNamespace(Class);
 
             foreach (FieldInfo field in Fields)
             {
@@ -452,37 +499,7 @@ namespace Stump.Tools.UtilityBot.FileParser
             {
                 writer.StartMethod(Constructor);
 
-                foreach (IExecution element in ConstructorElements)
-                {
-                    if (element.Type == ExecutionType.ControlSequence)
-                    {
-                        writer.StartControlSequence(( (ControlSequence)element ).SequenceType,
-                                                    ( (ControlSequence)element ).Condition);
-                    }
-                    else if (element.Type == ExecutionType.ControlSequenceEnd)
-                    {
-                        writer.EndControlSequence();
-                    }
-                    else if (element.Type == ExecutionType.FunctionCall)
-                    {
-                        writer.WriteExecution(( (FunctionCall)element ).Target,
-                                              ( (FunctionCall)element ).Name,
-                                              ( (FunctionCall)element ).ReturnVariableAssignation,
-                                              ( (FunctionCall)element ).ReturnVariableTypeAssignation,
-                                              ( (FunctionCall)element ).ReturnVariableAssignationTarget,
-                                              ( (FunctionCall)element ).Args,
-                                              ( (FunctionCall)element ).Stereotype);
-                    }
-                    else if (element.Type == ExecutionType.VariableAssignation)
-                    {
-                        writer.WriteVariableAssignation(( (VariableAssignation)element ).Target,
-                                                        ( (VariableAssignation)element ).Name,
-                                                        ( (VariableAssignation)element ).Value,
-                                                        ( (VariableAssignation)element ).TypeDeclaration);
-                    }
-                    else
-                        writer.WriteCustom(( (Unknown)element ).Execution);
-                }
+                WriteElements(writer, ConstructorElements);
 
                 writer.EndMethod();
             }
@@ -499,7 +516,7 @@ namespace Stump.Tools.UtilityBot.FileParser
                         {
                             AccessModifier = AccessModifiers.PUBLIC,
                             Name = Class.Name,
-                            Modifiers = new List<MethodInfo.MethodModifiers>(new[] { MethodInfo.MethodModifiers.NONE }),
+                            Modifiers = new List<MethodInfo.MethodModifiers>(new[] {MethodInfo.MethodModifiers.NONE}),
                             ReturnType = "",
                             ReturnsArray = false,
                             Args = methodInit.Args,
@@ -523,85 +540,76 @@ namespace Stump.Tools.UtilityBot.FileParser
 
                     writer.StartMethod(customConstructor, ": this()");
 
-                    foreach (IExecution element in elements)
-                    {
-                        if (element.Type == ExecutionType.ControlSequence)
-                        {
-                            writer.StartControlSequence(( (ControlSequence)element ).SequenceType,
-                                                        ( ( (ControlSequence)element ) ).Condition);
-                        }
-                        else if (element.Type == ExecutionType.ControlSequenceEnd)
-                        {
-                            writer.EndControlSequence();
-                        }
-                        else if (element.Type == ExecutionType.FunctionCall)
-                        {
-                            writer.WriteExecution(( (FunctionCall)element ).Target,
-                                                  ( ( (FunctionCall)element ) ).Name,
-                                                  ( ( (FunctionCall)element ) ).ReturnVariableAssignation,
-                                                  ( ( (FunctionCall)element ) ).ReturnVariableTypeAssignation,
-                                                  ( ( (FunctionCall)element ) ).ReturnVariableAssignationTarget,
-                                                  ( ( (FunctionCall)element ) ).Args,
-                                                  ( ( (FunctionCall)element ) ).Stereotype);
-                        }
-                        else if (element.Type == ExecutionType.VariableAssignation)
-                        {
-                            writer.WriteVariableAssignation(( (VariableAssignation)element ).Target,
-                                                            ( (VariableAssignation)element ).Name,
-                                                            ( (VariableAssignation)element ).Value,
-                                                            ( (VariableAssignation)element ).TypeDeclaration);
-                        }
-                        else
-                            writer.WriteCustom(( (Unknown)element ).Execution);
-                    }
+                    WriteElements(writer, elements);
 
                     writer.EndMethod();
                 }
             }
 
-            if (Methods != null)
+            if (Methods != null && !IgnoreMethods)
                 foreach (MethodInfo method in Methods)
                 {
                     writer.StartMethod(method);
 
-                    foreach (IExecution element in MethodsElements[method])
-                    {
-                        if (element.Type == ExecutionType.ControlSequence)
-                        {
-                            writer.StartControlSequence(( (ControlSequence)element ).SequenceType,
-                                                        ( (ControlSequence)element ).Condition);
-                        }
-                        else if (element.Type == ExecutionType.ControlSequenceEnd)
-                        {
-                            writer.EndControlSequence();
-                        }
-                        else if (element.Type == ExecutionType.FunctionCall)
-                        {
-                            writer.WriteExecution(( (FunctionCall)element ).Target,
-                                                  ( (FunctionCall)element ).Name,
-                                                  ( (FunctionCall)element ).ReturnVariableAssignation,
-                                                  ( (FunctionCall)element ).ReturnVariableTypeAssignation,
-                                                  ( (FunctionCall)element ).ReturnVariableAssignationTarget,
-                                                  ( (FunctionCall)element ).Args,
-                                                  ( (FunctionCall)element ).Stereotype);
-                        }
-                        else if (element.Type == ExecutionType.VariableAssignation)
-                        {
-                            writer.WriteVariableAssignation(( (VariableAssignation)element ).Target,
-                                                            ( (VariableAssignation)element ).Name,
-                                                            ( (VariableAssignation)element ).Value,
-                                                            ( (VariableAssignation)element ).TypeDeclaration);
-                        }
-                        else
-                            writer.WriteCustom(( (Unknown)element ).Execution);
-                    }
+                    WriteElements(writer, MethodsElements[method]);
 
                     writer.EndMethod();
                 }
 
-            writer.EndClass();
+            if (Properties != null)
+                foreach (PropertyInfo propertyInfo in Properties)
+                {
+                    writer.StartProperty(propertyInfo);
+
+                    writer.StartGetProperty();
+                    WriteElements(writer, MethodsElements[propertyInfo.MethodGet]);
+                    writer.EndGetProperty();
+
+                    writer.StartSetProperty();
+                    WriteElements(writer, MethodsElements[propertyInfo.MethodSet]);
+                    writer.EndSetProperty();
+
+                    writer.EndProperty();
+                }
+
+            writer.EndClassWithNamespace();
 
             File.WriteAllText(destFileName, ExecuteAfterParsingReplacement(File.ReadAllText(destFileName)));
+        }
+
+        private static void WriteElements(CsFileWriter writer, IEnumerable<IExecution> elements)
+        {
+            foreach (IExecution element in elements)
+            {
+                if (element.Type == ExecutionType.ControlSequence)
+                {
+                    writer.StartControlSequence(((ControlSequence) element).SequenceType,
+                                                ((ControlSequence) element).Condition);
+                }
+                else if (element.Type == ExecutionType.ControlSequenceEnd)
+                {
+                    writer.EndControlSequence();
+                }
+                else if (element.Type == ExecutionType.FunctionCall)
+                {
+                    writer.WriteExecution(((FunctionCall) element).Target,
+                                          ((FunctionCall) element).Name,
+                                          ((FunctionCall) element).ReturnVariableAssignation,
+                                          ((FunctionCall) element).ReturnVariableTypeAssignation,
+                                          ((FunctionCall) element).ReturnVariableAssignationTarget,
+                                          ((FunctionCall) element).Args,
+                                          ((FunctionCall) element).Stereotype);
+                }
+                else if (element.Type == ExecutionType.VariableAssignation)
+                {
+                    writer.WriteVariableAssignation(((VariableAssignation) element).Target,
+                                                    ((VariableAssignation) element).Name,
+                                                    ((VariableAssignation) element).Value,
+                                                    ((VariableAssignation) element).TypeDeclaration);
+                }
+                else
+                    writer.WriteCustom(((Unknown) element).Execution);
+            }
         }
 
 

@@ -39,6 +39,9 @@ namespace Stump.Server.WorldServer.IPC
         [Variable(DefinableRunning = true)]
         public static int ReconnectDelay = 10;
 
+        [Variable(DefinableRunning = true)]
+        public static int PingDelay = 200;
+
         [Variable]
         public static string IpcAuthAdress = "localhost";
 
@@ -60,6 +63,12 @@ namespace Stump.Server.WorldServer.IPC
         ///   Indicate if we are disposing or not.
         /// </summary>
         private bool m_disposing;
+
+        public bool IsRegister
+        {
+            get;
+            private set;
+        }
 
         #region IDisposable Members
 
@@ -91,25 +100,43 @@ namespace Stump.Server.WorldServer.IPC
         ///   Actually attempt to connect to remote server and retrieve a
         ///   proxy object.
         /// </summary>
-        private void Connect()
+        private bool Connect()
         {
             var proxyobject =
                 (IRemoteOperationsAuth) Activator.GetObject(typeof (IRemoteOperationsAuth), IpcAddress + "Remoting");
             try
             {
                 proxyobject.PingConnection(WorldServer.ServerInformation);
-                Connected = true;
                 ProxyObject = proxyobject;
+
+                return true;
             }
             catch (SocketException)
             {
-                Connected = false;
+                return false;
             }
                 // actually this is not an communication problem but we don't
                 // considered server as connected for a security reason.
             catch (Exception ex)
             {
                 throw new Exception("[IPC] Ping connection throw an exception : " + ex.Message);
+            }
+        }
+
+        public void RegisterWorld()
+        {
+            // todo : use a secret key to confirm world server access
+            if (m_proxyObject.RegisterWorld(WorldServer.ServerInformation, IpcWorldPort))
+            {
+                IsRegister = true;
+                logger.Info("[IPC] Connection from the authentification server granted");
+
+                Task.Factory.StartNew(MaintainConnection);
+            }
+            else
+            {
+                logger.Error("[IPC] The authentication server has denied the access of this server.");
+                WorldServer.Instance.Shutdown();
             }
         }
 
@@ -122,19 +149,22 @@ namespace Stump.Server.WorldServer.IPC
             {
                 if (!m_disposing)
                 {
-                    Connect();
-
-                    if (Connected && WorldServer.Instance.Running)
+                    if (Connect())
                     {
-                        logger.Info("[IPC] Connected successfully to {0}", IpcAddress);
-                        Task.Factory.StartNew(MaintainConnection);
+                        Connected = true;
+                        logger.Info("[IPC] Found Authenfication Server {0}. Wait to be register...", IpcAddress);
+                        RegisterWorld();
                     }
+
                     else if (!WorldServer.Instance.Running)
                     {
+                        Connected = false;
                         return;
                     }
                     else
                     {
+                        Connected = false;
+
                         logger.Warn("[IPC] Couldn't connect to : {0} Retrying in : {1} seconds...", IpcAddress,
                                     ReconnectDelay);
                         Task.Factory.StartNewDelayed(ReconnectDelay*1000, Start);
@@ -152,7 +182,7 @@ namespace Stump.Server.WorldServer.IPC
             {
                 try
                 {
-                    if (!ProxyObject.PingConnection(WorldServer.ServerInformation) && WorldServer.Instance.IsRegister())
+                    if (!ProxyObject.PingConnection(WorldServer.ServerInformation) && IsRegister)
                     {
                         // No pong. Connection closed (time out)
                         Connected = false;
@@ -170,7 +200,7 @@ namespace Stump.Server.WorldServer.IPC
                     Task.Factory.StartNewDelayed(ReconnectDelay*1000, Start);
                 }
 
-                Thread.Sleep(200);
+                Thread.Sleep(PingDelay);
             }
         }
 
@@ -189,7 +219,8 @@ namespace Stump.Server.WorldServer.IPC
         {
             lock (m_synclock)
             {
-                WorldServer.NotifyConnectionLost();
+                IsRegister = false;
+                ProxyObject = null;
             }
         }
 
@@ -203,6 +234,8 @@ namespace Stump.Server.WorldServer.IPC
         }
 
         #region Properties
+
+        private IRemoteOperationsAuth m_proxyObject;
 
         public string IpcAddress
         {
@@ -218,8 +251,14 @@ namespace Stump.Server.WorldServer.IPC
 
         public IRemoteOperationsAuth ProxyObject
         {
-            get;
-            private set;
+            get
+            {
+                if (!IsRegister)
+                    throw new Exception("Attempt to call the authentification server by ipc whithout beeing register");
+
+                return m_proxyObject;
+            }
+            private set { m_proxyObject = value; }
         }
 
         #endregion

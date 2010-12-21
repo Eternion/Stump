@@ -39,162 +39,102 @@ namespace Stump.Server.AuthServer.Handlers
                 };
         }
 
-        [AuthHandler(typeof (IdentificationMessage))]
+
+        #region Identification
+
+        [AuthHandler(typeof(IdentificationMessage))]
         public static void HandleIdentificationMessage(AuthClient client, IdentificationMessage message)
         {
+            /* Handle common identification */
+            if (!HandleIndentification(client, message))
+                return;
+
+            /* If autoconnect, send to the lastServer */
+            if (message.autoconnect && client.Account.LastServer.HasValue && WorldServerManager.CanAccessToWorld(client,(int)client.Account.LastServer))
+            {
+                SendSelectServerData(client, WorldServerManager.GetWorldRecord((int)client.Account.Id));
+            }
+            else
+            {
+                SendServersListMessage(client);
+            }
+
+        }
+
+        [AuthHandler(typeof(IdentificationWithServerIdMessage))]
+        public static void HandleIdentificationMessageWithServerIdMessage(AuthClient client, IdentificationWithServerIdMessage message)
+        {
+            /* Handle common identification */
+            HandleIndentification(client, message);
+
+            /* If world exist and connected */
+            if (WorldServerManager.CanAccessToWorld(client,message.serverId))
+            {
+                SendSelectServerData(client,WorldServerManager.GetWorldRecord(message.serverId));
+            }
+            else
+            {
+                SendServersListMessage(client);
+            }
+
+        }
+
+        public static bool HandleIndentification(AuthClient client, IdentificationMessage message)
+        {
+            /* Wrong Version */
             if (!ClientVersion.ClientVersionRequired.CompareVersion(message.version))
             {
                 SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.BAD_VERSION);
                 client.Disconnect();
+                return false;
             }
 
+            /* Bind Login and Pass to Client */
             client.Login = StringUtils.EscapeString(message.login);
             client.Password = StringUtils.EscapeString(message.password);
 
+            /* Get corresponding account */
             AccountRecord account = AccountManager.GetAccountByName(client.Login);
 
-            if (account != null &&
-                StringUtils.EncryptPassword(account.Password, client.Key) == client.Password)
-            {
-                bool wasAlreadyConnected = AuthentificationServer.Instance.DisconnectClientsUsingAccount(account);
-
-                if (account.Banned)
-                {
-                    SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.BANNED);
-                    return;
-                }
-
-                client.Account = account;
-                client.Characters = AccountManager.GetCharactersByAccount(account.Id);
-
-                /* Propose at client to give à nickname */
-                if (client.Account.Nickname == "")
-                {
-                    client.Send(new NicknameRegistrationMessage());
-                    return;
-                }
-
-
-                SendIdentificationSuccessMessage(client, wasAlreadyConnected);
-
-
-                if (client.AutoConnect && WorldServerManager.Worlds.Count > 0 && client.Account.LastServer != 0)
-                {
-                    SendSelectServerData(client);
-
-                    client.Disconnect();
-                }
-                else
-                    SendServersListMessage(client);
-
-
-                client.LookingOfServers = true;
-            }
-            else
+            /* Invalid password */
+            if (account == null || StringUtils.EncryptPassword(account.Password, client.Key) != client.Password)
             {
                 SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.WRONG_CREDENTIALS);
-            }
-        }
-
-        // called when client choose option "change character"
-        [AuthHandler(typeof (IdentificationMessageWithServerIdMessage))]
-        public static void HandleIdentificationMessageWithServerIdMessage(AuthClient client,
-                                                                          IdentificationMessageWithServerIdMessage
-                                                                              message)
-        {
-            if (!ClientVersion.ClientVersionRequired.CompareVersion(message.version))
-            {
-                SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.BAD_VERSION);
-                client.Disconnect();
+                return false;
             }
 
-            client.Login = StringUtils.EscapeString(message.login);
-            client.Password = StringUtils.EscapeString(message.password);
-            
-            AccountRecord account = AccountManager.GetAccountByName(client.Login);
-
-            if (account != null &&
-                StringUtils.EncryptPassword(account.Password, client.Key) == client.Password)
+            /*Banni */
+            if (account.Banned)
             {
-                bool wasAlreadyConnected = AuthentificationServer.Instance.DisconnectClientsUsingAccount(account);
-
-                if (account.Banned)
+                /* Ban indéterminé */
+                if (!account.BanDate.HasValue)
                 {
                     SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.BANNED);
-                    return;
                 }
-
-                client.Account = account;
-                client.Characters = AccountManager.GetCharactersByAccount(account.Id);
-
-                SendIdentificationSuccessMessage(client, wasAlreadyConnected);
-
-                if (WorldServerManager.HasWorld(message.serverId))
-                {
-                    client.SelectedServerId = message.serverId;
-                    SendSelectServerData(client);
-
-                    client.Disconnect();
-                }
+                /* Avec durée */
                 else
-                    SendServersListMessage(client);
-
-
-                client.LookingOfServers = true;
+                {
+                    SendIdentificationFailedBannedMessage(client);
+                }
+                return false;
             }
-            else
+
+
+            bool wasAlreadyConnected = AuthentificationServer.Instance.DisconnectClientsUsingAccount(account);
+
+            client.Account = account;
+            client.Characters = AccountManager.GetCharactersByAccount(account.Id);
+
+            /* Propose at client to give a nickname */
+            if (client.Account.Nickname == "")
             {
-                SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.WRONG_CREDENTIALS);
-            }
-        }
-
-        [AuthHandler(typeof (ServerSelectionMessage))]
-        public static void HandleServerSelectionMessage(AuthClient client, ServerSelectionMessage message)
-        {
-            client.LookingOfServers = false;
-
-            client.SelectedServerId = message.serverId;
-            if (WorldServerManager.HasWorld(client.SelectedServerId))
-            {
-                SendSelectServerData(client);
+                client.Send(new NicknameRegistrationMessage());
+                return false;
             }
 
-            client.Disconnect();
-        }
+            SendIdentificationSuccessMessage(client, wasAlreadyConnected);
 
-        public static void SendSelectServerData(AuthClient client)
-        {
-            client.LookingOfServers = false;
-
-            WorldRecord record = WorldRecord.FindWorldRecordById(client.SelectedServerId);
-
-            if (record == null)
-                throw new Exception(string.Format("Could not find WorldRecord <id:{0}>", client.SelectedServerId));
-
-            // save the ticket in the database
-            client.Account.Ticket = client.Key;
-            client.Account.LastServer = client.SelectedServerId;
-            client.Save();
-
-            client.Send(new SelectedServerDataMessage(
-                            record.Id,
-                            record.Ip,
-                            record.Port,
-                            !(client.Account.Role == RoleEnum.Player && record.BlockedToPlayer),
-                            client.Key));
-        }
-
-        public static void SendServersListMessage(AuthClient client)
-        {
-            List<GameServerInformations> servers =
-                WorldServerManager.Realmlist.Values.Select(
-                    record =>
-                    new GameServerInformations((uint) record.Id, (uint) record.Status,
-                                               (uint) record.Completion,
-                                               record.ServerSelectable,
-                                               client.GetCharactersCount(record.Id))).ToList();
-
-            client.Send(new ServersListMessage(servers));
+            return true;
         }
 
         public static void SendIdentificationSuccessMessage(AuthClient client, bool wasAlreadyConnected)
@@ -205,13 +145,99 @@ namespace Stump.Server.AuthServer.Handlers
                             0, // community ID ? ( se trouve dans le d2p, utilisé pour trouver les serveurs de la communauté )
                             client.Account.Role >= RoleEnum.Moderator,
                             client.Account.SecretQuestion,
-                            client.Account.GetRegistrationRemainingTime(), // remaining time
+                            client.Account.GetRegistrationRemainingTime(),
                             wasAlreadyConnected));
+
+            client.LookingOfServers = true;
         }
 
         public static void SendIdentificationFailedMessage(AuthClient client, IdentificationFailureReasonEnum reason)
         {
-            client.Send(new IdentificationFailedMessage((uint) reason));
+            client.Send(new IdentificationFailedMessage((uint)reason));
         }
+
+        public static void SendIdentificationFailedBannedMessage(AuthClient client)
+        {
+            client.Send(new IdentificationFailedBannedMessage(
+                                        (uint)IdentificationFailureReasonEnum.BANNED, (uint)client.Account.GetBanRemainingTime()));
+        }
+
+        #endregion
+
+        #region Server Selection
+
+        [AuthHandler(typeof(ServerSelectionMessage))]
+        public static void HandleServerSelectionMessage(AuthClient client, ServerSelectionMessage message)
+        {
+            var wr = WorldServerManager.GetWorldRecord(message.serverId);
+           
+            /* World not exist */
+            if (wr == null)
+            {
+                SendSelectServerRefusedMessage(client, wr, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_NO_REASON);
+                return;
+            }
+
+            /* Wrong state */
+            if (wr.Status != ServerStatusEnum.ONLINE)
+            {
+                SendSelectServerRefusedMessage(client, wr, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_DUE_TO_STATUS);
+                return;
+            }
+
+            /* not suscribe */
+            if (wr.RequireSubscription && client.Account.GetRegistrationRemainingTime() <= 0)
+            {
+                SendSelectServerRefusedMessage(client, wr, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_SUBSCRIBERS_ONLY);
+                return;
+            }
+
+            /* not the rights */
+            if (wr.RequiredRole > client.Account.Role)
+            {
+                SendSelectServerRefusedMessage(client, wr, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_ACCOUNT_RESTRICTED);
+                return;
+            }
+
+            /* Send client to the server */
+            SendSelectServerData(client, wr);
+
+        }
+
+        public static void SendSelectServerData(AuthClient client, WorldRecord world)
+        {
+            /* Check if is null */
+            if (world == null)
+                return;
+
+            client.LookingOfServers = false;
+
+            // save the ticket in the database
+            client.Account.Ticket = client.Key;
+            client.Account.LastServer = client.SelectedServerId;
+            client.Save();
+
+            client.Send(new SelectedServerDataMessage(
+                            world.Id,
+                            world.Ip,
+                            world.Port,
+                            ( client.Account.Role >= world.RequiredRole),
+                            client.Key));
+
+            client.Disconnect();
+        }
+
+        public static void SendSelectServerRefusedMessage(AuthClient client, WorldRecord world, ServerConnectionErrorEnum reason)
+        {
+            client.Send(new SelectedServerRefusedMessage(world.Id, (uint)reason, (uint)world.Status));
+        }
+
+        public static void SendServersListMessage(AuthClient client)
+        {
+            client.Send(new ServersListMessage(WorldServerManager.GetServersInformationList(client)));
+        }
+
+        #endregion
+
     }
 }

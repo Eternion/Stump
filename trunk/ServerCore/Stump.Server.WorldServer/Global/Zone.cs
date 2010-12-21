@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Global
             set;
         }
 
-        public int[] MapsId
+        public uint[] MapsId
         {
             get;
             set;
@@ -62,7 +62,7 @@ namespace Stump.Server.WorldServer.Global
             set;
         }
 
-        public int[] CustomWorldMapsId
+        public uint[] CustomWorldMapsId
         {
             get;
             set;

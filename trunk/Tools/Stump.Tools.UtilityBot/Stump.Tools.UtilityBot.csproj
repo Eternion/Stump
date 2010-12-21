@@ -36,10 +36,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Squishy.Irc">
-      <HintPath>..\Library\Squishy.Irc.dll</HintPath>
+      <HintPath>..\..\Library\Squishy.Irc.dll</HintPath>
     </Reference>
     <Reference Include="Squishy.Network">
-      <HintPath>..\Library\Squishy.Network.dll</HintPath>
+      <HintPath>..\..\Library\Squishy.Network.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -64,12 +64,13 @@
     <Compile Include="FileWriter\FieldInfo.cs" />
     <Compile Include="FileWriter\FileWriter.cs" />
     <Compile Include="FileWriter\MethodInfo.cs" />
+    <Compile Include="FileWriter\PropertyInfo.cs" />
     <Compile Include="IrcConnection.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BaseCore\Stump.BaseCore.Framework\Stump.BaseCore.Framework.csproj">
+    <ProjectReference Include="..\..\BaseCore\Stump.BaseCore.Framework\Stump.BaseCore.Framework.csproj">
       <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
       <Name>Stump.BaseCore.Framework</Name>
     </ProjectReference>

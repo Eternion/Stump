@@ -1,11 +1,9 @@
-
-
-
 #
 # VS Solution user file
 #
 *.suo
 *.user
+/trunk/_ReSharper.Stump
 
 # Output path
 bin/
@@ -17,3 +15,4 @@ obj/
 *.d2o
 *.d2i
 *.map
+

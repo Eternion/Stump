@@ -24,7 +24,7 @@ namespace Stump.Tools.UtilityBot.FileParser
     public class FunctionCall : IExecution
     {
         public static string Pattern =
-            @"(?<assignationtype>[^=(new|throw new)]\w+\s+)?(?:(?<assignationtarget>\w+\.)*(?<assignation>\w+\s*(?:=|:\*=)\s*))?(?<stereotype>new|throw new)?\s?(?<target>[\[\]_\w]+\.)*(?<name>[_\w]+)\((?<argument>[^,]+,?)*\);";
+            @"(?<assignationtype>[^=(new|throw new)]\w+\s+)?(?:(?<assignationtarget>\w+\.)*(?<assignation>\w+(?:\[\w+\])?\s*(?:=|:\*=)\s*))?(?<stereotype>new|throw new)?\s?(?<target>[\[\]_\w]+\.)*(?<name>[_\w]+)\((?<argument>[^,]+,?)*\);";
 
         public string Name
         {

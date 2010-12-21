@@ -41,46 +41,46 @@ namespace Stump.Server.WorldServer.Entities
         /// <summary>
         ///   Constructor called when a character has been successfully selected.
         /// </summary>
-        /// <param name = "cr"></param>
+        /// <param name = "record"></param>
         /// <param name = "client"></param>
-        public Character(CharacterRecord cr, WorldClient client)
+        public Character(CharacterRecord record, WorldClient client)
         {
-            Record = cr;
+            Record = record;
             Client = client;
 
-            Id = cr.Id;
-            Name = cr.Name;
-            Level = cr.Level;
-            BreedId = (BreedEnum) cr.Classe;
-            Sex = (SexTypeEnum) cr.SexId;
-            Kamas = cr.Kamas;
-            StatsPoint = cr.StatsPoints;
-            SpellsPoints = cr.SpellsPoints;
+            Id = record.Id;
+            Name = record.Name;
+            Level = record.Level;
+            BreedId = (BreedEnum) record.Classe;
+            Sex = (SexTypeEnum) record.SexId;
+            Kamas = record.Kamas;
+            StatsPoint = record.StatsPoints;
+            SpellsPoints = record.SpellsPoints;
             EmoteId = 0;
 
-            Position = new VectorIsometric(World.Instance.Maps[cr.MapId], cr.CellId, cr.Direction);
+            Position = new VectorIsometric(World.Instance.Maps[record.MapId], record.CellId, record.Direction);
             InWorld = false;
 
             // -> entity look
-            Skins = cr.Skins;
-            Colors = cr.Colors;
-            Scale = cr.Scale;
+            Skins = record.Skins;
+            Colors = record.Colors;
+            Scale = record.Scale;
             BonesId = 1;
 
             Inventory = new Inventory(this);
             Inventory.LoadInventory();
 
             Stats = new StatsFields(this);
-            Stats["Strength"].Base = cr.Strength;
-            Stats["Vitality"].Base = cr.Vitality;
-            Stats["Wisdom"].Base = cr.Wisdom;
-            Stats["Intelligence"].Base = cr.Intelligence;
-            Stats["Chance"].Base = cr.Chance;
-            Stats["Agility"].Base = cr.Agility;
+            Stats["Strength"].Base = record.Strength;
+            Stats["Vitality"].Base = record.Vitality;
+            Stats["Wisdom"].Base = record.Wisdom;
+            Stats["Intelligence"].Base = record.Intelligence;
+            Stats["Chance"].Base = record.Chance;
+            Stats["Agility"].Base = record.Agility;
 
-            cr.LoadSpells();
+            record.LoadSpells();
             Spells = new SpellCollection(this);
-            foreach (SpellRecord sr in cr.Spells.Values)
+            foreach (SpellRecord sr in record.Spells.Values)
             {
                 Spells.AddSpell(SpellManager.GetSpell(sr.SpellId));
                 Spells[sr.SpellId].CurrentLevel = sr.Level;
@@ -192,13 +192,24 @@ namespace Stump.Server.WorldServer.Entities
             return new GameFightCharacterInformations(
                 (int)Id,
                 ToNetworkEntityLook(),
-                GetEntityDisposition(),
+                CurrentFighter.GetEntityDisposition(),
                 (uint)( (FightGroup)Group ).TeamId,
                 !( CurrentFighter.IsDead || CurrentFighter.IsReady ),
                 CurrentFighter.GetFightMinimalStats(),
                 Name,
                 (uint)Level,
                 GetActorAlignmentInformations());
+        }
+
+        public CharacterBaseInformations GetBaseInformations()
+        {
+            return new CharacterBaseInformations(
+                (uint) Id,
+                (uint) Level,
+                Name,
+                ToNetworkEntityLook(),
+                (int) BreedId,
+                Sex == SexTypeEnum.SEX_FEMALE);
         }
 
         // todo : complete this

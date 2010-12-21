@@ -33,8 +33,8 @@ namespace Stump.Server.WorldServer
         public WorldClient(Socket socket)
             : base(socket)
         {
-            Send(new ProtocolRequired().initProtocolRequired(ClientVersion.ActualVersion, ClientVersion.RequiredVersion));
-            Send(new HelloGameMessage().initHelloGameMessage());
+            Send(new ProtocolRequired(ClientVersion.RequiredVersion, ClientVersion.ActualVersion));
+            Send(new HelloGameMessage());
 
             CanReceive = true;
         }

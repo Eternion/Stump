@@ -29,16 +29,15 @@ namespace Stump.DofusProtocol.Messages
 		public const uint protocolId = 1503;
 		internal Boolean _isInitialized = false;
 		public String id = "";
-		public uint priority = 1;
 		
 		public DownloadPartMessage()
 		{
 		}
 		
-		public DownloadPartMessage(String arg1, uint arg2)
+		public DownloadPartMessage(String arg1)
 			: this()
 		{
-			initDownloadPartMessage(arg1, arg2);
+			initDownloadPartMessage(arg1);
 		}
 		
 		public override uint getMessageId()
@@ -46,10 +45,9 @@ namespace Stump.DofusProtocol.Messages
 			return 1503;
 		}
 		
-		public DownloadPartMessage initDownloadPartMessage(String arg1 = "", uint arg2 = 1)
+		public DownloadPartMessage initDownloadPartMessage(String arg1 = "")
 		{
 			this.id = arg1;
-			this.priority = arg2;
 			this._isInitialized = true;
 			return this;
 		}
@@ -57,7 +55,6 @@ namespace Stump.DofusProtocol.Messages
 		public override void reset()
 		{
 			this.id = "";
-			this.priority = 1;
 			this._isInitialized = false;
 		}
 		
@@ -80,7 +77,6 @@ namespace Stump.DofusProtocol.Messages
 		public void serializeAs_DownloadPartMessage(BigEndianWriter arg1)
 		{
 			arg1.WriteUTF((string)this.id);
-			arg1.WriteByte((byte)this.priority);
 		}
 		
 		public virtual void deserialize(BigEndianReader arg1)
@@ -91,11 +87,6 @@ namespace Stump.DofusProtocol.Messages
 		public void deserializeAs_DownloadPartMessage(BigEndianReader arg1)
 		{
 			this.id = (String)arg1.ReadUTF();
-			this.priority = (uint)arg1.ReadByte();
-			if ( this.priority < 0 )
-			{
-				throw new Exception("Forbidden value (" + this.priority + ") on element of DownloadPartMessage.priority.");
-			}
 		}
 		
 	}

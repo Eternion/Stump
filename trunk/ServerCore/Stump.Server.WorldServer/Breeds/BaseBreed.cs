@@ -43,8 +43,8 @@ namespace Stump.Server.WorldServer.Breeds
 
         protected BaseBreed()
         {
-            MaleColors = new List<int>();
-            FemaleColors = new List<int>();
+            MaleColors = new List<uint>();
+            FemaleColors = new List<uint>();
             StartSpells = new Dictionary<SpellIdEnum, int>();
 
             Name = GetType().Name.Replace("Breed", string.Empty);
@@ -122,49 +122,49 @@ namespace Stump.Server.WorldServer.Breeds
             private set;
         }
 
-        public List<int> MaleColors
+        public List<uint> MaleColors
         {
             get;
             protected set;
         }
 
-        public List<int> FemaleColors
+        public List<uint> FemaleColors
         {
             get;
             protected set;
         }
 
-        public List<List<int>> StatsPointsForStrength
+        public List<List<uint>> StatsPointsForStrength
         {
             get;
             protected set;
         }
 
-        public List<List<int>> StatsPointsForIntelligence
+        public List<List<uint>> StatsPointsForIntelligence
         {
             get;
             protected set;
         }
 
-        public List<List<int>> StatsPointsForChance
+        public List<List<uint>> StatsPointsForChance
         {
             get;
             protected set;
         }
 
-        public List<List<int>> StatsPointsForAgility
+        public List<List<uint>> StatsPointsForAgility
         {
             get;
             protected set;
         }
 
-        public List<List<int>> StatsPointsForWisdom
+        public List<List<uint>> StatsPointsForWisdom
         {
             get;
             protected set;
         }
 
-        public List<List<int>> StatsPointsForVitality
+        public List<List<uint>> StatsPointsForVitality
         {
             get;
             protected set;

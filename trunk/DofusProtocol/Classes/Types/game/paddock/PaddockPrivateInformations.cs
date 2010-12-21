@@ -26,18 +26,17 @@ namespace Stump.DofusProtocol.Classes
 	public class PaddockPrivateInformations : PaddockAbandonnedInformations
 	{
 		public const uint protocolId = 131;
-		public String guildName = "";
-		public GuildEmblem guildEmblem;
+		public GuildInformations guildInfo;
 		
 		public PaddockPrivateInformations()
 		{
-			this.guildEmblem = new GuildEmblem();
+			this.guildInfo = new GuildInformations();
 		}
 		
-		public PaddockPrivateInformations(uint arg1, uint arg2, uint arg3, uint arg4, String arg5, GuildEmblem arg6)
+		public PaddockPrivateInformations(uint arg1, uint arg2, uint arg3, int arg4, GuildInformations arg5)
 			: this()
 		{
-			initPaddockPrivateInformations(arg1, arg2, arg3, arg4, arg5, arg6);
+			initPaddockPrivateInformations(arg1, arg2, arg3, arg4, arg5);
 		}
 		
 		public override uint getTypeId()
@@ -45,19 +44,17 @@ namespace Stump.DofusProtocol.Classes
 			return 131;
 		}
 		
-		public PaddockPrivateInformations initPaddockPrivateInformations(uint arg1 = 0, uint arg2 = 0, uint arg3 = 0, uint arg4 = 0, String arg5 = "", GuildEmblem arg6 = null)
+		public PaddockPrivateInformations initPaddockPrivateInformations(uint arg1 = 0, uint arg2 = 0, uint arg3 = 0, int arg4 = 0, GuildInformations arg5 = null)
 		{
 			base.initPaddockAbandonnedInformations(arg1, arg2, arg3, arg4);
-			this.guildName = arg5;
-			this.guildEmblem = arg6;
+			this.guildInfo = arg5;
 			return this;
 		}
 		
 		public override void reset()
 		{
 			base.reset();
-			this.guildName = "";
-			this.guildEmblem = new GuildEmblem();
+			this.guildInfo = new GuildInformations();
 		}
 		
 		public override void serialize(BigEndianWriter arg1)
@@ -68,8 +65,7 @@ namespace Stump.DofusProtocol.Classes
 		public void serializeAs_PaddockPrivateInformations(BigEndianWriter arg1)
 		{
 			base.serializeAs_PaddockAbandonnedInformations(arg1);
-			arg1.WriteUTF((string)this.guildName);
-			this.guildEmblem.serializeAs_GuildEmblem(arg1);
+			this.guildInfo.serializeAs_GuildInformations(arg1);
 		}
 		
 		public override void deserialize(BigEndianReader arg1)
@@ -80,9 +76,8 @@ namespace Stump.DofusProtocol.Classes
 		public void deserializeAs_PaddockPrivateInformations(BigEndianReader arg1)
 		{
 			base.deserialize(arg1);
-			this.guildName = (String)arg1.ReadUTF();
-			this.guildEmblem = new GuildEmblem();
-			this.guildEmblem.deserialize(arg1);
+			this.guildInfo = new GuildInformations();
+			this.guildInfo.deserialize(arg1);
 		}
 		
 	}

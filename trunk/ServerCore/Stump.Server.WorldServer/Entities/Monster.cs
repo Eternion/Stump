@@ -149,7 +149,7 @@ namespace Stump.Server.WorldServer.Entities
 
         #region Properties
 
-        public int GfxId
+        public uint GfxId
         {
             get;
             set;

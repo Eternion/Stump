@@ -27,24 +27,27 @@ namespace Stump.DofusProtocol.Messages
     {
         private static readonly Dictionary<uint, Type> Messages = new Dictionary<uint, Type>();
 
-        private static bool m_initialized;
-
         /// <summary>
         ///   Initializes this instance.
         /// </summary>
         public static void Initialize()
         {
-            Assembly asm = Assembly.GetAssembly(typeof (IdentificationMessage));
+            Assembly asm = Assembly.GetAssembly(typeof(MessageReceiver));
 
-            foreach (Type type in asm.GetTypes())
-            {
-                FieldInfo fi = type.GetField("protocolId");
+                foreach (Type type in asm.GetTypes())
+                {
+                    try
+                    {
+                        FieldInfo fi = type.GetField("protocolId");
 
-                if (fi != null)
-                    Messages.Add((uint) fi.GetValue(type), type);
-            }
-
-            m_initialized = true;
+                        if (fi != null)
+                            Messages.Add((uint) fi.GetValue(type), type);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                }
         }
 
         /// <summary>
@@ -54,9 +57,6 @@ namespace Stump.DofusProtocol.Messages
         /// <returns></returns>
         public static Message GetMessage(uint id, BigEndianReader reader)
         {
-            if (!m_initialized)
-                Initialize();
-
             if (!Messages.ContainsKey(id))
                throw new KeyNotFoundException("This Message doesn't exist");
 

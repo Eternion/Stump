@@ -33,10 +33,10 @@ namespace Stump.DofusProtocol.Messages
 		{
 		}
 		
-		public GuildMembershipMessage(String arg1, GuildEmblem arg2, uint arg3)
+		public GuildMembershipMessage(GuildInformations arg1, uint arg2)
 			: this()
 		{
-			initGuildMembershipMessage(arg1, arg2, arg3);
+			initGuildMembershipMessage(arg1, arg2);
 		}
 		
 		public override uint getMessageId()
@@ -44,9 +44,9 @@ namespace Stump.DofusProtocol.Messages
 			return 5835;
 		}
 		
-		public GuildMembershipMessage initGuildMembershipMessage(String arg1 = "", GuildEmblem arg2 = null, uint arg3 = 0)
+		public GuildMembershipMessage initGuildMembershipMessage(GuildInformations arg1 = null, uint arg2 = 0)
 		{
-			base.initGuildJoinedMessage(arg1, arg2, arg3);
+			base.initGuildJoinedMessage(arg1, arg2);
 			this._isInitialized = true;
 			return this;
 		}

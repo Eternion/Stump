@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
 		
 		public CharacterCreationRequestMessage()
 		{
-			this.colors = new List<int>(6);
+			this.colors = new List<int>(new int[6]);
 		}
 		
 		public CharacterCreationRequestMessage(String arg1, int arg2, Boolean arg3, List<int> arg4)
@@ -64,7 +64,7 @@ namespace Stump.DofusProtocol.Messages
 			this.name = "";
 			this.breed = 0;
 			this.sex = false;
-			this.colors = new List<int>(6);
+			this.colors = new List<int>(new int[6]);
 			this._isInitialized = false;
 		}
 		
@@ -106,7 +106,7 @@ namespace Stump.DofusProtocol.Messages
 		{
 			this.name = (String)arg1.ReadUTF();
 			this.breed = (int)arg1.ReadByte();
-			if ( this.breed < (int)Stump.DofusProtocol.Enums.BreedEnum.Feca || this.breed > (int)Stump.DofusProtocol.Enums.BreedEnum.Pandawa )
+			if ( this.breed < (int)Stump.DofusProtocol.Enums.BreedEnum.Feca || this.breed > (int)Stump.DofusProtocol.Enums.BreedEnum.Zobal )
 			{
 				throw new Exception("Forbidden value (" + this.breed + ") on element of CharacterCreationRequestMessage.breed.");
 			}
@@ -114,7 +114,7 @@ namespace Stump.DofusProtocol.Messages
 			var loc1 = 0;
 			while ( loc1 < 6 )
 			{
-				arg1.ReadInt();
+				this.colors[loc1] = arg1.ReadInt();
 				++loc1;
 			}
 		}

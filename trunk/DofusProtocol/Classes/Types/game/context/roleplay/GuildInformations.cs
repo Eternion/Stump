@@ -23,10 +23,9 @@ using Stump.BaseCore.Framework.IO;
 namespace Stump.DofusProtocol.Classes
 {
 	
-	public class GuildInformations : Object
+	public class GuildInformations : BasicGuildInformations
 	{
 		public const uint protocolId = 127;
-		public String guildName = "";
 		public GuildEmblem guildEmblem;
 		
 		public GuildInformations()
@@ -34,49 +33,49 @@ namespace Stump.DofusProtocol.Classes
 			this.guildEmblem = new GuildEmblem();
 		}
 		
-		public GuildInformations(String arg1, GuildEmblem arg2)
+		public GuildInformations(uint arg1, String arg2, GuildEmblem arg3)
 			: this()
 		{
-			initGuildInformations(arg1, arg2);
+			initGuildInformations(arg1, arg2, arg3);
 		}
 		
-		public virtual uint getTypeId()
+		public override uint getTypeId()
 		{
 			return 127;
 		}
 		
-		public GuildInformations initGuildInformations(String arg1 = "", GuildEmblem arg2 = null)
+		public GuildInformations initGuildInformations(uint arg1 = 0, String arg2 = "", GuildEmblem arg3 = null)
 		{
-			this.guildName = arg1;
-			this.guildEmblem = arg2;
+			base.initBasicGuildInformations(arg1, arg2);
+			this.guildEmblem = arg3;
 			return this;
 		}
 		
-		public virtual void reset()
+		public override void reset()
 		{
-			this.guildName = "";
+			base.reset();
 			this.guildEmblem = new GuildEmblem();
 		}
 		
-		public virtual void serialize(BigEndianWriter arg1)
+		public override void serialize(BigEndianWriter arg1)
 		{
 			this.serializeAs_GuildInformations(arg1);
 		}
 		
 		public void serializeAs_GuildInformations(BigEndianWriter arg1)
 		{
-			arg1.WriteUTF((string)this.guildName);
+			base.serializeAs_BasicGuildInformations(arg1);
 			this.guildEmblem.serializeAs_GuildEmblem(arg1);
 		}
 		
-		public virtual void deserialize(BigEndianReader arg1)
+		public override void deserialize(BigEndianReader arg1)
 		{
 			this.deserializeAs_GuildInformations(arg1);
 		}
 		
 		public void deserializeAs_GuildInformations(BigEndianReader arg1)
 		{
-			this.guildName = (String)arg1.ReadUTF();
+			base.deserialize(arg1);
 			this.guildEmblem = new GuildEmblem();
 			this.guildEmblem.deserialize(arg1);
 		}

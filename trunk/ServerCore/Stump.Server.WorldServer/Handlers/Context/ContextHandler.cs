@@ -38,6 +38,7 @@ namespace Stump.Server.WorldServer.Handlers
                 {
                     {typeof (GameContextQuitMessage), PredicatesDefinitions.IsFighting},
                     {typeof (GameActionFightCastRequestMessage), PredicatesDefinitions.IsFighting},
+                    {typeof (GameFightTurnFinishMessage), PredicatesDefinitions.IsFighting},
                     {typeof (GameFightTurnReadyMessage), PredicatesDefinitions.IsFighting},
                     {typeof (GameFightReadyMessage), PredicatesDefinitions.IsFighting},
                     {typeof (GameFightPlacementPositionRequestMessage), PredicatesDefinitions.IsFighting},
@@ -47,6 +48,21 @@ namespace Stump.Server.WorldServer.Handlers
                                  entry.ActiveCharacter.DialogRequest is FightRequest
                         },
                 };
+        }
+
+        [WorldHandler(typeof(GameContextCreateRequestMessage))]
+        public static void HandleGameContextCreateRequestMessage(WorldClient client, GameContextCreateRequestMessage message)
+        {
+            SendGameContextDestroyMessage(client);
+            SendGameContextCreateMessage(client, 1);
+
+            CharacterHandler.SendCharacterStatsListMessage(client);
+            CharacterHandler.SendLifePointsRegenBeginMessage(client, 60);
+
+            SendCurrentMapMessage(client, client.ActiveCharacter.Map.Id);
+            BasicHandler.SendBasicTimeMessage(client);
+
+            World.Instance.SendMessageOfTheDay(client.ActiveCharacter);
         }
 
         [WorldHandler(typeof(GameMapChangeOrientationRequestMessage))]
@@ -119,7 +135,7 @@ namespace Stump.Server.WorldServer.Handlers
             client.Send(new GameMapMovementMessage(movementsKey, (int)entity.Id));
         }
 
-        public static void SendGameEntitiesDispositionMessage(WorldClient client, IEnumerable<Entity> entities)
+        public static void SendGameEntitiesDispositionMessage(WorldClient client, IEnumerable<ILocableIdentified> entities)
         {
             client.Send(new GameEntitiesDispositionMessage(entities.Select( entry => entry.GetIdentifiedEntityDisposition()).ToList()));
         }

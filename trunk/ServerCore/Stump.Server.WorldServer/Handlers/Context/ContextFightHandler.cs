@@ -45,6 +45,12 @@ namespace Stump.Server.WorldServer.Handlers
                                                          (int) message.spellId);
         }
 
+        [WorldHandler(typeof(GameFightTurnFinishMessage))]
+        public static void HandleGameFightTurnFinishMessage(WorldClient client, GameFightTurnFinishMessage message)
+        {
+            client.ActiveCharacter.CurrentFight.FinishTurn(client.ActiveCharacter.CurrentFighter);
+        }
+
         [WorldHandler(typeof (GameFightTurnReadyMessage))]
         public static void HandleGameFightTurnReadyMessage(WorldClient client, GameFightTurnReadyMessage message)
         {
@@ -78,7 +84,7 @@ namespace Stump.Server.WorldServer.Handlers
                         CallOnAllCharacters(character =>
                                             SendGameEntitiesDispositionMessage(character.Client,
                                                                                client.ActiveCharacter.CurrentFight.
-                                                                                   GetAllEntities()));
+                                                                                   GetAllFighters()));
                 }
             }
         }
@@ -242,8 +248,8 @@ namespace Stump.Server.WorldServer.Handlers
         public static void SendGameFightPlacementPossiblePositionsMessage(WorldClient client, Fight fight, int team)
         {
             client.Send(new GameFightPlacementPossiblePositionsMessage(
-                            fight.SourceGroup.Positions.Cast<uint>().ToList(),
-                            fight.TargetGroup.Positions.Cast<uint>().ToList(),
+                            fight.SourceGroup.Positions.Select(entry => (uint)entry).ToList(),
+                            fight.TargetGroup.Positions.Select(entry => (uint)entry).ToList(),
                             (uint) team));
         }
     }

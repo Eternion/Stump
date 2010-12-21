@@ -49,7 +49,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stump.DofusProtocol.D2oClas
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stump.Tools.Proxy", "Tools\Stump.Tools.Proxy\Stump.Tools.Proxy.csproj", "{4B1F615A-F1E0-4132-8E4B-542B7A453FE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stump.Tools.UtilityBot", "Tools\UtilityBot\Stump.Tools.UtilityBot.csproj", "{68C437A3-289B-44C1-8081-12F27EE7651E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stump.Tools.UtilityBot", "Tools\Stump.Tools.UtilityBot\Stump.Tools.UtilityBot.csproj", "{68C437A3-289B-44C1-8081-12F27EE7651E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

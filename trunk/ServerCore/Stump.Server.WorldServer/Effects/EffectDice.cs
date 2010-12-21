@@ -27,10 +27,10 @@ namespace Stump.Server.WorldServer.Effects
     [Serializable]
     public class EffectDice : EffectInteger
     {
-        protected int m_diceface;
-        protected int m_dicenum;
+        protected uint m_diceface;
+        protected uint m_dicenum;
 
-        public EffectDice(int id, int value, int dicenum, int diceface)
+        public EffectDice(uint id, int value, uint dicenum, uint diceface)
             : base(id, value)
         {
             m_dicenum = dicenum;
@@ -49,12 +49,12 @@ namespace Stump.Server.WorldServer.Effects
             get { return 73; }
         }
 
-        public int DiceNum
+        public uint DiceNum
         {
             get { return m_dicenum; }
         }
 
-        public int DiceFace
+        public uint DiceFace
         {
             get { return m_diceface; }
         }
@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.Effects
 
             for (int i = 0; i < m_dicenum; i++)
             {
-                result += random.NextInt(1, m_diceface + 2);
+                result += random.NextInt(1, (int) (m_diceface + 2));
             }
 
             return new EffectInteger(m_id, result);
@@ -118,8 +118,8 @@ namespace Stump.Server.WorldServer.Effects
             unchecked
             {
                 int result = base.GetHashCode();
-                result = (result*397) ^ m_diceface;
-                result = (result*397) ^ m_dicenum;
+                result = (int) ((result*397) ^ m_diceface);
+                result = (int) ((result*397) ^ m_dicenum);
                 return result;
             }
         }

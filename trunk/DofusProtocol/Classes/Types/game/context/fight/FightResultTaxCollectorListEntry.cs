@@ -27,14 +27,15 @@ namespace Stump.DofusProtocol.Classes
 	{
 		public const uint protocolId = 84;
 		public uint level = 0;
-		public String guildName = "";
+		public BasicGuildInformations guildInfo;
 		public int experienceForGuild = 0;
 		
 		public FightResultTaxCollectorListEntry()
 		{
+			this.guildInfo = new BasicGuildInformations();
 		}
 		
-		public FightResultTaxCollectorListEntry(uint arg1, FightLoot arg2, int arg3, Boolean arg4, uint arg5, String arg6, int arg7)
+		public FightResultTaxCollectorListEntry(uint arg1, FightLoot arg2, int arg3, Boolean arg4, uint arg5, BasicGuildInformations arg6, int arg7)
 			: this()
 		{
 			initFightResultTaxCollectorListEntry(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
@@ -45,11 +46,11 @@ namespace Stump.DofusProtocol.Classes
 			return 84;
 		}
 		
-		public FightResultTaxCollectorListEntry initFightResultTaxCollectorListEntry(uint arg1 = 0, FightLoot arg2 = null, int arg3 = 0, Boolean arg4 = false, uint arg5 = 0, String arg6 = "", int arg7 = 0)
+		public FightResultTaxCollectorListEntry initFightResultTaxCollectorListEntry(uint arg1 = 0, FightLoot arg2 = null, int arg3 = 0, Boolean arg4 = false, uint arg5 = 0, BasicGuildInformations arg6 = null, int arg7 = 0)
 		{
 			base.initFightResultFighterListEntry(arg1, arg2, arg3, arg4);
 			this.level = arg5;
-			this.guildName = arg6;
+			this.guildInfo = arg6;
 			this.experienceForGuild = arg7;
 			return this;
 		}
@@ -58,8 +59,7 @@ namespace Stump.DofusProtocol.Classes
 		{
 			base.reset();
 			this.level = 0;
-			this.guildName = "";
-			this.experienceForGuild = 0;
+			this.guildInfo = new BasicGuildInformations();
 		}
 		
 		public override void serialize(BigEndianWriter arg1)
@@ -75,7 +75,7 @@ namespace Stump.DofusProtocol.Classes
 				throw new Exception("Forbidden value (" + this.level + ") on element level.");
 			}
 			arg1.WriteByte((byte)this.level);
-			arg1.WriteUTF((string)this.guildName);
+			this.guildInfo.serializeAs_BasicGuildInformations(arg1);
 			arg1.WriteInt((int)this.experienceForGuild);
 		}
 		
@@ -92,7 +92,8 @@ namespace Stump.DofusProtocol.Classes
 			{
 				throw new Exception("Forbidden value (" + this.level + ") on element of FightResultTaxCollectorListEntry.level.");
 			}
-			this.guildName = (String)arg1.ReadUTF();
+			this.guildInfo = new BasicGuildInformations();
+			this.guildInfo.deserialize(arg1);
 			this.experienceForGuild = (int)arg1.ReadInt();
 		}
 		

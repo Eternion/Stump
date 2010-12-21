@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Entities
     {
         #region Properties
 
-        public int Grade
+        public uint Grade
         {
             get;
             set;
@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Entities
             set;
         }
 
-        public int Level
+        public uint Level
         {
             get;
             set;

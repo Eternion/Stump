@@ -30,7 +30,6 @@ namespace Stump.Database
     {
         #region Fields
 
-        private uint m_id;
         private string m_name = "";
 
         #endregion
@@ -42,8 +41,8 @@ namespace Stump.Database
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
         public uint Id
         {
-            get { return m_id; }
-            set { m_id = value; }
+            get;
+            set;
         }
 
         /// <summary>
@@ -149,7 +148,7 @@ namespace Stump.Database
         ///   Last selected server
         /// </summary>
         [Property("LastServer")]
-        public int LastServer
+        public int? LastServer
         {
             get;
             set;
@@ -176,7 +175,7 @@ namespace Stump.Database
             get;
             set;
         }
-
+        
         /// <summary>
         ///   Whether the account is banned or not.
         /// </summary>
@@ -294,6 +293,20 @@ namespace Stump.Database
             if (RegistrationDate.HasValue)
             {
                 double time = RegistrationDate.Value.Subtract(DateTime.Now).TotalMilliseconds;
+                return time > 0 ? time : 0;
+            }
+            return 0;
+        }
+
+        /// <summary>
+        /// Get the remaining ban time
+        /// </summary>
+        /// <returns>The remaining time in milliseconds</returns>
+        public double GetBanRemainingTime()
+        {
+            if (BanDate.HasValue)
+            {
+                double time = BanDate.Value.Subtract(DateTime.Now).TotalSeconds;
                 return time > 0 ? time : 0;
             }
             return 0;

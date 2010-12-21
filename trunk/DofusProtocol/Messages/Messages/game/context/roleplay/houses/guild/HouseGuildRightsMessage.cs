@@ -29,19 +29,18 @@ namespace Stump.DofusProtocol.Messages
 		public const uint protocolId = 5703;
 		internal Boolean _isInitialized = false;
 		public uint houseId = 0;
-		public String guildName = "";
-		public GuildEmblem guildEmblem;
+		public GuildInformations guildInfo;
 		public uint rights = 0;
 		
 		public HouseGuildRightsMessage()
 		{
-			this.guildEmblem = new GuildEmblem();
+			this.guildInfo = new GuildInformations();
 		}
 		
-		public HouseGuildRightsMessage(uint arg1, String arg2, GuildEmblem arg3, uint arg4)
+		public HouseGuildRightsMessage(uint arg1, GuildInformations arg2, uint arg3)
 			: this()
 		{
-			initHouseGuildRightsMessage(arg1, arg2, arg3, arg4);
+			initHouseGuildRightsMessage(arg1, arg2, arg3);
 		}
 		
 		public override uint getMessageId()
@@ -49,12 +48,11 @@ namespace Stump.DofusProtocol.Messages
 			return 5703;
 		}
 		
-		public HouseGuildRightsMessage initHouseGuildRightsMessage(uint arg1 = 0, String arg2 = "", GuildEmblem arg3 = null, uint arg4 = 0)
+		public HouseGuildRightsMessage initHouseGuildRightsMessage(uint arg1 = 0, GuildInformations arg2 = null, uint arg3 = 0)
 		{
 			this.houseId = arg1;
-			this.guildName = arg2;
-			this.guildEmblem = arg3;
-			this.rights = arg4;
+			this.guildInfo = arg2;
+			this.rights = arg3;
 			this._isInitialized = true;
 			return this;
 		}
@@ -62,8 +60,7 @@ namespace Stump.DofusProtocol.Messages
 		public override void reset()
 		{
 			this.houseId = 0;
-			this.guildName = "";
-			this.guildEmblem = new GuildEmblem();
+			this.guildInfo = new GuildInformations();
 			this._isInitialized = false;
 		}
 		
@@ -90,8 +87,7 @@ namespace Stump.DofusProtocol.Messages
 				throw new Exception("Forbidden value (" + this.houseId + ") on element houseId.");
 			}
 			arg1.WriteShort((short)this.houseId);
-			arg1.WriteUTF((string)this.guildName);
-			this.guildEmblem.serializeAs_GuildEmblem(arg1);
+			this.guildInfo.serializeAs_GuildInformations(arg1);
 			if ( this.rights < 0 || this.rights > 4294967295 )
 			{
 				throw new Exception("Forbidden value (" + this.rights + ") on element rights.");
@@ -111,9 +107,8 @@ namespace Stump.DofusProtocol.Messages
 			{
 				throw new Exception("Forbidden value (" + this.houseId + ") on element of HouseGuildRightsMessage.houseId.");
 			}
-			this.guildName = (String)arg1.ReadUTF();
-			this.guildEmblem = new GuildEmblem();
-			this.guildEmblem.deserialize(arg1);
+			this.guildInfo = new GuildInformations();
+			this.guildInfo.deserialize(arg1);
 			this.rights = (uint)arg1.ReadUInt();
 			if ( this.rights < 0 || this.rights > 4294967295 )
 			{

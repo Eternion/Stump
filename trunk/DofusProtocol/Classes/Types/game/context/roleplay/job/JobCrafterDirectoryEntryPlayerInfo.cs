@@ -135,7 +135,7 @@ namespace Stump.DofusProtocol.Classes
 			this.playerName = (String)arg1.ReadUTF();
 			this.alignmentSide = (int)arg1.ReadByte();
 			this.breed = (int)arg1.ReadByte();
-			if ( this.breed < (int)Stump.DofusProtocol.Enums.BreedEnum.Feca || this.breed > (int)Stump.DofusProtocol.Enums.BreedEnum.Pandawa )
+			if ( this.breed < (int)Stump.DofusProtocol.Enums.BreedEnum.Feca || this.breed > (int)Stump.DofusProtocol.Enums.BreedEnum.Zobal )
 			{
 				throw new Exception("Forbidden value (" + this.breed + ") on element of JobCrafterDirectoryEntryPlayerInfo.breed.");
 			}

@@ -32,15 +32,16 @@ namespace Stump.DofusProtocol.Classes
 		public int breed = 0;
 		public int sex = 0;
 		public EntityLook spouseEntityLook;
-		public String guildName = "";
+		public BasicGuildInformations guildInfo;
 		public int alignmentSide = 0;
 		
 		public FriendSpouseInformations()
 		{
 			this.spouseEntityLook = new EntityLook();
+			this.guildInfo = new BasicGuildInformations();
 		}
 		
-		public FriendSpouseInformations(uint arg1, String arg2, uint arg3, int arg4, int arg5, EntityLook arg6, String arg7, int arg8)
+		public FriendSpouseInformations(uint arg1, String arg2, uint arg3, int arg4, int arg5, EntityLook arg6, BasicGuildInformations arg7, int arg8)
 			: this()
 		{
 			initFriendSpouseInformations(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
@@ -51,7 +52,7 @@ namespace Stump.DofusProtocol.Classes
 			return 77;
 		}
 		
-		public FriendSpouseInformations initFriendSpouseInformations(uint arg1 = 0, String arg2 = "", uint arg3 = 0, int arg4 = 0, int arg5 = 0, EntityLook arg6 = null, String arg7 = "", int arg8 = 0)
+		public FriendSpouseInformations initFriendSpouseInformations(uint arg1 = 0, String arg2 = "", uint arg3 = 0, int arg4 = 0, int arg5 = 0, EntityLook arg6 = null, BasicGuildInformations arg7 = null, int arg8 = 0)
 		{
 			this.spouseId = arg1;
 			this.spouseName = arg2;
@@ -59,7 +60,7 @@ namespace Stump.DofusProtocol.Classes
 			this.breed = arg4;
 			this.sex = arg5;
 			this.spouseEntityLook = arg6;
-			this.guildName = arg7;
+			this.guildInfo = arg7;
 			this.alignmentSide = arg8;
 			return this;
 		}
@@ -72,7 +73,6 @@ namespace Stump.DofusProtocol.Classes
 			this.breed = 0;
 			this.sex = 0;
 			this.spouseEntityLook = new EntityLook();
-			this.alignmentSide = 0;
 		}
 		
 		public virtual void serialize(BigEndianWriter arg1)
@@ -96,7 +96,7 @@ namespace Stump.DofusProtocol.Classes
 			arg1.WriteByte((byte)this.breed);
 			arg1.WriteByte((byte)this.sex);
 			this.spouseEntityLook.serializeAs_EntityLook(arg1);
-			arg1.WriteUTF((string)this.guildName);
+			this.guildInfo.serializeAs_BasicGuildInformations(arg1);
 			arg1.WriteByte((byte)this.alignmentSide);
 		}
 		
@@ -122,7 +122,8 @@ namespace Stump.DofusProtocol.Classes
 			this.sex = (int)arg1.ReadByte();
 			this.spouseEntityLook = new EntityLook();
 			this.spouseEntityLook.deserialize(arg1);
-			this.guildName = (String)arg1.ReadUTF();
+			this.guildInfo = new BasicGuildInformations();
+			this.guildInfo.deserialize(arg1);
 			this.alignmentSide = (int)arg1.ReadByte();
 		}
 		

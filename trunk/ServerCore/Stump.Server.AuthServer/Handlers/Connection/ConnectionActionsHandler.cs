@@ -67,9 +67,11 @@ namespace Stump.Server.AuthServer.Handlers
             SendServersListMessage(client);
         }
 
+
         public static bool CheckNickName(string nickName)
         {
             return Regex.IsMatch(nickName, @"^[a-zA-Z]{4,18}$");
         }
+
     }
 }

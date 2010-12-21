@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.Data
             foreach (var item in itemTemplates)
             {
                 itemTemplates.Where(entry => entry.Value.Id == item.Value.Id)
-                    .First().Value.Name = DataLoader.I18NFile.ReadText(item.Value.NameId);
+                    .First().Value.Name = DataLoader.I18NFile.ReadText((int) item.Value.NameId);
             }
         }
 

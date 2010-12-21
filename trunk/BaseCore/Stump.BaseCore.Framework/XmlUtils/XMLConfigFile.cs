@@ -138,7 +138,7 @@ namespace Stump.BaseCore.Framework.XmlUtils
 
             if (type == null)
             {
-                throw new Exception("Type " + className + " doesn't exist");
+                throw new Exception("[Config] Type " + className + " doesn't exist");
             }
 
             FieldInfo field = type.GetField(variableName, BindingFlags.Static | BindingFlags.Public);
@@ -162,7 +162,7 @@ namespace Stump.BaseCore.Framework.XmlUtils
                     }
                     else
                     {
-                        logger.Warn("Field " + field.Name + " must have Variable attribute to be modifiable");
+                        logger.Warn("[Config] Field " + field.Name + " must have Variable attribute to be modifiable");
                     }
                 }
                 else if (property != null)
@@ -181,22 +181,22 @@ namespace Stump.BaseCore.Framework.XmlUtils
                     }
                     else
                     {
-                        logger.Warn("Property " + property.Name + " must have Variable attribute to be modifiable");
+                        logger.Warn("[Config] Property " + property.Name + " must have Variable attribute to be modifiable");
                     }
                 }
                 else
                 {
-                    logger.Warn(className + "." + variableName + " doesn't exist");
+                    logger.Warn("[Config] " + className + "." + variableName + " doesn't exist");
                 }
             }
             catch (InvalidCastException)
             {
-                logger.Warn(string.Format("Type of {0}.{1} isn't correct. Expected Type : {2}", className, variableName,
+                logger.Warn(string.Format("[Config] Type of {0}.{1} isn't correct. Expected Type : {2}", className, variableName,
                                           (field != null ? field.FieldType : property.PropertyType)));
             }
             catch
             {
-                logger.Warn(string.Format("Cannot define the variable {0}.{1} with value {2}", className, variableName,
+                logger.Warn(string.Format("[Config] Cannot define the variable {0}.{1} with value {2}", className, variableName,
                                           value.ToString()));
             }
         }

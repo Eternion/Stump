@@ -67,10 +67,6 @@ namespace Stump.Server.WorldServer.Fights
                 ContextHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Source.Client, GroupTarget.Fight, true);
                 GroupTarget.Fight.StartingFight();
             }
-            catch
-            {
-                /* ... */
-            }
             finally
             {
                 Source.DialogRequest = null;
@@ -84,10 +80,6 @@ namespace Stump.Server.WorldServer.Fights
             {
                 ContextHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Source.Client, GroupTarget.Fight, false);
                 GroupTarget.Fight.CancelFight(GroupSource.Id);
-            }
-            catch
-            {
-                /* ... */
             }
             finally
             {
@@ -110,10 +102,6 @@ namespace Stump.Server.WorldServer.Fights
 
                 ContextHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(chr.Client, fight, false);
                 fight.CancelFight(groupId);
-            }
-            catch
-            {
-                /* ... */
             }
             finally
             {

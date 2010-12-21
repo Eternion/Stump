@@ -37,13 +37,16 @@ namespace Stump.Tools.UtilityBot
         public static int IrcPort = 6667;
 
         [Variable]
-        public static List<string> BotChannels = new List<string> {"#pmg"};
+        public static List<string> BotChannels = new List<string> {"#stump"};
 
         [Variable]
         public static string CommandPrefix = "!";
 
         [Variable]
         public static string[] BotNicknames = new[] {"StumpBot", "StumpBot-2", "StumpBot-3"};
+        
+        [Variable]
+        public static string[] AllowedUserNicks = new[] { "bouh2" };
 
         [Variable]
         public static string IrcUserName = "UtilityBot";

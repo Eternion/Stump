@@ -133,7 +133,7 @@ namespace Stump.Server.WorldServer.Items
             return !m_itemTemplates.ContainsKey(id) ? null : m_itemTemplates[id];
         }
 
-        public static ItemTypeEx GetItemType(int id)
+        public static ItemTypeEx GetItemType(uint id)
         {
             return m_itemTypes.Count(entry => entry != null && entry.id == id) <= 0 ? null : m_itemTypes[id];
         }

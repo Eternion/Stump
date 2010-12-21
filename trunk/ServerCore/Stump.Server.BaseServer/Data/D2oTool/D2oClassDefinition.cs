@@ -31,6 +31,12 @@ namespace Stump.Server.BaseServer.Data.D2oTool
     [DebuggerDisplay("Name = {Name}")]
     public class D2oClassDefinition
     {
+        private static readonly Dictionary<Type, Type> ToleratedType = new Dictionary<Type, Type>
+            {
+                {typeof (uint), typeof (int)},
+                {typeof (int), typeof (uint)},
+            };
+
         private readonly D2oFile m_file; // depending file, don't use without it !!
 
         public D2oClassDefinition(int id, string classname, string packagename, BigEndianReader reader, D2oFile file)
@@ -110,7 +116,9 @@ namespace Stump.Server.BaseServer.Data.D2oTool
                     if (field.Value.KnowType != typeof (object) &&
                         field.Value.KnowType != typeof (List<object>))
 
-                        if (field.Value.KnowType != nativeField.FieldType)
+                        if (field.Value.KnowType != nativeField.FieldType &&
+                            (!ToleratedType.ContainsKey(field.Value.KnowType) ||
+                             ToleratedType[field.Value.KnowType] != nativeField.FieldType))
                             throw new Exception(
                                 string.Format("Uncorresponding type : {0} must be of type {1} instead of {2}",
                                               field.Key, field.Value.KnowType.Name, nativeField.FieldType.Name));
@@ -150,7 +158,7 @@ namespace Stump.Server.BaseServer.Data.D2oTool
 
         internal T BuildClassObject<T>(BigEndianReader reader)
         {
-            return (T)BuildClassObject(reader, typeof (T));
+            return (T) BuildClassObject(reader, typeof (T));
         }
 
         internal object BuildClassObject(BigEndianReader reader, Type objType)
@@ -169,7 +177,12 @@ namespace Stump.Server.BaseServer.Data.D2oTool
                     ClassType.GetField(field.Key).SetValue(result, objList);
                 }
                 else
+                {
+                    if (field.Value.KnowType != ClassType.GetField(field.Key).FieldType)
+                        obj = Convert.ChangeType(obj, ClassType.GetField(field.Key).FieldType);
+
                     ClassType.GetField(field.Key).SetValue(result, obj);
+                }
             }
 
             return result;

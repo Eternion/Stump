@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using NLog;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.Database;
+using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.AuthServer.Handlers;
 using Stump.Server.AuthServer.IPC;
@@ -84,6 +85,11 @@ namespace Stump.Server.AuthServer
             m_registeredWorlds = new List<WorldServerInformation>();
             m_realmlist = WorldRecord.FindAll().ToDictionary(entry => entry.Id) ?? new Dictionary<int, WorldRecord>();
 
+            foreach (var worldRecord in m_realmlist)
+            {
+                worldRecord.Value.Status = ServerStatusEnum.OFFLINE;
+            }
+
             m_sync = new object();
         }
 
@@ -120,11 +126,12 @@ namespace Stump.Server.AuthServer
                     Ip = worldServerInformation.Address,
                     Port = worldServerInformation.Port,
                     Name = worldServerInformation.Name,
-                    BlockedToPlayer = false,
+                    RequireSubscription = false,
+                    RequiredRole = RoleEnum.Player,
                     CharCapacity = 1000,
                     ServerSelectable = true,
                     CharsCount = 0,
-                    Connected  = false,
+                    Connected = false,
                     Status = ServerStatusEnum.ONLINE
                 });
         }
@@ -167,6 +174,9 @@ namespace Stump.Server.AuthServer
                 {
                     Worlds.Add(world);
                     m_realmlist[world.Id].Connected = true;
+
+                    m_realmlist[world.Id].Status = ServerStatusEnum.ONLINE;
+
                     logger.Info("Registered World : \"{0}\" <Id : {1}> <{2}>", world.Name, world.Id, world.Address);
 
                     OnServerListChange();
@@ -193,6 +203,40 @@ namespace Stump.Server.AuthServer
 
                 return gs;
             }
+        }
+
+        public static WorldRecord GetWorldRecord(int id)
+        {
+            lock (m_sync)
+            {
+                if (m_realmlist.ContainsKey(id))
+                    return m_realmlist[id];
+                else
+                    return null;
+            }
+        }
+
+        public static bool CanAccessToWorld(AuthClient client, WorldRecord world)
+        {
+            return world != null && world.Status == ServerStatusEnum.ONLINE && client.Account.Role >= world.RequiredRole &&
+                    (!world.RequireSubscription || (client.Account.GetRegistrationRemainingTime() > 0));
+        }
+
+        public static bool CanAccessToWorld(AuthClient client, int worldId)
+        {
+            var world = GetWorldRecord(worldId);
+            return world != null && world.Status == ServerStatusEnum.ONLINE && client.Account.Role >= world.RequiredRole &&
+                    (!world.RequireSubscription || (client.Account.GetRegistrationRemainingTime() > 0));
+        }
+
+        public static List<GameServerInformations> GetServersInformationList(AuthClient client)
+        {
+            return m_realmlist.Values.Select(
+                    record =>
+                    new GameServerInformations((uint)record.Id, (uint)record.Status,
+                                               (uint)record.Completion,
+                                               record.ServerSelectable,
+                                               client.GetCharactersCount(record.Id))).ToList();
         }
 
         /// <summary>
@@ -227,6 +271,7 @@ namespace Stump.Server.AuthServer
                     if (m_realmlist.ContainsKey(world.Id))
                     {
                         m_realmlist[world.Id].Connected = false;
+
                         m_realmlist[world.Id].Status = ServerStatusEnum.OFFLINE;
 
                         OnServerListChange();
@@ -254,7 +299,7 @@ namespace Stump.Server.AuthServer
                 for (int i = 0; i < Worlds.Count; i++)
                 {
                     // check if the world server has pinged recently
-                    if ((DateTime.Now - Worlds[i].LastPing).TotalMilliseconds > WorldServerTimeout*1000)
+                    if ((DateTime.Now - Worlds[i].LastPing).TotalMilliseconds > WorldServerTimeout * 1000)
                     {
                         // the world server is disconnected
                         logger.Warn("WorldServer \"{0}\" <id:{1}> has timed out.", Worlds[i].Name, Worlds[i].Id);

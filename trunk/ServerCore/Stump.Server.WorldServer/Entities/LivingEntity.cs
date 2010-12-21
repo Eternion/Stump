@@ -142,10 +142,10 @@ namespace Stump.Server.WorldServer.Entities
             }
         }
 
-        // todo : check another factors
+        // todo : canMove()
         public virtual bool CanMove()
         {
-            return !IsMoving;
+            return true;
         }
 
         public void Move(MovementPath movementPath)

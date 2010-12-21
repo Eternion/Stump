@@ -1,9 +1,0 @@
-<Configuration>
-  <NamespaceFolders>
-    <SkipFolder>10884165-D492-4895-B3EF-32429F7A7F55/d:Types/d:connection</SkipFolder>
-    <SkipFolder>10884165-D492-4895-B3EF-32429F7A7F55/d:Types/d:game</SkipFolder>
-    <SkipFolder>10884165-D492-4895-B3EF-32429F7A7F55/d:Types/d:updater</SkipFolder>
-    <SkipFolder>10884165-D492-4895-B3EF-32429F7A7F55/d:Types/d:version</SkipFolder>
-    <SkipFolder>10884165-D492-4895-B3EF-32429F7A7F55/d:Types</SkipFolder>
-  </NamespaceFolders>
-</Configuration>

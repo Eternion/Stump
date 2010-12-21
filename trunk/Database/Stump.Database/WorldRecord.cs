@@ -58,20 +58,25 @@ namespace Stump.Database
             set;
         }
 
-        [Property("Status", NotNull = true, Default = "3")]
         public ServerStatusEnum Status
         {
             get;
             set;
         }
 
-        [Property("BlockedToPlayer", NotNull = true, Default = "0")]
-        public bool BlockedToPlayer
+        [Property("RequireSubscription", NotNull = true, Default = "0")]
+        public bool RequireSubscription
         {
             get;
             set;
         }
 
+        [Property("RequiredRole", NotNull = true, Default = "0")]
+        public RoleEnum RequiredRole
+        {
+            get;
+            set;
+        }
 
         [Property("Completion", NotNull = true, Default = "0")]
         public int Completion
@@ -111,5 +116,11 @@ namespace Stump.Database
         {
             return FindOne(Restrictions.Eq("Id", id));
         }
+
+        public static bool Exists(int id)
+        {
+            return Exists(Restrictions.Eq("Id", id));
+        }
+
     }
 }

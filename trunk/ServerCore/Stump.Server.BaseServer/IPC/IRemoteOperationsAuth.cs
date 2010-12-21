@@ -37,6 +37,13 @@ namespace Stump.Server.BaseServer.IPC
         void UnRegisterWorld(WorldServerInformation rsi);
 
         /// <summary>
+        /// Change Server State
+        /// </summary>
+        /// <param name="wsi"></param>
+        /// <param name="state"></param>
+        void ChangeState(WorldServerInformation wsi, DofusProtocol.Enums.ServerStatusEnum state);
+
+        /// <summary>
         ///   Increment the counter of connected characters
         /// </summary>
         /// <param name="wsi"></param>
@@ -58,7 +65,7 @@ namespace Stump.Server.BaseServer.IPC
         ///   Get and return an account record with a given ticket.
         /// </summary>
         /// <returns></returns>
-        AccountRecord GetAccountRecord(WorldServerInformation wsi, string ticket);
+        AccountRecord GetAccountRecordByTicket(WorldServerInformation wsi, string ticket);
 
         /// <summary>
         ///   Get and return an account record with a given account name.
@@ -102,7 +109,7 @@ namespace Stump.Server.BaseServer.IPC
         /// <param name="wsi"></param>
         /// <param name="accountid"></param>
         /// <returns></returns>
-        IEnumerable<uint> GetAccountCharacters(WorldServerInformation wsi, uint accountid);
+        uint[] GetAccountCharacters(WorldServerInformation wsi, uint accountid);
 
         /// <summary>
         /// Add a new Character to the account
@@ -119,5 +126,6 @@ namespace Stump.Server.BaseServer.IPC
         /// <param name="accountid"></param>
         /// <param name="characterId"></param>
         void DeleteAccountCharacter(WorldServerInformation wsi, uint accountid, uint characterId);
+
     }
 }

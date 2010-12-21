@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Global
 
         #region Variables
 
-        private static long m_worldUpdateInterval;
+        private static long m_worldUpdateInterval = 100;
 
         [Variable(DefinableRunning = true)]
         public static string MessageOfTheDay = "Bienvenue. Ce serveur est propulsé par Stump.";
@@ -217,10 +217,21 @@ namespace Stump.Server.WorldServer.Global
         }
 
         /// <summary>
+        ///   Get map with the given map id.
+        /// </summary>
+        /// <returns></returns>
+        public Map GetMap(uint mapid)
+        {
+            Map map;
+
+            return Maps.TryGetValue((int) mapid, out map) ? map : null;
+        }
+
+        /// <summary>
         ///   Get maps with the given map's id list.
         /// </summary>
         /// <returns></returns>
-        public Map[] GetMaps(IEnumerable<int> mapsids)
+        public Map[] GetMaps(IEnumerable<uint> mapsids)
         {
             return mapsids.Select(GetMap).Where(map => map != null).ToArray();
         }

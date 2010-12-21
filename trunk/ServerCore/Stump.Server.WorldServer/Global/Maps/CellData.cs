@@ -30,14 +30,14 @@ namespace Stump.Server.WorldServer.Global.Maps
             if (cell.Floor == -1280)
                 return;
 
-            writer.WriteByte((byte) cell.LosMov);
-            writer.WriteByte((byte) cell.Speed);
-            writer.WriteByte((byte) cell.MapChangeData);
+            writer.WriteByte(cell.LosMov);
+            writer.WriteByte(cell.Speed);
+            writer.WriteByte(cell.MapChangeData);
         }
 
         public static CellData ReadCell(this BigEndianReader reader)
         {
-            var cell = new CellData {Floor = reader.ReadByte()*10};
+            var cell = new CellData {Floor = (short) (reader.ReadByte()*10)};
 
             if (cell.Floor == -1280)
             {
@@ -54,10 +54,10 @@ namespace Stump.Server.WorldServer.Global.Maps
 
     public class CellData
     {
-        public int Floor;
-        public int LosMov;
-        public uint MapChangeData;
-        public int Speed;
+        public short Floor;
+        public byte LosMov;
+        public byte MapChangeData;
+        public byte Speed;
 
         public Map ParrentMap
         {

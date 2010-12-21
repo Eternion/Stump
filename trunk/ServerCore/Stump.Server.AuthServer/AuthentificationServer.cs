@@ -22,6 +22,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using Stump.Database;
+using Stump.DofusProtocol.Messages;
 using Stump.Server.AuthServer.Commands;
 using Stump.Server.AuthServer.IPC;
 using Stump.Server.BaseServer;
@@ -59,6 +60,9 @@ namespace Stump.Server.AuthServer
 
                 logger.Info("Opening Database...");
                 DatabaseAccessor.OpenDatabase();
+
+                logger.Info("Register Messages...");
+                MessageReceiver.Initialize();
 
                 logger.Info("Register Packets Handlers...");
                 HandlerManager.RegisterAll(typeof (AuthentificationServer).Assembly);
@@ -98,11 +102,11 @@ namespace Stump.Server.AuthServer
 
         public bool DisconnectClientsUsingAccount(AccountRecord account)
         {
-            IEnumerable<AuthClient> clients = GetClientsUsingAccount(account);
+            var clients = GetClientsUsingAccount(account).ToArray();
 
-            foreach (AuthClient entry in clients)
+            for (int i = 0; i < clients.Length; i++)
             {
-                entry.Disconnect();
+                clients[i].Disconnect();
             }
 
             if (IpcServer.Instance.GetIpcClients().Any(ipcclient => ipcclient.DisconnectConnectedAccount(account)))

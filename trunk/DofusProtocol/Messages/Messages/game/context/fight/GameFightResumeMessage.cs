@@ -30,16 +30,17 @@ namespace Stump.DofusProtocol.Messages
 		internal Boolean _isInitialized = false;
 		public List<GameFightSpellCooldown> spellCooldowns;
 		public uint summonCount = 0;
+		public uint bombCount = 0;
 		
 		public GameFightResumeMessage()
 		{
 			this.spellCooldowns = new List<GameFightSpellCooldown>();
 		}
 		
-		public GameFightResumeMessage(List<FightDispellableEffectExtendedInformations> arg1, List<GameActionMark> arg2, uint arg3, List<GameFightSpellCooldown> arg4, uint arg5)
+		public GameFightResumeMessage(List<FightDispellableEffectExtendedInformations> arg1, List<GameActionMark> arg2, uint arg3, List<GameFightSpellCooldown> arg4, uint arg5, uint arg6)
 			: this()
 		{
-			initGameFightResumeMessage(arg1, arg2, arg3, arg4, arg5);
+			initGameFightResumeMessage(arg1, arg2, arg3, arg4, arg5, arg6);
 		}
 		
 		public override uint getMessageId()
@@ -47,11 +48,12 @@ namespace Stump.DofusProtocol.Messages
 			return 6067;
 		}
 		
-		public GameFightResumeMessage initGameFightResumeMessage(List<FightDispellableEffectExtendedInformations> arg1, List<GameActionMark> arg2, uint arg3 = 0, List<GameFightSpellCooldown> arg4 = null, uint arg5 = 0)
+		public GameFightResumeMessage initGameFightResumeMessage(List<FightDispellableEffectExtendedInformations> arg1, List<GameActionMark> arg2, uint arg3 = 0, List<GameFightSpellCooldown> arg4 = null, uint arg5 = 0, uint arg6 = 0)
 		{
 			base.initGameFightSpectateMessage(arg1, arg2, arg3);
 			this.spellCooldowns = arg4;
 			this.summonCount = arg5;
+			this.bombCount = arg6;
 			this._isInitialized = true;
 			return this;
 		}
@@ -61,6 +63,7 @@ namespace Stump.DofusProtocol.Messages
 			base.reset();
 			this.spellCooldowns = new List<GameFightSpellCooldown>();
 			this.summonCount = 0;
+			this.bombCount = 0;
 			this._isInitialized = false;
 		}
 		
@@ -95,6 +98,11 @@ namespace Stump.DofusProtocol.Messages
 				throw new Exception("Forbidden value (" + this.summonCount + ") on element summonCount.");
 			}
 			arg1.WriteByte((byte)this.summonCount);
+			if ( this.bombCount < 0 )
+			{
+				throw new Exception("Forbidden value (" + this.bombCount + ") on element bombCount.");
+			}
+			arg1.WriteByte((byte)this.bombCount);
 		}
 		
 		public override void deserialize(BigEndianReader arg1)
@@ -118,6 +126,11 @@ namespace Stump.DofusProtocol.Messages
 			if ( this.summonCount < 0 )
 			{
 				throw new Exception("Forbidden value (" + this.summonCount + ") on element of GameFightResumeMessage.summonCount.");
+			}
+			this.bombCount = (uint)arg1.ReadByte();
+			if ( this.bombCount < 0 )
+			{
+				throw new Exception("Forbidden value (" + this.bombCount + ") on element of GameFightResumeMessage.bombCount.");
 			}
 		}
 		

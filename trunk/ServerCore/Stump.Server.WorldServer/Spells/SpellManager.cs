@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Spells
             foreach (SpellTemplate spell in spells)
             {
                 InitSpell(spell, spellslevels.Where(spellLevel => spellLevel.spellId == spell.id));
-            }
+            } 
         }
 
         private static void InitSpell(SpellTemplate spelltemp, IEnumerable<SpellLevelTemplate> spellleveltemp)
@@ -108,11 +108,11 @@ namespace Stump.Server.WorldServer.Spells
                     select Spells[(uint) spellid]).ToList();
         }
 
-        public static List<Spell> GetSpells(int[] spellids)
+        public static List<Spell> GetSpells(uint[] spellids)
         {
             return (from spellid in spellids
-                    where !Spells.ContainsKey((uint) spellid)
-                    select Spells[(uint) spellid]).ToList();
+                    where !Spells.ContainsKey(spellid)
+                    select Spells[spellid]).ToList();
         }
     }
 }

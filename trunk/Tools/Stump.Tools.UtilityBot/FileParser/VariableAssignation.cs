@@ -29,7 +29,7 @@ namespace Stump.Tools.UtilityBot.FileParser
     public class VariableAssignation : IExecution
     {
         public static string Pattern =
-            @"(?<assignationtype>^[^(new)]\w+\s+)?(?<target>\w+\.)*(?<name>\w+)\s*(?:=|:\*=)\s*(?<value>.+);$";
+            @"(?<assignationtype>^[^(new)]\w+\s+)?(?<target>\w+\.)*(?<name>\w+(?:\[\w+\])?)\s*(?:=|:\*=)\s*(?<value>.+);$";
 
         public string Name
         {

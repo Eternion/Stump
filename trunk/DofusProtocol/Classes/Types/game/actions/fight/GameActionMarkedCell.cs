@@ -29,15 +29,16 @@ namespace Stump.DofusProtocol.Classes
 		public uint cellId = 0;
 		public int zoneSize = 0;
 		public int cellColor = 0;
+		public int cellsType = 0;
 		
 		public GameActionMarkedCell()
 		{
 		}
 		
-		public GameActionMarkedCell(uint arg1, int arg2, int arg3)
+		public GameActionMarkedCell(uint arg1, int arg2, int arg3, int arg4)
 			: this()
 		{
-			initGameActionMarkedCell(arg1, arg2, arg3);
+			initGameActionMarkedCell(arg1, arg2, arg3, arg4);
 		}
 		
 		public virtual uint getTypeId()
@@ -45,11 +46,12 @@ namespace Stump.DofusProtocol.Classes
 			return 85;
 		}
 		
-		public GameActionMarkedCell initGameActionMarkedCell(uint arg1 = 0, int arg2 = 0, int arg3 = 0)
+		public GameActionMarkedCell initGameActionMarkedCell(uint arg1 = 0, int arg2 = 0, int arg3 = 0, int arg4 = 0)
 		{
 			this.cellId = arg1;
 			this.zoneSize = arg2;
 			this.cellColor = arg3;
+			this.cellsType = arg4;
 			return this;
 		}
 		
@@ -58,6 +60,7 @@ namespace Stump.DofusProtocol.Classes
 			this.cellId = 0;
 			this.zoneSize = 0;
 			this.cellColor = 0;
+			this.cellsType = 0;
 		}
 		
 		public virtual void serialize(BigEndianWriter arg1)
@@ -74,6 +77,7 @@ namespace Stump.DofusProtocol.Classes
 			arg1.WriteShort((short)this.cellId);
 			arg1.WriteByte((byte)this.zoneSize);
 			arg1.WriteInt((int)this.cellColor);
+			arg1.WriteByte((byte)this.cellsType);
 		}
 		
 		public virtual void deserialize(BigEndianReader arg1)
@@ -90,6 +94,7 @@ namespace Stump.DofusProtocol.Classes
 			}
 			this.zoneSize = (int)arg1.ReadByte();
 			this.cellColor = (int)arg1.ReadInt();
+			this.cellsType = (int)arg1.ReadByte();
 		}
 		
 	}

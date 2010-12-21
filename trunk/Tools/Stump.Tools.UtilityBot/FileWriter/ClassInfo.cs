@@ -59,5 +59,11 @@ namespace Stump.Tools.UtilityBot.FileWriter
             get;
             set;
         }
+
+        public string CustomAttribute
+        {
+            get;
+            set;
+        }
     }
 }

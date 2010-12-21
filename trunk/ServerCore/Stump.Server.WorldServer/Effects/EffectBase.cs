@@ -27,12 +27,12 @@ namespace Stump.Server.WorldServer.Effects
     [Serializable]
     public class EffectBase
     {
-        protected int m_id;
+        protected uint m_id;
 
         [NonSerialized]
         protected EffectTemplate m_template;
 
-        public EffectBase(int id)
+        public EffectBase(uint id)
         {
             m_id = id;
             m_template = EffectManager.GetTemplate(id);
@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Effects
             get { return 76; }
         }
 
-        public int Id
+        public uint Id
         {
             get { return m_id; }
             protected set { m_id = value; }
@@ -131,7 +131,7 @@ namespace Stump.Server.WorldServer.Effects
         {
             unchecked
             {
-                return (m_id*397) ^ (m_template != null ? m_template.GetHashCode() : 0);
+                return (int) ((m_id*397) ^ (m_template != null ? m_template.GetHashCode() : 0));
             }
         }
     }

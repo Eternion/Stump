@@ -17,7 +17,10 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using NLog;
@@ -34,28 +37,43 @@ namespace Stump.Database
         /// </summary>
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+        private static readonly IdGenerator IdGenerator = new IdGenerator(typeof(CharacterRecord), "Id");
+
+        public static long GetNextId()
+        {
+            return IdGenerator.Next();
+        }
+
         /// <summary>
         ///   Indicate if this record just got created.
         /// </summary>
         public bool New;
 
-        /// <summary>
-        /// Account of the character
-        /// </summary>
-        public AccountRecord Account
-        { get; set; }
+        private List<int> m_colors;
+        private string m_dbColors;
+        private string m_dbSkins;
+        private List<uint> m_skins;
 
         /// <summary>
         ///   Constructor
         /// </summary>
         public CharacterRecord()
         {
-            Colors = new List<int>();
-            Skins = new List<short>();
+            m_colors = new List<int>();
+            m_skins = new List<uint>();
             Spells = new Dictionary<uint, SpellRecord>();
         }
 
-        [PrimaryKey(PrimaryKeyType.Native, "Id")]
+        /// <summary>
+        ///   Account of the character
+        /// </summary>
+        public AccountRecord Account
+        {
+            get;
+            set;
+        }
+
+        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
         public int Id
         {
             get;
@@ -76,11 +94,38 @@ namespace Stump.Database
             set;
         }
 
-        [Property("Colors", Length = 256)]
+        [Property("Colors")]
+        private string DBColors
+        {
+            get { return m_dbColors; }
+            set
+            {
+                m_dbColors = value;
+
+                if (m_colors.Count <= 0)
+                    UpdateColors();
+            }
+        }
+
         public List<int> Colors
         {
-            get;
-            set;
+            get { return m_colors ?? (m_colors = DBColors.Trim().Split(',').Select(entry => int.Parse(entry)).ToList()); }
+            set
+            {
+                m_colors = value;
+
+                UpdateColors();
+            }
+        }
+
+        public List<int> ColorsIndexed
+        {
+            get
+            {
+                return
+                    Colors.Select(
+                        (color, index) => int.Parse((index + 1) + color.ToString("X6"), NumberStyles.HexNumber)).ToList();
+            }
         }
 
         [Property("Classe")]
@@ -97,11 +142,28 @@ namespace Stump.Database
             set;
         }
 
-        [Property("Skins", Length = 256, NotNull = true)]
-        public List<short> Skins
+        [Property("Skins", NotNull = true)]
+        private string DBSkins
         {
-            get;
-            set;
+            get { return m_dbSkins; }
+            set
+            {
+                m_dbSkins = value;
+
+                if (m_skins.Count <= 0)
+                    UpdateSkins();
+            }
+        }
+
+        public List<uint> Skins
+        {
+            get { return m_skins ?? (m_skins = DBSkins.Trim().Split(',').Select(entry => uint.Parse(entry)).ToList()); }
+            set
+            {
+                m_skins = value;
+
+                UpdateSkins();
+            }
         }
 
         [Property("Scale")]
@@ -227,13 +289,13 @@ namespace Stump.Database
                 if (Spells.ContainsKey(spellId))
                 {
                     logger.Error("Spell ({0}, Id: {1}) added twice to Character {2} (Breed: {3})",
-                                 (SpellIdEnum)spellId,
+                                 (SpellIdEnum) spellId,
                                  spellId,
                                  this,
-                                 (BreedEnum)Classe);
+                                 (BreedEnum) Classe);
                 }
 
-                var record = new SpellRecord(spellId, (uint)Id, position, level);
+                var record = new SpellRecord(spellId, (uint) Id, position, level);
                 Spells.Add(spellId, record);
                 record.Save();
             }
@@ -246,17 +308,17 @@ namespace Stump.Database
         {
             if (Spells != null)
             {
-                if (Spells.ContainsKey((uint)spellId))
+                if (Spells.ContainsKey((uint) spellId))
                 {
                     logger.Error("Spell ({0}, Id: {1}) added twice to Character {2} (Breed: {3})",
                                  spellId,
                                  spellId,
                                  this,
-                                 (BreedEnum)Classe);
+                                 (BreedEnum) Classe);
                 }
 
-                var record = new SpellRecord((uint)spellId, (uint)Id, position, level);
-                Spells.Add((uint)spellId, record);
+                var record = new SpellRecord((uint) spellId, (uint) Id, position, level);
+                Spells.Add((uint) spellId, record);
                 record.Save();
             }
         }
@@ -280,9 +342,9 @@ namespace Stump.Database
 
         public void ModifySpellPosition(int spellid, int newpos)
         {
-            if (Spells.ContainsKey((uint)spellid))
+            if (Spells.ContainsKey((uint) spellid))
             {
-                Spells[(uint)spellid].Position = newpos;
+                Spells[(uint) spellid].Position = newpos;
             }
         }
 
@@ -299,7 +361,7 @@ namespace Stump.Database
             if (!New)
             {
                 Spells = new Dictionary<uint, SpellRecord>();
-                SpellRecord[] dbSpells = SpellRecord.FindAll(Restrictions.Eq("OwnerId", (uint)Id));
+                SpellRecord[] dbSpells = SpellRecord.FindAll(Restrictions.Eq("OwnerId", (uint) Id));
                 foreach (SpellRecord spell in dbSpells)
                 {
                     try
@@ -327,20 +389,36 @@ namespace Stump.Database
 
         #endregion
 
-        /// <summary>
-        /// Find a character by his name
-        /// </summary>
-        /// <param name="CharacterName">name</param>
-        /// <returns></returns>
-        public static CharacterRecord FindCharacterByName(string CharacterName)
+        public void UpdateColors()
         {
-            return FindOne(Restrictions.Eq("Name", CharacterName));
+            if (m_colors.Count > 1)
+                DBColors = string.Join(",", m_colors.Select(entry => entry.ToString()));
+            else
+                m_colors = DBColors.Trim().Split(',').Select(entry => int.Parse(entry)).ToList();
+        }
+
+        public void UpdateSkins()
+        {
+            if (m_skins.Count > 0)
+                DBSkins = string.Join(",", m_skins.Select(entry => entry.ToString()));
+            else
+                m_skins = DBSkins.Trim().Split(',').Select(entry => uint.Parse(entry)).ToList();
         }
 
         /// <summary>
-        /// True if the name exist else false
+        ///   Find a character by his name
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name = "characterName">name</param>
+        /// <returns></returns>
+        public static CharacterRecord FindCharacterByName(string characterName)
+        {
+            return FindOne(Restrictions.Eq("Name", characterName));
+        }
+
+        /// <summary>
+        ///   True if the name exist else false
+        /// </summary>
+        /// <param name = "name"></param>
         /// <returns></returns>
         public static bool IsNameExists(string name)
         {
@@ -348,13 +426,13 @@ namespace Stump.Database
         }
 
         /// <summary>
-        /// Find a character by his id
+        ///   Find a character by his id
         /// </summary>
-        /// <param name="CharacterId"></param>
+        /// <param name = "characterId"></param>
         /// <returns></returns>
-        public static CharacterRecord FindCharacterById(int CharacterId)
+        public static CharacterRecord FindCharacterById(int characterId)
         {
-            return FindByPrimaryKey(CharacterId);
+            return FindByPrimaryKey(characterId);
         }
 
         public static int GetCount()
@@ -362,5 +440,28 @@ namespace Stump.Database
             return Count();
         }
 
+        public override void Save()
+        {
+            if (New)
+                Create();
+            else
+                Update();
+        }
+
+        public override void SaveAndFlush()
+        {
+            if (New)
+                CreateAndFlush();
+            else
+                UpdateAndFlush();
+        }
+
+        protected override bool BeforeSave(IDictionary state)
+        {
+            UpdateColors();
+            UpdateSkins();
+
+            return base.BeforeSave(state);
+        }
     }
 }
