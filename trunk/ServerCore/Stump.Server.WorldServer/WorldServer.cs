@@ -160,6 +160,11 @@ namespace Stump.Server.WorldServer
         {
         }
 
+        public IEnumerable<WorldClient> GetClients()
+        {
+            return (IEnumerable<WorldClient>) MessageListener.ClientList;
+        }
+
         public IEnumerable<WorldClient> GetClientsUsingAccount(AccountRecord account)
         {
             IEnumerable<WorldClient> clients = (from WorldClient entry in MessageListener.ClientList

@@ -58,7 +58,13 @@ namespace Stump.Server.BaseServer.Commands
             internal set;
         }
 
-        internal IEnumerable<ICommandParameter> CommandsParameters
+        internal Dictionary<string, ICommandParameter> CommandsParametersByName
+        {
+            get;
+            set;
+        }
+
+        internal Dictionary<string, ICommandParameter> CommandsParametersByShortName
         {
             get;
             set;
@@ -81,21 +87,18 @@ namespace Stump.Server.BaseServer.Commands
 
         public T GetArgument<T>(string name)
         {
-            IEnumerable<ICommandParameter> matchingParams =
-                CommandsParameters.Where(entry => entry.IsRightName(name, CommandBase.IgnoreCommandCase));
-
-            if (matchingParams.Count() <= 0)
-                throw new ArgumentException("'" + name + "' is not an existing parameter");
-
-            return (T) matchingParams.First().Value;
+            if (CommandsParametersByName.ContainsKey(name))
+                return (T)CommandsParametersByName[name].Value;
+            else if (CommandsParametersByShortName.ContainsKey(name))
+                return (T) CommandsParametersByShortName[name].Value;
+            else 
+                throw new ArgumentException("'" + name + "' is not an existing parameter"); 
         }
 
         public bool ArgumentExists(string name)
         {
-            IEnumerable<ICommandParameter> matchingParams =
-                CommandsParameters.Where(entry => entry.IsRightName(name, CommandBase.IgnoreCommandCase));
-
-            return matchingParams.Count() > 0;
+            return CommandsParametersByName.ContainsKey(name) ||
+                   CommandsParametersByShortName.ContainsKey(name);
         }
 
         public string GetBindedCommandName()
@@ -131,7 +134,7 @@ namespace Stump.Server.BaseServer.Commands
                     string value = matchIsNamed.Groups[2].Value;
 
                     IEnumerable<ICommandParameter> matchingParams =
-                        commandParameters.Where(entry => entry.IsRightName(name, CommandBase.IgnoreCommandCase));
+                        commandParameters.Where(entry => IsRightName(entry, name, CommandBase.IgnoreCommandCase));
 
                     if (matchingParams.Count() == 0)
                     {
@@ -146,7 +149,7 @@ namespace Stump.Server.BaseServer.Commands
                             if (string.IsNullOrEmpty(value))
                                 commandParameter.SetDefaultValue();
                             else
-                                commandParameter.SetStringValue(value);
+                                commandParameter.SetStringValue(value, this);
                         }
                         catch
                         {
@@ -162,7 +165,7 @@ namespace Stump.Server.BaseServer.Commands
                     string name = matchVar.Groups[1].Value;
 
                     IEnumerable<ICommandParameter> matchingParams =
-                        commandParameters.Where(entry => entry.IsRightName(name, CommandBase.IgnoreCommandCase));
+                        commandParameters.Where(entry => IsRightName(entry, name, CommandBase.IgnoreCommandCase));
 
                     if (matchingParams.Count() == 0)
                     {
@@ -191,7 +194,7 @@ namespace Stump.Server.BaseServer.Commands
 
                     try
                     {
-                        next.SetStringValue(word);
+                        next.SetStringValue(word, this);
                     }
                     catch
                     {
@@ -218,8 +221,18 @@ namespace Stump.Server.BaseServer.Commands
                 definedParam.Add(undefinedParameter);
             }
 
-            CommandsParameters = definedParam;
+            CommandsParametersByName = definedParam.ToDictionary(entry => entry.Name);
+            CommandsParametersByShortName = definedParam.ToDictionary(entry => !string.IsNullOrEmpty(entry.ShortName) ? entry.ShortName : entry.Name);
             return true;
+        }
+
+        public bool IsRightName(ICommandParameter parameter, string name, bool useCase)
+        {
+            return name.Equals(parameter.Name,
+                               useCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture)
+                   ||
+                   name.Equals(parameter.ShortName,
+                               useCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
         }
     }
 }

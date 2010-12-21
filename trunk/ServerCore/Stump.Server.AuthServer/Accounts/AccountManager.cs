@@ -16,13 +16,35 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System.Collections.Generic;
 using NLog;
+using Stump.BaseCore.Framework.Attributes;
 using Stump.Database;
+using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.AuthServer.Accounts
 {
     public static class AccountManager
     {
+        [Variable]
+        public static List<BreedEnum> AvailableBreeds = new List<BreedEnum>
+            {
+                BreedEnum.Feca,
+                BreedEnum.Osamodas,
+                BreedEnum.Enutrof,
+                BreedEnum.Sram,
+                BreedEnum.Xelor,
+                BreedEnum.Ecaflip,
+                BreedEnum.Eniripsa,
+                BreedEnum.Iop,
+                BreedEnum.Cra,
+                BreedEnum.Sadida,
+                BreedEnum.Sacrieur,
+                BreedEnum.Pandawa,
+                BreedEnum.Roublard,
+                //BreedEnum.Zobal,
+            };
+
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public static bool AccountExist(string accountname)
@@ -70,7 +92,8 @@ namespace Stump.Server.AuthServer.Accounts
                     Password = password,
                     Nickname = accountname,
                     SecretQuestion = "?",
-                    SecretAnswer = "!"
+                    SecretAnswer = "!",
+                    AvailableBreeds = AvailableBreeds,
                 };
 
             return CreateAccount(acc);

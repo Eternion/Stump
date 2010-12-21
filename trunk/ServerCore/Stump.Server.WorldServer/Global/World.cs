@@ -20,6 +20,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
@@ -29,6 +30,7 @@ using Stump.BaseCore.Framework.Utils;
 using Stump.Server.WorldServer.Chat;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global.Maps;
+using Stump.Server.WorldServer.Manager;
 
 namespace Stump.Server.WorldServer.Global
 {
@@ -142,6 +144,37 @@ namespace Stump.Server.WorldServer.Global
             Character[] result = m_charactersName.Values.Where(entry => entry.Id == id).ToArray();
 
             return result.Length > 0 ? result.First() : null;
+        }
+
+        /// <summary>
+        /// Get a character by a search pattern. *(account) = current character used by account, name = character by his name.
+        /// </summary>
+        /// <returns></returns>
+        public Character GetCharacterByPattern(string pattern)
+        {
+            Match match = Regex.Match(pattern, @"\*\(([\w\d_-]+)\)");
+            if (match.Success)
+            {
+                var characters = from entry in WorldServer.Instance.GetClients()
+                                 where entry.Account.Login == pattern
+                                 select entry.ActiveCharacter;
+
+                return characters.FirstOrDefault();
+            }
+
+            return GetCharacter(pattern);
+        }
+
+        /// <summary>
+        /// Get a character by a search pattern. * = caller, *(account) = current character used by account, name = character by his name.
+        /// </summary>
+        /// <returns></returns>
+        public Character GetCharacterByPattern(Character caller, string pattern)
+        {
+            if (pattern == "*")
+                return caller;
+
+            return GetCharacterByPattern(pattern);
         }
 
         public void CallOnAllCharacters(Action<Character> action)

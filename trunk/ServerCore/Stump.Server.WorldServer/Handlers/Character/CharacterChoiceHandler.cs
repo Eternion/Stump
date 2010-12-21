@@ -101,7 +101,7 @@ namespace Stump.Server.WorldServer.Handlers
                         characterRecord.ColorsIndexed,
                         new List<int>(characterRecord.Scale),
                         new List<SubEntity>()),
-                    characterRecord.Classe,
+                    characterRecord.Breed,
                     characterRecord.SexId != 0)).ToList();
 
 

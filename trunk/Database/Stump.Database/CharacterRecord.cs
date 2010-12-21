@@ -32,27 +32,27 @@ namespace Stump.Database
     [ActiveRecord("characters")]
     public sealed class CharacterRecord : ActiveRecordBase<CharacterRecord>
     {
+        private static readonly IdGenerator IdGenerator = new IdGenerator(typeof (CharacterRecord), "Id");
+
         /// <summary>
         ///   Logger for this class.
         /// </summary>
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
-
-        private static readonly IdGenerator IdGenerator = new IdGenerator(typeof(CharacterRecord), "Id");
-
-        public static long GetNextId()
-        {
-            return IdGenerator.Next();
-        }
 
         /// <summary>
         ///   Indicate if this record just got created.
         /// </summary>
         public bool New;
 
+
+
         private List<int> m_colors;
         private string m_dbColors;
+
         private string m_dbSkins;
         private List<uint> m_skins;
+
+
 
         /// <summary>
         ///   Constructor
@@ -128,8 +128,9 @@ namespace Stump.Database
             }
         }
 
-        [Property("Classe")]
-        public int Classe
+
+        [Property("Breed")]
+        public int Breed
         {
             get;
             set;
@@ -292,7 +293,7 @@ namespace Stump.Database
                                  (SpellIdEnum) spellId,
                                  spellId,
                                  this,
-                                 (BreedEnum) Classe);
+                                 (BreedEnum) Breed);
                 }
 
                 var record = new SpellRecord(spellId, (uint) Id, position, level);
@@ -314,7 +315,7 @@ namespace Stump.Database
                                  spellId,
                                  spellId,
                                  this,
-                                 (BreedEnum) Classe);
+                                 (BreedEnum) Breed);
                 }
 
                 var record = new SpellRecord((uint) spellId, (uint) Id, position, level);
@@ -388,6 +389,11 @@ namespace Stump.Database
         }
 
         #endregion
+
+        public static long GetNextId()
+        {
+            return IdGenerator.Next();
+        }
 
         public void UpdateColors()
         {

@@ -28,69 +28,62 @@ namespace Stump.Server.WorldServer.Entities
     {
         #region Delegates
 
-        public delegate void EntityChangingMapHandler(LivingEntity entity, Map lastMap);
+        public delegate void EntityChangeMapHandler(LivingEntity entity, Map lastMap);
 
-        public delegate void EntityMoveOperationHandler(LivingEntity entity, VectorIsometric positionInfo);
-        public delegate void EntityCompressedMoveOperationHandler(LivingEntity entity, MovementPath movementPath);
+        public delegate void EntityMoveOperationHandler(LivingEntity entity, MovementPath movementPath);
+        public delegate void EntityMoveCancelHandler(LivingEntity entity, VectorIsometric positionInfo);
+
+        public delegate void EntityTeleportHandler(LivingEntity entity, VectorIsometric positionInfo);
 
         #endregion
 
-        public event EntityCompressedMoveOperationHandler EntityCompressedMovingStart;
+        public event EntityMoveOperationHandler EntityMovingStart;
 
-        public void NotifyEntityCompressedMovingStart(MovementPath movementPath)
+        public void NotifyEntityMovingStart(MovementPath movementPath)
         {
-            EntityCompressedMoveOperationHandler handler = EntityCompressedMovingStart;
+            EntityMoveOperationHandler handler = EntityMovingStart;
 
             if (handler != null)
                 handler(this, movementPath);
         }
 
-        public event EntityMoveOperationHandler EntityMovingStart;
-
-        public void NotifyEntityMovingStart(VectorIsometric positioninfo)
-        {
-            EntityMoveOperationHandler handler = EntityMovingStart;
-
-            if (handler != null)
-                handler(this, positioninfo);
-        }
-
         public event EntityMoveOperationHandler EntityMovingEnd;
-
-        public void NotifyEntityMovingEnd(VectorIsometric positioninfo)
+        
+        public void NotifyEntityMovingEnd(MovementPath movementPath)
         {
             EntityMoveOperationHandler handler = EntityMovingEnd;
 
             if (handler != null)
-                handler(this, positioninfo);
+                handler(this, movementPath);
         }
 
-        public event EntityMoveOperationHandler EntityMovingStop;
+        public event EntityMoveCancelHandler EntityMovingCancel;
 
-        public void NotifyEntityMovingStop(VectorIsometric positioninfo)
+        public void NotifyEntityMovingCancel(VectorIsometric positioninfo)
         {
-            EntityMoveOperationHandler handler = EntityMovingStop;
+            EntityMoveCancelHandler handler = EntityMovingCancel;
 
             if (handler != null)
                 handler(this, positioninfo);
         }
 
-        public event EntityMoveOperationHandler EntityTeleport;
+
+        public event EntityTeleportHandler EntityTeleport;
 
         public void NotifyEntityTeleport(VectorIsometric positioninfo)
         {
-            EntityMoveOperationHandler handler = EntityTeleport;
+            EntityTeleportHandler handler = EntityTeleport;
 
             if (handler != null)
                 handler(this, positioninfo);
         }
 
 
-        public event EntityChangingMapHandler EntityChangeMap;
+        public event EntityChangeMapHandler EntityChangeMap;
 
         internal void NotifyChangeMap(Map lastmap)
         {
-            EntityChangingMapHandler handler = EntityChangeMap;
+            EntityChangeMapHandler handler = EntityChangeMap;
 
             if (handler != null)
                 handler(this, lastmap);

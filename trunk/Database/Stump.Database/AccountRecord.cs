@@ -17,6 +17,8 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
@@ -28,11 +30,16 @@ namespace Stump.Database
     [ActiveRecord("accounts")]
     public sealed class AccountRecord : ActiveRecordBase<AccountRecord>
     {
-        #region Fields
-
         private string m_name = "";
+        private string m_dbavailableBreeds;
+        [NonSerialized]
+        private List<BreedEnum> m_availableBreeds;
 
-        #endregion
+        public AccountRecord()
+        {
+            m_availableBreeds = new List<BreedEnum>();
+
+        }
 
         /// <summary>
         ///   Account's Identifier
@@ -174,6 +181,36 @@ namespace Stump.Database
         {
             get;
             set;
+        }
+
+        [Property("AvailableBreeds")]
+        private string DBAvailableBreeds
+        {
+            get
+            {
+                return m_dbavailableBreeds;
+            }
+            set
+            {
+                m_dbavailableBreeds = value;
+
+                if (m_availableBreeds.Count <= 0)
+                    UpdateAvailableBreeds();
+            }
+        }
+
+        public List<BreedEnum> AvailableBreeds
+        {
+            get
+            {
+                return m_availableBreeds ?? ( m_availableBreeds = DBAvailableBreeds.Trim().Split(',').Select(entry => (BreedEnum)int.Parse(entry)).ToList() ).ToList();
+            }
+            set
+            {
+                m_availableBreeds = value;
+
+                UpdateAvailableBreeds();
+            }
         }
         
         /// <summary>
@@ -331,5 +368,19 @@ namespace Stump.Database
             return false;
         }
 
+        public void UpdateAvailableBreeds()
+        {
+            if (m_availableBreeds.Count > 0)
+                DBAvailableBreeds = string.Join(",", m_availableBreeds.Select(entry => (int)entry));
+            else
+                m_availableBreeds = DBAvailableBreeds.Trim().Split(',').Select(entry => (BreedEnum)int.Parse(entry)).ToList();
+        }
+
+        protected override bool BeforeSave(System.Collections.IDictionary state)
+        {
+            UpdateAvailableBreeds();
+
+            return base.BeforeSave(state);
+        }
     }
 }

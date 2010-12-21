@@ -19,7 +19,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Stump.Database;
+using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.IPC;
 
@@ -56,7 +58,6 @@ namespace Stump.Server.WorldServer.Manager
             IpcAccessor.Instance.ProxyObject.AddAccountCharacter(WorldServer.ServerInformation,
                                                                  client.Account.Id,
                                                                  (uint) character.Id);
-
             return true;
         }
 
@@ -77,9 +78,9 @@ namespace Stump.Server.WorldServer.Manager
 
         #region Character Name Random Generation
 
-        private const string voyelles = "aeiouy";
+        private const string Voyelles = "aeiouy";
 
-        private const string consonnes = "bcdfghjklmnpqrstvwxz";
+        private const string Consonnes = "bcdfghjklmnpqrstvwxz";
 
         public static string GenerateName()
         {
@@ -104,12 +105,12 @@ namespace Stump.Server.WorldServer.Manager
 
         private static char RandomVoyelle(Random rand)
         {
-            return voyelles[rand.Next(0, voyelles.Length - 1)];
+            return Voyelles[rand.Next(0, Voyelles.Length - 1)];
         }
 
         private static char RandomConsonne(Random rand)
         {
-            return consonnes[rand.Next(0, consonnes.Length - 1)];
+            return Consonnes[rand.Next(0, Consonnes.Length - 1)];
         }
 
         #endregion

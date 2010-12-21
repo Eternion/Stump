@@ -51,6 +51,14 @@ namespace Stump.Server.BaseServer.Network
         [Variable(DefinableByConfig = false, DefinableRunning = false)]
         public static int BufferSize = 8192;
 
+        public event Action<MessageListener, BaseClient> ClientConnected;
+
+        public void NotifyClientConnected(BaseClient client)
+        {
+            Action<MessageListener, BaseClient> handler = ClientConnected;
+            if (handler != null) handler(this, client);
+        }
+
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly SocketAsyncEventArgs m_acceptArgs = new SocketAsyncEventArgs();
@@ -160,7 +168,7 @@ namespace Stump.Server.BaseServer.Network
 
         private void ProcessAccept(SocketAsyncEventArgs e)
         {
-            if (m_activeIpRestriction && GetSameIPNumber((e.AcceptSocket.RemoteEndPoint as IPEndPoint).Address) > m_maxIpConnexion)
+            if (m_activeIpRestriction && GetSameIPNumber(((IPEndPoint) e.AcceptSocket.RemoteEndPoint).Address) > m_maxIpConnexion)
             {
                 logger.Error("Client {0} try to connect more {1} time",e.AcceptSocket.RemoteEndPoint.ToString(), m_maxIpConnexion);
                 m_clientSemaphore.Release();
@@ -175,6 +183,8 @@ namespace Stump.Server.BaseServer.Network
 
             logger.Info("Client connected <{0}>", client.IP);
             m_clientList.Add(client);
+
+            NotifyClientConnected(client);
 
             if (!client.Socket.ReceiveAsync(readAsyncEventArgs))
             {
@@ -239,8 +249,6 @@ namespace Stump.Server.BaseServer.Network
             }
             m_clientSemaphore.Release();
 
-            client = null;
-
             // Free the SocketAsyncEventArg so they can be reused by another client
             m_readAsyncEventArgsPool.Push(e);
         }
@@ -248,11 +256,11 @@ namespace Stump.Server.BaseServer.Network
         /// <summary>
         /// Gets the number of same client .
         /// </summary>
-        /// <param name="IP">The IP.</param>
+        /// <param name="ip">The IP.</param>
         /// <returns></returns>
-        private int GetSameIPNumber(IPAddress IP)
+        private int GetSameIPNumber(IPAddress ip)
         {
-            return m_clientList.Count<BaseClient>(client => IP.Equals((client.Socket.RemoteEndPoint as IPEndPoint).Address));
+            return m_clientList.Count(client => ip.Equals(((IPEndPoint) client.Socket.RemoteEndPoint).Address));
         }
     }
 }

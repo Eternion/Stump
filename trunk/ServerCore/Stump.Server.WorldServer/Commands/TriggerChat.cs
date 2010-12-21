@@ -24,7 +24,7 @@ using Stump.Server.WorldServer.Handlers;
 
 namespace Stump.Server.WorldServer.Commands
 {
-    public class TriggerChat : TriggerBase
+    public class TriggerChat : TriggerBase, IInGameTrigger
     {
         public TriggerChat(StringStream args, Character character)
             : base(args, character == null ? RoleEnum.Administrator : character.Client.Account.Role)

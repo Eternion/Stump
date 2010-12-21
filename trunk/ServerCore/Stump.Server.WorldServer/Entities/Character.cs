@@ -51,7 +51,7 @@ namespace Stump.Server.WorldServer.Entities
             Id = record.Id;
             Name = record.Name;
             Level = record.Level;
-            BreedId = (BreedEnum) record.Classe;
+            BreedId = (BreedEnum) record.Breed;
             Sex = (SexTypeEnum) record.SexId;
             Kamas = record.Kamas;
             StatsPoint = record.StatsPoints;
@@ -143,17 +143,23 @@ namespace Stump.Server.WorldServer.Entities
             Position.ChangeLocation(nextMap, cellId);
 
             Map.AddEntity(this);
+
+            NotifyChangeMap(lastMap);
         }
 
 
         public void ChangeMap(Map nextMap, ushort cellId)
         {
+            Map lastMap = Map;
+
             NextMap = nextMap;
             Map.RemoveEntity(this);
 
             Position.ChangeLocation(nextMap, cellId);
 
             Map.AddEntity(this);
+
+            NotifyChangeMap(lastMap);
         }
 
         public void SetKamas(int amount)
