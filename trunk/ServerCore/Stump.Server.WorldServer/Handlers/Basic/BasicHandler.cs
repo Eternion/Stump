@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Linq;
 using Stump.DofusProtocol.Messages;
 
@@ -40,10 +41,9 @@ namespace Stump.Server.WorldServer.Handlers
 
         public static void SendBasicTimeMessage(WorldClient client)
         {
-            client.Send(new BasicTimeMessage(
-                            1000000000, // time
-                            900 // timezone
-                            ));
+            uint unixTimeStamp = (uint)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds;
+            int offset = (int)TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now).TotalSeconds;
+            client.Send(new BasicTimeMessage(unixTimeStamp, offset));
         }
 
         public static void SendBasicNoOperationMessage(WorldClient client)
