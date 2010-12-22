@@ -20,5 +20,8 @@ namespace Stump.Server.WorldServer.Entities
 {
     public class Npc : Entity
     {
+        public Npc(int id) : base(id)
+        {
+        }
     }
 }

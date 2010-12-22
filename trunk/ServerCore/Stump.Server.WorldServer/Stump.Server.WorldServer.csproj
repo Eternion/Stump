@@ -103,7 +103,6 @@
     <Compile Include="Entities\Character.Stats.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\IEntityContainer.cs" />
-    <Compile Include="Entities\IEntityLook.cs" />
     <Compile Include="Entities\ILivingEntity.cs" />
     <Compile Include="Entities\IMovable.cs" />
     <Compile Include="Entities\INamedEntity.cs" />

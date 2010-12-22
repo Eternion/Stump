@@ -30,7 +30,7 @@ using Stump.Server.WorldServer.Spells;
 
 namespace Stump.Server.WorldServer.Entities
 {
-    public abstract class  Entity : ILocableIdentified, IEntityLook, INamedEntity
+    public abstract class  Entity : ILocableIdentified, INamedEntity
     {
         #region Fields
 
@@ -42,21 +42,9 @@ namespace Stump.Server.WorldServer.Entities
         /// <summary>
         ///   Constructor
         /// </summary>
-        protected Entity()
-        {
-            Colors = new List<int>();
-            Skins = new List<uint>();
-        }
-
-        /// <summary>
-        ///   Constructor
-        /// </summary>
         protected Entity(int id)
         {
             Id = id;
-
-            Colors = new List<int>();
-            Skins = new List<uint>();
         }
 
         public virtual void OnCreate()
@@ -68,20 +56,10 @@ namespace Stump.Server.WorldServer.Entities
             return true;
         }
 
-        public virtual EntityLook ToNetworkEntityLook()
-        {
-            return new EntityLook(
-                1, // bones id
-                Skins,
-                ColorsIndexed,
-                Scales,
-                new List<SubEntity>());
-        }
-
         public virtual GameRolePlayActorInformations ToNetworkActor()
         {
             return new GameRolePlayActorInformations((int) Id,
-                                                     ToNetworkEntityLook(),
+                                                     Look,
                                                      GetEntityDisposition());
         }
 
@@ -157,43 +135,10 @@ namespace Stump.Server.WorldServer.Entities
             }
         }
 
-        public int BonesId
+        public EntityLook Look
         {
             get;
             set;
-        }
-
-        public List<uint> Skins
-        {
-            get;
-            set;
-        }
-
-        public List<int> Colors
-        {
-            get;
-            set;
-        }
-
-        public List<int> ColorsIndexed
-        {
-            get
-            {
-                return
-                    Colors.Select(
-                        (color, index) => int.Parse((index + 1) + color.ToString("X6"), NumberStyles.HexNumber)).ToList();
-            }
-        }
-
-        public int Scale
-        {
-            get;
-            set;
-        }
-
-        public List<int> Scales
-        {
-            get { return new List<int> {Scale}; }
         }
 
         #endregion

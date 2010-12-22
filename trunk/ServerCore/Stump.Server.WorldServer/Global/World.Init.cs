@@ -18,6 +18,8 @@
 //  *************************************************************************/
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Stump.BaseCore.Framework.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Data;
@@ -56,15 +58,15 @@ namespace Stump.Server.WorldServer.Global
 
                 var consoleProcent = new ConsoleProcent();
 
-                foreach (Map map in MapLoader.LoadMaps())
+                Parallel.ForEach(MapLoader.LoadMaps(), map =>
                 {
                     map.ParentSpace = GetZone((int) map.ZoneId);
                     map.ParentSpace.Childrens.Add(map);
 
                     Maps.Add(map.Id, map);
 
-                    consoleProcent.Update((int)(((double)Maps.Count/count)*100));
-                }
+                    consoleProcent.Update((int) (((double) Maps.Count/count)*100));
+                });
 
                 consoleProcent.End();
             }

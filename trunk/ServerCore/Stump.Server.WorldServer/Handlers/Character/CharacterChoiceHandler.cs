@@ -95,12 +95,7 @@ namespace Stump.Server.WorldServer.Handlers
                     (uint) characterRecord.Id,
                     (uint) characterRecord.Level,
                     characterRecord.Name,
-                    new EntityLook(
-                        1, // bonesId
-                        characterRecord.Skins, // skins
-                        characterRecord.ColorsIndexed,
-                        new List<int>(characterRecord.Scale),
-                        new List<SubEntity>()),
+                    characterRecord.Look,
                     characterRecord.Breed,
                     characterRecord.SexId != 0)).ToList();
 

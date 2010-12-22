@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.BaseCore.Framework.Utils;
 using Stump.DofusProtocol.Classes;
+using Stump.DofusProtocol.Classes.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Data;
 using Stump.Server.BaseServer.Initializing;
@@ -46,15 +47,15 @@ namespace Stump.Server.WorldServer.Entities
         #endregion
 
         public Monster(long id)
+            : base((int) id)
         {
-            Id = id;
             Race = MonsterRaceIdEnum.NotListed; // default race if not defined later.
             Grades = new List<MonsterGrade>();
         }
 
         public Monster(long id, MonsterRaceIdEnum monsterRace)
+            : base((int) id)
         {
-            Id = id;
             Race = monsterRace;
             Grades = new List<MonsterGrade>();
         }
@@ -64,8 +65,8 @@ namespace Stump.Server.WorldServer.Entities
         [StageStep(Stages.Two, "Loaded Monsters")]
         public static void LoadAll()
         {
-            var monstertemplates = DataLoader.LoadData<MonsterTemplate>();
-            var monsterRaces = DataLoader.LoadData<MonsterRaceTemplate>();
+            IEnumerable<MonsterTemplate> monstertemplates = DataLoader.LoadData<MonsterTemplate>();
+            IEnumerable<MonsterRaceTemplate> monsterRaces = DataLoader.LoadData<MonsterRaceTemplate>();
 
             foreach (MonsterTemplate monstertemplate in monstertemplates)
             {
@@ -73,9 +74,9 @@ namespace Stump.Server.WorldServer.Entities
                     {
                         GfxId = monstertemplate.gfxId,
                         Race = (MonsterRaceIdEnum) monstertemplate.race,
-                        Scale = 150,
-                        BonesId = 1
+                        Look = monstertemplate.look != "" ? monstertemplate.look.ToEntityLook() : null,
                     };
+
 
                 // todo : this is totally wrong !
                 MonsterRaceTemplate race = monsterRaces.SingleOrDefault(monsterRace => monsterRace.id == monster.Id);

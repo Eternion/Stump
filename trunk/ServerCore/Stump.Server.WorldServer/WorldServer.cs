@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
@@ -24,6 +25,7 @@ using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.Utils;
 using Stump.BaseCore.Framework.XmlUtils;
 using Stump.Database;
+using Stump.DofusProtocol.Classes.Extensions;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Database;
@@ -31,6 +33,7 @@ using Stump.Server.BaseServer.Initializing;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Commands;
+using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.IPC;
 

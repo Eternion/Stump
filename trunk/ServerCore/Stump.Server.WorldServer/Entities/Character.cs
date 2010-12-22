@@ -44,11 +44,11 @@ namespace Stump.Server.WorldServer.Entities
         /// <param name = "record"></param>
         /// <param name = "client"></param>
         public Character(CharacterRecord record, WorldClient client)
+            : base(record.Id)
         {
             Record = record;
             Client = client;
 
-            Id = record.Id;
             Name = record.Name;
             Level = record.Level;
             BreedId = (BreedEnum) record.Breed;
@@ -62,10 +62,7 @@ namespace Stump.Server.WorldServer.Entities
             InWorld = false;
 
             // -> entity look
-            Skins = record.Skins;
-            Colors = record.Colors;
-            Scale = record.Scale;
-            BonesId = 1;
+            Look = record.Look;
 
             Inventory = new Inventory(this);
             Inventory.LoadInventory();
@@ -172,7 +169,7 @@ namespace Stump.Server.WorldServer.Entities
         {
             return new GameRolePlayCharacterInformations(
                 (int) Id,
-                ToNetworkEntityLook(),
+                Look,
                 GetEntityDisposition(),
                 Name,
                 GetHumanInformations(),
@@ -197,7 +194,7 @@ namespace Stump.Server.WorldServer.Entities
 
             return new GameFightCharacterInformations(
                 (int)Id,
-                ToNetworkEntityLook(),
+                Look,
                 CurrentFighter.GetEntityDisposition(),
                 (uint)( (FightGroup)Group ).TeamId,
                 !( CurrentFighter.IsDead || CurrentFighter.IsReady ),
@@ -213,7 +210,7 @@ namespace Stump.Server.WorldServer.Entities
                 (uint) Id,
                 (uint) Level,
                 Name,
-                ToNetworkEntityLook(),
+                Look,
                 (int) BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE);
         }

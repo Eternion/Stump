@@ -24,6 +24,8 @@ using System.Linq;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using NLog;
+using Stump.DofusProtocol.Classes;
+using Stump.DofusProtocol.Classes.Extensions;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database
@@ -44,23 +46,14 @@ namespace Stump.Database
         /// </summary>
         public bool New;
 
-
-
-        private List<int> m_colors;
-        private string m_dbColors;
-
-        private string m_dbSkins;
-        private List<uint> m_skins;
-
-
+        private string m_dbLook;
+        private EntityLook m_look;
 
         /// <summary>
         ///   Constructor
         /// </summary>
         public CharacterRecord()
         {
-            m_colors = new List<int>();
-            m_skins = new List<uint>();
             Spells = new Dictionary<uint, SpellRecord>();
         }
 
@@ -94,41 +87,6 @@ namespace Stump.Database
             set;
         }
 
-        [Property("Colors")]
-        private string DBColors
-        {
-            get { return m_dbColors; }
-            set
-            {
-                m_dbColors = value;
-
-                if (m_colors.Count <= 0)
-                    UpdateColors();
-            }
-        }
-
-        public List<int> Colors
-        {
-            get { return m_colors ?? (m_colors = DBColors.Trim().Split(',').Select(entry => int.Parse(entry)).ToList()); }
-            set
-            {
-                m_colors = value;
-
-                UpdateColors();
-            }
-        }
-
-        public List<int> ColorsIndexed
-        {
-            get
-            {
-                return
-                    Colors.Select(
-                        (color, index) => int.Parse((index + 1) + color.ToString("X6"), NumberStyles.HexNumber)).ToList();
-            }
-        }
-
-
         [Property("Breed")]
         public int Breed
         {
@@ -143,35 +101,29 @@ namespace Stump.Database
             set;
         }
 
-        [Property("Skins", NotNull = true)]
-        private string DBSkins
+        [Property("Look", NotNull = true)]
+        private string DBLook
         {
-            get { return m_dbSkins; }
+            get
+            {
+                return m_dbLook;
+            }
             set
             {
-                m_dbSkins = value;
+                m_dbLook = value;
 
-                if (m_skins.Count <= 0)
-                    UpdateSkins();
+                m_look = m_dbLook.ToEntityLook();
             }
         }
 
-        public List<uint> Skins
+        public EntityLook Look
         {
-            get { return m_skins ?? (m_skins = DBSkins.Trim().Split(',').Select(entry => uint.Parse(entry)).ToList()); }
-            set
-            {
-                m_skins = value;
+            get { return m_look ?? (m_look = m_dbLook.ToEntityLook()); }
+            set { 
+                m_look = value;
 
-                UpdateSkins();
+                m_dbLook = EntityLookExtension.ToString(m_look);
             }
-        }
-
-        [Property("Scale")]
-        public int Scale
-        {
-            get;
-            set;
         }
 
         [Property("Kamas")]
@@ -395,22 +347,6 @@ namespace Stump.Database
             return IdGenerator.Next();
         }
 
-        public void UpdateColors()
-        {
-            if (m_colors.Count > 1)
-                DBColors = string.Join(",", m_colors.Select(entry => entry.ToString()));
-            else
-                m_colors = DBColors.Trim().Split(',').Select(entry => int.Parse(entry)).ToList();
-        }
-
-        public void UpdateSkins()
-        {
-            if (m_skins.Count > 0)
-                DBSkins = string.Join(",", m_skins.Select(entry => entry.ToString()));
-            else
-                m_skins = DBSkins.Trim().Split(',').Select(entry => uint.Parse(entry)).ToList();
-        }
-
         /// <summary>
         ///   Find a character by his name
         /// </summary>
@@ -464,8 +400,7 @@ namespace Stump.Database
 
         protected override bool BeforeSave(IDictionary state)
         {
-            UpdateColors();
-            UpdateSkins();
+            m_dbLook = m_look != null ? EntityLookExtension.ToString(m_look) : "{0}";
 
             return base.BeforeSave(state);
         }

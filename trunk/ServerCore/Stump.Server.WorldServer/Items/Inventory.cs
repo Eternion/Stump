@@ -361,30 +361,7 @@ namespace Stump.Server.WorldServer.Items
         private void OnItemMove(Inventory sender, Item item, CharacterInventoryPositionEnum oldPosition)
         {
             // Update entity skin
-            List<uint> newskins = Owner.Skins.Take(1).ToList();
-
-            Item hatItem;
-            if ((hatItem = GetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_HAT)) != null)
-                newskins.Add((uint)hatItem.Template.AppearanceId);
-
-            Item capeItem;
-            if ((capeItem = GetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_CAPE)) != null)
-                newskins.Add((uint)capeItem.Template.AppearanceId);
-
-            Item weaponItem;
-            if ((weaponItem = GetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON)) != null)
-                newskins.Add((uint)weaponItem.Template.AppearanceId);
-
-            Item petsItem;
-            if ((petsItem = GetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS)) != null)
-                newskins.Add((uint)petsItem.Template.AppearanceId);
-
-            Item shieldItem;
-            if ((shieldItem = GetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD)) != null)
-                newskins.Add((uint)shieldItem.Template.AppearanceId);
-
-            Owner.Skins = newskins;
-
+            
             ApplyItemsEffect();
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
             CharacterHandler.SendCharacterStatsListMessage(Owner.Client);

@@ -89,7 +89,8 @@ namespace Stump.Server.WorldServer.Breeds
         /// <param name = "breed">breed to initialize</param>
         private static void InitBreed(BaseBreed breed)
         {
-            breed.Initialize(m_breedsData.Single(breedData => (BreedEnum) breedData.id == breed.Id));
+            var breedData = m_breedsData.Single(entry => (BreedEnum) entry.id == breed.Id);
+            breed.Initialize(breedData);
             BaseBreeds[(int) breed.Id] = breed;
         }
 

@@ -127,7 +127,7 @@ namespace Stump.Server.WorldServer.Handlers
 
         public static void SendGameContextRefreshEntityLookMessage(WorldClient client, Entity entity)
         {
-            client.Send(new GameContextRefreshEntityLookMessage((int) entity.Id, entity.ToNetworkEntityLook()));
+            client.Send(new GameContextRefreshEntityLookMessage((int) entity.Id, entity.Look));
         }
 
         public static void SendGameMapMovementMessage(WorldClient client, List<uint> movementsKey, Entity entity)

@@ -17,9 +17,11 @@
 //  *
 //  *************************************************************************/
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Stump.BaseCore.Framework.Utils;
 using Stump.Database;
+using Stump.DofusProtocol.Classes.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Breeds;
@@ -59,18 +61,19 @@ namespace Stump.Server.WorldServer.Handlers
 
             BaseBreed breed = BreedManager.GetBreed(message.breed);
 
-            var charcolors = new List<int>();
+            var indexedColors = new List<int>();
             for (int i = 0; i < 5; i++) // we ignore the sixth color
             {
-                if (message.colors[i] == -1 &&
-                    breed.MaleColors.Count > i &&
-                    breed.FemaleColors.Count > i)
-                    charcolors.Add((int) (!message.sex ? breed.MaleColors[i] : breed.FemaleColors[i]));
-                else
-                    charcolors.Add(message.colors[i]);
+                int color = message.colors[i];
+
+                if (color == -1)
+                    color = (int)( !message.sex ? breed.MaleColors[i] : breed.FemaleColors[i] );
+
+                indexedColors.Add(int.Parse((i + 1) + color.ToString("X6"), NumberStyles.HexNumber));
             }
 
-            var charskins = new List<uint> { (uint) (message.breed * 10 + (message.sex ? 1 : 0)) };
+            var look = !message.sex ? breed.MaleLook.Copy() : breed.FemaleLook.Copy();
+            look.indexedColors = indexedColors;
 
             /* Create Character */
             var character = new CharacterRecord
@@ -81,9 +84,7 @@ namespace Stump.Server.WorldServer.Handlers
                     Name = characterName,
                     Breed = message.breed,
                     SexId = message.sex ? 1 : 0,
-                    Skins = charskins,
-                    Scale = breed.Scale,
-                    Colors = charcolors,
+                    Look = look,
                     Kamas = breed.StartKamas,
                     MapId = (int)breed.StartMap,
                     CellId = breed.StartCellId,

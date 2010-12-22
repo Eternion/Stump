@@ -7,6 +7,13 @@
 *.vsp
 /trunk/_ReSharper.Stump
 
+#
+# VS Test Unit files
+#
+/trunk/UnitTest
+*.vsmdi
+*.testsettings
+
 # Output path
 bin/
 obj/

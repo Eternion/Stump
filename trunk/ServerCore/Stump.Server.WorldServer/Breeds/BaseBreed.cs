@@ -19,7 +19,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Stump.DofusProtocol.Classes;
+using Stump.DofusProtocol.Classes.Extensions;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Spells;
 using BreedData = Stump.DofusProtocol.D2oClasses.Breed;
 
@@ -65,6 +68,9 @@ namespace Stump.Server.WorldServer.Breeds
             // Init BreedEnum's Colors
             MaleColors = breeddata.maleColors;
             FemaleColors = breeddata.femaleColors;
+
+            MaleLook = breeddata.maleLook.ToEntityLook();
+            FemaleLook = breeddata.femaleLook.ToEntityLook();
 
             StatsPointsForStrength = breeddata.statsPointsForStrength;
             StatsPointsForIntelligence = breeddata.statsPointsForIntelligence;
@@ -129,6 +135,18 @@ namespace Stump.Server.WorldServer.Breeds
         }
 
         public List<uint> FemaleColors
+        {
+            get;
+            protected set;
+        }
+
+        public EntityLook MaleLook
+        {
+            get;
+            protected set;
+        }
+
+        public EntityLook FemaleLook
         {
             get;
             protected set;

@@ -29,6 +29,10 @@ namespace Stump.Server.WorldServer.Entities
 {
     public abstract partial class LivingEntity : Entity, ILivingEntity, IMovable
     {
+        protected LivingEntity(int id) : base(id)
+        {
+        }
+
         public int CurrentHealth
         {
             get { return Stats["Health"].TotalSafe; }
