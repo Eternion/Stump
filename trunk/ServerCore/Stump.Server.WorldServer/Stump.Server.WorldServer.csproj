@@ -61,12 +61,16 @@
     <Compile Include="Breeds\IopBreed.cs" />
     <Compile Include="Breeds\OsamodasBreed.cs" />
     <Compile Include="Breeds\PandawaBreed.cs" />
+    <Compile Include="Breeds\RoublardBreed.cs" />
     <Compile Include="Breeds\SacrieurBreed.cs" />
     <Compile Include="Breeds\SadidaBreed.cs" />
     <Compile Include="Breeds\SramBreed.cs" />
     <Compile Include="Breeds\XelorBreed.cs" />
+    <Compile Include="Breeds\ZobalBreed.cs" />
     <Compile Include="Chat\ChannelId.cs" />
     <Compile Include="Chat\ChatManager.cs" />
+    <Compile Include="Commands\ItemCommand.cs" />
+    <Compile Include="Commands\IInGameTrigger.cs" />
     <Compile Include="Commands\TriggerChat.cs" />
     <Compile Include="Entities\ILocable.cs" />
     <Compile Include="Entities\ILocableIdentified.cs" />

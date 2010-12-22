@@ -60,19 +60,15 @@ namespace Stump.Server.BaseServer.Commands
         string StringValue
         {
             get;
-            set;
         }
-
-        bool IsRightName(string name);
-        bool IsRightName(string name, bool useCase);
-        void SetStringValue(string str);
+        void SetStringValue(string str, TriggerBase trigger);
         bool SetDefaultValue();
         string GetUsage();
     }
 
     public interface ICommandParameter<out T> : ICommandParameter
     {
-        Converter<string, T> Converter
+        Func<string, TriggerBase, T> Converter
         {
             get;
         }

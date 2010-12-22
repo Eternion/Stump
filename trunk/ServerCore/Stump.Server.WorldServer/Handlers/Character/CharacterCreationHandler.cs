@@ -79,7 +79,7 @@ namespace Stump.Server.WorldServer.Handlers
                     Account = client.Account,
                     Level = breed.StartLevel,
                     Name = characterName,
-                    Classe = message.breed,
+                    Breed = message.breed,
                     SexId = message.sex ? 1 : 0,
                     Skins = charskins,
                     Scale = breed.Scale,

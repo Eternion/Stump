@@ -3,6 +3,8 @@
 #
 *.suo
 *.user
+*.*.user
+*.vsp
 /trunk/_ReSharper.Stump
 
 # Output path
@@ -15,4 +17,3 @@ obj/
 *.d2o
 *.d2i
 *.map
-

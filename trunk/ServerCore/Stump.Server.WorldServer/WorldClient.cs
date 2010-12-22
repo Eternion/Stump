@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using Stump.Database;
@@ -28,6 +29,14 @@ namespace Stump.Server.WorldServer
 {
     public class WorldClient : BaseClient
     {
+        public new event Action<WorldClient> ClientDisconnected;
+
+        public override void NotifyClientDisconnected()
+        {
+            Action<WorldClient> handler = ClientDisconnected;
+            if (handler != null) handler(this);
+        }
+
         private string m_login;
 
         public WorldClient(Socket socket)

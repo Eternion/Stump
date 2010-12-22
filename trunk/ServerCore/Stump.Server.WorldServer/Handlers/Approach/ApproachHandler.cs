@@ -15,8 +15,13 @@
 //  *  You should have received a copy of the GNU General Public License
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Stump.Database;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.WorldServer.Breeds;
 using Stump.Server.WorldServer.Manager;
 
 namespace Stump.Server.WorldServer.Handlers
@@ -27,10 +32,8 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof (AuthenticationTicketMessage))]
         public static void HandleAuthenticationTicketMessage(WorldClient client, AuthenticationTicketMessage message)
         {
-            /* On récupère le compte associé au ticket */
             AccountRecord ticketAccount = AccountManager.GetAccountByTicket(message.ticket);
 
-            /* S'il n'y en avait pas */
             if (ticketAccount == null)
             {
                 client.Send(new AuthenticationTicketRefusedMessage()); 
@@ -38,10 +41,8 @@ namespace Stump.Server.WorldServer.Handlers
                 return;
             }
           
-            /* On associe le Client avec ce compte */
             client.Account = ticketAccount;
 
-            /* On associe les personnages */
             client.Characters = CharacterManager.GetCharactersByAccount(client);
 
             client.Send(new AuthenticationTicketAcceptedMessage());
@@ -53,10 +54,12 @@ namespace Stump.Server.WorldServer.Handlers
 
         public static void SendAccountCapabilitiesMessage(WorldClient client)
         {
-
+            client.Send(new AccountCapabilitiesMessage(
+                (int) client.Account.Id,
+                true,
+                BreedManager.BreedsToFlag(client.Account.AvailableBreeds),
+                BreedManager.BreedsToFlag(BreedManager.AvailableBreeds)
+                ));
         }
-
-
-
     }
 }

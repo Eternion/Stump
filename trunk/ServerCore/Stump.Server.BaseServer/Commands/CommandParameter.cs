@@ -52,7 +52,7 @@ namespace Stump.Server.BaseServer.Commands
         }
 
         public CommandParameter(string name, string shortName, bool isOptional, T defaultValue,
-                                Converter<string, T> converter)
+                                Func<string, TriggerBase, T> converter)
         {
             Name = name;
             ShortName = shortName;
@@ -86,7 +86,7 @@ namespace Stump.Server.BaseServer.Commands
         }
 
         public CommandParameter(string name, string shortName, string description, bool isOptional, T defaultValue,
-                                Converter<string, T> converter)
+                                Func<string, TriggerBase, T> converter)
         {
             Name = name;
             ShortName = shortName;
@@ -98,7 +98,7 @@ namespace Stump.Server.BaseServer.Commands
 
         #region ICommandParameter<T> Members
 
-        public Converter<string, T> Converter
+        public Func<string, TriggerBase, T> Converter
         {
             get;
             private set;
@@ -158,33 +158,14 @@ namespace Stump.Server.BaseServer.Commands
         public string StringValue
         {
             get { return m_stringValue; }
-            set
-            {
-                m_stringValue = value;
-                SetStringValue(value);
-            }
         }
 
-        public bool IsRightName(string name)
-        {
-            return name == Name || name == ShortName;
-        }
-
-        public bool IsRightName(string name, bool useCase)
-        {
-            return name.Equals(Name,
-                               useCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture)
-                   ||
-                   name.Equals(ShortName,
-                               useCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
-        }
-
-        public void SetStringValue(string str)
+        public void SetStringValue(string str, TriggerBase trigger)
         {
             if (ValueType == typeof (string))
                 Value = (T) (object) str;
-            else if (Converter != null)
-                Value = Converter(str);
+            else if (Converter != null && trigger != null)
+                Value = Converter(str, trigger);
             else if (Value is IConvertible)
                 Value = (T) Convert.ChangeType(str, typeof (T));
             else if (DefaultValue != null)

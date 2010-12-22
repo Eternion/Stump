@@ -16,9 +16,21 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
+using Stump.Server.BaseServer.Commands;
+using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.Global;
+
 namespace Stump.Server.WorldServer.Commands
 {
     public static class ParametersConverter
     {
+        public static Func<string, TriggerBase, Character> CharacterConverter = (entry, trigger) =>
+        {
+            if (trigger is IInGameTrigger && (trigger as IInGameTrigger).Character != null)
+                return World.Instance.GetCharacterByPattern((trigger as IInGameTrigger).Character, entry);
+
+            return World.Instance.GetCharacterByPattern(entry);
+        };
     }
 }

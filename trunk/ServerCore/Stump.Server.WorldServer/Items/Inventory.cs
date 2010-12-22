@@ -184,13 +184,45 @@ namespace Stump.Server.WorldServer.Items
             }
         }
 
+        public Item AddItem(ItemTemplate itemTemplate, uint amount)
+        {
+            List<EffectBase> effects = ItemManager.GenerateItemEffect(itemTemplate);
+
+            Item stack = null;
+            if (IsStackable(itemTemplate.Id, effects, out stack) && stack != null)
+                // if there is same item in inventory we stack it
+            {
+                StackItem(stack, amount);
+                return stack;
+            }
+
+
+            Item newitem = ItemManager.Create(itemTemplate.Id, Owner, amount, effects);
+
+            lock (m_sync)
+            {
+                if (m_items.ContainsKey(newitem.Guid))
+                {
+                    DeleteItem(newitem.Guid);
+                    return null;
+                }
+
+                m_items.Add(newitem.Guid, newitem);
+
+                NotifyItemAdded(newitem);
+            }
+
+            InventoryHandler.SendObjectAddedMessage(Owner.Client, newitem);
+            return newitem;
+        }
+
         public Item AddItem(int itemId, uint amount)
         {
             List<EffectBase> effects = ItemManager.GenerateItemEffect(ItemManager.GetTemplate(itemId));
 
             Item stack = null;
             if (IsStackable(itemId, effects, out stack) && stack != null)
-                // if there is same item in inventory we stack it
+            // if there is same item in inventory we stack it
             {
                 StackItem(stack, amount);
                 return stack;

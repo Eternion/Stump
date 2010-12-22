@@ -138,9 +138,7 @@ namespace Stump.Server.WorldServer.Global.Maps
         {
             if (entity is LivingEntity)
             {
-                (entity as LivingEntity).EntityCompressedMovingStart -= EntityCompressedMovingStart;
                 (entity as LivingEntity).EntityMovingStart -= EntityMovingStart;
-                (entity as LivingEntity).EntityMovingStop -= EntityMovingStop;
                 (entity as LivingEntity).EntityMovingEnd -= EntityMovingEnd;
             }
         }
@@ -149,14 +147,12 @@ namespace Stump.Server.WorldServer.Global.Maps
         {
             if (entity is LivingEntity)
             {
-                (entity as LivingEntity).EntityCompressedMovingStart += EntityCompressedMovingStart;
                 (entity as LivingEntity).EntityMovingStart += EntityMovingStart;
-                (entity as LivingEntity).EntityMovingStop += EntityMovingStop;
                 (entity as LivingEntity).EntityMovingEnd += EntityMovingEnd;
             }
         }
 
-        private void EntityCompressedMovingStart(LivingEntity entity, MovementPath movementPath)
+        private void EntityMovingStart(LivingEntity entity, MovementPath movementPath)
         {
             var movementsKey = MapMovementAdapter.GetServerMovement(movementPath);
 
@@ -169,19 +165,9 @@ namespace Stump.Server.WorldServer.Global.Maps
             CallOnAllCharactersWithoutFighters(action);
         }
 
-        private void EntityMovingStart(LivingEntity entity, VectorIsometric positioninfo)
+        private void EntityMovingEnd(LivingEntity entity, MovementPath movementPath)
         {
-
-        }
-
-        private void EntityMovingStop(LivingEntity entity, VectorIsometric positioninfo)
-        {
-
-        }
-
-        private void EntityMovingEnd(LivingEntity entity, VectorIsometric positioninfo)
-        {
-
+            /* check cell trigger, monsters... */
         }
 
 

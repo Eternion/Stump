@@ -16,27 +16,15 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
-using Stump.DofusProtocol.Enums;
-using Stump.Server.BaseServer.Commands;
+using Stump.Server.WorldServer.Entities;
 
-namespace Stump.Server.AuthServer.Commands
+namespace Stump.Server.WorldServer.Commands
 {
-    public static class ParametersConverter
+    public interface IInGameTrigger
     {
-        public static Func<string, TriggerBase, RoleEnum> RoleConverter = (entry, trigger) =>
+        Character Character
         {
-            RoleEnum result;
-            if (Enum.TryParse(entry, true, out result))
-            {
-                return result;
-            }
-
-            byte value;
-            if (byte.TryParse(entry, out value))
-                return (RoleEnum) Enum.ToObject(typeof (RoleEnum), value);
-
-            throw new ArgumentException("entry is not RoleEnum");
-        };
+            get;
+        }
     }
 }

@@ -130,16 +130,12 @@ namespace Stump.Server.WorldServer.Entities
         #region Movements
 
         private bool m_isMoving;
-        private MovementPath m_movingPath;
+        protected MovementPath m_movingPath;
 
         public bool IsMoving
         {
             get { return m_isMoving && m_movingPath != null; }
-            protected set
-            {
-                m_isMoving = value;
-                m_movingPath = null;
-            }
+            protected set { m_isMoving = value; }
         }
 
         // todo : canMove()
@@ -153,7 +149,7 @@ namespace Stump.Server.WorldServer.Entities
             if (!CanMove())
                 return;
 
-            NotifyEntityCompressedMovingStart(movementPath);
+            NotifyEntityMovingStart(movementPath);
 
             IsMoving = true;
             m_movingPath = movementPath;
@@ -173,9 +169,10 @@ namespace Stump.Server.WorldServer.Entities
                 return;
 
             Position.ChangeLocation(m_movingPath.End);
-            NotifyEntityMovingStop(m_movingPath.End);
+            NotifyEntityMovingEnd(m_movingPath);
 
             IsMoving = false;
+            m_movingPath = null;
         }
 
         public virtual void StopMove(VectorIsometric currentVectorIsometric)
@@ -184,9 +181,10 @@ namespace Stump.Server.WorldServer.Entities
                 return;
 
             Position.ChangeLocation(currentVectorIsometric);
-            NotifyEntityMovingStop(currentVectorIsometric);
+            NotifyEntityMovingCancel(currentVectorIsometric);
 
             IsMoving = false;
+            m_movingPath = null;
         }
 
         #endregion

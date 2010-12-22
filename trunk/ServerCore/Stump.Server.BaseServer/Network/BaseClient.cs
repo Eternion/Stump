@@ -29,6 +29,14 @@ namespace Stump.Server.BaseServer.Network
 {
     public abstract class BaseClient : IPacketReceiver
     {
+        public event Action<BaseClient> ClientDisconnected;
+
+        public virtual void NotifyClientDisconnected()
+        {
+            Action<BaseClient> handler = ClientDisconnected;
+            if (handler != null) handler(this);
+        }
+
         private const byte BIT_RIGHT_SHIFT_LEN_PACKET_ID = 2;
         private const byte BIT_MASK = 3;
 
@@ -250,6 +258,8 @@ namespace Stump.Server.BaseServer.Network
             OnDisconnect();
 
             Close();
+
+            NotifyClientDisconnected();
         }
 
         /// <summary>
