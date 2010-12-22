@@ -25,9 +25,15 @@ namespace Stump.Server.BaseServer
     /// </summary>
     public static class Settings
     {
+        /// <summary>
+        /// Path to 'Plugins' folder
+        /// </summary>
         [Variable]
         public static string PluginsDir = "./../Plugins/";
 
+        /// <summary>
+        /// Enable/Disable perfomances tracing
+        /// </summary>
         [Variable]
         public static bool EnableBenchmarking;
     }

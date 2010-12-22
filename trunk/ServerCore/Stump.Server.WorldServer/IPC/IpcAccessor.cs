@@ -39,15 +39,27 @@ namespace Stump.Server.WorldServer.IPC
         [Variable(DefinableRunning = true)]
         public static int ReconnectDelay = 10;
 
+        /// <summary>
+        /// ???
+        /// </summary>
         [Variable(DefinableRunning = true)]
         public static int PingDelay = 200;
 
+        /// <summary>
+        /// IPC server
+        /// </summary>
         [Variable]
         public static string IpcAuthAdress = "localhost";
 
+        /// <summary>
+        /// IPC authentification port
+        /// </summary>
         [Variable]
         public static short IpcAuthPort = 9100;
 
+        /// <summary>
+        /// IPC world port
+        /// </summary>
         [Variable]
         public static short IpcWorldPort = 9101;
 

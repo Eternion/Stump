@@ -37,12 +37,21 @@ namespace Stump.Server.BaseServer.Network
         [Variable]
         public static VersionCheckingSeverity Severity = VersionCheckingSeverity.Medium;
 
+        /// <summary>
+        /// Version for the client
+        /// </summary>
         [Variable]
         public static string VersionRequired = "2.3.0.37697.1";
 
+        /// <summary>
+        /// Actual version
+        /// </summary>
         [Variable]
         public static uint ActualVersion = 1304;
 
+        /// <summary>
+        /// Required version
+        /// </summary>
         [Variable]
         public static uint RequiredVersion = 1304;
 

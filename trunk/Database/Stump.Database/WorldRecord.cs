@@ -28,7 +28,7 @@ namespace Stump.Database
     [ActiveRecord("worlds")]
     public sealed class WorldRecord : ActiveRecordBase<WorldRecord>
     {
-        private int m_charscount;
+        private int m_charscount=0;
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
         public int Id
@@ -99,7 +99,7 @@ namespace Stump.Database
             set;
         }
 
-        [Property("CharsCount", NotNull = true, Default = "0")]
+        //[Property("CharsCount", NotNull = true, Default = "0")]
         public int CharsCount
         {
             get { return m_charscount; }

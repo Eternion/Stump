@@ -42,6 +42,9 @@ namespace Stump.Server.WorldServer.Global
 
         private static long m_worldUpdateInterval = 100;
 
+        /// <summary>
+        /// Welcome message
+        /// </summary>
         [Variable(DefinableRunning = true)]
         public static string MessageOfTheDay = "Bienvenue. Ce serveur est propulsé par Stump.";
 

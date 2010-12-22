@@ -26,6 +26,9 @@ namespace Stump.Server.AuthServer.Accounts
 {
     public static class AccountManager
     {
+        /// <summary>
+        /// List of available breeds
+        /// </summary>
         [Variable]
         public static List<BreedEnum> AvailableBreeds = new List<BreedEnum>
             {

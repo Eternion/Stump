@@ -16,32 +16,13 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System.Collections.Generic;
-using System.IO;
-using Stump.BaseCore.Framework.Attributes;
-using Stump.BaseCore.Framework.XmlUtils;
-using Stump.DofusProtocol.Classes;
-
-namespace Stump.Server.WorldServer.Data
+namespace Stump.DofusProtocol.Enums
 {
-    public class MonsterLoader
+    public enum AcquaintanceErrorEnum
     {
-        /// <summary>
-        /// Name of monsters folder
-        /// </summary>
-        [Variable]
-        public static string MapsDir = "/Monsters/";
-
-        public static IEnumerable<GameRolePlayGroupMonsterInformations> LoadSpawnData()
-        {
-            var mapDirectory = new DirectoryInfo(Settings.StaticPath + MapsDir);
-
-            foreach (FileInfo file in mapDirectory.GetFiles("*.xml", SearchOption.AllDirectories))
-            {
-                var parser = new XmlParser(file.FullName);
-
-                yield return null;
-            }
-        }
+        UNKNOWN,
+        UNAVAILABLE,
+        NO_RESULT,
+        FLOOD,
     }
 }

@@ -30,33 +30,63 @@ namespace Stump.Tools.UtilityBot
         private const string ConfigPath = "./utilitybot_config.xml";
         private const string SchemaPath = "./utilitybot_config.xsd";
 
+        /// <summary>
+        /// IRC server adress
+        /// </summary>
         [Variable]
         public static string IrcServer = "irc.epiknet.org";
 
+        /// <summary>
+        /// IRC server port
+        /// </summary>
         [Variable]
         public static int IrcPort = 6667;
 
+        /// <summary>
+        /// IRC bot channels
+        /// </summary>
         [Variable]
         public static List<string> BotChannels = new List<string> {"#stump"};
 
+        /// <summary>
+        /// IRC commands prefix
+        /// </summary>
         [Variable]
         public static string CommandPrefix = "!";
 
+        /// <summary>
+        /// IRC bots usernames
+        /// </summary>
         [Variable]
         public static string[] BotNicknames = new[] {"StumpBot", "StumpBot-2", "StumpBot-3"};
-        
+
+        /// <summary>
+        /// Usernames allowed on the IRC
+        /// </summary>
         [Variable]
         public static string[] AllowedUserNicks = new[] { "bouh2" };
 
+        /// <summary>
+        /// IRC username
+        /// </summary>
         [Variable]
         public static string IrcUserName = "UtilityBot";
 
+        /// <summary>
+        /// IRC user informations
+        /// </summary>
         [Variable]
         public static string IrcUserInfo = "Bot";
 
+        /// <summary>
+        /// Path to Dofus 2 folder
+        /// </summary>
         [Variable]
         public static string DofusPath = @"C:\Program Files\Dofus 2\";
 
+        /// <summary>
+        /// Path to Dofus source file (DofusInvoker.swf)
+        /// </summary>
         [Variable]
         public static string DofusSourcePath = @"C:\Program Files\Dofus 2\app\DofusInvoker";
 

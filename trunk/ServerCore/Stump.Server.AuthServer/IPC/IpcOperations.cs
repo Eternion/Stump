@@ -28,23 +28,12 @@ namespace Stump.Server.AuthServer.IPC
 {
     public class IpcOperations : MarshalByRefObject, IRemoteOperationsAuth
     {
-        [Variable]
-        public const double CharCountUpdateTimer = 30000; // 30 seconds
-
-        private DateTime m_lastdbupdate = DateTime.Now;
 
         #region IRemoteOperationsAuth Members
 
         public bool RegisterWorld(WorldServerInformation wsi, int channelPort)
         {
             wsi.LastPing = DateTime.Now;
-
-            // reset characters count
-            if (WorldServerManager.Realmlist.ContainsKey(wsi.Id))
-            {
-                WorldServerManager.Realmlist[wsi.Id].CharsCount = 0;
-                WorldServerManager.Realmlist[wsi.Id].SaveAndFlush();
-            }
 
             if (WorldServerManager.AddWorld(wsi))
             {
@@ -61,10 +50,7 @@ namespace Stump.Server.AuthServer.IPC
 
         public void ChangeState(WorldServerInformation wsi, DofusProtocol.Enums.ServerStatusEnum state)
         {
-              if (WorldServerManager.Realmlist.ContainsKey(wsi.Id))
-              {
-                  WorldServerManager.Realmlist[wsi.Id].Status = state;
-              }
+            WorldServerManager.ChangeWorldState(wsi.Id, state);
         }
 
         public void IncrementConnectedChars(WorldServerInformation wsi)
@@ -73,10 +59,9 @@ namespace Stump.Server.AuthServer.IPC
             {
                 WorldServerManager.Realmlist[wsi.Id].CharsCount++;
 
-                if ((DateTime.Now - m_lastdbupdate).TotalMilliseconds >= CharCountUpdateTimer)
+                if (WorldServerManager.Realmlist[wsi.Id].CharsCount >= WorldServerManager.Realmlist[wsi.Id].CharCapacity && WorldServerManager.Realmlist[wsi.Id].Status == DofusProtocol.Enums.ServerStatusEnum.ONLINE)
                 {
-                    m_lastdbupdate = DateTime.Now;
-                    WorldServerManager.Realmlist[wsi.Id].SaveAndFlush();
+                    WorldServerManager.ChangeWorldState(wsi.Id, DofusProtocol.Enums.ServerStatusEnum.FULL);
                 }
             }
         }
@@ -87,10 +72,9 @@ namespace Stump.Server.AuthServer.IPC
             {
                 WorldServerManager.Realmlist[wsi.Id].CharsCount--;
 
-                if ((DateTime.Now - m_lastdbupdate).TotalMilliseconds >= CharCountUpdateTimer)
+                if (WorldServerManager.Realmlist[wsi.Id].CharsCount < WorldServerManager.Realmlist[wsi.Id].CharCapacity && WorldServerManager.Realmlist[wsi.Id].Status == DofusProtocol.Enums.ServerStatusEnum.FULL)
                 {
-                    m_lastdbupdate = DateTime.Now;
-                    WorldServerManager.Realmlist[wsi.Id].SaveAndFlush();
+                    WorldServerManager.ChangeWorldState(wsi.Id, DofusProtocol.Enums.ServerStatusEnum.ONLINE);
                 }
             }
         }

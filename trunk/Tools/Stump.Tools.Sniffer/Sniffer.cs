@@ -37,9 +37,15 @@ namespace Stump.Tools.Sniffer
 {
     public class Sniffer
     {
+        /// <summary>
+        /// Local ip pattern for the sniffer
+        /// </summary>
         [Variable]
         public static string LocalIpPattern = "192.168.";
 
+        /// <summary>
+        /// local port for to sniff
+        /// </summary>
         [Variable]
         public static int PortToSniff = 5555;
 

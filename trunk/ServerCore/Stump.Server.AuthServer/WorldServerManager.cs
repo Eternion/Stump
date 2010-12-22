@@ -179,7 +179,7 @@ namespace Stump.Server.AuthServer
 
                     logger.Info("Registered World : \"{0}\" <Id : {1}> <{2}>", world.Name, world.Id, world.Address);
 
-                    OnServerListChange();
+                    OnServerChange(m_realmlist[world.Id]);
                     return true;
                 }
                 else
@@ -218,15 +218,25 @@ namespace Stump.Server.AuthServer
 
         public static bool CanAccessToWorld(AuthClient client, WorldRecord world)
         {
-            return world != null && world.Status == ServerStatusEnum.ONLINE && client.Account.Role >= world.RequiredRole &&
+            return world != null && world.Status == ServerStatusEnum.ONLINE && client.Account.Role >= world.RequiredRole && world.CharsCount < world.CharCapacity &&
                     (!world.RequireSubscription || (client.Account.GetRegistrationRemainingTime() > 0));
         }
 
         public static bool CanAccessToWorld(AuthClient client, int worldId)
         {
             var world = GetWorldRecord(worldId);
-            return world != null && world.Status == ServerStatusEnum.ONLINE && client.Account.Role >= world.RequiredRole &&
+            return world != null && world.Status == ServerStatusEnum.ONLINE && client.Account.Role >= world.RequiredRole && world.CharsCount < world.CharCapacity &&
                     (!world.RequireSubscription || (client.Account.GetRegistrationRemainingTime() > 0));
+        }
+
+        public static void ChangeWorldState(int worldId, ServerStatusEnum state)
+        {
+            var world = GetWorldRecord(worldId);
+            if (world != null)
+            {
+                world.Status = state;
+                OnServerChange(world);
+            }
         }
 
         public static List<GameServerInformations> GetServersInformationList(AuthClient client)
@@ -237,6 +247,14 @@ namespace Stump.Server.AuthServer
                                                (uint)record.Completion,
                                                record.ServerSelectable,
                                                client.GetCharactersCount(record.Id))).ToList();
+        }
+
+        public static GameServerInformations GetServerInformation(AuthClient client, WorldRecord world)
+        {
+            return new GameServerInformations((uint)world.Id, (uint)world.Status,
+                                               (uint)world.Completion,
+                                               world.ServerSelectable,
+                                               client.GetCharactersCount(world.Id));
         }
 
         /// <summary>
@@ -274,7 +292,7 @@ namespace Stump.Server.AuthServer
 
                         m_realmlist[world.Id].Status = ServerStatusEnum.OFFLINE;
 
-                        OnServerListChange();
+                        OnServerChange(m_realmlist[world.Id]);
                     }
                 }
                 logger.Info("Unregistered \"{0}\" <Id : {1}> <{2}>", world.Name, world.Id, world.Address);
@@ -315,6 +333,12 @@ namespace Stump.Server.AuthServer
         {
             Parallel.ForEach(AuthentificationServer.Instance.GetClientsLookingOfServers(),
                              ConnectionHandler.SendServersListMessage);
+        }
+
+        private static void OnServerChange(WorldRecord world)
+        {
+            Parallel.ForEach(AuthentificationServer.Instance.GetClientsLookingOfServers(),
+                client => ConnectionHandler.SendServerStatusUpdateMessage(client,world));
         }
     }
 }

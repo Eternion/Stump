@@ -38,6 +38,9 @@ namespace Stump.Tools.Proxy
 
         public int MaxPendingConnections = 100;
 
+        /// <summary>
+        /// Buffer size /!\ Advanced users /!\
+        /// </summary>
         [Variable(DefinableByConfig = false, DefinableRunning = false)]
         public static int BufferSize = 8192;
 

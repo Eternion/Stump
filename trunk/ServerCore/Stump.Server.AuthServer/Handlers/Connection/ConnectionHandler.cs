@@ -49,7 +49,7 @@ namespace Stump.Server.AuthServer.Handlers
                 return;
 
             /* If autoconnect, send to the lastServer */
-            if (message.autoconnect && client.Account.LastServer.HasValue && WorldServerManager.CanAccessToWorld(client,(int)client.Account.LastServer))
+            if (message.autoconnect && client.Account.LastServer.HasValue && WorldServerManager.CanAccessToWorld(client, (int)client.Account.LastServer))
             {
                 SendSelectServerData(client, WorldServerManager.GetWorldRecord((int)client.Account.Id));
             }
@@ -67,9 +67,9 @@ namespace Stump.Server.AuthServer.Handlers
             HandleIndentification(client, message);
 
             /* If world exist and connected */
-            if (WorldServerManager.CanAccessToWorld(client,message.serverId))
+            if (WorldServerManager.CanAccessToWorld(client, message.serverId))
             {
-                SendSelectServerData(client,WorldServerManager.GetWorldRecord(message.serverId));
+                SendSelectServerData(client, WorldServerManager.GetWorldRecord(message.serverId));
             }
             else
             {
@@ -83,7 +83,7 @@ namespace Stump.Server.AuthServer.Handlers
             /* Wrong Version */
             if (!ClientVersion.ClientVersionRequired.CompareVersion(message.version))
             {
-                SendIdentificationFailedForBadVersionMessage(client,ClientVersion.ClientVersionRequired.ToVersion());
+                SendIdentificationFailedForBadVersionMessage(client, ClientVersion.ClientVersionRequired.ToVersion());
                 client.DisconnectLater(1000);
                 return false;
             }
@@ -164,9 +164,9 @@ namespace Stump.Server.AuthServer.Handlers
             client.Send(new IdentificationFailedMessage((uint)reason));
         }
 
-        public static void SendIdentificationFailedForBadVersionMessage(AuthClient client,DofusProtocol.Classes.Version version)
+        public static void SendIdentificationFailedForBadVersionMessage(AuthClient client, DofusProtocol.Classes.Version version)
         {
-            client.Send(new IdentificationFailedForBadVersionMessage((uint)IdentificationFailureReasonEnum.BAD_VERSION,version));
+            client.Send(new IdentificationFailedForBadVersionMessage((uint)IdentificationFailureReasonEnum.BAD_VERSION, version));
         }
 
         public static void SendIdentificationFailedBannedMessage(AuthClient client)
@@ -183,7 +183,7 @@ namespace Stump.Server.AuthServer.Handlers
         public static void HandleServerSelectionMessage(AuthClient client, ServerSelectionMessage message)
         {
             var wr = WorldServerManager.GetWorldRecord(message.serverId);
-           
+
             /* World not exist */
             if (wr == null)
             {
@@ -234,7 +234,7 @@ namespace Stump.Server.AuthServer.Handlers
                             world.Id,
                             world.Ip,
                             world.Port,
-                            ( client.Account.Role >= world.RequiredRole),
+                            (client.Account.Role >= world.RequiredRole),
                             client.Key));
 
             client.Disconnect();
@@ -248,6 +248,12 @@ namespace Stump.Server.AuthServer.Handlers
         public static void SendServersListMessage(AuthClient client)
         {
             client.Send(new ServersListMessage(WorldServerManager.GetServersInformationList(client)));
+        }
+
+        public static void SendServerStatusUpdateMessage(AuthClient client, WorldRecord world)
+        {
+            if (world != null)
+                client.Send(new ServerStatusUpdateMessage(WorldServerManager.GetServerInformation(client, world)));
         }
 
         #endregion

@@ -43,9 +43,15 @@ namespace Stump.Server.WorldServer.Fights
 
     public class Fight : IInstance
     {
+        /// <summary>
+        /// Delay for player's turn
+        /// </summary>
         [Variable]
         public static int TurnTime = 35000;
 
+        /// <summary>
+        /// Delay before turn end
+        /// </summary>
         [Variable]
         public static int TurnEndTimeOut = 5000; // 5s
 

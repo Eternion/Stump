@@ -24,6 +24,9 @@ namespace Stump.Server.BaseServer.Commands
 {
     public abstract class CommandBase : ExecuterBase
     {
+        /// <summary>
+        /// Enable/Disable case check for server's commands
+        /// </summary>
         [Variable]
         public static bool IgnoreCommandCase = true;
 

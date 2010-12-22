@@ -28,6 +28,9 @@ namespace Stump.Server.AuthServer
 {
     public class AuthConsole : ConsoleBase
     {
+        /// <summary>
+        /// Prefix using for server's commands
+        /// </summary>
         [Variable]
         public static string CommandPreffix = "";
 
