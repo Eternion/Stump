@@ -61,6 +61,13 @@ namespace Stump.Server.WorldServer.Handlers
 
             BaseBreed breed = BreedManager.GetBreed(message.breed);
 
+            if (!client.Account.AvailableBreeds.Contains(breed.Id) ||
+                !BreedManager.AvailableBreeds.Contains(breed.Id))
+            {
+                client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.ERR_NOT_ALLOWED));
+                return;
+            }
+
             var indexedColors = new List<int>();
             for (int i = 0; i < 5; i++) // we ignore the sixth color
             {

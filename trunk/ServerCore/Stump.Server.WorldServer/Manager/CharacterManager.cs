@@ -19,9 +19,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
+using Castle.ActiveRecord;
 using Stump.Database;
-using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.IPC;
 
@@ -35,7 +34,24 @@ namespace Stump.Server.WorldServer.Manager
             uint[] ids = IpcAccessor.Instance.ProxyObject.GetAccountCharacters(WorldServer.ServerInformation,
                                                                                client.Account.Id);
             characters.AddRange(
-                ids.Select(id => CharacterRecord.FindCharacterById((int) id)).Where(character => character != null));
+                ids.Select(delegate(uint id)
+                {
+                    try
+                    {
+                        return CharacterRecord.FindCharacterById((int) id);
+                    }
+                    catch (NotFoundException)
+                    {
+                        // character do not exist, then we remove it from the auth database
+                        World.Instance.TaskPool.EnqueueTask(() =>
+                                                            IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(
+                                                                WorldServer.ServerInformation,
+                                                                client.Account.Id,
+                                                                id));
+                        return null;
+                    }
+                }).Where(character => character != null));
+
             return characters;
         }
 
@@ -67,7 +83,6 @@ namespace Stump.Server.WorldServer.Manager
 
             World.Instance.TaskPool.EnqueueTask(() =>
             {
-                character.DeleteAssociatedRecords();
                 character.Delete();
 
                 IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(WorldServer.ServerInformation,
@@ -78,9 +93,9 @@ namespace Stump.Server.WorldServer.Manager
 
         #region Character Name Random Generation
 
-        private const string Voyelles = "aeiouy";
+        private const string Vowels = "aeiouy";
 
-        private const string Consonnes = "bcdfghjklmnpqrstvwxz";
+        private const string Consonants = "bcdfghjklmnpqrstvwxz";
 
         public static string GenerateName()
         {
@@ -92,25 +107,25 @@ namespace Stump.Server.WorldServer.Manager
                 int namelen = rand.Next(5, 10);
                 name = string.Empty;
 
-                name += char.ToUpper(RandomConsonne(rand));
+                name += char.ToUpper(RandomConsonant(rand));
 
                 for (int i = 0; i < namelen - 1; i++)
                 {
-                    name += (i%2 == 1) ? RandomConsonne(rand) : RandomVoyelle(rand);
+                    name += (i%2 == 1) ? RandomConsonant(rand) : RandomVowel(rand);
                 }
             } while (CharacterRecord.IsNameExists(name));
 
             return name;
         }
 
-        private static char RandomVoyelle(Random rand)
+        private static char RandomVowel(Random rand)
         {
-            return Voyelles[rand.Next(0, Voyelles.Length - 1)];
+            return Vowels[rand.Next(0, Vowels.Length - 1)];
         }
 
-        private static char RandomConsonne(Random rand)
+        private static char RandomConsonant(Random rand)
         {
-            return Consonnes[rand.Next(0, Consonnes.Length - 1)];
+            return Consonants[rand.Next(0, Consonants.Length - 1)];
         }
 
         #endregion

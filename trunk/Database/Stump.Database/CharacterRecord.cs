@@ -398,6 +398,13 @@ namespace Stump.Database
                 UpdateAndFlush();
         }
 
+        protected override void OnDelete()
+        {
+            DeleteAssociatedRecords();
+
+            base.OnDelete();
+        }
+
         protected override bool BeforeSave(IDictionary state)
         {
             m_dbLook = m_look != null ? EntityLookExtension.ToString(m_look) : "{0}";
