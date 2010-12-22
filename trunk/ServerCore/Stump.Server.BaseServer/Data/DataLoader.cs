@@ -31,15 +31,27 @@ namespace Stump.Server.BaseServer.Data
 {
     public static class DataLoader
     {
+        /// <summary>
+        /// Path to 'data' folder
+        /// </summary>
         [Variable]
         public static string DataPath = "./../../data";
 
+        /// <summary>
+        /// Name of d2o folder in 'data' folder
+        /// </summary>
         [Variable]
         public static string D2ODir = "/common/";
 
+        /// <summary>
+        /// Name of i18n folder in 'data' folder
+        /// </summary>
         [Variable]
         public static string I18NDir = "/i18n/";
 
+        /// <summary>
+        /// Name of the i18n file used by the server
+        /// </summary>
         [Variable]
         public static string I18NFileName = "i18n_fr.d2i";
 

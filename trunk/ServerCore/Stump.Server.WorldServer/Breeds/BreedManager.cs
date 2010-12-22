@@ -29,6 +29,9 @@ namespace Stump.Server.WorldServer.Breeds
 {
     public static class BreedManager
     {
+        /// <summary>
+        /// List of available breeds
+        /// </summary>
         [Variable]
         public static List<BreedEnum> AvailableBreeds = new List<BreedEnum>
             {

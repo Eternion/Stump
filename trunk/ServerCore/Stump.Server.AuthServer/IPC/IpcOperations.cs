@@ -28,6 +28,9 @@ namespace Stump.Server.AuthServer.IPC
 {
     public class IpcOperations : MarshalByRefObject, IRemoteOperationsAuth
     {
+        /// <summary>
+        /// ???
+        /// </summary>
         [Variable]
         public const double CharCountUpdateTimer = 30000; // 30 seconds
 

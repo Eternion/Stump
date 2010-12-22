@@ -37,6 +37,9 @@ namespace Stump.Server.WorldServer.Chat
 
         #endregion
 
+        /// <summary>
+        /// Prefix used for chat commands
+        /// </summary>
         [Variable]
         public static string CommandPrefix = "#";
 

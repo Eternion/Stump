@@ -27,9 +27,15 @@ namespace Stump.Server.WorldServer.Data
     // todo : extract the d2p file if necessary to be synchronised with the client cache
     public static class MapLoader
     {
+        /// <summary>
+        /// Name of maps folder
+        /// </summary>
         [Variable]
         public static string MapsDir = "/maps/";
 
+        /// <summary>
+        /// Name of d2o file for maps
+        /// </summary>
         [Variable]
         public static string MapsPakFile = "maps.d2p";
 

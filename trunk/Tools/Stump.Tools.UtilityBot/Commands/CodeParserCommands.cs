@@ -28,6 +28,9 @@ namespace Stump.Tools.UtilityBot.Commands
 {
     public class PacketGeneratorCommand : Command
     {
+        /// <summary>
+        /// Output path
+        /// </summary>
         [Variable]
         public static string Output = "./../../../DofusProtocol/Messages/Messages/";
 
@@ -93,6 +96,9 @@ namespace Stump.Tools.UtilityBot.Commands
 
     public class ClassesGeneratorCommand : Command
     {
+        /// <summary>
+        /// Output path
+        /// </summary>
         [Variable]
         public static string Output = "./../../../DofusProtocol/Classes/Types/";
 
@@ -157,6 +163,9 @@ namespace Stump.Tools.UtilityBot.Commands
 
     public class D2OClassesGeneratorCommand : Command
     {
+        /// <summary>
+        /// Output path
+        /// </summary>
         [Variable]
         public static string Output = "./../../../DofusProtocol/D2oClasses/Classes/";
 
@@ -247,6 +256,9 @@ namespace Stump.Tools.UtilityBot.Commands
 
     public class GenEnumsCommand : Command
     {
+        /// <summary>
+        /// Output path
+        /// </summary>
         [Variable]
         public static string Output = "./../../../DofusProtocol/Enums/Export/";
 

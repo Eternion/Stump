@@ -26,6 +26,9 @@ namespace Stump.Server.WorldServer
 {
     public class WorldConsole : ConsoleBase
     {
+        /// <summary>
+        /// Prefix used for server's commands
+        /// </summary>
         [Variable]
         public static string CommandPreffix = "";
 

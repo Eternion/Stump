@@ -45,6 +45,9 @@ namespace Stump.Server.WorldServer
         {
         }
 
+        /// <summary>
+        /// ID of current world server
+        /// </summary>
         [Variable]
         public static int ServerId
         {
@@ -58,6 +61,9 @@ namespace Stump.Server.WorldServer
             }
         }
 
+        /// <summary>
+        /// Name of current world server
+        /// </summary>
         [Variable]
         public static string ServerName
         {
@@ -71,6 +77,9 @@ namespace Stump.Server.WorldServer
             }
         }
 
+        /// <summary>
+        /// Adress of current world server
+        /// </summary>
         [Variable]
         public static string ServerAddress
         {
@@ -84,6 +93,9 @@ namespace Stump.Server.WorldServer
             }
         }
 
+        /// <summary>
+        /// Port of current world server
+        /// </summary>
         [Variable]
         public static ushort ServerPort
         {

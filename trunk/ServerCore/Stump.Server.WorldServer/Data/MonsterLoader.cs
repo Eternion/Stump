@@ -26,6 +26,9 @@ namespace Stump.Server.WorldServer.Data
 {
     public class MonsterLoader
     {
+        /// <summary>
+        /// Name of monsters folder
+        /// </summary>
         [Variable]
         public static string MapsDir = "/Monsters/";
 

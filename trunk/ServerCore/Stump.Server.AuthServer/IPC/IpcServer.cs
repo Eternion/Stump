@@ -34,6 +34,9 @@ namespace Stump.Server.AuthServer.IPC
 {
     public class IpcServer : Singleton<IpcServer>
     {
+        /// <summary>
+        /// IPC port
+        /// </summary>
         [Variable]
         public static int IpcPort = 9100;
 

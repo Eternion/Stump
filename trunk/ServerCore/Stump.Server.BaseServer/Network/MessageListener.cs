@@ -30,24 +30,45 @@ namespace Stump.Server.BaseServer.Network
 {
     public sealed class MessageListener
     {
+        /// <summary>
+        /// Current server adress
+        /// </summary>
         [Variable]
         public static string Host = "localhost";
 
+        /// <summary>
+        /// Server port
+        /// </summary>
         [Variable]
         public static int Port = 443;
 
+        /// <summary>
+        /// Max number of clients connected
+        /// </summary>
         [Variable]
         public static int MaxConcurrentConnections = 2000;
 
+        /// <summary>
+        /// Max number of clients waiting for a connection
+        /// </summary>
         [Variable]
         public static int MaxPendingConnections = 100;
-
+        
+        /// <summary>
+        /// Enable/Disable IP restriction
+        /// </summary>
         [Variable]
         public static bool ActiveIPRestriction = true;
 
+        /// <summary>
+        /// Max number of clients connected on the same IP
+        /// </summary>
         [Variable]
         public static int MaxIPConnexions = 10;
 
+        /// <summary>
+        /// Buffer size /!\ Advenced users /!\
+        /// </summary>
         [Variable(DefinableByConfig = false, DefinableRunning = false)]
         public static int BufferSize = 8192;
 

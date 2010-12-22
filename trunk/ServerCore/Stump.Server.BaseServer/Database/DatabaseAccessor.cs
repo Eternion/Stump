@@ -115,6 +115,9 @@ namespace Stump.Server.BaseServer.Database
         /// </summary>
         private static string m_databaseName;
 
+        /// <summary>
+        /// Database user
+        /// </summary>
         [Variable]
         public static string LoginUser
         {
@@ -122,6 +125,9 @@ namespace Stump.Server.BaseServer.Database
             set { m_loginUser = value; }
         }
 
+        /// <summary>
+        /// Database password
+        /// </summary>
         [Variable]
         public static string LoginPassword
         {
@@ -129,6 +135,9 @@ namespace Stump.Server.BaseServer.Database
             set { m_loginPass = value; }
         }
 
+        /// <summary>
+        /// Database host
+        /// </summary>
         [Variable]
         public static string LoginHost
         {
@@ -136,6 +145,9 @@ namespace Stump.Server.BaseServer.Database
             set { m_loginHost = value; }
         }
 
+        /// <summary>
+        /// Database name to connect to
+        /// </summary>
         [Variable]
         public static string DatabaseName
         {
