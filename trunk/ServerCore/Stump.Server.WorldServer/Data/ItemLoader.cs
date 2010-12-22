@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,9 +15,9 @@ namespace Stump.Server.WorldServer.Data
         {
             foreach (var item in itemTemplates)
             {
-                itemTemplates.Where(entry => entry.Value.Id == item.Value.Id)
-                    .First().Value.Name = DataLoader.I18NFile.ReadText((int) item.Value.NameId);
+                item.Value.Name = DataLoader.I18NFile.ReadText((int) item.Value.NameId);
             }
+
         }
 
         public static void LoadItemsStored(ref Dictionary<int, ItemTemplate> itemTemplates)

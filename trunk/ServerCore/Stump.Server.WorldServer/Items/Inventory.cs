@@ -84,9 +84,9 @@ namespace Stump.Server.WorldServer.Items
             ItemMoved += OnItemMove;
         }
 
-        public Item[] Items
+        public IEnumerable<Item> Items
         {
-            get { return m_items.Values.ToArray(); }
+            get { return m_items.Values; }
         }
 
         public Item this[long guid]

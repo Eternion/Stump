@@ -20,6 +20,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using NLog;
 using Stump.Database;
 using Stump.DofusProtocol.Enums;
@@ -163,6 +164,74 @@ namespace Stump.Server.WorldServer.Items
             }
 
             return item;
+        }
+
+        /// <summary>
+        /// Found an item template contains in a given list with a pattern
+        /// </summary>
+        /// <remarks>
+        /// When @ precede the pattern the case is ignored
+        /// * is a joker, it can be placed at the begin or at the end or both
+        /// it means that characters are ignored
+        /// 
+        /// Note : We use RegExp for the pattern. '*' are remplaced by '[\w\d_]*'
+        /// </remarks>
+        /// <example>
+        /// pattern :   @Ab*
+        /// list :  abc
+        ///         Abd
+        ///         ace
+        /// 
+        /// returns : abc and Abd
+        /// </example>
+        // todo : enhanced the method to do like this '{Level>100;Name~coiffe...}'
+        public static IEnumerable<ItemTemplate> GetItemsByPattern(string pattern, IEnumerable<ItemTemplate> list)
+        {
+            if (pattern == "*")
+                return list;
+
+            bool ignorecase = pattern[0] == '@';
+
+            if (ignorecase)
+                pattern = pattern.Remove(0, 1);
+
+            int outvalue;
+            if (!ignorecase &&
+                int.TryParse(pattern, out outvalue)) // the pattern is an id
+            {
+                return list.Where(entry => entry.Id == outvalue);
+            }
+
+            pattern = pattern.Replace("*", @"[\w\d\s_]*");
+
+            return list.Where(entry => Regex.Match(entry.Name, pattern, ignorecase ? RegexOptions.IgnoreCase : RegexOptions.None).Success);
+        }
+
+        public static IEnumerable<ItemTemplate> GetItemsByPattern(string pattern)
+        {
+            return GetItemsByPattern(pattern, m_itemTemplates.Values);
+        }
+
+        public static IEnumerable<Item> GetItemsByPattern(string pattern, IEnumerable<Item> list)
+        {
+            if (pattern == "*")
+                return list;
+
+            bool ignorecase = pattern[0] == '@';
+
+            if (ignorecase)
+                pattern = pattern.Remove(0, 1);
+
+            int outvalue;
+            if (!ignorecase &&
+                int.TryParse(pattern, out outvalue)) // the pattern is an id
+            {
+                return list.Where(entry => entry.Template.Id == outvalue);
+            }
+
+            pattern = pattern.Replace("*", @"[\w\d\s_]*");
+
+            return list.Where(entry => Regex.Match(entry.Template.Name, pattern, ignorecase ? RegexOptions.IgnoreCase : RegexOptions.None).Success);
         }
 
         #endregion

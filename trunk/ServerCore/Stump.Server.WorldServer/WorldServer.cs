@@ -177,7 +177,7 @@ namespace Stump.Server.WorldServer
 
         public IEnumerable<WorldClient> GetClients()
         {
-            return (IEnumerable<WorldClient>) MessageListener.ClientList;
+            return MessageListener.ClientList.OfType<WorldClient>();
         }
 
         public IEnumerable<WorldClient> GetClientsUsingAccount(AccountRecord account)

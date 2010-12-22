@@ -96,7 +96,7 @@ namespace Stump.Server.WorldServer.Global
             Zones = new Dictionary<int, Zone>();
             Regions = new Dictionary<int, Region>();
             Continents = new Dictionary<int, Continent>();
-            Maps = new Dictionary<int, Map>();
+            Maps = new ConcurrentDictionary<int, Map>();
             Running = false;
 
             m_taskPool = new AsyncTaskPool(WorldUpdateInterval);
@@ -150,16 +150,17 @@ namespace Stump.Server.WorldServer.Global
         }
 
         /// <summary>
-        /// Get a character by a search pattern. *(account) = current character used by account, name = character by his name.
+        /// Get a character by a search pattern. *account = current character used by account, name = character by his name.
         /// </summary>
         /// <returns></returns>
         public Character GetCharacterByPattern(string pattern)
         {
-            Match match = Regex.Match(pattern, @"\*\(([\w\d_-]+)\)");
-            if (match.Success)
+            if (pattern[0] == '*')
             {
+                string name = pattern.Remove(0, 1);
+
                 var characters = from entry in WorldServer.Instance.GetClients()
-                                 where entry.Account.Login == pattern
+                                 where entry.Account.Login == name
                                  select entry.ActiveCharacter;
 
                 return characters.FirstOrDefault();
@@ -308,7 +309,7 @@ namespace Stump.Server.WorldServer.Global
             set;
         }
 
-        public Dictionary<int, Map> Maps
+        public ConcurrentDictionary<int, Map> Maps
         {
             get;
             set;

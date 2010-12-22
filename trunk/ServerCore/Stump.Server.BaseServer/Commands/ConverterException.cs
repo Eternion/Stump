@@ -17,77 +17,26 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Runtime.Serialization;
 
 namespace Stump.Server.BaseServer.Commands
 {
-    public interface ICommandParameter : ICloneable
+    public class ConverterException : Exception
     {
-        string Name
+        public ConverterException()
         {
-            get;
         }
 
-        string ShortName
+        public ConverterException(string message) : base(message)
         {
-            get;
         }
 
-        string Description
+        public ConverterException(string message, Exception innerException) : base(message, innerException)
         {
-            get;
         }
 
-        bool IsOptional
+        protected ConverterException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            get;
         }
-
-        bool IsValueDefined
-        {
-            get;
-        }
-
-        object Value
-        {
-            get;
-        }
-
-        object DefaultValue
-        {
-            get;
-        }
-
-        Type ValueType
-        {
-            get;
-        }
-
-        string StringValue
-        {
-            get;
-        }
-        void SetStringValue(string str, TriggerBase trigger);
-        bool SetDefaultValue();
-        string GetUsage();
-    }
-
-    public interface ICommandParameter<out T> : ICommandParameter
-    {
-        Func<string, TriggerBase, T> Converter
-        {
-            get;
-        }
-
-        new T DefaultValue
-        {
-            get;
-        }
-
-        new T Value
-        {
-            get;
-        }
-
-        T GetValue();
     }
 }

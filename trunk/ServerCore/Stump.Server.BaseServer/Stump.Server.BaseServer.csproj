@@ -67,6 +67,7 @@
     <Compile Include="Commands\ICommandParameter.cs" />
     <Compile Include="Commands\SubCommand.cs" />
     <Compile Include="Commands\TriggerBase.cs" />
+    <Compile Include="Commands\ConverterException.cs" />
     <Compile Include="ConsoleBase.cs" />
     <Compile Include="Data\DataLoader.cs" />
     <Compile Include="Data\D2oTool\D2oClassDefinition.cs" />

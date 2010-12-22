@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Stump.BaseCore.Framework.IO;
 using Stump.DofusProtocol.Enums;
@@ -63,7 +64,11 @@ namespace Stump.Server.WorldServer.Global
                     map.ParentSpace = GetZone((int) map.ZoneId);
                     map.ParentSpace.Childrens.Add(map);
 
-                    Maps.Add(map.Id, map);
+                    while (!Maps.TryAdd(map.Id, map))
+                    {
+                        // if cannot add the map we change the current thread
+                        Thread.Sleep(1);
+                    }
 
                     consoleProcent.Update((int) (((double) Maps.Count/count)*100));
                 });

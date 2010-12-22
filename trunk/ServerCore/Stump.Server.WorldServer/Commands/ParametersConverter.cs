@@ -28,10 +28,17 @@ namespace Stump.Server.WorldServer.Commands
     {
         public static Func<string, TriggerBase, Character> CharacterConverter = (entry, trigger) =>
         {
-            if (trigger is IInGameTrigger && (trigger as IInGameTrigger).Character != null)
-                return World.Instance.GetCharacterByPattern((trigger as IInGameTrigger).Character, entry);
+            Character target;
 
-            return World.Instance.GetCharacterByPattern(entry);
+            if (trigger is IInGameTrigger && (trigger as IInGameTrigger).Character != null)
+                target = World.Instance.GetCharacterByPattern((trigger as IInGameTrigger).Character, entry);
+            else 
+                target = World.Instance.GetCharacterByPattern(entry);
+
+            if (target == null)
+                throw new ConverterException(string.Format("'{0}' is not found or not connected", entry));
+
+            return target;
         };
 
         public static Func<string, TriggerBase, ItemTemplate> ItemTemplateConverter = (entry, trigger) =>
@@ -42,7 +49,7 @@ namespace Stump.Server.WorldServer.Commands
                 var itemById = ItemManager.GetTemplate(outvalue);
 
                 if (itemById == null)
-                    throw new Exception(string.Format("'{0}' is not a valid item", entry));
+                    throw new ConverterException(string.Format("'{0}' is not a valid item", entry));
 
                 return itemById;
             }
@@ -50,7 +57,7 @@ namespace Stump.Server.WorldServer.Commands
             var itemByName = ItemManager.GetTemplate(entry, CommandBase.IgnoreCommandCase);
 
             if (itemByName == null)
-                throw new Exception(string.Format("'{0}' is not a valid item", entry));
+                throw new ConverterException(string.Format("'{0}' is not a valid item", entry));
 
             return itemByName;
         };

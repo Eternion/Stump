@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.Handlers
             string characterName = StringUtils.FirstLetterUpper(message.name.ToLower());
 
             /* have bad name */
-            if (!Regex.IsMatch(characterName, "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$"))
+            if (!Regex.IsMatch(characterName, "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled))
             {
                 client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.ERR_INVALID_NAME));
                 return;

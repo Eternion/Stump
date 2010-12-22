@@ -230,13 +230,10 @@ namespace Stump.BaseCore.Framework.IO
         public string ReadUTF()
         {
             ushort length = ReadUShort();
-            var str = new StringBuilder();
-            int i;
-            for (i = 0; i < length; i++)
-            {
-                str.Append((char) ReadByte());
-            }
-            return str.ToString();
+
+            byte[] bytes = ReadBytes(length);
+
+            return Encoding.UTF8.GetString(bytes);
         }
 
         /// <summary>

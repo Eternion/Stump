@@ -23,8 +23,10 @@ namespace Stump.Server.BaseServer.Commands
     public class CommandParameter<T> : ICommandParameter<T>
     {
         private string m_stringValue;
+        private T m_value;
 
-        public CommandParameter(string name, string shortName = "", string description = "", bool isOptional = false, T defaultValue = default(T),
+        public CommandParameter(string name, string shortName = "", string description = "", bool isOptional = false,
+                                T defaultValue = default(T),
                                 Func<string, TriggerBase, T> converter = null)
         {
             Name = name;
@@ -34,6 +36,7 @@ namespace Stump.Server.BaseServer.Commands
             DefaultValue = defaultValue;
             Converter = converter;
         }
+
         #region ICommandParameter<T> Members
 
         public Func<string, TriggerBase, T> Converter
@@ -66,6 +69,12 @@ namespace Stump.Server.BaseServer.Commands
             private set;
         }
 
+        public bool IsValueDefined
+        {
+            get;
+            private set;
+        }
+
         object ICommandParameter.DefaultValue
         {
             get { return DefaultValue; }
@@ -89,8 +98,12 @@ namespace Stump.Server.BaseServer.Commands
 
         public T Value
         {
-            get;
-            private set;
+            get { return m_value; }
+            private set
+            {
+                IsValueDefined = true;
+                m_value = value;
+            }
         }
 
         public string StringValue
@@ -122,11 +135,9 @@ namespace Stump.Server.BaseServer.Commands
             // if not optional and default value isn't set we leave
             if ((Equals(DefaultValue, default(T))) && !IsOptional)
                 return false;
+
             if (Equals(DefaultValue, default(T)) && IsOptional)
-            {
-                Value = default(T);
                 return true;
-            }
 
             Value = DefaultValue;
             return true;

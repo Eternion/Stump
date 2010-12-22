@@ -89,16 +89,29 @@ namespace Stump.Server.BaseServer.Commands
         {
             if (CommandsParametersByName.ContainsKey(name))
                 return (T)CommandsParametersByName[name].Value;
-            else if (CommandsParametersByShortName.ContainsKey(name))
+            if (CommandsParametersByShortName.ContainsKey(name))
                 return (T) CommandsParametersByShortName[name].Value;
-            else 
-                throw new ArgumentException("'" + name + "' is not an existing parameter"); 
+
+            throw new ArgumentException("'" + name + "' is not an existing parameter");
         }
 
         public bool ArgumentExists(string name)
         {
-            return CommandsParametersByName.ContainsKey(name) ||
-                   CommandsParametersByShortName.ContainsKey(name);
+            ICommandParameter parameter;
+            if (CommandsParametersByName.ContainsKey(name))
+            {
+                parameter = CommandsParametersByName[name];
+
+                return parameter.IsValueDefined;
+            }
+            if (CommandsParametersByShortName.ContainsKey(name))
+            {
+                parameter = CommandsParametersByShortName[name];
+
+                return parameter.IsValueDefined;
+            }
+
+            return false;
         }
 
         public string GetBindedCommandName()
@@ -126,8 +139,8 @@ namespace Stump.Server.BaseServer.Commands
                 if (word.StartsWith("\"") && word.EndsWith("\""))
                     word = word.Remove(word.Length - 1, 1).Remove(0, 1);
 
-                Match matchIsNamed = Regex.Match(word, @"^(?!\"")(?:-|--)?(\w+)=([^\""\s]*)(?!\"")$");
-                Match matchVar = Regex.Match(word, @"^(?!\"")(?:-|--)(\w+)(?!\"")$");
+                Match matchIsNamed = Regex.Match(word, @"^(?!\"")(?:-|--)?(\w+)=([^\""\s]*)(?!\"")$", RegexOptions.Compiled);
+                Match matchVar = Regex.Match(word, @"^(?!\"")(?:-|--)(\w+)(?!\"")$", RegexOptions.Compiled);
                 if (matchIsNamed.Success)
                 {
                     string name = matchIsNamed.Groups[1].Value;
@@ -150,6 +163,11 @@ namespace Stump.Server.BaseServer.Commands
                                 commandParameter.SetDefaultValue();
                             else
                                 commandParameter.SetStringValue(value, this);
+                        }
+                        catch(ConverterException ex)
+                        {
+                            errorDelegate(string.Format("Cannot convert : {0} > {1}", word, ex.Message));
+                            return false;
                         }
                         catch
                         {
@@ -178,6 +196,11 @@ namespace Stump.Server.BaseServer.Commands
                         try
                         {
                             commandParameter.SetDefaultValue();
+                        }
+                        catch (ConverterException ex)
+                        {
+                            errorDelegate(string.Format("Cannot convert : {0} > {1}", word, ex.Message));
+                            return false;
                         }
                         catch
                         {
