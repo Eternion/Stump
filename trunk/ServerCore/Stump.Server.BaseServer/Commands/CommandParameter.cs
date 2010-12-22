@@ -24,69 +24,8 @@ namespace Stump.Server.BaseServer.Commands
     {
         private string m_stringValue;
 
-        public CommandParameter(string name)
-        {
-            Name = name;
-            ShortName = name;
-        }
-
-        public CommandParameter(string name, string shortName)
-        {
-            Name = name;
-            ShortName = shortName;
-        }
-
-        public CommandParameter(string name, string shortName, bool isOptional)
-        {
-            Name = name;
-            ShortName = shortName;
-            IsOptional = isOptional;
-        }
-
-        public CommandParameter(string name, string shortName, bool isOptional, T defaultValue)
-        {
-            Name = name;
-            ShortName = shortName;
-            IsOptional = isOptional;
-            DefaultValue = defaultValue;
-        }
-
-        public CommandParameter(string name, string shortName, bool isOptional, T defaultValue,
-                                Func<string, TriggerBase, T> converter)
-        {
-            Name = name;
-            ShortName = shortName;
-            IsOptional = isOptional;
-            DefaultValue = defaultValue;
-            Converter = converter;
-        }
-
-        public CommandParameter(string name, string shortName, string description)
-        {
-            Name = name;
-            ShortName = shortName;
-            Description = description;
-        }
-
-        public CommandParameter(string name, string shortName, string description, bool isOptional)
-        {
-            Name = name;
-            ShortName = shortName;
-            Description = description;
-            IsOptional = isOptional;
-        }
-
-        public CommandParameter(string name, string shortName, string description, bool isOptional, T defaultValue)
-        {
-            Name = name;
-            ShortName = shortName;
-            Description = description;
-            IsOptional = isOptional;
-            DefaultValue = defaultValue;
-        }
-
-        public CommandParameter(string name, string shortName, string description, bool isOptional, T defaultValue,
-                                Func<string, TriggerBase, T> converter)
+        public CommandParameter(string name, string shortName = "", string description = "", bool isOptional = false, T defaultValue = default(T),
+                                Func<string, TriggerBase, T> converter = null)
         {
             Name = name;
             ShortName = shortName;
@@ -95,7 +34,6 @@ namespace Stump.Server.BaseServer.Commands
             DefaultValue = defaultValue;
             Converter = converter;
         }
-
         #region ICommandParameter<T> Members
 
         public Func<string, TriggerBase, T> Converter
@@ -181,18 +119,17 @@ namespace Stump.Server.BaseServer.Commands
         /// <returns>False if <see cref = "IsOptional" /> is false or <see cref = "DefaultValue" /> is not assigned</returns>
         public bool SetDefaultValue()
         {
-            if (DefaultValue == null || Equals(DefaultValue, default(T)) || !IsOptional)
+            // if not optional and default value isn't set we leave
+            if ((Equals(DefaultValue, default(T))) && !IsOptional)
                 return false;
-            else if (DefaultValue == null || Equals(DefaultValue, default(T)) && IsOptional)
+            if (Equals(DefaultValue, default(T)) && IsOptional)
             {
                 Value = default(T);
                 return true;
             }
-            else
-            {
-                Value = DefaultValue;
-                return true;
-            }
+
+            Value = DefaultValue;
+            return true;
         }
 
         public string GetUsage()
@@ -214,7 +151,7 @@ namespace Stump.Server.BaseServer.Commands
 
         public object Clone()
         {
-            return new CommandParameter<T>(Name, ShortName, IsOptional, DefaultValue, Converter)
+            return new CommandParameter<T>(Name, ShortName, Description, IsOptional, DefaultValue, Converter)
                 {
                     m_stringValue = m_stringValue,
                     Value = Value

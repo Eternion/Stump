@@ -20,6 +20,7 @@ using System;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global;
+using Stump.Server.WorldServer.Items;
 
 namespace Stump.Server.WorldServer.Commands
 {
@@ -31,6 +32,27 @@ namespace Stump.Server.WorldServer.Commands
                 return World.Instance.GetCharacterByPattern((trigger as IInGameTrigger).Character, entry);
 
             return World.Instance.GetCharacterByPattern(entry);
+        };
+
+        public static Func<string, TriggerBase, ItemTemplate> ItemTemplateConverter = (entry, trigger) =>
+        {
+            int outvalue;
+            if (int.TryParse(entry, out outvalue))
+            {
+                var itemById = ItemManager.GetTemplate(outvalue);
+
+                if (itemById == null)
+                    throw new Exception(string.Format("'{0}' is not a valid item", entry));
+
+                return itemById;
+            }
+
+            var itemByName = ItemManager.GetTemplate(entry, CommandBase.IgnoreCommandCase);
+
+            if (itemByName == null)
+                throw new Exception(string.Format("'{0}' is not a valid item", entry));
+
+            return itemByName;
         };
     }
 }

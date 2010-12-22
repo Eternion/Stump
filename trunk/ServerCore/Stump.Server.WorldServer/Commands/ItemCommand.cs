@@ -49,9 +49,8 @@ namespace Stump.Server.WorldServer.Commands
             ParentCommand = typeof (ItemCommand);
             Parameters = new List<ICommandParameter>
                 {
-                    new CommandParameter<Character>("target", "t", "Character who will receive the item", false, null,
-                                                    ParametersConverter.CharacterConverter),
-                    new CommandParameter<ItemTemplate>("template", "item", "Item to add"),
+                    new CommandParameter<Character>("target", "t", "Character who will receive the item", converter:ParametersConverter.CharacterConverter),
+                    new CommandParameter<ItemTemplate>("template", "item", "Item to add", converter:ParametersConverter.ItemTemplateConverter),
                     new CommandParameter<uint>("amount", "amount", "Amount of items to add", true, 1),
                     new CommandParameter<bool>("max", "max", "Set item's effect to maximal values", true, false)
                 };

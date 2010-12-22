@@ -50,7 +50,7 @@ namespace Stump.Server.AuthServer.Commands
             Description = "Create a new account.";
             Parameters = new List<ICommandParameter>
                 {
-                    new CommandParameter<string>("accountname", "name", "Name of the created account", false),
+                    new CommandParameter<string>("accountname", "name", "Name of the created account"),
                     new CommandParameter<string>("password", "pass", "Password of the created accont"),
                     new CommandParameter<RoleEnum>("role", "role", "Role of the created account. See RoleEnum", true,
                                                    RoleEnum.Player, ParametersConverter.RoleConverter),

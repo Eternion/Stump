@@ -243,7 +243,7 @@ namespace Stump.Server.BaseServer.Commands
             trigger.Reply("{0} {1} - {2}",
                           string.Join("/", command.Aliases),
                           command.SubCommands.Count > 0
-                              ? string.Format("({0} subcommands)", command.SubCommands.Count)
+                              ? string.Format("({0} subcmds)", command.SubCommands.Count)
                               : "",
                           command.Description,
                           command.Aliases.First());
@@ -254,16 +254,17 @@ namespace Stump.Server.BaseServer.Commands
             trigger.Reply("{0} {1} - {2} : {3} {4}",
                           string.Join("/", command.Aliases),
                           command.SubCommands.Count > 0
-                              ? string.Format("({0} subcommands)", command.SubCommands.Count)
+                              ? string.Format("({0} subcmds)", command.SubCommands.Count)
                               : "",
                           command.Description,
                           command.Aliases.First(),
                           command.GetSafeUsage());
 
-            foreach (ICommandParameter commandParameter in command.Parameters)
-            {
-                DisplayCommandParameter(trigger, commandParameter);
-            }
+            if (command.Parameters != null)
+                foreach (ICommandParameter commandParameter in command.Parameters)
+                {
+                    DisplayCommandParameter(trigger, commandParameter);
+                }
         }
 
         private static void DisplaySubCommandDescription(TriggerBase trigger, CommandBase command, SubCommand subcommand)

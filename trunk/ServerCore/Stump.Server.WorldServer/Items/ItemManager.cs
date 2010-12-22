@@ -49,14 +49,13 @@ namespace Stump.Server.WorldServer.Items
         ///   Array containing every Item template loaded from database.
         /// </summary>
         private static Dictionary<int, ItemTemplate> m_itemTemplates = new Dictionary<int, ItemTemplate>();
-        private static ConcurrentDictionary<long, Item> m_loadedItems = new ConcurrentDictionary<long, Item>();
+
+        private static readonly ConcurrentDictionary<long, Item> m_loadedItems = new ConcurrentDictionary<long, Item>();
 
         /// <summary>
         ///   Array containing every Item Types in the game
         /// </summary>
         private static ItemTypeEx[] m_itemTypes = new ItemTypeEx[(int) ItemTypeEnum.End];
-
-        
 
         #endregion
 
@@ -131,6 +130,17 @@ namespace Stump.Server.WorldServer.Items
         public static ItemTemplate GetTemplate(int id)
         {
             return !m_itemTemplates.ContainsKey(id) ? null : m_itemTemplates[id];
+        }
+
+        public static ItemTemplate GetTemplate(string name, bool ignorecase)
+        {
+            return
+                m_itemTemplates.Values.Where(
+                    entry =>
+                    entry.Name.Equals(name,
+                                      ignorecase
+                                          ? StringComparison.InvariantCultureIgnoreCase
+                                          : StringComparison.InvariantCulture)).FirstOrDefault();
         }
 
         public static ItemTypeEx GetItemType(uint id)
