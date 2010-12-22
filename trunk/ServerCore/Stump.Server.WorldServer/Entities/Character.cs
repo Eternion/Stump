@@ -124,6 +124,9 @@ namespace Stump.Server.WorldServer.Entities
 
         public void ChangeMap(Map nextMap)
         {
+            if (IsMoving)
+                MovementEnded();
+
             Map lastMap = Map;
 
             NextMap = nextMap;

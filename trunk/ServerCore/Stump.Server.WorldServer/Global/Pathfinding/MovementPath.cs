@@ -45,7 +45,7 @@ namespace Stump.Server.WorldServer.Global.Pathfinding
         {
             if (Path.Count > 0)
             {
-                var i = Path.Count - 1;
+                var i = Path.Count - 2; // we don't touch the last vector
                 while (i > 0)
                 {
                     if (Path[i].Direction == Path[i - 1].Direction)
@@ -83,13 +83,13 @@ namespace Stump.Server.WorldServer.Global.Pathfinding
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.AppendLine("Start : [" + Start.Point.X + ", " + Start.Point.Y + "]");
-            sb.AppendLine("End : [" + End.Point.X + ", " + End.Point.Y + "]");
+            sb.AppendLine("Start : [" + Start.Point.X + ", " + Start.Point.Y + "], ");
+            sb.AppendLine("End : [" + End.Point.X + ", " + End.Point.Y + "], ");
             sb.AppendLine("Path :");
 
             foreach (var element in Path)
             {
-                sb.AppendLine("[" + element.Point.X + ", " + element.Point.Y + ", " + element.Direction + "]");
+                sb.Append("[" + element.Point.X + ", " + element.Point.Y + ", " + element.Direction + "] ");
             }
             return sb.ToString();
         }
