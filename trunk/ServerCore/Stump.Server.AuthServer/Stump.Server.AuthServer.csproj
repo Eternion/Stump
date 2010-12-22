@@ -65,7 +65,8 @@
     <Compile Include="Handlers\AuthHandlerContainer.cs" />
     <Compile Include="Handlers\Connection\ConnectionHandler.cs" />
     <Compile Include="Handlers\AuthHandler.cs" />
-    <Compile Include="Handlers\Connection\ConnectionActionsHandler.cs" />
+    <Compile Include="Handlers\Connection\ConnectionRegisterHandler.cs" />
+    <Compile Include="Handlers\Connection\ConnectionSearchHandler.cs" />
     <Compile Include="Handlers\PredicatesDefinitions.cs" />
     <Compile Include="IPC\IpcOperations.cs" />
     <Compile Include="IPC\IpcServer.cs" />
