@@ -22,9 +22,12 @@ namespace Stump.Server.WorldServer.Breeds
 {
     public class XelorBreed : BaseBreed
     {
-        public override BreedEnum Id
+        public override PlayableBreedEnum Id
         {
-            get { return BreedEnum.Xelor; }
+            get
+            {
+                return PlayableBreedEnum.Xelor;
+            }
         }
 
         protected override void OnInitialize()

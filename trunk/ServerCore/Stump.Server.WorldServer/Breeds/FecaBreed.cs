@@ -22,9 +22,12 @@ namespace Stump.Server.WorldServer.Breeds
 {
     public class FecaBreed : BaseBreed
     {
-        public override BreedEnum Id
+        public override PlayableBreedEnum Id
         {
-            get { return BreedEnum.Feca; }
+            get
+            {
+                return PlayableBreedEnum.Feca;
+            }
         }
 
         protected override void OnInitialize()

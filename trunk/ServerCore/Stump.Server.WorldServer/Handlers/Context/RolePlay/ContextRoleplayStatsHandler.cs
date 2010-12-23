@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Handlers
                 throw new Exception("Client is attempt to use more points that he has.");
 
             // Exception for Sacrieur Vitality * 2
-            if (breed.Id == BreedEnum.Sacrieur && statsid == CaracteristicsIdEnum.Vitality)
+            if (breed.Id == PlayableBreedEnum.Sacrieur && statsid == CaracteristicsIdEnum.Vitality)
                 boost *= 2;
 
             client.ActiveCharacter.Stats[statsid.ToString()].Base += boost;

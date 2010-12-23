@@ -22,9 +22,12 @@ namespace Stump.Server.WorldServer.Breeds
 {
     public class SramBreed : BaseBreed
     {
-        public override BreedEnum Id
+        public override PlayableBreedEnum Id
         {
-            get { return BreedEnum.Sram; }
+            get
+            {
+                return PlayableBreedEnum.Sram;
+            }
         }
 
         protected override void OnInitialize()

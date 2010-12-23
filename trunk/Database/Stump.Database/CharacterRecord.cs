@@ -245,7 +245,7 @@ namespace Stump.Database
                                  (SpellIdEnum) spellId,
                                  spellId,
                                  this,
-                                 (BreedEnum) Breed);
+                                 (PlayableBreedEnum)Breed);
                 }
 
                 var record = new SpellRecord(spellId, (uint) Id, position, level);
@@ -267,7 +267,7 @@ namespace Stump.Database
                                  spellId,
                                  spellId,
                                  this,
-                                 (BreedEnum) Breed);
+                                 (PlayableBreedEnum)Breed);
                 }
 
                 var record = new SpellRecord((uint) spellId, (uint) Id, position, level);

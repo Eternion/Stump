@@ -4,11 +4,11 @@ namespace Stump.Server.WorldServer.Breeds
 {
     public class RoublardBreed : BaseBreed
     {
-        public override BreedEnum Id
+        public override PlayableBreedEnum Id
         {
             get
             {
-                return BreedEnum.Roublard;
+                return PlayableBreedEnum.Roublard;
             }
         }
 

@@ -22,9 +22,12 @@ namespace Stump.Server.WorldServer.Breeds
 {
     public class PandawaBreed : BaseBreed
     {
-        public override BreedEnum Id
+        public override PlayableBreedEnum Id
         {
-            get { return BreedEnum.Pandawa; }
+            get
+            {
+                return PlayableBreedEnum.Pandawa;
+            }
         }
 
         public override int StartHealthPoint

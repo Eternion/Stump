@@ -85,7 +85,7 @@ namespace Stump.DofusProtocol.Classes
 			base.deserialize(arg1);
 			this.playerName = (String)arg1.ReadUTF();
 			this.breed = (int)arg1.ReadByte();
-			if ( this.breed < (int)Stump.DofusProtocol.Enums.BreedEnum.Feca || this.breed > (int)Stump.DofusProtocol.Enums.BreedEnum.Zobal )
+            if (this.breed < (int)Stump.DofusProtocol.Enums.PlayableBreedEnum.Feca || this.breed > (int)Stump.DofusProtocol.Enums.PlayableBreedEnum.Zobal)
 			{
 				throw new Exception("Forbidden value (" + this.breed + ") on element of IgnoredOnlineInformations.breed.");
 			}

@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Breeds
 
         #region Fields
 
-        public abstract BreedEnum Id
+        public abstract PlayableBreedEnum Id
         {
             get;
         }

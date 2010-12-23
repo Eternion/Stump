@@ -33,11 +33,11 @@ namespace Stump.Database
         private string m_name = "";
         private string m_dbavailableBreeds;
         [NonSerialized]
-        private List<BreedEnum> m_availableBreeds;
+        private List<PlayableBreedEnum> m_availableBreeds;
 
         public AccountRecord()
         {
-            m_availableBreeds = new List<BreedEnum>();
+            m_availableBreeds = new List<PlayableBreedEnum>();
 
         }
 
@@ -199,11 +199,11 @@ namespace Stump.Database
             }
         }
 
-        public List<BreedEnum> AvailableBreeds
+        public List<PlayableBreedEnum> AvailableBreeds
         {
             get
             {
-                return m_availableBreeds ?? ( m_availableBreeds = DBAvailableBreeds.Trim().Split(',').Select(entry => (BreedEnum)int.Parse(entry)).ToList() ).ToList();
+                return m_availableBreeds ?? ( m_availableBreeds = DBAvailableBreeds.Trim().Split(',').Select(entry => (PlayableBreedEnum)int.Parse(entry)).ToList() ).ToList();
             }
             set
             {
@@ -373,7 +373,7 @@ namespace Stump.Database
             if (m_availableBreeds.Count > 0)
                 DBAvailableBreeds = string.Join(",", m_availableBreeds.Select(entry => (int)entry));
             else
-                m_availableBreeds = DBAvailableBreeds.Trim().Split(',').Select(entry => (BreedEnum)int.Parse(entry)).ToList();
+                m_availableBreeds = DBAvailableBreeds.Trim().Split(',').Select(entry => (PlayableBreedEnum)int.Parse(entry)).ToList();
         }
 
         protected override bool BeforeSave(System.Collections.IDictionary state)

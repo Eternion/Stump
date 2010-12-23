@@ -22,9 +22,12 @@ namespace Stump.Server.WorldServer.Breeds
 {
     public class SacrieurBreed : BaseBreed
     {
-        public override BreedEnum Id
+        public override PlayableBreedEnum Id
         {
-            get { return BreedEnum.Sacrieur; }
+            get
+            {
+                return PlayableBreedEnum.Sacrieur;
+            }
         }
 
         public override int StartHealthPoint

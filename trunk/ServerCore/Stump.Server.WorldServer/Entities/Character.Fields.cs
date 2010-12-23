@@ -60,7 +60,7 @@ namespace Stump.Server.WorldServer.Entities
         /// <summary>
         ///   Breed of this character.
         /// </summary>
-        public BreedEnum BreedId
+        public PlayableBreedEnum BreedId
         {
             get;
             set;

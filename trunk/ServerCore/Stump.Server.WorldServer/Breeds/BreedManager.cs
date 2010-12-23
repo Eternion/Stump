@@ -33,21 +33,21 @@ namespace Stump.Server.WorldServer.Breeds
         /// List of available breeds
         /// </summary>
         [Variable]
-        public static List<BreedEnum> AvailableBreeds = new List<BreedEnum>
+        public static List<PlayableBreedEnum> AvailableBreeds = new List<PlayableBreedEnum>
             {
-                BreedEnum.Feca,
-                BreedEnum.Osamodas,
-                BreedEnum.Enutrof,
-                BreedEnum.Sram,
-                BreedEnum.Xelor,
-                BreedEnum.Ecaflip,
-                BreedEnum.Eniripsa,
-                BreedEnum.Iop,
-                BreedEnum.Cra,
-                BreedEnum.Sadida,
-                BreedEnum.Sacrieur,
-                BreedEnum.Pandawa,
-                BreedEnum.Roublard,
+                PlayableBreedEnum.Feca,
+                PlayableBreedEnum.Osamodas,
+                PlayableBreedEnum.Enutrof,
+                PlayableBreedEnum.Sram,
+                PlayableBreedEnum.Xelor,
+                PlayableBreedEnum.Ecaflip,
+                PlayableBreedEnum.Eniripsa,
+                PlayableBreedEnum.Iop,
+                PlayableBreedEnum.Cra,
+                PlayableBreedEnum.Sadida,
+                PlayableBreedEnum.Sacrieur,
+                PlayableBreedEnum.Pandawa,
+                PlayableBreedEnum.Roublard,
                 //BreedEnum.Zobal,
             };
 
@@ -92,14 +92,14 @@ namespace Stump.Server.WorldServer.Breeds
         /// <param name = "breed">breed to initialize</param>
         private static void InitBreed(BaseBreed breed)
         {
-            var breedData = m_breedsData.Single(entry => (BreedEnum) entry.id == breed.Id);
+            var breedData = m_breedsData.Single(entry => (PlayableBreedEnum)entry.id == breed.Id);
             breed.Initialize(breedData);
             BaseBreeds[(int) breed.Id] = breed;
         }
 
         #region BreedEnum Getter
 
-        public static BaseBreed GetBreed(BreedEnum breed)
+        public static BaseBreed GetBreed(PlayableBreedEnum breed)
         {
             return BaseBreeds[(int) breed];
         }
@@ -109,7 +109,7 @@ namespace Stump.Server.WorldServer.Breeds
             return BaseBreeds[breed];
         }
 
-        public static uint BreedsToFlag(IEnumerable<BreedEnum> breeds)
+        public static uint BreedsToFlag(IEnumerable<PlayableBreedEnum> breeds)
         {
             return (uint) breeds.Aggregate(0, (current, breedEnum) => current | (int)Math.Pow(2, (int)breedEnum));
         }

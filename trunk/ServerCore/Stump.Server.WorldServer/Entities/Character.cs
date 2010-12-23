@@ -51,7 +51,7 @@ namespace Stump.Server.WorldServer.Entities
 
             Name = record.Name;
             Level = record.Level;
-            BreedId = (BreedEnum) record.Breed;
+            BreedId = (PlayableBreedEnum)record.Breed;
             Sex = (SexTypeEnum) record.SexId;
             Kamas = record.Kamas;
             StatsPoint = record.StatsPoints;
