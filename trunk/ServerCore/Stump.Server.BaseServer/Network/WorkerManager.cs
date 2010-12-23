@@ -142,10 +142,12 @@ namespace Stump.Server.BaseServer.Network
         {
             var result = new StringBuilder();
 
+            result.AppendLine("");
+
             var treatedMessage = m_workerList.SelectMany(w => w.TreatedMessage);
 
             var groupMessage = from g in treatedMessage
-                               group g by g.Item1
+                               group g by g.Item1.getMessageId()
                                    into gr
                                    select gr;
 
@@ -155,13 +157,13 @@ namespace Stump.Server.BaseServer.Network
             foreach (var message in groupMessage)
             {
                 double average = message.Average(t => t.Item2);
-                result.AppendLine("**************");
-                result.AppendLine("Message :" + message.First().Item1.GetType().Name);
-                result.AppendLine("Average Time : " + average);
-                result.AppendLine("Min Time : " + message.Min(t => t.Item2));
-                result.AppendLine("Max Time : " + message.Max(t => t.Item2));
-                result.AppendLine("Ecart Type : " + Math.Sqrt((message.Sum(t => Math.Pow(average - t.Item2, 2)))) / message.Count());
-                result.AppendLine(" Message count : " + message.Count());
+                result.AppendLine("");
+                result.AppendLine("     Message :" + message.First().Item1.GetType().Name);
+                result.AppendLine("     Average Time : " + average);
+                result.AppendLine("     Min Time : " + message.Min(t => t.Item2));
+                result.AppendLine("     Max Time : " + message.Max(t => t.Item2));
+                result.AppendLine("     Ecart Type : " + Math.Sqrt((message.Sum(t => Math.Pow(average - t.Item2, 2)))) / message.Count());
+                result.AppendLine("     Message count : " + message.Count());
             }
 
             return result.ToString();
@@ -171,13 +173,18 @@ namespace Stump.Server.BaseServer.Network
         {
             var result = new StringBuilder();
 
+            result.AppendLine("");
+
             var treatedMessage = m_workerList.SelectMany(w => w.TreatedMessage).Where(t => t.Item1.GetType().Name == typeName);
 
             if (orderByTime)
                 treatedMessage = treatedMessage.OrderByDescending(t => t.Item2);
 
             foreach (var tuple in treatedMessage)
-                result.AppendLine("ID :" + Math.Abs(tuple.GetHashCode()) + " / " + "Time : " + tuple.Item2);
+            {
+                result.AppendLine("");
+                result.AppendLine("     Id :" + Math.Abs(tuple.GetHashCode()) + " | " + "Time : " + tuple.Item2);
+            }
 
             return result.ToString();
         }
@@ -186,13 +193,16 @@ namespace Stump.Server.BaseServer.Network
         {
             var result = new StringBuilder();
 
-            var treatedMessage = m_workerList.SelectMany(w => w.TreatedMessage).Where(t => t.Item1.GetType().Name == typeName).First(t => Math.Abs(t.GetHashCode()) == id);
+            result.AppendLine("");
+
+            var treatedMessage = m_workerList.SelectMany(w => w.TreatedMessage).Where(t => t.Item1.GetType().Name == typeName).First(t => Math.Abs(t.GetHashCode()) == id).Item1;
 
             var fields = treatedMessage.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
 
             foreach (FieldInfo field in fields)
             {
-                result.AppendLine(field.Name + " : " + field.GetValue(treatedMessage));
+                result.AppendLine("");
+                result.AppendLine("     Field : " + field.Name + " : " + field.GetValue(treatedMessage));
             }
 
             return result.ToString();

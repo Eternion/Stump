@@ -49,7 +49,7 @@ namespace Stump.Server.AuthServer.Commands
             Aliases = new[] { "messType", "mt" };
             ParentCommand = typeof(WorkerCommands);
             RequiredRole = RoleEnum.Administrator;
-            Description = "View message benchmarking group by type.";
+            Description = "View messageType benchmarking.";
             Parameters = new List<ICommandParameter>
                 {
                     new CommandParameter<bool>("orderByTime", "order", "Order the messageTypes by treatmentTime",true,true),
@@ -70,7 +70,7 @@ namespace Stump.Server.AuthServer.Commands
             Aliases = new[] { "mess"};
             ParentCommand = typeof(WorkerCommands);
             RequiredRole = RoleEnum.Administrator;
-            Description = "View message benchmarking group by type.";
+            Description = "View messages benchmarking of the selected type.";
             Parameters = new List<ICommandParameter>
                 {
                     new CommandParameter<string>("messageType", "type", "type of the message"),

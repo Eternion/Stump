@@ -30,21 +30,21 @@ namespace Stump.Server.AuthServer.Accounts
         /// List of available breeds
         /// </summary>
         [Variable]
-        public static List<BreedEnum> AvailableBreeds = new List<BreedEnum>
+        public static List<PlayableBreedEnum> AvailableBreeds = new List<PlayableBreedEnum>
             {
-                BreedEnum.Feca,
-                BreedEnum.Osamodas,
-                BreedEnum.Enutrof,
-                BreedEnum.Sram,
-                BreedEnum.Xelor,
-                BreedEnum.Ecaflip,
-                BreedEnum.Eniripsa,
-                BreedEnum.Iop,
-                BreedEnum.Cra,
-                BreedEnum.Sadida,
-                BreedEnum.Sacrieur,
-                BreedEnum.Pandawa,
-                BreedEnum.Roublard,
+                PlayableBreedEnum.Feca,
+                PlayableBreedEnum.Osamodas,
+                PlayableBreedEnum.Enutrof,
+                PlayableBreedEnum.Sram,
+                PlayableBreedEnum.Xelor,
+                PlayableBreedEnum.Ecaflip,
+                PlayableBreedEnum.Eniripsa,
+                PlayableBreedEnum.Iop,
+                PlayableBreedEnum.Cra,
+                PlayableBreedEnum.Sadida,
+                PlayableBreedEnum.Sacrieur,
+                PlayableBreedEnum.Pandawa,
+                PlayableBreedEnum.Roublard,
                 //BreedEnum.Zobal,
             };
 

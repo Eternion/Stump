@@ -51,7 +51,6 @@ namespace Stump.Server.WorldServer.Handlers
             BasicHandler.SendBasicNoOperationMessage(client);
         }
 
-
         public static void SendAccountCapabilitiesMessage(WorldClient client)
         {
             client.Send(new AccountCapabilitiesMessage(
@@ -60,6 +59,11 @@ namespace Stump.Server.WorldServer.Handlers
                 client.Account.DbAvailableBreeds,
                 BreedManager.BreedsToFlag(BreedManager.AvailableBreeds)
                 ));
+        }
+
+        public static void SendConsoleCommandsListMessage(WorldClient client,List<string> aliases,List<string> args,List<string> descr)
+        {
+            client.Send(new ConsoleCommandsListMessage(aliases, args, descr));
         }
     }
 }
