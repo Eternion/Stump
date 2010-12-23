@@ -16,16 +16,55 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using Stump.Server.WorldServer.Entities;
+using System;
+using Stump.DofusProtocol.Classes;
+using Stump.DofusProtocol.Classes.Extensions;
+using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Dialog;
+using NpcEx = Stump.DofusProtocol.D2oClasses.Npc;
 
-namespace Stump.Server.WorldServer.Dialog
+namespace Stump.Server.WorldServer.Npcs
 {
-    public interface IDialoger
+    public class NpcTemplate
     {
-        Entity Entity
+        private NpcEx m_npc;
+        public NpcTemplate(NpcEx npc)
+        {
+            m_npc = npc;
+            Look = npc.look.ToEntityLook();
+        }
+
+        public int Id
+        {
+            get { return m_npc.id; }
+        }
+
+        public string Name
         {
             get;
             set;
+        }
+
+        public SexTypeEnum Sex
+        {
+            get { return m_npc.gender != 0 ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE; }
+        }
+
+        public EntityLook Look
+        {
+            get;
+            set;
+        }
+
+        public NpcDialogQuestion MessageEntry
+        {
+            get;
+            set;
+        }
+
+        public bool CanSpeak
+        {
+            get { return MessageEntry != null; }
         }
     }
 }

@@ -34,5 +34,10 @@ namespace Stump.Server.WorldServer.Handlers
                 client.ActiveCharacter.Dialog.EndDialog();
             }
         }
+
+        public static void SendLeaveDialogMessage(WorldClient client)
+        {
+            client.Send(new LeaveDialogMessage());
+        }
     }
 }

@@ -99,6 +99,7 @@ namespace Stump.Server.WorldServer.Global.Maps
     /// <summary>
     ///   Represents a map where entities can walk for instance.
     /// </summary>
+    // todo : seperate SpawnEntries and Characters ?
     public partial class Map : WorldSpace
     {
         public const uint MaximumCellsCount = 560;
@@ -278,10 +279,13 @@ namespace Stump.Server.WorldServer.Global.Maps
             return CellsData[index];
         }
 
-        public List<Character> GetAllCharactersWithoutFighters()
+        public IEnumerable<Character> CharactersWithoutFighters
         {
-            return
-                Entities.Values.Where(entity => entity is Character && !(entity as Character).IsInFight).Cast<Character>().ToList();
+            get
+            {
+                return
+                    Entities.Values.OfType<Character>().Where(entity => !entity.IsInFight);
+            }
         }
 
 
@@ -291,9 +295,7 @@ namespace Stump.Server.WorldServer.Global.Maps
         /// <param name = "action"></param>
         public void CallOnAllCharactersWithoutFighters(Action<Character> action)
         {
-            List<Character> chars = GetAllCharactersWithoutFighters();
-
-            Parallel.For(0, chars.Count, i => action(chars[i]));
+            Parallel.ForEach(CharactersWithoutFighters, action);
         }
 
         public static bool operator ==(Map map1, Map map2)

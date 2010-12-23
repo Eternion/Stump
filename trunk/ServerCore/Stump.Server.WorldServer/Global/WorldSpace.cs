@@ -186,6 +186,14 @@ namespace Stump.Server.WorldServer.Global
             set;
         }
 
+        public IEnumerable<NpcSpawn> Npcs
+        {
+            get
+            {
+                return Entities.Values.OfType<NpcSpawn>();
+            }
+        }
+
         #endregion
     }
 }

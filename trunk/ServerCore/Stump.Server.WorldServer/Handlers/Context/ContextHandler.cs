@@ -47,6 +47,8 @@ namespace Stump.Server.WorldServer.Handlers
                         entry => PredicatesDefinitions.IsDialogRequested(entry) &&
                                  entry.ActiveCharacter.DialogRequest is FightRequest
                         },
+
+                    {typeof(NpcDialogReplyMessage), PredicatesDefinitions.IsDialogingWithNpc},
                 };
         }
 

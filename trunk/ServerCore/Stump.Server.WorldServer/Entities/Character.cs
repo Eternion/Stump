@@ -168,7 +168,7 @@ namespace Stump.Server.WorldServer.Entities
             InventoryHandler.SendKamasUpdateMessage(Client, amount);
         }
 
-        public override GameRolePlayActorInformations ToNetworkActor()
+        public override GameRolePlayActorInformations ToNetworkActor(WorldClient client)
         {
             return new GameRolePlayCharacterInformations(
                 (int) Id,

@@ -23,6 +23,7 @@ using Stump.Server.WorldServer.Dialog;
 using Stump.Server.WorldServer.Exchange;
 using Stump.Server.WorldServer.Global.Maps;
 using Stump.Server.WorldServer.Items;
+using Stump.Server.WorldServer.Npcs;
 
 namespace Stump.Server.WorldServer.Entities
 {
@@ -31,50 +32,9 @@ namespace Stump.Server.WorldServer.Entities
         #region Properties
 
         /// <summary>
-        ///   The emoteId of the current emote played. (0 = null)
-        /// </summary>
-        public int EmoteId
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        ///   Amount of kamas owned by this character.
-        /// </summary>
-        public long Kamas
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
         ///   Client associated with the character.
         /// </summary>
         public WorldClient Client
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        ///   Breed of this character.
-        /// </summary>
-        public PlayableBreedEnum BreedId
-        {
-            get;
-            set;
-        }
-
-        public BaseBreed Breed
-        {
-            get { return BreedManager.GetBreed(BreedId); }
-        }
-
-        /// <summary>
-        ///   Sex of this character.
-        /// </summary>
-        public SexTypeEnum Sex
         {
             get;
             set;
@@ -87,6 +47,44 @@ namespace Stump.Server.WorldServer.Entities
         {
             get;
             private set;
+        }
+
+        public bool InWorld
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        ///   Breed of this character.
+        /// </summary>
+        public PlayableBreedEnum BreedId
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        ///   Sex of this character.
+        /// </summary>
+        public SexTypeEnum Sex
+        {
+            get;
+            set;
+        }
+
+        public BaseBreed Breed
+        {
+            get { return BreedManager.GetBreed(BreedId); }
+        }
+
+        /// <summary>
+        ///   Amount of kamas owned by this character.
+        /// </summary>
+        public long Kamas
+        {
+            get;
+            set;
         }
 
         /// <summary>
@@ -118,26 +116,50 @@ namespace Stump.Server.WorldServer.Entities
             get { return DialogRequest != null; }
         }
 
-        public IDialog Dialog
+        public Dialoger Dialoger
         {
             get;
             set;
         }
 
-        public IDialoger Dialoger
+        public IDialog Dialog
         {
-            get;
-            set;
+            get { return Dialoger.Dialog; }
         }
 
         public bool IsInDialog
         {
-            get { return Dialog != null; }
+            get
+            {
+                return Dialoger != null;
+            }
         }
 
         public bool IsInTrade
         {
             get { return Dialoger != null && Dialoger is Trader; }
+        }
+
+        public bool IsInDialogWithNpc
+        {
+            get
+            {
+                return Dialoger != null && Dialoger is NpcDialoger;
+            }
+        }
+
+        public bool IsAway
+        {
+            get { return IsInDialog; }
+        }
+
+        /// <summary>
+        ///   The emoteId of the current emote played. (0 = null)
+        /// </summary>
+        public int EmoteId
+        {
+            get;
+            set;
         }
 
         #endregion

@@ -48,23 +48,15 @@ namespace Stump.Server.WorldServer.Exchange
         {
             try
             {
-                var sourceTrade = new Trader(Source);
-                var targetTrade = new Trader(Target);
+                var trade = new PlayerTrade(Source, Target);
 
-                var trade = new Trade(sourceTrade,
-                                      targetTrade);
-
-                Source.Dialoger = sourceTrade;
-                Target.Dialoger = targetTrade;
-                Source.Dialog = trade;
-                Target.Dialog = trade;
+                Source.Dialoger = trade.SourceTrader;
+                Target.Dialoger = trade.TargetTrader;
 
                 TradeManager.CreateTrade(trade);
 
-                InventoryHandler.SendExchangeStartedWithPodsMessage(((Character) trade.SourceTrader.Entity).Client,
-                                                                   trade);
-                InventoryHandler.SendExchangeStartedWithPodsMessage(( (Character) trade.TargetTrader.Entity ).Client,
-                                                                   trade);
+                InventoryHandler.SendExchangeStartedWithPodsMessage(Source.Client, trade);
+                InventoryHandler.SendExchangeStartedWithPodsMessage(Target.Client, trade);
             }
             finally
             {

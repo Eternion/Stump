@@ -53,7 +53,7 @@ namespace Stump.Server.BaseServer.Data
         /// Name of the i18n file used by the server
         /// </summary>
         [Variable]
-        public static string I18NFileName = "i18n_fr.d2i";
+        public static string I18NFileName = "i18n_en.d2i";
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -183,10 +183,7 @@ namespace Stump.Server.BaseServer.Data
 
         public static string GetI18NText(int id)
         {
-            using (var i18Nfile = new I18nFile(DataPath + I18NDir + I18NFile))
-            {
-                return !i18Nfile.Exists(id) ? "" : i18Nfile.ReadText(id);
-            }
+            return !I18NFile.Exists(id) ? "" : I18NFile.ReadText(id);
         }
     }
 }

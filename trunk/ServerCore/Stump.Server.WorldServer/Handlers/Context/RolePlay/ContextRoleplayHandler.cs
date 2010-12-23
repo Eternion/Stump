@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Handlers
                 (uint)client.ActiveCharacter.Map.Id,
                 0,
                 new List<HouseInformations>(),
-                client.ActiveCharacter.Map.Entities.Select(entry => entry.Value.ToNetworkActor()).ToList(),
+                client.ActiveCharacter.Map.Entities.Select(entry => entry.Value.ToNetworkActor(client)).ToList(),
                 new List<InteractiveElement>(),
                 new List<StatedElement>(),
                 new List<MapObstacle>(),
@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Handlers
 
         public static void SendGameRolePlayShowActorMessage(WorldClient client, Entity entity)
         {
-            client.Send(new GameRolePlayShowActorMessage(entity.ToNetworkActor()));
+            client.Send(new GameRolePlayShowActorMessage(entity.ToNetworkActor(client)));
         }
     }
 }

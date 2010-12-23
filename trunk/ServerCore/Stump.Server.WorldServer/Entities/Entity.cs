@@ -56,7 +56,7 @@ namespace Stump.Server.WorldServer.Entities
             return true;
         }
 
-        public virtual GameRolePlayActorInformations ToNetworkActor()
+        public virtual GameRolePlayActorInformations ToNetworkActor(WorldClient client)
         {
             return new GameRolePlayActorInformations((int) Id,
                                                      Look,
@@ -84,14 +84,7 @@ namespace Stump.Server.WorldServer.Entities
             set;
         }
 
-        /// <summary>
-        ///   Indicate or set if this entity is currently in world.
-        /// </summary>
-        public bool InWorld
-        {
-            get;
-            set;
-        }
+
 
         /// <summary>
         ///   Representation of Entity's World Position
@@ -118,21 +111,13 @@ namespace Stump.Server.WorldServer.Entities
             get { return (Region) Zone.ParentSpace; }
         }
 
-        private string m_name;
-
         /// <summary>
         ///   The name of this entity.
         /// </summary>
         public string Name
         {
-            get { return m_name; }
-            set
-            {
-                if (InWorld)
-                    throw new NotImplementedException("Dynamic renaming of Entity is not implemented.");
-
-                m_name = value;
-            }
+            get;
+            set;
         }
 
         public EntityLook Look

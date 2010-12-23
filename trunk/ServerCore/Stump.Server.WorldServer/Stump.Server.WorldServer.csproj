@@ -51,6 +51,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\ActionBase.cs" />
+    <Compile Include="Actions\ActionBaseArgument.cs" />
+    <Compile Include="Actions\ActionManager.cs" />
+    <Compile Include="Actions\ActionTypeAttribute.cs" />
+    <Compile Include="Actions\CharacterAction.cs" />
+    <Compile Include="Actions\CharacterActionArgument.cs" />
+    <Compile Include="Actions\NpcAction.cs" />
+    <Compile Include="Actions\NpcActionArgument.cs" />
+    <Compile Include="Actions\NpcActions\ActionDialogQuestion.cs" />
     <Compile Include="Breeds\BaseBreed.cs" />
     <Compile Include="Breeds\BreedManager.cs" />
     <Compile Include="Breeds\CraBreed.cs" />
@@ -72,14 +81,23 @@
     <Compile Include="Commands\ItemCommand.cs" />
     <Compile Include="Commands\IInGameTrigger.cs" />
     <Compile Include="Commands\TriggerChat.cs" />
+    <Compile Include="Dialog\Dialoger.cs" />
+    <Compile Include="Npcs\NpcDialog.cs" />
+    <Compile Include="Npcs\NpcDialoger.cs" />
+    <Compile Include="Npcs\NpcDialogQuestion.cs" />
+    <Compile Include="Npcs\NpcDialogReply.cs" />
     <Compile Include="Entities\ILocable.cs" />
     <Compile Include="Entities\ILocableIdentified.cs" />
+    <Compile Include="Entities\ISpawnEntry.cs" />
+    <Compile Include="Handlers\Context\RolePlay\ContextRoleplayNpcHandler.cs" />
+    <Compile Include="Npcs\NpcActionHandler.cs" />
+    <Compile Include="Npcs\NpcManager.cs" />
+    <Compile Include="Entities\NpcSpawn.cs" />
     <Compile Include="Manager\AccountManager.cs" />
     <Compile Include="Manager\CharacterManager.cs" />
     <Compile Include="Data\ItemLoader.cs" />
     <Compile Include="Data\MonsterLoader.cs" />
     <Compile Include="Dialog\IDialog.cs" />
-    <Compile Include="Dialog\IDialoger.cs" />
     <Compile Include="Dialog\IDialogRequest.cs" />
     <Compile Include="Effects\EffectBase.cs" />
     <Compile Include="Effects\EffectContext.cs" />
@@ -110,11 +128,11 @@
     <Compile Include="Entities\LivingEntity.cs" />
     <Compile Include="Entities\Monster.cs" />
     <Compile Include="Entities\MonsterGrade.cs" />
-    <Compile Include="Entities\Npc.cs" />
+    <Compile Include="Npcs\NpcTemplate.cs" />
     <Compile Include="Entities\StatsData.cs" />
     <Compile Include="Entities\StatsFields.cs" />
     <Compile Include="Entities\StatsHealth.cs" />
-    <Compile Include="Exchange\Trade.cs" />
+    <Compile Include="Exchange\PlayerTrade.cs" />
     <Compile Include="Exchange\TradeManager.cs" />
     <Compile Include="Exchange\Trader.cs" />
     <Compile Include="Exchange\TradeRequest.cs" />
@@ -256,6 +274,7 @@
   <ItemGroup>
     <Compile Include="Entities\LivingEntity.Events.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

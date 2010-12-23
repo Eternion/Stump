@@ -52,6 +52,7 @@
     <Compile Include="Custom\MapNeighbourEnum.cs" />
     <Compile Include="Custom\MonsterIdEnum.cs" />
     <Compile Include="Custom\MonsterRaceIdEnum.cs" />
+    <Compile Include="Custom\NpcActionTypeEnum.cs" />
     <Compile Include="Custom\RegionIdEnum.cs" />
     <Compile Include="Custom\RoleEnum.cs" />
     <Compile Include="Custom\SexTypeEnum.cs" />

@@ -17,23 +17,19 @@
 //  *
 //  *************************************************************************/
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using Stump.BaseCore.Framework.Attributes;
-using Stump.BaseCore.Framework.Utils;
-using Stump.BaseCore.Framework.XmlUtils;
 using Stump.Database;
-using Stump.DofusProtocol.Classes.Extensions;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initializing;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.Network;
+using Stump.Server.WorldServer.Actions;
 using Stump.Server.WorldServer.Commands;
-using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.IPC;
 
@@ -49,7 +45,7 @@ namespace Stump.Server.WorldServer
         }
 
         /// <summary>
-        /// ID of current world server
+        ///   ID of current world server
         /// </summary>
         [Variable]
         public static int ServerId
@@ -65,7 +61,7 @@ namespace Stump.Server.WorldServer
         }
 
         /// <summary>
-        /// Name of current world server
+        ///   Name of current world server
         /// </summary>
         [Variable]
         public static string ServerName
@@ -81,7 +77,7 @@ namespace Stump.Server.WorldServer
         }
 
         /// <summary>
-        /// Adress of current world server
+        ///   Adress of current world server
         /// </summary>
         [Variable]
         public static string ServerAddress
@@ -97,7 +93,7 @@ namespace Stump.Server.WorldServer
         }
 
         /// <summary>
-        /// Port of current world server
+        ///   Port of current world server
         /// </summary>
         [Variable]
         public static ushort ServerPort
@@ -135,6 +131,9 @@ namespace Stump.Server.WorldServer
 
             logger.Info("Register Packet Handlers...");
             HandlerManager.RegisterAll(typeof (WorldServer).Assembly);
+
+            logger.Info("Initialize Game's Actions...");
+            ActionManager.Initialize();
 
             logger.Info("Register Commands...");
             CommandManager.RegisterAll<WorldCommand, WorldSubCommand>();

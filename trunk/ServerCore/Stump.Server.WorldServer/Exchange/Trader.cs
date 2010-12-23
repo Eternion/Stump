@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Collections.Generic;
 using Stump.Server.WorldServer.Dialog;
 using Stump.Server.WorldServer.Entities;
@@ -23,21 +24,26 @@ using Stump.Server.WorldServer.Items;
 
 namespace Stump.Server.WorldServer.Exchange
 {
-    public class Trader : IDialoger
+    public class Trader : Dialoger
     {
-        public Trader(Entity trader)
+        public Trader(Character trader, PlayerTrade trade)
+            : base(trader, trade)
         {
-            Entity = trader;
             Items = new List<Item>();
         }
 
-        public uint Kamas
+        public PlayerTrade PlayerTrade
+        {
+            get { return Dialog as PlayerTrade; }
+        }
+
+        public List<Item> Items
         {
             get;
             set;
         }
 
-        public List<Item> Items
+        public uint Kamas
         {
             get;
             set;
@@ -48,27 +54,5 @@ namespace Stump.Server.WorldServer.Exchange
             get;
             set;
         }
-
-        public Trade Trade
-        {
-            get;
-            set;
-        }
-
-        #region IDialoger Members
-
-        /// <summary>
-        ///   Current entity
-        /// </summary>
-        /// <remarks>
-        ///   Entity can be a player or a npc
-        /// </remarks>
-        public Entity Entity
-        {
-            get;
-            set;
-        }
-
-        #endregion
     }
 }

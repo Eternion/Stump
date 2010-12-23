@@ -82,33 +82,24 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof(ExchangeObjectMoveKamaMessage))]
         public static void HandleExchangeObjectMoveKamaMessage(WorldClient client, ExchangeObjectMoveKamaMessage message)
         {
-            if (client.ActiveCharacter.IsInTrade)
-            {
-                ( (Trade) client.ActiveCharacter.Dialog ).SetKamas((Trader)client.ActiveCharacter.Dialoger, (uint) message.quantity);
-            }
+           ( (PlayerTrade) client.ActiveCharacter.Dialog ).SetKamas((Trader)client.ActiveCharacter.Dialoger, (uint) message.quantity);
         }
 
         [WorldHandler(typeof(ExchangeObjectMoveMessage))]
         public static void HandleExchangeObjectMoveMessage(WorldClient client, ExchangeObjectMoveMessage message)
         {
-            if (client.ActiveCharacter.IsInTrade)
-            {
                 var guid = (long) message.objectUID;
 
                 if (message.quantity > 0)
-                    ( (Trade) client.ActiveCharacter.Dialog ).AddItem((Trader)client.ActiveCharacter.Dialoger, guid, (uint)message.quantity);
+                    ( (PlayerTrade) client.ActiveCharacter.Dialog ).AddItem((Trader)client.ActiveCharacter.Dialoger, guid, (uint)message.quantity);
                 else if (message.quantity < 0)
-                    ( (Trade) client.ActiveCharacter.Dialog ).RemoveItem((Trader)client.ActiveCharacter.Dialoger, guid, (uint)( -message.quantity ));
-            }
+                    ( (PlayerTrade) client.ActiveCharacter.Dialog ).RemoveItem((Trader)client.ActiveCharacter.Dialoger, guid, (uint)( -message.quantity ));
         }
 
         [WorldHandler(typeof(ExchangeReadyMessage))]
         public static void HandleExchangeReadyMessage(WorldClient client, ExchangeReadyMessage message)
         {
-            if (client.ActiveCharacter.IsInTrade)
-            {
-                ( (Trade) client.ActiveCharacter.Dialog ).ToggleReady((Trader)client.ActiveCharacter.Dialoger, message.ready);
-            }
+                ( (PlayerTrade) client.ActiveCharacter.Dialog ).ToggleReady((Trader)client.ActiveCharacter.Dialoger, message.ready);
         }
 
         public static void SendExchangeRequestedTradeMessage(WorldClient client, ExchangeTypeEnum type, Character source,
@@ -120,19 +111,16 @@ namespace Stump.Server.WorldServer.Handlers
                             (uint) target.Id));
         }
 
-        public static void SendExchangeStartedWithPodsMessage(WorldClient client, Trade trade)
+        public static void SendExchangeStartedWithPodsMessage(WorldClient client, PlayerTrade playerTrade)
         {
-            if (!(trade.SourceTrader.Entity is Character) || !(trade.TargetTrader.Entity is Character))
-                return;
-
             client.Send(new ExchangeStartedWithPodsMessage(
                             (byte) ExchangeTypeEnum.PLAYER_TRADE,
-                            (int) trade.SourceTrader.Entity.Id,
-                            ((Character) trade.SourceTrader.Entity).Inventory.Weight,
-                            ((Character) trade.SourceTrader.Entity).Inventory.WeightTotal,
-                            (int) trade.SourceTrader.Entity.Id,
-                            ((Character) trade.TargetTrader.Entity).Inventory.Weight,
-                            ((Character) trade.TargetTrader.Entity).Inventory.WeightTotal
+                            (int) playerTrade.SourceTrader.Character.Id,
+                            playerTrade.SourceTrader.Character.Inventory.Weight,
+                            playerTrade.SourceTrader.Character.Inventory.WeightTotal,
+                            (int)playerTrade.SourceTrader.Character.Id,
+                            playerTrade.TargetTrader.Character.Inventory.Weight,
+                            playerTrade.TargetTrader.Character.Inventory.WeightTotal
                             ));
         }
 
@@ -158,7 +146,7 @@ namespace Stump.Server.WorldServer.Handlers
 
         public static void SendExchangeIsReadyMessage(WorldClient client, Trader trader, bool ready)
         {
-            client.Send(new ExchangeIsReadyMessage((uint) trader.Entity.Id, ready));
+            client.Send(new ExchangeIsReadyMessage((uint)trader.Character.Id, ready));
         }
 
         public static void SendExchangeErrorMessage(WorldClient client, ExchangeErrorEnum errorEnum)
