@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Castle.ActiveRecord;
 using Stump.Database;
 using Stump.Server.WorldServer.Global;
@@ -67,13 +68,16 @@ namespace Stump.Server.WorldServer.Manager
                 client.Characters = new List<CharacterRecord>(5);
 
             character.Id = (int) CharacterRecord.GetNextId();
-            character.Create();
+            client.Characters.Insert(0, character);
 
-            client.Characters.Add(character);
+            World.Instance.TaskPool.EnqueueTask(() =>
+            {
+                character.Create();
 
-            IpcAccessor.Instance.ProxyObject.AddAccountCharacter(WorldServer.ServerInformation,
-                                                                 client.Account.Id,
-                                                                 (uint) character.Id);
+                IpcAccessor.Instance.ProxyObject.AddAccountCharacter(WorldServer.ServerInformation,
+                                                                     client.Account.Id,
+                                                                     (uint) character.Id);
+            });
             return true;
         }
 
@@ -111,7 +115,7 @@ namespace Stump.Server.WorldServer.Manager
 
                 for (int i = 0; i < namelen - 1; i++)
                 {
-                    name += (i%2 == 1) ? RandomConsonant(rand) : RandomVowel(rand);
+                    name += ((i & 1) != 1) ? RandomConsonant(rand) : RandomVowel(rand);
                 }
             } while (CharacterRecord.IsNameExists(name));
 

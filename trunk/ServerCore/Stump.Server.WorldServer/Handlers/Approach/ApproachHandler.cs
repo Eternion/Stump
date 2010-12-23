@@ -47,6 +47,7 @@ namespace Stump.Server.WorldServer.Handlers
             client.Characters = CharacterManager.GetCharactersByAccount(client);
 
             client.Send(new AuthenticationTicketAcceptedMessage());
+
             BasicHandler.SendBasicTimeMessage(client);
             SendAccountCapabilitiesMessage(client);
             BasicHandler.SendBasicNoOperationMessage(client);

@@ -24,11 +24,11 @@
         <Severity>Medium</Severity>
         <VersionRequired>2.2.3.36341.1</VersionRequired>
         <ActualVersion>1280</ActualVersion>
-        <RequiredVersion>1285</RequiredVersion>
+        <RequiredVersion>1304</RequiredVersion>
       </ClientVersion>
       <WorkerManager>
-        <AutoWorkerNumber>true</AutoWorkerNumber>
-        <WorkerThreadNumber>2</WorkerThreadNumber>
+        <AutoWorkerNumber>false</AutoWorkerNumber>
+        <WorkerThreadNumber>10</WorkerThreadNumber>
       </WorkerManager>
     </Network>
   </Stump.Server.BaseServer>

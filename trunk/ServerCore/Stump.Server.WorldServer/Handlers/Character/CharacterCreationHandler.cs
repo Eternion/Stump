@@ -37,8 +37,7 @@ namespace Stump.Server.WorldServer.Handlers
         public static void HandleCharacterCreateRequest(WorldClient client, CharacterCreationRequestMessage message)
         {
             // 0) Check if we can create characters on this server
-            /*         [ToDo]       */
-            if (CharacterManager.GetCharactersNumberByAccount(client) >= World.MaxCharacterSlot)
+            if (client.Characters.Count >= World.MaxCharacterSlot)
             {
                 client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.ERR_TOO_MANY_CHARACTERS));
                 return;
@@ -61,7 +60,7 @@ namespace Stump.Server.WorldServer.Handlers
 
             BaseBreed breed = BreedManager.GetBreed(message.breed);
 
-            if (!client.Account.isBreedAvailable(message.breed) ||
+            if (!client.Account.IsBreedAvailable(message.breed) ||
                 !BreedManager.AvailableBreeds.Contains(breed.Id))
             {
                 client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.ERR_NOT_ALLOWED));

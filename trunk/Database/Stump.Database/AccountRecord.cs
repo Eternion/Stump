@@ -355,12 +355,12 @@ namespace Stump.Database
             return false;
         }
 
-        public bool isBreedAvailable(PlayableBreedEnum breed)
+        public bool IsBreedAvailable(PlayableBreedEnum breed)
         {
             return (DbAvailableBreeds >> (byte)breed) % 2 == 1;
         }
 
-        public bool isBreedAvailable(int breedId)
+        public bool IsBreedAvailable(int breedId)
         {
             return (DbAvailableBreeds >> breedId) % 2 == 1;
         }

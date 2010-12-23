@@ -35,7 +35,7 @@ namespace Stump.Server.AuthServer.Handlers
         {
             Predicates = new Dictionary<Type, Predicate<AuthClient>>
                 {
-                    {typeof (ServerSelectionMessage), Handlers.PredicatesDefinitions.IsLookingOfServers},
+                    {typeof (ServerSelectionMessage), PredicatesDefinitions.IsLookingOfServers},
                 };
         }
 
@@ -102,16 +102,13 @@ namespace Stump.Server.AuthServer.Handlers
                 client.DisconnectLater(1000);
                 return false;
             }
-
-            /*Banni */
             if (account.Banned)
             {
-                /* Ban indéterminé */
+                /* for undetermined time */
                 if (!account.BanDate.HasValue)
                 {
                     SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.BANNED);
                 }
-                /* Avec durée */
                 else
                 {
                     SendIdentificationFailedBannedMessage(client);
