@@ -111,7 +111,7 @@ namespace Stump.Server.WorldServer.Breeds
 
         public static uint BreedsToFlag(IEnumerable<BreedEnum> breeds)
         {
-            return (uint) breeds.Aggregate(0, (current, breedEnum) => current | (int)Math.Pow(2, (int)breedEnum));
+            return (uint)breeds.Aggregate(0, (current, breedEnum) => current | (1 << (int)breedEnum));
         }
 
         #endregion

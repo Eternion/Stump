@@ -57,7 +57,7 @@ namespace Stump.Server.WorldServer.Handlers
             client.Send(new AccountCapabilitiesMessage(
                 (int) client.Account.Id,
                 true,
-                BreedManager.BreedsToFlag(client.Account.AvailableBreeds),
+                client.Account.DbAvailableBreeds,
                 BreedManager.BreedsToFlag(BreedManager.AvailableBreeds)
                 ));
         }

@@ -19,8 +19,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using System.Threading;
+using System.Reflection;
 using Stump.BaseCore.Framework.Attributes;
+using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Handler;
 
 namespace Stump.Server.BaseServer.Network
@@ -134,6 +137,66 @@ namespace Stump.Server.BaseServer.Network
             return count;
         }
 
+
+        public string GetDetailedMessageTypes(bool orderByTime)
+        {
+            var result = new StringBuilder();
+
+            var treatedMessage = m_workerList.SelectMany(w => w.TreatedMessage);
+
+            var groupMessage = from g in treatedMessage
+                               group g by g.Item1
+                                   into gr
+                                   select gr;
+
+            if (orderByTime)
+                groupMessage = groupMessage.OrderByDescending(g => g.Average(t => t.Item2));
+
+            foreach (var message in groupMessage)
+            {
+                double average = message.Average(t => t.Item2);
+                result.AppendLine("**************");
+                result.AppendLine("Message :" + message.First().Item1.GetType().Name);
+                result.AppendLine("Average Time : " + average);
+                result.AppendLine("Min Time : " + message.Min(t => t.Item2));
+                result.AppendLine("Max Time : " + message.Max(t => t.Item2));
+                result.AppendLine("Ecart Type : " + Math.Sqrt((message.Sum(t => Math.Pow(average - t.Item2, 2)))) / message.Count());
+                result.AppendLine(" Message count : " + message.Count());
+            }
+
+            return result.ToString();
+        }
+
+        public string GetDetailedMessages(string typeName, bool orderByTime)
+        {
+            var result = new StringBuilder();
+
+            var treatedMessage = m_workerList.SelectMany(w => w.TreatedMessage).Where(t => t.Item1.GetType().Name == typeName);
+
+            if (orderByTime)
+                treatedMessage = treatedMessage.OrderByDescending(t => t.Item2);
+
+            foreach (var tuple in treatedMessage)
+                result.AppendLine("ID :" + Math.Abs(tuple.GetHashCode()) + " / " + "Time : " + tuple.Item2);
+
+            return result.ToString();
+        }
+
+        public string GetDetailedMessage(string typeName, int id)
+        {
+            var result = new StringBuilder();
+
+            var treatedMessage = m_workerList.SelectMany(w => w.TreatedMessage).Where(t => t.Item1.GetType().Name == typeName).First(t => Math.Abs(t.GetHashCode()) == id);
+
+            var fields = treatedMessage.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (FieldInfo field in fields)
+            {
+                result.AppendLine(field.Name + " : " + field.GetValue(treatedMessage));
+            }
+
+            return result.ToString();
+        }
 
         public override string ToString()
         {
