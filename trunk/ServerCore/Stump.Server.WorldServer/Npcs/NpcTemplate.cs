@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Npcs
         public NpcTemplate(NpcEx npc)
         {
             m_npc = npc;
-            Look = npc.look.ToEntityLook();
+            Look = !string.IsNullOrEmpty(npc.look) && npc.look != "null" ? npc.look.ToEntityLook() : null;
         }
 
         public int Id

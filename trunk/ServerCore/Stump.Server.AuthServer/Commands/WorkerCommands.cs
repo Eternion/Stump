@@ -32,7 +32,7 @@ namespace Stump.Server.AuthServer.Commands
         {
             Aliases = new[] { "worker", "wk" };
             RequiredRole = RoleEnum.Administrator;
-            Description = "Manage worker benchmarking.";
+            Description = "Manage worker's.";
         }
 
         public override void Execute(TriggerBase trigger)
@@ -41,25 +41,24 @@ namespace Stump.Server.AuthServer.Commands
         }
     }
 
-
-    public class WorkerMessageTypesCommand : AuthSubCommand
+    public class WorkerBenchmarkCommand : AuthSubCommand
     {
-        public WorkerMessageTypesCommand()
+        public WorkerBenchmarkCommand()
         {
-            Aliases = new[] { "messType", "mt" };
+            Aliases = new[] { "benchmark", "bench" };
             ParentCommand = typeof(WorkerCommands);
             RequiredRole = RoleEnum.Administrator;
-            Description = "View messageType benchmarking.";
+            Description = "Display the benchmark of treated messages";
             Parameters = new List<ICommandParameter>
                 {
-                    new CommandParameter<bool>("orderByTime", "order", "Order the messageTypes by treatmentTime",true,true),
+                    new CommandParameter<bool>("order", "o", "Order messages by average treatment time", true, true),
                 };
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            var order = trigger.GetArgument<bool>("orderByTime");
-            trigger.Reply(AuthentificationServer.Instance.WorkerManager.GetDetailedMessageTypes(order));
+            trigger.Reply(AuthentificationServer.Instance.WorkerManager.
+                GetDetailedMessageTypes(trigger.GetArgument<bool>("order")));
         }
     }
 
@@ -67,45 +66,45 @@ namespace Stump.Server.AuthServer.Commands
     {
         public WorkerMessageCommand()
         {
-            Aliases = new[] { "mess"};
+            Aliases = new[] { "message", "msg" };
             ParentCommand = typeof(WorkerCommands);
             RequiredRole = RoleEnum.Administrator;
-            Description = "View messages benchmarking of the selected type.";
+            Description = "Display detailed treatment of a message";
             Parameters = new List<ICommandParameter>
                 {
-                    new CommandParameter<string>("messageType", "type", "type of the message"),
-                    new CommandParameter<bool>("orderByTime", "order", "Order the messageTypes by treatmentTime",true,true),
+                    new CommandParameter<string>("name", "n", "Name of the message"),
+                    new CommandParameter<bool>("order", "o", "Order messages by average treatment time", true, true),
                 };
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            var type = trigger.GetArgument<string>("messageType");
-            var order = trigger.GetArgument<bool>("orderByTime");
-            trigger.Reply(AuthentificationServer.Instance.WorkerManager.GetDetailedMessages(type, order));
+            trigger.Reply(AuthentificationServer.Instance.WorkerManager.GetDetailedMessages(
+                trigger.GetArgument<string>("name"),
+                trigger.GetArgument<bool>("order")));
         }
     }
 
-    public class WorkerMessageInfoCommand : AuthSubCommand
+    public class WorkerMessageIdCommand : AuthSubCommand
     {
-        public WorkerMessageInfoCommand()
+        public WorkerMessageIdCommand()
         {
-            Aliases = new[] { "messInfo", "mi" };
+            Aliases = new[] { "messageid", "msgid" };
             ParentCommand = typeof(WorkerCommands);
             RequiredRole = RoleEnum.Administrator;
-            Description = "View info on the message";
+            Description = "Display info about the treatment of a unique message id";
             Parameters = new List<ICommandParameter>
                 {
-                    new CommandParameter<string>("messageType", "type", "type of the message"),
-                    new CommandParameter<int>("messId", "id", "Id of the message"),
+                    new CommandParameter<string>("name", "n", "Name of the message"),
+                    new CommandParameter<int>("id", "id", "Unique message id's treatment"),
                 };
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            var type = trigger.GetArgument<string>("messageType");
-            var id = trigger.GetArgument<int>("messId");
-            trigger.Reply(AuthentificationServer.Instance.WorkerManager.GetDetailedMessage(type, id));
+            trigger.Reply(AuthentificationServer.Instance.WorkerManager.GetDetailedMessage(
+                trigger.GetArgument<string>("name"),
+                trigger.GetArgument<int>("id")));
         }
     }
 }

@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Data;
 using Stump.Server.BaseServer.Initializing;
-using Stump.Server.BaseServer.Manager;
 using Stump.Server.WorldServer.Entities;
 using NpcEx = Stump.DofusProtocol.D2oClasses.Npc;
 using NpcActionEx = Stump.DofusProtocol.D2oClasses.NpcAction;
@@ -41,7 +40,7 @@ namespace Stump.Server.WorldServer.Npcs
         {
             IEnumerable<NpcEx> npcsEx = DataLoader.LoadData<NpcEx>();
 
-            foreach (var npc in npcsEx)
+            foreach (NpcEx npc in npcsEx)
             {
                 var npcTemplate = new NpcTemplate(npc)
                     {

@@ -158,12 +158,12 @@ namespace Stump.Server.BaseServer.Network
             {
                 double average = message.Average(t => t.Item2);
                 result.AppendLine("");
-                result.AppendLine("     Message :" + message.First().Item1.GetType().Name);
-                result.AppendLine("     Average Time : " + average);
-                result.AppendLine("     Min Time : " + message.Min(t => t.Item2));
-                result.AppendLine("     Max Time : " + message.Max(t => t.Item2));
-                result.AppendLine("     Ecart Type : " + Math.Sqrt((message.Sum(t => Math.Pow(average - t.Item2, 2)))) / message.Count());
-                result.AppendLine("     Message count : " + message.Count());
+                result.AppendLine(string.Format("\tMessage :{0}", message.First().Item1.GetType().Name));
+                result.AppendLine(string.Format("\tAverage Time : {0}ms", average));
+                result.AppendLine(string.Format("\tMin Time : {0}ms", message.Min(t => t.Item2)));
+                result.AppendLine(string.Format("\tMax Time : {0}ms", message.Max(t => t.Item2)));
+                result.AppendLine(string.Format("\tEcart Type : {0}", Math.Sqrt(( message.Sum(t => Math.Pow(average - t.Item2, 2)) )) / message.Count()));
+                result.AppendLine(string.Format("\tMessage count : {0}", message.Count()));
             }
 
             return result.ToString();
@@ -182,8 +182,7 @@ namespace Stump.Server.BaseServer.Network
 
             foreach (var tuple in treatedMessage)
             {
-                result.AppendLine("");
-                result.AppendLine("     Id :" + Math.Abs(tuple.GetHashCode()) + " | " + "Time : " + tuple.Item2);
+                result.AppendLine(string.Format("\tId :{0} | Time : {1}ms", Math.Abs(tuple.GetHashCode()), tuple.Item2));
             }
 
             return result.ToString();
@@ -201,8 +200,7 @@ namespace Stump.Server.BaseServer.Network
 
             foreach (FieldInfo field in fields)
             {
-                result.AppendLine("");
-                result.AppendLine("     Field : " + field.Name + " : " + field.GetValue(treatedMessage));
+                result.AppendLine(string.Format("\t{0} : {1}", field.Name, field.GetValue(treatedMessage)));
             }
 
             return result.ToString();

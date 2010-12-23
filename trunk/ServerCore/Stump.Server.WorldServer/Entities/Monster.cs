@@ -74,7 +74,7 @@ namespace Stump.Server.WorldServer.Entities
                     {
                         GfxId = monstertemplate.gfxId,
                         Race = (MonsterRaceIdEnum) monstertemplate.race,
-                        Look = monstertemplate.look != "" ? monstertemplate.look.ToEntityLook() : null,
+                        Look = !string.IsNullOrEmpty(monstertemplate.look) ? monstertemplate.look.ToEntityLook() : null,
                     };
 
 

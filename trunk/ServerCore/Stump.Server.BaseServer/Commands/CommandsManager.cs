@@ -251,14 +251,15 @@ namespace Stump.Server.BaseServer.Commands
 
         private static void DisplayFullCommandDescription(TriggerBase trigger, CommandBase command)
         {
-            trigger.Reply("{0} {1} - {2} : {3} {4}",
+            trigger.Reply("{0} {1} - {2} : {3}",
                           string.Join("/", command.Aliases),
                           command.SubCommands.Count > 0
                               ? string.Format("({0} subcmds)", command.SubCommands.Count)
                               : "",
                           command.Description,
-                          command.Aliases.First(),
-                          command.GetSafeUsage());
+                          command.SubCommands.Count == 0
+                              ? command.Aliases.First() + " " + command.GetSafeUsage()
+                              : "");
 
             if (command.Parameters != null)
                 foreach (ICommandParameter commandParameter in command.Parameters)

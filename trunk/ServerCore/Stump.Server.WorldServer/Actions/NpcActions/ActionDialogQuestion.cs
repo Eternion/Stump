@@ -17,9 +17,11 @@
 //  *
 //  *************************************************************************/
 using System;
+using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.WorldServer.Actions.NpcActions
 {
+    [ActionType(ActionsEnum.ACTION_START_DIALOG_WITH_NPC)]
     public class ActionDialogQuestion : NpcAction
     {
         public ActionDialogQuestion(NpcActionArgument argument)
