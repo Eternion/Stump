@@ -59,6 +59,7 @@
     <Compile Include="Commands\AuthCommand.cs" />
     <Compile Include="Commands\AuthConsoleTrigger.cs" />
     <Compile Include="Commands\AuthSubCommand.cs" />
+    <Compile Include="Commands\BenchmarkCommands\WorkerCommands.cs" />
     <Compile Include="Commands\ParametersConverter.cs" />
     <Compile Include="Commands\ShutdownCommand.cs" />
     <Compile Include="Definitions.cs" />

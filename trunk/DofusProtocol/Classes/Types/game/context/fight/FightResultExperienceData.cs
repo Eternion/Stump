@@ -99,13 +99,13 @@ namespace Stump.DofusProtocol.Classes
 		{
 			base.serializeAs_FightResultAdditionalData(arg1);
 			var loc1 = 0;
-			BooleanByteWrapper.SetFlag(loc1, 0, this.showExperience);
-			BooleanByteWrapper.SetFlag(loc1, 1, this.showExperienceLevelFloor);
-			BooleanByteWrapper.SetFlag(loc1, 2, this.showExperienceNextLevelFloor);
-			BooleanByteWrapper.SetFlag(loc1, 3, this.showExperienceFightDelta);
-			BooleanByteWrapper.SetFlag(loc1, 4, this.showExperienceForGuild);
-			BooleanByteWrapper.SetFlag(loc1, 5, this.showExperienceForMount);
-			BooleanByteWrapper.SetFlag(loc1, 6, this.isIncarnationExperience);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 0, this.showExperience);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 1, this.showExperienceLevelFloor);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 2, this.showExperienceNextLevelFloor);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 3, this.showExperienceFightDelta);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 4, this.showExperienceForGuild);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 5, this.showExperienceForMount);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 6, this.isIncarnationExperience);
 			arg1.WriteByte((byte)loc1);
 			if ( this.experience < 0 )
 			{

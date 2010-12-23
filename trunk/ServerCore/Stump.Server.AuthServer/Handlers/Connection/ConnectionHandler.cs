@@ -140,6 +140,11 @@ namespace Stump.Server.AuthServer.Handlers
                 return false;
             }
 
+            /* Update last connection info */
+            client.Account.LastLogin = DateTime.Now;
+            client.Account.LastIP = client.IP;
+            client.Account.Save();
+
             SendIdentificationSuccessMessage(client, wasAlreadyConnected);
 
             return true;
@@ -211,6 +216,10 @@ namespace Stump.Server.AuthServer.Handlers
                 SendSelectServerRefusedMessage(client, wr, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_ACCOUNT_RESTRICTED);
                 return;
             }
+
+            /* Update last connection info */
+            client.Account.LastServer = wr.Id;
+            client.Account.Save();
 
             /* Send client to the server */
             SendSelectServerData(client, wr);

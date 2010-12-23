@@ -71,10 +71,10 @@ namespace Stump.DofusProtocol.Classes
 		public void serializeAs_FightOptionsInformations(BigEndianWriter arg1)
 		{
 			var loc1 = 0;
-			BooleanByteWrapper.SetFlag(loc1, 0, this.isSecret);
-			BooleanByteWrapper.SetFlag(loc1, 1, this.isRestrictedToPartyOnly);
-			BooleanByteWrapper.SetFlag(loc1, 2, this.isClosed);
-			BooleanByteWrapper.SetFlag(loc1, 3, this.isAskingForHelp);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 0, this.isSecret);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 1, this.isRestrictedToPartyOnly);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 2, this.isClosed);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 3, this.isAskingForHelp);
 			arg1.WriteByte((byte)loc1);
 		}
 		

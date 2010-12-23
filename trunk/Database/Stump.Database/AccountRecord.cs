@@ -31,15 +31,6 @@ namespace Stump.Database
     public sealed class AccountRecord : ActiveRecordBase<AccountRecord>
     {
         private string m_name = "";
-        private string m_dbavailableBreeds;
-        [NonSerialized]
-        private List<PlayableBreedEnum> m_availableBreeds;
-
-        public AccountRecord()
-        {
-            m_availableBreeds = new List<PlayableBreedEnum>();
-
-        }
 
         /// <summary>
         ///   Account's Identifier
@@ -183,36 +174,32 @@ namespace Stump.Database
             set;
         }
 
-        [Property("AvailableBreeds")]
-        private string DBAvailableBreeds
+        [Property("AvailableBreeds", Default = "8191")]
+        public uint DbAvailableBreeds
         {
-            get
-            {
-                return m_dbavailableBreeds;
-            }
-            set
-            {
-                m_dbavailableBreeds = value;
-
-                if (m_availableBreeds.Count <= 0)
-                    UpdateAvailableBreeds();
-            }
+            get;
+            set;
         }
+
 
         public List<PlayableBreedEnum> AvailableBreeds
         {
             get
             {
-                return m_availableBreeds ?? ( m_availableBreeds = DBAvailableBreeds.Trim().Split(',').Select(entry => (PlayableBreedEnum)int.Parse(entry)).ToList() ).ToList();
+                var breeds = new List<PlayableBreedEnum>(14);
+                foreach (PlayableBreedEnum breed in Enum.GetValues(typeof(PlayableBreedEnum)))
+                {
+                    if (((DbAvailableBreeds >> (byte)breed) % 2 == 1))
+                        breeds.Add(breed);
+                }
+                return breeds;
             }
             set
             {
-                m_availableBreeds = value;
-
-                UpdateAvailableBreeds();
+                DbAvailableBreeds = (uint)value.Aggregate(0, (current, breedEnum) => current | (1 << (int)breedEnum));
             }
         }
-        
+
         /// <summary>
         ///   Whether the account is banned or not.
         /// </summary>
@@ -368,19 +355,15 @@ namespace Stump.Database
             return false;
         }
 
-        public void UpdateAvailableBreeds()
+        public bool IsBreedAvailable(PlayableBreedEnum breed)
         {
-            if (m_availableBreeds.Count > 0)
-                DBAvailableBreeds = string.Join(",", m_availableBreeds.Select(entry => (int)entry));
-            else
-                m_availableBreeds = DBAvailableBreeds.Trim().Split(',').Select(entry => (PlayableBreedEnum)int.Parse(entry)).ToList();
+            return (DbAvailableBreeds >> (byte)breed) % 2 == 1;
         }
 
-        protected override bool BeforeSave(System.Collections.IDictionary state)
+        public bool IsBreedAvailable(int breedId)
         {
-            UpdateAvailableBreeds();
-
-            return base.BeforeSave(state);
+            return (DbAvailableBreeds >> breedId) % 2 == 1;
         }
+
     }
 }

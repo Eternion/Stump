@@ -111,7 +111,7 @@ namespace Stump.DofusProtocol.Classes
 			}
 			this.alignmentSide = (int)arg1.ReadByte();
 			this.breed = (int)arg1.ReadByte();
-            if (this.breed < (int)Stump.DofusProtocol.Enums.PlayableBreedEnum.Feca || this.breed > (int)Stump.DofusProtocol.Enums.PlayableBreedEnum.Zobal)
+			if ( this.breed < (int)Stump.DofusProtocol.Enums.BreedEnum.Feca || this.breed > (int)Stump.DofusProtocol.Enums.BreedEnum.Zobal )
 			{
 				throw new Exception("Forbidden value (" + this.breed + ") on element of FriendOnlineInformations.breed.");
 			}

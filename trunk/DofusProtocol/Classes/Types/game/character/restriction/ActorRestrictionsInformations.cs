@@ -122,31 +122,31 @@ namespace Stump.DofusProtocol.Classes
 		public void serializeAs_ActorRestrictionsInformations(BigEndianWriter arg1)
 		{
 			var loc1 = 0;
-			BooleanByteWrapper.SetFlag(loc1, 0, this.cantBeAggressed);
-			BooleanByteWrapper.SetFlag(loc1, 1, this.cantBeChallenged);
-			BooleanByteWrapper.SetFlag(loc1, 2, this.cantTrade);
-			BooleanByteWrapper.SetFlag(loc1, 3, this.cantBeAttackedByMutant);
-			BooleanByteWrapper.SetFlag(loc1, 4, this.cantRun);
-			BooleanByteWrapper.SetFlag(loc1, 5, this.forceSlowWalk);
-			BooleanByteWrapper.SetFlag(loc1, 6, this.cantMinimize);
-			BooleanByteWrapper.SetFlag(loc1, 7, this.cantMove);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 0, this.cantBeAggressed);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 1, this.cantBeChallenged);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 2, this.cantTrade);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 3, this.cantBeAttackedByMutant);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 4, this.cantRun);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 5, this.forceSlowWalk);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 6, this.cantMinimize);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 7, this.cantMove);
 			arg1.WriteByte((byte)loc1);
 			var loc2 = 0;
-			BooleanByteWrapper.SetFlag(loc2, 0, this.cantAggress);
-			BooleanByteWrapper.SetFlag(loc2, 1, this.cantChallenge);
-			BooleanByteWrapper.SetFlag(loc2, 2, this.cantExchange);
-			BooleanByteWrapper.SetFlag(loc2, 3, this.cantAttack);
-			BooleanByteWrapper.SetFlag(loc2, 4, this.cantChat);
-			BooleanByteWrapper.SetFlag(loc2, 5, this.cantBeMerchant);
-			BooleanByteWrapper.SetFlag(loc2, 6, this.cantUseObject);
-			BooleanByteWrapper.SetFlag(loc2, 7, this.cantUseTaxCollector);
+			loc2 = BooleanByteWrapper.SetFlag(loc2, 0, this.cantAggress);
+			loc2 = BooleanByteWrapper.SetFlag(loc2, 1, this.cantChallenge);
+			loc2 = BooleanByteWrapper.SetFlag(loc2, 2, this.cantExchange);
+			loc2 = BooleanByteWrapper.SetFlag(loc2, 3, this.cantAttack);
+			loc2 = BooleanByteWrapper.SetFlag(loc2, 4, this.cantChat);
+			loc2 = BooleanByteWrapper.SetFlag(loc2, 5, this.cantBeMerchant);
+			loc2 = BooleanByteWrapper.SetFlag(loc2, 6, this.cantUseObject);
+			loc2 = BooleanByteWrapper.SetFlag(loc2, 7, this.cantUseTaxCollector);
 			arg1.WriteByte((byte)loc2);
 			var loc3 = 0;
-			BooleanByteWrapper.SetFlag(loc3, 0, this.cantUseInteractive);
-			BooleanByteWrapper.SetFlag(loc3, 1, this.cantSpeakToNPC);
-			BooleanByteWrapper.SetFlag(loc3, 2, this.cantChangeZone);
-			BooleanByteWrapper.SetFlag(loc3, 3, this.cantAttackMonster);
-			BooleanByteWrapper.SetFlag(loc3, 4, this.cantWalk8Directions);
+			loc3 = BooleanByteWrapper.SetFlag(loc3, 0, this.cantUseInteractive);
+			loc3 = BooleanByteWrapper.SetFlag(loc3, 1, this.cantSpeakToNPC);
+			loc3 = BooleanByteWrapper.SetFlag(loc3, 2, this.cantChangeZone);
+			loc3 = BooleanByteWrapper.SetFlag(loc3, 3, this.cantAttackMonster);
+			loc3 = BooleanByteWrapper.SetFlag(loc3, 4, this.cantWalk8Directions);
 			arg1.WriteByte((byte)loc3);
 		}
 		

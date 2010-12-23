@@ -77,9 +77,9 @@ namespace Stump.DofusProtocol.Classes
 		{
 			base.serializeAs_FriendSpouseInformations(arg1);
 			var loc1 = 0;
-			BooleanByteWrapper.SetFlag(loc1, 0, this.inFight);
-			BooleanByteWrapper.SetFlag(loc1, 1, this.followSpouse);
-			BooleanByteWrapper.SetFlag(loc1, 2, this.pvpEnabled);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 0, this.inFight);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 1, this.followSpouse);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 2, this.pvpEnabled);
 			arg1.WriteByte((byte)loc1);
 			if ( this.mapId < 0 )
 			{

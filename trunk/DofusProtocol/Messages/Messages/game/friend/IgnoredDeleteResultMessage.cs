@@ -83,8 +83,8 @@ namespace Stump.DofusProtocol.Messages
 		public void serializeAs_IgnoredDeleteResultMessage(BigEndianWriter arg1)
 		{
 			var loc1 = 0;
-			BooleanByteWrapper.SetFlag(loc1, 0, this.success);
-			BooleanByteWrapper.SetFlag(loc1, 1, this.session);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 0, this.success);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 1, this.session);
 			arg1.WriteByte((byte)loc1);
 			arg1.WriteUTF((string)this.name);
 		}

@@ -262,7 +262,7 @@ namespace Stump.Tools.UtilityBot.FileParser
             MethodsElements = new Dictionary<MethodInfo, IEnumerable<IExecution>>();
 
             Match matchMethods = Regex.Match(m_fileText,
-                                             @"(?<acces>public|protected|private|internal)\s*(?<override>override)?\s*function\s+(?<prop>get|set)?\s+(?<name>\w+)\((?<argument>[^,)]+,?)*\):(?:\w+\.)*(?<=\.|:)(?<returntype>\w+)");
+                                             @"(?<acces>public|protected|private|internal)\s*(?<override>override)?\s*function\s*(?<prop>get|set)?\s+(?<name>\w+)\((?<argument>[^,)]+,?)*\):(?:\w+\.)*(?<=\.|:)(?<returntype>\w+)");
             while (matchMethods.Success)
             {
                 // do not support properties

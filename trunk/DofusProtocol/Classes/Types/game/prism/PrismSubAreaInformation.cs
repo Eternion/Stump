@@ -74,8 +74,8 @@ namespace Stump.DofusProtocol.Classes
 		public void serializeAs_PrismSubAreaInformation(BigEndianWriter arg1)
 		{
 			var loc1 = 0;
-			BooleanByteWrapper.SetFlag(loc1, 0, this.isInFight);
-			BooleanByteWrapper.SetFlag(loc1, 1, this.isFightable);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 0, this.isInFight);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 1, this.isFightable);
 			arg1.WriteByte((byte)loc1);
 			if ( this.subId < 0 )
 			{

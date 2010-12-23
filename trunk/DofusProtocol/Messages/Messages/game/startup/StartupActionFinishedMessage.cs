@@ -83,8 +83,8 @@ namespace Stump.DofusProtocol.Messages
 		public void serializeAs_StartupActionFinishedMessage(BigEndianWriter arg1)
 		{
 			var loc1 = 0;
-			BooleanByteWrapper.SetFlag(loc1, 0, this.success);
-			BooleanByteWrapper.SetFlag(loc1, 1, this.automaticAction);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 0, this.success);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 1, this.automaticAction);
 			arg1.WriteByte((byte)loc1);
 			if ( this.actionId < 0 )
 			{

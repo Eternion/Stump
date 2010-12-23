@@ -346,7 +346,7 @@ namespace Stump.Tools.UtilityBot.Commands
                 {@"= (\w+)\.ReadUShort\(\);", @"= (ushort)$1.ReadUShort();"},
                 {@"ReadUnsignedByte", @"ReadByte"},
                 {@"getFlag\(", @"BooleanByteWrapper.GetFlag("},
-                {@"setFlag\(", @"BooleanByteWrapper.SetFlag("},
+                {@"setFlag\(([\w\d_]+), ([\w\d_]+), ([^\)]+)\)", @"$1 = BooleanByteWrapper.SetFlag($1, $2, $3)"},
                 {@"public uint getTypeId \(\)", @"public virtual uint getTypeId ()"},
                 {@"public void reset \(\)", @"public virtual void reset ()"},
                 {

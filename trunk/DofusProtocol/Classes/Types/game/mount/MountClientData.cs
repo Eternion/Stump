@@ -75,10 +75,10 @@ namespace Stump.DofusProtocol.Classes
 		public void serializeAs_MountClientData(BigEndianWriter arg1)
 		{
 			var loc1 = 0;
-			BooleanByteWrapper.SetFlag(loc1, 0, this.sex);
-			BooleanByteWrapper.SetFlag(loc1, 1, this.isRideable);
-			BooleanByteWrapper.SetFlag(loc1, 2, this.isWild);
-			BooleanByteWrapper.SetFlag(loc1, 3, this.isFecondationReady);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 0, this.sex);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 1, this.isRideable);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 2, this.isWild);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 3, this.isFecondationReady);
 			arg1.WriteByte((byte)loc1);
 			arg1.WriteDouble(this.id);
 			if ( this.model < 0 )

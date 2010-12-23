@@ -71,8 +71,8 @@ namespace Stump.DofusProtocol.Classes
 		public void serializeAs_PrismConquestInformation(BigEndianWriter arg1)
 		{
 			var loc1 = 0;
-			BooleanByteWrapper.SetFlag(loc1, 0, this.isEntered);
-			BooleanByteWrapper.SetFlag(loc1, 1, this.isInRoom);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 0, this.isEntered);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 1, this.isInRoom);
 			arg1.WriteByte((byte)loc1);
 			if ( this.subId < 0 )
 			{

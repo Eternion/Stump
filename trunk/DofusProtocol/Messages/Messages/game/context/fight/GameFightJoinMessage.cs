@@ -92,10 +92,10 @@ namespace Stump.DofusProtocol.Messages
 		public void serializeAs_GameFightJoinMessage(BigEndianWriter arg1)
 		{
 			var loc1 = 0;
-			BooleanByteWrapper.SetFlag(loc1, 0, this.canBeCancelled);
-			BooleanByteWrapper.SetFlag(loc1, 1, this.canSayReady);
-			BooleanByteWrapper.SetFlag(loc1, 2, this.isSpectator);
-			BooleanByteWrapper.SetFlag(loc1, 3, this.isFightStarted);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 0, this.canBeCancelled);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 1, this.canSayReady);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 2, this.isSpectator);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 3, this.isFightStarted);
 			arg1.WriteByte((byte)loc1);
 			if ( this.timeMaxBeforeFightStart < 0 )
 			{

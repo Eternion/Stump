@@ -95,8 +95,8 @@ namespace Stump.DofusProtocol.Messages
 		public void serializeAs_IdentificationSuccessMessage(BigEndianWriter arg1)
 		{
 			var loc1 = 0;
-			BooleanByteWrapper.SetFlag(loc1, 0, this.hasRights);
-			BooleanByteWrapper.SetFlag(loc1, 1, this.wasAlreadyConnected);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 0, this.hasRights);
+			loc1 = BooleanByteWrapper.SetFlag(loc1, 1, this.wasAlreadyConnected);
 			arg1.WriteByte((byte)loc1);
 			arg1.WriteUTF((string)this.nickname);
 			if ( this.accountId < 0 )

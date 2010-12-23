@@ -15,6 +15,7 @@
 //  *  You should have received a copy of the GNU General Public License
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
+//  *************************************************************************/
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,15 +52,19 @@ namespace Stump.Server.WorldServer.Handlers
             BasicHandler.SendBasicNoOperationMessage(client);
         }
 
-
         public static void SendAccountCapabilitiesMessage(WorldClient client)
         {
             client.Send(new AccountCapabilitiesMessage(
                 (int) client.Account.Id,
                 true,
-                BreedManager.BreedsToFlag(client.Account.AvailableBreeds),
+                client.Account.DbAvailableBreeds,
                 BreedManager.BreedsToFlag(BreedManager.AvailableBreeds)
                 ));
+        }
+
+        public static void SendConsoleCommandsListMessage(WorldClient client,List<string> aliases,List<string> args,List<string> descr)
+        {
+            client.Send(new ConsoleCommandsListMessage(aliases, args, descr));
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Stump.Server.BaseServer.Network
 
         private readonly HandlerManager m_handlerManager;
         private readonly QueueDispatcher m_queueDispatcher;
-        private readonly List<double> m_treatedMessage = new List<double>();
+        private readonly List<Tuple<Message, double>> m_treatedMessage = new List<Tuple<Message, double>>();
         private bool m_benchmark;
         private bool m_paused;
         private DateTime m_startDate;
@@ -80,20 +80,14 @@ namespace Stump.Server.BaseServer.Network
 
         public int TreatedMessageCount
         {
-            get { return m_treatedMessage.Count; }
+            get { return TreatedMessage.Count; }
         }
 
         public double TreatedMessageAverageTime
         {
             get
             {
-                Double sum = 0;
-                int count = m_treatedMessage.Count;
-                foreach (Double value in m_treatedMessage.AsReadOnly())
-                {
-                    sum += value;
-                }
-                return sum/count;
+                return TreatedMessage.Average(tuple => tuple.Item2);
             }
         }
 
@@ -105,6 +99,11 @@ namespace Stump.Server.BaseServer.Network
         public ThreadState State
         {
             get { return m_thread.ThreadState; }
+        }
+
+        public List<Tuple<Message, double>> TreatedMessage
+        {
+            get { return m_treatedMessage; }
         }
 
         #endregion
@@ -134,7 +133,7 @@ namespace Stump.Server.BaseServer.Network
 
                         m_handlerManager.Dispatch(tuple.Item1, tuple.Item2);
 
-                        m_treatedMessage.Add(DateTime.Now.Subtract(start).TotalMilliseconds);
+                        TreatedMessage.Add(new Tuple<Message, double>(tuple.Item2, DateTime.Now.Subtract(start).TotalMilliseconds));
                     }
                     else
                     {
@@ -143,6 +142,7 @@ namespace Stump.Server.BaseServer.Network
                 }
             }
         }
+
 
         public override string ToString()
         {
@@ -154,10 +154,13 @@ namespace Stump.Server.BaseServer.Network
             result.AppendLine("State : " + m_thread.ThreadState);
             result.AppendLine("Start Date : " + m_startDate.ToLongTimeString());
             result.AppendLine("UpTime : " + UpTime);
-            result.AppendLine("Treated Message : " + m_treatedMessage.Count);
-            if (m_treatedMessage.Count != 0)
+            result.AppendLine("Treated Message : " + TreatedMessage.Count);
+            if (TreatedMessage.Count != 0)
+            {
                 result.AppendLine("Average treatment : " + TreatedMessageAverageTime + " ms");
-
+                foreach (Tuple<Message, double> message in TreatedMessage)
+                    result.AppendLine(message.Item1.GetType().Name + " => " + message.Item2);
+            }
             return result.ToString();
         }
     }
