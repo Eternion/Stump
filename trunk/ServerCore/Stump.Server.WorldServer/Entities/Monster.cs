@@ -26,6 +26,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Data;
 using Stump.Server.BaseServer.Initializing;
 using Stump.Server.WorldServer.Groups;
+using Stump.Server.WorldServer.Look;
 using MonsterGradeTemplate = Stump.DofusProtocol.D2oClasses.MonsterGrade;
 using MonsterRaceTemplate = Stump.DofusProtocol.D2oClasses.MonsterRace;
 using MonsterTemplate = Stump.DofusProtocol.D2oClasses.Monster;
@@ -47,14 +48,14 @@ namespace Stump.Server.WorldServer.Entities
         #endregion
 
         public Monster(long id)
-            : base((int) id)
+            : base((int)id)
         {
             Race = MonsterRaceIdEnum.NotListed; // default race if not defined later.
             Grades = new List<MonsterGrade>();
         }
 
         public Monster(long id, MonsterRaceIdEnum monsterRace)
-            : base((int) id)
+            : base((int)id)
         {
             Race = monsterRace;
             Grades = new List<MonsterGrade>();
@@ -73,15 +74,15 @@ namespace Stump.Server.WorldServer.Entities
                 var monster = new Monster(monstertemplate.id)
                     {
                         GfxId = monstertemplate.gfxId,
-                        Race = (MonsterRaceIdEnum) monstertemplate.race,
-                        Look = !string.IsNullOrEmpty(monstertemplate.look) ? monstertemplate.look.ToEntityLook() : null,
+                        Race = (MonsterRaceIdEnum)monstertemplate.race,
+                        Look = !string.IsNullOrEmpty(monstertemplate.look) ? new CharacterLook(monstertemplate.look.ToEntityLook()) : null,
                     };
 
 
                 // todo : this is totally wrong !
                 MonsterRaceTemplate race = monsterRaces.SingleOrDefault(monsterRace => monsterRace.id == monster.Id);
                 if (race != null)
-                    monster.ParentMonsterId = (MonsterRaceIdEnum) race.superRaceId;
+                    monster.ParentMonsterId = (MonsterRaceIdEnum)race.superRaceId;
 
                 foreach (MonsterGradeTemplate grade in monstertemplate.grades)
                 {
@@ -184,7 +185,7 @@ namespace Stump.Server.WorldServer.Entities
 
         public override string ToString()
         {
-            return String.Format("Monster \"{0}\" <Id:{1}>", Enum.GetName(typeof (MonsterIdEnum), Id), Id);
+            return String.Format("Monster \"{0}\" <Id:{1}>", Enum.GetName(typeof(MonsterIdEnum), Id), Id);
         }
 
         public override FightTeamMemberInformations ToNetworkTeamMember()

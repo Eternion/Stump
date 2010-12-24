@@ -48,6 +48,8 @@ namespace Stump.Tools.Proxy
             /*Initialize HandlerManager */
             HandlerManager.RegisterAll(typeof (IdentificationSuccessMessageHandler).Assembly);
 
+            Stump.DofusProtocol.Messages.MessageReceiver.Initialize();
+
             /* Create Auth et World Client Listener */
             authClientListener = new ClientListener("127.0.0.1", 5555, 2000, 2000);
             worldClientListener = new ClientListener("127.0.0.1", 5556, 2000, 2000);

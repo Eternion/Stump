@@ -19,6 +19,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Database;
+using Stump.Server.WorldServer.Manager;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -31,15 +32,16 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof (CharacterSelectionMessage))]
         public static void HandleCharacterSelectionMessage(WorldClient client, CharacterSelectionMessage message)
         {
-            IEnumerable<CharacterRecord> characters = client.Characters.Where(entry => entry.Id == message.id);
-
-            if (characters.Count() != 1)
+            var character = client.Characters.First(entry => entry.Id == message.id);
+            
+            /* Check null */
+            if (character == null)
             {
                 client.Send(new CharacterSelectedErrorMessage());
                 return;
             }
 
-            client.ActiveCharacter = new Character(characters.First(), client);
+            client.ActiveCharacter = new Character(character, client);
 
 
             SendCharacterSelectedSuccessMessage(client);
@@ -95,11 +97,11 @@ namespace Stump.Server.WorldServer.Handlers
                     (uint) characterRecord.Id,
                     (uint) characterRecord.Level,
                     characterRecord.Name,
-                    characterRecord.Look,
+                   CharacterManager.GetStuffedCharacterLook(characterRecord).EntityLook ,//look
                     characterRecord.Breed,
                     characterRecord.SexId != 0)).ToList();
 
-
+            
             client.Send(new CharactersListMessage(
                             false, // HasStartupActions
                             list

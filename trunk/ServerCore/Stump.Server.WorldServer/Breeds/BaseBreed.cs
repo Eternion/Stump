@@ -71,7 +71,7 @@ namespace Stump.Server.WorldServer.Breeds
 
             MaleLook = breeddata.maleLook.ToEntityLook();
             FemaleLook = breeddata.femaleLook.ToEntityLook();
-
+            
             StatsPointsForStrength = breeddata.statsPointsForStrength;
             StatsPointsForIntelligence = breeddata.statsPointsForIntelligence;
             StatsPointsForChance = breeddata.statsPointsForChance;

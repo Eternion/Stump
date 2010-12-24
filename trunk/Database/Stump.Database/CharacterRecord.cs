@@ -34,7 +34,7 @@ namespace Stump.Database
     [ActiveRecord("characters")]
     public sealed class CharacterRecord : ActiveRecordBase<CharacterRecord>
     {
-        private static readonly IdGenerator IdGenerator = new IdGenerator(typeof (CharacterRecord), "Id");
+        private static readonly IdGenerator IdGenerator = new IdGenerator(typeof(CharacterRecord), "Id");
 
         /// <summary>
         ///   Logger for this class.
@@ -46,8 +46,8 @@ namespace Stump.Database
         /// </summary>
         public bool New;
 
-        private string m_dbLook;
-        private EntityLook m_look;
+        //   private string m_dbLook;
+        //    private EntityLook m_look;
 
         /// <summary>
         ///   Constructor
@@ -101,28 +101,96 @@ namespace Stump.Database
             set;
         }
 
-        [Property("Look", NotNull = true)]
-        private string DBLook
+        [Property("BonesId", NotNull = true, Default = "1")]
+        private uint BonesId
+        {
+            get;
+            set;
+        }
+
+        [Property("Skins", NotNull = true)]
+        private string Skins
+        {
+            get;
+            set;
+        }
+
+        [Property("Color1", NotNull = true)]
+        private int Color1
+        {
+            get;
+            set;
+        }
+
+        [Property("Color2", NotNull = true)]
+        private int Color2
+        {
+            get;
+            set;
+        }
+
+        [Property("Color3", NotNull = true)]
+        private int Color3
+        {
+            get;
+            set;
+        }
+
+        [Property("Color4", NotNull = true)]
+        private int Color4
+        {
+            get;
+            set;
+        }
+
+        [Property("Color5", NotNull = true)]
+        private int Color5
+        {
+            get;
+            set;
+        }
+
+        [Property("Height", NotNull = true)]
+        private int Height
+        {
+            get;
+            set;
+        }
+
+        [Property("Width", NotNull = true)]
+        private int Width
+        {
+            get;
+            set;
+        }
+
+        public EntityLook BaseLook
         {
             get
             {
-                return m_dbLook;
+                List<uint> skins = Skins.Split(',').ToList().ConvertAll(s => uint.Parse(s));
+                return new EntityLook(BonesId, skins ,new List<int>(5) {Color1, Color2, Color3, Color4, Color5}, new List<int>(2) {Height,Width }, new List<SubEntity>());
             }
             set
             {
-                m_dbLook = value;
+                BonesId = value.bonesId;
+                Skins = string.Join(",", value.skins);
+                Color1 = value.indexedColors[0];
+                Color2 = value.indexedColors[1];
+                Color3 = value.indexedColors[2];
+                Color4 = value.indexedColors[3];
+                Color5 = value.indexedColors[4];
+                if (value.scales.Count == 2)
+                {
+                    Height = value.scales[0];
+                    Width = value.scales[1];
+                }
+                else
+                {
+                   Height = value.scales[0];
+                   Width = value.scales[0];
+                }
 
-                m_look = m_dbLook.ToEntityLook();
-            }
-        }
-
-        public EntityLook Look
-        {
-            get { return m_look ?? (m_look = m_dbLook.ToEntityLook()); }
-            set { 
-                m_look = value;
-
-                m_dbLook = EntityLookExtension.ToString(m_look);
             }
         }
 
@@ -242,13 +310,13 @@ namespace Stump.Database
                 if (Spells.ContainsKey(spellId))
                 {
                     logger.Error("Spell ({0}, Id: {1}) added twice to Character {2} (Breed: {3})",
-                                 (SpellIdEnum) spellId,
+                                 (SpellIdEnum)spellId,
                                  spellId,
                                  this,
                                  (PlayableBreedEnum)Breed);
                 }
 
-                var record = new SpellRecord(spellId, (uint) Id, position, level);
+                var record = new SpellRecord(spellId, (uint)Id, position, level);
                 Spells.Add(spellId, record);
                 record.Save();
             }
@@ -261,7 +329,7 @@ namespace Stump.Database
         {
             if (Spells != null)
             {
-                if (Spells.ContainsKey((uint) spellId))
+                if (Spells.ContainsKey((uint)spellId))
                 {
                     logger.Error("Spell ({0}, Id: {1}) added twice to Character {2} (Breed: {3})",
                                  spellId,
@@ -270,8 +338,8 @@ namespace Stump.Database
                                  (PlayableBreedEnum)Breed);
                 }
 
-                var record = new SpellRecord((uint) spellId, (uint) Id, position, level);
-                Spells.Add((uint) spellId, record);
+                var record = new SpellRecord((uint)spellId, (uint)Id, position, level);
+                Spells.Add((uint)spellId, record);
                 record.Save();
             }
         }
@@ -295,9 +363,9 @@ namespace Stump.Database
 
         public void ModifySpellPosition(int spellid, int newpos)
         {
-            if (Spells.ContainsKey((uint) spellid))
+            if (Spells.ContainsKey((uint)spellid))
             {
-                Spells[(uint) spellid].Position = newpos;
+                Spells[(uint)spellid].Position = newpos;
             }
         }
 
@@ -314,7 +382,7 @@ namespace Stump.Database
             if (!New)
             {
                 Spells = new Dictionary<uint, SpellRecord>();
-                SpellRecord[] dbSpells = SpellRecord.FindAll(Restrictions.Eq("OwnerId", (uint) Id));
+                SpellRecord[] dbSpells = SpellRecord.FindAll(Restrictions.Eq("OwnerId", (uint)Id));
                 foreach (SpellRecord spell in dbSpells)
                 {
                     try
@@ -403,13 +471,6 @@ namespace Stump.Database
             DeleteAssociatedRecords();
 
             base.OnDelete();
-        }
-
-        protected override bool BeforeSave(IDictionary state)
-        {
-            m_dbLook = m_look != null ? EntityLookExtension.ToString(m_look) : "{0}";
-
-            return base.BeforeSave(state);
         }
     }
 }

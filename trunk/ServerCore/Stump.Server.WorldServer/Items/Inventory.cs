@@ -492,6 +492,13 @@ namespace Stump.Server.WorldServer.Items
                     select entry.Value).ToArray();
         }
 
+        public Item[] GetItems(params CharacterInventoryPositionEnum[] position)
+        {
+            return (from entry in m_items
+                    where position.Contains(entry.Value.Position)
+                    select entry.Value).ToArray();
+        }
+
         public Item[] GetEquipedItems()
         {
             return (from entry in m_items

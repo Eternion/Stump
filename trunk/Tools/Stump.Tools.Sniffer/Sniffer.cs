@@ -113,8 +113,10 @@ namespace Stump.Tools.Sniffer
             get { return m_running; }
         }
 
+        private System.Diagnostics.Stopwatch time  = new System.Diagnostics.Stopwatch();
         private void IdentifiedClient_OnNewMessage(Message message, string sender)
         {
+
             m_form.AddMessageToListView(message, sender);
         }
 

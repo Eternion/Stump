@@ -74,12 +74,22 @@ namespace Stump.Database
 
         public static CharacterItemRecord FindItemByGuid(long guid)
         {
-            return FindOne(Restrictions.Eq("Guid", guid));
+            return FindByPrimaryKey(guid);
         }
 
         public static CharacterItemRecord[] FindItemsByCharacter(long characterId)
         {
             return FindAll(Restrictions.Eq("OwnerId", characterId));
+        }
+
+        public static CharacterItemRecord FindItemByCharacterAndPosition(long characterId, CharacterInventoryPositionEnum position)
+        {
+            return FindOne(Restrictions.Eq("OwnerId", characterId), Restrictions.Eq("Position", position));
+        }
+
+        public static CharacterItemRecord[] FindItemsByCharacterAndPosition(long characterId, params CharacterInventoryPositionEnum[] positions)
+        {
+            return FindAll(Restrictions.Eq("OwnerId", characterId), Restrictions.In("Position", positions));
         }
     }
 }
