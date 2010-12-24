@@ -21,11 +21,13 @@ using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.BaseCore.Framework.Utils;
 using Stump.Database;
+using Stump.Server.WorldServer.Manager;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Chat;
+using Stump.Server.WorldServer.Manager;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Global.Maps;
 using Stump.Server.WorldServer.Groups;
@@ -62,11 +64,11 @@ namespace Stump.Server.WorldServer.Entities
             InWorld = false;
 
             // -> entity look
-            Look = record.Look;
+            Look = CharacterManager.GetStuffedCharacterLook(record);
 
             Inventory = new Inventory(this);
             Inventory.LoadInventory();
-
+            
             Stats = new StatsFields(this);
             Stats["Strength"].Base = record.Strength;
             Stats["Vitality"].Base = record.Vitality;
@@ -172,7 +174,7 @@ namespace Stump.Server.WorldServer.Entities
         {
             return new GameRolePlayCharacterInformations(
                 (int) Id,
-                Look,
+                Look.EntityLook,
                 GetEntityDisposition(),
                 Name,
                 GetHumanInformations(),
@@ -197,7 +199,7 @@ namespace Stump.Server.WorldServer.Entities
 
             return new GameFightCharacterInformations(
                 (int)Id,
-                Look,
+                Look.EntityLook,
                 CurrentFighter.GetEntityDisposition(),
                 (uint)( (FightGroup)Group ).TeamId,
                 !( CurrentFighter.IsDead || CurrentFighter.IsReady ),
@@ -213,7 +215,7 @@ namespace Stump.Server.WorldServer.Entities
                 (uint) Id,
                 (uint) Level,
                 Name,
-                Look,
+                Look.EntityLook,
                 (int) BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE);
         }

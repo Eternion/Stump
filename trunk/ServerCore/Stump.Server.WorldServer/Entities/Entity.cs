@@ -23,6 +23,7 @@ using System.Linq;
 using NLog;
 using Stump.DofusProtocol.Classes;
 using Stump.Server.WorldServer.Fights;
+using Stump.Server.WorldServer.Look;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Global.Maps;
 using Stump.Server.WorldServer.Groups;
@@ -59,7 +60,7 @@ namespace Stump.Server.WorldServer.Entities
         public virtual GameRolePlayActorInformations ToNetworkActor(WorldClient client)
         {
             return new GameRolePlayActorInformations((int) Id,
-                                                     Look,
+                                                     Look.EntityLook,
                                                      GetEntityDisposition());
         }
 
@@ -120,7 +121,7 @@ namespace Stump.Server.WorldServer.Entities
             set;
         }
 
-        public EntityLook Look
+        public CharacterLook Look
         {
             get;
             set;

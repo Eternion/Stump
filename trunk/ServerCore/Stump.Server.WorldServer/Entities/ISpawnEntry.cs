@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using Stump.DofusProtocol.Classes;
+using Stump.Server.WorldServer.Look;
 using Stump.Server.WorldServer.Global;
 
 namespace Stump.Server.WorldServer.Entities
@@ -28,7 +29,7 @@ namespace Stump.Server.WorldServer.Entities
             get;
         }
 
-        EntityLook Look
+        CharacterLook Look
         {
             get;
             set;

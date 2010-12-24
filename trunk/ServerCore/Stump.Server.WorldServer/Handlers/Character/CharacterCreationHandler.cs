@@ -78,8 +78,8 @@ namespace Stump.Server.WorldServer.Handlers
                 indexedColors.Add(int.Parse((i + 1) + color.ToString("X6"), NumberStyles.HexNumber));
             }
 
-            var look = !message.sex ? breed.MaleLook.Copy() : breed.FemaleLook.Copy();
-            look.indexedColors = indexedColors;
+            var breedLook = !message.sex ? breed.MaleLook.Copy() : breed.FemaleLook.Copy();
+            breedLook.indexedColors = indexedColors;
 
             /* Create Character */
             var character = new CharacterRecord
@@ -90,7 +90,7 @@ namespace Stump.Server.WorldServer.Handlers
                     Name = characterName,
                     Breed = message.breed,
                     SexId = message.sex ? 1 : 0,
-                    Look = look,
+                    BaseLook = breedLook,
                     Kamas = breed.StartKamas,
                     MapId = (int)breed.StartMap,
                     CellId = breed.StartCellId,

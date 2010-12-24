@@ -22,6 +22,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Castle.ActiveRecord;
 using Stump.Database;
+using Stump.DofusProtocol.Classes;
+using Stump.Server.WorldServer.Look;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.IPC;
 
@@ -39,7 +41,7 @@ namespace Stump.Server.WorldServer.Manager
                 {
                     try
                     {
-                        return CharacterRecord.FindCharacterById((int) id);
+                        return CharacterRecord.FindCharacterById((int)id);
                     }
                     catch (NotFoundException)
                     {
@@ -67,7 +69,7 @@ namespace Stump.Server.WorldServer.Manager
             if (client.Characters == null)
                 client.Characters = new List<CharacterRecord>(5);
 
-            character.Id = (int) CharacterRecord.GetNextId();
+            character.Id = (int)CharacterRecord.GetNextId();
             client.Characters.Insert(0, character);
 
             World.Instance.TaskPool.EnqueueTask(() =>
@@ -76,7 +78,7 @@ namespace Stump.Server.WorldServer.Manager
 
                 IpcAccessor.Instance.ProxyObject.AddAccountCharacter(WorldServer.ServerInformation,
                                                                      client.Account.Id,
-                                                                     (uint) character.Id);
+                                                                     (uint)character.Id);
             });
             return true;
         }
@@ -91,8 +93,17 @@ namespace Stump.Server.WorldServer.Manager
 
                 IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(WorldServer.ServerInformation,
                                                                         client.Account.Id,
-                                                                        (uint) character.Id);
+                                                                        (uint)character.Id);
             });
+        }
+
+        public static CharacterLook GetStuffedCharacterLook(CharacterRecord character)
+        {
+            CharacterLook baseLook = new CharacterLook(character.BaseLook);
+
+            //TODO ADD ITEMS
+
+            return baseLook;
         }
 
         #region Character Name Random Generation
