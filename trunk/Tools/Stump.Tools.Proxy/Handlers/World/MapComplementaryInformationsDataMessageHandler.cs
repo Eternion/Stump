@@ -16,29 +16,23 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading.Tasks;
 using Stump.DofusProtocol.Messages;
-using System.Net;
+using Stump.Tools.Proxy.Data;
+using Stump.Tools.Proxy.Network;
 
-namespace Stump.Tools.Proxy.Messages
+namespace Stump.Tools.Proxy.Handlers.World
 {
-    class ProtocolRequiredMessageHandler
+    public class MapComplementaryInformationsDataMessageHandler : WorldHandlerContainer
     {
-
-
-        [Handler(typeof(ProtocolRequired))]
-        public static void ProtocolRequiredMessage(ProtocolRequired message, DerivedConnexion sender)
+        [WorldHandler(typeof (MapComplementaryInformationsDataMessage))]
+        public static void HandleMapComplementaryInformationsDataMessage(WorldClient client,
+                                                                         MapComplementaryInformationsDataMessage message)
         {
-            if (sender is WorldDerivedConnexion)
-            {           
-                Console.WriteLine("Intercept ProtocolRequired");
-            }
-            else
-                sender.Client.Send(message);
-        }
+            Parallel.ForEach(message.actors, actor =>
+                                             DataFactory.HandleActorInformations(actor, message.mapId));
 
+            client.Send(message);
+        }
     }
 }

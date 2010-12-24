@@ -16,39 +16,17 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.DofusProtocol.Messages;
+using Stump.Tools.Proxy.Network;
 
-namespace Stump.Tools.Proxy.Messages
+namespace Stump.Tools.Proxy.Handlers.World
 {
-    class SelectedServerDataMessageHandler
+    public class HelloGameMessageHandler : WorldHandlerContainer
     {
-
-        /* Intercept and modify adress & port of the server */
-        [Handler(typeof(SelectedServerDataMessage))]
-        public static void HandleSelectedServerDataMessage(SelectedServerDataMessage message, DerivedConnexion sender)
+        [WorldHandler(typeof (HelloGameMessage))]
+        public static void HandleHelloGameMessage(WorldClient client, HelloGameMessage message)
         {
-             WorldDerivedConnexion.Tickets.Add(message.ticket, message);
-
-             var mess = new SelectedServerDataMessage();
-
-             mess.canCreateNewCharacter = true;
-
-             mess.serverId = message.serverId;
-
-             mess.ticket = message.ticket;
-
-             mess.address = Proxy.worldClientListener.Host;
-
-             mess.port = (uint)Proxy.worldClientListener.Port;
-
-             sender.Client.Send(mess);
-
-             sender.Client.Disconnect();
+            client.Server.Send(new AuthenticationTicketMessage("fr", client.Ticket));
         }
-
     }
 }

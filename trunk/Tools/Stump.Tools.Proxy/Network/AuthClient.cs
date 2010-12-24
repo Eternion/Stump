@@ -1,4 +1,4 @@
-﻿// /*************************************************************************
+// /*************************************************************************
 //  *
 //  *  Copyright (C) 2010 - 2011 Stump Team
 //  *
@@ -16,26 +16,17 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Stump.DofusProtocol.Messages;
 using System.Net;
+using System.Net.Sockets;
 
-namespace Stump.Tools.Proxy.Messages
+namespace Stump.Tools.Proxy.Network
 {
-    class HelloGameMessageHandler
+    public class AuthClient : ProxyClient
     {
-
-
-        [Handler(typeof(HelloGameMessage))]
-        public static void HandleHelloGameMessage(HelloGameMessage message, DerivedConnexion sender)
+        public AuthClient(Socket socket, IPEndPoint ipEndPoint)
+            : base(socket)
         {
-
-            sender.Server.Send(new AuthenticationTicketMessage("fr",(sender as WorldDerivedConnexion).Ticket));
-
+            BindToServer(ipEndPoint);
         }
-
     }
 }

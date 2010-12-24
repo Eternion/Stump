@@ -29,14 +29,6 @@ namespace Stump.Server.WorldServer
 {
     public class WorldClient : BaseClient
     {
-        public new event Action<WorldClient> ClientDisconnected;
-
-        public override void NotifyClientDisconnected()
-        {
-            Action<WorldClient> handler = ClientDisconnected;
-            if (handler != null) handler(this);
-        }
-
         private string m_login;
 
         public WorldClient(Socket socket)
@@ -72,7 +64,7 @@ namespace Stump.Server.WorldServer
             set;
         }
 
-        public override void OnDisconnect()
+        protected override void OnDisconnect()
         {
             IpcAccessor.Instance.ProxyObject.DecrementConnectedChars(WorldServer.ServerInformation);
             if (ActiveCharacter != null)

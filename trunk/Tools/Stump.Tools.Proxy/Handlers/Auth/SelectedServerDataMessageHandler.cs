@@ -16,32 +16,29 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.DofusProtocol.Messages;
-using System.Net;
+using Stump.Tools.Proxy.Network;
 
-namespace Stump.Tools.Proxy.Messages
+namespace Stump.Tools.Proxy.Handlers.Auth
 {
-    class AuthenticationTicketMessageHandler
+    public class SelectedServerDataMessageHandler : AuthHandlerContainer
     {
-
-
-        [Handler(typeof(AuthenticationTicketMessage))]
-        public static void HandleAuthenticationTicketMessage(AuthenticationTicketMessage message, DerivedConnexion sender)
+        [AuthHandler(typeof (SelectedServerDataMessage))]
+        public static void HandleSelectedServerDataMessage(AuthClient client, SelectedServerDataMessage message)
         {
-             if (WorldDerivedConnexion.Tickets.ContainsKey(message.ticket))
-             {
-                 SelectedServerDataMessage mess = WorldDerivedConnexion.Tickets[message.ticket];
-                 WorldDerivedConnexion.Tickets.Remove(message.ticket);
-                 (sender as WorldDerivedConnexion).Ticket = mess.ticket;
-                 sender.BindToServer(new IPEndPoint(IPAddress.Parse(mess.address), (int)mess.port));
-             }
-             else
-                 sender.Client.Disconnect();
-        }
+            WorldClient.PushTicket(message.ticket, message);
 
+            var customMessage = new SelectedServerDataMessage
+                {
+                    canCreateNewCharacter = true,
+                    serverId = message.serverId,
+                    ticket = message.ticket,
+                    address = Proxy.WorldAddress,
+                    port = (uint)Proxy.WorldPort
+                };
+
+            client.Send(customMessage);
+            client.Disconnect();
+        }
     }
 }

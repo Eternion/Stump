@@ -1,20 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="proxy_config.xsd">
-  <Dofus>
-    <Host>213.248.126.180</Host>
-    <Port>5555</Port>
-  </Dofus>
-  <Auth>
-    <Host>127.0.0.1</Host>
-    <Port>5555</Port>
-    <MaxConcurrentConnections>2000</MaxConcurrentConnections>
-    <MaxPendingConnections>100</MaxPendingConnections>
-  </Auth>
-  <World>
-    <Host>127.0.0.1</Host>
-    <Port>5556</Port>
-    <MaxConcurrentConnections>2000</MaxConcurrentConnections>
-    <MaxPendingConnections>100</MaxPendingConnections>
-  </World>
+
 </Configuration>

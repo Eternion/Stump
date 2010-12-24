@@ -16,31 +16,17 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.DofusProtocol.Messages;
-using System.Net;
+using Stump.Tools.Proxy.Network;
 
-namespace Stump.Tools.Proxy.Messages
+namespace Stump.Tools.Proxy.Handlers.World
 {
-    class NpcDialogQuestionMessageHandler
+    public class ZaapListMessageHandler : WorldHandlerContainer
     {
-
-
-        [Handler(typeof(NpcDialogQuestionMessage))]
-        public static void HandleNpcDialogQuestionMessage(NpcDialogQuestionMessage message, DerivedConnexion sender)
+        [WorldHandler(typeof (ZaapListMessage))]
+        public static void HandleZaapListMessage(WorldClient client, ZaapListMessage message)
         {
-            var lMessage = (sender.LastClientMessage as NpcDialogCreationMessage);
-
-            if (lMessage != null)
-            {
-                
-            }
-
-             sender.Client.Send(message);
+            client.Send(message);
         }
-
     }
 }

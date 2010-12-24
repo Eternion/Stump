@@ -17,24 +17,15 @@
 //  *
 //  *************************************************************************/
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer.Handler;
 
-namespace Stump.Tools.Proxy.Messages
+namespace Stump.Tools.Proxy.Handlers.Auth
 {
-    class ChatClientMultiMessageHandler
+    public class AuthHandler : Handler
     {
-        /* In order to process player commands */
-        [Handler(typeof(ChatClientMultiMessage))]
-        public static void ChatAbstractClientMessage(ChatClientMultiMessage message, DerivedConnexion sender)
+        public AuthHandler(Type message)
+            : base(message)
         {
-            if ((sender as WorldDerivedConnexion).Infos != null)
-            {
-                Commands.ProcessClientCommand(message.content.Substring(1).Split(' '), sender);
-            }
         }
-
     }
 }

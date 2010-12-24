@@ -124,8 +124,13 @@ namespace Stump.Server.BaseServer.Handler
                                : new Tuple<IHandlerContainer, Handler, Delegate>(handlerContainer, handler, null));
         }
 
+        public bool IsRegister(Type msgType)
+        {
+            return m_handlers.ContainsKey(msgType);
+        }
 
-        internal void Dispatch(BaseClient client, Message message)
+
+        public void Dispatch(BaseClient client, Message message)
         {
             Tuple<IHandlerContainer, Handler, Delegate> handler;
             if (m_handlers.TryGetValue(message.GetType(), out handler))

@@ -75,19 +75,19 @@ namespace Stump.Server.BaseServer.Network
 
         #region Queuing Management
 
-        internal void Enqueue(Tuple<BaseClient, Message> tuple)
+        public void Enqueue(Tuple<BaseClient, Message> tuple)
         {
-            if (isPriorithized(tuple.Item2))
+            if (IsPriorithized(tuple.Item2))
                 m_fastQueue.Enqueue(tuple);
             else
                 m_commonQueue.Enqueue(tuple);
         }
 
-        internal void Enqueue(BaseClient client, Message message)
+        public void Enqueue(BaseClient client, Message message)
         {
             var tuple = new Tuple<BaseClient, Message>(client, message);
 
-            if (isPriorithized(tuple.Item2))
+            if (IsPriorithized(tuple.Item2))
                 m_fastQueue.Enqueue(tuple);
             else
                 m_commonQueue.Enqueue(tuple);
@@ -95,25 +95,23 @@ namespace Stump.Server.BaseServer.Network
 
         internal Tuple<BaseClient, Message> Dequeue()
         {
-            //Problème si FastQueue vide, ça va attendre sur la CommonQueue, puis si un FastQueueMessage arrive, donc propriété Waiting en attendant
-            //Y'a quelque chose, on y go ou Y'a rien, mais la Common est déja en attente donc on y go aussi
             if (m_fastQueue.Count > 0 || (m_fastQueue.Count == 0 && m_commonQueue.IsWaiting))
             {
                 if (m_benchmark)
                     m_fastMessageTreatedCount++;
+
                 return m_fastQueue.Dequeue();
             }
+
             if (m_benchmark)
                 m_commonMessageTreatedCount++;
+
             return m_commonQueue.Dequeue();
         }
 
-        private bool isPriorithized(Message message)
+        private bool IsPriorithized(Message message)
         {
-            if (m_priorithizedMessage.Contains(typeof (Message)))
-                return true;
-            else
-                return false;
+            return m_priorithizedMessage.Contains(message.GetType());
         }
 
         #endregion

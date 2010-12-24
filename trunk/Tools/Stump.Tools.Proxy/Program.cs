@@ -17,24 +17,18 @@
 //  *
 //  *************************************************************************/
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Stump.DofusProtocol.Messages;
+using System.Threading;
 
-namespace Stump.Tools.Proxy.Messages
+namespace Stump.Tools.Proxy
 {
-    class CharacterSelectedSuccessMessageHandler
+    public class Program
     {
-
-        /* In order to save select player infos */
-        [Handler(typeof(CharacterSelectedSuccessMessage))]
-        public static void ChatAbstractClientMessage(CharacterSelectedSuccessMessage message, DerivedConnexion sender)
+        private static void Main()
         {
-             (sender as WorldDerivedConnexion).Infos = message.infos;
+            Proxy.Instance.Initialize();
 
-             sender.Client.Send(message);
+            while(true)
+                Thread.Sleep(20);
         }
-
     }
 }

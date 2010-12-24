@@ -1,4 +1,4 @@
-﻿// /*************************************************************************
+// /*************************************************************************
 //  *
 //  *  Copyright (C) 2010 - 2011 Stump Team
 //  *
@@ -17,26 +17,26 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections.Generic;
+using Stump.Server.BaseServer.Handler;
+using Stump.Server.BaseServer.Network;
+using Stump.Tools.Proxy.Network;
 
-namespace Stump.Tools.Proxy
+namespace Stump.Tools.Proxy.Handlers.Auth
 {
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
-    internal sealed class Handler : Attribute
+    public abstract class AuthHandlerContainer : IHandlerContainer
     {
-        public Handler(Type type)
-        {
-            Type = type;
-        }
+        public static Dictionary<Type, Predicate<AuthClient>> Predicates = new Dictionary<Type, Predicate<AuthClient>>();
 
-        public Type Type
+        public bool PredicateSuccess(BaseClient client, Type messageType)
         {
-            get;
-            private set;
-        }
+            if (!Predicates.ContainsKey(messageType))
+                return true;
 
-        public override bool Match(object obj)
-        {
-            return ReferenceEquals(Type, obj);
+            if (!( client is AuthClient ))
+                return false;
+
+            return Predicates[messageType](client as AuthClient);
         }
     }
 }

@@ -16,23 +16,16 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using Stump.DofusProtocol.Messages;
+using System;
+using Stump.Server.BaseServer.Handler;
 
-namespace Stump.Tools.Proxy.Messages
+namespace Stump.Tools.Proxy.Handlers.World
 {
-    internal class IdentificationSuccessMessageHandler
+    public class WorldHandler : Handler
     {
-        /* In order to set player Admin and give him console access*/
-
-        [Handler(typeof (IdentificationSuccessMessage))]
-        public static void HandleIdentificationSuccessMessage(IdentificationSuccessMessage message,
-                                                              DerivedConnexion sender)
+        public WorldHandler(Type message)
+            : base(message)
         {
-            message.accountId = 1;
-            message.nickname = "MegaAdmin";
-            message.hasRights = true;
-
-            sender.Client.Send(message);
         }
     }
 }

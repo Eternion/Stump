@@ -17,28 +17,36 @@
 //  *
 //  *************************************************************************/
 using System;
-using System.Threading.Tasks;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using NLog;
-using Stump.BaseCore.Framework.Threading;
 using Stump.BaseCore.Framework.IO;
 using Stump.BaseCore.Framework.Pool;
 using Stump.DofusProtocol.Messages;
+using TaskFactoryExtensions = Stump.BaseCore.Framework.Threading.TaskFactoryExtensions;
 
 namespace Stump.Server.BaseServer.Network
 {
     public abstract class BaseClient : IPacketReceiver
     {
-        public event Action<BaseClient> ClientDisconnected;
+        public event Action<BaseClient, Message> MessageReceived;
 
-        public virtual void NotifyClientDisconnected()
+        public void NotifyMessageReceived(Message message)
         {
-            Action<BaseClient> handler = ClientDisconnected;
-            if (handler != null) handler(this);
+            Action<BaseClient, Message> handler = MessageReceived;
+            if (handler != null) handler(this, message);
         }
 
-        private const byte BIT_RIGHT_SHIFT_LEN_PACKET_ID = 2;
-        private const byte BIT_MASK = 3;
+        public event Action<BaseClient, Message> MessageSended;
+
+        public void NotifyMessageSended(Message message)
+        {
+            Action<BaseClient, Message> handler = MessageSended;
+            if (handler != null) handler(this, message);
+        }
+
+        protected const byte BIT_RIGHT_SHIFT_LEN_PACKET_ID = 2;
+        protected const byte BIT_MASK = 3;
 
         private static SocketAsyncEventArgsPool m_argsPool;
         private static QueueDispatcher m_dispatcher;
@@ -47,11 +55,11 @@ namespace Stump.Server.BaseServer.Network
 
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly BigEndianReader m_buffer = new BigEndianReader();
-        private bool m_splittedPacket;
-        private uint m_splittedPacketId;
-        private uint m_splittedPacketLength;
-        private int m_staticHeader;
+        protected readonly BigEndianReader m_buffer = new BigEndianReader();
+        protected bool m_splittedPacket;
+        protected uint m_splittedPacketId;
+        protected uint m_splittedPacketLength;
+        protected int m_staticHeader;
 
 
         protected BaseClient(Socket socket)
@@ -92,6 +100,37 @@ namespace Stump.Server.BaseServer.Network
             m_isInitialized = true;
         }
 
+        public void Send(Message message)
+        {
+            if (Socket == null || !Connected)
+            {
+                throw new Exception("Attempt to send a packet when client isn't connected");
+            }
+
+            else
+            {
+                SocketAsyncEventArgs args = m_argsPool.Pop();
+
+                var writer = new BigEndianWriter();
+
+                message.pack(writer);
+                byte[] data = writer.Data;
+
+                args.SetBuffer(data, 0, data.Length);
+
+                if (!Socket.SendAsync(args))
+                {
+                    m_argsPool.Push(args);
+                }
+
+#if DEBUG
+                Console.WriteLine(string.Format("{0} >> {1}", this, message.GetType().Name));
+#endif
+
+                NotifyMessageSended(message);
+            }
+        }
+
         internal void ProcessReceive(byte[] data, int offset, int count)
         {
             try
@@ -101,7 +140,7 @@ namespace Stump.Server.BaseServer.Network
 
                 m_buffer.Add(data, offset, count);
 
-                Receive();
+                OnReceive();
             }
             catch (Exception ex)
             {
@@ -116,9 +155,7 @@ namespace Stump.Server.BaseServer.Network
             }
         }
 
-        // local temp variables
-
-        private void Receive()
+        protected virtual void OnReceive()
         {
             uint len = 0;
 
@@ -139,9 +176,12 @@ namespace Stump.Server.BaseServer.Network
                     len = GetMessageLengthByHeader(header);
                     if (m_buffer.BytesAvailable >= len)
                     {
-                        m_dispatcher.Enqueue(this,
-                                             MessageReceiver.GetMessage(id,
-                                                                        m_buffer.ReadBytesInNewBigEndianReader((int) len)));
+                        Message message = MessageReceiver.GetMessage(id,
+                                                                     m_buffer.ReadBytesInNewBigEndianReader((int) len));
+
+                        m_dispatcher.Enqueue(this, message);
+
+                        NotifyMessageReceived(message);
                         goto replay;
                     }
 
@@ -167,54 +207,24 @@ namespace Stump.Server.BaseServer.Network
             }
             if (m_buffer.BytesAvailable >= m_splittedPacketLength)
             {
-                m_dispatcher.Enqueue(this,
-                                     MessageReceiver.GetMessage(m_splittedPacketId,
-                                                                m_buffer.ReadBytesInNewBigEndianReader(
-                                                                    (int) m_splittedPacketLength)));
+                Message message = MessageReceiver.GetMessage(m_splittedPacketId,
+                                                             m_buffer.ReadBytesInNewBigEndianReader(
+                                                                 (int) m_splittedPacketLength));
+
+                m_dispatcher.Enqueue(this, message);
                 m_splittedPacket = false;
 
+                NotifyMessageReceived(message);
                 goto replay;
             }
         }
 
-        public void Send(DofusProtocol.Messages.Message message)
-        {
-            /*if (!message._isInitialized)
-			{
-				logger.Error("Sending non-initialized packet !");
-			}*/
-            if (!Connected || Socket == null)
-            {
-                logger.Error("Attempt to send a packet when client isn't connected");
-            }
-            else
-            {
-                SocketAsyncEventArgs args = m_argsPool.Pop();
-
-                var writer = new BigEndianWriter();
-
-                message.pack(writer);
-                byte[] data = writer.Data;
-
-                args.SetBuffer(data, 0, data.Length);
-
-                if (!Socket.SendAsync(args))
-                {
-                    m_argsPool.Push(args);
-                }
-
-#if DEBUG
-                Console.WriteLine(string.Format("{0} >> {1}", this, message.GetType().Name));
-#endif
-            }
-        }
-
-        private static uint GetMessageIdByHeader(uint header)
+        protected static uint GetMessageIdByHeader(uint header)
         {
             return header >> BIT_RIGHT_SHIFT_LEN_PACKET_ID;
         }
 
-        private uint GetMessageLengthByHeader(uint header)
+        protected uint GetMessageLengthByHeader(uint header)
         {
             uint lenType = header & BIT_MASK;
             uint len = 0;
@@ -258,26 +268,23 @@ namespace Stump.Server.BaseServer.Network
             OnDisconnect();
 
             Close();
-
-            NotifyClientDisconnected();
         }
 
         /// <summary>
-        /// Disconnect the Client after a time
+        ///   Disconnect the Client after a time
         /// </summary>
-        /// <param name="timeToWait"></param>
+        /// <param name = "timeToWait"></param>
         public void DisconnectLater(int timeToWait)
         {
-            Task.Factory.StartNewDelayed(timeToWait, Disconnect);
+            TaskFactoryExtensions.StartNewDelayed(Task.Factory, timeToWait, Disconnect);
         }
 
-        public virtual void OnDisconnect()
+        protected virtual void OnDisconnect()
         {
-            if (Socket != null && Socket.Connected)
-                logger.Info("Client disconnected <{0}>.", IP);
+
         }
 
-        public void Close()
+        protected void Close()
         {
             if (Socket != null && Socket.Connected)
             {
@@ -290,7 +297,7 @@ namespace Stump.Server.BaseServer.Network
 
         public override string ToString()
         {
-            return "<" + IP + ">";
+            return Socket == null ? "" : "<" + IP + ">";
         }
     }
 }

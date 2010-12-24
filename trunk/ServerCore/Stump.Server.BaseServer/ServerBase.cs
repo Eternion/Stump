@@ -122,10 +122,10 @@ namespace Stump.Server.BaseServer
         {
             Instance = this as T;
 
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 
             LoadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToDictionary(entry => entry.GetName().Name);
-            AppDomain.CurrentDomain.AssemblyLoad += CurrentDomain_AssemblyLoad;
+            AppDomain.CurrentDomain.AssemblyLoad += OnAssemblyLoad;
 
             ConsoleBase.DrawAsciiLogo();
             Console.WriteLine();
@@ -152,7 +152,20 @@ namespace Stump.Server.BaseServer
             CommandManager = new CommandsManager();
 
             MessageListener = new MessageListener(QueueDispatcher, CreateClient);
-            MessageListener.Init();
+            MessageListener.Initialize();
+
+            MessageListener.ClientConnected += OnClientConnected;
+            MessageListener.ClientDisconnected += OnClientDisconnected;
+        }
+
+        private void OnClientConnected(MessageListener messageListener, BaseClient client)
+        {
+            logger.Info("Client {0} connected", client);
+        }
+
+        private void OnClientDisconnected(MessageListener messageListener, BaseClient client)
+        {
+            logger.Info("Client {0} disconnected", client);
         }
 
         private static void InitializeGarbageCollector()
@@ -160,20 +173,20 @@ namespace Stump.Server.BaseServer
             GCSettings.LatencyMode = GCSettings.IsServerGC ? GCLatencyMode.Batch : GCLatencyMode.Interactive;
         }
 
-        private void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
+        private void OnAssemblyLoad(object sender, AssemblyLoadEventArgs args)
         {
             LoadedAssemblies.Add(args.LoadedAssembly.GetName().Name, args.LoadedAssembly);
         }
 
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs args)
+        private void OnUnhandledException(object sender, UnhandledExceptionEventArgs args)
         {
             if (args.IsTerminating)
                 logger.Fatal("Application has crashed. An Unhandled Exception has been thrown :");
 
-            logger.Error("Unhandled Exception : " + (args.ExceptionObject as Exception).Message);
-            logger.Error("Source : {0} Method : {1}", (args.ExceptionObject as Exception).Source,
-                         (args.ExceptionObject as Exception).TargetSite);
-            logger.Error("Stack Trace : " + (args.ExceptionObject as Exception).StackTrace);
+            logger.Error("Unhandled Exception : " + ((Exception) args.ExceptionObject).Message);
+            logger.Error("Source : {0} Method : {1}", ( (Exception)args.ExceptionObject ).Source,
+                         ( (Exception)args.ExceptionObject ).TargetSite);
+            logger.Error("Stack Trace : " + ( (Exception)args.ExceptionObject ).StackTrace);
 
             if (args.IsTerminating)
                 Shutdown();

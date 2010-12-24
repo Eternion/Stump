@@ -1,4 +1,4 @@
-﻿// /*************************************************************************
+// /*************************************************************************
 //  *
 //  *  Copyright (C) 2010 - 2011 Stump Team
 //  *
@@ -18,24 +18,30 @@
 //  *************************************************************************/
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Stump.DofusProtocol.Messages;
-using System.Net;
+using Stump.Server.BaseServer.Handler;
+using Stump.Server.BaseServer.Network;
+using Stump.Tools.Proxy.Network;
 
-namespace Stump.Tools.Proxy.Messages
+namespace Stump.Tools.Proxy.Handlers.World
 {
-    class CurrentMapMessageHandler
+    public abstract class WorldHandlerContainer : IHandlerContainer
     {
+        public static Dictionary<Type, Predicate<WorldClient>> Predicates =
+            new Dictionary<Type, Predicate<WorldClient>>();
 
+        #region IHandlerContainer Members
 
-        [Handler(typeof(CurrentMapMessage))]
-        public static void HandleCurrentMapMessage(CurrentMapMessage message, DerivedConnexion sender)
+        public bool PredicateSuccess(BaseClient client, Type messageType)
         {
-            (sender as WorldDerivedConnexion).MapId = message.mapId;
+            if (!Predicates.ContainsKey(messageType))
+                return true;
 
-             sender.Client.Send(message);
+            if (!(client is WorldClient))
+                return false;
+
+            return Predicates[messageType](client as WorldClient);
         }
 
+        #endregion
     }
 }

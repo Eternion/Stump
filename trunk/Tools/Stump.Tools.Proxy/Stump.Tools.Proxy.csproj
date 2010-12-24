@@ -20,7 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\Run\Debug\Proxy\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -29,7 +29,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\Run\Release\Proxy\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -47,31 +47,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Messages\World\ChatClientMultiMessageHandler.cs" />
-    <Compile Include="Messages\World\CharacterSelectedSuccessMessageHandler.cs" />
-    <Compile Include="Messages\Auth\SelectedServerDataMessageHandler.cs" />
-    <Compile Include="Messages\World\AuthenticationTicketMessageHandler.cs" />
-    <Compile Include="Messages\Auth\IdentificationSuccessMessageHandler.cs" />
-    <Compile Include="Messages\World\ProtocolRequiredMessageHandler.cs" />
-    <Compile Include="Messages\World\HelloGameMessageHandler.cs" />
-    <Compile Include="Messages\World\CurrentMapMessageHandler.cs" />
-    <Compile Include="Messages\World\NpcDialogQuestionMessageHandler.cs" />
-    <Compile Include="Messages\World\ZaapListMessageHandler.cs" />
-    <Compile Include="Messages\World\TeleportDestinationsListMessageHandler.cs" />
-    <Compile Include="Network\DerivedConnexion.cs" />
-    <Compile Include="Network\World\WorldDerivedConnexion.cs" />
-    <Compile Include="Network\Client\Client.cs" />
-    <Compile Include="Network\Client\ClientListener.cs" />
-    <Compile Include="Config\Commands.cs" />
-    <Compile Include="Network\Auth\AuthDerivedConnexion.cs" />
-    <Compile Include="Handler\Handler.cs" />
-    <Compile Include="Handler\HandlerManager.cs" />
-    <Compile Include="Core\Program.cs" />
-    <Compile Include="Messages\World\MapComplementaryInformationsDataMessageHandler.cs" />
+    <Compile Include="Data\DataFactory.cs" />
+    <Compile Include="Handlers\Auth\AuthHandler.cs" />
+    <Compile Include="Handlers\Auth\AuthHandlerContainer.cs" />
+    <Compile Include="Handlers\World\ChatClientMultiMessageHandler.cs" />
+    <Compile Include="Handlers\World\CharacterSelectedSuccessMessageHandler.cs" />
+    <Compile Include="Handlers\Auth\SelectedServerDataMessageHandler.cs" />
+    <Compile Include="Handlers\World\AuthenticationTicketMessageHandler.cs" />
+    <Compile Include="Handlers\Auth\IdentificationSuccessMessageHandler.cs" />
+    <Compile Include="Handlers\World\HelloGameMessageHandler.cs" />
+    <Compile Include="Handlers\World\CurrentMapMessageHandler.cs" />
+    <Compile Include="Handlers\World\NpcDialogQuestionMessageHandler.cs" />
+    <Compile Include="Handlers\World\ProtocoleRequieredHandler.cs" />
+    <Compile Include="Handlers\World\WorldHandler.cs" />
+    <Compile Include="Handlers\World\WorldHandlerContainer.cs" />
+    <Compile Include="Handlers\World\ZaapListMessageHandler.cs" />
+    <Compile Include="Handlers\World\TeleportDestinationsListMessageHandler.cs" />
+    <Compile Include="Network\AuthClient.cs" />
+    <Compile Include="Network\ProxyClient.cs" />
+    <Compile Include="Network\WorldClient.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Handlers\World\MapComplementaryInformationsDataMessageHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Core\Proxy.cs" />
-    <Compile Include="Utils\Serializer.cs" />
-    <Compile Include="Network\Server\ServerConnexion.cs" />
+    <Compile Include="Proxy.cs" />
+    <Compile Include="Network\ServerConnection.cs" />
+    <Compile Include="Data\ZonesManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\BaseCore\Stump.BaseCore.Framework\Stump.BaseCore.Framework.csproj">
@@ -81,6 +81,10 @@
     <ProjectReference Include="..\..\DofusProtocol\Classes\Stump.DofusProtocol.Classes.csproj">
       <Project>{10884165-D492-4895-B3EF-32429F7A7F55}</Project>
       <Name>Stump.DofusProtocol.Classes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DofusProtocol\D2oClasses\Stump.DofusProtocol.D2oClasses.csproj">
+      <Project>{33093793-C4BA-4B89-AC82-6E9D00437452}</Project>
+      <Name>Stump.DofusProtocol.D2oClasses</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DofusProtocol\Enums\Stump.DofusProtocol.Enums.csproj">
       <Project>{D7BFF8ED-065B-4A53-9805-595DFEA75A0A}</Project>
@@ -96,13 +100,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="proxy_config.xml" />
+    <Content Include="proxy_config.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="proxy_config.xsd">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

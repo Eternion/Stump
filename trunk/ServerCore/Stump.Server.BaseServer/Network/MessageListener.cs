@@ -67,7 +67,7 @@ namespace Stump.Server.BaseServer.Network
         public static int MaxIPConnexions = 10;
 
         /// <summary>
-        /// Buffer size /!\ Advenced users /!\
+        /// Buffer size /!\ Advanced users only /!\
         /// </summary>
         [Variable(DefinableByConfig = false, DefinableRunning = false)]
         public static int BufferSize = 8192;
@@ -77,6 +77,14 @@ namespace Stump.Server.BaseServer.Network
         public void NotifyClientConnected(BaseClient client)
         {
             Action<MessageListener, BaseClient> handler = ClientConnected;
+            if (handler != null) handler(this, client);
+        }
+
+        public event Action<MessageListener, BaseClient> ClientDisconnected;
+
+        public void NotifyClientDisconnected(BaseClient client)
+        {
+            Action<MessageListener, BaseClient> handler = ClientDisconnected;
             if (handler != null) handler(this, client);
         }
 
@@ -104,6 +112,28 @@ namespace Stump.Server.BaseServer.Network
         private readonly int m_readBufferSize;
         private readonly SocketAsyncEventArgsPool m_writeAsyncEventArgsPool;
 
+        public MessageListener(QueueDispatcher queueDispatcher, Func<Socket, BaseClient> delegateCreateClient, string address, int port)
+        {
+            m_ipEndPoint = new IPEndPoint(IPAddress.Parse(address), port);
+            m_readBufferSize = BufferSize;
+            m_maxConcurrentConnexion = MaxConcurrentConnections;
+            m_activeIpRestriction = ActiveIPRestriction;
+            m_maxIpConnexion = MaxIPConnexions;
+
+            m_readBufferManager = new BufferManager(m_maxConcurrentConnexion * m_readBufferSize, m_readBufferSize);
+
+            m_readAsyncEventArgsPool = new SocketAsyncEventArgsPool(m_maxConcurrentConnexion);
+            m_writeAsyncEventArgsPool = new SocketAsyncEventArgsPool(m_maxConcurrentConnexion * 3);
+
+            m_clientSemaphore = new SemaphoreSlim(m_maxConcurrentConnexion, m_maxConcurrentConnexion);
+
+            m_acceptArgs.Completed += OnAcceptCompleted;
+            m_delegateCreateClient = delegateCreateClient;
+            m_queueDispatcher = queueDispatcher;
+
+            BaseClient.Initialize(ref m_writeAsyncEventArgsPool, ref m_queueDispatcher);
+        }
+
         public MessageListener(QueueDispatcher queueDispatcher, Func<Socket, BaseClient> delegateCreateClient)
         {
             m_ipEndPoint = new IPEndPoint(IPAddress.Parse(Host), Port);
@@ -119,7 +149,7 @@ namespace Stump.Server.BaseServer.Network
 
             m_clientSemaphore = new SemaphoreSlim(m_maxConcurrentConnexion, m_maxConcurrentConnexion);
 
-            m_acceptArgs.Completed += Accept_Completed;
+            m_acceptArgs.Completed += OnAcceptCompleted;
             m_delegateCreateClient = delegateCreateClient;
             m_queueDispatcher = queueDispatcher;
 
@@ -131,28 +161,28 @@ namespace Stump.Server.BaseServer.Network
             get { return m_clientList; }
         }
 
-        internal void Init()
+        public void Initialize()
         {
             m_readBufferManager.InitBuffer();
 
-            SocketAsyncEventArgs args = null;
+            SocketAsyncEventArgs args;
 
             // initialize read pool
-            for (int i = 0; i < m_maxConcurrentConnexion; i++)
+            for (var i = 0; i < m_maxConcurrentConnexion; i++)
             {
                 args = new SocketAsyncEventArgs();
 
                 m_readBufferManager.SetBuffer(args);
-                args.Completed += Receive_Completed;
+                args.Completed += OnReceiveCompleted;
                 m_readAsyncEventArgsPool.Push(args);
             }
 
             // initialize write pool
-            for (int i = 0; i < m_maxConcurrentConnexion * 3; i++)
+            for (var i = 0; i < m_maxConcurrentConnexion * 3; i++)
             {
                 args = new SocketAsyncEventArgs();
 
-                args.Completed += Send_Completed;
+                args.Completed += OnSendCompleted;
                 m_writeAsyncEventArgsPool.Push(args);
             }
         }
@@ -182,7 +212,7 @@ namespace Stump.Server.BaseServer.Network
             }
         }
 
-        private void Accept_Completed(object sender, SocketAsyncEventArgs e)
+        private void OnAcceptCompleted(object sender, SocketAsyncEventArgs e)
         {
             ProcessAccept(e);
         }
@@ -202,7 +232,6 @@ namespace Stump.Server.BaseServer.Network
             BaseClient client = m_delegateCreateClient(e.AcceptSocket);
             readAsyncEventArgs.UserToken = client;
 
-            logger.Info("Client connected <{0}>", client.IP);
             m_clientList.Add(client);
 
             NotifyClientConnected(client);
@@ -215,7 +244,7 @@ namespace Stump.Server.BaseServer.Network
             StartAccept();
         }
 
-        private void Receive_Completed(object sender, SocketAsyncEventArgs e)
+        private void OnReceiveCompleted(object sender, SocketAsyncEventArgs e)
         {
             switch (e.LastOperation)
             {
@@ -253,7 +282,7 @@ namespace Stump.Server.BaseServer.Network
             }
         }
 
-        private void Send_Completed(object sender, SocketAsyncEventArgs e)
+        private void OnSendCompleted(object sender, SocketAsyncEventArgs e)
         {
             m_writeAsyncEventArgsPool.Push(e);
         }
@@ -265,8 +294,9 @@ namespace Stump.Server.BaseServer.Network
             if (client != null)
             {
                 client.Disconnect();
-
                 m_clientList.Remove(client);
+
+                NotifyClientDisconnected(client);
             }
             m_clientSemaphore.Release();
 

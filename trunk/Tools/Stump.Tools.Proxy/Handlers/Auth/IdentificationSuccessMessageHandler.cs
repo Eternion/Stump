@@ -17,15 +17,21 @@
 //  *
 //  *************************************************************************/
 using Stump.DofusProtocol.Messages;
+using Stump.Tools.Proxy.Handlers.Auth;
+using Stump.Tools.Proxy.Network;
 
 namespace Stump.Tools.Proxy.Messages
 {
-    internal class ZaapListMessageHandler
+    internal class IdentificationSuccessMessageHandler
     {
-        [Handler(typeof (ZaapListMessage))]
-        public static void HandleZaapListMessage(ZaapListMessage message, DerivedConnexion sender)
+        [AuthHandler(typeof (IdentificationSuccessMessage))]
+        public static void HandleIdentificationSuccessMessage(AuthClient client, IdentificationSuccessMessage message)
         {
-            sender.Client.Send(message);
+            //message.accountId = 1;
+            //message.nickname = "MegaAdmin";
+            //message.hasRights = true;
+
+            client.Send(message);
         }
     }
 }

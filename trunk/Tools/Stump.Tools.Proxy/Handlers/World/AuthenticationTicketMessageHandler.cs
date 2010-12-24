@@ -16,33 +16,25 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Net;
-using System.Net.Sockets;
-using NLog;
 using Stump.DofusProtocol.Messages;
-using Stump.DofusProtocol.Enums;
+using Stump.Tools.Proxy.Network;
 
-namespace Stump.Tools.Proxy
+namespace Stump.Tools.Proxy.Handlers.World
 {
-    class AuthDerivedConnexion : DerivedConnexion
+    public class AuthenticationTicketMessageHandler : WorldHandlerContainer
     {
-        private readonly Logger logger = LogManager.GetCurrentClassLogger();
-
-
-        public AuthDerivedConnexion(IPEndPoint serverEndPoint, Client client)
-            :base(client)
+        [WorldHandler(typeof (AuthenticationTicketMessage))]
+        public static void HandleAuthenticationTicketMessage(WorldClient client, AuthenticationTicketMessage message)
         {
-            base.BindToServer(serverEndPoint);
+            var serverDataMessage = WorldClient.PopTicket(message.ticket);
+            if (serverDataMessage != null)
+            {
+                client.Ticket = serverDataMessage.ticket;
+                client.BindToServer(new IPEndPoint(IPAddress.Parse(serverDataMessage.address), (int)serverDataMessage.port));
+            }
+            else
+                client.Disconnect();
         }
-
-        
-
-
-
-
     }
 }

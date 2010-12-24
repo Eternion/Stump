@@ -16,17 +16,17 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
+using Stump.DofusProtocol.Messages;
+using Stump.Tools.Proxy.Network;
 
-namespace Stump.Tools.Proxy
+namespace Stump.Tools.Proxy.Handlers.World
 {
-    internal class Program
+    public class NpcDialogQuestionMessageHandler : WorldHandlerContainer
     {
-        private static void Main(string[] args)
+        [WorldHandler(typeof (NpcDialogQuestionMessage))]
+        public static void HandleNpcDialogQuestionMessage(WorldClient client, NpcDialogQuestionMessage message)
         {
-            Proxy.Initialize();
-            Console.WriteLine("Proxy enabled");
-            Console.ReadLine();
+            client.Send(message);
         }
     }
 }

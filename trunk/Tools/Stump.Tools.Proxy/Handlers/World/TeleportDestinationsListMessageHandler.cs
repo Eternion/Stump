@@ -16,25 +16,17 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Stump.DofusProtocol.Messages;
+using Stump.Tools.Proxy.Network;
 
-namespace Stump.Tools.Proxy.Messages
+namespace Stump.Tools.Proxy.Handlers.World
 {
-    static class MapComplementaryInformationsDataMessageHandler
+    public class TeleportDestinationsListMessageHandler : WorldHandlerContainer
     {
-
-        [Handler(typeof(MapComplementaryInformationsDataMessage))]
-        public static void HandleMapComplementaryInformationsDataMessage(MapComplementaryInformationsDataMessage message, DerivedConnexion sender)
+        [WorldHandler(typeof (TeleportDestinationsListMessage))]
+        public static void HandleTeleportDestinationsListMessage(WorldClient client, TeleportDestinationsListMessage message)
         {
-          
-
-
-            sender.Client.Send(message);
+            client.Send(message);
         }
-
     }
 }
