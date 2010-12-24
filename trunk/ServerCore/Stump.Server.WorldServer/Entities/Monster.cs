@@ -21,12 +21,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.BaseCore.Framework.Utils;
 using Stump.DofusProtocol.Classes;
+using Stump.DofusProtocol.Classes.Custom;
 using Stump.DofusProtocol.Classes.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Data;
 using Stump.Server.BaseServer.Initializing;
 using Stump.Server.WorldServer.Groups;
-using Stump.Server.WorldServer.Look;
 using MonsterGradeTemplate = Stump.DofusProtocol.D2oClasses.MonsterGrade;
 using MonsterRaceTemplate = Stump.DofusProtocol.D2oClasses.MonsterRace;
 using MonsterTemplate = Stump.DofusProtocol.D2oClasses.Monster;
@@ -75,7 +75,7 @@ namespace Stump.Server.WorldServer.Entities
                     {
                         GfxId = monstertemplate.gfxId,
                         Race = (MonsterRaceIdEnum)monstertemplate.race,
-                        Look = !string.IsNullOrEmpty(monstertemplate.look) ? new CharacterLook(monstertemplate.look.ToEntityLook()) : null,
+                        Look = !string.IsNullOrEmpty(monstertemplate.look) ? new ExtendedLook(monstertemplate.look.ToEntityLook()) : null,
                     };
 
 

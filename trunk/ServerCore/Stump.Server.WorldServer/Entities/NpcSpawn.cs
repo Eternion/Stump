@@ -17,8 +17,8 @@
 //  *
 //  *************************************************************************/
 using Stump.DofusProtocol.Classes;
+using Stump.DofusProtocol.Classes.Custom;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Look;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Npcs;
 
@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Entities
         public NpcSpawn(NpcTemplate template, int contextualId)
             : base(contextualId)
         {
-            Look =new CharacterLook(template.Look);
+            Look =new ExtendedLook(template.Look);
         }
 
         public NpcTemplate Template

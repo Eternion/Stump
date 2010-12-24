@@ -16,18 +16,11 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using NLog;
 using Stump.DofusProtocol.Classes;
-using Stump.Server.WorldServer.Fights;
-using Stump.Server.WorldServer.Look;
+using Stump.DofusProtocol.Classes.Custom;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Global.Maps;
-using Stump.Server.WorldServer.Groups;
-using Stump.Server.WorldServer.Spells;
 
 namespace Stump.Server.WorldServer.Entities
 {
@@ -121,7 +114,7 @@ namespace Stump.Server.WorldServer.Entities
             set;
         }
 
-        public CharacterLook Look
+        public ExtendedLook Look
         {
             get;
             set;

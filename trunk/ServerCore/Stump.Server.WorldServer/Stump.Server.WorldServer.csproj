@@ -83,7 +83,6 @@
     <Compile Include="Commands\TriggerChat.cs" />
     <Compile Include="Commands\WorkerCommands.cs" />
     <Compile Include="Dialog\Dialoger.cs" />
-    <Compile Include="Look\CharacterLook.cs" />
     <Compile Include="Npcs\NpcDialog.cs" />
     <Compile Include="Npcs\NpcDialoger.cs" />
     <Compile Include="Npcs\NpcDialogQuestion.cs" />

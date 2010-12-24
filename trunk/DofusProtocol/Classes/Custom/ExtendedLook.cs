@@ -5,9 +5,9 @@ using System.Text;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Classes;
 
-namespace Stump.Server.WorldServer.Look
+namespace Stump.DofusProtocol.Classes.Custom
 {
-    public class CharacterLook
+    public class ExtendedLook
     {
 
         #region Fields
@@ -95,7 +95,7 @@ namespace Stump.Server.WorldServer.Look
 
         #region Ctors
 
-        public CharacterLook()
+        public ExtendedLook()
         {
             m_bonesId = 0;
             m_characterSkins = new List<uint>(2);
@@ -105,7 +105,7 @@ namespace Stump.Server.WorldServer.Look
             m_subentities = new List<SubEntity>();
         }
 
-        public CharacterLook(EntityLook baseLook)
+        public ExtendedLook(EntityLook baseLook)
         {
             m_bonesId = baseLook.bonesId;
             m_characterSkins = baseLook.skins;
@@ -115,7 +115,7 @@ namespace Stump.Server.WorldServer.Look
             m_subentities = baseLook.subentities;
         }
 
-        public CharacterLook(uint bonesId, List<uint> characterSkins, Dictionary<CharacterInventoryPositionEnum,uint> itemSkins, List<int> colors, List<int> scales, List<SubEntity> subEntities)
+        public ExtendedLook(uint bonesId, List<uint> characterSkins, Dictionary<CharacterInventoryPositionEnum,uint> itemSkins, List<int> colors, List<int> scales, List<SubEntity> subEntities)
         {
             m_bonesId = bonesId;
             m_characterSkins = characterSkins;

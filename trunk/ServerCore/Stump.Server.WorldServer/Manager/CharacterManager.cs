@@ -19,11 +19,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Castle.ActiveRecord;
 using Stump.Database;
-using Stump.DofusProtocol.Classes;
-using Stump.Server.WorldServer.Look;
+using Stump.DofusProtocol.Classes.Custom;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.IPC;
 
@@ -97,9 +95,9 @@ namespace Stump.Server.WorldServer.Manager
             });
         }
 
-        public static CharacterLook GetStuffedCharacterLook(CharacterRecord character)
+        public static ExtendedLook GetStuffedCharacterLook(CharacterRecord character)
         {
-            CharacterLook baseLook = new CharacterLook(character.BaseLook);
+            var baseLook = new ExtendedLook(character.BaseLook);
 
             //TODO ADD ITEMS
 
