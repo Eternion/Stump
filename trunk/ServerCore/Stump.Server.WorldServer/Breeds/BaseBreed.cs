@@ -198,17 +198,17 @@ namespace Stump.Server.WorldServer.Breeds
             get { return 0; }
         }
 
+        public virtual int StartHealthPoint
+        {
+            get { return 55; }
+        }
+
         /// <summary>
         ///   This is where you begin.
         /// </summary>
         public virtual MapIdEnum StartMap
         {
-            get { return MapIdEnum.Map_IncarnamStart; }
-        }
-
-        public virtual int StartHealthPoint
-        {
-            get { return 42; }
+            get { return MapIdEnum.Map_6541; }
         }
 
         /// <summary>
@@ -216,8 +216,15 @@ namespace Stump.Server.WorldServer.Breeds
         /// </summary>
         public virtual ushort StartCellId
         {
-            get { return 257; }
+            get { return 228; }
         }
+
+        public virtual DirectionsEnum StartDirection
+        {
+            get { return DirectionsEnum.DIRECTION_SOUTH_EAST; }
+        }
+
+
 
         /// <summary>
         ///   We read BreedEnum Name from our source's filename directly.

@@ -30,16 +30,26 @@ namespace Stump.Server.WorldServer.Breeds
             }
         }
 
-        public override int StartHealthPoint
-        {
-            get { return 44; }
-        }
-
         protected override void OnInitialize()
         {
             StartSpells.Add(SpellIdEnum.MagicArrow, 65);
             StartSpells.Add(SpellIdEnum.RetreatArrow, 66);
             StartSpells.Add(SpellIdEnum.PoisonedArrow, 67);
+        }
+
+        public override MapIdEnum StartMap
+        {
+            get { return MapIdEnum.Map_6554; }
+        }
+
+        public override ushort StartCellId
+        {
+            get { return 257; }
+        }
+
+        public override DirectionsEnum StartDirection
+        {
+            get { return DirectionsEnum.DIRECTION_SOUTH_EAST; }
         }
     }
 }
