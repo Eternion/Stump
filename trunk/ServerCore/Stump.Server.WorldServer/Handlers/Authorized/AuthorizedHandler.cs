@@ -16,58 +16,64 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.Database;
-using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Classes;
+using Stump.BaseCore.Framework.IO;
 using Stump.DofusProtocol.Classes.Custom;
 using Stump.DofusProtocol.Classes.Extensions;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.WorldServer.Breeds;
-using Stump.Server.WorldServer.Manager;
+using Stump.Server.WorldServer.Commands;
 
 namespace Stump.Server.WorldServer.Handlers
 {
     public class AuthorizedHandler : WorldHandlerContainer
     {
-
-        [WorldHandler(typeof(AdminQuietCommandMessage))]
+        [WorldHandler(typeof (AdminQuietCommandMessage))]
         public static void HandleAdminQuietCommandMessage(WorldClient client, AdminQuietCommandMessage message)
         {
             if (client.Account.Role < RoleEnum.GameMaster_Padawan)
                 return;
 
-            string[] data = message.content.Split(' ');
+            WorldServer.Instance.CommandManager.HandleCommand(new TriggerConsole(new StringStream(message.content),
+                                                                     client.ActiveCharacter));
+
+            /*string[] data = message.content.Split(' ');
             string command = data[0];
             string[] args = data[1].Split(' ');
 
             switch (command)
             {
-                /* morph */
                 case ("look"):
-                    {
-                        client.ActiveCharacter.Look = new ExtendedLook(EntityLookExtension.ToEntityLook(data[2]));
-                        ContextHandler.SendGameContextRefreshEntityLookMessage(client, client.ActiveCharacter);
-                        break;
-                    }
-                /* tele */
-                //case ("moveto"):
-                //    {
-                       
-                //    }
-            }
+                {
+                    client.ActiveCharacter.Look = new ExtendedLook(data[2].ToEntityLook());
+                    ContextHandler.SendGameContextRefreshEntityLookMessage(client, client.ActiveCharacter);
+                    break;
+                }
+                    //case ("moveto"):
+                    //    {
+
+                    //    }
+            }*/
         }
 
 
-        [WorldHandler(typeof(AdminCommandMessage))]
+        [WorldHandler(typeof (AdminCommandMessage))]
         public static void HandleAdminCommandMessage(WorldClient client, AdminCommandMessage message)
         {
             if (client.Account.Role < RoleEnum.GameMaster_Padawan)
                 return;
 
-            WorldServer.Instance.CommandManager.HandleCommand(new Commands.TriggerChat(new BaseCore.Framework.IO.StringStream(message.content), client.ActiveCharacter));
+            WorldServer.Instance.CommandManager.HandleCommand(new TriggerConsole(new StringStream(message.content),
+                                                                                 client.ActiveCharacter));
+        }
+
+        public static void SendConsoleMessage(WorldClient client, string text)
+        {
+            SendConsoleMessage(client, ConsoleMessageTypeEnum.CONSOLE_TEXT_MESSAGE, text);
+        }
+
+        public static void SendConsoleMessage(WorldClient client, ConsoleMessageTypeEnum type, string text)
+        {
+            client.Send(new ConsoleMessage((uint) type, text));
         }
     }
 }

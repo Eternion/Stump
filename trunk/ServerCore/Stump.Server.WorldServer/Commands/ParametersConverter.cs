@@ -17,6 +17,9 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections.Generic;
+using Stump.DofusProtocol.Classes.Custom;
+using Stump.DofusProtocol.Classes.Extensions;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global;
@@ -32,7 +35,7 @@ namespace Stump.Server.WorldServer.Commands
 
             if (trigger is IInGameTrigger && (trigger as IInGameTrigger).Character != null)
                 target = World.Instance.GetCharacterByPattern((trigger as IInGameTrigger).Character, entry);
-            else 
+            else
                 target = World.Instance.GetCharacterByPattern(entry);
 
             if (target == null)
@@ -46,7 +49,7 @@ namespace Stump.Server.WorldServer.Commands
             int outvalue;
             if (int.TryParse(entry, out outvalue))
             {
-                var itemById = ItemManager.GetTemplate(outvalue);
+                ItemTemplate itemById = ItemManager.GetTemplate(outvalue);
 
                 if (itemById == null)
                     throw new ConverterException(string.Format("'{0}' is not a valid item", entry));
@@ -54,7 +57,7 @@ namespace Stump.Server.WorldServer.Commands
                 return itemById;
             }
 
-            var itemByName = ItemManager.GetTemplate(entry, CommandBase.IgnoreCommandCase);
+            ItemTemplate itemByName = ItemManager.GetTemplate(entry, CommandBase.IgnoreCommandCase);
 
             if (itemByName == null)
                 throw new ConverterException(string.Format("'{0}' is not a valid item", entry));

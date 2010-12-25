@@ -30,7 +30,7 @@ namespace Stump.DofusProtocol.Classes.Custom
         }
 
         private Dictionary<CharacterInventoryPositionEnum, uint> m_itemSkins;
-        public Dictionary<CharacterInventoryPositionEnum, uint> Skins
+        public Dictionary<CharacterInventoryPositionEnum, uint> ItemSkins
         {
             get { return m_itemSkins; }
             set
@@ -81,7 +81,14 @@ namespace Stump.DofusProtocol.Classes.Custom
             m_itemSkins = new Dictionary<CharacterInventoryPositionEnum, uint>();
         }
 
-        private void SetItemLook(uint look, CharacterInventoryPositionEnum position)
+        public ExtendedLook(ExtendedLook extendedLook)
+        {
+            m_entityLook = extendedLook.EntityLook;
+            m_characterSkins = extendedLook.CharacterSkins;
+            m_itemSkins = extendedLook.ItemSkins;
+        }
+
+        public void SetItemLook(uint look, CharacterInventoryPositionEnum position)
         {
             if (m_itemSkins.ContainsKey(position))
                 m_itemSkins[position] = look;
@@ -90,7 +97,7 @@ namespace Stump.DofusProtocol.Classes.Custom
             UpdateEntityLookSkins();
         }
 
-        private void UpdateEntityLookSkins()
+        public void UpdateEntityLookSkins()
         {
             m_entityLook.skins = m_characterSkins.Concat(m_itemSkins.Values).ToList();
         }
