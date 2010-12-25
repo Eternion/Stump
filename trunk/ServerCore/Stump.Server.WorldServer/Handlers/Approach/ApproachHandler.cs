@@ -51,6 +51,8 @@ namespace Stump.Server.WorldServer.Handlers
             BasicHandler.SendBasicTimeMessage(client);
             SendAccountCapabilitiesMessage(client);
             BasicHandler.SendBasicNoOperationMessage(client);
+            /* Just to get autocompletion, description and parameters are provide by server */
+            SendConsoleCommandsListMessage(client, WorldServer.Instance.CommandManager.AvailableCommands.Select(c => c.Aliases.First()).ToList(), new List<string>(), new List<string>());
         }
 
         public static void SendAccountCapabilitiesMessage(WorldClient client)
