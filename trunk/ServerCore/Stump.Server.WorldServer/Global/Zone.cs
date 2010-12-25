@@ -30,14 +30,15 @@ namespace Stump.Server.WorldServer.Global
 
         public override void AddEntity(Entity entity)
         {
-            base.AddEntity(entity);
+            // it's useless to store the entity by zones 
+            //base.AddEntity(entity);
 
             ParentSpace.AddEntity(entity);
         }
 
         public override void RemoveEntity(Entity entity)
         {
-            base.RemoveEntity(entity);
+            //base.RemoveEntity(entity);
 
             ParentSpace.RemoveEntity(entity);
         }

@@ -18,14 +18,12 @@
 //  *************************************************************************/
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Stump.BaseCore.Framework.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Data;
 using Stump.Server.WorldServer.Data;
-using Stump.Server.WorldServer.Global.Maps;
 using AreaTemplate = Stump.DofusProtocol.D2oClasses.Area;
 using SubAreaTemplate = Stump.DofusProtocol.D2oClasses.SubArea;
 using SuperAreaTemplate = Stump.DofusProtocol.D2oClasses.SuperArea;
@@ -47,9 +45,25 @@ namespace Stump.Server.WorldServer.Global
 
             logger.Info("Loading Maps...");
             LoadMaps();
+
+            logger.Info("Spawn Npcs...");
+            SpawnNpcs();
         }
 
-        #region Maps/Zones/Region/Continent
+        public void SpawnNpcs()
+        {
+            foreach (var npcSpawnInfo in NpcLoader.LoadSpawnData())
+            {
+                try
+                {
+                    GetMap(npcSpawnInfo.Item1).SpawnNpc(npcSpawnInfo.Item2);
+                }
+                catch (Exception e)
+                {
+                    logger.Error("Cannot spawn Npc <id:{0}> : {1}", npcSpawnInfo.Item2.npcId, e.Message);
+                }
+            }
+        }
 
         public void LoadMaps()
         {
@@ -62,7 +76,17 @@ namespace Stump.Server.WorldServer.Global
                 Parallel.ForEach(MapLoader.LoadMaps(), map =>
                 {
                     map.ParentSpace = GetZone((int) map.ZoneId);
-                    map.ParentSpace.Childrens.Add(map);
+
+                    retry:
+                    try
+                    {
+                        map.ParentSpace.Childrens.Add(map);
+                    }
+                    catch
+                    {
+                        // ugly way ...
+                        goto retry;
+                    }
 
                     while (!Maps.TryAdd(map.Id, map))
                     {
@@ -145,7 +169,5 @@ namespace Stump.Server.WorldServer.Global
                 }
             }
         }
-
-        #endregion
     }
 }

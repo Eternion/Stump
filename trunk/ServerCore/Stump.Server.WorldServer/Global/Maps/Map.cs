@@ -19,12 +19,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Stump.BaseCore.Framework.IO;
+using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global.Pathfinding;
 using Stump.Server.WorldServer.Handlers;
+using Stump.Server.WorldServer.Npcs;
 
 namespace Stump.Server.WorldServer.Global.Maps
 {
@@ -103,12 +106,10 @@ namespace Stump.Server.WorldServer.Global.Maps
     public partial class Map : WorldSpace
     {
         public const uint MaximumCellsCount = 560;
-
-        #region Fields
+        private readonly Stack<int> m_freeContextualIds = new Stack<int>();
 
         private readonly Dictionary<int, MapNeighbour> m_mapsAround;
-
-        #endregion
+        private int m_nextContextualId;
 
         /// <summary>
         ///   Constructor
@@ -127,12 +128,31 @@ namespace Stump.Server.WorldServer.Global.Maps
             get { return WorldSpaceType.Map; }
         }
 
+        public IEnumerable<Character> CharactersWithoutFighters
+        {
+            get
+            {
+                return
+                    Entities.Values.OfType<Character>().Where(entity => !entity.IsInFight);
+            }
+        }
+
         public void InitializeMapArrounds()
         {
             m_mapsAround.Add(TopNeighbourId, MapNeighbour.Top);
             m_mapsAround.Add(BottomNeighbourId, MapNeighbour.Bottom);
             m_mapsAround.Add(LeftNeighbourId, MapNeighbour.Left);
             m_mapsAround.Add(RightNeighbourId, MapNeighbour.Right);
+        }
+
+        public int GetNextContextualId()
+        {
+            if (m_freeContextualIds.Count > 0)
+                return m_freeContextualIds.Pop();
+
+            Interlocked.Decrement(ref m_nextContextualId);
+
+            return m_nextContextualId;
         }
 
         private void WorldSpaceEntityRemoved(Entity entity)
@@ -155,7 +175,7 @@ namespace Stump.Server.WorldServer.Global.Maps
 
         private void EntityMovingStart(LivingEntity entity, MovementPath movementPath)
         {
-            var movementsKey = MapMovementAdapter.GetServerMovement(movementPath);
+            List<uint> movementsKey = MapMovementAdapter.GetServerMovement(movementPath);
 
             Action<Character> action = charac =>
             {
@@ -169,6 +189,24 @@ namespace Stump.Server.WorldServer.Global.Maps
         private void EntityMovingEnd(LivingEntity entity, MovementPath movementPath)
         {
             /* check cell trigger, monsters... */
+        }
+
+        public void SpawnNpc(GameRolePlayNpcInformations npcInformations)
+        {
+            var template = NpcManager.GetTemplate((int) npcInformations.npcId);
+
+            if (template == null)
+                throw new Exception(string.Format("NPC Template <id:{0}> doesn't exists", npcInformations.npcId));
+
+            var npcSpawn = new NpcSpawn(
+                template,
+                GetNextContextualId(),
+                new VectorIsometric(this, npcInformations.disposition),
+                npcInformations.sex,
+                (int) npcInformations.specialArtworkId,
+                npcInformations.look);
+
+            AddEntity(npcSpawn);
         }
 
 
@@ -277,15 +315,6 @@ namespace Stump.Server.WorldServer.Global.Maps
                 throw new Exception("Index out of bounds : " + index);
 
             return CellsData[index];
-        }
-
-        public IEnumerable<Character> CharactersWithoutFighters
-        {
-            get
-            {
-                return
-                    Entities.Values.OfType<Character>().Where(entity => !entity.IsInFight);
-            }
         }
 
 

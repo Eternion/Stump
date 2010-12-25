@@ -74,6 +74,8 @@ namespace Stump.Server.WorldServer.Manager
             {
                 character.Create();
 
+                character.New = false;
+
                 IpcAccessor.Instance.ProxyObject.AddAccountCharacter(WorldServer.ServerInformation,
                                                                      client.Account.Id,
                                                                      (uint)character.Id);

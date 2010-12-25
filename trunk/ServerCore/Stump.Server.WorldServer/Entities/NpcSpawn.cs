@@ -26,10 +26,28 @@ namespace Stump.Server.WorldServer.Entities
 {
     public class NpcSpawn : Entity, ISpawnEntry
     {
-        public NpcSpawn(NpcTemplate template, int contextualId)
+        public NpcSpawn(NpcTemplate template, int contextualId, VectorIsometric position, bool sex, int artworkId, EntityLook look)
             : base(contextualId)
         {
-            Look =new ExtendedLook(template.Look);
+            Template = template;
+            Look = new ExtendedLook(look);
+            Position = position;
+            Sex = sex;
+            SpecialArtworkId = artworkId;
+
+            IsQuestGiver = false;
+        }
+
+        public NpcSpawn(NpcTemplate template, int contextualId, VectorIsometric position, bool sex, int artworkId)
+            : base(contextualId)
+        {
+            Template = template;
+            Look = new ExtendedLook(template.Look);
+            Position = position;
+            Sex = sex;
+            SpecialArtworkId = artworkId;
+
+            IsQuestGiver = false;
         }
 
         public NpcTemplate Template
@@ -41,7 +59,7 @@ namespace Stump.Server.WorldServer.Entities
         public int SpecialArtworkId
         {
             get;
-            set;
+            protected set;
         }
 
         public bool IsQuestGiver
@@ -53,19 +71,13 @@ namespace Stump.Server.WorldServer.Entities
         public bool Sex
         {
             get;
-            set;
+            protected set;
         }
 
         public int ContextualId
         {
             get { return (int) Id; }
             set { Id = value; }
-        }
-
-        public VectorIsometric Location
-        {
-            get;
-            protected set;
         }
 
         public void StartDialog(NpcActionTypeEnum actionTypeEnum, Character dialoger)

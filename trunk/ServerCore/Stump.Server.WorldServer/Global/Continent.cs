@@ -32,5 +32,13 @@ namespace Stump.Server.WorldServer.Global
         {
             get { return WorldSpaceType.Continent; }
         }
+
+        public override void AddEntity(Entities.Entity entity)
+        {
+        }
+
+        public override void RemoveEntity(Entities.Entity entity)
+        {
+        }
     }
 }

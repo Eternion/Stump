@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System;
+using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Global.Maps;
 
@@ -58,6 +59,12 @@ namespace Stump.Server.WorldServer.Global
         {
             Direction = direction;
             Point = new MapPoint(map, cellId);
+        }
+
+        public VectorIsometric(Map map, EntityDispositionInformations dispositionInformations)
+        {
+            Direction = (DirectionsEnum) dispositionInformations.direction;
+            Point = new MapPoint(map, (ushort)dispositionInformations.cellId);
         }
 
         public VectorIsometric(Map map, VectorIsometric vectorIsometric)

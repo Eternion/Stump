@@ -35,6 +35,8 @@ namespace Stump.Server.WorldServer.Npcs
                 {NpcActionTypeEnum.ACTION_TALK, NpcActionHandler.HandleTalkAction},
             };
 
+        private static readonly Dictionary<int, NpcTemplate> NpcTemplates = new Dictionary<int, NpcTemplate>();
+
         [StageStep(Stages.Two, "Loaded Npcs")]
         public static void LoadNpcs()
         {
@@ -46,7 +48,14 @@ namespace Stump.Server.WorldServer.Npcs
                     {
                         Name = DataLoader.GetI18NText((int) npc.nameId)
                     };
+
+                NpcTemplates.Add(npcTemplate.Id, npcTemplate);
             }
+        }
+
+        public static NpcTemplate GetTemplate(int id)
+        {
+            return NpcTemplates.ContainsKey(id) ? NpcTemplates[id] : null;
         }
 
         public static void HandleNpcAction(NpcActionTypeEnum action, Character character, NpcSpawn npc)

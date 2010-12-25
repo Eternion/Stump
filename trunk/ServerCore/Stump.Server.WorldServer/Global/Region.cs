@@ -35,16 +35,6 @@ namespace Stump.Server.WorldServer.Global
 
         //private bool m_ContainHouses;
         //private bool m_ContainPaddocks;
-        /// <summary>
-        ///   Determines if this area contains houses.
-        /// </summary>
-        /// <summary>
-        ///   Determines if this area contains paddocks.
-        /// </summary>
-        /// <summary>
-        ///   Indicate if region is started.
-        /// </summary>
-        private bool m_running;
 
         #endregion
 
@@ -99,21 +89,24 @@ namespace Stump.Server.WorldServer.Global
         /// <param name = "entity"></param>
         public override void AddEntity(Entity entity)
         {
-            base.AddEntity(entity);
+            //base.AddEntity(entity);
 
             ParentSpace.AddEntity(entity);
 
-            if (!m_running)
+            if (!IsRunning)
             {
                 Start();
             }
 
-            Interlocked.Increment(ref m_charactercount);
+            if (entity is Character)
+            {
+                Interlocked.Increment(ref m_charactercount);
+            }
         }
 
         public override void RemoveEntity(Entity entity)
         {
-            base.RemoveEntity(entity);
+            //base.RemoveEntity(entity);
 
             ParentSpace.RemoveEntity(entity);
             if (entity is Character)
@@ -135,20 +128,26 @@ namespace Stump.Server.WorldServer.Global
         /// </summary>
         public void Start()
         {
-            if (!m_running)
+            lock (Sync)
             {
-                logger.Info("Started {0}.", this);
-                m_running = true;
+                if (!IsRunning)
+                {
+                    logger.Info("Started {0}.", this);
+                    IsRunning = true;
 
-                SpawnRegion();
+                    SpawnRegion();
+                }
             }
         }
 
         public void Stop()
         {
-            logger.Info("Stopped {0}.", this);
-            // Todo : disconnect characters in case region was stopped by admin
-            m_running = false;
+            lock (Sync)
+            {
+                logger.Info("Stopped {0}.", this);
+                // Todo : disconnect characters in case region was stopped by admin
+                IsRunning = false;
+            }
         }
 
         #endregion
@@ -164,8 +163,8 @@ namespace Stump.Server.WorldServer.Global
 
         public bool IsRunning
         {
-            get { return m_running; }
-            set { m_running = value; }
+            get;
+            set;
         }
 
         #endregion

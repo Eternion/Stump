@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Entities
             set;
         }
 
-        VectorIsometric Location
+        VectorIsometric Position
         {
             get;
         }
