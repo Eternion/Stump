@@ -8569,7 +8569,7 @@ namespace Stump.DofusProtocol.Enums
 		Map_8543 = 54165305,
 		Map_8544 = 54165306,
 		Map_8545 = 54165307,
-		Map_IncarnamStart = 54165308,
+		Map_8546 = 54165308,
 		Map_8547 = 54165309,
 		Map_8548 = 54165310,
 		Map_8549 = 54165311,

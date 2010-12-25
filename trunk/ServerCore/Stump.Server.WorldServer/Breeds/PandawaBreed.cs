@@ -30,11 +30,6 @@ namespace Stump.Server.WorldServer.Breeds
             }
         }
 
-        public override int StartHealthPoint
-        {
-            get { return 46; }
-        }
-
         protected override void OnInitialize()
         {
             StartSpells.Add(SpellIdEnum.Boozer, 65);

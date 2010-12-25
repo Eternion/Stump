@@ -30,14 +30,6 @@ namespace Stump.Server.WorldServer.Breeds
             }
         }
 
-        public override int StartHealthPoint
-        {
-            get
-            {
-                return 44;
-            }
-        }
-
         protected override void OnInitialize()
         {
            

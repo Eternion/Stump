@@ -36,5 +36,20 @@ namespace Stump.Server.WorldServer.Breeds
             StartSpells.Add(SpellIdEnum.FrighteningWord, 66);
             StartSpells.Add(SpellIdEnum.CurativeWord, 67);
         }
+
+        public override MapIdEnum StartMap
+        {
+            get { return MapIdEnum.Map_6545; }
+        }
+
+        public override ushort StartCellId
+        {
+            get { return 257; }
+        }
+
+        public override DirectionsEnum StartDirection
+        {
+            get { return DirectionsEnum.DIRECTION_SOUTH_EAST; }
+        }
     }
 }
