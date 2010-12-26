@@ -18,9 +18,12 @@
 //  *************************************************************************/
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Data;
 using Stump.Server.BaseServer.Initializing;
+using Stump.Server.WorldServer.Data;
 using Stump.Server.WorldServer.Entities;
 using NpcEx = Stump.DofusProtocol.D2oClasses.Npc;
 using NpcActionEx = Stump.DofusProtocol.D2oClasses.NpcAction;
@@ -29,13 +32,10 @@ namespace Stump.Server.WorldServer.Npcs
 {
     public class NpcManager
     {
-        private static readonly Dictionary<NpcActionTypeEnum, Action<Character, NpcSpawn>> NpcActions = new Dictionary
-            <NpcActionTypeEnum, Action<Character, NpcSpawn>>
-            {
-                {NpcActionTypeEnum.ACTION_TALK, NpcActionHandler.HandleTalkAction},
-            };
-
         private static readonly Dictionary<int, NpcTemplate> NpcTemplates = new Dictionary<int, NpcTemplate>();
+
+        private static Dictionary<int, NpcDialogQuestion> m_npcQuestions = new Dictionary<int, NpcDialogQuestion>();
+
 
         [StageStep(Stages.Two, "Loaded Npcs")]
         public static void LoadNpcs()
@@ -51,6 +51,18 @@ namespace Stump.Server.WorldServer.Npcs
 
                 NpcTemplates.Add(npcTemplate.Id, npcTemplate);
             }
+
+            foreach(var action in NpcLoader.LoadNpcActions())
+            {
+                var template = GetTemplate(action.NpcId);
+
+                if (template == null)
+                    throw new Exception(string.Format("Template <id:{0}> doesn't exist", action.NpcId));
+
+                template.StartActions.Add(action.ActionType, action);
+            }
+
+            m_npcQuestions = NpcLoader.LoadQuestions().ToDictionary(entry => (int)entry.Id);
         }
 
         public static NpcTemplate GetTemplate(int id)
@@ -58,12 +70,9 @@ namespace Stump.Server.WorldServer.Npcs
             return NpcTemplates.ContainsKey(id) ? NpcTemplates[id] : null;
         }
 
-        public static void HandleNpcAction(NpcActionTypeEnum action, Character character, NpcSpawn npc)
+        public static NpcDialogQuestion GetQuestion(int id)
         {
-            if (!NpcActions.ContainsKey(action))
-                throw new NotImplementedException("Npc action '" + action + "' is not implemented");
-
-            NpcActions[action].DynamicInvoke(character, npc);
+            return m_npcQuestions.ContainsKey(id) ? m_npcQuestions[id] : null;
         }
     }
 }

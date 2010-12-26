@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System.Threading;
+using System.Threading.Tasks;
 using Stump.Server.WorldServer.Entities;
 
 namespace Stump.Server.WorldServer.Global
@@ -65,7 +66,8 @@ namespace Stump.Server.WorldServer.Global
         {
             if (!m_npcsLoaded)
             {
-                // todo
+                // should we lazy load the npcs ?
+                
                 m_npcsLoaded = true;
             }
         }
@@ -93,7 +95,7 @@ namespace Stump.Server.WorldServer.Global
 
             ParentSpace.AddEntity(entity);
 
-            if (!IsRunning)
+            if (entity is Character && !IsRunning)
             {
                 Start();
             }

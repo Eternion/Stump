@@ -68,6 +68,7 @@ namespace Stump.Server.BaseServer.Network
                 throw new Exception("BaseClient is not initialized");
 
             Socket = socket;
+            IP = socket.RemoteEndPoint.ToString();
         }
 
         public Socket Socket
@@ -89,7 +90,8 @@ namespace Stump.Server.BaseServer.Network
 
         public string IP
         {
-            get { return Socket.RemoteEndPoint != null ? Socket.RemoteEndPoint.ToString() : "null"; }
+            get;
+            private set;
         }
 
         internal static void Initialize(ref SocketAsyncEventArgsPool pool, ref QueueDispatcher dispatcher)
@@ -297,7 +299,7 @@ namespace Stump.Server.BaseServer.Network
 
         public override string ToString()
         {
-            return Socket == null ? "" : "<" + IP + ">";
+            return "<" + IP + ">";
         }
     }
 }

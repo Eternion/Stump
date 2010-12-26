@@ -20,6 +20,11 @@ using System.IO;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.XmlUtils;
 using Stump.DofusProtocol.Classes;
+using Stump.DofusProtocol.Messages;
+using Stump.Server.WorldServer.Actions.NpcActions;
+using Stump.Server.WorldServer.Npcs;
+using Stump.Server.WorldServer.Npcs.StartActions;
+using Stump.Tools.Proxy.Network;
 
 namespace Stump.Tools.Proxy.Data
 {
@@ -32,16 +37,103 @@ namespace Stump.Tools.Proxy.Data
         public static string NpcDir = "Npcs/";
 
         [Variable]
+        public static string NpcQuestionsDir = "NpcsQuestions/";
+
+        [Variable]
+        public static string NpcRepliesDir = "NpcsReplies/";
+
+        [Variable]
+        public static string NpcActionsDir = "NpcsActions/";
+
+        [Variable]
         public static string MonstersDir = "Monsters/";
 
-
-        public static void HandleActorInformations(GameRolePlayActorInformations actorInformations, uint mapId)
+        public static void HandleNpcQuestion(WorldClient client, NpcDialogQuestionMessage dialogQuestionMessage)
         {
-            if (actorInformations is GameRolePlayNpcInformations)
-                HandleNpcInformations(actorInformations as GameRolePlayNpcInformations, mapId);
+            BuildActionNpcQuestion(client, dialogQuestionMessage);
+
+            if (!Directory.Exists(Output + NpcQuestionsDir))
+            {
+                Directory.CreateDirectory(Output + NpcQuestionsDir);
+            }
+
+            if (!File.Exists(Output + NpcQuestionsDir + dialogQuestionMessage.messageId + ".xml"))
+                XmlUtils.Serialize(Output + NpcQuestionsDir + dialogQuestionMessage.messageId + ".xml",
+                                   dialogQuestionMessage);
         }
 
-        public static void HandleNpcInformations(GameRolePlayNpcInformations npcInformations, uint mapId)
+        public static void BuildActionNpcQuestion(WorldClient client, NpcDialogQuestionMessage dialogQuestionMessage)
+        {
+            if (!client.GuessAction)
+                return;
+
+            if (client.GuessNpcReply != null)
+            {
+                uint replyId = client.GuessNpcReply.replyId;
+                client.GuessNpcReply = null; // clear it as fast as possible
+
+                var npcReply = new NpcDialogReply(replyId,
+                                                  new ActionDialogQuestion((int) dialogQuestionMessage.messageId));
+
+                if (!Directory.Exists(Output + NpcRepliesDir))
+                {
+                    Directory.CreateDirectory(Output + NpcRepliesDir);
+                }
+
+                if (!File.Exists(Output + NpcRepliesDir + replyId + ".xml"))
+                    XmlUtils.Serialize(Output + NpcRepliesDir + replyId + ".xml", npcReply);
+            }
+            else if (client.GuessNpcFirstAction != null)
+            {
+                uint npcId = client.MapNpcs[client.GuessNpcFirstAction.npcId].npcId;
+                uint actionId = client.GuessNpcFirstAction.npcActionId;
+                client.GuessNpcFirstAction = null;
+
+                NpcStartActionSerialized actionSerialized = new TalkAction((int) npcId,
+                                                                           (int) dialogQuestionMessage.messageId);
+
+                if (!Directory.Exists(Output + NpcActionsDir))
+                {
+                    Directory.CreateDirectory(Output + NpcActionsDir);
+                }
+
+                if (!File.Exists(Output + NpcActionsDir + npcId + "_" + actionId + ".xml"))
+                    XmlUtils.Serialize(Output + NpcActionsDir + npcId + "_" + actionId + ".xml",
+                                       actionSerialized);
+            }
+        }
+
+        public static void BuildActionNpcLeave(WorldClient client, LeaveDialogMessage leaveDialogMessage)
+        {
+            if (!client.GuessAction)
+                return;
+
+            if (client.GuessNpcReply == null)
+                return;
+
+            uint replyId = client.GuessNpcReply.replyId;
+            client.GuessNpcReply = null;
+
+            var npcReply = new NpcDialogReply(replyId, new ActionDialogLeave());
+
+            if (!Directory.Exists(Output + NpcRepliesDir))
+            {
+                Directory.CreateDirectory(Output + NpcRepliesDir);
+            }
+
+            if (!File.Exists(Output + NpcRepliesDir + replyId + ".xml"))
+                XmlUtils.Serialize(Output + NpcRepliesDir + replyId + ".xml", npcReply);
+        }
+
+        public static void HandleActorInformations(WorldClient client, GameRolePlayActorInformations actorInformations,
+                                                   uint mapId)
+        {
+            if (actorInformations is GameRolePlayNpcInformations)
+                HandleNpcInformations(client, actorInformations as GameRolePlayNpcInformations, mapId);
+        }
+
+        public static void HandleNpcInformations(WorldClient client, GameRolePlayNpcInformations npcInformations,
+                                                 uint mapId)
         {
             string zoneName = ZonesManager.GetZoneNameByMap(mapId);
 
@@ -55,8 +147,10 @@ namespace Stump.Tools.Proxy.Data
                 Directory.CreateDirectory(Output + NpcDir + zoneName);
             }
 
-            XmlUtils.Serialize(Output + NpcDir + zoneName + "/" +
-                               mapId + "_" + npcInformations.npcId + ".xml", npcInformations);
+            if (!File.Exists(Output + NpcDir + zoneName + "/" +
+                             mapId + "_" + npcInformations.npcId + ".xml"))
+                XmlUtils.Serialize(Output + NpcDir + zoneName + "/" +
+                                   mapId + "_" + npcInformations.npcId + ".xml", npcInformations);
         }
     }
 }

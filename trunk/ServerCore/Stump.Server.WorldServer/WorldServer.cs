@@ -132,9 +132,6 @@ namespace Stump.Server.WorldServer
             logger.Info("Register Packet Handlers...");
             HandlerManager.RegisterAll(typeof (WorldServer).Assembly);
 
-            logger.Info("Initialize Game's Actions...");
-            ActionManager.Initialize();
-
             logger.Info("Register Commands...");
             CommandManager.RegisterAll<WorldCommand, WorldSubCommand>();
 

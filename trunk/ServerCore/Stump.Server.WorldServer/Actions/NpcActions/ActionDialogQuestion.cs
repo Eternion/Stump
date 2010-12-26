@@ -17,23 +17,39 @@
 //  *
 //  *************************************************************************/
 using System;
-using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.Npcs;
 
 namespace Stump.Server.WorldServer.Actions.NpcActions
 {
-    [ActionType(ActionsEnum.ACTION_START_DIALOG_WITH_NPC)]
     public class ActionDialogQuestion : NpcAction
     {
-        public ActionDialogQuestion(NpcActionArgument argument)
-            : base(argument)
+        private ActionDialogQuestion()
         {
         }
 
-        public override void Execute()
+        public ActionDialogQuestion(int messageId)
         {
-            var questionId = Argument.Next<uint>();
+            MessageId = messageId;
+        }
 
-            // todo : get the associact NpcQuestion
+        public int MessageId
+        {
+            get;
+            set;
+        }
+
+        public override void Execute(NpcSpawn npc, Character executer)
+        {
+            if (!executer.IsInDialogWithNpc)
+                return;
+
+            var question = NpcManager.GetQuestion(MessageId);
+
+            if (question == null)
+                return;
+
+            ( (NpcDialog) executer.Dialog ).ChangeQuestion(question);
         }
     }
 }

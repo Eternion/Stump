@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System.Threading.Tasks;
+using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Messages;
 using Stump.Tools.Proxy.Data;
 using Stump.Tools.Proxy.Network;
@@ -29,10 +30,17 @@ namespace Stump.Tools.Proxy.Handlers.World
         public static void HandleMapComplementaryInformationsDataMessage(WorldClient client,
                                                                          MapComplementaryInformationsDataMessage message)
         {
-            Parallel.ForEach(message.actors, actor =>
-                                             DataFactory.HandleActorInformations(actor, message.mapId));
-
             client.Send(message);
+
+            client.MapNpcs.Clear();
+
+            Parallel.ForEach(message.actors, actor =>
+            {
+                DataFactory.HandleActorInformations(client, actor, message.mapId);
+
+                if (actor is GameRolePlayNpcInformations)
+                    client.MapNpcs.Add((actor as GameRolePlayNpcInformations).contextualId, (GameRolePlayNpcInformations) actor);
+            });
         }
     }
 }

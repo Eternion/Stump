@@ -24,6 +24,18 @@ namespace Stump.Server.WorldServer.Npcs
 {
     public class NpcDialogQuestion
     {
+        private NpcDialogQuestion()
+        {
+            Replies = new Dictionary<uint, NpcDialogReply>();
+        }
+
+        public NpcDialogQuestion(uint id, string[] parameters)
+             : this()
+        {
+            Id = id;
+            Parameters = parameters;
+        }
+
         public uint Id
         {
             get;
@@ -47,7 +59,7 @@ namespace Stump.Server.WorldServer.Npcs
             if (!Replies.ContainsKey(id))
                 throw new ArgumentException("Reply with id '" + id + "' doesn't exist");
 
-            Replies[id].CallAction(npc, dialoger);
+            Replies[id].Execute(npc, dialoger);
         }
     }
 }

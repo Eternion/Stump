@@ -73,7 +73,7 @@ namespace Stump.DofusProtocol.Messages
                 }
                 default:
                 {
-                    throw new Exception("Erreur taille du paquet");
+                    throw new Exception("Packet's length can't be encoded on 4 or more bytes");
                 }
             }
 

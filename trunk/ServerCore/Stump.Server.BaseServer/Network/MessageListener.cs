@@ -246,16 +246,23 @@ namespace Stump.Server.BaseServer.Network
 
         private void OnReceiveCompleted(object sender, SocketAsyncEventArgs e)
         {
-            switch (e.LastOperation)
+            try
             {
-                case SocketAsyncOperation.Receive:
-                    ProcessReceive(e);
-                    break;
-                case SocketAsyncOperation.Disconnect:
-                    CloseClientSocket(e);
-                    break;
-                default:
-                    break;
+                switch (e.LastOperation)
+                {
+                    case SocketAsyncOperation.Receive:
+                        ProcessReceive(e);
+                        break;
+                    case SocketAsyncOperation.Disconnect:
+                        CloseClientSocket(e);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception exception)
+            {
+                logger.Error("Last chance exception on receiving ! : " + exception);
             }
         }
 

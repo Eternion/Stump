@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Handlers
             if (npc == null)
                 return;
             
-            npc.StartDialog((NpcActionTypeEnum) message.npcActionId, client.ActiveCharacter);
+            npc.Interact((NpcActionTypeEnum) message.npcActionId, client.ActiveCharacter);
         }
 
         [WorldHandler(typeof(NpcDialogReplyMessage))]

@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Classes.Custom;
 using Stump.DofusProtocol.Enums;
@@ -80,9 +81,12 @@ namespace Stump.Server.WorldServer.Entities
             set { Id = value; }
         }
 
-        public void StartDialog(NpcActionTypeEnum actionTypeEnum, Character dialoger)
+        public void Interact(NpcActionTypeEnum actionTypeEnum, Character dialoger)
         {
-            NpcManager.HandleNpcAction(actionTypeEnum, dialoger, this);
+            if (!Template.StartActions.ContainsKey(actionTypeEnum))
+                throw new NotImplementedException(string.Format("Npc action '{0}' is not implemented for npc '{1}", actionTypeEnum, Template.Id));
+
+            Template.StartActions[actionTypeEnum].Execute(this, dialoger);
         }
 
         public override GameRolePlayActorInformations ToNetworkActor(WorldClient client)

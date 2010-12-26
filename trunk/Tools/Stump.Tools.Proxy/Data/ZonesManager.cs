@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.D2oClasses;
@@ -25,7 +26,7 @@ namespace Stump.Tools.Proxy.Data
 {
     public static class ZonesManager
     {
-        private static readonly Dictionary<uint, string> m_zoneNameByMap = new Dictionary<uint, string>();
+        private static readonly ConcurrentDictionary<uint, string> m_zoneNameByMap = new ConcurrentDictionary<uint, string>();
 
         public static Dictionary<int, string> ZonesName
         {
@@ -62,7 +63,7 @@ namespace Stump.Tools.Proxy.Data
 
             string name = ZonesName[zone.id];
 
-            m_zoneNameByMap.Add(mapId, name);
+            m_zoneNameByMap.TryAdd(mapId, name);
 
             return name;
         }

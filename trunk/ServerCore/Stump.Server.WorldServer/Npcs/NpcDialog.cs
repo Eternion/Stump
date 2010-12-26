@@ -43,10 +43,11 @@ namespace Stump.Server.WorldServer.Npcs
             private set;
         }
 
-        public NpcDialog(NpcSpawn npc, Character dialoger)
+        public NpcDialog(NpcSpawn npc, Character dialoger, NpcDialogQuestion currentQuestion)
         {
             Npc = npc;
             Dialoger = new NpcDialoger(dialoger, this);
+            CurrentQuestion = currentQuestion;
         }
 
         public void ChangeQuestion(NpcDialogQuestion dialogQuestion)

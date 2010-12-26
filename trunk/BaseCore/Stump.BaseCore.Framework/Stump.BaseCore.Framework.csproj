@@ -73,8 +73,7 @@
     <Compile Include="Utils\Singleton.cs" />
     <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="XmlUtils\XmlConfigFile.cs" />
-    <Compile Include="XmlUtils\Serializer.cs" />
-    <Compile Include="XmlUtils\XmlParser.cs" />
+    <Compile Include="XmlUtils\XmlUtils.cs" />
     <Compile Include="XmlUtils\XmlVariableConverters.cs" />
   </ItemGroup>
   <ItemGroup />

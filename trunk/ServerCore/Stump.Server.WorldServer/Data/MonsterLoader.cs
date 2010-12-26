@@ -38,8 +38,7 @@ namespace Stump.Server.WorldServer.Data
 
             foreach (FileInfo file in mapDirectory.GetFiles("*.xml", SearchOption.AllDirectories))
             {
-                var parser = new XmlParser(file.FullName);
-
+             
                 yield return null;
             }
         }

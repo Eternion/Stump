@@ -43,7 +43,6 @@ namespace Stump.BaseCore.Framework.XmlUtils
             {
                 m_serializer = new XmlSerializer(typeof (T));
                 m_serializer.Serialize(writer, item);
-                writer.Close();
             }
         }
 
@@ -59,7 +58,6 @@ namespace Stump.BaseCore.Framework.XmlUtils
             {
                 m_serializer = new XmlSerializer(typeof (T));
                 m_serializer.Serialize(writer, item);
-                writer.Close();
             }
         }
 
@@ -78,9 +76,7 @@ namespace Stump.BaseCore.Framework.XmlUtils
             using (var reader = new StreamReader(fileName))
             {
                 m_serializer = new XmlSerializer(typeof (T));
-                var o = (T) m_serializer.Deserialize(reader);
-                reader.Close();
-                return o;
+                return (T) m_serializer.Deserialize(reader);
             }
         }
 
@@ -95,9 +91,7 @@ namespace Stump.BaseCore.Framework.XmlUtils
             using (var reader = new StreamReader(stream))
             {
                 m_serializer = new XmlSerializer(typeof (T));
-                var o = (T) m_serializer.Deserialize(reader);
-                reader.Close();
-                return o;
+                return (T) m_serializer.Deserialize(reader);
             }
         }
 

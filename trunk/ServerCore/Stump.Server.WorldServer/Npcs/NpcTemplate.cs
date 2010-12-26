@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections.Generic;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Classes.Extensions;
 using Stump.DofusProtocol.Enums;
@@ -32,6 +33,8 @@ namespace Stump.Server.WorldServer.Npcs
         {
             m_npc = npc;
             Look = !string.IsNullOrEmpty(npc.look) && npc.look != "null" ? npc.look.ToEntityLook() : null;
+
+            StartActions = new Dictionary<NpcActionTypeEnum, NpcStartAction>();
         }
 
         public int Id
@@ -56,7 +59,7 @@ namespace Stump.Server.WorldServer.Npcs
             set;
         }
 
-        public NpcDialogQuestion MessageEntry
+        public Dictionary<NpcActionTypeEnum, NpcStartAction> StartActions
         {
             get;
             set;
@@ -64,7 +67,10 @@ namespace Stump.Server.WorldServer.Npcs
 
         public bool CanSpeak
         {
-            get { return MessageEntry != null; }
+            get
+            {
+                return StartActions.ContainsKey(NpcActionTypeEnum.ACTION_TALK);
+            }
         }
     }
 }

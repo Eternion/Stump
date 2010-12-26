@@ -58,9 +58,37 @@ namespace Stump.Tools.Proxy.Network
             set;
         }
 
+        public NpcDialogReplyMessage GuessNpcReply
+        {
+            get;
+            set;
+        }
+
+        public NpcGenericActionRequestMessage GuessNpcFirstAction
+        {
+            get;
+            set;
+        }
+
+        public Dictionary<int, GameRolePlayNpcInformations> MapNpcs
+        {
+            get;
+            set;
+        }
+
+        public bool GuessAction
+        {
+            get
+            {
+                return GuessNpcReply != null || GuessNpcFirstAction != null;
+            }
+        }
+
         public WorldClient(Socket socket)
             : base(socket)
         {
+            MapNpcs = new Dictionary<int, GameRolePlayNpcInformations>();
+
             Send(new ProtocolRequired(1304, 1304));
             Send(new HelloGameMessage());
         }

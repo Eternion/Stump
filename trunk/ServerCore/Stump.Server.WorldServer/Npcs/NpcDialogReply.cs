@@ -16,6 +16,10 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Serialization;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Actions;
 using Stump.Server.WorldServer.Entities;
@@ -24,27 +28,35 @@ namespace Stump.Server.WorldServer.Npcs
 {
     public class NpcDialogReply
     {
+        private NpcDialogReply()
+        {
+            
+        }
+
+        public NpcDialogReply(uint id, params ActionSerialized[] actions)
+        {
+            Id = id;
+            ActionsSerialized = actions;
+        }
+
         public uint Id
         {
             get;
-            private set;
+            set;
         }
 
-        public ActionsEnum ActionType
+        public ActionSerialized[] ActionsSerialized
         {
             get;
-            private set;
+            set;
         }
 
-        public object[] ActionArgs
+        public void Execute(NpcSpawn npc, Character dialoger)
         {
-            get;
-            private set;
-        }
-
-        public void CallAction(NpcSpawn npc, Character dialoger)
-        {
-            ActionManager.ExecuteAction(ActionType, npc, dialoger, ActionArgs);
+            foreach (var actionBase in ActionsSerialized)
+            {
+                ActionBase.ExecuteAction(actionBase, npc, dialoger);
+            }
         }
     }
 }

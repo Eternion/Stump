@@ -44,7 +44,7 @@ namespace Stump.BaseCore.Framework.XmlUtils
         ///     - Harry
         ///     - Thomas, Moore
         /// 
-        /// When not the array will contains 4 elements :
+        /// When it's false the array will contains 4 elements :
         ///     - John
         ///     - Harry
         ///     - "Thomas

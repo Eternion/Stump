@@ -52,13 +52,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\ActionBase.cs" />
-    <Compile Include="Actions\ActionBaseArgument.cs" />
-    <Compile Include="Actions\ActionManager.cs" />
-    <Compile Include="Actions\ActionTypeAttribute.cs" />
+    <Compile Include="Actions\ActionSerialized.cs" />
     <Compile Include="Actions\CharacterAction.cs" />
-    <Compile Include="Actions\CharacterActionArgument.cs" />
     <Compile Include="Actions\NpcAction.cs" />
-    <Compile Include="Actions\NpcActionArgument.cs" />
+    <Compile Include="Actions\NpcActions\ActionDialogLeave.cs" />
     <Compile Include="Actions\NpcActions\ActionDialogQuestion.cs" />
     <Compile Include="Breeds\BaseBreed.cs" />
     <Compile Include="Breeds\BreedManager.cs" />
@@ -87,6 +84,7 @@
     <Compile Include="Data\NpcLoader.cs" />
     <Compile Include="Dialog\Dialoger.cs" />
     <Compile Include="Handlers\Authorized\AuthorizedHandler.cs" />
+    <Compile Include="Npcs\NpcStartActionSerialized.cs" />
     <Compile Include="Npcs\NpcDialog.cs" />
     <Compile Include="Npcs\NpcDialoger.cs" />
     <Compile Include="Npcs\NpcDialogQuestion.cs" />
@@ -95,7 +93,6 @@
     <Compile Include="Entities\ILocableIdentified.cs" />
     <Compile Include="Entities\ISpawnEntry.cs" />
     <Compile Include="Handlers\Context\RolePlay\ContextRoleplayNpcHandler.cs" />
-    <Compile Include="Npcs\NpcActionHandler.cs" />
     <Compile Include="Npcs\NpcManager.cs" />
     <Compile Include="Entities\NpcSpawn.cs" />
     <Compile Include="Manager\AccountManager.cs" />
@@ -133,6 +130,7 @@
     <Compile Include="Entities\LivingEntity.cs" />
     <Compile Include="Entities\Monster.cs" />
     <Compile Include="Entities\MonsterGrade.cs" />
+    <Compile Include="Npcs\NpcStartAction.cs" />
     <Compile Include="Npcs\NpcTemplate.cs" />
     <Compile Include="Entities\StatsData.cs" />
     <Compile Include="Entities\StatsFields.cs" />
@@ -227,6 +225,7 @@
     <Compile Include="Items\ItemTemplate.cs" />
     <Compile Include="Items\Weapon.cs" />
     <Compile Include="Items\WeaponTemplate.cs" />
+    <Compile Include="Npcs\StartActions\TalkAction.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Spells\Spell.cs" />
     <Compile Include="Spells\SpellCollection.cs" />
