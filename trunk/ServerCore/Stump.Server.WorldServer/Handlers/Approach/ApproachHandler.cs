@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Handlers
             SendAccountCapabilitiesMessage(client);
             BasicHandler.SendBasicNoOperationMessage(client);
             /* Just to get autocompletion, description and parameters are provide by server */
-            SendConsoleCommandsListMessage(client, WorldServer.Instance.CommandManager.AvailableCommands.Select(c => c.Aliases.First()).ToList(), new List<string>(), new List<string>());
+            SendConsoleCommandsListMessage(client, WorldServer.Instance.CommandManager.AvailableCommands.SelectMany(c => c.Aliases).ToList(), new List<string>(), new List<string>());
         }
 
         public static void SendAccountCapabilitiesMessage(WorldClient client)

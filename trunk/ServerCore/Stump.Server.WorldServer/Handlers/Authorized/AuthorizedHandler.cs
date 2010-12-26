@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public class AuthorizedHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof (AdminQuietCommandMessage))]
+        [WorldHandler(typeof(AdminQuietCommandMessage))]
         public static void HandleAdminQuietCommandMessage(WorldClient client, AdminQuietCommandMessage message)
         {
             if (client.Account.Role < RoleEnum.GameMaster_Padawan)
@@ -36,27 +36,27 @@ namespace Stump.Server.WorldServer.Handlers
             WorldServer.Instance.CommandManager.HandleCommand(new TriggerConsole(new StringStream(message.content),
                                                                      client.ActiveCharacter));
 
-            /*string[] data = message.content.Split(' ');
+            string[] data = message.content.Split(' ');
             string command = data[0];
             string[] args = data[1].Split(' ');
 
             switch (command)
             {
                 case ("look"):
-                {
-                    client.ActiveCharacter.Look = new ExtendedLook(data[2].ToEntityLook());
-                    ContextHandler.SendGameContextRefreshEntityLookMessage(client, client.ActiveCharacter);
-                    break;
-                }
-                    //case ("moveto"):
-                    //    {
+                    {
+                        client.ActiveCharacter.Look = new ExtendedLook(data[2].ToEntityLook());
+                        ContextHandler.SendGameContextRefreshEntityLookMessage(client, client.ActiveCharacter);
+                        break;
+                    }
+                //case ("moveto"):
+                //    {
 
-                    //    }
-            }*/
+                //    }
+            }
         }
 
 
-        [WorldHandler(typeof (AdminCommandMessage))]
+        [WorldHandler(typeof(AdminCommandMessage))]
         public static void HandleAdminCommandMessage(WorldClient client, AdminCommandMessage message)
         {
             if (client.Account.Role < RoleEnum.GameMaster_Padawan)
@@ -73,7 +73,7 @@ namespace Stump.Server.WorldServer.Handlers
 
         public static void SendConsoleMessage(WorldClient client, ConsoleMessageTypeEnum type, string text)
         {
-            client.Send(new ConsoleMessage((uint) type, text));
+            client.Send(new ConsoleMessage((uint)type, text));
         }
     }
 }

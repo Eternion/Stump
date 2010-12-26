@@ -86,6 +86,7 @@ namespace Stump.Server.WorldServer.Handlers
             else
             {
                 client.Send(new IdentificationFailedMessage((int) IdentificationFailureReasonEnum.KICKED));
+                client.DisconnectLater(1000);
             }
         }
 
