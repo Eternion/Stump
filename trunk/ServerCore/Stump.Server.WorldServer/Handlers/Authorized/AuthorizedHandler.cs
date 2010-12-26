@@ -33,9 +33,6 @@ namespace Stump.Server.WorldServer.Handlers
             if (client.Account.Role < RoleEnum.GameMaster_Padawan)
                 return;
 
-            WorldServer.Instance.CommandManager.HandleCommand(new TriggerConsole(new StringStream(message.content),
-                                                                     client.ActiveCharacter));
-
             string[] data = message.content.Split(' ');
             string command = data[0];
             string[] args = data[1].Split(' ');
