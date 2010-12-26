@@ -114,7 +114,7 @@ namespace Stump.Database
 
         public static WorldRecord FindWorldRecordById(int id)
         {
-            return FindOne(Restrictions.Eq("Id", id));
+            return FindByPrimaryKey(id);
         }
 
         public static bool Exists(int id)
