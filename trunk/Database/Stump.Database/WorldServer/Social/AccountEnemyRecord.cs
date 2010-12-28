@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System.Linq;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
 
@@ -48,5 +49,23 @@ namespace Stump.Database
             set;
         }
 
+
+        public WorldAccountRecord Account
+        {
+            get { return WorldAccountRecord.FindWorldAccountById(AccountId); }
+            set { AccountId = value.Id; }
+        }
+
+        public WorldAccountRecord EnemyAccount
+        {
+            get { return WorldAccountRecord.FindWorldAccountById(EnemyAccountId); }
+            set { EnemyAccountId = value.Id; }
+        }
+
+
+        public static WorldAccountRecord[] FindEnemiesByAccountId(uint accountId)
+        {
+            return FindAll(Restrictions.Eq("AccountId", accountId)).Select(w => w.EnemyAccount).ToArray();
+        }
     }
 }

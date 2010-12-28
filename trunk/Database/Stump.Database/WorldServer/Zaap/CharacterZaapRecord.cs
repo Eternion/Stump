@@ -24,8 +24,8 @@ namespace Stump.Database
 {
 
     [AttributeDatabase(DatabaseService.WorldServer)]
-    [ActiveRecord("accounts_friends")]
-    public class AccountFriendRecord : ActiveRecordBase<AccountFriendRecord>
+    [ActiveRecord("characters_zaaps")]
+    public class CharacterZaapRecord : ActiveRecordBase<CharacterZaapRecord>
     {
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
@@ -35,38 +35,18 @@ namespace Stump.Database
             set;
         }
 
-        [Property("AccountId")]
-        public uint AccountId
+        [Property("CharacterId")]
+        public uint CharacterId
         {
             get;
             set;
         }
 
-        [Property("FriendAccountId")]
-        public uint FriendAccountId
+        [Property("MapId")]
+        public uint MapId
         {
             get;
             set;
         }
-
-
-        public WorldAccountRecord Account
-        {
-            get { return WorldAccountRecord.FindWorldAccountById(AccountId); }
-            set { AccountId = value.Id; }
-        }
-
-        public WorldAccountRecord FriendAccount
-        {
-            get { return WorldAccountRecord.FindWorldAccountById(FriendAccountId); }
-            set { FriendAccountId = value.Id; }
-        }
-
-
-        public static WorldAccountRecord[] FindFriendsByAccountId(uint accountId)
-        {
-            return FindAll(Restrictions.Eq("AccountId", accountId)).Select( w => w.FriendAccount).ToArray();
-        }
-
     }
 }

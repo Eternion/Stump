@@ -59,5 +59,36 @@ namespace Stump.Database
             set;
         }
 
+
+        public WorldAccountRecord[] Friends
+        {
+            get { return AccountFriendRecord.FindFriendsByAccountId(Id); }
+        }
+
+        public WorldAccountRecord[] Enemies
+        {
+            get { return AccountEnemyRecord.FindEnemiesByAccountId(Id); }
+        }
+
+
+        public static WorldAccountRecord FindWorldAccountById(uint id)
+        {
+            return FindByPrimaryKey(id);
+        }
+
+        public static WorldAccountRecord FindWorldAccountByNickname(string nickname)
+        {
+            return FindOne(Restrictions.Eq("Nickname",nickname));
+        }
+
+        public static bool Exists(uint id)
+        {
+            return Exists(id);
+        }
+
+        public static bool Exists(string nickname)
+        {
+            return Exists(Restrictions.Eq("Nickname", nickname));
+        }
     }
 }

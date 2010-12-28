@@ -66,6 +66,12 @@
     <Compile Include="VersionRecord.cs" />
     <Compile Include="AuthServer\World\WorldCharacterRecord.cs" />
     <Compile Include="AuthServer\World\WorldRecord.cs" />
+    <Compile Include="WorldServer\Social\AccountFriendRecord.cs" />
+    <Compile Include="WorldServer\Social\AccountEnemyRecord.cs" />
+    <Compile Include="WorldServer\Storage\StorageItemRecord.cs" />
+    <Compile Include="WorldServer\Storage\StorageRecord.cs" />
+    <Compile Include="WorldServer\WorldAccountRecord.cs" />
+    <Compile Include="WorldServer\Zaap\CharacterZaapRecord.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DofusProtocol\Classes\Stump.DofusProtocol.Classes.csproj">
@@ -78,7 +84,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="WorldServer\" />
+    <Folder Include="WorldServer\Alignment\" />
+    <Folder Include="WorldServer\Bank\" />
+    <Folder Include="WorldServer\BidHouse\" />
+    <Folder Include="WorldServer\Character\" />
+    <Folder Include="WorldServer\Emote\" />
+    <Folder Include="WorldServer\Guild\" />
+    <Folder Include="WorldServer\House\" />
+    <Folder Include="WorldServer\Job\" />
+    <Folder Include="WorldServer\Mount\" />
+    <Folder Include="WorldServer\Paddock\" />
+    <Folder Include="WorldServer\Perceptor\" />
+    <Folder Include="WorldServer\Quest\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
