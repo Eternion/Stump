@@ -80,19 +80,19 @@ namespace Stump.Database
             return FindAll((Restrictions.Eq("AccountId", accountId)));
         }
 
-        public static WorldCharacterRecord[] FindCharactersByServerId(int serverid)
+        public static WorldCharacterRecord[] FindCharactersByServerId(int worldId)
         {
-            return FindAll((Restrictions.Eq("ServerId", serverid)));
+            return FindAll((Restrictions.Eq("WorldId", worldId)));
         }
 
-        public static WorldCharacterRecord FindCharacterByServerIdAndCharacterId(int serverId, uint characterId)
+        public static WorldCharacterRecord FindCharacterByServerIdAndCharacterId(int worldId, uint characterId)
         {
-            return FindOne(Restrictions.And(Restrictions.Eq("ServerId", serverId), Restrictions.Eq("CharacterId", characterId)));
+            return FindOne(Restrictions.And(Restrictions.Eq("WorldId", worldId), Restrictions.Eq("CharacterId", characterId)));
         }
 
-        public static WorldCharacterRecord[] FindCharactersByAccountIdAndServerId(uint accountid, int serverId)
+        public static WorldCharacterRecord[] FindCharactersByAccountIdAndServerId(uint accountid, int worldId)
         {
-            return FindAll(Restrictions.And(Restrictions.Eq("AccountId", accountid), Restrictions.Eq("ServerId", serverId)));
+            return FindAll(Restrictions.And(Restrictions.Eq("AccountId", accountid), Restrictions.Eq("WorldId", worldId)));
         }
 
     }

@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.BaseCore.Framework.Attributes;
 using Stump.Database;
 using Stump.Server.AuthServer.Accounts;
 using Stump.Server.BaseServer.IPC;
@@ -101,7 +100,7 @@ namespace Stump.Server.AuthServer.IPC
 
         public AccountRecord GetAccountRecordByNickname(WorldServerInformation wsi, string nickname)
         {
-           return AccountRecord.FindAccountByNickname(nickname.ToLower());
+            return AccountRecord.FindAccountByNickname(nickname.ToLower());
         }
 
         public bool ModifyAccountRecordByNickname(WorldServerInformation wsi, string name, AccountRecord modifiedRecord)
@@ -193,16 +192,49 @@ namespace Stump.Server.AuthServer.IPC
 
         public void DeleteAccountCharacter(WorldServerInformation wsi, uint accountid, uint characterId)
         {
-           var record= WorldCharacterRecord.FindCharacterByServerIdAndCharacterId(wsi.Id, characterId);
+            var record = WorldCharacterRecord.FindCharacterByServerIdAndCharacterId(wsi.Id, characterId);
 
-           if (record.AccountId != accountid) return;
+            if (record.AccountId != accountid) return;
 
-           record.DeleteAndFlush();
+            new DeletedWorldCharacterRecord {AccountId = accountid, CharacterId = characterId, WorldId = wsi.Id}.
+                CreateAndFlush();
+
+            record.DeleteAndFlush();
+        }
+
+        public bool ExceedsDeletedCharactersQuota(uint accountid)
+        {
+            var record = DeletedWorldCharacterRecord.FindCharactersByAccountId(accountid);
+
+            return record.Length > 6;
         }
 
         public bool CheckWorldServerSecretKey(WorldServerInformation wsi, string secretKey)
         {
             return (IpcServer.IpcSecretKey == secretKey);
+        }
+
+        public bool BanAccount(WorldServerInformation wsi, uint accountid, DateTime banEndDate)
+        {
+            var account = AccountRecord.FindAccountById(accountid);
+
+            if (account == null)
+                return false;
+
+            account.Banned = true;
+            account.BanEndDate = banEndDate;
+
+            account.UpdateAndFlush();
+
+            return true;
+        }
+
+        public void BanIp(WorldServerInformation wsi, string ip)
+        {
+            new IpBanRecord
+                {
+                    Ip = ip
+                }.CreateAndFlush();
         }
 
         #endregion

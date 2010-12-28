@@ -18,7 +18,6 @@
 //  *************************************************************************/
 using System.Linq;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using Stump.Database;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;

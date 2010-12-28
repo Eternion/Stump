@@ -53,7 +53,7 @@
     <Compile Include="ActiveRecordHelper.cs" />
     <Compile Include="AttributeDatabase.cs" />
     <Compile Include="AuthServer\World\DeletedWorldCharacterRecord.cs" />
-    <Compile Include="BanRecord.cs" />
+    <Compile Include="AuthServer\IpBanRecord.cs" />
     <Compile Include="CharacterItemRecord.cs" />
     <Compile Include="CharacterRecord.cs" />
     <Compile Include="CharacterStartupActionRecord.cs" />

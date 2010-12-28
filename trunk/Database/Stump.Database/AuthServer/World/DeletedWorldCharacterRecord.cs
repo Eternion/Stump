@@ -24,8 +24,8 @@ namespace Stump.Database
 {
     [Serializable]
     [AttributeDatabase(DatabaseService.AuthServer)]
-    [ActiveRecord("deleted_worlds_characters")]
-    public sealed class DeletedWorldCharacterRecord : WorldCharacterRecord
+    [ActiveRecord("worlds_characters_deleted")]
+    public sealed class DeletedWorldCharacterRecord : ActiveRecordBase<DeletedWorldCharacterRecord>
     {
 
         public DeletedWorldCharacterRecord()
@@ -33,11 +33,78 @@ namespace Stump.Database
             DeletionDate = DateTime.Now;
         }
 
+        [PrimaryKey(PrimaryKeyType.Native, "Id")]
+        public long Id
+        {
+            get;
+            set;
+        }
+
+        [KeyProperty(Column = "AccountId", NotNull = true)]
+        public uint AccountId
+        {
+            get;
+            set;
+        }
+
+        [KeyProperty(Column = "WorldId", NotNull = true)]
+        public int WorldId
+        {
+            get;
+            set;
+        }
+
+        [KeyProperty(Column = "CharacterId", NotNull = true)]
+        public uint CharacterId
+        {
+            get;
+            set;
+        }
+
         [KeyProperty(Column = "DeletionDate", NotNull = true)]
         public DateTime DeletionDate
         {
             get;
             set;
+        }
+
+
+        public AccountRecord Account
+        {
+            get { return AccountRecord.FindByPrimaryKey(AccountId); }
+            set { AccountId = value.Id; }
+        }
+
+        public WorldRecord World
+        {
+            get { return WorldRecord.FindByPrimaryKey(WorldId); }
+            set { WorldId = value.Id; }
+        }
+
+
+        public static DeletedWorldCharacterRecord FindCharacterById(long id)
+        {
+            return FindByPrimaryKey(id);
+        }
+
+        public static DeletedWorldCharacterRecord[] FindCharactersByAccountId(uint accountId)
+        {
+            return FindAll((Restrictions.Eq("AccountId", accountId)));
+        }
+
+        public static DeletedWorldCharacterRecord[] FindCharactersByServerId(int worldId)
+        {
+            return FindAll((Restrictions.Eq("WorldId", worldId)));
+        }
+
+        public static DeletedWorldCharacterRecord FindCharacterByServerIdAndCharacterId(int worldId, uint characterId)
+        {
+            return FindOne(Restrictions.And(Restrictions.Eq("WorldId", worldId), Restrictions.Eq("CharacterId", characterId)));
+        }
+
+        public static DeletedWorldCharacterRecord[] FindCharactersByAccountIdAndServerId(uint accountid, int worldId)
+        {
+            return FindAll(Restrictions.And(Restrictions.Eq("AccountId", accountid), Restrictions.Eq("WorldId", worldId)));
         }
 
     }

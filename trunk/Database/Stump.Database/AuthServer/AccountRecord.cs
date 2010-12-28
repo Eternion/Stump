@@ -45,21 +45,21 @@ namespace Stump.Database
             set;
         }
 
-        [Property("Login", NotNull = true, Length = 25)]
+        [Property("Login", NotNull = true, Length = 19)]
         public string Login
         {
             get { return m_name.ToLower(); }
             set { m_name = value.ToLower(); }
         }
 
-        [Property("Password", NotNull = true, Length = 25)]
+        [Property("Password", NotNull = true, Length = 49)]
         public string Password
         {
             get;
             set;
         }
 
-        [Property("Nickname", NotNull = true)]
+        [Property("Nickname", NotNull = true, Length=29)]
         public string Nickname
         {
             get;
@@ -265,6 +265,16 @@ namespace Stump.Database
         public static AccountRecord[] FindAccountsByRole(RoleEnum role)
         {
             return FindAll(Restrictions.Eq("Role", role));
+        }
+
+        public static bool LoginExist(string login)
+        {
+            return Exists(Restrictions.Eq("Login", login.ToLower()));
+        }
+
+        public static bool NicknameExist(string nickname)
+        {
+            return Exists(Restrictions.Eq("Nickname", nickname));
         }
 
     }

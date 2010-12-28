@@ -26,21 +26,17 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public partial class CharacterHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof (CharacterDeletionRequestMessage))]
+        [WorldHandler(typeof(CharacterDeletionRequestMessage))]
         public static void HandleCharacterDeletionRequest(WorldClient client, CharacterDeletionRequestMessage message)
         {
-            //////////////////////////////////////////////////////////////////////////
-            // TODO : - save a copy of the character during 30 days
-            //////////////////////////////////////////////////////////////////////////
-
             uint characterId = message.characterId;
-            
+
             CharacterRecord characterRecord = client.Characters.Find(o => o.Id == characterId);
 
             /* Le personnage n'existe pas */
             if (characterRecord == null)
             {
-                client.Send(new CharacterDeletionErrorMessage((int) CharacterDeletionErrorEnum.DEL_ERR_NO_REASON));
+                client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_NO_REASON));
                 client.Disconnect();
                 return;
             }
@@ -52,6 +48,12 @@ namespace Stump.Server.WorldServer.Handlers
                                                 secretAnswerHash ==
                                                 StringUtils.GetMd5(characterId + "~" + client.Account.SecretAnswer)))
             {
+                if (CharacterManager.ExceedsDeletedCharactersQuota(client.Account))
+                {
+                    client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_TOO_MANY_CHAR_DELETION));
+                    return;
+                }
+
                 CharacterManager.DeleteCharacter(characterRecord, client);
 
                 SendCharactersListMessage(client);
@@ -59,7 +61,7 @@ namespace Stump.Server.WorldServer.Handlers
             }
             else
             {
-                client.Send(new CharacterDeletionErrorMessage((int) CharacterDeletionErrorEnum.DEL_ERR_BAD_SECRET_ANSWER));
+                client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_BAD_SECRET_ANSWER));
             }
         }
     }

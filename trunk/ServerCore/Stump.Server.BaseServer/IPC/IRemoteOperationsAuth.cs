@@ -128,6 +128,14 @@ namespace Stump.Server.BaseServer.IPC
         void DeleteAccountCharacter(WorldServerInformation wsi, uint accountid, uint characterId);
 
         /// <summary>
+        /// Check if account exceeds the quota of day character deletion
+        /// </summary>
+        /// <param name="wsi"></param>
+        /// <param name="accountid"></param>
+        /// <returns></returns>
+        bool ExceedsDeletedCharactersQuota(uint accountid);
+
+        /// <summary>
         /// Check the world server's secret key
         /// </summary>
         /// <param name="wsi"></param>

@@ -52,7 +52,7 @@ namespace Stump.Server.AuthServer.Handlers
             }
 
             /* Already Used */
-            if (AccountRecord.FindAccountByNickname(nickname) != null)
+            if (AccountRecord.NicknameExist(nickname))
             {
                 client.Send(new NicknameRefusedMessage((uint) NicknameErrorEnum.ALREADY_USED));
                 return;
@@ -70,7 +70,7 @@ namespace Stump.Server.AuthServer.Handlers
 
         public static bool CheckNickName(string nickName)
         {
-            return Regex.IsMatch(nickName, @"^[a-zA-Z]{4,18}$", RegexOptions.Compiled);
+            return Regex.IsMatch(nickName, @"^[a-zA-Z\-]{3,29}$", RegexOptions.Compiled);
         }
 
     }

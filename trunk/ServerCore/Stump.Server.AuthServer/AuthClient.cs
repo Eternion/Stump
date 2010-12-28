@@ -41,12 +41,6 @@ namespace Stump.Server.AuthServer
             CanReceive = true;
         }
 
-        public int SelectedServerId
-        {
-            get;
-            set;
-        }
-
         public string Login
         {
             get { return m_login; }

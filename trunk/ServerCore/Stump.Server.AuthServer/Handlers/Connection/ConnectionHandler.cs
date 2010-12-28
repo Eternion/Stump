@@ -80,6 +80,15 @@ namespace Stump.Server.AuthServer.Handlers
 
         public static bool HandleIndentification(AuthClient client, IdentificationMessage message)
         {
+
+            /* Ban Ip */
+            if(IpBanRecord.Exists(client.IP))
+            {
+                SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.UNKNOWN_AUTH_ERROR);
+                client.DisconnectLater(1000);
+                return false;
+            }
+
             /* Wrong Version */
             if (!ClientVersion.ClientVersionRequired.CompareVersion(message.version))
             {
@@ -229,7 +238,7 @@ namespace Stump.Server.AuthServer.Handlers
 
             // save the ticket in the database
             client.Account.Ticket = client.Key;
-            client.Account.LastServer = client.SelectedServerId;
+            client.Account.LastServer = world.Id;
             client.Save();
 
             client.Send(new SelectedServerDataMessage(
