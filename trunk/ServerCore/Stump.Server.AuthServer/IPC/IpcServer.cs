@@ -40,6 +40,12 @@ namespace Stump.Server.AuthServer.IPC
         [Variable]
         public static int IpcPort = 9100;
 
+        /// <summary>
+        /// Secret key to use to confirm World Server access
+        /// </summary>
+        [Variable]
+        public static string IpcSecretKey = "000stump000";
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly ConcurrentDictionary<WorldServerInformation, IRemoteOperationsWorld> m_ipcclients =

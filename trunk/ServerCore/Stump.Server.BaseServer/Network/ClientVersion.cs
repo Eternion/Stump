@@ -41,7 +41,7 @@ namespace Stump.Server.BaseServer.Network
         /// Version for the client
         /// </summary>
         [Variable]
-        public static string VersionRequired = "2.3.0.37697.1";
+        public static string VersionRequired = "2.3.0.37782.1";
 
         /// <summary>
         /// Actual version

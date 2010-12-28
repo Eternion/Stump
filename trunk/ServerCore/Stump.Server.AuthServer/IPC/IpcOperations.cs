@@ -203,6 +203,11 @@ namespace Stump.Server.AuthServer.IPC
            record.DeleteAndFlush();
         }
 
+        public bool CheckWorldServerSecretKey(WorldServerInformation wsi, string secretKey)
+        {
+            return (IpcServer.IpcSecretKey == secretKey);
+        }
+
         #endregion
 
         public override object InitializeLifetimeService()

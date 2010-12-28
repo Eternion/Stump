@@ -127,5 +127,12 @@ namespace Stump.Server.BaseServer.IPC
         /// <param name="characterId"></param>
         void DeleteAccountCharacter(WorldServerInformation wsi, uint accountid, uint characterId);
 
+        /// <summary>
+        /// Check the world server's secret key
+        /// </summary>
+        /// <param name="wsi"></param>
+        /// <param name="secretKey"></param>
+        /// <returns></returns>
+        bool CheckWorldServerSecretKey(WorldServerInformation wsi, string secretKey);
     }
 }
