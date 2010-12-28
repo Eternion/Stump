@@ -59,7 +59,7 @@ namespace Stump.Database
             set;
         }
 
-        [Property("Nickname", NotNull = true, Length=29)]
+        [Property("Nickname", NotNull = true, Length = 29)]
         public string Nickname
         {
             get;
@@ -209,7 +209,10 @@ namespace Stump.Database
             }
         }
 
-
+        public StartupActionRecord[] StartupActions
+        {
+            get { return AccountStartupActionRecord.FindAccountStartupActionsByAccountId(Id).Select(asar => asar.StartupAction).ToArray(); }
+        }
 
         public WorldCharacterRecord[] Characters
         {
@@ -229,6 +232,15 @@ namespace Stump.Database
                                  WorldId = worldId,
                                  CharacterId = characterId,
                              }.Create();
+        }
+
+        public void AddStartupAction(uint startupActionId)
+        {
+            new AccountStartupActionRecord
+            {
+                AccountId = Id,
+                StartupActionId = startupActionId
+            }.Create();
         }
 
 

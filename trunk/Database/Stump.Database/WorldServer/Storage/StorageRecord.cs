@@ -16,48 +16,22 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
-using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database
 {
-    [Serializable]
+
     [AttributeDatabase(DatabaseService.WorldServer)]
-    [ActiveRecord("characters_startupactions")]
-    public sealed class CharacterStartupActionRecord : ActiveRecordBase<CharacterStartupActionRecord>
+    [ActiveRecord("storages")]
+    public class StorageRecord : ActiveRecordBase<StorageRecord>
     {
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
-        public int Id
+        public long Id
         {
             get;
             set;
-        }
-
-        [Property("CharacterId", NotNull = true)]
-        public int CharacterId
-        {
-            get;
-            set;
-        }
-
-        [Property("StartupActionId", NotNull = true)]
-        public int StartupActionId
-        {
-            get;
-            set;
-        }
-
-        public static CharacterStartupActionRecord FindCharacterStartupActionById(int id)
-        {
-            return FindByPrimaryKey(id);
-        }
-
-        public static CharacterStartupActionRecord[] FindStartupActionsByCharacterId(int characterId)
-        {
-            return FindAll(Restrictions.Eq("CharacterId", characterId));
         }
 
     }

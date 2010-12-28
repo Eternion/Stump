@@ -30,18 +30,18 @@ namespace Stump.Server.WorldServer.Handlers
     public class ApproachHandler : WorldHandlerContainer
     {
 
-        [WorldHandler(typeof (AuthenticationTicketMessage))]
+        [WorldHandler(typeof(AuthenticationTicketMessage))]
         public static void HandleAuthenticationTicketMessage(WorldClient client, AuthenticationTicketMessage message)
         {
             AccountRecord ticketAccount = AccountManager.GetAccountByTicket(message.ticket);
 
             if (ticketAccount == null)
             {
-                client.Send(new AuthenticationTicketRefusedMessage()); 
+                client.Send(new AuthenticationTicketRefusedMessage());
                 client.Disconnect();
                 return;
             }
-          
+
             client.Account = ticketAccount;
 
             client.Characters = CharacterManager.GetCharactersByAccount(client);
@@ -51,21 +51,23 @@ namespace Stump.Server.WorldServer.Handlers
             BasicHandler.SendBasicTimeMessage(client);
             SendAccountCapabilitiesMessage(client);
             BasicHandler.SendBasicNoOperationMessage(client);
+
             /* Just to get autocompletion, description and parameters are provide by server */
-            SendConsoleCommandsListMessage(client, WorldServer.Instance.CommandManager.AvailableCommands.SelectMany(c => c.Aliases).ToList(), new List<string>(), new List<string>());
+            if (client.Account.Role >= RoleEnum.Moderator)
+                SendConsoleCommandsListMessage(client, WorldServer.Instance.CommandManager.AvailableCommands.SelectMany(c => c.Aliases).ToList(), new List<string>(), new List<string>());
         }
 
         public static void SendAccountCapabilitiesMessage(WorldClient client)
         {
             client.Send(new AccountCapabilitiesMessage(
-                (int) client.Account.Id,
+                (int)client.Account.Id,
                 true,
                 client.Account.DbAvailableBreeds,
                 BreedManager.BreedsToFlag(BreedManager.AvailableBreeds)
                 ));
         }
 
-        public static void SendConsoleCommandsListMessage(WorldClient client,List<string> aliases,List<string> args,List<string> descr)
+        public static void SendConsoleCommandsListMessage(WorldClient client, List<string> aliases, List<string> args, List<string> descr)
         {
             client.Send(new ConsoleCommandsListMessage(aliases, args, descr));
         }

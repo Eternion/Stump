@@ -24,35 +24,61 @@ using Stump.DofusProtocol.Enums;
 namespace Stump.Database
 {
     [Serializable]
-    [AttributeDatabase(DatabaseService.WorldServer)]
-    [ActiveRecord("startupactions_objects")]
-    public sealed class StartupActionItemRecord : ActiveRecordBase<StartupActionItemRecord>
+    [AttributeDatabase(DatabaseService.AuthServer)]
+    [ActiveRecord("startup_actions")]
+    public sealed class StartupActionRecord : ActiveRecordBase<StartupActionRecord>
     {
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
-        public int Id
+        public uint Id
         {
             get;
             set;
         }
 
-        [Property("StartupActionId", NotNull = true)]
-        public int StartupActionId
+        [Property("Title", NotNull = true, Length = 25)]
+        public string Title
         {
             get;
             set;
         }
 
-        [Property("ItemId", NotNull = true)]
-        public int ItemId
+        [Property("Text", NotNull = true, Length = 250)]
+        public string Text
         {
             get;
             set;
         }
 
-        public static StartupActionItemRecord[] FindStartupActionItemsByStartupActionId(int startupActionId)
+        [Property("DescUrl", NotNull = true, Length=50)]
+        public string DescUrl
         {
-            return FindAll(Restrictions.Eq("StartupActionId", startupActionId));
+            get;
+            set;
+        }
+
+        [Property("PictureUrl", NotNull = true, Length = 50)]
+        public string PictureUrl
+        {
+            get;
+            set;
+        }
+
+
+        public StartupActionItemRecord[] Items
+        {
+            get { return StartupActionItemRecord.FindItemsByStartupActionId(Id); }
+        }
+
+
+        public static StartupActionRecord FindStartupActionById(uint id)
+        {
+            return FindByPrimaryKey(id);
+        }
+
+        public static StartupActionRecord[] FindStartupActionByTitle(string title)
+        {
+            return FindAll(Restrictions.Eq("Title",title));
         }
 
     }

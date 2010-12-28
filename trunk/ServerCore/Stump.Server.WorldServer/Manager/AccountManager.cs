@@ -52,5 +52,16 @@ namespace Stump.Server.WorldServer.Manager
 
             return acc == null || acc.Password != accPass ? RoleEnum.None : acc.Role;
         }
+
+        public static bool ExceedsDeletedCharactersQuota(AccountRecord account)
+        {
+            return IpcAccessor.Instance.ProxyObject.ExceedsDeletedCharactersQuota(account.Id);
+        }
+
+        public static StartupActionRecord[] GetAccountStartupActions(uint accountId)
+        {
+            return IpcAccessor.Instance.ProxyObject.GetAccountStartupActions(accountId);
+        }
+    
     }
 }

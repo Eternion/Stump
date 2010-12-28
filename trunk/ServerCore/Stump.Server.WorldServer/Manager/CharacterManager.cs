@@ -83,12 +83,6 @@ namespace Stump.Server.WorldServer.Manager
             return true;
         }
 
-
-        public static bool ExceedsDeletedCharactersQuota(AccountRecord account)
-        {
-            return IpcAccessor.Instance.ProxyObject.ExceedsDeletedCharactersQuota(account.Id);
-        }
-
         public static void DeleteCharacter(CharacterRecord character, WorldClient client)
         {
             client.Characters.Remove(character);

@@ -196,7 +196,7 @@ namespace Stump.Server.AuthServer.IPC
 
             if (record.AccountId != accountid) return;
 
-            new DeletedWorldCharacterRecord {AccountId = accountid, CharacterId = characterId, WorldId = wsi.Id}.
+            new DeletedWorldCharacterRecord { AccountId = accountid, CharacterId = characterId, WorldId = wsi.Id }.
                 CreateAndFlush();
 
             record.DeleteAndFlush();
@@ -235,6 +235,16 @@ namespace Stump.Server.AuthServer.IPC
                 {
                     Ip = ip
                 }.CreateAndFlush();
+        }
+
+        public StartupActionRecord[] GetAccountStartupActions(uint accountId)
+        {
+            var account = AccountRecord.FindAccountById(accountId);
+
+            if (account == null)
+                return null;
+
+            return account.StartupActions;
         }
 
         #endregion

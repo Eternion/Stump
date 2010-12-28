@@ -16,17 +16,45 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System.Linq;
 using System.Collections.Generic;
+using Stump.Database;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.WorldServer.Manager;
 
 namespace Stump.Server.WorldServer.Handlers
 {
     public class StartupHandler : WorldHandlerContainer
     {
+
+        [WorldHandler(typeof(StartupActionsExecuteMessage))]
+        public static void HandleStartupActionsListRequestMessage(WorldClient client,StartupActionsExecuteMessage message)
+        {
+            SendStartupActionsListMessage(client);
+        }
+
+        [WorldHandler(typeof(StartupActionsObjetAttributionMessage))]
+        public static void HandleStartupActionsObjetAttributionMessage(WorldClient client, StartupActionsObjetAttributionMessage message)
+        {
+            
+        }
+
         public static void SendStartupActionsListMessage(WorldClient client)
         {
-            client.Send(new StartupActionsListMessage(new List<StartupActionAddObject>()));
+            var startupsActions =
+                AccountManager.GetAccountStartupActions(client.Account.Id).Select(
+                    s =>
+                    new StartupActionAddObject(s.Id, s.Title, s.Text, s.DescUrl, s.PictureUrl,
+                                               new List<ObjectItemMinimalInformation>(){new ObjectItemMinimalInformation(1,1,false,new List<ObjectEffect>())}));
+            
+            client.Send(new StartupActionsListMessage(startupsActions.ToList()));
         }
+
+        public static void SendStartupActionFinishedMessage(WorldClient client)
+        {
+            client.Send(new StartupActionFinishedMessage());
+        }
+
     }
 }

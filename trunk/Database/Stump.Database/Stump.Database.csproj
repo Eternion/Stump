@@ -56,9 +56,9 @@
     <Compile Include="AuthServer\IpBanRecord.cs" />
     <Compile Include="CharacterItemRecord.cs" />
     <Compile Include="CharacterRecord.cs" />
-    <Compile Include="CharacterStartupActionRecord.cs" />
-    <Compile Include="StartupActionItemRecord.cs" />
-    <Compile Include="StartupActionRecord.cs" />
+    <Compile Include="AuthServer\StartupAction\AccountStartupActionRecord.cs" />
+    <Compile Include="AuthServer\StartupAction\StartupActionItemRecord.cs" />
+    <Compile Include="AuthServer\StartupAction\StartupActionRecord.cs" />
     <Compile Include="IdGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpellRecord.cs" />

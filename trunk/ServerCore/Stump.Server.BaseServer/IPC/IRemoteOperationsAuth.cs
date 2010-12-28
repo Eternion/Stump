@@ -142,5 +142,12 @@ namespace Stump.Server.BaseServer.IPC
         /// <param name="secretKey"></param>
         /// <returns></returns>
         bool CheckWorldServerSecretKey(WorldServerInformation wsi, string secretKey);
+
+        /// <summary>
+        /// Return account startupAction
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns></returns>
+        StartupActionRecord[] GetAccountStartupActions(uint accountId);
     }
 }

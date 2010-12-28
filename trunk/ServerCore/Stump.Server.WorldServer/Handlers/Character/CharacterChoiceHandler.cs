@@ -102,9 +102,8 @@ namespace Stump.Server.WorldServer.Handlers
                     characterRecord.Breed,
                     characterRecord.SexId != 0)).ToList();
 
-            
             client.Send(new CharactersListMessage(
-                            false, // HasStartupActions
+                            AccountManager.GetAccountStartupActions(client.Account.Id) != null , // HasStartupActions
                             list
                             ));
         }

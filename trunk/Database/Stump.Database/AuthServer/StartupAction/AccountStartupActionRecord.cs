@@ -24,9 +24,9 @@ using Stump.DofusProtocol.Enums;
 namespace Stump.Database
 {
     [Serializable]
-    [AttributeDatabase(DatabaseService.WorldServer)]
-    [ActiveRecord("startupactions")]
-    public sealed class StartupActionRecord : ActiveRecordBase<StartupActionRecord>
+    [AttributeDatabase(DatabaseService.AuthServer)]
+    [ActiveRecord("accounts_startup_actions")]
+    public sealed class AccountStartupActionRecord : ActiveRecordBase<AccountStartupActionRecord>
     {
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
@@ -36,37 +36,45 @@ namespace Stump.Database
             set;
         }
 
-        [Property("Title", NotNull = true, Length = 25)]
-        public string Title
+        [Property("AccountId", NotNull = true)]
+        public uint AccountId
         {
             get;
             set;
         }
 
-        [Property("Text", NotNull = true, Length = 250)]
-        public string Text
+        [Property("StartupActionId", NotNull = true)]
+        public uint StartupActionId
         {
             get;
             set;
         }
 
-        [Property("DescUrl", NotNull = true, Length=50)]
-        public string DescUrl
+
+        public AccountRecord Account
         {
-            get;
-            set;
+            get { return AccountRecord.FindAccountById(AccountId); }
         }
 
-        [Property("PictureUrl", NotNull = true, Length = 50)]
-        public string PictureUrl
+        public StartupActionRecord StartupAction
         {
-            get;
-            set;
+            get { return StartupActionRecord.FindStartupActionById(StartupActionId); }
         }
 
-        public static StartupActionRecord FindStartupActionById(int id)
+
+        public static AccountStartupActionRecord FindAccountStartupActionById(int id)
         {
             return FindByPrimaryKey(id);
+        }
+
+        public static AccountStartupActionRecord[] FindAccountStartupActionsByAccountId(uint accountId)
+        {
+            return FindAll(Restrictions.Eq("AccountId", accountId));
+        }
+
+        public static AccountStartupActionRecord[] FindAccountStartupActionsByStartupActionId(int startupActionId)
+        {
+            return FindAll(Restrictions.Eq("StartupActionId", startupActionId));
         }
 
     }
