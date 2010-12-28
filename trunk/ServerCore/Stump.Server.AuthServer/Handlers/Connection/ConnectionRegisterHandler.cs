@@ -52,7 +52,7 @@ namespace Stump.Server.AuthServer.Handlers
             }
 
             /* Already Used */
-            if (AccountRecord.FindByNickname(nickname) != null)
+            if (AccountRecord.FindAccountByNickname(nickname) != null)
             {
                 client.Send(new NicknameRefusedMessage((uint) NicknameErrorEnum.ALREADY_USED));
                 return;

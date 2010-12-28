@@ -50,36 +50,10 @@ namespace Stump.Server.AuthServer.Accounts
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static bool AccountExist(string accountname)
-        {
-            return AccountRecord.FindByLogin(accountname) != null;
-        }
-
-        public static AccountRecord GetAccountByName(string username)
-        {
-            return AccountRecord.FindByLogin(username);
-        }
-
-        public static AccountRecord GetAccountByTicket(string ticket)
-        {
-            return AccountRecord.FindByTicket(ticket);
-        }
-
-        public static WorldCharacterRecord[] GetCharactersByAccount(uint accountid)
-        {
-            return WorldCharacterRecord.FindCharactersByAccountId(accountid);
-        }
-
-        public static bool IsBanned(string username)
-        {
-            AccountRecord acc = GetAccountByName(username);
-
-            return acc != null && acc.Banned;
-        }
 
         public static bool CreateAccount(AccountRecord acc)
         {
-            if (AccountExist(acc.Login.ToLower()))
+            if (AccountRecord.FindAccountByLogin(acc.Login.ToLower())!=null)
                 return false;
 
             acc.SaveAndFlush();
@@ -87,31 +61,15 @@ namespace Stump.Server.AuthServer.Accounts
             return true;
         }
 
-        public static bool CreateAccount(string accountname, string password)
-        {
-            var acc = new AccountRecord
-                {
-                    Login = accountname,
-                    Password = password,
-                    Nickname = accountname,
-                    SecretQuestion = "?",
-                    SecretAnswer = "!",
-                    AvailableBreeds = AvailableBreeds,
-                };
-
-            return CreateAccount(acc);
-        }
-
         public static bool DeleteAccount(AccountRecord account)
         {
             if (account == null)
-            {
                 return false;
-            }
-
+            
             account.DeleteAndFlush();
 
             return true;
         }
+
     }
 }

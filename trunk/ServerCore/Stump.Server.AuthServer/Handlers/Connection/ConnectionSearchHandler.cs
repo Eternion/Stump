@@ -30,7 +30,7 @@ namespace Stump.Server.AuthServer.Handlers
         [AuthHandler(typeof(AcquaintanceSearchMessage))]
         public static void HandleAcquaintanceSearchMessage(AuthClient client, AcquaintanceSearchMessage message)
         {
-            var ac = AccountRecord.FindByNickname(message.nickname);
+            var ac = AccountRecord.FindAccountByNickname(message.nickname);
 
             if (ac == null)
             {
@@ -38,9 +38,7 @@ namespace Stump.Server.AuthServer.Handlers
                 return;
             }
 
-            var wcrs = WorldCharacterRecord.FindCharactersByAccountId(ac.Id);
-
-            SendAcquaintanceSearchServerListMessage(client, wcrs.Select(wcr => wcr.ServerId).Distinct().ToList());
+            SendAcquaintanceSearchServerListMessage(client, ac.Characters.Select(wcr => wcr.WorldId).Distinct().ToList());
         }
 
         public static void SendAcquaintanceSearchServerListMessage(AuthClient client, List<int> serverIds)

@@ -219,14 +219,14 @@ namespace Stump.Server.AuthServer
         public static bool CanAccessToWorld(AuthClient client, WorldRecord world)
         {
             return world != null && world.Status == ServerStatusEnum.ONLINE && client.Account.Role >= world.RequiredRole && world.CharsCount < world.CharCapacity &&
-                    (!world.RequireSubscription || (client.Account.GetRegistrationRemainingTime() > 0));
+                    (!world.RequireSubscription || (client.Account.SubscriptionRemainingTime > 0));
         }
 
         public static bool CanAccessToWorld(AuthClient client, int worldId)
         {
             var world = GetWorldRecord(worldId);
             return world != null && world.Status == ServerStatusEnum.ONLINE && client.Account.Role >= world.RequiredRole && world.CharsCount < world.CharCapacity &&
-                    (!world.RequireSubscription || (client.Account.GetRegistrationRemainingTime() > 0));
+                    (!world.RequireSubscription || (client.Account.SubscriptionRemainingTime > 0));
         }
 
         public static void ChangeWorldState(int worldId, ServerStatusEnum state)

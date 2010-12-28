@@ -28,7 +28,9 @@ namespace Stump.Database
     [ActiveRecord("worlds")]
     public sealed class WorldRecord : ActiveRecordBase<WorldRecord>
     {
-        private int m_charscount=0;
+
+        private int m_charsCount=0;
+
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
         public int Id
@@ -58,12 +60,6 @@ namespace Stump.Database
             set;
         }
 
-        public ServerStatusEnum Status
-        {
-            get;
-            set;
-        }
-
         [Property("RequireSubscription", NotNull = true, Default = "0")]
         public bool RequireSubscription
         {
@@ -71,7 +67,7 @@ namespace Stump.Database
             set;
         }
 
-        [Property("RequiredRole", NotNull = true, Default = "0")]
+        [Property("RequiredRole", NotNull = true, Default = "1")]
         public RoleEnum RequiredRole
         {
             get;
@@ -99,11 +95,17 @@ namespace Stump.Database
             set;
         }
 
-        //[Property("CharsCount", NotNull = true, Default = "0")]
+
+        public ServerStatusEnum Status
+        {
+            get;
+            set;
+        }
+
         public int CharsCount
         {
-            get { return m_charscount; }
-            set { m_charscount = value < 0 ? 0 : value; }
+            get { return m_charsCount; }
+            set { m_charsCount = value < 0 ? 0 : value; }
         }
 
         public bool Connected
@@ -112,7 +114,13 @@ namespace Stump.Database
             set;
         }
 
-        public static WorldRecord FindWorldRecordById(int id)
+        public WorldCharacterRecord[] Characters
+        {
+            get { return WorldCharacterRecord.FindCharactersByServerId(Id); }
+        }
+
+
+        public static WorldRecord FindWorldById(int id)
         {
             return FindByPrimaryKey(id);
         }

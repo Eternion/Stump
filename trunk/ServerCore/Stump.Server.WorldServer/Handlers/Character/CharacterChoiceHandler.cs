@@ -66,12 +66,12 @@ namespace Stump.Server.WorldServer.Handlers
 
             BasicHandler.SendTextInformationMessage(client, 1, 89);
             BasicHandler.SendTextInformationMessage(client, 0, 152,
-                                                    client.Account.LastLogin.Year.ToString(),
-                                                    client.Account.LastLogin.Month.ToString(),
-                                                    client.Account.LastLogin.Day.ToString(),
-                                                    client.Account.LastLogin.Hour.ToString(),
-                                                    client.Account.LastLogin.Minute.ToString(),
-                                                    client.Account.LastIP ?? "(null)");
+                                                    client.Account.LastConnection.Year.ToString(),
+                                                    client.Account.LastConnection.Month.ToString(),
+                                                    client.Account.LastConnection.Day.ToString(),
+                                                    client.Account.LastConnection.Hour.ToString(),
+                                                    client.Account.LastConnection.Minute.ToString(),
+                                                    client.Account.LastIp ?? "(null)");
 
             InitializationHandler.SendOnConnectionEventMessage(client, 2);
         }

@@ -97,7 +97,7 @@ namespace Stump.Server.AuthServer
             if (Characters.Length == 0)
                 return 0;
 
-            return  (byte)Characters.Where(entry => entry.ServerId==serverid).Count();
+            return  (byte)Characters.Where(entry => entry.WorldId==serverid).Count();
         }
 
         public override string ToString()

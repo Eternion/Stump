@@ -25,13 +25,9 @@ namespace Stump.Database
     [Serializable]
     [AttributeDatabase(DatabaseService.AuthServer)]
     [ActiveRecord("worlds_characters")]
-    public sealed class WorldCharacterRecord : ActiveRecordBase<WorldCharacterRecord>
+    public  class WorldCharacterRecord : ActiveRecordBase<WorldCharacterRecord>
     {
 
-        /// <summary>
-        ///  Unique Character Id for all Servers
-        /// </summary>
-        /// <value>The id.</value>
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
         public long Id
         {
@@ -39,36 +35,44 @@ namespace Stump.Database
             set;
         }
 
-
-        [KeyProperty(Column = "AccountId")]
+        [KeyProperty(Column = "AccountId", NotNull = true)]
         public uint AccountId
         {
             get;
             set;
         }
 
-        [KeyProperty(Column = "ServerId")]
-        public int ServerId
+        [KeyProperty(Column = "WorldId", NotNull = true)]
+        public int WorldId
         {
             get;
             set;
         }
 
-        [KeyProperty(Column = "CharacterId")]
+        [KeyProperty(Column = "CharacterId", NotNull = true)]
         public uint CharacterId
         {
             get;
             set;
         }
 
-        public static WorldCharacterRecord FindCharactersByUniqueId(long uniqueId)
+
+        public AccountRecord Account
         {
-            return FindByPrimaryKey(uniqueId);
+            get { return AccountRecord.FindByPrimaryKey(AccountId); }
+            set { AccountId = value.Id; }
         }
 
-        public static WorldCharacterRecord[] FindCharactersByServer(int serverid)
+        public WorldRecord World
         {
-            return FindAll((Restrictions.Eq("ServerId", serverid)));
+            get { return WorldRecord.FindByPrimaryKey(WorldId); }
+            set { WorldId = value.Id; }
+        }
+
+
+        public static WorldCharacterRecord FindCharacterById(long id)
+        {
+            return FindByPrimaryKey(id);
         }
 
         public static WorldCharacterRecord[] FindCharactersByAccountId(uint accountId)
@@ -76,14 +80,20 @@ namespace Stump.Database
             return FindAll((Restrictions.Eq("AccountId", accountId)));
         }
 
+        public static WorldCharacterRecord[] FindCharactersByServerId(int serverid)
+        {
+            return FindAll((Restrictions.Eq("ServerId", serverid)));
+        }
+
         public static WorldCharacterRecord FindCharacterByServerIdAndCharacterId(int serverId, uint characterId)
         {
             return FindOne(Restrictions.And(Restrictions.Eq("ServerId", serverId), Restrictions.Eq("CharacterId", characterId)));
         }
 
-        public static WorldCharacterRecord[] FindCharactersByAccountIdAnsServerId(uint accountid, int serverId)
+        public static WorldCharacterRecord[] FindCharactersByAccountIdAndServerId(uint accountid, int serverId)
         {
-            return FindAll(Restrictions.And(Restrictions.Eq("AccountId",accountid),Restrictions.Eq("ServerId",serverId)));
+            return FindAll(Restrictions.And(Restrictions.Eq("AccountId", accountid), Restrictions.Eq("ServerId", serverId)));
         }
+
     }
 }

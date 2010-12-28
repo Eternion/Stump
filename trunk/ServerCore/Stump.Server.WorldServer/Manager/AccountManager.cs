@@ -30,25 +30,25 @@ namespace Stump.Server.WorldServer.Manager
             return IpcAccessor.Instance.ProxyObject.GetAccountRecordByTicket(WorldServer.ServerInformation, ticket);
         }
 
-        public static AccountRecord GetAccountByName(string accName)
+        public static AccountRecord GetAccountByNickname(string accName)
         {
             if (!IpcAccessor.Instance.Connected ||
                 IpcAccessor.Instance.ProxyObject == null)
                 throw new Exception("Cannot acces to AuthServer, check that the server is running");
 
-            return IpcAccessor.Instance.ProxyObject.GetAccountRecordByName(WorldServer.ServerInformation, accName);
+            return IpcAccessor.Instance.ProxyObject.GetAccountRecordByNickname(WorldServer.ServerInformation, accName);
         }
 
         public static RoleEnum GetRoleByName(string accName)
         {
-            var acc = GetAccountByName(accName);
+            var acc = GetAccountByNickname(accName);
 
             return acc == null ? RoleEnum.None : acc.Role;
         }
 
         public static RoleEnum GetRoleWithCheckPassword(string accName, string accPass)
         {
-            var acc = GetAccountByName(accName);
+            var acc = GetAccountByNickname(accName);
 
             return acc == null || acc.Password != accPass ? RoleEnum.None : acc.Role;
         }
