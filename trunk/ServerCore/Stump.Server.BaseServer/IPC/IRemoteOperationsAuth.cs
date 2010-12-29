@@ -71,13 +71,13 @@ namespace Stump.Server.BaseServer.IPC
         ///   Get and return an account record with a given account name.
         /// </summary>
         /// <returns></returns>
-        AccountRecord GetAccountRecordByName(WorldServerInformation wsi, string name);
+        AccountRecord GetAccountRecordByNickname(WorldServerInformation wsi, string nickname);
 
         /// <summary>
         ///   Get and return an account record with a given account name.
         /// </summary>
         /// <returns>success</returns>
-        bool ModifyAccountRecordByName(WorldServerInformation wsi, string name, AccountRecord modifiedRecord);
+        bool ModifyAccountRecordByNickname(WorldServerInformation wsi, string name, AccountRecord modifiedRecord);
 
         /// <summary>
         ///   Create a new account and cache it.
@@ -127,5 +127,20 @@ namespace Stump.Server.BaseServer.IPC
         /// <param name="characterId"></param>
         void DeleteAccountCharacter(WorldServerInformation wsi, uint accountid, uint characterId);
 
+        /// <summary>
+        /// Check if account exceeds the quota of day character deletion
+        /// </summary>
+        /// <param name="wsi"></param>
+        /// <param name="accountid"></param>
+        /// <returns></returns>
+        bool ExceedsDeletedCharactersQuota(uint accountid);
+
+        /// <summary>
+        /// Check the world server's secret key
+        /// </summary>
+        /// <param name="wsi"></param>
+        /// <param name="secretKey"></param>
+        /// <returns></returns>
+        bool CheckWorldServerSecretKey(WorldServerInformation wsi, string secretKey);
     }
 }

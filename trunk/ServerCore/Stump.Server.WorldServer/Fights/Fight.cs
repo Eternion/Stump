@@ -325,14 +325,17 @@ namespace Stump.Server.WorldServer.Fights
 
             if (CanCastSpell(caster, cell, spellLevel))
             {
-                // todo critic/fail hit
-                bool echec = false;
-
-                if (echec)
-                {
-                }
-
+                Random rnd = new Random();
                 bool critical = false;
+
+                if (rnd.Next(1, 101) <= caster.Entity.Spells[(SpellIdEnum) spellId].CurrentSpellLevel.CriticalFailureProbability) // if the cast fail
+                {
+                    // TODO: Manage Fail
+                }
+                else if (rnd.Next(1, 101) <= caster.Entity.Spells[(SpellIdEnum)spellId].CurrentSpellLevel.CriticalHitProbability) // if the cast is critical
+                {
+                    critical = true;
+                }
 
                 FightEffectExecutor.ExecuteSpellEffects(spellLevel, this, caster, cell, critical);
 

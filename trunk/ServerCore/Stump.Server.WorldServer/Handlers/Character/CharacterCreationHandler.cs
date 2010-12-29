@@ -60,7 +60,7 @@ namespace Stump.Server.WorldServer.Handlers
 
             BaseBreed breed = BreedManager.GetBreed(message.breed);
 
-            if (!client.Account.IsBreedAvailable(message.breed) ||
+            if (!client.Account.CanUseBreed(message.breed) ||
                 !BreedManager.AvailableBreeds.Contains(breed.Id))
             {
                 client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.ERR_NOT_ALLOWED));

@@ -49,10 +49,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccountRecord.cs" />
+    <Compile Include="AuthServer\AccountRecord.cs" />
     <Compile Include="ActiveRecordHelper.cs" />
     <Compile Include="AttributeDatabase.cs" />
-    <Compile Include="BanRecord.cs" />
+    <Compile Include="AuthServer\World\DeletedWorldCharacterRecord.cs" />
+    <Compile Include="AuthServer\IpBanRecord.cs" />
     <Compile Include="CharacterItemRecord.cs" />
     <Compile Include="CharacterRecord.cs" />
     <Compile Include="CharacterStartupActionRecord.cs" />
@@ -63,8 +64,8 @@
     <Compile Include="SpellRecord.cs" />
     <Compile Include="DatabaseService.cs" />
     <Compile Include="VersionRecord.cs" />
-    <Compile Include="WorldCharacterRecord.cs" />
-    <Compile Include="WorldRecord.cs" />
+    <Compile Include="AuthServer\World\WorldCharacterRecord.cs" />
+    <Compile Include="AuthServer\World\WorldRecord.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DofusProtocol\Classes\Stump.DofusProtocol.Classes.csproj">
@@ -75,6 +76,9 @@
       <Project>{D7BFF8ED-065B-4A53-9805-595DFEA75A0A}</Project>
       <Name>Stump.DofusProtocol.Enums</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="WorldServer\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

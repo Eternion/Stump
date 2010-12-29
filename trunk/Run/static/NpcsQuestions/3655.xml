@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NpcDialogQuestionMessage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <messageId>3655</messageId>
+  <dialogParams />
+  <visibleReplies>
+    <unsignedInt>3223</unsignedInt>
+  </visibleReplies>
+</NpcDialogQuestionMessage>

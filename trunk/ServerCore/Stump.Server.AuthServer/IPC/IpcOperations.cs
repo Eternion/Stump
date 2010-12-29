@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.BaseCore.Framework.Attributes;
 using Stump.Database;
 using Stump.Server.AuthServer.Accounts;
 using Stump.Server.BaseServer.IPC;
@@ -96,33 +95,30 @@ namespace Stump.Server.AuthServer.IPC
 
         public AccountRecord GetAccountRecordByTicket(WorldServerInformation wsi, string ticket)
         {
-            AccountRecord acc = AccountManager.GetAccountByTicket(ticket);
-            return acc;
+            return AccountRecord.FindAccountByTicket(ticket);
         }
 
-        public AccountRecord GetAccountRecordByName(WorldServerInformation wsi, string name)
+        public AccountRecord GetAccountRecordByNickname(WorldServerInformation wsi, string nickname)
         {
-            AccountRecord acc = AccountManager.GetAccountByName(name.ToLower());
-            return acc;
+            return AccountRecord.FindAccountByNickname(nickname.ToLower());
         }
 
-        public bool ModifyAccountRecordByName(WorldServerInformation wsi, string name, AccountRecord modifiedRecord)
+        public bool ModifyAccountRecordByNickname(WorldServerInformation wsi, string name, AccountRecord modifiedRecord)
         {
             try
             {
-                AccountRecord acc = AccountManager.GetAccountByName(name.ToLower());
+                AccountRecord acc = AccountRecord.FindAccountByNickname(name.ToLower());
 
                 if (acc == null)
                     return false;
 
-                acc.LastIP = modifiedRecord.LastIP;
-                acc.LastLogin = modifiedRecord.LastLogin;
+                acc.LastIp = modifiedRecord.LastIp;
+                acc.LastConnection = modifiedRecord.LastConnection;
                 acc.Password = modifiedRecord.Password;
                 acc.SecretQuestion = modifiedRecord.SecretQuestion;
                 acc.SecretAnswer = modifiedRecord.SecretAnswer;
                 acc.Role = modifiedRecord.Role;
-                acc.Banned = modifiedRecord.Banned;
-                acc.BanDate = modifiedRecord.BanDate;
+                acc.BanEndDate = modifiedRecord.BanEndDate;
 
                 acc.UpdateAndFlush();
 
@@ -155,7 +151,7 @@ namespace Stump.Server.AuthServer.IPC
         {
             try
             {
-                AccountRecord record = AccountRecord.FindByLogin(accountname);
+                AccountRecord record = AccountRecord.FindAccountByLogin(accountname);
 
                 if (record != null)
                 {
@@ -174,19 +170,19 @@ namespace Stump.Server.AuthServer.IPC
 
         public uint[] GetAccountCharacters(WorldServerInformation wsi, uint accountid)
         {
-            return AccountManager.GetCharactersByAccount(accountid).Select(record => record.CharacterId).ToArray();
+            return AccountRecord.FindAccountById(accountid).Characters.Select(record => record.CharacterId).ToArray();
         }
 
         public int GetAccountCharacterCount(WorldServerInformation wsi, uint accountid)
         {
-            return AccountManager.GetCharactersByAccount(accountid).Length;
+            return AccountRecord.FindAccountById(accountid).Characters.Length;
         }
 
         public void AddAccountCharacter(WorldServerInformation wsi, uint accountid, uint characterId)
         {
             var record = new WorldCharacterRecord
             {
-                ServerId = wsi.Id,
+                WorldId = wsi.Id,
                 AccountId = accountid,
                 CharacterId = characterId,
             };
@@ -196,11 +192,49 @@ namespace Stump.Server.AuthServer.IPC
 
         public void DeleteAccountCharacter(WorldServerInformation wsi, uint accountid, uint characterId)
         {
-           var record= WorldCharacterRecord.FindCharacterByServerIdAndCharacterId(wsi.Id, characterId);
+            var record = WorldCharacterRecord.FindCharacterByServerIdAndCharacterId(wsi.Id, characterId);
 
-           if (record.AccountId != accountid) return;
+            if (record.AccountId != accountid) return;
 
-           record.DeleteAndFlush();
+            new DeletedWorldCharacterRecord {AccountId = accountid, CharacterId = characterId, WorldId = wsi.Id}.
+                CreateAndFlush();
+
+            record.DeleteAndFlush();
+        }
+
+        public bool ExceedsDeletedCharactersQuota(uint accountid)
+        {
+            var record = DeletedWorldCharacterRecord.FindCharactersByAccountId(accountid);
+
+            return record.Length > 6;
+        }
+
+        public bool CheckWorldServerSecretKey(WorldServerInformation wsi, string secretKey)
+        {
+            return (IpcServer.IpcSecretKey == secretKey);
+        }
+
+        public bool BanAccount(WorldServerInformation wsi, uint accountid, DateTime banEndDate)
+        {
+            var account = AccountRecord.FindAccountById(accountid);
+
+            if (account == null)
+                return false;
+
+            account.Banned = true;
+            account.BanEndDate = banEndDate;
+
+            account.UpdateAndFlush();
+
+            return true;
+        }
+
+        public void BanIp(WorldServerInformation wsi, string ip)
+        {
+            new IpBanRecord
+                {
+                    Ip = ip
+                }.CreateAndFlush();
         }
 
         #endregion

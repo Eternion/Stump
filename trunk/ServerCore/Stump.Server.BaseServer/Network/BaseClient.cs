@@ -104,6 +104,7 @@ namespace Stump.Server.BaseServer.Network
 
         public void Send(Message message)
         {
+
             if (Socket == null || !Connected)
             {
                 throw new Exception("Attempt to send a packet when client isn't connected");

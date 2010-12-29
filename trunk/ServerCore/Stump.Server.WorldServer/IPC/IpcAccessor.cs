@@ -40,13 +40,13 @@ namespace Stump.Server.WorldServer.IPC
         public static int ReconnectDelay = 10;
 
         /// <summary>
-        /// ???
+        /// Delay for a ping check
         /// </summary>
         [Variable(DefinableRunning = true)]
         public static int PingDelay = 200;
 
         /// <summary>
-        /// IPC server
+        /// IPC server adress
         /// </summary>
         [Variable]
         public static string IpcAuthAdress = "localhost";
@@ -63,6 +63,11 @@ namespace Stump.Server.WorldServer.IPC
         [Variable]
         public static short IpcWorldPort = 9101;
 
+        /// <summary>
+        /// Secret key to use to confirm World Server access
+        /// </summary>
+        [Variable] 
+        public static string IpcSecretKey = "000stump000";
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -137,13 +142,22 @@ namespace Stump.Server.WorldServer.IPC
 
         public void RegisterWorld()
         {
-            // todo : use a secret key to confirm world server access
             if (m_proxyObject.RegisterWorld(WorldServer.ServerInformation, IpcWorldPort))
             {
                 IsRegister = true;
                 logger.Info("[IPC] Connection from the authentification server granted");
+                logger.Info("[IPC] Checking secret key ...");
 
-                Task.Factory.StartNew(MaintainConnection);
+                if(m_proxyObject.CheckWorldServerSecretKey(WorldServer.ServerInformation, IpcSecretKey))
+                {
+                    logger.Info("[IPC] Secret key confirmed.");
+                    Task.Factory.StartNew(MaintainConnection);
+                }
+                else
+                {
+                    logger.Error("[IPC] Connection rejected : Invalid secret key.");
+                    WorldServer.Instance.Shutdown();
+                }    
             }
             else
             {

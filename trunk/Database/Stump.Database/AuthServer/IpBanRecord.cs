@@ -21,16 +21,12 @@ using NHibernate.Criterion;
 
 namespace Stump.Database
 {
-    /// <summary>
-    ///   Ban record represents an IP Banned Record, not an account banned record !
-    /// </summary>
+
     [AttributeDatabase(DatabaseService.AuthServer)]
-    [ActiveRecord("bans")]
-    public class BanRecord : ActiveRecordBase<BanRecord>
+    [ActiveRecord("IP_bans")]
+    public class IpBanRecord : ActiveRecordBase<IpBanRecord>
     {
-        /// <summary>
-        ///   Account's Identifier
-        /// </summary>
+
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
         public long Id
         {
@@ -38,35 +34,18 @@ namespace Stump.Database
             set;
         }
 
-        /// <summary>
-        ///   IP Banned
-        /// </summary>
-        [Property("IP")]
-        public string IP
+        [Property("Ip")]
+        public string Ip
         {
             get;
             set;
         }
 
-        /// <summary>
-        ///   Search for a record with the given ip.
-        ///   Returns null if no IP is found.
-        /// </summary>
-        /// <param name = "ip"></param>
-        /// <returns></returns>
-        public static BanRecord FindByIP(string ip)
+
+        public static bool Exists(string ip)
         {
-            // Note that we use the property name, _not_ the column name
-            return FindOne(Restrictions.Eq("IP", ip));
+            return Exists(Restrictions.Eq("Ip", ip));
         }
 
-        /// <summary>
-        ///   Returns the numbers of ip banned records.
-        /// </summary>
-        /// <returns></returns>
-        public static int GetCount()
-        {
-            return Count();
-        }
     }
 }

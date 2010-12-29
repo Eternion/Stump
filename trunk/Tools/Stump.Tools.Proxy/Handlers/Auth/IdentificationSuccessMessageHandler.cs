@@ -32,5 +32,15 @@ namespace Stump.Tools.Proxy.Handlers.Auth
 
             client.Send(message);
         }
+
+        [AuthHandler(typeof(IdentificationFailedForBadVersionMessage))]
+        public static void HandleIdentificationFailedForBadVersionMessage(AuthClient client, IdentificationFailedForBadVersionMessage message)
+        {
+            //message.accountId = 1;
+            //message.nickname = "MegaAdmin";
+          //  message.hasRights = true;
+
+            client.Send(new IdentificationSuccessMessage("jeredejerede",1,1,true,"",0,false));
+        }
     }
 }
