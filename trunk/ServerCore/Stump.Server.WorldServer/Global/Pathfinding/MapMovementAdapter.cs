@@ -55,6 +55,9 @@ namespace Stump.Server.WorldServer.Global.Pathfinding
                 last = pathElement;
             }
 
+            if (keys.Count > 2)
+                movementPath.End.Direction = movementPath.Path[movementPath.Path.Count - 2].Direction;
+
             // movementPath.fill();
             return movementPath;
         }
