@@ -33,10 +33,11 @@ namespace Stump.Tools.Proxy.Handlers.World
             client.Send(message);
 
             client.MapNpcs.Clear();
+            client.CurrentMap = message.mapId;
 
             Parallel.ForEach(message.actors, actor =>
             {
-                DataFactory.HandleActorInformations(client, actor, message.mapId);
+                DataFactory.HandleActorInformations(client, actor);
 
                 if (actor is GameRolePlayNpcInformations)
                     client.MapNpcs.Add((actor as GameRolePlayNpcInformations).contextualId, (GameRolePlayNpcInformations) actor);

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GameRolePlayNpcInformations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <contextualId>-1</contextualId>
+  <look>
+    <bonesId>62</bonesId>
+    <skins />
+    <indexedColors />
+    <scales />
+    <subentities />
+  </look>
+  <disposition>
+    <cellId>240</cellId>
+    <direction>3</direction>
+  </disposition>
+  <npcId>451</npcId>
+  <sex>true</sex>
+  <specialArtworkId>0</specialArtworkId>
+  <canGiveQuest>true</canGiveQuest>
+</GameRolePlayNpcInformations>

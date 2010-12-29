@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <GameRolePlayNpcInformations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <contextualId>-2</contextualId>
+  <contextualId>-1</contextualId>
   <look>
     <bonesId>1</bonesId>
     <skins>
-      <unsignedInt>30</unsignedInt>
-      <unsignedInt>226</unsignedInt>
+      <unsignedInt>40</unsignedInt>
     </skins>
     <indexedColors>
-      <int>85131264</int>
-      <int>34799616</int>
-      <int>70057984</int>
-      <int>32750686</int>
-      <int>67043328</int>
+      <int>94544546</int>
+      <int>44212898</int>
+      <int>76948008</int>
+      <int>26588367</int>
+      <int>60990114</int>
     </indexedColors>
     <scales>
-      <int>120</int>
+      <int>140</int>
     </scales>
     <subentities />
   </look>
   <disposition>
-    <cellId>217</cellId>
-    <direction>1</direction>
+    <cellId>386</cellId>
+    <direction>3</direction>
   </disposition>
-  <npcId>856</npcId>
+  <npcId>476</npcId>
   <sex>false</sex>
   <specialArtworkId>0</specialArtworkId>
   <canGiveQuest>true</canGiveQuest>

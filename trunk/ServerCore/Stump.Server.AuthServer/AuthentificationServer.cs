@@ -22,6 +22,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using Stump.Database;
+using Stump.DofusProtocol;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.AuthServer.Commands;
 using Stump.Server.AuthServer.IPC;
@@ -63,6 +64,7 @@ namespace Stump.Server.AuthServer
 
                 logger.Info("Register Messages...");
                 MessageReceiver.Initialize();
+                ProtocolTypeManager.Initialize();
 
                 logger.Info("Register Packets Handlers...");
                 HandlerManager.RegisterAll(typeof (AuthentificationServer).Assembly);

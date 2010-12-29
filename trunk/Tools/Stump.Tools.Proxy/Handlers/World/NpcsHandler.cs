@@ -22,7 +22,7 @@ using Stump.Tools.Proxy.Network;
 
 namespace Stump.Tools.Proxy.Handlers.World
 {
-    public class NpcDialogQuestionMessageHandler : WorldHandlerContainer
+    public class NpcsHandler : WorldHandlerContainer
     {
         [WorldHandler(typeof (NpcDialogQuestionMessage))]
         public static void HandleNpcDialogQuestionMessage(WorldClient client, NpcDialogQuestionMessage message)
@@ -54,6 +54,15 @@ namespace Stump.Tools.Proxy.Handlers.World
             client.GuessNpcFirstAction = message;
 
             client.Server.Send(message);
+        }
+
+
+        [WorldHandler(typeof (ExchangeStartOkNpcShopMessage))]
+        public static void HandleExchangeStartOkNpcShopMessage(WorldClient client, ExchangeStartOkNpcShopMessage message)
+        {
+            client.Send(message);
+
+            DataFactory.BuildActionNpcShop(client, message);
         }
     }
 }

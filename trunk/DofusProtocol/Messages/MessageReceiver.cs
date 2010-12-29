@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Stump.BaseCore.Framework.Extensions;
 using Stump.BaseCore.Framework.IO;
 
 namespace Stump.DofusProtocol.Messages
@@ -26,6 +27,8 @@ namespace Stump.DofusProtocol.Messages
     public static class MessageReceiver
     {
         private static readonly Dictionary<uint, Type> Messages = new Dictionary<uint, Type>();
+        private static readonly Dictionary<uint, Delegate> Constructors = new Dictionary<uint, Delegate>();
+
 
         /// <summary>
         ///   Initializes this instance.
@@ -41,7 +44,18 @@ namespace Stump.DofusProtocol.Messages
                         FieldInfo fi = type.GetField("protocolId");
 
                         if (fi != null)
+                        {
                             Messages.Add((uint) fi.GetValue(type), type);
+
+                            var ctor = type.GetConstructor(new Type[0]);
+
+                            if (ctor == null)
+                                throw new Exception(
+                                    string.Format("'{0}' doesn't implemented a parameterless constructor",
+                                                  type.ToString()));
+
+                            Constructors.Add((uint)fi.GetValue(type), ctor.CreateDelegate(ctor.GetFuncType()));
+                        }
                     }
                     catch (Exception e)
                     {
@@ -58,15 +72,9 @@ namespace Stump.DofusProtocol.Messages
         public static Message GetMessage(uint id, BigEndianReader reader)
         {
             if (!Messages.ContainsKey(id))
-               throw new KeyNotFoundException("This Message doesn't exist");
+               throw new KeyNotFoundException(string.Format("Message <id:{0}> doesn't exist", id));
 
-            Type type = Messages[id];
-            ConstructorInfo ci = type.GetConstructor(new Type[0] {});
-
-            if (ci == null)
-                throw new Exception("This Message doesn't implement parameterless's constructor");
-
-            var message = ci.Invoke(new object[0] {}) as Message;
+            var message = Constructors[id].DynamicInvoke(new object[0]) as Message;
 
             message.unpack(reader, 0);
             return message;

@@ -6,15 +6,16 @@
     <skins>
       <unsignedInt>80</unsignedInt>
       <unsignedInt>1252</unsignedInt>
-      <unsignedInt>116</unsignedInt>
+      <unsignedInt>1089</unsignedInt>
+      <unsignedInt>1159</unsignedInt>
+      <unsignedInt>53</unsignedInt>
     </skins>
     <indexedColors>
-      <int>94513205</int>
-      <int>49910315</int>
-      <int>77735989</int>
+      <int>100663295</int>
+      <int>33554432</int>
+      <int>83886079</int>
       <int>33542780</int>
-      <int>111290421</int>
-      <int>60958773</int>
+      <int>50331648</int>
     </indexedColors>
     <scales>
       <int>140</int>
@@ -22,11 +23,11 @@
     <subentities />
   </look>
   <disposition>
-    <cellId>273</cellId>
+    <cellId>198</cellId>
     <direction>1</direction>
   </disposition>
-  <npcId>846</npcId>
+  <npcId>537</npcId>
   <sex>false</sex>
   <specialArtworkId>0</specialArtworkId>
-  <canGiveQuest>true</canGiveQuest>
+  <canGiveQuest>false</canGiveQuest>
 </GameRolePlayNpcInformations>

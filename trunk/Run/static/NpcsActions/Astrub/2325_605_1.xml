@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NpcStartActionSerialized type="Stump.Server.WorldServer.Npcs.StartActions.ShopAction">
+  <ShopAction xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <NpcId>605</NpcId>
+    <ItemsToSell>
+      <ItemToSellInNpcShop>
+        <Price>0</Price>
+        <BuyCriterion />
+        <ItemId>10002</ItemId>
+      </ItemToSellInNpcShop>
+      <ItemToSellInNpcShop>
+        <Price>0</Price>
+        <BuyCriterion />
+        <ItemId>9996</ItemId>
+      </ItemToSellInNpcShop>
+      <ItemToSellInNpcShop>
+        <Price>0</Price>
+        <BuyCriterion />
+        <ItemId>10001</ItemId>
+      </ItemToSellInNpcShop>
+    </ItemsToSell>
+    <TokenId>0</TokenId>
+  </ShopAction>
+</NpcStartActionSerialized>

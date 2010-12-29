@@ -22,6 +22,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.Database;
+using Stump.DofusProtocol;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Database;
@@ -128,6 +129,7 @@ namespace Stump.Server.WorldServer
 
             logger.Info("Register Messages...");
             MessageReceiver.Initialize();
+            ProtocolTypeManager.Initialize();
 
             logger.Info("Register Packet Handlers...");
             HandlerManager.RegisterAll(typeof (WorldServer).Assembly);

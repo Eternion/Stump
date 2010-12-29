@@ -84,6 +84,9 @@
     <Compile Include="Data\NpcLoader.cs" />
     <Compile Include="Dialog\Dialoger.cs" />
     <Compile Include="Handlers\Authorized\AuthorizedHandler.cs" />
+    <Compile Include="Items\ItemToSellInNpcShop.cs" />
+    <Compile Include="Npcs\NpcShopDialog.cs" />
+    <Compile Include="Npcs\NpcShopDialoger.cs" />
     <Compile Include="Npcs\NpcStartActionSerialized.cs" />
     <Compile Include="Npcs\NpcDialog.cs" />
     <Compile Include="Npcs\NpcDialoger.cs" />
@@ -225,6 +228,7 @@
     <Compile Include="Items\ItemTemplate.cs" />
     <Compile Include="Items\Weapon.cs" />
     <Compile Include="Items\WeaponTemplate.cs" />
+    <Compile Include="Npcs\StartActions\ShopAction.cs" />
     <Compile Include="Npcs\StartActions\TalkAction.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Spells\Spell.cs" />

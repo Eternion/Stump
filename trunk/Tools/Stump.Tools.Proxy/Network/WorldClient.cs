@@ -76,6 +76,12 @@ namespace Stump.Tools.Proxy.Network
             set;
         }
 
+        public uint CurrentMap
+        {
+            get;
+            set;
+        }
+
         public bool GuessAction
         {
             get

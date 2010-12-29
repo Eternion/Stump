@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,15 +27,28 @@ namespace Stump.Tools.Proxy.Data
 {
     public static class ZonesManager
     {
-        private static readonly ConcurrentDictionary<uint, string> m_zoneNameByMap = new ConcurrentDictionary<uint, string>();
+        private static readonly ConcurrentDictionary<uint, string> m_regionNameByMap = new ConcurrentDictionary<uint, string>();
 
-        public static Dictionary<int, string> ZonesName
+        public static Dictionary<int, string> RegionsName
         {
             get;
             private set;
         }
 
-        public static IEnumerable<SubArea> Zones
+        public static Dictionary<int, SubArea> Zones
+        {
+            get;
+            private set;
+        }
+
+
+        public static Dictionary<int, Area> Regions
+        {
+            get;
+            private set;
+        }
+
+        public static Dictionary<int, MapPosition> Maps
         {
             get;
             private set;
@@ -42,28 +56,39 @@ namespace Stump.Tools.Proxy.Data
 
         public static void Initialize()
         {
-            Zones = DataLoader.LoadData<SubArea>();
-            ZonesName = new Dictionary<int, string>();
+            Zones = DataLoader.LoadDataByIdAsDictionary<int, SubArea>(entry => entry.id);
+            Regions = DataLoader.LoadDataByIdAsDictionary<int, Area>(entry => entry.id);
+            Maps = DataLoader.LoadDataByIdAsDictionary<int, MapPosition>(entry => entry.id);
 
-            foreach (SubArea subArea in Zones)
+            RegionsName = new Dictionary<int, string>();
+
+            foreach (Area area in Regions.Values)
             {
-                ZonesName.Add(subArea.id, DataLoader.GetI18NText((int) subArea.nameId));
+                RegionsName.Add(area.id, DataLoader.GetI18NText((int)area.nameId));
             }
         }
 
-        public static string GetZoneNameByMap(uint mapId)
+        public static string GetRegionNameByMap(uint mapId)
         {
-            if (m_zoneNameByMap.ContainsKey(mapId))
-                return m_zoneNameByMap[mapId];
+            if (m_regionNameByMap.ContainsKey(mapId))
+                return m_regionNameByMap[mapId];
 
-            SubArea zone = Zones.Where(entry => entry.mapIds.Contains(mapId)).FirstOrDefault();
+            Area region;
+            try
+            {
+                region = Regions[Zones[Maps[(int) mapId].subAreaId].areaId];
+            }
+            catch
+            {
+                region = null;
+            }
 
-            if (zone == null)
+            if (region == null)
                 return "Unknown Zone";
 
-            string name = ZonesName[zone.id];
+            string name = RegionsName[region.id];
 
-            m_zoneNameByMap.TryAdd(mapId, name);
+            m_regionNameByMap.TryAdd(mapId, name);
 
             return name;
         }

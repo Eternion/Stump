@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NpcDialogReply xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Id>4768</Id>
+  <ActionsSerialized>
+    <ActionSerialized type="Stump.Server.WorldServer.Actions.NpcActions.ActionDialogQuestion">
+      <ActionDialogQuestion>
+        <MessageId>5640</MessageId>
+      </ActionDialogQuestion>
+    </ActionSerialized>
+  </ActionsSerialized>
+</NpcDialogReply>
