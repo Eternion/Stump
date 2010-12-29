@@ -34,9 +34,9 @@ namespace Stump.Server.WorldServer.Handlers
                 };
         }
 
-        public static void SendKamasUpdateMessage(WorldClient client, int kamasAmount)
+        public static void SendKamasUpdateMessage(WorldClient client, long kamasAmount)
         {
-            client.Send(new KamasUpdateMessage(kamasAmount));
+            client.Send(new KamasUpdateMessage((int) kamasAmount));
         }
     }
 }

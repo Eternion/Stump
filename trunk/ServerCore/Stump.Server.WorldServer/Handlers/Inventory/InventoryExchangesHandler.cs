@@ -105,6 +105,18 @@ namespace Stump.Server.WorldServer.Handlers
                 ( (PlayerTrade) client.ActiveCharacter.Dialog ).ToggleReady((Trader)client.ActiveCharacter.Dialoger, message.ready);
         }
 
+        [WorldHandler(typeof(ExchangeBuyMessage))]
+        public static void HandleExchangeBuyMessage(WorldClient client, ExchangeBuyMessage message)
+        {
+            ((NpcShopDialog) client.ActiveCharacter.Dialog).BuyItem((int) message.objectToBuyId, message.quantity);
+        }
+
+        [WorldHandler(typeof (ExchangeSellMessage))]
+        public static void HandleExchangeSellMessage(WorldClient client, ExchangeSellMessage message)
+        {
+            ( (NpcShopDialog)client.ActiveCharacter.Dialog ).SellItem((int)message.objectToSellId, message.quantity);
+        }
+
         public static void SendExchangeRequestedTradeMessage(WorldClient client, ExchangeTypeEnum type, Character source,
                                                              Character target)
         {

@@ -51,7 +51,7 @@ namespace Stump.Server.WorldServer.Npcs.StartActions
 
         public override void Execute(NpcSpawn npc, Character executer)
         {
-            if (m_itemsToSell.Count <= 0)
+            if (m_itemsToSell == null || m_itemsToSell.Count <= 0)
                 m_itemsToSell =
                     ItemsToSell.Select(
                         entry =>
@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Npcs.StartActions
 
             executer.Dialoger = dialog.Dialoger;
 
-            InventoryHandler.SendExchangeStartOkNpcShopMessage(executer.Client, NpcId, TokenId, m_itemsToSell);
+            InventoryHandler.SendExchangeStartOkNpcShopMessage(executer.Client, (int) npc.Id, TokenId, m_itemsToSell);
         }
     }
 }

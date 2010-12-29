@@ -164,7 +164,17 @@ namespace Stump.Server.WorldServer.Entities
             NotifyChangeMap(lastMap);
         }
 
-        public void SetKamas(int amount)
+        public void AddKamas(long amount)
+        {
+            SetKamas(Kamas + amount);
+        }
+
+        public void SubKamas(long amount)
+        {
+            SetKamas(Kamas - amount);
+        }
+
+        public void SetKamas(long amount)
         {
             Kamas = amount;
             InventoryHandler.SendKamasUpdateMessage(Client, amount);
@@ -265,6 +275,7 @@ namespace Stump.Server.WorldServer.Entities
                 Record.MapId = Position.Map.Id;
 
             Record.CellId = Position.CellId;
+            Record.Direction = Position.Direction;
             Record.BaseHealth = BaseHealth;
             Record.DamageTaken = DamageTaken;
             Record.StatsPoints = StatsPoint;
