@@ -337,7 +337,8 @@ namespace Stump.Server.WorldServer.Entities
 
         public void RemoveSpell(SpellIdEnum spellid)
         {
-            // todo
+            Spells.Remove(spellid);
+            Record.RemoveSpell((uint) spellid);
         }
 
         #endregion

@@ -147,7 +147,12 @@ namespace Stump.Server.WorldServer.Global
             lock (Sync)
             {
                 logger.Info("Stopped {0}.", this);
-                // Todo : disconnect characters in case region was stopped by admin
+
+                foreach (Character c in this.GetAllCharacters())
+                {
+                    c.Client.Disconnect();
+                }
+
                 IsRunning = false;
             }
         }
