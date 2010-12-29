@@ -286,7 +286,7 @@ namespace Stump.Server.WorldServer.Fights
                 ContextHandler.SendGameContextDestroyMessage(charac.Client);
                 ContextHandler.SendGameContextCreateMessage(charac.Client, 1);
                 CharacterHandler.SendCharacterStatsListMessage(charac.Client);
-                CharacterHandler.SendLifePointsRegenBeginMessage(charac.Client, 60); // todo : use config to define regen rate, use events
+                CharacterHandler.SendLifePointsRegenBeginMessage(charac.Client, 60 * (uint)charac.Client.ActiveCharacter.Level);
 
                 charac.Map.OnFightLeave(charac);
                 ContextHandler.SendCurrentMapMessage(charac.Client, charac.Map.Id);

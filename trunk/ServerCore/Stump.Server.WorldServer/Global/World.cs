@@ -235,7 +235,7 @@ namespace Stump.Server.WorldServer.Global
 
         public void SendMessageOfTheDay(Character character)
         {
-            // todo : ChatHandler.SendCustomServerMessage(character.Client, MessageOfTheDay);
+           // Handlers.ChatHandler.SendChatServerCopyMessage(character.Client,character,ChannelId.General,MessageOfTheDay);
         }
 
         #endregion
