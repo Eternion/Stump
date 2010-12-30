@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Stump.BaseCore.Framework.Extensions;
 using Version = Stump.DofusProtocol.Classes.Version;
 
 namespace Stump.DofusProtocol
@@ -26,8 +27,7 @@ namespace Stump.DofusProtocol
     public static class ProtocolTypeManager
     {
         private static readonly Dictionary<uint, Type> m_types = new Dictionary<uint, Type>();
-
-        private static bool m_initialized;
+        private static readonly Dictionary<uint, Delegate> m_typesConstructors = new Dictionary<uint, Delegate>();
 
         /// <summary>
         ///   Initializes this instance.
@@ -41,10 +41,17 @@ namespace Stump.DofusProtocol
                 FieldInfo fi = type.GetField("protocolId");
 
                 if (fi != null)
+                {
                     m_types.Add((uint) fi.GetValue(type), type);
-            }
 
-            m_initialized = true;
+                    var ctor = type.GetConstructor(new Type[0]);
+
+                    if (ctor == null)
+                        throw new Exception(string.Format("'{0}' doesn't implemented a parameterless constructor", type.ToString()));
+
+                    m_typesConstructors.Add((uint) fi.GetValue(type), ctor.CreateDelegate(ctor.GetFuncType()));
+                }
+            }
         }
 
         /// <summary>
@@ -55,24 +62,10 @@ namespace Stump.DofusProtocol
         /// <returns></returns>
         public static T GetInstance<T>(uint id) where T : class
         {
-            if (!m_initialized)
-                Initialize();
-
             if (!m_types.ContainsKey(id))
-                throw new KeyNotFoundException("Le Type n'existe pas");
+                throw new KeyNotFoundException(string.Format("Type <id:{0} doesn't exist", id));
 
-            Type type = m_types[id];
-
-            if ((!type.IsSubclassOf(typeof (T))) && (!typeof (T).IsEquivalentTo(type)))
-            {
-                throw new Exception("Le type n'hérite pas de la classe");
-            }
-            ConstructorInfo ci = type.GetConstructor(new Type[0] {});
-
-            if (ci == null)
-                throw new Exception("Le type n'implémente pas de constructeur sans paramètres");
-
-            return ci.Invoke(new object[0] {}) as T;
+            return m_typesConstructors[id].DynamicInvoke(new object[0]) as T;
         }
     }
 }

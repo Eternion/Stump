@@ -16,12 +16,15 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System.Collections.Generic;
+using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Exchange;
 using Stump.Server.WorldServer.Global;
-using Stump.Server.WorldServer.Items;
+using Stump.Server.WorldServer.Npcs;
+using Item = Stump.Server.WorldServer.Items.Item;
 
 namespace Stump.Server.WorldServer.Handlers
 {
@@ -102,6 +105,18 @@ namespace Stump.Server.WorldServer.Handlers
                 ( (PlayerTrade) client.ActiveCharacter.Dialog ).ToggleReady((Trader)client.ActiveCharacter.Dialoger, message.ready);
         }
 
+        [WorldHandler(typeof(ExchangeBuyMessage))]
+        public static void HandleExchangeBuyMessage(WorldClient client, ExchangeBuyMessage message)
+        {
+            ((NpcShopDialog) client.ActiveCharacter.Dialog).BuyItem((int) message.objectToBuyId, message.quantity);
+        }
+
+        [WorldHandler(typeof (ExchangeSellMessage))]
+        public static void HandleExchangeSellMessage(WorldClient client, ExchangeSellMessage message)
+        {
+            ( (NpcShopDialog)client.ActiveCharacter.Dialog ).SellItem((int)message.objectToSellId, message.quantity);
+        }
+
         public static void SendExchangeRequestedTradeMessage(WorldClient client, ExchangeTypeEnum type, Character source,
                                                              Character target)
         {
@@ -122,6 +137,11 @@ namespace Stump.Server.WorldServer.Handlers
                             playerTrade.TargetTrader.Character.Inventory.Weight,
                             playerTrade.TargetTrader.Character.Inventory.WeightTotal
                             ));
+        }
+
+        public static void SendExchangeStartOkNpcShopMessage(WorldClient client, int npcId, uint tokenId, List<ObjectItemToSellInNpcShop> items)
+        {
+            client.Send(new ExchangeStartOkNpcShopMessage(npcId, tokenId, items));
         }
 
         public static void SendExchangeLeaveMessage(WorldClient client, bool success)

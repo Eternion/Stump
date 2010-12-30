@@ -318,7 +318,7 @@ namespace Stump.Server.BaseServer.Network
         /// <returns></returns>
         private int GetSameIPNumber(IPAddress ip)
         {
-            return m_clientList.Count(client => ip.Equals(((IPEndPoint) client.Socket.RemoteEndPoint).Address));
+            return m_clientList.Count(client => client.Socket != null && ip.Equals(( (IPEndPoint)client.Socket.RemoteEndPoint ).Address));
         }
     }
 }

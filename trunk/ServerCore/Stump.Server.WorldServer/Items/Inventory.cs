@@ -77,10 +77,43 @@ namespace Stump.Server.WorldServer.Items
         private readonly object m_sync = new object();
         private Dictionary<long, Item> m_items = new Dictionary<long, Item>();
 
+        private readonly Dictionary<CharacterInventoryPositionEnum, List<Item>> m_itemsByPosition = new Dictionary
+            <CharacterInventoryPositionEnum, List<Item>>
+            {
+                {CharacterInventoryPositionEnum.ACCESSORY_POSITION_HAT, new List<Item>()},
+                {CharacterInventoryPositionEnum.ACCESSORY_POSITION_CAPE, new List<Item>()},
+                {CharacterInventoryPositionEnum.ACCESSORY_POSITION_BELT, new List<Item>()},
+                {CharacterInventoryPositionEnum.ACCESSORY_POSITION_BOOTS, new List<Item>()},
+                {CharacterInventoryPositionEnum.ACCESSORY_POSITION_AMULET, new List<Item>()},
+                {CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD, new List<Item>()},
+                {CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON, new List<Item>()},
+                {CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS, new List<Item>()},
+                {CharacterInventoryPositionEnum.INVENTORY_POSITION_RING_LEFT, new List<Item>()},
+                {CharacterInventoryPositionEnum.INVENTORY_POSITION_RING_RIGHT, new List<Item>()},
+                {CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_1, new List<Item>()},
+                {CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_2, new List<Item>()},
+                {CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_3, new List<Item>()},
+                {CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_4, new List<Item>()},
+                {CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_5, new List<Item>()},
+                {CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_6, new List<Item>()},
+                {CharacterInventoryPositionEnum.INVENTORY_POSITION_MOUNT, new List<Item>()},
+                {CharacterInventoryPositionEnum.INVENTORY_POSITION_MUTATION, new List<Item>()},
+                {CharacterInventoryPositionEnum.INVENTORY_POSITION_BOOST_FOOD, new List<Item>()},
+                {CharacterInventoryPositionEnum.INVENTORY_POSITION_FIRST_BONUS, new List<Item>()},
+                {CharacterInventoryPositionEnum.INVENTORY_POSITION_SECOND_BONUS, new List<Item>()},
+                {CharacterInventoryPositionEnum.INVENTORY_POSITION_FIRST_MALUS, new List<Item>()},
+                {CharacterInventoryPositionEnum.INVENTORY_POSITION_SECOND_MALUS, new List<Item>()},
+                {CharacterInventoryPositionEnum.INVENTORY_POSITION_ROLEPLAY_BUFFER, new List<Item>()},
+                {CharacterInventoryPositionEnum.INVENTORY_POSITION_FOLLOWER, new List<Item>()},
+                {CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, new List<Item>()},
+            };
+
         public Inventory(Character owner)
         {
             Owner = owner;
 
+            ItemAdded += OnItemAdd;
+            ItemRemoved += OnItemRemoved;
             ItemMoved += OnItemMove;
         }
 
@@ -105,7 +138,7 @@ namespace Stump.Server.WorldServer.Items
             {
                 return m_items.Values.Aggregate<Item, uint>(0,
                                                             (current, item) =>
-                                                            current + (uint) item.Template.Weight*item.Stack);
+                                                            current + item.Template.Weight*item.Stack);
             }
         }
 
@@ -154,6 +187,10 @@ namespace Stump.Server.WorldServer.Items
                 CharacterItemRecord[] records = CharacterItemRecord.FindItemsByCharacter(Owner.Id);
 
                 m_items = ItemManager.LoadItem(Owner, records).ToDictionary(entry => entry.Guid);
+                foreach (var item in m_items.Values)
+                {
+                     m_itemsByPosition[item.Position].Add(item);
+                }
             }
         }
 
@@ -162,6 +199,11 @@ namespace Stump.Server.WorldServer.Items
             lock (m_sync)
             {
                 ItemManager.UnLoadItem(m_items.Keys.ToArray());
+                m_items.Clear();
+                foreach (var item in m_itemsByPosition)
+                {
+                    m_itemsByPosition[item.Key].Clear();
+                }
             }
         }
 
@@ -208,6 +250,7 @@ namespace Stump.Server.WorldServer.Items
                 }
 
                 m_items.Add(newitem.Guid, newitem);
+                m_itemsByPosition[newitem.Position].Add(newitem);
 
                 NotifyItemAdded(newitem);
             }
@@ -240,6 +283,7 @@ namespace Stump.Server.WorldServer.Items
                 }
 
                 m_items.Add(newitem.Guid, newitem);
+                m_itemsByPosition[newitem.Position].Add(newitem);
 
                 NotifyItemAdded(newitem);
             }
@@ -269,12 +313,18 @@ namespace Stump.Server.WorldServer.Items
                 }
 
                 m_items.Add(newitem.Guid, newitem);
+                m_itemsByPosition[newitem.Position].Add(newitem);
 
                 NotifyItemAdded(newitem);
             }
 
             InventoryHandler.SendObjectAddedMessage(Owner.Client, newitem);
             return newitem;
+        }
+
+        private void OnItemAdd(Inventory sender, Item item)
+        {
+            InventoryHandler.SendInventoryWeightMessage(Owner.Client);
         }
 
         public void DeleteItem(long guid)
@@ -298,6 +348,7 @@ namespace Stump.Server.WorldServer.Items
                     }
                     else
                     {
+                        m_itemsByPosition[m_items[guid].Position].Remove(m_items[guid]);
                         m_items.Remove(guid);
 
                         ItemManager.RemoveItem(guid);
@@ -308,6 +359,11 @@ namespace Stump.Server.WorldServer.Items
                 }
                 else return;
             }
+        }
+
+        private void OnItemRemoved(Inventory sender, long guid)
+        {
+            InventoryHandler.SendInventoryWeightMessage(Owner.Client);
         }
 
         public void MoveItem(long guid, CharacterInventoryPositionEnum position)
@@ -427,6 +483,7 @@ namespace Stump.Server.WorldServer.Items
             lock (m_sync)
             {
                 m_items.Add(newitem.Guid, newitem);
+                m_itemsByPosition[newitem.Position].Add(newitem);
             }
 
 
@@ -455,55 +512,34 @@ namespace Stump.Server.WorldServer.Items
 
         public Item GetItem(long guid)
         {
-            if (!m_items.ContainsKey(guid))
-                return null;
-
-            return m_items[guid];
+            return !m_items.ContainsKey(guid) ? null : m_items[guid];
         }
 
         public Item GetItem(int itemId, List<EffectBase> effects, CharacterInventoryPositionEnum position)
         {
-            IEnumerable<Item> entrys = from entry in m_items
-                                       where entry.Value.ItemId == itemId &&
-                                             entry.Value.Position == position &&
-                                             effects.CompareEnumerable(entry.Value.Effects)
-                                       select entry.Value;
+            IEnumerable<Item> entries = from entry in m_itemsByPosition[position]
+                                       where entry.ItemId == itemId &&
+                                             effects.CompareEnumerable(entry.Effects)
+                                       select entry;
 
-            if (entrys.Count() <= 0)
-                return null;
-
-            return entrys.First();
+            return entries.FirstOrDefault();
         }
 
         public Item GetItem(CharacterInventoryPositionEnum position)
         {
-            Item[] items = GetItems(position);
-
-            if (items.Count() <= 0)
-                return null;
-
-            return items.First();
+            return m_itemsByPosition[position].FirstOrDefault();
         }
 
-        public Item[] GetItems(CharacterInventoryPositionEnum position)
+        public IEnumerable<Item> GetItems(CharacterInventoryPositionEnum position)
         {
-            return (from entry in m_items
-                    where entry.Value.Position == position
-                    select entry.Value).ToArray();
+            return m_itemsByPosition[position];
         }
 
-        public Item[] GetItems(params CharacterInventoryPositionEnum[] position)
+        public IEnumerable<Item> GetEquipedItems()
         {
-            return (from entry in m_items
-                    where position.Contains(entry.Value.Position)
-                    select entry.Value).ToArray();
-        }
-
-        public Item[] GetEquipedItems()
-        {
-            return (from entry in m_items
-                    where entry.Value.Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED
-                    select entry.Value).ToArray();
+            return from entry in m_items
+                   where entry.Value.Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED
+                   select entry.Value;
         }
     }
 }

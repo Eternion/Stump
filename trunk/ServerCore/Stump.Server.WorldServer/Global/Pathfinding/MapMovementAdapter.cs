@@ -26,13 +26,14 @@ namespace Stump.Server.WorldServer.Global.Pathfinding
     {
         public static List<uint> GetServerMovement(MovementPath movement)
         {
-            var keys = new List<uint>(movement.Path.Count);
+            var keys = new List<uint>();
 
             movement.Compress();
 
-            keys.AddRange(from vectorIsometric in movement.Path
-                          let orientation = (byte) vectorIsometric.Direction
-                          select (uint) ((orientation & 7) << 12 | vectorIsometric.Point.CellId & 4095));
+            foreach (var vectorIsometric in movement.Path)
+            {
+                keys.Add((uint)( ( (int)vectorIsometric.Direction & 7 ) << 12 | vectorIsometric.Point.CellId & 4095 ));
+            }
 
             return keys;
         }
@@ -53,6 +54,9 @@ namespace Stump.Server.WorldServer.Global.Pathfinding
                 movementPath.Path.Add(pathElement);
                 last = pathElement;
             }
+
+            if (keys.Count > 2)
+                movementPath.End.Direction = movementPath.Path[movementPath.Path.Count - 2].Direction;
 
             // movementPath.fill();
             return movementPath;

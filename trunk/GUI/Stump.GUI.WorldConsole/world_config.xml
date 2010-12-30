@@ -22,7 +22,7 @@
       </MessageListener>
       <ClientVersion>
         <Severity>Medium</Severity>
-        <VersionRequired>2.2.3.36341.1</VersionRequired>
+        <VersionRequired>2.3.0.37782.1</VersionRequired>
         <ActualVersion>1280</ActualVersion>
         <RequiredVersion>1304</RequiredVersion>
       </ClientVersion>

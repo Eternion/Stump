@@ -52,15 +52,10 @@ namespace Stump.BaseCore.Framework.XmlUtils
         /// </example>
         public const bool UseModifiers = true;
 
-        // note : very ugly way ...
         public static IList ToList(string str, Type elementType)
         {
-            Type listType = typeof (List<>).MakeGenericType(new[]
-                {
-                    elementType
-                });
+            IList list = new List<object>();
 
-            var list = Activator.CreateInstance(listType) as IList;
             foreach (object element in ToArray(str, elementType))
             {
                 list.Add(element);

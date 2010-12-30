@@ -209,14 +209,16 @@ namespace Stump.BaseCore.Framework.IO
         ///   Write a string into the buffer
         /// </summary>
         /// <returns></returns>
-        public void WriteUTF(string @string)
+        public void WriteUTF(string str)
         {
-            var length = @string.Length;
-            WriteUShort((ushort) length);
+            var length = str.Length;
 
-            for (var i = 0; i < length; i++)
+            var bytes = Encoding.UTF8.GetBytes(str);
+            WriteUShort((ushort)bytes.Length);
+
+            foreach (byte @byte in bytes)
             {
-                m_writer.Write(@string[i]);
+                m_writer.Write(@byte);
             }
         }
 

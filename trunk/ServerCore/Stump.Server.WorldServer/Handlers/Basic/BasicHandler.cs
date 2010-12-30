@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Messages;
 
@@ -37,6 +38,17 @@ namespace Stump.Server.WorldServer.Handlers
                                                       params string[] arguments)
         {
             client.Send(new TextInformationMessage(msgType, msgId, arguments.ToList()));
+        }
+
+        public static void SendTextInformationMessage(WorldClient client, uint msgType, uint msgId,
+                                              params object[] arguments)
+        {
+            client.Send(new TextInformationMessage(msgType, msgId, arguments.Select(entry => entry.ToString()).ToList()));
+        }
+
+        public static void SendTextInformationMessage(WorldClient client, uint msgType, uint msgId)
+        {
+            client.Send(new TextInformationMessage(msgType, msgId, new List<string>()));
         }
 
         public static void SendBasicTimeMessage(WorldClient client)

@@ -83,10 +83,17 @@ namespace Stump.Server.WorldServer.Entities
 
         public void Interact(NpcActionTypeEnum actionTypeEnum, Character dialoger)
         {
-            if (!Template.StartActions.ContainsKey(actionTypeEnum))
-                throw new NotImplementedException(string.Format("Npc action '{0}' is not implemented for npc '{1}", actionTypeEnum, Template.Id));
+            try
+            {
+                if (!Template.StartActions.ContainsKey(actionTypeEnum))
+                    throw new NotImplementedException(string.Format("Npc action '{0}' is not implemented for npc '{1}", actionTypeEnum, Template.Id));
 
-            Template.StartActions[actionTypeEnum].Execute(this, dialoger);
+                Template.StartActions[actionTypeEnum].Execute(this, dialoger);
+            }
+            catch (Exception e)
+            {
+                logger.Error("Can't interact with npc '{0}' : {1}", Template.Id, e.Message);
+            }
         }
 
         public override GameRolePlayActorInformations ToNetworkActor(WorldClient client)
