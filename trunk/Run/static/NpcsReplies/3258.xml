@@ -2,7 +2,7 @@
 <NpcDialogReply xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Id>3258</Id>
   <ActionsSerialized>
-    <ActionSerialized type="Stump.Server.WorldServer.Actions.NpcActions.ActionDialogLeave">
+    <ActionSerialized type="Stump.Server.WorldServer.Actions.ActionsNpcs.ActionDialogLeave">
       <ActionDialogLeave />
     </ActionSerialized>
   </ActionsSerialized>

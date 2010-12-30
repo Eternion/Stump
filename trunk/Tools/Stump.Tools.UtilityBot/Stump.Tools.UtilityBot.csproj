@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Bot.cs" />
     <Compile Include="Commands\CodeParserCommands.cs" />
+    <Compile Include="Commands\MapsCommands.cs" />
     <Compile Include="FileParser\ControlSequence.cs" />
     <Compile Include="FileParser\FunctionCall.cs" />
     <Compile Include="FileParser\IExecution.cs" />
@@ -73,6 +74,10 @@
     <ProjectReference Include="..\..\BaseCore\Stump.BaseCore.Framework\Stump.BaseCore.Framework.csproj">
       <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
       <Name>Stump.BaseCore.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ServerCore\Stump.Server.BaseServer\Stump.Server.BaseServer.csproj">
+      <Project>{011FBAFC-7720-4D36-9C59-71BAE6163C9E}</Project>
+      <Name>Stump.Server.BaseServer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

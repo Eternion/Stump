@@ -18,7 +18,8 @@
 //  *************************************************************************/
 using System;
 using System.IO;
-using zlib;
+using System.Text;
+using Ionic.Zlib;
 
 namespace Stump.Server.BaseServer.Data.MapTool
 {
@@ -31,7 +32,7 @@ namespace Stump.Server.BaseServer.Data.MapTool
 
             var dlmStream = new FileStream(dlmFullPath, FileMode.Open);
             var mapStream = new FileStream(mapFullPath, FileMode.Create);
-            var zoutput = new ZOutputStream(mapStream, zlibConst.Z_DEFAULT_COMPRESSION);
+            var zoutput = new ZlibStream(mapStream, CompressionMode.Compress, CompressionLevel.BestCompression, true);
 
             try
             {
@@ -57,7 +58,7 @@ namespace Stump.Server.BaseServer.Data.MapTool
 
             var dlmStream = new FileStream(dlmFullPath, FileMode.Open);
             var mapStream = new FileStream(mapFullPath, FileMode.Create);
-            var zoutput = new ZOutputStream(mapStream);
+            var zoutput = new ZlibStream(mapStream, CompressionMode.Decompress, true);
 
             try
             {

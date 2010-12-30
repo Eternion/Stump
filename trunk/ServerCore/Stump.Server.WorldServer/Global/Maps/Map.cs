@@ -18,6 +18,7 @@
 //  *************************************************************************/
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,6 +29,7 @@ using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global.Pathfinding;
 using Stump.Server.WorldServer.Handlers;
 using Stump.Server.WorldServer.Npcs;
+using Stump.Server.WorldServer.Skills;
 
 namespace Stump.Server.WorldServer.Global.Maps
 {
@@ -35,6 +37,7 @@ namespace Stump.Server.WorldServer.Global.Maps
     {
         public static void WriteMap(this BigEndianWriter writer, Map map)
         {
+            writer.WriteByte(0x96);
             writer.WriteByte((byte) map.Version);
             writer.WriteInt(map.Id);
             writer.WriteInt((int) map.RelativeId);
@@ -62,10 +65,22 @@ namespace Stump.Server.WorldServer.Global.Maps
             {
                 writer.WriteCell(cell);
             }
+
+            writer.WriteInt(map.MapElementsPositions.Count);
+            foreach (var elementsPosition in map.MapElementsPositions)
+            {
+                writer.WriteUInt(elementsPosition.Key);
+                writer.WriteUShort(elementsPosition.Value.Id);
+            }
         }
 
         public static Map ReadMap(this BigEndianReader reader)
         {
+            int header = reader.ReadByte();
+
+            if (header != 0x96)
+                throw new FileLoadException("Wrong header file");
+
             var map = new Map
                 {
                     Version = reader.ReadByte(),
@@ -93,6 +108,20 @@ namespace Stump.Server.WorldServer.Global.Maps
                 map.CellsData.Add(celldata);
             }
 
+            int count = reader.ReadInt();
+            for (int i = 0; i < count; i++ )
+            {
+                uint key = reader.ReadUInt();
+                ushort cell = reader.ReadUShort();
+
+                // objects can be superposed, so we ignore it
+                if (map.MapElementsPositions.ContainsKey(key) && map.MapElementsPositions[key].Id == cell)
+                    continue;
+
+                if (key > 0)
+                    map.MapElementsPositions.Add(key, map.GetCell(cell));
+            }
+
             map.InitializeMapArrounds();
 
             return map;
@@ -117,6 +146,8 @@ namespace Stump.Server.WorldServer.Global.Maps
         public Map()
         {
             CellsData = new List<CellData>();
+            MapElementsPositions = new Dictionary<uint, CellData>();
+            InteractiveObjects = new Dictionary<uint, InteractiveObject>();
             m_mapsAround = new Dictionary<int, MapNeighbour>();
 
             EntityAdded += WorldSpaceEntityAdded;
@@ -193,7 +224,7 @@ namespace Stump.Server.WorldServer.Global.Maps
 
         public void SpawnNpc(GameRolePlayNpcInformations npcInformations)
         {
-            var template = NpcManager.GetTemplate((int) npcInformations.npcId);
+            NpcTemplate template = NpcManager.GetTemplate((int) npcInformations.npcId);
 
             if (template == null)
                 throw new Exception(string.Format("NPC Template <id:{0}> doesn't exists", npcInformations.npcId));
@@ -207,6 +238,14 @@ namespace Stump.Server.WorldServer.Global.Maps
                 npcInformations.look);
 
             AddEntity(npcSpawn);
+        }
+
+        public void SpawnInteractiveObject(InteractiveElement interactiveElement)
+        {
+            var interactiveObject = new InteractiveObject(interactiveElement.elementId, interactiveElement.elementTypeId,
+                                                          new Dictionary<uint, SkillBase>(), MapElementsPositions[interactiveElement.elementId]);
+
+            InteractiveObjects.Add(interactiveElement.elementId, interactiveObject);
         }
 
 
@@ -317,6 +356,10 @@ namespace Stump.Server.WorldServer.Global.Maps
             return CellsData[index];
         }
 
+        public InteractiveObject GetInteractiveObject(uint elementId)
+        {
+            return InteractiveObjects.ContainsKey(elementId) ? InteractiveObjects[elementId] : null;
+        }
 
         /// <summary>
         ///   Execute an action of every characters in this world space included fight's members.
@@ -418,6 +461,18 @@ namespace Stump.Server.WorldServer.Global.Maps
         }
 
         public int PresetId
+        {
+            get;
+            set;
+        }
+
+        internal Dictionary<uint, CellData> MapElementsPositions
+        {
+            get;
+            set;
+        }
+
+        public Dictionary<uint, InteractiveObject> InteractiveObjects
         {
             get;
             set;

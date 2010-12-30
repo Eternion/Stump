@@ -29,12 +29,12 @@ namespace Stump.Server.WorldServer
         /// Path of content folder
         /// </summary>
         [Variable]
-        public static string ContentPath = "./../../content";
+        public static string ContentPath = "./../../content/";
 
         /// <summary>
         /// Path of static folder
         /// </summary>
         [Variable]
-        public static string StaticPath = "./../../static";
+        public static string StaticPath = "./../../static/";
     }
 }

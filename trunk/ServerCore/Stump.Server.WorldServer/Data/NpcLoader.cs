@@ -34,16 +34,16 @@ namespace Stump.Server.WorldServer.Data
         ///   Name of monsters folder
         /// </summary>
         [Variable]
-        public static string NpcsDir = "/Npcs/";
+        public static string NpcsDir = "Npcs/";
 
         [Variable]
-        public static string NpcsQuestionsDir = "/NpcsQuestions/";
+        public static string NpcsQuestionsDir = "NpcsQuestions/";
 
         [Variable]
-        public static string NpcRepliesDir = "/NpcsReplies/";
+        public static string NpcRepliesDir = "NpcsReplies/";
 
         [Variable]
-        public static string NpcActionsDir = "/NpcsActions/";
+        public static string NpcActionsDir = "NpcsActions/";
 
         public static IEnumerable<Tuple<uint, GameRolePlayNpcInformations>> LoadSpawnData()
         {

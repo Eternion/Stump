@@ -21,11 +21,14 @@ using System.Linq;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.XmlUtils;
 using Stump.DofusProtocol.Classes;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.WorldServer.Actions.NpcActions;
+using Stump.Server.WorldServer.Actions.ActionsCharacter;
+using Stump.Server.WorldServer.Actions.ActionsNpcs;
 using Stump.Server.WorldServer.Items;
 using Stump.Server.WorldServer.Npcs;
 using Stump.Server.WorldServer.Npcs.StartActions;
+using Stump.Server.WorldServer.Skills;
 using Stump.Tools.Proxy.Network;
 
 namespace Stump.Tools.Proxy.Data
@@ -50,6 +53,12 @@ namespace Stump.Tools.Proxy.Data
         [Variable]
         public static string MonstersDir = "Monsters/";
 
+        [Variable]
+        public static string InteractiveObjectsDir = "InteractiveObjects/";
+
+        [Variable]
+        public static string SkillActionsDir = "SkillActions/";
+
         public static void HandleNpcQuestion(WorldClient client, NpcDialogQuestionMessage dialogQuestionMessage)
         {
             BuildActionNpcQuestion(client, dialogQuestionMessage);
@@ -62,6 +71,47 @@ namespace Stump.Tools.Proxy.Data
             SerializeToXml(
                 Output + NpcQuestionsDir + dialogQuestionMessage.messageId + ".xml",
                 dialogQuestionMessage);
+        }
+
+        public static void BuildActionTeleport(WorldClient client, CurrentMapMessage message)
+        {
+            if (client.GuessNpcReply != null)
+            {
+                uint replyId = client.GuessNpcReply.replyId;
+                client.GuessNpcReply = null; // clear it as fast as possible
+
+                var npcReply = new NpcDialogReply(replyId,
+                                                  new ActionTeleport(message.mapId, (ushort) client.Disposition.cellId,
+                                                                     (DirectionsEnum) client.Disposition.direction));
+
+                if (!Directory.Exists(Output + NpcRepliesDir))
+                {
+                    Directory.CreateDirectory(Output + NpcRepliesDir);
+                }
+
+                SerializeToXml(Output + NpcRepliesDir + replyId + ".xml",
+                               npcReply);
+            }
+            else if (client.GuessSkillAction != null)
+            {
+                uint mapId = client.GuessSkillAction.Item1;
+                uint skillId = client.GuessSkillAction.Item2.skillInstanceUid;
+                uint elementId = client.GuessSkillAction.Item2.elemId;
+                uint duration = client.GuessSkillAction.Item3.duration;
+                client.GuessSkillAction = null;
+
+                var skill = new SkillInstance(skillId,
+                                              new SkillUse(duration,
+                                                           actions:
+                                                               new ActionTeleport(message.mapId,
+                                                                                  (ushort) client.Disposition.cellId,
+                                                                                  (DirectionsEnum)
+                                                                                  client.Disposition.direction)));
+
+                SerializeToXml(
+                    GetDirectoryPath(client, SkillActionsDir) + mapId + "_" + elementId + "_" + skillId + ".xml",
+                    skill);
+            }
         }
 
         public static void BuildActionNpcQuestion(WorldClient client, NpcDialogQuestionMessage dialogQuestionMessage)
@@ -135,7 +185,8 @@ namespace Stump.Tools.Proxy.Data
             client.GuessNpcFirstAction = null;
 
             NpcStartActionSerialized action = new ShopAction((int) npcId, npcShopMessage.tokenId,
-                                                             npcShopMessage.objectsInfos.Select(entry => new ItemToSellInNpcShop(entry)).ToList());
+                                                             npcShopMessage.objectsInfos.Select(
+                                                                 entry => new ItemToSellInNpcShop(entry)).ToList());
 
             SerializeToXml(
                 GetDirectoryPath(client, NpcActionsDir) + client.CurrentMap + "_" + npcId + "_" +
@@ -154,6 +205,14 @@ namespace Stump.Tools.Proxy.Data
             SerializeToXml(
                 GetDirectoryPath(client, NpcDir) + client.CurrentMap + "_" + npcInformations.npcId + ".xml",
                 npcInformations);
+        }
+
+        public static void HandleInteractiveObject(WorldClient client, InteractiveElement interactiveElement)
+        {
+            SerializeToXml(
+                GetDirectoryPath(client, InteractiveObjectsDir) + client.CurrentMap + "_" + interactiveElement.elementId +
+                ".xml",
+                interactiveElement);
         }
 
         public static string GetDirectoryPath(WorldClient client, string specificDirectory)

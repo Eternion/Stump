@@ -70,7 +70,19 @@ namespace Stump.Tools.Proxy.Network
             set;
         }
 
+        public Tuple<uint, InteractiveUseRequestMessage, InteractiveUsedMessage> GuessSkillAction
+        {
+            get;
+            set;
+        }
+
         public Dictionary<int, GameRolePlayNpcInformations> MapNpcs
+        {
+            get;
+            set;
+        }
+
+        public Dictionary<int, InteractiveElement> MapIOs
         {
             get;
             set;
@@ -82,18 +94,43 @@ namespace Stump.Tools.Proxy.Network
             set;
         }
 
+        private EntityDispositionInformations m_disposition;
+
+        public EntityDispositionInformations Disposition
+        {
+            get { return m_disposition; }
+            set
+            {
+                m_disposition = value;
+
+                if (m_delegateToCall != null)
+                {
+                    m_delegateToCall.DynamicInvoke();
+
+                    m_delegateToCall = null;
+                }
+            }
+        }
+
         public bool GuessAction
         {
             get
             {
-                return GuessNpcReply != null || GuessNpcFirstAction != null;
+                return GuessNpcReply != null || GuessNpcFirstAction != null || GuessSkillAction != null;
             }
+        }
+
+        private Action m_delegateToCall;
+        public void CallWhenPositionChange(Action action)
+        {
+            m_delegateToCall = action;
         }
 
         public WorldClient(Socket socket)
             : base(socket)
         {
             MapNpcs = new Dictionary<int, GameRolePlayNpcInformations>();
+            MapIOs = new Dictionary<int, InteractiveElement>();
 
             Send(new ProtocolRequired(1304, 1304));
             Send(new HelloGameMessage());

@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Data
         /// Name of maps folder
         /// </summary>
         [Variable]
-        public static string MapsDir = "/maps/";
+        public static string MapsDir = "maps/";
 
         /// <summary>
         /// Name of d2o file for maps

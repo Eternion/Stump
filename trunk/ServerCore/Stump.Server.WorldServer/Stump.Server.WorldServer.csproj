@@ -52,11 +52,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\ActionBase.cs" />
+    <Compile Include="Actions\ActionsCharacter\ActionTeleport.cs" />
     <Compile Include="Actions\ActionSerialized.cs" />
     <Compile Include="Actions\CharacterAction.cs" />
+    <Compile Include="Actions\InteractiveAction.cs" />
     <Compile Include="Actions\NpcAction.cs" />
-    <Compile Include="Actions\NpcActions\ActionDialogLeave.cs" />
-    <Compile Include="Actions\NpcActions\ActionDialogQuestion.cs" />
+    <Compile Include="Actions\ActionsNpcs\ActionDialogLeave.cs" />
+    <Compile Include="Actions\ActionsNpcs\ActionDialogQuestion.cs" />
     <Compile Include="Breeds\BaseBreed.cs" />
     <Compile Include="Breeds\BreedManager.cs" />
     <Compile Include="Breeds\CraBreed.cs" />
@@ -81,8 +83,10 @@
     <Compile Include="Commands\TriggerChat.cs" />
     <Compile Include="Commands\TriggerConsole.cs" />
     <Compile Include="Commands\WorkerCommands.cs" />
+    <Compile Include="Data\InteractiveObjectLoader.cs" />
     <Compile Include="Data\NpcLoader.cs" />
     <Compile Include="Dialog\Dialoger.cs" />
+    <Compile Include="Global\Maps\InteractiveObject.cs" />
     <Compile Include="Handlers\Authorized\AuthorizedHandler.cs" />
     <Compile Include="Items\ItemToSellInNpcShop.cs" />
     <Compile Include="Npcs\NpcShopDialog.cs" />
@@ -231,6 +235,10 @@
     <Compile Include="Npcs\StartActions\ShopAction.cs" />
     <Compile Include="Npcs\StartActions\TalkAction.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="Skills\SkillInstance.cs" />
+    <Compile Include="Skills\SkillSerialized.cs" />
+    <Compile Include="Skills\SkillBase.cs" />
+    <Compile Include="Skills\SkillUse.cs" />
     <Compile Include="Spells\Spell.cs" />
     <Compile Include="Spells\SpellCollection.cs" />
     <Compile Include="Spells\SpellLevel.cs" />
@@ -282,7 +290,9 @@
   <ItemGroup>
     <Compile Include="Entities\LivingEntity.Events.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Actions\ActionsBase\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

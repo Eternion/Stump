@@ -33,6 +33,7 @@ namespace Stump.Tools.Proxy.Handlers.World
             client.Send(message);
 
             client.MapNpcs.Clear();
+            client.MapIOs.Clear();
             client.CurrentMap = message.mapId;
 
             Parallel.ForEach(message.actors, actor =>
@@ -40,7 +41,16 @@ namespace Stump.Tools.Proxy.Handlers.World
                 DataFactory.HandleActorInformations(client, actor);
 
                 if (actor is GameRolePlayNpcInformations)
-                    client.MapNpcs.Add((actor as GameRolePlayNpcInformations).contextualId, (GameRolePlayNpcInformations) actor);
+                    client.MapNpcs.Add(( actor as GameRolePlayNpcInformations ).contextualId, (GameRolePlayNpcInformations)actor);
+                else if (actor is GameRolePlayCharacterInformations && ( actor as GameRolePlayCharacterInformations ).contextualId == client.CharacterInformations.id)
+                    client.Disposition = actor.disposition;
+            });
+
+            Parallel.ForEach(message.interactiveElements, entry =>
+            {
+                DataFactory.HandleInteractiveObject(client, entry);
+
+                client.MapIOs.Add((int) entry.elementId, entry);
             });
         }
     }

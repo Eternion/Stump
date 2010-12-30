@@ -16,13 +16,26 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using Stump.DofusProtocol.Messages;
+using Stump.Tools.Proxy.Data;
 using Stump.Tools.Proxy.Network;
 
 namespace Stump.Tools.Proxy.Handlers.World
 {
-    public class TeleportDestinationsListMessageHandler : WorldHandlerContainer
+    public class TeleportHandler : WorldHandlerContainer
     {
+        [WorldHandler(typeof (CurrentMapMessage))]
+        public static void HandleCurrentMapMessage(WorldClient client, CurrentMapMessage message)
+        {
+            if(client.GuessAction)
+            {
+                client.CallWhenPositionChange(() => DataFactory.BuildActionTeleport(client, message));
+            }
+
+            client.Send(message);
+        }
+
         [WorldHandler(typeof (TeleportDestinationsListMessage))]
         public static void HandleTeleportDestinationsListMessage(WorldClient client, TeleportDestinationsListMessage message)
         {

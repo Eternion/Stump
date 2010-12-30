@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Data
         /// Name of monsters folder
         /// </summary>
         [Variable]
-        public static string MapsDir = "/Monsters/";
+        public static string MapsDir = "Monsters/";
 
         public static IEnumerable<GameRolePlayGroupMonsterInformations> LoadSpawnData()
         {

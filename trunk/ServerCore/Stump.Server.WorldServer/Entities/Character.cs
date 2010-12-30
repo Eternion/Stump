@@ -126,15 +126,7 @@ namespace Stump.Server.WorldServer.Entities
 
         public void ChangeMap(Map nextMap)
         {
-            if (IsMoving)
-                MovementEnded();
-
-            Map lastMap = Map;
-
-            NextMap = nextMap;
-            Map.RemoveEntity(this);
-
-            var neighbour = lastMap.GetMapNeighbourByMapid(nextMap.Id);
+            var neighbour = Map.GetMapNeighbourByMapid(nextMap.Id);
 
             var cellId = Position.CellId;
             if (neighbour != MapNeighbour.None)
@@ -142,26 +134,33 @@ namespace Stump.Server.WorldServer.Entities
                 cellId = Map.GetCellAfterChangeMap(Position.CellId, neighbour);
             }
 
-            Position.ChangeLocation(nextMap, cellId);
-
-            Map.AddEntity(this);
-
-            NotifyChangeMap(lastMap);
+            ChangeMap(nextMap, cellId);
         }
 
 
         public void ChangeMap(Map nextMap, ushort cellId)
+        {
+            if (IsMoving)
+                MovementEnded();
+
+            ChangeMap(nextMap, cellId, Position.Direction);
+        }
+
+        public void ChangeMap(Map nextMap, ushort cellId, DirectionsEnum direction)
         {
             Map lastMap = Map;
 
             NextMap = nextMap;
             Map.RemoveEntity(this);
 
-            Position.ChangeLocation(nextMap, cellId);
+            Position.ChangeLocation(new VectorIsometric(nextMap, cellId, direction));
 
             Map.AddEntity(this);
 
             NotifyChangeMap(lastMap);
+
+            ContextHandler.SendCurrentMapMessage(Client, Map.Id);
+            BasicHandler.SendBasicTimeMessage(Client);
         }
 
         public void AddKamas(long amount)

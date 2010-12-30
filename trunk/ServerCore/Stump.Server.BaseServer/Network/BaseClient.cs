@@ -102,7 +102,7 @@ namespace Stump.Server.BaseServer.Network
             m_isInitialized = true;
         }
 
-        public void Send(Message message)
+        public virtual void Send(Message message)
         {
 
             if (Socket == null || !Connected)

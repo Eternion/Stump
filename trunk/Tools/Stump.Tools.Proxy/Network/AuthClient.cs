@@ -26,6 +26,8 @@ namespace Stump.Tools.Proxy.Network
         public AuthClient(Socket socket, IPEndPoint ipEndPoint)
             : base(socket)
         {
+            IsInCriticalZone = true;
+
             BindToServer(ipEndPoint);
         }
     }

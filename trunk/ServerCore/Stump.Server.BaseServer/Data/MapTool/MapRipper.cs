@@ -16,6 +16,8 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
+using System.Collections.Generic;
 using System.IO;
 using Stump.BaseCore.Framework.IO;
 
@@ -31,10 +33,10 @@ namespace Stump.Server.BaseServer.Data.MapTool
         public static void RipMapFile(string mapfilePath, string dest)
         {
             FileStream stream = File.Open(mapfilePath, FileMode.Open);
-            int mapversion;
+            byte mapversion;
             int mapid;
             int relativeid;
-            int maptype;
+            byte maptype;
             int subareaid;
             int topid;
             int bottomid;
@@ -49,15 +51,19 @@ namespace Stump.Server.BaseServer.Data.MapTool
             int[] losmov;
             int[] speed;
             int[] mapchangedata;
+            List<MapObjectElement> elements;
 
             using (var reader = new BigEndianReader(stream))
             {
-                reader.ReadByte(); // header
+                byte header = reader.ReadByte(); // header
 
-                mapversion = reader.ReadInt();
+                if (header == 0x96)
+                    return;
+
+                mapversion = reader.ReadByte();
                 mapid = reader.ReadInt();
                 relativeid = reader.ReadInt();
-                maptype = reader.ReadInt();
+                maptype = reader.ReadByte();
                 subareaid = reader.ReadInt();
                 topid = reader.ReadInt();
                 bottomid = reader.ReadInt();
@@ -75,11 +81,11 @@ namespace Stump.Server.BaseServer.Data.MapTool
                 if (mapversion >= 4)
                 {
                     /*this.ZOOM_SCALE = */
-                    reader.ReadUShort(); // 100 
+                    ushort loc1 = reader.ReadUShort(); // 100 
                     /*this.ZOOM_OFFSET_X = */
-                    reader.ReadShort();
+                    short loc2 = reader.ReadShort();
                     /*this.ZOOM_OFFSET_Y = */
-                    reader.ReadShort();
+                    short loc3 = reader.ReadShort();
                 }
 
                 uselowpassfilter = reader.ReadByte() != 0;
@@ -91,7 +97,7 @@ namespace Stump.Server.BaseServer.Data.MapTool
                 }
 
                 // fixtures background
-                int count = reader.ReadInt();
+                int count = reader.ReadByte();
                 for (int i = 0; i < count; i++)
                 {
                     // new fixture
@@ -108,7 +114,7 @@ namespace Stump.Server.BaseServer.Data.MapTool
                 }
 
                 // fixtures foreground
-                count = reader.ReadInt();
+                count = reader.ReadByte();
                 for (int i = 0; i < count; i++)
                 {
                     // new fixture
@@ -126,31 +132,27 @@ namespace Stump.Server.BaseServer.Data.MapTool
 
                 reader.ReadInt();
 
-                reader.ReadInt(); // ground
+                int ground = reader.ReadInt(); // ground
 
                 // layers
+                elements = new List<MapObjectElement>();
                 count = reader.ReadByte();
                 for (int i = 0; i < count; i++)
                 {
                     // new layer
-                    reader.ReadInt(); // id
+                    int id = reader.ReadInt(); // id
                     short cellscount = reader.ReadShort(); // count
                     for (int l = 0; l < cellscount; l++)
                     {
-                        reader.ReadShort(); //id
+                        ushort cell = reader.ReadUShort(); //id
                         short elemcount = reader.ReadShort(); // count
                         for (int k = 0; k < elemcount; k++)
                         {
-                            switch (reader.ReadByte())
+                            int type = reader.ReadByte();
+                            switch (type)
                             {
                                 case 2: // GRAPICAL
-                                    reader.ReadShort();
-                                    reader.ReadByte();
-                                    reader.ReadByte();
-                                    reader.ReadByte();
-                                    reader.ReadInt();
-                                    reader.ReadByte();
-                                    reader.ReadByte();
+                                    elements.Add(new MapObjectElement(cell, reader));
                                     break;
                                 case 33: // SOUND
                                     reader.ReadInt();
@@ -160,6 +162,8 @@ namespace Stump.Server.BaseServer.Data.MapTool
                                     reader.ReadShort();
                                     reader.ReadShort();
                                     break;
+                                default:
+                                    throw new Exception("Wrong element type");
                             }
                         }
                     }
@@ -180,9 +184,6 @@ namespace Stump.Server.BaseServer.Data.MapTool
                     speed[i] = reader.ReadByte();
                     mapchangedata[i] = reader.ReadByte();
                 }
-
-
-                reader.Dispose();
             }
 
             // STEP 2 : Write data to a new ripped file
@@ -190,11 +191,12 @@ namespace Stump.Server.BaseServer.Data.MapTool
 
             using (var writer = new BigEndianWriter(ripStream))
             {
-                writer.WriteInt(mapversion);
+                writer.WriteByte(0x96); // header
+                writer.WriteByte(mapversion);
                 writer.WriteInt(mapid);
                 writer.WriteInt(relativeid);
 
-                writer.WriteInt(maptype);
+                writer.WriteByte(maptype);
 
                 writer.WriteInt(subareaid);
 
@@ -222,8 +224,13 @@ namespace Stump.Server.BaseServer.Data.MapTool
                     writer.WriteByte((byte) speed[i]);
                     writer.WriteByte((byte) mapchangedata[i]);
                 }
-
-                writer.Dispose();
+                
+                writer.WriteInt(elements.Count);
+                for (int i = 0; i < elements.Count; i++)
+                {
+                    writer.WriteUInt(elements[i].Identifier);
+                    writer.WriteUShort(elements[i].Cell);
+                }
             }
         }
     }

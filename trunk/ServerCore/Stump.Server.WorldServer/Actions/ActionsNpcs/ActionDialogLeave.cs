@@ -1,6 +1,6 @@
 using Stump.Server.WorldServer.Entities;
 
-namespace Stump.Server.WorldServer.Actions.NpcActions
+namespace Stump.Server.WorldServer.Actions.ActionsNpcs
 {
     public class ActionDialogLeave : NpcAction
     {

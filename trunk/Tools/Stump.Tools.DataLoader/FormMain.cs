@@ -27,6 +27,8 @@ namespace Stump.Tools.DataLoader
     public partial class FormMain : Form
     {
         private static readonly Dictionary<string, Type> m_adapters = new Dictionary<string, Type>();
+        private ToolStripItem m_currentMenuItem;
+        private ToolStripItem m_firstMenuItem;
 
         static FormMain()
         {
@@ -44,6 +46,8 @@ namespace Stump.Tools.DataLoader
         public FormMain()
         {
             InitializeComponent();
+
+            m_firstMenuItem = menuStrip1.Items[0];
         }
 
         private void OpenToolStripMenuItemClick(object sender, EventArgs e)
@@ -92,13 +96,15 @@ namespace Stump.Tools.DataLoader
 
         private void FormMainMdiChildActivate(object sender, EventArgs e)
         {
-            if (menuStrip1.Items[1].Tag is IFileAdapter)
-                menuStrip1.Items.RemoveAt(1);
+            if (m_currentMenuItem != null && m_currentMenuItem.Tag is IFileAdapter)
+                menuStrip1.Items.Remove(m_currentMenuItem);
 
             if (ActiveMdiChild != null)
             {
-                menuStrip1.Items.Insert(1, ((FormAdapter) ActiveMdiChild).Adapter.MenuItem);
-                menuStrip1.Items[1].Tag = ((FormAdapter) ActiveMdiChild).Adapter;
+                m_currentMenuItem = ((FormAdapter) ActiveMdiChild).Adapter.MenuItem;
+                m_currentMenuItem.MergeAction = MergeAction.Insert;
+                menuStrip1.Items.Insert(menuStrip1.Items.Count - 2, m_currentMenuItem);
+                m_currentMenuItem.Tag = ( (FormAdapter)ActiveMdiChild ).Adapter;
             }
         }
 

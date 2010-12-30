@@ -46,23 +46,11 @@ namespace Stump.Server.WorldServer.Global
             logger.Info("Loading Maps...");
             LoadMaps();
 
+            logger.Info("Spawn Interactive Objects...");
+            SpawnInteractiveObjects();
+
             logger.Info("Spawn Npcs...");
             SpawnNpcs();
-        }
-
-        public void SpawnNpcs()
-        {
-            foreach (var npcSpawnInfo in NpcLoader.LoadSpawnData())
-            {
-                try
-                {
-                    GetMap(npcSpawnInfo.Item1).SpawnNpc(npcSpawnInfo.Item2);
-                }
-                catch (Exception e)
-                {
-                    logger.Error("Cannot spawn Npc <id:{0}> : {1}", npcSpawnInfo.Item2.npcId, e.Message);
-                }
-            }
         }
 
         public void LoadMaps()
@@ -166,6 +154,48 @@ namespace Stump.Server.WorldServer.Global
 
                     zone.ParentSpace.Childrens.Add(zone);
                     Zones.Add(zone.Id, zone);
+                }
+            }
+        }
+
+        public void SpawnInteractiveObjects()
+        {
+            foreach (var interactiveObject in InteractiveObjectLoader.LoadsInteractiveObjects())
+            {
+                try
+                {
+                    GetMap(interactiveObject.Item1).SpawnInteractiveObject(interactiveObject.Item2);
+                }
+                catch (Exception e)
+                {
+                    logger.Error("Cannot spawn object <id:{0}> : {1}", interactiveObject.Item2.elementId, e.Message);
+                }
+            }
+
+            foreach (var skill in InteractiveObjectLoader.LoadSkills())
+            {
+                try
+                {
+                    GetMap(skill.Item1).GetInteractiveObject(skill.Item2).Skills.Add(skill.Item3.Id, skill.Item3.Skill);
+                }
+                catch (Exception e)
+                {
+                    logger.Error("Cannot assign skill <id:{0}> : {1}", skill.Item3.Id, e.Message);
+                }
+            }
+        }
+
+        public void SpawnNpcs()
+        {
+            foreach (var npcSpawnInfo in NpcLoader.LoadSpawnData())
+            {
+                try
+                {
+                    GetMap(npcSpawnInfo.Item1).SpawnNpc(npcSpawnInfo.Item2);
+                }
+                catch (Exception e)
+                {
+                    logger.Error("Cannot spawn Npc <id:{0}> : {1}", npcSpawnInfo.Item2.npcId, e.Message);
                 }
             }
         }

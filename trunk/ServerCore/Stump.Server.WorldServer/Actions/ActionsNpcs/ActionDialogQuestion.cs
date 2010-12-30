@@ -1,4 +1,4 @@
-﻿// /*************************************************************************
+// /*************************************************************************
 //  *
 //  *  Copyright (C) 2010 - 2011 Stump Team
 //  *
@@ -16,17 +16,39 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using Stump.DofusProtocol.Messages;
-using Stump.Tools.Proxy.Network;
+using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.Npcs;
 
-namespace Stump.Tools.Proxy.Handlers.World
+namespace Stump.Server.WorldServer.Actions.ActionsNpcs
 {
-    public class CurrentMapMessageHandler : WorldHandlerContainer
+    public class ActionDialogQuestion : NpcAction
     {
-        [WorldHandler(typeof (CurrentMapMessage))]
-        public static void HandleCurrentMapMessage(WorldClient client, CurrentMapMessage message)
+        private ActionDialogQuestion()
         {
-            client.Send(message);
+        }
+
+        public ActionDialogQuestion(int messageId)
+        {
+            MessageId = messageId;
+        }
+
+        public int MessageId
+        {
+            get;
+            set;
+        }
+
+        public override void Execute(NpcSpawn npc, Character executer)
+        {
+            if (!executer.IsInDialogWithNpc)
+                return;
+
+            var question = NpcManager.GetQuestion(MessageId);
+
+            if (question == null)
+                return;
+
+            ( (NpcDialog) executer.Dialog ).ChangeQuestion(question);
         }
     }
 }

@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using NLog;
 using Stump.BaseCore.Framework.Utils;
 using Stump.DofusProtocol.Messages;
@@ -39,6 +40,17 @@ namespace Stump.Tools.Proxy.Network
         public ServerConnection Server
         {
             get { return m_serverConnection; }
+        }
+
+        protected bool m_isInCriticalZone;
+
+        public bool IsInCriticalZone
+        {
+            get { return m_isInCriticalZone; }
+            set
+            {
+                m_isInCriticalZone = value;
+            }
         }
 
         public ProxyClient(Socket socket)
@@ -146,18 +158,29 @@ namespace Stump.Tools.Proxy.Network
         private void OnServerDisconnected(ServerConnection connection)
         {
             IsBinded = false;
-            Disconnect();
+            if (Socket != null)
+                Disconnect();
         }
+
+        private object m_syncLock = new object();
 
         private void OnServerMessageReceived(ServerConnection connection, Message message)
         {
+            bool mustExitCriticalZone = false;
+
+            if (IsInCriticalZone)
+            {
+                Monitor.Enter(m_syncLock);
+                mustExitCriticalZone = true;
+            }
+
             try
             {
                 m_receivedMessagesStack.TrimExcess();
                 m_receivedMessagesStack.Push(message);
 
                 if (Proxy.Instance.HandlerManager.IsRegister(message.GetType()))
-                    Proxy.Instance.QueueDispatcher.Enqueue(this, message);
+                    Proxy.Instance.HandlerManager.Dispatch(this, message);
                 else
                     Send(message);
             }
@@ -171,6 +194,11 @@ namespace Stump.Tools.Proxy.Network
                 if (Socket != null)
                     Disconnect();
             }
+            finally
+            {
+                if (mustExitCriticalZone)
+                    Monitor.Exit(m_syncLock);
+            }
         }
 
         private void OnClientMessageReceived(BaseClient client, Message message)
@@ -181,7 +209,7 @@ namespace Stump.Tools.Proxy.Network
                 m_sendedMessagesStack.Push(message);
 
                 if (Proxy.Instance.HandlerManager.IsRegister(message.GetType()))
-                    Proxy.Instance.QueueDispatcher.Enqueue(this, message);
+                    Proxy.Instance.HandlerManager.Dispatch(this, message);
                 else
                 {
                     if (!IsBinded)
@@ -200,6 +228,7 @@ namespace Stump.Tools.Proxy.Network
                 if (Socket != null)
                     Disconnect();
             }
+
         }
 
         protected override void OnDisconnect()

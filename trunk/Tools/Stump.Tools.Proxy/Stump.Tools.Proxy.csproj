@@ -56,13 +56,13 @@
     <Compile Include="Handlers\World\AuthenticationTicketMessageHandler.cs" />
     <Compile Include="Handlers\Auth\IdentificationSuccessMessageHandler.cs" />
     <Compile Include="Handlers\World\HelloGameMessageHandler.cs" />
-    <Compile Include="Handlers\World\CurrentMapMessageHandler.cs" />
+    <Compile Include="Handlers\World\InteractiveObjectsHandler.cs" />
     <Compile Include="Handlers\World\NpcsHandler.cs" />
     <Compile Include="Handlers\World\ProtocoleRequieredHandler.cs" />
     <Compile Include="Handlers\World\WorldHandler.cs" />
     <Compile Include="Handlers\World\WorldHandlerContainer.cs" />
     <Compile Include="Handlers\World\ZaapListMessageHandler.cs" />
-    <Compile Include="Handlers\World\TeleportDestinationsListMessageHandler.cs" />
+    <Compile Include="Handlers\World\TeleportHandler.cs" />
     <Compile Include="Network\AuthClient.cs" />
     <Compile Include="Network\ProxyClient.cs" />
     <Compile Include="Network\WorldClient.cs" />

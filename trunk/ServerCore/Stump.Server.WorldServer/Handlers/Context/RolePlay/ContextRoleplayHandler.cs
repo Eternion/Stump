@@ -34,9 +34,6 @@ namespace Stump.Server.WorldServer.Handlers
             Map nextMap = World.Instance.GetMap((int)message.mapId);
 
             client.ActiveCharacter.ChangeMap(nextMap);
-
-            SendCurrentMapMessage(client, (int) message.mapId);
-            BasicHandler.SendBasicTimeMessage(client);
         }
 
         [WorldHandler(typeof(MapInformationsRequestMessage))]
@@ -61,7 +58,7 @@ namespace Stump.Server.WorldServer.Handlers
                 0,
                 new List<HouseInformations>(),
                 client.ActiveCharacter.Map.Entities.Select(entry => entry.Value.ToNetworkActor(client)).ToList(),
-                new List<InteractiveElement>(),
+                client.ActiveCharacter.Map.InteractiveObjects.Select(entry => entry.Value.ToNetworkElement(client)).ToList(),
                 new List<StatedElement>(),
                 new List<MapObstacle>(),
                 new List<FightCommonInformations>()));

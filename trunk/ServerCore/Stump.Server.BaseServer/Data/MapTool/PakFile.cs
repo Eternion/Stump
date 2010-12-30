@@ -24,17 +24,15 @@ using Stump.BaseCore.Framework.IO;
 
 namespace Stump.Server.BaseServer.Data.MapTool
 {
-    public class PakFile
+    public class PakFile : IDisposable
     {
-        private readonly Dictionary<string, Tuple<int, int>> m_indexes = new Dictionary<string, Tuple<int, int>>();
-        private readonly BigEndianReader m_reader;
+        private readonly Dictionary<string, Tuple<int, int, BigEndianReader>> m_indexes = new Dictionary<string, Tuple<int, int, BigEndianReader>>();
+        private readonly Dictionary<string, Dictionary<string, string>> m_properties = new Dictionary<string, Dictionary<string, string>>();
+        private readonly List<BigEndianReader> m_openReaders = new List<BigEndianReader>();
 
         public PakFile(string filepath)
         {
             FilePath = filepath;
-
-            m_reader =
-                new BigEndianReader(File.Open(filepath, FileMode.Open));
 
             Init();
         }
@@ -47,16 +45,55 @@ namespace Stump.Server.BaseServer.Data.MapTool
 
         private void Init()
         {
-            int indextableOffset = m_reader.ReadInt();
-            m_reader.Seek(indextableOffset, SeekOrigin.Begin);
+            string linkFile = FilePath;
+            bool linked = false;
 
-            while (m_reader.BaseStream.Length - m_reader.BaseStream.Position > 0)
+           parse:
+            var reader = new BigEndianReader(File.Open(linkFile, FileMode.Open));
+            m_openReaders.Add(reader);
+
+            if (reader.ReadByte() != 2 || reader.ReadByte() != 1)
+                throw new FileLoadException("Corrupted d2p header");
+
+            reader.Seek(-24, SeekOrigin.End);
+            var offsetBase = reader.ReadInt();
+            var loc9 = reader.ReadUInt();
+            var startOffset = reader.ReadInt();
+            var elementsCount = reader.ReadUInt();
+            var propertiesOffset = reader.ReadInt();
+            var propertiesCount = reader.ReadUInt();
+
+            reader.Seek(propertiesOffset, SeekOrigin.Begin);
+            m_properties.Add(linkFile, new Dictionary<string, string>());
+
+            for (int i = 0; i < propertiesCount; i++)
             {
-                string indexname = m_reader.ReadUTF();
-                int offset = m_reader.ReadInt();
-                int bytescount = m_reader.ReadInt();
+                var key = reader.ReadUTF();
+                var property = reader.ReadUTF();
 
-                m_indexes.Add(indexname, new Tuple<int, int>(offset, bytescount));
+                m_properties[linkFile].Add(key, property);
+
+                if (key == "link")
+                {
+                    linkFile = Path.GetDirectoryName(linkFile) + @"\" + property;
+                    linked = true;
+                }
+            }
+
+            reader.Seek(startOffset, SeekOrigin.Begin);
+            for (int i = 0; i < elementsCount; i++)
+            {
+                string indexname = reader.ReadUTF();
+                int offset = reader.ReadInt() + offsetBase;
+                int bytescount = reader.ReadInt();
+
+                m_indexes.Add(indexname, new Tuple<int, int, BigEndianReader>(offset, bytescount, reader));
+            }
+
+            if (linked)
+            {
+                linked = false;
+                goto parse;
             }
         }
 
@@ -78,8 +115,8 @@ namespace Stump.Server.BaseServer.Data.MapTool
                 if (!Directory.Exists(Path.GetDirectoryName(dirpath + index.Key)))
                     Directory.CreateDirectory(Path.GetDirectoryName(dirpath + index.Key));
 
-                m_reader.Seek(index.Value.Item1, SeekOrigin.Begin); // offset
-                byte[] fileData = m_reader.ReadBytes(index.Value.Item2);
+                index.Value.Item3.Seek(index.Value.Item1, SeekOrigin.Begin); // offset
+                byte[] fileData = index.Value.Item3.ReadBytes(index.Value.Item2);
 
                 File.WriteAllBytes(dirpath + index.Key, fileData);
             }
@@ -89,13 +126,12 @@ namespace Stump.Server.BaseServer.Data.MapTool
         {
             destfile = Path.GetFullPath(destfile);
 
-            IEnumerable<KeyValuePair<string, Tuple<int, int>>> files = m_indexes.Where(entry => entry.Key == file);
-
-            if (files.Count() <= 0)
+            Tuple<int, int, BigEndianReader> outvalue;
+            if (!m_indexes.TryGetValue(file, out outvalue))
                 throw new Exception("Unknown file " + file);
 
-            m_reader.Seek(files.First().Value.Item1, SeekOrigin.Begin); // offset
-            byte[] fileData = m_reader.ReadBytes(files.First().Value.Item2);
+            outvalue.Item3.Seek(outvalue.Item1, SeekOrigin.Begin); // offset
+            byte[] fileData = outvalue.Item3.ReadBytes(outvalue.Item2);
 
             File.WriteAllBytes(destfile, fileData);
         }
@@ -113,7 +149,15 @@ namespace Stump.Server.BaseServer.Data.MapTool
 
         public void Close()
         {
-            m_reader.Dispose();
+            foreach (var reader in m_openReaders)
+            {
+                reader.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Close();
         }
     }
 }

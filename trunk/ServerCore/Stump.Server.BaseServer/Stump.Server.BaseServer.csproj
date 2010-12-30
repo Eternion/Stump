@@ -37,6 +37,9 @@
     <Reference Include="Castle.Core">
       <HintPath>..\..\Library\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\..\Library\Ionic.Zip.dll</HintPath>
+    </Reference>
     <Reference Include="MySql.Data, Version=6.2.2.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Library\MySql.Data.dll</HintPath>
@@ -54,9 +57,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="zlib.net">
-      <HintPath>..\..\Library\zlib.net.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\CommandBase.cs" />
@@ -69,16 +69,17 @@
     <Compile Include="Commands\TriggerBase.cs" />
     <Compile Include="Commands\ConverterException.cs" />
     <Compile Include="ConsoleBase.cs" />
-    <Compile Include="Data\DataLoader.cs" />
     <Compile Include="Data\D2oTool\D2oClassDefinition.cs" />
     <Compile Include="Data\D2oTool\D2oFieldDefinition.cs" />
     <Compile Include="Data\D2oTool\D2oFile.cs" />
     <Compile Include="Data\D2oTool\I18nFile.cs" />
+    <Compile Include="Data\DataLoader.cs" />
     <Compile Include="Data\MapTool\Compressor.cs" />
     <Compile Include="Data\MapTool\MapRipper.cs" />
-    <Compile Include="Data\MapTool\PakFile.cs" />
     <Compile Include="Database\DatabaseAccessor.cs" />
     <Compile Include="Database\DatabaseConfiguration.cs" />
+    <Compile Include="Data\MapTool\MapObjectElement.cs" />
+    <Compile Include="Data\MapTool\PakFile.cs" />
     <Compile Include="Definitions.cs" />
     <Compile Include="Handler\IHandlerContainer.cs" />
     <Compile Include="Initializing\StageStep.cs" />
@@ -127,7 +128,6 @@
       <Name>Stump.DofusProtocol.D2oClasses</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
