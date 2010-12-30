@@ -17,12 +17,11 @@
 //  *
 //  *************************************************************************/
 using Stump.DofusProtocol.Messages;
-using Stump.Tools.Proxy.Handlers.Auth;
 using Stump.Tools.Proxy.Network;
 
-namespace Stump.Tools.Proxy.Messages
+namespace Stump.Tools.Proxy.Handlers.Auth
 {
-    internal class IdentificationSuccessMessageHandler : AuthHandlerContainer
+    public class IdentificationSuccessMessageHandler : AuthHandlerContainer
     {
         [AuthHandler(typeof (IdentificationSuccessMessage))]
         public static void HandleIdentificationSuccessMessage(AuthClient client, IdentificationSuccessMessage message)

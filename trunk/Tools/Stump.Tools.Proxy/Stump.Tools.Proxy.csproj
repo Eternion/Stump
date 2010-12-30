@@ -57,7 +57,7 @@
     <Compile Include="Handlers\Auth\IdentificationSuccessMessageHandler.cs" />
     <Compile Include="Handlers\World\HelloGameMessageHandler.cs" />
     <Compile Include="Handlers\World\CurrentMapMessageHandler.cs" />
-    <Compile Include="Handlers\World\NpcDialogQuestionMessageHandler.cs" />
+    <Compile Include="Handlers\World\NpcsHandler.cs" />
     <Compile Include="Handlers\World\ProtocoleRequieredHandler.cs" />
     <Compile Include="Handlers\World\WorldHandler.cs" />
     <Compile Include="Handlers\World\WorldHandlerContainer.cs" />

@@ -24,7 +24,6 @@ using NLog;
 using Stump.BaseCore.Framework.Utils;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
-using Stump.Tools.Proxy.Network.Server;
 
 namespace Stump.Tools.Proxy.Network
 {
@@ -147,12 +146,14 @@ namespace Stump.Tools.Proxy.Network
         private void OnServerDisconnected(ServerConnection connection)
         {
             IsBinded = false;
+            Disconnect();
         }
 
         private void OnServerMessageReceived(ServerConnection connection, Message message)
         {
             try
             {
+                m_receivedMessagesStack.TrimExcess();
                 m_receivedMessagesStack.Push(message);
 
                 if (Proxy.Instance.HandlerManager.IsRegister(message.GetType()))
@@ -176,6 +177,7 @@ namespace Stump.Tools.Proxy.Network
         {
             try
             {
+                m_sendedMessagesStack.TrimExcess();
                 m_sendedMessagesStack.Push(message);
 
                 if (Proxy.Instance.HandlerManager.IsRegister(message.GetType()))
@@ -198,6 +200,14 @@ namespace Stump.Tools.Proxy.Network
                 if (Socket != null)
                     Disconnect();
             }
+        }
+
+        protected override void OnDisconnect()
+        {
+            if (m_serverConnection.Socket != null && m_serverConnection.Socket.Connected)
+                m_serverConnection.Disconnect();
+
+            base.OnDisconnect();
         }
     }
 }

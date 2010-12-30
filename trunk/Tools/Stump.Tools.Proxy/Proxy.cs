@@ -28,6 +28,7 @@ using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.IO;
 using Stump.BaseCore.Framework.Utils;
 using Stump.BaseCore.Framework.XmlUtils;
+using Stump.DofusProtocol;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Handler;
@@ -134,7 +135,8 @@ namespace Stump.Tools.Proxy
 
             logger.Info("Initializing Network Messages...");
             MessageReceiver.Initialize();
-            HandlerManager.RegisterAll(typeof (Proxy).Assembly);
+            ProtocolTypeManager.Initialize();
+            HandlerManager.RegisterAll(typeof(Proxy).Assembly);
 
             logger.Info("Loading Static Data...");
             ZonesManager.Initialize();

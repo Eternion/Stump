@@ -17,11 +17,13 @@
 //  *
 //  *************************************************************************/
 using System.IO;
+using System.Linq;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.XmlUtils;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Actions.NpcActions;
+using Stump.Server.WorldServer.Items;
 using Stump.Server.WorldServer.Npcs;
 using Stump.Server.WorldServer.Npcs.StartActions;
 using Stump.Tools.Proxy.Network;
@@ -57,9 +59,9 @@ namespace Stump.Tools.Proxy.Data
                 Directory.CreateDirectory(Output + NpcQuestionsDir);
             }
 
-            if (!File.Exists(Output + NpcQuestionsDir + dialogQuestionMessage.messageId + ".xml"))
-                XmlUtils.Serialize(Output + NpcQuestionsDir + dialogQuestionMessage.messageId + ".xml",
-                                   dialogQuestionMessage);
+            SerializeToXml(
+                Output + NpcQuestionsDir + dialogQuestionMessage.messageId + ".xml",
+                dialogQuestionMessage);
         }
 
         public static void BuildActionNpcQuestion(WorldClient client, NpcDialogQuestionMessage dialogQuestionMessage)
@@ -80,8 +82,8 @@ namespace Stump.Tools.Proxy.Data
                     Directory.CreateDirectory(Output + NpcRepliesDir);
                 }
 
-                if (!File.Exists(Output + NpcRepliesDir + replyId + ".xml"))
-                    XmlUtils.Serialize(Output + NpcRepliesDir + replyId + ".xml", npcReply);
+                SerializeToXml(Output + NpcRepliesDir + replyId + ".xml",
+                               npcReply);
             }
             else if (client.GuessNpcFirstAction != null)
             {
@@ -92,14 +94,9 @@ namespace Stump.Tools.Proxy.Data
                 NpcStartActionSerialized actionSerialized = new TalkAction((int) npcId,
                                                                            (int) dialogQuestionMessage.messageId);
 
-                if (!Directory.Exists(Output + NpcActionsDir))
-                {
-                    Directory.CreateDirectory(Output + NpcActionsDir);
-                }
-
-                if (!File.Exists(Output + NpcActionsDir + npcId + "_" + actionId + ".xml"))
-                    XmlUtils.Serialize(Output + NpcActionsDir + npcId + "_" + actionId + ".xml",
-                                       actionSerialized);
+                SerializeToXml(
+                    GetDirectoryPath(client, NpcActionsDir) + client.CurrentMap + "_" + npcId + "_" + actionId + ".xml",
+                    actionSerialized);
             }
         }
 
@@ -121,36 +118,65 @@ namespace Stump.Tools.Proxy.Data
                 Directory.CreateDirectory(Output + NpcRepliesDir);
             }
 
-            if (!File.Exists(Output + NpcRepliesDir + replyId + ".xml"))
-                XmlUtils.Serialize(Output + NpcRepliesDir + replyId + ".xml", npcReply);
+            SerializeToXml(Output + NpcRepliesDir + replyId + ".xml",
+                           npcReply);
         }
 
-        public static void HandleActorInformations(WorldClient client, GameRolePlayActorInformations actorInformations,
-                                                   uint mapId)
+        public static void BuildActionNpcShop(WorldClient client, ExchangeStartOkNpcShopMessage npcShopMessage)
+        {
+            if (!client.GuessAction)
+                return;
+
+            if (client.GuessNpcFirstAction == null)
+                return;
+
+            uint actionId = client.GuessNpcFirstAction.npcActionId;
+            uint npcId = client.MapNpcs[client.GuessNpcFirstAction.npcId].npcId;
+            client.GuessNpcFirstAction = null;
+
+            NpcStartActionSerialized action = new ShopAction((int) npcId, npcShopMessage.tokenId,
+                                                             npcShopMessage.objectsInfos.Select(entry => new ItemToSellInNpcShop(entry)).ToList());
+
+            SerializeToXml(
+                GetDirectoryPath(client, NpcActionsDir) + client.CurrentMap + "_" + npcId + "_" +
+                actionId + ".xml",
+                action);
+        }
+
+        public static void HandleActorInformations(WorldClient client, GameRolePlayActorInformations actorInformations)
         {
             if (actorInformations is GameRolePlayNpcInformations)
-                HandleNpcInformations(client, actorInformations as GameRolePlayNpcInformations, mapId);
+                HandleNpcInformations(client, actorInformations as GameRolePlayNpcInformations);
         }
 
-        public static void HandleNpcInformations(WorldClient client, GameRolePlayNpcInformations npcInformations,
-                                                 uint mapId)
+        public static void HandleNpcInformations(WorldClient client, GameRolePlayNpcInformations npcInformations)
         {
-            string zoneName = ZonesManager.GetZoneNameByMap(mapId);
+            SerializeToXml(
+                GetDirectoryPath(client, NpcDir) + client.CurrentMap + "_" + npcInformations.npcId + ".xml",
+                npcInformations);
+        }
 
-            if (!Directory.Exists(Output + NpcDir))
+        public static string GetDirectoryPath(WorldClient client, string specificDirectory)
+        {
+            string zoneName = ZonesManager.GetRegionNameByMap(client.CurrentMap);
+
+            if (!Directory.Exists(Output + specificDirectory))
             {
-                Directory.CreateDirectory(Output + NpcDir);
+                Directory.CreateDirectory(Output + specificDirectory);
             }
 
-            if (!Directory.Exists(Output + NpcDir + zoneName))
+            if (!Directory.Exists(Output + specificDirectory + zoneName))
             {
-                Directory.CreateDirectory(Output + NpcDir + zoneName);
+                Directory.CreateDirectory(Output + specificDirectory + zoneName);
             }
 
-            if (!File.Exists(Output + NpcDir + zoneName + "/" +
-                             mapId + "_" + npcInformations.npcId + ".xml"))
-                XmlUtils.Serialize(Output + NpcDir + zoneName + "/" +
-                                   mapId + "_" + npcInformations.npcId + ".xml", npcInformations);
+            return Output + specificDirectory + zoneName + "/";
+        }
+
+        public static void SerializeToXml<T>(string path, T item)
+        {
+            if (!File.Exists(path))
+                XmlUtils.Serialize(path, item);
         }
     }
 }

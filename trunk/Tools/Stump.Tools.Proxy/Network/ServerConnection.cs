@@ -23,7 +23,7 @@ using NLog;
 using Stump.BaseCore.Framework.IO;
 using Stump.DofusProtocol.Messages;
 
-namespace Stump.Tools.Proxy.Network.Server
+namespace Stump.Tools.Proxy.Network
 {
     public class ServerConnection
     {
@@ -261,12 +261,16 @@ namespace Stump.Tools.Proxy.Network.Server
             AsyncSend(data);
         }
 
-
+        private object m_syncDisconnect = new object();
         public void Disconnect()
         {
             try
             {
-                m_socket.Disconnect(true);
+                lock (m_syncDisconnect)
+                {
+                    if (m_socket.Connected)
+                        m_socket.Disconnect(true);
+                }
 
                 NotifyServerDisconnected();
             }

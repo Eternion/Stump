@@ -78,11 +78,11 @@ namespace Stump.Server.WorldServer.Handlers
 
             BasicHandler.SendTextInformationMessage(client, 1, 89);
             BasicHandler.SendTextInformationMessage(client, 0, 152,
-                                                    client.Account.LastConnection.Year.ToString(),
-                                                    client.Account.LastConnection.Month.ToString(),
-                                                    client.Account.LastConnection.Day.ToString(),
-                                                    client.Account.LastConnection.Hour.ToString(),
-                                                    client.Account.LastConnection.Minute.ToString(),
+                                                    client.Account.LastConnection.Year,
+                                                    client.Account.LastConnection.Month,
+                                                    client.Account.LastConnection.Day,
+                                                    client.Account.LastConnection.Hour,
+                                                    client.Account.LastConnection.Minute,
                                                     client.Account.LastIp ?? "(null)");
 
             InitializationHandler.SendOnConnectionEventMessage(client, 2);

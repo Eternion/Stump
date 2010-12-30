@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<NpcStartActionSerialized type="Stump.Server.WorldServer.Npcs.StartActions.TalkAction">
-  <TalkAction xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <NpcId>883</NpcId>
-    <MessageId>3745</MessageId>
-    <Condition />
-  </TalkAction>
-</NpcStartActionSerialized>
