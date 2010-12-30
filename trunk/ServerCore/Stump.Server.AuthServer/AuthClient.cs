@@ -65,13 +65,6 @@ namespace Stump.Server.AuthServer
             set;
         }
 
-        public WorldCharacterRecord[] Characters
-        {
-            get;
-            set;
-        }
-
-
         /// <summary>
         ///   True when the client is choising a server
         /// </summary>
@@ -86,13 +79,6 @@ namespace Stump.Server.AuthServer
             Account.UpdateAndFlush();
         }
 
-        public byte GetCharactersCount(int serverid)
-        {
-            if (Characters.Length == 0)
-                return 0;
-
-            return  (byte)Characters.Where(entry => entry.WorldId==serverid).Count();
-        }
 
         public override string ToString()
         {

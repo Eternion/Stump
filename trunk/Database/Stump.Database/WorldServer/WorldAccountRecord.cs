@@ -26,7 +26,7 @@ using Stump.DofusProtocol.Enums;
 namespace Stump.Database
 {
     [Serializable]
-    [AttributeDatabase(DatabaseService.AuthServer)]
+    [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("accounts")]
     public sealed class WorldAccountRecord : ActiveRecordBase<WorldAccountRecord>
     {
@@ -59,15 +59,41 @@ namespace Stump.Database
             set;
         }
 
-
-        public WorldAccountRecord[] Friends
+        [HasAndBelongsToMany(typeof(WorldAccountRecord), Table = "accounts_friends", ColumnKey = "AccountId", ColumnRef = "FriendAccountId")]
+        public IList<WorldAccountRecord> Friends
         {
-            get { return AccountFriendRecord.FindFriendsByAccountId(Id); }
+            get;
+            set;
         }
 
-        public WorldAccountRecord[] Enemies
+        [HasAndBelongsToMany(typeof(WorldAccountRecord), Table = "accounts_enemies", ColumnKey = "AccountId", ColumnRef = "EnemyAccountId")]
+        public IList<WorldAccountRecord> Enemies
         {
-            get { return AccountEnemyRecord.FindEnemiesByAccountId(Id); }
+            get;
+            set;
+        }
+
+        [HasAndBelongsToMany(typeof(WorldAccountRecord), Table = "accounts_ignored", ColumnKey = "AccountId", ColumnRef = "IgnoredAccountId")]
+        public IList<WorldAccountRecord> Ignored
+        {
+            get;
+            set;
+        }
+
+
+        public uint LastConnectionTimeStamp
+        {
+            get
+            {
+                return (uint)LastConnection.Subtract(new DateTime(1970, 1, 1, 0, 0, 0)).TotalMinutes;          
+            }
+        }
+
+        public bool IsRevertFriend(WorldAccountRecord account)
+        {
+            if (Friends.Contains(account) && account.Friends.Contains(this))
+                return true;
+            return false;
         }
 
 
@@ -78,12 +104,7 @@ namespace Stump.Database
 
         public static WorldAccountRecord FindWorldAccountByNickname(string nickname)
         {
-            return FindOne(Restrictions.Eq("Nickname",nickname));
-        }
-
-        public static bool Exists(uint id)
-        {
-            return Exists(id);
+            return FindOne(Restrictions.Eq("Nickname", nickname));
         }
 
         public static bool Exists(string nickname)

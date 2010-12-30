@@ -20,7 +20,7 @@ using System;
 using System.Collections.Generic;
 using Stump.Database;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.AuthServer.Accounts;
+using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.Commands;
 
 namespace Stump.Server.AuthServer.Commands

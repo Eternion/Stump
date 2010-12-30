@@ -56,7 +56,6 @@
     <Compile Include="AuthServer\IpBanRecord.cs" />
     <Compile Include="CharacterItemRecord.cs" />
     <Compile Include="CharacterRecord.cs" />
-    <Compile Include="AuthServer\StartupAction\AccountStartupActionRecord.cs" />
     <Compile Include="AuthServer\StartupAction\StartupActionItemRecord.cs" />
     <Compile Include="AuthServer\StartupAction\StartupActionRecord.cs" />
     <Compile Include="IdGenerator.cs" />
@@ -66,8 +65,6 @@
     <Compile Include="VersionRecord.cs" />
     <Compile Include="AuthServer\World\WorldCharacterRecord.cs" />
     <Compile Include="AuthServer\World\WorldRecord.cs" />
-    <Compile Include="WorldServer\Social\AccountFriendRecord.cs" />
-    <Compile Include="WorldServer\Social\AccountEnemyRecord.cs" />
     <Compile Include="WorldServer\Storage\StorageItemRecord.cs" />
     <Compile Include="WorldServer\Storage\StorageRecord.cs" />
     <Compile Include="WorldServer\WorldAccountRecord.cs" />

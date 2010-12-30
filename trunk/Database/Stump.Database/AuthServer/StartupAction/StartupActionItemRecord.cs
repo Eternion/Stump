@@ -30,37 +30,38 @@ namespace Stump.Database
     {
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
-        public int Id
+        public uint Id
         {
             get;
             set;
         }
 
-        [Property("StartupActionId", NotNull = true)]
-        public uint StartupActionId
+        [BelongsTo("StartupActionId", NotNull = true)]
+        public StartupActionRecord StartupAction
         {
             get;
             set;
         }
 
         [Property("ItemGID", NotNull = true)]
-        public int ItemId
+        public uint ItemId
+        {
+            get;
+            set;
+        }
+
+        [Property("JetMax", NotNull = true, Default="1")]
+        public int JetMax
         {
             get;
             set;
         }
 
 
-        public StartupActionRecord StartupAction
-        {
-            get { return StartupActionRecord.FindStartupActionById(StartupActionId); }
-            set { StartupActionId = value.Id; }
-        }
 
-
-        public static StartupActionItemRecord[] FindItemsByStartupActionId(uint startupActionId)
+        public static StartupActionItemRecord[] FindItemsByStartupActionId(StartupActionRecord startupAction)
         {
-            return FindAll(Restrictions.Eq("StartupActionId", startupActionId));
+            return FindAll(Restrictions.Eq("StartupAction", startupAction));
         }
 
     }

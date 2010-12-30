@@ -130,9 +130,6 @@ namespace Stump.Server.AuthServer
                     RequiredRole = RoleEnum.Player,
                     CharCapacity = 1000,
                     ServerSelectable = true,
-                    CharsCount = 0,
-                    Connected = false,
-                    Status = ServerStatusEnum.ONLINE
                 });
         }
 
@@ -242,11 +239,11 @@ namespace Stump.Server.AuthServer
         public static List<GameServerInformations> GetServersInformationList(AuthClient client)
         {
             return m_realmlist.Values.Select(
-                    record =>
-                    new GameServerInformations((uint)record.Id, (uint)record.Status,
-                                               (uint)record.Completion,
-                                               record.ServerSelectable,
-                                               client.GetCharactersCount(record.Id))).ToList();
+                    world =>
+                    new GameServerInformations((uint)world.Id, (uint)world.Status,
+                                               (uint)world.Completion,
+                                               world.ServerSelectable,
+                                               client.Account.GetCharactersCountByWorld(world.Id))).ToList();
         }
 
         public static GameServerInformations GetServerInformation(AuthClient client, WorldRecord world)
@@ -254,7 +251,7 @@ namespace Stump.Server.AuthServer
             return new GameServerInformations((uint)world.Id, (uint)world.Status,
                                                (uint)world.Completion,
                                                world.ServerSelectable,
-                                               client.GetCharactersCount(world.Id));
+                                               client.Account.GetCharactersCountByWorld(world.Id));
         }
 
         /// <summary>

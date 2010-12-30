@@ -51,7 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Accounts\AccountManager.cs" />
+    <Compile Include="Managers\AccountManager.cs" />
     <Compile Include="AuthClient.cs" />
     <Compile Include="AuthConsole.cs" />
     <Compile Include="AuthentificationServer.cs" />
@@ -71,6 +71,7 @@
     <Compile Include="Handlers\PredicatesDefinitions.cs" />
     <Compile Include="IPC\IpcOperations.cs" />
     <Compile Include="IPC\IpcServer.cs" />
+    <Compile Include="Managers\StartupActionManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WorldServerManager.cs" />
   </ItemGroup>

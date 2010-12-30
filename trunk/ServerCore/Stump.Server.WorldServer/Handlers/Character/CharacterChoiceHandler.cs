@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Database;
@@ -29,11 +30,11 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public partial class CharacterHandler
     {
-        [WorldHandler(typeof (CharacterSelectionMessage))]
+        [WorldHandler(typeof(CharacterSelectionMessage))]
         public static void HandleCharacterSelectionMessage(WorldClient client, CharacterSelectionMessage message)
         {
             var character = client.Characters.First(entry => entry.Id == message.id);
-            
+
             /* Check null */
             if (character == null)
             {
@@ -43,6 +44,20 @@ namespace Stump.Server.WorldServer.Handlers
 
             client.ActiveCharacter = new Character(character, client);
 
+
+            /* Check if we also have a world account */
+            if (! WorldAccountRecord.Exists(client.Account.Id))
+            {
+                new WorldAccountRecord {Id=client.Account.Id, Nickname = client.Account.Nickname }.CreateAndFlush();
+            }
+
+            /* Bind World Account */
+            client.WorldAccount = WorldAccountRecord.FindWorldAccountById(client.Account.Id);
+
+            /* Update LastConnection and Last Ip */
+            client.WorldAccount.LastConnection = DateTime.Now;
+            client.WorldAccount.LastIp = client.IP;
+            client.WorldAccount.UpdateAndFlush();
 
             SendCharacterSelectedSuccessMessage(client);
 
@@ -61,9 +76,6 @@ namespace Stump.Server.WorldServer.Handlers
 
             InitializationHandler.SendSetCharacterRestrictionsMessage(client);
 
-            FriendHandler.SendFriendWarnOnConnectionStateMessage(client, false);
-            FriendHandler.SendFriendWarnOnLevelGainStateMessage(client, false);
-
             BasicHandler.SendTextInformationMessage(client, 1, 89);
             BasicHandler.SendTextInformationMessage(client, 0, 152,
                                                     client.Account.LastConnection.Year.ToString(),
@@ -76,7 +88,7 @@ namespace Stump.Server.WorldServer.Handlers
             InitializationHandler.SendOnConnectionEventMessage(client, 2);
         }
 
-        [WorldHandler(typeof (CharactersListRequestMessage))]
+        [WorldHandler(typeof(CharactersListRequestMessage))]
         public static void HandleCharacterListRequest(WorldClient client, CharactersListRequestMessage message)
         {
             if (client.Account != null && client.Account.Login != "")
@@ -85,7 +97,7 @@ namespace Stump.Server.WorldServer.Handlers
             }
             else
             {
-                client.Send(new IdentificationFailedMessage((int) IdentificationFailureReasonEnum.KICKED));
+                client.Send(new IdentificationFailedMessage((int)IdentificationFailureReasonEnum.KICKED));
                 client.DisconnectLater(1000);
             }
         }
@@ -95,15 +107,15 @@ namespace Stump.Server.WorldServer.Handlers
             List<CharacterBaseInformations> list = client.Characters.Select(
                 characterRecord =>
                 new CharacterBaseInformations(
-                    (uint) characterRecord.Id,
-                    (uint) characterRecord.Level,
+                    (uint)characterRecord.Id,
+                    (uint)characterRecord.Level,
                     characterRecord.Name,
-                   CharacterManager.GetStuffedCharacterLook(characterRecord).EntityLook ,//look
+                   CharacterManager.GetStuffedCharacterLook(characterRecord).EntityLook,//look
                     characterRecord.Breed,
                     characterRecord.SexId != 0)).ToList();
 
             client.Send(new CharactersListMessage(
-                            AccountManager.GetAccountStartupActions(client.Account.Id) != null , // HasStartupActions
+                           client.Account.StartupActions.Count != 0, // HasStartupActions
                             list
                             ));
         }

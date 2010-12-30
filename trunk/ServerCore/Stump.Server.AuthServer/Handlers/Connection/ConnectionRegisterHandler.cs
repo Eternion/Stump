@@ -25,7 +25,8 @@ namespace Stump.Server.AuthServer.Handlers
 {
     public partial class ConnectionHandler
     {
-        [AuthHandler(typeof (NicknameChoiceRequestMessage))]
+
+        [AuthHandler(typeof(NicknameChoiceRequestMessage))]
         public static void HandleNicknameChoiceRequestMessage(AuthClient client, NicknameChoiceRequestMessage message)
         {
             string nickname = message.nickname;
@@ -33,28 +34,28 @@ namespace Stump.Server.AuthServer.Handlers
             /* Check the Username */
             if (!CheckNickName(nickname))
             {
-                client.Send(new NicknameRefusedMessage((uint) NicknameErrorEnum.INVALID_NICK));
+                client.Send(new NicknameRefusedMessage((uint)NicknameErrorEnum.INVALID_NICK));
                 return;
             }
 
             /* Same as Login */
             if (nickname == client.Account.Login)
             {
-                client.Send(new NicknameRefusedMessage((uint) NicknameErrorEnum.SAME_AS_LOGIN));
+                client.Send(new NicknameRefusedMessage((uint)NicknameErrorEnum.SAME_AS_LOGIN));
                 return;
             }
 
             /* Look like Login */
             if (client.Account.Login.Contains(nickname))
             {
-                client.Send(new NicknameRefusedMessage((uint) NicknameErrorEnum.TOO_SIMILAR_TO_LOGIN));
+                client.Send(new NicknameRefusedMessage((uint)NicknameErrorEnum.TOO_SIMILAR_TO_LOGIN));
                 return;
             }
 
             /* Already Used */
             if (AccountRecord.NicknameExist(nickname))
             {
-                client.Send(new NicknameRefusedMessage((uint) NicknameErrorEnum.ALREADY_USED));
+                client.Send(new NicknameRefusedMessage((uint)NicknameErrorEnum.ALREADY_USED));
                 return;
             }
 
@@ -66,7 +67,6 @@ namespace Stump.Server.AuthServer.Handlers
             SendIdentificationSuccessMessage(client, false);
             SendServersListMessage(client);
         }
-
 
         public static bool CheckNickName(string nickName)
         {

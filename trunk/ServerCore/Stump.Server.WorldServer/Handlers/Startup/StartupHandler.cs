@@ -37,16 +37,23 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof(StartupActionsObjetAttributionMessage))]
         public static void HandleStartupActionsObjetAttributionMessage(WorldClient client, StartupActionsObjetAttributionMessage message)
         {
-            
+            if (message.characterId != 0)
+            {
+                // TODO Ajout de l'item au personnage
+
+               var character = client.Characters.FirstOrDefault(c => c.Id == message.characterId);
+
+
+                SendStartupActionFinishedMessage(client);
+            }
         }
 
         public static void SendStartupActionsListMessage(WorldClient client)
         {
             var startupsActions =
-                AccountManager.GetAccountStartupActions(client.Account.Id).Select(
-                    s =>
-                    new StartupActionAddObject(s.Id, s.Title, s.Text, s.DescUrl, s.PictureUrl,
-                                               new List<ObjectItemMinimalInformation>(){new ObjectItemMinimalInformation(1,1,false,new List<ObjectEffect>())}));
+                client.Account.StartupActions.Select(
+                    s =>  new StartupActionAddObject(s.Id, s.Title, s.Text, s.DescUrl, s.PictureUrl, s.Items.Select(
+                        i=> new ObjectItemMinimalInformation(i.ItemId,0,false,new List<ObjectEffect>())).ToList()));
             
             client.Send(new StartupActionsListMessage(startupsActions.ToList()));
         }

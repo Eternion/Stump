@@ -52,6 +52,12 @@ namespace Stump.Server.WorldServer
             set;
         }
 
+        public WorldAccountRecord WorldAccount
+        {
+            get;
+            set;
+        }
+
         public List<CharacterRecord> Characters
         {
             get;
@@ -59,6 +65,18 @@ namespace Stump.Server.WorldServer
         }
 
         public Character ActiveCharacter
+        {
+            get;
+            set;
+        }
+
+        public bool WarnOnFriendConnection
+        {
+            get;
+            set;
+        }
+
+        public bool WarnOnFriendLevelGain
         {
             get;
             set;

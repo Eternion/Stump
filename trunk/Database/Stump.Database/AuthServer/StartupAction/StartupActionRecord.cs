@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections.Generic;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
@@ -50,7 +51,7 @@ namespace Stump.Database
             set;
         }
 
-        [Property("DescUrl", NotNull = true, Length=50)]
+        [Property("DescUrl", NotNull = true, Length = 50)]
         public string DescUrl
         {
             get;
@@ -64,10 +65,18 @@ namespace Stump.Database
             set;
         }
 
-
-        public StartupActionItemRecord[] Items
+        [HasMany(typeof(StartupActionItemRecord), Cascade= ManyRelationCascadeEnum.Delete)]
+        public IList<StartupActionItemRecord> Items
         {
-            get { return StartupActionItemRecord.FindItemsByStartupActionId(Id); }
+            get;
+            set;
+        }
+
+        [HasAndBelongsToMany(typeof(AccountRecord), Table = "accounts_startup_actions", ColumnKey = "StartupActionId", ColumnRef = "AccountId", Inverse=true)]
+        public IList<AccountRecord> Accounts
+        {
+            get;
+            set;
         }
 
 
@@ -78,7 +87,7 @@ namespace Stump.Database
 
         public static StartupActionRecord[] FindStartupActionByTitle(string title)
         {
-            return FindAll(Restrictions.Eq("Title",title));
+            return FindAll(Restrictions.Eq("Title", title));
         }
 
     }

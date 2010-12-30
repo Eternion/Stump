@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
+using NHibernate.Engine;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database
@@ -164,7 +165,6 @@ namespace Stump.Database
             set;
         }
 
-
         public List<PlayableBreedEnum> AvailableBreeds
         {
             get
@@ -182,7 +182,7 @@ namespace Stump.Database
                 DbAvailableBreeds = (uint)value.Aggregate(0, (current, breedEnum) => current | (1 << (int)breedEnum));
             }
         }
-
+        
         public double SubscriptionRemainingTime
         {
             get
@@ -209,38 +209,42 @@ namespace Stump.Database
             }
         }
 
-        public StartupActionRecord[] StartupActions
+        [HasAndBelongsToMany(typeof(StartupActionRecord), Table = "accounts_startup_actions", ColumnKey = "AccountId", ColumnRef = "StartupActionId", Cascade = ManyRelationCascadeEnum.Delete)]
+        public IList<StartupActionRecord> StartupActions
         {
-            get { return AccountStartupActionRecord.FindAccountStartupActionsByAccountId(Id).Select(asar => asar.StartupAction).ToArray(); }
+            get;
+            set;
         }
 
-        public WorldCharacterRecord[] Characters
+        [HasMany(typeof(WorldCharacterRecord), Cascade = ManyRelationCascadeEnum.Delete)]
+        public IList<WorldCharacterRecord> Characters
         {
-            get { return WorldCharacterRecord.FindCharactersByAccountId(Id); }
+            get;
+            set;
         }
+
+        [HasMany(typeof(DeletedWorldCharacterRecord),Cascade = ManyRelationCascadeEnum.Delete)]
+        public IList<DeletedWorldCharacterRecord> DeletedCharacters
+        {
+            get;
+            set;
+        }
+
+
 
         public bool CanUseBreed(int breedId)
         {
             return (DbAvailableBreeds >> breedId) % 2 == 1;
         }
 
-        public void AddCharacter(int worldId, uint characterId)
+        public byte GetCharactersCountByWorld(int worldId)
         {
-            new WorldCharacterRecord
-                             {
-                                 AccountId = Id,
-                                 WorldId = worldId,
-                                 CharacterId = characterId,
-                             }.Create();
+            return (byte)Characters.Where(entry => entry.World.Id == worldId).Count();
         }
 
-        public void AddStartupAction(uint startupActionId)
+        public List<uint> GetWorldCharactersId(int worldId)
         {
-            new AccountStartupActionRecord
-            {
-                AccountId = Id,
-                StartupActionId = startupActionId
-            }.Create();
+            return Characters.Where(c=> c.World.Id==worldId).Select(c => c.CharacterId).ToList();
         }
 
 

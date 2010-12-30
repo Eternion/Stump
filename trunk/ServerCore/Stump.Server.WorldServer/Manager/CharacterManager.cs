@@ -32,8 +32,8 @@ namespace Stump.Server.WorldServer.Manager
         public static List<CharacterRecord> GetCharactersByAccount(WorldClient client)
         {
             var characters = new List<CharacterRecord>();
-            uint[] ids = IpcAccessor.Instance.ProxyObject.GetAccountCharacters(WorldServer.ServerInformation,
-                                                                               client.Account.Id);
+            var ids = client.Account.GetWorldCharactersId(WorldServer.ServerId)            ;
+            
             characters.AddRange(
                 ids.Select(delegate(uint id)
                 {
@@ -56,19 +56,13 @@ namespace Stump.Server.WorldServer.Manager
             return characters;
         }
 
-        public static int GetCharactersNumberByAccount(WorldClient client)
-        {
-            return IpcAccessor.Instance.ProxyObject.GetAccountCharacterCount(WorldServer.ServerInformation,
-                                                                             client.Account.Id);
-        }
-
         public static bool CreateCharacter(CharacterRecord character, WorldClient client)
         {
             if (client.Characters == null)
                 client.Characters = new List<CharacterRecord>(5);
 
             character.Id = (int)CharacterRecord.GetNextId();
-            client.Characters.Insert(0, character);
+            client.Characters.Insert(0,character);
 
             World.Instance.TaskPool.EnqueueTask(() =>
             {
