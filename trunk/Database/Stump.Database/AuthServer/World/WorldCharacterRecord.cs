@@ -35,15 +35,15 @@ namespace Stump.Database
             set;
         }
 
-        [KeyProperty(Column = "AccountId", NotNull = true)]
-        public uint AccountId
+        [BelongsTo(Column = "AccountId", NotNull = true)]
+        public AccountRecord Account
         {
             get;
             set;
         }
 
-        [KeyProperty(Column = "WorldId", NotNull = true)]
-        public int WorldId
+        [BelongsTo(Column = "WorldId", NotNull = true)]
+        public WorldRecord World
         {
             get;
             set;
@@ -57,42 +57,30 @@ namespace Stump.Database
         }
 
 
-        public AccountRecord Account
-        {
-            get { return AccountRecord.FindByPrimaryKey(AccountId); }
-            set { AccountId = value.Id; }
-        }
-
-        public WorldRecord World
-        {
-            get { return WorldRecord.FindByPrimaryKey(WorldId); }
-            set { WorldId = value.Id; }
-        }
-
 
         public static WorldCharacterRecord FindCharacterById(long id)
         {
             return FindByPrimaryKey(id);
         }
 
-        public static WorldCharacterRecord[] FindCharactersByAccountId(uint accountId)
+        public static WorldCharacterRecord[] FindCharactersByAccount(AccountRecord account)
         {
-            return FindAll((Restrictions.Eq("AccountId", accountId)));
+            return FindAll((Restrictions.Eq("Account", account)));
         }
 
-        public static WorldCharacterRecord[] FindCharactersByServerId(int worldId)
+        public static WorldCharacterRecord[] FindCharactersByServer(WorldRecord world)
         {
-            return FindAll((Restrictions.Eq("WorldId", worldId)));
+            return FindAll((Restrictions.Eq("World", world)));
         }
 
-        public static WorldCharacterRecord FindCharacterByServerIdAndCharacterId(int worldId, uint characterId)
+        public static WorldCharacterRecord FindCharacterByServerAndCharacterId(WorldRecord world, uint characterId)
         {
-            return FindOne(Restrictions.And(Restrictions.Eq("WorldId", worldId), Restrictions.Eq("CharacterId", characterId)));
+            return FindOne(Restrictions.And(Restrictions.Eq("World", world), Restrictions.Eq("CharacterId", characterId)));
         }
 
-        public static WorldCharacterRecord[] FindCharactersByAccountIdAndServerId(uint accountid, int worldId)
+        public static WorldCharacterRecord[] FindCharactersByAccountAndServer(AccountRecord account, WorldRecord world)
         {
-            return FindAll(Restrictions.And(Restrictions.Eq("AccountId", accountid), Restrictions.Eq("WorldId", worldId)));
+            return FindAll(Restrictions.And(Restrictions.Eq("Account", account), Restrictions.Eq("World", world)));
         }
 
     }

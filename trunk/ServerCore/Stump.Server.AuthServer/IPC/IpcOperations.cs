@@ -20,7 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Database;
-using Stump.Server.AuthServer.Accounts;
+using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.IPC;
 
 namespace Stump.Server.AuthServer.IPC
@@ -105,29 +105,22 @@ namespace Stump.Server.AuthServer.IPC
 
         public bool ModifyAccountRecordByNickname(WorldServerInformation wsi, string name, AccountRecord modifiedRecord)
         {
-            try
-            {
-                AccountRecord acc = AccountRecord.FindAccountByNickname(name.ToLower());
+            AccountRecord account = AccountRecord.FindAccountByNickname(name.ToLower());
 
-                if (acc == null)
-                    return false;
-
-                acc.LastIp = modifiedRecord.LastIp;
-                acc.LastConnection = modifiedRecord.LastConnection;
-                acc.Password = modifiedRecord.Password;
-                acc.SecretQuestion = modifiedRecord.SecretQuestion;
-                acc.SecretAnswer = modifiedRecord.SecretAnswer;
-                acc.Role = modifiedRecord.Role;
-                acc.BanEndDate = modifiedRecord.BanEndDate;
-
-                acc.UpdateAndFlush();
-
-                return true;
-            }
-            catch (Exception)
-            {
+            if (account == null)
                 return false;
-            }
+
+            account.LastIp = modifiedRecord.LastIp;
+            account.LastConnection = modifiedRecord.LastConnection;
+            account.Password = modifiedRecord.Password;
+            account.SecretQuestion = modifiedRecord.SecretQuestion;
+            account.SecretAnswer = modifiedRecord.SecretAnswer;
+            account.Role = modifiedRecord.Role;
+            account.BanEndDate = modifiedRecord.BanEndDate;
+
+            account.UpdateAndFlush();
+
+            return true;
         }
 
         public AccountRecord[] GetAllAccountsRecords(WorldServerInformation wsi)
@@ -135,78 +128,53 @@ namespace Stump.Server.AuthServer.IPC
             return AccountRecord.FindAll();
         }
 
-        public bool CreateAccountRecord(WorldServerInformation wsi, AccountRecord accrecord)
+        public bool CreateAccountRecord(WorldServerInformation wsi, AccountRecord account)
         {
-            try
-            {
-                return AccountManager.CreateAccount(accrecord);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return AccountManager.CreateAccount(account);
         }
 
         public bool DeleteAccountRecord(WorldServerInformation wsi, string accountname)
         {
-            try
-            {
-                AccountRecord record = AccountRecord.FindAccountByLogin(accountname);
+            AccountRecord account = AccountRecord.FindAccountByLogin(accountname);
 
-                if (record != null)
-                {
-                    AuthentificationServer.Instance.DisconnectClientsUsingAccount(record);
-
-                    return AccountManager.DeleteAccount(record);
-                }
-
+            if (account == null)
                 return false;
-            }
-            catch (Exception)
-            {
+
+            AuthentificationServer.Instance.DisconnectClientsUsingAccount(account);
+
+            return AccountManager.DeleteAccount(account);
+        }
+
+        public bool AddAccountCharacter(WorldServerInformation wsi, uint accountId, uint characterId)
+        {
+            var account = AccountRecord.FindAccountById(accountId);
+            var world = WorldServerManager.GetWorldRecord(wsi.Id);
+
+            if (account == null || world == null)
                 return false;
-            }
+
+            return AccountManager.AddAccountCharacter(account, world, characterId);
         }
 
-        public uint[] GetAccountCharacters(WorldServerInformation wsi, uint accountid)
+        public bool DeleteAccountCharacter(WorldServerInformation wsi, uint accountId, uint characterId)
         {
-            return AccountRecord.FindAccountById(accountid).Characters.Select(record => record.CharacterId).ToArray();
+            var account = AccountRecord.FindAccountById(accountId);
+            var world = WorldServerManager.GetWorldRecord(wsi.Id);
+
+            if (account == null || world == null)
+                return false;
+
+            return AccountManager.DeleteAccountCharacter(account, world, characterId);
         }
 
-        public int GetAccountCharacterCount(WorldServerInformation wsi, uint accountid)
+        public bool ExceedsDeletedCharactersQuota(uint accountId)
         {
-            return AccountRecord.FindAccountById(accountid).Characters.Length;
-        }
+            var account = AccountRecord.FindAccountById(accountId);
 
-        public void AddAccountCharacter(WorldServerInformation wsi, uint accountid, uint characterId)
-        {
-            var record = new WorldCharacterRecord
-            {
-                WorldId = wsi.Id,
-                AccountId = accountid,
-                CharacterId = characterId,
-            };
+            if (account == null)
+                return false;
 
-            record.SaveAndFlush();
-        }
-
-        public void DeleteAccountCharacter(WorldServerInformation wsi, uint accountid, uint characterId)
-        {
-            var record = WorldCharacterRecord.FindCharacterByServerIdAndCharacterId(wsi.Id, characterId);
-
-            if (record.AccountId != accountid) return;
-
-            new DeletedWorldCharacterRecord {AccountId = accountid, CharacterId = characterId, WorldId = wsi.Id}.
-                CreateAndFlush();
-
-            record.DeleteAndFlush();
-        }
-
-        public bool ExceedsDeletedCharactersQuota(uint accountid)
-        {
-            var record = DeletedWorldCharacterRecord.FindCharactersByAccountId(accountid);
-
-            return record.Length > 6;
+            return account.DeletedCharacters.Count > 5;
         }
 
         public bool CheckWorldServerSecretKey(WorldServerInformation wsi, string secretKey)
@@ -214,9 +182,9 @@ namespace Stump.Server.AuthServer.IPC
             return (IpcServer.IpcSecretKey == secretKey);
         }
 
-        public bool BanAccount(WorldServerInformation wsi, uint accountid, DateTime banEndDate)
+        public bool BanAccount(WorldServerInformation wsi, uint accountId, DateTime banEndDate)
         {
-            var account = AccountRecord.FindAccountById(accountid);
+            var account = AccountRecord.FindAccountById(accountId);
 
             if (account == null)
                 return false;

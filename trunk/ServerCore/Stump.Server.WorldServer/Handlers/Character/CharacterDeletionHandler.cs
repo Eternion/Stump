@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Handlers
                                                 secretAnswerHash ==
                                                 StringUtils.GetMd5(characterId + "~" + client.Account.SecretAnswer)))
             {
-                if (CharacterManager.ExceedsDeletedCharactersQuota(client.Account))
+                if (AccountManager.ExceedsDeletedCharactersQuota(client.Account.Id))
                 {
                     client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_TOO_MANY_CHAR_DELETION));
                     return;

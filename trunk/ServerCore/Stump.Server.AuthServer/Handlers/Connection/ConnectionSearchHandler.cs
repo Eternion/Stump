@@ -26,18 +26,19 @@ namespace Stump.Server.AuthServer.Handlers
 {
     public partial class ConnectionHandler
     {
+
         [AuthHandler(typeof(AcquaintanceSearchMessage))]
         public static void HandleAcquaintanceSearchMessage(AuthClient client, AcquaintanceSearchMessage message)
         {
-            var ac = AccountRecord.FindAccountByNickname(message.nickname);
+            var account = AccountRecord.FindAccountByNickname(message.nickname);
 
-            if (ac == null)
+            if (account == null)
             {
                 SendAcquaintanceSearchErrorMessage(client, AcquaintanceErrorEnum.NO_RESULT);
                 return;
             }
 
-            SendAcquaintanceSearchServerListMessage(client, ac.Characters.Select(wcr => wcr.WorldId).Distinct().ToList());
+            SendAcquaintanceSearchServerListMessage(client, account.Characters.Select(wcr => wcr.World.Id).Distinct().ToList());
         }
 
         public static void SendAcquaintanceSearchServerListMessage(AuthClient client, List<int> serverIds)
@@ -49,8 +50,6 @@ namespace Stump.Server.AuthServer.Handlers
         {
             client.Send(new AcquaintanceSearchErrorMessage((uint)reason));
         }
-
-
 
     }
 }

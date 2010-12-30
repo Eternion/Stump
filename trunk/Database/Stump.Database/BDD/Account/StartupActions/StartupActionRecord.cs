@@ -17,42 +17,61 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
+using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database
 {
     [Serializable]
     [AttributeDatabase(DatabaseService.WorldServer)]
-    [ActiveRecord("startupactions_objects")]
-    public sealed class StartupActionItemRecord : ActiveRecordBase<StartupActionItemRecord>
+    [ActiveRecord("startupactions")]
+    public sealed class StartupActionRecord : ActiveRecordBase<StartupActionRecord>
     {
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
-        public int Id
+        public uint Id
         {
             get;
             set;
         }
 
-        [Property("StartupActionId", NotNull = true)]
-        public int StartupActionId
+        [Property("Title", NotNull = true, Length = 25)]
+        public string Title
         {
             get;
             set;
         }
 
-        [Property("ItemId", NotNull = true)]
-        public int ItemId
+        [Property("Text", NotNull = true, Length = 250)]
+        public string Text
         {
             get;
             set;
         }
 
-        public static StartupActionItemRecord[] FindStartupActionItemsByStartupActionId(int startupActionId)
+        [Property("DescUrl", NotNull = true, Length=50)]
+        public string DescUrl
         {
-            return FindAll(Restrictions.Eq("StartupActionId", startupActionId));
+            get;
+            set;
+        }
+
+        [Property("PictureUrl", NotNull = true, Length = 50)]
+        public string PictureUrl
+        {
+            get;
+            set;
+        }
+
+        [HasAndBelongsToMany(typeof(WorldAccountRecord), Table = "Accounts_StartupActions", ColumnKey = "AccountId", ColumnRef = "StartupActionId")]
+        public IList<WorldAccountRecord> Accounts
+        {
+            get;
+            set;
         }
 
     }

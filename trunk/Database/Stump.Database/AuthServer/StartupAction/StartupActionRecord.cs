@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections.Generic;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
@@ -24,40 +25,69 @@ using Stump.DofusProtocol.Enums;
 namespace Stump.Database
 {
     [Serializable]
-    [AttributeDatabase(DatabaseService.WorldServer)]
-    [ActiveRecord("characters_startupactions")]
-    public sealed class CharacterStartupActionRecord : ActiveRecordBase<CharacterStartupActionRecord>
+    [AttributeDatabase(DatabaseService.AuthServer)]
+    [ActiveRecord("startup_actions")]
+    public sealed class StartupActionRecord : ActiveRecordBase<StartupActionRecord>
     {
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
-        public int Id
+        public uint Id
         {
             get;
             set;
         }
 
-        [Property("CharacterId", NotNull = true)]
-        public int CharacterId
+        [Property("Title", NotNull = true, Length = 25)]
+        public string Title
         {
             get;
             set;
         }
 
-        [Property("StartupActionId", NotNull = true)]
-        public int StartupActionId
+        [Property("Text", NotNull = true, Length = 250)]
+        public string Text
         {
             get;
             set;
         }
 
-        public static CharacterStartupActionRecord FindCharacterStartupActionById(int id)
+        [Property("DescUrl", NotNull = true, Length = 50)]
+        public string DescUrl
+        {
+            get;
+            set;
+        }
+
+        [Property("PictureUrl", NotNull = true, Length = 50)]
+        public string PictureUrl
+        {
+            get;
+            set;
+        }
+
+        [HasMany(typeof(StartupActionItemRecord), Cascade= ManyRelationCascadeEnum.Delete)]
+        public IList<StartupActionItemRecord> Items
+        {
+            get;
+            set;
+        }
+
+        [HasAndBelongsToMany(typeof(AccountRecord), Table = "accounts_startup_actions", ColumnKey = "StartupActionId", ColumnRef = "AccountId", Inverse=true)]
+        public IList<AccountRecord> Accounts
+        {
+            get;
+            set;
+        }
+
+
+        public static StartupActionRecord FindStartupActionById(uint id)
         {
             return FindByPrimaryKey(id);
         }
 
-        public static CharacterStartupActionRecord[] FindStartupActionsByCharacterId(int characterId)
+        public static StartupActionRecord[] FindStartupActionByTitle(string title)
         {
-            return FindAll(Restrictions.Eq("CharacterId", characterId));
+            return FindAll(Restrictions.Eq("Title", title));
         }
 
     }

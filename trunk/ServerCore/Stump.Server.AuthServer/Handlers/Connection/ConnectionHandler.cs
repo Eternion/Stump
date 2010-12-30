@@ -19,12 +19,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Castle.ActiveRecord;
 using Stump.BaseCore.Framework.Utils;
 using Stump.Database;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.AuthServer.Accounts;
 using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.AuthServer.Handlers
@@ -80,9 +80,8 @@ namespace Stump.Server.AuthServer.Handlers
 
         public static bool HandleIndentification(AuthClient client, IdentificationMessage message)
         {
-
             /* Ban Ip */
-            if(IpBanRecord.Exists(client.IP))
+            if (IpBanRecord.Exists(client.IP))
             {
                 SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.UNKNOWN_AUTH_ERROR);
                 client.DisconnectLater(1000);
@@ -116,17 +115,13 @@ namespace Stump.Server.AuthServer.Handlers
             {
                 /* for undetermined time */
                 if (!account.BanEndDate.HasValue)
-                {
                     SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.BANNED);
-                }
                 else
-                {
                     SendIdentificationFailedBannedMessage(client);
-                }
+
                 client.DisconnectLater(1000);
                 return false;
             }
-
 
             bool wasAlreadyConnected = AuthentificationServer.Instance.DisconnectClientsUsingAccount(account);
 
@@ -134,11 +129,10 @@ namespace Stump.Server.AuthServer.Handlers
             if (wasAlreadyConnected)
             {
                 client.Send(new AlreadyConnectedMessage());
-                return false;
             }
 
+            /* Bind Account to Client */
             client.Account = account;
-            client.Characters = account.Characters;
 
             /* Propose at client to give a nickname */
             if (client.Account.Nickname == "")
@@ -194,38 +188,38 @@ namespace Stump.Server.AuthServer.Handlers
         [AuthHandler(typeof(ServerSelectionMessage))]
         public static void HandleServerSelectionMessage(AuthClient client, ServerSelectionMessage message)
         {
-            var wr = WorldServerManager.GetWorldRecord(message.serverId);
+            var world = WorldServerManager.GetWorldRecord(message.serverId);
 
             /* World not exist */
-            if (wr == null)
+            if (world == null)
             {
-                SendSelectServerRefusedMessage(client, wr, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_NO_REASON);
+                SendSelectServerRefusedMessage(client, world, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_NO_REASON);
                 return;
             }
 
             /* Wrong state */
-            if (wr.Status != ServerStatusEnum.ONLINE)
+            if (world.Status != ServerStatusEnum.ONLINE)
             {
-                SendSelectServerRefusedMessage(client, wr, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_DUE_TO_STATUS);
+                SendSelectServerRefusedMessage(client, world, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_DUE_TO_STATUS);
                 return;
             }
 
             /* not suscribe */
-            if (wr.RequireSubscription && client.Account.SubscriptionRemainingTime <= 0)
+            if (world.RequireSubscription && client.Account.SubscriptionRemainingTime <= 0)
             {
-                SendSelectServerRefusedMessage(client, wr, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_SUBSCRIBERS_ONLY);
+                SendSelectServerRefusedMessage(client, world, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_SUBSCRIBERS_ONLY);
                 return;
             }
 
             /* not the rights */
-            if (wr.RequiredRole > client.Account.Role)
+            if (world.RequiredRole > client.Account.Role)
             {
-                SendSelectServerRefusedMessage(client, wr, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_ACCOUNT_RESTRICTED);
+                SendSelectServerRefusedMessage(client, world, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_ACCOUNT_RESTRICTED);
                 return;
             }
 
             /* Send client to the server */
-            SendSelectServerData(client, wr);
+            SendSelectServerData(client, world);
         }
 
         public static void SendSelectServerData(AuthClient client, WorldRecord world)
@@ -236,7 +230,7 @@ namespace Stump.Server.AuthServer.Handlers
 
             client.LookingOfServers = false;
 
-            // save the ticket in the database
+            /* Bind Ticket & LastServer */
             client.Account.Ticket = client.Key;
             client.Account.LastServer = world.Id;
             client.Save();

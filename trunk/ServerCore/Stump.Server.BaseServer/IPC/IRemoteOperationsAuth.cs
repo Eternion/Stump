@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Collections.Generic;
 using Stump.Database;
 
@@ -101,7 +102,7 @@ namespace Stump.Server.BaseServer.IPC
         ///   Get the number of characters from an account
         /// </summary>
         /// <returns></returns>
-        int GetAccountCharacterCount(WorldServerInformation wsi, uint accountid);
+        //    int GetAccountCharacterCount(WorldServerInformation wsi, AccountRecord account);
 
         /// <summary>
         /// Get the list of CharacterId of the specified Account
@@ -109,7 +110,7 @@ namespace Stump.Server.BaseServer.IPC
         /// <param name="wsi"></param>
         /// <param name="accountid"></param>
         /// <returns></returns>
-        uint[] GetAccountCharacters(WorldServerInformation wsi, uint accountid);
+        //   uint[] GetAccountCharacters(WorldServerInformation wsi, AccountRecord account);
 
         /// <summary>
         /// Add a new Character to the account
@@ -117,7 +118,7 @@ namespace Stump.Server.BaseServer.IPC
         /// <param name="wsi"></param>
         /// <param name="accountid"></param>
         /// <param name="characterId"></param>
-        void AddAccountCharacter(WorldServerInformation wsi, uint accountid, uint characterId);
+        bool AddAccountCharacter(WorldServerInformation wsi, uint accountId, uint characterId);
 
         /// <summary>
         /// Delete a character of the account
@@ -125,7 +126,7 @@ namespace Stump.Server.BaseServer.IPC
         /// <param name="wsi"></param>
         /// <param name="accountid"></param>
         /// <param name="characterId"></param>
-        void DeleteAccountCharacter(WorldServerInformation wsi, uint accountid, uint characterId);
+        bool DeleteAccountCharacter(WorldServerInformation wsi, uint accountId, uint characterId);
 
         /// <summary>
         /// Check if account exceeds the quota of day character deletion
@@ -133,7 +134,7 @@ namespace Stump.Server.BaseServer.IPC
         /// <param name="wsi"></param>
         /// <param name="accountid"></param>
         /// <returns></returns>
-        bool ExceedsDeletedCharactersQuota(uint accountid);
+        bool ExceedsDeletedCharactersQuota(uint accountId);
 
         /// <summary>
         /// Check the world server's secret key
@@ -142,5 +143,22 @@ namespace Stump.Server.BaseServer.IPC
         /// <param name="secretKey"></param>
         /// <returns></returns>
         bool CheckWorldServerSecretKey(WorldServerInformation wsi, string secretKey);
+
+        /// <summary>
+        /// Ban an account
+        /// </summary>
+        /// <param name="wsi"></param>
+        /// <param name="accountId"></param>
+        /// <param name="banEndDate"></param>
+        /// <returns></returns>
+        bool BanAccount(WorldServerInformation wsi, uint accountId, DateTime banEndDate);
+
+        /// <summary>
+        /// Ban an ip
+        /// </summary>
+        /// <param name="wsi"></param>
+        /// <param name="ip"></param>
+        void BanIp(WorldServerInformation wsi, string ip);
+
     }
 }

@@ -148,7 +148,7 @@ namespace Stump.Server.BaseServer
             QueueDispatcher = new QueueDispatcher(Settings.EnableBenchmarking);
             HandlerManager = new HandlerManager();
             WorkerManager = new WorkerManager(QueueDispatcher, HandlerManager);
-
+          
             CommandManager = new CommandsManager();
 
             MessageListener = new MessageListener(QueueDispatcher, CreateClient);

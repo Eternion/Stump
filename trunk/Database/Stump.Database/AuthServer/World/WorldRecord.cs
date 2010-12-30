@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections.Generic;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
@@ -29,8 +30,9 @@ namespace Stump.Database
     public sealed class WorldRecord : ActiveRecordBase<WorldRecord>
     {
 
-        private int m_charsCount=0;
-
+        private int m_charsCount = 0;
+        private bool m_connected = false;
+        private ServerStatusEnum m_state = ServerStatusEnum.OFFLINE;
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
         public int Id
@@ -95,11 +97,24 @@ namespace Stump.Database
             set;
         }
 
-
-        public ServerStatusEnum Status
+        [HasMany(typeof(WorldCharacterRecord), Lazy = true)]
+        public IList<WorldCharacterRecord> Characters
         {
             get;
             set;
+        }
+
+        [HasMany(typeof(DeletedWorldCharacterRecord), Lazy = true)]
+        public IList<DeletedWorldCharacterRecord> DeletedCharacters
+        {
+            get;
+            set;
+        }
+
+        public ServerStatusEnum Status
+        {
+            get { return m_state; }
+            set { m_state = value; }
         }
 
         public int CharsCount
@@ -110,13 +125,8 @@ namespace Stump.Database
 
         public bool Connected
         {
-            get;
-            set;
-        }
-
-        public WorldCharacterRecord[] Characters
-        {
-            get { return WorldCharacterRecord.FindCharactersByServerId(Id); }
+            get { return m_connected; }
+            set { m_connected = value; }
         }
 
 

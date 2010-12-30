@@ -81,6 +81,7 @@ namespace Stump.Server.WorldServer.Handlers
             var breedLook = !message.sex ? breed.MaleLook.Copy() : breed.FemaleLook.Copy();
             breedLook.indexedColors = indexedColors;
 
+
             /* Create Character */
             var character = new CharacterRecord
                 {

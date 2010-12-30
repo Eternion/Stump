@@ -17,56 +17,56 @@
 //  *
 //  *************************************************************************/
 using System.Collections.Generic;
+using System.Linq;
 using NLog;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.Database;
 using Stump.DofusProtocol.Enums;
 
-namespace Stump.Server.AuthServer.Accounts
+namespace Stump.Server.AuthServer.Managers
 {
-    public static class AccountManager
+    public static class StartupActionManager
     {
-        /// <summary>
-        /// List of available breeds
-        /// </summary>
-        [Variable]
-        public static List<PlayableBreedEnum> AvailableBreeds = new List<PlayableBreedEnum>
-            {
-                PlayableBreedEnum.Feca,
-                PlayableBreedEnum.Osamodas,
-                PlayableBreedEnum.Enutrof,
-                PlayableBreedEnum.Sram,
-                PlayableBreedEnum.Xelor,
-                PlayableBreedEnum.Ecaflip,
-                PlayableBreedEnum.Eniripsa,
-                PlayableBreedEnum.Iop,
-                PlayableBreedEnum.Cra,
-                PlayableBreedEnum.Sadida,
-                PlayableBreedEnum.Sacrieur,
-                PlayableBreedEnum.Pandawa,
-                PlayableBreedEnum.Roublard,
-                //BreedEnum.Zobal,
-            };
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
 
-        public static bool CreateAccount(AccountRecord acc)
+        public static bool CreateStartupAction(StartupActionRecord startupAction)
         {
-            if (AccountRecord.FindAccountByLogin(acc.Login.ToLower())!=null)
+            if (StartupActionRecord.Exists(startupAction))
                 return false;
 
-            acc.SaveAndFlush();
+            startupAction.CreateAndFlush();
 
             return true;
         }
 
-        public static bool DeleteAccount(AccountRecord account)
+        public static bool DeleteStartupAction(StartupActionRecord startupAction)
         {
-            if (account == null)
+            if (startupAction == null)
                 return false;
             
-            account.DeleteAndFlush();
+            startupAction.DeleteAndFlush();
+
+            return true;
+        }
+
+        public static bool AddStartupActionItem(StartupActionRecord startupAction, StartupActionItemRecord item)
+        {
+            if (startupAction.Items.Contains(item))
+                return false;
+
+            startupAction.Items.Add(item);
+
+            return true;
+        }
+
+        public static bool DeleteStartupActionItem(StartupActionRecord startupAction, StartupActionItemRecord item)
+        {
+            if (!startupAction.Items.Contains(item))
+                return false;
+
+            startupAction.Items.Remove(item);
 
             return true;
         }

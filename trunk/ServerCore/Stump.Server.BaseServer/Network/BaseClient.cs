@@ -104,7 +104,6 @@ namespace Stump.Server.BaseServer.Network
 
         public virtual void Send(Message message)
         {
-
             if (Socket == null || !Connected)
             {
                 throw new Exception("Attempt to send a packet when client isn't connected");
@@ -157,6 +156,7 @@ namespace Stump.Server.BaseServer.Network
                 Disconnect();
             }
         }
+
 
         protected virtual void OnReceive()
         {
@@ -213,7 +213,7 @@ namespace Stump.Server.BaseServer.Network
                 Message message = MessageReceiver.GetMessage(m_splittedPacketId,
                                                              m_buffer.ReadBytesInNewBigEndianReader(
                                                                  (int) m_splittedPacketLength));
-
+               
                 m_dispatcher.Enqueue(this, message);
                 m_splittedPacket = false;
 
