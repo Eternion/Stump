@@ -106,11 +106,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DofusProtocol\D2oClasses\Stump.DofusProtocol.D2oClasses.csproj">
+    <ProjectReference Include="..\..\DofusProtocol\D2oClasses\Stump.DofusProtocol.D2oClasses.csproj">
       <Project>{33093793-C4BA-4B89-AC82-6E9D00437452}</Project>
       <Name>Stump.DofusProtocol.D2oClasses</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ServerCore\Stump.Server.BaseServer\Stump.Server.BaseServer.csproj">
+    <ProjectReference Include="..\..\ServerCore\Stump.Server.BaseServer\Stump.Server.BaseServer.csproj">
       <Project>{011FBAFC-7720-4D36-9C59-71BAE6163C9E}</Project>
       <Name>Stump.Server.BaseServer</Name>
     </ProjectReference>
