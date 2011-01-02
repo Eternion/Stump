@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FileAssociation">
+      <HintPath>..\..\Library\FileAssociation.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -48,17 +51,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="D2OAdapater.cs" />
-    <Compile Include="FormAdapter.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormAdapter.Designer.cs">
-      <DependentUpon>FormAdapter.cs</DependentUpon>
-    </Compile>
+    <Compile Include="D2PAdapter.cs" />
     <Compile Include="FormD2O.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormD2O.Designer.cs">
       <DependentUpon>FormD2O.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormD2P.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormD2P.Designer.cs">
+      <DependentUpon>FormD2P.cs</DependentUpon>
     </Compile>
     <Compile Include="FormSelect.cs">
       <SubType>Form</SubType>
@@ -73,10 +77,14 @@
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="IFormAdapter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FormD2O.resx">
       <DependentUpon>FormD2O.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormD2P.resx">
+      <DependentUpon>FormD2P.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
@@ -85,7 +93,7 @@
       <DependentUpon>FormSelect.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -114,6 +122,12 @@
       <Project>{011FBAFC-7720-4D36-9C59-71BAE6163C9E}</Project>
       <Name>Stump.Server.BaseServer</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\page_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow_out.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

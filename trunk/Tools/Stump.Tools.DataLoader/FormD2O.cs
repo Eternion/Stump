@@ -6,11 +6,13 @@ using System.Windows.Forms;
 
 namespace Stump.Tools.DataLoader
 {
-    public partial class FormD2O : FormAdapter
+    public partial class FormD2O : Form, IFormAdapter
     {
-        public FormD2O()
+        public FormD2O(D2OAdapater adapter)
         {
             InitializeComponent();
+
+            Adapter = adapter;
         }
 
         public void DefineColumns(params string[] columns)
@@ -43,7 +45,12 @@ namespace Stump.Tools.DataLoader
             m_dataView.Rows.Add(values);
         }
 
-        public override IFileAdapter Adapter
+        IFileAdapter IFormAdapter.Adapter
+        {
+            get { return Adapter; }
+        }
+
+        public D2OAdapater Adapter
         {
             get;
             set;

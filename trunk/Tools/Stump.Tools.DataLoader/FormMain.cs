@@ -79,7 +79,7 @@ namespace Stump.Tools.DataLoader
                 string ext = Path.GetExtension(fileName).Remove(0, 1).ToLower();
 
                 if (!m_adapters.ContainsKey(ext))
-                    throw new Exception(ext + " is not a valide extension");
+                    throw new Exception(ext + " is not a valid extension");
 
                 var adapter = (IFileAdapter)Activator.CreateInstance(m_adapters[ext], fileName);
 
@@ -101,10 +101,10 @@ namespace Stump.Tools.DataLoader
 
             if (ActiveMdiChild != null)
             {
-                m_currentMenuItem = ((FormAdapter) ActiveMdiChild).Adapter.MenuItem;
+                m_currentMenuItem = ((IFormAdapter) ActiveMdiChild).Adapter.MenuItem;
                 m_currentMenuItem.MergeAction = MergeAction.Insert;
                 menuStrip1.Items.Insert(menuStrip1.Items.Count - 2, m_currentMenuItem);
-                m_currentMenuItem.Tag = ( (FormAdapter)ActiveMdiChild ).Adapter;
+                m_currentMenuItem.Tag = ( (IFormAdapter)ActiveMdiChild ).Adapter;
             }
         }
 

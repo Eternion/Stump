@@ -16,6 +16,8 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System.Reflection;
+using Ciloci.Flee;
 using NLog;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Classes.Custom;
@@ -39,6 +41,9 @@ namespace Stump.Server.WorldServer.Entities
         protected Entity(int id)
         {
             Id = id;
+
+            ExpressionContext = new ExpressionContext(this);
+            ExpressionContext.Options.OwnerMemberAccess = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;
         }
 
         public virtual void OnCreate()
@@ -78,8 +83,6 @@ namespace Stump.Server.WorldServer.Entities
             set;
         }
 
-
-
         /// <summary>
         ///   Representation of Entity's World Position
         /// </summary>
@@ -115,6 +118,12 @@ namespace Stump.Server.WorldServer.Entities
         }
 
         public ExtendedLook Look
+        {
+            get;
+            set;
+        }
+
+        public ExpressionContext ExpressionContext
         {
             get;
             set;

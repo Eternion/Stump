@@ -44,7 +44,6 @@ namespace Stump.Server.WorldServer.Handlers
 
             client.ActiveCharacter = new Character(character, client);
 
-
             /* Check if we also have a world account */
             if (! WorldAccountRecord.Exists(client.Account.Id))
             {

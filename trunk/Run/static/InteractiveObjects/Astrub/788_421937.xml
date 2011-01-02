@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InteractiveElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <elementId>421937</elementId>
+  <elementTypeId>31</elementTypeId>
+  <enabledSkills />
+  <disabledSkills>
+    <InteractiveElementSkill>
+      <skillId>37</skillId>
+      <skillInstanceUid>9071</skillInstanceUid>
+    </InteractiveElementSkill>
+  </disabledSkills>
+</InteractiveElement>

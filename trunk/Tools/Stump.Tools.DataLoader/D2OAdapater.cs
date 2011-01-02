@@ -70,9 +70,13 @@ namespace Stump.Tools.DataLoader
             string file = Path.GetFileNameWithoutExtension(FileName);
 
             if (!m_typeByFileName.ContainsKey(file))
-                throw new ArgumentException("'{0}' is not a valid D2O file", FileName);
+                throw new ArgumentException(string.Format("'{0}' is not a valid D2O file", FileName));
 
-            m_form = new FormD2O {Text = Path.GetFileName(file), Adapter = this};
+            m_form = new FormD2O(this)
+            {
+                Text = Path.GetFileName(FileName),
+                Adapter = this
+            };
             FillDataView();
         }
 

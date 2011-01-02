@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SkillInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Id>18300</Id>
+  <Skill type="Stump.Server.WorldServer.Skills.SkillUse">
+    <SkillUse>
+      <Duration>0</Duration>
+      <ActionsSerialized>
+        <ActionSerialized type="Stump.Server.WorldServer.Actions.ActionsCharacter.ActionTeleport">
+          <ActionTeleport>
+            <MapId>23592962</MapId>
+            <Cell>145</Cell>
+            <Direction>DIRECTION_NORTH</Direction>
+          </ActionTeleport>
+        </ActionSerialized>
+      </ActionsSerialized>
+      <Condition />
+    </SkillUse>
+  </Skill>
+</SkillInstance>

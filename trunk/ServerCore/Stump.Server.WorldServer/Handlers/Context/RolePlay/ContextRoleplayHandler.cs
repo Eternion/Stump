@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Handlers
         public static void HandleMapInformationsRequestMessage(WorldClient client, MapInformationsRequestMessage message)
         {
             if (!client.ActiveCharacter.InWorld)
-                client.ActiveCharacter.FirstSpawn();
+                client.ActiveCharacter.EnterWorld();
 
             SendMapComplementaryInformationsDataMessage(client);
         }

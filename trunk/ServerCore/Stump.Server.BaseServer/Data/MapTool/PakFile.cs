@@ -49,7 +49,7 @@ namespace Stump.Server.BaseServer.Data.MapTool
             bool linked = false;
 
            parse:
-            var reader = new BigEndianReader(File.Open(linkFile, FileMode.Open));
+            var reader = new BigEndianReader(File.OpenRead(linkFile));
             m_openReaders.Add(reader);
 
             if (reader.ReadByte() != 2 || reader.ReadByte() != 1)
@@ -101,19 +101,9 @@ namespace Stump.Server.BaseServer.Data.MapTool
         {
             dirpath = Path.GetFullPath(dirpath);
 
-            if (!dirpath.EndsWith("/"))
-                if (!dirpath.EndsWith("\\") && dirpath.Contains('\\'))
-                    dirpath += "\\";
-                else if (dirpath.Contains('/'))
-                    dirpath += "/";
-
-            if (!Directory.Exists(dirpath))
-                Directory.CreateDirectory(dirpath);
-
             foreach (var index in m_indexes)
             {
-                if (!Directory.Exists(Path.GetDirectoryName(dirpath + index.Key)))
-                    Directory.CreateDirectory(Path.GetDirectoryName(dirpath + index.Key));
+                CreateDirectoriesOnPath(dirpath + index.Key);
 
                 index.Value.Item3.Seek(index.Value.Item1, SeekOrigin.Begin); // offset
                 byte[] fileData = index.Value.Item3.ReadBytes(index.Value.Item2);
@@ -126,6 +116,8 @@ namespace Stump.Server.BaseServer.Data.MapTool
         {
             destfile = Path.GetFullPath(destfile);
 
+            CreateDirectoriesOnPath(destfile);
+
             Tuple<int, int, BigEndianReader> outvalue;
             if (!m_indexes.TryGetValue(file, out outvalue))
                 throw new Exception("Unknown file " + file);
@@ -136,15 +128,62 @@ namespace Stump.Server.BaseServer.Data.MapTool
             File.WriteAllBytes(destfile, fileData);
         }
 
+        public byte[] ReadFile(string file)
+        {
+            Tuple<int, int, BigEndianReader> outvalue;
+            if (!m_indexes.TryGetValue(file, out outvalue))
+                throw new Exception("Unknown file " + file);
+
+            outvalue.Item3.Seek(outvalue.Item1, SeekOrigin.Begin); // offset
+
+            return outvalue.Item3.ReadBytes(outvalue.Item2);
+        }
+
         public bool ExistsFile(string file)
         {
             return GetFilesName().Contains(file);
+        }
+
+        private static void CreateDirectoriesOnPath(string path)
+        {
+            var unexistantDirectories = new List<string>();
+            string lastDir = Path.GetDirectoryName(path);
+            while (!Directory.Exists(lastDir))
+            {
+                unexistantDirectories.Add(lastDir);
+
+                lastDir = Path.GetDirectoryName(lastDir);
+            }
+
+            unexistantDirectories.Reverse();
+
+            foreach (var unexistantDirectory in unexistantDirectories)
+            {
+                Directory.CreateDirectory(unexistantDirectory);
+            }
         }
 
         public string[] GetFilesName()
         {
             return (from entry in m_indexes
                     select entry.Key).ToArray();
+        }
+
+        public IEnumerable<PakedFileInfo> GetFilesInfo()
+        {
+            foreach (var entry in m_indexes)
+            {
+                string[] directories = Path.GetDirectoryName(entry.Key).Split(new [] {'/'}, StringSplitOptions.RemoveEmptyEntries);
+
+                yield return new PakedFileInfo
+                    {
+                        Name = entry.Key,
+                        Directories = directories,
+                        Index = entry.Value.Item1,
+                        Size = entry.Value.Item2,
+                        Container = Path.GetFileName(((FileStream) entry.Value.Item3.BaseStream).Name),
+                    };
+            }
         }
 
         public void Close()
@@ -158,6 +197,39 @@ namespace Stump.Server.BaseServer.Data.MapTool
         public void Dispose()
         {
             Close();
+        }
+
+        public class PakedFileInfo
+        {
+            public string Name
+            {
+                get;
+                set;
+            }
+
+            public string[] Directories
+            {
+                get;
+                set;
+            }
+
+            public int Size
+            {
+                get;
+                set;
+            }
+
+            public int Index
+            {
+                get;
+                set;
+            }
+
+            public string Container
+            {
+                get;
+                set;
+            }
         }
     }
 }

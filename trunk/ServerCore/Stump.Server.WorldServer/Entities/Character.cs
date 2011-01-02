@@ -113,7 +113,7 @@ namespace Stump.Server.WorldServer.Entities
         /// <summary>
         ///   Spawn the character on the map. It can be called once.
         /// </summary>
-        public void FirstSpawn()
+        internal void EnterWorld()
         {
             if (!InWorld)
             {
@@ -177,81 +177,6 @@ namespace Stump.Server.WorldServer.Entities
         {
             Kamas = amount;
             InventoryHandler.SendKamasUpdateMessage(Client, amount);
-        }
-
-        public override GameRolePlayActorInformations ToNetworkActor(WorldClient client)
-        {
-            return new GameRolePlayCharacterInformations(
-                (int) Id,
-                Look.EntityLook,
-                GetEntityDisposition(),
-                Name,
-                GetHumanInformations(),
-                GetActorAlignmentInformations());
-        }
-
-        public override FightTeamMemberInformations ToNetworkTeamMember()
-        {
-            if (!IsInFight)
-                return null;
-
-            return new FightTeamMemberCharacterInformations(
-                (int) Id,
-                Name,
-                (uint) Level);
-        }
-
-        public override GameFightFighterInformations ToNetworkFighter()
-        {
-            if (!IsInFight)
-                return null;
-
-            return new GameFightCharacterInformations(
-                (int)Id,
-                Look.EntityLook,
-                CurrentFighter.GetEntityDisposition(),
-                (uint)( (FightGroup)Group ).TeamId,
-                !( CurrentFighter.IsDead || CurrentFighter.IsReady ),
-                CurrentFighter.GetFightMinimalStats(),
-                Name,
-                (uint)Level,
-                GetActorAlignmentInformations());
-        }
-
-        public CharacterBaseInformations GetBaseInformations()
-        {
-            return new CharacterBaseInformations(
-                (uint) Id,
-                (uint) Level,
-                Name,
-                Look.EntityLook,
-                (int) BreedId,
-                Sex == SexTypeEnum.SEX_FEMALE);
-        }
-
-        // todo : complete this
-
-        public HumanInformations GetHumanInformations()
-        {
-            return new HumanInformations(
-                new List<EntityLook>(),
-                0,
-                0,
-                new ActorRestrictionsInformations(),
-                0,
-                "");
-        }
-
-        // todo : complete this
-
-        public ActorAlignmentInformations GetActorAlignmentInformations()
-        {
-            return new ActorAlignmentInformations(
-                0,
-                0,
-                0,
-                0,
-                0);
         }
 
         #region Save
@@ -337,9 +262,84 @@ namespace Stump.Server.WorldServer.Entities
         public void RemoveSpell(SpellIdEnum spellid)
         {
             Spells.Remove(spellid);
-            Record.RemoveSpell((uint) spellid);
+            Record.RemoveSpell((uint)spellid);
         }
 
         #endregion
+
+        public override GameRolePlayActorInformations ToNetworkActor(WorldClient client)
+        {
+            return new GameRolePlayCharacterInformations(
+                (int) Id,
+                Look.EntityLook,
+                GetEntityDisposition(),
+                Name,
+                GetHumanInformations(),
+                GetActorAlignmentInformations());
+        }
+
+        public override FightTeamMemberInformations ToNetworkTeamMember()
+        {
+            if (!IsInFight)
+                return null;
+
+            return new FightTeamMemberCharacterInformations(
+                (int) Id,
+                Name,
+                (uint) Level);
+        }
+
+        public override GameFightFighterInformations ToNetworkFighter()
+        {
+            if (!IsInFight)
+                return null;
+
+            return new GameFightCharacterInformations(
+                (int)Id,
+                Look.EntityLook,
+                CurrentFighter.GetEntityDisposition(),
+                (uint)( (FightGroup)Group ).TeamId,
+                !( CurrentFighter.IsDead || CurrentFighter.IsReady ),
+                CurrentFighter.GetFightMinimalStats(),
+                Name,
+                (uint)Level,
+                GetActorAlignmentInformations());
+        }
+
+        public CharacterBaseInformations GetBaseInformations()
+        {
+            return new CharacterBaseInformations(
+                (uint) Id,
+                (uint) Level,
+                Name,
+                Look.EntityLook,
+                (int) BreedId,
+                Sex == SexTypeEnum.SEX_FEMALE);
+        }
+
+        // todo : complete this
+
+        public HumanInformations GetHumanInformations()
+        {
+            return new HumanInformations(
+                new List<EntityLook>(),
+                0,
+                0,
+                new ActorRestrictionsInformations(),
+                0,
+                "");
+        }
+
+        // todo : complete this
+
+        public ActorAlignmentInformations GetActorAlignmentInformations()
+        {
+            return new ActorAlignmentInformations(
+                0,
+                0,
+                0,
+                0,
+                0);
+        }
     }
 }
