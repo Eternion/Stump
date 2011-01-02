@@ -46,6 +46,9 @@ namespace Stump.Server.WorldServer.Global
             logger.Info("Loading Maps...");
             LoadMaps();
 
+            logger.Info("Loading Cell Triggers...");
+            LoadTriggers();
+
             logger.Info("Spawn Interactive Objects...");
             SpawnInteractiveObjects();
 
@@ -96,6 +99,21 @@ namespace Stump.Server.WorldServer.Global
             {
                 zone.Maps = GetMaps(zone.MapsId);
                 zone.CustomWorldMaps = GetMaps(zone.CustomWorldMapsId);
+            }
+        }
+
+        public void LoadTriggers()
+        {
+            foreach (var trigger in MapLoader.LoadTriggers())
+            {
+                try
+                {
+                    trigger.Map.AddTrigger(trigger.Cell, trigger);
+                }
+                catch (Exception e)
+                {
+                    logger.Error("Cannot add trigger on cell <id:{0}> : {1}", trigger.Cell.Id, e.Message);
+                }
             }
         }
 
@@ -164,11 +182,11 @@ namespace Stump.Server.WorldServer.Global
             {
                 try
                 {
-                    GetMap(interactiveObject.Item1).SpawnInteractiveObject(interactiveObject.Item2);
+                    interactiveObject.Map.SpawnInteractiveObject(interactiveObject.InteractiveElement);
                 }
                 catch (Exception e)
                 {
-                    logger.Error("Cannot spawn object <id:{0}> : {1}", interactiveObject.Item2.elementId, e.Message);
+                    logger.Error("Cannot spawn object <id:{0}> : {1}", interactiveObject.InteractiveElement.elementId, e.Message);
                 }
             }
 
@@ -176,11 +194,13 @@ namespace Stump.Server.WorldServer.Global
             {
                 try
                 {
-                    GetMap(skill.Item1).GetInteractiveObject(skill.Item2).Skills.Add(skill.Item3.Id, skill.Item3.Skill);
+                    var interactiveObject = skill.Map.GetInteractiveObject(skill.ElementId);
+                    
+                    interactiveObject.Skills.Add(skill.SkillInstance.Id, skill.SkillInstance.Skill);
                 }
                 catch (Exception e)
                 {
-                    logger.Error("Cannot assign skill <id:{0}> : {1}", skill.Item3.Id, e.Message);
+                    logger.Error("Cannot assign skill <id:{0}> : {1}", skill.SkillInstance.Id, e.Message);
                 }
             }
         }
@@ -191,11 +211,11 @@ namespace Stump.Server.WorldServer.Global
             {
                 try
                 {
-                    GetMap(npcSpawnInfo.Item1).SpawnNpc(npcSpawnInfo.Item2);
+                    npcSpawnInfo.Map.SpawnNpc(npcSpawnInfo.NpcInformations);
                 }
                 catch (Exception e)
                 {
-                    logger.Error("Cannot spawn Npc <id:{0}> : {1}", npcSpawnInfo.Item2.npcId, e.Message);
+                    logger.Error("Cannot spawn Npc <id:{0}> : {1}", npcSpawnInfo.NpcInformations.npcId, e.Message);
                 }
             }
         }

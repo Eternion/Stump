@@ -146,6 +146,7 @@ namespace Stump.Server.WorldServer.Global.Maps
         public Map()
         {
             CellsData = new List<CellData>();
+            Triggers = new Dictionary<CellData, CellTrigger>();
             MapElementsPositions = new Dictionary<uint, CellData>();
             InteractiveObjects = new Dictionary<uint, InteractiveObject>();
             m_mapsAround = new Dictionary<int, MapNeighbour>();
@@ -220,6 +221,9 @@ namespace Stump.Server.WorldServer.Global.Maps
         private void EntityMovingEnd(LivingEntity entity, MovementPath movementPath)
         {
             /* check cell trigger, monsters... */
+
+            if (entity is Character)
+                movementPath.End.Cell.NotifyCellReached(entity as Character);
         }
 
         public void SpawnNpc(GameRolePlayNpcInformations npcInformations)
@@ -305,6 +309,13 @@ namespace Stump.Server.WorldServer.Global.Maps
                 charac => ContextHandler.SendGameRolePlayShowActorMessage(charac.Client, entity);
 
             CallOnAllCharactersWithoutFighters(action);
+        }
+
+        public void AddTrigger(CellData cell, CellTrigger trigger)
+        {
+            Triggers.Add(cell, trigger);
+
+            trigger.StartTrigger();
         }
 
         public MapNeighbour GetMapNeighbourByMapid(int mapid)
@@ -473,6 +484,12 @@ namespace Stump.Server.WorldServer.Global.Maps
         }
 
         public Dictionary<uint, InteractiveObject> InteractiveObjects
+        {
+            get;
+            set;
+        }
+
+        public Dictionary<CellData, CellTrigger> Triggers
         {
             get;
             set;

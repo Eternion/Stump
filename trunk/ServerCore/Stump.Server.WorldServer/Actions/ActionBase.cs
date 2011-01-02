@@ -21,5 +21,13 @@ namespace Stump.Server.WorldServer.Actions
             else if (action is NpcAction)
                 (action as NpcAction).Execute(npc, executer);
         }
+
+        public static void ExecuteAction(ActionBase action, CellData cell, Character executer)
+        {
+            if (action is CharacterAction)
+                ( action as CharacterAction ).Execute(executer);
+            else if (action is CellAction)
+                ( action as CellAction ).Execute(cell, executer);
+        }
     }
 }

@@ -25,10 +25,12 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Actions.ActionsCharacter;
 using Stump.Server.WorldServer.Actions.ActionsNpcs;
+using Stump.Server.WorldServer.Global.Maps;
 using Stump.Server.WorldServer.Items;
 using Stump.Server.WorldServer.Npcs;
 using Stump.Server.WorldServer.Npcs.StartActions;
 using Stump.Server.WorldServer.Skills;
+using Stump.Server.WorldServer.XmlSerialize;
 using Stump.Tools.Proxy.Network;
 
 namespace Stump.Tools.Proxy.Data
@@ -58,6 +60,9 @@ namespace Stump.Tools.Proxy.Data
 
         [Variable]
         public static string SkillActionsDir = "SkillActions/";
+
+        [Variable]
+        public static string CellTriggersDir = "CellTriggers/";
 
         public static void HandleNpcQuestion(WorldClient client, NpcDialogQuestionMessage dialogQuestionMessage)
         {
@@ -100,17 +105,31 @@ namespace Stump.Tools.Proxy.Data
                 uint duration = client.GuessSkillAction.Item3.duration;
                 client.GuessSkillAction = null;
 
+                var action = new ActionTeleport(message.mapId,
+                                                (ushort) client.Disposition.cellId,
+                                                (DirectionsEnum) client.Disposition.direction);
+
                 var skill = new SkillInstance(skillId,
-                                              new SkillUse(duration,
-                                                           actions:
-                                                               new ActionTeleport(message.mapId,
-                                                                                  (ushort) client.Disposition.cellId,
-                                                                                  (DirectionsEnum)
-                                                                                  client.Disposition.direction)));
+                                              new SkillUse(duration, actions: action));
 
                 SerializeToXml(
-                    GetDirectoryPath(client, SkillActionsDir) + mapId + "_" + elementId + "_" + skillId + ".xml",
-                    skill);
+                    GetDirectoryPath(client, mapId, SkillActionsDir) + mapId + "_" + elementId + "_" + skillId + ".xml",
+                    new SkillInstanceSerialized(mapId, elementId, skill));
+            }
+            else if (client.GuessCellTrigger != null)
+            {
+                var trigger = new CellTrigger((ushort) client.GuessCellTrigger, client.LastMap,
+                                              CellTrigger.TriggerEvent.OnReached,
+                                              new ActionTeleport(client.CurrentMap,
+                                                                 (ushort) client.Disposition.cellId,
+                                                                 (DirectionsEnum) client.Disposition.direction));
+
+                SerializeToXml(
+                    GetDirectoryPath(client, client.LastMap, CellTriggersDir) + client.LastMap + "_" + client.GuessCellTrigger + "_" +
+                    (int) CellTrigger.TriggerEvent.OnReached + ".xml",
+                    trigger);
+
+                client.GuessCellTrigger = null;
             }
         }
 
@@ -204,7 +223,7 @@ namespace Stump.Tools.Proxy.Data
         {
             SerializeToXml(
                 GetDirectoryPath(client, NpcDir) + client.CurrentMap + "_" + npcInformations.npcId + ".xml",
-                npcInformations);
+                new NpcSerialized(client.CurrentMap, npcInformations));
         }
 
         public static void HandleInteractiveObject(WorldClient client, InteractiveElement interactiveElement)
@@ -212,12 +231,29 @@ namespace Stump.Tools.Proxy.Data
             SerializeToXml(
                 GetDirectoryPath(client, InteractiveObjectsDir) + client.CurrentMap + "_" + interactiveElement.elementId +
                 ".xml",
-                interactiveElement);
+                new InteractiveElementSerialized(client.CurrentMap, interactiveElement));
         }
 
         public static string GetDirectoryPath(WorldClient client, string specificDirectory)
         {
             string zoneName = ZonesManager.GetRegionNameByMap(client.CurrentMap);
+
+            if (!Directory.Exists(Output + specificDirectory))
+            {
+                Directory.CreateDirectory(Output + specificDirectory);
+            }
+
+            if (!Directory.Exists(Output + specificDirectory + zoneName))
+            {
+                Directory.CreateDirectory(Output + specificDirectory + zoneName);
+            }
+
+            return Output + specificDirectory + zoneName + "/";
+        }
+
+        public static string GetDirectoryPath(WorldClient client, uint mapId, string specificDirectory)
+        {
+            string zoneName = ZonesManager.GetRegionNameByMap(mapId);
 
             if (!Directory.Exists(Output + specificDirectory))
             {

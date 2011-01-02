@@ -19,10 +19,10 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using NLog;
-using Stump.BaseCore.Framework.Utils;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 
@@ -31,27 +31,13 @@ namespace Stump.Tools.Proxy.Network
     public class ProxyClient : BaseClient
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly Stack<Message> m_receivedMessagesStack = new Stack<Message>(20);
+        private readonly List<Message> m_receivedMessagesStack = new List<Message>(20);
 
-        private readonly Stack<Message> m_sendedMessagesStack = new Stack<Message>(20);
-
-        private ServerConnection m_serverConnection;
-
-        public ServerConnection Server
-        {
-            get { return m_serverConnection; }
-        }
-
+        private readonly List<Message> m_sendedMessagesStack = new List<Message>(20);
+        private readonly object m_syncLock = new object();
         protected bool m_isInCriticalZone;
 
-        public bool IsInCriticalZone
-        {
-            get { return m_isInCriticalZone; }
-            set
-            {
-                m_isInCriticalZone = value;
-            }
-        }
+        private ServerConnection m_serverConnection;
 
         public ProxyClient(Socket socket)
             : base(socket)
@@ -61,12 +47,23 @@ namespace Stump.Tools.Proxy.Network
             CanReceive = true;
         }
 
-        public Stack<Message> ReceivedMessagesStack
+        public ServerConnection Server
+        {
+            get { return m_serverConnection; }
+        }
+
+        public bool IsInCriticalZone
+        {
+            get { return m_isInCriticalZone; }
+            set { m_isInCriticalZone = value; }
+        }
+
+        public List<Message> ReceivedMessagesStack
         {
             get { return m_receivedMessagesStack; }
         }
 
-        public Stack<Message> SendedMessagesStack
+        public List<Message> SendedMessagesStack
         {
             get { return m_sendedMessagesStack; }
         }
@@ -86,6 +83,26 @@ namespace Stump.Tools.Proxy.Network
             m_serverConnection.MessageReceived += OnServerMessageReceived;
 
             m_serverConnection.Connect();
+        }
+
+        public bool HasSent(Type message)
+        {
+            return HasSent(message, 1);
+        }
+
+        public bool HasSent(Type message, int range)
+        {
+            return m_sendedMessagesStack.FindIndex(0, range, entry => entry.GetType() == message) != -1;
+        }
+
+        public bool HasReceive(Type message)
+        {
+            return HasReceive(message, 1);
+        }
+
+        public bool HasReceive(Type message, int range)
+        {
+            return m_receivedMessagesStack.FindIndex(0, range, entry => entry.GetType() == message) != -1;
         }
 
         protected override void OnReceive()
@@ -162,8 +179,6 @@ namespace Stump.Tools.Proxy.Network
                 Disconnect();
         }
 
-        private object m_syncLock = new object();
-
         private void OnServerMessageReceived(ServerConnection connection, Message message)
         {
             bool mustExitCriticalZone = false;
@@ -176,8 +191,11 @@ namespace Stump.Tools.Proxy.Network
 
             try
             {
-                m_receivedMessagesStack.TrimExcess();
-                m_receivedMessagesStack.Push(message);
+                if (!(message is BasicNoOperationMessage))
+                {
+                    m_receivedMessagesStack.TrimExcess();
+                    m_receivedMessagesStack.Insert(0, message);
+                }
 
                 if (Proxy.Instance.HandlerManager.IsRegister(message.GetType()))
                     Proxy.Instance.HandlerManager.Dispatch(this, message);
@@ -205,8 +223,11 @@ namespace Stump.Tools.Proxy.Network
         {
             try
             {
-                m_sendedMessagesStack.TrimExcess();
-                m_sendedMessagesStack.Push(message);
+                if (!(message is BasicNoOperationMessage))
+                {
+                    m_sendedMessagesStack.TrimExcess();
+                    m_sendedMessagesStack.Insert(0, message);
+                }
 
                 if (Proxy.Instance.HandlerManager.IsRegister(message.GetType()))
                     Proxy.Instance.HandlerManager.Dispatch(this, message);
@@ -228,7 +249,6 @@ namespace Stump.Tools.Proxy.Network
                 if (Socket != null)
                     Disconnect();
             }
-
         }
 
         protected override void OnDisconnect()

@@ -58,7 +58,20 @@ namespace Stump.Tools.Proxy.Network
             set;
         }
 
+        private NpcDialogReplyMessage m_guessNpcReply;
+
         public NpcDialogReplyMessage GuessNpcReply
+        {
+            get { return m_guessNpcReply; }
+            set
+            {
+                LastNpcReply = m_guessNpcReply;
+
+                m_guessNpcReply = value;
+            }
+        }
+
+        public NpcDialogReplyMessage LastNpcReply
         {
             get;
             set;
@@ -88,7 +101,26 @@ namespace Stump.Tools.Proxy.Network
             set;
         }
 
+        public uint LastMap
+        {
+            get;
+            set;
+        }
+
+        private uint m_currentMap;
+
         public uint CurrentMap
+        {
+            get { return m_currentMap; }
+            set
+            {
+                LastMap = m_currentMap;
+                
+                m_currentMap = value;
+            }
+        }
+
+        public ushort? GuessCellTrigger
         {
             get;
             set;
@@ -116,12 +148,12 @@ namespace Stump.Tools.Proxy.Network
         {
             get
             {
-                return GuessNpcReply != null || GuessNpcFirstAction != null || GuessSkillAction != null;
+                return GuessNpcReply != null || GuessNpcFirstAction != null || GuessSkillAction != null || GuessCellTrigger != null;
             }
         }
 
         private Action m_delegateToCall;
-        public void CallWhenPositionChange(Action action)
+        public void CallWhenTeleported(Action action)
         {
             m_delegateToCall = action;
         }

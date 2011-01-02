@@ -28,12 +28,15 @@ namespace Stump.Tools.Proxy.Handlers.World
         [WorldHandler(typeof (CurrentMapMessage))]
         public static void HandleCurrentMapMessage(WorldClient client, CurrentMapMessage message)
         {
+            client.Send(message);
+
+            if (client.HasReceive(typeof(LeaveDialogMessage), 2))
+                client.GuessNpcReply = client.LastNpcReply;
+
             if(client.GuessAction)
             {
-                client.CallWhenPositionChange(() => DataFactory.BuildActionTeleport(client, message));
+                client.CallWhenTeleported(() => DataFactory.BuildActionTeleport(client, message));
             }
-
-            client.Send(message);
         }
 
         [WorldHandler(typeof (TeleportDestinationsListMessage))]

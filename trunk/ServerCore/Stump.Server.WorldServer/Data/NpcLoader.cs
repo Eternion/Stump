@@ -25,6 +25,7 @@ using Stump.BaseCore.Framework.XmlUtils;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Npcs;
+using Stump.Server.WorldServer.XmlSerialize;
 
 namespace Stump.Server.WorldServer.Data
 {
@@ -45,18 +46,13 @@ namespace Stump.Server.WorldServer.Data
         [Variable]
         public static string NpcActionsDir = "NpcsActions/";
 
-        public static IEnumerable<Tuple<uint, GameRolePlayNpcInformations>> LoadSpawnData()
+        public static IEnumerable<NpcSerialized> LoadSpawnData()
         {
             var directory = new DirectoryInfo(Settings.StaticPath + NpcsDir);
 
             foreach (FileInfo file in directory.GetFiles("*.xml", SearchOption.AllDirectories))
             {
-                uint mapId = uint.Parse(file.Name.Split('_').First());
-
-                yield return
-                    new Tuple<uint, GameRolePlayNpcInformations>(mapId,
-                                                                 XmlUtils.Deserialize<GameRolePlayNpcInformations>(
-                                                                     file.FullName));
+                yield return XmlUtils.Deserialize<NpcSerialized>(file.FullName);
             }
         }
 

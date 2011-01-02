@@ -1,3 +1,5 @@
+using Stump.Server.WorldServer.XmlSerialize;
+
 namespace Stump.Server.WorldServer.Skills
 {
     public class SkillInstance

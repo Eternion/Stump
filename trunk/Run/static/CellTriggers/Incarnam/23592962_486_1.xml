@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CellTrigger xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <CellId>486</CellId>
+  <MapId>23592962</MapId>
+  <Event>OnReached</Event>
+  <Action type="Stump.Server.WorldServer.Actions.ActionsCharacter.ActionTeleport">
+    <ActionTeleport>
+      <MapId>23595010</MapId>
+      <Cell>257</Cell>
+      <Direction>DIRECTION_SOUTH</Direction>
+    </ActionTeleport>
+  </Action>
+</CellTrigger>

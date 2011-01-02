@@ -20,11 +20,11 @@ using System.Collections.Generic;
 using System.IO;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.IO;
+using Stump.BaseCore.Framework.XmlUtils;
 using Stump.Server.WorldServer.Global.Maps;
 
 namespace Stump.Server.WorldServer.Data
 {
-    // todo : extract the d2p file if necessary to be synchronised with the client cache
     public static class MapLoader
     {
         /// <summary>
@@ -33,11 +33,8 @@ namespace Stump.Server.WorldServer.Data
         [Variable]
         public static string MapsDir = "maps/";
 
-        /// <summary>
-        /// Name of d2o file for maps
-        /// </summary>
         [Variable]
-        public static string MapsPakFile = "maps.d2p";
+        public static string CellTriggersDir = "CellTriggers/";
 
         /// <summary>
         ///   Load ripped maps from maps directory
@@ -57,9 +54,14 @@ namespace Stump.Server.WorldServer.Data
             return Directory.GetFiles(Settings.ContentPath + MapsDir, "*.map", SearchOption.AllDirectories).Length;
         }
 
-        // todo : extract d2p file and rips the maps
-        public static void ExtractMaps()
+        public static IEnumerable<CellTrigger> LoadTriggers()
         {
+            var directory = new DirectoryInfo(Settings.StaticPath + CellTriggersDir);
+
+            foreach (FileInfo file in directory.GetFiles("*.xml", SearchOption.AllDirectories))
+            {
+                yield return XmlUtils.Deserialize<CellTrigger>(file.FullName);
+            }
         }
     }
 }

@@ -24,6 +24,7 @@ using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.XmlUtils;
 using Stump.DofusProtocol.Classes;
 using Stump.Server.WorldServer.Skills;
+using Stump.Server.WorldServer.XmlSerialize;
 
 namespace Stump.Server.WorldServer.Data
 {
@@ -35,35 +36,23 @@ namespace Stump.Server.WorldServer.Data
         [Variable]
         public static string SkillActionsDir = "SkillActions/";
 
-        public static IEnumerable<Tuple<uint, InteractiveElement>> LoadsInteractiveObjects()
+        public static IEnumerable<InteractiveElementSerialized> LoadsInteractiveObjects()
         {
             var directory = new DirectoryInfo(Settings.StaticPath + InteractiveObjectsDir);
 
             foreach (FileInfo file in directory.GetFiles("*.xml", SearchOption.AllDirectories))
             {
-                uint mapId = uint.Parse(file.Name.Split('_').First());
-
-                yield return
-                    new Tuple<uint, InteractiveElement>(mapId,
-                                                        XmlUtils.Deserialize<InteractiveElement>(
-                                                            file.FullName));
+                yield return XmlUtils.Deserialize<InteractiveElementSerialized>(file.FullName);
             }
         }
 
-        public static IEnumerable<Tuple<uint, uint, SkillInstance>> LoadSkills()
+        public static IEnumerable<SkillInstanceSerialized> LoadSkills()
         {
             var directory = new DirectoryInfo(Settings.StaticPath + SkillActionsDir);
 
             foreach (FileInfo file in directory.GetFiles("*.xml", SearchOption.AllDirectories))
             {
-                uint mapId = uint.Parse(file.Name.Split('_').First());
-                uint elementId = uint.Parse(file.Name.Split('_').GetValue(1).ToString());
-
-                yield return
-                    new Tuple<uint, uint, SkillInstance>(mapId,
-                                                         elementId,
-                                                         XmlUtils.Deserialize<SkillInstance>(
-                                                             file.FullName));
+                yield return XmlUtils.Deserialize<SkillInstanceSerialized>(file.FullName);
             }
         }
     }

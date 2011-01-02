@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<InteractiveElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <elementId>435730</elementId>
-  <elementTypeId>-1</elementTypeId>
-  <enabledSkills>
-    <InteractiveElementSkill>
-      <skillId>184</skillId>
-      <skillInstanceUid>18300</skillInstanceUid>
-    </InteractiveElementSkill>
-  </enabledSkills>
-  <disabledSkills />
-</InteractiveElement>
+<InteractiveElementSerialized xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <MapId>23593986</MapId>
+  <InteractiveElement>
+    <elementId>435730</elementId>
+    <elementTypeId>-1</elementTypeId>
+    <enabledSkills>
+      <InteractiveElementSkill>
+        <skillId>184</skillId>
+        <skillInstanceUid>59019</skillInstanceUid>
+      </InteractiveElementSkill>
+    </enabledSkills>
+    <disabledSkills />
+  </InteractiveElement>
+</InteractiveElementSerialized>

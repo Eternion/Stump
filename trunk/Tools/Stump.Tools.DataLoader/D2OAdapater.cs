@@ -112,7 +112,8 @@ namespace Stump.Tools.DataLoader
                             values[i] = fields[columns[i]];
                         }
 
-                        m_form.AddRow(values);
+                        var row = m_form.AddRow(values);
+                        row.Tag = data;
                     }
                     else
                     {

@@ -18,6 +18,7 @@
 //  *************************************************************************/
 using System;
 using Stump.BaseCore.Framework.IO;
+using Stump.Server.WorldServer.Entities;
 
 namespace Stump.Server.WorldServer.Global.Maps
 {
@@ -54,6 +55,19 @@ namespace Stump.Server.WorldServer.Global.Maps
 
     public class CellData
     {
+        /// <summary>
+        /// Occurs when the cell has been reached.
+        /// </summary>
+        public event Action<CellData, Character> CellReached;
+
+        public void NotifyCellReached(Character character)
+        {
+            Action<CellData, Character> handler = CellReached;
+
+            if (handler != null)
+                handler(this, character);
+        }
+
         public short Floor;
         public byte LosMov;
         public byte MapChangeData;

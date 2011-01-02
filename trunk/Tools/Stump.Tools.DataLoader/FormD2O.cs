@@ -25,24 +25,50 @@ namespace Stump.Tools.DataLoader
             }
         }
 
-        public void AddRow(params object[] values)
+        public DataGridViewRow AddRow(params object[] values)
         {
-            for (int i = 0; i < values.Length; i++)
+            var row = new DataGridViewRow();
+
+            foreach (object value in values)
             {
-                if (values[i] is IEnumerable<IEnumerable>)
+                if (value is IEnumerable && !(value is string))
                 {
-                    values[i] = "{" +
-                        string.Join("}, {",
-                                    ( values[i] as IEnumerable<IEnumerable> ).Select(
-                                       entry => string.Join(", ", entry.Cast<object>().Select(subentry => subentry.ToString()).ToArray())).ToArray()) + "}";
+                    var cell = new DataGridViewTextBoxCell
+                        {
+                            Value = GetEnumerableValue(value as IEnumerable),
+                            Tag = value,
+                        };
+                    row.Cells.Add(cell);
                 }
-                else if (values[i] is IEnumerable && !(values[i] is string))
+                else
                 {
-                    values[i] = "{" + string.Join(", ", ( (IEnumerable)values[i] ).Cast<object>().Select(entry => entry.ToString()).ToArray()) + "}";
+                    var cell = new DataGridViewTextBoxCell
+                        {
+                            Value = value,
+                            Tag = value,
+                        };
+                    row.Cells.Add(cell);
                 }
             }
 
-            m_dataView.Rows.Add(values);
+            m_dataView.Rows.Add(row);
+
+            return row;
+        }
+
+        private static string GetEnumerableValue(IEnumerable enumerable)
+        {
+            string result = "{";
+
+            foreach (var value in enumerable)
+            {
+                if (value is IEnumerable && !( value is string ))
+                    result += value + ", ";
+                else
+                    result += value + ", ";
+            }
+
+            return result + "}";
         }
 
         IFileAdapter IFormAdapter.Adapter

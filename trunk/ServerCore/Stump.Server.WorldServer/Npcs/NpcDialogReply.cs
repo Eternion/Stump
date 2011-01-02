@@ -23,6 +23,7 @@ using System.Xml.Serialization;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Actions;
 using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.XmlSerialize;
 
 namespace Stump.Server.WorldServer.Npcs
 {

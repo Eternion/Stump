@@ -59,7 +59,8 @@
   <ItemGroup>
     <Compile Include="Actions\ActionBase.cs" />
     <Compile Include="Actions\ActionsCharacter\ActionTeleport.cs" />
-    <Compile Include="Actions\ActionSerialized.cs" />
+    <Compile Include="Actions\CellAction.cs" />
+    <Compile Include="XmlSerialize\ActionSerialized.cs" />
     <Compile Include="Actions\CharacterAction.cs" />
     <Compile Include="Actions\InteractiveAction.cs" />
     <Compile Include="Actions\NpcAction.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Data\InteractiveObjectLoader.cs" />
     <Compile Include="Data\NpcLoader.cs" />
     <Compile Include="Dialog\Dialoger.cs" />
+    <Compile Include="Global\Maps\CellTrigger.cs" />
     <Compile Include="Global\Maps\InteractiveObject.cs" />
     <Compile Include="Handlers\Authorized\AuthorizedHandler.cs" />
     <Compile Include="Items\ItemToSellInNpcShop.cs" />
@@ -242,7 +244,11 @@
     <Compile Include="Npcs\StartActions\TalkAction.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Skills\SkillInstance.cs" />
-    <Compile Include="Skills\SkillSerialized.cs" />
+    <Compile Include="XmlSerialize\InteractiveElementSerialized.cs" />
+    <Compile Include="XmlSerialize\NpcSerialized.cs" />
+    <Compile Include="XmlSerialize\PartialLocalizable.cs" />
+    <Compile Include="XmlSerialize\SkillInstanceSerialized.cs" />
+    <Compile Include="XmlSerialize\SkillSerialized.cs" />
     <Compile Include="Skills\SkillBase.cs" />
     <Compile Include="Skills\SkillUse.cs" />
     <Compile Include="Spells\Spell.cs" />
@@ -262,6 +268,7 @@
     <Compile Include="WorldClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WorldServer.cs" />
+    <Compile Include="XmlSerialize\Localizable.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\BaseCore\Stump.BaseCore.Framework\Stump.BaseCore.Framework.csproj">
@@ -298,6 +305,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Actions\ActionsBase\" />
+    <Folder Include="Actions\ActionsCell\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

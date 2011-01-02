@@ -48,6 +48,14 @@ namespace Stump.Tools.Proxy.Handlers.World
             DataFactory.BuildActionNpcLeave(client, message);
         }
 
+        [WorldHandler(typeof(LeaveDialogRequestMessage))]
+        public static void HandleLeaveDialogRequestMessage(WorldClient client, LeaveDialogRequestMessage message)
+        {
+            client.GuessNpcReply = null;
+
+            client.Server.Send(message);
+        }
+
         [WorldHandler(typeof(NpcGenericActionRequestMessage))]
         public static void HandleNpcGenericActionRequestMessage(WorldClient client, NpcGenericActionRequestMessage message)
         {
