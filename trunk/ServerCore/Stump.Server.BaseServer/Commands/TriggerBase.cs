@@ -33,6 +33,12 @@ namespace Stump.Server.BaseServer.Commands
             UserRole = userRole;
         }
 
+        protected TriggerBase(string args, RoleEnum userRole)
+        {
+            Args = new StringStream(args);
+            UserRole = userRole;
+        }
+
         public StringStream Args
         {
             get;
@@ -140,7 +146,7 @@ namespace Stump.Server.BaseServer.Commands
                     word = word.Remove(word.Length - 1, 1).Remove(0, 1);
 
                 Match matchIsNamed = Regex.Match(word, @"^(?!\"")(?:-|--)?(\w+)=([^\""\s]*)(?!\"")$", RegexOptions.Compiled);
-                Match matchVar = Regex.Match(word, @"^(?!\"")(?:-|--)(\w+)(?!\"")$", RegexOptions.Compiled);
+                Match matchVar = Regex.Match(word, @"^(?!\"")(?:-|--)([a-zA-Z]+)(?!\"")$", RegexOptions.Compiled);
                 if (matchIsNamed.Success)
                 {
                     string name = matchIsNamed.Groups[1].Value;

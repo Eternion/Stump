@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Stump.BaseCore.Framework.Attributes;
-using Stump.BaseCore.Framework.XmlUtils;
+using Stump.BaseCore.Framework.Xml;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Npcs;

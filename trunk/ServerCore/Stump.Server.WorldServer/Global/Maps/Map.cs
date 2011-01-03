@@ -24,12 +24,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Stump.BaseCore.Framework.IO;
 using Stump.DofusProtocol.Classes;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global.Pathfinding;
 using Stump.Server.WorldServer.Handlers;
 using Stump.Server.WorldServer.Npcs;
 using Stump.Server.WorldServer.Skills;
+using Point = System.Drawing.Point;
 
 namespace Stump.Server.WorldServer.Global.Maps
 {
@@ -318,6 +320,12 @@ namespace Stump.Server.WorldServer.Global.Maps
             trigger.StartTrigger();
         }
 
+        public void SetMapPosition(MapPosition mapPosition)
+        {
+            Position = new Point(mapPosition.posX, mapPosition.posY);
+            Outdoor = mapPosition.outdoor;
+        }
+
         public MapNeighbour GetMapNeighbourByMapid(int mapid)
         {
             if (!m_mapsAround.ContainsKey(mapid))
@@ -427,6 +435,18 @@ namespace Stump.Server.WorldServer.Global.Maps
         {
             get;
             set;
+        }
+
+        public Point Position
+        {
+            get;
+            private set;
+        }
+
+        public bool Outdoor
+        {
+            get;
+            private set;
         }
 
         public int TopNeighbourId

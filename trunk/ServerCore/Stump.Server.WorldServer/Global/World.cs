@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -27,6 +28,7 @@ using NLog;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.Threading;
 using Stump.BaseCore.Framework.Utils;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Chat;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global.Maps;

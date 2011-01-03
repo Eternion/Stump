@@ -15,6 +15,12 @@ namespace Stump.Server.WorldServer.Commands
             Character = character;
         }
 
+        public TriggerConsole(string args, Character character)
+            : base(args, character == null ? RoleEnum.Administrator : character.Client.Account.Role)
+        {
+            Character = character;
+        }
+
         public Character Character
         {
             get;

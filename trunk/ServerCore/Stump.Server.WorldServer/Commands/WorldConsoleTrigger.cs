@@ -30,6 +30,11 @@ namespace Stump.Server.WorldServer.Commands
         {
         }
 
+        public WorldConsoleTrigger(string args)
+            : base(args, RoleEnum.Administrator)
+        {
+        }
+
         public override void Reply(string text)
         {
             string name = GetBindedCommandName();

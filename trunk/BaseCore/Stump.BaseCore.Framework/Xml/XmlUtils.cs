@@ -16,16 +16,18 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 
-namespace Stump.BaseCore.Framework.XmlUtils
+namespace Stump.BaseCore.Framework.Xml
 {
     public static class XmlUtils
     {
         #region Properties
 
-        private static XmlSerializer m_serializer;
+        private static readonly Dictionary<Type, XmlSerializer> Serializers = new Dictionary<Type, XmlSerializer>();
 
         #endregion
 
@@ -41,8 +43,10 @@ namespace Stump.BaseCore.Framework.XmlUtils
         {
             using (var writer = new StreamWriter(fileName))
             {
-                m_serializer = new XmlSerializer(typeof (T));
-                m_serializer.Serialize(writer, item);
+                if (!Serializers.ContainsKey(typeof(T)))
+                    Serializers.Add(typeof(T), new XmlSerializer(typeof(T)));
+
+                Serializers[typeof(T)].Serialize(writer, item);
             }
         }
 
@@ -56,8 +60,10 @@ namespace Stump.BaseCore.Framework.XmlUtils
         {
             using (var writer = new StreamWriter(stream))
             {
-                m_serializer = new XmlSerializer(typeof (T));
-                m_serializer.Serialize(writer, item);
+                if (!Serializers.ContainsKey(typeof(T)))
+                    Serializers.Add(typeof(T), new XmlSerializer(typeof(T)));
+
+                Serializers[typeof(T)].Serialize(writer, item);
             }
         }
 
@@ -75,8 +81,10 @@ namespace Stump.BaseCore.Framework.XmlUtils
         {
             using (var reader = new StreamReader(fileName))
             {
-                m_serializer = new XmlSerializer(typeof (T));
-                return (T) m_serializer.Deserialize(reader);
+                if (!Serializers.ContainsKey(typeof(T)))
+                    Serializers.Add(typeof(T), new XmlSerializer(typeof(T)));
+
+                return (T)Serializers[typeof(T)].Deserialize(reader);
             }
         }
 
@@ -90,8 +98,10 @@ namespace Stump.BaseCore.Framework.XmlUtils
         {
             using (var reader = new StreamReader(stream))
             {
-                m_serializer = new XmlSerializer(typeof (T));
-                return (T) m_serializer.Deserialize(reader);
+                if (!Serializers.ContainsKey(typeof(T)))
+                    Serializers.Add(typeof(T), new XmlSerializer(typeof(T)));
+
+                return (T)Serializers[typeof(T)].Deserialize(reader);
             }
         }
 

@@ -72,9 +72,10 @@
     <Compile Include="Utils\Node.cs" />
     <Compile Include="Utils\Singleton.cs" />
     <Compile Include="Utils\StringUtils.cs" />
-    <Compile Include="XmlUtils\XmlConfigFile.cs" />
-    <Compile Include="XmlUtils\XmlUtils.cs" />
-    <Compile Include="XmlUtils\XmlVariableConverters.cs" />
+    <Compile Include="Xml\XmlFile.cs" />
+    <Compile Include="Xml\XmlConfigFile.cs" />
+    <Compile Include="Xml\XmlUtils.cs" />
+    <Compile Include="Xml\XmlVariableConverters.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -27,7 +27,7 @@ using NLog;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.IO;
 using Stump.BaseCore.Framework.Utils;
-using Stump.BaseCore.Framework.XmlUtils;
+using Stump.BaseCore.Framework.Xml;
 using Stump.DofusProtocol;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer;

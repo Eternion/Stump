@@ -17,14 +17,19 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Stump.BaseCore.Framework.IO;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Data;
 using Stump.Server.WorldServer.Data;
+using Stump.Server.WorldServer.Global.Maps;
+using Stump.Server.WorldServer.XmlSerialize;
 using AreaTemplate = Stump.DofusProtocol.D2oClasses.Area;
+using Point = System.Drawing.Point;
 using SubAreaTemplate = Stump.DofusProtocol.D2oClasses.SubArea;
 using SuperAreaTemplate = Stump.DofusProtocol.D2oClasses.SuperArea;
 
@@ -63,10 +68,15 @@ namespace Stump.Server.WorldServer.Global
                 int count = MapLoader.GetMapFilesCount();
 
                 var consoleProcent = new ConsoleProcent();
-
+                IDictionary<int, MapPosition> mapsPositions = MapLoader.LoadMapPositions();
                 Parallel.ForEach(MapLoader.LoadMaps(), map =>
                 {
                     map.ParentSpace = GetZone((int) map.ZoneId);
+
+                    if (mapsPositions.ContainsKey(map.Id))
+                        map.SetMapPosition(mapsPositions[map.Id]);
+
+                    var continent = (Continent)map.ParentSpace.ParentSpace.ParentSpace;
 
                     retry:
                     try
@@ -84,6 +94,13 @@ namespace Stump.Server.WorldServer.Global
                         // if cannot add the map we change the current thread
                         Thread.Sleep(1);
                     }
+
+                    if (map.Outdoor && !continent.MapsByPosition.ContainsKey(map.Position))
+                        while (!continent.MapsByPosition.TryAdd(map.Position, map))
+                        {
+                            // if cannot add the element we change the current thread
+                            Thread.Sleep(1);
+                        }
 
                     consoleProcent.Update((int) (((double) Maps.Count/count)*100));
                 });
@@ -104,7 +121,7 @@ namespace Stump.Server.WorldServer.Global
 
         public void LoadTriggers()
         {
-            foreach (var trigger in MapLoader.LoadTriggers())
+            foreach (CellTrigger trigger in MapLoader.LoadTriggers())
             {
                 try
                 {
@@ -127,7 +144,7 @@ namespace Stump.Server.WorldServer.Global
                 var continent = new Continent
                     {
                         Id = parentarea.id,
-                        Name = Enum.GetName(typeof (ContinentIdEnum), parentarea.id),
+                        Name = DataLoader.GetI18NText((int) parentarea.nameId),
                         ParentSpace = null
                     };
 
@@ -178,7 +195,8 @@ namespace Stump.Server.WorldServer.Global
 
         public void SpawnInteractiveObjects()
         {
-            foreach (var interactiveObject in InteractiveObjectLoader.LoadsInteractiveObjects())
+            foreach (InteractiveElementSerialized interactiveObject in InteractiveObjectLoader.LoadsInteractiveObjects()
+                )
             {
                 try
                 {
@@ -186,16 +204,17 @@ namespace Stump.Server.WorldServer.Global
                 }
                 catch (Exception e)
                 {
-                    logger.Error("Cannot spawn object <id:{0}> : {1}", interactiveObject.InteractiveElement.elementId, e.Message);
+                    logger.Error("Cannot spawn object <id:{0}> : {1}", interactiveObject.InteractiveElement.elementId,
+                                 e.Message);
                 }
             }
 
-            foreach (var skill in InteractiveObjectLoader.LoadSkills())
+            foreach (SkillInstanceSerialized skill in InteractiveObjectLoader.LoadSkills())
             {
                 try
                 {
-                    var interactiveObject = skill.Map.GetInteractiveObject(skill.ElementId);
-                    
+                    InteractiveObject interactiveObject = skill.Map.GetInteractiveObject(skill.ElementId);
+
                     interactiveObject.Skills.Add(skill.SkillInstance.Id, skill.SkillInstance.Skill);
                 }
                 catch (Exception e)
@@ -207,7 +226,7 @@ namespace Stump.Server.WorldServer.Global
 
         public void SpawnNpcs()
         {
-            foreach (var npcSpawnInfo in NpcLoader.LoadSpawnData())
+            foreach (NpcSerialized npcSpawnInfo in NpcLoader.LoadSpawnData())
             {
                 try
                 {

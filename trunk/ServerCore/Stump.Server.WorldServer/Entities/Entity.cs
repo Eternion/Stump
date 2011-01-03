@@ -108,6 +108,11 @@ namespace Stump.Server.WorldServer.Entities
             get { return (Region) Zone.ParentSpace; }
         }
 
+        public Continent Continent
+        {
+            get { return (Continent) Region.ParentSpace; }
+        }
+
         /// <summary>
         ///   The name of this entity.
         /// </summary>

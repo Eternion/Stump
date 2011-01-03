@@ -319,7 +319,7 @@ namespace Stump.Server.BaseServer.Commands
                     if (command.Aliases == null || command.RequiredRole == RoleEnum.None)
                     {
                         logger.Error(
-                            "An error occurred while registering Command : {0}. Either aliases are null or RequiredRole is incorrect.\nPlease check and repair.");
+                            "An error occurred while registering Command : {0}. Either aliases are null or RequiredRole is incorrect.\nPlease check and repair.", commandType.Name);
                         return;
                     }
 

@@ -16,17 +16,24 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System.Collections.Concurrent;
+using System.Drawing;
+using Stump.Server.WorldServer.Global.Maps;
+
 namespace Stump.Server.WorldServer.Global
 {
-    /// <summary>
-    ///   ParentArea is the representation of a continent. See ParentAreasId for a full list of them.
-    ///   We actually don't use ParentArea as it's not needed at the moment.
-    /// </summary>
     public class Continent : WorldSpace
     {
-        #region Fields
+        public Continent()
+        {
+            MapsByPosition = new ConcurrentDictionary<Point, Map>();
+        }
 
-        #endregion
+        public ConcurrentDictionary<Point, Map> MapsByPosition
+        {
+            get;
+            private set;
+        }
 
         public override WorldSpaceType Type
         {

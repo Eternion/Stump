@@ -18,6 +18,7 @@
 //  *************************************************************************/
 using System;
 using System.Collections.Generic;
+using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Classes.Custom;
 using Stump.DofusProtocol.Classes.Extensions;
 using Stump.Server.BaseServer.Commands;

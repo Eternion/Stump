@@ -27,7 +27,7 @@ using System.Xml.Schema;
 using NLog;
 using Stump.BaseCore.Framework.Attributes;
 
-namespace Stump.BaseCore.Framework.XmlUtils
+namespace Stump.BaseCore.Framework.Xml
 {
     public class XmlConfigFile
     {

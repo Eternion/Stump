@@ -16,9 +16,8 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System.Linq;
 using Stump.BaseCore.Framework.IO;
-using Stump.DofusProtocol.Classes.Custom;
-using Stump.DofusProtocol.Classes.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Commands;
@@ -27,7 +26,7 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public class AuthorizedHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof(AdminQuietCommandMessage))]
+        [WorldHandler(typeof (AdminQuietCommandMessage))]
         public static void HandleAdminQuietCommandMessage(WorldClient client, AdminQuietCommandMessage message)
         {
             if (client.Account.Role < RoleEnum.GameMaster_Padawan)
@@ -40,20 +39,25 @@ namespace Stump.Server.WorldServer.Handlers
             switch (command)
             {
                 case ("look"):
-                    {
-                        client.ActiveCharacter.Look = new ExtendedLook(data[2].ToEntityLook());
-                        ContextHandler.SendGameContextRefreshEntityLookMessage(client, client.ActiveCharacter);
-                        break;
-                    }
-                //case ("moveto"):
-                //    {
+                {
+                    WorldServer.Instance.CommandManager.HandleCommand(
+                        new TriggerConsole(message.content, client.ActiveCharacter));
+                    break;
+                }
+                case ("moveto"):
+                {
+                    string x = args[0].Split(',').First();
+                    string y = args[0].Split(',').Last();
 
-                //    }
+                    WorldServer.Instance.CommandManager.HandleCommand(
+                        new TriggerChat(string.Format("gopos * {0} {1}", x, y), client.ActiveCharacter));
+                    break;
+                }
             }
         }
 
 
-        [WorldHandler(typeof(AdminCommandMessage))]
+        [WorldHandler(typeof (AdminCommandMessage))]
         public static void HandleAdminCommandMessage(WorldClient client, AdminCommandMessage message)
         {
             if (client.Account.Role < RoleEnum.GameMaster_Padawan)
@@ -70,7 +74,7 @@ namespace Stump.Server.WorldServer.Handlers
 
         public static void SendConsoleMessage(WorldClient client, ConsoleMessageTypeEnum type, string text)
         {
-            client.Send(new ConsoleMessage((uint)type, text));
+            client.Send(new ConsoleMessage((uint) type, text));
         }
     }
 }

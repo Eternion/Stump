@@ -26,7 +26,7 @@ using System.Threading;
 using NLog;
 using Stump.BaseCore.Framework.IO;
 using Stump.BaseCore.Framework.Utils;
-using Stump.BaseCore.Framework.XmlUtils;
+using Stump.BaseCore.Framework.Xml;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.Network;

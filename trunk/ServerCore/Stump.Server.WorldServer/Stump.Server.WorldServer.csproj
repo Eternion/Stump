@@ -60,6 +60,7 @@
     <Compile Include="Actions\ActionBase.cs" />
     <Compile Include="Actions\ActionsCharacter\ActionTeleport.cs" />
     <Compile Include="Actions\CellAction.cs" />
+    <Compile Include="Commands\Commands\TeleportCommand.cs" />
     <Compile Include="XmlSerialize\ActionSerialized.cs" />
     <Compile Include="Actions\CharacterAction.cs" />
     <Compile Include="Actions\InteractiveAction.cs" />
@@ -84,12 +85,12 @@
     <Compile Include="Breeds\ZobalBreed.cs" />
     <Compile Include="Chat\ChannelId.cs" />
     <Compile Include="Chat\ChatManager.cs" />
-    <Compile Include="Commands\ItemCommand.cs" />
+    <Compile Include="Commands\Commands\ItemCommand.cs" />
     <Compile Include="Commands\IInGameTrigger.cs" />
-    <Compile Include="Commands\LookCommand.cs" />
+    <Compile Include="Commands\Commands\LookCommand.cs" />
     <Compile Include="Commands\TriggerChat.cs" />
     <Compile Include="Commands\TriggerConsole.cs" />
-    <Compile Include="Commands\WorkerCommands.cs" />
+    <Compile Include="Commands\Commands\WorkerCommands.cs" />
     <Compile Include="Data\InteractiveObjectLoader.cs" />
     <Compile Include="Data\NpcLoader.cs" />
     <Compile Include="Dialog\Dialoger.cs" />

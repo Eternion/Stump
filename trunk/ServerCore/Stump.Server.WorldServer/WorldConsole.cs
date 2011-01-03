@@ -80,8 +80,7 @@ namespace Stump.Server.WorldServer
                         Cmd = Cmd.Substring(CommandPreffix.Length);
                         var stopwatch = new Stopwatch();
                         stopwatch.Start();
-                        WorldServer.Instance.CommandManager.HandleCommand(
-                            new WorldConsoleTrigger(new StringStream(Cmd)));
+                        WorldServer.Instance.CommandManager.HandleCommand(new WorldConsoleTrigger(Cmd));
                         stopwatch.Stop();
 
                         Debug.WriteLine(stopwatch.ElapsedMilliseconds + " ms");

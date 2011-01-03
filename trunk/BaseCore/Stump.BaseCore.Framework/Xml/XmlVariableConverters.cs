@@ -21,11 +21,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.Exceptions;
 using Stump.BaseCore.Framework.Utils;
 
-namespace Stump.BaseCore.Framework.XmlUtils
+namespace Stump.BaseCore.Framework.Xml
 {
     // todo : maybe can we found a way to add any method to convert to any type we wan't in any assembly
     /// <summary>

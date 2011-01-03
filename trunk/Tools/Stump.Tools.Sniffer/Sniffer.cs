@@ -27,7 +27,7 @@ using PcapDotNet.Analysis;
 using PcapDotNet.Core;
 using PcapDotNet.Packets;
 using PcapDotNet.Packets.IpV4;
-using Stump.BaseCore.Framework.XmlUtils;
+using Stump.BaseCore.Framework.Xml;
 using Stump.DofusProtocol;
 using Stump.DofusProtocol.Messages;
 using Message = Stump.DofusProtocol.Messages.Message;

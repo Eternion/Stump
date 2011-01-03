@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Stump.BaseCore.Framework.Attributes;
-using Stump.BaseCore.Framework.XmlUtils;
+using Stump.BaseCore.Framework.Xml;
 
 namespace Stump.Tools.UtilityBot
 {

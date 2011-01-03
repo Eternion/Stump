@@ -30,6 +30,11 @@ namespace Stump.Server.AuthServer.Commands
         {
         }
 
+        public AuthConsoleTrigger(string args)
+            : base(args, RoleEnum.Administrator)
+        {
+        }
+
         public override void Reply(string text)
         {
             string name = GetBindedCommandName();

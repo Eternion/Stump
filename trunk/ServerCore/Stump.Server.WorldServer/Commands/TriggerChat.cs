@@ -38,6 +38,18 @@ namespace Stump.Server.WorldServer.Commands
             Character = null;
         }
 
+        public TriggerChat(string args, Character character)
+            : base(args, character == null ? RoleEnum.Administrator : character.Client.Account.Role)
+        {
+            Character = character;
+        }
+
+        public TriggerChat(string args, RoleEnum role)
+            : base(args, role)
+        {
+            Character = null;
+        }
+
         public Character Character
         {
             get;
