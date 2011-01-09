@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
+using Stump.BaseCore.Framework.Attributes;
 using Stump.Database;
 using Stump.DofusProtocol;
 using Stump.DofusProtocol.Messages;
@@ -29,6 +30,7 @@ using Stump.Server.AuthServer.IPC;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Network;
+using Stump.Server.BaseServer.Plugins;
 
 namespace Stump.Server.AuthServer
 {
@@ -62,6 +64,9 @@ namespace Stump.Server.AuthServer
                 logger.Info("Opening Database...");
                 DatabaseAccessor.OpenDatabase();
 
+                logger.Info("Initializing WorldServers Manager");
+                WorldServerManager.Initialize();
+
                 logger.Info("Register Messages...");
                 MessageReceiver.Initialize();
                 ProtocolTypeManager.Initialize();
@@ -70,13 +75,20 @@ namespace Stump.Server.AuthServer
                 HandlerManager.RegisterAll(typeof (AuthentificationServer).Assembly);
 
                 logger.Info("Register Commands...");
-                CommandManager.RegisterAll<AuthCommand, AuthSubCommand>();
+                CommandManager.RegisterAll<AuthCommand, AuthSubCommand>(typeof(AuthCommand).Assembly);
             }
             catch (Exception ex)
             {
                 logger.Fatal("Cannot initialize Server : " + ex);
                 Shutdown();
             }
+        }
+
+        protected override void OnPluginAdded(PluginContext plugincontext)
+        {
+            CommandManager.RegisterAll<AuthCommand, AuthSubCommand>(plugincontext.PluginAssembly);
+
+            base.OnPluginAdded(plugincontext);
         }
 
         public override void Start()

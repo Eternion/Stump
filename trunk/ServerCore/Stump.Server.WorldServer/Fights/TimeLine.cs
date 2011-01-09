@@ -16,43 +16,60 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using NLog;
 using Stump.Server.WorldServer.Groups;
 
 namespace Stump.Server.WorldServer.Fights
 {
     public enum TimeLineState
     {
-        Sleeping,
+        Idle,
         TurnInProgress,
-        TurnEndRequest
+        TurnEndRequest,
+        TurnEnding,
     }
 
-    public class TimeLine
+    public class TimeLine : IDisposable
     {
+        public static Logger logger = LogManager.GetCurrentClassLogger();
+
         #region Events
 
+        #region Delegates
+
+        public delegate void TurnEndedHandler(
+            TimeLine sender, FightGroupMember lastFighter, FightGroupMember currentFighter);
+
+        public delegate void TurnEndedRequestHandler(TimeLine sender, FightGroupMember currentFighter);
+
         public delegate void TurnStartedHandler(TimeLine sender, FightGroupMember currentFighter);
+
+        #endregion
+
         public event TurnStartedHandler TurnStarted;
 
 
-        public delegate void TurnEndedHandler(TimeLine sender, FightGroupMember oldFighter, FightGroupMember newFighter);
+        public event TurnEndedRequestHandler TurnEndedRequest;
+
         public event TurnEndedHandler TurnEnded;
 
         #endregion
 
-        private Timer m_turnEndTimer;
+        private Timer m_forceEndTurnTimer;
+        private Timer m_turnTimer;
 
         public TimeLine(Fight fight)
         {
             Fighters = new List<FightGroupMember>();
             Index = -1;
-            State = TimeLineState.Sleeping;
+            State = TimeLineState.Idle;
 
             Fight = fight;
-            
+
             CreateTimeLine();
         }
 
@@ -91,11 +108,23 @@ namespace Stump.Server.WorldServer.Fights
             }
         }
 
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            if (m_turnTimer != null)
+                m_turnTimer.Dispose();
+
+            if (m_forceEndTurnTimer != null)
+                m_forceEndTurnTimer.Dispose();
+        }
+
+        #endregion
+
         /// <summary>
-        /// Change the current fighter and select the next fighter on the timeline
+        ///   Change the current fighter and select the next fighter on the timeline
         /// </summary>
         /// <returns></returns>
-        /// <remarks>You must not call it to change the turn. Use it wisely !</remarks>
         public FightGroupMember UpdateToNextFighter()
         {
             Index = (Index + 1) < Fighters.Count ? Index + 1 : 0;
@@ -117,9 +146,9 @@ namespace Stump.Server.WorldServer.Fights
             return Fighters[index];
         }
 
-        public void StartTurnTimer()
+        public void StartTurn()
         {
-            m_turnEndTimer = new Timer(TurnEndReached, true, Fight.TurnTime, Timeout.Infinite);
+            m_turnTimer = new Timer(TurnEndReached, true, Fight.TurnTime, Timeout.Infinite);
 
             State = TimeLineState.TurnInProgress;
 
@@ -127,11 +156,12 @@ namespace Stump.Server.WorldServer.Fights
                 TurnStarted(this, Current);
         }
 
-        public bool EndTurn(FightGroupMember fighter)
+        public bool RequestTurnEnd(FightGroupMember fighter)
         {
-            if(fighter != Current)
+            if (fighter != Current)
                 return false;
 
+            m_turnTimer.Dispose();
             TurnEndReached(false);
 
             return true;
@@ -139,14 +169,77 @@ namespace Stump.Server.WorldServer.Fights
 
         private void TurnEndReached(object timerEnded)
         {
-            m_turnEndTimer.Dispose();
+            try
+            {
+                State = TimeLineState.TurnEndRequest;
+
+                if (TurnEndedRequest != null)
+                    TurnEndedRequest(this, Current);
+
+                m_forceEndTurnTimer = new Timer(ConfirmTurnEnd, null, Fight.TurnEndTimeOut, Timeout.Infinite);
+            }
+            catch (Exception e)
+            {
+                logger.Error("Exception thrown on fight <id:{0}> when turn end is requested : {1}", Fight.Id, e);
+
+                try
+                {
+                    Fight.EndFight();
+                }
+                // ReSharper disable EmptyGeneralCatchClause
+                catch
+                {
+                }
+                // ReSharper restore EmptyGeneralCatchClause
+            }
+        }
+
+        public void ConfirmTurnEnd()
+        {
+            m_forceEndTurnTimer.Dispose();
+            ConfirmTurnEnd(null);
+        }
+
+        private void ConfirmTurnEnd(object args)
+        {
+            try
+            {
+                m_forceEndTurnTimer.Dispose();
+
+                if (State == TimeLineState.TurnEndRequest)
+                {
+                    State = TimeLineState.TurnEnding;
+
+                    EndTurn();
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error("Exception thrown on fight <id:{0}> when turn end is confirmed : {1}", Fight.Id, e);
+
+                try
+                {
+                    Fight.EndFight();
+                }
+                // ReSharper disable EmptyGeneralCatchClause
+                catch
+                {
+                }
+                // ReSharper restore EmptyGeneralCatchClause
+            }
+        }
+
+        private void EndTurn()
+        {
+            Current.ResetUsedProperties();
 
             UpdateToNextFighter();
 
-            State = TimeLineState.TurnEndRequest;
-
             if (TurnEnded != null)
                 TurnEnded(this, GetLastFighter(), Current);
+
+            if (!Fight.CheckIfEnd())
+                StartTurn();
         }
 
         private void CreateTimeLine()
@@ -154,10 +247,12 @@ namespace Stump.Server.WorldServer.Fights
             int sourceIndex = 0;
             int targetIndex = 0;
 
-            var sortedSourceGroup =
-                Fight.SourceGroup.Members.OrderByDescending(entry => entry.Entity.Stats["Initiative"].Total).OfType<FightGroupMember>();
-            var sortedTargetGroup =
-                Fight.TargetGroup.Members.OrderByDescending(entry => entry.Entity.Stats["Initiative"].Total).OfType<FightGroupMember>();
+            IEnumerable<FightGroupMember> sortedSourceGroup =
+                Fight.SourceGroup.Members.OrderByDescending(entry => entry.Entity.Stats["Initiative"].Total).OfType
+                    <FightGroupMember>();
+            IEnumerable<FightGroupMember> sortedTargetGroup =
+                Fight.TargetGroup.Members.OrderByDescending(entry => entry.Entity.Stats["Initiative"].Total).OfType
+                    <FightGroupMember>();
 
             bool sourceStart = SourceIsFirst(sortedSourceGroup, sortedTargetGroup);
 

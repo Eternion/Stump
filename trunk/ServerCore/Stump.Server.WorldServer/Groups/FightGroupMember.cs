@@ -103,7 +103,7 @@ namespace Stump.Server.WorldServer.Groups
             set;
         }
 
-        public bool IsInTurn
+        public bool IsPlaying
         {
             get { return Equals(((FightGroup) GroupOwner).Fight.FighterPlaying); }
         }

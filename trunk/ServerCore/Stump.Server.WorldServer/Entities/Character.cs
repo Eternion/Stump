@@ -95,10 +95,28 @@ namespace Stump.Server.WorldServer.Entities
             Client.Send(message);
         }
 
+        /// <summary>
+        ///   Spawn the character on the map. It can be called once.
+        /// </summary>
+        public void LogIn()
+        {
+            if (!InWorld)
+            {
+                Position.Map.AddEntity(this);
+
+                InWorld = true;
+                World.Instance.AddCharacter(this);
+
+                NotifyLoggedIn();
+            }
+        }
+
         public void LogOut()
         {
             if (InWorld)
             {
+                NotifyLoggingOut();
+
                 Inventory.UnLoadInventory();
                 SaveNow();
 
@@ -107,20 +125,6 @@ namespace Stump.Server.WorldServer.Entities
 
                 World.Instance.RemoveCharacter(this);
                 InWorld = false;
-            }
-        }
-
-        /// <summary>
-        ///   Spawn the character on the map. It can be called once.
-        /// </summary>
-        internal void EnterWorld()
-        {
-            if (!InWorld)
-            {
-                Position.Map.AddEntity(this);
-
-                InWorld = true;
-                World.Instance.AddCharacter(this);
             }
         }
 

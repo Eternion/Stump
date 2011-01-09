@@ -30,6 +30,8 @@ namespace Stump.Server.WorldServer.Fights
         /// <returns></returns>
         public static bool RemoveFight(Fight fight)
         {
+            fight.Dispose();
+
             return RemoveInstance(fight);
         }
 

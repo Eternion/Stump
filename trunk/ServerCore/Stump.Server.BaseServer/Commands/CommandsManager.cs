@@ -51,15 +51,12 @@ namespace Stump.Server.BaseServer.Commands
             get { return GetCommand(alias); }
         }
 
-        public void RegisterAll<T, TC>()
+        public void RegisterAll<T, TC>(Assembly assembly)
         {
-            Assembly asm = typeof (T).Assembly;
-            Type[] callTypes;
+            if (assembly == null)
+                throw new ArgumentNullException("assembly");
 
-            if (asm != null)
-                callTypes = asm.GetTypes();
-            else
-                return;
+            Type[] callTypes = assembly.GetTypes();
 
             foreach (Type type in callTypes)
             {
@@ -73,7 +70,6 @@ namespace Stump.Server.BaseServer.Commands
             {
                 RegisterSubCommand<TC>(type);
             }
-
 
             foreach (CommandBase command in m_commandsByAlias.Values)
             {

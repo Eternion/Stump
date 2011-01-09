@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Stump.Server.AuthServer</name>
+    </assembly>
+    <members>
+        <member name="M:Stump.Server.AuthServer.AuthentificationServer.#ctor">
+            <summary>
+              Bag containing client currently under authentification process.
+            </summary>
+        </member>
+        <member name="F:Stump.Server.AuthServer.IPC.IpcServer.IpcPort">
+            <summary>
+            IPC port
+            </summary>
+        </member>
+        <member name="F:Stump.Server.AuthServer.IPC.IpcServer.IpcSecretKey">
+            <summary>
+            Secret key to use to confirm World Server access
+            </summary>
+        </member>
+        <member name="F:Stump.Server.AuthServer.Managers.AccountManager.AvailableBreeds">
+            <summary>
+            List of available breeds
+            </summary>
+        </member>
+        <member name="P:Stump.Server.AuthServer.AuthClient.LookingOfServers">
+            <summary>
+              True when the client is choising a server
+            </summary>
+        </member>
+        <member name="T:Stump.Server.AuthServer.WorldServerManager">
+            <summary>
+              Manager for handling different connected worlds
+              as well as the database's worldlist.
+            </summary>
+        </member>
+        <member name="F:Stump.Server.AuthServer.WorldServerManager.WorldServerTimeout">
+            <summary>
+              Defines after how many seconds a world server is considered as timed out.
+            </summary>
+        </member>
+        <member name="F:Stump.Server.AuthServer.WorldServerManager.m_registeredWorlds">
+            <summary>
+              List containing worlds registered and handled by authserver.
+            </summary>
+        </member>
+        <member name="F:Stump.Server.AuthServer.WorldServerManager.m_realmlist">
+            <summary>
+              List of world by Id taken from database.
+            </summary>
+        </member>
+        <member name="F:Stump.Server.AuthServer.WorldServerManager.m_sync">
+            <summary>
+              Synchronization object.
+            </summary>
+        </member>
+        <member name="M:Stump.Server.AuthServer.WorldServerManager.Initialize">
+            <summary>
+              Initialize up our list and get all
+              world registered in our database in
+              "world list".
+            </summary>
+        </member>
+        <member name="M:Stump.Server.AuthServer.WorldServerManager.Start">
+            <summary>
+              Start up a new task which will ping
+              connected world servers.
+            </summary>
+        </member>
+        <member name="M:Stump.Server.AuthServer.WorldServerManager.CreateWorld(Stump.Database.WorldRecord)">
+            <summary>
+              Create a new world record and save it
+              directly in database.
+            </summary>
+            <param name = "record"></param>
+        </member>
+        <member name="M:Stump.Server.AuthServer.WorldServerManager.CreateWorld(Stump.Server.BaseServer.IPC.WorldServerInformation)">
+            <summary>
+              Create a new world record and save it
+              directly in database.
+            </summary>
+        </member>
+        <member name="M:Stump.Server.AuthServer.WorldServerManager.AddWorld(Stump.Server.BaseServer.IPC.WorldServerInformation)">
+            <summary>
+              Check and add a new world server to handle.
+              If server info differs from worldlist, it's rejected.
+            </summary>
+            <param name = "world"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.AuthServer.WorldServerManager.GetWorld(System.Int32)">
+            <summary>
+              Get a world from our list.
+            </summary>
+            <param name = "id">identifier of the world.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.AuthServer.WorldServerManager.HasWorld(System.Int32)">
+            <summary>
+              Check if we have got a world identified
+              by given id.
+            </summary>
+            <param name = "id">World's identifier to check.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.AuthServer.WorldServerManager.RemoveWorld(Stump.Server.BaseServer.IPC.WorldServerInformation)">
+            <summary>
+              Remove a given world from our list
+              and set it off line.
+            </summary>
+            <param name = "world"></param>
+        </member>
+        <member name="M:Stump.Server.AuthServer.WorldServerManager.CheckPing">
+            <summary>
+              Check each second if the world servers are alive
+            </summary>
+        </member>
+        <member name="T:Stump.Server.AuthServer.Definitions">
+            <summary>
+              Contains hard-coded data
+            </summary>
+        </member>
+        <member name="F:Stump.Server.AuthServer.AuthConsole.CommandPreffix">
+            <summary>
+            Prefix using for server's commands
+            </summary>
+        </member>
+    </members>
+</doc>

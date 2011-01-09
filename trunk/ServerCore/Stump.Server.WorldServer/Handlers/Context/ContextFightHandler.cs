@@ -54,9 +54,9 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof (GameFightTurnReadyMessage))]
         public static void HandleGameFightTurnReadyMessage(WorldClient client, GameFightTurnReadyMessage message)
         {
-            if (message.isReady && client.ActiveCharacter.CurrentFighter.IsInTurn)
+            if (message.isReady && client.ActiveCharacter.CurrentFight.State == FightState.Fighting && client.ActiveCharacter.CurrentFighter.IsPlaying)
                 client.ActiveCharacter.CurrentFight.TurnEndConfirm(client.ActiveCharacter.CurrentFighter);
-            else
+            else if (client.ActiveCharacter.CurrentFight.State == FightState.PreparePosition)
             {
                 client.ActiveCharacter.CurrentFight.CallOnAllCharacters(charac =>
                     SendGameFightTurnReadyRequestMessage(charac.Client,client.ActiveCharacter.GroupMember.Entity));
@@ -66,7 +66,7 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof (GameFightReadyMessage))]
         public static void HandleGameFightReadyMessage(WorldClient client, GameFightReadyMessage message)
         {
-            client.ActiveCharacter.CurrentFight.SetReadyState(client.ActiveCharacter, message.isReady);
+            client.ActiveCharacter.CurrentFight.SetReadyState(client.ActiveCharacter.CurrentFighter, message.isReady);
         }
 
         [WorldHandler(typeof (GameFightPlacementPositionRequestMessage))]

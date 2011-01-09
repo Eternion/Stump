@@ -209,61 +209,61 @@ namespace Stump.Server.WorldServer.Global.Maps
         //    return _loc_3;
         //}
 
-        //public MapPoint GetNearestCellInDirection(int direction)
-        //{
-        //    MapPoint mapPoint;
-        //    switch (direction)
-        //    {
-        //        case 0:
-        //            {
-        //                mapPoint = MapPoint.FromCoords(m_x + 1, m_y + 1);
-        //                break;
-        //            }
-        //        case 1:
-        //            {
-        //                mapPoint = MapPoint.FromCoords(m_x + 1, m_y);
-        //                break;
-        //            }
-        //        case 2:
-        //            {
-        //                mapPoint = MapPoint.FromCoords(m_x + 1, m_y - 1);
-        //                break;
-        //            }
-        //        case 3:
-        //            {
-        //                mapPoint = MapPoint.FromCoords(m_x, m_y - 1);
-        //                break;
-        //            }
-        //        case 4:
-        //            {
-        //                mapPoint = MapPoint.FromCoords(m_x - 1, m_y - 1);
-        //                break;
-        //            }
-        //        case 5:
-        //            {
-        //                mapPoint = MapPoint.FromCoords(m_x - 1, m_y);
-        //                break;
-        //            }
-        //        case 6:
-        //            {
-        //                mapPoint = MapPoint.FromCoords(m_x - 1, m_y + 1);
-        //                break;
-        //            }
-        //        case 7:
-        //            {
-        //                mapPoint = MapPoint.FromCoords(m_x, m_y + 1);
-        //                break;
-        //            }
-        //        default:
-        //            {
-        //                return null;
-        //            }
-        //    }
-        //    if (MapPoint.IsInMap(mapPoint.m_x, mapPoint.m_y))
-        //        return mapPoint;
-        //    else
-        //        return null;
-        //}
+        public MapPoint GetNearestCellInDirection(DirectionsEnum direction)
+        {
+            MapPoint mapPoint = null;
+            switch (direction)
+            {
+                case DirectionsEnum.DIRECTION_EAST:
+                    {
+                        mapPoint = new MapPoint(Map, m_x + 1, m_y + 1);
+                        break;
+                    }
+                case DirectionsEnum.DIRECTION_SOUTH_EAST:
+                    {
+                        mapPoint = new MapPoint(Map, m_x + 1, m_y);
+                        break;
+                    }
+                case DirectionsEnum.DIRECTION_SOUTH:
+                    {
+                        mapPoint = new MapPoint(Map, m_x + 1, m_y - 1);
+                        break;
+                    }
+                case DirectionsEnum.DIRECTION_SOUTH_WEST:
+                    {
+                        mapPoint = new MapPoint(Map, m_x, m_y - 1);
+                        break;
+                    }
+                case DirectionsEnum.DIRECTION_WEST:
+                    {
+                        mapPoint = new MapPoint(Map, m_x - 1, m_y - 1);
+                        break;
+                    }
+                case DirectionsEnum.DIRECTION_NORTH_WEST:
+                    {
+                        mapPoint = new MapPoint(Map, m_x - 1, m_y);
+                        break;
+                    }
+                case DirectionsEnum.DIRECTION_NORTH:
+                    {
+                        mapPoint = new MapPoint(Map, m_x - 1, m_y + 1);
+                        break;
+                    }
+                case DirectionsEnum.DIRECTION_NORTH_EAST:
+                    {
+                        mapPoint = new MapPoint(Map, m_x, m_y + 1);
+                        break;
+                    }
+            }
+
+            if (mapPoint != null)
+                if (IsInMap(mapPoint.X, mapPoint.Y))
+                    return mapPoint;
+                else
+                    return null;
+
+            return null;
+        }
 
         //public MapPoint GetNearestFreeCellInDirection(int direction, Map param2, Boolean param3 = true, Boolean param4 = true)
         //{

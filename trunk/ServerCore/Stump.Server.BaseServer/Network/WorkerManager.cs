@@ -37,7 +37,7 @@ namespace Stump.Server.BaseServer.Network
         public static bool AutoWorkerNumber = true;
 
         /// <summary>
-        ///   Number of workers if <see cref = "AutoWorkerNumber" /> is false
+        ///   Number of workers if AutoWorkerNumber is false
         /// </summary>
         [Variable]
         public static int WorkerThreadNumber = 2;

@@ -49,17 +49,17 @@ namespace Stump.Server.AuthServer
         /// <summary>
         ///   List containing worlds registered and handled by authserver.
         /// </summary>
-        private static readonly List<WorldServerInformation> m_registeredWorlds;
+        private static List<WorldServerInformation> m_registeredWorlds;
 
         /// <summary>
         ///   List of world by Id taken from database.
         /// </summary>
-        private static readonly Dictionary<int, WorldRecord> m_realmlist;
+        private static Dictionary<int, WorldRecord> m_realmlist;
 
         /// <summary>
         ///   Synchronization object.
         /// </summary>
-        private static readonly object m_sync;
+        private static object m_sync;
 
         #region Properties
 
@@ -80,7 +80,7 @@ namespace Stump.Server.AuthServer
         ///   world registered in our database in
         ///   "world list".
         /// </summary>
-        static WorldServerManager()
+        public static void Initialize()
         {
             m_registeredWorlds = new List<WorldServerInformation>();
             m_realmlist = WorldRecord.FindAll().ToDictionary(entry => entry.Id) ?? new Dictionary<int, WorldRecord>();

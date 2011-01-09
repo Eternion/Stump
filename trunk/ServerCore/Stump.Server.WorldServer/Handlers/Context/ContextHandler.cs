@@ -81,15 +81,15 @@ namespace Stump.Server.WorldServer.Handlers
             if(!client.ActiveCharacter.CanMove())
                 return;
 
-            var cellid = (ushort) (message.keyMovements[message.keyMovements.Count - 1] & 0x0FFF);
+            var movementPath = new MovementPath(client.ActiveCharacter.Map, message.keyMovements);
 
             if (client.ActiveCharacter.IsInFight)
             {
-                client.ActiveCharacter.CurrentFight.MoveFighter(client.ActiveCharacter, cellid, message.keyMovements);
+                client.ActiveCharacter.CurrentFight.MoveFighter(client.ActiveCharacter.CurrentFighter, movementPath);
             }
             else
             {
-                client.ActiveCharacter.Move(MapMovementAdapter.GetClientMovement(client.ActiveCharacter.Map, message.keyMovements));
+                client.ActiveCharacter.Move(movementPath);
             }
         }
 

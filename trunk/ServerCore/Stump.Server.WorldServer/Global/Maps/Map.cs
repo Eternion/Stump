@@ -209,7 +209,7 @@ namespace Stump.Server.WorldServer.Global.Maps
 
         private void EntityMovingStart(LivingEntity entity, MovementPath movementPath)
         {
-            List<uint> movementsKey = MapMovementAdapter.GetServerMovement(movementPath);
+            List<uint> movementsKey = movementPath.GetServerMovementKeys();
 
             Action<Character> action = charac =>
             {

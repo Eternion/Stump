@@ -217,7 +217,7 @@ namespace Stump.BaseCore.Framework.Xml
 		{
 			T cfg;
 			var ser = new XmlSerializer(typeof(T));
-			using (var rdr = XmlReader.Create(filename))
+			using (var rdr = XmlReader.Create(filename, new XmlReaderSettings()))
 			{
 				cfg = (T)ser.Deserialize(rdr);
 			}

@@ -40,6 +40,20 @@ namespace Stump.BaseCore.Framework.Xml
         ///   Initializes a new instance of the <see cref = "XmlConfigFile" /> class.
         /// </summary>
         /// <param name = "uriConfig">The URI config.</param>
+        public XmlConfigFile(string uriConfig)
+        {
+            uriConfig = Path.GetFullPath(uriConfig);
+
+            if (!File.Exists(uriConfig))
+                throw new FileNotFoundException("Config file is not found");
+
+            (m_document = new XmlDocument()).Load(uriConfig);
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref = "XmlConfigFile" /> class.
+        /// </summary>
+        /// <param name = "uriConfig">The URI config.</param>
         /// <param name = "uriSchema">The URI schema.</param>
         public XmlConfigFile(string uriConfig, string uriSchema)
         {
@@ -88,6 +102,18 @@ namespace Stump.BaseCore.Framework.Xml
             }
         }
 
+        public void DefinesVariables(Assembly currentAssembly)
+        {
+            var stackPath = new Stack<string>();
+
+            XmlNode firstNode = m_document.GetElementsByTagName("Configuration").Item(0);
+
+            if (firstNode == null)
+                throw new Exception("The element Configuration is not found");
+
+            ExploreNode(firstNode, ref stackPath, currentAssembly);
+        }
+
         /// <summary>
         ///   Defines the variables.
         /// </summary>
@@ -100,7 +126,6 @@ namespace Stump.BaseCore.Framework.Xml
             if (firstNode == null)
                 throw new Exception("The element Configuration is not found");
 
-            // on parcours tout les nodes assembly
             foreach (XmlNode assemblyNode in firstNode.ChildNodes)
             {
                 if (!loadedAssemblies.ContainsKey(assemblyNode.Name))
@@ -181,7 +206,8 @@ namespace Stump.BaseCore.Framework.Xml
                     }
                     else
                     {
-                        logger.Warn("[Config] Property " + property.Name + " must have Variable attribute to be modifiable");
+                        logger.Warn("[Config] Property " + property.Name +
+                                    " must have Variable attribute to be modifiable");
                     }
                 }
                 else
@@ -191,12 +217,14 @@ namespace Stump.BaseCore.Framework.Xml
             }
             catch (InvalidCastException)
             {
-                logger.Warn(string.Format("[Config] Type of {0}.{1} isn't correct. Expected Type : {2}", className, variableName,
+                logger.Warn(string.Format("[Config] Type of {0}.{1} isn't correct. Expected Type : {2}", className,
+                                          variableName,
                                           (field != null ? field.FieldType : property.PropertyType)));
             }
             catch
             {
-                logger.Warn(string.Format("[Config] Cannot define the variable {0}.{1} with value {2}", className, variableName,
+                logger.Warn(string.Format("[Config] Cannot define the variable {0}.{1} with value {2}", className,
+                                          variableName,
                                           value.ToString()));
             }
         }

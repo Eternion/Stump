@@ -30,6 +30,7 @@ using Stump.BaseCore.Framework.Xml;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.Network;
+using Stump.Server.BaseServer.Plugins;
 
 namespace Stump.Server.BaseServer
 {
@@ -148,7 +149,7 @@ namespace Stump.Server.BaseServer
             QueueDispatcher = new QueueDispatcher(Settings.EnableBenchmarking);
             HandlerManager = new HandlerManager();
             WorkerManager = new WorkerManager(QueueDispatcher, HandlerManager);
-          
+
             CommandManager = new CommandsManager();
 
             MessageListener = new MessageListener(QueueDispatcher, CreateClient);
@@ -156,6 +157,19 @@ namespace Stump.Server.BaseServer
 
             MessageListener.ClientConnected += OnClientConnected;
             MessageListener.ClientDisconnected += OnClientDisconnected;
+
+            PluginManager.PluginAdded += OnPluginAdded;
+            PluginManager.PluginRemoved += OnPluginRemoved;
+        }
+
+        protected virtual void OnPluginRemoved(PluginContext plugincontext)
+        {
+            logger.Info("Plugins Unloaded : {0}", plugincontext.Plugin.GetDefaultDescription());
+        }
+
+        protected virtual void OnPluginAdded(PluginContext plugincontext)
+        {
+            logger.Info("Plugins Loaded : {0}", plugincontext.Plugin.GetDefaultDescription());
         }
 
         private void OnClientConnected(MessageListener messageListener, BaseClient client)
@@ -184,9 +198,9 @@ namespace Stump.Server.BaseServer
                 logger.Fatal("Application has crashed. An Unhandled Exception has been thrown :");
 
             logger.Error("Unhandled Exception : " + ((Exception) args.ExceptionObject).Message);
-            logger.Error("Source : {0} Method : {1}", ( (Exception)args.ExceptionObject ).Source,
-                         ( (Exception)args.ExceptionObject ).TargetSite);
-            logger.Error("Stack Trace : " + ( (Exception)args.ExceptionObject ).StackTrace);
+            logger.Error("Source : {0} Method : {1}", ((Exception) args.ExceptionObject).Source,
+                         ((Exception) args.ExceptionObject).TargetSite);
+            logger.Error("Stack Trace : " + ((Exception) args.ExceptionObject).StackTrace);
 
             if (args.IsTerminating)
                 Shutdown();
@@ -201,6 +215,9 @@ namespace Stump.Server.BaseServer
 
         public virtual void Start()
         {
+            logger.Info("Loading Plugins...");
+            PluginManager.LoadAllPlugins();
+
             logger.Info("Start listening on port : " + MessageListener.Port + "...");
             MessageListener.Start();
 
@@ -240,7 +257,7 @@ namespace Stump.Server.BaseServer
                     Console.ReadKey(false);
 
                     Console.WriteLine("Press now a key to exit...");
-                    Thread.Sleep(100); 
+                    Thread.Sleep(100);
 
                     Console.ReadKey(false);
                 }

@@ -30,6 +30,7 @@ using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initializing;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.Network;
+using Stump.Server.BaseServer.Plugins;
 using Stump.Server.WorldServer.Actions;
 using Stump.Server.WorldServer.Commands;
 using Stump.Server.WorldServer.Global;
@@ -136,7 +137,7 @@ namespace Stump.Server.WorldServer
             HandlerManager.RegisterAll(typeof (WorldServer).Assembly);
 
             logger.Info("Register Commands...");
-            CommandManager.RegisterAll<WorldCommand, WorldSubCommand>();
+            CommandManager.RegisterAll<WorldCommand, WorldSubCommand>(typeof(WorldCommand).Assembly);
 
             logger.Info("Start Parallel Initialization Procedure...");
             StageManager.Initialize(GetType().Assembly);
@@ -146,6 +147,13 @@ namespace Stump.Server.WorldServer
 
             logger.Info("Initializing IPC Client..");
             IpcAccessor.Instance.Initialize();
+        }
+
+        protected override void OnPluginAdded(PluginContext plugincontext)
+        {
+            CommandManager.RegisterAll<WorldCommand, WorldSubCommand>(plugincontext.PluginAssembly);
+
+            base.OnPluginAdded(plugincontext);
         }
 
         public override void Start()

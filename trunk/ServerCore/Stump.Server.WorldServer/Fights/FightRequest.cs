@@ -101,7 +101,11 @@ namespace Stump.Server.WorldServer.Fights
                                     : fight.SourceGroup.Members.First().Entity as Character;
 
                 ContextHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(chr.Client, fight, false);
-                fight.CancelFight(groupId);
+
+                GroupManager.RemoveGroup(fight.SourceGroup);
+                GroupManager.RemoveGroup(fight.TargetGroup);
+
+                FightManager.RemoveFight(fight);
             }
             finally
             {

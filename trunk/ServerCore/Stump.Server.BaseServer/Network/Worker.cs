@@ -120,6 +120,7 @@ namespace Stump.Server.BaseServer.Network
         {
             m_thread = Thread.CurrentThread;
             m_startDate = DateTime.Now;
+            m_thread.Name = "Worker #" + UniqueId;
 
             while (!m_wantToStop)
             {
