@@ -29,10 +29,9 @@ namespace Stump.Server.WorldServer.Handlers
             client.Send(new SequenceStartMessage((int) entity.Id, (int) sequenceType));
         }
 
-        public static void SendSequenceEndMessage(WorldClient client, Entity entity, SequenceTypeEnum sequenceType)
+        public static void SendSequenceEndMessage(WorldClient client, Entity entity, int actionId, SequenceTypeEnum sequenceType)
         {
-            // todo : check action id 
-            client.Send(new SequenceEndMessage(8 - (uint) sequenceType, (int) entity.Id, (int) sequenceType));
+            client.Send(new SequenceEndMessage((uint) actionId, (int)entity.Id, (int)sequenceType));
         }
     }
 }

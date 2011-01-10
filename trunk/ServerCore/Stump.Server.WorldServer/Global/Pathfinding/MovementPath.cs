@@ -79,9 +79,6 @@ namespace Stump.Server.WorldServer.Global.Pathfinding
             {
                 m_serverMovementKeys = new List<uint>();
 
-                // shall we compress the path ?
-                Compress();
-
                 foreach (VectorIsometric vectorIsometric in Path)
                 {
                     m_serverMovementKeys.Add(

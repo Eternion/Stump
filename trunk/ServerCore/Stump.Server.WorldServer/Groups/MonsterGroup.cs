@@ -16,9 +16,11 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-namespace Stump.Server.WorldServer.Groups
-{
-    public sealed class MonsterGroup : Group
-    {
-    }
-}
+//using Stump.DofusProtocol.D2oClasses;
+//
+//namespace Stump.Server.WorldServer.Groups
+//{
+//    public sealed class MonsterGroup : Group<>
+//    {
+//    }
+//}

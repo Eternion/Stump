@@ -27,10 +27,31 @@ using Stump.Server.WorldServer.Entities;
 
 namespace Stump.Server.WorldServer.Groups
 {
-    public abstract class Group : IInstance
+    public interface IGroup : IInstance
     {
-        #region Fields
+        bool IsFull
+        {
+            get;
+        }
 
+        int Count
+        {
+            get;
+        }
+
+        int GroupLevel
+        {
+            get;
+        }
+
+        Character GetCharacterById(int id);
+
+        LivingEntity GetEntityById(int id);
+    }
+
+    public abstract class Group<T> : IGroup
+        where T : class, IGroupMember 
+    {
         /// <summary>
         ///   Maximum number of characters that can be in a same group.
         /// </summary>
@@ -53,10 +74,6 @@ namespace Stump.Server.WorldServer.Groups
         /// </summary>
         protected ReaderWriterLockSlim m_syncLock;
 
-        #endregion
-
-        #region Properties
-
         public bool IsFull
         {
             get { return (Count >= MaxMemberCount); }
@@ -70,16 +87,16 @@ namespace Stump.Server.WorldServer.Groups
         public int GroupLevel
         {
             get;
-            set;
+            protected set;
         }
 
-        public List<GroupMember> Members
+        public List<T> Members
         {
             get;
-            set;
+            protected set;
         }
 
-        public GroupMember Leader
+        public T Leader
         {
             get { return GetMemberById(m_leaderId); }
             protected set
@@ -95,8 +112,6 @@ namespace Stump.Server.WorldServer.Groups
             set;
         }
 
-        #endregion
-
         /// <summary>
         ///   Constructor
         /// </summary>
@@ -105,7 +120,7 @@ namespace Stump.Server.WorldServer.Groups
             m_leaderId = -1;
             m_syncLock = new ReaderWriterLockSlim();
             GroupLevel = 0;
-            Members = new List<GroupMember>();
+            Members = new List<T>();
 
             MemberAdded += OnAddMember;
             MemberRemoved += OnMemberRemoved;
@@ -127,44 +142,40 @@ namespace Stump.Server.WorldServer.Groups
                 .FirstOrDefault();
         }
 
-        public GroupMember GetMemberById(int id)
+        public T GetMemberById(int id)
         {
             return Members.Where(entry => entry.Entity.Id == id)
                 .FirstOrDefault();
         }
 
-        public void AddMembers(LivingEntity[] ents)
+        public void AddMembers(T[] members)
         {
-            foreach (LivingEntity ent in ents)
-                AddMember(ent);
+            foreach (var member in members)
+                AddMember(member);
         }
 
         /// <summary>
         ///   Add a new member to this group.
         /// </summary>
-        /// <param name = "ent"></param>
-        public virtual GroupMember AddMember(LivingEntity ent)
+        public virtual T AddMember(T member)
         {
-            GroupMember newMember = null;
-
             m_syncLock.EnterWriteLock();
 
             try
             {
                 if (!IsFull)
                 {
-                    newMember = new GroupMember(ent, this);
-                    Members.Add(newMember);
+                    Members.Add(member);
 
                     if (m_leaderId < 0)
-                        m_leaderId = (int) ent.Id;
+                        m_leaderId = (int) member.Entity.Id;
 
-                    NotifyMemberAdded(newMember);
+                    NotifyMemberAdded(member);
                 }
             }
             catch (Exception e)
             {
-                logger.ErrorException(string.Format("Could not add member {0} to group {1}", ent, this), e);
+                logger.ErrorException(string.Format("Could not add member {0} to group {1}", member.Entity, this), e);
             }
             finally
             {
@@ -173,13 +184,13 @@ namespace Stump.Server.WorldServer.Groups
 
             // Send Update to all (todo)
 
-            return newMember;
+            return member;
         }
 
         /// <summary>
         ///   Remove member from this Group.
         /// </summary>
-        public virtual void RemoveMember(GroupMember member)
+        public virtual void RemoveMember(T member)
         {
             if (Count <= MinGroupMemberCount)
             {
@@ -212,33 +223,33 @@ namespace Stump.Server.WorldServer.Groups
 
         #region Group Events
 
-        public event Action<Group, GroupMember> MemberAdded;
+        public event Action<Group<T>, T> MemberAdded;
 
-        public void NotifyMemberAdded(GroupMember groupMember)
+        protected void NotifyMemberAdded(T groupMember)
         {
-            Action<Group, GroupMember> handler = MemberAdded;
-            if (handler != null) handler(this, groupMember);
+            Action<Group<T>, T> handler = MemberAdded;
+            if (handler != null)
+                handler(this, groupMember);
         }
 
-        public event Action<Group, GroupMember> MemberRemoved;
+        public event Action<Group<T>, T> MemberRemoved;
 
-        public void NotifyMemberRemoved(GroupMember groupMember)
+        protected void NotifyMemberRemoved(T groupMember)
         {
-            Action<Group, GroupMember> handler = MemberRemoved;
-            if (handler != null) handler(this, groupMember);
+            Action<Group<T>, T> handler = MemberRemoved;
+            if (handler != null)
+                handler(this, groupMember);
         }
 
 
-        public virtual void OnAddMember(Group group, GroupMember member)
+        protected virtual void OnAddMember(Group<T> group, T member)
         {
             GroupLevel += member.Entity.Level;
         }
 
-        public virtual void OnMemberRemoved(Group group, GroupMember member)
+        protected virtual void OnMemberRemoved(Group<T> group, T member)
         {
             GroupLevel -= member.Entity.Level;
-
-            member.Entity.GroupMember = null;
         }
 
         public virtual void Disband()

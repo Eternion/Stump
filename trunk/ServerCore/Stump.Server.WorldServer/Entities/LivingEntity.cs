@@ -16,9 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System.Collections.Generic;
 using Stump.DofusProtocol.Classes;
-using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Fights;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Global.Pathfinding;
@@ -35,12 +33,12 @@ namespace Stump.Server.WorldServer.Entities
 
         public int CurrentHealth
         {
-            get { return Stats["Health"].TotalSafe; }
+            get { return Stats.Health.TotalSafe; }
         }
 
         public int MaxHealth
         {
-            get { return ((StatsHealth) Stats["Health"]).TotalMax; }
+            get { return Stats.Health.TotalMax; }
         }
 
         #region ILivingEntity Members
@@ -53,14 +51,14 @@ namespace Stump.Server.WorldServer.Entities
 
         public int BaseHealth
         {
-            get { return Stats["Health"].Base; }
-            set { Stats["Health"].Base = value; }
+            get { return Stats.Health.Base; }
+            set { Stats.Health.Base = value; }
         }
 
         public int DamageTaken
         {
-            get { return ((StatsHealth) Stats["Health"]).DamageTaken; }
-            set { ((StatsHealth) Stats["Health"]).DamageTaken = value; }
+            get { return Stats.Health.DamageTaken; }
+            set { Stats.Health.DamageTaken = value; }
         }
 
         public StatsFields Stats
@@ -78,54 +76,43 @@ namespace Stump.Server.WorldServer.Entities
             protected set;
         }
 
-        public GroupMember GroupMember
-        {
-            get;
-            set;
-        }
-
-        public Group Group
-        {
-            get { return !IsInGroup ? null : GroupMember.GroupOwner; }
-        }
-
-        /// <summary>
-        ///   Indicate if the character is in a group.
-        /// </summary>
-        public bool IsInGroup
-        {
-            get { return GroupMember != null; }
-        }
-
         public bool IsInFight
         {
             get
             {
-                return GroupMember != null && GroupMember is FightGroupMember &&
-                       (((FightGroup) (GroupMember as FightGroupMember).GroupOwner).Fight.State ==
-                        FightState.Fighting ||
-                        ((GroupMember as FightGroupMember).GroupOwner as FightGroup).Fight.State ==
-                        FightState.PreparePosition);
+                return Fighter != null &&
+                       (Fight.State == FightState.Fighting ||
+                        Fight.State == FightState.PreparePosition);
             }
         }
 
-        public Fight CurrentFight
+        public Fight Fight
         {
-            get { return !IsInFight ? null : ((FightGroup) GroupMember.GroupOwner).Fight; }
+            get { return FightGroup.Fight; }
         }
 
-        public FightGroupMember CurrentFighter
+        public FightGroup FightGroup
         {
-            get
-            {
-                if (!IsInFight)
-                    return null;
+            get { return Fighter.GroupOwner; }
+        }
 
-                return (GroupMember as FightGroupMember);
-            }
+        public FightGroupMember Fighter
+        {
+            get;
+            private set;
         }
 
         #endregion
+
+        public void EnterFight(FightGroup team)
+        {
+            Fighter = team.AddMember(this);
+        }
+
+        public void LeaveFight()
+        {
+            Fighter = null;
+        }
 
         public abstract FightTeamMemberInformations ToNetworkTeamMember();
 

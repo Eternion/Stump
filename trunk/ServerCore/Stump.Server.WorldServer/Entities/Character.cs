@@ -19,20 +19,17 @@
 using System;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
-using Stump.BaseCore.Framework.Utils;
 using Stump.Database;
-using Stump.Server.WorldServer.Manager;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
-using Stump.Server.WorldServer.Chat;
-using Stump.Server.WorldServer.Manager;
+using Stump.Server.WorldServer.Dialog;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Global.Maps;
-using Stump.Server.WorldServer.Groups;
 using Stump.Server.WorldServer.Handlers;
 using Stump.Server.WorldServer.Items;
+using Stump.Server.WorldServer.Manager;
 using Stump.Server.WorldServer.Spells;
 using Item = Stump.Server.WorldServer.Items.Item;
 
@@ -53,7 +50,7 @@ namespace Stump.Server.WorldServer.Entities
 
             Name = record.Name;
             Level = record.Level;
-            BreedId = (PlayableBreedEnum)record.Breed;
+            BreedId = (PlayableBreedEnum) record.Breed;
             Sex = (SexTypeEnum) record.SexId;
             Kamas = record.Kamas;
             StatsPoint = record.StatsPoints;
@@ -68,7 +65,7 @@ namespace Stump.Server.WorldServer.Entities
 
             Inventory = new Inventory(this);
             Inventory.LoadInventory();
-            
+
             Stats = new StatsFields(this);
             Stats["Strength"].Base = record.Strength;
             Stats["Vitality"].Base = record.Vitality;
@@ -87,6 +84,8 @@ namespace Stump.Server.WorldServer.Entities
             }
         }
 
+        #region IPacketReceiver Members
+
         /// <summary>
         ///   Send a packet to this character.
         /// </summary>
@@ -94,6 +93,8 @@ namespace Stump.Server.WorldServer.Entities
         {
             Client.Send(message);
         }
+
+        #endregion
 
         /// <summary>
         ///   Spawn the character on the map. It can be called once.
@@ -130,9 +131,9 @@ namespace Stump.Server.WorldServer.Entities
 
         public void ChangeMap(Map nextMap)
         {
-            var neighbour = Map.GetMapNeighbourByMapid(nextMap.Id);
+            MapNeighbour neighbour = Map.GetMapNeighbourByMapid(nextMap.Id);
 
-            var cellId = Position.CellId;
+            ushort cellId = Position.CellId;
             if (neighbour != MapNeighbour.None)
             {
                 cellId = Map.GetCellAfterChangeMap(Position.CellId, neighbour);
@@ -167,6 +168,41 @@ namespace Stump.Server.WorldServer.Entities
             BasicHandler.SendBasicTimeMessage(Client);
         }
 
+        public FighterRefusedReasonEnum CanRequestFight(Character target)
+        {
+            if (target == null)
+            {
+                return FighterRefusedReasonEnum.OPPONENT_NOT_MEMBER;
+            }
+
+            if (target.Id == Id)
+            {
+                return FighterRefusedReasonEnum.FIGHT_MYSELF;
+            }
+
+            if (target.Map != Map)
+            {
+                return FighterRefusedReasonEnum.WRONG_MAP;
+            }
+
+            if (IsOccupied)
+            {
+                return FighterRefusedReasonEnum.IM_OCCUPIED;
+            }
+
+            if (target.IsOccupied)
+            {
+                return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
+            }
+
+            return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
+        }
+
+        public void RequestDialog(IDialogRequest request)
+        {
+            DialogRequest = request;
+        }
+
         public void AddKamas(long amount)
         {
             SetKamas(Kamas + amount);
@@ -181,6 +217,81 @@ namespace Stump.Server.WorldServer.Entities
         {
             Kamas = amount;
             InventoryHandler.SendKamasUpdateMessage(Client, amount);
+        }
+
+        public override GameRolePlayActorInformations ToNetworkActor(WorldClient client)
+        {
+            return new GameRolePlayCharacterInformations(
+                (int) Id,
+                Look.EntityLook,
+                GetEntityDisposition(),
+                Name,
+                GetHumanInformations(),
+                GetActorAlignmentInformations());
+        }
+
+        public override FightTeamMemberInformations ToNetworkTeamMember()
+        {
+            if (!IsInFight)
+                return null;
+
+            return new FightTeamMemberCharacterInformations(
+                (int) Id,
+                Name,
+                (uint) Level);
+        }
+
+        public override GameFightFighterInformations ToNetworkFighter()
+        {
+            if (!IsInFight)
+                return null;
+
+            return new GameFightCharacterInformations(
+                (int) Id,
+                Look.EntityLook,
+                Fighter.GetEntityDisposition(),
+                (uint) FightGroup.TeamId,
+                !(Fighter.IsDead || Fighter.IsReady),
+                Fighter.GetFightMinimalStats(),
+                Name,
+                (uint) Level,
+                GetActorAlignmentInformations());
+        }
+
+        public CharacterBaseInformations GetBaseInformations()
+        {
+            return new CharacterBaseInformations(
+                (uint) Id,
+                (uint) Level,
+                Name,
+                Look.EntityLook,
+                (int) BreedId,
+                Sex == SexTypeEnum.SEX_FEMALE);
+        }
+
+        // todo : complete this
+
+        public HumanInformations GetHumanInformations()
+        {
+            return new HumanInformations(
+                new List<EntityLook>(),
+                0,
+                0,
+                new ActorRestrictionsInformations(),
+                0,
+                "");
+        }
+
+        // todo : complete this
+
+        public ActorAlignmentInformations GetActorAlignmentInformations()
+        {
+            return new ActorAlignmentInformations(
+                0,
+                0,
+                0,
+                0,
+                0);
         }
 
         #region Save
@@ -254,96 +365,21 @@ namespace Stump.Server.WorldServer.Entities
         public void AddSpell(Spell spell)
         {
             Spells.AddSpell(spell);
-            Record.AddSpell((uint)spell.Id, spell.Position, spell.CurrentLevel);
+            Record.AddSpell((uint) spell.Id, spell.Position, spell.CurrentLevel);
         }
 
         public void ModifySpellPos(SpellIdEnum spellId, int newPos)
         {
             Spells.MoveSpell(spellId, newPos);
-            Record.ModifySpellPosition((int)spellId, newPos);
+            Record.ModifySpellPosition((int) spellId, newPos);
         }
 
         public void RemoveSpell(SpellIdEnum spellid)
         {
             Spells.Remove(spellid);
-            Record.RemoveSpell((uint)spellid);
+            Record.RemoveSpell((uint) spellid);
         }
 
         #endregion
-
-        public override GameRolePlayActorInformations ToNetworkActor(WorldClient client)
-        {
-            return new GameRolePlayCharacterInformations(
-                (int) Id,
-                Look.EntityLook,
-                GetEntityDisposition(),
-                Name,
-                GetHumanInformations(),
-                GetActorAlignmentInformations());
-        }
-
-        public override FightTeamMemberInformations ToNetworkTeamMember()
-        {
-            if (!IsInFight)
-                return null;
-
-            return new FightTeamMemberCharacterInformations(
-                (int) Id,
-                Name,
-                (uint) Level);
-        }
-
-        public override GameFightFighterInformations ToNetworkFighter()
-        {
-            if (!IsInFight)
-                return null;
-
-            return new GameFightCharacterInformations(
-                (int)Id,
-                Look.EntityLook,
-                CurrentFighter.GetEntityDisposition(),
-                (uint)( (FightGroup)Group ).TeamId,
-                !( CurrentFighter.IsDead || CurrentFighter.IsReady ),
-                CurrentFighter.GetFightMinimalStats(),
-                Name,
-                (uint)Level,
-                GetActorAlignmentInformations());
-        }
-
-        public CharacterBaseInformations GetBaseInformations()
-        {
-            return new CharacterBaseInformations(
-                (uint) Id,
-                (uint) Level,
-                Name,
-                Look.EntityLook,
-                (int) BreedId,
-                Sex == SexTypeEnum.SEX_FEMALE);
-        }
-
-        // todo : complete this
-
-        public HumanInformations GetHumanInformations()
-        {
-            return new HumanInformations(
-                new List<EntityLook>(),
-                0,
-                0,
-                new ActorRestrictionsInformations(),
-                0,
-                "");
-        }
-
-        // todo : complete this
-
-        public ActorAlignmentInformations GetActorAlignmentInformations()
-        {
-            return new ActorAlignmentInformations(
-                0,
-                0,
-                0,
-                0,
-                0);
-        }
     }
 }

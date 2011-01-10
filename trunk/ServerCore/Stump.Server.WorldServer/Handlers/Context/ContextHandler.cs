@@ -85,7 +85,7 @@ namespace Stump.Server.WorldServer.Handlers
 
             if (client.ActiveCharacter.IsInFight)
             {
-                client.ActiveCharacter.CurrentFight.MoveFighter(client.ActiveCharacter.CurrentFighter, movementPath);
+                client.ActiveCharacter.Fighter.Move(movementPath);
             }
             else
             {

@@ -16,9 +16,9 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-namespace Stump.Server.WorldServer.Groups
-{
-    public sealed class PartyGroup : Group
-    {
-    }
-}
+//namespace Stump.Server.WorldServer.Groups
+//{
+//    public sealed class PartyGroup : Group
+//    {
+//    }
+//}

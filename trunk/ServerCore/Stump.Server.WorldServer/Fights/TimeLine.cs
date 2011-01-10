@@ -52,7 +52,6 @@ namespace Stump.Server.WorldServer.Fights
 
         public event TurnStartedHandler TurnStarted;
 
-
         public event TurnEndedRequestHandler TurnEndedRequest;
 
         public event TurnEndedHandler TurnEnded;
@@ -69,11 +68,15 @@ namespace Stump.Server.WorldServer.Fights
             State = TimeLineState.Idle;
 
             Fight = fight;
-
-            CreateTimeLine();
         }
 
         public Fight Fight
+        {
+            get;
+            private set;
+        }
+
+        public bool IsStarted
         {
             get;
             private set;
@@ -120,6 +123,19 @@ namespace Stump.Server.WorldServer.Fights
         }
 
         #endregion
+
+        public void Start()
+        {
+            if (!IsStarted)
+            {
+                CreateTimeLine();
+                UpdateToNextFighter();
+
+                StartTurn();
+
+                IsStarted = true;
+            }
+        }
 
         /// <summary>
         ///   Change the current fighter and select the next fighter on the timeline
@@ -269,8 +285,8 @@ namespace Stump.Server.WorldServer.Fights
             }
         }
 
-        private static bool SourceIsFirst(IEnumerable<GroupMember> sortedSourceMembers,
-                                          IEnumerable<GroupMember> sortedTargetMember)
+        private static bool SourceIsFirst(IEnumerable<FightGroupMember> sortedSourceMembers,
+                                          IEnumerable<FightGroupMember> sortedTargetMember)
         {
             return (sortedSourceMembers.First().Entity.Stats["Initiative"].Total >=
                     sortedTargetMember.First().Entity.Stats["Initiative"].Total);

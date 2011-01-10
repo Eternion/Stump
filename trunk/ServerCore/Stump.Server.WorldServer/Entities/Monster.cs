@@ -122,30 +122,30 @@ namespace Stump.Server.WorldServer.Entities
 
         #region Generation
 
-        public static MonsterGroup GenerateGroup(MapIdEnum mapid)
-        {
-            var group = new MonsterGroup();
-
+//        public static MonsterGroup GenerateGroup(MapIdEnum mapid)
+//        {
+//            var group = new MonsterGroup();
+//
             // 1) Get how munch monsters will join this group.
-            var random = new AsyncRandom();
-            int number = random.NextInt(1, 8);
-
+//            var random = new AsyncRandom();
+//            int number = random.NextInt(1, 8);
+//
             // 2) Get succeptibles monsters to land on this map
-            IEnumerable<Monster> monsters = (from entry in Monsters
-                                             where entry.m_mapIds.Contains(mapid)
-                                             select entry);
-            IEnumerator<Monster> enumerator = monsters.GetEnumerator();
-            enumerator.Reset();
-            int i = 0;
-            while (enumerator.MoveNext() && i < number)
-            {
-                group.AddMember(enumerator.Current);
-                i++;
-            }
-
-            MonsterGroup = group;
-            return group;
-        }
+//            IEnumerable<Monster> monsters = (from entry in Monsters
+//                                             where entry.m_mapIds.Contains(mapid)
+//                                             select entry);
+//            IEnumerator<Monster> enumerator = monsters.GetEnumerator();
+//            enumerator.Reset();
+//            int i = 0;
+//            while (enumerator.MoveNext() && i < number)
+//            {
+//                group.AddMember(enumerator.Current);
+//                i++;
+//            }
+//
+//            MonsterGroup = group;
+//            return group;
+//        }
 
         #endregion
 
@@ -175,11 +175,11 @@ namespace Stump.Server.WorldServer.Entities
             set;
         }
 
-        public static MonsterGroup MonsterGroup
-        {
-            get;
-            set;
-        }
+//        public static MonsterGroup MonsterGroup
+//        {
+//            get;
+//            set;
+//        }
 
         #endregion
 

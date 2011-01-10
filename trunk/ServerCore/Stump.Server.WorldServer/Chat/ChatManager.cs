@@ -86,7 +86,7 @@ namespace Stump.Server.WorldServer.Chat
                     charac => ChatHandler.SendChatServerMessage(charac.Client, client.ActiveCharacter, chanid, msg);
 
                 if (client.ActiveCharacter.IsInFight)
-                    client.ActiveCharacter.CurrentFight.CallOnAllCharacters(action);
+                    client.ActiveCharacter.Fight.CallOnAllCharacters(action);
                 else
                     client.ActiveCharacter.Map.CallOnAllCharactersWithoutFighters(action);
             }
@@ -108,20 +108,20 @@ namespace Stump.Server.WorldServer.Chat
 
         private static void SayGroup(WorldClient client, ChannelId chanid, string msg)
         {
-            if (client.ActiveCharacter.IsInGroup)
-            {
-                Action<Character> action = charac =>
-                {
-                    if (charac.Client.ActiveCharacter.GroupMember == client.ActiveCharacter.GroupMember)
-                        ChatHandler.SendChatServerMessage(charac.Client, client.ActiveCharacter, chanid, msg);
-                };
-
-                client.ActiveCharacter.Map.CallOnAllCharacters(action);
-            }
-            else
-            {
+//            if (client.ActiveCharacter.IsInGroup)
+//            {
+//                Action<Character> action = charac =>
+//                {
+//                    if (charac.Client.ActiveCharacter.GroupMember == client.ActiveCharacter.GroupMember)
+//                        ChatHandler.SendChatServerMessage(charac.Client, client.ActiveCharacter, chanid, msg);
+//                };
+//
+//                client.ActiveCharacter.Map.CallOnAllCharacters(action);
+//            }
+//            else
+//            {
                 // Envoyer message d'erreur "pas de groupe".
-            }
+//            }
         }
 
         #endregion

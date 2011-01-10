@@ -58,36 +58,22 @@ namespace Stump.Server.WorldServer.Entities
             get;
         }
 
-        GroupMember GroupMember
-        {
-            get;
-            set;
-        }
-
-        Group Group
-        {
-            get;
-        }
-
-        /// <summary>
-        ///   Indicate if the character is in a group.
-        /// </summary>
-        bool IsInGroup
-        {
-            get;
-        }
-
         bool IsInFight
         {
             get;
         }
 
-        Fight CurrentFight
+        Fight Fight
         {
             get;
         }
 
-        FightGroupMember CurrentFighter
+        FightGroup FightGroup
+        {
+            get;
+        }
+
+        FightGroupMember Fighter
         {
             get;
         }

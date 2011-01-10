@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Handlers
             Action<Character> action = charac => SendChatSmileyMessage(charac.Client, client.ActiveCharacter, (byte)message.smileyId);
 
             if (client.ActiveCharacter.IsInFight)
-                client.ActiveCharacter.CurrentFight.CallOnAllCharacters(action);
+                client.ActiveCharacter.Fight.CallOnAllCharacters(action);
             else
                 client.ActiveCharacter.Map.CallOnAllCharactersWithoutFighters(action);
         }

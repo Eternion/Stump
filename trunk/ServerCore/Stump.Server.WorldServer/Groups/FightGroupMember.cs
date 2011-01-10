@@ -17,27 +17,110 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections.Generic;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.Fights;
 using Stump.Server.WorldServer.Global;
-using Stump.Server.WorldServer.Global.Maps;
+using Stump.Server.WorldServer.Global.Pathfinding;
+using Stump.Server.WorldServer.Handlers;
 
 namespace Stump.Server.WorldServer.Groups
 {
-    public sealed class FightGroupMember : GroupMember, ILocableIdentified
+    public sealed class FightGroupMember : IGroupMember, IMovable
     {
-        public FightGroupMember(LivingEntity ent, FightGroup groupOwner)
-            : base(ent, groupOwner)
+        // todo : change this. This is the only way i found to know the actionId to send in SequenceEndMessage. We need more investigation
+        private static readonly Dictionary<SequenceTypeEnum, int> ActionIds = new Dictionary<SequenceTypeEnum, int>
+            {
+                {SequenceTypeEnum.SEQUENCE_MOVE, 3}
+            };
+
+        private Dictionary<int, SequenceTypeEnum> m_sequenceActions = new Dictionary<int, SequenceTypeEnum>();
+
+        public event Action<FightGroupMember, bool> ReadyStateChanged;
+
+        private void NotifyReadyStateChanged(bool isReady)
         {
+            Action<FightGroupMember, bool> handler = ReadyStateChanged;
+            if (handler != null)
+                handler(this, isReady);
+        }
+
+        public event Action<FightGroupMember> FightLeft;
+
+        private void NotifyFightLeft()
+        {
+            Action<FightGroupMember> handler = FightLeft;
+            if (handler != null)
+                handler(this);
+        }
+
+        public event Action<FightGroupMember, MovementPath> Moved;
+
+        private void NotifyMoved(MovementPath movementPath)
+        {
+            Action<FightGroupMember, MovementPath> handler = Moved;
+            if (handler != null)
+                handler(this, movementPath);
+        }
+
+        public event Action<FightGroupMember, VectorIsometric> PrePlacementChanged;
+
+        private void NotifyPrePlacementChanged(VectorIsometric position)
+        {
+            Action<FightGroupMember, VectorIsometric> handler = PrePlacementChanged;
+            if (handler != null)
+                handler(this, position);
+        }
+
+        public event Action<FightGroupMember> TurnPassed;
+
+        private void NotifyTurnPassed()
+        {
+            Action<FightGroupMember> handler = TurnPassed;
+            if (handler != null)
+                handler(this);
+        }
+
+
+        public FightGroupMember(LivingEntity entity, FightGroup groupOwner)
+        {
+            Entity = entity;
+            GroupOwner = groupOwner;
+
             IsReady = false;
             IsDead = false;
             UsedAp = 0;
             UsedMp = 0;
             DamageTaken = 0;
 
-            // copy the position of the owner entity
-            Position = new VectorIsometric(ent.Position.Point, ent.Position.Direction);
+            Position = new VectorIsometric(entity.Map, entity.Position);
+        }
+
+        public LivingEntity Entity
+        {
+            get;
+            private set;
+        }
+
+        public FightGroup GroupOwner
+        {
+            get;
+            private set;
+        }
+
+        IGroup IGroupMember.GroupOwner
+        {
+            get
+            {
+                return GroupOwner;
+            }
+        }
+
+        public Fight Fight
+        {
+            get { return GroupOwner.Fight; }
         }
 
         public int TotalAp
@@ -70,8 +153,39 @@ namespace Stump.Server.WorldServer.Groups
         public int DamageTaken
         {
             get;
-            set;
+            private set;
         }
+
+        public bool IsReady
+        {
+            get;
+            private set;
+        }
+
+        public bool IsDead
+        {
+            get;
+            private set;
+        }
+
+        public bool IsTurnPassed
+        {
+            get;
+            private set;
+        }
+
+        public bool HasLeft
+        {
+            get;
+            private set;
+        }
+
+        public bool IsPlaying
+        {
+            get { return Equals(Fight.FighterPlaying); }
+        }
+
+        #region IMovable Members
 
         public VectorIsometric Position
         {
@@ -79,40 +193,111 @@ namespace Stump.Server.WorldServer.Groups
             set;
         }
 
-        public bool IsReady
+        public bool IsMoving
         {
             get;
-            set;
+            private set;
         }
 
-        public bool IsDead
+        public bool CanMove()
         {
-            get;
-            set;
+            return IsPlaying && !IsMoving;
         }
 
-        public bool HasLeft
+        public void Move(MovementPath movementPath)
         {
-            get;
-            set;
+            int requiredMp = movementPath.MpCost;
+            if (!CanMove() && (TotalMp - requiredMp) < 0)
+            {
+                // todo : send a message error
+            }
+            else
+            {
+                UsedMp += requiredMp;
+                Position.ChangeLocation(movementPath.End);
+
+                NotifyMoved(movementPath);
+            }
         }
 
-        public bool ReadyTurnEnd
+        public void MoveInstant(VectorIsometric to)
         {
-            get;
-            set;
+            throw new NotImplementedException();
         }
 
-        public bool IsPlaying
+        public void MovementEnded()
         {
-            get { return Equals(((FightGroup) GroupOwner).Fight.FighterPlaying); }
+            IsMoving = false;
+        }
+
+        public void StopMove(VectorIsometric currentVectorIsometric)
+        {
+            IsMoving = false;
+        }
+
+        public long Id
+        {
+            get { return Entity.Id; }
+            set { Entity.Id = value; }
+        }
+
+        public IdentifiedEntityDispositionInformations GetIdentifiedEntityDisposition()
+        {
+            return new IdentifiedEntityDispositionInformations(Position.CellId, (uint) Position.Direction, (int) Id);
+        }
+
+        public EntityDispositionInformations GetEntityDisposition()
+        {
+            return new EntityDispositionInformations(Position.CellId, (uint) Position.Direction);
+        }
+
+        #endregion
+
+        public void CallIfCharacter(Action<Character> action)
+        {
+            if (Entity is Character)
+                action(Entity as Character);
+        }
+
+        public void SetReady(bool isReady)
+        {
+            IsReady = isReady;
+
+            NotifyReadyStateChanged(isReady);
+        }
+
+        public void ChangePrePlacementPosition(ushort cellId)
+        {
+            if (Fight.CanChangePosition(this, cellId))
+            {
+                Position.ChangeLocation(cellId);
+
+                NotifyPrePlacementChanged(Position);
+            }
+        }
+
+        public void PassTurn()
+        {
+            IsTurnPassed = true;
+
+            NotifyTurnPassed();
+        }
+
+        public void LeftFight()
+        {
+            if (!HasLeft)
+            {
+                HasLeft = true;
+
+                NotifyFightLeft();
+            }
         }
 
         public void ResetUsedProperties()
         {
             UsedMp = 0;
             UsedAp = 0;
-            ReadyTurnEnd = false;
+            IsTurnPassed = false;
         }
 
         public ushort ReceiveDamage(ushort damage)
@@ -125,27 +310,44 @@ namespace Stump.Server.WorldServer.Groups
             return damage;
         }
 
-        public long Id
+        public void StartSequence(SequenceTypeEnum sequenceType, Action<Character> sequence)
         {
-            get { return Entity.Id;  }
-            set { Entity.Id = value; }
+            int actionId = ActionIds.ContainsKey(sequenceType)
+                               ? ActionIds[sequenceType]
+                               : 8 - (int) sequenceType;
+            m_sequenceActions.Add(actionId, sequenceType);
+
+            Fight.CallOnAllCharacters(character =>
+            {
+                ActionsHandler.SendSequenceStartMessage(character.Client, character,
+                                                        sequenceType);
+
+                sequence(character);
+
+                ActionsHandler.SendSequenceEndMessage(character.Client, character,
+                                                      actionId,
+                                                      sequenceType);
+            });
         }
 
-        public IdentifiedEntityDispositionInformations GetIdentifiedEntityDisposition()
+        public void SequenceEndReply(int actionId)
         {
-            return new IdentifiedEntityDispositionInformations(Position.CellId, (uint)Position.Direction, (int)Id);
-        }
+            if (m_sequenceActions.ContainsKey(actionId))
+            {
+                if (m_sequenceActions[actionId] == SequenceTypeEnum.SEQUENCE_MOVE)
+                {
+                    MovementEnded();
+                }
 
-        public EntityDispositionInformations GetEntityDisposition()
-        {
-            return new EntityDispositionInformations(Position.CellId, (uint)Position.Direction);
+                m_sequenceActions.Remove(actionId);
+            }
         }
 
         public GameFightMinimalStats GetFightMinimalStats()
         {
             return new GameFightMinimalStats(
-                (uint)CurrentHealth,
-                (uint)Entity.MaxHealth,
+                (uint) CurrentHealth,
+                (uint) Entity.MaxHealth,
                 TotalAp,
                 TotalMp,
                 Entity.Stats["SummonLimit"].Total,
@@ -154,10 +356,10 @@ namespace Stump.Server.WorldServer.Groups
                 Entity.Stats["WaterResistPercent"].Total,
                 Entity.Stats["AirResistPercent"].Total,
                 Entity.Stats["FireResistPercent"].Total,
-                (uint)Entity.Stats["DodgeAPProbability"].Total,
-                (uint)Entity.Stats["DodgeMPProbability"].Total,
+                (uint) Entity.Stats["DodgeAPProbability"].Total,
+                (uint) Entity.Stats["DodgeMPProbability"].Total,
                 0, // tackleblock
-                (int)GameActionFightInvisibilityStateEnum.VISIBLE);
+                (int) GameActionFightInvisibilityStateEnum.VISIBLE);
         }
     }
 }

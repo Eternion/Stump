@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public abstract class WorldHandlerContainer : IHandlerContainer
     {
-        public static Dictionary<Type, Predicate<WorldClient>> Predicates =
+        public Dictionary<Type, Predicate<WorldClient>> Predicates =
             new Dictionary<Type, Predicate<WorldClient>>();
 
         #region IHandlerContainer Members

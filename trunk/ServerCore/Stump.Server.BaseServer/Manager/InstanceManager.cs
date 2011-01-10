@@ -29,7 +29,7 @@ namespace Stump.Server.BaseServer.Manager
 
         public static event InstanceEventHandler InstanceAdded;
 
-        public static void NotifyInstanceAdded(T instance)
+        private static void NotifyInstanceAdded(T instance)
         {
             InstanceEventHandler handler = InstanceAdded;
             if (handler != null) handler(instance);
@@ -37,7 +37,7 @@ namespace Stump.Server.BaseServer.Manager
 
         public static event InstanceEventHandler InstanceRemoved;
 
-        public static void NotifyInstanceRemoved(T instance)
+        private static void NotifyInstanceRemoved(T instance)
         {
             InstanceEventHandler handler = InstanceRemoved;
             if (handler != null) handler(instance);

@@ -25,7 +25,6 @@ namespace Stump.Server.WorldServer.Handlers
         public static readonly Predicate<WorldClient> HasChoosenCharacter = entry => entry.ActiveCharacter != null;
 
         public static readonly Predicate<WorldClient> IsMoving = entry => HasChoosenCharacter(entry) && entry.ActiveCharacter.IsMoving;
-        public static readonly Predicate<WorldClient> IsInGroup = entry => HasChoosenCharacter(entry) && entry.ActiveCharacter.IsInGroup;
         public static readonly Predicate<WorldClient> IsFighting = entry => HasChoosenCharacter(entry) && entry.ActiveCharacter.IsInFight;
         public static readonly Predicate<WorldClient> IsDialoging = entry => HasChoosenCharacter(entry) && entry.ActiveCharacter.IsInDialog;
         public static readonly Predicate<WorldClient> IsTrading = entry => HasChoosenCharacter(entry) && entry.ActiveCharacter.IsInTrade;

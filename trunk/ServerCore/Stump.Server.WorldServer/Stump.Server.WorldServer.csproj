@@ -93,6 +93,7 @@
     <Compile Include="Actions\CellAction.cs" />
     <Compile Include="Commands\Commands\TeleportCommand.cs" />
     <Compile Include="Entities\Character.Events.cs" />
+    <Compile Include="Groups\IGroupMember.cs" />
     <Compile Include="XmlSerialize\ActionSerialized.cs" />
     <Compile Include="Actions\CharacterAction.cs" />
     <Compile Include="Actions\InteractiveAction.cs" />

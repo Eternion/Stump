@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Dialog;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Groups;
@@ -26,24 +27,10 @@ namespace Stump.Server.WorldServer.Fights
 {
     public class FightRequest : IDialogRequest
     {
-        public FightRequest(Character source, Character target, FightGroup groupSource, FightGroup groupTarget)
+        public FightRequest(Character source, Character target)
         {
             Source = source;
             Target = target;
-            GroupSource = groupSource;
-            GroupTarget = groupTarget;
-        }
-
-        public FightGroup GroupSource
-        {
-            get;
-            set;
-        }
-
-        public FightGroup GroupTarget
-        {
-            get;
-            set;
         }
 
         #region IDialogRequest Members
@@ -60,12 +47,30 @@ namespace Stump.Server.WorldServer.Fights
             set;
         }
 
+        public void StartDialog()
+        {
+            ContextHandler.SendGameRolePlayPlayerFightFriendlyRequestedMessage(Source.Client, Target, Source, Target);
+            ContextHandler.SendGameRolePlayPlayerFightFriendlyRequestedMessage(Target.Client, Source, Source, Target);
+        }
+
         public void AcceptDialog()
         {
             try
             {
-                ContextHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Source.Client, GroupTarget.Fight, true);
-                GroupTarget.Fight.StartingFight();
+                ContextHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Source.Client, Source, Source, Target, true);
+
+                var groupSource = new FightGroup();
+                var groupTarget = new FightGroup();
+
+                GroupManager.CreateGroup(groupSource);
+                GroupManager.CreateGroup(groupTarget);
+
+                var fight = new Fight(groupSource, groupTarget, FightTypeEnum.FIGHT_TYPE_CHALLENGE);
+                FightManager.CreateFight(fight);
+
+                Source.EnterFight(groupSource);
+                Target.EnterFight(groupTarget);
+                fight.StartingFight();
             }
             finally
             {
@@ -78,8 +83,7 @@ namespace Stump.Server.WorldServer.Fights
         {
             try
             {
-                ContextHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Source.Client, GroupTarget.Fight, false);
-                GroupTarget.Fight.CancelFight(GroupSource.Id);
+                ContextHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Source.Client, Source, Source, Target, false);
             }
             finally
             {
@@ -90,22 +94,15 @@ namespace Stump.Server.WorldServer.Fights
 
         #endregion
 
-        public void DeniedDialog(int groupId)
+        public void DeniedDialog(Character replier)
         {
             try
             {
-                Fight fight = FightManager.GetFightByGroupId(groupId);
+                if (replier.Id == Source.Id)
+                    ContextHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Target.Client, replier, Source, Target, false);
+                else if (replier.Id == Target.Id)
+                    ContextHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Source.Client, replier, Source, Target, false);
 
-                Character chr = fight.SourceGroup.Id == groupId
-                                    ? fight.TargetGroup.Members.First().Entity as Character
-                                    : fight.SourceGroup.Members.First().Entity as Character;
-
-                ContextHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(chr.Client, fight, false);
-
-                GroupManager.RemoveGroup(fight.SourceGroup);
-                GroupManager.RemoveGroup(fight.TargetGroup);
-
-                FightManager.RemoveFight(fight);
             }
             finally
             {

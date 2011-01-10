@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
@@ -25,15 +26,10 @@ using Stump.Server.WorldServer.Fights;
 
 namespace Stump.Server.WorldServer.Groups
 {
-    public sealed class FightGroup : Group
+    public sealed class FightGroup : Group<FightGroupMember>
     {
         public FightGroup()
         {
-        }
-
-        public FightGroup(LivingEntity entity)
-        {
-            AddMember(entity);
         }
 
         public int TeamId
@@ -54,110 +50,49 @@ namespace Stump.Server.WorldServer.Groups
             set;
         }
 
-        public bool AllAreReady()
+        public bool IsAllDead()
         {
-            return Members.Cast<FightGroupMember>().All(member => member.IsReady);
+            return Members.Count(entry => !(entry.IsDead || entry.HasLeft)) == 0;
         }
 
-        public int[] GetAlivesIds()
+        public bool IsAllReady()
+        {
+            return Members.All(member => member.IsReady);
+        }
+
+        public IEnumerable<int> GetAlivesIds()
         {
             return
                 Members.Where(
                     entry =>
-                    (entry is FightGroupMember &&
-                     !(((entry as FightGroupMember).IsDead) || (entry as FightGroupMember).HasLeft)))
-                    .Select(entry => (int) entry.Entity.Id).ToArray();
+                    !((entry.IsDead) || entry.HasLeft))
+                    .Select(entry => (int) entry.Entity.Id);
         }
 
-        public int[] GetDeadsIds()
+        public IEnumerable<int> GetDeadsIds()
         {
             return
-                Members.Where(
-                    entry =>
-                    (entry is FightGroupMember &&
-                     (((entry as FightGroupMember).IsDead) || (entry as FightGroupMember).HasLeft)))
-                    .Select(entry => (int) entry.Entity.Id).ToArray();
+                Members.Where(entry =>
+                    entry.IsDead || entry.HasLeft)
+                    .Select(entry => (int) entry.Entity.Id);
         }
 
-        public int[] GetLeftIds()
+        public IEnumerable<int> GetLeftIds()
         {
-            return Members.Where(entry => (entry is FightGroupMember && (entry as FightGroupMember).HasLeft))
-                .Select(entry => (int) entry.Entity.Id).ToArray();
-        }
-
-        public FightGroupMember GetMemberByCharacter(int chrId)
-        {
-            return Members.Where(entry => (entry is FightGroupMember && entry.Entity.Id == chrId))
-                       .FirstOrDefault() as FightGroupMember;
+            return Members.Where(entry => entry.HasLeft)
+                .Select(entry => (int) entry.Entity.Id);
         }
 
         /// <summary>
         ///   Add a new member to this group.
         /// </summary>
-        /// <param name = "ent"></param>
-        public override GroupMember AddMember(LivingEntity ent)
+        public FightGroupMember AddMember(LivingEntity entity)
         {
-            GroupMember newMember = null;
+            FightGroupMember newMember = AddMember(new FightGroupMember(entity, this));
 
-            m_syncLock.EnterWriteLock();
-
-            try
-            {
-                if (!IsFull)
-                {
-                    newMember = new FightGroupMember(ent, this);
-                    Members.Add(newMember);
-
-                    if (m_leaderId < 0)
-                        m_leaderId = (int)ent.Id;
-
-                    NotifyMemberAdded(newMember);
-                }
-            }
-            catch (Exception e)
-            {
-                logger.ErrorException(string.Format("Could not add member {0} to group {1}", ent, this), e);
-            }
-            finally
-            {
-                m_syncLock.ExitWriteLock();
-            }
-
-            // Send Update to all (todo)
+            // todo : send Update to all
 
             return newMember;
-        }
-
-        /// <summary>
-        ///   Remove member from this Group.
-        /// </summary>
-        public override void RemoveMember(GroupMember member)
-        {
-            if (Count <= MinGroupMemberCount)
-            {
-                Disband();
-            }
-            else
-            {
-                m_syncLock.EnterWriteLock();
-
-                try
-                {
-                    // ToDo : Some logic (change leaders, update stuff like group level etc.
-                    Members.Remove(member);
-
-                    if (member.Entity.Id == m_leaderId)
-                        m_leaderId = (int)Members.First().Entity.Id;
-
-                    NotifyMemberRemoved(member);
-                }
-                finally
-                {
-                    m_syncLock.ExitWriteLock();
-                }
-            }
-
-            // send update to all (?)
         }
 
         public FightTeamInformations ToNetworkFightTeam()
@@ -167,7 +102,7 @@ namespace Stump.Server.WorldServer.Groups
                 (int) Leader.Entity.Id,
                 (int) AlignmentSideEnum.ALIGNMENT_WITHOUT,
                 (uint) TeamEnum.TEAM_CHALLENGER,
-                Members.Select(entry=> entry.Entity.ToNetworkTeamMember()).ToList());
+                Members.Select(entry => entry.Entity.ToNetworkTeamMember()).ToList());
         }
     }
 }

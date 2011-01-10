@@ -54,20 +54,16 @@ namespace Stump.Server.WorldServer.Fights
 
         public static Fight GetFightByCharacterId(int chrId)
         {
-            Fight[] fights =
-                m_instances.Values.Where(
-                    entry =>
-                    (entry.SourceGroup.GetMemberById(chrId) != null || entry.TargetGroup.GetMemberById(chrId) != null)).
-                    ToArray();
-            return fights.Length > 0 ? fights.First() : null;
+            return (from entry in m_instances.Values
+                    where entry.SourceGroup.GetMemberById(chrId) != null || entry.TargetGroup.GetMemberById(chrId) != null
+                    select entry).FirstOrDefault();
         }
 
         public static Fight GetFightByGroupId(int groupId)
         {
-            Fight[] fights =
-                m_instances.Values.Where(entry => (entry.SourceGroup.Id == groupId || entry.TargetGroup.Id == groupId)).
-                    ToArray();
-            return fights.Length > 0 ? fights.First() : null;
+            return ( from entry in m_instances.Values
+                     where entry.SourceGroup.Id == groupId || entry.TargetGroup.Id == groupId
+                     select entry ).FirstOrDefault();
         }
 
         #endregion

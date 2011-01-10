@@ -150,7 +150,13 @@ namespace Stump.Server.WorldServer.Entities
 
         public bool IsAway
         {
-            get { return IsInDialog; }
+            get;
+            private set;
+        }
+
+        public bool IsOccupied
+        {
+            get { return IsInDialog || IsDialogRequested || IsAway || IsInFight; }
         }
 
         /// <summary>

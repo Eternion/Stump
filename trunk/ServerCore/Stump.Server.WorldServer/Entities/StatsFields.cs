@@ -82,6 +82,11 @@ namespace Stump.Server.WorldServer.Entities
             private set;
         }
 
+        public StatsHealth Health
+        {
+            get { return this["Health"] as StatsHealth; }
+        }
+
         public StatsData this[string name]
         {
             get

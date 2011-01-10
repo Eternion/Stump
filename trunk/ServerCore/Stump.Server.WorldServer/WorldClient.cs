@@ -27,10 +27,8 @@ using Stump.Server.WorldServer.IPC;
 
 namespace Stump.Server.WorldServer
 {
-    public class WorldClient : BaseClient
+    public sealed class WorldClient : BaseClient
     {
-        private string m_login;
-
         public WorldClient(Socket socket)
             : base(socket)
         {

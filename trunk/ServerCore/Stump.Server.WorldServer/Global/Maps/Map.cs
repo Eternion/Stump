@@ -111,7 +111,7 @@ namespace Stump.Server.WorldServer.Global.Maps
             }
 
             int count = reader.ReadInt();
-            for (int i = 0; i < count; i++ )
+            for (int i = 0; i < count; i++)
             {
                 uint key = reader.ReadUInt();
                 ushort cell = reader.ReadUShort();
@@ -209,6 +209,7 @@ namespace Stump.Server.WorldServer.Global.Maps
 
         private void EntityMovingStart(LivingEntity entity, MovementPath movementPath)
         {
+            movementPath.Compress();
             List<uint> movementsKey = movementPath.GetServerMovementKeys();
 
             Action<Character> action = charac =>
@@ -249,7 +250,8 @@ namespace Stump.Server.WorldServer.Global.Maps
         public void SpawnInteractiveObject(InteractiveElement interactiveElement)
         {
             var interactiveObject = new InteractiveObject(interactiveElement.elementId, interactiveElement.elementTypeId,
-                                                          new Dictionary<uint, SkillBase>(), MapElementsPositions[interactiveElement.elementId]);
+                                                          new Dictionary<uint, SkillBase>(),
+                                                          MapElementsPositions[interactiveElement.elementId]);
 
             InteractiveObjects.Add(interactiveElement.elementId, interactiveObject);
         }
@@ -397,6 +399,26 @@ namespace Stump.Server.WorldServer.Global.Maps
         public static bool operator !=(Map map1, Map map2)
         {
             return !(map1 == map2);
+        }
+
+        public bool Equals(Map other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return other.Id == Id;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != typeof (Map)) return false;
+            return Equals((Map) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
         }
 
         #region Properties

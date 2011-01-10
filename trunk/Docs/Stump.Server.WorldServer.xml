@@ -75,11 +75,6 @@
               Spell container of this entity.
             </summary>
         </member>
-        <member name="P:Stump.Server.WorldServer.Entities.ILivingEntity.IsInGroup">
-            <summary>
-              Indicate if the character is in a group.
-            </summary>
-        </member>
         <member name="M:Stump.Server.WorldServer.Entities.IMovable.Move(Stump.Server.WorldServer.Global.Pathfinding.MovementPath)">
             <summary>
               Move the entity.
@@ -99,11 +94,6 @@
         <member name="P:Stump.Server.WorldServer.Entities.LivingEntity.Spells">
             <summary>
               Spell container of this entity.
-            </summary>
-        </member>
-        <member name="P:Stump.Server.WorldServer.Entities.LivingEntity.IsInGroup">
-            <summary>
-              Indicate if the character is in a group.
             </summary>
         </member>
         <member name="M:Stump.Server.WorldServer.Effects.EffectManager.ConvertExportedEffect(Stump.DofusProtocol.D2oClasses.EffectInstance)">
@@ -357,7 +347,7 @@
               The emoteId of the current emote played. (0 = null)
             </summary>
         </member>
-        <member name="M:Stump.Server.WorldServer.Groups.GroupManager.CreateGroup(Stump.Server.WorldServer.Groups.Group)">
+        <member name="M:Stump.Server.WorldServer.Groups.GroupManager.CreateGroup(Stump.Server.WorldServer.Groups.IGroup)">
             <summary>
               Add the group
             </summary>
@@ -378,6 +368,78 @@
             <summary>
               Our global array containing every monsters of our world.
             </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Global.World.MessageOfTheDay">
+            <summary>
+            Welcome message
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Global.World.MaxCharacterSlot">
+            <summary>
+              Maximum number of characters you can create/store in your account
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Global.World.m_charactersId">
+            <summary>
+              Character's Map where you retrieve a character by his Id.
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Global.World.m_charactersName">
+            <summary>
+              Character's Map where you retrieve a character by his name.
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Global.World.m_taskPool">
+            <summary>
+              Task pool which will handle and execute all messages given.
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Global.World.Save">
+            <summary>
+              Save all characters in world.
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Global.World.GetCharacterByPattern(System.String)">
+            <summary>
+            Get a character by a search pattern. *account = current character used by account, name = character by his name.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Global.World.GetCharacterByPattern(Stump.Server.WorldServer.Entities.Character,System.String)">
+            <summary>
+            Get a character by a search pattern. * = caller, *(account) = current character used by account, name = character by his name.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Global.World.AddCharacter(Stump.Server.WorldServer.Entities.Character)">
+            <summary>
+              Add a character to the world.
+            </summary>
+            <param name = "chr">the character to add</param>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Global.World.RemoveCharacter(Stump.Server.WorldServer.Entities.Character)">
+            <summary>
+              Removes a character from the world manager.
+            </summary>
+            <param name = "chr">the character to stop tracking</param>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Global.World.GetMap(System.Int32)">
+            <summary>
+              Get map with the given map id.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Global.World.GetMap(System.UInt32)">
+            <summary>
+              Get map with the given map id.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Global.World.GetMaps(System.Collections.Generic.IEnumerable{System.UInt32})">
+            <summary>
+              Get maps with the given map's id list.
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:Stump.Server.WorldServer.Definitions">
             <summary>
@@ -485,78 +547,6 @@
               Notify to WorldServer instance that we lost connection to remote server.
             </summary>
         </member>
-        <member name="F:Stump.Server.WorldServer.Global.World.MessageOfTheDay">
-            <summary>
-            Welcome message
-            </summary>
-        </member>
-        <member name="F:Stump.Server.WorldServer.Global.World.MaxCharacterSlot">
-            <summary>
-              Maximum number of characters you can create/store in your account
-            </summary>
-        </member>
-        <member name="F:Stump.Server.WorldServer.Global.World.m_charactersId">
-            <summary>
-              Character's Map where you retrieve a character by his Id.
-            </summary>
-        </member>
-        <member name="F:Stump.Server.WorldServer.Global.World.m_charactersName">
-            <summary>
-              Character's Map where you retrieve a character by his name.
-            </summary>
-        </member>
-        <member name="F:Stump.Server.WorldServer.Global.World.m_taskPool">
-            <summary>
-              Task pool which will handle and execute all messages given.
-            </summary>
-        </member>
-        <member name="M:Stump.Server.WorldServer.Global.World.Save">
-            <summary>
-              Save all characters in world.
-            </summary>
-        </member>
-        <member name="M:Stump.Server.WorldServer.Global.World.GetCharacterByPattern(System.String)">
-            <summary>
-            Get a character by a search pattern. *account = current character used by account, name = character by his name.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Stump.Server.WorldServer.Global.World.GetCharacterByPattern(Stump.Server.WorldServer.Entities.Character,System.String)">
-            <summary>
-            Get a character by a search pattern. * = caller, *(account) = current character used by account, name = character by his name.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Stump.Server.WorldServer.Global.World.AddCharacter(Stump.Server.WorldServer.Entities.Character)">
-            <summary>
-              Add a character to the world.
-            </summary>
-            <param name = "chr">the character to add</param>
-        </member>
-        <member name="M:Stump.Server.WorldServer.Global.World.RemoveCharacter(Stump.Server.WorldServer.Entities.Character)">
-            <summary>
-              Removes a character from the world manager.
-            </summary>
-            <param name = "chr">the character to stop tracking</param>
-        </member>
-        <member name="M:Stump.Server.WorldServer.Global.World.GetMap(System.Int32)">
-            <summary>
-              Get map with the given map id.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Stump.Server.WorldServer.Global.World.GetMap(System.UInt32)">
-            <summary>
-              Get map with the given map id.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Stump.Server.WorldServer.Global.World.GetMaps(System.Collections.Generic.IEnumerable{System.UInt32})">
-            <summary>
-              Get maps with the given map's id list.
-            </summary>
-            <returns></returns>
-        </member>
         <member name="P:Stump.Server.WorldServer.Entities.StatsData.TotalSafe">
             <summary>
               Value can't be lesser than 0
@@ -636,38 +626,37 @@
               Represent the Inventory of a character
             </summary>
         </member>
-        <member name="F:Stump.Server.WorldServer.Groups.Group.MaxMemberCount">
+        <member name="F:Stump.Server.WorldServer.Groups.Group`1.MaxMemberCount">
             <summary>
               Maximum number of characters that can be in a same group.
             </summary>
         </member>
-        <member name="F:Stump.Server.WorldServer.Groups.Group.MinGroupMemberCount">
+        <member name="F:Stump.Server.WorldServer.Groups.Group`1.MinGroupMemberCount">
             <summary>
               Minimum number of characters needed to be/create a group.
             </summary>
         </member>
-        <member name="F:Stump.Server.WorldServer.Groups.Group.m_leaderId">
+        <member name="F:Stump.Server.WorldServer.Groups.Group`1.m_leaderId">
             <summary>
               Id of the leader of the group
             </summary>
         </member>
-        <member name="F:Stump.Server.WorldServer.Groups.Group.m_syncLock">
+        <member name="F:Stump.Server.WorldServer.Groups.Group`1.m_syncLock">
             <summary>
               Synchronization tool.
             </summary>
         </member>
-        <member name="M:Stump.Server.WorldServer.Groups.Group.#ctor">
+        <member name="M:Stump.Server.WorldServer.Groups.Group`1.#ctor">
             <summary>
               Constructor
             </summary>
         </member>
-        <member name="M:Stump.Server.WorldServer.Groups.Group.AddMember(Stump.Server.WorldServer.Entities.LivingEntity)">
+        <member name="M:Stump.Server.WorldServer.Groups.Group`1.AddMember(`0)">
             <summary>
               Add a new member to this group.
             </summary>
-            <param name = "ent"></param>
         </member>
-        <member name="M:Stump.Server.WorldServer.Groups.Group.RemoveMember(Stump.Server.WorldServer.Groups.GroupMember)">
+        <member name="M:Stump.Server.WorldServer.Groups.Group`1.RemoveMember(`0)">
             <summary>
               Remove member from this Group.
             </summary>
@@ -675,12 +664,6 @@
         <member name="M:Stump.Server.WorldServer.Groups.FightGroup.AddMember(Stump.Server.WorldServer.Entities.LivingEntity)">
             <summary>
               Add a new member to this group.
-            </summary>
-            <param name = "ent"></param>
-        </member>
-        <member name="M:Stump.Server.WorldServer.Groups.FightGroup.RemoveMember(Stump.Server.WorldServer.Groups.GroupMember)">
-            <summary>
-              Remove member from this Group.
             </summary>
         </member>
         <member name="F:Stump.Server.WorldServer.Breeds.BreedManager.AvailableBreeds">
@@ -808,16 +791,14 @@
             <param name = "target">An other group</param>
             <param name = "fightType">Fight type</param>
         </member>
-        <member name="M:Stump.Server.WorldServer.Fights.Fight.PrepareFight(Stump.Server.WorldServer.Entities.Character,Stump.Server.WorldServer.Groups.FightGroup)">
-            <summary>
-              Prepare to Fight method, Showing cells and characters.
-            </summary>
-            <param name = "charac"></param>
-            <param name = "group"></param>
-        </member>
         <member name="M:Stump.Server.WorldServer.Fights.Fight.StartingFight">
             <summary>
               Starting a fight, from map to preparation time in fight
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Fights.Fight.PrepareFight(Stump.Server.WorldServer.Entities.Character,Stump.Server.WorldServer.Groups.FightGroup)">
+            <summary>
+              Prepare to Fight method, Showing cells and characters.
             </summary>
         </member>
         <member name="M:Stump.Server.WorldServer.Fights.Fight.CancelFight(System.Int32)">
@@ -826,10 +807,18 @@
             </summary>
             <param name = "groupId">Group that have cancelled the fight</param>
         </member>
-        <member name="M:Stump.Server.WorldServer.Fights.Fight.SetReadyState(Stump.Server.WorldServer.Groups.FightGroupMember,System.Boolean)">
+        <member name="M:Stump.Server.WorldServer.Fights.Fight.OnSetReady(Stump.Server.WorldServer.Groups.FightGroupMember,System.Boolean)">
             <summary>
               Set the ready state of a character
             </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Fights.Fight.CanChangePosition(Stump.Server.WorldServer.Groups.FightGroupMember,System.UInt16)">
+            <summary>
+              Check if a character can change position (before fight is started).
+            </summary>
+            <param name = "fighter"></param>
+            <param name = "cellId">The cellId wanted</param>
+            <returns>If change is possible</returns>
         </member>
         <member name="M:Stump.Server.WorldServer.Fights.Fight.StartFight">
             <summary>
@@ -839,11 +828,6 @@
         <member name="M:Stump.Server.WorldServer.Fights.Fight.UseSpell(Stump.Server.WorldServer.Groups.FightGroupMember,System.Int32,System.Int32)">
             <summary>
               Use the required spell by the fighter.
-            </summary>
-        </member>
-        <member name="M:Stump.Server.WorldServer.Fights.Fight.MoveFighter(Stump.Server.WorldServer.Groups.FightGroupMember,Stump.Server.WorldServer.Global.Pathfinding.MovementPath)">
-            <summary>
-              Move the fighter.
             </summary>
         </member>
         <member name="M:Stump.Server.WorldServer.Fights.Fight.SetFightState(Stump.Server.WorldServer.Fights.FightState)">
@@ -863,14 +847,6 @@
               Gets the ids of dead entites.
             </summary>
             <returns></returns>
-        </member>
-        <member name="M:Stump.Server.WorldServer.Fights.Fight.CanChangePosition(Stump.Server.WorldServer.Groups.FightGroupMember,System.UInt16)">
-            <summary>
-              Check if a character can change position (before fight started only).
-            </summary>
-            <param name = "fighter"></param>
-            <param name = "cellId">The cellId wanted</param>
-            <returns>If change is possible</returns>
         </member>
         <member name="M:Stump.Server.WorldServer.Fights.Fight.GetGroup(System.Int32)">
             <summary>
@@ -897,7 +873,7 @@
             <summary>
               Get the FightGroupMember corresponding to Character's Id.
             </summary>
-            <param name = "chrId">The character's id of the fighter</param>
+            <param name = "characterId">The character's id of the fighter</param>
             <returns>The fightGroupMember of the character, else null</returns>
         </member>
         <member name="M:Stump.Server.WorldServer.Fights.Fight.CallOnAllCharacters(System.Action{Stump.Server.WorldServer.Entities.Character})">

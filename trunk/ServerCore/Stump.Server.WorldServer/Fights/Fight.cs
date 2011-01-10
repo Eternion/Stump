@@ -25,6 +25,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Manager;
 using Stump.Server.WorldServer.Effects.Executor;
 using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Global.Maps;
 using Stump.Server.WorldServer.Global.Pathfinding;
 using Stump.Server.WorldServer.Groups;
@@ -35,7 +36,6 @@ namespace Stump.Server.WorldServer.Fights
 {
     public enum FightState
     {
-        AskingForDuel,
         PreparePosition,
         Fighting,
         Ended
@@ -53,15 +53,27 @@ namespace Stump.Server.WorldServer.Fights
         ///   Delay before force turn to end
         /// </summary>
         [Variable]
-        public static int TurnEndTimeOut = 5000; // 5s
+        public static int TurnEndTimeOut = 5000;
+
+        public delegate void FightEndedDelegate(Fight fight, FightGroup winners, FightGroup losers, bool draw);
+
+        public event FightEndedDelegate FightEnded;
+
+        private void NotifyFightEnded(FightGroup winners, FightGroup losers, bool draw)
+        {
+            FightEndedDelegate handler = FightEnded;
+            if (handler != null)
+                handler(this, winners, losers, draw);
+        }
 
         #region Fields
 
-        private IEnumerable<FightGroupMember> m_fighters;
-        private IEnumerable<Character> m_characters;
+        private readonly List<FightGroupMember> m_fighters;
+        private readonly List<Character> m_characters;
+
+        private bool m_disposed;
         private DateTime m_startTime;
         private TimeLine m_timeline;
-        private bool m_disposed;
 
         #endregion
 
@@ -82,6 +94,18 @@ namespace Stump.Server.WorldServer.Fights
             TargetGroup.TeamId = 1;
             TargetGroup.Fight = this;
 
+            SourceGroup.MemberAdded += OnGroupMemberAdded;
+            SourceGroup.MemberRemoved += OnGroupMemberRemoved;
+            TargetGroup.MemberAdded += OnGroupMemberAdded;
+            TargetGroup.MemberRemoved += OnGroupMemberRemoved;
+
+            m_fighters = source.Members.Concat(target.Members).ToList();
+            m_characters = (from entry in m_fighters
+                            where entry.Entity is Character
+                            select entry.Entity as Character).ToList();
+
+            m_timeline = new TimeLine(this);
+
             FightType = fightType;
 
             SetFightState(FightState.PreparePosition);
@@ -92,53 +116,90 @@ namespace Stump.Server.WorldServer.Fights
         #region Methods
 
         /// <summary>
+        ///   Starting a fight, from map to preparation time in fight
+        /// </summary>
+        public void StartingFight()
+        {
+            StartPreFightEvents();
+
+            // TODO : write a routine that found correct pre-fight placements
+            SourceGroup.Positions = new ushort[] {370, 355, 354};
+            TargetGroup.Positions = new ushort[] {328, 356, 357};
+
+            SourceGroup.Leader.Position.ChangeLocation(SourceGroup.Positions.First());
+            TargetGroup.Leader.Position.ChangeLocation(TargetGroup.Positions.First());
+
+            SetFightState(FightState.PreparePosition);
+
+            CallOnAllCharacters(character => PrepareFight(character, character.FightGroup));
+        }
+
+        private void StartPreFightEvents()
+        {
+            foreach (FightGroupMember fighter in m_fighters)
+            {
+                fighter.ReadyStateChanged += OnSetReady;
+                fighter.PrePlacementChanged += OnChangePreplacementPosition;
+            }
+
+            foreach (var character in m_characters)
+            {
+                character.LoggingOut += OnLoggedOut;
+            }
+        }
+
+        private void OnGroupMemberAdded(Group<FightGroupMember> group, FightGroupMember fighter)
+        {
+            AddFighter(fighter);
+        }
+
+        private void AddFighter(FightGroupMember fighter)
+        {
+            m_fighters.Add(fighter);
+
+            if (fighter.Entity is Character)
+                m_characters.Add(fighter.Entity as Character);
+        }
+
+        private void OnGroupMemberRemoved(Group<FightGroupMember> group, FightGroupMember fighter)
+        {
+            RemoveFighter(fighter);
+        }
+
+        private void RemoveFighter(FightGroupMember fighter)
+        {
+            m_fighters.Remove(fighter);
+
+            if (fighter.Entity is Character)
+                m_characters.Remove(fighter.Entity as Character);
+        }
+
+        /// <summary>
         ///   Prepare to Fight method, Showing cells and characters.
         /// </summary>
-        /// <param name = "charac"></param>
-        /// <param name = "group"></param>
         private void PrepareFight(Character charac, FightGroup group)
         {
-            var chrSource = SourceGroup.Leader.Entity as Character;
-            var chrTarget = TargetGroup.Leader.Entity as Character;
-
             // TODO : Show "swords", use events
             charac.Map.OnFightEnter(charac);
+
 
             ContextHandler.SendGameContextDestroyMessage(charac.Client);
             ContextHandler.SendGameContextCreateMessage(charac.Client, 2);
 
             ContextHandler.SendGameFightStartingMessage(charac.Client, FightType);
             ContextHandler.SendGameFightJoinMessage(charac.Client, true, true, false, false, 0, FightType);
-                // todo : define this
+            // todo : define this
             ContextHandler.SendGameFightPlacementPossiblePositionsMessage(charac.Client, this, group.TeamId);
 
             CharacterHandler.SendLifePointsRegenEndMessage(charac.Client);
 
-            ContextHandler.SendGameFightShowFighterMessage(charac.Client, chrTarget.CurrentFighter);
-            ContextHandler.SendGameFightShowFighterMessage(charac.Client, chrSource.CurrentFighter);
+            ContextHandler.SendGameFightShowFighterMessage(charac.Client, SourceGroup.Leader);
+            ContextHandler.SendGameFightShowFighterMessage(charac.Client, TargetGroup.Leader);
 
             ContextHandler.SendGameEntitiesDispositionMessage(charac.Client, GetAllFighters());
 
             ContextHandler.SendGameFightUpdateTeamMessage(charac.Client, this, SourceGroup);
             ContextHandler.SendGameFightUpdateTeamMessage(charac.Client, this, TargetGroup);
-        }
-
-        /// <summary>
-        ///   Starting a fight, from map to preparation time in fight
-        /// </summary>
-        public void StartingFight()
-        {
-            var group = new[] {SourceGroup, TargetGroup};
-
-            SourceGroup.Positions = new ushort[] {370, 355, 354};
-            // TODO : write a routine that found correct pre-fight placements
-            TargetGroup.Positions = new ushort[] {328, 356, 357};
-
-            ChangePosition(SourceGroup.Members.First() as FightGroupMember, SourceGroup.Positions.First());
-            ChangePosition(TargetGroup.Members.First() as FightGroupMember, TargetGroup.Positions.First());
-
-            SetFightState(FightState.PreparePosition);
-            Parallel.For(0, 2, i => PrepareFight(group[i].Leader.Entity as Character, group[i]));
         }
 
         /// <summary>
@@ -153,15 +214,31 @@ namespace Stump.Server.WorldServer.Fights
         /// <summary>
         ///   Set the ready state of a character
         /// </summary>
-        public void SetReadyState(FightGroupMember fighter, bool isReady)
+        private void OnSetReady(FightGroupMember fighter, bool isReady)
         {
-            fighter.IsReady = isReady;
-
             CallOnAllCharacters(
                 charac => ContextHandler.SendGameFightHumanReadyStateMessage(charac.Client, fighter));
 
-            if (SourceGroup.AllAreReady() && TargetGroup.AllAreReady())
+            if (SourceGroup.IsAllReady() && TargetGroup.IsAllReady())
                 StartFight();
+        }
+
+        /// <summary>
+        ///   Check if a character can change position (before fight is started).
+        /// </summary>
+        /// <param name = "fighter"></param>
+        /// <param name = "cellId">The cellId wanted</param>
+        /// <returns>If change is possible</returns>
+        public bool CanChangePosition(FightGroupMember fighter, ushort cellId)
+        {
+            return !Started && fighter.GroupOwner.Positions.Contains(cellId) && GetOneFighter(cellId) == null;
+        }
+
+        private void OnChangePreplacementPosition(FightGroupMember fighter, VectorIsometric vectorIsometric)
+        {
+            CallOnAllCharacters(character =>
+                                ContextHandler.SendGameEntitiesDispositionMessage(character.Client,
+                                                                                  GetAllFighters()));
         }
 
         /// <summary>
@@ -176,38 +253,55 @@ namespace Stump.Server.WorldServer.Fights
                 ContextHandler.SendGameFightStartMessage(charac.Client);
                 ContextHandler.SendGameFightTurnListMessage(charac.Client, this);
 
-                BasicHandler.SendBasicNoOperationMessage(charac.Client);
-
                 ContextHandler.SendGameFightSynchronizeMessage(charac.Client, this);
                 CharacterHandler.SendCharacterStatsListMessage(charac.Client);
-
-                charac.LoggingOut += OnLoggedOut;
             });
 
-            SetFightState(FightState.Fighting);
+            StopPreFightEvents();
+            StartEvents();
 
-            m_timeline = new TimeLine(this);
             m_timeline.TurnStarted += OnTurnStarted;
             m_timeline.TurnEndedRequest += OnTurnEndedRequest;
             m_timeline.TurnEnded += OnTurnEnded;
 
-            m_timeline.UpdateToNextFighter();
-            m_timeline.StartTurn();
+            m_timeline.Start();
+
+            SetFightState(FightState.Fighting);
         }
 
-        public void QuitFight(FightGroupMember fighter)
+        private void StopPreFightEvents()
         {
+            SourceGroup.MemberAdded -= OnGroupMemberAdded;
+            SourceGroup.MemberRemoved -= OnGroupMemberRemoved;
+            TargetGroup.MemberAdded -= OnGroupMemberAdded;
+            TargetGroup.MemberRemoved -= OnGroupMemberRemoved;
+
+            foreach (FightGroupMember fighter in m_fighters)
+            {
+                fighter.ReadyStateChanged -= OnSetReady;
+                fighter.PrePlacementChanged -= OnChangePreplacementPosition;
+            }
+        }
+
+        private void StartEvents()
+        {
+            foreach (FightGroupMember fighter in m_fighters)
+            {
+                fighter.FightLeft += OnFighterLeft;
+                fighter.Moved += OnFighterMoved;
+                fighter.TurnPassed += OnTurnPassed;
+            }
+        }
+
+        private void OnFighterLeft(FightGroupMember fighter)
+        {
+            RemoveFighter(fighter);
+
             if (!fighter.IsDead)
             {
-                CallOnAllCharacters(entity =>
-                {
-                    ActionsHandler.SendSequenceStartMessage(entity.Client, fighter.Entity,
-                                                            SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH);
-                    ActionsHandler.SendGameActionFightDeathMessage(entity.Client, fighter.Entity);
-                    ActionsHandler.SendSequenceEndMessage(entity.Client, fighter.Entity,
-                                                          SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH);
-                });
-                fighter.HasLeft = true;
+                fighter.StartSequence(SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH,
+                                      character =>
+                                      ActionsHandler.SendGameActionFightDeathMessage(character.Client, fighter.Entity));
             }
 
             CheckIfEnd();
@@ -215,10 +309,15 @@ namespace Stump.Server.WorldServer.Fights
 
         private void OnLoggedOut(Character character)
         {
-            if (character.IsInFight && character.CurrentFight.Id == Id)
+            if (character.IsInFight && character.Fight.Id == Id)
             {
-                QuitFight(character.CurrentFighter);
+                character.Fighter.LeftFight();
             }
+        }
+
+        private void OnTurnPassed(FightGroupMember fighter)
+        {
+            CallOnAllCharacters(charac => ContextHandler.SendGameFightTurnReadyRequestMessage(charac.Client, fighter.Entity));
         }
 
         private void OnTurnStarted(TimeLine sender, FightGroupMember currentfighter)
@@ -266,7 +365,7 @@ namespace Stump.Server.WorldServer.Fights
             if (State == FightState.Ended)
                 return true;
 
-            if (SourceGroup.GetAlivesIds().Length == 0 || TargetGroup.GetAlivesIds().Length == 0)
+            if (SourceGroup.IsAllDead() || TargetGroup.IsAllDead())
             {
                 EndFight();
 
@@ -282,19 +381,28 @@ namespace Stump.Server.WorldServer.Fights
             {
                 SetFightState(FightState.Ended);
 
-                CallOnAllCharacters(charac =>
+                CallOnAllCharacters(character =>
                 {
-                    ContextHandler.SendGameFightEndMessage(charac.Client, this);
+                    ContextHandler.SendGameFightEndMessage(character.Client, this);
 
-                    ContextHandler.SendGameContextDestroyMessage(charac.Client);
-                    ContextHandler.SendGameContextCreateMessage(charac.Client, 1);
-                    CharacterHandler.SendCharacterStatsListMessage(charac.Client);
-                    CharacterHandler.SendLifePointsRegenBeginMessage(charac.Client,
-                                                                     60*(uint) charac.Client.ActiveCharacter.Level);
+                    ContextHandler.SendGameContextDestroyMessage(character.Client);
+                    ContextHandler.SendGameContextCreateMessage(character.Client, 1);
+                    CharacterHandler.SendCharacterStatsListMessage(character.Client);
+                    CharacterHandler.SendLifePointsRegenBeginMessage(character.Client,
+                                                                     60*(uint) character.Client.ActiveCharacter.Level);
 
-                    charac.Map.OnFightLeave(charac);
-                    ContextHandler.SendCurrentMapMessage(charac.Client, charac.Map.Id);
+                    character.Map.OnFightLeave(character);
+                    character.LeaveFight();
+
+                    ContextHandler.SendCurrentMapMessage(character.Client, character.Map.Id);
                 });
+
+                if (SourceGroup.IsAllDead() && TargetGroup.IsAllDead()) // logically it's impossible. todo : compare when the last fighter of each team is dead
+                    NotifyFightEnded(null, null, true);
+                else if (SourceGroup.IsAllDead())
+                    NotifyFightEnded(TargetGroup, SourceGroup, false);
+                else if (TargetGroup.IsAllDead())
+                    NotifyFightEnded(SourceGroup, TargetGroup, false);
 
                 GroupManager.RemoveGroup(SourceGroup);
                 GroupManager.RemoveGroup(TargetGroup);
@@ -357,34 +465,19 @@ namespace Stump.Server.WorldServer.Fights
             }
         }
 
-        /// <summary>
-        ///   Move the fighter.
-        /// </summary>
-        public void MoveFighter(FightGroupMember fighter, MovementPath movement)
+        public void OnFighterMoved(FightGroupMember fighter, MovementPath movement)
         {
-            var requiredMp = movement.MpCost;
-            if ((fighter.TotalMp - requiredMp) < 0)
+            List<uint> movementsKeys = movement.GetServerMovementKeys();
+            var delta = (short) (-movement.MpCost);
+
+            fighter.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE, character =>
             {
-                // send a message error
-                return;
-            }
-
-            fighter.UsedMp += requiredMp;
-            var delta = (short) -requiredMp;
-
-            fighter.Position.ChangeLocation(movement.End);
-            var movementsKeys = movement.GetServerMovementKeys();
-
-            Action<Character> action = charac =>
-            {
-                ActionsHandler.SendSequenceStartMessage(charac.Client, fighter.Entity, SequenceTypeEnum.SEQUENCE_MOVE);
-                ContextHandler.SendGameMapMovementMessage(charac.Client, movementsKeys, fighter.Entity);
-                ActionsHandler.SendGameActionFightPointsVariationMessage(charac.Client,
-                                                                         ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_USE,
+                ContextHandler.SendGameMapMovementMessage(character.Client, movementsKeys, fighter.Entity);
+                ActionsHandler.SendGameActionFightPointsVariationMessage(character.Client,
+                                                                         ActionsEnum.
+                                                                             ACTION_CHARACTER_MOVEMENT_POINTS_USE,
                                                                          fighter.Entity, fighter.Entity, delta);
-                ActionsHandler.SendSequenceEndMessage(charac.Client, fighter.Entity, SequenceTypeEnum.SEQUENCE_MOVE);
-            };
-            CallOnAllCharacters(action);
+            });
         }
 
         /// <summary>
@@ -418,29 +511,6 @@ namespace Stump.Server.WorldServer.Fights
                 return new int[0];
 
             return SourceGroup.GetDeadsIds().Concat(TargetGroup.GetDeadsIds());
-        }
-
-        /// <summary>
-        ///   Check if a character can change position (before fight started only).
-        /// </summary>
-        /// <param name = "fighter"></param>
-        /// <param name = "cellId">The cellId wanted</param>
-        /// <returns>If change is possible</returns>
-        public bool CanChangePosition(FightGroupMember fighter, ushort cellId)
-        {
-            return !Started && ((FightGroup) fighter.GroupOwner).Positions.Contains(cellId);
-        }
-
-        public bool ChangePosition(FightGroupMember fighter, ushort cellId)
-        {
-            if (CanChangePosition(fighter, cellId))
-            {
-                fighter.Position.ChangeLocation(fighter.Entity.Map.CellsData[cellId]);
-
-                return true;
-            }
-
-            return false;
         }
 
         /// <summary>
@@ -496,11 +566,11 @@ namespace Stump.Server.WorldServer.Fights
         /// <summary>
         ///   Get the FightGroupMember corresponding to Character's Id.
         /// </summary>
-        /// <param name = "chrId">The character's id of the fighter</param>
+        /// <param name = "characterId">The character's id of the fighter</param>
         /// <returns>The fightGroupMember of the character, else null</returns>
-        public FightGroupMember GetGroupMemberByCharacter(int chrId)
+        public FightGroupMember GetGroupMemberByCharacter(int characterId)
         {
-            return SourceGroup.GetMemberByCharacter(chrId) ?? TargetGroup.GetMemberByCharacter(chrId);
+            return SourceGroup.GetMemberById(characterId) ?? TargetGroup.GetMemberById(characterId);
         }
 
         /// <summary>
@@ -516,12 +586,7 @@ namespace Stump.Server.WorldServer.Fights
 
         public IEnumerable<FightGroupMember> GetAllFighters()
         {
-            if (m_fighters == null ||
-                m_fighters.Count() == 0)
-                m_fighters = SourceGroup.Members.Select(entry => (FightGroupMember) entry).Concat(
-                    TargetGroup.Members.Select(entry => (FightGroupMember) entry));
-
-            return m_fighters;
+            return Fighters;
         }
 
         public IEnumerable<FightGroupMember> GetAllFighters(Func<FightGroupMember, bool> predicate)
@@ -544,6 +609,11 @@ namespace Stump.Server.WorldServer.Fights
             return GetOneFighter(entry => entry.Position.Cell == cell);
         }
 
+        public FightGroupMember GetOneFighter(ushort cellId)
+        {
+            return GetOneFighter(entry => entry.Position.Cell.Id == cellId);
+        }
+
         /// <summary>
         ///   Get all entities contains in both sides groups
         /// </summary>
@@ -559,12 +629,6 @@ namespace Stump.Server.WorldServer.Fights
         /// <returns></returns>
         public IEnumerable<Character> GetAllCharacters()
         {
-            if (m_characters == null ||
-                m_characters.Count() == 0)
-                m_characters = from entry in GetAllFighters()
-                               where entry.Entity is Character
-                               select entry.Entity as Character;
-
             return m_characters;
         }
 
@@ -591,8 +655,7 @@ namespace Stump.Server.WorldServer.Fights
         {
             get
             {
-                return State != FightState.AskingForDuel &&
-                       State != FightState.PreparePosition;
+                return State != FightState.PreparePosition;
             }
         }
 
@@ -612,6 +675,14 @@ namespace Stump.Server.WorldServer.Fights
         {
             get;
             private set;
+        }
+
+        public IEnumerable<FightGroupMember> Fighters
+        {
+            get
+            {
+                return m_fighters;
+            }
         }
 
         /// <summary>
@@ -650,20 +721,38 @@ namespace Stump.Server.WorldServer.Fights
 
         #endregion
 
+        #region IDisposable Members
+
         public void Dispose()
         {
             if (!m_disposed)
             {
-                m_timeline.Dispose();
+                StopEvents();
 
-                if (m_characters != null)
-                    foreach (var character in m_characters)
-                    {
-                        character.LoggingOut -= OnLoggedOut;
-                    }
+                if (m_timeline != null)
+                    m_timeline.Dispose();
 
                 m_disposed = true;
             }
+        }
+
+        #endregion
+
+        private void StopEvents()
+        {
+            if (m_characters != null)
+                foreach (Character character in m_characters)
+                {
+                    character.LoggingOut -= OnLoggedOut;
+                }
+
+            if (m_fighters != null)
+                foreach (FightGroupMember fighter in m_fighters)
+                {
+                    fighter.FightLeft -= OnFighterLeft;
+                    fighter.Moved -= OnFighterMoved;
+                    fighter.TurnPassed -= OnTurnPassed;
+                }
         }
     }
 }
