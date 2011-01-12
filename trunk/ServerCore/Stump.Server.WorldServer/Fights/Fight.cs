@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Fights
         Ended
     }
 
-    public class Fight : IInstance, IDisposable
+    public class Fight : IInstance, IContext, IDisposable
     {
         /// <summary>
         ///   Delay for player's turn
@@ -635,6 +635,11 @@ namespace Stump.Server.WorldServer.Fights
         #endregion
 
         #region Properties
+
+        public ContextType ContextType
+        {
+            get { return ContextType.Fight; }
+        }
 
         public FightTypeEnum FightType
         {

@@ -27,12 +27,15 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof(ChatSmileyRequestMessage))]
         public static void HandleChatSmileyRequestMessage(WorldClient client, ChatSmileyRequestMessage message)
         {
-            Action<Character> action = charac => SendChatSmileyMessage(charac.Client, client.ActiveCharacter, (byte)message.smileyId);
+            client.ActiveCharacter.DisplaySmiley((byte) message.smileyId);
+        }
 
-            if (client.ActiveCharacter.IsInFight)
-                client.ActiveCharacter.Fight.CallOnAllCharacters(action);
-            else
-                client.ActiveCharacter.Map.CallOnAllCharactersWithoutFighters(action);
+        public static void SendChatSmileyMessage(WorldClient client, Character character, uint smileyId)
+        {
+            client.Send(new ChatSmileyMessage(
+                (int)character.Id,
+                smileyId,
+                character.Client.Account.Id));
         }
 
         public static void SendChatSmileyMessage(WorldClient client, Entity entity, uint smileyId)
@@ -40,7 +43,7 @@ namespace Stump.Server.WorldServer.Handlers
             client.Send(new ChatSmileyMessage(
                 (int)entity.Id,
                 smileyId,
-                client.Account.Id));
+                0));
         }
     }
 }

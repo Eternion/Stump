@@ -29,15 +29,18 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof (EmotePlayRequestMessage))]
         public static void HandleEmotePlayRequestMessage(WorldClient client, EmotePlayRequestMessage message)
         {
-            if ((message.emoteId == (byte) EmotesEnum.EMOTE_SIT || message.emoteId == (byte) EmotesEnum.EMOTE_REST) &&
-                client.ActiveCharacter.EmoteId == message.emoteId) // Emote sit/lay down && already down
-                message.emoteId = 0; // he's standing now
+            // todo : found the duration of each emote
+            client.ActiveCharacter.StartEmote((EmotesEnum) message.emoteId, 0);
+        }
 
-            client.ActiveCharacter.EmoteId = (int) message.emoteId;
-
-            // todo : found each emote duration
-            client.ActiveCharacter.Map.CallOnAllCharactersWithoutFighters(
-                charac => SendEmotePlayMessage(charac.Client, client.ActiveCharacter, (EmotesEnum) message.emoteId, 0));
+        public static void SendEmotePlayMessage(WorldClient client, Character character, EmotesEnum emote, uint duration)
+        {
+            client.Send(new EmotePlayMessage(
+                            (byte) emote,
+                            duration,
+                            (int) character.Id,
+                            (int) character.Client.Account.Id
+                            ));
         }
 
         public static void SendEmotePlayMessage(WorldClient client, Entity entity, EmotesEnum emote, uint duration)
@@ -46,7 +49,7 @@ namespace Stump.Server.WorldServer.Handlers
                             (byte) emote,
                             duration,
                             (int) entity.Id,
-                            (int) client.Account.Id
+                            0
                             ));
         }
 

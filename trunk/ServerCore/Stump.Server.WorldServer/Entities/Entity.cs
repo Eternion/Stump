@@ -21,8 +21,11 @@ using Ciloci.Flee;
 using NLog;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Classes.Custom;
+using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Chat;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Global.Maps;
+using Stump.Server.WorldServer.Handlers;
 
 namespace Stump.Server.WorldServer.Entities
 {
@@ -53,6 +56,16 @@ namespace Stump.Server.WorldServer.Entities
         public virtual bool IsVisible()
         {
             return true;
+        }
+
+        public void Say(string text)
+        {
+            ChatManager.SayGeneral(this, ChannelId.General, text);
+        }
+        
+        public void DisplaySmiley(byte smileyId)
+        {
+            Context.CallOnAllCharacters(charac => ChatHandler.SendChatSmileyMessage(charac.Client, this, smileyId));
         }
 
         public virtual GameRolePlayActorInformations ToNetworkActor(WorldClient client)
@@ -89,13 +102,13 @@ namespace Stump.Server.WorldServer.Entities
         public VectorIsometric Position
         {
             get;
-            set;
+            protected set;
         }
 
         public Map Map
         {
             get { return Position.Map; }
-            set { Position = new VectorIsometric(value, Position); }
+            internal set {  Position = new VectorIsometric(value, Position);}
         }
 
         public Zone Zone
@@ -126,6 +139,12 @@ namespace Stump.Server.WorldServer.Entities
         {
             get;
             set;
+        }
+
+        public IContext Context
+        {
+            get;
+            protected set;
         }
 
         public ExpressionContext ExpressionContext

@@ -83,7 +83,7 @@ namespace Stump.Server.WorldServer.Handlers
         public static void HandleGameRolePlayPlayerFightRequestMessage(WorldClient client,
                                                                        GameRolePlayPlayerFightRequestMessage message)
         {
-            Character target = World.Instance.GetCharacter(message.targetId);
+            var target = client.ActiveCharacter.Map.Get<Character>(message.targetId);
 
             var reason = client.ActiveCharacter.CanRequestFight(target);
             if (reason != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)

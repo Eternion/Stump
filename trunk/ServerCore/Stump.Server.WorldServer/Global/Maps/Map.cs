@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,6 +28,7 @@ using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.Fights;
 using Stump.Server.WorldServer.Global.Pathfinding;
 using Stump.Server.WorldServer.Handlers;
 using Stump.Server.WorldServer.Npcs;
@@ -133,13 +135,13 @@ namespace Stump.Server.WorldServer.Global.Maps
     /// <summary>
     ///   Represents a map where entities can walk for instance.
     /// </summary>
-    // todo : seperate SpawnEntries and Characters ?
     public partial class Map : WorldSpace
     {
         public const uint MaximumCellsCount = 560;
-        private readonly Stack<int> m_freeContextualIds = new Stack<int>();
 
+        private readonly Stack<int> m_freeContextualIds = new Stack<int>();
         private readonly Dictionary<int, MapNeighbour> m_mapsAround;
+
         private int m_nextContextualId;
 
         /// <summary>
@@ -147,19 +149,12 @@ namespace Stump.Server.WorldServer.Global.Maps
         /// </summary>
         public Map()
         {
+            m_mapsAround = new Dictionary<int, MapNeighbour>();
+
             CellsData = new List<CellData>();
             Triggers = new Dictionary<CellData, CellTrigger>();
             MapElementsPositions = new Dictionary<uint, CellData>();
             InteractiveObjects = new Dictionary<uint, InteractiveObject>();
-            m_mapsAround = new Dictionary<int, MapNeighbour>();
-
-            EntityAdded += WorldSpaceEntityAdded;
-            EntityRemoved += WorldSpaceEntityRemoved;
-        }
-
-        public override WorldSpaceType Type
-        {
-            get { return WorldSpaceType.Map; }
         }
 
         public IEnumerable<Character> CharactersWithoutFighters
@@ -179,7 +174,7 @@ namespace Stump.Server.WorldServer.Global.Maps
             m_mapsAround.Add(RightNeighbourId, MapNeighbour.Right);
         }
 
-        public int GetNextContextualId()
+        public int PopNextContextualId()
         {
             if (m_freeContextualIds.Count > 0)
                 return m_freeContextualIds.Pop();
@@ -187,46 +182,6 @@ namespace Stump.Server.WorldServer.Global.Maps
             Interlocked.Decrement(ref m_nextContextualId);
 
             return m_nextContextualId;
-        }
-
-        private void WorldSpaceEntityRemoved(Entity entity)
-        {
-            if (entity is LivingEntity)
-            {
-                (entity as LivingEntity).EntityMovingStart -= EntityMovingStart;
-                (entity as LivingEntity).EntityMovingEnd -= EntityMovingEnd;
-            }
-        }
-
-        private void WorldSpaceEntityAdded(Entity entity)
-        {
-            if (entity is LivingEntity)
-            {
-                (entity as LivingEntity).EntityMovingStart += EntityMovingStart;
-                (entity as LivingEntity).EntityMovingEnd += EntityMovingEnd;
-            }
-        }
-
-        private void EntityMovingStart(LivingEntity entity, MovementPath movementPath)
-        {
-            movementPath.Compress();
-            List<uint> movementsKey = movementPath.GetServerMovementKeys();
-
-            Action<Character> action = charac =>
-            {
-                ContextHandler.SendGameMapMovementMessage(charac.Client, movementsKey, entity);
-                BasicHandler.SendBasicNoOperationMessage(charac.Client);
-            };
-
-            CallOnAllCharactersWithoutFighters(action);
-        }
-
-        private void EntityMovingEnd(LivingEntity entity, MovementPath movementPath)
-        {
-            /* check cell trigger, monsters... */
-
-            if (entity is Character)
-                movementPath.End.Cell.NotifyCellReached(entity as Character);
         }
 
         public void SpawnNpc(GameRolePlayNpcInformations npcInformations)
@@ -237,8 +192,9 @@ namespace Stump.Server.WorldServer.Global.Maps
                 throw new Exception(string.Format("NPC Template <id:{0}> doesn't exists", npcInformations.npcId));
 
             var npcSpawn = new NpcSpawn(
+                this,
                 template,
-                GetNextContextualId(),
+                PopNextContextualId(),
                 new VectorIsometric(this, npcInformations.disposition),
                 npcInformations.sex,
                 (int) npcInformations.specialArtworkId,
@@ -276,7 +232,7 @@ namespace Stump.Server.WorldServer.Global.Maps
             Action<Character> action =
                 charac => ContextHandler.SendGameRolePlayShowActorMessage(charac.Client, entity);
 
-            CallOnAllCharactersWithoutFighters(action);
+            CallOnAllCharacters(action);
 
             NotifySpawnedEntity(entity);
         }
@@ -289,7 +245,7 @@ namespace Stump.Server.WorldServer.Global.Maps
             Action<Character> action =
                 charac => ContextHandler.SendGameContextRemoveElementMessage(charac.Client, entity);
 
-            CallOnAllCharactersWithoutFighters(action);
+            CallOnAllCharacters(action);
 
             if (entity is Character)
             {
@@ -304,7 +260,7 @@ namespace Stump.Server.WorldServer.Global.Maps
             Action<Character> action =
                 charac => ContextHandler.SendGameContextRemoveElementMessage(charac.Client, entity);
 
-            CallOnAllCharactersWithoutFighters(action);
+            CallOnAllCharacters(action);
         }
 
         public void OnFightLeave(Entity entity)
@@ -312,7 +268,7 @@ namespace Stump.Server.WorldServer.Global.Maps
             Action<Character> action =
                 charac => ContextHandler.SendGameRolePlayShowActorMessage(charac.Client, entity);
 
-            CallOnAllCharactersWithoutFighters(action);
+            CallOnAllCharacters(action);
         }
 
         public void AddTrigger(CellData cell, CellTrigger trigger)
@@ -383,12 +339,17 @@ namespace Stump.Server.WorldServer.Global.Maps
         }
 
         /// <summary>
-        ///   Execute an action of every characters in this world space included fight's members.
+        ///   Execute an action with every characters in this world space without fight's members.
         /// </summary>
         /// <param name = "action"></param>
-        public void CallOnAllCharactersWithoutFighters(Action<Character> action)
+        public override void CallOnAllCharacters(Action<Character> action)
         {
-            Parallel.ForEach(CharactersWithoutFighters, action);
+            Parallel.ForEach(NonFighters.Values, action);
+        }
+
+        public void CallOnAllCharactersWithFighters(Action<Character> action)
+        {
+            Parallel.ForEach(Characters.Values, action);
         }
 
         public static bool operator ==(Map map1, Map map2)
@@ -423,13 +384,23 @@ namespace Stump.Server.WorldServer.Global.Maps
 
         #region Properties
 
+        public override WorldSpaceType Type
+        {
+            get { return WorldSpaceType.Map; }
+        }
+
+        public override ContextType ContextType
+        {
+            get { return ContextType.Map; }
+        }
+
         /// <summary>
         ///   Map version of this map.
         /// </summary>
         public uint Version
         {
             get;
-            set;
+            internal set;
         }
 
         /// <summary>
@@ -438,7 +409,7 @@ namespace Stump.Server.WorldServer.Global.Maps
         public uint RelativeId
         {
             get;
-            set;
+            internal set;
         }
 
         /// <summary>
@@ -447,7 +418,7 @@ namespace Stump.Server.WorldServer.Global.Maps
         public int MapType
         {
             get;
-            set;
+            internal set;
         }
 
         /// <summary>
@@ -456,7 +427,7 @@ namespace Stump.Server.WorldServer.Global.Maps
         public uint ZoneId
         {
             get;
-            set;
+            internal set;
         }
 
         public Point Position
@@ -468,79 +439,183 @@ namespace Stump.Server.WorldServer.Global.Maps
         public bool Outdoor
         {
             get;
-            private set;
+            internal set;
         }
 
         public int TopNeighbourId
         {
             get;
-            set;
+            internal set;
         }
 
         public int BottomNeighbourId
         {
             get;
-            set;
+            internal set;
         }
 
         public int LeftNeighbourId
         {
             get;
-            set;
+            internal set;
         }
 
         public int RightNeighbourId
         {
             get;
-            set;
+            internal set;
         }
 
         public int ShadowBonusOnEntities
         {
             get;
-            set;
+            internal set;
         }
 
         public bool UseLowpassFilter
         {
             get;
-            set;
+            internal set;
         }
 
         public bool UseReverb
         {
             get;
-            set;
+            internal set;
         }
 
         public int PresetId
         {
             get;
-            set;
+            internal set;
+        }
+
+        public ConcurrentDictionary<long, Character> NonFighters
+        {
+            get;
+            private set;
         }
 
         internal Dictionary<uint, CellData> MapElementsPositions
         {
             get;
-            set;
+            private set;
         }
 
         public Dictionary<uint, InteractiveObject> InteractiveObjects
         {
             get;
-            set;
+            private set;
         }
 
         public Dictionary<CellData, CellTrigger> Triggers
         {
             get;
-            set;
+            private set;
         }
 
         public List<CellData> CellsData
         {
             get;
-            set;
+            private set;
+        }
+
+        #endregion
+
+        #region Entity Added/Removed
+
+        protected override void OnEntityRemoved(Entity entity)
+        {
+            base.OnEntityRemoved(entity);
+
+            if (entity is Character)
+            {
+                Character outvalue;
+                if (!NonFighters.TryRemove(entity.Id, out outvalue))
+                {
+                    throw new Exception("Couldn't remove character as nonfighter in map");
+                }
+            }
+
+            if (entity is LivingEntity)
+            {
+                (entity as LivingEntity).EntityMovingStart -= OnEntityMovingStart;
+                (entity as LivingEntity).EntityMovingEnd -= OnEntityMovingEnd;
+                (entity as LivingEntity).EntityEnterFight -= OnEntityEnterFight;
+                (entity as LivingEntity).EntityLeaveFight -= OnEntityLeaveFight;
+            }
+        }
+
+        protected override void OnEntityAdded(Entity entity)
+        {
+            base.OnEntityAdded(entity);
+
+            if (entity is Character)
+                if (!NonFighters.TryAdd(entity.Id, entity as Character))
+                {
+                    throw new Exception("Couldn't add character as nonfighter in map");
+                }
+
+            if (entity is LivingEntity)
+            {
+                (entity as LivingEntity).EntityMovingStart += OnEntityMovingStart;
+                (entity as LivingEntity).EntityMovingEnd += OnEntityMovingEnd;
+                (entity as LivingEntity).EntityEnterFight += OnEntityEnterFight;
+                (entity as LivingEntity).EntityLeaveFight += OnEntityLeaveFight;
+            }
+        }
+
+        private void OnEntityEnterFight(LivingEntity entity, Fight fight)
+        {
+            entity.EntityMovingStart -= OnEntityMovingStart;
+            entity.EntityMovingEnd -= OnEntityMovingEnd;
+
+            if (entity is Character)
+            {
+                Character outvalue;
+                if (!NonFighters.TryRemove(entity.Id, out outvalue))
+                {
+                    throw new Exception("Couldn't remove character as nonfighter in map");
+                }
+            }
+        }
+
+        private void OnEntityLeaveFight(LivingEntity entity, Fight fight)
+        {
+            entity.EntityMovingStart += OnEntityMovingStart;
+            entity.EntityMovingEnd += OnEntityMovingEnd;
+
+            if (entity is Character)
+                if (!NonFighters.TryAdd(entity.Id, entity as Character))
+                {
+                    throw new Exception("Couldn't add character as nonfighter in map");
+                }
+        }
+
+        #endregion
+
+        #region Movements
+
+        private void OnEntityMovingStart(LivingEntity entity, MovementPath movementPath)
+        {
+            movementPath.Compress();
+            List<uint> movementsKey = movementPath.GetServerMovementKeys();
+
+            Action<Character> action = charac =>
+            {
+                ContextHandler.SendGameMapMovementMessage(charac.Client, movementsKey, entity);
+                BasicHandler.SendBasicNoOperationMessage(charac.Client);
+            };
+
+            CallOnAllCharacters(action);
+        }
+
+        private void OnEntityMovingEnd(LivingEntity entity, MovementPath movementPath)
+        {
+            /* check cell trigger, monsters... */
+
+            if (entity is Character)
+                movementPath.End.Cell.NotifyCellReached(entity as Character);
         }
 
         #endregion

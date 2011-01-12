@@ -16,11 +16,17 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
+using Stump.BaseCore.Framework.Threading;
+using System.Threading.Tasks;
 using Stump.DofusProtocol.Classes;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Fights;
 using Stump.Server.WorldServer.Global;
+using Stump.Server.WorldServer.Global.Maps;
 using Stump.Server.WorldServer.Global.Pathfinding;
 using Stump.Server.WorldServer.Groups;
+using Stump.Server.WorldServer.Handlers;
 using Stump.Server.WorldServer.Spells;
 
 namespace Stump.Server.WorldServer.Entities
@@ -29,6 +35,9 @@ namespace Stump.Server.WorldServer.Entities
     {
         protected LivingEntity(int id) : base(id)
         {
+            EntityChangeMap += OnMapChanged;
+            EntityEnterFight += OnEnterFight;
+            EntityMovingStart += OnMove;
         }
 
         public int CurrentHealth
@@ -104,14 +113,96 @@ namespace Stump.Server.WorldServer.Entities
 
         #endregion
 
-        public void EnterFight(FightGroup team)
+        public EmotesEnum Emote
         {
-            Fighter = team.AddMember(this);
+            get;
+            private set;
         }
 
-        public void LeaveFight()
+        public bool StartEmote(EmotesEnum emotesEnum, uint duration)
         {
-            Fighter = null;
+            if (Context.ContextType == ContextType.Map)
+            {
+                if (Emote == emotesEnum && // already sit/rest, so now he is standing
+                    (emotesEnum == EmotesEnum.EMOTE_SIT ||
+                    emotesEnum == EmotesEnum.EMOTE_REST))
+                {
+                    Emote = EmotesEnum.NONE;
+                }
+                else
+                {
+                    Emote = emotesEnum;
+                }
+
+                Context.CallOnAllCharacters(
+                    charac => ContextHandler.SendEmotePlayMessage(charac.Client, this, emotesEnum, duration));
+
+                if (duration > 0)
+                {
+                    Task.Factory.StartNewDelayed((int) duration, StopEmote);
+                }
+
+                NotifyEntityEmoteStart(emotesEnum);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public void StopEmote()
+        {
+            var lastEmote = Emote;
+
+            Emote = EmotesEnum.NONE;
+
+            NotifyEntityEmoteStop(lastEmote);
+        }
+
+        internal bool EnterFight(FightGroup team)
+        {
+            if (Context.ContextType == ContextType.Map)
+            {
+                Fighter = team.AddMember(this);
+                Context = team.Fight;
+
+                NotifyEntityEnterFight(team.Fight);
+
+                return true;
+            }
+            return false;
+        }
+
+        internal bool LeaveFight()
+        {
+            if (Context.ContextType == ContextType.Fight)
+            {
+                Fight instance = Fight;
+
+                Fighter = null;
+                Context = Map;
+
+                NotifyEntityLeaveFight(instance);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private void OnMapChanged(LivingEntity entity, Map lastmap)
+        {
+            Context = Map;
+        }
+
+        private void OnEnterFight(LivingEntity entity, Fight fight)
+        {
+            StopEmote();
+        }
+
+        private void OnMove(LivingEntity entity, MovementPath movementPath)
+        {
+            StopEmote();
         }
 
         public abstract FightTeamMemberInformations ToNetworkTeamMember();

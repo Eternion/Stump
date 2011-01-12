@@ -246,6 +246,12 @@
               Constructor
             </summary>
         </member>
+        <member name="M:Stump.Server.WorldServer.Global.WorldSpace.CallOnAllCharacters(System.Action{Stump.Server.WorldServer.Entities.Character})">
+            <summary>
+              Execute an action of every characters in this world space.
+            </summary>
+            <param name = "action"></param>
+        </member>
         <member name="M:Stump.Server.WorldServer.Global.WorldSpace.FindAll">
             <summary>
               Find and returns all entities in this world space.
@@ -265,12 +271,6 @@
             </summary>
             <param name = "id"></param>
             <returns></returns>
-        </member>
-        <member name="M:Stump.Server.WorldServer.Global.WorldSpace.CallOnAllCharacters(System.Action{Stump.Server.WorldServer.Entities.Character})">
-            <summary>
-              Execute an action of every characters in this world space.
-            </summary>
-            <param name = "action"></param>
         </member>
         <member name="P:Stump.Server.WorldServer.Global.WorldSpace.Type">
             <summary>
@@ -944,9 +944,9 @@
               Calculate which cell our character will walk on once map changed.
             </summary>
         </member>
-        <member name="M:Stump.Server.WorldServer.Global.Maps.Map.CallOnAllCharactersWithoutFighters(System.Action{Stump.Server.WorldServer.Entities.Character})">
+        <member name="M:Stump.Server.WorldServer.Global.Maps.Map.CallOnAllCharacters(System.Action{Stump.Server.WorldServer.Entities.Character})">
             <summary>
-              Execute an action of every characters in this world space included fight's members.
+              Execute an action with every characters in this world space without fight's members.
             </summary>
             <param name = "action"></param>
         </member>

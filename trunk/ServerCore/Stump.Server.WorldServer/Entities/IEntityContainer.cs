@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Entities
         /// <summary>
         /// Thread Safe set containing characters.
         /// </summary>
-        ConcurrentDictionary<long, Entity> Entities { get; set; }
+        ConcurrentDictionary<long, Entity> Entities { get; }
         /// <summary>
         /// Find all entities contained in this set. 
         /// </summary>

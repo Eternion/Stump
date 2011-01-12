@@ -72,7 +72,7 @@ namespace Stump.Server.WorldServer.Chat
 
         #region Handlers
 
-        private static void SayGeneral(WorldClient client, ChannelId chanid, string msg)
+        public static void SayGeneral(WorldClient client, ChannelId chanid, string msg)
         {
             if (msg.StartsWith(CommandPrefix))
             {
@@ -85,14 +85,19 @@ namespace Stump.Server.WorldServer.Chat
                 Action<Character> action =
                     charac => ChatHandler.SendChatServerMessage(charac.Client, client.ActiveCharacter, chanid, msg);
 
-                if (client.ActiveCharacter.IsInFight)
-                    client.ActiveCharacter.Fight.CallOnAllCharacters(action);
-                else
-                    client.ActiveCharacter.Map.CallOnAllCharactersWithoutFighters(action);
+                    client.ActiveCharacter.Context.CallOnAllCharacters(action);
             }
         }
 
-        private static void SayAdministrators(WorldClient client, ChannelId chanid, string msg)
+        public static void SayGeneral(Entity entity, ChannelId chanid, string msg)
+        {
+                Action<Character> action =
+                    charac => ChatHandler.SendChatServerMessage(charac.Client, entity, chanid, msg);
+
+                entity.Context.CallOnAllCharacters(action);
+        }
+
+        public static void SayAdministrators(WorldClient client, ChannelId chanid, string msg)
         {
             if (client.Account.Role == RoleEnum.Administrator)
             {
@@ -102,11 +107,11 @@ namespace Stump.Server.WorldServer.Chat
                         ChatHandler.SendChatServerMessage(charac.Client, client.ActiveCharacter, chanid, msg);
                 };
 
-                client.ActiveCharacter.Map.CallOnAllCharacters(action);
+                client.ActiveCharacter.Context.CallOnAllCharacters(action);
             }
         }
 
-        private static void SayGroup(WorldClient client, ChannelId chanid, string msg)
+        public static void SayGroup(WorldClient client, ChannelId chanid, string msg)
         {
 //            if (client.ActiveCharacter.IsInGroup)
 //            {

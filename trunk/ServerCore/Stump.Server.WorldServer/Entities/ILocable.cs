@@ -29,7 +29,6 @@ namespace Stump.Server.WorldServer.Entities
         VectorIsometric Position
         {
             get;
-            set;
         }
 
         EntityDispositionInformations GetEntityDisposition();

@@ -71,7 +71,7 @@ namespace Stump.Server.WorldServer.Handlers
         public static void HandleGameMapChangeOrientationRequestMessage(WorldClient client, GameMapChangeOrientationRequestMessage message)
         {
             client.ActiveCharacter.Position.ChangeLocation((DirectionsEnum) message.direction);
-            client.ActiveCharacter.Map.CallOnAllCharactersWithoutFighters(charac => SendGameMapChangeOrientationMessage(charac.Client, client.ActiveCharacter));
+            client.ActiveCharacter.Map.CallOnAllCharacters(charac => SendGameMapChangeOrientationMessage(charac.Client, client.ActiveCharacter));
         }
 
         // todo : get and check whole path

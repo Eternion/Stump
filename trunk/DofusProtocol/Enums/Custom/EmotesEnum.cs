@@ -20,6 +20,7 @@ namespace Stump.DofusProtocol.Enums
 {
     public enum EmotesEnum : byte
     {
+        NONE = 0,
         EMOTE_SIT = 1,
         EMOTE_WAVE = 2,
         EMOTE_APPLAUSE = 3,

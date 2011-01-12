@@ -59,18 +59,7 @@ namespace Stump.Server.WorldServer.Fights
             {
                 ContextHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Source.Client, Source, Source, Target, true);
 
-                var groupSource = new FightGroup();
-                var groupTarget = new FightGroup();
-
-                GroupManager.CreateGroup(groupSource);
-                GroupManager.CreateGroup(groupTarget);
-
-                var fight = new Fight(groupSource, groupTarget, FightTypeEnum.FIGHT_TYPE_CHALLENGE);
-                FightManager.CreateFight(fight);
-
-                Source.EnterFight(groupSource);
-                Target.EnterFight(groupTarget);
-                fight.StartingFight();
+                Source.StartFightWith(Target, true);
             }
             finally
             {

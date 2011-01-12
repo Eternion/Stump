@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Handlers
             if (skill == null)
                 return;
 
-            client.ActiveCharacter.Map.CallOnAllCharactersWithoutFighters(character =>
+            client.ActiveCharacter.Map.CallOnAllCharacters(character =>
                 SendInteractiveUsedMessage(character.Client, client.ActiveCharacter, interactiveObject, skill));
 
             interactiveObject.ExecuteSkill(client.ActiveCharacter,

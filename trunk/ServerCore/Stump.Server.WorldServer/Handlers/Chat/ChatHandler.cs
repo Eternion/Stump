@@ -66,6 +66,24 @@ namespace Stump.Server.WorldServer.Handlers
             SendChatServerMessage(client, ChannelId.Information, message, 0, "", 0, "Server", 0);
         }
 
+        public static void SendChatServerMessage(WorldClient client, Entity sender, ChannelId channel, string message)
+        {
+            SendChatServerMessage(client, sender, channel, message, 0, "");
+        }
+
+        public static void SendChatServerMessage(WorldClient client, Entity sender, ChannelId channel, string message,
+                                         int timestamp, string fingerprint)
+        {
+            client.Send(new ChatServerMessage(
+                            (uint)channel,
+                            message,
+                            (uint)timestamp,
+                            fingerprint,
+                            (int)sender.Id,
+                            sender.Name,
+                            0));
+        }
+
         public static void SendChatServerMessage(WorldClient client, Character sender, ChannelId channel, string message)
         {
             SendChatServerMessage(client, sender, channel, message, 0, "");

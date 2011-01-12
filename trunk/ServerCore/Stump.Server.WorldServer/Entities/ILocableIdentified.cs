@@ -28,7 +28,6 @@ namespace Stump.Server.WorldServer.Entities
         long Id
         {
             get;
-            set;
         }
 
         IdentifiedEntityDispositionInformations GetIdentifiedEntityDisposition();

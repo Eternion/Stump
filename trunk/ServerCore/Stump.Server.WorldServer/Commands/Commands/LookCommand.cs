@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Commands
 
             target.Look = new ExtendedLook(trigger.GetArgument<string>("look").ToEntityLook());
 
-            target.Map.CallOnAllCharactersWithoutFighters(character =>
+            target.Map.CallOnAllCharacters(character =>
                                                           ContextHandler.SendGameContextRefreshEntityLookMessage(
                                                               character.Client, target));
         }

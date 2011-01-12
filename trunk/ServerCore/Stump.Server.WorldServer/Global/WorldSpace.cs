@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
@@ -27,7 +26,7 @@ using Stump.Server.WorldServer.Entities;
 
 namespace Stump.Server.WorldServer.Global
 {
-    public abstract partial class WorldSpace : IEntityContainer
+    public abstract partial class WorldSpace : IEntityContainer, IContext
     {
         #region Fields
 
@@ -47,6 +46,11 @@ namespace Stump.Server.WorldServer.Global
         {
             Childrens = new List<WorldSpace>();
             Entities = new ConcurrentDictionary<long, Entity>();
+            Characters = new ConcurrentDictionary<long, Character>();
+            Npcs = new ConcurrentDictionary<long, NpcSpawn>();
+
+            EntityAdded += OnEntityAdded;
+            EntityRemoved += OnEntityRemoved;
         }
 
         /// <summary>
@@ -101,9 +105,64 @@ namespace Stump.Server.WorldServer.Global
                 EntityRemoved(removedEntity);
         }
 
+        protected virtual void OnEntityAdded(Entity entity)
+        {
+            if (entity is Character)
+                if (!Characters.TryAdd(entity.Id, entity as Character))
+                {
+                    throw new Exception("Couldn't add character in world space");
+                }
+
+            if (entity is NpcSpawn)
+                if (!Npcs.TryAdd(entity.Id, entity as NpcSpawn))
+                {
+                    throw new Exception("Couldn't add npc in world space");
+                }
+        }
+
+        protected virtual void OnEntityRemoved(Entity entity)
+        {
+            if (entity is Character)
+            {
+                Character removedCharacter;
+                if (!Characters.TryRemove(entity.Id, out removedCharacter))
+                {
+                    throw new Exception("Couldn't remove character in world space");
+                }
+            }
+            if (entity is Character)
+            {
+                NpcSpawn removedNpc;
+                if (!Npcs.TryRemove(entity.Id, out removedNpc))
+                {
+                    throw new Exception("Couldn't remove npc in world space");
+                }
+            }
+        }
+
         #endregion
 
         #region Entity Management
+
+        #region IContext Members
+
+        public virtual IEnumerable<Character> GetAllCharacters()
+        {
+            return Characters.Values;
+        }
+
+        /// <summary>
+        ///   Execute an action of every characters in this world space.
+        /// </summary>
+        /// <param name = "action"></param>
+        public virtual void CallOnAllCharacters(Action<Character> action)
+        {
+            Parallel.ForEach(Characters.Values, action);
+        }
+
+        #endregion
+
+        #region IEntityContainer Members
 
         /// <summary>
         ///   Find and returns all entities in this world space.
@@ -124,6 +183,8 @@ namespace Stump.Server.WorldServer.Global
             return !Entities.ContainsKey(id) ? null : Entities[id];
         }
 
+        #endregion
+
         /// <summary>
         ///   Get an entity with the given id.
         /// </summary>
@@ -135,21 +196,7 @@ namespace Stump.Server.WorldServer.Global
             if ((entity = Get(id)) != null && entity is T)
                 return entity as T;
 
-            else return default(T);
-        }
-
-        public IEnumerable<Character> GetAllCharacters()
-        {
-            return Entities.Values.OfType<Character>();
-        }
-
-        /// <summary>
-        ///   Execute an action of every characters in this world space.
-        /// </summary>
-        /// <param name = "action"></param>
-        public void CallOnAllCharacters(Action<Character> action)
-        {
-            Parallel.ForEach(GetAllCharacters(), action);
+            return default(T);
         }
 
         #endregion
@@ -159,39 +206,48 @@ namespace Stump.Server.WorldServer.Global
         public int Id
         {
             get;
-            set;
+            internal set;
         }
 
         public string Name
         {
             get;
-            set;
+            internal set;
         }
 
         public List<WorldSpace> Childrens
         {
             get;
-            set;
+            internal set;
+        }
+
+        public virtual ContextType ContextType
+        {
+            get { return ContextType.Unknown; }
         }
 
         public WorldSpace ParentSpace
         {
             get;
-            set;
+            internal set;
+        }
+
+        public ConcurrentDictionary<long, Character> Characters
+        {
+            get;
+            private set;
+        }
+
+        public ConcurrentDictionary<long, NpcSpawn> Npcs
+        {
+            get;
+            private set;
         }
 
         public ConcurrentDictionary<long, Entity> Entities
         {
             get;
-            set;
-        }
-
-        public IEnumerable<NpcSpawn> Npcs
-        {
-            get
-            {
-                return Entities.Values.OfType<NpcSpawn>();
-            }
+            private set;
         }
 
         #endregion

@@ -25,8 +25,10 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Dialog;
+using Stump.Server.WorldServer.Fights;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Global.Maps;
+using Stump.Server.WorldServer.Groups;
 using Stump.Server.WorldServer.Handlers;
 using Stump.Server.WorldServer.Items;
 using Stump.Server.WorldServer.Manager;
@@ -172,17 +174,12 @@ namespace Stump.Server.WorldServer.Entities
         {
             if (target == null)
             {
-                return FighterRefusedReasonEnum.OPPONENT_NOT_MEMBER;
+                return FighterRefusedReasonEnum.WRONG_MAP;
             }
 
             if (target.Id == Id)
             {
                 return FighterRefusedReasonEnum.FIGHT_MYSELF;
-            }
-
-            if (target.Map != Map)
-            {
-                return FighterRefusedReasonEnum.WRONG_MAP;
             }
 
             if (IsOccupied)
@@ -217,6 +214,26 @@ namespace Stump.Server.WorldServer.Entities
         {
             Kamas = amount;
             InventoryHandler.SendKamasUpdateMessage(Client, amount);
+        }
+
+        public void StartFightWith(Character character, bool amical)
+        {
+            if (amical)
+            {
+                var groupSource = new FightGroup();
+                var groupTarget = new FightGroup();
+
+                GroupManager.CreateGroup(groupSource);
+                GroupManager.CreateGroup(groupTarget);
+
+                var fight = new Fight(groupSource, groupTarget, FightTypeEnum.FIGHT_TYPE_CHALLENGE);
+                FightManager.CreateFight(fight);
+
+                EnterFight(groupSource);
+                character.EnterFight(groupTarget);
+
+                fight.StartingFight();
+            }
         }
 
         public override GameRolePlayActorInformations ToNetworkActor(WorldClient client)
