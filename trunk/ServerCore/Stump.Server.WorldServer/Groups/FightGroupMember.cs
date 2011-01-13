@@ -30,6 +30,13 @@ namespace Stump.Server.WorldServer.Groups
 {
     public sealed class FightGroupMember : IGroupMember, IMovable
     {
+        private enum FighterEndStatus
+        {
+            Winner,
+            Loser,
+            Leaver,
+        }
+
         // todo : change this. This is the only way i found to know the actionId to send in SequenceEndMessage. We need more investigation
         private static readonly Dictionary<SequenceTypeEnum, int> ActionIds = new Dictionary<SequenceTypeEnum, int>
             {
@@ -83,17 +90,20 @@ namespace Stump.Server.WorldServer.Groups
                 handler(this);
         }
 
+        public event Action<FightGroupMember, FightGroupMember> Dead;
+
+        public void NotifyDead(FightGroupMember killedBy)
+        {
+            Action<FightGroupMember, FightGroupMember> handler = Dead;
+            if (handler != null)
+                handler(this, killedBy);
+        }
+
 
         public FightGroupMember(LivingEntity entity, FightGroup groupOwner)
         {
             Entity = entity;
             GroupOwner = groupOwner;
-
-            IsReady = false;
-            IsDead = false;
-            UsedAp = 0;
-            UsedMp = 0;
-            DamageTaken = 0;
 
             Position = new VectorIsometric(entity.Map, entity.Position);
         }
@@ -164,8 +174,7 @@ namespace Stump.Server.WorldServer.Groups
 
         public bool IsDead
         {
-            get;
-            private set;
+            get { return CurrentHealth <= 0; }
         }
 
         public bool IsTurnPassed
@@ -225,7 +234,7 @@ namespace Stump.Server.WorldServer.Groups
             throw new NotImplementedException();
         }
 
-        public void MovementEnded()
+        internal void MovementEnded()
         {
             IsMoving = false;
         }
@@ -283,21 +292,72 @@ namespace Stump.Server.WorldServer.Groups
             NotifyTurnPassed();
         }
 
-        public void LeftFight()
+        public void LeaveFight()
         {
             if (!HasLeft)
             {
                 HasLeft = true;
 
+                if (Fight.Started)
+                {
+                    Die();
+                }
+
+                Entity.LeaveFight();
+
                 NotifyFightLeft();
+
+                SynchroniseCharacter(FighterEndStatus.Leaver);
             }
         }
 
-        public void ResetUsedProperties()
+        internal void ResetUsedProperties()
         {
             UsedMp = 0;
             UsedAp = 0;
             IsTurnPassed = false;
+        }
+
+        internal void NotifyAssignedToFight()
+        {
+            Fight.FightEnded += OnFightEnded;
+        }
+
+        private void OnFightEnded(Fight fight, FightGroup winners, FightGroup losers, bool draw)
+        {
+            if (Entity is Character)
+                SynchroniseCharacter(GroupOwner.IsWinner ? FighterEndStatus.Winner : FighterEndStatus.Loser);
+        }
+
+        private void SynchroniseCharacter(FighterEndStatus endStatus)
+        {
+            switch (endStatus)
+            {
+                case FighterEndStatus.Winner:
+                    break;
+                case FighterEndStatus.Loser:
+                    break;
+                case FighterEndStatus.Leaver:
+                    break;
+            }
+        }
+
+        public void Die()
+        {
+            ReceiveDamage((ushort) CurrentHealth);
+        }
+
+        public ushort ReceiveDamage(ushort damage, FightGroupMember from)
+        {
+            if (CurrentHealth - damage < 0)
+                damage = (ushort)CurrentHealth;
+
+            DamageTaken += damage;
+
+            if (IsDead)
+                NotifyDead(from);
+
+            return damage;
         }
 
         public ushort ReceiveDamage(ushort damage)
@@ -306,6 +366,9 @@ namespace Stump.Server.WorldServer.Groups
                 damage = (ushort) CurrentHealth;
 
             DamageTaken += damage;
+
+            if (IsDead)
+                NotifyDead(null);
 
             return damage;
         }
@@ -330,7 +393,7 @@ namespace Stump.Server.WorldServer.Groups
             });
         }
 
-        public void SequenceEndReply(int actionId)
+        internal void SequenceEndReply(int actionId)
         {
             if (m_sequenceActions.ContainsKey(actionId))
             {

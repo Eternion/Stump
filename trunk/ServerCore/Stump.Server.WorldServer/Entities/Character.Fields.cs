@@ -158,16 +158,6 @@ namespace Stump.Server.WorldServer.Entities
         {
             get { return IsInDialog || IsDialogRequested || IsAway || IsInFight; }
         }
-
-        /// <summary>
-        ///   The emoteId of the current emote played. (0 = null)
-        /// </summary>
-        public int EmoteId
-        {
-            get;
-            set;
-        }
-
         #endregion
     }
 }

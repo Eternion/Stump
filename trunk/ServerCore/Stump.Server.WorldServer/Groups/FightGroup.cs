@@ -35,19 +35,25 @@ namespace Stump.Server.WorldServer.Groups
         public int TeamId
         {
             get;
-            set;
+            internal set;
         }
 
         public ushort[] Positions
         {
             get;
-            set;
+            internal set;
         }
 
         public Fight Fight
         {
             get;
-            set;
+            internal set;
+        }
+
+        public bool IsWinner
+        {
+            get;
+            internal set;
         }
 
         public bool IsAllDead()

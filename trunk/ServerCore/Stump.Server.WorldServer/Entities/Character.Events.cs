@@ -30,5 +30,29 @@ namespace Stump.Server.WorldServer.Entities
 
             World.Instance.NotifyLoggingOut(this);
         }
+
+        /// <summary>
+        /// Occurs when the character loose a fight and loose energy.
+        /// </summary>
+        public event Action<Character, uint> Dead;
+
+        private void NotifyDead(uint energyLost)
+        {
+            Action<Character, uint> handler = Dead;
+            if (handler != null)
+                handler(this, energyLost);
+        }
+
+        /// <summary>
+        /// Occurs when the character loose all his energy and became a ghost
+        /// </summary>
+        public event Action<Character> BecameGhost;
+
+        private void NotifyBecameGhost()
+        {
+            Action<Character> handler = BecameGhost;
+            if (handler != null)
+                handler(this);
+        }
     }
 }

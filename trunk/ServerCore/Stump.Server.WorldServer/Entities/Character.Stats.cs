@@ -34,6 +34,18 @@ namespace Stump.Server.WorldServer.Entities
             set;
         }
 
+        public uint Energy
+        {
+            get;
+            set;
+        }
+
+        public uint EnergyMax
+        {
+            get;
+            set;
+        }
+
         #endregion
     }
 }

@@ -222,6 +222,20 @@ namespace Stump.Database
             set;
         }
 
+        [Property("Energy", NotNull = true)]
+        public uint Energy
+        {
+            get;
+            set;
+        }
+
+        [Property("EnergyMax", NotNull = true)]
+        public uint EnergyMax
+        {
+            get;
+            set;
+        }
+
         [Property("BaseHealth", NotNull = true)]
         public int BaseHealth
         {

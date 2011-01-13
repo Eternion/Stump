@@ -55,9 +55,11 @@ namespace Stump.Server.WorldServer.Entities
             BreedId = (PlayableBreedEnum) record.Breed;
             Sex = (SexTypeEnum) record.SexId;
             Kamas = record.Kamas;
+
             StatsPoint = record.StatsPoints;
             SpellsPoints = record.SpellsPoints;
-            EmoteId = 0;
+            Energy = record.Energy;
+            EnergyMax = record.EnergyMax;
 
             Position = new VectorIsometric(World.Instance.Maps[record.MapId], record.CellId, record.Direction);
             InWorld = false;
@@ -236,6 +238,32 @@ namespace Stump.Server.WorldServer.Entities
             }
         }
 
+        public void Die()
+        {
+            Die(Energy);
+        }
+
+        public void Die(uint energyloosed)
+        {
+            if (Energy - energyloosed <= 0)
+            {
+                Energy = 0;
+
+                TransformAsGhost();
+            }
+            else
+            {
+                Energy -= energyloosed;
+            }
+
+            NotifyDead(energyloosed);
+        }
+
+        private void TransformAsGhost()
+        {
+            NotifyBecameGhost();
+        }
+
         public override GameRolePlayActorInformations ToNetworkActor(WorldClient client)
         {
             return new GameRolePlayCharacterInformations(
@@ -336,6 +364,8 @@ namespace Stump.Server.WorldServer.Entities
             Record.DamageTaken = DamageTaken;
             Record.StatsPoints = StatsPoint;
             Record.SpellsPoints = SpellsPoints;
+            Record.Energy = Energy;
+            Record.EnergyMax = EnergyMax;
 
             if (Stats != null)
             {

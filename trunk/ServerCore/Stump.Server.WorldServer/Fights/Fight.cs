@@ -55,6 +55,16 @@ namespace Stump.Server.WorldServer.Fights
         [Variable]
         public static int TurnEndTimeOut = 5000;
 
+        public event Action<Fight> FightStarted;
+
+        public void NotifyFightStarted()
+        {
+            Action<Fight> handler = FightStarted;
+            if (handler != null)
+                handler(this);
+        }
+
+
         public delegate void FightEndedDelegate(Fight fight, FightGroup winners, FightGroup losers, bool draw);
 
         public event FightEndedDelegate FightEnded;
@@ -99,10 +109,8 @@ namespace Stump.Server.WorldServer.Fights
             TargetGroup.MemberAdded += OnGroupMemberAdded;
             TargetGroup.MemberRemoved += OnGroupMemberRemoved;
 
-            m_fighters = source.Members.Concat(target.Members).ToList();
-            m_characters = (from entry in m_fighters
-                            where entry.Entity is Character
-                            select entry.Entity as Character).ToList();
+            AddFighters(SourceGroup.Members);
+            AddFighters(TargetGroup.Members);
 
             m_timeline = new TimeLine(this);
 
@@ -159,6 +167,16 @@ namespace Stump.Server.WorldServer.Fights
 
             if (fighter.Entity is Character)
                 m_characters.Add(fighter.Entity as Character);
+
+            fighter.NotifyAssignedToFight();
+        }
+
+        private void AddFighters(IEnumerable<FightGroupMember> fighters)
+        {
+            foreach (var fighter in fighters)
+            {
+                AddFighter(fighter);
+            }
         }
 
         private void OnGroupMemberRemoved(Group<FightGroupMember> group, FightGroupMember fighter)
@@ -172,6 +190,14 @@ namespace Stump.Server.WorldServer.Fights
 
             if (fighter.Entity is Character)
                 m_characters.Remove(fighter.Entity as Character);
+        }
+
+        private void RemoveFighters(IEnumerable<FightGroupMember> fighters)
+        {
+            foreach (var fighter in fighters)
+            {
+                RemoveFighter(fighter);
+            }
         }
 
         /// <summary>
@@ -267,6 +293,8 @@ namespace Stump.Server.WorldServer.Fights
             m_timeline.Start();
 
             SetFightState(FightState.Fighting);
+
+            NotifyFightStarted();
         }
 
         private void StopPreFightEvents()
@@ -295,8 +323,6 @@ namespace Stump.Server.WorldServer.Fights
 
         private void OnFighterLeft(FightGroupMember fighter)
         {
-            RemoveFighter(fighter);
-
             if (!fighter.IsDead)
             {
                 fighter.StartSequence(SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH,
@@ -311,7 +337,7 @@ namespace Stump.Server.WorldServer.Fights
         {
             if (character.IsInFight && character.Fight.Id == Id)
             {
-                character.Fighter.LeftFight();
+                character.Fighter.LeaveFight();
             }
         }
 
@@ -400,9 +426,20 @@ namespace Stump.Server.WorldServer.Fights
                 if (SourceGroup.IsAllDead() && TargetGroup.IsAllDead()) // logically it's impossible. todo : compare when the last fighter of each team is dead
                     NotifyFightEnded(null, null, true);
                 else if (SourceGroup.IsAllDead())
+                {
+                    SourceGroup.IsWinner = false;
+                    TargetGroup.IsWinner = true;
+
                     NotifyFightEnded(TargetGroup, SourceGroup, false);
+                }
                 else if (TargetGroup.IsAllDead())
+                {
+                    SourceGroup.IsWinner = true;
+                    TargetGroup.IsWinner = false;
+
+
                     NotifyFightEnded(SourceGroup, TargetGroup, false);
+                }
 
                 GroupManager.RemoveGroup(SourceGroup);
                 GroupManager.RemoveGroup(TargetGroup);

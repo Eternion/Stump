@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof (GameContextQuitMessage))]
         public static void HandleGameContextQuitMessage(WorldClient client, GameContextQuitMessage message)
         {
-            client.ActiveCharacter.Fighter.LeftFight();
+            client.ActiveCharacter.Fighter.LeaveFight();
         }
 
         [WorldHandler(typeof (GameActionFightCastRequestMessage))]
