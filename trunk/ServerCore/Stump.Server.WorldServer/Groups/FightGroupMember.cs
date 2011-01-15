@@ -234,7 +234,7 @@ namespace Stump.Server.WorldServer.Groups
             throw new NotImplementedException();
         }
 
-        internal void MovementEnded()
+        public void MovementEnded()
         {
             IsMoving = false;
         }
