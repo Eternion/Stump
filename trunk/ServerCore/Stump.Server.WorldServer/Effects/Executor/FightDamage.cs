@@ -46,20 +46,8 @@ namespace Stump.Server.WorldServer.Effects.Executor
             {
                 /* Recalculate damage */
 
-                InflictDamage(fight, caster, target, damage);
+                target.ReceiveDamage(damage, caster);
             }
-        }
-
-        private static void InflictDamage(Fight fight, FightGroupMember caster, FightGroupMember target, ushort damage)
-        {
-            damage = target.ReceiveDamage(damage);
-
-            var delta = (short) -damage;
-
-            fight.CallOnAllCharacters(entry =>
-                                      ActionsHandler.SendGameActionFightPointsVariationMessage(entry.Client, ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST,
-                                                                                                 caster.Entity,
-                                                                                                 target.Entity, delta));
         }
     }
 }

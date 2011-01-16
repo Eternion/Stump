@@ -175,7 +175,7 @@ namespace Stump.Server.WorldServer.Groups
             }
             catch (Exception e)
             {
-                logger.ErrorException(string.Format("Could not add member {0} to group {1}", member.Entity, this), e);
+                logger.Error(string.Format("Could not add member {0} to group {1} : {2}", member.Entity, this, e));
             }
             finally
             {

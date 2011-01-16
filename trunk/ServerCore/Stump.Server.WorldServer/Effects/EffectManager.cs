@@ -109,6 +109,49 @@ namespace Stump.Server.WorldServer.Effects
             return RandomablesEffects.Contains(effect);
         }
 
+        public static EffectBaseEx GuessRealEffect(EffectBaseEx effect)
+        {
+            if (!( effect is EffectDiceEx ))
+                return effect;
+
+            var effectDice = effect as EffectDiceEx;
+
+            if (effectDice.value == 0 && effectDice.diceNum > 0 && effectDice.diceSide > 0)
+            {
+                return new EffectMaxEx
+                       {
+                           duration = effectDice.duration, effectId = effectDice.effectId,
+                           max = effectDice.diceSide,
+                           min = effectDice.diceNum,
+                           modificator = effectDice.modificator,
+                           random = effectDice.random,
+                           targetId = effectDice.targetId,
+                           trigger = effectDice.trigger,
+                           zoneShape = effectDice.zoneShape,
+                           zoneSize = effectDice.zoneSize
+                       };
+            }
+
+            if (effectDice.value == 0 && effectDice.diceNum == 0 && effectDice.diceSide > 0)
+            {
+                return new EffectMaxEx
+                       {
+                           duration = effectDice.duration,
+                           effectId = effectDice.effectId,
+                           max = effectDice.diceSide,
+                           min = effectDice.diceNum,
+                           modificator = effectDice.modificator,
+                           random = effectDice.random,
+                           targetId = effectDice.targetId,
+                           trigger = effectDice.trigger,
+                           zoneShape = effectDice.zoneShape,
+                           zoneSize = effectDice.zoneSize
+                       };
+            }
+
+            return effect;
+        }
+
         #region Randomable Effects
 
         /// <summary>

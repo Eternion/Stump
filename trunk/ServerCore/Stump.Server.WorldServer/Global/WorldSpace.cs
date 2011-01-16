@@ -130,7 +130,7 @@ namespace Stump.Server.WorldServer.Global
                     throw new Exception("Couldn't remove character in world space");
                 }
             }
-            if (entity is Character)
+            if (entity is NpcSpawn)
             {
                 NpcSpawn removedNpc;
                 if (!Npcs.TryRemove(entity.Id, out removedNpc))

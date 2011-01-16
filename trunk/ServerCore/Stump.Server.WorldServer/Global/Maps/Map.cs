@@ -155,15 +155,8 @@ namespace Stump.Server.WorldServer.Global.Maps
             Triggers = new Dictionary<CellData, CellTrigger>();
             MapElementsPositions = new Dictionary<uint, CellData>();
             InteractiveObjects = new Dictionary<uint, InteractiveObject>();
-        }
 
-        public IEnumerable<Character> CharactersWithoutFighters
-        {
-            get
-            {
-                return
-                    Entities.Values.OfType<Character>().Where(entity => !entity.IsInFight);
-            }
+            NonFighters = new ConcurrentDictionary<long, Character>();
         }
 
         public void InitializeMapArrounds()

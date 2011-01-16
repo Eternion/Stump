@@ -23,6 +23,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime;
 using System.Threading;
+using System.Threading.Tasks;
 using NLog;
 using Stump.BaseCore.Framework.IO;
 using Stump.BaseCore.Framework.Utils;
@@ -124,6 +125,7 @@ namespace Stump.Server.BaseServer
             Instance = this as T;
 
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+            TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
 
             LoadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToDictionary(entry => entry.GetName().Name);
             AppDomain.CurrentDomain.AssemblyLoad += OnAssemblyLoad;
@@ -190,6 +192,13 @@ namespace Stump.Server.BaseServer
         private void OnAssemblyLoad(object sender, AssemblyLoadEventArgs args)
         {
             LoadedAssemblies.Add(args.LoadedAssembly.GetName().Name, args.LoadedAssembly);
+        }
+
+        private void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            logger.Error("Unobserved Exception : " + e);
+
+            e.SetObserved();
         }
 
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs args)

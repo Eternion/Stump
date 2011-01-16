@@ -103,7 +103,7 @@ namespace Stump.Server.WorldServer.Items
 
         public static List<EffectBase> GenerateItemEffect(ItemTemplate template)
         {
-            return template.Effects.Select(effect => effect.GenerateEffect()).ToList();
+            return template.Effects.Select(effect => effect.GenerateEffect(EffectGenerationContext.Item)).ToList();
         }
 
         #endregion

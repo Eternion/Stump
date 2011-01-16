@@ -112,6 +112,7 @@ namespace Stump.Server.WorldServer.Entities
                 InWorld = true;
                 World.Instance.AddCharacter(this);
 
+                NotifyEnterWorld(Map);
                 NotifyLoggedIn();
             }
         }

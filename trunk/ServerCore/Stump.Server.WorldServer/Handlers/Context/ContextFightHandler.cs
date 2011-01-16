@@ -26,6 +26,7 @@ using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Fights;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Groups;
+using Stump.Server.WorldServer.Spells;
 
 namespace Stump.Server.WorldServer.Handlers
 {
@@ -41,8 +42,7 @@ namespace Stump.Server.WorldServer.Handlers
         public static void HandleGameActionFightCastRequestMessage(WorldClient client,
                                                                    GameActionFightCastRequestMessage message)
         {
-            client.ActiveCharacter.Fight.UseSpell(client.ActiveCharacter.Fighter, message.cellId,
-                                                         (int) message.spellId);
+            client.ActiveCharacter.Fighter.CastSpell(message.spellId, message.cellId);
         }
 
         [WorldHandler(typeof(GameFightTurnFinishMessage))]
@@ -203,6 +203,11 @@ namespace Stump.Server.WorldServer.Handlers
                             fight.SourceGroup.Positions.Select(entry => (uint)entry).ToList(),
                             fight.TargetGroup.Positions.Select(entry => (uint)entry).ToList(),
                             (uint) team));
+        }
+
+        public static void SendGameActionFightSpellCastMessage(WorldClient client, uint actionId, LivingEntity source, ushort cellId, bool critical, bool silentCast, SpellLevel spell)
+        {
+            client.Send(new GameActionFightSpellCastMessage(actionId, (int) source.Id, cellId, (uint) (critical ? 1 : 0), silentCast, (uint) spell.Spell.Id, (uint) spell.Level));
         }
     }
 }

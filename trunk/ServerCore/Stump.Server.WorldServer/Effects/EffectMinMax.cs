@@ -71,9 +71,9 @@ namespace Stump.Server.WorldServer.Effects
             return new ObjectEffectMinMax((uint)EffectId, ValueMin, ValueMax);
         }
 
-        public override EffectBase GenerateEffect()
+        public override EffectBase GenerateEffect(EffectGenerationContext context)
         {
-            if (EffectManager.IsEffectRandomable(EffectId))
+            if (context == EffectGenerationContext.Spell || EffectManager.IsEffectRandomable(EffectId))
             {
                 var rand = new AsyncRandom();
 

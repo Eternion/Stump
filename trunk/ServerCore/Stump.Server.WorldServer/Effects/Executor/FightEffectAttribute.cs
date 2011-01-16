@@ -27,9 +27,22 @@ namespace Stump.Server.WorldServer.Effects.Executor
         public FightEffectAttribute(EffectsEnum effect)
         {
             Effect = effect;
+            Generate = true;
+        }
+
+        public FightEffectAttribute(EffectsEnum effect, bool generate)
+        {
+            Effect = effect;
+            Generate = generate;
         }
 
         public EffectsEnum Effect
+        {
+            get;
+            set;
+        }
+
+        public bool Generate
         {
             get;
             set;

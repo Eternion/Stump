@@ -24,6 +24,12 @@ using EffectBaseEx = Stump.DofusProtocol.D2oClasses.EffectInstance;
 
 namespace Stump.Server.WorldServer.Effects
 {
+    public enum EffectGenerationContext
+    {
+        Item,
+        Spell,
+    }
+
     [Serializable]
     public class EffectBase
     {
@@ -71,7 +77,7 @@ namespace Stump.Server.WorldServer.Effects
             return new object[0];
         }
 
-        public virtual EffectBase GenerateEffect()
+        public virtual EffectBase GenerateEffect(EffectGenerationContext context)
         {
             return this;
         }
