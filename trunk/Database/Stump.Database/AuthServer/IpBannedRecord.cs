@@ -28,50 +28,52 @@ namespace Stump.Database
     public class IpBannedRecord : ActiveRecordBase<IpBannedRecord>
     {
 
-        [PrimaryKey(PrimaryKeyType.Native, "ip", Length=15)]
+        [PrimaryKey(PrimaryKeyType.Native, "Id")]
+        public uint Id
+        {
+            get;
+            set;
+        }
+
+        [Property("Ip", Length=15)]
         public string Ip
         {
             get;
             set;
         }
 
-        [Property("bandate")]
+        [Property("BanDate")]
         public DateTime BanDate
         {
             get;
             set;
         }
 
-        [Property("unbandate")]
+        [Property("UnbanDate")]
         public DateTime UnbanDate
         {
             get;
             set;
         }
 
-        [Property("bannedby")]
+        [Property("BannedBy")]
         public string BannedBy
         {
             get;
             set;
         }
 
-        [Property("banreason")]
+        [Property("BanReason")]
         public string BanReason
         {
             get;
             set;
         }
 
+
         public static bool Exists(string ip)
         {
             return Exists(Restrictions.Eq("Ip", ip));
         }
-
-        public static void UpdateAll()
-        {
-            //TODO Delete all
-        }
-
     }
 }

@@ -199,8 +199,6 @@ namespace Stump.Server.AuthServer.IPC
 
         public void BanIp(WorldServerInformation wsi, IpBannedRecord ipBanned)
         {
-            if (IpBannedRecord.Exists(ipBanned.Ip))
-                IpBannedRecord.Find(ipBanned.Ip).DeleteAndFlush();
             ipBanned.CreateAndFlush();
         }
 

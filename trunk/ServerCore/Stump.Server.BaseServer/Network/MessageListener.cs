@@ -53,7 +53,7 @@ namespace Stump.Server.BaseServer.Network
         /// </summary>
         [Variable]
         public static int MaxPendingConnections = 100;
-        
+
         /// <summary>
         /// Enable/Disable IP restriction
         /// </summary>
@@ -65,6 +65,12 @@ namespace Stump.Server.BaseServer.Network
         /// </summary>
         [Variable]
         public static int MaxIPConnexions = 10;
+
+        /// <summary>
+        ///   Disconnect Client after specified time(in s) or NULL for desactivate
+        /// </summary>
+        [Variable]
+        public static uint? InactivityDisconnectionTime = 900;
 
         /// <summary>
         /// Buffer size /!\ Advanced users only /!\
@@ -112,7 +118,7 @@ namespace Stump.Server.BaseServer.Network
         private readonly int m_readBufferSize;
         private readonly SocketAsyncEventArgsPool m_writeAsyncEventArgsPool;
 
-        public MessageListener(QueueDispatcher queueDispatcher, Func<Socket, BaseClient> delegateCreateClient, string address, int port)
+        public MessageListener(QueueDispatcher queueDispatcher, TaskPool taskPool, Func<Socket, BaseClient> delegateCreateClient, string address, int port)
         {
             m_ipEndPoint = new IPEndPoint(IPAddress.Parse(address), port);
             m_readBufferSize = BufferSize;
@@ -131,10 +137,13 @@ namespace Stump.Server.BaseServer.Network
             m_delegateCreateClient = delegateCreateClient;
             m_queueDispatcher = queueDispatcher;
 
+            if (InactivityDisconnectionTime.HasValue)
+                taskPool.RegisterCyclicTask((Action)DisconnectAfkClient, InactivityDisconnectionTime.Value/5, null, null);
+
             BaseClient.Initialize(ref m_writeAsyncEventArgsPool, ref m_queueDispatcher);
         }
 
-        public MessageListener(QueueDispatcher queueDispatcher, Func<Socket, BaseClient> delegateCreateClient)
+        public MessageListener(QueueDispatcher queueDispatcher, TaskPool taskPool, Func<Socket, BaseClient> delegateCreateClient)
         {
             m_ipEndPoint = new IPEndPoint(IPAddress.Parse(Host), Port);
             m_readBufferSize = BufferSize;
@@ -152,6 +161,9 @@ namespace Stump.Server.BaseServer.Network
             m_acceptArgs.Completed += OnAcceptCompleted;
             m_delegateCreateClient = delegateCreateClient;
             m_queueDispatcher = queueDispatcher;
+
+            if (InactivityDisconnectionTime.HasValue)
+                taskPool.RegisterCyclicTask((Action)DisconnectAfkClient, InactivityDisconnectionTime.Value/5, null, null);
 
             BaseClient.Initialize(ref m_writeAsyncEventArgsPool, ref m_queueDispatcher);
         }
@@ -219,9 +231,9 @@ namespace Stump.Server.BaseServer.Network
 
         private void ProcessAccept(SocketAsyncEventArgs e)
         {
-            if (m_activeIpRestriction && GetSameIPNumber(((IPEndPoint) e.AcceptSocket.RemoteEndPoint).Address) > m_maxIpConnexion)
+            if (m_activeIpRestriction && GetSameIPNumber(((IPEndPoint)e.AcceptSocket.RemoteEndPoint).Address) > m_maxIpConnexion)
             {
-                logger.Error("Client {0} try to connect more {1} time",e.AcceptSocket.RemoteEndPoint.ToString(), m_maxIpConnexion);
+                logger.Error("Client {0} try to connect more {1} time", e.AcceptSocket.RemoteEndPoint.ToString(), m_maxIpConnexion);
                 m_clientSemaphore.Release();
                 StartAccept();
                 return;
@@ -318,7 +330,14 @@ namespace Stump.Server.BaseServer.Network
         /// <returns></returns>
         private int GetSameIPNumber(IPAddress ip)
         {
-            return m_clientList.Count(client => client.Socket != null && ip.Equals(( (IPEndPoint)client.Socket.RemoteEndPoint ).Address));
+            return m_clientList.Count(client => client.Socket != null && ip.Equals(((IPEndPoint)client.Socket.RemoteEndPoint).Address));
+        }
+
+        private void DisconnectAfkClient()
+        {
+            logger.Info("Disconnect AFK Clients");
+            foreach (BaseClient client in ClientList.Where(c => DateTime.Now.Subtract(c.LastActivity).TotalSeconds >= InactivityDisconnectionTime))
+                client.Disconnect();
         }
     }
 }

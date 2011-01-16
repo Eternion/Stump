@@ -18,27 +18,26 @@
 //  *************************************************************************/
 using System;
 
-namespace Stump.BaseCore.Framework.Xml
+namespace Stump.BaseCore.Framework.Pool
 {
     public class CyclicTask
     {
         public Delegate Delegate { get; private set; }
-        public TimeSpan ExecutionDelay { get; private set; }
-        public DateTime? StartDate { get; private set; }
-        public DateTime? EndDate { get; private set; }
-        public uint? MaxExecutionNbr { get; private set; }
+        private TimeSpan ExecutionDelay { get; set; }
+        private Condition Condition { get; set; }
+        private uint? MaxExecutionNbr { get; set; }
 
-        public DateTime LastCall { get; private set; }
-        public uint CurrentExecutionNbr { get; private set; }
+        private DateTime LastCall { get; set; }
+        private uint CurrentExecutionNbr { get; set; }
 
         public bool RequireExecution
         {
-            get { return IsBegin && ReachDelay; }
+            get { return ReachDelay && SuitCondition; }
         }
 
-        public bool IsObsolete
+        private bool SuitCondition
         {
-            get { return IsEnded || ReachMaxExecutionNbr; }
+            get { return Condition==null || Condition(); }
         }
 
         private bool ReachDelay
@@ -46,28 +45,18 @@ namespace Stump.BaseCore.Framework.Xml
             get { return DateTime.Now.Subtract(LastCall) >= ExecutionDelay; }
         }
 
-        private bool IsBegin
-        {
-            get { return !StartDate.HasValue || (DateTime.Now > StartDate); }
-        }
-
-        private bool IsEnded
-        {
-            get { return EndDate.HasValue && (DateTime.Now > EndDate); }
-        }
-
-        private bool ReachMaxExecutionNbr
+        public bool ReachMaxExecutionNbr
         {
             get { return MaxExecutionNbr.HasValue && (CurrentExecutionNbr == MaxExecutionNbr); }
         }
 
-        public CyclicTask(Delegate method, uint delay, DateTime? startDate, DateTime? endDate, uint? maxExecution)
+        public CyclicTask(Delegate method, uint delay, Condition condition, uint? maxExecution)
         {
             Delegate = method;
-            ExecutionDelay = TimeSpan.FromMilliseconds(delay);
-            StartDate = startDate;
-            EndDate = endDate;
+            ExecutionDelay = TimeSpan.FromSeconds(delay);
+            Condition = condition;
             MaxExecutionNbr = maxExecution;
+            LastCall = DateTime.Now;
         }
 
         public void Execute()

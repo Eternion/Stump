@@ -19,26 +19,23 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Reflection;
-using System.Xml;
-using System.Xml.Schema;
-
 using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.Extensions;
 
-namespace Stump.BaseCore.Framework.Xml
-{
-    public static class TaskPool
-    {
-        private static List<CyclicTask> m_cyclicTasks = new List<CyclicTask>();
-        private static readonly object sync = new object();
-        private static ConcurrentQueue<Action> m_tasks = new ConcurrentQueue<Action>();
 
-        public static void Initialize(Assembly asm)
+namespace Stump.BaseCore.Framework.Pool
+{
+    public delegate bool Condition();
+
+    public class TaskPool
+    {
+        private List<CyclicTask> m_cyclicTasks = new List<CyclicTask>();
+        private readonly object sync = new object();
+        private ConcurrentQueue<Action> m_tasks = new ConcurrentQueue<Action>();
+
+        public void Initialize(Assembly asm)
         {
             foreach (var type in asm.GetTypes())
             {
@@ -48,43 +45,43 @@ namespace Stump.BaseCore.Framework.Xml
                     var attributes = method.GetCustomAttributes(typeof(Cyclic), false);
                     if (attributes.Length == 1)
                     {
-                        m_cyclicTasks.Add(new CyclicTask(Delegate.CreateDelegate(method.GetActionType(), method), (attributes[0] as Cyclic).Time, null, null, null));
+                        m_cyclicTasks.Add(new CyclicTask(Delegate.CreateDelegate(method.GetActionType(), method), (attributes[0] as Cyclic).Time,null, null));
                     }
                 }
             }
         }
 
-        public static void RegisterCyclicTask(Delegate method, uint time, DateTime? startDate, DateTime? endDate, uint? maxExecution)
+        public void RegisterCyclicTask(Delegate method, uint time, Condition condition, uint? maxExecution)
         {
             lock (sync)
-                m_cyclicTasks.Add(new CyclicTask(method, time, startDate, endDate, maxExecution));
+                m_cyclicTasks.Add(new CyclicTask(method, time, condition, maxExecution));
         }
 
-        public static void RegisterCyclicTask(CyclicTask cyclicTask)
+        public void RegisterCyclicTask(CyclicTask cyclicTask)
         {
             lock (sync)
                 m_cyclicTasks.Add(cyclicTask);
         }
 
-        public static void UnregisterCyclicTask(Delegate method)
+        public void UnregisterCyclicTask(Delegate method)
         {
             lock (sync)
                 m_cyclicTasks.RemoveAll(m => m.Delegate == method);
         }
 
-        public static void UnregisterCyclicTask(CyclicTask cyclicTask)
+        public void UnregisterCyclicTask(CyclicTask cyclicTask)
         {
             lock (sync)
                 m_cyclicTasks.Remove(cyclicTask);
         }
 
-        public static void EnqueueTask(Action action)
+        public void EnqueueTask(Action action)
         {
             m_tasks.Enqueue(action);
         }
 
-        private static Action m_action;
-        public static void ProcessUpdate(int sleepTime)
+        private Action m_action;
+        public void ProcessUpdate()
         {
             /* Execute Tasks */
             while (m_tasks.TryDequeue(out m_action))
@@ -96,7 +93,7 @@ namespace Stump.BaseCore.Framework.Xml
                 foreach (var cyclicMethod in m_cyclicTasks.Where(m => m.RequireExecution))
                     cyclicMethod.Execute();
                 /* Delete Obsolete Tasks */
-                m_cyclicTasks.RemoveAll(m => m.IsObsolete);
+                m_cyclicTasks.RemoveAll(m => m.ReachMaxExecutionNbr);
             }
         }
     }
