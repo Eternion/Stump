@@ -197,12 +197,11 @@ namespace Stump.Server.AuthServer.IPC
             return true;
         }
 
-        public void BanIp(WorldServerInformation wsi, string ip)
+        public void BanIp(WorldServerInformation wsi, IpBannedRecord ipBanned)
         {
-            new IpBanRecord
-                {
-                    Ip = ip
-                }.CreateAndFlush();
+            if (IpBannedRecord.Exists(ipBanned.Ip))
+                IpBannedRecord.Find(ipBanned.Ip).DeleteAndFlush();
+            ipBanned.CreateAndFlush();
         }
 
         #endregion

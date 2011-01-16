@@ -100,7 +100,7 @@
     <Compile Include="Utils\BooleanByteWrapper.cs" />
     <Compile Include="Utils\ConditionWaiter.cs" />
     <Compile Include="Extensions\Extensions.cs" />
-    <Compile Include="Pool\Task\CylicTask.cs" />
+    <Compile Include="Pool\Task\CyclicTask.cs" />
     <Compile Include="Utils\FormatterHelper.cs" />
     <Compile Include="Utils\Node.cs" />
     <Compile Include="Utils\Singleton.cs" />

@@ -154,11 +154,11 @@ namespace Stump.Server.BaseServer.IPC
         bool BanAccount(WorldServerInformation wsi, uint accountId, DateTime banEndDate);
 
         /// <summary>
-        /// Ban an ip
+        /// Ban an IP
         /// </summary>
         /// <param name="wsi"></param>
-        /// <param name="ip"></param>
-        void BanIp(WorldServerInformation wsi, string ip);
+        /// <param name="ipBanned"></param>
+        void BanIp(WorldServerInformation wsi, IpBannedRecord ipBanned);
 
     }
 }

@@ -81,7 +81,7 @@ namespace Stump.Server.AuthServer.Handlers
         public static bool HandleIndentification(AuthClient client, IdentificationMessage message)
         {
             /* Ban Ip */
-            if (IpBanRecord.Exists(client.IP))
+            if (IpBannedRecord.Exists(client.IP))
             {
                 SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.UNKNOWN_AUTH_ERROR);
                 client.DisconnectLater(1000);
