@@ -16,53 +16,58 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
+using System.Collections.Generic;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database
 {
-    [Serializable]
-    [AttributeDatabase(DatabaseService.AuthServer)]
-    [ActiveRecord("startup_actions_objects")]
-    public sealed class StartupActionItemRecord : ActiveRecordBase<StartupActionItemRecord>
+    [AttributeDatabase(DatabaseService.WorldServer)]
+    [ActiveRecord("guilds_emblem")]
+    public sealed class GuildEmblemRecord : ActiveRecordBase<GuildEmblemRecord>
     {
 
-        [PrimaryKey(PrimaryKeyType.Native, "Id")]
-        public uint Id
+        [PrimaryKey(PrimaryKeyType.Foreign, "GuildId")]
+        public uint GuildId
         {
             get;
             set;
         }
 
-        [BelongsTo("StartupActionId", NotNull = true)]
-        public StartupActionRecord StartupAction
+        [OneToOne(Cascade = CascadeEnum.Delete)]
+        public GuildRecord Guild
         {
             get;
             set;
         }
 
-        [Property("ItemTemplate", NotNull = true)]
-        public uint ItemTemplate
+        [Property("SymbolShape", NotNull = true, Default = "0")]
+        public int SymbolShape
         {
             get;
             set;
         }
 
-        [Property("MaxEffects", NotNull = true, Default = "1")]
-        public bool MaxEffects
+        [Property("SymbolColor", NotNull = true, Default = "0")]
+        public int SymbolColor
         {
             get;
             set;
         }
 
-
-
-        public static StartupActionItemRecord[] FindItemsByStartupActionId(StartupActionRecord startupAction)
+        [Property("BackgroundShape", NotNull = true, Default = "0")]
+        public int BackgroundShape
         {
-            return FindAll(Restrictions.Eq("StartupAction", startupAction));
+            get;
+            set;
         }
 
+        [Property("BackgroundColor", NotNull = true, Default = "0")]
+        public int BackgroundColor
+        {
+            get;
+            set;
+        }
     }
 }

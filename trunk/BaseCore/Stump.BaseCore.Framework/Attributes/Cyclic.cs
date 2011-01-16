@@ -16,37 +16,22 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using Castle.ActiveRecord;
-using NHibernate.Criterion;
+using System;
 
-namespace Stump.Database
+namespace Stump.BaseCore.Framework.Attributes
 {
-
-    [AttributeDatabase(DatabaseService.WorldServer)]
-    [ActiveRecord("storages")]
-    public class StorageRecord : ActiveRecordBase<StorageRecord>
+    [AttributeUsage(AttributeTargets.Method)]
+    public class Cyclic : Attribute
     {
+        public Cyclic(uint time)
+        {
+            Time = time;
+        }
 
-        [PrimaryKey(PrimaryKeyType.Assigned,"StorageId")]
-        public uint StorageId
+        public uint Time
         {
             get;
             set;
         }
-
-        [Property("Password", NotNull=false)]
-        public string Password
-        {
-            get;
-            set;
-        }
-
-        [BelongsTo("InventoryId", NotNull = false)]
-        public InventoryRecord Inventory
-        {
-            get;
-            set;
-        }
-
     }
 }

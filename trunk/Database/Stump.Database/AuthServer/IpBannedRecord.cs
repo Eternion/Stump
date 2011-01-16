@@ -19,49 +19,58 @@
 using System;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
-using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database
 {
-    [Serializable]
+
     [AttributeDatabase(DatabaseService.AuthServer)]
-    [ActiveRecord("startup_actions_objects")]
-    public sealed class StartupActionItemRecord : ActiveRecordBase<StartupActionItemRecord>
+    [ActiveRecord("ip_banned")]
+    public class IpBannedRecord : ActiveRecordBase<IpBannedRecord>
     {
 
-        [PrimaryKey(PrimaryKeyType.Native, "Id")]
-        public uint Id
+        [PrimaryKey(PrimaryKeyType.Native, "ip", Length=15)]
+        public string Ip
         {
             get;
             set;
         }
 
-        [BelongsTo("StartupActionId", NotNull = true)]
-        public StartupActionRecord StartupAction
+        [Property("bandate")]
+        public DateTime BanDate
         {
             get;
             set;
         }
 
-        [Property("ItemTemplate", NotNull = true)]
-        public uint ItemTemplate
+        [Property("unbandate")]
+        public DateTime UnbanDate
         {
             get;
             set;
         }
 
-        [Property("MaxEffects", NotNull = true, Default = "1")]
-        public bool MaxEffects
+        [Property("bannedby")]
+        public string BannedBy
         {
             get;
             set;
         }
 
-
-
-        public static StartupActionItemRecord[] FindItemsByStartupActionId(StartupActionRecord startupAction)
+        [Property("banreason")]
+        public string BanReason
         {
-            return FindAll(Restrictions.Eq("StartupAction", startupAction));
+            get;
+            set;
+        }
+
+        public static bool Exists(string ip)
+        {
+            return Exists(Restrictions.Eq("Ip", ip));
+        }
+
+        public static void UpdateAll()
+        {
+            //TODO Delete all
         }
 
     }

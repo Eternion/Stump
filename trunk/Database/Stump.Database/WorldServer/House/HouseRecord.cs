@@ -23,23 +23,38 @@ namespace Stump.Database
 {
 
     [AttributeDatabase(DatabaseService.WorldServer)]
-    [ActiveRecord("storages_items")]
-    public class StorageItemRecord : ActiveRecordBase<StorageItemRecord>
+    [ActiveRecord("accounts_house"), JoinedBase]
+    public class HouseRecord : ActiveRecordBase<HouseRecord>
     {
 
-        [PrimaryKey(PrimaryKeyType.Native, "Id")]
-        public long Id
+        [PrimaryKey(PrimaryKeyType.Assigned, "HouseId")]
+        public uint HouseId
+        {
+            get;
+            set;
+        }
+        
+        [BelongsTo("AccountId", NotNull = true)]
+        public WorldAccountRecord Account
         {
             get;
             set;
         }
 
-        [Property("StorageId")]
-        public uint AccountId
+        [Property("Price", NotNull = false)]
+        public uint Price
         {
             get;
             set;
         }
+
+        [Property("Password", NotNull = false)]
+        public uint Password
+        {
+            get;
+            set;
+        }
+
 
     }
 }

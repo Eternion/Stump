@@ -57,7 +57,6 @@ namespace Stump.Database
         }
 
 
-
         public static WorldCharacterRecord FindCharacterById(long id)
         {
             return FindByPrimaryKey(id);

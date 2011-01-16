@@ -17,52 +17,56 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections.Generic;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database
 {
-    [Serializable]
-    [AttributeDatabase(DatabaseService.AuthServer)]
-    [ActiveRecord("startup_actions_objects")]
-    public sealed class StartupActionItemRecord : ActiveRecordBase<StartupActionItemRecord>
+    [AttributeDatabase(DatabaseService.WorldServer)]
+    [ActiveRecord("bidhouses_items")]
+    public sealed class BidHouseItemRecord : ItemRecord
     {
 
-        [PrimaryKey(PrimaryKeyType.Native, "Id")]
-        public uint Id
+        public BidHouseItemRecord()
+        {
+            PushDate = DateTime.Now;
+        }
+
+        [JoinedKey("ItemGuid")]
+        private long ItemGuid
         {
             get;
             set;
         }
 
-        [BelongsTo("StartupActionId", NotNull = true)]
-        public StartupActionRecord StartupAction
+        [BelongsTo("AccountId", NotNull=true)]
+        public WorldAccountRecord Account
+        {
+            get;
+            set;
+        }
+        
+        [BelongsTo("BidHouseId", NotNull=true)]
+        public BidHouseRecord BidHouse
         {
             get;
             set;
         }
 
-        [Property("ItemTemplate", NotNull = true)]
-        public uint ItemTemplate
+        [Property("Price", NotNull=true)]
+        public uint Price
         {
             get;
             set;
         }
 
-        [Property("MaxEffects", NotNull = true, Default = "1")]
-        public bool MaxEffects
+        [Property("PushDate", NotNull=true)]
+        public DateTime PushDate
         {
             get;
             set;
         }
-
-
-
-        public static StartupActionItemRecord[] FindItemsByStartupActionId(StartupActionRecord startupAction)
-        {
-            return FindAll(Restrictions.Eq("StartupAction", startupAction));
-        }
-
     }
 }

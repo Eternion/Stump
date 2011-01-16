@@ -41,10 +41,6 @@ namespace Stump.Server.WorldServer.Items
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        /// <summary>
-        ///   Used to get the next unused item guid
-        /// </summary>
-        private static readonly IdGenerator ItemGuidGenerator = new IdGenerator(typeof (CharacterItemRecord), "Guid");
 
         /// <summary>
         ///   Array containing every Item template loaded from database.

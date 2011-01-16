@@ -92,7 +92,7 @@ namespace Stump.Server.WorldServer.Items
         public Item(LivingEntity owner, CharacterItemRecord record)
         {
             m_record = record;
-
+            
             if (m_record.OwnerId != owner.Id)
                 throw new Exception(
                     string.Format(

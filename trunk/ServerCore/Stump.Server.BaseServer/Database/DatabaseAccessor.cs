@@ -279,9 +279,6 @@ namespace Stump.Server.BaseServer.Database
                     throw new Exception("This version don't support this database version : " + m_version.Revision);
                 }
             }
-
-            IdGenerator.InitializeCreators();
-
             IsOpen = true;
         }
 

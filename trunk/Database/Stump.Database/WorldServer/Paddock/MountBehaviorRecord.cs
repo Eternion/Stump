@@ -16,68 +16,37 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System.Collections.Generic;
 using Castle.ActiveRecord;
+using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database
 {
     [AttributeDatabase(DatabaseService.WorldServer)]
-    [ActiveRecord("characters_spells")]
-    public class SpellRecord : ActiveRecordBase<SpellRecord>
+    [ActiveRecord("mounts_behaviors")]
+    public sealed class MountBehaviorRecord : ActiveRecordBase<MountBehaviorRecord>
     {
-        private static readonly IdGenerator IdGenerator = new IdGenerator(typeof (SpellRecord), "RecordId");
 
-        public SpellRecord(uint id, uint ownerId, int position, int level)
-        {
-            SpellId = id;
-            OwnerId = ownerId;
-            Position = position;
-            Level = level;
-            RecordId = IdGenerator.Next();
-        }
-
-        public SpellRecord()
-        {
-        }
-
-        [PrimaryKey(PrimaryKeyType.Assigned, "SpellRecordId")]
-        public long RecordId
+        [PrimaryKey(PrimaryKeyType.Native, "Id")]
+        public long Id
         {
             get;
             set;
         }
 
-        [Property("OwnerId", NotNull = true)]
-        public uint OwnerId
+        [BelongsTo("MountId", NotNull=true)]
+        public MountRecord Mount
         {
             get;
             set;
         }
 
-        [Property("SpellId", NotNull = true)]
-        public uint SpellId
+        [Property("Behavior", NotNull=true)]
+        public byte Behavior
         {
             get;
             set;
-        }
-
-        [Property("Position", NotNull = true)]
-        public int Position
-        {
-            get;
-            set;
-        }
-
-        [Property("Level", NotNull = true)]
-        public int Level
-        {
-            get;
-            set;
-        }
-
-        public override string ToString()
-        {
-            return (SpellIdEnum) SpellId + " (" + SpellId + ")";
         }
     }
 }

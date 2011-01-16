@@ -16,7 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System.Linq;
+using System;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
 
@@ -24,26 +24,33 @@ namespace Stump.Database
 {
 
     [AttributeDatabase(DatabaseService.WorldServer)]
-    [ActiveRecord("characters_zaaps")]
-    public class CharacterZaapRecord : ActiveRecordBase<CharacterZaapRecord>
+    [ActiveRecord("subareas_prism")]
+    public sealed class PrismRecord : ActiveRecordBase<PrismRecord>
     {
 
-        [PrimaryKey(PrimaryKeyType.Native, "Id")]
-        public long Id
+        [PrimaryKey(PrimaryKeyType.Foreign, "SubAreaId")]
+        public uint SubAreaId
         {
             get;
             set;
         }
 
-        [Property("CharacterId")]
-        public uint CharacterId
+        [OneToOne]
+        public SubAreaRecord SubArea
         {
             get;
             set;
         }
 
-        [Property("MapId")]
+        [Property("MapId", NotNull=true)]
         public uint MapId
+        {
+            get;
+            set;
+        }
+
+        [Property("PlaceDate", NotNull=true)]
+        public DateTime PlaceDate
         {
             get;
             set;

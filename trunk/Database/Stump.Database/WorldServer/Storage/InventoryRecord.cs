@@ -16,52 +16,38 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
+using System.Collections.Generic;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
-using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database
 {
-    [Serializable]
-    [AttributeDatabase(DatabaseService.AuthServer)]
-    [ActiveRecord("startup_actions_objects")]
-    public sealed class StartupActionItemRecord : ActiveRecordBase<StartupActionItemRecord>
-    {
 
-        [PrimaryKey(PrimaryKeyType.Native, "Id")]
+    [AttributeDatabase(DatabaseService.WorldServer)]
+    [ActiveRecord("inventories")]
+    public sealed class InventoryRecord : ActiveRecordBase<InventoryRecord>
+    {
+        private IList<ItemRecord> m_items;
+
+        [PrimaryKey(PrimaryKeyType.Identity, "Id")]
         public uint Id
         {
             get;
             set;
         }
 
-        [BelongsTo("StartupActionId", NotNull = true)]
-        public StartupActionRecord StartupAction
+        [Property("Kamas", NotNull = true, Default = "0")]
+        public uint Kamas
         {
             get;
             set;
         }
 
-        [Property("ItemTemplate", NotNull = true)]
-        public uint ItemTemplate
+        [HasMany(typeof(ItemRecord), Table = "inventories_items", ColumnKey = "InventoryId", Cascade=  ManyRelationCascadeEnum.Delete)]
+        public IList<ItemRecord> Items
         {
-            get;
-            set;
-        }
-
-        [Property("MaxEffects", NotNull = true, Default = "1")]
-        public bool MaxEffects
-        {
-            get;
-            set;
-        }
-
-
-
-        public static StartupActionItemRecord[] FindItemsByStartupActionId(StartupActionRecord startupAction)
-        {
-            return FindAll(Restrictions.Eq("StartupAction", startupAction));
+            get { return m_items ?? new List<ItemRecord>(); }
+            set { m_items = value; }
         }
 
     }
