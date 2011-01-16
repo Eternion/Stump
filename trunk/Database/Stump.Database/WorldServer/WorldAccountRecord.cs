@@ -30,8 +30,11 @@ namespace Stump.Database
     [ActiveRecord("accounts")]
     public sealed class WorldAccountRecord : ActiveRecordBase<WorldAccountRecord>
     {
+        private IList<WorldAccountRecord> m_friends;
+        private IList<WorldAccountRecord> m_enemies;
+        private IList<BidHouseItemRecord> m_bidhouseItems;
 
-        [PrimaryKey(PrimaryKeyType.Native, "Id")]
+        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
         public uint Id
         {
             get;
@@ -59,33 +62,72 @@ namespace Stump.Database
             set;
         }
 
-        [HasAndBelongsToMany(typeof(WorldAccountRecord), Table = "accounts_friends", ColumnKey = "AccountId", ColumnRef = "FriendAccountId")]
-        public IList<WorldAccountRecord> Friends
+        [Property("BanEndDate")]
+        public DateTime? BanEndDate
         {
             get;
             set;
+        }
+
+        public TimeSpan BanRemainingTime
+        {
+            get
+            {
+                if (BanEndDate.HasValue)
+                {
+                    var date = BanEndDate.Value.Subtract(DateTime.Now);
+                    if (date.TotalSeconds <= 0)
+                    {
+                        BanEndDate = null;
+                        SaveAndFlush();
+                        return TimeSpan.Zero;
+                    }
+                    return date;
+                }
+                return TimeSpan.Zero;
+            }
+        }
+
+        [HasAndBelongsToMany(typeof(WorldAccountRecord), Table = "accounts_friends", ColumnKey = "AccountId", ColumnRef = "FriendAccountId")]
+        public IList<WorldAccountRecord> Friends
+        {
+            get { return m_friends ?? new List<WorldAccountRecord>(); }
+            set { m_friends = value; }
         }
 
         [HasAndBelongsToMany(typeof(WorldAccountRecord), Table = "accounts_enemies", ColumnKey = "AccountId", ColumnRef = "EnemyAccountId")]
         public IList<WorldAccountRecord> Enemies
         {
-            get;
-            set;
+            get { return m_enemies ?? new List<WorldAccountRecord>(); }
+            set { m_enemies = value; }
         }
 
-        [HasAndBelongsToMany(typeof(WorldAccountRecord), Table = "accounts_ignored", ColumnKey = "AccountId", ColumnRef = "IgnoredAccountId")]
-        public IList<WorldAccountRecord> Ignored
+        [HasMany(typeof(BidHouseItemRecord))]
+        public IList<BidHouseItemRecord> BidHousesItems
+        {
+            get { return m_bidhouseItems ?? new List<BidHouseItemRecord>(); }
+            set { m_bidhouseItems = value; }
+        }
+        
+        [BelongsTo("HouseId", NotNull = false, NotFoundBehaviour = NotFoundBehaviour.Exception)]
+        public HouseRecord House
         {
             get;
             set;
         }
 
+        [BelongsTo("InventoryId", NotNull = true, NotFoundBehaviour = NotFoundBehaviour.Exception)]
+        public InventoryRecord Bank
+        {
+            get;
+            set;
+        }
 
         public uint LastConnectionTimeStamp
         {
             get
             {
-                return (uint)LastConnection.Subtract(new DateTime(1970, 1, 1, 0, 0, 0)).TotalMinutes;          
+                return (uint)DateTime.Now.Subtract(LastConnection).TotalHours;
             }
         }
 

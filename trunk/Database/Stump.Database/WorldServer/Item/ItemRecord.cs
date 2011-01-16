@@ -24,10 +24,10 @@ using Stump.DofusProtocol.Enums;
 namespace Stump.Database
 {
     [AttributeDatabase(DatabaseService.WorldServer)]
-    [ActiveRecord("characters_items")]
-    public sealed class CharacterItemRecord : ActiveRecordBase<CharacterItemRecord>
+    [ActiveRecord("items"), JoinedBase]
+    public class ItemRecord : ActiveRecordBase<ItemRecord>
     {
-        public const int MAX_EFFECT_PER_ITEM = 32;
+        private IList<byte[]> m_effects;
 
         [PrimaryKey(PrimaryKeyType.Native, "Guid")]
         public long Guid
@@ -36,60 +36,32 @@ namespace Stump.Database
             set;
         }
 
-        [Property("OwnerId")]
-        public long OwnerId
-        {
-            get;
-            set;
-        }
-
-        [Property("ItemId")]
+        [Property("ItemId", NotNull = true)]
         public int ItemId
         {
             get;
             set;
         }
 
-        [Property("Stack")]
+        [Property("Stack", NotNull=true, Default="0")]
         public uint Stack
         {
             get;
             set;
         }
 
-        [Property("Position")]
+        [Property("Position", NotNull=true, Default="63")]
         public CharacterInventoryPositionEnum Position
         {
             get;
             set;
         }
 
-        [Property("Effects", Length = MAX_EFFECT_PER_ITEM*256)] // Max Effects.Length = 32 (32 effets per item)
-            public List<byte[]> Effects
+        [HasMany(typeof(ItemEffectRecord), Cascade= ManyRelationCascadeEnum.Delete)]
+        public IList<byte[]> Effects
         {
-            get;
-            set;
-        }
-
-
-        public static CharacterItemRecord FindItemByGuid(long guid)
-        {
-            return FindByPrimaryKey(guid);
-        }
-
-        public static CharacterItemRecord[] FindItemsByCharacter(long characterId)
-        {
-            return FindAll(Restrictions.Eq("OwnerId", characterId));
-        }
-
-        public static CharacterItemRecord FindItemByCharacterAndPosition(long characterId, CharacterInventoryPositionEnum position)
-        {
-            return FindOne(Restrictions.Eq("OwnerId", characterId), Restrictions.Eq("Position", position));
-        }
-
-        public static CharacterItemRecord[] FindItemsByCharacterAndPosition(long characterId, params CharacterInventoryPositionEnum[] positions)
-        {
-            return FindAll(Restrictions.Eq("OwnerId", characterId), Restrictions.In("Position", positions));
+            get { return m_effects ?? new List<byte[]>(); }
+            set { m_effects = value; }
         }
     }
 }

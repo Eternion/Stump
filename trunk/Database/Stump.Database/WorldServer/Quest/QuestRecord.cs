@@ -16,52 +16,44 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
+using System.Collections.Generic;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
-using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database
 {
-    [Serializable]
-    [AttributeDatabase(DatabaseService.AuthServer)]
-    [ActiveRecord("startup_actions_objects")]
-    public sealed class StartupActionItemRecord : ActiveRecordBase<StartupActionItemRecord>
+
+    [AttributeDatabase(DatabaseService.WorldServer)]
+    [ActiveRecord("characters_quests")]
+    public class QuestRecord : ActiveRecordBase<QuestRecord>
     {
 
-        [PrimaryKey(PrimaryKeyType.Native, "Id")]
+        [PrimaryKey(PrimaryKeyType.Identity, "Id")]
         public uint Id
         {
             get;
             set;
         }
 
-        [BelongsTo("StartupActionId", NotNull = true)]
-        public StartupActionRecord StartupAction
+        [BelongsTo("CharacterId", NotNull=true)]
+        public CharacterRecord Character
         {
             get;
             set;
         }
 
-        [Property("ItemTemplate", NotNull = true)]
-        public uint ItemTemplate
+        [Property("QuestId", NotNull = true)]
+        public uint QuestId
         {
             get;
             set;
         }
 
-        [Property("MaxEffects", NotNull = true, Default = "1")]
-        public bool MaxEffects
+        [Property("Step", NotNull = true, Default="0")]
+        public uint Step
         {
             get;
             set;
-        }
-
-
-
-        public static StartupActionItemRecord[] FindItemsByStartupActionId(StartupActionRecord startupAction)
-        {
-            return FindAll(Restrictions.Eq("StartupAction", startupAction));
         }
 
     }

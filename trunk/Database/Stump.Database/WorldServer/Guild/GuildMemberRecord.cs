@@ -16,53 +16,58 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
+using System.Collections.Generic;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database
 {
-    [Serializable]
-    [AttributeDatabase(DatabaseService.AuthServer)]
-    [ActiveRecord("startup_actions_objects")]
-    public sealed class StartupActionItemRecord : ActiveRecordBase<StartupActionItemRecord>
+    [AttributeDatabase(DatabaseService.WorldServer)]
+    [ActiveRecord("guilds_members")]
+    public sealed class GuildMemberRecord : CharacterRecord
     {
 
-        [PrimaryKey(PrimaryKeyType.Native, "Id")]
-        public uint Id
+        [JoinedKey("CharacterId")]
+        public uint CharacterId
         {
             get;
             set;
         }
 
-        [BelongsTo("StartupActionId", NotNull = true)]
-        public StartupActionRecord StartupAction
+        [BelongsTo("GuildId", NotNull=true)]
+        public GuildRecord Guild
         {
             get;
             set;
         }
 
-        [Property("ItemTemplate", NotNull = true)]
-        public uint ItemTemplate
+        [Property("Rank", NotNull=true)]
+        public uint Rank
         {
             get;
             set;
         }
 
-        [Property("MaxEffects", NotNull = true, Default = "1")]
-        public bool MaxEffects
+        [Property("Rights", NotNull=true)]
+        public uint Rights
         {
             get;
             set;
         }
 
-
-
-        public static StartupActionItemRecord[] FindItemsByStartupActionId(StartupActionRecord startupAction)
+        [Property("GivenExperience", NotNull=true, Default="0")]
+        public uint GivenExperience
         {
-            return FindAll(Restrictions.Eq("StartupAction", startupAction));
+            get;
+            set;
         }
 
+        [Property("GivenPercent", NotNull=true, Default="0")]
+        public byte GivenPercent
+        {
+            get;
+            set;
+        }
     }
 }

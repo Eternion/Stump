@@ -16,53 +16,32 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
+using System.Collections.Generic;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
-using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database
 {
-    [Serializable]
-    [AttributeDatabase(DatabaseService.AuthServer)]
-    [ActiveRecord("startup_actions_objects")]
-    public sealed class StartupActionItemRecord : ActiveRecordBase<StartupActionItemRecord>
+
+    [AttributeDatabase(DatabaseService.WorldServer)]
+    [ActiveRecord("paddocks"), JoinedBase]
+    public class PaddockRecord : ActiveRecordBase<PaddockRecord>
     {
+        private IList<MountRecord> m_mounts;
 
-        [PrimaryKey(PrimaryKeyType.Native, "Id")]
-        public uint Id
+        [PrimaryKey(PrimaryKeyType.Assigned, "PaddockId")]
+        public uint PaddockId
         {
             get;
             set;
         }
 
-        [BelongsTo("StartupActionId", NotNull = true)]
-        public StartupActionRecord StartupAction
+        [HasMany(typeof(MountRecord), Table = "paddocks_mount", ColumnKey = "PaddockId", Cascade= ManyRelationCascadeEnum.Delete)]
+        public IList<MountRecord> Mounts
         {
-            get;
-            set;
+            get { return m_mounts ?? new List<MountRecord>(); }
+            set { m_mounts = value; }
         }
-
-        [Property("ItemTemplate", NotNull = true)]
-        public uint ItemTemplate
-        {
-            get;
-            set;
-        }
-
-        [Property("MaxEffects", NotNull = true, Default = "1")]
-        public bool MaxEffects
-        {
-            get;
-            set;
-        }
-
-
-
-        public static StartupActionItemRecord[] FindItemsByStartupActionId(StartupActionRecord startupAction)
-        {
-            return FindAll(Restrictions.Eq("StartupAction", startupAction));
-        }
-
+   
     }
 }

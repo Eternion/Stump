@@ -29,7 +29,8 @@ namespace Stump.Database
     [ActiveRecord("worlds")]
     public sealed class WorldRecord : ActiveRecordBase<WorldRecord>
     {
-
+        private IList<WorldCharacterRecord> m_characters;
+        private IList<DeletedWorldCharacterRecord> m_deletedCharacters;
         private int m_charsCount = 0;
         private bool m_connected = false;
         private ServerStatusEnum m_state = ServerStatusEnum.OFFLINE;
@@ -100,15 +101,15 @@ namespace Stump.Database
         [HasMany(typeof(WorldCharacterRecord), Lazy = true)]
         public IList<WorldCharacterRecord> Characters
         {
-            get;
-            set;
+            get { return m_characters ?? new List<WorldCharacterRecord>(); }
+            set { m_characters = value; }
         }
 
         [HasMany(typeof(DeletedWorldCharacterRecord), Lazy = true)]
         public IList<DeletedWorldCharacterRecord> DeletedCharacters
         {
-            get;
-            set;
+            get { return m_deletedCharacters ?? new List<DeletedWorldCharacterRecord>(); }
+            set { m_deletedCharacters = value; }
         }
 
         public ServerStatusEnum Status

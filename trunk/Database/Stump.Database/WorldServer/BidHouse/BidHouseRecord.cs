@@ -16,53 +16,37 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
+using System.Collections.Generic;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database
 {
-    [Serializable]
-    [AttributeDatabase(DatabaseService.AuthServer)]
-    [ActiveRecord("startup_actions_objects")]
-    public sealed class StartupActionItemRecord : ActiveRecordBase<StartupActionItemRecord>
+    [AttributeDatabase(DatabaseService.WorldServer)]
+    [ActiveRecord("bidhouses")]
+    public sealed class BidHouseRecord : ActiveRecordBase<BidHouseRecord>
     {
 
-        [PrimaryKey(PrimaryKeyType.Native, "Id")]
-        public uint Id
+        [PrimaryKey(PrimaryKeyType.Assigned, "BidHouseId")]
+        public uint BidHouseId
         {
             get;
             set;
         }
 
-        [BelongsTo("StartupActionId", NotNull = true)]
-        public StartupActionRecord StartupAction
+        [HasMany(typeof(BidHouseItemRecord))]
+        public IList<BidHouseItemRecord> Items
         {
             get;
             set;
         }
 
-        [Property("ItemTemplate", NotNull = true)]
-        public uint ItemTemplate
+        [HasMany(typeof(BidHouseSoldItemRecord))]
+        public IList<BidHouseSoldItemRecord> SoldItems
         {
             get;
             set;
         }
-
-        [Property("MaxEffects", NotNull = true, Default = "1")]
-        public bool MaxEffects
-        {
-            get;
-            set;
-        }
-
-
-
-        public static StartupActionItemRecord[] FindItemsByStartupActionId(StartupActionRecord startupAction)
-        {
-            return FindAll(Restrictions.Eq("StartupAction", startupAction));
-        }
-
     }
 }

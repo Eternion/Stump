@@ -17,16 +17,16 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections.Generic;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database
 {
-    [Serializable]
-    [AttributeDatabase(DatabaseService.AuthServer)]
-    [ActiveRecord("startup_actions_objects")]
-    public sealed class StartupActionItemRecord : ActiveRecordBase<StartupActionItemRecord>
+    [AttributeDatabase(DatabaseService.WorldServer)]
+    [ActiveRecord("guilds_collectors")]
+    public sealed class CollectorRecord : ActiveRecordBase<CollectorRecord>
     {
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
@@ -36,33 +36,32 @@ namespace Stump.Database
             set;
         }
 
-        [BelongsTo("StartupActionId", NotNull = true)]
-        public StartupActionRecord StartupAction
+        [BelongsTo("GuildId", NotNull = true)]
+        public GuildRecord Guild
         {
             get;
             set;
         }
 
-        [Property("ItemTemplate", NotNull = true)]
-        public uint ItemTemplate
+        [BelongsTo("OwnerId", NotNull = true)]
+        public CharacterRecord Owner
         {
             get;
             set;
         }
 
-        [Property("MaxEffects", NotNull = true, Default = "1")]
-        public bool MaxEffects
+        [BelongsTo("InventoryId", NotNull = true, Cascade = CascadeEnum.Delete)]
+        public InventoryRecord Inventory
         {
             get;
             set;
         }
 
-
-
-        public static StartupActionItemRecord[] FindItemsByStartupActionId(StartupActionRecord startupAction)
+        [Property("SetDate", NotNull = true)]
+        public DateTime SetDate
         {
-            return FindAll(Restrictions.Eq("StartupAction", startupAction));
+            get;
+            set;
         }
-
     }
 }

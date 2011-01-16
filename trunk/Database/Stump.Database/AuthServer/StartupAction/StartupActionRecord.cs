@@ -29,6 +29,8 @@ namespace Stump.Database
     [ActiveRecord("startup_actions")]
     public sealed class StartupActionRecord : ActiveRecordBase<StartupActionRecord>
     {
+        private IList<AccountRecord> m_accounts;
+        private IList<StartupActionItemRecord> m_items;
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
         public uint Id
@@ -68,15 +70,15 @@ namespace Stump.Database
         [HasMany(typeof(StartupActionItemRecord), Cascade= ManyRelationCascadeEnum.Delete)]
         public IList<StartupActionItemRecord> Items
         {
-            get;
-            set;
+            get { return m_items ?? new List<StartupActionItemRecord>(); }
+            set { m_items = value; }
         }
 
         [HasAndBelongsToMany(typeof(AccountRecord), Table = "accounts_startup_actions", ColumnKey = "StartupActionId", ColumnRef = "AccountId", Inverse=true)]
         public IList<AccountRecord> Accounts
         {
-            get;
-            set;
+            get { return m_accounts ?? new List<AccountRecord>(); }
+            set { m_accounts = value; }
         }
 
 

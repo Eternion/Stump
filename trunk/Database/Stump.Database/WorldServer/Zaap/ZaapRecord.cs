@@ -17,34 +17,34 @@
 //  *
 //  *************************************************************************/
 using Castle.ActiveRecord;
-using NHibernate.Criterion;
+using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database
 {
-
-    [AttributeDatabase(DatabaseService.AuthServer)]
-    [ActiveRecord("IP_bans")]
-    public class IpBanRecord : ActiveRecordBase<IpBanRecord>
+    [AttributeDatabase(DatabaseService.WorldServer)]
+    [ActiveRecord("characters_zaaps")]
+    public class ZaapRecord : ActiveRecordBase<ZaapRecord>
     {
 
-        [PrimaryKey(PrimaryKeyType.Native, "Id")]
+        [PrimaryKey(PrimaryKeyType.Identity)]
         public long Id
         {
             get;
             set;
         }
 
-        [Property("Ip")]
-        public string Ip
+        [BelongsTo("CharacterId", NotNull=true)]
+        public CharacterRecord Character
         {
             get;
             set;
         }
 
-
-        public static bool Exists(string ip)
+        [Property("ZaapId", NotNull = true)]
+        public int ZaapId
         {
-            return Exists(Restrictions.Eq("Ip", ip));
+            get;
+            set;
         }
 
     }

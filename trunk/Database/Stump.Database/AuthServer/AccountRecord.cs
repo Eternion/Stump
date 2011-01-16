@@ -32,7 +32,10 @@ namespace Stump.Database
     public sealed class AccountRecord : ActiveRecordBase<AccountRecord>
     {
 
-        private string m_name = "";
+        private string m_login = "";
+        private IList<StartupActionRecord> m_startupActions;
+        private IList<WorldCharacterRecord> m_characters;
+        private IList<DeletedWorldCharacterRecord> m_deletedCharacters;
 
         public AccountRecord()
         {
@@ -49,8 +52,8 @@ namespace Stump.Database
         [Property("Login", NotNull = true, Length = 19)]
         public string Login
         {
-            get { return m_name.ToLower(); }
-            set { m_name = value.ToLower(); }
+            get { return m_login.ToLower(); }
+            set { m_login = value.ToLower(); }
         }
 
         [Property("Password", NotNull = true, Length = 49)]
@@ -67,49 +70,49 @@ namespace Stump.Database
             set;
         }
 
-        [Property("Active", Default = "1")]
+        [Property("Active", NotNull = true, Default = "1")]
         public bool Active
         {
             get;
             set;
         }
 
-        [Property("Role", Default = "1")]
+        [Property("Role", NotNull = true, Default = "1")]
         public RoleEnum Role
         {
             get;
             set;
         }
 
-        [Property("AvailableBreeds", Default = "8191")]
+        [Property("AvailableBreeds", NotNull = true, Default = "8191")]
         public uint DbAvailableBreeds
         {
             get;
             set;
         }
 
-        [Property("LastServer")]
+        [Property("LastServer", NotNull = false)]
         public int? LastServer
         {
             get;
             set;
         }
 
-        [Property("LastConnection")]
+        [Property("LastConnection", NotNull = false)]
         public DateTime LastConnection
         {
             get;
             set;
         }
 
-        [Property("Ticket")]
+        [Property("Ticket", NotNull = false)]
         public string Ticket
         {
             get;
             set;
         }
 
-        [Property("LastIp")]
+        [Property("LastIp", NotNull = false)]
         public string LastIp
         {
             get;
@@ -130,35 +133,35 @@ namespace Stump.Database
             set;
         }
 
-        [Property("Email")]
+        [Property("Email", NotNull = true)]
         public string Email
         {
             get;
             set;
         }
 
-        [Property("SubscriptionEndDate")]
+        [Property("SubscriptionEndDate", NotNull = false)]
         public DateTime? SubscriptionEndDate
         {
             get;
             set;
         }
 
-        [Property("Banned", Default = "0")]
+        [Property("Banned", NotNull = true, Default = "0")]
         public bool Banned
         {
             get;
             set;
         }
 
-        [Property("BanEndDate")]
+        [Property("BanEndDate", NotNull=false)]
         public DateTime? BanEndDate
         {
             get;
             set;
         }
 
-        [Property("CreationDate", Default = "")]
+        [Property("CreationDate",NotNull=true)]
         public DateTime CreationDate
         {
             get;
@@ -182,7 +185,7 @@ namespace Stump.Database
                 DbAvailableBreeds = (uint)value.Aggregate(0, (current, breedEnum) => current | (1 << (int)breedEnum));
             }
         }
-        
+
         public double SubscriptionRemainingTime
         {
             get
@@ -212,24 +215,23 @@ namespace Stump.Database
         [HasAndBelongsToMany(typeof(StartupActionRecord), Table = "accounts_startup_actions", ColumnKey = "AccountId", ColumnRef = "StartupActionId", Cascade = ManyRelationCascadeEnum.Delete)]
         public IList<StartupActionRecord> StartupActions
         {
-            get;
-            set;
+            get { return m_startupActions ?? new List<StartupActionRecord>(); }
+            set { m_startupActions = value; }
         }
 
         [HasMany(typeof(WorldCharacterRecord), Cascade = ManyRelationCascadeEnum.Delete)]
         public IList<WorldCharacterRecord> Characters
         {
-            get;
-            set;
+            get { return m_characters ?? new List<WorldCharacterRecord>(); }
+            set { m_characters = value; }
         }
 
-        [HasMany(typeof(DeletedWorldCharacterRecord),Cascade = ManyRelationCascadeEnum.Delete)]
+        [HasMany(typeof(DeletedWorldCharacterRecord), Cascade = ManyRelationCascadeEnum.Delete)]
         public IList<DeletedWorldCharacterRecord> DeletedCharacters
         {
-            get;
-            set;
+            get { return m_deletedCharacters ?? new List<DeletedWorldCharacterRecord>(); }
+            set { m_deletedCharacters = value; }
         }
-
 
 
         public bool CanUseBreed(int breedId)
@@ -244,7 +246,18 @@ namespace Stump.Database
 
         public List<uint> GetWorldCharactersId(int worldId)
         {
-            return Characters.Where(c=> c.World.Id==worldId).Select(c => c.CharacterId).ToList();
+            return Characters.Where(c => c.World.Id == worldId).Select(c => c.CharacterId).ToList();
+        }
+
+        public void UpdateBanStatus()
+        {
+            /* Update if we have passed BanEndDate */
+            if (Banned && BanEndDate.HasValue && BanRemainingTime == 0)
+            {
+                Banned = false;
+                BanEndDate = null;
+                SaveAndFlush();
+            }
         }
 
 
