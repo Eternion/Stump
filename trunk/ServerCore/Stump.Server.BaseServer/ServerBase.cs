@@ -26,6 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using Stump.BaseCore.Framework.IO;
+using Stump.BaseCore.Framework.Pool;
 using Stump.BaseCore.Framework.Utils;
 using Stump.BaseCore.Framework.Xml;
 using Stump.Server.BaseServer.Commands;
@@ -114,6 +115,12 @@ namespace Stump.Server.BaseServer
             set;
         }
 
+        public TaskPool TaskPool
+        {
+            get;
+            private set;
+        }
+
         public bool Running
         {
             get;
@@ -147,6 +154,10 @@ namespace Stump.Server.BaseServer
                 SchemaFilePath);
             ConfigFile.DefinesVariables(ref LoadedAssemblies);
 
+            logger.Info("Initialize Task Pool");
+            TaskPool = new TaskPool();
+            TaskPool.Initialize(Assembly.GetExecutingAssembly());
+
             logger.Info("Initializing Network Interfaces...");
             QueueDispatcher = new QueueDispatcher(Settings.EnableBenchmarking);
             HandlerManager = new HandlerManager();
@@ -154,9 +165,9 @@ namespace Stump.Server.BaseServer
 
             CommandManager = new CommandsManager();
 
-            MessageListener = new MessageListener(QueueDispatcher, CreateClient);
+            MessageListener = new MessageListener(QueueDispatcher,TaskPool, CreateClient);
             MessageListener.Initialize();
-
+            
             MessageListener.ClientConnected += OnClientConnected;
             MessageListener.ClientDisconnected += OnClientDisconnected;
 
@@ -233,9 +244,9 @@ namespace Stump.Server.BaseServer
             Running = true;
         }
 
-        // todo : don't use Sleep
         public virtual void Update()
         {
+            TaskPool.ProcessUpdate();
             Thread.Sleep(10);
         }
 

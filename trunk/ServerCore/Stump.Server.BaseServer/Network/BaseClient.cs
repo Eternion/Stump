@@ -20,6 +20,7 @@ using System;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using NLog;
+using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.IO;
 using Stump.BaseCore.Framework.Pool;
 using Stump.DofusProtocol.Messages;
@@ -29,10 +30,12 @@ namespace Stump.Server.BaseServer.Network
 {
     public abstract class BaseClient : IPacketReceiver
     {
+
         public event Action<BaseClient, Message> MessageReceived;
 
         public void NotifyMessageReceived(Message message)
         {
+            LastActivity = DateTime.Now;
             Action<BaseClient, Message> handler = MessageReceived;
             if (handler != null) handler(this, message);
         }
@@ -89,6 +92,12 @@ namespace Stump.Server.BaseServer.Network
         }
 
         public string IP
+        {
+            get;
+            private set;
+        }
+
+        public DateTime LastActivity
         {
             get;
             private set;
@@ -156,7 +165,6 @@ namespace Stump.Server.BaseServer.Network
                 Disconnect();
             }
         }
-
 
         protected virtual void OnReceive()
         {
