@@ -22,50 +22,58 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Xml;
 using System.Xml.Schema;
+using System.Xml.Serialization;
+using System.Xml.XPath;
 using NLog;
 using Stump.BaseCore.Framework.Attributes;
 
 namespace Stump.BaseCore.Framework.Xml
 {
-    public class XmlConfigFile
+    public class XmlConfigReader
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly XmlDocument m_document;
+        private readonly XmlTextReader m_reader;
         private readonly XmlSchemaSet m_schema = new XmlSchemaSet();
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref = "XmlConfigFile" /> class.
+        ///   Initializes a new instance of the <see cref = "XmlConfigReader" /> class.
         /// </summary>
         /// <param name = "uriConfig">The URI config.</param>
-        public XmlConfigFile(string uriConfig)
+        public XmlConfigReader(string uriConfig)
         {
             uriConfig = Path.GetFullPath(uriConfig);
+
+            m_reader = new XmlTextReader(new MemoryStream(File.ReadAllBytes(uriConfig)));
 
             if (!File.Exists(uriConfig))
                 throw new FileNotFoundException("Config file is not found");
 
-            (m_document = new XmlDocument()).Load(uriConfig);
+            ( m_document = new XmlDocument() ).Load(m_reader);
         }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref = "XmlConfigFile" /> class.
+        ///   Initializes a new instance of the <see cref = "XmlConfigReader" /> class.
         /// </summary>
         /// <param name = "uriConfig">The URI config.</param>
         /// <param name = "uriSchema">The URI schema.</param>
-        public XmlConfigFile(string uriConfig, string uriSchema)
+        public XmlConfigReader(string uriConfig, string uriSchema)
         {
             uriConfig = Path.GetFullPath(uriConfig);
             uriSchema = Path.GetFullPath(uriSchema);
+
+            m_reader = new XmlTextReader(new MemoryStream(File.ReadAllBytes(uriConfig)));
 
             if (!File.Exists(uriConfig))
                 throw new FileNotFoundException("Config file is not found");
             if (!File.Exists(uriSchema))
                 throw new FileNotFoundException("Schema file is not found");
 
-            (m_document = new XmlDocument()).Load(uriConfig);
+            ( m_document = new XmlDocument() ).Load(m_reader);
 
             using (var reader = new StreamReader(uriSchema))
             {
@@ -104,14 +112,51 @@ namespace Stump.BaseCore.Framework.Xml
 
         public void DefinesVariables(Assembly currentAssembly)
         {
-            var stackPath = new Stack<string>();
-
-            XmlNode firstNode = m_document.GetElementsByTagName("Configuration").Item(0);
-
-            if (firstNode == null)
+            if (m_document.DocumentElement.Name != "Configuration")
                 throw new Exception("The element Configuration is not found");
 
-            ExploreNode(firstNode, ref stackPath, currentAssembly);
+            XmlNode asmNode = m_document.DocumentElement.FirstChild;
+            while (asmNode != null)
+            {
+                if (currentAssembly.GetName().Name != asmNode.Name)
+                {
+                   logger.Error("[Config] Assembly " + asmNode.Name + " isn't found");
+                   continue;
+                }
+
+                foreach (XPathNavigator navigator in asmNode.CreateNavigator().SelectDescendants("Variable", "", false))
+                {
+                    if (!navigator.IsNode)
+                        continue;
+
+                    XmlNode variable = ( navigator as IHasXmlNode ).GetNode();
+
+                    string name = variable.Attributes["name"] != null ? variable.Attributes["name"].Value : "";
+                    string type = variable.Attributes["type"] != null ? variable.Attributes["type"].Value : "";
+                    string @namespace = GetNamespaceOfNode(variable);
+
+                    if (name == "")
+                        throw new Exception(string.Format("[Config] Variable in {0} has not attribute 'name'",
+                                                          @namespace));
+
+                    if (type != "")
+                    {
+                        Type valueType = Type.GetType(type);
+
+                        if (valueType == null)
+                        {
+                            valueType = currentAssembly.GetType(type);
+                        }
+
+                        DefineVariable(name, @namespace, variable, valueType, currentAssembly);
+
+                    }
+                    else
+                        DefineVariable(name, @namespace, variable.InnerText, null, currentAssembly);
+                }
+
+                asmNode = asmNode.NextSibling;
+            }
         }
 
         /// <summary>
@@ -119,55 +164,79 @@ namespace Stump.BaseCore.Framework.Xml
         /// </summary>
         public void DefinesVariables(ref Dictionary<string, Assembly> loadedAssemblies)
         {
-            var stackPath = new Stack<string>();
-
-            XmlNode firstNode = m_document.GetElementsByTagName("Configuration").Item(0);
-
-            if (firstNode == null)
+            if (m_document.DocumentElement.Name != "Configuration")
                 throw new Exception("The element Configuration is not found");
 
-            foreach (XmlNode assemblyNode in firstNode.ChildNodes)
+            XmlNode asmNode = m_document.DocumentElement.FirstChild;
+            while (asmNode != null)
             {
-                if (!loadedAssemblies.ContainsKey(assemblyNode.Name))
-                    throw new Exception("Assembly " + assemblyNode.Name + " isn't found");
+                if (!loadedAssemblies.ContainsKey(asmNode.Name))
+                    throw new Exception("Assembly " + asmNode.Name + " isn't found");
 
-                ExploreNode(assemblyNode, ref stackPath, loadedAssemblies[assemblyNode.Name]);
-            }
-        }
-
-        private void ExploreNode(XmlNode node, ref Stack<string> stackPath, Assembly asm)
-        {
-            if (node.NodeType == XmlNodeType.Element && node.HasChildNodes)
-            {
-                stackPath.Push(node.Name);
-
-                foreach (XmlNode child in node.ChildNodes)
+                foreach (XPathNavigator navigator in asmNode.CreateNavigator().SelectDescendants("Variable", "", false))
                 {
-                    ExploreNode(child, ref stackPath, asm);
+                    if(!navigator.IsNode)
+                        continue;
+
+                    XmlNode variable = (navigator as IHasXmlNode).GetNode();
+
+                    string name = variable.Attributes["name"] != null ? variable.Attributes["name"].Value : "";
+                    string type = variable.Attributes["type"] != null ? variable.Attributes["type"].Value : "";
+                    string @namespace = GetNamespaceOfNode(variable);
+
+                    if (name == "")
+                        throw new Exception(string.Format("[Config] Variable in {0} has not attribute 'name'",
+                                                          @namespace));
+
+                    if (type != "")
+                    {
+                        Type valueType = Type.GetType(type);
+                        int i = 0;
+                        while (valueType == null && i < loadedAssemblies.Count)
+                        {
+                            valueType = loadedAssemblies.Values.ElementAt(i).GetType(type);
+
+                            i++;
+                        }
+
+                        DefineVariable(name, @namespace, variable, valueType, loadedAssemblies[asmNode.Name]);
+
+                    }
+                    else
+                        DefineVariable(name, @namespace, variable.InnerText, null, loadedAssemblies[asmNode.Name]);
                 }
 
-                stackPath.Pop();
-            }
-            else if (node.NodeType == XmlNodeType.Text)
-            {
-                string name = stackPath.Peek();
-                string path = string.Join(".", stackPath.Skip(1).Reverse());
-
-                DefineVariable(name, path, node.Value, asm);
+                asmNode = asmNode.NextSibling;
             }
         }
 
-        private void DefineVariable(string variableName, string className, object value, Assembly asm)
+        private string GetNamespaceOfNode(XmlNode node)
         {
-            Type type = asm.GetType(className);
+            var stringBuilder = new StringBuilder();
+
+            var currentNode = node;
+            while (currentNode.ParentNode != null && currentNode.ParentNode != m_document.DocumentElement)
+            {
+                stringBuilder.Insert(0, currentNode.ParentNode.Name + ".");
+
+                currentNode = currentNode.ParentNode;
+            }
+
+            return stringBuilder.Remove(stringBuilder.Length - 1, 1).ToString();
+        }
+
+        private void DefineVariable(string variableName, string @namespace, object value, Type valueType, Assembly asm)
+        {
+            Type type = asm.GetType(@namespace);
 
             if (type == null)
             {
-                throw new Exception("[Config] Type " + className + " doesn't exist");
+                throw new Exception("[Config] Type " + @namespace + " doesn't exist");
             }
 
             FieldInfo field = type.GetField(variableName, BindingFlags.Static | BindingFlags.Public);
-            PropertyInfo property = type.GetProperty(variableName, BindingFlags.Static | BindingFlags.Public);
+            PropertyInfo property = type.GetProperty(variableName,
+                                                     BindingFlags.Static | BindingFlags.Public);
 
             try
             {
@@ -182,7 +251,7 @@ namespace Stump.BaseCore.Framework.Xml
 
                         if (attribute.DefinableByConfig)
                         {
-                            field.SetValue(null, ReadElement(value, field.FieldType));
+                            field.SetValue(null, ReadElement(value, valueType ?? field.FieldType));
                         }
                     }
                     else
@@ -201,7 +270,7 @@ namespace Stump.BaseCore.Framework.Xml
 
                         if (attribute.DefinableByConfig)
                         {
-                            property.SetValue(null, ReadElement(value, property.PropertyType), null);
+                            property.SetValue(null, ReadElement(value, valueType ?? property.PropertyType), null);
                         }
                     }
                     else
@@ -212,18 +281,18 @@ namespace Stump.BaseCore.Framework.Xml
                 }
                 else
                 {
-                    logger.Warn("[Config] " + className + "." + variableName + " doesn't exist");
+                    logger.Warn("[Config] " + @namespace + "." + variableName + " doesn't exist");
                 }
             }
             catch (InvalidCastException)
             {
-                logger.Warn(string.Format("[Config] Type of {0}.{1} isn't correct. Expected Type : {2}", className,
+                logger.Warn(string.Format("[Config] Type of {0}.{1} isn't correct. Expected Type : {2}", @namespace,
                                           variableName,
                                           (field != null ? field.FieldType : property.PropertyType)));
             }
             catch
             {
-                logger.Warn(string.Format("[Config] Cannot define the variable {0}.{1} with value {2}", className,
+                logger.Warn(string.Format("[Config] Cannot define the variable {0}.{1} with value {2}", @namespace,
                                           variableName,
                                           value.ToString()));
             }
@@ -258,18 +327,18 @@ namespace Stump.BaseCore.Framework.Xml
         /// <returns></returns>
         internal object ReadElement(object value, Type type)
         {
-            return XmlVariableConverters.FoundConverter(value.ToString(), type);
-        }
+            if (value is XmlNode)
+            {
+                return new XmlSerializer(type).Deserialize(new StringReader(( value as XmlNode ).InnerXml));
+            }
 
-        /// <summary>
-        ///   Reads the element.
-        /// </summary>
-        /// <param name = "element">The element.</param>
-        /// <param name = "type">The type.</param>
-        /// <returns></returns>
-        internal object ReadElement(XmlElement element, Type type)
-        {
-            return ReadElement(element.Value, type);
+            if (value.ToString() == "")
+                if (value is string)
+                    return "";
+                else
+                    return null;
+
+            return Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
         }
     }
 }

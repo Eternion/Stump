@@ -22,13 +22,50 @@ namespace Stump.BaseCore.Framework.Pool
 {
     public class CyclicTask
     {
-        public Delegate Delegate { get; private set; }
-        private TimeSpan ExecutionDelay { get; set; }
-        private Condition Condition { get; set; }
-        private uint? MaxExecutionNbr { get; set; }
+        public CyclicTask(Delegate method, uint delay, Condition condition, uint? maxExecution)
+        {
+            Delegate = method;
+            ExecutionDelay = TimeSpan.FromSeconds(delay);
+            Condition = condition;
+            MaxExecutionNbr = maxExecution;
+            LastCall = DateTime.Now;
+        }
 
-        private DateTime LastCall { get; set; }
-        private uint CurrentExecutionNbr { get; set; }
+        public Delegate Delegate
+        {
+            get;
+            private set;
+        }
+
+        private TimeSpan ExecutionDelay
+        {
+            get;
+            set;
+        }
+
+        private Condition Condition
+        {
+            get;
+            set;
+        }
+
+        private uint? MaxExecutionNbr
+        {
+            get;
+            set;
+        }
+
+        private DateTime LastCall
+        {
+            get;
+            set;
+        }
+
+        private uint CurrentExecutionNbr
+        {
+            get;
+            set;
+        }
 
         public bool RequireExecution
         {
@@ -37,7 +74,7 @@ namespace Stump.BaseCore.Framework.Pool
 
         private bool SuitCondition
         {
-            get { return Condition==null || Condition(); }
+            get { return Condition == null || Condition(); }
         }
 
         private bool ReachDelay
@@ -48,15 +85,6 @@ namespace Stump.BaseCore.Framework.Pool
         public bool ReachMaxExecutionNbr
         {
             get { return MaxExecutionNbr.HasValue && (CurrentExecutionNbr == MaxExecutionNbr); }
-        }
-
-        public CyclicTask(Delegate method, uint delay, Condition condition, uint? maxExecution)
-        {
-            Delegate = method;
-            ExecutionDelay = TimeSpan.FromSeconds(delay);
-            Condition = condition;
-            MaxExecutionNbr = maxExecution;
-            LastCall = DateTime.Now;
         }
 
         public void Execute()

@@ -64,7 +64,7 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
-        public XmlConfigFile ConfigFile
+        public XmlConfigReader ConfigReader
         {
             get;
             protected set;
@@ -149,10 +149,10 @@ namespace Stump.Server.BaseServer
 
             logger.Info("Initializing Configuration...");
             /* Initialize Config File */
-            ConfigFile = new XmlConfigFile(
+            ConfigReader = new XmlConfigReader(
                 ConfigFilePath,
                 SchemaFilePath);
-            ConfigFile.DefinesVariables(ref LoadedAssemblies);
+            ConfigReader.DefinesVariables(ref LoadedAssemblies);
 
             logger.Info("Initialize Task Pool");
             TaskPool = new TaskPool();

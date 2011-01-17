@@ -63,7 +63,7 @@ namespace Stump.Tools.Proxy
 
         private Dictionary<string, Assembly> m_loadedAssemblies;
 
-        public XmlConfigFile ConfigFile
+        public XmlConfigReader ConfigReader
         {
             get;
             private set;
@@ -117,10 +117,10 @@ namespace Stump.Tools.Proxy
             logger = LogManager.GetCurrentClassLogger();
 
             logger.Info("Initializing Configuration...");
-            ConfigFile = new XmlConfigFile(
+            ConfigReader = new XmlConfigReader(
                 "proxy_config.xml",
                 "proxy_config.xsd");
-            ConfigFile.DefinesVariables(ref m_loadedAssemblies);
+            ConfigReader.DefinesVariables(ref m_loadedAssemblies);
 
             logger.Info("Initializing Network Interfaces...");
             QueueDispatcher = new QueueDispatcher(false);

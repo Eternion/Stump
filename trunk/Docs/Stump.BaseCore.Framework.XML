@@ -4,6 +4,45 @@
         <name>Stump.BaseCore.Framework</name>
     </assembly>
     <members>
+        <member name="M:Stump.BaseCore.Framework.Xml.XmlConfigReader.#ctor(System.String)">
+            <summary>
+              Initializes a new instance of the <see cref="T:Stump.BaseCore.Framework.Xml.XmlConfigReader"/> class.
+            </summary>
+            <param name="uriConfig">The URI config.</param>
+        </member>
+        <member name="M:Stump.BaseCore.Framework.Xml.XmlConfigReader.#ctor(System.String,System.String)">
+            <summary>
+              Initializes a new instance of the <see cref="T:Stump.BaseCore.Framework.Xml.XmlConfigReader"/> class.
+            </summary>
+            <param name="uriConfig">The URI config.</param>
+            <param name="uriSchema">The URI schema.</param>
+        </member>
+        <member name="M:Stump.BaseCore.Framework.Xml.XmlConfigReader.ValidationEventHandler(System.Object,System.Xml.Schema.ValidationEventArgs)">
+            <summary>
+              Validation event handler.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:System.Xml.Schema.ValidationEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:Stump.BaseCore.Framework.Xml.XmlConfigReader.DefinesVariables(System.Collections.Generic.Dictionary{System.String,System.Reflection.Assembly}@)">
+            <summary>
+              Defines the variables.
+            </summary>
+        </member>
+        <member name="M:Stump.BaseCore.Framework.Xml.XmlConfigReader.Read``1(System.String[])">
+            <summary>
+              Reads the specified nodes.
+            </summary>
+            <typeparam name = "T"></typeparam>
+            <param name = "nodes">The nodes.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.BaseCore.Framework.Xml.XmlConfigReader.ReadElement(System.Object,System.Type)">
+            <summary>
+              Reads the element.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:Stump.BaseCore.Framework.Utils.AsyncRandom">
             <summary>
               Represent a safe-thread random class
@@ -106,6 +145,22 @@
             <param name = "stream">The stream.</param>
             <param name = "item">The item.</param>
         </member>
+        <member name="M:Stump.BaseCore.Framework.Xml.XmlUtils.Serialize(System.String,System.Object,System.Type)">
+            <summary>
+              Serializes the specified file name.
+            </summary>
+            <typeparam name = "T"></typeparam>
+            <param name = "fileName">Name of the file.</param>
+            <param name = "item">The item.</param>
+        </member>
+        <member name="M:Stump.BaseCore.Framework.Xml.XmlUtils.Serialize(System.IO.Stream,System.Object,System.Type)">
+            <summary>
+              Serializes the specified stream.
+            </summary>
+            <typeparam name = "T"></typeparam>
+            <param name = "stream">The stream.</param>
+            <param name = "item">The item.</param>
+        </member>
         <member name="M:Stump.BaseCore.Framework.Xml.XmlUtils.Deserialize``1(System.String)">
             <summary>
               Deserializes the specified file name.
@@ -119,6 +174,20 @@
               Deserializes the specified stream.
             </summary>
             <typeparam name = "T"></typeparam>
+            <param name = "stream">The stream.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.BaseCore.Framework.Xml.XmlUtils.Deserialize(System.String,System.Type)">
+            <summary>
+              Deserializes the specified file name.
+            </summary>
+            <param name = "fileName">Name of the file.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.BaseCore.Framework.Xml.XmlUtils.Deserialize(System.IO.Stream,System.Type)">
+            <summary>
+              Deserializes the specified stream.
+            </summary>
             <param name = "stream">The stream.</param>
             <returns></returns>
         </member>
@@ -154,30 +223,6 @@
             <summary>
               Disable the logging.
             </summary>
-        </member>
-        <member name="T:Stump.BaseCore.Framework.Xml.XmlVariableConverters">
-            <summary>
-              Provides some methods to convert string to a given type
-            </summary>
-        </member>
-        <member name="F:Stump.BaseCore.Framework.Xml.XmlVariableConverters.UseModifiers">
-            <summary>
-            Allow to pack parsed array's element with quotes
-            </summary>
-            <example>
-            Parsed string : John, Harry, "Thomas, Moore"
-            
-            When it's set to true the array will contains 3 elements :
-                - John
-                - Harry
-                - Thomas, Moore
-            
-            When it's false the array will contains 4 elements :
-                - John
-                - Harry
-                - "Thomas
-                - Moore"
-            </example>
         </member>
         <member name="T:Stump.BaseCore.Framework.Threading.IMessage">
             <summary>
@@ -1115,53 +1160,6 @@
             </summary>
             <param name = "chaine">String</param>
             <param name = "hash">MD5 hash to check</param>
-            <returns></returns>
-        </member>
-        <member name="M:Stump.BaseCore.Framework.Xml.XmlConfigFile.#ctor(System.String)">
-            <summary>
-              Initializes a new instance of the <see cref="T:Stump.BaseCore.Framework.Xml.XmlConfigFile"/> class.
-            </summary>
-            <param name="uriConfig">The URI config.</param>
-        </member>
-        <member name="M:Stump.BaseCore.Framework.Xml.XmlConfigFile.#ctor(System.String,System.String)">
-            <summary>
-              Initializes a new instance of the <see cref="T:Stump.BaseCore.Framework.Xml.XmlConfigFile"/> class.
-            </summary>
-            <param name="uriConfig">The URI config.</param>
-            <param name="uriSchema">The URI schema.</param>
-        </member>
-        <member name="M:Stump.BaseCore.Framework.Xml.XmlConfigFile.ValidationEventHandler(System.Object,System.Xml.Schema.ValidationEventArgs)">
-            <summary>
-              Validation event handler.
-            </summary>
-            <param name="sender">The sender.</param>
-            <param name="e">The <see cref="T:System.Xml.Schema.ValidationEventArgs"/> instance containing the event data.</param>
-        </member>
-        <member name="M:Stump.BaseCore.Framework.Xml.XmlConfigFile.DefinesVariables(System.Collections.Generic.Dictionary{System.String,System.Reflection.Assembly}@)">
-            <summary>
-              Defines the variables.
-            </summary>
-        </member>
-        <member name="M:Stump.BaseCore.Framework.Xml.XmlConfigFile.Read``1(System.String[])">
-            <summary>
-              Reads the specified nodes.
-            </summary>
-            <typeparam name = "T"></typeparam>
-            <param name = "nodes">The nodes.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Stump.BaseCore.Framework.Xml.XmlConfigFile.ReadElement(System.Object,System.Type)">
-            <summary>
-              Reads the element.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Stump.BaseCore.Framework.Xml.XmlConfigFile.ReadElement(System.Xml.XmlElement,System.Type)">
-            <summary>
-              Reads the element.
-            </summary>
-            <param name = "element">The element.</param>
-            <param name = "type">The type.</param>
             <returns></returns>
         </member>
         <member name="P:Stump.BaseCore.Framework.Utils.Singleton`1.Instance">

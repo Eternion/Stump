@@ -72,8 +72,8 @@ namespace Stump.Tools.Sniffer
             m_form = form;
             m_loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToDictionary(entry => entry.GetName().Name);
 
-            ConfigFile = new XmlConfigFile(ConfigPath, SchemaPath);
-            ConfigFile.DefinesVariables(ref m_loadedAssemblies);
+            ConfigReader = new XmlConfigReader(ConfigPath, SchemaPath);
+            ConfigReader.DefinesVariables(ref m_loadedAssemblies);
 
             PcapDotNetAnalysis.OptIn = false;
 
@@ -102,7 +102,7 @@ namespace Stump.Tools.Sniffer
             IdentifiedClient.OnNewMessage += IdentifiedClient_OnNewMessage;
         }
 
-        public XmlConfigFile ConfigFile
+        public XmlConfigReader ConfigReader
         {
             get;
             private set;

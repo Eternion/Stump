@@ -140,12 +140,12 @@
             <param name="banEndDate"></param>
             <returns></returns>
         </member>
-        <member name="M:Stump.Server.BaseServer.IPC.IRemoteOperationsAuth.BanIp(Stump.Server.BaseServer.IPC.WorldServerInformation,System.String)">
+        <member name="M:Stump.Server.BaseServer.IPC.IRemoteOperationsAuth.BanIp(Stump.Server.BaseServer.IPC.WorldServerInformation,Stump.Database.IpBannedRecord)">
             <summary>
-            Ban an ip
+            Ban an IP
             </summary>
             <param name="wsi"></param>
-            <param name="ip"></param>
+            <param name="ipBanned"></param>
         </member>
         <member name="F:Stump.Server.BaseServer.Network.MessageListener.Host">
             <summary>
@@ -175,6 +175,11 @@
         <member name="F:Stump.Server.BaseServer.Network.MessageListener.MaxIPConnexions">
             <summary>
             Max number of clients connected on the same IP
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.MessageListener.InactivityDisconnectionTime">
+            <summary>
+              Disconnect Client after specified time(in s) or NULL for desactivate
             </summary>
         </member>
         <member name="F:Stump.Server.BaseServer.Network.MessageListener.BufferSize">

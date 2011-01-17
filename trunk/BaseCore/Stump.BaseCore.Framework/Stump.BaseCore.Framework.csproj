@@ -110,9 +110,8 @@
     <Compile Include="Xml\Docs\DotNetDocumentation.cs" />
     <Compile Include="Xml\Docs\MemberType.cs" />
     <Compile Include="Xml\XmlFile.cs" />
-    <Compile Include="Xml\XmlConfigFile.cs" />
+    <Compile Include="Xml\XmlConfigReader.cs" />
     <Compile Include="Xml\XmlUtils.cs" />
-    <Compile Include="Xml\XmlVariableConverters.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
