@@ -30,7 +30,7 @@ namespace Stump.Server.BaseServer.Plugins
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         [Variable]
-        public static IList<string> PluginsPath = new List<string>
+        public static List<string> PluginsPath = new List<string>
             {
                 "./plugins/"
             };

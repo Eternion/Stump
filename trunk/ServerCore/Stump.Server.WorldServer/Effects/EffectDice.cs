@@ -66,20 +66,25 @@ namespace Stump.Server.WorldServer.Effects
 
         public override ObjectEffect ToNetworkEffect()
         {
-            return new ObjectEffectDice((uint)EffectId, (uint) DiceNum, (uint) DiceFace, (uint) Value);
+            return new ObjectEffectDice((uint)EffectId, DiceNum, DiceFace, (uint) Value);
         }
 
-        public override EffectBase GenerateEffect()
+        public override EffectBase GenerateEffect(EffectGenerationContext context)
         {
-            var random = new AsyncRandom();
-            int result = 0;
-
-            for (int i = 0; i < m_dicenum; i++)
+            if (context == EffectGenerationContext.Spell || EffectManager.IsEffectRandomable(EffectId))
             {
-                result += random.NextInt(1, (int) (m_diceface + 2));
+                var random = new AsyncRandom();
+                int result = 0;
+
+                for (int i = 0; i < m_dicenum; i++)
+                {
+                    result += random.NextInt(1, (int) (m_diceface + 2));
+                }
+
+                return new EffectInteger(m_id, result);
             }
 
-            return new EffectInteger(m_id, result);
+            return this;
         }
 
         public override bool Equals(object obj)

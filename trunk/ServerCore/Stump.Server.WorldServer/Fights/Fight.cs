@@ -78,8 +78,8 @@ namespace Stump.Server.WorldServer.Fights
 
         #region Fields
 
-        private readonly List<FightGroupMember> m_fighters;
-        private readonly List<Character> m_characters;
+        private readonly List<FightGroupMember> m_fighters = new List<FightGroupMember>();
+        private readonly List<Character> m_characters = new List<Character>();
 
         private bool m_disposed;
         private DateTime m_startTime;
@@ -186,10 +186,27 @@ namespace Stump.Server.WorldServer.Fights
 
         private void RemoveFighter(FightGroupMember fighter)
         {
+            if (Started)
+            {
+                fighter.FightLeft -= OnFighterLeft;
+                fighter.Dead -= OnFighterDead;
+                fighter.Moved -= OnFighterMoved;
+                fighter.TurnPassed -= OnTurnPassed;
+            }
+            else
+            {
+                fighter.ReadyStateChanged -= OnSetReady;
+                fighter.PrePlacementChanged -= OnChangePreplacementPosition;
+            }
+
             m_fighters.Remove(fighter);
 
             if (fighter.Entity is Character)
+            {
+                ( fighter.Entity as Character ).LoggingOut -= OnLoggedOut;
+
                 m_characters.Remove(fighter.Entity as Character);
+            }
         }
 
         private void RemoveFighters(IEnumerable<FightGroupMember> fighters)
@@ -316,16 +333,26 @@ namespace Stump.Server.WorldServer.Fights
             foreach (FightGroupMember fighter in m_fighters)
             {
                 fighter.FightLeft += OnFighterLeft;
+                fighter.Dead += OnFighterDead;
                 fighter.Moved += OnFighterMoved;
                 fighter.TurnPassed += OnTurnPassed;
             }
+        }
+
+        private void OnFighterDead(FightGroupMember fighter, FightGroupMember killer)
+        {
+            fighter.ExecuteInstantSequence(SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH,
+                      character =>
+                      ActionsHandler.SendGameActionFightDeathMessage(character.Client, fighter.Entity));
+
+            CheckIfEnd();
         }
 
         private void OnFighterLeft(FightGroupMember fighter)
         {
             if (!fighter.IsDead)
             {
-                fighter.StartSequence(SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH,
+                fighter.ExecuteInstantSequence(SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH,
                                       character =>
                                       ActionsHandler.SendGameActionFightDeathMessage(character.Client, fighter.Entity));
             }
@@ -457,57 +484,12 @@ namespace Stump.Server.WorldServer.Fights
             return true;
         }
 
-        /// <summary>
-        ///   Use the required spell by the fighter.
-        /// </summary>
-        public void UseSpell(FightGroupMember caster, int cellId, int spellId)
-        {
-            if (!caster.Entity.Spells.Contains((SpellIdEnum) spellId))
-            {
-                // Error : Character doesn't have this spell.
-                return;
-            }
-            Spell spell = caster.Entity.Spells[(SpellIdEnum) spellId];
-            if (spell == null)
-            {
-                // spell doesn't exist.
-                return;
-            }
-
-            SpellLevel spellLevel = spell.CurrentSpellLevel;
-            CellData cell = caster.Entity.Map.CellsData[cellId];
-
-            if (CanCastSpell(caster, cell, spellLevel))
-            {
-                var rnd = new Random();
-                bool critical = false;
-
-                if (rnd.Next(1, 101) <=
-                    caster.Entity.Spells[(SpellIdEnum) spellId].CurrentSpellLevel.CriticalFailureProbability)
-                    // if the cast fail
-                {
-                    // TODO: Manage Fail
-                }
-                else if (rnd.Next(1, 101) <=
-                         caster.Entity.Spells[(SpellIdEnum) spellId].CurrentSpellLevel.CriticalHitProbability)
-                    // if the cast is critical
-                {
-                    critical = true;
-                }
-
-                FightEffectExecutor.ExecuteSpellEffects(spellLevel, this, caster, cell, critical);
-
-                // TODO : Check range.
-                // TODO: Get effect of spell then use it.
-            }
-        }
-
         public void OnFighterMoved(FightGroupMember fighter, MovementPath movement)
         {
             List<uint> movementsKeys = movement.GetServerMovementKeys();
             var delta = (short) (-movement.MpCost);
 
-            fighter.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE, character =>
+            fighter.ExecuteInstantSequence(SequenceTypeEnum.SEQUENCE_MOVE, character =>
             {
                 ContextHandler.SendGameMapMovementMessage(character.Client, movementsKeys, fighter.Entity);
                 ActionsHandler.SendGameActionFightPointsVariationMessage(character.Client,
@@ -792,6 +774,7 @@ namespace Stump.Server.WorldServer.Fights
                 foreach (FightGroupMember fighter in m_fighters)
                 {
                     fighter.FightLeft -= OnFighterLeft;
+                    fighter.Dead -= OnFighterDead;
                     fighter.Moved -= OnFighterMoved;
                     fighter.TurnPassed -= OnTurnPassed;
                 }

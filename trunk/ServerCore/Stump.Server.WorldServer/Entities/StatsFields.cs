@@ -124,7 +124,7 @@ namespace Stump.Server.WorldServer.Entities
         {
             string stat;
             Action action;
-            EffectBase generatedeffect = effect.GenerateEffect();
+            EffectBase generatedeffect = effect.GenerateEffect(EffectGenerationContext.Item);
             if (generatedeffect is EffectInteger &&
                 GetEffectCharacteristicBonus(generatedeffect, out stat))
             {

@@ -97,8 +97,8 @@ namespace Stump.Tools.UtilityBot
         {
             m_loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToDictionary(entry => entry.GetName().Name);
 
-            ConfigFile = new XmlConfigFile(ConfigPath, SchemaPath);
-            ConfigFile.DefinesVariables(ref m_loadedAssemblies);
+            ConfigReader = new XmlConfigReader(ConfigPath, SchemaPath);
+            ConfigReader.DefinesVariables(ref m_loadedAssemblies);
 
             Connection = new IrcConnection(BotChannels, CommandPrefix)
                 {
@@ -116,7 +116,7 @@ namespace Stump.Tools.UtilityBot
             private set;
         }
 
-        public XmlConfigFile ConfigFile
+        public XmlConfigReader ConfigReader
         {
             get;
             private set;

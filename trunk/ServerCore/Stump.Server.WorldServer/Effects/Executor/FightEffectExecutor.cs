@@ -30,12 +30,33 @@ namespace Stump.Server.WorldServer.Effects.Executor
 {
     public static partial class FightEffectExecutor
     {
-        private static readonly Dictionary<EffectsEnum, Delegate> FunctionsEffects =
-            new Dictionary<EffectsEnum, Delegate>();
+        private class EffectMethod
+        {
+            public EffectMethod(Delegate @delegate, bool generateEffect)
+            {
+                Method = @delegate;
+                GenerateEffect = generateEffect;
+            }
+
+            public Delegate Method
+            {
+                get;
+                set;
+            }
+
+            public bool GenerateEffect
+            {
+                get;
+                set;
+            }
+        }
+
+        private static readonly Dictionary<EffectsEnum, EffectMethod> FunctionsEffects =
+            new Dictionary<EffectsEnum, EffectMethod>();
 
         public static void Initialize()
         {
-            foreach (MethodInfo method in typeof (FightEffectExecutor).GetMethods())
+            foreach (MethodInfo method in typeof(FightEffectExecutor).GetMethods())
             {
                 object[] attributs = method.GetCustomAttributes(false);
 
@@ -43,27 +64,30 @@ namespace Stump.Server.WorldServer.Effects.Executor
                 {
                     if (attribute is FightEffectAttribute)
                     {
-                        FunctionsEffects.Add((attribute as FightEffectAttribute).Effect,
-                                             method.ToDelegate(null));
+                        FunctionsEffects.Add(( attribute as FightEffectAttribute ).Effect,
+                                             new EffectMethod(method.ToDelegate(null), (attribute as FightEffectAttribute).Generate));
                     }
                 }
             }
         }
 
-        public static void ExecuteSpellEffects(SpellLevel spellLevel, Fight fight, FightGroupMember caster,
+        public static void ExecuteSpellEffects(Fight fight, SpellLevel spellLevel, FightGroupMember caster,
                                                CellData target, bool critical)
         {
             Func<EffectBase[]> geteffects = critical
                                                 ? spellLevel.GetCriticalEffects
-                                                : (Func<EffectBase[]>) spellLevel.GetEffects;
+                                                : (Func<EffectBase[]>)spellLevel.GetEffects;
 
             foreach (EffectBase effect in geteffects())
             {
                 if (FunctionsEffects.ContainsKey(effect.EffectId))
                 {
-                    FunctionsEffects[effect.EffectId].DynamicInvoke(spellLevel, effect, fight, caster, target, critical);
+                    var generatedEffect = FunctionsEffects[effect.EffectId].GenerateEffect ? effect.GenerateEffect(EffectGenerationContext.Spell) : effect;
+
+                    FunctionsEffects[effect.EffectId].Method.DynamicInvoke(spellLevel, generatedEffect, fight, caster, target, critical);
                 }
             }
         }
+
     }
 }

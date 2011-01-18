@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.D2oClasses;
@@ -37,7 +38,7 @@ namespace Stump.Server.WorldServer.Spells
         public Spell Spell
         {
             get;
-            set;
+            internal set;
         }
 
         public uint ApCost
@@ -148,9 +149,15 @@ namespace Stump.Server.WorldServer.Spells
             set;
         }
 
+        public int Level
+        {
+            get;
+            internal set;
+        }
+
         #endregion
 
-        public void SetEffects(IEnumerable<EffectInstanceDice> effects)
+        public void SetEffects(IEnumerable<EffectInstance> effects)
         {
             m_effects = EffectManager.ConvertExportedEffect(effects);
         }

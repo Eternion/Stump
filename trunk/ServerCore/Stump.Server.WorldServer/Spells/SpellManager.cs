@@ -19,9 +19,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Data;
 using Stump.Server.BaseServer.Initializing;
+using Stump.Server.WorldServer.Effects;
 using SpellLevelTemplate = Stump.DofusProtocol.D2oClasses.SpellLevel;
 using SpellTemplate = Stump.DofusProtocol.D2oClasses.Spell;
 
@@ -41,13 +43,12 @@ namespace Stump.Server.WorldServer.Spells
         [StageStep(Stages.One, "Loaded Spells")]
         public static void LoadSpells()
         {
-            var spellslevels = DataLoader.LoadData<SpellLevelTemplate>();
-
+            var spellslevels = DataLoader.LoadDataById<SpellLevelTemplate>(entry => (int)entry.id);
             var spells = DataLoader.LoadData<SpellTemplate>();
 
             foreach (SpellTemplate spell in spells)
             {
-                InitSpell(spell, spellslevels.Where(spellLevel => spellLevel.spellId == spell.id));
+                InitSpell(spell, spell.spellLevels.Select(entry => spellslevels[entry]));
             } 
         }
 
@@ -61,6 +62,7 @@ namespace Stump.Server.WorldServer.Spells
                 var sl = new SpellLevel
                     {
                         Spell = spell,
+                        Level = level,
                         ApCost = splevel.apCost,
                         CastInLine = splevel.castInLine,
                         CastTestLos = splevel.castTestLos,
@@ -79,14 +81,12 @@ namespace Stump.Server.WorldServer.Spells
                         RangeCanBeBoosted = splevel.rangeCanBeBoosted
                     };
 
-                sl.SetEffects(splevel.effects);
-                sl.SetCriticalEffects(splevel.criticalEffect);
+                sl.SetEffects(splevel.effects.Select(EffectManager.GuessRealEffect));
+                sl.SetCriticalEffects(splevel.criticalEffect.Select(EffectManager.GuessRealEffect));
 
                 spell.ByLevel.Add(level, sl);
                 level++;
             }
-            if (spell.ByLevel.Count == 0)
-                Console.Write("");
 
             Spells.Add((uint) spell.Id, spell);
         }

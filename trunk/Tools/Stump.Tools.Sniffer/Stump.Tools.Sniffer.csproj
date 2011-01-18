@@ -69,7 +69,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\Run\Debug\Sniffer\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -102,23 +102,23 @@
   <ItemGroup>
     <Reference Include="PcapDotNet.Analysis, Version=0.7.0.0, Culture=neutral, PublicKeyToken=4b6f3e583145a652, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Library\PcapDotNet.Analysis.dll</HintPath>
+      <HintPath>..\..\Library\Pcap.Net.Binaries.0.7.0.46671.x64\PcapDotNet.Analysis.dll</HintPath>
     </Reference>
-    <Reference Include="PcapDotNet.Base, Version=0.7.0.39653, Culture=neutral, PublicKeyToken=4b6f3e583145a652, processorArchitecture=MSIL">
+    <Reference Include="PcapDotNet.Base, Version=0.7.0.40019, Culture=neutral, PublicKeyToken=4b6f3e583145a652, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Library\PcapDotNet.Base.dll</HintPath>
+      <HintPath>..\..\Library\Pcap.Net.Binaries.0.7.0.46671.x64\PcapDotNet.Base.dll</HintPath>
     </Reference>
-    <Reference Include="PcapDotNet.Core, Version=0.7.0.39675, Culture=neutral, PublicKeyToken=4b6f3e583145a652, processorArchitecture=AMD64">
+    <Reference Include="PcapDotNet.Core, Version=0.7.0.40037, Culture=neutral, PublicKeyToken=4b6f3e583145a652, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Library\PcapDotNet.Core.dll</HintPath>
+      <HintPath>..\..\Library\Pcap.Net.Binaries.0.7.0.46671.x64\PcapDotNet.Core.dll</HintPath>
     </Reference>
-    <Reference Include="PcapDotNet.Core.Extensions, Version=0.7.0.39678, Culture=neutral, PublicKeyToken=4b6f3e583145a652, processorArchitecture=MSIL">
+    <Reference Include="PcapDotNet.Core.Extensions, Version=0.7.0.40043, Culture=neutral, PublicKeyToken=4b6f3e583145a652, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Library\PcapDotNet.Core.Extensions.dll</HintPath>
+      <HintPath>..\..\Library\Pcap.Net.Binaries.0.7.0.46671.x64\PcapDotNet.Core.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="PcapDotNet.Packets, Version=0.7.0.39655, Culture=neutral, PublicKeyToken=4b6f3e583145a652, processorArchitecture=MSIL">
+    <Reference Include="PcapDotNet.Packets, Version=0.7.0.40021, Culture=neutral, PublicKeyToken=4b6f3e583145a652, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Library\PcapDotNet.Packets.dll</HintPath>
+      <HintPath>..\..\Library\Pcap.Net.Binaries.0.7.0.46671.x64\PcapDotNet.Packets.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

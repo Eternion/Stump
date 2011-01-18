@@ -276,9 +276,12 @@ namespace Stump.Server.BaseServer.Network
         /// </summary>
         public void Disconnect()
         {
-            OnDisconnect();
+            if (!Connected)
+            {
+                OnDisconnect();
 
-            Close();
+                Close();
+            }
         }
 
         /// <summary>

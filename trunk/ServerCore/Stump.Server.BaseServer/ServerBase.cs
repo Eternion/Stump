@@ -23,6 +23,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime;
 using System.Threading;
+using System.Threading.Tasks;
 using NLog;
 using Stump.BaseCore.Framework.IO;
 using Stump.BaseCore.Framework.Pool;
@@ -63,7 +64,7 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
-        public XmlConfigFile ConfigFile
+        public XmlConfigReader ConfigReader
         {
             get;
             protected set;
@@ -131,6 +132,7 @@ namespace Stump.Server.BaseServer
             Instance = this as T;
 
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+            TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
 
             LoadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToDictionary(entry => entry.GetName().Name);
             AppDomain.CurrentDomain.AssemblyLoad += OnAssemblyLoad;
@@ -147,16 +149,16 @@ namespace Stump.Server.BaseServer
 
             logger.Info("Initializing Configuration...");
             /* Initialize Config File */
-            ConfigFile = new XmlConfigFile(ConfigFilePath, SchemaFilePath);
-            ConfigFile.DefinesVariables(ref LoadedAssemblies);
+            ConfigReader = new XmlConfigReader( ConfigFilePath, SchemaFilePath);
+            ConfigReader.DefinesVariables(ref LoadedAssemblies);
 
             /* Set Config Watcher */
             FileWatcher.RegisterFileModification(ConfigFilePath, () =>
                 {
                     if (ConsoleInterface.AskForSomething("Config has been modified, do you want to reload it ?", 20))
                     {
-                        ConfigFile = new XmlConfigFile(ConfigFilePath, SchemaFilePath);
-                        ConfigFile.DefinesVariables(ref LoadedAssemblies);
+                        ConfigReader = new XmlConfigReader(ConfigFilePath, SchemaFilePath);
+                        ConfigReader.DefinesVariables(ref LoadedAssemblies);
                         logger.Warn("Config has been reloaded sucessfully");
                     }
                 });
@@ -210,6 +212,13 @@ namespace Stump.Server.BaseServer
         private void OnAssemblyLoad(object sender, AssemblyLoadEventArgs args)
         {
             LoadedAssemblies.Add(args.LoadedAssembly.GetName().Name, args.LoadedAssembly);
+        }
+
+        private void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            logger.Error("Unobserved Exception : " + e);
+
+            e.SetObserved();
         }
 
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs args)

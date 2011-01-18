@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Reflection;
 using Ciloci.Flee;
 using NLog;
@@ -38,6 +39,15 @@ namespace Stump.Server.WorldServer.Entities
 
         #endregion
 
+        public event Action<Entity, Map> EnterWorld;
+
+        protected void NotifyEnterWorld(Map map)
+        {
+            Action<Entity, Map> handler = EnterWorld;
+            if (handler != null)
+                handler(this, map);
+        }
+
         /// <summary>
         ///   Constructor
         /// </summary>
@@ -47,6 +57,13 @@ namespace Stump.Server.WorldServer.Entities
 
             ExpressionContext = new ExpressionContext(this);
             ExpressionContext.Options.OwnerMemberAccess = BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty;
+
+            EnterWorld += OnEnterWorld;
+        }
+
+        private void OnEnterWorld(Entity entity, Map map)
+        {
+            Context = map;
         }
 
         public virtual void OnCreate()

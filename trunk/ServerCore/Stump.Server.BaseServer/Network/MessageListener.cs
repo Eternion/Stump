@@ -120,7 +120,7 @@ namespace Stump.Server.BaseServer.Network
 
         public MessageListener(QueueDispatcher queueDispatcher, TaskPool taskPool, Func<Socket, BaseClient> delegateCreateClient, string address, int port)
         {
-            m_ipEndPoint = new IPEndPoint(IPAddress.Parse(address), port);
+            m_ipEndPoint = new IPEndPoint(Dns.GetHostAddresses(address).First(), port);
             m_readBufferSize = BufferSize;
             m_maxConcurrentConnexion = MaxConcurrentConnections;
             m_activeIpRestriction = ActiveIPRestriction;
@@ -145,7 +145,7 @@ namespace Stump.Server.BaseServer.Network
 
         public MessageListener(QueueDispatcher queueDispatcher, TaskPool taskPool, Func<Socket, BaseClient> delegateCreateClient)
         {
-            m_ipEndPoint = new IPEndPoint(IPAddress.Parse(Host), Port);
+            m_ipEndPoint = new IPEndPoint(Dns.GetHostAddresses(Host).First(), Port);
             m_readBufferSize = BufferSize;
             m_maxConcurrentConnexion = MaxConcurrentConnections;
             m_activeIpRestriction = ActiveIPRestriction;

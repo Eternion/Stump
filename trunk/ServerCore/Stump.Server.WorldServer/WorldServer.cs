@@ -40,83 +40,90 @@ namespace Stump.Server.WorldServer
 {
     public class WorldServer : ServerBase<WorldServer>
     {
-        public static WorldServerInformation ServerInformation;
+        [Variable]
+        public static WorldServerInformation ServerInformation = new WorldServerInformation
+        {
+            Id = 1,
+            Name = "Jiva",
+            Address = "localhost",
+            Port = 3467
+        };
 
         public WorldServer()
             : base(Definitions.ConfigFilePath, Definitions.SchemaFilePath)
         {
         }
 
-        /// <summary>
-        ///   ID of current world server
-        /// </summary>
-        [Variable]
-        public static int ServerId
-        {
-            get { return ServerInformation.Id; }
-            set
-            {
-                if (ServerInformation == null)
-                    ServerInformation = new WorldServerInformation();
-
-                ServerInformation.Id = value;
-            }
-        }
-
-        /// <summary>
-        ///   Name of current world server
-        /// </summary>
-        [Variable]
-        public static string ServerName
-        {
-            get { return ServerInformation.Name; }
-            set
-            {
-                if (ServerInformation == null)
-                    ServerInformation = new WorldServerInformation();
-
-                ServerInformation.Name = value;
-            }
-        }
-
-        /// <summary>
-        ///   Adress of current world server
-        /// </summary>
-        [Variable]
-        public static string ServerAddress
-        {
-            get { return ServerInformation.Address; }
-            set
-            {
-                if (ServerInformation == null)
-                    ServerInformation = new WorldServerInformation();
-
-                ServerInformation.Address = value;
-            }
-        }
-
-        /// <summary>
-        ///   Port of current world server
-        /// </summary>
-        [Variable]
-        public static ushort ServerPort
-        {
-            get { return ServerInformation.Port; }
-            set
-            {
-                if (ServerInformation == null)
-                    ServerInformation = new WorldServerInformation();
-
-                ServerInformation.Port = value;
-            }
-        }
+//        /// <summary>
+//        ///   ID of current world server
+//        /// </summary>
+//        [Variable]
+//        public static int ServerId
+//        {
+//            get { return ServerInformation.Id; }
+//            set
+//            {
+//                if (ServerInformation == null)
+//                    ServerInformation = new WorldServerInformation();
+//
+//                ServerInformation.Id = value;
+//            }
+//        }
+//
+//        /// <summary>
+//        ///   Name of current world server
+//        /// </summary>
+//        [Variable]
+//        public static string ServerName
+//        {
+//            get { return ServerInformation.Name; }
+//            set
+//            {
+//                if (ServerInformation == null)
+//                    ServerInformation = new WorldServerInformation();
+//
+//                ServerInformation.Name = value;
+//            }
+//        }
+//
+//        /// <summary>
+//        ///   Adress of current world server
+//        /// </summary>
+//        [Variable]
+//        public static string ServerAddress
+//        {
+//            get { return ServerInformation.Address; }
+//            set
+//            {
+//                if (ServerInformation == null)
+//                    ServerInformation = new WorldServerInformation();
+//
+//                ServerInformation.Address = value;
+//            }
+//        }
+//
+//        /// <summary>
+//        ///   Port of current world server
+//        /// </summary>
+//        [Variable]
+//        public static ushort ServerPort
+//        {
+//            get { return ServerInformation.Port; }
+//            set
+//            {
+//                if (ServerInformation == null)
+//                    ServerInformation = new WorldServerInformation();
+//
+//                ServerInformation.Port = value;
+//            }
+//        }
 
         public override void Initialize()
         {
             base.Initialize();
 
             ConsoleInterface = new WorldConsole();
-            ConsoleBase.SetTitle("#Stump World Server : " + ServerName);
+            ConsoleBase.SetTitle("#Stump World Server : " + ServerInformation.Name);
 
 
             logger.Info("Initializing Database...");
