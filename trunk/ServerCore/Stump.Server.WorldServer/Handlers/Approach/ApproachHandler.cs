@@ -33,28 +33,41 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof(AuthenticationTicketMessage))]
         public static void HandleAuthenticationTicketMessage(WorldClient client, AuthenticationTicketMessage message)
         {
-            AccountRecord ticketAccount = AccountManager.GetAccountByTicket(message.ticket);
+            /* Get Ticket */
+            var ticketAccount = AccountManager.GetAccountByTicket(message.ticket);
 
+            /* Check null ticket */
             if (ticketAccount == null)
             {
                 client.Send(new AuthenticationTicketRefusedMessage());
-                client.Disconnect();
+                client.DisconnectLater(1000);
                 return;
             }
 
-            client.Account = ticketAccount;
+            /* Bind WorldAccount if exist */
+            if (WorldAccountRecord.Exists(ticketAccount.Id))
+                client.WorldAccount = WorldAccountRecord.FindWorldAccountById(ticketAccount.Id);
 
+            /* WorldAccount is banned */
+            if (client.WorldAccount != null && client.WorldAccount.BanRemainingTime != TimeSpan.Zero)
+            {
+                SendAccountLoggingKickedMessage(client);
+                return;
+            }
+
+            /* Bind Account & Characters */
+            client.Account = ticketAccount;
             client.Characters = CharacterManager.GetCharactersByAccount(client);
 
+            /* Ok */
             client.Send(new AuthenticationTicketAcceptedMessage());
-
             BasicHandler.SendBasicTimeMessage(client);
             SendAccountCapabilitiesMessage(client);
             BasicHandler.SendBasicNoOperationMessage(client);
 
-            /* Just to get autocompletion, description and parameters are provide by server */
+            /* Just to get console AutoCompletion */
             if (client.Account.Role >= RoleEnum.Moderator)
-                SendConsoleCommandsListMessage(client, WorldServer.Instance.CommandManager.AvailableCommands.SelectMany(c => c.Aliases).ToList(), new List<string>(), new List<string>());
+                SendConsoleCommandsListMessage(client);
         }
 
         public static void SendAccountCapabilitiesMessage(WorldClient client)
@@ -67,9 +80,15 @@ namespace Stump.Server.WorldServer.Handlers
                 ));
         }
 
-        public static void SendConsoleCommandsListMessage(WorldClient client, List<string> aliases, List<string> args, List<string> descr)
+        public static void SendAccountLoggingKickedMessage(WorldClient client)
         {
-            client.Send(new ConsoleCommandsListMessage(aliases, args, descr));
+            var date = client.WorldAccount.BanRemainingTime;
+            client.Send(new AccountLoggingKickedMessage((uint)date.Days, (uint)date.Hours, (uint)date.Minutes));
+        }
+
+        public static void SendConsoleCommandsListMessage(WorldClient client)
+        {
+            client.Send(new ConsoleCommandsListMessage(WorldServer.Instance.CommandManager.AvailableCommands.SelectMany(c => c.Aliases).ToList(), new List<string>(), new List<string>()));
         }
     }
 }

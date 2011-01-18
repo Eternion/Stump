@@ -116,7 +116,7 @@ namespace Stump.Server.BaseServer
             {
                 AskingSomething = true;
 
-                logger.Warn(request + " [CANCEL IN " + delay + " SECONDS] (y/n)");
+                logger.Warn(request + "\n[CANCEL IN " + delay + " SECONDS] (y/n)");
 
                 // Wait that user enter any characters ;)
                 if (ConditionWaiter.WaitFor(() => !EnteringCommand && Console.KeyAvailable, delay * 1000, AskWaiterInterval))

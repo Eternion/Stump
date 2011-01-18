@@ -196,7 +196,7 @@ namespace Stump.Server.WorldServer
             return clients;
         }
 
-        public IEnumerable<WorldClient> GetCharacters()
+        public IEnumerable<WorldClient> GetClientsWithActiveCharacter()
         {
             return GetClients().Where(c => c.ActiveCharacter != null);
         }

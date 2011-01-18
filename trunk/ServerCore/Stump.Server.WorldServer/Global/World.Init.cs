@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Stump.BaseCore.Framework.IO;
+using Stump.BaseCore.Framework.Utils;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Data;
@@ -59,6 +60,9 @@ namespace Stump.Server.WorldServer.Global
 
             logger.Info("Spawn Npcs...");
             SpawnNpcs();
+
+            logger.Info("Setup WorldElement Lazy Loading");
+            SetupLazyLoading();
         }
 
         public void LoadMaps()
@@ -133,7 +137,6 @@ namespace Stump.Server.WorldServer.Global
                 }
             }
         }
-
 
         public void LoadContinents()
         {
@@ -237,6 +240,40 @@ namespace Stump.Server.WorldServer.Global
                     logger.Error("Cannot spawn Npc <id:{0}> : {1}", npcSpawnInfo.NpcInformations.npcId, e.Message);
                 }
             }
+        }
+
+        public void SetupLazyLoading()
+        {
+            var text = "{0} was added in the {1}Folder, load it ?";
+
+            /* Npcs */
+            FileWatcher.RegisterFileCreation(NpcLoader.NpcsDir,f=>
+                {
+                    if (WorldServer.Instance.ConsoleInterface.AskForSomething(string.Format(text,f,"Npc"), 20))
+                    {
+                        //TODO
+                    }
+                });
+
+            /* InteractiveObject */
+            FileWatcher.RegisterFileCreation(InteractiveObjectLoader.InteractiveObjectsDir, f =>
+            {
+                if (WorldServer.Instance.ConsoleInterface.AskForSomething(string.Format(text, f, "InteractiveObject"), 20))
+                {
+                    //TODO
+                }
+            });
+
+            /* Trigger */
+            FileWatcher.RegisterFileCreation(MapLoader.CellTriggersDir, f =>
+            {
+                if (WorldServer.Instance.ConsoleInterface.AskForSomething(string.Format(text, f, "Trigger"), 20))
+                {
+                    //TODO
+                }
+            });
+
+            //TODO
         }
     }
 }
