@@ -4,6 +4,31 @@
         <name>Stump.Server.AuthServer</name>
     </assembly>
     <members>
+        <member name="M:Stump.Server.AuthServer.AuthentificationServer.#ctor">
+            <summary>
+              Bag containing client currently under authentification process.
+            </summary>
+        </member>
+        <member name="F:Stump.Server.AuthServer.IPC.IpcServer.IpcPort">
+            <summary>
+            IPC port
+            </summary>
+        </member>
+        <member name="F:Stump.Server.AuthServer.IPC.IpcServer.IpcSecretKey">
+            <summary>
+            Secret key to use to confirm World Server access
+            </summary>
+        </member>
+        <member name="F:Stump.Server.AuthServer.Managers.AccountManager.AvailableBreeds">
+            <summary>
+            List of available breeds
+            </summary>
+        </member>
+        <member name="P:Stump.Server.AuthServer.AuthClient.LookingOfServers">
+            <summary>
+              True when the client is choising a server
+            </summary>
+        </member>
         <member name="T:Stump.Server.AuthServer.WorldServerManager">
             <summary>
               Manager for handling different connected worlds
@@ -96,34 +121,9 @@
               Contains hard-coded data
             </summary>
         </member>
-        <member name="F:Stump.Server.AuthServer.Managers.AccountManager.AvailableBreeds">
-            <summary>
-            List of available breeds
-            </summary>
-        </member>
         <member name="F:Stump.Server.AuthServer.AuthConsole.CommandPreffix">
             <summary>
             Prefix using for server's commands
-            </summary>
-        </member>
-        <member name="M:Stump.Server.AuthServer.AuthentificationServer.#ctor">
-            <summary>
-              Bag containing client currently under authentification process.
-            </summary>
-        </member>
-        <member name="F:Stump.Server.AuthServer.IPC.IpcServer.IpcPort">
-            <summary>
-            IPC port
-            </summary>
-        </member>
-        <member name="F:Stump.Server.AuthServer.IPC.IpcServer.IpcSecretKey">
-            <summary>
-            Secret key to use to confirm World Server access
-            </summary>
-        </member>
-        <member name="P:Stump.Server.AuthServer.AuthClient.LookingOfServers">
-            <summary>
-              True when the client is choising a server
             </summary>
         </member>
     </members>

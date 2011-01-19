@@ -149,10 +149,19 @@ namespace Stump.Server.BaseServer
 
             logger.Info("Initializing Configuration...");
             /* Initialize Config File */
-            ConfigReader = new XmlConfigReader(
-                ConfigFilePath,
-                SchemaFilePath);
+            ConfigReader = new XmlConfigReader( ConfigFilePath, SchemaFilePath);
             ConfigReader.DefinesVariables(ref LoadedAssemblies);
+
+            /* Set Config Watcher */
+            FileWatcher.RegisterFileModification(ConfigFilePath, () =>
+                {
+                    if (ConsoleInterface.AskForSomething("Config has been modified, do you want to reload it ?", 20))
+                    {
+                        ConfigReader = new XmlConfigReader(ConfigFilePath, SchemaFilePath);
+                        ConfigReader.DefinesVariables(ref LoadedAssemblies);
+                        logger.Warn("Config has been reloaded sucessfully");
+                    }
+                });
 
             logger.Info("Initialize Task Pool");
             TaskPool = new TaskPool();
@@ -165,9 +174,9 @@ namespace Stump.Server.BaseServer
 
             CommandManager = new CommandsManager();
 
-            MessageListener = new MessageListener(QueueDispatcher,TaskPool, CreateClient);
+            MessageListener = new MessageListener(QueueDispatcher, TaskPool, CreateClient);
             MessageListener.Initialize();
-            
+
             MessageListener.ClientConnected += OnClientConnected;
             MessageListener.ClientDisconnected += OnClientDisconnected;
 
@@ -217,10 +226,10 @@ namespace Stump.Server.BaseServer
             if (args.IsTerminating)
                 logger.Fatal("Application has crashed. An Unhandled Exception has been thrown :");
 
-            logger.Error("Unhandled Exception : " + ((Exception) args.ExceptionObject).Message);
-            logger.Error("Source : {0} Method : {1}", ((Exception) args.ExceptionObject).Source,
-                         ((Exception) args.ExceptionObject).TargetSite);
-            logger.Error("Stack Trace : " + ((Exception) args.ExceptionObject).StackTrace);
+            logger.Error("Unhandled Exception : " + ((Exception)args.ExceptionObject).Message);
+            logger.Error("Source : {0} Method : {1}", ((Exception)args.ExceptionObject).Source,
+                         ((Exception)args.ExceptionObject).TargetSite);
+            logger.Error("Stack Trace : " + ((Exception)args.ExceptionObject).StackTrace);
 
             if (args.IsTerminating)
                 Shutdown();
@@ -272,7 +281,7 @@ namespace Stump.Server.BaseServer
                 Console.WriteLine("Application is now terminated. Wait " + Definitions.ExitWaitTime +
                                   " seconds to exit ... or press any key to cancel");
 
-                if (ConditionWaiter.WaitFor(() => Console.KeyAvailable, Definitions.ExitWaitTime*1000, 20))
+                if (ConditionWaiter.WaitFor(() => Console.KeyAvailable, Definitions.ExitWaitTime * 1000, 20))
                 {
                     Console.ReadKey(false);
 

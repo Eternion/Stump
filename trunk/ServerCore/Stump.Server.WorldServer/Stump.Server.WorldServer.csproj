@@ -92,9 +92,12 @@
     <Compile Include="Actions\ActionsCharacter\ActionTeleport.cs" />
     <Compile Include="Actions\CellAction.cs" />
     <Compile Include="Commands\Commands\TeleportCommand.cs" />
+    <Compile Include="Data\ThresholdLoader.cs" />
     <Compile Include="Entities\Character.Events.cs" />
     <Compile Include="Global\IContext.cs" />
     <Compile Include="Groups\IGroupMember.cs" />
+    <Compile Include="Threshold\ThresholdDictionnary.cs" />
+    <Compile Include="Threshold\ThresholdManager.cs" />
     <Compile Include="XmlSerialize\ActionSerialized.cs" />
     <Compile Include="Actions\CharacterAction.cs" />
     <Compile Include="Actions\InteractiveAction.cs" />
