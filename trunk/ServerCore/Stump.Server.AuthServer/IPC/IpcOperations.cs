@@ -167,14 +167,14 @@ namespace Stump.Server.AuthServer.IPC
             return AccountManager.DeleteAccountCharacter(account, world, characterId);
         }
 
-        public bool ExceedsDeletedCharactersQuota(uint accountId)
+        public int GetDeletedCharactersNumber(uint accountId)
         {
             var account = AccountRecord.FindAccountById(accountId);
 
             if (account == null)
-                return false;
+                return 0;
 
-            return account.DeletedCharacters.Count > 5;
+            return account.DeletedCharacters.Count;
         }
 
         public bool CheckWorldServerSecretKey(WorldServerInformation wsi, string secretKey)

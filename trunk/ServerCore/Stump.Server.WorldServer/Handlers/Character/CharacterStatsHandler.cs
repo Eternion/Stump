@@ -25,17 +25,23 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public partial class CharacterHandler : WorldHandlerContainer
     {
-        public static void SendLifePointsRegenEndMessage(WorldClient client)
-        {
-            client.Send(new LifePointsRegenEndMessage(
-                (uint) client.ActiveCharacter.Stats["Health"].Total,
-                (uint) ( (StatsHealth) client.ActiveCharacter.Stats["Health"] ).TotalMax,
-                0));
-        }
 
         public static void SendLifePointsRegenBeginMessage(WorldClient client, uint regenRate)
         {
             client.Send(new LifePointsRegenBeginMessage(regenRate));
+        }
+
+        public static void SendUpdateLifePointsMessage(WorldClient client, uint lifePoint)
+        {
+            client.Send(new UpdateLifePointsMessage(lifePoint, (uint)((StatsHealth)client.ActiveCharacter.Stats["Health"]).TotalMax));
+        }
+
+        public static void SendLifePointsRegenEndMessage(WorldClient client)
+        {
+            client.Send(new LifePointsRegenEndMessage(
+                (uint)client.ActiveCharacter.Stats["Health"].Total,
+                (uint)((StatsHealth)client.ActiveCharacter.Stats["Health"]).TotalMax,
+                0));
         }
 
         public static void SendCharacterStatsListMessage(WorldClient client)
@@ -43,17 +49,17 @@ namespace Stump.Server.WorldServer.Handlers
             client.Send(
                 new CharacterStatsListMessage(
                     new CharacterCharacteristicsInformations(
-                        0d, // EXPERIENCE
-                        0d, // EXPERIENCE level floor 
-                        110d, // EXPERIENCE nextlevel floor 
+                        client.ActiveCharacter.Experience, // EXPERIENCE
+                        ThresholdManager.Thresholds["CharacterExp"].GetLowerBound(client.ActiveCharacter.Experience), // EXPERIENCE level floor 
+                        ThresholdManager.Thresholds["CharacterExp"].GetUpperBound(client.ActiveCharacter.Experience), // EXPERIENCE nextlevel floor 
 
-                        (uint) client.ActiveCharacter.Kamas,
-                        // Amount of kamas.
+                        (uint)client.ActiveCharacter.Kamas,
+                // Amount of kamas.
 
-                        (uint) client.ActiveCharacter.StatsPoint,
-                        // Stats points
-                        (uint) client.ActiveCharacter.SpellsPoints,
-                        // Spell points
+                        (uint)client.ActiveCharacter.StatsPoint,
+                // Stats points
+                        (uint)client.ActiveCharacter.SpellsPoints,
+                // Spell points
 
                         // Alignment
                         new ActorExtendedAlignmentInformations(
@@ -67,17 +73,17 @@ namespace Stump.Server.WorldServer.Handlers
                             0, // honorNextGradeFloor
                             false // pvpEnabled
                             ),
-                        (uint) client.ActiveCharacter.Stats["Health"].
+                        (uint)client.ActiveCharacter.Stats["Health"].
                                    Total, // Life points
-                        (uint) ((StatsHealth) client.ActiveCharacter.Stats["Health"]).
+                        (uint)((StatsHealth)client.ActiveCharacter.Stats["Health"]).
                                    TotalMax, // Max Life points
 
-                        10000, // Energy points
-                        10000, // maxEnergyPoints
+                        client.ActiveCharacter.CurrentEnergy, // Energy points
+                        client.ActiveCharacter.MaxEnergy, // maxEnergyPoints
 
-                        (short) client.ActiveCharacter.Stats["AP"]
+                        (short)client.ActiveCharacter.Stats["AP"]
                                     .Total, // actionPointsCurrent
-                        (short) client.ActiveCharacter.Stats["MP"]
+                        (short)client.ActiveCharacter.Stats["MP"]
                                     .Total, // movementPointsCurrent
 
                         client.ActiveCharacter.Stats["Initiative"],
@@ -140,6 +146,16 @@ namespace Stump.Server.WorldServer.Handlers
                         client.ActiveCharacter.Stats["PvpFireElementReduction"],
                         new List<CharacterSpellModification>()
                         )));
+        }
+
+        public static void SendCharacterLevelUpMessage(WorldClient client, uint level)
+        {
+            client.Send(new CharacterLevelUpMessage(level));
+        }
+
+        public static void SendCharacterLevelUpInformationMessage(WorldClient client, Character character, uint level)
+        {
+            client.Send(new CharacterLevelUpInformationMessage(level, character.Name, (uint)character.Id, 0));
         }
     }
 }

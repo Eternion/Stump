@@ -30,32 +30,27 @@ namespace Stump.Server.WorldServer.Manager
             return IpcAccessor.Instance.ProxyObject.GetAccountRecordByTicket(WorldServer.ServerInformation, ticket);
         }
 
-        public static AccountRecord GetAccountByNickname(string accName)
+        public static AccountRecord GetAccountByNickname(string nickName)
         {
             if (!IpcAccessor.Instance.Connected ||
                 IpcAccessor.Instance.ProxyObject == null)
                 throw new Exception("Cannot acces to AuthServer, check that the server is running");
 
-            return IpcAccessor.Instance.ProxyObject.GetAccountRecordByNickname(WorldServer.ServerInformation, accName);
+            return IpcAccessor.Instance.ProxyObject.GetAccountRecordByNickname(WorldServer.ServerInformation, nickName);
         }
 
-        public static RoleEnum GetRoleByName(string accName)
+        public static RoleEnum GetRoleByNickName(string nickName)
         {
-            var acc = GetAccountByNickname(accName);
+            var acc = GetAccountByNickname(nickName);
 
             return acc == null ? RoleEnum.None : acc.Role;
         }
 
-        public static RoleEnum GetRoleWithCheckPassword(string accName, string accPass)
+        public static RoleEnum GetRoleWithCheckPassword(string nickName, string accPass)
         {
-            var acc = GetAccountByNickname(accName);
+            var acc = GetAccountByNickname(nickName);
 
             return acc == null || acc.Password != accPass ? RoleEnum.None : acc.Role;
-        }
-
-        public static bool ExceedsDeletedCharactersQuota(uint accountId)
-        {
-            return IpcAccessor.Instance.ProxyObject.ExceedsDeletedCharactersQuota(accountId);
         }
 
     }

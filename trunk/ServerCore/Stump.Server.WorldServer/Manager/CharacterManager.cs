@@ -56,7 +56,7 @@ namespace Stump.Server.WorldServer.Manager
             return characters;
         }
 
-        public static bool CreateCharacter(CharacterRecord character, WorldClient client)
+        public static bool CreateCharacterOnAccount(CharacterRecord character, WorldClient client)
         {
             if (client.Characters == null)
                 client.Characters = new List<CharacterRecord>(5);
@@ -77,13 +77,18 @@ namespace Stump.Server.WorldServer.Manager
             return true;
         }
 
-        public static void DeleteCharacter(CharacterRecord character, WorldClient client)
+        public static void DeleteCharacterOnAccount(CharacterRecord character, WorldClient client)
         {
             client.Characters.Remove(character);
 
             World.Instance.TaskPool.EnqueueTask(() => IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(WorldServer.ServerInformation,
                                                                                                               client.Account.Id,
                                                                                                               (uint)character.Id));
+        }
+
+        public static int GetAccountDeletedCharactersNumber(uint accountId)
+        {
+            return IpcAccessor.Instance.ProxyObject.GetDeletedCharactersNumber(accountId);
         }
 
         public static ExtendedLook GetStuffedCharacterLook(CharacterRecord character)
@@ -94,6 +99,7 @@ namespace Stump.Server.WorldServer.Manager
 
             return baseLook;
         }
+
 
         #region Character Name Random Generation
 

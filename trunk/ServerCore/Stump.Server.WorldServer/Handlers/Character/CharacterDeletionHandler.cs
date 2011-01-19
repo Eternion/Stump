@@ -16,45 +16,48 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.Utils;
 using Stump.Database;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Manager;
+using Stump.Server.WorldServer.Threshold;
 
 namespace Stump.Server.WorldServer.Handlers
 {
     public partial class CharacterHandler : WorldHandlerContainer
     {
+        [Variable]
+        public static int MaxDayCharacterDeletion = 5;
+
         [WorldHandler(typeof(CharacterDeletionRequestMessage))]
-        public static void HandleCharacterDeletionRequest(WorldClient client, CharacterDeletionRequestMessage message)
+        public static void HandleCharacterDeletionRequestMessage(WorldClient client, CharacterDeletionRequestMessage message)
         {
-            uint characterId = message.characterId;
+            CharacterRecord character = client.Characters.Find(o => o.Id == message.characterId);
 
-            CharacterRecord characterRecord = client.Characters.Find(o => o.Id == characterId);
-
-            /* Le personnage n'existe pas */
-            if (characterRecord == null)
+            /* check null */
+            if (character == null)
             {
                 client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_NO_REASON));
-                client.Disconnect();
+                client.DisconnectLater(1000);
                 return;
             }
 
             string secretAnswerHash = message.secretAnswerHash;
 
-            /* Vérification de la réponse secrete si level > 20 */
-            if (characterRecord.Level <= 20 || (client.Account.SecretAnswer != null &&
-                                                secretAnswerHash ==
-                                                StringUtils.GetMd5(characterId + "~" + client.Account.SecretAnswer)))
+            /* check secret answer if level > 20 */
+            if (ThresholdManager.Thresholds["CharacterExp"].GetLevel(character.Experience) <= 20 || (client.Account.SecretAnswer != null
+                    && secretAnswerHash == StringUtils.GetMd5(message.characterId + "~" + client.Account.SecretAnswer)))
             {
-                if (AccountManager.ExceedsDeletedCharactersQuota(client.Account.Id))
+                /* Too many character deletion */
+                if (CharacterManager.GetAccountDeletedCharactersNumber(client.Account.Id) > MaxDayCharacterDeletion)
                 {
                     client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_TOO_MANY_CHAR_DELETION));
                     return;
                 }
 
-                CharacterManager.DeleteCharacter(characterRecord, client);
+                CharacterManager.DeleteCharacterOnAccount(character, client);
 
                 SendCharactersListMessage(client);
                 BasicHandler.SendBasicNoOperationMessage(client);

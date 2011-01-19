@@ -165,7 +165,7 @@ namespace Stump.Server.BaseServer
 
             logger.Info("Initialize Task Pool");
             TaskPool = new TaskPool();
-            TaskPool.Initialize(Assembly.GetExecutingAssembly());
+            TaskPool.Initialize(Assembly.GetCallingAssembly());
 
             logger.Info("Initializing Network Interfaces...");
             QueueDispatcher = new QueueDispatcher(Settings.EnableBenchmarking);

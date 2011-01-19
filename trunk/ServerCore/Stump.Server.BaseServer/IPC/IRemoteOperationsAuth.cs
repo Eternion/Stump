@@ -129,14 +129,6 @@ namespace Stump.Server.BaseServer.IPC
         bool DeleteAccountCharacter(WorldServerInformation wsi, uint accountId, uint characterId);
 
         /// <summary>
-        /// Check if account exceeds the quota of day character deletion
-        /// </summary>
-        /// <param name="wsi"></param>
-        /// <param name="accountid"></param>
-        /// <returns></returns>
-        bool ExceedsDeletedCharactersQuota(uint accountId);
-
-        /// <summary>
         /// Check the world server's secret key
         /// </summary>
         /// <param name="wsi"></param>
@@ -160,5 +152,12 @@ namespace Stump.Server.BaseServer.IPC
         /// <param name="ipBanned"></param>
         void BanIp(WorldServerInformation wsi, IpBannedRecord ipBanned);
 
+        /// <summary>
+        /// Check if account exceeds the quota of day character deletion
+        /// </summary>
+        /// <param name="wsi"></param>
+        /// <param name="accountid"></param>
+        /// <returns></returns>
+        int GetDeletedCharactersNumber(uint accountId);
     }
 }
