@@ -33,11 +33,11 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public partial class CharacterHandler
     {
+
         [WorldHandler(typeof (CharacterFirstSelectionMessage))]
-        public static void HandleCharacterFirstSelectionMessage(WorldClient client,
-                                                                CharacterFirstSelectionMessage message)
+        public static void HandleCharacterFirstSelectionMessage(WorldClient client, CharacterFirstSelectionMessage message)
         {
-            // TODO ADD TUTORIAL
+            // TODO ADD TUTORIAL EFFECTS
             HandleCharacterSelectionMessage(client, message);
         }
 
@@ -53,68 +53,12 @@ namespace Stump.Server.WorldServer.Handlers
                 return;
             }
 
-            client.ActiveCharacter = new Character(character, client);
-
-            /* Check if we also have a world account */
-            if (client.WorldAccount == null)
-            {
-                if (!WorldAccountRecord.Exists(client.Account.Id))
-                    new WorldAccountRecord {Id = client.Account.Id, Nickname = client.Account.Nickname}.CreateAndFlush();
-
-                client.WorldAccount = WorldAccountRecord.FindWorldAccountById(client.Account.Id);
-            }
-
-            /* Update LastConnection and Last Ip */
-            client.WorldAccount.LastConnection = DateTime.Now;
-            client.WorldAccount.LastIp = client.IP;
-            client.WorldAccount.UpdateAndFlush();
-
-            SendCharacterSelectedSuccessMessage(client);
-
-            InventoryHandler.SendInventoryContentMessage(client);
-            InventoryHandler.SendInventoryWeightMessage(client);
-
-            InventoryHandler.SendSpellListMessage(client, true);
-            ContextHandler.SendSpellForgottenMessage(client);
-            ContextHandler.SendNotificationListMessage(client, new List<int>());
-
-            ContextHandler.SendEmoteListMessage(client, new List<uint>());
-            ChatHandler.SendEnabledChannelsMessage(client, new List<uint>(), new List<uint>());
-
-            PvpHandler.SendAlignmentRankUpdateMessage(client);
-            PvpHandler.SendAlignmentSubAreasListMessage(client);
-
-            InitializationHandler.SendSetCharacterRestrictionsMessage(client);
-
-            BasicHandler.SendTextInformationMessage(client, 1, 89);
-            BasicHandler.SendTextInformationMessage(client, 0, 152,
-                                                    client.Account.LastConnection.Year,
-                                                    client.Account.LastConnection.Month,
-                                                    client.Account.LastConnection.Day,
-                                                    client.Account.LastConnection.Hour,
-                                                    client.Account.LastConnection.Minute,
-                                                    client.Account.LastIp ?? "(null)");
-
-            InitializationHandler.SendOnConnectionEventMessage(client, 2);
-        }
-
-        [WorldHandler(typeof (CharactersListRequestMessage))]
-        public static void HandleCharacterListRequest(WorldClient client, CharactersListRequestMessage message)
-        {
-            if (client.Account != null && client.Account.Login != "")
-            {
-                SendCharactersListMessage(client);
-            }
-            else
-            {
-                client.Send(new IdentificationFailedMessage((int) IdentificationFailureReasonEnum.KICKED));
-                client.DisconnectLater(1000);
-            }
+            /* Common selection */
+            CommonCharacterSelection(client, character);
         }
 
         [WorldHandler(typeof (CharacterSelectionWithRecolorMessage))]
-        public static void HandleCharacterSelectionWithRecolorMessage(WorldClient client,
-                                                                      CharacterSelectionWithRecolorMessage message)
+        public static void HandleCharacterSelectionWithRecolorMessage(WorldClient client,CharacterSelectionWithRecolorMessage message)
         {
             CharacterRecord character = client.Characters.First(entry => entry.Id == message.id);
 
@@ -127,15 +71,49 @@ namespace Stump.Server.WorldServer.Handlers
 
             /* Set Colors */
             character.BaseLook.indexedColors = message.indexedColor;
-            character.SaveAndFlush();
+            character.Save();
 
+            /* Common selection */
+            CommonCharacterSelection(client, character);
+        }
+
+        [WorldHandler(typeof (CharacterSelectionWithRenameMessage))]
+        public static void HandleCharacterSelectionWithRenameMessage(WorldClient client,CharacterSelectionWithRenameMessage message)
+        {
+            CharacterRecord character = client.Characters.First(entry => entry.Id == message.id);
+
+            /* Check null */
+            if (character == null)
+            {
+                client.Send(new CharacterSelectedErrorMessage());
+                return;
+            }
+
+            /* Check if name is free */
+            if (CharacterRecord.IsNameExists(message.name) || !Regex.IsMatch(StringUtils.FirstLetterUpper(message.name.ToLower()),
+                               "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled))
+            {
+                client.Send(new CharacterCreationResultMessage((int) CharacterCreationResultEnum.ERR_NAME_ALREADY_EXISTS));
+                return;
+            }
+
+            /* Set new name */
+            character.Name = StringUtils.FirstLetterUpper(message.name.ToLower());
+            character.Save();
+
+            /* Common selection */
+            CommonCharacterSelection(client, character);
+        }
+
+        public static void CommonCharacterSelection(WorldClient client, CharacterRecord character)
+        {
             client.ActiveCharacter = new Character(character, client);
 
             /* Check if we also have a world account */
             if (client.WorldAccount == null)
             {
                 if (!WorldAccountRecord.Exists(client.Account.Id))
-                    new WorldAccountRecord {Id = client.Account.Id, Nickname = client.Account.Nickname}.CreateAndFlush();
+                    new WorldAccountRecord { Id = client.Account.Id, Nickname = client.Account.Nickname }.Create();
 
                 client.WorldAccount = WorldAccountRecord.FindWorldAccountById(client.Account.Id);
             }
@@ -143,7 +121,7 @@ namespace Stump.Server.WorldServer.Handlers
             /* Update LastConnection and Last Ip */
             client.WorldAccount.LastConnection = DateTime.Now;
             client.WorldAccount.LastIp = client.IP;
-            client.WorldAccount.UpdateAndFlush();
+            client.WorldAccount.Update();
 
             SendCharacterSelectedSuccessMessage(client);
 
@@ -174,75 +152,18 @@ namespace Stump.Server.WorldServer.Handlers
             InitializationHandler.SendOnConnectionEventMessage(client, 2);
         }
 
-        [WorldHandler(typeof (CharacterSelectionWithRenameMessage))]
-        public static void HandleCharacterSelectionWithRenameMessage(WorldClient client,
-                                                                     CharacterSelectionWithRenameMessage message)
+        [WorldHandler(typeof(CharactersListRequestMessage))]
+        public static void HandleCharacterListRequest(WorldClient client, CharactersListRequestMessage message)
         {
-            CharacterRecord character = client.Characters.First(entry => entry.Id == message.id);
-
-            /* Check null */
-            if (character == null)
+            if (client.Account != null && client.Account.Login != "")
             {
-                client.Send(new CharacterSelectedErrorMessage());
-                return;
+                SendCharactersListMessage(client);
             }
-
-            /* Check if name is free */
-            if (CharacterRecord.IsNameExists(message.name) ||
-                !Regex.IsMatch(StringUtils.FirstLetterUpper(message.name.ToLower()),
-                               "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled))
+            else
             {
-                client.Send(new CharacterCreationResultMessage((int) CharacterCreationResultEnum.ERR_NAME_ALREADY_EXISTS));
-                return;
+                client.Send(new IdentificationFailedMessage((int)IdentificationFailureReasonEnum.KICKED));
+                client.DisconnectLater(1000);
             }
-
-            /* Set new name */
-            character.Name = StringUtils.FirstLetterUpper(message.name.ToLower());
-            character.SaveAndFlush();
-
-            client.ActiveCharacter = new Character(character, client);
-
-            /* Check if we also have a world account */
-            if (client.WorldAccount == null)
-            {
-                if (!WorldAccountRecord.Exists(client.Account.Id))
-                    new WorldAccountRecord {Id = client.Account.Id, Nickname = client.Account.Nickname}.CreateAndFlush();
-
-                client.WorldAccount = WorldAccountRecord.FindWorldAccountById(client.Account.Id);
-            }
-
-            /* Update LastConnection and Last Ip */
-            client.WorldAccount.LastConnection = DateTime.Now;
-            client.WorldAccount.LastIp = client.IP;
-            client.WorldAccount.UpdateAndFlush();
-
-            SendCharacterSelectedSuccessMessage(client);
-
-            InventoryHandler.SendInventoryContentMessage(client);
-            InventoryHandler.SendInventoryWeightMessage(client);
-
-            InventoryHandler.SendSpellListMessage(client, true);
-            ContextHandler.SendSpellForgottenMessage(client);
-            ContextHandler.SendNotificationListMessage(client, new List<int>());
-
-            ContextHandler.SendEmoteListMessage(client, new List<uint>());
-            ChatHandler.SendEnabledChannelsMessage(client, new List<uint>(), new List<uint>());
-
-            PvpHandler.SendAlignmentRankUpdateMessage(client);
-            PvpHandler.SendAlignmentSubAreasListMessage(client);
-
-            InitializationHandler.SendSetCharacterRestrictionsMessage(client);
-
-            BasicHandler.SendTextInformationMessage(client, 1, 89);
-            BasicHandler.SendTextInformationMessage(client, 0, 152,
-                                                    client.Account.LastConnection.Year,
-                                                    client.Account.LastConnection.Month,
-                                                    client.Account.LastConnection.Day,
-                                                    client.Account.LastConnection.Hour,
-                                                    client.Account.LastConnection.Minute,
-                                                    client.Account.LastIp ?? "(null)");
-
-            InitializationHandler.SendOnConnectionEventMessage(client, 2);
         }
 
         public static void SendCharactersListMessage(WorldClient client)

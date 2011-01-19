@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof(CharacterReplayRequestMessage))]
         public static void HandleCharacterReplayRequestMessage(WorldClient client, CharacterReplayRequestMessage message)
         {
-
+            // TODO mhh ?
         }
 
         [WorldHandler(typeof(CharacterReplayWithRenameRequestMessage))]

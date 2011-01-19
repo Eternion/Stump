@@ -28,44 +28,32 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public partial class CharacterHandler : WorldHandlerContainer
     {
-<<<<<<< HEAD
         [Variable]
         public static int MaxDayCharacterDeletion = 5;
 
         [WorldHandler(typeof(CharacterDeletionRequestMessage))]
         public static void HandleCharacterDeletionRequestMessage(WorldClient client, CharacterDeletionRequestMessage message)
-=======
-        [WorldHandler(typeof (CharacterDeletionRequestMessage))]
-        public static void HandleCharacterDeletionRequest(WorldClient client, CharacterDeletionRequestMessage message)
->>>>>>> 23e9354153cb54a4bfe880de59e0d30f32883ff8
         {
             CharacterRecord character = client.Characters.Find(o => o.Id == message.characterId);
 
             /* check null */
             if (character == null)
             {
-<<<<<<< HEAD
                 client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_NO_REASON));
                 client.DisconnectLater(1000);
-=======
-                client.Send(new CharacterDeletionErrorMessage((int) CharacterDeletionErrorEnum.DEL_ERR_NO_REASON));
-                client.Disconnect();
->>>>>>> 23e9354153cb54a4bfe880de59e0d30f32883ff8
                 return;
             }
 
             string secretAnswerHash = message.secretAnswerHash;
 
-            /* check secret answer if level > 20 */
+            /* Level < 20 or > 20 and Good secret Answer */
             if (ThresholdManager.Thresholds["CharacterExp"].GetLevel(character.Experience) <= 20 || (client.Account.SecretAnswer != null
                     && secretAnswerHash == StringUtils.GetMd5(message.characterId + "~" + client.Account.SecretAnswer)))
             {
                 /* Too many character deletion */
                 if (CharacterManager.GetAccountDeletedCharactersNumber(client.Account.Id) > MaxDayCharacterDeletion)
                 {
-                    client.Send(
-                        new CharacterDeletionErrorMessage(
-                            (int) CharacterDeletionErrorEnum.DEL_ERR_TOO_MANY_CHAR_DELETION));
+                    client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_TOO_MANY_CHAR_DELETION));
                     return;
                 }
 
@@ -76,8 +64,9 @@ namespace Stump.Server.WorldServer.Handlers
             }
             else
             {
-                client.Send(new CharacterDeletionErrorMessage((int) CharacterDeletionErrorEnum.DEL_ERR_BAD_SECRET_ANSWER));
+                client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_BAD_SECRET_ANSWER));
             }
         }
+
     }
 }
