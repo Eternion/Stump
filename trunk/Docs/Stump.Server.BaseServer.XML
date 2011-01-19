@@ -4,30 +4,6 @@
         <name>Stump.Server.BaseServer</name>
     </assembly>
     <members>
-<<<<<<< HEAD
-        <member name="F:Stump.Server.BaseServer.IPC.WorldServerInformation.Address">
-            <summary>
-              World address.
-            </summary>
-        </member>
-        <member name="F:Stump.Server.BaseServer.IPC.WorldServerInformation.Id">
-            <summary>
-              Internally assigned unique Id of this World.
-            </summary>
-        </member>
-        <member name="F:Stump.Server.BaseServer.IPC.WorldServerInformation.Name">
-            <summary>
-              World name.
-            </summary>
-        </member>
-        <member name="M:Stump.Server.BaseServer.IPC.IRemoteOperationsWorld.DisconnectConnectedAccount(Stump.Database.AuthServer.AccountRecord)">
-            <summary>
-              Disconnect client who use the given account
-            </summary>
-            <param name = "account"></param>
-        </member>
-=======
->>>>>>> d1db21b4066d57be5d99588671b3cd338b7c1332
         <member name="M:Stump.Server.BaseServer.IPC.IRemoteOperationsAuth.RegisterWorld(Stump.Server.BaseServer.IPC.WorldServerInformation,System.Int32)">
             <summary>
               Register a game server when he gets online.
@@ -143,11 +119,7 @@
             <param name="banEndDate"></param>
             <returns></returns>
         </member>
-<<<<<<< HEAD
-        <member name="M:Stump.Server.BaseServer.IPC.IRemoteOperationsAuth.BanIp(Stump.Server.BaseServer.IPC.WorldServerInformation,Stump.Database.AuthServer.IpBannedRecord)">
-=======
         <member name="M:Stump.Server.BaseServer.IPC.IRemoteOperationsAuth.BanIp(Stump.Server.BaseServer.IPC.WorldServerInformation,System.String)">
->>>>>>> d1db21b4066d57be5d99588671b3cd338b7c1332
             <summary>
             Ban an ip
             </summary>
