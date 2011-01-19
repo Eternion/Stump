@@ -20,7 +20,7 @@ using System;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
 
-namespace Stump.Database
+namespace Stump.Database.AuthServer
 {
     [Serializable]
     [AttributeDatabase(DatabaseService.AuthServer)]

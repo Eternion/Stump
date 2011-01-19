@@ -18,6 +18,7 @@
 //  *************************************************************************/
 using Stump.BaseCore.Framework.Utils;
 using Stump.Database;
+using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Manager;

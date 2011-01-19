@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Database;
+using Stump.Database.WorldServer;
 using Stump.Server.WorldServer.Manager;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;

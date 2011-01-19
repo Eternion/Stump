@@ -17,12 +17,9 @@
 //  *
 //  *************************************************************************/
 using System;
-using System.Collections.Generic;
 using Castle.ActiveRecord;
-using NHibernate.Criterion;
-using Stump.DofusProtocol.Enums;
 
-namespace Stump.Database
+namespace Stump.Database.WorldServer
 {
     [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("bidhouses_items")]

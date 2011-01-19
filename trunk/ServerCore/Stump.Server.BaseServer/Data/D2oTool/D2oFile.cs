@@ -17,10 +17,12 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Stump.BaseCore.Framework.IO;
 using Stump.DofusProtocol.D2oClasses;
@@ -145,7 +147,7 @@ namespace Stump.Server.BaseServer.Data.D2oTool
                                                                 FileName)) == 0)
                 throw new Exception("Targeted class hasn't correct AttributeAssociatedFile");
 
-            var result = new Dictionary<int, T>();
+            var result = new ConcurrentDictionary<int, T>();
             Parallel.ForEach(m_indextable, index =>
             {
                 var reader = new BigEndianReader(new MemoryStream(m_filebuffer));
@@ -159,12 +161,17 @@ namespace Stump.Server.BaseServer.Data.D2oTool
                 {
                     try
                     {
-                        result.Add(index.Key, m_classes[classid].BuildClassObject<T>(reader));
+                        int i = 0;
+                        while (!result.TryAdd(index.Key, m_classes[classid].BuildClassObject<T>(reader)) && i < 10)
+                        {
+                            Thread.Sleep(1);
+                            i++;
+                        }
                     }
                     catch
                     {
                         if (allownulled)
-                            result.Add(index.Key, default(T));
+                            result.TryAdd(index.Key, default(T));
                         else
                             throw;
                     }
@@ -173,7 +180,7 @@ namespace Stump.Server.BaseServer.Data.D2oTool
                 reader.Dispose();
             });
 
-            return result;
+            return result.ToDictionary(key => key.Key, value => value.Value);
         }
 
         /// <summary>
@@ -192,7 +199,7 @@ namespace Stump.Server.BaseServer.Data.D2oTool
         /// <returns></returns>
         public Dictionary<int, object> ReadObjects(bool allownulled)
         {
-            var result = new Dictionary<int, object>();
+            var result = new ConcurrentDictionary<int, object>();
             Parallel.ForEach(m_indextable, index =>
             {
                 var reader = new BigEndianReader(new MemoryStream(m_filebuffer));
@@ -203,12 +210,17 @@ namespace Stump.Server.BaseServer.Data.D2oTool
 
                 try
                 {
-                    result.Add(index.Key, m_classes[classid].BuildClassObject(reader, m_classes[classid].ClassType));
+                    int i = 0;
+                    while (!result.TryAdd(index.Key, m_classes[classid].BuildClassObject(reader, m_classes[classid].ClassType)) && i < 10)
+                    {
+                        Thread.Sleep(1);
+                        i++;
+                    }
                 }
                 catch
                 {
                     if (allownulled)
-                        result.Add(index.Key, null);
+                        result.TryAdd(index.Key, null);
                     else
                         throw;
                 }
@@ -217,7 +229,7 @@ namespace Stump.Server.BaseServer.Data.D2oTool
                 reader.Dispose();
             });
 
-            return result;
+            return result.ToDictionary(key => key.Key, value => value.Value);
         }
 
         /// <summary>

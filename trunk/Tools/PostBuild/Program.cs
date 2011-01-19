@@ -74,7 +74,7 @@ namespace PostBuild
 
                     if (File.Exists(docPath))
                         doc = DotNetDocumentation.Load(docPath);
-                    Debugger.Launch();
+
                     var lastNamespace = new List<string>();
                     foreach (Type type in asm.GetTypes())
                     {

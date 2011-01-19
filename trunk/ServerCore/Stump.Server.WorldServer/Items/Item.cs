@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.BaseCore.Framework.Extensions;
 using Stump.Database;
+using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Effects;
@@ -29,59 +30,46 @@ using Stump.Server.WorldServer.Global;
 
 namespace Stump.Server.WorldServer.Items
 {
-    public class Item : IOwned
+    public class Item
     {
         #region Fields
 
-        private readonly CharacterItemRecord m_record;
-
-        private List<EffectBase> m_effects;
-        private CharacterInventoryPositionEnum m_position;
-        private uint m_stack;
-        protected ItemTemplate m_template;
+        private readonly ItemRecord m_record;
 
         #endregion
 
         #region Constructors
 
-        public Item(LivingEntity owner, Item item)
-            : this(owner, item, item.Stack)
+        public Item(Item item, uint stack)
+            : this(item.Template, item.Guid, item.Position, stack, item.Effects)
         {
         }
 
-        public Item(LivingEntity owner, Item item, uint stack)
-            : this(owner, item.Template, item.Guid, item.Position, stack, item.Effects)
+        public Item(ItemTemplate template, long guid)
+            : this(template, guid, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
         {
         }
 
-        public Item(LivingEntity owner, ItemTemplate template, long guid)
-            : this(owner, template, guid, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
+        public Item(ItemTemplate template, long guid, CharacterInventoryPositionEnum position)
+            : this(template, guid, position, 1)
         {
         }
 
-        public Item(LivingEntity owner, ItemTemplate template, long guid, CharacterInventoryPositionEnum position)
-            : this(owner, template, guid, position, 1)
+        public Item(ItemTemplate template, long guid, CharacterInventoryPositionEnum position, uint stack)
+            : this(template, guid, position, stack, new List<EffectBase>())
         {
         }
 
-        public Item(LivingEntity owner, ItemTemplate template, long guid, CharacterInventoryPositionEnum position, uint stack)
-            : this(owner, template, guid, position, stack, new List<EffectBase>())
-        {
-        }
-
-        public Item(LivingEntity owner, ItemTemplate template, long guid, CharacterInventoryPositionEnum position, uint stack,
+        public Item(ItemTemplate template, long guid, CharacterInventoryPositionEnum position, uint stack,
                     List<EffectBase> effects)
         {
-            Owner = owner;
-            m_template = template;
-            Guid = guid;
-            m_position = position;
-            m_stack = stack;
-            m_effects = effects;
-            m_record = new CharacterItemRecord // create the associated record
+            Template = template;
+            Position = position;
+            Stack = stack;
+            Effects = effects;
+            m_record = new ItemRecord // create the associated record
                 {
                     Guid = guid,
-                    OwnerId = owner.Id,
                     ItemId = template.Id,
                     Stack = stack,
                     Position = position,
@@ -89,22 +77,32 @@ namespace Stump.Server.WorldServer.Items
                 };
         }
 
-        public Item(LivingEntity owner, CharacterItemRecord record)
+        public Item(ItemRecord record)
         {
             m_record = record;
-            
-            if (m_record.OwnerId != owner.Id)
-                throw new Exception(
-                    string.Format(
-                        "This item <guid:{0}> don't own to the given Entity <id:{1}> but to this Entity <id:{2}>",
-                        m_record.Guid, owner.Id, m_record.OwnerId));
+          
+            Template = ItemManager.GetTemplate(m_record.ItemId);
+            Stack = m_record.Stack;
+            Position = m_record.Position;
+            Effects = GetEffectsUnSerialized(m_record.Effects);
+        }
 
-            Owner = owner;
-            Guid = m_record.Guid;
-            m_template = ItemManager.GetTemplate(m_record.ItemId);
-            m_stack = m_record.Stack;
-            m_position = m_record.Position;
-            m_effects = GetEffectsUnSerialized(m_record.Effects);
+        internal Item(ItemTemplate template, CharacterInventoryPositionEnum position, uint stack,
+                      List<EffectBase> effects)
+        {
+            Template = template;
+            Position = position;
+            Stack = stack;
+            Effects = effects;
+
+            m_record = new ItemRecord // create the associated record
+                       {
+                           Guid = -1, // unassigned guid. ITEM CANNOT BE USED !
+                           ItemId = template.Id,
+                           Stack = stack,
+                           Position = position,
+                           Effects = GetEffectsSerialized()
+                       };
         }
 
         #endregion
@@ -118,8 +116,7 @@ namespace Stump.Server.WorldServer.Items
         /// <returns></returns>
         public bool IsStackableWith(Item compared)
         {
-            return (compared.Owner == Owner &&
-                    compared.ItemId == ItemId &&
+            return (compared.ItemId == ItemId &&
                     compared.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED &&
                     compared.Effects.CompareEnumerable(Effects));
         }
@@ -131,8 +128,7 @@ namespace Stump.Server.WorldServer.Items
         /// <returns></returns>
         public bool MustStackWith(Item compared)
         {
-            return (compared.Owner == Owner &&
-                    compared.ItemId == ItemId &&
+            return (compared.ItemId == ItemId &&
                     compared.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED &&
                     compared.Position == Position &&
                     compared.Effects.CompareEnumerable(Effects));
@@ -140,18 +136,18 @@ namespace Stump.Server.WorldServer.Items
 
         public void StackItem(uint amount)
         {
-            if (m_position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
+            if (Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
                 return;
 
-            m_stack += amount;
+            Stack += amount;
         }
 
         public void UnStackItem(uint amount)
         {
-            if (m_position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
+            if (Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
                 return;
 
-            m_stack -= amount;
+            Stack -= amount;
         }
 
         public ObjectItem ToNetworkItem()
@@ -161,7 +157,7 @@ namespace Stump.Server.WorldServer.Items
                 (uint) ItemId,
                 0, // todo : power rate
                 false, // todo : over max
-                m_effects.Select(entry => entry.ToNetworkEffect()).ToList(),
+                Effects.Select(entry => entry.ToNetworkEffect()).ToList(),
                 (uint) Guid,
                 Stack);
         }
@@ -177,47 +173,51 @@ namespace Stump.Server.WorldServer.Items
 
         public ItemTemplate Template
         {
-            get { return m_template; }
+            get;
+            protected set;
         }
 
         public long Guid
         {
-            get;
-            private set;
+            get
+            {
+                return m_record.Guid;
+            }
+            internal set
+            {
+                m_record.Guid = value;
+            }
         }
 
         public int ItemId
         {
-            get { return m_template.Id; }
+            get { return Template.Id; }
         }
 
         public uint Stack
         {
-            get { return m_stack; }
-            set { m_stack = value; }
+            get;
+            set;
         }
 
         public CharacterInventoryPositionEnum Position
         {
-            get { return m_position; }
-            set { m_position = value; }
+            get;
+            set;
         }
 
         public List<EffectBase> Effects
         {
-            get { return m_effects; }
-            set { m_effects = value; }
-        }
-
-        Entity IOwned.Owner
-        {
-            get { return Owner; }
-        }
-
-        public LivingEntity Owner
-        {
             get;
             set;
+        }
+
+        internal bool CanBeSave
+        {
+            get
+            {
+                return Guid != -1;
+            }
         }
 
         #endregion
@@ -231,19 +231,20 @@ namespace Stump.Server.WorldServer.Items
 
         internal void SaveNow()
         {
-            m_record.Guid = Guid;
-            m_record.ItemId = m_template.Id;
-            m_record.Position = m_position;
-            m_record.Stack = m_stack;
-            m_record.OwnerId = Owner.Id;
-            m_record.Effects = GetEffectsSerialized();
+            if (CanBeSave)
+            {
+                m_record.ItemId = Template.Id;
+                m_record.Position = Position;
+                m_record.Stack = Stack;
+                m_record.Effects = GetEffectsSerialized();
 
-            m_record.Save();
+                m_record.Save();
+            }
         }
 
-        public void Create()
+        internal void Create()
         {
-            World.Instance.TaskPool.EnqueueTask(m_record.Create);
+            m_record.Create();
         }
 
         public void Delete()
@@ -253,10 +254,10 @@ namespace Stump.Server.WorldServer.Items
 
         internal List<byte[]> GetEffectsSerialized()
         {
-            return m_effects.Select(EffectBase.Serialize).ToList();
+            return Effects.Select(EffectBase.Serialize).ToList();
         }
 
-        internal List<EffectBase> GetEffectsUnSerialized(List<byte[]> buffers)
+        internal List<EffectBase> GetEffectsUnSerialized(IList<byte[]> buffers)
         {
             return buffers.Select(EffectBase.DeSerialize).ToList();
         }

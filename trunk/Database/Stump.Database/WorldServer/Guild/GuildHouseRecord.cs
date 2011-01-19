@@ -16,12 +16,9 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System.Collections.Generic;
 using Castle.ActiveRecord;
-using NHibernate.Criterion;
-using Stump.DofusProtocol.Enums;
 
-namespace Stump.Database
+namespace Stump.Database.WorldServer
 {
     [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("guilds_houses")]

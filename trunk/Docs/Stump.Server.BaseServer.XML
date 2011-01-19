@@ -19,7 +19,7 @@
               World name.
             </summary>
         </member>
-        <member name="M:Stump.Server.BaseServer.IPC.IRemoteOperationsWorld.DisconnectConnectedAccount(Stump.Database.AccountRecord)">
+        <member name="M:Stump.Server.BaseServer.IPC.IRemoteOperationsWorld.DisconnectConnectedAccount(Stump.Database.AuthServer.AccountRecord)">
             <summary>
               Disconnect client who use the given account
             </summary>
@@ -75,13 +75,13 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Stump.Server.BaseServer.IPC.IRemoteOperationsAuth.ModifyAccountRecordByNickname(Stump.Server.BaseServer.IPC.WorldServerInformation,System.String,Stump.Database.AccountRecord)">
+        <member name="M:Stump.Server.BaseServer.IPC.IRemoteOperationsAuth.ModifyAccountRecordByNickname(Stump.Server.BaseServer.IPC.WorldServerInformation,System.String,Stump.Database.AuthServer.AccountRecord)">
             <summary>
               Get and return an account record with a given account name.
             </summary>
             <returns>success</returns>
         </member>
-        <member name="M:Stump.Server.BaseServer.IPC.IRemoteOperationsAuth.CreateAccountRecord(Stump.Server.BaseServer.IPC.WorldServerInformation,Stump.Database.AccountRecord)">
+        <member name="M:Stump.Server.BaseServer.IPC.IRemoteOperationsAuth.CreateAccountRecord(Stump.Server.BaseServer.IPC.WorldServerInformation,Stump.Database.AuthServer.AccountRecord)">
             <summary>
               Create a new account and cache it.
             </summary>
@@ -140,7 +140,7 @@
             <param name="banEndDate"></param>
             <returns></returns>
         </member>
-        <member name="M:Stump.Server.BaseServer.IPC.IRemoteOperationsAuth.BanIp(Stump.Server.BaseServer.IPC.WorldServerInformation,Stump.Database.IpBannedRecord)">
+        <member name="M:Stump.Server.BaseServer.IPC.IRemoteOperationsAuth.BanIp(Stump.Server.BaseServer.IPC.WorldServerInformation,Stump.Database.AuthServer.IpBannedRecord)">
             <summary>
             Ban an IP
             </summary>

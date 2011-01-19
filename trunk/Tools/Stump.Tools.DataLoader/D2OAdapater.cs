@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.Server.BaseServer.Data.D2oTool;
-
 
 namespace Stump.Tools.DataLoader
 {
@@ -16,13 +15,18 @@ namespace Stump.Tools.DataLoader
     {
         private static I18nFile m_lastI18NFile;
 
-        private static readonly Dictionary<string,Type> m_typeByFileName = new Dictionary<string, Type>();
+        private static readonly Dictionary<string, Type> m_typeByFileName = new Dictionary<string, Type>();
+
+        private D2oFile m_d2oFile;
+        private FormD2O m_form;
 
         static D2OAdapater()
         {
-            foreach (var type in typeof(AttributeAssociatedFile).Assembly.GetTypes())
+            foreach (Type type in typeof (AttributeAssociatedFile).Assembly.GetTypes())
             {
-                var attribute = (AttributeAssociatedFile) type.GetCustomAttributes(typeof(AttributeAssociatedFile), false).FirstOrDefault();
+                var attribute =
+                    (AttributeAssociatedFile)
+                    type.GetCustomAttributes(typeof (AttributeAssociatedFile), false).FirstOrDefault();
 
                 if (attribute != null)
                 {
@@ -30,11 +34,12 @@ namespace Stump.Tools.DataLoader
                 }
             }
         }
-        
+
         public D2OAdapater()
         {
             MenuItem = new ToolStripMenuItem("D2O");
             MenuItem.DropDownItems.Add("Convert Name's ID by Text...", null, AttachToI18N);
+            MenuItem.DropDownItems.Add("Extract to JSON file...", null, ToJson);
         }
 
         public D2OAdapater(string file)
@@ -42,6 +47,8 @@ namespace Stump.Tools.DataLoader
         {
             FileName = file;
         }
+
+        #region IFileAdapter Members
 
         public string FileName
         {
@@ -53,7 +60,7 @@ namespace Stump.Tools.DataLoader
         {
             get { return "d2o"; }
         }
-        private FormD2O m_form;
+
         public Form Form
         {
             get { return m_form; }
@@ -73,10 +80,10 @@ namespace Stump.Tools.DataLoader
                 throw new ArgumentException(string.Format("'{0}' is not a valid D2O file", FileName));
 
             m_form = new FormD2O(this)
-            {
-                Text = Path.GetFileName(FileName),
-                Adapter = this
-            };
+                     {
+                         Text = Path.GetFileName(FileName),
+                         Adapter = this
+                     };
             FillDataView();
         }
 
@@ -85,11 +92,13 @@ namespace Stump.Tools.DataLoader
             throw new NotImplementedException();
         }
 
+        #endregion
+
         private void FillDataView()
         {
-            var datafile = new D2oFile(FileName);
+            m_d2oFile = new D2oFile(FileName);
 
-            Dictionary<int, D2oClassDefinition> classes = datafile.GetClasses();
+            Dictionary<int, D2oClassDefinition> classes = m_d2oFile.GetClasses();
             string[] columns = classes.Values.First().Fields.Select(entry => entry.Key).ToArray();
             m_form.DefineColumns(columns);
 
@@ -98,13 +107,14 @@ namespace Stump.Tools.DataLoader
             {
                 try
                 {
-                    object data = datafile.ReadObject(@class.Key);
+                    object data = m_d2oFile.ReadObject(@class.Key);
 
                     if (data != null)
                     {
-                        var fields =
-                            data.GetType().GetFields(BindingFlags.Public | BindingFlags.GetField | BindingFlags.Instance).
-                            ToDictionary(entry=> entry.Name, entry => entry.GetValue(data));
+                        Dictionary<string, object> fields =
+                            data.GetType().GetFields(BindingFlags.Public | BindingFlags.GetField | BindingFlags.Instance)
+                                .
+                                ToDictionary(entry => entry.Name, entry => entry.GetValue(data));
 
                         var values = new object[columns.Length];
                         for (int i = 0; i < columns.Length; i++)
@@ -112,7 +122,7 @@ namespace Stump.Tools.DataLoader
                             values[i] = fields[columns[i]];
                         }
 
-                        var row = m_form.AddRow(values);
+                        DataGridViewRow row = m_form.AddRow(values);
                         row.Tag = data;
                     }
                     else
@@ -129,22 +139,22 @@ namespace Stump.Tools.DataLoader
 
         private void AttachToI18N(object sender, EventArgs eventArgs)
         {
-            var columns = (from DataGridViewColumn entry in m_form.m_dataView.Columns
-                           select entry.HeaderText).ToArray();
+            string[] columns = (from DataGridViewColumn entry in m_form.m_dataView.Columns
+                                select entry.HeaderText).ToArray();
 
             var dialogSelect = new FormSelect(columns, columns.Where(entry => entry.ToLower().Contains("nameid")))
-                {Text = @"Select columns to convert..."};
+                               {Text = @"Select columns to convert..."};
 
             if (dialogSelect.ShowDialog(Form) == DialogResult.OK)
             {
                 var dialog = new OpenFileDialog
-                    {
-                        Title = @"Select the d2i file used to found the text by the name's id...",
-                        CheckFileExists = true,
-                        CheckPathExists = true,
-                        Filter = @"d2i files (*.d2i)|*.d2i",
-                        Multiselect = false
-                    };
+                             {
+                                 Title = @"Select the d2i file used to found the text by the name's id...",
+                                 CheckFileExists = true,
+                                 CheckPathExists = true,
+                                 Filter = @"d2i files (*.d2i)|*.d2i",
+                                 Multiselect = false
+                             };
 
                 if (m_lastI18NFile != null || dialog.ShowDialog(Form) == DialogResult.OK)
                 {
@@ -153,17 +163,34 @@ namespace Stump.Tools.DataLoader
 
                     for (int i = 0; i < m_form.m_dataView.Rows.Count; i++)
                     {
-                        foreach (var column in dialogSelect.SelectedStrings)
+                        foreach (string column in dialogSelect.SelectedStrings)
                         {
                             if (m_form.m_dataView.Rows[i].Cells[column].Value is int)
                                 m_form.m_dataView.Rows[i].Cells[column].Value =
-                                    m_lastI18NFile.ReadText((int)m_form.m_dataView.Rows[i].Cells[column].Value);
+                                    m_lastI18NFile.ReadText((int) m_form.m_dataView.Rows[i].Cells[column].Value);
                             else if (m_form.m_dataView.Rows[i].Cells[column].Value is uint)
                                 m_form.m_dataView.Rows[i].Cells[column].Value =
-                                    m_lastI18NFile.ReadText((int)( (uint)m_form.m_dataView.Rows[i].Cells[column].Value ));
+                                    m_lastI18NFile.ReadText((int) ((uint) m_form.m_dataView.Rows[i].Cells[column].Value));
                         }
                     }
                 }
+            }
+        }
+
+        private void ToJson(object sender, EventArgs eventArgs)
+        {
+            var dialog = new SaveFileDialog
+                         {
+                             Title = @"Create the output JSON file",
+                             FileName = Path.GetFileNameWithoutExtension(FileName) + ".json",
+                         };
+
+            if (dialog.ShowDialog(Form) == DialogResult.OK)
+            {
+                var items = m_d2oFile.ReadObjects().Values.ToArray();
+
+                var serializer = new JavaScriptSerializer();
+                File.WriteAllText(dialog.FileName, serializer.Serialize(items));
             }
         }
     }

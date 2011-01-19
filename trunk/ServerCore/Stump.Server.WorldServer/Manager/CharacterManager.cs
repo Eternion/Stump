@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Castle.ActiveRecord;
 using Stump.Database;
+using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Classes.Custom;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.IPC;

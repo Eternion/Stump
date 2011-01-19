@@ -21,6 +21,7 @@ using System.Linq;
 using System.Net.Sockets;
 using Stump.BaseCore.Framework.Extensions;
 using Stump.Database;
+using Stump.Database.AuthServer;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 

@@ -21,10 +21,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
-using NHibernate.Engine;
 using Stump.DofusProtocol.Enums;
 
-namespace Stump.Database
+namespace Stump.Database.AuthServer
 {
     [Serializable]
     [AttributeDatabase(DatabaseService.AuthServer)]

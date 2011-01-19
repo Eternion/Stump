@@ -20,6 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using Stump.Database;
+using Stump.Database.AuthServer;
+using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Entities;

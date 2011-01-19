@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Database;
+using Stump.Database.AuthServer;
 using Stump.Server.BaseServer.IPC;
 
 namespace Stump.Server.WorldServer.IPC

@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.Database;
+using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;

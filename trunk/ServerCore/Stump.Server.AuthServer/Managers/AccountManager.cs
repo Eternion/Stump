@@ -22,6 +22,7 @@ using System.Linq;
 using NLog;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.Database;
+using Stump.Database.AuthServer;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.AuthServer.Managers

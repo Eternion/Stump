@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using Stump.Database;
+using Stump.Database.AuthServer;
 
 namespace Stump.Server.BaseServer.IPC
 {
