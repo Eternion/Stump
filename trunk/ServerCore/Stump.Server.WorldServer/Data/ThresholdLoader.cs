@@ -16,25 +16,42 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Xml.Linq;
 using Stump.BaseCore.Framework.Attributes;
-using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Classes;
+using Stump.DofusProtocol.Classes.Custom;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.WorldServer.Npcs;
+using Stump.Server.WorldServer.Threshold;
 
-namespace Stump.Server.WorldServer.Handlers
+namespace Stump.Server.WorldServer.Data
 {
-    public class SubscriberHandler : WorldHandlerContainer
+    public class ThresholdLoader
     {
+        /// <summary>
+        ///   Name of Thresholds folder
+        /// </summary>
         [Variable]
-        public static bool EnableSubscriptionLimitation = true;
+        public static string ThresholdsDir = "Thresholds/";
 
-        public static void SendSubscriptionLimitationMessage(WorldClient client, SubscriptionRequiredEnum reason)
+
+        public static Dictionary<string, ThresholdDictionnary> LoadThresholds()
         {
-            client.Send(new SubscriptionLimitationMessage((uint)reason));
+            var directory = new DirectoryInfo(Settings.StaticPath + ThresholdsDir);
+            var dico = new Dictionary<string, ThresholdDictionnary>();
+
+            foreach (FileInfo file in directory.GetFiles("*.xml"))
+            {
+                var name = file.Name.Split('.')[0];
+                var doc = XDocument.Load(file.FullName);
+                dico.Add(name, new ThresholdDictionnary(name, XDocument.Load(file.FullName)));
+            }
+            return dico;
         }
 
-        public static void SendSubscriptionZoneMessage(WorldClient client)
-        {
-            client.Send(new SubscriptionZoneMessage(EnableSubscriptionLimitation));
-        }
     }
 }
