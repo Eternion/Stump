@@ -67,12 +67,6 @@ namespace Stump.Server.BaseServer.Network
         public static int MaxIPConnexions = 10;
 
         /// <summary>
-        ///   Disconnect Client after specified time(in s) or NULL for desactivate
-        /// </summary>
-        [Variable]
-        public static uint? InactivityDisconnectionTime = 900;
-
-        /// <summary>
         /// Buffer size /!\ Advanced users only /!\
         /// </summary>
         [Variable(DefinableByConfig = false, DefinableRunning = false)]
@@ -118,7 +112,7 @@ namespace Stump.Server.BaseServer.Network
         private readonly int m_readBufferSize;
         private readonly SocketAsyncEventArgsPool m_writeAsyncEventArgsPool;
 
-        public MessageListener(QueueDispatcher queueDispatcher, TaskPool taskPool, Func<Socket, BaseClient> delegateCreateClient, string address, int port)
+        public MessageListener(QueueDispatcher queueDispatcher, Func<Socket, BaseClient> delegateCreateClient, string address, int port)
         {
             m_ipEndPoint = new IPEndPoint(Dns.GetHostAddresses(address).First(), port);
             m_readBufferSize = BufferSize;
@@ -137,13 +131,10 @@ namespace Stump.Server.BaseServer.Network
             m_delegateCreateClient = delegateCreateClient;
             m_queueDispatcher = queueDispatcher;
 
-            if (InactivityDisconnectionTime.HasValue)
-                taskPool.RegisterCyclicTask((Action)DisconnectAfkClient, InactivityDisconnectionTime.Value/5, null, null);
-
             BaseClient.Initialize(ref m_writeAsyncEventArgsPool, ref m_queueDispatcher);
         }
 
-        public MessageListener(QueueDispatcher queueDispatcher, TaskPool taskPool, Func<Socket, BaseClient> delegateCreateClient)
+        public MessageListener(QueueDispatcher queueDispatcher, Func<Socket, BaseClient> delegateCreateClient)
         {
             m_ipEndPoint = new IPEndPoint(Dns.GetHostAddresses(Host).First(), Port);
             m_readBufferSize = BufferSize;
@@ -161,9 +152,6 @@ namespace Stump.Server.BaseServer.Network
             m_acceptArgs.Completed += OnAcceptCompleted;
             m_delegateCreateClient = delegateCreateClient;
             m_queueDispatcher = queueDispatcher;
-
-            if (InactivityDisconnectionTime.HasValue)
-                taskPool.RegisterCyclicTask((Action)DisconnectAfkClient, InactivityDisconnectionTime.Value/5, null, null);
 
             BaseClient.Initialize(ref m_writeAsyncEventArgsPool, ref m_queueDispatcher);
         }
@@ -331,13 +319,6 @@ namespace Stump.Server.BaseServer.Network
         private int GetSameIPNumber(IPAddress ip)
         {
             return m_clientList.Count(client => client.Socket != null && ip.Equals(((IPEndPoint)client.Socket.RemoteEndPoint).Address));
-        }
-
-        private void DisconnectAfkClient()
-        {
-            logger.Info("Disconnect AFK Clients");
-            foreach (BaseClient client in ClientList.Where(c => DateTime.Now.Subtract(c.LastActivity).TotalSeconds >= InactivityDisconnectionTime))
-                client.Disconnect();
         }
     }
 }

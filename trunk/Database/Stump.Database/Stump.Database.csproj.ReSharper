@@ -1,0 +1,17 @@
+<Configuration>
+  <NamespaceFolders>
+    <SkipFolder>D0C51923-20CC-4B7B-ACF2-BA56ACB06232/d:AuthServer/d:StartupAction</SkipFolder>
+    <SkipFolder>D0C51923-20CC-4B7B-ACF2-BA56ACB06232/d:AuthServer/d:World</SkipFolder>
+    <SkipFolder>D0C51923-20CC-4B7B-ACF2-BA56ACB06232/d:WorldServer/d:Alignment</SkipFolder>
+    <SkipFolder>D0C51923-20CC-4B7B-ACF2-BA56ACB06232/d:WorldServer/d:BidHouse</SkipFolder>
+    <SkipFolder>D0C51923-20CC-4B7B-ACF2-BA56ACB06232/d:WorldServer/d:Character</SkipFolder>
+    <SkipFolder>D0C51923-20CC-4B7B-ACF2-BA56ACB06232/d:WorldServer/d:Guild</SkipFolder>
+    <SkipFolder>D0C51923-20CC-4B7B-ACF2-BA56ACB06232/d:WorldServer/d:House</SkipFolder>
+    <SkipFolder>D0C51923-20CC-4B7B-ACF2-BA56ACB06232/d:WorldServer/d:Item</SkipFolder>
+    <SkipFolder>D0C51923-20CC-4B7B-ACF2-BA56ACB06232/d:WorldServer/d:Job</SkipFolder>
+    <SkipFolder>D0C51923-20CC-4B7B-ACF2-BA56ACB06232/d:WorldServer/d:Paddock</SkipFolder>
+    <SkipFolder>D0C51923-20CC-4B7B-ACF2-BA56ACB06232/d:WorldServer/d:Quest</SkipFolder>
+    <SkipFolder>D0C51923-20CC-4B7B-ACF2-BA56ACB06232/d:WorldServer/d:Storage</SkipFolder>
+    <SkipFolder>D0C51923-20CC-4B7B-ACF2-BA56ACB06232/d:WorldServer/d:Zaap</SkipFolder>
+  </NamespaceFolders>
+</Configuration>

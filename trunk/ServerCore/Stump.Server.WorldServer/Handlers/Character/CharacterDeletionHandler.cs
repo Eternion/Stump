@@ -17,7 +17,6 @@
 //  *
 //  *************************************************************************/
 using Stump.BaseCore.Framework.Utils;
-using Stump.Database;
 using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -27,7 +26,7 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public partial class CharacterHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof(CharacterDeletionRequestMessage))]
+        [WorldHandler(typeof (CharacterDeletionRequestMessage))]
         public static void HandleCharacterDeletionRequest(WorldClient client, CharacterDeletionRequestMessage message)
         {
             uint characterId = message.characterId;
@@ -37,7 +36,7 @@ namespace Stump.Server.WorldServer.Handlers
             /* Le personnage n'existe pas */
             if (characterRecord == null)
             {
-                client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_NO_REASON));
+                client.Send(new CharacterDeletionErrorMessage((int) CharacterDeletionErrorEnum.DEL_ERR_NO_REASON));
                 client.Disconnect();
                 return;
             }
@@ -51,7 +50,9 @@ namespace Stump.Server.WorldServer.Handlers
             {
                 if (AccountManager.ExceedsDeletedCharactersQuota(client.Account.Id))
                 {
-                    client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_TOO_MANY_CHAR_DELETION));
+                    client.Send(
+                        new CharacterDeletionErrorMessage(
+                            (int) CharacterDeletionErrorEnum.DEL_ERR_TOO_MANY_CHAR_DELETION));
                     return;
                 }
 
@@ -62,7 +63,7 @@ namespace Stump.Server.WorldServer.Handlers
             }
             else
             {
-                client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_BAD_SECRET_ANSWER));
+                client.Send(new CharacterDeletionErrorMessage((int) CharacterDeletionErrorEnum.DEL_ERR_BAD_SECRET_ANSWER));
             }
         }
     }

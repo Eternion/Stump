@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.Database;
 using Stump.Database.AuthServer;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -30,12 +29,11 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public class ApproachHandler : WorldHandlerContainer
     {
-
-        [WorldHandler(typeof(AuthenticationTicketMessage))]
+        [WorldHandler(typeof (AuthenticationTicketMessage))]
         public static void HandleAuthenticationTicketMessage(WorldClient client, AuthenticationTicketMessage message)
         {
             /* Get Ticket */
-            var ticketAccount = AccountManager.GetAccountByTicket(message.ticket);
+            AccountRecord ticketAccount = AccountManager.GetAccountByTicket(message.ticket);
 
             /* Check null ticket */
             if (ticketAccount == null)
@@ -74,22 +72,25 @@ namespace Stump.Server.WorldServer.Handlers
         public static void SendAccountCapabilitiesMessage(WorldClient client)
         {
             client.Send(new AccountCapabilitiesMessage(
-                (int)client.Account.Id,
-                true,
-                client.Account.DbAvailableBreeds,
-                BreedManager.BreedsToFlag(BreedManager.AvailableBreeds)
-                ));
+                            (int) client.Account.Id,
+                            true,
+                            client.Account.DbAvailableBreeds,
+                            BreedManager.BreedsToFlag(BreedManager.AvailableBreeds)
+                            ));
         }
 
         public static void SendAccountLoggingKickedMessage(WorldClient client)
         {
-            var date = client.WorldAccount.BanRemainingTime;
-            client.Send(new AccountLoggingKickedMessage((uint)date.Days, (uint)date.Hours, (uint)date.Minutes));
+            TimeSpan date = client.WorldAccount.BanRemainingTime;
+            client.Send(new AccountLoggingKickedMessage((uint) date.Days, (uint) date.Hours, (uint) date.Minutes));
         }
 
         public static void SendConsoleCommandsListMessage(WorldClient client)
         {
-            client.Send(new ConsoleCommandsListMessage(WorldServer.Instance.CommandManager.AvailableCommands.SelectMany(c => c.Aliases).ToList(), new List<string>(), new List<string>()));
+            client.Send(
+                new ConsoleCommandsListMessage(
+                    WorldServer.Instance.CommandManager.AvailableCommands.SelectMany(c => c.Aliases).ToList(),
+                    new List<string>(), new List<string>()));
         }
     }
 }

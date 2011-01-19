@@ -16,7 +16,6 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Classes;
@@ -24,7 +23,6 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Fights;
-using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Groups;
 using Stump.Server.WorldServer.Spells;
 
@@ -45,7 +43,7 @@ namespace Stump.Server.WorldServer.Handlers
             client.ActiveCharacter.Fighter.CastSpell(message.spellId, message.cellId);
         }
 
-        [WorldHandler(typeof(GameFightTurnFinishMessage))]
+        [WorldHandler(typeof (GameFightTurnFinishMessage))]
         public static void HandleGameFightTurnFinishMessage(WorldClient client, GameFightTurnFinishMessage message)
         {
             client.ActiveCharacter.Fight.FinishTurn(client.ActiveCharacter.Fighter);
@@ -54,12 +52,13 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof (GameFightTurnReadyMessage))]
         public static void HandleGameFightTurnReadyMessage(WorldClient client, GameFightTurnReadyMessage message)
         {
-            if (message.isReady && client.ActiveCharacter.Fight.State == FightState.Fighting && client.ActiveCharacter.Fighter.IsPlaying)
+            if (message.isReady && client.ActiveCharacter.Fight.State == FightState.Fighting &&
+                client.ActiveCharacter.Fighter.IsPlaying)
                 client.ActiveCharacter.Fight.TurnEndConfirm(client.ActiveCharacter.Fighter);
             else if (client.ActiveCharacter.Fight.State == FightState.PreparePosition)
             {
                 client.ActiveCharacter.Fighter.PassTurn();
-            }        
+            }
         }
 
         [WorldHandler(typeof (GameFightReadyMessage))]
@@ -85,13 +84,13 @@ namespace Stump.Server.WorldServer.Handlers
         {
             var target = client.ActiveCharacter.Map.Get<Character>(message.targetId);
 
-            var reason = client.ActiveCharacter.CanRequestFight(target);
+            FighterRefusedReasonEnum reason = client.ActiveCharacter.CanRequestFight(target);
             if (reason != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)
             {
                 SendChallengeFightJoinRefusedMessage(client, reason);
                 return;
             }
-           
+
             if (message.friendly)
             {
                 var fightRequest = new FightRequest(client.ActiveCharacter, target);
@@ -200,14 +199,17 @@ namespace Stump.Server.WorldServer.Handlers
         public static void SendGameFightPlacementPossiblePositionsMessage(WorldClient client, Fight fight, int team)
         {
             client.Send(new GameFightPlacementPossiblePositionsMessage(
-                            fight.SourceGroup.Positions.Select(entry => (uint)entry).ToList(),
-                            fight.TargetGroup.Positions.Select(entry => (uint)entry).ToList(),
+                            fight.SourceGroup.Positions.Select(entry => (uint) entry).ToList(),
+                            fight.TargetGroup.Positions.Select(entry => (uint) entry).ToList(),
                             (uint) team));
         }
 
-        public static void SendGameActionFightSpellCastMessage(WorldClient client, uint actionId, LivingEntity source, ushort cellId, bool critical, bool silentCast, SpellLevel spell)
+        public static void SendGameActionFightSpellCastMessage(WorldClient client, uint actionId, LivingEntity source,
+                                                               ushort cellId, bool critical, bool silentCast,
+                                                               SpellLevel spell)
         {
-            client.Send(new GameActionFightSpellCastMessage(actionId, (int) source.Id, cellId, (uint) (critical ? 1 : 0), silentCast, (uint) spell.Spell.Id, (uint) spell.Level));
+            client.Send(new GameActionFightSpellCastMessage(actionId, (int) source.Id, cellId, (uint) (critical ? 1 : 0),
+                                                            silentCast, (uint) spell.Spell.Id, (uint) spell.Level));
         }
     }
 }

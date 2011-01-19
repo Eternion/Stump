@@ -16,32 +16,32 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System.Linq;
 using System.Collections.Generic;
-using Stump.Database;
+using System.Linq;
+using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.WorldServer.Manager;
 
 namespace Stump.Server.WorldServer.Handlers
 {
     public class StartupHandler : WorldHandlerContainer
     {
-
-        [WorldHandler(typeof(StartupActionsExecuteMessage))]
-        public static void HandleStartupActionsListRequestMessage(WorldClient client,StartupActionsExecuteMessage message)
+        [WorldHandler(typeof (StartupActionsExecuteMessage))]
+        public static void HandleStartupActionsListRequestMessage(WorldClient client,
+                                                                  StartupActionsExecuteMessage message)
         {
             SendStartupActionsListMessage(client);
         }
 
-        [WorldHandler(typeof(StartupActionsObjetAttributionMessage))]
-        public static void HandleStartupActionsObjetAttributionMessage(WorldClient client, StartupActionsObjetAttributionMessage message)
+        [WorldHandler(typeof (StartupActionsObjetAttributionMessage))]
+        public static void HandleStartupActionsObjetAttributionMessage(WorldClient client,
+                                                                       StartupActionsObjetAttributionMessage message)
         {
             if (message.characterId != 0)
             {
                 // TODO Ajout de l'item au personnage
 
-               var character = client.Characters.FirstOrDefault(c => c.Id == message.characterId);
+                CharacterRecord character = client.Characters.FirstOrDefault(c => c.Id == message.characterId);
 
 
                 SendStartupActionFinishedMessage(client);
@@ -50,11 +50,11 @@ namespace Stump.Server.WorldServer.Handlers
 
         public static void SendStartupActionsListMessage(WorldClient client)
         {
-            var startupsActions =
+            IEnumerable<StartupActionAddObject> startupsActions =
                 client.Account.StartupActions.Select(
-                    s =>  new StartupActionAddObject(s.Id, s.Title, s.Text, s.DescUrl, s.PictureUrl, s.Items.Select(
-                        i=> new ObjectItemMinimalInformation(i.ItemId,0,false,new List<ObjectEffect>())).ToList()));
-            
+                    s => new StartupActionAddObject(s.Id, s.Title, s.Text, s.DescUrl, s.PictureUrl, s.Items.Select(
+                        i => new ObjectItemMinimalInformation(i.ItemId, 0, false, new List<ObjectEffect>())).ToList()));
+
             client.Send(new StartupActionsListMessage(startupsActions.ToList()));
         }
 
@@ -62,6 +62,5 @@ namespace Stump.Server.WorldServer.Handlers
         {
             client.Send(new StartupActionFinishedMessage());
         }
-
     }
 }

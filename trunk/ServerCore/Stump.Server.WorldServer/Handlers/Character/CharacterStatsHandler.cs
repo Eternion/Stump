@@ -28,9 +28,9 @@ namespace Stump.Server.WorldServer.Handlers
         public static void SendLifePointsRegenEndMessage(WorldClient client)
         {
             client.Send(new LifePointsRegenEndMessage(
-                (uint) client.ActiveCharacter.Stats["Health"].Total,
-                (uint) ( (StatsHealth) client.ActiveCharacter.Stats["Health"] ).TotalMax,
-                0));
+                            (uint) client.ActiveCharacter.Stats["Health"].Total,
+                            (uint) ((StatsHealth) client.ActiveCharacter.Stats["Health"]).TotalMax,
+                            0));
         }
 
         public static void SendLifePointsRegenBeginMessage(WorldClient client, uint regenRate)

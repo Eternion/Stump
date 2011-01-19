@@ -16,7 +16,6 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Entities;
 
@@ -24,7 +23,7 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public partial class ChatHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof(ChatSmileyRequestMessage))]
+        [WorldHandler(typeof (ChatSmileyRequestMessage))]
         public static void HandleChatSmileyRequestMessage(WorldClient client, ChatSmileyRequestMessage message)
         {
             client.ActiveCharacter.DisplaySmiley((byte) message.smileyId);
@@ -33,17 +32,17 @@ namespace Stump.Server.WorldServer.Handlers
         public static void SendChatSmileyMessage(WorldClient client, Character character, uint smileyId)
         {
             client.Send(new ChatSmileyMessage(
-                (int)character.Id,
-                smileyId,
-                character.Client.Account.Id));
+                            (int) character.Id,
+                            smileyId,
+                            character.Client.Account.Id));
         }
 
         public static void SendChatSmileyMessage(WorldClient client, Entity entity, uint smileyId)
         {
             client.Send(new ChatSmileyMessage(
-                (int)entity.Id,
-                smileyId,
-                0));
+                            (int) entity.Id,
+                            smileyId,
+                            0));
         }
     }
 }

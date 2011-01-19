@@ -23,16 +23,14 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public class PvpHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof(SetEnablePVPRequestMessage))]
+        [WorldHandler(typeof (SetEnablePVPRequestMessage))]
         public static void HandleSetEnablePvpRequestMessage(WorldClient client, SetEnablePVPRequestMessage message)
         {
-
         }
 
-        [WorldHandler(typeof(GetPVPActivationCostMessage))]
+        [WorldHandler(typeof (GetPVPActivationCostMessage))]
         public static void HandleGetPvpActivationCostMessage(WorldClient client, GetPVPActivationCostMessage message)
         {
-
         }
 
 

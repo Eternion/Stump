@@ -17,7 +17,6 @@
 //  *
 //  *************************************************************************/
 using System;
-using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Breeds;

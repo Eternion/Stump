@@ -27,17 +27,18 @@ namespace Stump.Server.WorldServer.Handlers
         public static void SendGameActionFightDeathMessage(WorldClient client, Entity entity)
         {
             client.Send(new GameActionFightDeathMessage(
-                            (uint)ActionsEnum.ACTION_CHARACTER_DEATH,
-                            (int)entity.Id, (int)entity.Id
+                            (uint) ActionsEnum.ACTION_CHARACTER_DEATH,
+                            (int) entity.Id, (int) entity.Id
                             ));
         }
 
-        public static void SendGameActionFightPointsVariationMessage(WorldClient client, ActionsEnum action, Entity source,
-                                                                         Entity target, short delta)
+        public static void SendGameActionFightPointsVariationMessage(WorldClient client, ActionsEnum action,
+                                                                     Entity source,
+                                                                     Entity target, short delta)
         {
             client.Send(new GameActionFightPointsVariationMessage(
-                            (uint)action,
-                            (int)source.Id, (int)target.Id, delta
+                            (uint) action,
+                            (int) source.Id, (int) target.Id, delta
                             ));
         }
 

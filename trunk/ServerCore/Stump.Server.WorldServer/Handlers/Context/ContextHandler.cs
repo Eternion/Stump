@@ -25,35 +25,34 @@ using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Fights;
 using Stump.Server.WorldServer.Global;
-using Stump.Server.WorldServer.Global.Maps;
 using Stump.Server.WorldServer.Global.Pathfinding;
 
 namespace Stump.Server.WorldServer.Handlers
 {
     public partial class ContextHandler : WorldHandlerContainer
     {
-        ContextHandler()
+        private ContextHandler()
         {
             Predicates = new Dictionary<Type, Predicate<WorldClient>>
-                {
-                    {typeof (GameContextQuitMessage), PredicatesDefinitions.IsFighting},
-                    {typeof (GameActionFightCastRequestMessage), PredicatesDefinitions.IsFighting},
-                    {typeof (GameFightTurnFinishMessage), PredicatesDefinitions.IsFighting},
-                    {typeof (GameFightTurnReadyMessage), PredicatesDefinitions.IsFighting},
-                    {typeof (GameFightReadyMessage), PredicatesDefinitions.IsFighting},
-                    {typeof (GameFightPlacementPositionRequestMessage), PredicatesDefinitions.IsFighting},
-                    {
-                        typeof (GameRolePlayPlayerFightFriendlyAnswerMessage),
-                        entry => PredicatesDefinitions.IsDialogRequested(entry) &&
-                                 entry.ActiveCharacter.DialogRequest is FightRequest
-                        },
-
-                    {typeof(NpcDialogReplyMessage), PredicatesDefinitions.IsDialogingWithNpc},
-                };
+                         {
+                             {typeof (GameContextQuitMessage), PredicatesDefinitions.IsFighting},
+                             {typeof (GameActionFightCastRequestMessage), PredicatesDefinitions.IsFighting},
+                             {typeof (GameFightTurnFinishMessage), PredicatesDefinitions.IsFighting},
+                             {typeof (GameFightTurnReadyMessage), PredicatesDefinitions.IsFighting},
+                             {typeof (GameFightReadyMessage), PredicatesDefinitions.IsFighting},
+                             {typeof (GameFightPlacementPositionRequestMessage), PredicatesDefinitions.IsFighting},
+                             {
+                                 typeof (GameRolePlayPlayerFightFriendlyAnswerMessage),
+                                 entry => PredicatesDefinitions.IsDialogRequested(entry) &&
+                                          entry.ActiveCharacter.DialogRequest is FightRequest
+                                 },
+                             {typeof (NpcDialogReplyMessage), PredicatesDefinitions.IsDialogingWithNpc},
+                         };
         }
 
-        [WorldHandler(typeof(GameContextCreateRequestMessage))]
-        public static void HandleGameContextCreateRequestMessage(WorldClient client, GameContextCreateRequestMessage message)
+        [WorldHandler(typeof (GameContextCreateRequestMessage))]
+        public static void HandleGameContextCreateRequestMessage(WorldClient client,
+                                                                 GameContextCreateRequestMessage message)
         {
             SendGameContextDestroyMessage(client);
             SendGameContextCreateMessage(client, 1);
@@ -67,18 +66,20 @@ namespace Stump.Server.WorldServer.Handlers
             World.Instance.SendMessageOfTheDay(client.ActiveCharacter);
         }
 
-        [WorldHandler(typeof(GameMapChangeOrientationRequestMessage))]
-        public static void HandleGameMapChangeOrientationRequestMessage(WorldClient client, GameMapChangeOrientationRequestMessage message)
+        [WorldHandler(typeof (GameMapChangeOrientationRequestMessage))]
+        public static void HandleGameMapChangeOrientationRequestMessage(WorldClient client,
+                                                                        GameMapChangeOrientationRequestMessage message)
         {
             client.ActiveCharacter.Position.ChangeLocation((DirectionsEnum) message.direction);
-            client.ActiveCharacter.Map.CallOnAllCharacters(charac => SendGameMapChangeOrientationMessage(charac.Client, client.ActiveCharacter));
+            client.ActiveCharacter.Map.CallOnAllCharacters(
+                charac => SendGameMapChangeOrientationMessage(charac.Client, client.ActiveCharacter));
         }
 
         // todo : get and check whole path
-        [WorldHandler(typeof(GameMapMovementRequestMessage))]
+        [WorldHandler(typeof (GameMapMovementRequestMessage))]
         public static void HandleGameMapMovementRequestMessage(WorldClient client, GameMapMovementRequestMessage message)
         {
-            if(!client.ActiveCharacter.CanMove())
+            if (!client.ActiveCharacter.CanMove())
                 return;
 
             var movementPath = new MovementPath(client.ActiveCharacter.Map, message.keyMovements);
@@ -93,18 +94,19 @@ namespace Stump.Server.WorldServer.Handlers
             }
         }
 
-        [WorldHandler(typeof(GameMapMovementConfirmMessage))]
+        [WorldHandler(typeof (GameMapMovementConfirmMessage))]
         public static void HandleGameMapMovementConfirmMessage(WorldClient client, GameMapMovementConfirmMessage message)
         {
             client.ActiveCharacter.MovementEnded();
         }
 
-        [WorldHandler(typeof(GameMapMovementCancelMessage))]
+        [WorldHandler(typeof (GameMapMovementCancelMessage))]
         public static void HandleGameMapMovementCancelMessage(WorldClient client, GameMapMovementCancelMessage message)
         {
             // todo : check if cell is available and if moving
 
-            client.ActiveCharacter.StopMove(new VectorIsometric(client.ActiveCharacter.Map, (ushort) message.cellId, client.ActiveCharacter.Position.Direction));
+            client.ActiveCharacter.StopMove(new VectorIsometric(client.ActiveCharacter.Map, (ushort) message.cellId,
+                                                                client.ActiveCharacter.Position.Direction));
         }
 
         public static void SendGameContextCreateMessage(WorldClient client, byte context)
@@ -119,7 +121,9 @@ namespace Stump.Server.WorldServer.Handlers
 
         public static void SendGameMapChangeOrientationMessage(WorldClient client, Entity entity)
         {
-            client.Send(new GameMapChangeOrientationMessage(new ActorOrientation((int) entity.Id, (uint) entity.Position.Direction)));
+            client.Send(
+                new GameMapChangeOrientationMessage(new ActorOrientation((int) entity.Id,
+                                                                         (uint) entity.Position.Direction)));
         }
 
         public static void SendGameContextRemoveElementMessage(WorldClient client, Entity entity)
@@ -134,12 +138,15 @@ namespace Stump.Server.WorldServer.Handlers
 
         public static void SendGameMapMovementMessage(WorldClient client, List<uint> movementsKey, Entity entity)
         {
-            client.Send(new GameMapMovementMessage(movementsKey, (int)entity.Id));
+            client.Send(new GameMapMovementMessage(movementsKey, (int) entity.Id));
         }
 
-        public static void SendGameEntitiesDispositionMessage(WorldClient client, IEnumerable<ILocableIdentified> entities)
+        public static void SendGameEntitiesDispositionMessage(WorldClient client,
+                                                              IEnumerable<ILocableIdentified> entities)
         {
-            client.Send(new GameEntitiesDispositionMessage(entities.Select( entry => entry.GetIdentifiedEntityDisposition()).ToList()));
+            client.Send(
+                new GameEntitiesDispositionMessage(
+                    entities.Select(entry => entry.GetIdentifiedEntityDisposition()).ToList()));
         }
     }
 }

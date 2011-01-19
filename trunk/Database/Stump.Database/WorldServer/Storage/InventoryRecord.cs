@@ -36,7 +36,7 @@ namespace Stump.Database.WorldServer
         }
 
         [Property("Kamas", NotNull = true, Default = "0")]
-        public uint Kamas
+        public long Kamas
         {
             get;
             set;

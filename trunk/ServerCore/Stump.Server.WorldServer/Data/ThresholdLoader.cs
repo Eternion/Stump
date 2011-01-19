@@ -52,6 +52,5 @@ namespace Stump.Server.WorldServer.Data
             }
             return dico;
         }
-
     }
 }

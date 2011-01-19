@@ -11,13 +11,19 @@ namespace Stump.Server.WorldServer.Threshold
 {
     public class ThresholdDictionnary
     {
-        private string m_name;
         private Dictionary<uint, long> m_levels = new Dictionary<uint,long>();
 
         public ThresholdDictionnary(string name, XDocument doc)
         {
-            m_name = name;
+            Name = name;
+
             Init(doc);
+        }
+
+        public string Name
+        {
+            get;
+            private set;
         }
 
         private void Init(XDocument doc)
@@ -49,7 +55,7 @@ namespace Stump.Server.WorldServer.Threshold
         {
             if (m_levels.ContainsKey(level))
                 return m_levels[level];
-            throw new Exception("Level " + level + " not found in " + m_name + " threshold");
+            throw new Exception("Level " + level + " not found in " + Name + " threshold");
         }
 
         public long GetLowerBound(long experience)
@@ -75,10 +81,8 @@ namespace Stump.Server.WorldServer.Threshold
             }
             catch (InvalidOperationException ex)
             {
-                throw new Exception("Experience " + experience + " not bind to a level in " + m_name + " threshold", ex);
+                throw new Exception(string.Format("Experience {0} not bind to a level in {1} threshold", experience, Name), ex);
             }
         }
-
-
     }
 }

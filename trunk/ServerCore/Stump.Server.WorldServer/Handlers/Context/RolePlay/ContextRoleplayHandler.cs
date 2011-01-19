@@ -28,15 +28,15 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public partial class ContextHandler
     {
-        [WorldHandler(typeof(ChangeMapMessage))]
+        [WorldHandler(typeof (ChangeMapMessage))]
         public static void HandleChangeMapMessage(WorldClient client, ChangeMapMessage message)
         {
-            Map nextMap = World.Instance.GetMap((int)message.mapId);
+            Map nextMap = World.Instance.GetMap((int) message.mapId);
 
             client.ActiveCharacter.ChangeMap(nextMap);
         }
 
-        [WorldHandler(typeof(MapInformationsRequestMessage))]
+        [WorldHandler(typeof (MapInformationsRequestMessage))]
         public static void HandleMapInformationsRequestMessage(WorldClient client, MapInformationsRequestMessage message)
         {
             if (!client.ActiveCharacter.InWorld)
@@ -53,15 +53,17 @@ namespace Stump.Server.WorldServer.Handlers
         public static void SendMapComplementaryInformationsDataMessage(WorldClient client)
         {
             client.Send(new MapComplementaryInformationsDataMessage(
-                (uint)client.ActiveCharacter.Zone.Id,
-                (uint)client.ActiveCharacter.Map.Id,
-                0,
-                new List<HouseInformations>(),
-                client.ActiveCharacter.Map.Entities.Select(entry => entry.Value.ToNetworkActor(client)).ToList(),
-                client.ActiveCharacter.Map.InteractiveObjects.Select(entry => entry.Value.ToNetworkElement(client)).ToList(),
-                new List<StatedElement>(),
-                new List<MapObstacle>(),
-                new List<FightCommonInformations>()));
+                            (uint) client.ActiveCharacter.Zone.Id,
+                            (uint) client.ActiveCharacter.Map.Id,
+                            0,
+                            new List<HouseInformations>(),
+                            client.ActiveCharacter.Map.Entities.Select(entry => entry.Value.ToNetworkActor(client)).
+                                ToList(),
+                            client.ActiveCharacter.Map.InteractiveObjects.Select(
+                                entry => entry.Value.ToNetworkElement(client)).ToList(),
+                            new List<StatedElement>(),
+                            new List<MapObstacle>(),
+                            new List<FightCommonInformations>()));
         }
 
 
