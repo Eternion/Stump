@@ -26,7 +26,6 @@ namespace Stump.Server.WorldServer.Handlers
         /// <param name="client"></param>
         public static void SendAtlasPointInformationMessage(WorldClient client)
         {
-
         }
     }
 }

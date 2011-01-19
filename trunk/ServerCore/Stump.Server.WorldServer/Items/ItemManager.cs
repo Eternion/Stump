@@ -23,6 +23,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using NLog;
 using Stump.Database;
+using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Data;
 using Stump.Server.BaseServer.Initializing;
@@ -60,39 +61,43 @@ namespace Stump.Server.WorldServer.Items
 
         public static Item Create(int id, LivingEntity owner, uint amount)
         {
-            long itemguid = ItemGuidGenerator.Next();
-
             var newitem =
-                new Item(owner, m_itemTemplates[id], itemguid,
+                new Item(m_itemTemplates[id],
                          CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, amount,
                          GenerateItemEffect(m_itemTemplates[id]));
 
             AddItem(newitem);
+
+            if (!newitem.CanBeSave)
+                throw new Exception("Item without assigned Guid cannot be used");
 
             return newitem;
         }
 
         public static Item Create(int id, LivingEntity owner, uint amount, List<EffectBase> effects)
         {
-            long itemguid = ItemGuidGenerator.Next();
-
             var newitem =
-                new Item(owner, m_itemTemplates[id], itemguid,
+                new Item(m_itemTemplates[id],
                          CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, amount, effects);
+
             AddItem(newitem);
+
+            if (!newitem.CanBeSave)
+                throw new Exception("Item without assigned Guid cannot be used");
 
             return newitem;
         }
 
         public static Item RegisterAnItemCopy(Item copy, LivingEntity owner, uint amount)
         {
-            long itemguid = ItemGuidGenerator.Next();
-
             var newitem =
-                new Item(owner, copy.Template, itemguid, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
+                new Item(copy.Template, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
                          amount, copy.Effects);
 
             AddItem(newitem);
+
+            if (!newitem.CanBeSave)
+                throw new Exception("Item without assigned Guid cannot be used");
 
             return newitem;
         }
@@ -240,24 +245,41 @@ namespace Stump.Server.WorldServer.Items
         /// <param name = "item"></param>
         public static void AddItem(Item item)
         {
-            if (m_loadedItems.ContainsKey(item.Guid))
-                throw new Exception(string.Format(
-                    "Cannot create a new item because the guid is already used <guid:{0}>",
-                    item.Guid));
-
-            if (!m_loadedItems.TryAdd(item.Guid, item))
+            if (!item.CanBeSave)
             {
-                // Item cannot be added
-                logger.Error(
-                    string.Format("Item <guid:{0}> cannot be added for an unknown reason " +
-                                  (m_loadedItems.ContainsKey(item.Guid)
-                                       ? "but the item has been added"
-                                       : "and the item is not present"),
-                                  item.Guid));
-                return;
-            }
+                item.Create(); // get the guid
 
-            item.Create(); // write the item in the DB if no errors
+                if (!m_loadedItems.TryAdd(item.Guid, item))
+                {
+                    // Item cannot be added
+                     throw new Exception(
+                        string.Format("Item <guid:{0}> cannot be added for an unknown reason " +
+                                      ( m_loadedItems.ContainsKey(item.Guid)
+                                           ? "but the item has been added"
+                                           : "and the item is not present" ),
+                                      item.Guid));
+                }
+            }
+            else
+            {
+                if (m_loadedItems.ContainsKey(item.Guid))
+                    throw new Exception(string.Format(
+                        "Cannot create a new item because the guid is already used <guid:{0}>",
+                        item.Guid));
+
+                if (!m_loadedItems.TryAdd(item.Guid, item))
+                {
+                    // Item cannot be added
+                    throw new Exception(
+                        string.Format("Item <guid:{0}> cannot be added for an unknown reason " +
+                                      (m_loadedItems.ContainsKey(item.Guid)
+                                           ? "but the item has been added"
+                                           : "and the item is not present"),
+                                      item.Guid));
+                }
+
+                item.Create(); // write the item in the DB if no errors
+            }
         }
 
         public static void RemoveItem(long guid)
@@ -290,7 +312,7 @@ namespace Stump.Server.WorldServer.Items
         /// <param name = "owner"></param>
         /// <param name = "record"></param>
         /// <returns></returns>
-        public static Item LoadItem(LivingEntity owner, CharacterItemRecord record)
+        public static Item LoadItem(LivingEntity owner, ItemRecord record)
         {
             if (m_loadedItems.ContainsKey(record.Guid))
             {
@@ -298,7 +320,7 @@ namespace Stump.Server.WorldServer.Items
                 return m_loadedItems[record.Guid];
             }
 
-            var item = new Item(owner, record);
+            var item = new Item(record);
             if (!m_loadedItems.TryAdd(record.Guid, item))
             {
                 // Item cannot be added
@@ -312,7 +334,7 @@ namespace Stump.Server.WorldServer.Items
             return item;
         }
 
-        public static Item[] LoadItem(LivingEntity owner, CharacterItemRecord[] records)
+        public static Item[] LoadItem(LivingEntity owner, ItemRecord[] records)
         {
             var result = new Item[records.Length];
 
@@ -323,7 +345,7 @@ namespace Stump.Server.WorldServer.Items
                     logger.Warn(string.Format("Trying to load an item <guid:{0}> twice", records[i].Guid));
                 }
 
-                result[i] = new Item(owner, records[i]);
+                result[i] = new Item(records[i]);
                 if (!m_loadedItems.TryAdd(records[i].Guid, result[i]))
                 {
                     // Item cannot be added

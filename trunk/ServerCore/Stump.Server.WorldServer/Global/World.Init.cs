@@ -30,7 +30,6 @@ using Stump.Server.WorldServer.Data;
 using Stump.Server.WorldServer.Global.Maps;
 using Stump.Server.WorldServer.XmlSerialize;
 using AreaTemplate = Stump.DofusProtocol.D2oClasses.Area;
-using Point = System.Drawing.Point;
 using SubAreaTemplate = Stump.DofusProtocol.D2oClasses.SubArea;
 using SuperAreaTemplate = Stump.DofusProtocol.D2oClasses.SuperArea;
 
@@ -244,7 +243,7 @@ namespace Stump.Server.WorldServer.Global
 
         public void SetupLazyLoading()
         {
-            var text = "{0} was added in the {1}Folder, load it ?";
+            const string text = "{0} was added in the {1}Folder, load it ?";
 
             /* Npcs */
             FileWatcher.RegisterFileCreation(NpcLoader.NpcsDir,f=>

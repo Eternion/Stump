@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using Stump.Database;
+using Stump.Database.AuthServer;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.Commands;

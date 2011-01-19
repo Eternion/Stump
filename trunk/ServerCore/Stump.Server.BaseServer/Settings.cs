@@ -26,15 +26,15 @@ namespace Stump.Server.BaseServer
     public static class Settings
     {
         /// <summary>
-        /// Path to 'Plugins' folder
-        /// </summary>
-        [Variable]
-        public static string PluginsDir = "./../Plugins/";
-
-        /// <summary>
         /// Enable/Disable perfomances tracing
         /// </summary>
         [Variable]
         public static bool EnableBenchmarking;
+
+        /// <summary>
+        ///   Disconnect Client after specified time(in s) or NULL for desactivate
+        /// </summary>
+        [Variable]
+        public static uint? InactivityDisconnectionTime = 900;
     }
 }

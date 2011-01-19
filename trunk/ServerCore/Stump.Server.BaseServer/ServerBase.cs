@@ -174,8 +174,11 @@ namespace Stump.Server.BaseServer
 
             CommandManager = new CommandsManager();
 
-            MessageListener = new MessageListener(QueueDispatcher, TaskPool, CreateClient);
+            MessageListener = new MessageListener(QueueDispatcher, CreateClient);
             MessageListener.Initialize();
+
+            if (Settings.InactivityDisconnectionTime.HasValue)
+                TaskPool.RegisterCyclicTask((Action)DisconnectAfkClient, Settings.InactivityDisconnectionTime.Value / 5, null, null);
 
             MessageListener.ClientConnected += OnClientConnected;
             MessageListener.ClientDisconnected += OnClientDisconnected;
@@ -256,7 +259,13 @@ namespace Stump.Server.BaseServer
         public virtual void Update()
         {
             TaskPool.ProcessUpdate();
-            Thread.Sleep(10);
+        }
+
+        private void DisconnectAfkClient()
+        {
+            logger.Info("Disconnect AFK Clients");
+            foreach (BaseClient client in MessageListener.ClientList.Where(c => DateTime.Now.Subtract(c.LastActivity).TotalSeconds >= Settings.InactivityDisconnectionTime))
+                client.Disconnect();
         }
 
         public abstract BaseClient CreateClient(Socket s);

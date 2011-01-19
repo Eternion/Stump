@@ -54,5 +54,41 @@ namespace Stump.Server.WorldServer.Entities
             if (handler != null)
                 handler(this);
         }
+
+        public event Action<Character, long> ExperienceGained;
+
+        private void NotifyExperienceGained(long gainedPoints)
+        {
+            Action<Character, long> handler = ExperienceGained;
+            if (handler != null)
+                handler(this, gainedPoints);
+        }
+
+        public event Action<Character> ExperienceModified;
+
+        public void NotifyExperienceModified()
+        {
+            Action<Character> handler = ExperienceModified;
+            if (handler != null)
+                handler(this);
+        }
+
+        public event Action<Character, uint> LeveledUp;
+
+        public void NotifyLeveledUp(uint gainedLevel)
+        {
+            Action<Character, uint> handler = LeveledUp;
+            if (handler != null)
+                handler(this, gainedLevel);
+        }
+
+        public event Action<Character, uint> LeveledDown;
+
+        public void NotifyLeveledDown(uint loosedLevel)
+        {
+            Action<Character, uint> handler = LeveledDown;
+            if (handler != null)
+                handler(this, loosedLevel);
+        }
     }
 }

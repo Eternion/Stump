@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public partial class ContextHandler
     {
-        [WorldHandler(typeof(QuestListRequestMessage))]
+        [WorldHandler(typeof (QuestListRequestMessage))]
         public static void HandleQuestListRequestMessage(WorldClient client, QuestListRequestMessage message)
         {
             SendQuestListMessage(client);

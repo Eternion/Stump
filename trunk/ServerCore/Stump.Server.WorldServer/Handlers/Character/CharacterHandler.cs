@@ -26,9 +26,8 @@ namespace Stump.Server.WorldServer.Handlers
         private CharacterHandler()
         {
             Predicates = new Dictionary<Type, Predicate<WorldClient>>
-                {
-                    
-                };
+                         {
+                         };
         }
     }
 }

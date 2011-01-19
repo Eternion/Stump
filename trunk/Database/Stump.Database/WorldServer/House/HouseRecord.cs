@@ -17,9 +17,8 @@
 //  *
 //  *************************************************************************/
 using Castle.ActiveRecord;
-using NHibernate.Criterion;
 
-namespace Stump.Database
+namespace Stump.Database.WorldServer
 {
 
     [AttributeDatabase(DatabaseService.WorldServer)]

@@ -26,6 +26,5 @@ namespace Stump.Server.WorldServer.Handlers
         {
             client.Send(new CinematicMessage(cinematicId));
         }
-
     }
 }

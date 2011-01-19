@@ -22,7 +22,7 @@ using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
 
-namespace Stump.Database
+namespace Stump.Database.AuthServer
 {
     [Serializable]
     [AttributeDatabase(DatabaseService.AuthServer)]

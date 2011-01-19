@@ -19,7 +19,7 @@
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 
-namespace Stump.Database
+namespace Stump.Database.WorldServer
 {
     [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("characters_spells")]

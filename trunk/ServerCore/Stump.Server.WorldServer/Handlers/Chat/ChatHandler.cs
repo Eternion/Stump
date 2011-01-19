@@ -16,7 +16,6 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
 using Stump.BaseCore.Framework.Utils;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -28,7 +27,7 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public partial class ChatHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof(ChatClientPrivateMessage))]
+        [WorldHandler(typeof (ChatClientPrivateMessage))]
         public static void HandleChatClientPrivateMessage(WorldClient client, ChatClientPrivateMessage message)
         {
             Character chr = World.Instance.GetCharacter(message.receiver);
@@ -43,21 +42,21 @@ namespace Stump.Server.WorldServer.Handlers
             }
             else
             {
-                client.Send(new ChatErrorMessage((uint)ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND));
+                client.Send(new ChatErrorMessage((uint) ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND));
             }
         }
 
-        [WorldHandler(typeof(ChatClientMultiMessage))]
+        [WorldHandler(typeof (ChatClientMultiMessage))]
         public static void HandleChatClientMultiMessage(WorldClient client, ChatClientMultiMessage message)
         {
-            if (ChatManager.ChatHandlers.Length <= (int)message.channel)
+            if (ChatManager.ChatHandlers.Length <= (int) message.channel)
                 return;
 
             ChatManager.ChatParserDelegate handler = ChatManager.ChatHandlers[message.channel];
 
             if (handler != null)
             {
-                handler(client, (ChannelId)message.channel, message.content);
+                handler(client, (ChannelId) message.channel, message.content);
             }
         }
 
@@ -72,14 +71,14 @@ namespace Stump.Server.WorldServer.Handlers
         }
 
         public static void SendChatServerMessage(WorldClient client, Entity sender, ChannelId channel, string message,
-                                         int timestamp, string fingerprint)
+                                                 int timestamp, string fingerprint)
         {
             client.Send(new ChatServerMessage(
-                            (uint)channel,
+                            (uint) channel,
                             message,
-                            (uint)timestamp,
+                            (uint) timestamp,
                             fingerprint,
-                            (int)sender.Id,
+                            (int) sender.Id,
                             sender.Name,
                             0));
         }
@@ -96,22 +95,23 @@ namespace Stump.Server.WorldServer.Handlers
                 message = StringUtils.HtmlEntities(message);
 
             client.Send(new ChatServerMessage(
-                            (uint)channel,
+                            (uint) channel,
                             message,
-                            (uint)timestamp,
+                            (uint) timestamp,
                             fingerprint,
-                            (int)sender.Id,
+                            (int) sender.Id,
                             sender.Name,
-                            (int)sender.Client.Account.Id));
+                            (int) sender.Client.Account.Id));
         }
 
         public static void SendChatServerMessage(WorldClient client, ChannelId channel, string message,
-                                         int timestamp, string fingerprint, int senderId, string senderName, int accountId)
+                                                 int timestamp, string fingerprint, int senderId, string senderName,
+                                                 int accountId)
         {
             client.Send(new ChatServerMessage(
-                            (uint)channel,
+                            (uint) channel,
                             message,
-                            (uint)timestamp,
+                            (uint) timestamp,
                             fingerprint,
                             senderId,
                             senderName,
@@ -133,11 +133,11 @@ namespace Stump.Server.WorldServer.Handlers
                     message = StringUtils.HtmlEntities(message);
 
                 client.Send(new ChatServerCopyMessage(
-                                (uint)channel,
+                                (uint) channel,
                                 message,
-                                (uint)timestamp,
+                                (uint) timestamp,
                                 fingerprint,
-                                (uint)receiver.Id,
+                                (uint) receiver.Id,
                                 receiver.Name));
             }
         }

@@ -18,9 +18,8 @@
 //  *************************************************************************/
 using System.Collections.Generic;
 using Castle.ActiveRecord;
-using NHibernate.Criterion;
 
-namespace Stump.Database
+namespace Stump.Database.WorldServer
 {
 
     [AttributeDatabase(DatabaseService.WorldServer)]
@@ -37,7 +36,7 @@ namespace Stump.Database
         }
 
         [Property("Kamas", NotNull = true, Default = "0")]
-        public uint Kamas
+        public long Kamas
         {
             get;
             set;

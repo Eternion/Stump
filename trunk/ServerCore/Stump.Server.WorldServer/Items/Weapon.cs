@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using Stump.Database;
+using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Entities;
 
@@ -25,29 +26,29 @@ namespace Stump.Server.WorldServer.Items
     public class Weapon : Item
     {
         public Weapon(LivingEntity owner, WeaponTemplate template, long guid)
-            : base(owner, template, guid)
+            : base(template, guid)
         {
         }
 
         public Weapon(LivingEntity owner, WeaponTemplate template, long guid, CharacterInventoryPositionEnum position)
-            : base(owner, template, guid, position)
+            : base(template, guid, position)
         {
         }
 
         public Weapon(LivingEntity owner, WeaponTemplate template, long guid, CharacterInventoryPositionEnum position,
                       uint stack)
-            : base(owner, template, guid, position, stack)
+            : base(template, guid, position, stack)
         {
         }
 
-        public Weapon(LivingEntity owner, CharacterItemRecord record)
-            : base(owner, record)
+        public Weapon(LivingEntity owner, ItemRecord record)
+            : base(record)
         {
         }
 
         public new WeaponTemplate Template
         {
-            get { return m_template as WeaponTemplate; }
+            get { return base.Template as WeaponTemplate; }
         }
     }
 }

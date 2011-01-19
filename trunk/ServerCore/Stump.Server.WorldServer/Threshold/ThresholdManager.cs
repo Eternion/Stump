@@ -43,6 +43,14 @@ namespace Stump.Server.WorldServer.Threshold
             get { return m_thresholds; }
         }
 
+        public static ThresholdDictionnary CharacterExp
+        {
+            get
+            {
+                return m_thresholds["CharacterExp"];
+            }
+        }
+
         [StageStep(Stages.One, "Loaded Thresholds")]
         public static void LoadThresholds()
         {

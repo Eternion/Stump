@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Handlers
 
         public static void SendSubscriptionLimitationMessage(WorldClient client, SubscriptionRequiredEnum reason)
         {
-            client.Send(new SubscriptionLimitationMessage((uint)reason));
+            client.Send(new SubscriptionLimitationMessage((uint) reason));
         }
 
         public static void SendSubscriptionZoneMessage(WorldClient client)

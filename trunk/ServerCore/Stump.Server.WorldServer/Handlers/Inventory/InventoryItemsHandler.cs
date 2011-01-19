@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Items;
 
 namespace Stump.Server.WorldServer.Handlers
@@ -29,19 +28,20 @@ namespace Stump.Server.WorldServer.Handlers
     public partial class InventoryHandler : WorldHandlerContainer
     {
         // todo : manage amounts
-        [WorldHandler(typeof(ObjectSetPositionMessage))]
+        [WorldHandler(typeof (ObjectSetPositionMessage))]
         public static void HandleObjectSetPositionMessage(WorldClient client, ObjectSetPositionMessage message)
         {
-            if (!Enum.IsDefined(typeof(CharacterInventoryPositionEnum), (int)message.position))
+            if (!Enum.IsDefined(typeof (CharacterInventoryPositionEnum), (int) message.position))
             {
                 return;
             }
 
-            client.ActiveCharacter.Inventory.MoveItem(message.objectUID, (CharacterInventoryPositionEnum)message.position);
+            client.ActiveCharacter.Inventory.MoveItem(message.objectUID,
+                                                      (CharacterInventoryPositionEnum) message.position);
             SendInventoryWeightMessage(client);
         }
 
-        [WorldHandler(typeof(ObjectDeleteMessage))]
+        [WorldHandler(typeof (ObjectDeleteMessage))]
         public static void HandleObjectDeleteMessage(WorldClient client, ObjectDeleteMessage message)
         {
             client.ActiveCharacter.Inventory.DeleteItem(message.objectUID, message.quantity);
@@ -85,7 +85,7 @@ namespace Stump.Server.WorldServer.Handlers
 
         public static void SendObjectsDeletedMessage(WorldClient client, IEnumerable<long> guids)
         {
-            client.Send(new ObjectsDeletedMessage(guids.Select(entry => (uint)entry).ToList()));
+            client.Send(new ObjectsDeletedMessage(guids.Select(entry => (uint) entry).ToList()));
         }
 
         public static void SendObjectModifiedMessage(WorldClient client, Item item)
@@ -105,7 +105,7 @@ namespace Stump.Server.WorldServer.Handlers
 
         public static void SendObjectErrorMessage(WorldClient client, ObjectErrorEnum error)
         {
-            client.Send(new ObjectErrorMessage((byte)error));
+            client.Send(new ObjectErrorMessage((byte) error));
         }
     }
 }

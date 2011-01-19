@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using Stump.Database;
+using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Breeds;
 using Stump.Server.WorldServer.Dialog;

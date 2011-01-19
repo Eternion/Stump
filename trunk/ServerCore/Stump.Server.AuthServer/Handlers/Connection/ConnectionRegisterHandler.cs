@@ -18,6 +18,7 @@
 //  *************************************************************************/
 using System.Text.RegularExpressions;
 using Stump.Database;
+using Stump.Database.AuthServer;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 

@@ -39,15 +39,19 @@ namespace Stump.Server.WorldServer.Handlers
                 return;
 
             client.ActiveCharacter.Map.CallOnAllCharacters(character =>
-                SendInteractiveUsedMessage(character.Client, client.ActiveCharacter, interactiveObject, skill));
+                                                           SendInteractiveUsedMessage(character.Client,
+                                                                                      client.ActiveCharacter,
+                                                                                      interactiveObject, skill));
 
             interactiveObject.ExecuteSkill(client.ActiveCharacter,
                                            message.skillInstanceUid);
         }
 
-        public static void SendInteractiveUsedMessage(WorldClient client, Entity entity, InteractiveObject interactiveObject, SkillBase skill)
+        public static void SendInteractiveUsedMessage(WorldClient client, Entity entity,
+                                                      InteractiveObject interactiveObject, SkillBase skill)
         {
-            client.Send(new InteractiveUsedMessage((uint) entity.Id, interactiveObject.ElementId, skill.SkillId, skill.Duration));
+            client.Send(new InteractiveUsedMessage((uint) entity.Id, interactiveObject.ElementId, skill.SkillId,
+                                                   skill.Duration));
         }
     }
 }

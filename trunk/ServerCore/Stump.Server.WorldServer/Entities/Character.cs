@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.Database;
+using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -33,6 +34,7 @@ using Stump.Server.WorldServer.Handlers;
 using Stump.Server.WorldServer.Items;
 using Stump.Server.WorldServer.Manager;
 using Stump.Server.WorldServer.Spells;
+using Stump.Server.WorldServer.Threshold;
 using Item = Stump.Server.WorldServer.Items.Item;
 
 namespace Stump.Server.WorldServer.Entities
@@ -51,18 +53,19 @@ namespace Stump.Server.WorldServer.Entities
             Client = client;
 
             Name = record.Name;
-            Level = record.Level;
             BreedId = (PlayableBreedEnum) record.Breed;
-            Sex = (SexTypeEnum) record.SexId;
-            Kamas = record.Kamas;
+            Sex = record.Sex;
+            Kamas = record.Inventory.Kamas;
 
             StatsPoint = record.StatsPoints;
             SpellsPoints = record.SpellsPoints;
             Energy = record.Energy;
             EnergyMax = record.EnergyMax;
+            Experience = record.Experience;
+            Level = (int)ThresholdManager.CharacterExp.GetLevel(Experience);
+            ExperienceMax = ThresholdManager.CharacterExp.GetUpperBound(Level);
 
             Position = new VectorIsometric(World.Instance.Maps[record.MapId], record.CellId, record.Direction);
-            InWorld = false;
 
             // -> entity look
             Look = CharacterManager.GetStuffedCharacterLook(record);
@@ -86,6 +89,13 @@ namespace Stump.Server.WorldServer.Entities
                 Spells[sr.SpellId].CurrentLevel = sr.Level;
                 Spells[sr.SpellId].Position = sr.Position;
             }
+
+            StartEvents();
+        }
+
+        private void StartEvents()
+        {
+            ExperienceModified += OnExperienceModified;
         }
 
         #region IPacketReceiver Members
@@ -353,9 +363,6 @@ namespace Stump.Server.WorldServer.Entities
         /// </summary>
         public void SaveNow()
         {
-            Record.Kamas = Kamas;
-            Record.Level = Level;
-
             if (Map != null)
                 Record.MapId = Position.Map.Id;
 
@@ -367,6 +374,9 @@ namespace Stump.Server.WorldServer.Entities
             Record.SpellsPoints = SpellsPoints;
             Record.Energy = Energy;
             Record.EnergyMax = EnergyMax;
+            Record.Experience = Experience;
+
+            Record.Inventory.Kamas = Kamas; // note : is it correct ?
 
             if (Stats != null)
             {
