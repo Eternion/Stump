@@ -79,7 +79,6 @@ namespace Stump.Server.WorldServer.Entities
             }
         }
 
-
         /// <summary>
         ///   Additions of values without using damages taken;
         /// </summary>

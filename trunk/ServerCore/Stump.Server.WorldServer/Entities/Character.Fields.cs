@@ -30,7 +30,6 @@ namespace Stump.Server.WorldServer.Entities
 {
     public partial class Character
     {
-        #region Properties
 
         /// <summary>
         ///   Client associated with the character.
@@ -77,15 +76,6 @@ namespace Stump.Server.WorldServer.Entities
         public BaseBreed Breed
         {
             get { return BreedManager.GetBreed(BreedId); }
-        }
-
-        /// <summary>
-        ///   Amount of kamas owned by this character.
-        /// </summary>
-        public long Kamas
-        {
-            get;
-            set;
         }
 
         /// <summary>
@@ -155,10 +145,10 @@ namespace Stump.Server.WorldServer.Entities
             private set;
         }
 
-        public bool IsOccupied
+        public bool IsOccuped
         {
             get { return IsInDialog || IsDialogRequested || IsAway || IsInFight; }
         }
-        #endregion
+
     }
 }

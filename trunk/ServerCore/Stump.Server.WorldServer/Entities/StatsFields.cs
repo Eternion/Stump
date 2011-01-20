@@ -23,6 +23,7 @@ using System.Reflection;
 using Castle.Core;
 using Stump.BaseCore.Framework.Extensions;
 using Stump.Server.WorldServer.Effects;
+using Stump.Server.WorldServer.Threshold;
 
 namespace Stump.Server.WorldServer.Entities
 {
@@ -224,7 +225,7 @@ namespace Stump.Server.WorldServer.Entities
                     {"Health", new StatsHealth(Owner, ((Character) Owner).Record.BaseHealth, ((Character) Owner).Record.DamageTaken)},
                     {"Initiative", new StatsData(Owner, "Initiative", 0, FormuleInitiative)},
                     {"Prospecting", new StatsData(Owner, "Prospecting", 100, FormuleProspecting)},
-                    {"AP", new StatsData(Owner, "AP", ((Character) Owner).Record.Level >= 100 ? 7 : 6)},
+                    {"AP", new StatsData(Owner, "AP", (ThresholdManager.Thresholds["CharacterExp"].GetLevel((Owner as Character).Experience) >= 100 ? 7 : 6))},
                     {"MP", new StatsData(Owner, "MP", 3)},
                     {"Strength", new StatsData(Owner, "Strength", 0)},
                     {"Vitality", new StatsData(Owner, "Vitality", 0)},

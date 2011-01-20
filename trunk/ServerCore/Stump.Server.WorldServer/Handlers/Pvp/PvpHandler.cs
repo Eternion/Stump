@@ -31,8 +31,8 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof (GetPVPActivationCostMessage))]
         public static void HandleGetPvpActivationCostMessage(WorldClient client, GetPVPActivationCostMessage message)
         {
-        }
 
+        }
 
         public static void SendAlignmentSubAreasListMessage(WorldClient client)
         {

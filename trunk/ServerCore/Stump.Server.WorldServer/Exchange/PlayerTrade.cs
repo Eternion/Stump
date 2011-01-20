@@ -167,8 +167,8 @@ namespace Stump.Server.WorldServer.Exchange
             ToggleReady(SourceTrader, false);
             ToggleReady(TargetTrader, false);
 
-            if (kamas > trader.Character.Kamas)
-                kamas = (uint) trader.Character.Kamas;
+            if (kamas > trader.Character.Inventory.Kamas)
+                kamas = (uint) trader.Character.Inventory.Kamas;
 
             trader.Kamas = kamas;
 
@@ -204,10 +204,10 @@ namespace Stump.Server.WorldServer.Exchange
 
         public void ApplyExchange()
         {
-            SourceTrader.Character.SetKamas(
-                (int) (SourceTrader.Character.Kamas + (TargetTrader.Kamas - SourceTrader.Kamas)));
-            TargetTrader.Character.SetKamas(
-                (int) (TargetTrader.Character.Kamas + (SourceTrader.Kamas - TargetTrader.Kamas)));
+            SourceTrader.Character.Inventory.SetKamas(
+                (int) (SourceTrader.Character.Inventory.Kamas + (TargetTrader.Kamas - SourceTrader.Kamas)));
+            TargetTrader.Character.Inventory.SetKamas(
+                (int) (TargetTrader.Character.Inventory.Kamas + (SourceTrader.Kamas - TargetTrader.Kamas)));
 
             // trade items
             foreach (Item item in SourceTrader.Items)

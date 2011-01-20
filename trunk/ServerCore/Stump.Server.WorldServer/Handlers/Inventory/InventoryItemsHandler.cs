@@ -54,7 +54,7 @@ namespace Stump.Server.WorldServer.Handlers
             client.Send(
                 new InventoryContentMessage(
                     client.ActiveCharacter.Inventory.Items.Select(entry => entry.ToNetworkItem()).ToList(),
-                    (uint) client.ActiveCharacter.Kamas));
+                    (uint) client.ActiveCharacter.Inventory.Kamas));
         }
 
         public static void SendInventoryWeightMessage(WorldClient client)

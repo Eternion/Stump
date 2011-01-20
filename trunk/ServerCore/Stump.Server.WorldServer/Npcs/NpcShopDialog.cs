@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Npcs
             }
             long finalPrice = itemToSell.Price == 0 ? itemToSell.Template.Price*amount : itemToSell.Price*amount;
 
-            if (Dialoger.Character.Kamas < finalPrice)
+            if (Dialoger.Character.Inventory.Kamas < finalPrice)
             {
                 Dialoger.Character.Client.Send(new ExchangeErrorMessage((int) ExchangeErrorEnum.BUY_ERROR));
                 return;
@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.Npcs
             BasicHandler.SendTextInformationMessage(Dialoger.Character.Client, 0, 21, amount, itemId);
 
             Dialoger.Character.Inventory.AddItem(itemId, amount);
-            Dialoger.Character.SubKamas(finalPrice);
+            Dialoger.Character.Inventory.SubKamas(finalPrice);
 
             Dialoger.Character.Client.Send(new ExchangeBuyOkMessage());
         }
@@ -82,7 +82,7 @@ namespace Stump.Server.WorldServer.Npcs
             BasicHandler.SendTextInformationMessage(Dialoger.Character.Client, 0, 22, amount, item.ItemId);
 
             Dialoger.Character.Inventory.DeleteItem(guid, amount);
-            Dialoger.Character.AddKamas(price);
+            Dialoger.Character.Inventory.AddKamas(price);
 
             Dialoger.Character.Client.Send(new ExchangeSellOkMessage());
         }

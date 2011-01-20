@@ -53,9 +53,8 @@ namespace Stump.Server.WorldServer.Entities
             Client = client;
 
             Name = record.Name;
-            BreedId = (PlayableBreedEnum) record.Breed;
+            BreedId = (PlayableBreedEnum)record.Breed;
             Sex = record.Sex;
-            Kamas = record.Inventory.Kamas;
 
             StatsPoint = record.StatsPoints;
             SpellsPoints = record.SpellsPoints;
@@ -81,9 +80,8 @@ namespace Stump.Server.WorldServer.Entities
             Stats["Chance"].Base = record.Chance;
             Stats["Agility"].Base = record.Agility;
 
-            record.LoadSpells();
             Spells = new SpellCollection(this);
-            foreach (SpellRecord sr in record.Spells.Values)
+            foreach (SpellRecord sr in record.Spells)
             {
                 Spells.AddSpell(SpellManager.GetSpell(sr.SpellId));
                 Spells[sr.SpellId].CurrentLevel = sr.Level;
@@ -195,12 +193,12 @@ namespace Stump.Server.WorldServer.Entities
                 return FighterRefusedReasonEnum.FIGHT_MYSELF;
             }
 
-            if (IsOccupied)
+            if (IsOccuped)
             {
                 return FighterRefusedReasonEnum.IM_OCCUPIED;
             }
 
-            if (target.IsOccupied)
+            if (target.IsOccuped)
             {
                 return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
             }
@@ -213,21 +211,6 @@ namespace Stump.Server.WorldServer.Entities
             DialogRequest = request;
         }
 
-        public void AddKamas(long amount)
-        {
-            SetKamas(Kamas + amount);
-        }
-
-        public void SubKamas(long amount)
-        {
-            SetKamas(Kamas - amount);
-        }
-
-        public void SetKamas(long amount)
-        {
-            Kamas = amount;
-            InventoryHandler.SendKamasUpdateMessage(Client, amount);
-        }
 
         public void StartFightWith(Character character, bool amical)
         {
@@ -278,7 +261,7 @@ namespace Stump.Server.WorldServer.Entities
         public override GameRolePlayActorInformations ToNetworkActor(WorldClient client)
         {
             return new GameRolePlayCharacterInformations(
-                (int) Id,
+                (int)Id,
                 Look.EntityLook,
                 GetEntityDisposition(),
                 Name,
@@ -292,9 +275,9 @@ namespace Stump.Server.WorldServer.Entities
                 return null;
 
             return new FightTeamMemberCharacterInformations(
-                (int) Id,
+                (int)Id,
                 Name,
-                (uint) Level);
+                (uint)Level);
         }
 
         public override GameFightFighterInformations ToNetworkFighter()
@@ -303,25 +286,25 @@ namespace Stump.Server.WorldServer.Entities
                 return null;
 
             return new GameFightCharacterInformations(
-                (int) Id,
+                (int)Id,
                 Look.EntityLook,
                 Fighter.GetEntityDisposition(),
-                (uint) FightGroup.TeamId,
+                (uint)FightGroup.TeamId,
                 !(Fighter.IsDead || Fighter.IsReady),
                 Fighter.GetFightMinimalStats(),
                 Name,
-                (uint) Level,
+                (uint)Level,
                 GetActorAlignmentInformations());
         }
 
         public CharacterBaseInformations GetBaseInformations()
         {
             return new CharacterBaseInformations(
-                (uint) Id,
-                (uint) Level,
+                (uint)Id,
+                (uint)Level,
                 Name,
                 Look.EntityLook,
-                (int) BreedId,
+                (int)BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE);
         }
 
@@ -376,7 +359,7 @@ namespace Stump.Server.WorldServer.Entities
             Record.EnergyMax = EnergyMax;
             Record.Experience = Experience;
 
-            Record.Inventory.Kamas = Kamas; // note : is it correct ?
+         //   Record.Inventory.Kamas = Kamas; // note : is it correct ?
 
             if (Stats != null)
             {
@@ -390,19 +373,19 @@ namespace Stump.Server.WorldServer.Entities
 
             try
             {
-                using (var saveScope = new SessionScope(FlushAction.Never))
-                {
-                    foreach (Item item in Inventory.Items)
-                    {
-                        item.SaveNow();
-                    }
+                //using (var saveScope = new SessionScope(FlushAction.Never))
+                //{
+                //    foreach (Item item in Inventory.Items)
+                //    {
+                //        item.SaveNow();
+                //    }
 
-                    Record.SaveSpells();
+                //    Record.SaveSpells();
 
-                    Record.Save();
+                //    Record.Save();
 
-                    saveScope.Flush();
-                }
+                //    saveScope.Flush();
+                //}
             }
             catch (Exception e)
             {
@@ -423,19 +406,30 @@ namespace Stump.Server.WorldServer.Entities
         public void AddSpell(Spell spell)
         {
             Spells.AddSpell(spell);
-            Record.AddSpell((uint) spell.Id, spell.Position, spell.CurrentLevel);
+            var record = new SpellRecord { SpellId = (uint)spell.Id, Level = spell.CurrentLevel, Position = spell.Position };
+            record.Create();
+            Record.Spells.Add(record);
         }
 
         public void ModifySpellPos(SpellIdEnum spellId, int newPos)
         {
             Spells.MoveSpell(spellId, newPos);
-            Record.ModifySpellPosition((int) spellId, newPos);
+            if (Record.SpellsDictionnary.ContainsKey((uint)spellId))
+            {
+                var spell = Record.SpellsDictionnary[(uint)spellId];
+                spell.Position = newPos;
+                spell.Save();
+            }
         }
 
-        public void RemoveSpell(SpellIdEnum spellid)
+        public void RemoveSpell(SpellIdEnum spellId)
         {
-            Spells.Remove(spellid);
-            Record.RemoveSpell((uint) spellid);
+            Spells.Remove(spellId);
+            if (Record.SpellsDictionnary.ContainsKey((uint)spellId))
+            {
+                var spell = Record.SpellsDictionnary[(uint)spellId];
+                spell.Delete();
+            }
         }
 
         #endregion

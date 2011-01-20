@@ -23,7 +23,6 @@ namespace Stump.Server.WorldServer.Entities
 {
     public partial class Character
     {
-        #region Character Stats
 
         public int StatsPoint
         {
@@ -83,20 +82,18 @@ namespace Stump.Server.WorldServer.Entities
 
             if (difference > 0)
             {
-                NotifyLeveledUp((uint) difference);
+                NotifyLeveledUp((uint)difference);
 
                 Level = level;
                 ExperienceMax = ThresholdManager.CharacterExp.GetUpperBound(Level);
             }
             else if (level < Level)
             {
-                NotifyLeveledDown((uint)( -difference ));
+                NotifyLeveledDown((uint)(-difference));
 
                 Level = level;
                 ExperienceMax = ThresholdManager.CharacterExp.GetUpperBound(Level);
             }
         }
-
-        #endregion
-        }
+    }
 }

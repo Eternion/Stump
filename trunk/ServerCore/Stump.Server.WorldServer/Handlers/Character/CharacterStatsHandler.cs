@@ -20,21 +20,12 @@ using System.Collections.Generic;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.Threshold;
 
 namespace Stump.Server.WorldServer.Handlers
 {
     public partial class CharacterHandler : WorldHandlerContainer
     {
-<<<<<<< HEAD
-=======
-        public static void SendLifePointsRegenEndMessage(WorldClient client)
-        {
-            client.Send(new LifePointsRegenEndMessage(
-                            (uint) client.ActiveCharacter.Stats["Health"].Total,
-                            (uint) ((StatsHealth) client.ActiveCharacter.Stats["Health"]).TotalMax,
-                            0));
-        }
->>>>>>> 23e9354153cb54a4bfe880de59e0d30f32883ff8
 
         public static void SendLifePointsRegenBeginMessage(WorldClient client, uint regenRate)
         {
@@ -63,7 +54,7 @@ namespace Stump.Server.WorldServer.Handlers
                         ThresholdManager.Thresholds["CharacterExp"].GetLowerBound(client.ActiveCharacter.Experience), // EXPERIENCE level floor 
                         ThresholdManager.Thresholds["CharacterExp"].GetUpperBound(client.ActiveCharacter.Experience), // EXPERIENCE nextlevel floor 
 
-                        (uint)client.ActiveCharacter.Kamas,
+                        (uint)client.ActiveCharacter.Inventory.Kamas,
                 // Amount of kamas.
 
                         (uint)client.ActiveCharacter.StatsPoint,
@@ -88,8 +79,8 @@ namespace Stump.Server.WorldServer.Handlers
                         (uint)((StatsHealth)client.ActiveCharacter.Stats["Health"]).
                                    TotalMax, // Max Life points
 
-                        client.ActiveCharacter.CurrentEnergy, // Energy points
-                        client.ActiveCharacter.MaxEnergy, // maxEnergyPoints
+                        client.ActiveCharacter.Energy, // Energy points
+                        client.ActiveCharacter.EnergyMax, // maxEnergyPoints
 
                         (short)client.ActiveCharacter.Stats["AP"]
                                     .Total, // actionPointsCurrent

@@ -21,6 +21,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using Stump.BaseCore.Framework.Utils;
 using Stump.Database;
+using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Classes.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -30,7 +31,6 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public partial class CharacterHandler : WorldHandlerContainer
     {
-
 
         [WorldHandler(typeof(CharacterReplayRequestMessage))]
         public static void HandleCharacterReplayRequestMessage(WorldClient client, CharacterReplayRequestMessage message)
@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Handlers
 
             /* Bind look and save character */
             character.Name = characterName;
-            character.SaveAndFlush();
+            character.Save();
         }
 
         [WorldHandler(typeof(CharacterReplayWithRecolorRequestMessage))]
@@ -105,7 +105,7 @@ namespace Stump.Server.WorldServer.Handlers
 
             /* Bind look and save character */
             character.BaseLook = breedLook;
-            character.SaveAndFlush();
+            character.Save();
         }
 
     }

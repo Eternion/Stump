@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.BaseCore.Framework.Extensions;
 using Stump.Database;
+using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Effects;
 using Stump.Server.WorldServer.Entities;
@@ -176,17 +177,24 @@ namespace Stump.Server.WorldServer.Items
             set;
         }
 
+        /// <summary>
+        ///   Amount of kamas owned by this character.
+        /// </summary>
+        public long Kamas
+        {
+            get;
+            set;
+        }
+
         #endregion
 
-    
-
+  
         public void LoadInventory()
         {
             lock (m_sync)
             {
-                CharacterItemRecord[] records = CharacterItemRecord.FindItemsByCharacter(Owner.Id);
-
-                m_items = ItemManager.LoadItem(Owner, records).ToDictionary(entry => entry.Guid);
+                Kamas = Owner.Record.Inventory.Kamas;
+                m_items = Owner.Record.Inventory.Items.Select(i => new Item(i)).ToDictionary(entry => entry.Guid);
                 foreach (var item in m_items.Values)
                 {
                      m_itemsByPosition[item.Position].Add(item);
@@ -198,7 +206,7 @@ namespace Stump.Server.WorldServer.Items
         {
             lock (m_sync)
             {
-                ItemManager.UnLoadItem(m_items.Keys.ToArray());
+                //ItemManager.UnLoadItem(m_items.Keys.ToArray());
                 m_items.Clear();
                 foreach (var item in m_itemsByPosition)
                 {
@@ -540,6 +548,22 @@ namespace Stump.Server.WorldServer.Items
             return from entry in m_items
                    where entry.Value.Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED
                    select entry.Value;
+        }
+
+        public void AddKamas(long amount)
+        {
+            SetKamas(Kamas + amount);
+        }
+
+        public void SubKamas(long amount)
+        {
+            SetKamas(Kamas - amount);
+        }
+
+        public void SetKamas(long amount)
+        {
+            Kamas = amount;
+            InventoryHandler.SendKamasUpdateMessage(Owner.Client, amount);
         }
     }
 }
