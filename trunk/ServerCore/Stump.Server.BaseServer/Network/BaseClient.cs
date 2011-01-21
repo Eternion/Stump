@@ -276,7 +276,7 @@ namespace Stump.Server.BaseServer.Network
         /// </summary>
         public void Disconnect()
         {
-            if (!Connected)
+            if (Socket !=null && Connected)
             {
                 OnDisconnect();
 

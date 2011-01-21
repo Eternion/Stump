@@ -160,6 +160,32 @@
               FightId of this fight
             </summary>
         </member>
+        <member name="P:Stump.Server.WorldServer.Entities.ILocable.Position">
+            <summary>
+              Representation of Entity's World Position
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Entities.ILocableIdentified.Id">
+            <summary>
+              Id of this entity.
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Entities.IMovable.Move(Stump.Server.WorldServer.Global.Pathfinding.MovementPath)">
+            <summary>
+              Move the entity.
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Entities.IMovable.MoveInstant(Stump.Server.WorldServer.Global.VectorIsometric)">
+            <summary>
+              Teleport instantly the entity.
+            </summary>
+            <param name="to"></param>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Entities.IMovable.IsMoving">
+            <summary>
+              Indicate or set if entity is moving.
+            </summary>
+        </member>
         <member name="P:Stump.Server.WorldServer.Breeds.BaseBreed.StartMap">
             <summary>
               This is where you begin.
@@ -261,16 +287,6 @@
             </summary>
             <param name="client"></param>
         </member>
-        <member name="P:Stump.Server.WorldServer.Entities.ILocable.Position">
-            <summary>
-              Representation of Entity's World Position
-            </summary>
-        </member>
-        <member name="P:Stump.Server.WorldServer.Entities.ILocableIdentified.Id">
-            <summary>
-              Id of this entity.
-            </summary>
-        </member>
         <member name="P:Stump.Server.WorldServer.Entities.INamedEntity.Name">
             <summary>
               The name of this character.
@@ -304,22 +320,6 @@
         <member name="P:Stump.Server.WorldServer.Entities.ILivingEntity.Spells">
             <summary>
               Spell container of this entity.
-            </summary>
-        </member>
-        <member name="M:Stump.Server.WorldServer.Entities.IMovable.Move(Stump.Server.WorldServer.Global.Pathfinding.MovementPath)">
-            <summary>
-              Move the entity.
-            </summary>
-        </member>
-        <member name="M:Stump.Server.WorldServer.Entities.IMovable.MoveInstant(Stump.Server.WorldServer.Global.VectorIsometric)">
-            <summary>
-              Teleport instantly the entity.
-            </summary>
-            <param name="to"></param>
-        </member>
-        <member name="P:Stump.Server.WorldServer.Entities.IMovable.IsMoving">
-            <summary>
-              Indicate or set if entity is moving.
             </summary>
         </member>
         <member name="P:Stump.Server.WorldServer.Entities.LivingEntity.Spells">

@@ -246,7 +246,7 @@ namespace Stump.Server.WorldServer.Global
             const string text = "{0} was added in the {1}Folder, load it ?";
 
             /* Npcs */
-            FileWatcher.RegisterFileCreation(NpcLoader.NpcsDir,f=>
+            FileWatcher.RegisterFileCreation(Settings.StaticPath+  NpcLoader.NpcsDir,f=>
                 {
                     if (WorldServer.Instance.ConsoleInterface.AskForSomething(string.Format(text,f,"Npc"), 20))
                     {
@@ -255,7 +255,7 @@ namespace Stump.Server.WorldServer.Global
                 });
 
             /* InteractiveObject */
-            FileWatcher.RegisterFileCreation(InteractiveObjectLoader.InteractiveObjectsDir, f =>
+            FileWatcher.RegisterFileCreation(Settings.StaticPath + InteractiveObjectLoader.InteractiveObjectsDir, f =>
             {
                 if (WorldServer.Instance.ConsoleInterface.AskForSomething(string.Format(text, f, "InteractiveObject"), 20))
                 {
@@ -264,7 +264,7 @@ namespace Stump.Server.WorldServer.Global
             });
 
             /* Trigger */
-            FileWatcher.RegisterFileCreation(MapLoader.CellTriggersDir, f =>
+            FileWatcher.RegisterFileCreation(Settings.StaticPath + MapLoader.CellTriggersDir, f =>
             {
                 if (WorldServer.Instance.ConsoleInterface.AskForSomething(string.Format(text, f, "Trigger"), 20))
                 {

@@ -19,6 +19,7 @@
 using System;
 using Stump.Database;
 using Stump.Database.AuthServer;
+using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.IPC;
 
@@ -54,5 +55,24 @@ namespace Stump.Server.WorldServer.Manager
             return acc == null || acc.Password != accPass ? RoleEnum.None : acc.Role;
         }
 
+        public static WorldAccountRecord CreateWorldAccount(WorldClient client)
+        {
+            /* Create Bank */
+            var bank = new InventoryRecord
+                           {
+                               Kamas = 0
+                           };
+            bank.Create();
+
+            /* Create WorldAccount */
+            var worldAccount = new WorldAccountRecord
+                                   {
+                                       Id = client.Account.Id,
+                                       Nickname = client.Account.Nickname,
+                                       Bank = bank
+                                   };
+            worldAccount.Create();
+            return worldAccount;
+        }
     }
 }

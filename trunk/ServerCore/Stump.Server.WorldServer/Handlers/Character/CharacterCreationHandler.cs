@@ -27,6 +27,7 @@ using Stump.DofusProtocol.Classes.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Breeds;
+using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Manager;
 using Stump.Server.WorldServer.Threshold;
@@ -89,6 +90,11 @@ namespace Stump.Server.WorldServer.Handlers
             var breedLook = !message.sex ? breed.MaleLook.Copy() : breed.FemaleLook.Copy();
             breedLook.indexedColors = indexedColors;
 
+            /* Create Inventory */
+            // TODO ADD START OBJECTS
+            var inventory = new InventoryRecord { Kamas = (uint)breed.StartKamas };
+            inventory.Create();
+
             /* Create Character */
             var character = new CharacterRecord
             {
@@ -109,17 +115,14 @@ namespace Stump.Server.WorldServer.Handlers
                 Intelligence = 0,
                 Chance = 0,
                 Agility = 0,
+                Inventory = inventory
             };
-
-            /* Set Character Inventory */
-            // TODO ADD START OBJECTS
-            character.Inventory = new InventoryRecord { Kamas = (uint)breed.StartKamas };
-            character.Inventory.Create();
+            character.Create();
 
             /* Set Character SpellCollection */
             foreach (SpellIdEnum spellId in breed.StartSpells.Keys)
             {
-                var spell =new SpellRecord { SpellId = (uint)spellId, Position = breed.StartSpells[spellId], Level = 1 };
+                var spell = new SpellRecord { SpellId = (uint)spellId, Position = breed.StartSpells[spellId], Level = 1 };
                 spell.Create();
                 character.Spells.Add(spell);
             }

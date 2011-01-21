@@ -1,4 +1,4 @@
-﻿// /*************************************************************************
+﻿﻿// /*************************************************************************
 //  *
 //  *  Copyright (C) 2010 - 2011 Stump Team
 //  *
@@ -53,7 +53,7 @@ namespace Stump.BaseCore.Framework.Xml
             if (!File.Exists(uriConfig))
                 throw new FileNotFoundException("Config file is not found");
 
-            ( m_document = new XmlDocument() ).Load(m_reader);
+            (m_document = new XmlDocument()).Load(m_reader);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Stump.BaseCore.Framework.Xml
             if (!File.Exists(uriSchema))
                 throw new FileNotFoundException("Schema file is not found");
 
-            ( m_document = new XmlDocument() ).Load(m_reader);
+            (m_document = new XmlDocument()).Load(m_reader);
 
             using (var reader = new StreamReader(uriSchema))
             {
@@ -120,8 +120,8 @@ namespace Stump.BaseCore.Framework.Xml
             {
                 if (currentAssembly.GetName().Name != asmNode.Name)
                 {
-                   logger.Error("[Config] Assembly " + asmNode.Name + " isn't found");
-                   continue;
+                    logger.Error("[Config] Assembly " + asmNode.Name + " isn't found");
+                    continue;
                 }
 
                 foreach (XPathNavigator navigator in asmNode.CreateNavigator().SelectDescendants("Variable", "", false))
@@ -129,7 +129,7 @@ namespace Stump.BaseCore.Framework.Xml
                     if (!navigator.IsNode)
                         continue;
 
-                    XmlNode variable = ( navigator as IHasXmlNode ).GetNode();
+                    XmlNode variable = (navigator as IHasXmlNode).GetNode();
 
                     string name = variable.Attributes["name"] != null ? variable.Attributes["name"].Value : "";
                     string type = variable.Attributes["type"] != null ? variable.Attributes["type"].Value : "";
@@ -175,7 +175,7 @@ namespace Stump.BaseCore.Framework.Xml
 
                 foreach (XPathNavigator navigator in asmNode.CreateNavigator().SelectDescendants("Variable", "", false))
                 {
-                    if(!navigator.IsNode)
+                    if (!navigator.IsNode)
                         continue;
 
                     XmlNode variable = (navigator as IHasXmlNode).GetNode();
@@ -243,7 +243,7 @@ namespace Stump.BaseCore.Framework.Xml
                 if (field != null)
                 {
                     IEnumerable<Variable> attributes =
-                        field.GetCustomAttributes(typeof (Variable), false).OfType<Variable>();
+                        field.GetCustomAttributes(typeof(Variable), false).OfType<Variable>();
 
                     if (attributes.Count() > 0)
                     {
@@ -262,7 +262,7 @@ namespace Stump.BaseCore.Framework.Xml
                 else if (property != null)
                 {
                     IEnumerable<Variable> attributes =
-                        property.GetCustomAttributes(typeof (Variable), false).OfType<Variable>();
+                        property.GetCustomAttributes(typeof(Variable), false).OfType<Variable>();
 
                     if (attributes.Count() > 0)
                     {
@@ -313,7 +313,7 @@ namespace Stump.BaseCore.Framework.Xml
 
             try
             {
-                return (T) Convert.ChangeType(root.Value, typeof (T), CultureInfo.InvariantCulture);
+                return (T)Convert.ChangeType(root.Value, typeof(T), CultureInfo.InvariantCulture);
             }
             catch (InvalidCastException)
             {
@@ -329,7 +329,7 @@ namespace Stump.BaseCore.Framework.Xml
         {
             if (value is XmlNode)
             {
-                return new XmlSerializer(type).Deserialize(new StringReader(( value as XmlNode ).InnerXml));
+                return new XmlSerializer(type).Deserialize(new StringReader((value as XmlNode).InnerXml));
             }
 
             if (value.ToString() == "")

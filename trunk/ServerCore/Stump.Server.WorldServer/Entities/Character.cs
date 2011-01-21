@@ -359,8 +359,6 @@ namespace Stump.Server.WorldServer.Entities
             Record.EnergyMax = EnergyMax;
             Record.Experience = Experience;
 
-         //   Record.Inventory.Kamas = Kamas; // note : is it correct ?
-
             if (Stats != null)
             {
                 Record.Strength = Stats["Strength"].Base;
@@ -370,22 +368,9 @@ namespace Stump.Server.WorldServer.Entities
                 Record.Chance = Stats["Chance"].Base;
                 Record.Agility = Stats["Agility"].Base;
             }
-
             try
             {
-                //using (var saveScope = new SessionScope(FlushAction.Never))
-                //{
-                //    foreach (Item item in Inventory.Items)
-                //    {
-                //        item.SaveNow();
-                //    }
-
-                //    Record.SaveSpells();
-
-                //    Record.Save();
-
-                //    saveScope.Flush();
-                //}
+                Record.SaveAndFlush();
             }
             catch (Exception e)
             {
