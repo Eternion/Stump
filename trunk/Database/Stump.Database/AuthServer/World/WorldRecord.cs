@@ -35,7 +35,7 @@ namespace Stump.Database.AuthServer
         private bool m_connected = false;
         private ServerStatusEnum m_state = ServerStatusEnum.OFFLINE;
 
-        [PrimaryKey(PrimaryKeyType.Native, "Id")]
+        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
         public int Id
         {
             get;

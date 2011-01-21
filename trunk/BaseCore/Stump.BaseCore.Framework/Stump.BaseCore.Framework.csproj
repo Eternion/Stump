@@ -82,7 +82,10 @@
     <Compile Include="Collections\TimedList.cs" />
     <Compile Include="Cryptography\Cryptography.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
+    <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="IO\ConsoleProcent.cs" />
+    <Compile Include="Reflection\AccessorBuilder.cs" />
+    <Compile Include="Reflection\Extensions.cs" />
     <Compile Include="Threading\TaskCompletionSourceExtensions.cs" />
     <Compile Include="Threading\TaskExtensions.cs" />
     <Compile Include="Threading\TaskFactoryExtensions.cs" />
@@ -99,7 +102,7 @@
     <Compile Include="Threading\AsyncTaskPool.cs" />
     <Compile Include="Utils\BooleanByteWrapper.cs" />
     <Compile Include="Utils\ConditionWaiter.cs" />
-    <Compile Include="Extensions\Extensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Pool\Task\CyclicTask.cs" />
     <Compile Include="Utils\FileWatcher.cs" />
     <Compile Include="Utils\FormatterHelper.cs" />

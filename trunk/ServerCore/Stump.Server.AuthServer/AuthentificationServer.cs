@@ -22,6 +22,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using Stump.BaseCore.Framework.Attributes;
+using Stump.BaseCore.Framework.Reflection;
 using Stump.Database;
 using Stump.Database.AuthServer;
 using Stump.DofusProtocol;
@@ -45,6 +46,8 @@ namespace Stump.Server.AuthServer
             base(Definitions.ConfigFilePath, Definitions.SchemaFilePath)
         {
         }
+
+        private int m_value = 1;
 
         public override void Initialize()
         {

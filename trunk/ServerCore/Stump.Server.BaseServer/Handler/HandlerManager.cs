@@ -24,6 +24,7 @@ using System.Text;
 using System.Threading;
 using NLog;
 using Stump.BaseCore.Framework.Extensions;
+using Stump.BaseCore.Framework.Reflection;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 

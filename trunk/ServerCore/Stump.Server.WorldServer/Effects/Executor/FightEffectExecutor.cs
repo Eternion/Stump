@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Stump.BaseCore.Framework.Extensions;
+using Stump.BaseCore.Framework.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Fights;
 using Stump.Server.WorldServer.Global.Maps;

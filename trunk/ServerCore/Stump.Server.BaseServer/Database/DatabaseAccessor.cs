@@ -102,58 +102,38 @@ namespace Stump.Server.BaseServer.Database
             return toVersion;
         };
 
-
-        private static string m_loginUser;
-
-        private static string m_loginPass;
-
-        /// <remarks>
-        /// </remarks>
-        private static string m_loginHost;
-
-        /// <summary>
-        /// </summary>
-        private static string m_databaseName;
-
         /// <summary>
         /// Database user
         /// </summary>
-        [Variable]
-        public static string LoginUser
-        {
-            get { return m_loginUser; }
-            set { m_loginUser = value; }
-        }
+        [Variable] 
+        public static string LoginUser = "root";
 
         /// <summary>
         /// Database password
         /// </summary>
         [Variable]
-        public static string LoginPassword
-        {
-            get { return m_loginPass; }
-            set { m_loginPass = value; }
-        }
+        public static string LoginPassword = "";
 
         /// <summary>
         /// Database host
         /// </summary>
-        [Variable]
-        public static string LoginHost
-        {
-            get { return m_loginHost; }
-            set { m_loginHost = value; }
-        }
+        [Variable] 
+        public static string LoginHost = "localhost";
 
         /// <summary>
         /// Database name to connect to
         /// </summary>
-        [Variable]
-        public static string DatabaseName
-        {
-            get { return m_databaseName; }
-            set { m_databaseName = value; }
-        }
+#if AUTH_SERVER
+        [Variable] 
+        public static string DatabaseName = "";
+#elif WORLD_SERVER
+        [Variable] 
+        public static string DatabaseName = "";
+#else
+        [Variable] 
+        public static string DatabaseName = "";
+#endif
+
 
         public static bool IsInitialized
         {
@@ -171,7 +151,10 @@ namespace Stump.Server.BaseServer.Database
         {
             if (!IsInitialized)
             {
-                var config = new DatabaseConfiguration(dbtype, m_loginHost, m_databaseName, m_loginUser, m_loginPass);
+                if (string.IsNullOrEmpty(DatabaseName))
+                    throw new Exception("Cannot access to database. Database's name is not defined");
+
+                var config = new DatabaseConfiguration(dbtype, LoginHost, DatabaseName, LoginUser, LoginPassword);
                 var source = new InPlaceConfigurationSource();
 
                 source.Add(typeof (ActiveRecordBase), config.GetProperties());
@@ -217,7 +200,7 @@ namespace Stump.Server.BaseServer.Database
 
                 if (innerException == null)
                 {
-                    throw new Exception("Cannot access to databse. Be sure that the database names '" + m_databaseName +
+                    throw new Exception("Cannot access to database. Be sure that the database names '" + DatabaseName +
                                         "' exists. Exception : " + ex);
                 }
             }

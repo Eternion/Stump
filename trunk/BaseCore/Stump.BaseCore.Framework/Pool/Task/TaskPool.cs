@@ -22,7 +22,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 using Stump.BaseCore.Framework.Attributes;
-using Stump.BaseCore.Framework.Extensions;
+using Stump.BaseCore.Framework.Reflection;
 
 
 namespace Stump.BaseCore.Framework.Pool

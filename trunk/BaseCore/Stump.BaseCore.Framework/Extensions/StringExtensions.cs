@@ -17,44 +17,22 @@
 //  *
 //  *************************************************************************/
 using System;
-using System.Xml.Serialization;
-using Stump.DofusProtocol.Enums;
+using System.Text;
 
-namespace Stump.Server.BaseServer.IPC
+namespace Stump.BaseCore.Framework.Extensions
 {
-    [Serializable]
-    public class WorldServerInformation
+    public static class StringExtensions
     {
-        #region Properties
-
-        /// <summary>
-        ///   World address.
-        /// </summary>
-        public string Address;
-
-        /// <summary>
-        ///   Internally assigned unique Id of this World.
-        /// </summary>
-        public int Id;
-
-        [XmlIgnore]
-        public DateTime LastPing;
-
-        [XmlIgnore]
-        public DateTime LastUpdate;
-
-        /// <summary>
-        ///   World name.
-        /// </summary>
-        public string Name;
-
-        public ushort Port;
-
-        public string AddressString
+        public static string RandomString(this Random random, int size)
         {
-            get { return Address + ":" + Port; }
-        }
+            var builder = new StringBuilder();
 
-        #endregion
+            for (int i = 0; i < size; i++)
+            {
+                //26 letters in the alphabet, ascii + 65 for the capital letters
+                builder.Append(Convert.ToChar(Convert.ToInt32(Math.Floor(26*random.NextDouble() + 65))));
+            }
+            return builder.ToString();
+        }
     }
 }

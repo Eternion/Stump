@@ -1,35 +1,134 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
-<Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="auth_config.xsd">
-  <Stump.Server.BaseServer>
-    <Settings>
-      <EnableBenchmarking>true</EnableBenchmarking>
-    </Settings>
-    <Database>
-      <DatabaseAccessor>
-        <LoginUser>root</LoginUser>
-        <LoginPassword></LoginPassword>
-        <LoginHost>localhost</LoginHost>
-        <DatabaseName>stump_auth</DatabaseName>
-      </DatabaseAccessor>
-    </Database>
-    <Network>
-      <MessageListener>
-        <Host>127.0.0.1</Host>
-        <Port>5555</Port>
-        <MaxConcurrentConnections>2000</MaxConcurrentConnections>
-        <MaxPendingConnections>100</MaxPendingConnections>
-      </MessageListener>
-      <ClientVersion>
-        <Severity>Medium</Severity>
-        <VersionRequired>2.3.0.37782.1</VersionRequired>
-        <ActualVersion>1304</ActualVersion>
-        <RequiredVersion>1304</RequiredVersion>
-      </ClientVersion>
-      <WorkerManager>
-        <AutoWorkerNumber>true</AutoWorkerNumber>
-        <WorkerThreadNumber>2</WorkerThreadNumber>
-      </WorkerManager>
-    </Network>
-  </Stump.Server.BaseServer>
+﻿<Configuration>
+	<Stump.Server.AuthServer>
+		<WorldServerManager>
+			<!--Defines after how many seconds a world server is considered as timed out.-->
+			<Variable name="WorldServerTimeout">20</Variable>
+		</WorldServerManager>
+		<Managers>
+			<AccountManager>
+				<!--List of available breeds-->
+				<Variable name="AvailableBreeds" type="List`1">
+					<ArrayOfPlayableBreedEnum xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+						<PlayableBreedEnum>Feca</PlayableBreedEnum>
+						<PlayableBreedEnum>Osamodas</PlayableBreedEnum>
+						<PlayableBreedEnum>Enutrof</PlayableBreedEnum>
+						<PlayableBreedEnum>Sram</PlayableBreedEnum>
+						<PlayableBreedEnum>Xelor</PlayableBreedEnum>
+						<PlayableBreedEnum>Ecaflip</PlayableBreedEnum>
+						<PlayableBreedEnum>Eniripsa</PlayableBreedEnum>
+						<PlayableBreedEnum>Iop</PlayableBreedEnum>
+						<PlayableBreedEnum>Cra</PlayableBreedEnum>
+						<PlayableBreedEnum>Sadida</PlayableBreedEnum>
+						<PlayableBreedEnum>Sacrieur</PlayableBreedEnum>
+						<PlayableBreedEnum>Pandawa</PlayableBreedEnum>
+						<PlayableBreedEnum>Roublard</PlayableBreedEnum>
+					</ArrayOfPlayableBreedEnum>
+				</Variable>
+			</AccountManager>
+		</Managers>
+		<AuthConsole>
+			<!--Prefix using for server's commands-->
+			<Variable name="CommandPreffix" />
+		</AuthConsole>
+		<IPC>
+			<IpcServer>
+				<!--IPC port-->
+				<Variable name="IpcPort">9100</Variable>
+				<!--Secret key to use to confirm World Server access-->
+				<Variable name="IpcSecretKey">000stump000</Variable>
+			</IpcServer>
+		</IPC>
+	</Stump.Server.AuthServer>
+	<Stump.Server.BaseServer>
+		<Plugins>
+			<PluginManager>
+				<Variable name="PluginsPath" type="List`1">
+					<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+						<string>./plugins/</string>
+					</ArrayOfString>
+				</Variable>
+			</PluginManager>
+		</Plugins>
+		<Network>
+			<MessageListener>
+				<!--Current server adress-->
+				<Variable name="Host">localhost</Variable>
+				<!--Server port-->
+				<Variable name="Port">443</Variable>
+				<!--Max number of clients connected-->
+				<Variable name="MaxConcurrentConnections">2000</Variable>
+				<!--Max number of clients waiting for a connection-->
+				<Variable name="MaxPendingConnections">100</Variable>
+				<!--Enable/Disable IP restriction-->
+				<Variable name="ActiveIPRestriction">True</Variable>
+				<!--Max number of clients connected on the same IP-->
+				<Variable name="MaxIPConnexions">10</Variable>
+				<!--Buffer size /!\ Advanced users only /!\-->
+				<Variable name="BufferSize">8192</Variable>
+			</MessageListener>
+		</Network>
+		<Data>
+			<DataLoader>
+				<!--Path to 'data' folder-->
+				<Variable name="DataPath">./../../data</Variable>
+				<!--Name of d2o folder in 'data' folder-->
+				<Variable name="D2ODir">/common/</Variable>
+				<!--Name of i18n folder in 'data' folder-->
+				<Variable name="I18NDir">/i18n/</Variable>
+				<!--Name of the i18n file used by the server-->
+				<Variable name="I18NFileName">i18n_en.d2i</Variable>
+			</DataLoader>
+		</Data>
+		<Network>
+			<WorkerManager>
+				<!--Define worker numbers by processor count.-->
+				<Variable name="AutoWorkerNumber">True</Variable>
+				<!--Number of workers if AutoWorkerNumber is false-->
+				<Variable name="WorkerThreadNumber">2</Variable>
+			</WorkerManager>
+			<ClientVersion>
+				<!--Define the severity of the client version checking. Set to Light/NoCheck if you have any bugs with it.-->
+        <Variable name="Severity" type="VersionCheckingSeverity">
+          <VersionCheckingSeverity>Medium</VersionCheckingSeverity>
+        </Variable>
+        <!--Version for the client-->
+				<Variable name="VersionRequired">2.3.0.37782.1</Variable>
+				<!--Actual version-->
+				<Variable name="ActualVersion">1304</Variable>
+				<!--Required version-->
+				<Variable name="RequiredVersion">1304</Variable>
+			</ClientVersion>
+		</Network>
+		<Settings>
+			<!--Enable/Disable perfomances tracing-->
+			<Variable name="EnableBenchmarking">False</Variable>
+			<!--Disconnect Client after specified time(in s) or NULL for desactivate-->
+			<Variable name="InactivityDisconnectionTime" type="Nullable`1">
+				<unsignedInt>900</unsignedInt>
+			</Variable>
+		</Settings>
+		<Database>
+			<DatabaseAccessor>
+				<!--Database user-->
+				<Variable name="LoginUser">root</Variable>
+				<!--Database password-->
+				<Variable name="LoginPassword" />
+				<!--Database host-->
+				<Variable name="LoginHost">localhost</Variable>
+				<!--Database name to connect to-->
+				<Variable name="DatabaseName">stump_auth</Variable>
+			</DatabaseAccessor>
+		</Database>
+		<ConsoleBase>
+			<!--Define the interval between two condition checks
+            when server is asking something to the user by the console-->
+			<Variable name="AskWaiterInterval">20</Variable>
+		</ConsoleBase>
+		<Commands>
+			<CommandBase>
+				<!--Enable/Disable case check for server's commands-->
+				<Variable name="IgnoreCommandCase">True</Variable>
+			</CommandBase>
+		</Commands>
+	</Stump.Server.BaseServer>
 </Configuration>

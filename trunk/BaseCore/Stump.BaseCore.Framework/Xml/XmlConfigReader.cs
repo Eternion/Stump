@@ -331,6 +331,10 @@ namespace Stump.BaseCore.Framework.Xml
             {
                 return new XmlSerializer(type).Deserialize(new StringReader(( value as XmlNode ).InnerXml));
             }
+            if (type.IsEnum)
+            {
+                return new XmlSerializer(type).Deserialize(new StringReader(value.ToString()));
+            }
 
             if (value.ToString() == "")
                 if (value is string)

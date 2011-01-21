@@ -1,30 +1,11 @@
-﻿// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
 
-namespace Stump.BaseCore.Framework.Extensions
+namespace Stump.BaseCore.Framework.Reflection
 {
     public static class Extensions
     {
@@ -35,8 +16,7 @@ namespace Stump.BaseCore.Framework.Extensions
 
         public static Type GetFuncType(this ConstructorInfo constructor)
         {
-            var types = new List<Type>(constructor.GetParameters().Select(entry => entry.ParameterType))
-                {constructor.DeclaringType};
+            var types = new List<Type>(constructor.GetParameters().Select(entry => entry.ParameterType)) { constructor.DeclaringType };
 
             return Expression.GetFuncType(types.ToArray());
         }
@@ -147,43 +127,6 @@ namespace Stump.BaseCore.Framework.Extensions
                 : Delegate.CreateDelegate(delegateType, target, mi);
 
             return result;
-        }
-
-        public static string RandomString(this Random random, int size)
-        {
-            var builder = new StringBuilder();
-
-            for (int i = 0; i < size; i++)
-            {
-                //26 letters in the alphabet, ascii + 65 for the capital letters
-                builder.Append(Convert.ToChar(Convert.ToInt32(Math.Floor(26*random.NextDouble() + 65))));
-            }
-            return builder.ToString();
-        }
-
-        public static bool CompareEnumerable<T>(this IEnumerable<T> ie1, IEnumerable<T> ie2)
-        {
-            if (ie1.GetType() != ie2.GetType())
-                return false;
-
-            if (ie1.Count() != ie2.Count())
-                return false;
-            
-            IEnumerator<T> enumerator1 = ie1.GetEnumerator();
-            while (enumerator1.MoveNext())
-            {
-                if (ie2.Count(entry => Equals(entry, enumerator1.Current)) != ie1.Count(entry => Equals(entry, enumerator1.Current)))
-                    return false;
-            }
-
-            IEnumerator<T> enumerator2 = ie2.GetEnumerator();
-            while (enumerator2.MoveNext())
-            {
-                if (ie2.Count(entry => Equals(entry, enumerator2.Current)) != ie1.Count(entry => Equals(entry, enumerator2.Current)))
-                    return false;
-            }
-
-            return true;
         }
     }
 }

@@ -72,6 +72,7 @@ namespace Stump.Server.AuthServer.Commands
                     SecretQuestion = trigger.GetArgument<string>("question"),
                     SecretAnswer = trigger.GetArgument<string>("answer"),
                     Role = trigger.GetArgument<RoleEnum>("role"),
+                    Email = "",
                     AvailableBreeds = AccountManager.AvailableBreeds,
                 };
 

@@ -4,90 +4,26 @@
         <name>Stump.Server.BaseServer</name>
     </assembly>
     <members>
-        <member name="T:Stump.Server.BaseServer.Settings">
+        <member name="F:Stump.Server.BaseServer.IPC.WorldServerInformation.Address">
             <summary>
-              Global settings defined by the config file
+              World address.
             </summary>
         </member>
-        <member name="F:Stump.Server.BaseServer.Settings.EnableBenchmarking">
+        <member name="F:Stump.Server.BaseServer.IPC.WorldServerInformation.Id">
             <summary>
-            Enable/Disable perfomances tracing
+              Internally assigned unique Id of this World.
             </summary>
         </member>
-        <member name="F:Stump.Server.BaseServer.Settings.InactivityDisconnectionTime">
+        <member name="F:Stump.Server.BaseServer.IPC.WorldServerInformation.Name">
             <summary>
-              Disconnect Client after specified time(in s) or NULL for desactivate
+              World name.
             </summary>
         </member>
-        <member name="M:Stump.Server.BaseServer.Commands.TriggerBase.Reply(System.String)">
+        <member name="M:Stump.Server.BaseServer.IPC.IRemoteOperationsWorld.DisconnectConnectedAccount(Stump.Database.AuthServer.AccountRecord)">
             <summary>
-              Replies accordingly with the given text.
+              Disconnect client who use the given account
             </summary>
-        </member>
-        <member name="F:Stump.Server.BaseServer.Handler.HandlerManager.m_handlers">
-            <summary>
-              Key : Typeof handled message
-              Value : Target method
-            </summary>
-        </member>
-        <member name="M:Stump.Server.BaseServer.Handler.HandlerManager.RegisterAll(System.Reflection.Assembly)">
-            <summary>
-              Automatically detects and registers all PacketHandlers within the given Assembly
-            </summary>
-        </member>
-        <member name="M:Stump.Server.BaseServer.Handler.HandlerManager.Register(System.Type)">
-            <summary>
-              Registers all packet handlers defined in the given type.
-            </summary>
-            <param name = "type">the type to search through for packet handlers</param>
-        </member>
-        <member name="F:Stump.Server.BaseServer.ConsoleBase.AskWaiterInterval">
-            <summary>
-            Define the interval between two condition checks
-            when server is asking something to the user by the console
-            </summary>
-        </member>
-        <member name="F:Stump.Server.BaseServer.Network.MessageListener.Host">
-            <summary>
-            Current server adress
-            </summary>
-        </member>
-        <member name="F:Stump.Server.BaseServer.Network.MessageListener.Port">
-            <summary>
-            Server port
-            </summary>
-        </member>
-        <member name="F:Stump.Server.BaseServer.Network.MessageListener.MaxConcurrentConnections">
-            <summary>
-            Max number of clients connected
-            </summary>
-        </member>
-        <member name="F:Stump.Server.BaseServer.Network.MessageListener.MaxPendingConnections">
-            <summary>
-            Max number of clients waiting for a connection
-            </summary>
-        </member>
-        <member name="F:Stump.Server.BaseServer.Network.MessageListener.ActiveIPRestriction">
-            <summary>
-            Enable/Disable IP restriction
-            </summary>
-        </member>
-        <member name="F:Stump.Server.BaseServer.Network.MessageListener.MaxIPConnexions">
-            <summary>
-            Max number of clients connected on the same IP
-            </summary>
-        </member>
-        <member name="F:Stump.Server.BaseServer.Network.MessageListener.BufferSize">
-            <summary>
-            Buffer size /!\ Advanced users only /!\
-            </summary>
-        </member>
-        <member name="M:Stump.Server.BaseServer.Network.MessageListener.GetSameIPNumber(System.Net.IPAddress)">
-            <summary>
-            Gets the number of same client .
-            </summary>
-            <param name="ip">The IP.</param>
-            <returns></returns>
+            <param name = "account"></param>
         </member>
         <member name="M:Stump.Server.BaseServer.IPC.IRemoteOperationsAuth.RegisterWorld(Stump.Server.BaseServer.IPC.WorldServerInformation,System.Int32)">
             <summary>
@@ -211,15 +147,115 @@
             <param name="accountid"></param>
             <returns></returns>
         </member>
+        <member name="F:Stump.Server.BaseServer.Network.MessageListener.Host">
+            <summary>
+            Current server adress
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.MessageListener.Port">
+            <summary>
+            Server port
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.MessageListener.MaxConcurrentConnections">
+            <summary>
+            Max number of clients connected
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.MessageListener.MaxPendingConnections">
+            <summary>
+            Max number of clients waiting for a connection
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.MessageListener.ActiveIPRestriction">
+            <summary>
+            Enable/Disable IP restriction
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.MessageListener.MaxIPConnexions">
+            <summary>
+            Max number of clients connected on the same IP
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.MessageListener.BufferSize">
+            <summary>
+            Buffer size /!\ Advanced users only /!\
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Network.MessageListener.GetSameIPNumber(System.Net.IPAddress)">
+            <summary>
+            Gets the number of same client .
+            </summary>
+            <param name="ip">The IP.</param>
+            <returns></returns>
+        </member>
         <member name="T:Stump.Server.BaseServer.Commands.ExecuterBase">
             <summary>
               Only used to make SubCommand and CommandBase shorter
             </summary>
         </member>
-        <member name="M:Stump.Server.BaseServer.Initializing.StageStep.#ctor">
+        <member name="F:Stump.Server.BaseServer.Data.DataLoader.DataPath">
             <summary>
-            Default Constructor.
+            Path to 'data' folder
             </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Data.DataLoader.D2ODir">
+            <summary>
+            Name of d2o folder in 'data' folder
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Data.DataLoader.I18NDir">
+            <summary>
+            Name of i18n folder in 'data' folder
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Data.DataLoader.I18NFileName">
+            <summary>
+            Name of the i18n file used by the server
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Data.DataLoader.LoadData``1">
+            <summary>
+              Load a D2O file with a class constraint
+            </summary>
+            <typeparam name = "T">Constraint class</typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Data.DataLoader.LoadData``1(System.Boolean)">
+            <summary>
+              Load a D2O file with a class constraint
+            </summary>
+            <typeparam name = "T">Constraint class</typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Data.DataLoader.LoadData(System.String)">
+            <summary>
+              Load a D2O file
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Data.DataLoader.LoadData(System.String,System.Boolean)">
+            <summary>
+              Load a D2O file
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Handler.HandlerManager.m_handlers">
+            <summary>
+              Key : Typeof handled message
+              Value : Target method
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Handler.HandlerManager.RegisterAll(System.Reflection.Assembly)">
+            <summary>
+              Automatically detects and registers all PacketHandlers within the given Assembly
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Handler.HandlerManager.Register(System.Type)">
+            <summary>
+              Registers all packet handlers defined in the given type.
+            </summary>
+            <param name = "type">the type to search through for packet handlers</param>
         </member>
         <member name="M:Stump.Server.BaseServer.Commands.CommandParameter`1.SetDefaultValue">
             <summary>
@@ -275,23 +311,25 @@
               List of Active Worker
             </summary>
         </member>
-        <member name="M:Stump.Server.BaseServer.Network.BaseClient.Disconnect">
+        <member name="F:Stump.Server.BaseServer.ServerBase`1.Instance">
             <summary>
-              Disconnect the Client. Cannot reuse the socket.
+              Class singleton
             </summary>
         </member>
-        <member name="M:Stump.Server.BaseServer.Network.BaseClient.DisconnectLater(System.Int32)">
+        <member name="P:Stump.Server.BaseServer.ServerBase`1.CommandManager">
             <summary>
-              Disconnect the Client after a time
+              Classe de base de l'execution des commandes.
             </summary>
-            <param name = "timeToWait"></param>
         </member>
-        <member name="M:Stump.Server.BaseServer.Data.MapTool.MapRipper.RipMapFile(System.String,System.String)">
+        <member name="P:Stump.Server.BaseServer.ServerBase`1.QueueDispatcher">
             <summary>
-              Rewrite a .map file without superflous data
+              Classe de gestion du traitement séquencielle et prioritisé des paquetqs
             </summary>
-            <param name = "mapfilePath">The unripped .map file</param>
-            <param name = "dest">Where to write the ripped .map file</param>
+        </member>
+        <member name="P:Stump.Server.BaseServer.ServerBase`1.WorkerManager">
+            <summary>
+              Classe de Gestion MultiThreading des paquets
+            </summary>
         </member>
         <member name="F:Stump.Server.BaseServer.Network.ClientVersion.Severity">
             <summary>
@@ -313,104 +351,14 @@
             Required version
             </summary>
         </member>
-        <member name="F:Stump.Server.BaseServer.ServerBase`1.Instance">
+        <member name="T:Stump.Server.BaseServer.Definitions">
             <summary>
-              Class singleton
+              Contains hard-coded data
             </summary>
         </member>
-        <member name="P:Stump.Server.BaseServer.ServerBase`1.CommandManager">
+        <member name="M:Stump.Server.BaseServer.Initializing.StageStep.#ctor">
             <summary>
-              Classe de base de l'execution des commandes.
-            </summary>
-        </member>
-        <member name="P:Stump.Server.BaseServer.ServerBase`1.QueueDispatcher">
-            <summary>
-              Classe de gestion du traitement séquencielle et prioritisé des paquetqs
-            </summary>
-        </member>
-        <member name="P:Stump.Server.BaseServer.ServerBase`1.WorkerManager">
-            <summary>
-              Classe de Gestion MultiThreading des paquets
-            </summary>
-        </member>
-        <member name="F:Stump.Server.BaseServer.Data.DataLoader.DataPath">
-            <summary>
-            Path to 'data' folder
-            </summary>
-        </member>
-        <member name="F:Stump.Server.BaseServer.Data.DataLoader.D2ODir">
-            <summary>
-            Name of d2o folder in 'data' folder
-            </summary>
-        </member>
-        <member name="F:Stump.Server.BaseServer.Data.DataLoader.I18NDir">
-            <summary>
-            Name of i18n folder in 'data' folder
-            </summary>
-        </member>
-        <member name="F:Stump.Server.BaseServer.Data.DataLoader.I18NFileName">
-            <summary>
-            Name of the i18n file used by the server
-            </summary>
-        </member>
-        <member name="M:Stump.Server.BaseServer.Data.DataLoader.LoadData``1">
-            <summary>
-              Load a D2O file with a class constraint
-            </summary>
-            <typeparam name = "T">Constraint class</typeparam>
-            <returns></returns>
-        </member>
-        <member name="M:Stump.Server.BaseServer.Data.DataLoader.LoadData``1(System.Boolean)">
-            <summary>
-              Load a D2O file with a class constraint
-            </summary>
-            <typeparam name = "T">Constraint class</typeparam>
-            <returns></returns>
-        </member>
-        <member name="M:Stump.Server.BaseServer.Data.DataLoader.LoadData(System.String)">
-            <summary>
-              Load a D2O file
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Stump.Server.BaseServer.Data.DataLoader.LoadData(System.String,System.Boolean)">
-            <summary>
-              Load a D2O file
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Stump.Server.BaseServer.Data.D2oTool.D2oClassDefinition.ReadValue``1(System.Int32,System.String)">
-            <summary>
-              Read a defined field from a class by his index
-            </summary>
-            <typeparam name = "T"></typeparam>
-            <param name = "index"></param>
-            <param name = "field"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Stump.Server.BaseServer.Data.D2oTool.D2oClassDefinition.ReadValue``1(System.Int32,System.String,``0)">
-            <summary>
-              Read a defined field from a class by his index
-            </summary>
-            <typeparam name = "T"></typeparam>
-            <param name = "index"></param>
-            <param name = "field"></param>
-            <param name = "defaultValue"></param>
-            <returns></returns>
-        </member>
-        <member name="F:Stump.Server.BaseServer.IPC.WorldServerInformation.Address">
-            <summary>
-              World address.
-            </summary>
-        </member>
-        <member name="F:Stump.Server.BaseServer.IPC.WorldServerInformation.Id">
-            <summary>
-              Internally assigned unique Id of this World.
-            </summary>
-        </member>
-        <member name="F:Stump.Server.BaseServer.IPC.WorldServerInformation.Name">
-            <summary>
-              World name.
+            Default Constructor.
             </summary>
         </member>
         <member name="M:Stump.Server.BaseServer.Data.D2oTool.D2oFile.#ctor(System.String)">
@@ -462,6 +410,28 @@
             <param name = "index"></param>
             <returns></returns>
         </member>
+        <member name="T:Stump.Server.BaseServer.Settings">
+            <summary>
+              Global settings defined by the config file
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Settings.EnableBenchmarking">
+            <summary>
+            Enable/Disable perfomances tracing
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Settings.InactivityDisconnectionTime">
+            <summary>
+              Disconnect Client after specified time(in s) or NULL for desactivate
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Data.MapTool.MapRipper.RipMapFile(System.String,System.String)">
+            <summary>
+              Rewrite a .map file without superflous data
+            </summary>
+            <param name = "mapfilePath">The unripped .map file</param>
+            <param name = "dest">Where to write the ripped .map file</param>
+        </member>
         <member name="F:Stump.Server.BaseServer.Initializing.StageManager.WaitTime">
             <summary>
             Time to wait a task after it's has been started. (ms)
@@ -472,43 +442,41 @@
             Array for our differents stages.
             </summary>
         </member>
-        <member name="M:Stump.Server.BaseServer.IPC.IRemoteOperationsWorld.DisconnectConnectedAccount(Stump.Database.AuthServer.AccountRecord)">
+        <member name="M:Stump.Server.BaseServer.Network.BaseClient.Disconnect">
             <summary>
-              Disconnect client who use the given account
-            </summary>
-            <param name = "account"></param>
-        </member>
-        <member name="F:Stump.Server.BaseServer.Database.DatabaseAccessor.m_loginHost">
-            <remarks>
-            </remarks>
-        </member>
-        <member name="F:Stump.Server.BaseServer.Database.DatabaseAccessor.m_databaseName">
-            <summary>
+              Disconnect the Client. Cannot reuse the socket.
             </summary>
         </member>
-        <member name="P:Stump.Server.BaseServer.Database.DatabaseAccessor.LoginUser">
+        <member name="M:Stump.Server.BaseServer.Network.BaseClient.DisconnectLater(System.Int32)">
+            <summary>
+              Disconnect the Client after a time
+            </summary>
+            <param name = "timeToWait"></param>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Database.DatabaseAccessor.LoginUser">
             <summary>
             Database user
             </summary>
         </member>
-        <member name="P:Stump.Server.BaseServer.Database.DatabaseAccessor.LoginPassword">
+        <member name="F:Stump.Server.BaseServer.Database.DatabaseAccessor.LoginPassword">
             <summary>
             Database password
             </summary>
         </member>
-        <member name="P:Stump.Server.BaseServer.Database.DatabaseAccessor.LoginHost">
+        <member name="F:Stump.Server.BaseServer.Database.DatabaseAccessor.LoginHost">
             <summary>
             Database host
             </summary>
         </member>
-        <member name="P:Stump.Server.BaseServer.Database.DatabaseAccessor.DatabaseName">
+        <member name="F:Stump.Server.BaseServer.Database.DatabaseAccessor.DatabaseName">
             <summary>
             Database name to connect to
             </summary>
         </member>
-        <member name="T:Stump.Server.BaseServer.Definitions">
+        <member name="F:Stump.Server.BaseServer.ConsoleBase.AskWaiterInterval">
             <summary>
-              Contains hard-coded data
+            Define the interval between two condition checks
+            when server is asking something to the user by the console
             </summary>
         </member>
         <member name="F:Stump.Server.BaseServer.Commands.CommandBase.IgnoreCommandCase">
@@ -523,6 +491,30 @@
             <param name = "subcmd">requested subcommand name</param>
             <param name = "result">Out the requested subcommand</param>
             <returns>if the requested subcommand exists.</returns>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Data.D2oTool.D2oClassDefinition.ReadValue``1(System.Int32,System.String)">
+            <summary>
+              Read a defined field from a class by his index
+            </summary>
+            <typeparam name = "T"></typeparam>
+            <param name = "index"></param>
+            <param name = "field"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Data.D2oTool.D2oClassDefinition.ReadValue``1(System.Int32,System.String,``0)">
+            <summary>
+              Read a defined field from a class by his index
+            </summary>
+            <typeparam name = "T"></typeparam>
+            <param name = "index"></param>
+            <param name = "field"></param>
+            <param name = "defaultValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Commands.TriggerBase.Reply(System.String)">
+            <summary>
+              Replies accordingly with the given text.
+            </summary>
         </member>
     </members>
 </doc>

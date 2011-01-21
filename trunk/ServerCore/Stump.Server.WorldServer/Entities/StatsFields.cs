@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using Castle.Core;
 using Stump.BaseCore.Framework.Extensions;
+using Stump.BaseCore.Framework.Reflection;
 using Stump.Server.WorldServer.Effects;
 using Stump.Server.WorldServer.Threshold;
 

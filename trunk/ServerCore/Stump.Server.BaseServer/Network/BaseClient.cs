@@ -88,7 +88,7 @@ namespace Stump.Server.BaseServer.Network
 
         public bool Connected
         {
-            get { return Socket.Connected; }
+            get { return Socket != null && Socket.Connected; }
         }
 
         public string IP
@@ -271,16 +271,21 @@ namespace Stump.Server.BaseServer.Network
             return len;
         }
 
+
+        private object m_disconnectLock = new object();
         /// <summary>
         ///   Disconnect the Client. Cannot reuse the socket.
         /// </summary>
         public void Disconnect()
         {
-            if (!Connected)
+            lock (m_disconnectLock)
             {
-                OnDisconnect();
+                if (Connected)
+                {
+                    OnDisconnect();
 
-                Close();
+                    Close();
+                }
             }
         }
 

@@ -19,7 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Stump.BaseCore.Framework.Extensions;
+using Stump.BaseCore.Framework.Reflection;
 using Stump.BaseCore.Framework.IO;
 
 namespace Stump.DofusProtocol.Messages

@@ -18,12 +18,14 @@
 //  *************************************************************************/
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using Stump.BaseCore.Framework.IO;
+using Stump.BaseCore.Framework.Reflection;
 using Stump.DofusProtocol.D2oClasses;
 
 namespace Stump.Server.BaseServer.Data.D2oTool
@@ -38,6 +40,10 @@ namespace Stump.Server.BaseServer.Data.D2oTool
             };
 
         private readonly D2oFile m_file; // depending file, don't use without it !!
+
+        private static readonly ConcurrentDictionary<Type, ConcurrentDictionary<string, AccessorBuilder.SetFieldValueUnboundDelegate>> FieldsAccessors = new ConcurrentDictionary<Type, ConcurrentDictionary<string, AccessorBuilder.SetFieldValueUnboundDelegate>>();
+        private static readonly ConcurrentDictionary<Type, Delegate> TypesConstructors = new ConcurrentDictionary<Type, Delegate>();
+
 
         public D2oClassDefinition(int id, string classname, string packagename, BigEndianReader reader, D2oFile file)
         {
@@ -163,25 +169,40 @@ namespace Stump.Server.BaseServer.Data.D2oTool
 
         internal object BuildClassObject(BigEndianReader reader, Type objType)
         {
+            if (!TypesConstructors.ContainsKey(objType))
+            {
+                var ctor = objType.GetConstructor(new Type[0]);
+                TypesConstructors.TryAdd(objType, ctor.CreateDelegate(ctor.GetFuncType()));
+            }
+
             // call constructor
-            object result = objType.GetConstructor(new Type[0]).Invoke(new object[0]);
+            object result = TypesConstructors[objType].DynamicInvoke(new object[0]);
 
             foreach (var field in Fields)
             {
                 var obj = field.Value.ReadValue<object>(reader);
 
+                if (!FieldsAccessors.ContainsKey(ClassType))
+                    FieldsAccessors.TryAdd(ClassType, new ConcurrentDictionary<string, AccessorBuilder.SetFieldValueUnboundDelegate>());
+
+                if (!FieldsAccessors[ClassType].ContainsKey(field.Key))
+                {
+                    var fieldInfo = ClassType.GetField(field.Key);
+                    FieldsAccessors[ClassType].TryAdd(field.Key, AccessorBuilder.CreateSetter(ClassType, fieldInfo.FieldType, field.Key));
+                }
+
                 if (obj is List<object>)
                 {
                     IList objList = BuildList(obj, ClassType.GetField(field.Key).FieldType);
 
-                    ClassType.GetField(field.Key).SetValue(result, objList);
+                    FieldsAccessors[ClassType][field.Key](result, objList);
                 }
                 else
                 {
                     if (field.Value.KnowType != ClassType.GetField(field.Key).FieldType)
                         obj = Convert.ChangeType(obj, ClassType.GetField(field.Key).FieldType);
 
-                    ClassType.GetField(field.Key).SetValue(result, obj);
+                    FieldsAccessors[ClassType][field.Key](result, obj);
                 }
             }
 
