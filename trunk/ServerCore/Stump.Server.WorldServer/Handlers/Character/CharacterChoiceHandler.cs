@@ -34,14 +34,14 @@ namespace Stump.Server.WorldServer.Handlers
     public partial class CharacterHandler
     {
 
-        [WorldHandler(typeof (CharacterFirstSelectionMessage))]
+        [WorldHandler(typeof(CharacterFirstSelectionMessage))]
         public static void HandleCharacterFirstSelectionMessage(WorldClient client, CharacterFirstSelectionMessage message)
         {
             // TODO ADD TUTORIAL EFFECTS
             HandleCharacterSelectionMessage(client, message);
         }
 
-        [WorldHandler(typeof (CharacterSelectionMessage))]
+        [WorldHandler(typeof(CharacterSelectionMessage))]
         public static void HandleCharacterSelectionMessage(WorldClient client, CharacterSelectionMessage message)
         {
             CharacterRecord character = client.Characters.First(entry => entry.Id == message.id);
@@ -57,8 +57,8 @@ namespace Stump.Server.WorldServer.Handlers
             CommonCharacterSelection(client, character);
         }
 
-        [WorldHandler(typeof (CharacterSelectionWithRecolorMessage))]
-        public static void HandleCharacterSelectionWithRecolorMessage(WorldClient client,CharacterSelectionWithRecolorMessage message)
+        [WorldHandler(typeof(CharacterSelectionWithRecolorMessage))]
+        public static void HandleCharacterSelectionWithRecolorMessage(WorldClient client, CharacterSelectionWithRecolorMessage message)
         {
             CharacterRecord character = client.Characters.First(entry => entry.Id == message.id);
 
@@ -77,8 +77,8 @@ namespace Stump.Server.WorldServer.Handlers
             CommonCharacterSelection(client, character);
         }
 
-        [WorldHandler(typeof (CharacterSelectionWithRenameMessage))]
-        public static void HandleCharacterSelectionWithRenameMessage(WorldClient client,CharacterSelectionWithRenameMessage message)
+        [WorldHandler(typeof(CharacterSelectionWithRenameMessage))]
+        public static void HandleCharacterSelectionWithRenameMessage(WorldClient client, CharacterSelectionWithRenameMessage message)
         {
             CharacterRecord character = client.Characters.First(entry => entry.Id == message.id);
 
@@ -93,7 +93,7 @@ namespace Stump.Server.WorldServer.Handlers
             if (CharacterRecord.IsNameExists(message.name) || !Regex.IsMatch(StringUtils.FirstLetterUpper(message.name.ToLower()),
                                "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled))
             {
-                client.Send(new CharacterCreationResultMessage((int) CharacterCreationResultEnum.ERR_NAME_ALREADY_EXISTS));
+                client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.ERR_NAME_ALREADY_EXISTS));
                 return;
             }
 
@@ -113,9 +113,9 @@ namespace Stump.Server.WorldServer.Handlers
             if (client.WorldAccount == null)
             {
                 if (!WorldAccountRecord.Exists(client.Account.Id))
-                    new WorldAccountRecord { Id = client.Account.Id, Nickname = client.Account.Nickname }.Create();
-
-                client.WorldAccount = WorldAccountRecord.FindWorldAccountById(client.Account.Id);
+                    client.WorldAccount = AccountManager.CreateWorldAccount(client);
+                else
+                    client.WorldAccount = WorldAccountRecord.FindWorldAccountById(client.Account.Id);
             }
 
             /* Update LastConnection and Last Ip */
@@ -171,7 +171,7 @@ namespace Stump.Server.WorldServer.Handlers
             List<CharacterBaseInformations> characters = client.Characters.Select(
                 characterRecord =>
                 new CharacterBaseInformations(
-                    (uint) characterRecord.Id,
+                    (uint)characterRecord.Id,
                     ThresholdManager.Thresholds["CharacterExp"].GetLevel(characterRecord.Experience),
                     characterRecord.Name,
                     CharacterManager.GetStuffedCharacterLook(characterRecord).EntityLook,
@@ -193,7 +193,7 @@ namespace Stump.Server.WorldServer.Handlers
 
             foreach (CharacterRecord c in client.Characters)
             {
-                cbi.Add(new CharacterBaseInformations((uint) c.Id,
+                cbi.Add(new CharacterBaseInformations((uint)c.Id,
                                                       ThresholdManager.Thresholds["CharacterExp"].GetLevel(c.Experience),
                                                       c.Name, CharacterManager.GetStuffedCharacterLook(c).EntityLook,
                                                       c.Breed, c.Sex != SexTypeEnum.SEX_MALE));
@@ -205,7 +205,7 @@ namespace Stump.Server.WorldServer.Handlers
 
                 if (c.Recolor)
                 {
-                    ctri.Add(new CharacterToRecolorInformation((uint) c.Id, c.BaseLook.indexedColors));
+                    ctri.Add(new CharacterToRecolorInformation((uint)c.Id, c.BaseLook.indexedColors));
                 }
 
                 if (!(c.Recolor && c.Rename))

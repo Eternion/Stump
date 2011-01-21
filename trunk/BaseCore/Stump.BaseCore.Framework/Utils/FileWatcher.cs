@@ -51,10 +51,10 @@ namespace Stump.BaseCore.Framework.Utils
 
         public static void RegisterFileModification(string fileName, Action action)
         {
-            if (!File.Exists(fileName))
-                throw new FileNotFoundException("Le fichier n'existe pas");
-
             var fileInfo = new FileInfo(fileName);
+
+            if (!fileInfo.Exists)
+                throw new FileNotFoundException("Le fichier n'existe pas");
 
             if (!m_watchers.ContainsKey(fileInfo.DirectoryName))
                 CreateFileWatcher(fileInfo.DirectoryName);
@@ -64,10 +64,10 @@ namespace Stump.BaseCore.Framework.Utils
 
         public static void RegisterFileCreation(string directoryName, WatchAction action)
         {
-            if (!Directory.Exists(directoryName))
-                throw new FileNotFoundException("Le répertoire n'existe pas");
-
             var directory = new DirectoryInfo(directoryName);
+
+            if (!directory.Exists)
+                throw new FileNotFoundException("Le répertoire n'existe pas");
 
             if (!m_watchers.ContainsKey(directory.FullName))
                 CreateFolderWatcher(directory.FullName);
