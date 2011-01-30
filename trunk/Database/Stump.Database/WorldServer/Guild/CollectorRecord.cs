@@ -18,6 +18,7 @@
 //  *************************************************************************/
 using System;
 using Castle.ActiveRecord;
+using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database.WorldServer
 {
@@ -42,6 +43,41 @@ namespace Stump.Database.WorldServer
 
         [BelongsTo("OwnerId", NotNull = true)]
         public CharacterRecord Owner
+        {
+            get;
+            set;
+        }
+
+        [Property("LastNameId", NotNull = true)]
+        public uint LastNameId
+        {
+            get;
+            set;
+        }
+
+        [Property("FirstNameId", NotNull = true)]
+        public uint FirstNameId
+        {
+            get;
+            set;
+        }
+
+        [Property("MapId", NotNull = true)]
+        public int MapId
+        {
+            get;
+            set;
+        }
+
+        [Property("CellId", NotNull = true)]
+        public ushort CellId
+        {
+            get;
+            set;
+        }
+
+        [Property("Direction", NotNull = true)]
+        public DirectionsEnum Direction
         {
             get;
             set;

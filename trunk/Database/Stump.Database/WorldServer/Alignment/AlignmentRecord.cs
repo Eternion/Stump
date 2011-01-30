@@ -54,22 +54,15 @@ namespace Stump.Database.WorldServer
             set;
         }
 
-        [Property("AlignmentGrade", NotNull = true, Default = "0")]
-        public uint AlignmentGrade
-        {
-            get;
-            set;
-        }
-
         [Property("Honour", NotNull = true, Default = "0")]
-        public uint Honour
+        public uint Honor
         {
             get;
             set;
         }
 
-        [Property("Dishonour", NotNull = true, Default = "0")]
-        public uint Dishonour
+        [Property("Dishonor", NotNull = true, Default = "0")]
+        public uint Dishonor
         {
             get;
             set;

@@ -42,6 +42,13 @@ namespace Stump.Database.WorldServer
             set;
         }
 
+        [Property("Capacity", NotNull = true, Default = "1000")]
+        public uint Capacity
+        {
+            get;
+            set;
+        }
+
         [HasMany(typeof(ItemRecord), Table = "inventories_items", ColumnKey = "InventoryId", Cascade=  ManyRelationCascadeEnum.Delete)]
         public IList<ItemRecord> Items
         {

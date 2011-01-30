@@ -27,7 +27,6 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Manager;
-using Stump.Server.WorldServer.Threshold;
 
 namespace Stump.Server.WorldServer.Handlers
 {

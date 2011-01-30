@@ -185,5 +185,10 @@ namespace Stump.Server.BaseServer.Data
         {
             return !I18NFile.Exists(id) ? "" : I18NFile.ReadText(id);
         }
+
+        public static string GetI18NText(uint id)
+        {
+            return GetI18NText((int) id);
+        }
     }
 }

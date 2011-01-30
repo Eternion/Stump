@@ -18,31 +18,27 @@
 //  *************************************************************************/
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.World.Actors.Actor;
 
 namespace Stump.Server.WorldServer.Handlers
 {
     public partial class ChatHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof (ChatSmileyRequestMessage))]
+
+        [WorldHandler(typeof(ChatSmileyRequestMessage))]
         public static void HandleChatSmileyRequestMessage(WorldClient client, ChatSmileyRequestMessage message)
         {
-            client.ActiveCharacter.DisplaySmiley((byte) message.smileyId);
+            client.ActiveCharacter.DisplaySmiley((byte)message.smileyId);
         }
 
         public static void SendChatSmileyMessage(WorldClient client, Character character, uint smileyId)
         {
-            client.Send(new ChatSmileyMessage(
-                            (int) character.Id,
-                            smileyId,
-                            character.Client.Account.Id));
+            client.Send(new ChatSmileyMessage((int)character.Id, smileyId, character.Client.Account.Id));
         }
 
-        public static void SendChatSmileyMessage(WorldClient client, Entity entity, uint smileyId)
+        public static void SendChatSmileyMessage(WorldClient client, Actor actor, uint smileyId)
         {
-            client.Send(new ChatSmileyMessage(
-                            (int) entity.Id,
-                            smileyId,
-                            0));
+            client.Send(new ChatSmileyMessage((int)actor.Id, smileyId, 0));
         }
     }
 }

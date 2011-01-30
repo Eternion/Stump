@@ -22,15 +22,23 @@ namespace Stump.Database.WorldServer
 {
     [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("guilds_members")]
-    public sealed class GuildMemberRecord : CharacterRecord
+    public sealed class GuildMemberRecord :  ActiveRecordBase<GuildMemberRecord>
     {
 
-        [JoinedKey("CharacterId")]
+        [PrimaryKey(PrimaryKeyType.Foreign, "CharacterId")]
         public uint CharacterId
         {
             get;
             set;
         }
+
+        [OneToOne]
+        public CharacterRecord Character
+        {
+            get;
+            set;
+        }
+
 
         [BelongsTo("GuildId", NotNull=true)]
         public GuildRecord Guild

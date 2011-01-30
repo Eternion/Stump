@@ -26,6 +26,7 @@ using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Fights;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Global.Pathfinding;
+using Stump.Server.WorldServer.World.Actors.Actor;
 
 namespace Stump.Server.WorldServer.Handlers
 {
@@ -51,8 +52,7 @@ namespace Stump.Server.WorldServer.Handlers
         }
 
         [WorldHandler(typeof (GameContextCreateRequestMessage))]
-        public static void HandleGameContextCreateRequestMessage(WorldClient client,
-                                                                 GameContextCreateRequestMessage message)
+        public static void HandleGameContextCreateRequestMessage(WorldClient client, GameContextCreateRequestMessage message)
         {
             SendGameContextDestroyMessage(client);
             SendGameContextCreateMessage(client, 1);
@@ -60,7 +60,7 @@ namespace Stump.Server.WorldServer.Handlers
             CharacterHandler.SendCharacterStatsListMessage(client);
             CharacterHandler.SendLifePointsRegenBeginMessage(client, 60);
 
-            SendCurrentMapMessage(client, client.ActiveCharacter.Map.Id);
+            SendCurrentMapMessage(client, (int)client.ActiveCharacter.Map.Id);
             BasicHandler.SendBasicTimeMessage(client);
 
             World.Instance.SendMessageOfTheDay(client.ActiveCharacter);
@@ -119,24 +119,22 @@ namespace Stump.Server.WorldServer.Handlers
             client.Send(new GameContextDestroyMessage());
         }
 
-        public static void SendGameMapChangeOrientationMessage(WorldClient client, Entity entity)
+        public static void SendGameMapChangeOrientationMessage(WorldClient client, Actor actor)
         {
-            client.Send(
-                new GameMapChangeOrientationMessage(new ActorOrientation((int) entity.Id,
-                                                                         (uint) entity.Position.Direction)));
+            client.Send( new GameMapChangeOrientationMessage(new ActorOrientation((int) actor.Id, (uint) actor.Position.Direction)));
         }
 
-        public static void SendGameContextRemoveElementMessage(WorldClient client, Entity entity)
+        public static void SendGameContextRemoveElementMessage(WorldClient client, Actor actor)
         {
-            client.Send(new GameContextRemoveElementMessage((int) entity.Id));
+            client.Send(new GameContextRemoveElementMessage((int) actor.Id));
         }
 
-        public static void SendGameContextRefreshEntityLookMessage(WorldClient client, Entity entity)
+        public static void SendGameContextRefreshEntityLookMessage(WorldClient client, Actor actor)
         {
-            client.Send(new GameContextRefreshEntityLookMessage((int) entity.Id, entity.Look.EntityLook));
+            client.Send(new GameContextRefreshEntityLookMessage((int) actor.Id, actor.Look.EntityLook));
         }
 
-        public static void SendGameMapMovementMessage(WorldClient client, List<uint> movementsKey, Entity entity)
+        public static void SendGameMapMovementMessage(WorldClient client, List<uint> movementsKey, Actor actor)
         {
             client.Send(new GameMapMovementMessage(movementsKey, (int) entity.Id));
         }

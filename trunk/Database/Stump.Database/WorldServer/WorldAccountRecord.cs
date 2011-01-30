@@ -30,6 +30,7 @@ namespace Stump.Database.WorldServer
     {
         private IList<WorldAccountRecord> m_friends;
         private IList<WorldAccountRecord> m_enemies;
+        private IList<MountRecord> m_mounts;
         private IList<BidHouseItemRecord> m_bidhouseItems;
 
         [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
@@ -106,7 +107,14 @@ namespace Stump.Database.WorldServer
             get { return m_bidhouseItems ?? new List<BidHouseItemRecord>(); }
             set { m_bidhouseItems = value; }
         }
-        
+
+        [HasMany(typeof(MountRecord), Table = "stables_mounts", ColumnKey = "AccountId")]
+        public IList<MountRecord> Mounts
+        {
+            get { return m_mounts ?? new List<MountRecord>(); }
+            set { m_mounts = value; }
+        }
+
         [BelongsTo("HouseId", NotNull = false, NotFoundBehaviour = NotFoundBehaviour.Exception)]
         public HouseRecord House
         {

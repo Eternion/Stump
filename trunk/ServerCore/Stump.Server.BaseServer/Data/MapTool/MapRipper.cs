@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Stump.BaseCore.Framework.IO;
+using Stump.DofusProtocol.Classes.Custom;
 
 namespace Stump.Server.BaseServer.Data.MapTool
 {

@@ -27,6 +27,7 @@ namespace Stump.Database.WorldServer
     public class PaddockRecord : ActiveRecordBase<PaddockRecord>
     {
         private IList<MountRecord> m_mounts;
+        private IList<ItemRecord> m_items;
 
         [PrimaryKey(PrimaryKeyType.Assigned, "PaddockId")]
         public uint PaddockId
@@ -35,12 +36,19 @@ namespace Stump.Database.WorldServer
             set;
         }
 
-        [HasMany(typeof(MountRecord), Table = "paddocks_mount", ColumnKey = "PaddockId", Cascade= ManyRelationCascadeEnum.Delete)]
+        [HasMany(typeof(MountRecord), Table = "paddocks_mount", ColumnKey = "PaddockId", Cascade = ManyRelationCascadeEnum.Delete)]
         public IList<MountRecord> Mounts
         {
             get { return m_mounts ?? new List<MountRecord>(); }
             set { m_mounts = value; }
         }
-   
+
+        [HasMany(typeof(ItemRecord), Table = "paddocks_items", ColumnKey = "PaddockId", Cascade = ManyRelationCascadeEnum.Delete)]
+        public IList<ItemRecord> Items
+        {
+            get { return m_items ?? new List<ItemRecord>(); }
+            set { m_items = value; }
+        }
+
     }
 }
