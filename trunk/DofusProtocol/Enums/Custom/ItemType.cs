@@ -24,6 +24,7 @@ namespace Stump.DofusProtocol.Enums
 {
 	public enum ItemTypeEnum
 	{
+        None = -1,
 		Amulet = 1,
 		Bow = 2,
 		Wand = 3,

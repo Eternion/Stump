@@ -90,9 +90,12 @@
     <Compile Include="WorldServer\Alignment\PrismRecord.cs" />
     <Compile Include="WorldServer\Alignment\SubAreaRecord.cs" />
     <Compile Include="WorldServer\Guild\GuildPaddockRecord.cs" />
+    <Compile Include="WorldServer\Item\PricedItemRecord.cs" />
     <Compile Include="WorldServer\Item\ItemEffectRecord.cs" />
+    <Compile Include="WorldServer\Paddock\PaddockItemRecord.cs" />
     <Compile Include="WorldServer\Paddock\MountBehaviorRecord.cs" />
     <Compile Include="WorldServer\Paddock\PaddockRecord.cs" />
+    <Compile Include="WorldServer\Storage\SellBagRecord.cs" />
     <Compile Include="WorldServer\Storage\InventoryRecord.cs" />
     <Compile Include="WorldServer\BidHouse\BidHouseRecord.cs" />
     <Compile Include="WorldServer\BidHouse\BidHouseSoldItemRecord.cs" />

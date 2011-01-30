@@ -237,6 +237,17 @@ namespace Stump.BaseCore.Framework.IO
         }
 
         /// <summary>
+        ///   Read a string from the Buffer
+        /// </summary>
+        /// <returns></returns>
+        public string ReadUTFBytes(ushort len)
+        {
+            byte[] bytes = ReadBytes(len);
+
+            return Encoding.UTF8.GetString(bytes);
+        }
+
+        /// <summary>
         ///   Skip bytes
         /// </summary>
         /// <param name = "n"></param>

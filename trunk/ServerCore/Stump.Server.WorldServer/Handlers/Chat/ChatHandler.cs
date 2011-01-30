@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof (ChatClientPrivateMessage))]
         public static void HandleChatClientPrivateMessage(WorldClient client, ChatClientPrivateMessage message)
         {
-            Character chr = World.Instance.GetCharacter(message.receiver);
+            Character chr = World.World.Instance.GetCharacter(message.receiver);
 
             if (chr != null)
             {
@@ -65,12 +65,12 @@ namespace Stump.Server.WorldServer.Handlers
             SendChatServerMessage(client, ChannelId.Information, message, 0, "", 0, "Server", 0);
         }
 
-        public static void SendChatServerMessage(WorldClient client, Entity sender, ChannelId channel, string message)
+        public static void SendChatServerMessage(WorldClient client, NamedActor sender, ChannelId channel, string message)
         {
             SendChatServerMessage(client, sender, channel, message, 0, "");
         }
 
-        public static void SendChatServerMessage(WorldClient client, Entity sender, ChannelId channel, string message,
+        public static void SendChatServerMessage(WorldClient client, NamedActor sender, ChannelId channel, string message,
                                                  int timestamp, string fingerprint)
         {
             client.Send(new ChatServerMessage(

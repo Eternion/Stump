@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System.Collections.Generic;
 using Castle.ActiveRecord;
 
 namespace Stump.Database.WorldServer
@@ -25,6 +26,8 @@ namespace Stump.Database.WorldServer
     [ActiveRecord("guilds_paddocks")]
     public sealed class GuildPaddockRecord : PaddockRecord
     {
+
+        private IList<PaddockItemRecord> m_paddockItems;
 
         [JoinedKey("PaddockId")]
         public uint PaddockId
@@ -39,5 +42,14 @@ namespace Stump.Database.WorldServer
             get;
             set;
         }   
+
+
+        [HasMany(typeof(PaddockItemRecord))]
+        public IList<PaddockItemRecord> PaddockItems
+        {
+            get { return m_paddockItems ?? new List<PaddockItemRecord>(); }
+            set { m_paddockItems = value; }
+        }
+
     }
 }

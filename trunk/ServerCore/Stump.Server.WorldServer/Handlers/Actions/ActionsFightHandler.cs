@@ -19,36 +19,27 @@
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.World.Actors.Actor;
 
 namespace Stump.Server.WorldServer.Handlers
 {
     public partial class ActionsHandler : WorldHandlerContainer
     {
-        public static void SendGameActionFightDeathMessage(WorldClient client, Entity entity)
+
+        public static void SendGameActionFightDeathMessage(WorldClient client, Actor actor)
         {
-            client.Send(new GameActionFightDeathMessage(
-                            (uint) ActionsEnum.ACTION_CHARACTER_DEATH,
-                            (int) entity.Id, (int) entity.Id
-                            ));
+            client.Send(new GameActionFightDeathMessage((uint)ActionsEnum.ACTION_CHARACTER_DEATH, (int)actor.Id, (int)actor.Id));
         }
 
-        public static void SendGameActionFightPointsVariationMessage(WorldClient client, ActionsEnum action,
-                                                                     Entity source,
-                                                                     Entity target, short delta)
+        public static void SendGameActionFightPointsVariationMessage(WorldClient client, ActionsEnum action, Actor source, Actor target, short delta)
         {
-            client.Send(new GameActionFightPointsVariationMessage(
-                            (uint) action,
-                            (int) source.Id, (int) target.Id, delta
-                            ));
+            client.Send(new GameActionFightPointsVariationMessage((uint)action, (int)source.Id, (int)target.Id, delta));
         }
 
-        public static void SendGameActionFightLifePointsVariationMessage(WorldClient client, Entity source,
-                                                                         Entity target, short delta)
+        public static void SendGameActionFightLifePointsVariationMessage(WorldClient client, Actor source, Actor target, short delta)
         {
-            client.Send(new GameActionFightLifePointsVariationMessage(
-                            (uint) ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST,
-                            (int) source.Id, (int) target.Id, delta
-                            ));
+            client.Send(new GameActionFightLifePointsVariationMessage( (uint)ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST, (int)source.Id, (int)target.Id, delta  ));
         }
+   
     }
 }

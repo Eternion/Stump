@@ -77,6 +77,7 @@
     <Compile Include="Attributes\Cyclic.cs" />
     <Compile Include="Attributes\Variable.cs" />
     <Compile Include="Collections\BlockingQueue.cs" />
+    <Compile Include="Collections\ConcurrentList.cs" />
     <Compile Include="Collections\LockFreeQueue.cs" />
     <Compile Include="Collections\TimedDictionary.cs" />
     <Compile Include="Collections\TimedList.cs" />

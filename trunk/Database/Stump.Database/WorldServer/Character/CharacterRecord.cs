@@ -16,10 +16,12 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
+using NHibernate.Mapping;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 
@@ -31,7 +33,8 @@ namespace Stump.Database.WorldServer
     {
         private IList<SpellRecord> m_spells;
         private IList<ZaapRecord> m_zaaps;
-        private IList<QuestRecord> m_quests;
+        private IList<QuestRecord> m_activeQuests;
+        private IList<QuestRecord> m_finishedQuests;
         private IList<JobRecord> m_jobs;
 
         #region Base
@@ -45,6 +48,13 @@ namespace Stump.Database.WorldServer
 
         [Property("Name", Length = 18, NotNull = true)]
         public string Name
+        {
+            get;
+            set;
+        }
+
+        [Property("Restrictions", NotNull = true, Default="0|0|0")]
+        public string Restrictions
         {
             get;
             set;
@@ -66,6 +76,13 @@ namespace Stump.Database.WorldServer
 
         [Property("DamageTaken", NotNull = true)]
         public int DamageTaken
+        {
+            get;
+            set;
+        }
+
+        [Property("LastConnection")]
+        public DateTime LastConnection
         {
             get;
             set;
@@ -175,6 +192,20 @@ namespace Stump.Database.WorldServer
             }
         }
 
+        [Property("TitleId", NotNull = true, Default = "0")]
+        public uint TitleId
+        {
+            get;
+            set;
+        }
+
+        [Property("TitleParam", NotNull = true, Default = "")]
+        public string TitleParam
+        {
+            get;
+            set;
+        }
+
         [Property("HasRecolor", NotNull = true, Default = "0")]
         public bool Recolor
         {
@@ -199,7 +230,6 @@ namespace Stump.Database.WorldServer
             get;
             set;
         }
-
 
         [Property("CellId", NotNull = true)]
         public ushort CellId
@@ -344,10 +374,17 @@ namespace Stump.Database.WorldServer
         #region Quests
 
         [HasMany(typeof(QuestRecord))]
-        public IList<QuestRecord> Quests
+        public IList<QuestRecord> ActiveQuests
         {
-            get { return m_quests ?? new List<QuestRecord>(); }
-            set { m_quests = value; }
+            get { return m_activeQuests ?? new List<QuestRecord>(); }
+            set { m_activeQuests = value; }
+        }
+
+       // [HasMany(typeof(typeof(int)), ColumnKey="", Table="")]
+        public IList<QuestRecord> FinishedQuests
+        {
+            get { return m_finishedQuests ?? new List<QuestRecord>(); }
+            set { m_finishedQuests = value; }
         }
 
         #endregion
@@ -374,10 +411,21 @@ namespace Stump.Database.WorldServer
 
         #endregion
 
+        #region Merchant
+
+        [OneToOne]
+        public SellBagRecord SellBag
+        {
+            get;
+            set;
+        }
+
+        #endregion
+
         #region Guild
 
-        [BelongsTo("GuildId", NotNull = false)]
-        public GuildRecord Guild
+        [OneToOne]
+        public GuildMemberRecord GuildMember
         {
             get;
             set;

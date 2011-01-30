@@ -52,7 +52,7 @@ namespace Stump.Database.WorldServer
         }
 
         [Property("Experience", NotNull = true, Default="0")]
-        public int Experience
+        public long Experience
         {
             get;
             set;
@@ -81,7 +81,7 @@ namespace Stump.Database.WorldServer
         }
 
         [HasMany(typeof(CollectorRecord))]
-        public IList<CollectorRecord> Perceptors
+        public IList<CollectorRecord> TaxCollectors
         {
             get { return m_collectors ?? new List<CollectorRecord>(); }
             set { m_collectors = value; }

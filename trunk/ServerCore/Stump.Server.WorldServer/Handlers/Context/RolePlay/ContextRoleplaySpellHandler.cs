@@ -23,9 +23,9 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public partial class ContextHandler : WorldHandlerContainer
     {
-        public static void SendSpellForgottenMessage(WorldClient client)
+        public static void SendSpellForgottenMessage(WorldClient client, List<uint> spellIds, uint spellBoosts)
         {
-            client.Send(new SpellForgottenMessage(new List<uint>(), 0));
+            client.Send(new SpellForgottenMessage(spellIds, spellBoosts));
         }
     }
 }

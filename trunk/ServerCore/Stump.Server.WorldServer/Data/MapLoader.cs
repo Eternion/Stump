@@ -21,9 +21,11 @@ using System.IO;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.IO;
 using Stump.BaseCore.Framework.Xml;
+using Stump.DofusProtocol.Classes.Extensions;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.Server.BaseServer.Data;
 using Stump.Server.WorldServer.Global.Maps;
+using MapTemplate = Stump.DofusProtocol.Classes.Custom.Map;
 
 namespace Stump.Server.WorldServer.Data
 {
@@ -41,7 +43,7 @@ namespace Stump.Server.WorldServer.Data
         /// <summary>
         ///   Load ripped maps from maps directory
         /// </summary>
-        public static IEnumerable<Map> LoadMaps()
+        public static IEnumerable<MapTemplate> LoadMaps()
         {
             foreach (
                 string file in Directory.GetFiles(Settings.ContentPath + MapsDir, "*.map", SearchOption.AllDirectories))

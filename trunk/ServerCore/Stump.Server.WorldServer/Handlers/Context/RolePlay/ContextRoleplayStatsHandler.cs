@@ -19,7 +19,6 @@
 using System;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.WorldServer.Breeds;
 
 namespace Stump.Server.WorldServer.Handlers
 {
@@ -34,8 +33,12 @@ namespace Stump.Server.WorldServer.Handlers
                 statsid > CaracteristicsIdEnum.Intelligence)
                 throw new Exception("Wrong statsid");
 
+            /* Forbidden Value */
             if (message.boostPoint <= 0)
-                throw new Exception("Client given 0 as boostpoint. Forbidden value.");
+            {
+                client.DisconnectLater(1000);
+                return;
+            }
 
             BaseBreed breed = BreedManager.GetBreed(client.ActiveCharacter.BreedId);
             int neededpts = breed.GetNeededPointForStats(client.ActiveCharacter.Stats[statsid.ToString()].Base, statsid);
@@ -55,9 +58,10 @@ namespace Stump.Server.WorldServer.Handlers
             CharacterHandler.SendCharacterStatsListMessage(client);
         }
 
-        public static void SendStatsUpgradeResultMessage(WorldClient client, uint usedpts)
+        public static void SendStatsUpgradeResultMessage(WorldClient client, uint usedPoints)
         {
-            client.Send(new StatsUpgradeResultMessage(usedpts));
+            client.Send(new StatsUpgradeResultMessage(usedPoints));
         }
+
     }
 }

@@ -74,7 +74,10 @@
   <ItemGroup>
     <Compile Include="Custom\AcquaintanceErrorEnum.cs" />
     <Compile Include="Custom\ActionsEnum.cs" />
+    <Compile Include="Custom\ChannelId.cs" />
     <Compile Include="Custom\ContinentIdEnum.cs" />
+    <Compile Include="Custom\MountBehaviorEnum.cs" />
+    <Compile Include="Custom\MapType.cs" />
     <Compile Include="Custom\EffectsEnum.cs" />
     <Compile Include="Custom\EmotesEnum.cs" />
     <Compile Include="Custom\ItemCategoryEnum.cs" />
@@ -92,6 +95,7 @@
     <Compile Include="Custom\SpellIdEnum.cs" />
     <Compile Include="Custom\SpellStatesEnum.cs" />
     <Compile Include="Custom\SpellTypesEnum.cs" />
+    <Compile Include="Custom\CaracteristicsEnum.cs" />
     <Compile Include="Custom\ZoneIdEnum.cs" />
     <Compile Include="Export\AlignmentSideEnum.cs" />
     <Compile Include="Export\BreedEnum.cs" />

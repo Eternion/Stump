@@ -30,7 +30,6 @@ using Stump.Server.WorldServer.Breeds;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Manager;
-using Stump.Server.WorldServer.Threshold;
 
 namespace Stump.Server.WorldServer.Handlers
 {
@@ -39,11 +38,17 @@ namespace Stump.Server.WorldServer.Handlers
         [Variable]
         public static bool EnableNameSuggestion = true;
 
+        /// <summary>
+        ///   Maximum number of characters you can create/store in your account
+        /// </summary>
+        [Variable]
+        public static int MaxCharacterSlot = 5;
+
         [WorldHandler(typeof(CharacterCreationRequestMessage))]
         public static void HandleCharacterCreationRequestMessage(WorldClient client, CharacterCreationRequestMessage message)
         {
             /* Check if we can create characters on this server */
-            if (client.Characters.Count >= World.MaxCharacterSlot)
+            if (client.Characters.Count >= MaxCharacterSlot)
             {
                 client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.ERR_TOO_MANY_CHARACTERS));
                 return;
@@ -122,7 +127,7 @@ namespace Stump.Server.WorldServer.Handlers
             /* Set Character SpellCollection */
             foreach (SpellIdEnum spellId in breed.StartSpells.Keys)
             {
-                var spell = new SpellRecord { SpellId = (uint)spellId, Position = breed.StartSpells[spellId], Level = 1 };
+                var spell = new SpellRecord { SpellId = (uint)spellId, Character = character, Position = breed.StartSpells[spellId], Level = 1 };
                 spell.Create();
                 character.Spells.Add(spell);
             }

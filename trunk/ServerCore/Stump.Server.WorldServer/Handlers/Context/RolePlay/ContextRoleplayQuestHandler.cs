@@ -29,9 +29,9 @@ namespace Stump.Server.WorldServer.Handlers
             SendQuestListMessage(client);
         }
 
-        public static void SendQuestListMessage(WorldClient client)
+        public static void SendQuestListMessage(WorldClient client, List<uint> finishedQuestsIds, List<uint> activeQuestsIds)
         {
-            client.Send(new QuestListMessage(new List<uint>(), new List<uint>()));
+            client.Send(new QuestListMessage(finishedQuestsIds, activeQuestsIds));
         }
     }
 }

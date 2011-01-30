@@ -157,12 +157,13 @@ namespace Stump.Server.BaseServer.Network
             foreach (var message in groupMessage)
             {
                 double average = message.Average(t => t.Item2);
+                var ecartType = Math.Sqrt((message.Sum(t => Math.Pow(average - t.Item2, 2))))/message.Count();
                 result.AppendLine("");
                 result.AppendLine(string.Format("\tMessage :{0}", message.First().Item1.GetType().Name));
                 result.AppendLine(string.Format("\tAverage Time : {0}ms", average));
                 result.AppendLine(string.Format("\tMin Time : {0}ms", message.Min(t => t.Item2)));
                 result.AppendLine(string.Format("\tMax Time : {0}ms", message.Max(t => t.Item2)));
-                result.AppendLine(string.Format("\tEcart Type : {0}", Math.Sqrt(( message.Sum(t => Math.Pow(average - t.Item2, 2)) )) / message.Count()));
+                result.AppendLine(string.Format("\tEcart Type : {0} ({1}%)", ecartType, Math.Ceiling(ecartType*100)));
                 result.AppendLine(string.Format("\tMessage count : {0}", message.Count()));
             }
 
