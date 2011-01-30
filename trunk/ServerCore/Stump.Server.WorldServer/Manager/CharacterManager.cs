@@ -62,7 +62,6 @@ namespace Stump.Server.WorldServer.Manager
             if (client.Characters == null)
                 client.Characters = new List<CharacterRecord>();
 
-            character.Create();
             client.Characters.Insert(0, character);
 
             World.Instance.TaskPool.EnqueueTask(() => IpcAccessor.Instance.ProxyObject.AddAccountCharacter(WorldServer.ServerInformation,
