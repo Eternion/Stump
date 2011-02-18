@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
-using NHibernate.Mapping;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 
@@ -440,12 +439,12 @@ namespace Stump.Database.WorldServer
 
         public static CharacterRecord FindCharacterByName(string characterName)
         {
-            return FindOne(Restrictions.Eq("Name", characterName));
+            return FindOne(NHibernate.Criterion.Restrictions.Eq("Name", characterName));
         }
 
         public static bool IsNameExists(string name)
         {
-            return Exists(Restrictions.Eq("Name", name));
+            return Exists(NHibernate.Criterion.Restrictions.Eq("Name", name));
         }
 
         public static int GetCount()

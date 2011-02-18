@@ -30,8 +30,7 @@ namespace Stump.Server.BaseServer.Handler
 
         public Type Message
         {
-            get;
-            set;
+            get; private set;
         }
 
         public override string ToString()

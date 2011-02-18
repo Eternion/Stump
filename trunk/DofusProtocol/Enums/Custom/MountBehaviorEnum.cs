@@ -18,7 +18,7 @@
 //  *************************************************************************/
 namespace Stump.DofusProtocol.Enums
 {
-    public enum RoleEnum : byte
+    public enum MountBehaviorEnum : byte
     {
         Infatigable,
         Porteuse,

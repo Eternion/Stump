@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 
 namespace Stump.DofusProtocol.Classes.Extensions
 {
@@ -59,24 +60,24 @@ namespace Stump.DofusProtocol.Classes.Extensions
 
         public static string ToString(this EntityLook entityLook)
         {
-            string result = "";
+            StringBuilder result = new StringBuilder();
 
             // todo : header
 
-            result += "{";
+            result.Append("{");
 
-            result += entityLook.bonesId + "|";
-            result += string.Join(",", entityLook.skins) + "|";
-            result += string.Join(",", from entry in entityLook.indexedColors
+            result.Append(entityLook.bonesId + "|");
+            result.Append(string.Join(",", entityLook.skins) + "|");
+            result.Append(string.Join(",", from entry in entityLook.indexedColors
                                        let tuple = ExtractIndexedColor(entry)
-                                       select tuple.Item1 + "=" + tuple.Item2) + "|";
-            result += string.Join(",", entityLook.scales);
+                                       select tuple.Item1 + "=" + tuple.Item2) + "|");
+            result.Append(string.Join(",", entityLook.scales));
 
             // todo : subentities
 
-            result += "}";
+            result.Append("}");
 
-            return result;
+            return result.ToString();
         }
 
         public static EntityLook ToEntityLook(this string str)

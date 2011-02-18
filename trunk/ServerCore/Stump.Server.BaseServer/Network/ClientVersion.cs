@@ -23,7 +23,7 @@ namespace Stump.Server.BaseServer.Network
 {
     public enum VersionCheckingSeverity
     {
-        NoCheck,
+        None,
         Light, // check major minor and release values
         Medium, // check revision too
         Heavy, // check patch
@@ -78,7 +78,7 @@ namespace Stump.Server.BaseServer.Network
 
         public bool CompareVersion(Version versionToCompare)
         {
-            if (Severity == VersionCheckingSeverity.NoCheck)
+            if (Severity == VersionCheckingSeverity.None)
                 return true;
 
             else if (Severity == VersionCheckingSeverity.Light)
@@ -99,13 +99,12 @@ namespace Stump.Server.BaseServer.Network
                        Revision == versionToCompare.revision &&
                        Patch == versionToCompare.patch;
 
-
             return false;
         }
 
         public bool CompareVersion(ClientVersion versionToCompare)
         {
-            if (Severity == VersionCheckingSeverity.NoCheck)
+            if (Severity == VersionCheckingSeverity.None)
                 return true;
 
             else if (Severity == VersionCheckingSeverity.Light)

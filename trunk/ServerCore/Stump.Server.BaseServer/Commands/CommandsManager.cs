@@ -174,7 +174,7 @@ namespace Stump.Server.BaseServer.Commands
         {
             string commandStr = trigger.Args.NextWord();
 
-            if (commandStr == "")
+            if (commandStr == string.Empty)
             {
                 DisplayAllCommands(trigger);
             }
@@ -190,7 +190,7 @@ namespace Stump.Server.BaseServer.Commands
 
                 string subCommandStr = trigger.Args.NextWord();
 
-                if (subCommandStr == "")
+                if (subCommandStr == string.Empty)
                 {
                     DisplayCompleteCommandDescription(trigger, command);
                 }

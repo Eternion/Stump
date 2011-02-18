@@ -26,6 +26,7 @@ using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.IPC;
+using Stump.Server.WorldServer.World.Actors.Character;
 
 namespace Stump.Server.WorldServer
 {

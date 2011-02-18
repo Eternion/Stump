@@ -23,6 +23,7 @@ using Stump.Server.WorldServer.Dialog;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Handlers;
 using Stump.Server.WorldServer.Items;
+using Stump.Server.WorldServer.World.Actors.Character;
 
 namespace Stump.Server.WorldServer.Exchange
 {

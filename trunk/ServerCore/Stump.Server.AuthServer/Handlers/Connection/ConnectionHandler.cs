@@ -136,7 +136,7 @@ namespace Stump.Server.AuthServer.Handlers
             client.Account = account;
 
             /* Propose at client to give a nickname */
-            if (client.Account.Nickname == "")
+            if (client.Account.Nickname == string.Empty)
             {
                 client.Send(new NicknameRegistrationMessage());
                 return false;

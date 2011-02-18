@@ -26,6 +26,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Data;
 using Stump.Server.WorldServer.Data;
 using Stump.Server.WorldServer.Global.Maps;
+using Stump.Server.WorldServer.World.Zones.Map;
 using Stump.Server.WorldServer.XmlSerialize;
 using Point = System.Drawing.Point;
 

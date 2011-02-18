@@ -23,12 +23,12 @@ namespace Stump.BaseCore.Framework.Attributes
     [AttributeUsage(AttributeTargets.Method)]
     public class Cyclic : Attribute
     {
-        public Cyclic(uint time)
+        public Cyclic(int time)
         {
             Time = time;
         }
 
-        public uint Time
+        public int Time
         {
             get;
             set;

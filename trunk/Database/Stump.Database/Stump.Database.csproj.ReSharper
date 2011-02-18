@@ -1,6 +1,5 @@
 <Configuration>
   <NamespaceFolders>
-    <SkipFolder>D0C51923-20CC-4B7B-ACF2-BA56ACB06232/d:AuthServer/d:StartupAction</SkipFolder>
     <SkipFolder>D0C51923-20CC-4B7B-ACF2-BA56ACB06232/d:AuthServer/d:World</SkipFolder>
     <SkipFolder>D0C51923-20CC-4B7B-ACF2-BA56ACB06232/d:WorldServer/d:Alignment</SkipFolder>
     <SkipFolder>D0C51923-20CC-4B7B-ACF2-BA56ACB06232/d:WorldServer/d:BidHouse</SkipFolder>

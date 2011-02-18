@@ -29,6 +29,7 @@ using Stump.Server.WorldServer.Global.Maps;
 using Stump.Server.WorldServer.Global.Pathfinding;
 using Stump.Server.WorldServer.Handlers;
 using Stump.Server.WorldServer.Spells;
+using Stump.Server.WorldServer.World.Actors.Character;
 
 namespace Stump.Server.WorldServer.Groups
 {

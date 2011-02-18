@@ -176,7 +176,7 @@ namespace Stump.Tools.UtilityBot.FileParser
                     ClassModifier = ClassInfo.ClassModifiers.NONE
                 };
 
-            if (Class.Name == "")
+            if (Class.Name == string.Empty)
                 throw new Exception("This file does not contain a class");
 
             if (!IgnoreMethods)
@@ -218,7 +218,7 @@ namespace Stump.Tools.UtilityBot.FileParser
                                        true),
                         Name = ExecuteNameReplacement(matchConst.Groups["name"].Value),
                         Type =
-                            ExecuteNameReplacement(matchConst.Groups["generictype"].Value == ""
+                            ExecuteNameReplacement(matchConst.Groups["generictype"].Value == string.Empty
                                                        ? matchConst.Groups["type"].Value
                                                        : "List<" + matchConst.Groups["generictype"].Value + ">"),
                         Value = ExecuteNameReplacement(matchConst.Groups["value"].Value.Replace("=", "").Trim()),
@@ -242,7 +242,7 @@ namespace Stump.Tools.UtilityBot.FileParser
                                        true),
                         Name = ExecuteNameReplacement(matchVar.Groups["name"].Value),
                         Type =
-                            ExecuteNameReplacement(matchVar.Groups["generictype"].Value == ""
+                            ExecuteNameReplacement(matchVar.Groups["generictype"].Value == string.Empty
                                                        ? matchVar.Groups["type"].Value
                                                        : "List<" + matchVar.Groups["generictype"].Value + ">"),
                         Value = ExecuteNameReplacement(matchVar.Groups["value"].Value.Replace("=", "").Trim()),

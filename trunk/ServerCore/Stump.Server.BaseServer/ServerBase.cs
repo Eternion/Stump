@@ -178,7 +178,7 @@ namespace Stump.Server.BaseServer
             MessageListener.Initialize();
 
             if (Settings.InactivityDisconnectionTime.HasValue)
-                TaskPool.RegisterCyclicTask((Action)DisconnectAfkClient, Settings.InactivityDisconnectionTime.Value / 5, null, null);
+                TaskPool.RegisterCyclicTask(DisconnectAfkClient, Settings.InactivityDisconnectionTime.Value / 5, null, null);
 
             MessageListener.ClientConnected += OnClientConnected;
             MessageListener.ClientDisconnected += OnClientDisconnected;

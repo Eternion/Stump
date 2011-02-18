@@ -22,16 +22,16 @@ namespace Stump.BaseCore.Framework.Pool
 {
     public class CyclicTask
     {
-        public CyclicTask(Delegate method, uint delay, Condition condition, uint? maxExecution)
+        public CyclicTask(Action method, int delay, Condition condition, uint? maxExecution)
         {
-            Delegate = method;
+            Action = method;
             ExecutionDelay = TimeSpan.FromSeconds(delay);
             Condition = condition;
             MaxExecutionNbr = maxExecution;
             LastCall = DateTime.Now;
         }
 
-        public Delegate Delegate
+        public Action Action
         {
             get;
             private set;
@@ -89,7 +89,7 @@ namespace Stump.BaseCore.Framework.Pool
 
         public void Execute()
         {
-            Delegate.DynamicInvoke(null);
+            Action.Invoke();
             LastCall = DateTime.Now;
             CurrentExecutionNbr++;
         }

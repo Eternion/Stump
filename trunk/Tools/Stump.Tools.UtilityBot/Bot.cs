@@ -64,7 +64,7 @@ namespace Stump.Tools.UtilityBot
         /// Usernames allowed on the IRC
         /// </summary>
         [Variable]
-        public static string[] AllowedUserNicks = new[] { "bouh2" };
+        public static string[] AllowedUserNicks = new[] { "nath2" };
 
         /// <summary>
         /// IRC username
@@ -82,7 +82,7 @@ namespace Stump.Tools.UtilityBot
         /// Path to Dofus 2 folder
         /// </summary>
         [Variable]
-        public static string DofusPath = @"C:\Program Files\Dofus 2\";
+        public static string DofusPath = @"C:\Program Files (x86)\Dofus 2\";
 
         /// <summary>
         /// Path to Dofus source file (DofusInvoker.swf)

@@ -25,6 +25,7 @@ using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Items;
+using Stump.Server.WorldServer.World.Actors.Character;
 
 namespace Stump.Server.WorldServer.Commands
 {

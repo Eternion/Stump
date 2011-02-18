@@ -20,6 +20,7 @@ using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Classes.Custom;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Global;
+using Stump.Server.WorldServer.World.Zones.Map;
 
 namespace Stump.Server.WorldServer.World.Actors.Actor
 {
@@ -34,7 +35,7 @@ namespace Stump.Server.WorldServer.World.Actors.Actor
             Position = position;
         }
 
-        protected Actor(long id, string name, ExtendedLook look, Global.Maps.Map map, ushort cellId, DirectionsEnum direction)
+        protected Actor(long id, string name, ExtendedLook look, Map map, ushort cellId, DirectionsEnum direction)
             : this(id, name, look, new VectorIsometric(map, cellId, direction))
         {
         }
@@ -59,7 +60,7 @@ namespace Stump.Server.WorldServer.World.Actors.Actor
             protected set;
         }
 
-        public Global.Maps.Map Map
+        public Map Map
         {
             get { return Position.Map; }
             protected set { Position = new VectorIsometric(value, Position); }

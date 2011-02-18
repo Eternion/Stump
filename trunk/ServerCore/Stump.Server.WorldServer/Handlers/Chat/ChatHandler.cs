@@ -22,6 +22,7 @@ using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Chat;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global;
+using Stump.Server.WorldServer.World.Actors.Character;
 
 namespace Stump.Server.WorldServer.Handlers
 {

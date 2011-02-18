@@ -116,7 +116,7 @@ namespace Stump.Server.BaseServer.Initializing
 
             foreach (var method in methods)
             {
-                var attribute = (StageStep)method.GetCustomAttributes(typeof(StageStep), false).FirstOrDefault();
+                var attribute = method.GetCustomAttributes(typeof(StageStep), false).FirstOrDefault() as StageStep;
 
                 if (attribute == null)
                     continue;

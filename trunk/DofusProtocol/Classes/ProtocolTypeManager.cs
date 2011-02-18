@@ -26,8 +26,8 @@ namespace Stump.DofusProtocol
 {
     public static class ProtocolTypeManager
     {
-        private static readonly Dictionary<uint, Type> m_types = new Dictionary<uint, Type>();
-        private static readonly Dictionary<uint, Delegate> m_typesConstructors = new Dictionary<uint, Delegate>();
+        private static readonly Dictionary<uint, Type> m_types = new Dictionary<uint, Type>(200);
+        private static readonly Dictionary<uint, Func<object>> m_typesConstructors = new Dictionary<uint, Func<object>>(200);
 
         /// <summary>
         ///   Initializes this instance.
@@ -42,14 +42,16 @@ namespace Stump.DofusProtocol
 
                 if (fi != null)
                 {
-                    m_types.Add((uint) fi.GetValue(type), type);
+                    uint id = (uint)fi.GetValue(type);
 
-                    var ctor = type.GetConstructor(new Type[0]);
+                    m_types.Add(id, type);
 
+                    var ctor = type.GetConstructor(Type.EmptyTypes);
+                    
                     if (ctor == null)
                         throw new Exception(string.Format("'{0}' doesn't implemented a parameterless constructor", type.ToString()));
-
-                    m_typesConstructors.Add((uint) fi.GetValue(type), ctor.CreateDelegate(ctor.GetFuncType()));
+                    
+                    m_typesConstructors.Add(id, ctor.CreateDelegate<object>());
                 }
             }
         }
@@ -64,8 +66,8 @@ namespace Stump.DofusProtocol
         {
             if (!m_types.ContainsKey(id))
                 throw new KeyNotFoundException(string.Format("Type <id:{0} doesn't exist", id));
-
-            return m_typesConstructors[id].DynamicInvoke(new object[0]) as T;
+            
+            return m_typesConstructors[id]() as T;
         }
     }
 }

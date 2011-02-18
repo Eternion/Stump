@@ -33,8 +33,7 @@ namespace Stump.Server.BaseServer.Network
 
         private readonly HandlerManager m_handlerManager;
         private readonly QueueDispatcher m_queueDispatcher;
-        private readonly List<Tuple<Message, double>> m_treatedMessage = new List<Tuple<Message, double>>();
-        private bool m_benchmark;
+        private readonly List<Tuple<Message, double>> m_treatedMessage = new List<Tuple<Message, double>>(1000);
         private bool m_paused;
         private DateTime m_startDate;
         private Thread m_thread;
@@ -48,12 +47,6 @@ namespace Stump.Server.BaseServer.Network
         public HandlerManager HandlerManager
         {
             get { return m_handlerManager; }
-        }
-
-        public bool ActiveBenchmark
-        {
-            get { return m_benchmark; }
-            set { m_benchmark = value; }
         }
 
         public bool WantToStop
@@ -108,9 +101,8 @@ namespace Stump.Server.BaseServer.Network
 
         #endregion
 
-        public Worker(QueueDispatcher queueDispatcher, HandlerManager handlerManager, bool benchmark = true)
+        public Worker(QueueDispatcher queueDispatcher, HandlerManager handlerManager)
         {
-            m_benchmark = benchmark;
             m_queueDispatcher = queueDispatcher;
             m_handlerManager = handlerManager;
             Task.Factory.StartNew(Loop, TaskCreationOptions.LongRunning);
@@ -128,9 +120,9 @@ namespace Stump.Server.BaseServer.Network
                 {
                     Tuple<BaseClient, Message> tuple = m_queueDispatcher.Dequeue();
 
-                    if (m_benchmark)
+                    if (Settings.EnableBenchmarking)
                     {
-                        DateTime start = DateTime.Now;
+                        var start = DateTime.Now;
 
                         m_handlerManager.Dispatch(tuple.Item1, tuple.Item2);
 

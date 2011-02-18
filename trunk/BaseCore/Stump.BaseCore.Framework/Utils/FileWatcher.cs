@@ -80,7 +80,7 @@ namespace Stump.BaseCore.Framework.Utils
             var directory = e.FullPath.Remove(e.FullPath.LastIndexOf('\\'));
             if (m_directoryList.ContainsKey(directory))
             {
-                m_directoryList[directory].DynamicInvoke(new object[] { e.FullPath });
+                m_directoryList[directory](e.FullPath);
             }
         }
 
@@ -90,7 +90,7 @@ namespace Stump.BaseCore.Framework.Utils
             {
                 var watcher = sender as FileSystemWatcher;
                 watcher.EnableRaisingEvents = false;
-                m_fileList[e.FullPath].DynamicInvoke(null);
+                m_fileList[e.FullPath]();
                 watcher.EnableRaisingEvents = true;
             }
         }

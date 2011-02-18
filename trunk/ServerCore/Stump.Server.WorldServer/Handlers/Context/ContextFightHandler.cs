@@ -25,6 +25,7 @@ using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Fights;
 using Stump.Server.WorldServer.Groups;
 using Stump.Server.WorldServer.Spells;
+using Stump.Server.WorldServer.World.Actors.Character;
 
 namespace Stump.Server.WorldServer.Handlers
 {

@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using NLog;
 using Stump.Server.BaseServer.Manager;
 using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.World.Actors.Character;
 
 namespace Stump.Server.WorldServer.Groups
 {

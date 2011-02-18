@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.World.Actors.Character;
 
 namespace Stump.Server.WorldServer.Handlers
 {

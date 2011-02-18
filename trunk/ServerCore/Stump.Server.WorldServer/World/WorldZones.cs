@@ -4,6 +4,7 @@ using Stump.BaseCore.Framework.Utils;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Global.Maps;
 using Stump.Server.WorldServer.World.Zones;
+using Stump.Server.WorldServer.World.Zones.Map;
 
 namespace Stump.Server.WorldServer.World
 {

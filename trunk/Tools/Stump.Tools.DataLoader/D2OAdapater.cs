@@ -24,9 +24,7 @@ namespace Stump.Tools.DataLoader
         {
             foreach (Type type in typeof (AttributeAssociatedFile).Assembly.GetTypes())
             {
-                var attribute =
-                    (AttributeAssociatedFile)
-                    type.GetCustomAttributes(typeof (AttributeAssociatedFile), false).FirstOrDefault();
+                var attribute = type.GetCustomAttributes(typeof (AttributeAssociatedFile), false).FirstOrDefault() as AttributeAssociatedFile;
 
                 if (attribute != null)
                 {

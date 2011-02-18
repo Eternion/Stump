@@ -35,6 +35,6 @@ namespace Stump.Server.BaseServer
         ///   Disconnect Client after specified time(in s) or NULL for desactivate
         /// </summary>
         [Variable]
-        public static uint? InactivityDisconnectionTime = 900;
+        public static int? InactivityDisconnectionTime = 900;
     }
 }

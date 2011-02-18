@@ -22,6 +22,7 @@ using System.Linq;
 using System.Text;
 using Stump.Server.WorldServer.Global.Maps;
 using Stump.Server.WorldServer.World.Position;
+using Stump.Server.WorldServer.World.Zones.Map;
 
 namespace Stump.Server.WorldServer.Global.Pathfinding
 {
