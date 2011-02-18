@@ -25,6 +25,7 @@ using Stump.Server.WorldServer.Effects;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Handlers;
 using Stump.Server.WorldServer.Items;
+using Stump.Server.WorldServer.World.Actors.Character;
 
 namespace Stump.Server.WorldServer.World.Storages
 {

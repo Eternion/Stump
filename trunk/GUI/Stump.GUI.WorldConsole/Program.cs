@@ -21,7 +21,7 @@ using Stump.Server.WorldServer;
 
 namespace Stump.GUI.WorldConsole
 {
-    class Program
+    static class Program
     {
         static void Main(string[] args)
         {

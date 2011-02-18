@@ -16,16 +16,16 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System.Drawing;
 using System.Linq;
 using System.Collections.Generic;
 using Stump.BaseCore.Framework.Collections;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Entities;
-using Stump.Server.WorldServer.World.Zones;
-using Point = System.Drawing.Point;
+using Stump.Server.WorldServer.World.Actors.Character;
 
-namespace Stump.Server.WorldServer.Global.Maps
+namespace Stump.Server.WorldServer.World.Zones.Map
 {
     public class Map
     {

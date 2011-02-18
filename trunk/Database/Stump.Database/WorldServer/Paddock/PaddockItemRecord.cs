@@ -42,8 +42,8 @@ namespace Stump.Database.WorldServer
             set;
         }
    
-        [Property("ItemId")]
-        public ItemRecord Item
+       // [Property("ItemId")]
+     //   public ItemRecord Item
 
     }
 }

@@ -16,15 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
-using System.Collections.Generic;
-using Stump.Database.WorldServer;
-using Stump.DofusProtocol.Classes;
-using Stump.DofusProtocol.Classes.Custom;
-using Stump.Server.WorldServer.Global;
-using Stump.Server.WorldServer.Manager;
-
-namespace Stump.Server.WorldServer.Entities
+namespace Stump.Server.WorldServer.World.Actors.Character
 {
     public partial class Character
     {

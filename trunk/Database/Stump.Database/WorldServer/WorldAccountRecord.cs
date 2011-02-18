@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
+using Stump.Database.WorldServer.StartupAction;
 
 namespace Stump.Database.WorldServer
 {
@@ -28,6 +29,7 @@ namespace Stump.Database.WorldServer
     [ActiveRecord("accounts")]
     public sealed class WorldAccountRecord : ActiveRecordBase<WorldAccountRecord>
     {
+        private IList<StartupActionRecord> m_startupActions;
         private IList<WorldAccountRecord> m_friends;
         private IList<WorldAccountRecord> m_enemies;
         private IList<MountRecord> m_mounts;
@@ -85,6 +87,13 @@ namespace Stump.Database.WorldServer
                 }
                 return TimeSpan.Zero;
             }
+        }
+
+        [HasAndBelongsToMany(typeof(StartupActionRecord), Table = "accounts_startup_actions", ColumnKey = "AccountId", ColumnRef = "StartupActionId", Cascade = ManyRelationCascadeEnum.Delete)]
+        public IList<StartupActionRecord> StartupActions
+        {
+            get { return m_startupActions ?? new List<StartupActionRecord>(); }
+            set { m_startupActions = value; }
         }
 
         [HasAndBelongsToMany(typeof(WorldAccountRecord), Table = "accounts_friends", ColumnKey = "AccountId", ColumnRef = "FriendAccountId")]

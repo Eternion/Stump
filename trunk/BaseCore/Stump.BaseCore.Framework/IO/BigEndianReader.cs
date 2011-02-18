@@ -26,21 +26,21 @@ namespace Stump.BaseCore.Framework.IO
     {
         #region Properties
 
-        private BinaryReader reader;
+        private BinaryReader m_reader;
 
         /// <summary>
         ///   Gets availiable bytes number in the buffer
         /// </summary>
         public long BytesAvailable
         {
-            get { return reader.BaseStream.Length - reader.BaseStream.Position; }
+            get { return m_reader.BaseStream.Length - m_reader.BaseStream.Position; }
         }
 
         public Stream BaseStream
         {
             get
             {
-                return reader.BaseStream;
+                return m_reader.BaseStream;
             }
         }
 
@@ -53,7 +53,7 @@ namespace Stump.BaseCore.Framework.IO
         /// </summary>
         public BigEndianReader()
         {
-            reader = new BinaryReader(new MemoryStream(), Encoding.UTF8);
+            m_reader = new BinaryReader(new MemoryStream(), Encoding.UTF8);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Stump.BaseCore.Framework.IO
         /// <param name = "stream">The stream.</param>
         public BigEndianReader(Stream stream)
         {
-            reader = new BinaryReader(stream, Encoding.UTF8);
+            m_reader = new BinaryReader(stream, Encoding.UTF8);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Stump.BaseCore.Framework.IO
         /// <param name = "tab">Memory buffer.</param>
         public BigEndianReader(byte[] tab)
         {
-            reader = new BinaryReader(new MemoryStream(tab), Encoding.UTF8);
+            m_reader = new BinaryReader(new MemoryStream(tab), Encoding.UTF8);
         }
 
         #endregion
@@ -88,7 +88,7 @@ namespace Stump.BaseCore.Framework.IO
             var bytes = new byte[count];
             int i;
             for (i = count - 1; i >= 0; i--)
-                bytes[i] = reader.ReadByte();
+                bytes[i] = m_reader.ReadByte();
             return bytes;
         }
 
@@ -165,7 +165,7 @@ namespace Stump.BaseCore.Framework.IO
         /// <returns></returns>
         public byte ReadByte()
         {
-            return reader.ReadByte();
+            return m_reader.ReadByte();
         }
 
         /// <summary>
@@ -175,16 +175,17 @@ namespace Stump.BaseCore.Framework.IO
         /// <returns></returns>
         public byte[] ReadBytes(int n)
         {
-            return reader.ReadBytes(n);
+            return m_reader.ReadBytes(n);
         }
 
+        /// <summary>
         /// Returns N bytes from the buffer
         /// </summary>
         /// <param name = "n">Number of read bytes.</param>
         /// <returns></returns>
         public BigEndianReader ReadBytesInNewBigEndianReader(int n)
         {
-            return new BigEndianReader(reader.ReadBytes(n));
+            return new BigEndianReader(m_reader.ReadBytes(n));
         }
 
         /// <summary>
@@ -193,7 +194,7 @@ namespace Stump.BaseCore.Framework.IO
         /// <returns></returns>
         public Boolean ReadBoolean()
         {
-            return reader.ReadByte() == 1 ? true : false;
+            return m_reader.ReadByte() == 1 ? true : false;
         }
 
         /// <summary>
@@ -256,14 +257,14 @@ namespace Stump.BaseCore.Framework.IO
             int i;
             for (i = 0; i < n; i++)
             {
-                reader.ReadByte();
+                m_reader.ReadByte();
             }
         }
 
 
         public void Seek(int offset, SeekOrigin seekOrigin)
         {
-            reader.BaseStream.Seek(offset, seekOrigin);
+            m_reader.BaseStream.Seek(offset, seekOrigin);
         }
 
         /// <summary>
@@ -271,12 +272,12 @@ namespace Stump.BaseCore.Framework.IO
         /// </summary>
         public void Add(byte[] data, int offset, int count)
         {
-            long pos = reader.BaseStream.Position;
-            reader.BaseStream.Position = reader.BaseStream.Length;
+            long pos = m_reader.BaseStream.Position;
+            m_reader.BaseStream.Position = m_reader.BaseStream.Length;
 
-            reader.BaseStream.Write(data, offset, count);
+            m_reader.BaseStream.Write(data, offset, count);
 
-            reader.BaseStream.Position = pos;
+            m_reader.BaseStream.Position = pos;
         }
 
         #endregion
@@ -288,8 +289,8 @@ namespace Stump.BaseCore.Framework.IO
         /// </summary>
         public void Dispose()
         {
-            reader.Dispose();
-            reader = null;
+            m_reader.Dispose();
+            m_reader = null;
         }
 
         #endregion

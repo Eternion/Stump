@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using ProtoBuf;
 using Squishy.Irc.Commands;
 using Stump.BaseCore.Framework.Attributes;
+using Stump.BaseCore.Framework.IO;
 using Stump.Server.BaseServer.Data.MapTool;
 
 namespace Stump.Tools.UtilityBot.Commands
@@ -16,20 +19,23 @@ namespace Stump.Tools.UtilityBot.Commands
         }
 
         /// <summary>
-        /// Output path
+        /// Output file
         /// </summary>
         [Variable]
         public static string Output = "./../../content/maps/";
-
         public override void Process(CmdTrigger trigger)
         {
-            trigger.Reply("Generating maps. It can take few minutes.");
+            throw new NotImplementedException();
+        }
+        public static void Process()
+        {
+       //     trigger.Reply("Generating maps. It can take few minutes.");
 
             var file = new PakFile(Bot.DofusPath + @"\app\content\maps\maps0.d2p");
 
             file.ExtractAll(Output);
 
-            trigger.Reply("Maps extracted (1/3)");
+       //     trigger.Reply("Maps extracted (1/3)");
 
             Parallel.ForEach(Directory.EnumerateFiles(Output, "*.dlm", SearchOption.AllDirectories), dlm =>
             {
@@ -51,12 +57,24 @@ namespace Stump.Tools.UtilityBot.Commands
                 File.Delete(dlm);
             });
 
-            trigger.Reply("Maps decompressed (2/3)");
+      //      trigger.Reply("Maps decompressed (2/3)");
 
-            Parallel.ForEach(Directory.EnumerateFiles(Output, "*.map", SearchOption.AllDirectories), map =>
-                MapRipper.RipMapFile(map, map));
+            var maps = new List<Map>();
 
-            trigger.Reply("Maps ripped. Done (3/3)");
+            Parallel.ForEach(Directory.EnumerateFiles(Output, "*.map", SearchOption.AllDirectories), f =>
+                {
+                    using (var sr = new StreamReader(f))
+                    {
+                        var reader = new BigEndianReader(sr.BaseStream);
+                        if (reader.ReadByte() != 0x96)
+                            maps.Add(new Map(reader));
+                    }
+                });
+
+            using (var sw = new StreamWriter(Output+"maps.dat"))
+                Serializer.Serialize(sw.BaseStream, maps);
+
+     //       trigger.Reply("Maps ripped. Done (3/3)");
         }
     }
 }

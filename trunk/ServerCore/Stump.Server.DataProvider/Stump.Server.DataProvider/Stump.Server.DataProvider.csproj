@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{944742DD-E4E8-408D-8054-E6F94E31034E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Stump.Server.DataProvider</RootNamespace>
+    <AssemblyName>Stump.Server.DataProvider</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release 2|AnyCPU'">
+    <OutputPath>bin\Release 2\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\Stump.Server.DataProvider.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Final|AnyCPU'">
+    <OutputPath>bin\Final\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NLog">
+      <HintPath>..\..\..\Library\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\..\..\..\..\..\..\..\Desktop\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\DataProvider2.cs" />
+    <Compile Include="Core\ProviderParams.cs" />
+    <Compile Include="Core\DataLoader.cs" />
+    <Compile Include="Core\DataLoadingType.cs" />
+    <Compile Include="Core\DataProvider.cs" />
+    <Compile Include="Core\DataProviderAttribute.cs" />
+    <Compile Include="Core\Settings.cs" />
+    <Compile Include="Data\Actions\ActionBase.cs" />
+    <Compile Include="Data\Actions\ActionsCharacter\ActionTeleport.cs" />
+    <Compile Include="Data\Actions\ActionsNpcs\ActionDialogLeave.cs" />
+    <Compile Include="Data\Actions\ActionsNpcs\ActionDialogQuestion.cs" />
+    <Compile Include="Data\Actions\CellAction.cs" />
+    <Compile Include="Data\Actions\CharacterAction.cs" />
+    <Compile Include="Data\Actions\InteractiveAction.cs" />
+    <Compile Include="Data\Actions\NpcAction.cs" />
+    <Compile Include="Data\Alignment\AlignmentSideTemplateProvider.cs" />
+    <Compile Include="Data\Alignment\AlignmentGift.cs" />
+    <Compile Include="Data\Alignment\AlignmentOrder.cs" />
+    <Compile Include="Data\Alignment\AlignmentRank.cs" />
+    <Compile Include="Data\Alignment\AlignmentSide.cs" />
+    <Compile Include="Data\Breeds\BreedDataProvider.cs" />
+    <Compile Include="Data\Breeds\BreedTemplate.cs" />
+    <Compile Include="Data\Breeds\LearnableSpell.cs" />
+    <Compile Include="Data\Chat\ChatForbiddenWordProvider.cs" />
+    <Compile Include="Data\D2oTool\D2oClassDefinition.cs" />
+    <Compile Include="Data\D2oTool\D2oFieldDefinition.cs" />
+    <Compile Include="Data\D2oTool\D2oFile.cs" />
+    <Compile Include="Data\D2oTool\I18nFile.cs" />
+    <Compile Include="Data\D2OLoader.cs" />
+    <Compile Include="Data\House\HouseDoorsProvider.cs" />
+    <Compile Include="Data\MapTool\Compressor.cs" />
+    <Compile Include="Data\MapTool\PakFile.cs" />
+    <Compile Include="Data\Map\CellData.cs" />
+    <Compile Include="Data\Chat\ChannelTemplate.cs" />
+    <Compile Include="Data\Chat\ChatChannelTemplateProvider.cs" />
+    <Compile Include="Data\Dialog\Dialoger.cs" />
+    <Compile Include="Data\Dialog\IDialog.cs" />
+    <Compile Include="Data\Dialog\IDialogRequest.cs" />
+    <Compile Include="Data\Effects\EffectBase.cs" />
+    <Compile Include="Data\Effects\EffectContext.cs" />
+    <Compile Include="Data\Effects\EffectCreature.cs" />
+    <Compile Include="Data\Effects\EffectDate.cs" />
+    <Compile Include="Data\Effects\EffectDice.cs" />
+    <Compile Include="Data\Effects\EffectDuration.cs" />
+    <Compile Include="Data\Effects\EffectHandleAttribute.cs" />
+    <Compile Include="Data\Effects\EffectInteger.cs" />
+    <Compile Include="Data\Effects\EffectLadder.cs" />
+    <Compile Include="Data\Effects\EffectManager.cs" />
+    <Compile Include="Data\Effects\EffectMinMax.cs" />
+    <Compile Include="Data\Effects\EffectMount.cs" />
+    <Compile Include="Data\Effects\EffectString.cs" />
+    <Compile Include="Data\Effects\EffectTemplate.cs" />
+    <Compile Include="Data\Effects\Executor\FightDamage.cs" />
+    <Compile Include="Data\Effects\Executor\FightEffectAttribute.cs" />
+    <Compile Include="Data\Effects\Executor\FightEffectExecutor.cs" />
+    <Compile Include="Data\Emote\EmoteDurationProvider.cs" />
+    <Compile Include="Data\Emote\EmoteDuration.cs" />
+    <Compile Include="Data\House\HouseModelProvider.cs" />
+    <Compile Include="Data\House\HouseDoors.cs" />
+    <Compile Include="Data\House\HouseModel.cs" />
+    <Compile Include="Data\InteractiveObjectLoader.cs" />
+    <Compile Include="Data\Interactives\InteractiveActionIdProvider.cs" />
+    <Compile Include="Data\InteractiveMapElement.cs" />
+    <Compile Include="Data\ItemLoader.cs" />
+    <Compile Include="Data\Items\ItemManager.cs" />
+    <Compile Include="Data\Items\ItemStored.cs" />
+    <Compile Include="Data\Items\ItemTemplate.cs" />
+    <Compile Include="Data\Items\ItemToSellInNpcShop.cs" />
+    <Compile Include="Data\Items\Weapon.cs" />
+    <Compile Include="Data\Items\WeaponTemplate.cs" />
+    <Compile Include="Data\Job\JobTemplateProvider.cs" />
+    <Compile Include="Data\Job\JobSkill.cs" />
+    <Compile Include="Data\Job\JobTemplate.cs" />
+    <Compile Include="Data\Map\MapTemplate.cs" />
+    <Compile Include="Data\Map\MapTemplateProvider.cs" />
+    <Compile Include="Data\Map\MapObjectElement.cs" />
+    <Compile Include="Data\MonsterLoader.cs" />
+    <Compile Include="Data\Mount\MountTemplate.cs" />
+    <Compile Include="Data\Mount\MountTemplateProvider.cs" />
+    <Compile Include="Data\NpcLoader.cs" />
+    <Compile Include="Data\Npcs\NpcDialog.cs" />
+    <Compile Include="Data\Npcs\NpcDialoger.cs" />
+    <Compile Include="Data\Npcs\NpcDialogQuestion.cs" />
+    <Compile Include="Data\Npcs\NpcDialogReply.cs" />
+    <Compile Include="Data\Npcs\NpcManager.cs" />
+    <Compile Include="Data\Npcs\NpcShopDialog.cs" />
+    <Compile Include="Data\Npcs\NpcShopDialoger.cs" />
+    <Compile Include="Data\Npcs\NpcStartAction.cs" />
+    <Compile Include="Data\Npcs\NpcStartActionSerialized.cs" />
+    <Compile Include="Data\Npcs\NpcTemplate.cs" />
+    <Compile Include="Data\Npcs\StartActions\ShopAction.cs" />
+    <Compile Include="Data\Npcs\StartActions\TalkAction.cs" />
+    <Compile Include="Data\Recipe\IngredientTemplate.cs" />
+    <Compile Include="Data\Recipe\RecipeTemplate.cs" />
+    <Compile Include="Data\Recipe\RecipeTemplateProvider.cs" />
+    <Compile Include="Data\Skills\SkillBase.cs" />
+    <Compile Include="Data\Skills\SkillInstance.cs" />
+    <Compile Include="Data\Skills\SkillUse.cs" />
+    <Compile Include="Data\Spells\SpellLevel.cs" />
+    <Compile Include="Data\Spells\SpellManager.cs" />
+    <Compile Include="Data\TaxCollector\TaxCollectorNameProvider.cs" />
+    <Compile Include="Data\TaxCollector\TaxCollectorFirstNameProvider.cs" />
+    <Compile Include="Data\Threshold\ThresholdDictionnaryTemplate.cs" />
+    <Compile Include="Data\Threshold\Threshold.cs" />
+    <Compile Include="Data\Threshold\ThresholdProvider.cs" />
+    <Compile Include="Data\Threshold\ThresholdDictionnary.cs" />
+    <Compile Include="Data\Trigger\TriggerTemplate.cs" />
+    <Compile Include="Data\Trigger\TriggerProvider.cs" />
+    <Compile Include="Data\XmlSerialize\NpcSerialized.cs" />
+    <Compile Include="Data\XmlSerialize\PartialLocalizable.cs" />
+    <Compile Include="Data\XmlSerialize\SkillInstanceSerialized.cs" />
+    <Compile Include="Data\XmlSerialize\SkillSerialized.cs" />
+    <Compile Include="Data\Map\MapCapabilities.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\Actions\ActionsBase\" />
+    <Folder Include="Data\Actions\ActionsCell\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BaseCore\Stump.BaseCore.Framework\Stump.BaseCore.Framework.csproj">
+      <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
+      <Name>Stump.BaseCore.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DofusProtocol\Classes\Stump.DofusProtocol.Classes.csproj">
+      <Project>{10884165-D492-4895-B3EF-32429F7A7F55}</Project>
+      <Name>Stump.DofusProtocol.Classes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DofusProtocol\D2oClasses\Stump.DofusProtocol.D2oClasses.csproj">
+      <Project>{33093793-C4BA-4B89-AC82-6E9D00437452}</Project>
+      <Name>Stump.DofusProtocol.D2oClasses</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DofusProtocol\Enums\Stump.DofusProtocol.Enums.csproj">
+      <Project>{D7BFF8ED-065B-4A53-9805-595DFEA75A0A}</Project>
+      <Name>Stump.DofusProtocol.Enums</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

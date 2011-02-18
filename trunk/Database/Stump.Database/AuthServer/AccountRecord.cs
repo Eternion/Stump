@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
+using Stump.Database.WorldServer.StartupAction;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database.AuthServer
@@ -32,7 +33,6 @@ namespace Stump.Database.AuthServer
     {
 
         private string m_login = "";
-        private IList<StartupActionRecord> m_startupActions;
         private IList<WorldCharacterRecord> m_characters;
         private IList<DeletedWorldCharacterRecord> m_deletedCharacters;
 
@@ -209,13 +209,6 @@ namespace Stump.Database.AuthServer
                 }
                 return 0;
             }
-        }
-
-        [HasAndBelongsToMany(typeof(StartupActionRecord), Table = "accounts_startup_actions", ColumnKey = "AccountId", ColumnRef = "StartupActionId", Cascade = ManyRelationCascadeEnum.Delete)]
-        public IList<StartupActionRecord> StartupActions
-        {
-            get { return m_startupActions ?? new List<StartupActionRecord>(); }
-            set { m_startupActions = value; }
         }
 
         [HasMany(typeof(WorldCharacterRecord), Cascade = ManyRelationCascadeEnum.Delete)]

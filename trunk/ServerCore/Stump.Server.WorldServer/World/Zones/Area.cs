@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using Stump.BaseCore.Framework.Collections;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global;
+using Stump.Server.WorldServer.World.Actors.Character;
 
 namespace Stump.Server.WorldServer.World.Zones
 {

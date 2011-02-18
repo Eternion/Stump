@@ -20,6 +20,7 @@ using System;
 using Stump.Database;
 using Stump.Database.AuthServer;
 using Stump.Database.WorldServer;
+using Stump.Database.WorldServer.StartupAction;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.IPC;
 
@@ -73,6 +74,27 @@ namespace Stump.Server.WorldServer.Manager
                                    };
             worldAccount.Create();
             return worldAccount;
+        }
+
+
+        public static bool AddAccountStartupAction(WorldAccountRecord account, StartupActionRecord startupAction)
+        {
+            if (account.StartupActions.Contains(startupAction))
+                return false;
+
+            account.StartupActions.Add(startupAction);
+
+            return true;
+        }
+
+        public static bool DeleteAccountStartupAction(WorldAccountRecord account, StartupActionRecord startupAction)
+        {
+            if (!account.StartupActions.Contains(startupAction))
+                return false;
+
+            account.StartupActions.Remove(startupAction);
+
+            return true;
         }
     }
 }

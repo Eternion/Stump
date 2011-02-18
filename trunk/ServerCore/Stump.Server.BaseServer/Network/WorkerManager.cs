@@ -23,7 +23,6 @@ using System.Linq;
 using System.Threading;
 using System.Reflection;
 using Stump.BaseCore.Framework.Attributes;
-using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Handler;
 
 namespace Stump.Server.BaseServer.Network
@@ -50,9 +49,10 @@ namespace Stump.Server.BaseServer.Network
 
 
         /// <summary>
-        ///   New instance of WorkerManager
+        /// Initializes a new instance of the <see cref="WorkerManager"/> class.
         /// </summary>
-        /// <param name = "workerNbr"></param>
+        /// <param name="queueDispatcher">The queue dispatcher.</param>
+        /// <param name="handlerManager">The handler manager.</param>
         public WorkerManager(QueueDispatcher queueDispatcher, HandlerManager handlerManager)
         {
             m_queueDispatcher = queueDispatcher;
@@ -113,9 +113,9 @@ namespace Stump.Server.BaseServer.Network
         public void AdaptWorkerNumberWithProcessor()
         {
             if (Environment.ProcessorCount >= 4)
-                SetWorkerNumber(Environment.ProcessorCount - 2);
+                SetWorkerNumber(2 * Environment.ProcessorCount);
             else
-                SetWorkerNumber(2);
+                SetWorkerNumber(4);
         }
 
         /// <summary>
@@ -157,13 +157,13 @@ namespace Stump.Server.BaseServer.Network
             foreach (var message in groupMessage)
             {
                 double average = message.Average(t => t.Item2);
-                var ecartType = Math.Sqrt((message.Sum(t => Math.Pow(average - t.Item2, 2))))/message.Count();
+                var ecartType = Math.Sqrt((message.Sum(t => Math.Pow(average - t.Item2, 2)))) / message.Count();
                 result.AppendLine("");
                 result.AppendLine(string.Format("\tMessage :{0}", message.First().Item1.GetType().Name));
                 result.AppendLine(string.Format("\tAverage Time : {0}ms", average));
                 result.AppendLine(string.Format("\tMin Time : {0}ms", message.Min(t => t.Item2)));
                 result.AppendLine(string.Format("\tMax Time : {0}ms", message.Max(t => t.Item2)));
-                result.AppendLine(string.Format("\tEcart Type : {0} ({1}%)", ecartType, Math.Ceiling(ecartType*100)));
+                result.AppendLine(string.Format("\tEcart Type : {0} ({1}%)", ecartType, Math.Ceiling(ecartType * 100)));
                 result.AppendLine(string.Format("\tMessage count : {0}", message.Count()));
             }
 

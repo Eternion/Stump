@@ -23,6 +23,7 @@ using NLog;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.Database;
 using Stump.Database.AuthServer;
+using Stump.Database.WorldServer.StartupAction;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.AuthServer.Managers
@@ -127,26 +128,5 @@ namespace Stump.Server.AuthServer.Managers
 
             return true;
         }
-
-        public static bool AddAccountStartupAction(AccountRecord account, StartupActionRecord startupAction)
-        {
-            if (account.StartupActions.Contains(startupAction))
-                return false;
-
-            account.StartupActions.Add(startupAction);
-
-            return true;
-        }
-
-        public static bool DeleteAccountStartupAction(AccountRecord account, StartupActionRecord startupAction)
-        {
-            if (!account.StartupActions.Contains(startupAction))
-                return false;
-
-            account.StartupActions.Remove(startupAction);
-
-            return true;
-        }
-
     }
 }

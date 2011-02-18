@@ -23,6 +23,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Commands;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Handlers;
+using Stump.Server.WorldServer.World.Actors.Character;
 
 namespace Stump.Server.WorldServer.Chat
 {

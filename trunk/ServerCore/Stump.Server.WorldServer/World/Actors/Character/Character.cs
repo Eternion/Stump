@@ -16,25 +16,24 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
-using System.Collections.Generic;
+using Stump.BaseCore.Framework.Utils;
 using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Classes.Custom;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Items;
 using Stump.Server.WorldServer.Manager;
 using Stump.Server.WorldServer.Spells;
-using Stump.Server.WorldServer.World.Actors.Actor;
 
-namespace Stump.Server.WorldServer.Entities
+namespace Stump.Server.WorldServer.World.Actors.Character
 {
-    public partial class Character : Actor, IInventoryOwner, ISpellsOwner, IAligned
+    public partial class Character : Actor.Actor, IInventoryOwner, ISpellsOwner, IAligned
     {
 
         public Character(WorldClient client, CharacterRecord record)
-            : base(record.Id, record.Name, CharacterManager.GetStuffedCharacterLook(record), new VectorIsometric(World.World.Instance.GetMap(record.MapId), record.CellId, record.Direction))
+            : base(record.Id, record.Name, CharacterManager.GetStuffedCharacterLook(record), new VectorIsometric(Singleton<World>.Instance.GetMap(record.MapId), record.CellId, record.Direction))
         {
             Client = client;
             Record = record;

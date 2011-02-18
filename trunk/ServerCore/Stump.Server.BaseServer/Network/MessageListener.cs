@@ -55,16 +55,16 @@ namespace Stump.Server.BaseServer.Network
         public static int MaxPendingConnections = 100;
 
         /// <summary>
-        /// Enable/Disable IP restriction
+        /// Max number of clients connected on the same IP or NULL for unlimited
         /// </summary>
         [Variable]
-        public static bool ActiveIPRestriction = true;
+        public static int? MaxIPConnexions = 10;
 
         /// <summary>
-        /// Max number of clients connected on the same IP
+        /// Min interval between two received message or NULL for unlimited ( in ms )
         /// </summary>
         [Variable]
-        public static int MaxIPConnexions = 10;
+        public static int? MinMessageInterval = 1;
 
         /// <summary>
         /// Buffer size /!\ Advanced users only /!\
@@ -74,24 +74,12 @@ namespace Stump.Server.BaseServer.Network
 
         public event Action<MessageListener, BaseClient> ClientConnected;
 
-        public void NotifyClientConnected(BaseClient client)
-        {
-            Action<MessageListener, BaseClient> handler = ClientConnected;
-            if (handler != null) handler(this, client);
-        }
-
         public event Action<MessageListener, BaseClient> ClientDisconnected;
-
-        public void NotifyClientDisconnected(BaseClient client)
-        {
-            Action<MessageListener, BaseClient> handler = ClientDisconnected;
-            if (handler != null) handler(this, client);
-        }
 
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly SocketAsyncEventArgs m_acceptArgs = new SocketAsyncEventArgs();
-        private readonly List<BaseClient> m_clientList = new List<BaseClient>();
+        private readonly List<BaseClient> m_clientList;
         private readonly SemaphoreSlim m_clientSemaphore;
         private readonly Func<Socket, BaseClient> m_delegateCreateClient;
 
@@ -101,8 +89,6 @@ namespace Stump.Server.BaseServer.Network
         private readonly Socket m_listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream,
                                                             ProtocolType.Tcp);
 
-        private readonly bool m_activeIpRestriction;
-        private readonly int m_maxIpConnexion;
 
         private readonly int m_maxConcurrentConnexion;
         private readonly QueueDispatcher m_queueDispatcher;
@@ -114,16 +100,16 @@ namespace Stump.Server.BaseServer.Network
 
         public MessageListener(QueueDispatcher queueDispatcher, Func<Socket, BaseClient> delegateCreateClient, string address, int port)
         {
-            m_ipEndPoint = new IPEndPoint(Dns.GetHostAddresses(address).First(), port);
+            m_ipEndPoint = new IPEndPoint(Dns.GetHostAddresses(address).First(ip => ip.AddressFamily == AddressFamily.InterNetwork), port);
             m_readBufferSize = BufferSize;
             m_maxConcurrentConnexion = MaxConcurrentConnections;
-            m_activeIpRestriction = ActiveIPRestriction;
-            m_maxIpConnexion = MaxIPConnexions;
+
+            m_clientList = new List<BaseClient>(m_maxConcurrentConnexion);
 
             m_readBufferManager = new BufferManager(m_maxConcurrentConnexion * m_readBufferSize, m_readBufferSize);
 
             m_readAsyncEventArgsPool = new SocketAsyncEventArgsPool(m_maxConcurrentConnexion);
-            m_writeAsyncEventArgsPool = new SocketAsyncEventArgsPool(m_maxConcurrentConnexion * 3);
+            m_writeAsyncEventArgsPool = new SocketAsyncEventArgsPool(m_maxConcurrentConnexion * 2);
 
             m_clientSemaphore = new SemaphoreSlim(m_maxConcurrentConnexion, m_maxConcurrentConnexion);
 
@@ -136,16 +122,16 @@ namespace Stump.Server.BaseServer.Network
 
         public MessageListener(QueueDispatcher queueDispatcher, Func<Socket, BaseClient> delegateCreateClient)
         {
-            m_ipEndPoint = new IPEndPoint(Dns.GetHostAddresses(Host).First(), Port);
+            m_ipEndPoint = new IPEndPoint(Dns.GetHostAddresses(Host).First(ip => ip.AddressFamily == AddressFamily.InterNetwork), Port);
             m_readBufferSize = BufferSize;
             m_maxConcurrentConnexion = MaxConcurrentConnections;
-            m_activeIpRestriction = ActiveIPRestriction;
-            m_maxIpConnexion = MaxIPConnexions;
+
+            m_clientList = new List<BaseClient>(m_maxConcurrentConnexion);
 
             m_readBufferManager = new BufferManager(m_maxConcurrentConnexion * m_readBufferSize, m_readBufferSize);
 
             m_readAsyncEventArgsPool = new SocketAsyncEventArgsPool(m_maxConcurrentConnexion);
-            m_writeAsyncEventArgsPool = new SocketAsyncEventArgsPool(m_maxConcurrentConnexion * 3);
+            m_writeAsyncEventArgsPool = new SocketAsyncEventArgsPool(m_maxConcurrentConnexion * 2);
 
             m_clientSemaphore = new SemaphoreSlim(m_maxConcurrentConnexion, m_maxConcurrentConnexion);
 
@@ -156,7 +142,7 @@ namespace Stump.Server.BaseServer.Network
             BaseClient.Initialize(ref m_writeAsyncEventArgsPool, ref m_queueDispatcher);
         }
 
-        public List<BaseClient> ClientList
+        public IEnumerable<BaseClient> ClientList
         {
             get { return m_clientList; }
         }
@@ -178,7 +164,7 @@ namespace Stump.Server.BaseServer.Network
             }
 
             // initialize write pool
-            for (var i = 0; i < m_maxConcurrentConnexion * 3; i++)
+            for (var i = 0; i < m_maxConcurrentConnexion * 2; i++)
             {
                 args = new SocketAsyncEventArgs();
 
@@ -219,9 +205,9 @@ namespace Stump.Server.BaseServer.Network
 
         private void ProcessAccept(SocketAsyncEventArgs e)
         {
-            if (m_activeIpRestriction && GetSameIPNumber(((IPEndPoint)e.AcceptSocket.RemoteEndPoint).Address) > m_maxIpConnexion)
+            if (MaxIPConnexions.HasValue && GetSameIpNumber((e.AcceptSocket.RemoteEndPoint as IPEndPoint).Address) > MaxIPConnexions.Value)
             {
-                logger.Error("Client {0} try to connect more {1} time", e.AcceptSocket.RemoteEndPoint.ToString(), m_maxIpConnexion);
+                logger.Error("Client {0} try to connect more {1} time", e.AcceptSocket.RemoteEndPoint.ToString(), MaxIPConnexions.Value);
                 m_clientSemaphore.Release();
                 StartAccept();
                 return;
@@ -229,12 +215,12 @@ namespace Stump.Server.BaseServer.Network
 
             SocketAsyncEventArgs readAsyncEventArgs = m_readAsyncEventArgsPool.Pop();
 
-            BaseClient client = m_delegateCreateClient(e.AcceptSocket);
+            var client = m_delegateCreateClient(e.AcceptSocket);
             readAsyncEventArgs.UserToken = client;
 
             m_clientList.Add(client);
 
-            NotifyClientConnected(client);
+            if (ClientConnected != null) ClientConnected(this, client);
 
             if (!client.Socket.ReceiveAsync(readAsyncEventArgs))
             {
@@ -275,12 +261,24 @@ namespace Stump.Server.BaseServer.Network
                 if (client != null)
                 {
                     client.ProcessReceive(e.Buffer, e.Offset, e.BytesTransferred);
-                    bool willRaiseEvent = client.Socket.ReceiveAsync(e);
 
-                    if (!willRaiseEvent)
+                    if (client.Socket != null)
                     {
-                        ProcessReceive(e);
+                        bool willRaiseEvent = client.Socket.ReceiveAsync(e);
+
+                        if (!willRaiseEvent)
+                        {
+                            ProcessReceive(e);
+                        }
                     }
+                    else
+                    {
+                        CloseClientSocket(e);
+                    }
+                }
+                else
+                {
+                    CloseClientSocket(e);
                 }
             }
             else
@@ -303,7 +301,7 @@ namespace Stump.Server.BaseServer.Network
                 client.Disconnect();
                 m_clientList.Remove(client);
 
-                NotifyClientDisconnected(client);
+                if (ClientDisconnected != null) ClientDisconnected(this, client);
             }
             m_clientSemaphore.Release();
 
@@ -316,9 +314,9 @@ namespace Stump.Server.BaseServer.Network
         /// </summary>
         /// <param name="ip">The IP.</param>
         /// <returns></returns>
-        private int GetSameIPNumber(IPAddress ip)
+        private int GetSameIpNumber(IPAddress ip)
         {
-            return m_clientList.Count(client => client.Socket != null && ip.Equals(((IPEndPoint)client.Socket.RemoteEndPoint).Address));
+            return m_clientList.Count(t => t.Socket != null && (t.Socket.RemoteEndPoint as IPEndPoint).Address == ip);
         }
     }
 }

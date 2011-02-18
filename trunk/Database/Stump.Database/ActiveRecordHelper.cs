@@ -18,6 +18,7 @@
 //  *************************************************************************/
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Stump.Database
@@ -32,13 +33,9 @@ namespace Stump.Database
 
             foreach (Type t in types)
             {
-                object[] attributes = t.GetCustomAttributes(typeof (AttributeDatabase), false);
+                var attributes = t.GetCustomAttributes(typeof (AttributeDatabase), false) as AttributeDatabase[];
 
-                foreach (object a in attributes)
-                {
-                    if (((a as AttributeDatabase).Service & service) == service)
-                        result.Add(t);
-                }
+                result.AddRange(from a in attributes where (a.Service & service) == service select t);
             }
 
             return result.ToArray();

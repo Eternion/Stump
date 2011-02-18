@@ -17,12 +17,11 @@
 //  *
 //  *************************************************************************/
 using System;
-using System.Threading;
 using Stump.Server.AuthServer;
 
 namespace Stump.GUI.AuthConsole
 {
-    class Program
+    static class Program
     {
         static void Main(string[] args)
         {

@@ -61,7 +61,7 @@ namespace Stump.Server.BaseServer.Initializing
         {
             StageNumber = stageNbr;
             LogMessage = msg;
-            Method = (Action)Delegate.CreateDelegate(typeof(Action), method);
+            Method = Delegate.CreateDelegate(typeof(Action), method) as Action;
         }
 
         public void Execute()

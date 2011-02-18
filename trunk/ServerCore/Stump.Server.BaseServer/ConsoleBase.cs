@@ -62,7 +62,7 @@ namespace Stump.Server.BaseServer
         protected string Cmd = "";
         protected readonly ConditionWaiter m_conditionWaiter;
 
-        public ConsoleBase()
+        protected ConsoleBase()
         {
             m_conditionWaiter = new ConditionWaiter(() => !AskingSomething && Console.KeyAvailable, Timeout.Infinite, 20);
         }
@@ -91,7 +91,7 @@ namespace Stump.Server.BaseServer
 
             foreach (string line in AsciiLogo)
             {
-                int pad = (Console.BufferWidth + line.Length)/2;
+                int pad = (Console.BufferWidth + line.Length) / 2;
 
                 Console.WriteLine(line.PadLeft(pad));
             }
@@ -116,7 +116,7 @@ namespace Stump.Server.BaseServer
             {
                 AskingSomething = true;
 
-                logger.Warn(request + "\n[CANCEL IN " + delay + " SECONDS] (y/n)");
+                logger.Warn(request + Environment.NewLine + "[CANCEL IN " + delay + " SECONDS] (y/n)");
 
                 // Wait that user enter any characters ;)
                 if (ConditionWaiter.WaitFor(() => !EnteringCommand && Console.KeyAvailable, delay * 1000, AskWaiterInterval))

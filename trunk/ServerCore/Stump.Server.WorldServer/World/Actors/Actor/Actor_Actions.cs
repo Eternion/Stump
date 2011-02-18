@@ -25,6 +25,7 @@ using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Global.Pathfinding;
 using Stump.Server.WorldServer.Handlers;
 using Stump.Server.WorldServer.Spells;
+using Stump.Server.WorldServer.World.Actors.Extensions;
 
 namespace Stump.Server.WorldServer.World.Actors.Actor
 {
@@ -133,7 +134,7 @@ namespace Stump.Server.WorldServer.World.Actors.Actor
         {
             Map.Characters.Send(c =>
             {
-                ContextHandler.SendEmotePlayMessage(c.Client, this, emote, EmoteDataProvider.GetEmoteDuration(emote));
+                ContextHandler.SendEmotePlayMessage(c.Client, this, emote, EmoteDurationProvider.Instance.Get(emote));
                 BasicHandler.SendBasicNoOperationMessage(c.Client);
             }, c => c.Context == GameContextEnum.ROLE_PLAY);
         }

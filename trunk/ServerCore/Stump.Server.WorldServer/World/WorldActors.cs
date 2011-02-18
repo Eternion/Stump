@@ -6,6 +6,7 @@ using System.Threading;
 using Stump.BaseCore.Framework.Utils;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.World.Actors.Character;
 
 namespace Stump.Server.WorldServer.World
 {

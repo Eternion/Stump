@@ -41,11 +41,11 @@ namespace Stump.DofusProtocol.Messages
 
             writer.Clear();
 
-            int typeLen = ComputeTypeLen(packet.Length);
+            byte typeLen = ComputeTypeLen(packet.Length);
 
-            int header = SubComputeStaticHeader((int) id, typeLen);
+            short header = (short)SubComputeStaticHeader(id, typeLen);
 
-            writer.WriteShort((short) header);
+            writer.WriteShort(header);
 
             switch (typeLen)
             {
@@ -76,12 +76,11 @@ namespace Stump.DofusProtocol.Messages
                     throw new Exception("Packet's length can't be encoded on 4 or more bytes");
                 }
             }
-
             writer.WriteBytes(packet);
         }
 
 
-        private static int ComputeTypeLen(int param1)
+        private static byte ComputeTypeLen(int param1)
         {
             if (param1 > 65535)
             {
@@ -98,7 +97,7 @@ namespace Stump.DofusProtocol.Messages
             return 0;
         }
 
-        private static int SubComputeStaticHeader(int id, int typeLen)
+        private static uint SubComputeStaticHeader(uint id, byte typeLen)
         {
             return id << BIT_RIGHT_SHIFT_LEN_PACKET_ID | typeLen;
         }

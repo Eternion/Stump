@@ -135,11 +135,11 @@ namespace Stump.BaseCore.Framework.Xml
                     string type = variable.Attributes["type"] != null ? variable.Attributes["type"].Value : "";
                     string @namespace = GetNamespaceOfNode(variable);
 
-                    if (name == "")
+                    if (name == string.Empty)
                         throw new Exception(string.Format("[Config] Variable in {0} has not attribute 'name'",
                                                           @namespace));
 
-                    if (type != "")
+                    if (type != string.Empty)
                     {
                         Type valueType = Type.GetType(type);
 
@@ -184,11 +184,11 @@ namespace Stump.BaseCore.Framework.Xml
                     string type = variable.Attributes["type"] != null ? variable.Attributes["type"].Value : "";
                     string @namespace = GetNamespaceOfNode(variable);
 
-                    if (name == "")
+                    if (name == string.Empty)
                         throw new Exception(string.Format("[Config] Variable in {0} has not attribute 'name'",
                                                           @namespace));
 
-                    if (type != "")
+                    if (type != string.Empty)
                     {
                         Type valueType = Type.GetType(type);
                         int i = 0;
@@ -336,9 +336,9 @@ namespace Stump.BaseCore.Framework.Xml
                 return new XmlSerializer(type).Deserialize(new StringReader(value.ToString()));
             }
 
-            if (value.ToString() == "")
+            if (value.ToString() == string.Empty)
                 if (value is string)
-                    return "";
+                    return string.Empty;
                 else
                     return null;
 

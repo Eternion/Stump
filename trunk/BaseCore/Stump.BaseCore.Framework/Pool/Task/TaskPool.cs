@@ -34,6 +34,13 @@ namespace Stump.BaseCore.Framework.Pool
         private List<CyclicTask> m_cyclicTasks = new List<CyclicTask>();
         private readonly object sync = new object();
         private ConcurrentQueue<Action> m_tasks = new ConcurrentQueue<Action>();
+        private static TaskPool m_instance;
+
+        public static TaskPool Instance
+        {
+            get { return m_instance ?? (m_instance = new TaskPool()); }
+        }
+
 
         public void Initialize(Assembly asm)
         {
@@ -42,16 +49,16 @@ namespace Stump.BaseCore.Framework.Pool
                 var m = type.GetMethods();
                 foreach (var method in type.GetMethods())
                 {
-                    var attributes = method.GetCustomAttributes(typeof(Cyclic), false);
-                    if (attributes.Length == 1)
+                    var attribute = method.GetCustomAttributes(typeof(Cyclic), false).FirstOrDefault() as Cyclic;
+                    if (attribute != null)
                     {
-                        m_cyclicTasks.Add(new CyclicTask(Delegate.CreateDelegate(method.GetActionType(), method), (attributes[0] as Cyclic).Time,null, null));
+                        m_cyclicTasks.Add(new CyclicTask(Delegate.CreateDelegate(method.GetActionType(), method) as Action, attribute.Time,null, null));
                     }
                 }
             }
         }
 
-        public void RegisterCyclicTask(Delegate method, uint time, Condition condition, uint? maxExecution)
+        public void RegisterCyclicTask(Action method, int time, Condition condition, uint? maxExecution)
         {
             lock (sync)
                 m_cyclicTasks.Add(new CyclicTask(method, time, condition, maxExecution));
@@ -63,10 +70,10 @@ namespace Stump.BaseCore.Framework.Pool
                 m_cyclicTasks.Add(cyclicTask);
         }
 
-        public void UnregisterCyclicTask(Delegate method)
+        public void UnregisterCyclicTask(Action method)
         {
             lock (sync)
-                m_cyclicTasks.RemoveAll(m => m.Delegate == method);
+                m_cyclicTasks.RemoveAll(m => m.Action == method);
         }
 
         public void UnregisterCyclicTask(CyclicTask cyclicTask)
@@ -85,7 +92,7 @@ namespace Stump.BaseCore.Framework.Pool
         {
             /* Execute Tasks */
             while (m_tasks.TryDequeue(out m_action))
-                m_action.DynamicInvoke();
+                m_action.Invoke();
 
             lock (sync)
             {

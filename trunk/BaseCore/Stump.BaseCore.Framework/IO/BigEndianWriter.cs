@@ -48,7 +48,7 @@ namespace Stump.BaseCore.Framework.IO
             {
                 var data = new byte[m_writer.BaseStream.Length];
                 m_writer.BaseStream.Position = 0;
-                m_writer.BaseStream.Read(data, 0, (int) m_writer.BaseStream.Length);
+                m_writer.BaseStream.Read(data, 0, (int)m_writer.BaseStream.Length);
                 return data;
             }
         }
@@ -171,11 +171,11 @@ namespace Stump.BaseCore.Framework.IO
         {
             if (@bool)
             {
-                m_writer.Write((byte) 1);
+                m_writer.Write((byte)1);
             }
             else
             {
-                m_writer.Write((byte) 0);
+                m_writer.Write((byte)0);
             }
         }
 
@@ -212,12 +212,12 @@ namespace Stump.BaseCore.Framework.IO
         public void WriteUTF(string str)
         {
             var bytes = Encoding.UTF8.GetBytes(str);
-            WriteUShort((ushort)bytes.Length);
+            var len = (ushort)bytes.Length;
+            WriteUShort(len);
 
-            foreach (byte @byte in bytes)
-            {
-                m_writer.Write(@byte);
-            }
+            int i;
+            for (i = 0; i < len; i++)
+                m_writer.Write(bytes[i]);
         }
 
         /// <summary>
@@ -227,11 +227,10 @@ namespace Stump.BaseCore.Framework.IO
         public void WriteUTFBytes(string str)
         {
             var bytes = Encoding.UTF8.GetBytes(str);
-
-            foreach (byte @byte in bytes)
-            {
-                m_writer.Write(@byte);
-            }
+            var len = bytes.Length;
+            int i;
+            for (i = 0; i < len; i++)
+                m_writer.Write(bytes[i]);
         }
 
         /// <summary>

@@ -18,14 +18,7 @@
 //  *************************************************************************/
 using System;
 using System.Collections.Generic;
-using Stump.DofusProtocol.Classes;
-using Stump.DofusProtocol.Classes.Custom;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Chat;
-using Stump.Server.WorldServer.Global;
-using Stump.Server.WorldServer.Global.Maps;
-using Stump.Server.WorldServer.Global.Pathfinding;
-using Stump.Server.WorldServer.Handlers;
 
 namespace Stump.DofusProtocol.Enums
 {

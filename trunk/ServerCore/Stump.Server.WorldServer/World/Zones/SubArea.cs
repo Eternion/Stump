@@ -22,6 +22,7 @@ using Stump.Database.WorldServer;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.World.Actors.Character;
 
 namespace Stump.Server.WorldServer.World.Zones
 {
@@ -42,7 +43,7 @@ namespace Stump.Server.WorldServer.World.Zones
 
         public readonly Area Area;
 
-        public Dictionary<int, Global.Maps.Map> Maps
+        public Dictionary<int, Map.Map> Maps
         {
             get;
             set;

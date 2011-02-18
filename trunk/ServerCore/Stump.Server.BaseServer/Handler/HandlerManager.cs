@@ -32,14 +32,14 @@ namespace Stump.Server.BaseServer.Handler
 {
     public sealed class HandlerManager
     {
-        private readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger m_logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         ///   Key : Typeof handled message
         ///   Value : Target method
         /// </summary>
-        private readonly Dictionary<Type, Tuple<IHandlerContainer, Handler, Delegate>> m_handlers =
-            new Dictionary<Type, Tuple<IHandlerContainer, Handler, Delegate>>();
+        private readonly Dictionary<Type, Tuple<IHandlerContainer, Handler, Action<BaseClient,Message>>> m_handlers =
+            new Dictionary<Type, Tuple<IHandlerContainer, Handler, Action<BaseClient,Message>>>();
 
         /// <summary>
         ///   Automatically detects and registers all PacketHandlers within the given Assembly
@@ -57,7 +57,7 @@ namespace Stump.Server.BaseServer.Handler
         ///   Registers all packet handlers defined in the given type.
         /// </summary>
         /// <param name = "type">the type to search through for packet handlers</param>
-        public void Register(Type type)
+        private void Register(Type type)
         {
             if(type.IsAbstract || !type.GetInterfaces().Contains(typeof(IHandlerContainer)))
                 return;
@@ -78,11 +78,9 @@ namespace Stump.Server.BaseServer.Handler
 
             foreach (MethodInfo method in methods)
             {
-                object[] attributes = method.GetCustomAttributes(
-                    typeof (Handler), false);
+                var attributes = method.GetCustomAttributes(typeof (Handler), false) as Handler[];
 
-
-                if (attributes.Length == 0)
+                if (attributes == null || attributes.Length == 0)
                     continue;
 
                 try
@@ -90,16 +88,15 @@ namespace Stump.Server.BaseServer.Handler
                     if (
                         method.GetParameters().Count(
                             entry =>
-                            (entry.ParameterType.IsSubclassOf(typeof (Message)) ||
-                             entry.ParameterType.IsSubclassOf(typeof (BaseClient)))) != 2)
+                            (entry.ParameterType.IsSubclassOf(typeof(Message)) ||
+                             entry.ParameterType.IsSubclassOf(typeof(BaseClient)))) != 2)
                         throw new ArgumentException("Incorrect delegate parameters");
 
-                    Delegate handlerDelegate = Delegate.CreateDelegate(method.GetActionType(), method);
+                    var handlerDelegate = method.CreateDelegate(typeof(BaseClient),typeof(Message))  as Action<BaseClient,Message>;
                     
-
-                    foreach (object attribute in attributes)
+                    foreach (var attribute in attributes)
                     {
-                        RegisterHandler(((Handler) attribute).Message, handlerContainer, (Handler) attribute, handlerDelegate);
+                        RegisterHandler(attribute.Message, handlerContainer, attribute, handlerDelegate);
                     }
                 }
                 catch (Exception e)
@@ -113,17 +110,17 @@ namespace Stump.Server.BaseServer.Handler
             }
         }
 
-        internal void RegisterHandler(Type msgType, IHandlerContainer handlerContainer, Handler handler, Delegate target)
+        private void RegisterHandler(Type msgType, IHandlerContainer handlerContainer, Handler handler, Action<BaseClient,Message> target)
         {
             if (m_handlers.ContainsKey(msgType))
             {
-                logger.Debug(string.Format("Packet handler {0} already registered ! Func : {1} ", msgType, target));
+                m_logger.Debug(string.Format("Packet handler {0} already registered ! Func : {1} ", msgType, target));
             }
 
             m_handlers.Add(msgType,
                            target != null
-                               ? new Tuple<IHandlerContainer, Handler, Delegate>(handlerContainer, handler, target)
-                               : new Tuple<IHandlerContainer, Handler, Delegate>(handlerContainer, handler, null));
+                               ? new Tuple<IHandlerContainer, Handler, Action<BaseClient, Message>>(handlerContainer, handler, target)
+                               : new Tuple<IHandlerContainer, Handler, Action<BaseClient, Message>>(handlerContainer, handler, null));
         }
 
         public bool IsRegister(Type msgType)
@@ -131,24 +128,17 @@ namespace Stump.Server.BaseServer.Handler
             return m_handlers.ContainsKey(msgType);
         }
 
-
         public void Dispatch(BaseClient client, Message message)
         {
-            Tuple<IHandlerContainer, Handler, Delegate> handler;
-            if (m_handlers.TryGetValue(message.GetType(), out handler))
+            var messageType = message.GetType();
+            Tuple<IHandlerContainer, Handler, Action<BaseClient,Message>> handler;
+            if (m_handlers.TryGetValue(messageType, out handler))
             {
                 try
                 {
-                    //////////////////////////////////////////////////////////////////////////
-                    // The following should be benchmarked.
-                    // What is the best when you have to handle a large amount of packets
-                    // Parallel stuff sounds good but need a serious benchmarking
-                    // since this is some kind of critical stuff we have there...
-                    //////////////////////////////////////////////////////////////////////////
-
-                    if (!handler.Item1.PredicateSuccess(client, message.GetType()))
+                    if (!handler.Item1.PredicateSuccess(client, messageType))
                     {
-                        logger.Warn(client + " tried to send " + message + " but predicate didn't success");
+                        m_logger.Warn(client + " tried to send " + message + " but predicate didn't success");
                         return;
                     }
 
@@ -156,21 +146,17 @@ namespace Stump.Server.BaseServer.Handler
                     Console.WriteLine(string.Format("{0} << {1}", client, message.GetType().Name));
 #endif
 
-                    handler.Item3.DynamicInvoke(client, message);
-
-                    /*handler.Item3.GetInvocationList()
-                    .AsParallel().AsOrdered()
-                    .Select(d => d.DynamicInvoke(client, message));*/
+                    handler.Item3(client, message);
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(string.Format("[Handler : {0}] Force disconnection of client {1} : {2}", message.GetType().Name, client, ex));
+                    m_logger.Error(string.Format("[Handler : {0}] Force disconnection of client {1} : {2}", messageType.Name, client, ex));
                     client.Disconnect();
                 }
             }
             else
             {
-                logger.Debug("Received Unknown packet : " + message.GetType().Name);
+                m_logger.Debug("Received Unknown packet : " + messageType.Name);
             }
         }
 

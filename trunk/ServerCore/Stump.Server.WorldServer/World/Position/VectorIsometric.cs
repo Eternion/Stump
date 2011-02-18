@@ -21,6 +21,7 @@ using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Global.Maps;
 using Stump.Server.WorldServer.World.Position;
+using Stump.Server.WorldServer.World.Zones.Map;
 
 namespace Stump.Server.WorldServer.Global
 {
