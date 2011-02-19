@@ -1,4 +1,4 @@
-// /*************************************************************************
+﻿// /*************************************************************************
 //  *
 //  *  Copyright (C) 2010 - 2011 Stump Team
 //  *
@@ -16,31 +16,35 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using ProtoBuf;
 using Stump.BaseCore.Framework.Attributes;
-using Stump.DofusProtocol.Classes;
+using Stump.DofusProtocol.Classes.Extensions;
 using Stump.Server.DataProvider.Core;
 
-namespace Stump.Server.WorldServer.Data
+namespace Stump.Server.DataProvider.Data.Monsters
 {
-    public class MonsterLoader
+    public class MonsterSpawnProvider : DataProvider<uint, MonsterSpawn>
     {
+
         /// <summary>
-        /// Name of monsters folder
+        /// Name of monsters spawn file
         /// </summary>
         [Variable]
-        public static string MapsDir = "Monsters/";
+        public static string MonsterSpawnFile = "MonstersSpawn.xml";
 
-        public static IEnumerable<GameRolePlayGroupMonsterInformations> LoadSpawnData()
+
+        protected override MonsterSpawn GetData(uint id)
         {
-            var mapDirectory = new DirectoryInfo(Settings.StaticPath + MapsDir);
+            return null;
+        }
 
-            foreach (FileInfo file in mapDirectory.GetFiles("*.xml", SearchOption.AllDirectories))
-            {
-             
-                yield return null;
-            }
+        protected override Dictionary<uint, MonsterSpawn> GetAllData()
+        {
+            return null;
         }
     }
 }

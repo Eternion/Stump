@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Data
     public class InteractiveObjectLoader
     {
         [Variable]
-        public static string InteractiveObjectsDir = "InteractiveObjects/";
+        public static string InteractiveObjectsFile = "InteractiveObjects.xml";
 
         [Variable]
         public static string SkillActionsDir = "SkillActions/";

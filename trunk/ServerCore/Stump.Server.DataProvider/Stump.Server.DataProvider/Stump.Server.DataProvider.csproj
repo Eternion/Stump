@@ -50,6 +50,9 @@
     <OutputPath>bin\Final\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ionic.Zlib">
+      <HintPath>..\..\..\Library\Ionic.Zlib.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\..\..\Library\NLog.dll</HintPath>
     </Reference>
@@ -88,11 +91,11 @@
     <Compile Include="Data\Breeds\BreedTemplate.cs" />
     <Compile Include="Data\Breeds\LearnableSpell.cs" />
     <Compile Include="Data\Chat\ChatForbiddenWordProvider.cs" />
-    <Compile Include="Data\D2oTool\D2oClassDefinition.cs" />
-    <Compile Include="Data\D2oTool\D2oFieldDefinition.cs" />
-    <Compile Include="Data\D2oTool\D2oFile.cs" />
+    <Compile Include="Data\D2oTool\D2OClassDefinition.cs" />
+    <Compile Include="Data\D2oTool\D2OFieldDefinition.cs" />
+    <Compile Include="Data\D2oTool\D2OFile.cs" />
     <Compile Include="Data\D2oTool\I18nFile.cs" />
-    <Compile Include="Data\D2OLoader.cs" />
+    <Compile Include="Data\D2oTool\D2OLoader.cs" />
     <Compile Include="Data\House\HouseDoorsProvider.cs" />
     <Compile Include="Data\MapTool\Compressor.cs" />
     <Compile Include="Data\MapTool\PakFile.cs" />
@@ -124,10 +127,10 @@
     <Compile Include="Data\House\HouseModelProvider.cs" />
     <Compile Include="Data\House\HouseDoors.cs" />
     <Compile Include="Data\House\HouseModel.cs" />
-    <Compile Include="Data\InteractiveObjectLoader.cs" />
+    <Compile Include="Data\Interactives\InteractiveObjectLoader.cs" />
     <Compile Include="Data\Interactives\InteractiveActionIdProvider.cs" />
-    <Compile Include="Data\InteractiveMapElement.cs" />
-    <Compile Include="Data\ItemLoader.cs" />
+    <Compile Include="Data\Interactives\InteractiveMapElement.cs" />
+    <Compile Include="Data\Items\ItemLoader.cs" />
     <Compile Include="Data\Items\ItemManager.cs" />
     <Compile Include="Data\Items\ItemStored.cs" />
     <Compile Include="Data\Items\ItemTemplate.cs" />
@@ -140,10 +143,12 @@
     <Compile Include="Data\Map\MapTemplate.cs" />
     <Compile Include="Data\Map\MapTemplateProvider.cs" />
     <Compile Include="Data\Map\MapObjectElement.cs" />
-    <Compile Include="Data\MonsterLoader.cs" />
+    <Compile Include="Data\Monsters\MonsterTemplateProvider.cs" />
+    <Compile Include="Data\Monsters\MonsterSpawn.cs" />
+    <Compile Include="Data\Monsters\MonsterSpawnProvider.cs" />
     <Compile Include="Data\Mount\MountTemplate.cs" />
     <Compile Include="Data\Mount\MountTemplateProvider.cs" />
-    <Compile Include="Data\NpcLoader.cs" />
+    <Compile Include="Data\Npcs\NpcLoader.cs" />
     <Compile Include="Data\Npcs\NpcDialog.cs" />
     <Compile Include="Data\Npcs\NpcDialoger.cs" />
     <Compile Include="Data\Npcs\NpcDialogQuestion.cs" />
