@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using Stump.BaseCore.Framework.Cache;
 using Stump.BaseCore.Framework.Utils;
 
@@ -6,7 +8,6 @@ namespace Stump.Server.DataProvider.Core
 {
     public abstract class DataProvider<T, T1> : Singleton<DataProvider<T,T1>>
     {
-
         private DataLoadingType m_loadingType;
     
         private int m_lifeTime;
@@ -51,5 +52,28 @@ namespace Stump.Server.DataProvider.Core
         protected abstract T1 GetData(T id);
 
         protected abstract Dictionary<T, T1> GetAllData();
+    }
+
+
+    public abstract class DataProvider<T> : Singleton<DataProvider<T>>
+    {
+        protected List<T> m_list;
+
+        internal void Init(ProviderParams @params)
+        {
+            m_list = GetAllData();
+        }
+
+        public bool Contains(Func<T, bool> predicate)
+        {
+            return m_list.Count(predicate) != 0;
+        }
+
+        public IEnumerable<T> Get(Func<T, bool> predicate)
+        {
+            return m_list.Where(predicate);
+        }
+
+        protected abstract List<T> GetAllData();
     }
 }

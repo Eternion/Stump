@@ -19,11 +19,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using ProtoBuf;
 using System.Linq;
+using ProtoBuf;
 using Stump.BaseCore.Framework.Attributes;
-using Stump.BaseCore.Framework.IO;
-using Stump.BaseCore.Framework.Xml;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.Server.DataProvider.Core;
 
@@ -32,10 +30,10 @@ namespace Stump.Server.DataProvider.Data.Map
     public class MapTemplateProvider : DataProvider<int,MapTemplate>
     {
         /// <summary>
-        ///   Name of maps folder
+        ///   Name of maps file
         /// </summary>
         [Variable]
-        public static string MapsFile = "maps/maps.xml";
+        public static string MapsFile = "Maps.xml";
 
         protected override MapTemplate GetData(int id)
         {

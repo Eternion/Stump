@@ -16,11 +16,12 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using ProtoBuf;
 
 namespace Stump.Server.DataProvider.Data.Threshold
 {
-    [ProtoContract]
+    [Serializable,ProtoContract]
     public class Threshold
     {
         [ProtoMember(1)]
@@ -37,5 +38,9 @@ namespace Stump.Server.DataProvider.Data.Threshold
             set;
         }
 
+        public Threshold()
+        {
+            
+        }
     }
 }

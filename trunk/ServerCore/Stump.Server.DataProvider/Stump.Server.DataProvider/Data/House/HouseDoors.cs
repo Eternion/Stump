@@ -16,18 +16,23 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Collections.Generic;
 using ProtoBuf;
 
-namespace Stump.Server.WorldServer.Data.House
+namespace Stump.Server.DataProvider.Data.House
 {
-    [ProtoContract]
+    [Serializable, ProtoContract]
     public class HouseDoors
     {
         [ProtoMember(1)]
         public int HouseId { get; set; }
 
         [ProtoMember(2)]
-        public List<int> Doors { get; set; }
+        public List<short> Doors { get; set; }
+
+        public HouseDoors()
+        {
+        }
     }
 }

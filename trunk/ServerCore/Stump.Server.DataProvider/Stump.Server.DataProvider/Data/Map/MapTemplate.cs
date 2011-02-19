@@ -21,18 +21,16 @@ using System.Collections.Generic;
 using ProtoBuf;
 using Stump.BaseCore.Framework.IO;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.Server.BaseServer.Data.MapTool;
 
 namespace Stump.Server.DataProvider.Data.Map
 {
-    [ProtoContract]
+    [Serializable, ProtoContract]
     public class MapTemplate
     {
-        public const uint MaximumCellsCount = 560;
+        private const uint MaximumCellsCount = 560;
 
         public MapTemplate()
-        {
-            
+        {         
         }
 
         public MapTemplate(BigEndianReader reader)
@@ -145,8 +143,7 @@ namespace Stump.Server.DataProvider.Data.Map
         [ProtoMember(1)]
         public int Id
         {
-            get;
-            internal set;
+            get; private set;
         }
 
         [ProtoMember(2)]

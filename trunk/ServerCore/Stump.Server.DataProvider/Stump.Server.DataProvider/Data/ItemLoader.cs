@@ -22,7 +22,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Stump.Server.BaseServer.Data;
-using Stump.Server.BaseServer.Data.D2oTool;
 using Stump.Server.DataProvider.Data;
 using Stump.Server.WorldServer.Items;
 

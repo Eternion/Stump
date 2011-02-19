@@ -18,10 +18,9 @@
 //  *************************************************************************/
 using System;
 using System.IO;
-using System.Text;
 using Ionic.Zlib;
 
-namespace Stump.Server.BaseServer.Data.MapTool
+namespace Stump.Server.DataProvider.Data.MapTool
 {
     public static class Compressor
     {

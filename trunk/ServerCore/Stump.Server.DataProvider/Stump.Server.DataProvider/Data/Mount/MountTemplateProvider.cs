@@ -17,16 +17,13 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
 using ProtoBuf;
 using Stump.BaseCore.Framework.Attributes;
-using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Classes.Extensions;
-using Stump.DofusProtocol.D2oClasses;
 using Stump.Server.DataProvider.Core;
-using Stump.Server.WorldServer.Data.House;
 
 namespace Stump.Server.DataProvider.Data.Mount
 {
@@ -37,17 +34,15 @@ namespace Stump.Server.DataProvider.Data.Mount
         ///   Name of Mount template file
         /// </summary>
         [Variable]
-        public static string MountFile = "Mount/MountsTemplate.xml";
+        public static string MountFile = "MountsTemplate.xml";
 
         protected override MountTemplate GetData(uint id)
         {
-            var mountData = D2OLoader.LoadData<DofusProtocol.D2oClasses.Mount>().FirstOrDefault(m => m.id == id);
-
             using (var sr = new StreamReader(Settings.StaticPath + MountFile))
             {
                 var mounts = Serializer.Deserialize<List<MountTemplate>>(sr.BaseStream);
 
-                mounts[(int)id].Look = mountData.look.ToEntityLook();
+                mounts[(int) id].Look = mounts[(int) id].LookStr.ToEntityLook();
 
                 return mounts[(int)id];
             }
@@ -55,18 +50,13 @@ namespace Stump.Server.DataProvider.Data.Mount
 
         protected override Dictionary<uint, MountTemplate> GetAllData()
         {
-            var mountsData = D2OLoader.LoadData<DofusProtocol.D2oClasses.Mount>().ToDictionary(m => m.id);
-
             using (var sr = new StreamReader(Settings.StaticPath + MountFile))
             {
                 var mounts = Serializer.Deserialize<List<MountTemplate>>(sr.BaseStream);
 
                 foreach (var mount in mounts)
                 {
-                    if (!mountsData.ContainsKey(mount.MountId))
-                        throw new Exception("Can't find the mount");
-
-                    mount.Look = mountsData[mount.MountId].look.ToEntityLook();
+                    mount.Look = mount.LookStr.ToEntityLook();
                 }
                 return mounts.ToDictionary(m => m.MountId);
             }

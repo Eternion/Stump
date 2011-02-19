@@ -16,13 +16,11 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ProtoBuf;
 using Stump.BaseCore.Framework.Attributes;
-using Stump.BaseCore.Framework.Xml;
 using Stump.Server.DataProvider.Core;
 
 namespace Stump.Server.DataProvider.Data.Threshold
@@ -30,10 +28,10 @@ namespace Stump.Server.DataProvider.Data.Threshold
     public class ThresholdProvider : DataProvider<string, ThresholdDictionnary>
     {
         /// <summary>
-        ///   Name of Thresholds file
+        ///   Name of the Thresholds file
         /// </summary>
         [Variable]
-        public static string ThresholdsFile = "Thresholds/Thresholds.xml";
+        public static string ThresholdsFile = "Thresholds.xml";
 
         protected override ThresholdDictionnary GetData(string id)
         {

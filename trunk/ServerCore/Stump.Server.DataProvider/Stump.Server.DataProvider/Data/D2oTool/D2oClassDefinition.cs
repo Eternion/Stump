@@ -27,14 +27,13 @@ using System.Reflection;
 using Stump.BaseCore.Framework.IO;
 using Stump.BaseCore.Framework.Reflection;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.Server.BaseServer.Data.D2oTool;
 
 namespace Stump.Server.DataProvider.Data.D2oTool
 {
     [DebuggerDisplay("Name = {Name}")]
     public class D2OClassDefinition
     {
-        private static readonly Dictionary<Type, Type> ToleratedType = new Dictionary<Type, Type>
+        private static readonly Dictionary<Type, Type> m_toleratedType = new Dictionary<Type, Type>
             {
                 {typeof (uint), typeof (int)},
                 {typeof (int), typeof (uint)},
@@ -51,14 +50,13 @@ namespace Stump.Server.DataProvider.Data.D2oTool
             Id = id;
             Name = classname;
             PackageName = packagename;
-            Fields = new Dictionary<string, D2oFieldDefinition>();
             m_file = file;
 
             InitFields(reader);
             CheckClass();
         }
 
-        public Dictionary<string, D2oFieldDefinition> Fields
+        public Dictionary<string, D2OFieldDefinition> Fields
         {
             get;
             private set;
@@ -91,12 +89,13 @@ namespace Stump.Server.DataProvider.Data.D2oTool
         private void InitFields(BigEndianReader reader)
         {
             int fieldscount = reader.ReadInt();
+            Fields = new Dictionary<string, D2OFieldDefinition>(fieldscount);
             for (var i = 0; i < fieldscount; i++)
             {
                 string fieldname = reader.ReadUTF();
                 int fieldtype = reader.ReadInt();
 
-                Fields.Add(fieldname, new D2oFieldDefinition(fieldname, fieldtype, reader, m_file));
+                Fields.Add(fieldname, new D2OFieldDefinition(fieldname, fieldtype, reader, m_file));
             }
         }
 
@@ -121,8 +120,8 @@ namespace Stump.Server.DataProvider.Data.D2oTool
                         field.Value.KnowType != typeof (List<object>))
 
                         if (field.Value.KnowType != nativeField.FieldType &&
-                            (!ToleratedType.ContainsKey(field.Value.KnowType) ||
-                             ToleratedType[field.Value.KnowType] != nativeField.FieldType))
+                            (!m_toleratedType.ContainsKey(field.Value.KnowType) ||
+                             m_toleratedType[field.Value.KnowType] != nativeField.FieldType))
                             throw new Exception(
                                 string.Format("Uncorresponding type : {0} must be of type {1} instead of {2}",
                                               field.Key, field.Value.KnowType.Name, nativeField.FieldType.Name));
@@ -214,7 +213,7 @@ namespace Stump.Server.DataProvider.Data.D2oTool
         /// <returns></returns>
         public T ReadValue<T>(int index, string field)
         {
-            using (var reader = new BigEndianReader(m_file.StreamReader))
+            using (var reader = new BigEndianReader(m_file.m_filebuffer))
             {
                 if (!m_file.Indexes.ContainsKey(index))
                     return default(T);
@@ -238,7 +237,7 @@ namespace Stump.Server.DataProvider.Data.D2oTool
         /// <returns></returns>
         public T ReadValue<T>(int index, string field, T defaultValue)
         {
-            using (var reader = new BigEndianReader(m_file.StreamReader))
+            using (var reader = new BigEndianReader(m_file.m_filebuffer))
             {
                 if (!m_file.Indexes.ContainsKey(index))
                     return defaultValue;

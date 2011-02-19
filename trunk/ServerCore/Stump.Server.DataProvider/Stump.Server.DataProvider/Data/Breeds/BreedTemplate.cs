@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Collections.Generic;
 using ProtoBuf;
 using Stump.DofusProtocol.Classes;
@@ -23,7 +24,7 @@ using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.DataProvider.Data.Breeds
 {
-    [ProtoContract]
+    [Serializable,ProtoContract]
     public class BreedTemplate
     {
         [ProtoMember(1)]

@@ -16,9 +16,9 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.Server.DataProvider.Core;
 
 namespace Stump.Server.DataProvider.Data.Interactives
@@ -28,12 +28,12 @@ namespace Stump.Server.DataProvider.Data.Interactives
 
         protected override int GetData(int id)
         {
-            return D2OLoader.LoadData<DofusProtocol.D2oClasses.Interactive>(id).actionId;
+            return D2OLoader.LoadData<Interactive>(id).actionId;
         }
 
         protected override Dictionary<int, int> GetAllData()
         {
-            return D2OLoader.LoadData<DofusProtocol.D2oClasses.Interactive>().ToDictionary(i => i.id, i => i.actionId);
+            return D2OLoader.LoadData<Interactive>().ToDictionary(i => i.id, i => i.actionId);
         }
     }
 }

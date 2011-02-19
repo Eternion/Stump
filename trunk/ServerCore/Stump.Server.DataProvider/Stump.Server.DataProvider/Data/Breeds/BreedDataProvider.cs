@@ -22,10 +22,9 @@ using System.IO;
 using System.Linq;
 using ProtoBuf;
 using Stump.BaseCore.Framework.Attributes;
-using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Classes.Extensions;
-using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.DataProvider.Core;
 
 namespace Stump.Server.DataProvider.Data.Breeds
@@ -37,14 +36,14 @@ namespace Stump.Server.DataProvider.Data.Breeds
         ///   Name of Breed file
         /// </summary>
         [Variable]
-        public static string BreedFile = "Breed/Breeds.xml";
+        public static string BreedFile = "Breeds.xml";
 
         protected override BreedTemplate GetData(PlayableBreedEnum id)
         {
             var breedData = D2OLoader.LoadData<Breed>().FirstOrDefault(b => b.id == (int)id);
 
             if(breedData==null)
-                 throw new Exception("Impossible de trouver la classe correspondance dans les D2Os");
+                 throw new Exception("Impossible de trouver la classe correspondante dans les D2Os");
 
             using (var reader = new StreamReader(Settings.StaticPath + BreedFile))
             {

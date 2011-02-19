@@ -24,7 +24,6 @@ using System.Threading.Tasks;
 using NLog;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.Server.BaseServer.Data.D2oTool;
 using Stump.Server.DataProvider.Data.D2oTool;
 
 namespace Stump.Server.DataProvider.Data
@@ -57,11 +56,11 @@ namespace Stump.Server.DataProvider.Data
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private static I18nFile m_i18nFile;
+        private static I18NFile m_i18nFile;
 
-        public static I18nFile I18NFile
+        public static I18NFile I18NFile
         {
-            get { return m_i18nFile ?? (m_i18nFile = new I18nFile(DataPath + I18NDir + I18NFileName)); }
+            get { return m_i18nFile ?? (m_i18nFile = new I18NFile(DataPath + I18NDir + I18NFileName)); }
         }
 
         /// <summary>
@@ -194,7 +193,7 @@ namespace Stump.Server.DataProvider.Data
 
         public static string GetI18NText(int id)
         {
-            return !I18NFile.Exists(id) ? "" : I18NFile.ReadText(id);
+            return !I18NFile.Exists(id) ? "{undefined}" : I18NFile.ReadText(id);
         }
 
         public static string GetI18NText(uint id)

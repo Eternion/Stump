@@ -17,7 +17,6 @@
 //  *
 //  *************************************************************************/
 using System.Collections.Generic;
-using Stump.Server.WorldServer.Data.Alignment;
 
 namespace Stump.Server.DataProvider.Data.Alignment
 {

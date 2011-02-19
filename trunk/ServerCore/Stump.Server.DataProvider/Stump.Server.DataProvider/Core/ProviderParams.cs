@@ -3,7 +3,7 @@ using ProtoBuf;
 
 namespace Stump.Server.DataProvider.Core
 {
-    [ProtoContract]
+    [Serializable, ProtoContract]
     public class ProviderParams
     {
         [ProtoMember(1)]
@@ -18,5 +18,8 @@ namespace Stump.Server.DataProvider.Core
         [ProtoMember(4)]
         public int CheckTime { get; set; }
 
+        public ProviderParams()
+        {
+        }
     }
 }

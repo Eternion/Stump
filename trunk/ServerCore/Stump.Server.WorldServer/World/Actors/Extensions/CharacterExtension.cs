@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.World.Actors.Extensions
             action(character);
         }
 
-        public static void Send(Character.Character character, Action<Character.Character> action, GameContextEnum context)
+        public static void Send(this Character.Character character, Action<Character.Character> action, GameContextEnum context)
         {
             if (character.Context == context)
                 action(character);

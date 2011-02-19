@@ -46,6 +46,5 @@ namespace Stump.Server.DataProvider.Core
                 }
             }
         }
-
     }
 }

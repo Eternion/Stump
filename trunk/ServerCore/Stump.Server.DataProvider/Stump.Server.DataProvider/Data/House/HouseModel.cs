@@ -16,7 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-namespace Stump.Server.WorldServer.Data.House
+namespace Stump.Server.DataProvider.Data.House
 {
     public class HouseModel
     {

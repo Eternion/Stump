@@ -16,37 +16,40 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System.Linq;
-using System.Collections.Generic;
+using System;
 using ProtoBuf;
 using Stump.DofusProtocol.Classes;
-using Stump.DofusProtocol.Classes.Extensions;
-using Stump.DofusProtocol.D2oClasses;
-using Stump.Server.DataProvider.Core;
 
 namespace Stump.Server.DataProvider.Data.Mount
 {
-    [ProtoContract]
+    [Serializable,ProtoContract]
     public class MountTemplate
     {
         [ProtoMember(1)]
         public uint MountId { get; set; }
 
+        [ProtoMember(2)]
+        public string LookStr { get; set; }
+
         public EntityLook Look { get; set; }
 
-        [ProtoMember(2)]
+        [ProtoMember(3)]
         public string PodFormula { get; set; }
 
-        [ProtoMember(3)]
+        [ProtoMember(4)]
         public string EnergyFormula { get; set; }
 
-        [ProtoMember(4)]
+        [ProtoMember(5)]
         public uint MaxMaturity { get; set; }
 
-        [ProtoMember(5)]
+        [ProtoMember(6)]
         public string GestationDuration { get; set; }
 
-        [ProtoMember(6)]
+        [ProtoMember(7)]
         public string LearningMalus { get; set; }
+
+        public MountTemplate()
+        {
+        }
     }
 }

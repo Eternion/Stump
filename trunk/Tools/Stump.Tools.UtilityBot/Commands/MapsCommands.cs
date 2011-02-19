@@ -23,19 +23,16 @@ namespace Stump.Tools.UtilityBot.Commands
         /// </summary>
         [Variable]
         public static string Output = "./../../content/maps/";
+
         public override void Process(CmdTrigger trigger)
         {
-            throw new NotImplementedException();
-        }
-        public static void Process()
-        {
-       //     trigger.Reply("Generating maps. It can take few minutes.");
+            trigger.Reply("Generating maps. It can take few minutes.");
 
             var file = new PakFile(Bot.DofusPath + @"\app\content\maps\maps0.d2p");
 
             file.ExtractAll(Output);
 
-       //     trigger.Reply("Maps extracted (1/3)");
+            trigger.Reply("Maps extracted (1/3)");
 
             Parallel.ForEach(Directory.EnumerateFiles(Output, "*.dlm", SearchOption.AllDirectories), dlm =>
             {
@@ -57,7 +54,7 @@ namespace Stump.Tools.UtilityBot.Commands
                 File.Delete(dlm);
             });
 
-      //      trigger.Reply("Maps decompressed (2/3)");
+            trigger.Reply("Maps decompressed (2/3)");
 
             var maps = new List<Map>();
 
@@ -74,7 +71,7 @@ namespace Stump.Tools.UtilityBot.Commands
             using (var sw = new StreamWriter(Output+"maps.dat"))
                 Serializer.Serialize(sw.BaseStream, maps);
 
-     //       trigger.Reply("Maps ripped. Done (3/3)");
+            trigger.Reply("Maps ripped. Done (3/3)");
         }
     }
 }

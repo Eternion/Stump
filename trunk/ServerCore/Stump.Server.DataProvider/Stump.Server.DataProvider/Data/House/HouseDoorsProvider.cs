@@ -16,27 +16,25 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ProtoBuf;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.Server.DataProvider.Core;
-using Stump.Server.WorldServer.Data.House;
 
 namespace Stump.Server.DataProvider.Data.House
 {
-    public class HouseDoorsProvider : DataProvider<int, List<int>>
+    public class HouseDoorsProvider : DataProvider<int, List<short>>
     {
         /// <summary>
         ///   Name of House Doors file
         /// </summary>
         [Variable]
-        public static string HousesDoorsFile = "Houses/HousesDoors.xml";
+        public static string HousesDoorsFile = "HousesDoors.xml";
 
 
-        protected override List<int> GetData(int id)
+        protected override List<short> GetData(int id)
         {
             using (var sr = new StreamReader(Settings.StaticPath + HousesDoorsFile))
             {
@@ -46,7 +44,7 @@ namespace Stump.Server.DataProvider.Data.House
             }
         }
 
-        protected override Dictionary<int, List<int>> GetAllData()
+        protected override Dictionary<int, List<short>> GetAllData()
         {
             using (var sr = new StreamReader(Settings.StaticPath + HousesDoorsFile))
             {

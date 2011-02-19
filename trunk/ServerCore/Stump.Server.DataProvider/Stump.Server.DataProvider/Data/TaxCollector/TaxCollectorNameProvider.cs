@@ -16,7 +16,6 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.BaseCore.Framework.Utils;
@@ -39,10 +38,6 @@ namespace Stump.Server.DataProvider.Data.TaxCollector
             return D2OLoader.LoadData<TaxCollectorName>().ToDictionary(t=>t.id, t=>D2OLoader.GetI18NText(t.nameId));
         }
 
-        /// <summary>
-        /// Can be only used with pre-loading
-        /// </summary>
-        /// <returns></returns>
         public KeyValuePair<int, string> GetRandom()
         {
             return m_dico.ElementAt(m_rnd.NextInt(m_dico.Count));

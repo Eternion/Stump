@@ -19,7 +19,7 @@
 using System.Collections.Generic;
 using Stump.DofusProtocol.Classes.Custom;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Data.Emote;
+using Stump.Server.DataProvider.Data.Emote;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Global.Pathfinding;

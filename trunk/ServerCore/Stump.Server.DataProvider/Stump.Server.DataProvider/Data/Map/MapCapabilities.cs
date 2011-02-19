@@ -16,7 +16,6 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-
 namespace Stump.Server.DataProvider.Data.Map
 {
     public class MapCapabilities
@@ -24,74 +23,74 @@ namespace Stump.Server.DataProvider.Data.Map
 
         public MapCapabilities(int capabilities)
         {
-            Capabilities = capabilities;
+            m_capabilities = capabilities;
         }
 
-        public readonly int Capabilities;
+        private readonly int m_capabilities;
 
         public bool AllowChallenge
         {
-            get { return (Capabilities & 1) != 0; }
+            get { return (m_capabilities & 1) != 0; }
         }
 
         public bool AllowAggression
         {
-            get { return (Capabilities & 2) != 0; }
+            get { return (m_capabilities & 2) != 0; }
         }
 
         public bool AllowTeleportTo
         {
-            get { return (Capabilities & 4) != 0; }
+            get { return (m_capabilities & 4) != 0; }
         }
 
         public bool AllowTeleportFrom
         {
-            get { return (Capabilities & 8) != 0; }
+            get { return (m_capabilities & 8) != 0; }
         }
 
         public bool AllowExchangeBetweenPlayers
         {
-            get { return (Capabilities & 16) != 0; }
+            get { return (m_capabilities & 16) != 0; }
         }
 
         public bool AllowHumanVendor
         {
-            get { return (Capabilities & 32) != 0; }
+            get { return (m_capabilities & 32) != 0; }
         }
 
         public bool AllowCollector
         {
-            get { return (Capabilities & 64) != 0; }
+            get { return (m_capabilities & 64) != 0; }
         }
 
         public bool AllowSoulCapture
         {
-            get { return (Capabilities & 128) != 0; }
+            get { return (m_capabilities & 128) != 0; }
         }
 
         public bool AllowSoulSummon
         {
-            get { return (Capabilities & 256) != 0; }
+            get { return (m_capabilities & 256) != 0; }
         }
 
         public bool AllowTavernRegen
         {
-            get { return (Capabilities & 512) != 0; }
+            get { return (m_capabilities & 512) != 0; }
         }
 
         public bool AllowTombMode
         {
-            get { return (Capabilities & 1024) != 0; }
+            get { return (m_capabilities & 1024) != 0; }
         }
 
         public bool TeleportEverywhere
         {
-            get { return (Capabilities & 2048) != 0; }
+            get { return (m_capabilities & 2048) != 0; }
         }
 
         public bool AllowFightChallenge
         {
-            get { return (Capabilities & 4096) != 0; }
+            get { return (m_capabilities & 4096) != 0; }
         }
 
     }

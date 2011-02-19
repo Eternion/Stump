@@ -17,7 +17,6 @@
 //  *
 //  *************************************************************************/
 using System.Collections.Generic;
-using Stump.Server.DataProvider.Data.Job;
 
 namespace Stump.Server.DataProvider.Data.Recipe
 {
