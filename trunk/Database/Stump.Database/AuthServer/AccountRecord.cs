@@ -236,9 +236,9 @@ namespace Stump.Database.AuthServer
             return (byte)Characters.Where(entry => entry.World.Id == worldId).Count();
         }
 
-        public List<uint> GetWorldCharactersId(int worldId)
+        public IEnumerable<uint> GetWorldCharactersId(int worldId)
         {
-            return Characters.Where(c => c.World.Id == worldId).Select(c => c.CharacterId).ToList();
+            return Characters.Where(c => c.World.Id == worldId).Select(c => c.CharacterId);
         }
 
         public void UpdateBanStatus()

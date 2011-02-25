@@ -18,27 +18,35 @@
 //  *************************************************************************/
 using System.Collections.Generic;
 using Stump.BaseCore.Framework.Collections;
-using Stump.Server.WorldServer.Entities;
-using Stump.Server.WorldServer.Global;
-using Stump.Server.WorldServer.World.Actors.Character;
+using Stump.Server.BaseServer.Network;
+using Stump.Server.DataProvider.Data.Areas;
+using Stump.Server.WorldServer.World.Entities.Characters;
 
 namespace Stump.Server.WorldServer.World.Zones
 {
     public class Area
     {
 
-        public Area(int id, string name, SuperArea superArea)
+        public Area(AreaTemplate template, SuperArea superArea)
         {
-            Id = id;
-            Name = name;
+            Template = template;
             SuperArea = superArea;
         }
 
-        public readonly int Id;
-
-        public readonly string Name;
+        public readonly AreaTemplate Template;
 
         public readonly SuperArea SuperArea;
+
+        public int Id
+        {
+            get { return Template.Id; }
+        }
+
+        public string Name
+        {
+            get { return Template.Name; }
+            set { Template.Name = value; }
+        }
 
         public Dictionary<int, SubArea> SubAreas
         {

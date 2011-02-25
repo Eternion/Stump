@@ -27,6 +27,7 @@ namespace Stump.Server.WorldServer.Handlers
         {
             Predicates = new Dictionary<Type, Predicate<WorldClient>>
                          {
+                           
                          };
         }
     }

@@ -17,7 +17,6 @@
 //  *
 //  *************************************************************************/
 using Stump.DofusProtocol.Messages;
-using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global.Maps;
 using Stump.Server.WorldServer.Skills;
 

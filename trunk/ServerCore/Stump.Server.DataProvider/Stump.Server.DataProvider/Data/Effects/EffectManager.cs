@@ -121,7 +121,8 @@ namespace Stump.Server.WorldServer.Effects
             {
                 return new EffectMaxEx
                        {
-                           duration = effectDice.duration, effectId = effectDice.effectId,
+                           duration = effectDice.duration,
+                           effectId = effectDice.effectId,
                            max = effectDice.diceSide,
                            min = effectDice.diceNum,
                            modificator = effectDice.modificator,

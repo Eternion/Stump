@@ -27,6 +27,7 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.IPC;
 using Stump.Server.WorldServer.World.Actors.Character;
+using Stump.Server.WorldServer.World.Entities.Characters;
 
 namespace Stump.Server.WorldServer
 {
@@ -39,12 +40,6 @@ namespace Stump.Server.WorldServer
             Send(new HelloGameMessage());
 
             CanReceive = true;
-        }
-
-        public bool AutoConnect
-        {
-            get;
-            set;
         }
 
         public AccountRecord Account
@@ -71,16 +66,17 @@ namespace Stump.Server.WorldServer
             set;
         }
 
-        public bool WarnOnFriendConnection
+        public CharacterRecord GetCharacterById(uint characterId)
         {
-            get;
-            set;
-        }
-
-        public bool WarnOnFriendLevelGain
-        {
-            get;
-            set;
+            var count = Characters.Count;
+            for (var i = 0; i < count; i++)
+            {
+                if (Characters[i].Id == characterId)
+                {
+                    return Characters[i];
+                }
+            }
+            return null;
         }
 
         protected override void OnDisconnect()

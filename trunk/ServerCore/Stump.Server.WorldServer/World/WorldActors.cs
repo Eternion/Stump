@@ -5,8 +5,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using Stump.BaseCore.Framework.Utils;
 using Stump.Server.BaseServer.Network;
-using Stump.Server.WorldServer.Entities;
-using Stump.Server.WorldServer.World.Actors.Character;
+using Stump.Server.WorldServer.World.Entities.Characters;
 
 namespace Stump.Server.WorldServer.World
 {

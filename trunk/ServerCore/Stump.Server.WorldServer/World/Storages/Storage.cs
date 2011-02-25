@@ -16,18 +16,11 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Stump.BaseCore.Framework.Extensions;
-using Stump.Database;
 using Stump.Database.WorldServer;
-using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Effects;
 using Stump.Server.WorldServer.Entities;
-using Stump.Server.WorldServer.Handlers;
+using Stump.Server.WorldServer.Items;
 
-namespace Stump.Server.WorldServer.Items
+namespace Stump.Server.WorldServer.World.Storages
 {
 
     public class Storage : IInventoryOwner

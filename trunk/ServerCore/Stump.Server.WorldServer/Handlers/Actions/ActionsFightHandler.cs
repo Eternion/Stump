@@ -19,7 +19,7 @@
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Entities;
-using Stump.Server.WorldServer.World.Actors.Actor;
+using Stump.Server.WorldServer.World.Entities.Actors;
 
 namespace Stump.Server.WorldServer.Handlers
 {

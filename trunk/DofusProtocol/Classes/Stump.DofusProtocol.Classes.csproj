@@ -120,7 +120,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Custom\ExtendedLook.cs" />
-    <Compile Include="Custom\CharacterRestrictions.cs" />
     <Compile Include="Extensions\CellExtension.cs" />
     <Compile Include="Extensions\MapExtension.cs" />
     <Compile Include="Extensions\EntityLookExtension.cs" />

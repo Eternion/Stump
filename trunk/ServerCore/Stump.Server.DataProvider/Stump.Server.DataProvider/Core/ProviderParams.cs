@@ -1,21 +1,16 @@
 ﻿using System;
-using ProtoBuf;
+using Stump.Server.DataProvider.Core2;
 
 namespace Stump.Server.DataProvider.Core
 {
-    [Serializable, ProtoContract]
     public class ProviderParams
     {
-        [ProtoMember(1)]
         public Type ProviderType { get; set; }
 
-        [ProtoMember(2)]
-        public DataLoadingType LoadingType { get; set; }
+        public LoadingType LoadingType { get; set; }
 
-        [ProtoMember(3)]
         public int LifeTime { get; set; }
 
-        [ProtoMember(4)]
         public int CheckTime { get; set; }
 
         public ProviderParams()

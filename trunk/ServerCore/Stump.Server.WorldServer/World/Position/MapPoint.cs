@@ -20,7 +20,7 @@ using System;
 using System.Drawing;
 using Stump.DofusProtocol.Classes.Custom;
 using Stump.DofusProtocol.Enums;
-using Map = Stump.Server.WorldServer.World.Zones.Map.Map;
+using Map = Stump.Server.WorldServer.World.Zones.Map;
 
 namespace Stump.Server.WorldServer.World.Position
 {

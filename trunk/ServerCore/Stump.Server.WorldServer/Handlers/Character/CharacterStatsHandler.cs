@@ -19,8 +19,9 @@
 using System.Collections.Generic;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.WorldServer.Entities;
+using Stump.Server.DataProvider.Data.Threshold;
 using Stump.Server.WorldServer.World.Actors.Character;
+using Stump.Server.WorldServer.World.Entities.Characters;
 
 namespace Stump.Server.WorldServer.Handlers
 {
@@ -50,17 +51,16 @@ namespace Stump.Server.WorldServer.Handlers
             client.Send(
                 new CharacterStatsListMessage(
                     new CharacterCharacteristicsInformations(
-                        client.ActiveCharacter.Experience, // EXPERIENCE
-                        ThresholdManager.Thresholds["CharacterExp"].GetLowerBound(client.ActiveCharacter.Experience), // EXPERIENCE level floor 
-                        ThresholdManager.Thresholds["CharacterExp"].GetUpperBound(client.ActiveCharacter.Experience), // EXPERIENCE nextlevel floor 
 
-                        (uint)client.ActiveCharacter.Inventory.Kamas,
-                // Amount of kamas.
+                /* Experience */ client.ActiveCharacter.Experience,
+                /* Experience Level Floor */ ThresholdProvider.Instance["CharacterExp"].GetLowerBound(client.ActiveCharacter.Experience),
+                /* Experience Next Floor */  ThresholdProvider.Instance["CharacterExp"].GetUpperBound(client.ActiveCharacter.Experience),
 
-                        (uint)client.ActiveCharacter.StatsPoint,
-                // Stats points
-                        (uint)client.ActiveCharacter.SpellsPoints,
-                // Spell points
+                /* Kamas Amount */ (uint)client.ActiveCharacter.Inventory.Kamas,
+
+                /* Stats points */ (uint)client.ActiveCharacter.StatsPoint,
+                /* Spell points */ (uint)client.ActiveCharacter.SpellsPoints,
+
 
                         // Alignment
                         new ActorExtendedAlignmentInformations(
@@ -79,8 +79,8 @@ namespace Stump.Server.WorldServer.Handlers
                         (uint)((StatsHealth)client.ActiveCharacter.Stats["Health"]).
                                    TotalMax, // Max Life points
 
-                        client.ActiveCharacter.Energy, // Energy points
-                        client.ActiveCharacter.EnergyMax, // maxEnergyPoints
+              /* Current Energy */ client.ActiveCharacter.Energy,
+                /* Max Energy */ client.ActiveCharacter.EnergyMax,
 
                         (short)client.ActiveCharacter.Stats["AP"]
                                     .Total, // actionPointsCurrent

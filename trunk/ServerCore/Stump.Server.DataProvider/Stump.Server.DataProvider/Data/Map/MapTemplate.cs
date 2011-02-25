@@ -157,7 +157,7 @@ namespace Stump.Server.DataProvider.Data.Map
         public byte MapType
         {
             get;
-            internal set;
+            set;
         }
 
         [ProtoMember(4)]
@@ -168,28 +168,28 @@ namespace Stump.Server.DataProvider.Data.Map
         }
 
         [ProtoMember(5)]
-        public int TopNeighbourId
+        public uint TopNeighbourId
         {
             get;
-            internal set;
+             set;
         }
 
         [ProtoMember(6)]
-        public int BottomNeighbourId
+        public uint BottomNeighbourId
         {
             get;
             internal set;
         }
 
         [ProtoMember(7)]
-        public int LeftNeighbourId
+        public uint LeftNeighbourId
         {
             get;
             internal set;
         }
 
         [ProtoMember(8)]
-        public int RightNeighbourId
+        public uint RightNeighbourId
         {
             get;
             internal set;
@@ -209,7 +209,7 @@ namespace Stump.Server.DataProvider.Data.Map
             set;
         }
 
-        public Point Position { get; set; }
+        public System.Drawing.Point Position { get; set; }
 
         public MapCapabilities Capabilities { get; set; }
     }

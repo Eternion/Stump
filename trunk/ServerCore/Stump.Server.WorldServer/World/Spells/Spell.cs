@@ -19,6 +19,7 @@
 using System.Collections.Generic;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.DataProvider.Data.Spells;
 
 namespace Stump.Server.WorldServer.Spells
 {

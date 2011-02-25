@@ -4,6 +4,7 @@ using Stump.Server.DataProvider.Data.Actions;
 using Stump.Server.WorldServer.Actions;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.World.Actors.Character;
+using Stump.Server.WorldServer.World.Entities.Characters;
 using Stump.Server.WorldServer.XmlSerialize;
 
 namespace Stump.Server.WorldServer.Global.Maps

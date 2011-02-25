@@ -60,10 +60,36 @@ namespace Stump.Server.DataProvider.Data.Breeds
         public int StartMap { get; set; }
 
         [ProtoMember(5)]
-        public uint StartCell { get; set; }
+        public ushort StartCell { get; set; }
 
         [ProtoMember(6)]
         public DirectionsEnum StartDirection { get; set; }
 
+        [ProtoMember(7)]
+        public int StartStatsPoints { get; set; }
+
+        [ProtoMember(8)]
+        public ushort StartSpellsPoints { get; set; }
+
+        [ProtoMember(9)]
+        public ushort StartStrength { get; set; }
+
+        [ProtoMember(10)]
+        public ushort StartVitality { get; set; }
+
+        [ProtoMember(11)]
+        public ushort StartWisdom { get; set; }
+
+        [ProtoMember(12)]
+        public ushort StartIntelligence { get; set; }
+
+        [ProtoMember(13)]
+        public ushort StartChance { get; set; }
+
+        [ProtoMember(14)]
+        public ushort StartAgility { get; set; }
+
+        [ProtoMember(15)]
+        public uint StartLevel { get; set; }
     }
 }

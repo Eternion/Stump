@@ -17,22 +17,25 @@
 //  *
 //  *************************************************************************/
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using NLog;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.IO;
-using Stump.DofusProtocol.D2oClasses;
+using Stump.BaseCore.Framework.Utils;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.BaseServer.Data;
+using Stump.Server.DataProvider.Data.Map;
+using Stump.Server.DataProvider.Data.SubAreas;
+using Stump.Server.DataProvider.Data.SuperAreas;
 using Stump.Server.WorldServer.Data;
 using Stump.Server.WorldServer.Global.Maps;
-using Stump.Server.WorldServer.World.Zones.Map;
+using Stump.Server.WorldServer.World.Zones;
 using Stump.Server.WorldServer.XmlSerialize;
-using Point = System.Drawing.Point;
+using System.Drawing;
 
 namespace Stump.Server.WorldServer.World
 {
-    public partial class World
+    public partial class World : Singleton<World>
     {
 
         /// <summary>
@@ -46,61 +49,57 @@ namespace Stump.Server.WorldServer.World
 
         public void Initialize()
         {
-            logger.Info("Building World...");
+            logger.Info("Build World...");
             BuildWorld();
-            logger.Info("Spawning World");
+
+            logger.Info("Spawn World");
             SpawnWorld();
         }
 
-
-        public void BuildWorld()
+        private void BuildWorld()
         {
-            logger.Info("Building SuperAreas...");
+            logger.Info("Build SuperAreas...");
             BuildSuperAreas();
 
-            logger.Info("Building Areas...");
+            logger.Info("Build Areas...");
             BuildAreas();
 
-            logger.Info("Building SubAreas...");
+            logger.Info("Build SubAreas...");
             BuildSubAreas();
 
-            logger.Info("Building Maps...");
+            logger.Info("Build Maps...");
             BuildMaps();
 
-            logger.Info("Building Cell Triggers...");
+            logger.Info("Build Triggers...");
             BuildTriggers();
 
-            logger.Info("Building Interactive Objects...");
+            logger.Info("Build Interactives...");
             BuildInteractiveObjects();
 
-            logger.Info("Building Houses");
+            logger.Info("Build Houses");
             //TODO
 
-            logger.Info("Building Paddocks");
+            logger.Info("Build Paddocks");
             //TODO
 
-            logger.Info("Building BidHouses");
+            logger.Info("Build BidHouses");
             //TODO
         }
 
-        public void BuildSuperAreas()
+        private void BuildSuperAreas()
         {
-            foreach (var data in DataLoader.LoadData<SuperArea>())
-            {
-                var superArea = new Zones.SuperArea(data.id, DataLoader.GetI18NText(data.nameId), this);
-                m_superAreas.Add(superArea.Id, superArea);
-            }
+            m_superAreas=SuperAreaTemplateProvider.Instance.Select(t => new SuperArea(t)).ToDictionary(s => s.Id);
             logger.Info("Loaded {0} SuperAreas", m_superAreas.Count);
         }
 
-        public void BuildAreas()
+        private void BuildAreas()
         {
-            foreach (var data in DataLoader.LoadData<Area>())
+            foreach (var areaTemplate in AreaTemplateProvider.Instance)
             {
-                var superArea = GetSuperArea(data.superAreaId);
+                var superArea = GetSuperArea(areaTemplate.SuperAreaId);
                 if (superArea != null)
                 {
-                    var area = new Zones.Area(data.id, DataLoader.GetI18NText(data.nameId), superArea);
+                    var area = new Area(areaTemplate, superArea);
                     superArea.Areas.Add(area.Id, area);
                     m_areas.Add(area.Id, area);
                 }
@@ -112,57 +111,57 @@ namespace Stump.Server.WorldServer.World
 
         public void BuildSubAreas()
         {
-            foreach (var data in DataLoader.LoadData<SubArea>())
+            foreach (var subAreaTemplate in SubAreaTemplateProvider.Instance)
             {
-                var area = GetArea(data.areaId);
+                var area = GetArea(subAreaTemplate.AreaId);
                 if (area != null)
                 {
-                    var subArea = new Zones.SubArea(data.id, DataLoader.GetI18NText(data.nameId), area);
+                    var subArea = new SubArea(subAreaTemplate, area);
                     area.SubAreas.Add(subArea.Id, subArea);
                     m_subAreas.Add(subArea.Id, subArea);
                 }
                 else
-                    logger.Warn("SubArea {0} belongs to unexistant Area {1}", data.id, data.areaId);
+                    logger.Warn("SubArea {0} belongs to unexistant Area {1}", subAreaTemplate.id, subAreaTemplate.areaId);
             }
             logger.Info("Loaded {0} SubAreas", m_areas.Count);
         }
 
         public void BuildMaps()
         {
+            var mapTemplates = MapTemplateProvider.Instance.GetAll();
+
             var consoleProcent = new ConsoleProcent();
-            int count = MapLoader.GetMapFilesCount();
-            int i = 0;
-            IDictionary<int, MapPosition> mapsPosition = MapLoader.LoadMapPositions();
-            foreach (var data in MapLoader.LoadMaps())
+            var count = mapTemplates.Count();
+            var i = 0;
+
+            foreach (var mapTemplate in mapTemplates)
             {
-                if (mapsPosition.ContainsKey(data.Id))
+                if (mapTemplate.Position != Point.Empty)
                 {
-                    if (m_subAreas.ContainsKey((int)data.SubAreaId))
+                    if (m_subAreas.ContainsKey(mapTemplate.SubAreaId))
                     {
-                        var pos = mapsPosition[data.Id];
-                        var subArea = GetSubArea((int)data.SubAreaId);
-                        var point = new Point(pos.posX, pos.posY);
+                        var subArea = GetSubArea(mapTemplate.SubAreaId);
 
-                        var map = new Map((uint)data.Id, data.MapType, point, subArea);
+                        var map = new Map(mapTemplate, subArea);
 
-                        subArea.Maps.Add((int)map.Id, map);
-                        m_maps.Add((int)map.Id, map);
+                        subArea.Maps.Add(map.Id, map);
+                        m_maps.Add(map.Id, map);
 
                         if (map.MapType == MapTypeEnum.OUTDOOR)
-                            m_outdoorMapsByCoordinates.Add(point, map);
+                            m_outdoorMapsByCoordinates.Add(map.Position, map);
                         else
-                            m_indoorMapsByCoordinates.Add(point, map);
+                            m_indoorMapsByCoordinates.Add(map.Position, map);
 
                         consoleProcent.Update(i++ / count);
                     }
                     else
                     {
-                        logger.Warn("Map {0} belongs to an innexistant subArea :{1}", data.Id, data.SubAreaId);
+                        logger.Warn("Map {0} belongs to an innexistant subArea :{1}", mapTemplate.Id, mapTemplate.SubAreaId);
                     }
                 }
                 else
                 {
-                    logger.Warn("Map {0} doesn't have a position", data.Id);
+                    logger.Warn("Map {0} doesn't have a position", mapTemplate.Id);
                 }
             }
             consoleProcent.End();
@@ -244,19 +243,19 @@ namespace Stump.Server.WorldServer.World
             }
         }
 
-        public void  SpawnMonsters()
+        public void SpawnMonsters()
         {
-            
+
         }
 
         public void SpawnPrisms()
         {
-            
+
         }
 
         public void SpawnCollectors()
         {
-            
+
         }
 
     }

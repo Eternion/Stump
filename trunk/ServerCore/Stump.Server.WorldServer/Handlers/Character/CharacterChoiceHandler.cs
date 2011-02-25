@@ -25,9 +25,10 @@ using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.WorldServer.Entities;
-using Stump.Server.WorldServer.Manager;
+using Stump.Server.DataProvider.Data.Threshold;
+using Stump.Server.WorldServer.Helpers;
 using Stump.Server.WorldServer.World.Actors.Character;
+using Stump.Server.WorldServer.World.Entities.Characters;
 
 namespace Stump.Server.WorldServer.Handlers
 {
@@ -107,15 +108,15 @@ namespace Stump.Server.WorldServer.Handlers
 
         public static void CommonCharacterSelection(WorldClient client, CharacterRecord character)
         {
-            client.ActiveCharacter = new Character(character, client);
+            client.ActiveCharacter = new Character(client, character);
 
             /* Check if we also have a world account */
             if (client.WorldAccount == null)
             {
                 if (!WorldAccountRecord.Exists(client.Account.Id))
-                    client.WorldAccount = AccountManager.CreateWorldAccount(client);
+                    client.WorldAccount = WorldAccountManager.CreateWorldAccount(client);
                 else
-                    client.WorldAccount = WorldAccountRecord.FindWorldAccountById(client.Account.Id);
+                    client.WorldAccount = WorldAccountRecord.FindById(client.Account.Id);
             }
 
             /* Update LastConnection and Last Ip */
@@ -147,7 +148,7 @@ namespace Stump.Server.WorldServer.Handlers
                                                     client.Account.LastConnection.Day,
                                                     client.Account.LastConnection.Hour,
                                                     client.Account.LastConnection.Minute,
-                                                    client.Account.LastIp ?? "(null)");
+                                                    client.Account.LastIp ?? "{null}");
 
             InitializationHandler.SendOnConnectionEventMessage(client, 2);
         }
@@ -172,14 +173,14 @@ namespace Stump.Server.WorldServer.Handlers
                 characterRecord =>
                 new CharacterBaseInformations(
                     (uint)characterRecord.Id,
-                    ThresholdManager.Thresholds["CharacterExp"].GetLevel(characterRecord.Experience),
+                    ThresholdProvider.Instance["CharacterExp"].GetLevel(characterRecord.Experience),
                     characterRecord.Name,
                     CharacterManager.GetStuffedCharacterLook(characterRecord).EntityLook,
                     characterRecord.Breed,
                     characterRecord.Sex != SexTypeEnum.SEX_MALE)).ToList();
 
             client.Send(new CharactersListMessage(
-                            client.Account.StartupActions.Count != 0,
+                            client.WorldAccount.StartupActions.Count != 0,
                             characters
                             ));
         }
@@ -194,7 +195,7 @@ namespace Stump.Server.WorldServer.Handlers
             foreach (CharacterRecord c in client.Characters)
             {
                 cbi.Add(new CharacterBaseInformations((uint)c.Id,
-                                                      ThresholdManager.Thresholds["CharacterExp"].GetLevel(c.Experience),
+                                                      ThresholdProvider.Instance["CharacterExp"].GetLevel(c.Experience),
                                                       c.Name, CharacterManager.GetStuffedCharacterLook(c).EntityLook,
                                                       c.Breed, c.Sex != SexTypeEnum.SEX_MALE));
 
@@ -213,7 +214,7 @@ namespace Stump.Server.WorldServer.Handlers
                     oth.Add(c.Id);
                 }
             }
-            client.Send(new CharactersListWithModificationsMessage(client.Account.StartupActions.Count != 0, cbi, ctri,
+            client.Send(new CharactersListWithModificationsMessage(client.WorldAccount.StartupActions.Count != 0, cbi, ctri,
                                                                    re, oth));
         }
 
