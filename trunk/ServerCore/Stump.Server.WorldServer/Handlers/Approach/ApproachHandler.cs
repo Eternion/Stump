@@ -23,8 +23,7 @@ using Stump.Database.AuthServer;
 using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.WorldServer.Breeds;
-using Stump.Server.WorldServer.Manager;
+using Stump.Server.WorldServer.Helpers;
 
 namespace Stump.Server.WorldServer.Handlers
 {
@@ -34,7 +33,7 @@ namespace Stump.Server.WorldServer.Handlers
         public static void HandleAuthenticationTicketMessage(WorldClient client, AuthenticationTicketMessage message)
         {
             /* Get Ticket */
-            AccountRecord ticketAccount = AccountManager.GetAccountByTicket(message.ticket);
+            var ticketAccount = AccountManager.GetAccountByTicket(message.ticket);
 
             /* Check null ticket */
             if (ticketAccount == null)
@@ -46,7 +45,7 @@ namespace Stump.Server.WorldServer.Handlers
 
             /* Bind WorldAccount if exist */
             if (WorldAccountRecord.Exists(ticketAccount.Id))
-                client.WorldAccount = WorldAccountRecord.FindWorldAccountById(ticketAccount.Id);
+                client.WorldAccount = WorldAccountRecord.FindById(ticketAccount.Id);
 
             /* WorldAccount is banned */
             if (client.WorldAccount != null && client.WorldAccount.BanRemainingTime != TimeSpan.Zero)
@@ -57,7 +56,7 @@ namespace Stump.Server.WorldServer.Handlers
 
             /* Bind Account & Characters */
             client.Account = ticketAccount;
-            client.Characters = CharacterManager.GetCharactersByAccount(client);
+            client.Characters = AccountManager.GetCharactersOnAccount(client);
 
             /* Ok */
             client.Send(new AuthenticationTicketAcceptedMessage());
@@ -65,7 +64,7 @@ namespace Stump.Server.WorldServer.Handlers
             SendAccountCapabilitiesMessage(client);
             BasicHandler.SendBasicNoOperationMessage(client);
 
-            /* Just to get console AutoCompletion */
+            /* Get console AutoCompletion */
             if (client.Account.Role >= RoleEnum.Moderator)
                 SendConsoleCommandsListMessage(client);
         }
@@ -76,13 +75,13 @@ namespace Stump.Server.WorldServer.Handlers
                             (int) client.Account.Id,
                             true,
                             client.Account.DbAvailableBreeds,
-                            BreedManager.BreedsToFlag(BreedManager.AvailableBreeds)
+                            BreedsToFlag(CharacterHandler.AvailableBreeds)
                             ));
         }
 
         public static void SendAccountLoggingKickedMessage(WorldClient client)
         {
-            TimeSpan date = client.WorldAccount.BanRemainingTime;
+            var date = client.WorldAccount.BanRemainingTime;
             client.Send(new AccountLoggingKickedMessage((uint) date.Days, (uint) date.Hours, (uint) date.Minutes));
         }
 
@@ -92,6 +91,11 @@ namespace Stump.Server.WorldServer.Handlers
                 new ConsoleCommandsListMessage(
                     WorldServer.Instance.CommandManager.AvailableCommands.SelectMany(c => c.Aliases).ToList(),
                     new List<string>(), new List<string>()));
+        }
+
+        private static uint BreedsToFlag(IEnumerable<PlayableBreedEnum> breeds)
+        {
+            return (uint)breeds.Aggregate(0, (current, breedEnum) => current | (1 << (int)breedEnum));
         }
     }
 }

@@ -22,25 +22,25 @@ using System.IO;
 using System.Linq;
 using Stump.BaseCore.Framework.IO;
 
-namespace Stump.Server.BaseServer.Data.MapTool
+namespace Stump.Server.DataProvider.Data.MapTool
 {
     public class PakFile : IDisposable
     {
-        private readonly Dictionary<string, Tuple<int, int, BigEndianReader>> m_indexes = new Dictionary<string, Tuple<int, int, BigEndianReader>>();
+        private Dictionary<string, Tuple<int, int, BigEndianReader>> m_indexes;
         private readonly Dictionary<string, Dictionary<string, string>> m_properties = new Dictionary<string, Dictionary<string, string>>();
         private readonly List<BigEndianReader> m_openReaders = new List<BigEndianReader>();
-
-        public PakFile(string filepath)
-        {
-            FilePath = filepath;
-
-            Init();
-        }
+        private readonly string m_filePath;
 
         public string FilePath
         {
-            get;
-            private set;
+            get { return m_filePath; }
+        }
+
+        public PakFile(string filepath)
+        {
+            m_filePath = filepath;
+
+            Init();
         }
 
         private void Init()
@@ -64,7 +64,7 @@ namespace Stump.Server.BaseServer.Data.MapTool
             var propertiesCount = reader.ReadUInt();
 
             reader.Seek(propertiesOffset, SeekOrigin.Begin);
-            m_properties.Add(linkFile, new Dictionary<string, string>());
+            m_properties.Add(linkFile, new Dictionary<string, string>(propertiesCount));
 
             for (int i = 0; i < propertiesCount; i++)
             {
@@ -81,6 +81,7 @@ namespace Stump.Server.BaseServer.Data.MapTool
             }
 
             reader.Seek(startOffset, SeekOrigin.Begin);
+            m_indexes = new Dictionary<string, Tuple<int, int, BigEndianReader>>((int)elementsCount);
             for (int i = 0; i < elementsCount; i++)
             {
                 string indexname = reader.ReadUTF();
@@ -106,7 +107,7 @@ namespace Stump.Server.BaseServer.Data.MapTool
                 CreateDirectoriesOnPath(dirpath + index.Key);
 
                 index.Value.Item3.Seek(index.Value.Item1, SeekOrigin.Begin); // offset
-                byte[] fileData = index.Value.Item3.ReadBytes(index.Value.Item2);
+                var fileData = index.Value.Item3.ReadBytes(index.Value.Item2);
 
                 File.WriteAllBytes(dirpath + index.Key, fileData);
             }
@@ -123,7 +124,7 @@ namespace Stump.Server.BaseServer.Data.MapTool
                 throw new Exception("Unknown file " + file);
 
             outvalue.Item3.Seek(outvalue.Item1, SeekOrigin.Begin); // offset
-            byte[] fileData = outvalue.Item3.ReadBytes(outvalue.Item2);
+            var fileData = outvalue.Item3.ReadBytes(outvalue.Item2);
 
             File.WriteAllBytes(destfile, fileData);
         }
@@ -173,7 +174,7 @@ namespace Stump.Server.BaseServer.Data.MapTool
         {
             foreach (var entry in m_indexes)
             {
-                string[] directories = Path.GetDirectoryName(entry.Key).Split(new [] {'/'}, StringSplitOptions.RemoveEmptyEntries);
+                var directories = Path.GetDirectoryName(entry.Key).Split(new [] {'/'}, StringSplitOptions.RemoveEmptyEntries);
 
                 yield return new PakedFileInfo
                     {

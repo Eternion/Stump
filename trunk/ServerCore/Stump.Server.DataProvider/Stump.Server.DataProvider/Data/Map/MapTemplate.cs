@@ -21,18 +21,16 @@ using System.Collections.Generic;
 using ProtoBuf;
 using Stump.BaseCore.Framework.IO;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.Server.BaseServer.Data.MapTool;
 
 namespace Stump.Server.DataProvider.Data.Map
 {
-    [ProtoContract]
+    [Serializable, ProtoContract]
     public class MapTemplate
     {
-        public const uint MaximumCellsCount = 560;
+        private const uint MaximumCellsCount = 560;
 
         public MapTemplate()
-        {
-            
+        {         
         }
 
         public MapTemplate(BigEndianReader reader)
@@ -145,8 +143,7 @@ namespace Stump.Server.DataProvider.Data.Map
         [ProtoMember(1)]
         public int Id
         {
-            get;
-            internal set;
+            get; private set;
         }
 
         [ProtoMember(2)]
@@ -160,7 +157,7 @@ namespace Stump.Server.DataProvider.Data.Map
         public byte MapType
         {
             get;
-            internal set;
+            set;
         }
 
         [ProtoMember(4)]
@@ -171,28 +168,28 @@ namespace Stump.Server.DataProvider.Data.Map
         }
 
         [ProtoMember(5)]
-        public int TopNeighbourId
+        public uint TopNeighbourId
         {
             get;
-            internal set;
+             set;
         }
 
         [ProtoMember(6)]
-        public int BottomNeighbourId
+        public uint BottomNeighbourId
         {
             get;
             internal set;
         }
 
         [ProtoMember(7)]
-        public int LeftNeighbourId
+        public uint LeftNeighbourId
         {
             get;
             internal set;
         }
 
         [ProtoMember(8)]
-        public int RightNeighbourId
+        public uint RightNeighbourId
         {
             get;
             internal set;
@@ -212,7 +209,7 @@ namespace Stump.Server.DataProvider.Data.Map
             set;
         }
 
-        public Point Position { get; set; }
+        public System.Drawing.Point Position { get; set; }
 
         public MapCapabilities Capabilities { get; set; }
     }

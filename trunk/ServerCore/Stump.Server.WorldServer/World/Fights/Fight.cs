@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Manager;
+using Stump.Server.DataProvider.Data.Spells;
 using Stump.Server.WorldServer.Effects.Executor;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global;
@@ -32,6 +33,7 @@ using Stump.Server.WorldServer.Groups;
 using Stump.Server.WorldServer.Handlers;
 using Stump.Server.WorldServer.Spells;
 using Stump.Server.WorldServer.World.Actors.Character;
+using Stump.Server.WorldServer.World.Entities.Characters;
 
 namespace Stump.Server.WorldServer.Fights
 {

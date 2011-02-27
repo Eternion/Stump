@@ -18,6 +18,7 @@
 //  *************************************************************************/
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.World.Actors.Character;
+using Stump.Server.WorldServer.World.Entities.Characters;
 
 namespace Stump.Server.WorldServer.Commands
 {

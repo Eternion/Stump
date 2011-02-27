@@ -23,6 +23,7 @@ using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.World.Actors.Character;
+using Stump.Server.WorldServer.World.Entities.Characters;
 using Stump.Server.WorldServer.World.Zones;
 
 namespace Stump.Server.WorldServer.Commands

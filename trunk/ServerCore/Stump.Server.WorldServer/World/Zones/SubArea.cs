@@ -21,29 +21,39 @@ using Stump.BaseCore.Framework.Collections;
 using Stump.Database.WorldServer;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.DataProvider.Data.SubAreas;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.World.Actors.Character;
+using Stump.Server.WorldServer.World.Entities.Characters;
 
 namespace Stump.Server.WorldServer.World.Zones
 {
     public class SubArea
     {
 
-        public SubArea(int id, string name, Area area)
+        public SubArea(SubAreaTemplate template, Area area)
         {
-            Id = id;
-            Name = name;
+            Template = template;
             Area = area;
             AlignmentSide = AlignmentSideEnum.ALIGNMENT_NEUTRAL;
         }
 
-        public readonly int Id;
+        public readonly SubAreaTemplate Template;
 
-        public readonly string Name;
+        public int Id
+        {
+            get { return Template.Id; }
+        }
+
+        public string Name
+        {
+            get { return Template.Name; }
+            set { Template.Name = value; }
+        }
 
         public readonly Area Area;
 
-        public Dictionary<int, Map.Map> Maps
+        public Dictionary<int, Map> Maps
         {
             get;
             set;

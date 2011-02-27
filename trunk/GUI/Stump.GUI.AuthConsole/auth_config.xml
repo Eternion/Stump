@@ -88,10 +88,10 @@
 			</WorkerManager>
 			<ClientVersion>
 				<!--Define the severity of the client version checking. Set to Light/NoCheck if you have any bugs with it.-->
-        <Variable name="Severity" type="VersionCheckingSeverity">
-          <VersionCheckingSeverity>Medium</VersionCheckingSeverity>
-        </Variable>
-        <!--Version for the client-->
+				<Variable name="Severity" type="VersionCheckingSeverity">
+					<VersionCheckingSeverity>Medium</VersionCheckingSeverity>
+				</Variable>
+				<!--Version for the client-->
 				<Variable name="VersionRequired">2.3.0.37782.1</Variable>
 				<!--Actual version-->
 				<Variable name="ActualVersion">1304</Variable>
@@ -121,7 +121,7 @@
 		</Database>
 		<ConsoleBase>
 			<!--Define the interval between two condition checks
-            when server is asking something to the user by the console-->
+						when server is asking something to the user by the console-->
 			<Variable name="AskWaiterInterval">20</Variable>
 		</ConsoleBase>
 		<Commands>

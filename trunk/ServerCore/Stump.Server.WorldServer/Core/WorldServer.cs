@@ -26,7 +26,6 @@ using Stump.Database.AuthServer;
 using Stump.DofusProtocol;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer;
-using Stump.Server.BaseServer.Data.MapTool;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initializing;
 using Stump.Server.BaseServer.IPC;

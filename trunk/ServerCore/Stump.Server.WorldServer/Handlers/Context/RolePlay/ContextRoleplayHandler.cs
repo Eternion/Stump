@@ -24,8 +24,8 @@ using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Global.Maps;
-using Stump.Server.WorldServer.World.Actors.Actor;
-using Stump.Server.WorldServer.World.Zones.Map;
+using Stump.Server.WorldServer.World.Entities.Actors;
+using Stump.Server.WorldServer.World.Zones;
 
 namespace Stump.Server.WorldServer.Handlers
 {

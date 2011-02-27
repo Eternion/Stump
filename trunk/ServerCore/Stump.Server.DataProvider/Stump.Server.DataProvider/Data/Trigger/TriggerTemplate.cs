@@ -16,12 +16,12 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System.Collections.Generic;
+using System;
 using ProtoBuf;
 
 namespace Stump.Server.DataProvider.Data.Trigger
 {
-    [ProtoContract]
+    [Serializable,ProtoContract]
     public class TriggerTemplate
     {
         [ProtoMember(1)]

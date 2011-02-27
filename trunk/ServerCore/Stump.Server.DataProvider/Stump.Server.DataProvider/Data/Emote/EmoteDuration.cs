@@ -16,12 +16,13 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using ProtoBuf;
 using Stump.DofusProtocol.Enums;
 
-namespace Stump.Server.WorldServer.Data.Emote
+namespace Stump.Server.DataProvider.Data.Emote
 {
-    [ProtoContract]
+    [Serializable, ProtoContract]
     public class EmoteDuration
     {
         [ProtoMember(1)]
@@ -29,5 +30,9 @@ namespace Stump.Server.WorldServer.Data.Emote
 
         [ProtoMember(2)]
         public uint Duration { get; set; }
+
+        public EmoteDuration()
+        {
+        }
     }
 }

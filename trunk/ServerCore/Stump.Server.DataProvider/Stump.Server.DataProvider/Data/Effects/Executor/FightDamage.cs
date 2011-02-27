@@ -17,11 +17,11 @@
 //  *
 //  *************************************************************************/
 using Stump.DofusProtocol.Enums;
+using Stump.Server.DataProvider.Data.Spells;
 using Stump.Server.WorldServer.Fights;
 using Stump.Server.WorldServer.Global.Maps;
 using Stump.Server.WorldServer.Groups;
 using Stump.Server.WorldServer.Handlers;
-using Stump.Server.WorldServer.Spells;
 
 namespace Stump.Server.WorldServer.Effects.Executor
 {

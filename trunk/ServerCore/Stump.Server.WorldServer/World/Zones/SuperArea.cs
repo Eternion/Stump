@@ -17,24 +17,30 @@
 //  *
 //  *************************************************************************/
 using System.Collections.Generic;
+using Stump.Server.DataProvider.Data.SuperAreas;
 
 namespace Stump.Server.WorldServer.World.Zones
 {
     public class SuperArea
     {
 
-        public SuperArea(int id, string name, World world)
+        public SuperArea(SuperAreaTemplate template)
         {
-            Id = id;
-            Name = name;
-            World = world;
+            Template = template;
         }
 
-        public readonly int Id;
+        public readonly SuperAreaTemplate Template;
 
-        public readonly string Name;
+        public int Id
+        {
+            get { return Template.Id; }
+        }
 
-        public readonly World World;
+        public string Name
+        {
+            get { return Template.Name; }
+            set { Template.Name = value; }
+        }
 
         public Dictionary<int, Area> Areas
         {

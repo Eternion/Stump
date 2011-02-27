@@ -16,15 +16,10 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.Server.DataProvider.Core;
-using AlignmentGift = Stump.Server.DataProvider.Data.Alignment.AlignmentGift;
-using AlignmentOrder = Stump.Server.DataProvider.Data.Alignment.AlignmentOrder;
-using AlignmentRank = Stump.Server.DataProvider.Data.Alignment.AlignmentRank;
-using AlignmentSide = Stump.Server.DataProvider.Data.Alignment.AlignmentSide;
 
 namespace Stump.Server.DataProvider.Data.Alignment
 {

@@ -31,7 +31,7 @@ namespace Stump.Server.DataProvider.Data.Trigger
         ///   Name of Trigger file
         /// </summary>
         [Variable]
-        public static string TriggerFile = "Trigger/Triggers.xml";
+        public static string TriggerFile = "Triggers.xml";
 
         protected override List<TriggerTemplate> GetData(int id)
         {

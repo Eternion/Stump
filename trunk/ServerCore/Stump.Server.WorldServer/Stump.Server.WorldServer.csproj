@@ -115,9 +115,6 @@
     <Reference Include="NLog">
       <HintPath>..\..\Library\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="protobuf-net">
-      <HintPath>..\..\..\..\..\..\..\Desktop\protobuf-net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -130,13 +127,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Commands\Commands\TeleportCommand.cs" />
-    <Compile Include="World\Actors\Actor\Actor.cs" />
-    <Compile Include="World\Actors\ActorAlignment.cs" />
-    <Compile Include="World\Actors\Actor\Actor_Actions.cs" />
-    <Compile Include="World\Actors\Character\Character.cs" />
-    <Compile Include="World\Actors\CharacterRestrictions.cs" />
-    <Compile Include="World\Actors\Character\Character_Actions.cs" />
-    <Compile Include="World\Actors\Character\Character_Fields.cs" />
+    <Compile Include="Helpers\WorldAccountManager.cs" />
+    <Compile Include="World\Entities\Actors\Actor.cs" />
+    <Compile Include="World\Entities\ActorAlignment.cs" />
+    <Compile Include="World\Entities\Actors\Actor_Actions.cs" />
+    <Compile Include="World\Entities\Characters\Character.cs" />
+    <Compile Include="World\Entities\Characters\CharacterRestrictions.cs" />
+    <Compile Include="World\Entities\Characters\Character_Actions.cs" />
+    <Compile Include="World\Entities\Characters\Character_Fields.cs" />
     <Compile Include="World\Guilds\GuildMember.cs" />
     <Compile Include="World\Guilds\GuildEmblem.cs" />
     <Compile Include="World\Guilds\Guild.cs" />
@@ -144,24 +142,23 @@
     <Compile Include="World\Mount\Paddock.cs" />
     <Compile Include="World\Stats\Stats.cs" />
     <Compile Include="World\Stats\Caracteristic.cs" />
-    <Compile Include="World\Actors\Interfaces\ISpellsOwner.cs" />
-    <Compile Include="World\Actors\Interfaces\IAligned.cs" />
+    <Compile Include="World\Entities\Interfaces\ISpellsOwner.cs" />
+    <Compile Include="World\Entities\Interfaces\IAligned.cs" />
     <Compile Include="World\Storages\Storage.cs" />
     <Compile Include="World\Storages\PricedItem.cs" />
     <Compile Include="World\Storages\SellBag.cs" />
-    <Compile Include="World\Zones\Map\MapCapabilities.cs" />
-    <Compile Include="World\Actors\Extensions\CharacterExtension.cs" />
-    <Compile Include="World\Actors\Interfaces\IAttackable.cs" />
-    <Compile Include="World\Actors\Interfaces\IExchanger.cs" />
-    <Compile Include="World\Actors\Interfaces\IInteractive.cs" />
-    <Compile Include="World\Actors\Interfaces\IInventoryOwner.cs" />
-    <Compile Include="World\Actors\Interfaces\ITrader.cs" />
-    <Compile Include="World\Actors\Merchant\Merchant.cs" />
-    <Compile Include="World\Actors\Monster\MonsterGroup.cs" />
-    <Compile Include="World\Actors\Mount\Mount.cs" />
-    <Compile Include="World\Actors\NPC\NPC.cs" />
-    <Compile Include="World\Actors\Prism\Prism.cs" />
-    <Compile Include="World\Actors\TaxCollector\TaxCollector.cs" />
+    <Compile Include="World\Entities\Extensions\CharacterExtension.cs" />
+    <Compile Include="World\Entities\Interfaces\IAttackable.cs" />
+    <Compile Include="World\Entities\Interfaces\IExchanger.cs" />
+    <Compile Include="World\Entities\Interfaces\IInteractive.cs" />
+    <Compile Include="World\Entities\Interfaces\IInventoryOwner.cs" />
+    <Compile Include="World\Entities\Interfaces\ITrader.cs" />
+    <Compile Include="World\Entities\Merchants\Merchant.cs" />
+    <Compile Include="World\Entities\Monsters\MonsterGroup.cs" />
+    <Compile Include="World\Entities\Mounts\Mount.cs" />
+    <Compile Include="World\Entities\NPCs\NPC.cs" />
+    <Compile Include="World\Entities\Prisms\Prism.cs" />
+    <Compile Include="World\Entities\TaxCollectors\TaxCollector.cs" />
     <Compile Include="World\WorldActors.cs" />
     <Compile Include="World\WorldZones.cs" />
     <Compile Include="World\Groups\IGroupMember.cs" />
@@ -190,7 +187,7 @@
     <Compile Include="World\Position\MapPoint.cs" />
     <Compile Include="World\Position\MovementPath.cs" />
     <Compile Include="World\Position\VectorIsometric.cs" />
-    <Compile Include="World\Zones\Map\Map.cs" />
+    <Compile Include="World\Zones\Map.cs" />
     <Compile Include="World\Zones\Area.cs" />
     <Compile Include="World\WorldSave.cs" />
     <Compile Include="World\WorldInitialization.cs" />

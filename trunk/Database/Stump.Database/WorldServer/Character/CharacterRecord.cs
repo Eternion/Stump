@@ -52,29 +52,29 @@ namespace Stump.Database.WorldServer
             set;
         }
 
-        [Property("Restrictions", NotNull = true, Default="0|0|0")]
-        public string Restrictions
+        [Property("Restrictions", NotNull = true, Default="0")]
+        public int Restrictions
         {
             get;
             set;
         }
 
         [Property("Breed", NotNull = true)]
-        public int Breed
+        public PlayableBreedEnum Breed
         {
             get;
             set;
         }
 
         [Property("BaseHealth", NotNull = true)]
-        public int BaseHealth
+        public uint BaseHealth
         {
             get;
             set;
         }
 
         [Property("DamageTaken", NotNull = true)]
-        public int DamageTaken
+        public uint DamageTaken
         {
             get;
             set;
@@ -432,12 +432,12 @@ namespace Stump.Database.WorldServer
 
         #endregion
 
-        public static CharacterRecord FindCharacterById(int characterId)
+        public static CharacterRecord FindById(int characterId)
         {
             return FindByPrimaryKey(characterId);
         }
 
-        public static CharacterRecord FindCharacterByName(string characterName)
+        public static CharacterRecord FindByName(string characterName)
         {
             return FindOne(NHibernate.Criterion.Restrictions.Eq("Name", characterName));
         }

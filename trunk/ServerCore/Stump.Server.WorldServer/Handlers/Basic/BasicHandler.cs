@@ -20,9 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.WorldServer.Entities;
-using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.World.Actors.Character;
+using Stump.Server.WorldServer.World.Entities.Characters;
 
 namespace Stump.Server.WorldServer.Handlers
 {

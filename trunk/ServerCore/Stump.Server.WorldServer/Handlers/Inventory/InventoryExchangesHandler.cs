@@ -25,6 +25,7 @@ using Stump.Server.WorldServer.Exchange;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Npcs;
 using Stump.Server.WorldServer.World.Actors.Character;
+using Stump.Server.WorldServer.World.Entities.Characters;
 using Item = Stump.Server.WorldServer.Items.Item;
 
 namespace Stump.Server.WorldServer.Handlers

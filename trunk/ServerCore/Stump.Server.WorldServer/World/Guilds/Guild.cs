@@ -23,6 +23,7 @@ using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Classes.Custom;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Global.Maps;
+using Stump.Server.WorldServer.World.Entities.TaxCollectors;
 
 namespace Stump.Server.WorldServer.Entities
 {

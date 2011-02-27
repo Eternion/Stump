@@ -23,41 +23,23 @@ using System.Linq;
 using System.Text;
 using Stump.BaseCore.Framework.IO;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.Server.BaseServer.Data.D2oTool;
 
 namespace Stump.Server.DataProvider.Data.D2oTool
 {
     public class D2OFile
     {
-        private readonly Dictionary<int, D2OClassDefinition> m_classes = new Dictionary<int, D2OClassDefinition>();
-        private readonly Dictionary<int, int> m_indextable = new Dictionary<int, int>();
+        private Dictionary<int, D2OClassDefinition> m_classes;
+        private Dictionary<int, int> m_indextable = new Dictionary<int, int>();
         private int m_classcount;
-        private byte[] m_filebuffer;
+        public byte[] m_filebuffer;
         private int m_headeroffset;
         private int m_indextablelen;
+        private readonly string m_filePath;
         private BigEndianReader m_reader;
-
-        /// <summary>
-        ///   Create and initialise a new D2o file
-        /// </summary>
-        /// <param name = "name">Path of the file</param>
-        public D2OFile(string name)
-        {
-            FilePath = name;
-            m_classes = new Dictionary<int, D2OClassDefinition>();
-
-            Init();
-        }
-
-        internal Stream StreamReader
-        {
-            get { return m_reader.BaseStream; }
-        }
 
         public string FilePath
         {
-            get;
-            set;
+            get { return m_filePath; }
         }
 
         public string FileName
@@ -80,12 +62,24 @@ namespace Stump.Server.DataProvider.Data.D2oTool
             get { return m_indextable; }
         }
 
+
+        /// <summary>
+        ///   Create and initialise a new D2o file
+        /// </summary>
+        /// <param name = "filePath">Path of the file</param>
+        public D2OFile(string filePath)
+        {
+            m_filePath = filePath;
+
+            Init();
+        }
+
         private void Init()
         {
             m_filebuffer = File.ReadAllBytes(FilePath);
             m_reader = new BigEndianReader(new MemoryStream(m_filebuffer));
 
-            string header = Encoding.Default.GetString(m_reader.ReadBytes(3));
+            string header = m_reader.ReadUTFBytes(3);
 
             if (header != "D2O")
             {
@@ -97,6 +91,7 @@ namespace Stump.Server.DataProvider.Data.D2oTool
             m_indextablelen = m_reader.ReadInt();
 
             // init table index
+            m_indextable = new Dictionary<int, int>(m_indextablelen / 8);
             for (int i = 0; i < m_indextablelen; i += 8)
             {
                 m_indextable.Add(m_reader.ReadInt(), m_reader.ReadInt());
@@ -104,6 +99,7 @@ namespace Stump.Server.DataProvider.Data.D2oTool
 
             // init classes
             m_classcount = m_reader.ReadInt();
+            m_classes = new Dictionary<int, D2OClassDefinition>(m_classcount);
             for (int i = 0; i < m_classcount; i++)
             {
                 int classId = m_reader.ReadInt();
@@ -115,6 +111,15 @@ namespace Stump.Server.DataProvider.Data.D2oTool
             }
         }
 
+        private bool TypeHasAssiocatedFileAttribute(Type type)
+        {
+            return (type.GetCustomAttributes(false) != null &&
+                    type.GetCustomAttributes(false).Count(entry =>
+                                                          entry is AttributeAssociatedFile &&
+                                                          (entry as AttributeAssociatedFile).FilesName.Contains(
+                                                              FileName)) != 0);
+        }
+
         /// <summary>
         ///   Get all objects that corresponding to T associated to his index
         /// </summary>
@@ -123,11 +128,9 @@ namespace Stump.Server.DataProvider.Data.D2oTool
         /// <returns></returns>
         public Dictionary<int, T> ReadObjects<T>(bool allownulled = false)
         {
-            if (typeof(T).GetCustomAttributes(false) == null ||
-                typeof(T).GetCustomAttributes(false).Count(entry =>
-                                                            entry is AttributeAssociatedFile &&
-                                                            (entry as AttributeAssociatedFile).FilesName.Contains(
-                                                                FileName)) == 0)
+            var gType = typeof (T);
+
+            if(!TypeHasAssiocatedFileAttribute(gType))
                 throw new Exception("Targeted class hasn't correct AttributeAssociatedFile");
 
             var result = new Dictionary<int, T>(m_indextable.Count);
@@ -140,8 +143,7 @@ namespace Stump.Server.DataProvider.Data.D2oTool
 
                     int classid = reader.ReadInt();
 
-                    if (m_classes[classid].ClassType == typeof(T) ||
-                        m_classes[classid].ClassType.IsSubclassOf(typeof(T)))
+                    if (m_classes[classid].ClassType == gType || m_classes[classid].ClassType.IsSubclassOf(gType))
                     {
                         try
                         {
@@ -161,7 +163,7 @@ namespace Stump.Server.DataProvider.Data.D2oTool
         }
 
         /// <summary>
-        ///   Get all objects that corresponding to T associated to his index
+        ///   Get all objects associated to his index
         /// </summary>
         /// <param name = "allownulled">True to adding null instead of throwing an exception</param>
         /// <returns></returns>
@@ -171,7 +173,6 @@ namespace Stump.Server.DataProvider.Data.D2oTool
 
             using (var reader = new BigEndianReader(m_filebuffer))
             {
-
                 foreach (var index in m_indextable)
                 {
                     reader.Seek(index.Value, SeekOrigin.Begin);
@@ -215,20 +216,17 @@ namespace Stump.Server.DataProvider.Data.D2oTool
         }
 
         /// <summary>
-        ///   Get an object from his index
+        ///   Get an T from his index
         /// </summary>
         /// <typeparam name = "T"></typeparam>
         /// <param name = "index"></param>
         /// <returns></returns>
         public T ReadObject<T>(int index)
         {
-            if (typeof(T).GetCustomAttributes(false) == null ||
-                typeof(T).GetCustomAttributes(false).Count(entry =>
-                                                            entry is AttributeAssociatedFile &&
-                                                            (entry as AttributeAssociatedFile).FilesName.Contains(
-                                                                FileName)) == 0)
-                throw new Exception("Targeted class hasn't correct AttributeAssociatedFile");
+            var gType = typeof (T);
 
+            if (!TypeHasAssiocatedFileAttribute(gType))
+                throw new Exception("Targeted class hasn't correct AttributeAssociatedFile");
 
             using (var reader = new BigEndianReader(m_filebuffer))
             {
@@ -237,10 +235,8 @@ namespace Stump.Server.DataProvider.Data.D2oTool
 
                 var classid = reader.ReadInt();
 
-                if (m_classes[classid].ClassType != typeof(T) &&
-                    !m_classes[classid].ClassType.IsSubclassOf(typeof(T)))
-                    throw new Exception(string.Format("Wrong type, try to read object with {1} instead of {0}",
-                                                      typeof(T).Name, m_classes[classid].ClassType.Name));
+                if (m_classes[classid].ClassType != gType && !m_classes[classid].ClassType.IsSubclassOf(gType))
+                    throw new Exception(string.Format("Wrong type, try to read object with {1} instead of {0}", gType.Name, m_classes[classid].ClassType.Name));
 
                 var result = m_classes[classid].BuildClassObject<T>(reader);
 

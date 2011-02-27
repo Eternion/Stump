@@ -22,10 +22,10 @@ using System.Reflection;
 using Stump.BaseCore.Framework.Extensions;
 using Stump.BaseCore.Framework.Reflection;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.DataProvider.Data.Spells;
 using Stump.Server.WorldServer.Fights;
 using Stump.Server.WorldServer.Global.Maps;
 using Stump.Server.WorldServer.Groups;
-using Stump.Server.WorldServer.Spells;
 
 namespace Stump.Server.WorldServer.Effects.Executor
 {

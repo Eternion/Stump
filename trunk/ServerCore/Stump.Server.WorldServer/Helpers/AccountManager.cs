@@ -17,17 +17,63 @@
 //  *
 //  *************************************************************************/
 using System;
-using Stump.Database;
+using System.Collections.Generic;
+using Stump.BaseCore.Framework.Pool;
 using Stump.Database.AuthServer;
 using Stump.Database.WorldServer;
-using Stump.Database.WorldServer.StartupAction;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.IPC;
 
-namespace Stump.Server.WorldServer.Manager
+namespace Stump.Server.WorldServer.Helpers
 {
-    public static partial class AccountManager
+    public static class AccountManager
     {
+        public static List<CharacterRecord> GetCharactersOnAccount(WorldClient client)
+        {
+            var characters = new List<CharacterRecord>(Handlers.CharacterHandler.MaxCharacterSlot);
+            var ids = client.Account.GetWorldCharactersId(WorldServer.ServerInformation.Id);
+
+            foreach (var id in ids)
+            {
+                /* don't exists */
+                if (!CharacterRecord.Exists(id))
+                {
+                    TaskPool.Instance.EnqueueTask(() =>
+                                                  IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(
+                                                      WorldServer.ServerInformation, client.Account.Id, id));
+                }
+                else
+                {
+                    characters.Add(CharacterRecord.FindById((int)id));
+                }
+            }
+            return characters;
+        }
+
+        public static void AddCharacterOnAccount(CharacterRecord character, WorldClient client)
+        {
+            if (client.Characters == null)
+                client.Characters = new List<CharacterRecord>(Handlers.CharacterHandler.MaxCharacterSlot);
+
+            client.Characters.Insert(0, character);
+
+            TaskPool.Instance.EnqueueTask(() => IpcAccessor.Instance.ProxyObject.AddAccountCharacter(
+                WorldServer.ServerInformation, client.Account.Id, (uint)character.Id));
+        }
+
+        public static void RemoveCharacterFromAccount(CharacterRecord character, WorldClient client)
+        {
+            client.Characters.Remove(character);
+
+            TaskPool.Instance.EnqueueTask(() => IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(
+                WorldServer.ServerInformation, client.Account.Id, (uint)character.Id));
+        }
+
+        public static int GetNumberOfDayDeletedCharacter(uint accountId)
+        {
+            return IpcAccessor.Instance.ProxyObject.GetDeletedCharactersNumber(accountId);
+        }
+
         public static AccountRecord GetAccountByTicket(string ticket)
         {
             return IpcAccessor.Instance.ProxyObject.GetAccountRecordByTicket(WorldServer.ServerInformation, ticket);
@@ -35,8 +81,7 @@ namespace Stump.Server.WorldServer.Manager
 
         public static AccountRecord GetAccountByNickname(string nickName)
         {
-            if (!IpcAccessor.Instance.Connected ||
-                IpcAccessor.Instance.ProxyObject == null)
+            if (!IpcAccessor.Instance.Connected ||  IpcAccessor.Instance.ProxyObject == null)
                 throw new Exception("Cannot acces to AuthServer, check that the server is running");
 
             return IpcAccessor.Instance.ProxyObject.GetAccountRecordByNickname(WorldServer.ServerInformation, nickName);
@@ -54,47 +99,6 @@ namespace Stump.Server.WorldServer.Manager
             var acc = GetAccountByNickname(nickName);
 
             return acc == null || acc.Password != accPass ? RoleEnum.None : acc.Role;
-        }
-
-        public static WorldAccountRecord CreateWorldAccount(WorldClient client)
-        {
-            /* Create Bank */
-            var bank = new InventoryRecord
-                           {
-                               Kamas = 0
-                           };
-            bank.Create();
-
-            /* Create WorldAccount */
-            var worldAccount = new WorldAccountRecord
-                                   {
-                                       Id = client.Account.Id,
-                                       Nickname = client.Account.Nickname,
-                                       Bank = bank
-                                   };
-            worldAccount.Create();
-            return worldAccount;
-        }
-
-
-        public static bool AddAccountStartupAction(WorldAccountRecord account, StartupActionRecord startupAction)
-        {
-            if (account.StartupActions.Contains(startupAction))
-                return false;
-
-            account.StartupActions.Add(startupAction);
-
-            return true;
-        }
-
-        public static bool DeleteAccountStartupAction(WorldAccountRecord account, StartupActionRecord startupAction)
-        {
-            if (!account.StartupActions.Contains(startupAction))
-                return false;
-
-            account.StartupActions.Remove(startupAction);
-
-            return true;
         }
     }
 }

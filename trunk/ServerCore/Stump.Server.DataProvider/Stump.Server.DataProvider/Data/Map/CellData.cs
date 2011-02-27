@@ -16,12 +16,13 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using ProtoBuf;
 using Stump.BaseCore.Framework.IO;
 
 namespace Stump.Server.DataProvider.Data.Map
 {
-    [ProtoContract]
+    [Serializable,ProtoContract]
     public class CellData
     {
 
@@ -36,6 +37,7 @@ namespace Stump.Server.DataProvider.Data.Map
             MapId=mapId;
 
             Floor = reader.ReadByte();
+
             if (Floor * 10 == -1280)
                 return;
 

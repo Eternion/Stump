@@ -7,6 +7,7 @@ using Stump.DofusProtocol.D2oClasses;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Skills;
 using Stump.Server.WorldServer.World.Actors.Character;
+using Stump.Server.WorldServer.World.Entities.Characters;
 
 namespace Stump.Server.WorldServer.Global.Maps
 {

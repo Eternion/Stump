@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System.Linq;
+using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -26,16 +27,27 @@ namespace Stump.Server.WorldServer.Handlers
 {
     public class AuthorizedHandler : WorldHandlerContainer
     {
+        /// <summary>
+        /// Required role for executing quiet commands
+        /// </summary>
+        [Variable]
+        public static RoleEnum RequiredRoleForQuietCommand = RoleEnum.GameMaster_Padawan;
+
+        /// <summary>
+        /// Required role for executing admin commands
+        /// </summary>
+        [Variable]
+        public static RoleEnum RequiredRoleForAdminCommand = RoleEnum.GameMaster_Padawan;
 
         [WorldHandler(typeof(AdminQuietCommandMessage))]
         public static void HandleAdminQuietCommandMessage(WorldClient client, AdminQuietCommandMessage message)
         {
-            if (client.Account.Role < RoleEnum.GameMaster_Padawan)
+            if (client.Account.Role < RequiredRoleForQuietCommand)
                 return;
-
-            string[] data = message.content.Split(' ');
-            string command = data[0];
-            string[] args = data[1].Split(' ');
+           
+            var data = message.content.Split(' ');
+            var command = data[0];
+            var args = data[1].Split(' ');
 
             switch (command)
             {
@@ -58,7 +70,7 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof(AdminCommandMessage))]
         public static void HandleAdminCommandMessage(WorldClient client, AdminCommandMessage message)
         {
-            if (client.Account.Role < RoleEnum.GameMaster_Padawan)
+            if (client.Account.Role < RequiredRoleForAdminCommand)
                 return;
 
             WorldServer.Instance.CommandManager.HandleCommand(new TriggerConsole(new StringStream(message.content), client.ActiveCharacter));

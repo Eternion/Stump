@@ -153,6 +153,7 @@
     <Compile Include="Utils\ConditionWaiter.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Pool\Task\CyclicTask.cs" />
+    <Compile Include="Utils\BooleanIntWrapper.cs" />
     <Compile Include="Utils\FileWatcher.cs" />
     <Compile Include="Utils\FormatterHelper.cs" />
     <Compile Include="Utils\Node.cs" />

@@ -16,7 +16,6 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,16 +24,15 @@ using Stump.BaseCore.Framework.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.DataProvider.Core;
 
-namespace Stump.Server.WorldServer.Data.Emote
+namespace Stump.Server.DataProvider.Data.Emote
 {
     public class EmoteDurationProvider : DataProvider<EmotesEnum, uint>
     {
         /// <summary>
-        ///   Name of Emote file
+        ///   Name of EmoteDuration file
         /// </summary>
         [Variable]
-        public static string EmotesFile = "Emotes/EmotesDuration.xml";
-
+        public static string EmotesFile = "EmotesDuration.xml";
 
         protected override uint GetData(EmotesEnum id)
         {

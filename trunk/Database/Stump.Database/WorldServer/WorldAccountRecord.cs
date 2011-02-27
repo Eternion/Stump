@@ -154,12 +154,12 @@ namespace Stump.Database.WorldServer
         }
 
 
-        public static WorldAccountRecord FindWorldAccountById(uint id)
+        public static WorldAccountRecord FindById(uint id)
         {
             return FindByPrimaryKey(id);
         }
 
-        public static WorldAccountRecord FindWorldAccountByNickname(string nickname)
+        public static WorldAccountRecord FindByNickname(string nickname)
         {
             return FindOne(Restrictions.Eq("Nickname", nickname));
         }

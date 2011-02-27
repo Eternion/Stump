@@ -16,43 +16,39 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.BaseCore.Framework.Extensions;
-using Stump.Database;
 using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Effects;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Handlers;
+using Stump.Server.WorldServer.Items;
 using Stump.Server.WorldServer.World.Actors.Character;
+using Stump.Server.WorldServer.World.Entities.Characters;
 
-namespace Stump.Server.WorldServer.Items
+namespace Stump.Server.WorldServer.World.Storages
 {
 
     public class Inventory
     {
 
-        public Inventory(InventoryRecord record, IInventoryOwner owner)
+        public Inventory(IInventoryOwner owner, InventoryRecord record)
         {
-            Record =record;
             Owner = owner;
+            Record = record;
 
             Kamas = record.Kamas;
             WeightTotal = record.Capacity;
             m_items = record.Items.Select(i => new Item(i)).ToDictionary(entry => entry.Guid);
             foreach (var item in m_items.Values)
-                m_itemsByPosition[item.Position].Add(item);           
+                m_itemsByPosition[item.Position].Add(item);
         }
-        
-        public InventoryRecord Record;
 
-        public IInventoryOwner Owner
-        {
-            get;
-            private set;
-        }
+        public readonly InventoryRecord Record;
+
+        public readonly IInventoryOwner Owner;
 
         public long Kamas
         {
@@ -78,8 +74,8 @@ namespace Stump.Server.WorldServer.Items
 
         #region ItemsByPosition
 
-                private readonly Dictionary<CharacterInventoryPositionEnum, List<Item>> m_itemsByPosition = new Dictionary
-            <CharacterInventoryPositionEnum, List<Item>>
+        private readonly Dictionary<CharacterInventoryPositionEnum, List<Item>> m_itemsByPosition = new Dictionary
+    <CharacterInventoryPositionEnum, List<Item>>
             {
                 {CharacterInventoryPositionEnum.ACCESSORY_POSITION_HAT, new List<Item>()},
                 {CharacterInventoryPositionEnum.ACCESSORY_POSITION_CAPE, new List<Item>()},
@@ -108,7 +104,7 @@ namespace Stump.Server.WorldServer.Items
                 {CharacterInventoryPositionEnum.INVENTORY_POSITION_FOLLOWER, new List<Item>()},
                 {CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, new List<Item>()},
             };
-        
+
         public List<Item> this[CharacterInventoryPositionEnum position]
         {
             get
@@ -125,7 +121,7 @@ namespace Stump.Server.WorldServer.Items
         {
             get
             {
-                return m_items.Values.Aggregate<Item, uint>(0,(current, item) =>current + item.Template.Weight*item.Stack);
+                return m_items.Values.Aggregate<Item, uint>(0, (current, item) => current + item.Template.Weight * item.Stack);
             }
         }
 
@@ -189,7 +185,7 @@ namespace Stump.Server.WorldServer.Items
                 if ((weapon = GetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON)) != null)
                 {
                     return weapon.Template is WeaponTemplate
-                               ? (uint) (weapon.Template as WeaponTemplate).CriticalHitBonus
+                               ? (uint)(weapon.Template as WeaponTemplate).CriticalHitBonus
                                : 0;
                 }
 
@@ -222,7 +218,7 @@ namespace Stump.Server.WorldServer.Items
 
             Item stack = null;
             if (IsStackable(itemTemplate.Id, effects, out stack) && stack != null)
-                // if there is same item in inventory we stack it
+            // if there is same item in inventory we stack it
             {
                 StackItem(stack, amount);
                 return stack;
@@ -286,7 +282,7 @@ namespace Stump.Server.WorldServer.Items
         {
             Item stack = null;
             if (IsStackable(item.ItemId, item.Effects, out stack) && stack != null)
-                // if there is same item in inventory we stack it
+            // if there is same item in inventory we stack it
             {
                 StackItem(stack, amount);
                 return stack;
@@ -383,21 +379,21 @@ namespace Stump.Server.WorldServer.Items
             Item stacktoitem = null;
             if (position == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED &&
                 IsStackable(itemToMove.Template.Id, itemToMove.Effects, out stacktoitem) && stacktoitem != null)
-                // check if we must stack the moved item
+            // check if we must stack the moved item
             {
                 StackItem(stacktoitem, itemToMove.Stack); // in all cases Stack = 1 else there is an error
                 DeleteItem(itemToMove.Guid);
             }
             else // else we just move the item
             {
-                
+
 
                 itemToMove.Position = position;
                 InventoryHandler.SendObjectMovementMessage(Owner.Client, itemToMove);
 
                 itemToMove.Save();
 
-                
+
             }
 
             NotifyItemMoved(itemToMove, oldPosition);
@@ -407,7 +403,7 @@ namespace Stump.Server.WorldServer.Items
         private void OnItemMove(Inventory sender, Item item, CharacterInventoryPositionEnum oldPosition)
         {
             // Update entity skin
-            
+
             ApplyItemsEffect();
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
             CharacterHandler.SendCharacterStatsListMessage(Owner.Client);
@@ -506,9 +502,9 @@ namespace Stump.Server.WorldServer.Items
         public Item GetItem(int itemId, List<EffectBase> effects, CharacterInventoryPositionEnum position)
         {
             IEnumerable<Item> entries = from entry in m_itemsByPosition[position]
-                                       where entry.ItemId == itemId &&
-                                             effects.CompareEnumerable(entry.Effects)
-                                       select entry;
+                                        where entry.ItemId == itemId &&
+                                              effects.CompareEnumerable(entry.Effects)
+                                        select entry;
 
             return entries.FirstOrDefault();
         }

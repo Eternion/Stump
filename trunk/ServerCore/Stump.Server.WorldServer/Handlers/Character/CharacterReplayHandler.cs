@@ -20,12 +20,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Stump.BaseCore.Framework.Utils;
-using Stump.Database;
 using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Classes.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.WorldServer.Breeds;
+using Stump.Server.DataProvider.Data.Breeds;
 
 namespace Stump.Server.WorldServer.Handlers
 {
@@ -41,7 +40,7 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof(CharacterReplayWithRenameRequestMessage))]
         public static void HandleCharacterReplayWithRenameRequestMessage(WorldClient client, CharacterReplayWithRenameRequestMessage message)
         {
-            var character = client.Characters.Find(o => o.Id == message.characterId);
+            var character = client.GetCharacterById(message.characterId);
 
             /* check null */
             if (character == null)
@@ -58,7 +57,7 @@ namespace Stump.Server.WorldServer.Handlers
                 return;
             }
 
-            string characterName = StringUtils.FirstLetterUpper(message.name.ToLower());
+            var characterName = StringUtils.FirstLetterUpper(message.name.ToLower());
 
             /* Check name */
             if (!Regex.IsMatch(characterName, "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled))
@@ -67,15 +66,15 @@ namespace Stump.Server.WorldServer.Handlers
                 return;
             }
 
-            /* Bind look and save character */
+            /* Bind name and save character */
             character.Name = characterName;
-            character.Save();
+            character.Update();
         }
 
         [WorldHandler(typeof(CharacterReplayWithRecolorRequestMessage))]
         public static void HandleCharacterReplayWithRecolorRequestMessage(WorldClient client, CharacterReplayWithRecolorRequestMessage message)
         {
-            var character = client.Characters.Find(o => o.Id == message.characterId);
+            var character = client.GetCharacterById(message.characterId);
 
             /* check null */
             if (character == null)
@@ -86,26 +85,26 @@ namespace Stump.Server.WorldServer.Handlers
             }
 
             /* Get character Breed */
-            BaseBreed breed = BreedManager.GetBreed(character.Breed);
+            var breedTemplate = BreedTemplateProvider.Instance[(PlayableBreedEnum)character.Breed];
 
             /* Parse character colors */
-            var indexedColors = new List<int>();
+            var indexedColors = new List<int>(5);
             for (int i = 0; i < 5; i++)
             {
-                int color = message.indexedColor[i];
+                var color = message.indexedColor[i];
 
                 if (color == -1)
-                    color = (int)(character.Sex == SexTypeEnum.SEX_MALE ? breed.MaleColors[i] : breed.FemaleColors[i]);
+                    color = (int)(character.Sex == SexTypeEnum.SEX_MALE ? breedTemplate.MaleColors[i] : breedTemplate.FemaleColors[i]);
 
                 indexedColors.Add(int.Parse((i + 1) + color.ToString("X6"), NumberStyles.HexNumber));
             }
 
-            var breedLook = character.Sex == SexTypeEnum.SEX_MALE ? breed.MaleLook.Copy() : breed.FemaleLook.Copy();
+            var breedLook = character.Sex == SexTypeEnum.SEX_MALE ? breedTemplate.MaleLook.Copy() : breedTemplate.FemaleLook.Copy();
             breedLook.indexedColors = indexedColors;
 
             /* Bind look and save character */
             character.BaseLook = breedLook;
-            character.Save();
+            character.Update();
         }
 
     }

@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using Stump.BaseCore.Framework.Utils;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.DataProvider.Data.Spells;
 using Stump.Server.WorldServer.Effects.Executor;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Fights;
@@ -30,6 +31,7 @@ using Stump.Server.WorldServer.Global.Pathfinding;
 using Stump.Server.WorldServer.Handlers;
 using Stump.Server.WorldServer.Spells;
 using Stump.Server.WorldServer.World.Actors.Character;
+using Stump.Server.WorldServer.World.Entities.Characters;
 
 namespace Stump.Server.WorldServer.Groups
 {

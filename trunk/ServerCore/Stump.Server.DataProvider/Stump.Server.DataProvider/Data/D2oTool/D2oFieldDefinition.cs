@@ -20,20 +20,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.BaseCore.Framework.IO;
-using Stump.Server.DataProvider.Data.D2oTool;
 
-namespace Stump.Server.BaseServer.Data.D2oTool
+namespace Stump.Server.DataProvider.Data.D2oTool
 {
-    public class D2oFieldDefinition
+    public class D2OFieldDefinition
     {
-        public const int NullIdentifier = -1431660000; // wtf ?!
+        private const int NullIdentifier = -1431660000; // wtf ?!
 
         private readonly D2OFile m_file;
 
         private readonly List<Func<BigEndianReader, int, object>> m_tempVectorMethod;
         private readonly List<Type> m_tempVectorType;
 
-        public D2oFieldDefinition(string name, int type, BigEndianReader reader, D2OFile file)
+        public D2OFieldDefinition(string name, int type, BigEndianReader reader, D2OFile file)
         {
             Name = name;
             FieldType = type;
@@ -90,7 +89,7 @@ namespace Stump.Server.BaseServer.Data.D2oTool
         {
             try
             {
-                object obj = AssociatedMethod.DynamicInvoke(reader, 0);
+                object obj = AssociatedMethod(reader, 0);
 
                 if (obj is IConvertible)
                     return (T) Convert.ChangeType(obj, typeof (T));
@@ -170,9 +169,8 @@ namespace Stump.Server.BaseServer.Data.D2oTool
 
             for (int i = 0; i < count; i++)
             {
-                result.Add(m_tempVectorMethod[vectorDimension].DynamicInvoke(reader, vectorDimension + 1));
+                result.Add(m_tempVectorMethod[vectorDimension](reader, vectorDimension + 1));
             }
-
 
             return result;
         }
