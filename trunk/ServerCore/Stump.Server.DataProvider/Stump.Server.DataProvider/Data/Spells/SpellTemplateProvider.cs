@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.Server.DataProvider.Data.D2oTool;
 using Stump.Server.WorldServer.Effects;
 using Stump.Server.DataProvider.Core;
 

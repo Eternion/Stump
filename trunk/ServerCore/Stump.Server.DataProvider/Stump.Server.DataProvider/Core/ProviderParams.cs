@@ -1,5 +1,4 @@
 ﻿using System;
-using Stump.Server.DataProvider.Core2;
 
 namespace Stump.Server.DataProvider.Core
 {

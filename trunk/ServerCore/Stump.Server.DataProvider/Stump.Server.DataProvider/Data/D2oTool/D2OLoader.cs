@@ -17,16 +17,17 @@
 //  *
 //  *************************************************************************/
 using System;
-using System.Collections.Concurrent;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Cryptography;
 using NLog;
+using ProtoBuf;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.Server.DataProvider.Data.D2oTool;
 
-namespace Stump.Server.DataProvider.Data
+namespace Stump.Server.DataProvider.Data.D2oTool
 {
     public static class D2OLoader
     {
@@ -58,9 +59,73 @@ namespace Stump.Server.DataProvider.Data
 
         private static I18NFile m_i18nFile;
 
+        /// <summary>
+        /// Store D2O filenames that are already checked
+        /// </summary>
+        private static readonly List<string> m_checkedFiles = new List<string>();
+
+        private static readonly Dictionary<string, D2OFile> m_loadedFiles = new Dictionary<string, D2OFile>();
+
+        /// <summary>
+        /// Common I18N file
+        /// </summary>
         public static I18NFile I18NFile
         {
-            get { return m_i18nFile ?? (m_i18nFile = new I18NFile(DataPath + I18NDir + I18NFileName)); }
+            get { return m_i18nFile ?? (m_i18nFile = new I18NFile(Path.Combine(DataPath, I18NDir, I18NFileName))); }
+        }
+
+        private static void ConvertToProtobuf(string filename, IEnumerable filedata)
+        {
+            var datafile = new D2OFile(Path.Combine(DataPath, D2ODir, filename));
+
+            using (FileStream file = File.Create(Path.GetFileNameWithoutExtension(filename) + ".bin"))
+            {
+                Serializer.Serialize(file, filedata);
+            }
+
+            // hash checksum to verify if the d2o file has any change
+            using (FileStream file = File.Open(filename, FileMode.Open))
+            {
+                File.WriteAllBytes(Path.GetFileNameWithoutExtension(filename) + ".hash", MD5.Create().ComputeHash(file));
+            }
+
+            m_checkedFiles.Add(filename);
+        }
+
+        private static bool HasToConvert(string filename)
+        {
+            if (!File.Exists(Path.GetFileNameWithoutExtension(filename) + ".bin") ||
+                !File.Exists(Path.GetFileNameWithoutExtension(filename) + ".hash"))
+                return false;
+
+            if (!CheckD2OHash(filename))
+                return false;
+
+            return true;
+        }
+
+        private static bool CheckD2OHash(string filename)
+        {
+            if (!File.Exists(Path.GetFileNameWithoutExtension(filename) + ".hash"))
+                return false;
+
+            if (m_checkedFiles.Contains(filename))
+                return true;
+
+            byte[] hash;
+
+            using (FileStream file = File.Open(filename, FileMode.Open))
+            {
+                hash = MD5.Create().ComputeHash(file);
+            }
+
+            if (File.ReadAllBytes(Path.GetFileNameWithoutExtension(filename) + ".hash") == hash)
+            {
+                m_checkedFiles.Add(filename);
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -70,94 +135,167 @@ namespace Stump.Server.DataProvider.Data
         /// <returns></returns>
         public static IEnumerable<T> LoadData<T>(bool ignoreException = false) where T : class
         {
-            object[] attributes = typeof(T).GetCustomAttributes(typeof(AttributeAssociatedFile), false);
+            object[] attributes = typeof (T).GetCustomAttributes(typeof (AttributeAssociatedFile), false);
 
             if (attributes.Length <= 0)
-                throw new Exception(string.Format("This class '{0}' hasn't any associated d2o file", typeof(T)));
+                throw new Exception(string.Format("This class '{0}' hasn't any associated d2o file", typeof (T)));
 
-            string name = attributes.Cast<AttributeAssociatedFile>().First().FilesName.First();
-            var datafile = new D2OFile(DataPath + D2ODir + name + ".d2o");
+            string filename = attributes.Cast<AttributeAssociatedFile>().First().FilesName.First() + ".d2o";
 
-            Dictionary<int, D2OClassDefinition> classes = datafile.GetClasses();
-
-            var copy = new List<T>(classes.Count);
-
-            foreach (var @class in classes)
+            // read the D2O file directly and convert it into a protobuf file
+            if (HasToConvert(filename))
             {
-                try
-                {
-                    if (@class.Value.ClassType == typeof(T))
-                    {
-                        var data = datafile.ReadObject<T>(@class.Key);
+                D2OFile datafile;
 
-                        if (data != null)
+                if (m_loadedFiles.ContainsKey(filename))
+                    datafile = m_loadedFiles[filename];
+                else
+                {
+                    datafile = new D2OFile(Path.Combine(DataPath, D2ODir, filename));
+                    m_loadedFiles.Add(filename, datafile);
+                }
+
+                Dictionary<int, D2OClassDefinition> classes = datafile.GetClasses();
+
+                var copy = new List<T>(classes.Count);
+
+                foreach (var @class in classes)
+                {
+                    try
+                    {
+                        if (@class.Value.ClassType == typeof (T))
                         {
-                            copy.Add(data);
+                            var data = datafile.ReadObject<T>(@class.Key);
+
+                            if (data != null)
+                            {
+                                copy.Add(data);
+                            }
                         }
                     }
+                    catch
+                    {
+                        if (ignoreException)
+                            logger.Warn("Error thrown when parsing {0} <id:{1}>", typeof (T).Name, @class.Key);
+                        else
+                            throw;
+                    }
                 }
-                catch
-                {
-                    logger.Warn("Error thrown when parsing {0} <id:{1}>", typeof(T).Name, @class.Key);
-                }
+                ConvertToProtobuf(filename, copy);
+
+                return copy;
             }
-            return copy;
+
+            // in the other case we just read the protobuf file that is much faster
+            List<T> result;
+            using (FileStream file = File.Open(filename, FileMode.Open))
+            {
+                result = Serializer.Deserialize<List<T>>(file);
+            }
+
+            return result;
         }
 
         /// <summary>
         ///   Load a D2O file
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<object> LoadData(string fileName, bool ignoreException = false)
+        public static IEnumerable<object> LoadData(string filename, bool ignoreException = false)
         {
-            var datafile = new D2OFile(DataPath + D2ODir + fileName + ".d2o");
-
-            var classes = datafile.GetClasses();
-
-            var copy = new List<object>(classes.Count);
-
-            foreach (var @class in classes)
+            // read the D2O file directly and convert it into a protobuf file
+            if (HasToConvert(filename))
             {
-                try
-                {
-                    object data = datafile.ReadObject(@class.Key);
+                D2OFile datafile;
 
-                    if (data != null)
-                        copy.Add(data);
-                }
-                catch
+                if (m_loadedFiles.ContainsKey(filename))
+                    datafile = m_loadedFiles[filename];
+                else
                 {
-                    logger.Warn("Error thrown when parsing (?) <id:{0}>", @class.Key);
+                    datafile = new D2OFile(Path.Combine(DataPath, D2ODir, filename));
+                    m_loadedFiles.Add(filename, datafile);
                 }
+
+                Dictionary<int, D2OClassDefinition> classes = datafile.GetClasses();
+
+                var copy = new List<object>(classes.Count);
+
+                foreach (var @class in classes)
+                {
+                    try
+                    {
+                        object data = datafile.ReadObject(@class.Key);
+
+                        if (data != null)
+                            copy.Add(data);
+                    }
+                    catch
+                    {
+                        if (ignoreException)
+                            logger.Warn("Error thrown when parsing {0} <id:{1}>", @class.Value.ClassType, @class.Key);
+                        else
+                            throw;
+                    }
+                }
+
+                ConvertToProtobuf(filename, copy);
+
+                return copy;
             }
-            return copy;
+
+            // in the other case we just read the protobuf file that is much faster
+            List<object> result;
+            using (FileStream file = File.Open(filename, FileMode.Open))
+            {
+                result = Serializer.Deserialize<List<object>>(file);
+            }
+
+            return result;
         }
 
         /// <summary>
-        ///   Load a D2O file with a class constraint
+        ///   Load an object from a D2O file with a class constraint by his id
         /// </summary>
         /// <typeparam name = "T">Constraint class</typeparam>
         /// <returns></returns>
         public static T LoadData<T>(int index, bool ignoreException = false) where T : class
         {
-            object[] attributes = typeof(T).GetCustomAttributes(typeof(AttributeAssociatedFile), false);
+            object[] attributes = typeof (T).GetCustomAttributes(typeof (AttributeAssociatedFile), false);
 
             if (attributes.Length <= 0)
-                throw new Exception(string.Format("This class '{0}' hasn't any associated d2o file", typeof(T)));
+                throw new Exception(string.Format("This class '{0}' hasn't any associated d2o file", typeof (T)));
 
-            var name = attributes.Cast<AttributeAssociatedFile>().First().FilesName.First();
-            var datafile = new D2OFile(DataPath + D2ODir + name + ".d2o");
+            string filename = attributes.Cast<AttributeAssociatedFile>().First().FilesName.First() + ".d2o";
 
-             return datafile.ReadObject<T>(index);
+            // we can't convert the D2O file because this function have to be fast
+
+            D2OFile datafile;
+
+            if (m_loadedFiles.ContainsKey(filename))
+                datafile = m_loadedFiles[filename];
+            else
+            {
+                datafile = new D2OFile(Path.Combine(DataPath, D2ODir, filename));
+                m_loadedFiles.Add(filename, datafile);
+            }
+
+            return datafile.ReadObject<T>(index);
         }
 
         /// <summary>
-        ///   Load a D2O file
+        ///   Load an object from a D2O file by his id
         /// </summary>
         /// <returns></returns>
-        public static T LoadData<T>(string fileName,int index, bool ignoreException = false)
+        public static T LoadData<T>(string filename, int index, bool ignoreException = false)
         {
-            var datafile = new D2OFile(DataPath + D2ODir + fileName + ".d2o");
+            D2OFile datafile;
+
+            if (m_loadedFiles.ContainsKey(filename))
+                datafile = m_loadedFiles[filename];
+            else
+            {
+                datafile = new D2OFile(Path.Combine(DataPath, D2ODir, filename + ".d2o"));
+                m_loadedFiles.Add(filename, datafile);
+            }
 
             return datafile.ReadObject<T>(index);
         }
@@ -180,10 +318,10 @@ namespace Stump.Server.DataProvider.Data
         public static Dictionary<TKey, TValue> LoadDataByIdAsDictionary<TKey, TValue>(Func<TValue, TKey> idSelector)
             where TValue : class
         {
-            object[] attributes = typeof(TValue).GetCustomAttributes(typeof(AttributeAssociatedFile), false);
+            object[] attributes = typeof (TValue).GetCustomAttributes(typeof (AttributeAssociatedFile), false);
 
             if (attributes.Length <= 0)
-                throw new Exception(string.Format("This class '{0}' hasn't any associated d2o file", typeof(TValue)));
+                throw new Exception(string.Format("This class '{0}' hasn't any associated d2o file", typeof (TValue)));
 
             string name = attributes.Cast<AttributeAssociatedFile>().First().FilesName.First();
             var items = new List<TValue>();
@@ -198,7 +336,15 @@ namespace Stump.Server.DataProvider.Data
 
         public static string GetI18NText(uint id)
         {
-            return GetI18NText((int)id);
+            return GetI18NText((int) id);
+        }
+
+        /// <summary>
+        /// Clear the cached files to reload the D2O files into memory
+        /// </summary>
+        public static void ClearCachedFiles()
+        {
+            m_loadedFiles.Clear();
         }
     }
 }

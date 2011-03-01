@@ -26,12 +26,12 @@ using Stump.DofusProtocol.Classes.Extensions;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.DataProvider.Core;
+using Stump.Server.DataProvider.Data.D2oTool;
 
 namespace Stump.Server.DataProvider.Data.Breeds
 {
     public class BreedTemplateProvider : DataProvider<PlayableBreedEnum, BreedTemplate>
     {
-
         /// <summary>
         ///   Name of Breed file
         /// </summary>
@@ -40,28 +40,29 @@ namespace Stump.Server.DataProvider.Data.Breeds
 
         protected override BreedTemplate GetData(PlayableBreedEnum id)
         {
-            var breedData = D2OLoader.LoadData<Breed>().FirstOrDefault(b => b.id == (int)id);
+            Breed breedData = D2OLoader.LoadData<Breed>().FirstOrDefault(b => b.id == (int) id);
 
-            if(breedData==null)
-                 throw new Exception("Impossible de trouver la classe correspondante dans les D2Os");
+            if (breedData == null)
+                throw new Exception("The correspondant D2O file \'Breeds.d2o\' is unfundable");
 
             using (var reader = new StreamReader(Settings.StaticPath + BreedFile))
             {
-                var template = Serializer.Deserialize<List<BreedTemplate>>(reader.BaseStream).FirstOrDefault(t => t.Id ==id);
+                BreedTemplate template =
+                    Serializer.Deserialize<List<BreedTemplate>>(reader.BaseStream).FirstOrDefault(t => t.Id == id);
 
-                if(template==null)
-                     throw new Exception("Impossible de trouver la classe correspondance dans les xmls");
+                if (template == null)
+                    throw new Exception(string.Format("The correspondant xml file {0} is unfundable", BreedFile));
 
-                    template.MaleLook = breedData.maleLook.ToEntityLook();
-                    template.MaleColors = breedData.maleColors;
-                    template.FemaleLook = breedData.femaleLook.ToEntityLook();
-                    template.FemaleColors = breedData.femaleColors;
-                    template.StatsPointsForAgility = breedData.statsPointsForAgility;
-                    template.StatsPointsForChance = breedData.statsPointsForChance;
-                    template.StatsPointsForIntelligence = breedData.statsPointsForIntelligence;
-                    template.StatsPointsForStrength = breedData.statsPointsForStrength;
-                    template.StatsPointsForVitality = breedData.statsPointsForVitality;
-                    template.StatsPointsForWisdom = breedData.statsPointsForWisdom;
+                template.MaleLook = breedData.maleLook.ToEntityLook();
+                template.MaleColors = breedData.maleColors;
+                template.FemaleLook = breedData.femaleLook.ToEntityLook();
+                template.FemaleColors = breedData.femaleColors;
+                template.StatsPointsForAgility = breedData.statsPointsForAgility;
+                template.StatsPointsForChance = breedData.statsPointsForChance;
+                template.StatsPointsForIntelligence = breedData.statsPointsForIntelligence;
+                template.StatsPointsForStrength = breedData.statsPointsForStrength;
+                template.StatsPointsForVitality = breedData.statsPointsForVitality;
+                template.StatsPointsForWisdom = breedData.statsPointsForWisdom;
 
                 return template;
             }
@@ -69,17 +70,17 @@ namespace Stump.Server.DataProvider.Data.Breeds
 
         protected override Dictionary<PlayableBreedEnum, BreedTemplate> GetAllData()
         {
-            var breedDatas = D2OLoader.LoadData<Breed>().ToDictionary(b => b.id);
+            Dictionary<int, Breed> breedDatas = D2OLoader.LoadData<Breed>().ToDictionary(b => b.id);
             using (var reader = new StreamReader(Settings.StaticPath + BreedFile))
             {
                 var templates = Serializer.Deserialize<List<BreedTemplate>>(reader.BaseStream);
 
-                foreach (var template in templates)
+                foreach (BreedTemplate template in templates)
                 {
-                    if (!breedDatas.ContainsKey((int)template.Id))
-                        throw new Exception("Impossible de trouver la classe correspondance dans les D2Os");
+                    if (!breedDatas.ContainsKey((int) template.Id))
+                        throw new Exception("The correspondant D2O file \'Breeds.d2o\' is unfundable");
 
-                    var breedData = breedDatas[(int)template.Id];
+                    Breed breedData = breedDatas[(int) template.Id];
                     template.MaleLook = breedData.maleLook.ToEntityLook();
                     template.MaleColors = breedData.maleColors;
                     template.FemaleLook = breedData.femaleLook.ToEntityLook();

@@ -24,6 +24,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Data;
 using Stump.Server.BaseServer.Initializing;
 using Stump.Server.DataProvider.Data;
+using Stump.Server.DataProvider.Data.D2oTool;
 using Stump.Server.WorldServer.Data;
 using Stump.Server.WorldServer.Entities;
 using NpcEx = Stump.DofusProtocol.D2oClasses.Npc;

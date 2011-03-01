@@ -21,6 +21,7 @@ using System.Linq;
 using Stump.BaseCore.Framework.Utils;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.Server.DataProvider.Core;
+using Stump.Server.DataProvider.Data.D2oTool;
 
 namespace Stump.Server.DataProvider.Data.TaxCollector
 {
@@ -40,7 +41,7 @@ namespace Stump.Server.DataProvider.Data.TaxCollector
 
         public KeyValuePair<int, string> GetRandom()
         {
-            return m_dico.ElementAt(m_rnd.NextInt(m_dico.Count));
+            return PreLoadData.ElementAt(m_rnd.NextInt(PreLoadData.Count));
         }
     }
 }

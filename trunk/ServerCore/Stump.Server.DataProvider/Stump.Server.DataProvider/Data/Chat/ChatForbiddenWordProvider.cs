@@ -25,6 +25,7 @@ using Stump.BaseCore.Framework.Attributes;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.DataProvider.Core;
+using Stump.Server.DataProvider.Data.D2oTool;
 using Stump.Server.WorldServer.Data.Chat;
 
 namespace Stump.Server.DataProvider.Data.Chat
@@ -50,7 +51,7 @@ namespace Stump.Server.DataProvider.Data.Chat
         /// <returns></returns>
         public bool IsCensored(string word)
         {
-            return m_dico.ContainsValue(word);
+            return PreLoadData.ContainsValue(word);
         }
     }
 }

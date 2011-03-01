@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using ProtoBuf;
 using Stump.BaseCore.Framework.Attributes;
-using Stump.Server.DataProvider.Core2;
 
 namespace Stump.Server.DataProvider.Core
 {
