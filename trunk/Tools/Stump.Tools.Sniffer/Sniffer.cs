@@ -55,12 +55,14 @@ namespace Stump.Tools.Sniffer
         private readonly FormMain m_form;
         private readonly Dictionary<string, Assembly> m_loadedAssemblies;
 
-        private readonly PacketDevice m_selectedDevice;
+        private  PacketDevice m_selectedDevice;
 
         private IdentifiedClient m_player = new IdentifiedClient("Player");
         private bool m_running;
         private IdentifiedClient m_server = new IdentifiedClient("Server");
         private Thread m_thread;
+
+        private bool m_initialized;
 
 
 
@@ -75,31 +77,10 @@ namespace Stump.Tools.Sniffer
             ConfigReader = new XmlConfigReader(ConfigPath, SchemaPath);
             ConfigReader.DefinesVariables(ref m_loadedAssemblies);
 
-            PcapDotNetAnalysis.OptIn = false;
-
-            IList<LivePacketDevice> allDevices = LivePacketDevice.AllLocalMachine;
-
-            if (allDevices.Count == 0)
-            {
-                MessageBox.Show("No interfaces found! Make sure WinPcap is installed.");
-                return;
-            }
-
-            foreach (LivePacketDevice device in allDevices)
-            {
-                if (
-                    device.Addresses.Any(
-                        adress =>
-                        (adress.Address.Family.ToString() == "Internet") &&
-                        adress.Address.ToString().Contains(LocalIpPattern)))
-                {
-                    m_selectedDevice = device;
-                }
-            }
+            
 
             MessageReceiver.Initialize();
             ProtocolTypeManager.Initialize();
-            IdentifiedClient.OnNewMessage += IdentifiedClient_OnNewMessage;
         }
 
         public XmlConfigReader ConfigReader
@@ -123,11 +104,42 @@ namespace Stump.Tools.Sniffer
         /// <summary>
         ///   Starts this instance.
         /// </summary>
-        public void Start()
+        public bool Start()
         {
-            m_thread = new Thread(DStart) {IsBackground = true};
+            if (!m_initialized)
+            {
+                PcapDotNetAnalysis.OptIn = false;
+
+                IList<LivePacketDevice> allDevices = LivePacketDevice.AllLocalMachine;
+
+                if (allDevices.Count == 0)
+                {
+                    MessageBox.Show("No interfaces found! Make sure WinPcap is installed.");
+                    return false;
+                }
+
+                var dialog = new DialogInterfaceSelect
+                                 {
+                                     Interfaces = allDevices.Select(entry => entry.Name).ToArray()
+                                 };
+                if (dialog.ShowDialog() == DialogResult.OK && dialog.SelectedInterface != null)
+                {
+                    m_selectedDevice = allDevices.Where(entry => entry.Name == dialog.SelectedInterface).First();
+
+                    IdentifiedClient.OnNewMessage += IdentifiedClient_OnNewMessage;
+
+                } 
+                else
+                    return false;
+
+                m_initialized = true;
+            }
+
+            m_thread = new Thread(StartSniffing) {IsBackground = true};
             m_thread.Start();
             m_running = true;
+
+            return true;
         }
 
         /// <summary>
@@ -148,7 +160,7 @@ namespace Stump.Tools.Sniffer
             m_running = false;
         }
 
-        private void DStart()
+        private void StartSniffing()
         {
             if (m_selectedDevice == null)
                 return;

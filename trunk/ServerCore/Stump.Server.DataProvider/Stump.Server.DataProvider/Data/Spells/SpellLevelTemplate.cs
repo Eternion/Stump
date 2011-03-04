@@ -22,41 +22,113 @@ namespace Stump.Server.DataProvider.Data.Spells
 {
     public class SpellLevelTemplate
     {
-        public SpellTemplate Spell { get; set; }
+        public SpellTemplate Spell
+        {
+            get;
+            set;
+        }
 
-        public uint ApCost { get; set; }
+        public uint ApCost
+        {
+            get;
+            set;
+        }
 
-        public uint MinRange { get; set; }
+        public uint MinRange
+        {
+            get;
+            set;
+        }
 
-        public uint Range { get; set; }
+        public uint Range
+        {
+            get;
+            set;
+        }
 
-        public bool CastInLine { get; set; }
+        public bool CastInLine
+        {
+            get;
+            set;
+        }
 
-        public bool CastTestLos { get; set; }
+        public bool CastTestLos
+        {
+            get;
+            set;
+        }
 
-        public uint CriticalHitProbability { get; set; }
+        public uint CriticalHitProbability
+        {
+            get;
+            set;
+        }
 
-        public uint CriticalFailureProbability { get; set; }
+        public uint CriticalFailureProbability
+        {
+            get;
+            set;
+        }
 
-        public bool NeedFreeCell { get; set; }
+        public bool NeedFreeCell
+        {
+            get;
+            set;
+        }
 
-        public bool NeedFreeTrapCell { get; set; }
+        public bool NeedFreeTrapCell
+        {
+            get;
+            set;
+        }
 
-        public bool RangeCanBeBoosted { get; set; }
+        public bool RangeCanBeBoosted
+        {
+            get;
+            set;
+        }
 
-        public uint MaxCastPerTurn { get; set; }
+        public uint MaxCastPerTurn
+        {
+            get;
+            set;
+        }
 
-        public uint MaxCastPerTarget { get; set; }
+        public uint MaxCastPerTarget
+        {
+            get;
+            set;
+        }
 
-        public uint MinCastInterval { get; set; }
+        public uint MinCastInterval
+        {
+            get;
+            set;
+        }
 
-        public uint MinPlayerLevel { get; set; }
+        public uint MinPlayerLevel
+        {
+            get;
+            set;
+        }
 
-        public bool CriticalFailureEndsTurn { get; set; }
+        public bool CriticalFailureEndsTurn
+        {
+            get;
+            set;
+        }
 
-        public List<int> StatsRequired { get; set; }
+        public List<int> StatsRequired
+        {
+            get;
+            set;
+        }
 
-        public List<int> StatsForbidden { get; set; }
+        public List<int> StatsForbidden
+        {
+            get;
+            set;
+        }
 
         //public EffectBase[] Effects
         //{
@@ -69,7 +141,5 @@ namespace Stump.Server.DataProvider.Data.Spells
         //    get;
         //    set;
         //}
-
     }
 }
-

@@ -19,7 +19,7 @@
 using ProtoBuf;
 using Stump.DofusProtocol.Enums;
 
-namespace Stump.Server.WorldServer.Data.Chat
+namespace Stump.Server.DataProvider.Data.Chat
 {
     [ProtoContract]
     public class ChannelTemplate

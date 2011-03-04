@@ -127,4 +127,3 @@ namespace Stump.Server.DataProvider.Data.Spells
             m_criticalEffect = effects.ToArray();
         }
 
-

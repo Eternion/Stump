@@ -16,18 +16,14 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.Xml;
-using Stump.DofusProtocol.Classes;
 using Stump.Server.DataProvider.Core;
-using Stump.Server.WorldServer.Skills;
 using Stump.Server.WorldServer.XmlSerialize;
 
-namespace Stump.Server.WorldServer.Data
+namespace Stump.Server.DataProvider.Data.Interactives
 {
     public class InteractiveObjectLoader
     {

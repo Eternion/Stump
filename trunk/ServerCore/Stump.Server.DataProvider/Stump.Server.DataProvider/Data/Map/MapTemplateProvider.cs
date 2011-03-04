@@ -25,10 +25,11 @@ using Stump.BaseCore.Framework.Attributes;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.Server.DataProvider.Core;
 using Stump.Server.DataProvider.Data.D2oTool;
+using Point = System.Drawing.Point;
 
 namespace Stump.Server.DataProvider.Data.Map
 {
-    public class MapTemplateProvider : DataProvider<int,MapTemplate>
+    public class MapTemplateProvider : DataProvider<int, MapTemplate>
     {
         /// <summary>
         ///   Name of maps file
@@ -54,8 +55,8 @@ namespace Stump.Server.DataProvider.Data.Map
                     if (positions.ContainsKey(map.Id))
                     {
                         var pos = positions[map.Id];
-                        map.Position = new Point {x = pos.posX, y = pos.posY};
-                        map.Capabilities =new MapCapabilities(pos.capabilities);
+                        map.Position = new Point(pos.posX, pos.posY);
+                        map.Capabilities = new MapCapabilities(pos.capabilities);
                     }
                 }
                 return maps.ToDictionary(m => m.Id);

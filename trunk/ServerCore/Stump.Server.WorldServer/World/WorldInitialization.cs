@@ -24,6 +24,8 @@ using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.IO;
 using Stump.BaseCore.Framework.Utils;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.DataProvider.Data.Areas;
+using Stump.Server.DataProvider.Data.Interactives;
 using Stump.Server.DataProvider.Data.Map;
 using Stump.Server.DataProvider.Data.SubAreas;
 using Stump.Server.DataProvider.Data.SuperAreas;

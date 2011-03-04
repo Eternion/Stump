@@ -16,18 +16,14 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ProtoBuf;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.Server.DataProvider.Core;
-using Stump.Server.DataProvider.Data.Areas;
-using Stump.Server.DataProvider.Data.Mount;
-using Stump.Server.DataProvider.Data.Recipe;
 
-namespace Stump.Server.DataProvider.Data.SuperAreas
+namespace Stump.Server.DataProvider.Data.Areas
 {
     public class AreaTemplateProvider : DataProvider<int,AreaTemplate>
     {

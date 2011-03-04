@@ -25,7 +25,6 @@ using Stump.BaseCore.Framework.Attributes;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.DataProvider.Core;
-using Stump.Server.WorldServer.Data.Chat;
 
 namespace Stump.Server.DataProvider.Data.Chat
 {

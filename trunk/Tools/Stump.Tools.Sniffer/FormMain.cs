@@ -44,8 +44,8 @@ namespace Stump.Tools.Sniffer
             }
             else
             {
-                (sender as ToolStripButton).Text = "Stop";
-                m_sniffer.Start();
+                if (m_sniffer.Start())
+                    (sender as ToolStripButton).Text = "Stop";
             }
         }
 

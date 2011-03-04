@@ -30,9 +30,5 @@ namespace Stump.Server.DataProvider.Data.Emote
 
         [ProtoMember(2)]
         public uint Duration { get; set; }
-
-        public EmoteDuration()
-        {
-        }
     }
 }
