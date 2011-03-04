@@ -6,7 +6,7 @@ namespace Stump.Server.DataProvider.Core
     {
         public Type ProviderType { get; set; }
 
-        public LoadingType LoadingType { get; set; }
+        public string LoadingType { get; set; }
 
         public int LifeTime { get; set; }
 

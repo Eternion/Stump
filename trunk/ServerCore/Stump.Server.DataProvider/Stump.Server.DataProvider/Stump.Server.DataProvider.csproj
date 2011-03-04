@@ -72,7 +72,6 @@
     <Compile Include="Core\DataManagerAttribute.cs" />
     <Compile Include="Core\DataManagerParams.cs" />
     <Compile Include="Core\DataLoader.cs" />
-    <Compile Include="Core\LoadingType.cs" />
     <Compile Include="Core\DataManager.cs" />
     <Compile Include="Core\Settings.cs" />
     <Compile Include="Data\Actions\ActionBase.cs" />
