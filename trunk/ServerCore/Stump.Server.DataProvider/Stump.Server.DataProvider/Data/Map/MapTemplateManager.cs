@@ -29,7 +29,7 @@ using Point = System.Drawing.Point;
 
 namespace Stump.Server.DataProvider.Data.Map
 {
-    public class MapTemplateProvider : DataProvider<int, MapTemplate>
+    public class MapTemplateManager : DataManager<int, MapTemplate>
     {
         /// <summary>
         ///   Name of maps file

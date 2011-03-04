@@ -25,7 +25,7 @@ using Stump.Server.DataProvider.Data.D2oTool;
 
 namespace Stump.Server.DataProvider.Data.Job
 {
-    public class JobTemplateProvider : DataProvider<int,JobTemplate>
+    public class JobTemplateManager : DataManager<int,JobTemplate>
     {
         protected override JobTemplate GetData(int id)
         {

@@ -23,31 +23,32 @@ using ProtoBuf;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.Server.DataProvider.Core;
 
-namespace Stump.Server.DataProvider.Data.Areas
+namespace Stump.Server.DataProvider.Data.House
 {
-    public class AreaTemplateProvider : DataProvider<int,AreaTemplate>
+    public class HouseDoorsManager : DataManager<int, List<short>>
     {
         /// <summary>
-        ///   Name of Area templates file
+        ///   Name of House Doors file
         /// </summary>
         [Variable]
-        public static string AreaFile = "AreaTemplates.xml";
+        public static string HousesDoorsFile = "HousesDoors.xml";
 
-        protected override AreaTemplate GetData(int id)
+
+        protected override List<short> GetData(int id)
         {
-            using (var sr = new StreamReader(Settings.StaticPath + AreaFile))
+            using (var sr = new StreamReader(Settings.StaticPath + HousesDoorsFile))
             {
-                var areas = Serializer.Deserialize<List<AreaTemplate>>(sr.BaseStream);
+                var doors = Serializer.Deserialize<List<HouseDoors>>(sr.BaseStream).FirstOrDefault(h => h.HouseId == id);
 
-                return areas[id];
+                return doors != null ? doors.Doors : null;
             }
         }
 
-        protected override Dictionary<int, AreaTemplate> GetAllData()
+        protected override Dictionary<int, List<short>> GetAllData()
         {
-            using (var sr = new StreamReader(Settings.StaticPath + AreaFile))
+            using (var sr = new StreamReader(Settings.StaticPath + HousesDoorsFile))
             {
-                return Serializer.Deserialize<List<AreaTemplate>>(sr.BaseStream).ToDictionary(s => s.Id);
+                return Serializer.Deserialize<List<HouseDoors>>(sr.BaseStream).ToDictionary(h=>h.HouseId,h=> h.Doors);
             }
         }
     }

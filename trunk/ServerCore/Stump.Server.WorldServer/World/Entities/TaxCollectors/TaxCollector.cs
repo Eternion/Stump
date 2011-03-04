@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.World.Entities.TaxCollectors
         protected TaxCollector(Guild guild,long id, ExtendedLook look, VectorIsometric position, Inventory inventory)
             :base(id,"",look,position)
         {
-            var fn = TaxCollectorFirstNameProvider.Instance.Get();
+            var fn = TaxCollectorFirstNameManager.Instance.Get();
             var n = TaxCollectorDataManager.GetRandomName();
             Name = n + " " + fn;
             FirstNameId = fn.Key;

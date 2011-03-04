@@ -22,36 +22,29 @@ using System.IO;
 using System.Linq;
 using ProtoBuf;
 using Stump.BaseCore.Framework.Attributes;
+using Stump.DofusProtocol.Classes.Extensions;
 using Stump.Server.DataProvider.Core;
-using Stump.Server.DataProvider.Data.Mount;
-using Stump.Server.DataProvider.Data.Recipe;
 
-namespace Stump.Server.DataProvider.Data.SuperAreas
+namespace Stump.Server.DataProvider.Data.Monsters
 {
-    public class SuperAreaTemplateProvider : DataProvider<int,SuperAreaTemplate>
+    public class MonsterSpawnManager : DataManager<uint, MonsterSpawn>
     {
+
         /// <summary>
-        ///   Name of SuperArea templates file
+        /// Name of monsters spawn file
         /// </summary>
         [Variable]
-        public static string SuperAreaFile = "SuperAreaTemplates.xml";
+        public static string MonsterSpawnFile = "MonstersSpawn.xml";
 
-        protected override SuperAreaTemplate GetData(int id)
+
+        protected override MonsterSpawn GetData(uint id)
         {
-            using (var sr = new StreamReader(Settings.StaticPath + SuperAreaFile))
-            {
-                var superAreas = Serializer.Deserialize<List<SuperAreaTemplate>>(sr.BaseStream);
-
-                return superAreas[id];
-            }
+            return null;
         }
 
-        protected override Dictionary<int, SuperAreaTemplate> GetAllData()
+        protected override Dictionary<uint, MonsterSpawn> GetAllData()
         {
-            using (var sr = new StreamReader(Settings.StaticPath + SuperAreaFile))
-            {
-                return Serializer.Deserialize<List<SuperAreaTemplate>>(sr.BaseStream).ToDictionary(s => s.Id);
-            }
+            return null;
         }
     }
 }

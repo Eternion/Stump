@@ -24,7 +24,7 @@ using Stump.Server.DataProvider.Data.D2oTool;
 
 namespace Stump.Server.DataProvider.Data.Alignment
 {
-    public class AlignmentSideTemplateProvider : DataProvider<int,AlignmentSide>
+    public class AlignmentSideTemplateManager : DataManager<int,AlignmentSide>
     {
         protected override AlignmentSide GetData(int id)
         {

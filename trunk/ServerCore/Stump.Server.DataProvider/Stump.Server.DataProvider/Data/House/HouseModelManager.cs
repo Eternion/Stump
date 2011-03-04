@@ -17,39 +17,25 @@
 //  *
 //  *************************************************************************/
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using ProtoBuf;
-using Stump.BaseCore.Framework.Attributes;
-using Stump.DofusProtocol.Enums;
 using Stump.Server.DataProvider.Core;
+using Stump.Server.DataProvider.Data.D2oTool;
 
-namespace Stump.Server.DataProvider.Data.Emote
+namespace Stump.Server.DataProvider.Data.House
 {
-    public class EmoteDurationProvider : DataProvider<EmotesEnum, uint>
+    public class HouseModelManager : DataManager<int, HouseModel>
     {
-        /// <summary>
-        ///   Name of EmoteDuration file
-        /// </summary>
-        [Variable]
-        public static string EmotesFile = "EmotesDuration.xml";
 
-        protected override uint GetData(EmotesEnum id)
+        protected override HouseModel GetData(int id)
         {
-            using (var sr = new StreamReader(Settings.StaticPath + EmotesFile))
-            {
-                var emote = Serializer.Deserialize<List<EmoteDuration>>(sr.BaseStream).FirstOrDefault(element => element.Id == id);
-
-                return emote != null ? emote.Duration : 0;
-            }
+            var house = D2OLoader.LoadData<DofusProtocol.D2oClasses.House>(id);
+            return new HouseModel {ModelId = house.typeId, DefaultPrice = house.defaultPrice};
         }
 
-        protected override Dictionary<EmotesEnum, uint> GetAllData()
+        protected override Dictionary<int, HouseModel> GetAllData()
         {
-            using (var sr = new StreamReader(Settings.StaticPath + EmotesFile))
-            {
-                return Serializer.Deserialize<List<EmoteDuration>>(sr.BaseStream).ToDictionary(e=>e.Id, e=>e.Duration);
-            }
+            return D2OLoader.LoadData<DofusProtocol.D2oClasses.House>()
+             .Select(h => new HouseModel { ModelId = h.typeId, DefaultPrice = h.defaultPrice }).ToDictionary(h => h.ModelId);
         }
     }
 }

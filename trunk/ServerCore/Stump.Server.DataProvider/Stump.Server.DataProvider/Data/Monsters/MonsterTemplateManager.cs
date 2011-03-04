@@ -27,7 +27,7 @@ using Stump.Server.DataProvider.Core;
 
 namespace Stump.Server.DataProvider.Data.Monsters
 {
-    public class MonsterTemplateProvider
+    public class MonsterTemplateManager
     {
 
     }

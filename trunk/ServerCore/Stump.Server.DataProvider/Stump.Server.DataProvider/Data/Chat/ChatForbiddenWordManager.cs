@@ -16,32 +16,41 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using Stump.BaseCore.Framework.Utils;
+using ProtoBuf;
+using Stump.BaseCore.Framework.Attributes;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.DataProvider.Core;
 using Stump.Server.DataProvider.Data.D2oTool;
 
-namespace Stump.Server.DataProvider.Data.TaxCollector
+namespace Stump.Server.DataProvider.Data.Chat
 {
-    public class TaxCollectorFirstNameProvider : DataProvider<int,string>
+    public class ChatForbiddenWordManager : DataManager<uint,string>
     {
-        private static readonly AsyncRandom m_rnd = new AsyncRandom();
 
-        protected override string GetData(int id)
+        protected override string GetData(uint id)
         {
-            return D2OLoader.GetI18NText(D2OLoader.LoadData<TaxCollectorFirstname>(id).firstnameId);
+            var cw = D2OLoader.LoadData<CensoredWord>((int)id);
+            return cw != null ? cw.word : "";
         }
 
-        protected override Dictionary<int, string> GetAllData()
+        protected override Dictionary<uint, string> GetAllData()
         {
-            return D2OLoader.LoadData<TaxCollectorFirstname>().ToDictionary(t => t.id, t => D2OLoader.GetI18NText(t.firstnameId));
+            return D2OLoader.LoadData<CensoredWord>().ToDictionary(w => w.id, w => w.word);
         }
 
-        public KeyValuePair<int, string> GetRandom()
+        /// <summary>
+        /// Only with pre-loaded
+        /// </summary>
+        /// <param name="word"></param>
+        /// <returns></returns>
+        public bool IsCensored(string word)
         {
-            return PreLoadData.ElementAt(m_rnd.NextInt(PreLoadData.Count));
+            return PreLoadData.ContainsValue(word);
         }
     }
 }

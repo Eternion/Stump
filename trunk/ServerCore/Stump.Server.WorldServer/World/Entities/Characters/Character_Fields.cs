@@ -47,8 +47,8 @@ namespace Stump.Server.WorldServer.World.Entities.Characters
 
         public uint Level
         {
-            get { return ThresholdProvider.Instance["CharacterExp"].GetLevel(Experience); }
-            set { Experience = ThresholdProvider.Instance["CharacterExp"].GetLowerBound(value); }
+            get { return ThresholdManager.Instance["CharacterExp"].GetLevel(Experience); }
+            set { Experience = ThresholdManager.Instance["CharacterExp"].GetLowerBound(value); }
         }
 
         public Inventory Inventory

@@ -17,38 +17,35 @@
 //  *
 //  *************************************************************************/
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using ProtoBuf;
-using Stump.BaseCore.Framework.Attributes;
+using Stump.BaseCore.Framework.Utils;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.Server.DataProvider.Core;
+using Stump.Server.DataProvider.Data.D2oTool;
 
-namespace Stump.Server.DataProvider.Data.SubAreas
+namespace Stump.Server.DataProvider.Data.TaxCollector
 {
-    public class SubAreaTemplateProvider : DataProvider<int,SubAreaTemplate>
+    public class TaxCollectorFirstNameManager : DataManager<int,string>
     {
-        /// <summary>
-        ///   Name of SuperArea templates file
-        /// </summary>
-        [Variable]
-        public static string SubAreaFile = "SubAreaTemplates.xml";
+        private static readonly AsyncRandom m_rnd = new AsyncRandom();
 
-        protected override SubAreaTemplate GetData(int id)
+        protected override string GetData(int id)
         {
-            using (var sr = new StreamReader(Settings.StaticPath + SubAreaFile))
-            {
-                var superAreas = Serializer.Deserialize<List<SubAreaTemplate>>(sr.BaseStream);
-
-                return superAreas[id];
-            }
+            return D2OLoader.GetI18NText(D2OLoader.LoadData<TaxCollectorFirstname>(id).firstnameId);
         }
 
-        protected override Dictionary<int, SubAreaTemplate> GetAllData()
+        protected override Dictionary<int, string> GetAllData()
         {
-            using (var sr = new StreamReader(Settings.StaticPath + SubAreaFile))
-            {
-                return Serializer.Deserialize<List<SubAreaTemplate>>(sr.BaseStream).ToDictionary(s => s.Id);
-            }
+            return D2OLoader.LoadData<TaxCollectorFirstname>().ToDictionary(t => t.id, t => D2OLoader.GetI18NText(t.firstnameId));
+        }
+
+        public KeyValuePair<int, string> GetRandom()
+        {
+            return PreLoadData.ElementAt(m_rnd.NextInt(PreLoadData.Count));
         }
     }
 }
+
+
+
+

@@ -90,13 +90,13 @@ namespace Stump.Server.WorldServer.World
 
         private void BuildSuperAreas()
         {
-            m_superAreas=SuperAreaTemplateProvider.Instance.Select(t => new SuperArea(t)).ToDictionary(s => s.Id);
+            m_superAreas=SuperAreaTemplateManager.Instance.Select(t => new SuperArea(t)).ToDictionary(s => s.Id);
             logger.Info("Loaded {0} SuperAreas", m_superAreas.Count);
         }
 
         private void BuildAreas()
         {
-            foreach (var areaTemplate in AreaTemplateProvider.Instance)
+            foreach (var areaTemplate in AreaTemplateManager.Instance)
             {
                 var superArea = GetSuperArea(areaTemplate.SuperAreaId);
                 if (superArea != null)
@@ -113,7 +113,7 @@ namespace Stump.Server.WorldServer.World
 
         public void BuildSubAreas()
         {
-            foreach (var subAreaTemplate in SubAreaTemplateProvider.Instance)
+            foreach (var subAreaTemplate in SubAreaTemplateManager.Instance)
             {
                 var area = GetArea(subAreaTemplate.AreaId);
                 if (area != null)
@@ -130,7 +130,7 @@ namespace Stump.Server.WorldServer.World
 
         public void BuildMaps()
         {
-            var mapTemplates = MapTemplateProvider.Instance.GetAll();
+            var mapTemplates = MapTemplateManager.Instance.GetAll();
 
             var consoleProcent = new ConsoleProcent();
             var count = mapTemplates.Count();

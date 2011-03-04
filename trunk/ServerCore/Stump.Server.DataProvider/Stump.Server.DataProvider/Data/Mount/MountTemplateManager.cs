@@ -16,39 +16,49 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ProtoBuf;
 using Stump.BaseCore.Framework.Attributes;
+using Stump.DofusProtocol.Classes.Extensions;
 using Stump.Server.DataProvider.Core;
 
-namespace Stump.Server.DataProvider.Data.House
+namespace Stump.Server.DataProvider.Data.Mount
 {
-    public class HouseDoorsProvider : DataProvider<int, List<short>>
+    public class MountTemplateManager : DataManager<uint, MountTemplate>
     {
+
         /// <summary>
-        ///   Name of House Doors file
+        ///   Name of Mount template file
         /// </summary>
         [Variable]
-        public static string HousesDoorsFile = "HousesDoors.xml";
+        public static string MountFile = "MountsTemplate.xml";
 
-
-        protected override List<short> GetData(int id)
+        protected override MountTemplate GetData(uint id)
         {
-            using (var sr = new StreamReader(Settings.StaticPath + HousesDoorsFile))
+            using (var sr = new StreamReader(Settings.StaticPath + MountFile))
             {
-                var doors = Serializer.Deserialize<List<HouseDoors>>(sr.BaseStream).FirstOrDefault(h => h.HouseId == id);
+                var mounts = Serializer.Deserialize<List<MountTemplate>>(sr.BaseStream);
 
-                return doors != null ? doors.Doors : null;
+                mounts[(int) id].Look = mounts[(int) id].LookStr.ToEntityLook();
+
+                return mounts[(int)id];
             }
         }
 
-        protected override Dictionary<int, List<short>> GetAllData()
+        protected override Dictionary<uint, MountTemplate> GetAllData()
         {
-            using (var sr = new StreamReader(Settings.StaticPath + HousesDoorsFile))
+            using (var sr = new StreamReader(Settings.StaticPath + MountFile))
             {
-                return Serializer.Deserialize<List<HouseDoors>>(sr.BaseStream).ToDictionary(h=>h.HouseId,h=> h.Doors);
+                var mounts = Serializer.Deserialize<List<MountTemplate>>(sr.BaseStream);
+
+                foreach (var mount in mounts)
+                {
+                    mount.Look = mount.LookStr.ToEntityLook();
+                }
+                return mounts.ToDictionary(m => m.MountId);
             }
         }
     }

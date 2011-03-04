@@ -17,25 +17,38 @@
 //  *
 //  *************************************************************************/
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using ProtoBuf;
+using Stump.BaseCore.Framework.Attributes;
 using Stump.Server.DataProvider.Core;
-using Stump.Server.DataProvider.Data.D2oTool;
 
-namespace Stump.Server.DataProvider.Data.House
+namespace Stump.Server.DataProvider.Data.SubAreas
 {
-    public class HouseModelProvider : DataProvider<int, HouseModel>
+    public class SubAreaTemplateManager : DataManager<int,SubAreaTemplate>
     {
+        /// <summary>
+        ///   Name of SuperArea templates file
+        /// </summary>
+        [Variable]
+        public static string SubAreaFile = "SubAreaTemplates.xml";
 
-        protected override HouseModel GetData(int id)
+        protected override SubAreaTemplate GetData(int id)
         {
-            var house = D2OLoader.LoadData<DofusProtocol.D2oClasses.House>(id);
-            return new HouseModel {ModelId = house.typeId, DefaultPrice = house.defaultPrice};
+            using (var sr = new StreamReader(Settings.StaticPath + SubAreaFile))
+            {
+                var superAreas = Serializer.Deserialize<List<SubAreaTemplate>>(sr.BaseStream);
+
+                return superAreas[id];
+            }
         }
 
-        protected override Dictionary<int, HouseModel> GetAllData()
+        protected override Dictionary<int, SubAreaTemplate> GetAllData()
         {
-            return D2OLoader.LoadData<DofusProtocol.D2oClasses.House>()
-             .Select(h => new HouseModel { ModelId = h.typeId, DefaultPrice = h.defaultPrice }).ToDictionary(h => h.ModelId);
+            using (var sr = new StreamReader(Settings.StaticPath + SubAreaFile))
+            {
+                return Serializer.Deserialize<List<SubAreaTemplate>>(sr.BaseStream).ToDictionary(s => s.Id);
+            }
         }
     }
 }

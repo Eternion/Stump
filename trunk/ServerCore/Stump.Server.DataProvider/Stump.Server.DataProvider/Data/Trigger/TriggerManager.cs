@@ -17,24 +17,35 @@
 //  *
 //  *************************************************************************/
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using Stump.DofusProtocol.D2oClasses;
+using ProtoBuf;
+using Stump.BaseCore.Framework.Attributes;
 using Stump.Server.DataProvider.Core;
-using Stump.Server.DataProvider.Data.D2oTool;
 
-namespace Stump.Server.DataProvider.Data.Interactives
+namespace Stump.Server.DataProvider.Data.Trigger
 {
-    public class InteractiveActionIdProvider : DataProvider<int, int>
+    public class TriggerManager : DataManager<int, List<TriggerTemplate>>
     {
+        /// <summary>
+        ///   Name of Trigger file
+        /// </summary>
+        [Variable]
+        public static string TriggerFile = "Triggers.xml";
 
-        protected override int GetData(int id)
+        protected override List<TriggerTemplate> GetData(int id)
         {
-            return D2OLoader.LoadData<Interactive>(id).actionId;
+            return null;
         }
 
-        protected override Dictionary<int, int> GetAllData()
+        protected override Dictionary<int, List<TriggerTemplate>> GetAllData()
         {
-            return D2OLoader.LoadData<Interactive>().ToDictionary(i => i.id, i => i.actionId);
+            using (var sr = new StreamReader(Settings.StaticPath + TriggerFile))
+            {
+                return
+                    Serializer.Deserialize<List<TriggerTemplate>>(sr.BaseStream).GroupBy(t => t.MapId).
+                    ToDictionary(g=>(int)g.First().MapId,  g => g.ToList());
+            }
         }
     }
 }

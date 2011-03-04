@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Handlers
             }
 
             /* Bad secret Answer */
-            if (ThresholdProvider.Instance["CharacterExp"].GetLevel(character.Experience) > 20 && client.Account.SecretAnswer != null
+            if (ThresholdManager.Instance["CharacterExp"].GetLevel(character.Experience) > 20 && client.Account.SecretAnswer != null
                     && message.secretAnswerHash != StringUtils.GetMd5(message.characterId + "~" + client.Account.SecretAnswer))
             {
                 client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_BAD_SECRET_ANSWER));

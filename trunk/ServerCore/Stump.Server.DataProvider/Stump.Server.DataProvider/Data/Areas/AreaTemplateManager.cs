@@ -16,35 +16,39 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ProtoBuf;
 using Stump.BaseCore.Framework.Attributes;
-using Stump.DofusProtocol.Classes.Extensions;
 using Stump.Server.DataProvider.Core;
 
-namespace Stump.Server.DataProvider.Data.Monsters
+namespace Stump.Server.DataProvider.Data.Areas
 {
-    public class MonsterSpawnProvider : DataProvider<uint, MonsterSpawn>
+    public class AreaTemplateManager : DataManager<int,AreaTemplate>
     {
-
         /// <summary>
-        /// Name of monsters spawn file
+        ///   Name of Area templates file
         /// </summary>
         [Variable]
-        public static string MonsterSpawnFile = "MonstersSpawn.xml";
+        public static string AreaFile = "AreaTemplates.xml";
 
-
-        protected override MonsterSpawn GetData(uint id)
+        protected override AreaTemplate GetData(int id)
         {
-            return null;
+            using (var sr = new StreamReader(Settings.StaticPath + AreaFile))
+            {
+                var areas = Serializer.Deserialize<List<AreaTemplate>>(sr.BaseStream);
+
+                return areas[id];
+            }
         }
 
-        protected override Dictionary<uint, MonsterSpawn> GetAllData()
+        protected override Dictionary<int, AreaTemplate> GetAllData()
         {
-            return null;
+            using (var sr = new StreamReader(Settings.StaticPath + AreaFile))
+            {
+                return Serializer.Deserialize<List<AreaTemplate>>(sr.BaseStream).ToDictionary(s => s.Id);
+            }
         }
     }
 }

@@ -30,7 +30,7 @@ using Stump.Server.DataProvider.Data.D2oTool;
 
 namespace Stump.Server.DataProvider.Data.Breeds
 {
-    public class BreedTemplateProvider : DataProvider<PlayableBreedEnum, BreedTemplate>
+    public class BreedTemplateManager : DataManager<PlayableBreedEnum, BreedTemplate>
     {
         /// <summary>
         ///   Name of Breed file

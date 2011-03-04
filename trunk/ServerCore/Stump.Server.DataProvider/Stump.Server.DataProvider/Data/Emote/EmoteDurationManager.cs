@@ -21,30 +21,34 @@ using System.IO;
 using System.Linq;
 using ProtoBuf;
 using Stump.BaseCore.Framework.Attributes;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.DataProvider.Core;
 
-namespace Stump.Server.DataProvider.Data.Trigger
+namespace Stump.Server.DataProvider.Data.Emote
 {
-    public class TriggerProvider : DataProvider<int, List<TriggerTemplate>>
+    public class EmoteDurationManager : DataManager<EmotesEnum, uint>
     {
         /// <summary>
-        ///   Name of Trigger file
+        ///   Name of EmoteDuration file
         /// </summary>
         [Variable]
-        public static string TriggerFile = "Triggers.xml";
+        public static string EmotesFile = "EmotesDuration.xml";
 
-        protected override List<TriggerTemplate> GetData(int id)
+        protected override uint GetData(EmotesEnum id)
         {
-            return null;
+            using (var sr = new StreamReader(Settings.StaticPath + EmotesFile))
+            {
+                var emote = Serializer.Deserialize<List<EmoteDuration>>(sr.BaseStream).FirstOrDefault(element => element.Id == id);
+
+                return emote != null ? emote.Duration : 0;
+            }
         }
 
-        protected override Dictionary<int, List<TriggerTemplate>> GetAllData()
+        protected override Dictionary<EmotesEnum, uint> GetAllData()
         {
-            using (var sr = new StreamReader(Settings.StaticPath + TriggerFile))
+            using (var sr = new StreamReader(Settings.StaticPath + EmotesFile))
             {
-                return
-                    Serializer.Deserialize<List<TriggerTemplate>>(sr.BaseStream).GroupBy(t => t.MapId).
-                    ToDictionary(g=>(int)g.First().MapId,  g => g.ToList());
+                return Serializer.Deserialize<List<EmoteDuration>>(sr.BaseStream).ToDictionary(e=>e.Id, e=>e.Duration);
             }
         }
     }

@@ -53,8 +53,8 @@ namespace Stump.Server.WorldServer.Handlers
                     new CharacterCharacteristicsInformations(
 
                 /* Experience */ client.ActiveCharacter.Experience,
-                /* Experience Level Floor */ ThresholdProvider.Instance["CharacterExp"].GetLowerBound(client.ActiveCharacter.Experience),
-                /* Experience Next Floor */  ThresholdProvider.Instance["CharacterExp"].GetUpperBound(client.ActiveCharacter.Experience),
+                /* Experience Level Floor */ ThresholdManager.Instance["CharacterExp"].GetLowerBound(client.ActiveCharacter.Experience),
+                /* Experience Next Floor */  ThresholdManager.Instance["CharacterExp"].GetUpperBound(client.ActiveCharacter.Experience),
 
                 /* Kamas Amount */ (uint)client.ActiveCharacter.Inventory.Kamas,
 

@@ -22,39 +22,36 @@ using System.IO;
 using System.Linq;
 using ProtoBuf;
 using Stump.BaseCore.Framework.Attributes;
-using Stump.DofusProtocol.D2oClasses;
-using Stump.DofusProtocol.Enums;
 using Stump.Server.DataProvider.Core;
-using Stump.Server.DataProvider.Data.D2oTool;
+using Stump.Server.DataProvider.Data.Mount;
+using Stump.Server.DataProvider.Data.Recipe;
 
-namespace Stump.Server.DataProvider.Data.Chat
+namespace Stump.Server.DataProvider.Data.SuperAreas
 {
-    public class ChatForbiddenWordProvider : DataProvider<uint,string>
+    public class SuperAreaTemplateManager : DataManager<int,SuperAreaTemplate>
     {
-
-        protected override string GetData(uint id)
-        {
-            var cw = D2OLoader.LoadData<CensoredWord>((int)id);
-            return cw != null ? cw.word : "";
-        }
-
-        protected override Dictionary<uint, string> GetAllData()
-        {
-            return D2OLoader.LoadData<CensoredWord>().ToDictionary(w => w.id, w => w.word);
-        }
-
         /// <summary>
-        /// Only with pre-loaded
+        ///   Name of SuperArea templates file
         /// </summary>
-        /// <param name="word"></param>
-        /// <returns></returns>
-        public bool IsCensored(string word)
+        [Variable]
+        public static string SuperAreaFile = "SuperAreaTemplates.xml";
+
+        protected override SuperAreaTemplate GetData(int id)
         {
-            return PreLoadData.ContainsValue(word);
+            using (var sr = new StreamReader(Settings.StaticPath + SuperAreaFile))
+            {
+                var superAreas = Serializer.Deserialize<List<SuperAreaTemplate>>(sr.BaseStream);
+
+                return superAreas[id];
+            }
+        }
+
+        protected override Dictionary<int, SuperAreaTemplate> GetAllData()
+        {
+            using (var sr = new StreamReader(Settings.StaticPath + SuperAreaFile))
+            {
+                return Serializer.Deserialize<List<SuperAreaTemplate>>(sr.BaseStream).ToDictionary(s => s.Id);
+            }
         }
     }
 }
-
-
-
-

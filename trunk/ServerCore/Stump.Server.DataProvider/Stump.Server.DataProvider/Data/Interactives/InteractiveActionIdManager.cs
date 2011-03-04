@@ -16,44 +16,25 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using ProtoBuf;
-using Stump.BaseCore.Framework.Attributes;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.DofusProtocol.Enums;
 using Stump.Server.DataProvider.Core;
+using Stump.Server.DataProvider.Data.D2oTool;
 
-namespace Stump.Server.DataProvider.Data.Chat
+namespace Stump.Server.DataProvider.Data.Interactives
 {
-    public class ChatChannelTemplateProvider : DataProvider<ChannelId, ChannelTemplate>
+    public class InteractiveActionIdManager : DataManager<int, int>
     {
-        /// <summary>
-        ///   Name of Channels file
-        /// </summary>
-        [Variable]
-        public static string ChannelFile = "Chat/Channels.xml";
 
-        protected override ChannelTemplate GetData(ChannelId id)
+        protected override int GetData(int id)
         {
-            using (var sr = new StreamReader(Settings.StaticPath + ChannelFile))
-            {
-                return Serializer.Deserialize<List<ChannelTemplate>>(sr.BaseStream).FirstOrDefault(c => c.Id == id);
-            }
+            return D2OLoader.LoadData<Interactive>(id).actionId;
         }
 
-        protected override Dictionary<ChannelId, ChannelTemplate> GetAllData()
+        protected override Dictionary<int, int> GetAllData()
         {
-            using (var sr = new StreamReader(Settings.StaticPath + ChannelFile))
-            {
-                return Serializer.Deserialize<List<ChannelTemplate>>(sr.BaseStream).ToDictionary(c => c.Id);
-            }
+            return D2OLoader.LoadData<Interactive>().ToDictionary(i => i.id, i => i.actionId);
         }
     }
 }
-
-
-
-

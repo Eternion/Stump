@@ -16,49 +16,40 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ProtoBuf;
 using Stump.BaseCore.Framework.Attributes;
-using Stump.DofusProtocol.Classes.Extensions;
 using Stump.Server.DataProvider.Core;
 
-namespace Stump.Server.DataProvider.Data.Mount
+namespace Stump.Server.DataProvider.Data.Threshold
 {
-    public class MountTemplateProvider : DataProvider<uint, MountTemplate>
+    public class ThresholdManager : DataManager<string, ThresholdDictionnary>
     {
-
         /// <summary>
-        ///   Name of Mount template file
+        ///   Name of the Thresholds file
         /// </summary>
         [Variable]
-        public static string MountFile = "MountsTemplate.xml";
+        public static string ThresholdsFile = "Thresholds.xml";
 
-        protected override MountTemplate GetData(uint id)
+        protected override ThresholdDictionnary GetData(string id)
         {
-            using (var sr = new StreamReader(Settings.StaticPath + MountFile))
+            using (var reader = new StreamReader(Settings.StaticPath + ThresholdsFile))
             {
-                var mounts = Serializer.Deserialize<List<MountTemplate>>(sr.BaseStream);
+                var t = Serializer.Deserialize<List<ThresholdDictionnaryTemplate>>(reader.BaseStream).FirstOrDefault(  th => th.Name == id);
 
-                mounts[(int) id].Look = mounts[(int) id].LookStr.ToEntityLook();
-
-                return mounts[(int)id];
+                return t == null ? null : new ThresholdDictionnary(t.Name, t.Thresholds.ToDictionary(th => th.Level, th => th.Value));
             }
         }
 
-        protected override Dictionary<uint, MountTemplate> GetAllData()
+        protected override Dictionary<string, ThresholdDictionnary> GetAllData()
         {
-            using (var sr = new StreamReader(Settings.StaticPath + MountFile))
+            using (var reader = new StreamReader(Settings.StaticPath + ThresholdsFile))
             {
-                var mounts = Serializer.Deserialize<List<MountTemplate>>(sr.BaseStream);
-
-                foreach (var mount in mounts)
-                {
-                    mount.Look = mount.LookStr.ToEntityLook();
-                }
-                return mounts.ToDictionary(m => m.MountId);
+                return Serializer.Deserialize<List<ThresholdDictionnaryTemplate>>(reader.BaseStream).
+                    Select(t => new ThresholdDictionnary(t.Name, t.Thresholds.ToDictionary(t2 => t2.Level, t2 => t2.Value))).
+                    ToDictionary(t3 => t3.Name);
             }
         }
     }

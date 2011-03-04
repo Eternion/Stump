@@ -25,7 +25,7 @@ using Stump.Server.DataProvider.Data.D2oTool;
 
 namespace Stump.Server.DataProvider.Data.TaxCollector
 {
-    public class TaxCollectorNameProvider : DataProvider<int,string>
+    public class TaxCollectorNameManager : DataManager<int,string>
     {
         private static readonly AsyncRandom m_rnd = new AsyncRandom();
 

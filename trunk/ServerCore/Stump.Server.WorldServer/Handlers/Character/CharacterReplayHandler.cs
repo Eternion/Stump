@@ -85,7 +85,7 @@ namespace Stump.Server.WorldServer.Handlers
             }
 
             /* Get character Breed */
-            var breedTemplate = BreedTemplateProvider.Instance[(PlayableBreedEnum)character.Breed];
+            var breedTemplate = BreedTemplateManager.Instance[(PlayableBreedEnum)character.Breed];
 
             /* Parse character colors */
             var indexedColors = new List<int>(5);

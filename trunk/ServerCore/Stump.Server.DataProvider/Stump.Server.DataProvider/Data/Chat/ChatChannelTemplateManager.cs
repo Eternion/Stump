@@ -16,41 +16,44 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ProtoBuf;
 using Stump.BaseCore.Framework.Attributes;
+using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.DataProvider.Core;
 
-namespace Stump.Server.DataProvider.Data.Threshold
+namespace Stump.Server.DataProvider.Data.Chat
 {
-    public class ThresholdProvider : DataProvider<string, ThresholdDictionnary>
+    public class ChatChannelTemplateManager : DataManager<ChannelId, ChannelTemplate>
     {
         /// <summary>
-        ///   Name of the Thresholds file
+        ///   Name of Channels file
         /// </summary>
         [Variable]
-        public static string ThresholdsFile = "Thresholds.xml";
+        public static string ChannelFile = "Chat/Channels.xml";
 
-        protected override ThresholdDictionnary GetData(string id)
+        protected override ChannelTemplate GetData(ChannelId id)
         {
-            using (var reader = new StreamReader(Settings.StaticPath + ThresholdsFile))
+            using (var sr = new StreamReader(Settings.StaticPath + ChannelFile))
             {
-                var t = Serializer.Deserialize<List<ThresholdDictionnaryTemplate>>(reader.BaseStream).FirstOrDefault(  th => th.Name == id);
-
-                return t == null ? null : new ThresholdDictionnary(t.Name, t.Thresholds.ToDictionary(th => th.Level, th => th.Value));
+                return Serializer.Deserialize<List<ChannelTemplate>>(sr.BaseStream).FirstOrDefault(c => c.Id == id);
             }
         }
 
-        protected override Dictionary<string, ThresholdDictionnary> GetAllData()
+        protected override Dictionary<ChannelId, ChannelTemplate> GetAllData()
         {
-            using (var reader = new StreamReader(Settings.StaticPath + ThresholdsFile))
+            using (var sr = new StreamReader(Settings.StaticPath + ChannelFile))
             {
-                return Serializer.Deserialize<List<ThresholdDictionnaryTemplate>>(reader.BaseStream).
-                    Select(t => new ThresholdDictionnary(t.Name, t.Thresholds.ToDictionary(t2 => t2.Level, t2 => t2.Value))).
-                    ToDictionary(t3 => t3.Name);
+                return Serializer.Deserialize<List<ChannelTemplate>>(sr.BaseStream).ToDictionary(c => c.Id);
             }
         }
     }
 }
+
+
+
+

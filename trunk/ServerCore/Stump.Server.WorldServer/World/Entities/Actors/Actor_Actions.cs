@@ -132,7 +132,7 @@ namespace Stump.Server.WorldServer.World.Entities.Actors
         {
             Map.Characters.Send(c =>
             {
-                ContextHandler.SendEmotePlayMessage(c.Client, this, emote, EmoteDurationProvider.Instance.Get(emote));
+                ContextHandler.SendEmotePlayMessage(c.Client, this, emote, EmoteDurationManager.Instance.Get(emote));
                 BasicHandler.SendBasicNoOperationMessage(c.Client);
             }, c => c.Context == GameContextEnum.ROLE_PLAY);
         }

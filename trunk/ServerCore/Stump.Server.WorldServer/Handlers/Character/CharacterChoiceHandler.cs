@@ -173,7 +173,7 @@ namespace Stump.Server.WorldServer.Handlers
                 characterRecord =>
                 new CharacterBaseInformations(
                     (uint)characterRecord.Id,
-                    ThresholdProvider.Instance["CharacterExp"].GetLevel(characterRecord.Experience),
+                    ThresholdManager.Instance["CharacterExp"].GetLevel(characterRecord.Experience),
                     characterRecord.Name,
                     CharacterManager.GetStuffedCharacterLook(characterRecord).EntityLook,
                     characterRecord.Breed,
@@ -195,7 +195,7 @@ namespace Stump.Server.WorldServer.Handlers
             foreach (CharacterRecord c in client.Characters)
             {
                 cbi.Add(new CharacterBaseInformations((uint)c.Id,
-                                                      ThresholdProvider.Instance["CharacterExp"].GetLevel(c.Experience),
+                                                      ThresholdManager.Instance["CharacterExp"].GetLevel(c.Experience),
                                                       c.Name, CharacterManager.GetStuffedCharacterLook(c).EntityLook,
                                                       c.Breed, c.Sex != SexTypeEnum.SEX_MALE));
 

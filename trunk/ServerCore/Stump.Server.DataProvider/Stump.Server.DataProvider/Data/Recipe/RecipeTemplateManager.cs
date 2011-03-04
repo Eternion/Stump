@@ -23,7 +23,7 @@ using Stump.Server.DataProvider.Data.D2oTool;
 
 namespace Stump.Server.DataProvider.Data.Recipe
 {
-    public class RecipeTemplateProvider : DataProvider<int, RecipeTemplate>
+    public class RecipeTemplateManager : DataManager<int, RecipeTemplate>
     {
         protected override RecipeTemplate GetData(int id)
         {

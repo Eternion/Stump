@@ -95,7 +95,7 @@ namespace Stump.Server.WorldServer.Handlers
             }
 
             /* Get character Breed */
-            var breedTemplate = BreedTemplateProvider.Instance.Get((PlayableBreedEnum)message.breed);
+            var breedTemplate = BreedTemplateManager.Instance.Get((PlayableBreedEnum)message.breed);
 
             /* Check if breed is available */
             if (!client.Account.CanUseBreed(message.breed) || !AvailableBreeds.Contains(breedTemplate.Id))
@@ -126,7 +126,7 @@ namespace Stump.Server.WorldServer.Handlers
             /* Create Character */
             var character = new CharacterRecord
             {
-                Experience = ThresholdProvider.Instance["CharacterExp"].GetLowerBound(breedTemplate.StartLevel),
+                Experience = ThresholdManager.Instance["CharacterExp"].GetLowerBound(breedTemplate.StartLevel),
                 Name = characterName,
                 Breed = message.breed,
                 Sex = message.sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE,

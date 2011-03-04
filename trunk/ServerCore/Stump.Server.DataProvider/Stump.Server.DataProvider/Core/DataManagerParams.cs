@@ -2,7 +2,7 @@
 
 namespace Stump.Server.DataProvider.Core
 {
-    public class ProviderParams
+    public class DataManagerParams
     {
         public Type ProviderType { get; set; }
 
@@ -12,7 +12,7 @@ namespace Stump.Server.DataProvider.Core
 
         public int CheckTime { get; set; }
 
-        public ProviderParams()
+        public DataManagerParams()
         {
         }
     }

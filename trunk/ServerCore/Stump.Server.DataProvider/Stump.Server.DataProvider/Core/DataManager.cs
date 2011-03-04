@@ -7,7 +7,7 @@ using Stump.BaseCore.Framework.Utils;
 
 namespace Stump.Server.DataProvider.Core
 {
-    public abstract class DataProvider<T, T1> : Singleton<DataProvider<T, T1>>, IEnumerable<T1>
+    public abstract class DataManager<T, T1> : Singleton<DataManager<T, T1>>, IEnumerable<T1>
     {
         protected CacheDictionary<T, T1> Cache;
         protected Dictionary<T, T1> PreLoadData;
@@ -24,7 +24,7 @@ namespace Stump.Server.DataProvider.Core
             get { return Get(index); }
         }
 
-        internal void Init(ProviderParams @params)
+        internal void Init(DataManagerParams @params)
         {
             m_loadingType = @params.LoadingType;
             m_lifeTime = @params.LifeTime;
@@ -93,11 +93,11 @@ namespace Stump.Server.DataProvider.Core
     }
 
 
-    public abstract class DataProvider<T> : Singleton<DataProvider<T>>
+    public abstract class DataManager<T> : Singleton<DataManager<T>>
     {
         protected List<T> PreLoadData;
 
-        internal void Init(ProviderParams @params)
+        internal void Init(DataManagerParams @params)
         {
             PreLoadData = GetAllData();
         }

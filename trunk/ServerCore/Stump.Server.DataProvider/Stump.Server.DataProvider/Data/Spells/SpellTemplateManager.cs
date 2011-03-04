@@ -26,7 +26,7 @@ using Stump.Server.DataProvider.Core;
 
 namespace Stump.Server.DataProvider.Data.Spells
 {
-    public class SpellTemplateProvider : DataProvider<uint,SpellTemplate>
+    public class SpellTemplateManager : DataManager<uint,SpellTemplate>
     {
 
         private static Dictionary<int, Spell> m_spellTemplates = new Dictionary<int, Spell>();
