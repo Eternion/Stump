@@ -28,6 +28,7 @@ namespace Stump.Server.DataProvider.Data.Alignment
     {
         protected override AlignmentSide GetData(int id)
         {
+            
             // ROFL FLEMME
             return null;
         }

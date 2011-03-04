@@ -41,7 +41,7 @@ namespace Stump.Server.DataProvider.Data.Breeds
         protected override BreedTemplate GetData(PlayableBreedEnum id)
         {
             Breed breedData = D2OLoader.LoadData<Breed>().FirstOrDefault(b => b.id == (int) id);
-
+            Serializer.DeserializeItems<>()
             if (breedData == null)
                 throw new Exception("The correspondant D2O file \'Breeds.d2o\' is unfundable");
 

@@ -74,6 +74,8 @@
     <Compile Include="Core\DataLoader.cs" />
     <Compile Include="Core\LoadingType.cs" />
     <Compile Include="Core\DataManager.cs" />
+    <Compile Include="Core\SdpReader.cs" />
+    <Compile Include="Core\SdpWriter.cs" />
     <Compile Include="Core\Settings.cs" />
     <Compile Include="Data\Actions\ActionBase.cs" />
     <Compile Include="Data\Actions\ActionsCharacter\ActionTeleport.cs" />

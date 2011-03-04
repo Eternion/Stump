@@ -43,7 +43,7 @@ namespace Stump.Server.DataProvider.Core
                     m_getMethod = Cache.Get;
                     m_getAllMethod = () => GetAllData().Select(k => k.Value);
                     break;
-
+                    
                 case LoadingType.LazyLoading:
                     m_getMethod = GetData;
                     m_getAllMethod = () => GetAllData().Select(k => k.Value);
