@@ -1,47 +1,59 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ProtoBuf;
+using NLog;
 using Stump.BaseCore.Framework.Attributes;
 
 namespace Stump.Server.DataProvider.Core
 {
-    static class DataLoader
+    public static class DataLoader
     {
+        private static readonly Logger m_logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         ///  Contains all of params of the providers
+        ///  LoadingType :  - PreLoading    : Load the entire file and store it into memory (Memory--/Speed++)
+        ///                 - CacheLoading  : Store into memory during a defined time objects that are requested once (Memory+-/Speed+-)
+        ///                 - LazyLoading   : Don't store anything, always load from the file the objects (Memory++/Speed--)
+        ///  
+        ///  LifeTime (CacheLoading only)   : Life time of a cached object (in seconds)
+        ///  CheckTime (CacheLoading only)  : Time between each check cycle to make the cache clean (in seconds)
         /// </summary>
         [Variable]
         public static List<DataManagerParams> DataManagerParams = new List<DataManagerParams>();
 
-        public static void Init()
+        public static void Initialize()
         {
-            var @params = DataManagerParams.ToDictionary(p => p.ProviderType);
+            Dictionary<string, DataManagerParams> @params = DataManagerParams.ToDictionary(p => p.ProviderType);
 
-            var asm = Assembly.GetExecutingAssembly();
-            var attribType = typeof(DataManagerAttribute);
+            Assembly asm = Assembly.GetExecutingAssembly();
 
-            foreach (var type in asm.GetTypes())
+            Dictionary<Type, DataManagerAttribute> managers =
+                asm.GetTypes().Where(
+                    entry => entry.GetCustomAttributes(typeof (DataManagerAttribute), false).Count() > 0).
+                    ToDictionary(entry => entry,
+                                 entry =>
+                                 (DataManagerAttribute)
+                                 entry.GetCustomAttributes(typeof (DataManagerAttribute), false).FirstOrDefault());
+
+            foreach (var manager in managers.OrderByDescending(entry => entry.Value.LoadPriority))
             {
-                var attrib = type.GetCustomAttributes(attribType, false).FirstOrDefault() as DataManagerAttribute;
+                FieldInfo field = manager.Key.GetField("Instance");
 
-                if (attrib != null)
+                if (field != null)
                 {
-                    var field = type.GetField("Instance");
-                    var method = type.GetMethod("Init");
-                    if (field != null && method != null)
-                    {
-                        var instance = field.GetValue(null);
+                    object instance = field.GetValue(null);
+                    DataManagerParams managerParams = @params.ContainsKey(manager.Key.Name)
+                                                          ? @params[manager.Key.Name]
+                                                          : new DataManagerParams
+                                                                {LoadingType = LoadingType.PreLoading};
 
-                        if (@params.ContainsKey(type))
-                            type.GetMethod("Init").Invoke(instance, new object[] { @params[type] });
-                        else
-                            type.GetMethod("Init").Invoke(instance, new object[] { new DataManagerParams { LoadingType = LoadingType.PreLoading, LifeTime = 60000, CheckTime = 60000 } });
-                    }
+                    m_logger.Info(manager.Value.LoadingMessage + "(" + managerParams.LoadingType + ")");
+
+                    manager.Key.GetMethod("Initialize").Invoke(instance, new object[] {managerParams});
                 }
             }
         }
-
     }
 }

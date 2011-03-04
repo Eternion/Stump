@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Stump.BaseCore.Framework.Pool;
 
 namespace Stump.BaseCore.Framework.Cache
@@ -32,10 +33,11 @@ namespace Stump.BaseCore.Framework.Cache
 
         private void RemoveDirtyData()
         {
-            foreach (var e in m_cache)
+            var outdatedElements = m_cache.Where(entry => entry.Value.CachedTime.TotalSeconds > m_lifeTime);
+
+            foreach (var outdatedElement in outdatedElements)
             {
-                if (e.Value.CachedTime.TotalSeconds > m_lifeTime)
-                    m_cache.Remove(e.Key);
+                m_cache.Remove(outdatedElement.Key);
             }
         }
     }

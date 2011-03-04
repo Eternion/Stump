@@ -16,7 +16,7 @@ namespace Stump.Server.DataProvider.Core
 
         private int m_checkTime;
         private int m_lifeTime;
-        private string m_loadingType;
+        private LoadingType m_loadingType;
 
         private readonly Logger m_logger = LogManager.GetCurrentClassLogger();
 
@@ -27,7 +27,7 @@ namespace Stump.Server.DataProvider.Core
 
         #region Initialization
 
-        private void Init(DataManagerParams @params)
+        internal void Initialize(DataManagerParams @params)
         {
             m_loadingType = @params.LoadingType;
             m_lifeTime = @params.LifeTime;
@@ -35,20 +35,17 @@ namespace Stump.Server.DataProvider.Core
 
             switch (m_loadingType)
             {
-                case "PreLoading":
+                case LoadingType.PreLoading:
                     PreLoadingInit();
                     m_logger.Info("PreLoaded {0} element(s)", m_preLoadData.Count);
                     break;
-                case "CachedLoading":
+                case LoadingType.CacheLoading:
                     CachedLoadingInit();
-                    m_logger.Info("Init Cache with lifeTime of {0}second(s)", m_lifeTime);
+                    m_logger.Info("Initialize Cache with lifeTime of {0}second(s)", m_lifeTime);
                     break;
-                case "LazyLoading":
+                case LoadingType.LazyLoading:
                     LazyLoadingInit();
-                    m_logger.Info("Init with LazyLoading");
-                    break;
-                default :
-                    m_logger.Info("Wrong LoadingType, can't manage any elements");
+                    m_logger.Info("Initialize with LazyLoading");
                     break;
             }
         }
@@ -89,6 +86,7 @@ namespace Stump.Server.DataProvider.Core
 
         public bool Contains(T id)
         {
+            // NOTE : useless if Get() return null
             return Get(id) != null;
         }
 
@@ -157,7 +155,7 @@ namespace Stump.Server.DataProvider.Core
     {
         private List<T> m_preLoadData;
 
-        internal void Init(DataManagerParams @params)
+        internal void Initialize(DataManagerParams @params)
         {
             m_preLoadData = GetAllData();
         }
