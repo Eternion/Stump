@@ -18,43 +18,29 @@
 //  *************************************************************************/
 using System.Collections.Generic;
 using Castle.ActiveRecord;
+using Stump.Database.Types;
 
 namespace Stump.Database.WorldServer
 {
-
-    [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("sellbags")]
-    public sealed class SellBagRecord : ActiveRecordBase<SellBagRecord>
+    public sealed class SellBagRecord : WorldRecord<SellBagRecord>
     {
         private IList<PricedItemRecord> m_items;
 
         [PrimaryKey(PrimaryKeyType.Foreign, "CharacterId")]
-        public uint CharacterId
-        {
-            get;
-            set;
-        }
+        public uint CharacterId { get; set; }
 
         [OneToOne]
-        public CharacterRecord Character
-        {
-            get;
-            set;
-        }
+        public CharacterRecord Character { get; set; }
 
         [Property("Capacity")]
-        public uint Capacity
-        {
-            get;
-            set;
-        }
+        public uint Capacity { get; set; }
 
-        [HasMany(typeof(PricedItemRecord), Table = "sellbags_items", ColumnKey = "CharacterId")]
+        [HasMany(typeof (PricedItemRecord), Table = "sellbags_items", ColumnKey = "CharacterId")]
         public IList<PricedItemRecord> PricedItems
         {
             get { return m_items ?? new List<PricedItemRecord>(); }
             set { m_items = value; }
         }
-
     }
 }

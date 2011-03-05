@@ -17,35 +17,20 @@
 //  *
 //  *************************************************************************/
 using Castle.ActiveRecord;
+using Stump.Database.Types;
 
 namespace Stump.Database.WorldServer
 {
-
-    [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("storages")]
-    public class StorageRecord : ActiveRecordBase<StorageRecord>
+    public class StorageRecord : WorldRecord<StorageRecord>
     {
+        [PrimaryKey(PrimaryKeyType.Assigned, "StorageId")]
+        public uint StorageId { get; set; }
 
-        [PrimaryKey(PrimaryKeyType.Assigned,"StorageId")]
-        public uint StorageId
-        {
-            get;
-            set;
-        }
-
-        [Property("Password", NotNull=false)]
-        public string Password
-        {
-            get;
-            set;
-        }
+        [Property("Password", NotNull = false)]
+        public string Password { get; set; }
 
         [BelongsTo("InventoryId", NotNull = false)]
-        public InventoryRecord Inventory
-        {
-            get;
-            set;
-        }
-
+        public InventoryRecord Inventory { get; set; }
     }
 }

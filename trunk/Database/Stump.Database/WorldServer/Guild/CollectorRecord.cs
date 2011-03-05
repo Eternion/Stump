@@ -18,83 +18,42 @@
 //  *************************************************************************/
 using System;
 using Castle.ActiveRecord;
+using Stump.Database.Types;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database.WorldServer
 {
-    [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("guilds_collectors")]
-    public sealed class CollectorRecord : ActiveRecordBase<CollectorRecord>
+    public sealed class CollectorRecord : WorldRecord<CollectorRecord>
     {
-
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
-        public uint Id
-        {
-            get;
-            set;
-        }
+        public uint Id { get; set; }
 
         [BelongsTo("GuildId", NotNull = true)]
-        public GuildRecord Guild
-        {
-            get;
-            set;
-        }
+        public GuildRecord Guild { get; set; }
 
         [BelongsTo("OwnerId", NotNull = true)]
-        public CharacterRecord Owner
-        {
-            get;
-            set;
-        }
+        public CharacterRecord Owner { get; set; }
 
         [Property("LastNameId", NotNull = true)]
-        public uint LastNameId
-        {
-            get;
-            set;
-        }
+        public uint LastNameId { get; set; }
 
         [Property("FirstNameId", NotNull = true)]
-        public uint FirstNameId
-        {
-            get;
-            set;
-        }
+        public uint FirstNameId { get; set; }
 
         [Property("MapId", NotNull = true)]
-        public int MapId
-        {
-            get;
-            set;
-        }
+        public int MapId { get; set; }
 
         [Property("CellId", NotNull = true)]
-        public ushort CellId
-        {
-            get;
-            set;
-        }
+        public ushort CellId { get; set; }
 
         [Property("Direction", NotNull = true)]
-        public DirectionsEnum Direction
-        {
-            get;
-            set;
-        }
+        public DirectionsEnum Direction { get; set; }
 
         [BelongsTo("InventoryId", NotNull = true, Cascade = CascadeEnum.Delete)]
-        public InventoryRecord Inventory
-        {
-            get;
-            set;
-        }
+        public InventoryRecord Inventory { get; set; }
 
         [Property("SetDate", NotNull = true)]
-        public DateTime SetDate
-        {
-            get;
-            set;
-        }
+        public DateTime SetDate { get; set; }
     }
 }

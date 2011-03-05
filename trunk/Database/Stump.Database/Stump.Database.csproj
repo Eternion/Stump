@@ -123,15 +123,19 @@
   <ItemGroup>
     <Compile Include="AuthServer\AccountRecord.cs" />
     <Compile Include="ActiveRecordHelper.cs" />
-    <Compile Include="AttributeDatabase.cs" />
     <Compile Include="AuthServer\World\DeletedWorldCharacterRecord.cs" />
     <Compile Include="AuthServer\IpBannedRecord.cs" />
+    <Compile Include="DatabaseType.cs" />
+    <Compile Include="Types\AuthRecord.cs" />
+    <Compile Include="Types\DataRecord.cs" />
+    <Compile Include="Types\WorldRecord.cs" />
     <Compile Include="WorldServer\Alignment\AlignmentRecord.cs" />
     <Compile Include="WorldServer\Alignment\PrismRecord.cs" />
     <Compile Include="WorldServer\Alignment\SubAreaRecord.cs" />
     <Compile Include="WorldServer\Guild\GuildPaddockRecord.cs" />
     <Compile Include="WorldServer\Item\PricedItemRecord.cs" />
     <Compile Include="WorldServer\Item\ItemEffectRecord.cs" />
+    <Compile Include="IVersionRecord.cs" />
     <Compile Include="WorldServer\Paddock\PaddockItemRecord.cs" />
     <Compile Include="WorldServer\Paddock\MountBehaviorRecord.cs" />
     <Compile Include="WorldServer\Paddock\PaddockRecord.cs" />
@@ -144,9 +148,8 @@
     <Compile Include="WorldServer\StartupAction\StartupActionItemRecord.cs" />
     <Compile Include="WorldServer\StartupAction\StartupActionRecord.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WorldServer\Character\SpellRecord.cs" />
-    <Compile Include="DatabaseService.cs" />
-    <Compile Include="VersionRecord.cs" />
+    <Compile Include="WorldServer\Character\CharacterSpellRecord.cs" />
+    <Compile Include="AuthServer\AuthVersionRecord.cs" />
     <Compile Include="AuthServer\World\WorldCharacterRecord.cs" />
     <Compile Include="AuthServer\World\WorldRecord.cs" />
     <Compile Include="WorldServer\Guild\CollectorRecord.cs" />
@@ -161,9 +164,14 @@
     <Compile Include="WorldServer\Storage\StorageRecord.cs" />
     <Compile Include="WorldServer\WorldAccountRecord.cs" />
     <Compile Include="WorldServer\Paddock\MountRecord.cs" />
+    <Compile Include="WorldServer\WorldVersionRecord.cs" />
     <Compile Include="WorldServer\Zaap\ZaapRecord.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\BaseCore\Stump.BaseCore.Framework\Stump.BaseCore.Framework.csproj">
+      <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
+      <Name>Stump.BaseCore.Framework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DofusProtocol\Classes\Stump.DofusProtocol.Classes.csproj">
       <Project>{10884165-D492-4895-B3EF-32429F7A7F55}</Project>
       <Name>Stump.DofusProtocol.Classes</Name>

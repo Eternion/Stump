@@ -18,33 +18,20 @@
 //  *************************************************************************/
 using System.Collections.Generic;
 using Castle.ActiveRecord;
+using Stump.Database.Types;
 
 namespace Stump.Database.WorldServer
 {
-    [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("bidhouses")]
-    public sealed class BidHouseRecord : ActiveRecordBase<BidHouseRecord>
+    public sealed class BidHouseRecord : WorldRecord<BidHouseRecord>
     {
-
         [PrimaryKey(PrimaryKeyType.Assigned, "BidHouseId")]
-        public uint BidHouseId
-        {
-            get;
-            set;
-        }
+        public uint BidHouseId { get; set; }
 
-        [HasMany(typeof(BidHouseItemRecord))]
-        public IList<BidHouseItemRecord> Items
-        {
-            get;
-            set;
-        }
+        [HasMany(typeof (BidHouseItemRecord))]
+        public IList<BidHouseItemRecord> Items { get; set; }
 
-        [HasMany(typeof(BidHouseSoldItemRecord))]
-        public IList<BidHouseSoldItemRecord> SoldItems
-        {
-            get;
-            set;
-        }
+        [HasMany(typeof (BidHouseSoldItemRecord))]
+        public IList<BidHouseSoldItemRecord> SoldItems { get; set; }
     }
 }

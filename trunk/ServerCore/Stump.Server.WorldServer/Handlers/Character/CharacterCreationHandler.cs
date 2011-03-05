@@ -128,7 +128,7 @@ namespace Stump.Server.WorldServer.Handlers
             {
                 Experience = ThresholdManager.Instance["CharacterExp"].GetLowerBound(breedTemplate.StartLevel),
                 Name = characterName,
-                Breed = message.breed,
+                Breed = (PlayableBreedEnum) message.breed,
                 Sex = message.sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE,
                 BaseLook = breedLook,
                 MapId = breedTemplate.StartMap,
@@ -151,7 +151,7 @@ namespace Stump.Server.WorldServer.Handlers
             var startPos = 64;
             foreach (var spellTemplate in breedTemplate.LearnableSpells.Where(s => s.ObtainLevel == 1))
             {
-                var spell = new SpellRecord { SpellId = (uint)spellTemplate.Id, Character = character, Position = startPos++, Level = 1 };
+                var spell = new CharacterSpellRecord { SpellId = (uint)spellTemplate.Id, Character = character, Position = startPos++, Level = 1 };
                 spell.Create();
                 character.Spells.Add(spell);
             }

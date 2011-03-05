@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WORLD_SERVER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>..\..\Docs\Stump.Server.WorldServer.xml</DocumentationFile>
@@ -144,8 +144,9 @@
     <Compile Include="World\Stats\Caracteristic.cs" />
     <Compile Include="World\Entities\Interfaces\ISpellsOwner.cs" />
     <Compile Include="World\Entities\Interfaces\IAligned.cs" />
-    <Compile Include="World\Storages\Storage.cs" />
-    <Compile Include="World\Storages\PricedItem.cs" />
+    <Compile Include="World\Storages\New\Equipment.cs" />
+    <Compile Include="World\Storages\New\Storage.cs" />
+    <Compile Include="World\Item\PricedItem.cs" />
     <Compile Include="World\Storages\SellBag.cs" />
     <Compile Include="World\Entities\Extensions\CharacterExtension.cs" />
     <Compile Include="World\Entities\Interfaces\IAttackable.cs" />
@@ -251,8 +252,8 @@
     <Compile Include="Handlers\Startup\StartupHandler.cs" />
     <Compile Include="Handlers\Subscriber\SubscriberHandler.cs" />
     <Compile Include="Handlers\WorldHandlerContainer.cs" />
-    <Compile Include="World\Storages\Inventory.cs" />
-    <Compile Include="World\Storages\Item.cs" />
+    <Compile Include="World\Storages\New\Inventory.cs" />
+    <Compile Include="World\Item\Item.cs" />
     <Compile Include="Core\Settings.cs" />
     <Compile Include="World\Spells\Spell.cs" />
     <Compile Include="World\Spells\SpellInventory.cs" />

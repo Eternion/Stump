@@ -18,7 +18,6 @@
 //  *************************************************************************/
 using System.Collections.Generic;
 using Stump.BaseCore.Framework.Collections;
-using Stump.Server.BaseServer.Network;
 using Stump.Server.DataProvider.Data.Areas;
 using Stump.Server.WorldServer.World.Entities.Characters;
 
@@ -45,7 +44,7 @@ namespace Stump.Server.WorldServer.World.Zones
         public string Name
         {
             get { return Template.Name; }
-            set { Template.Name = value; }
+            set {Template.Name = value; }
         }
 
         public Dictionary<int, SubArea> SubAreas
@@ -54,7 +53,7 @@ namespace Stump.Server.WorldServer.World.Zones
             set;
         }
 
-        private ConcurrentList<Character> m_characters = new ConcurrentList<Character>();
+        private readonly ConcurrentList<Character> m_characters = new ConcurrentList<Character>();
         public ConcurrentList<Character> Characters
         { get { return m_characters; } }
 

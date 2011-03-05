@@ -19,11 +19,9 @@
 using System.Collections.Generic;
 using Stump.BaseCore.Framework.Collections;
 using Stump.Database.WorldServer;
-using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.DataProvider.Data.SubAreas;
 using Stump.Server.WorldServer.Entities;
-using Stump.Server.WorldServer.World.Actors.Character;
 using Stump.Server.WorldServer.World.Entities.Characters;
 
 namespace Stump.Server.WorldServer.World.Zones
@@ -31,14 +29,16 @@ namespace Stump.Server.WorldServer.World.Zones
     public class SubArea
     {
 
-        public SubArea(SubAreaTemplate template, Area area)
+        public SubArea(SubAreaTemplate template, SubAreaRecord record, Area area)
         {
             Template = template;
+            Record = record;
             Area = area;
-            AlignmentSide = AlignmentSideEnum.ALIGNMENT_NEUTRAL;
         }
 
         public readonly SubAreaTemplate Template;
+
+        public readonly SubAreaRecord Record;
 
         public int Id
         {
@@ -61,8 +61,8 @@ namespace Stump.Server.WorldServer.World.Zones
 
         public AlignmentSideEnum AlignmentSide
         {
-            get;
-            set;
+            get { return (AlignmentSideEnum)Record.AlignmentSide; }
+            set { Record.AlignmentSide = (int)value; }
         }
 
         private ConcurrentList<Character> m_characters = new ConcurrentList<Character>();
@@ -72,15 +72,9 @@ namespace Stump.Server.WorldServer.World.Zones
 
         public void Save()
         {
-            if (!SubAreaRecord.Exists(Id))
-                new SubAreaRecord { SubAreaId = (uint)Id, AlignmentSide = (int)AlignmentSide, Prism = null }.Create();
-            else
-            {
-                var record = SubAreaRecord.Find(Id);
-                record.AlignmentSide = (int)AlignmentSide;
-                record.Prism = null;
-                record.SaveAndFlush();
-            }
+                Record.AlignmentSide = (int)AlignmentSide;
+                Record.Prism = Prism.Record;
+                Record.SaveAndFlush();
         }
 
         public override string ToString()

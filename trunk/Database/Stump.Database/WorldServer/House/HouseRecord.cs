@@ -17,43 +17,23 @@
 //  *
 //  *************************************************************************/
 using Castle.ActiveRecord;
+using Stump.Database.Types;
 
 namespace Stump.Database.WorldServer
 {
-
-    [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("accounts_house"), JoinedBase]
-    public class HouseRecord : ActiveRecordBase<HouseRecord>
+    public class HouseRecord : WorldRecord<HouseRecord>
     {
-
         [PrimaryKey(PrimaryKeyType.Assigned, "HouseId")]
-        public uint HouseId
-        {
-            get;
-            set;
-        }
-        
+        public uint HouseId { get; set; }
+
         [BelongsTo("AccountId", NotNull = true)]
-        public WorldAccountRecord Account
-        {
-            get;
-            set;
-        }
+        public WorldAccountRecord Account { get; set; }
 
         [Property("Price", NotNull = false)]
-        public uint Price
-        {
-            get;
-            set;
-        }
+        public uint Price { get; set; }
 
         [Property("Password", NotNull = false)]
-        public uint Password
-        {
-            get;
-            set;
-        }
-
-
+        public uint Password { get; set; }
     }
 }

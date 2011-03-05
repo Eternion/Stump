@@ -16,68 +16,36 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System.Collections.Generic;
+
+using Stump.BaseCore.Framework.Attributes;
 
 namespace Stump.Server.BaseServer.Database
 {
-    public enum DatabaseType
-    {
-        MySQL,
-        MSSQL2005,
-        MSSQL2008
-    }
-
     public class DatabaseConfiguration
     {
-        private readonly IDictionary<string, string> m_props;
+        /// <summary>
+        /// Folder which contains all of sql file to update db
+        /// </summary>
+        public string UpdateFileDir = "./sql_update/";
 
-        public DatabaseConfiguration(DatabaseType dbtype, string host, string dbName, string user, string password)
-        {
-            m_props = new Dictionary<string, string>();
+        /// <summary>
+        /// Database user
+        /// </summary>
+        public string User = "root";
 
-            switch (dbtype)
-            {
-                case DatabaseType.MySQL:
-                {
-                    m_props.Add("connection.driver_class", "NHibernate.Driver.MySqlDataDriver");
-                    m_props.Add("dialect", "NHibernate.Dialect.MySQLDialect");
-                    m_props.Add("connection.provider", "NHibernate.Connection.DriverConnectionProvider");
-                    m_props.Add("connection.connection_string", "Database=" + dbName + ";Data Source=" + host +
-                                                                ";User Id=" + user + ";Password=" + password);
-                    m_props.Add("proxyfactory.factory_class",
-                                "NHibernate.ByteCode.Castle.ProxyFactoryFactory, NHibernate.ByteCode.Castle");
-                    break;
-                }
-                case DatabaseType.MSSQL2005:
-                {
-                    m_props.Add("connection.driver_class", "NHibernate.Driver.SqlClientDriver");
-                    m_props.Add("dialect", "NHibernate.Dialect.MsSql2005Dialect");
-                    m_props.Add("connection.provider", "NHibernate.Connection.DriverConnectionProvider");
-                    m_props.Add("connection.connection_string",
-                                "Data Source=" + host + ";Initial Catalog=" + dbName + ";User Id=" + user +
-                                ";Password=" + password + ";");
-                    m_props.Add("proxyfactory.factory_class",
-                                "NHibernate.ByteCode.Castle.ProxyFactoryFactory, NHibernate.ByteCode.Castle");
-                    break;
-                }
-                case DatabaseType.MSSQL2008:
-                {
-                    m_props.Add("connection.driver_class", "NHibernate.Driver.SqlClientDriver");
-                    m_props.Add("dialect", "NHibernate.Dialect.MsSql2008Dialect");
-                    m_props.Add("connection.provider", "NHibernate.Connection.DriverConnectionProvider");
-                    m_props.Add("connection.connection_string",
-                                "Data Source=" + host + ";Initial Catalog=" + dbName + ";User Id=" + user +
-                                ";Password=" + password + ";");
-                    m_props.Add("proxyfactory.factory_class",
-                                "NHibernate.ByteCode.Castle.ProxyFactoryFactory, NHibernate.ByteCode.Castle");
-                    break;
-                }
-            }
-        }
+        /// <summary>
+        /// Database password
+        /// </summary>
+        public string Password = "";
 
-        public IDictionary<string, string> GetProperties()
-        {
-            return m_props;
-        }
+        /// <summary>
+        /// Database host
+        /// </summary>
+        public string Host = "localhost";
+
+        /// <summary>
+        /// Database name to connect to
+        /// </summary>
+        public string Name = "";
     }
 }

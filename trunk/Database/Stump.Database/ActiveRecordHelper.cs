@@ -20,25 +20,91 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Castle.ActiveRecord;
+using Stump.BaseCore.Framework.Extensions;
+using Stump.Database.AuthServer;
 
 namespace Stump.Database
 {
     public static class ActiveRecordHelper
     {
-        public static Type[] GetTables(DatabaseService service)
+        public static Dictionary<string, string> GetConfiguration(DatabaseType dbtype, string host, string dbName, string user, string password)
         {
-            Assembly asm = Assembly.GetExecutingAssembly();
-            Type[] types = asm.GetTypes();
-            var result = new List<Type>();
+            var props = new Dictionary<string, string>(5);
 
-            foreach (Type t in types)
+            switch (dbtype)
             {
-                var attributes = t.GetCustomAttributes(typeof (AttributeDatabase), false) as AttributeDatabase[];
-
-                result.AddRange(from a in attributes where (a.Service & service) == service select t);
+                case DatabaseType.MySQL:
+                    {
+                        props.Add("connection.driver_class", "NHibernate.Driver.MySqlDataDriver");
+                        props.Add("dialect", "NHibernate.Dialect.MySQLDialect");
+                        props.Add("connection.provider", "NHibernate.Connection.DriverConnectionProvider");
+                        props.Add("connection.connection_string", "Database=" + dbName + ";Data Source=" + host +
+                                                                  ";User Id=" + user + ";Password=" + password);
+                        props.Add("proxyfactory.factory_class",
+                                  "NHibernate.ByteCode.Castle.ProxyFactoryFactory, NHibernate.ByteCode.Castle");
+                        break;
+                    }
+                case DatabaseType.MSSQL2005:
+                    {
+                        props.Add("connection.driver_class", "NHibernate.Driver.SqlClientDriver");
+                        props.Add("dialect", "NHibernate.Dialect.MsSql2005Dialect");
+                        props.Add("connection.provider", "NHibernate.Connection.DriverConnectionProvider");
+                        props.Add("connection.connection_string",
+                                  "Data Source=" + host + ";Initial Catalog=" + dbName + ";User Id=" + user +
+                                  ";Password=" + password + ";");
+                        props.Add("proxyfactory.factory_class",
+                                  "NHibernate.ByteCode.Castle.ProxyFactoryFactory, NHibernate.ByteCode.Castle");
+                        break;
+                    }
+                case DatabaseType.MSSQL2008:
+                    {
+                        props.Add("connection.driver_class", "NHibernate.Driver.SqlClientDriver");
+                        props.Add("dialect", "NHibernate.Dialect.MsSql2008Dialect");
+                        props.Add("connection.provider", "NHibernate.Connection.DriverConnectionProvider");
+                        props.Add("connection.connection_string",
+                                  "Data Source=" + host + ";Initial Catalog=" + dbName + ";User Id=" + user +
+                                  ";Password=" + password + ";");
+                        props.Add("proxyfactory.factory_class",
+                                  "NHibernate.ByteCode.Castle.ProxyFactoryFactory, NHibernate.ByteCode.Castle");
+                        break;
+                    }
             }
+            return props;
+        }
 
-            return result.ToArray();
+        public static IEnumerable<Type> GetTables(Type dbType)
+        {
+            var asm = Assembly.GetExecutingAssembly();
+            var types = asm.GetTypes();
+            
+            return types.Where(t => t.IsSubclassOfGeneric(dbType)).ToArray();
+        }
+
+        public static Type GetVersionType(IEnumerable<Type> types)
+        {
+            return types.First(t => t.GetInterfaces().Contains(typeof(IVersionRecord)));
+        }
+
+        public static Func<IVersionRecord> GetLastestVersionMethod(Type versionType)
+        {
+            var method = versionType.BaseType.BaseType.GetMethod("FindAll",Type.EmptyTypes);
+
+            var deleg = Delegate.CreateDelegate(typeof (Func<IEnumerable<IVersionRecord>>), method) as Func<IEnumerable<IVersionRecord>>;
+            return () => deleg().FirstOrDefault();
+        }
+
+        public static void CreateVersionRecord(Type versionType, uint revision)
+        {
+            var instance = Activator.CreateInstance(versionType) as IVersionRecord;
+            instance.Revision = revision;
+            instance.UpdateDate = DateTime.Now;
+            instance.CreateAndFlush();
+        }
+
+        public static void DeleteVersionRecord(Type versionType)
+        {
+            versionType.BaseType.BaseType.GetMethod("DeleteAll", Type.EmptyTypes).Invoke(null,null);
         }
     }
 }

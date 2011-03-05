@@ -128,13 +128,12 @@ namespace Stump.Server.WorldServer
 
             logger.Info("Initializing Database...");
             DatabaseAccessor.Initialize(
-                Assembly.GetExecutingAssembly(),
                 Definitions.DatabaseRevision,
                 DatabaseType.MySQL,
                 DatabaseService.WorldServer);
 
             logger.Info("Opening Database...");
-            DatabaseAccessor.OpenDatabase();
+            DatabaseAccessor.Check();
 
             logger.Info("Register Messages...");
             MessageReceiver.Initialize();

@@ -17,33 +17,20 @@
 //  *
 //  *************************************************************************/
 using Castle.ActiveRecord;
+using Stump.Database.Types;
 
 namespace Stump.Database.WorldServer
 {
-    [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("mounts_behaviors")]
-    public sealed class MountBehaviorRecord : ActiveRecordBase<MountBehaviorRecord>
+    public sealed class MountBehaviorRecord : WorldRecord<MountBehaviorRecord>
     {
-
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
-        public long Id
-        {
-            get;
-            set;
-        }
+        public long Id { get; set; }
 
-        [BelongsTo("MountId", NotNull=true)]
-        public MountRecord Mount
-        {
-            get;
-            set;
-        }
+        [BelongsTo("MountId", NotNull = true)]
+        public MountRecord Mount { get; set; }
 
-        [Property("Behavior", NotNull=true)]
-        public byte Behavior
-        {
-            get;
-            set;
-        }
+        [Property("Behavior", NotNull = true)]
+        public byte Behavior { get; set; }
     }
 }

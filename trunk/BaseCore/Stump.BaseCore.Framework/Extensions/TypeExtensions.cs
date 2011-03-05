@@ -16,35 +16,25 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System.Collections.Generic;
-using Castle.ActiveRecord;
-using Stump.Database.Types;
-using Stump.DofusProtocol.Enums;
+using System;
 
-namespace Stump.Database.WorldServer
+namespace Stump.BaseCore.Framework.Extensions
 {
-    [ActiveRecord("items"), JoinedBase]
-    public class ItemRecord : WorldRecord<ItemRecord>
+    public static class TypeExtensions
     {
-        private IList<byte[]> m_effects;
-
-        [PrimaryKey(PrimaryKeyType.Native, "Guid")]
-        public long Guid { get; set; }
-
-        [Property("ItemId", NotNull = true)]
-        public int ItemId { get; set; }
-
-        [Property("Stack", NotNull = true, Default = "0")]
-        public uint Stack { get; set; }
-
-        [Property("Position", NotNull = true, Default = "63")]
-        public CharacterInventoryPositionEnum Position { get; set; }
-
-        [HasMany(typeof (ItemEffectRecord), Cascade = ManyRelationCascadeEnum.Delete)]
-        public IList<byte[]> Effects
+        public static bool IsSubclassOfGeneric(this Type type, Type genericType)
         {
-            get { return m_effects ?? new List<byte[]>(); }
-            set { m_effects = value; }
+            var t = type.BaseType;
+
+            while (t != null && !t.IsValueType)
+            {
+                if (t.IsGenericType && t.GetGenericTypeDefinition() == genericType)
+                    return true;
+
+                t = t.BaseType;
+            }
+
+            return false;
         }
     }
 }

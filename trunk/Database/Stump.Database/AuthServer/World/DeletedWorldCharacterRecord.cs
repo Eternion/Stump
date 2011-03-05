@@ -19,13 +19,13 @@
 using System;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
+using Stump.Database.Types;
 
 namespace Stump.Database.AuthServer
 {
     [Serializable]
-    [AttributeDatabase(DatabaseService.AuthServer)]
     [ActiveRecord("worlds_characters_deleted")]
-    public sealed class DeletedWorldCharacterRecord : ActiveRecordBase<DeletedWorldCharacterRecord>
+    public sealed class DeletedWorldCharacterRecord : AuthRecord<DeletedWorldCharacterRecord>
     {
 
         public DeletedWorldCharacterRecord()

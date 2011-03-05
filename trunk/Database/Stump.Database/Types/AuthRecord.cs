@@ -16,21 +16,11 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
+using Castle.ActiveRecord;
 
-namespace Stump.Database
+namespace Stump.Database.Types
 {
-    public sealed class AttributeDatabase : Attribute
+    public abstract class AuthRecord<T> : ActiveRecordBase<T>
     {
-        public AttributeDatabase(DatabaseService service)
-        {
-            Service = service;
-        }
-
-        public DatabaseService Service
-        {
-            get;
-            set;
-        }
     }
 }

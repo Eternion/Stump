@@ -18,32 +18,22 @@
 //  *************************************************************************/
 using System.Collections.Generic;
 using Castle.ActiveRecord;
+using Stump.Database.Types;
 
 namespace Stump.Database.WorldServer
 {
-
-    [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("paddocks_items"), JoinedBase]
-    public class PaddockItemRecord : ActiveRecordBase<PaddockItemRecord>
+    public class PaddockItemRecord : WorldRecord<PaddockItemRecord>
     {
         private IList<MountRecord> m_mounts;
 
         [PrimaryKey(PrimaryKeyType.Identity, "Id")]
-        public uint Id
-        {
-            get;
-            set;
-        }
+        public uint Id { get; set; }
 
         [BelongsTo("PaddockId")]
-        public GuildPaddockRecord Paddock
-        {
-            get;
-            set;
-        }
-   
-       // [Property("ItemId")]
-     //   public ItemRecord Item
+        public GuildPaddockRecord Paddock { get; set; }
 
+        // [Property("ItemId")]
+        //   public ItemRecord Item
     }
 }

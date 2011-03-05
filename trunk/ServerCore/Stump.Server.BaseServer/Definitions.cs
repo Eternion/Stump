@@ -25,10 +25,6 @@ namespace Stump.Server.BaseServer
     /// </summary>
     public static class Definitions
     {
-        public static Encoding DefaultEncoding = Encoding.UTF8;
-
-        public static int BufferSize = 8192;
-
         public static int ExitWaitTime = 10; // seconds
     }
 }

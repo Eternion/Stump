@@ -21,15 +21,15 @@ using System.Collections.Generic;
 using System.Linq;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
+using Stump.Database.Types;
 using Stump.Database.WorldServer.StartupAction;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database.AuthServer
 {
     [Serializable]
-    [AttributeDatabase(DatabaseService.AuthServer)]
     [ActiveRecord("accounts")]
-    public sealed class AccountRecord : ActiveRecordBase<AccountRecord>
+    public sealed class AccountRecord : AuthRecord<AccountRecord>
     {
 
         private string m_login = "";

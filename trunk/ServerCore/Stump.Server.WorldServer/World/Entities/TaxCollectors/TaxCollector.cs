@@ -25,6 +25,7 @@ using Stump.Server.DataProvider.Data.TaxCollector;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.World.Entities.Actors;
+using Stump.Server.WorldServer.World.Guilds;
 using Stump.Server.WorldServer.World.Storages;
 
 namespace Stump.Server.WorldServer.World.Entities.TaxCollectors

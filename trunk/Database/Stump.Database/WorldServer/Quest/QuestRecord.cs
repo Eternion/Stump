@@ -1,4 +1,4 @@
-﻿ // /*************************************************************************
+﻿// /*************************************************************************
 //  *
 //  *  Copyright (C) 2010 - 2011 Stump Team
 //  *
@@ -17,42 +17,23 @@
 //  *
 //  *************************************************************************/
 using Castle.ActiveRecord;
+using Stump.Database.Types;
 
 namespace Stump.Database.WorldServer
 {
-
-    [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("characters_quests")]
-    public class QuestRecord : ActiveRecordBase<QuestRecord>
+    public class QuestRecord : WorldRecord<QuestRecord>
     {
-
         [PrimaryKey(PrimaryKeyType.Identity, "Id")]
-        public uint Id
-        {
-            get;
-            set;
-        }
+        public uint Id { get; set; }
 
-        [BelongsTo("CharacterId", NotNull=true)]
-        public CharacterRecord Character
-        {
-            get;
-            set;
-        }
+        [BelongsTo("CharacterId", NotNull = true)]
+        public CharacterRecord Character { get; set; }
 
         [Property("QuestId", NotNull = true)]
-        public uint QuestId
-        {
-            get;
-            set;
-        }
+        public uint QuestId { get; set; }
 
-        [Property("Step", NotNull = true, Default="0")]
-        public uint Step
-        {
-            get;
-            set;
-        }
-
+        [Property("Step", NotNull = true, Default = "0")]
+        public uint Step { get; set; }
     }
 }

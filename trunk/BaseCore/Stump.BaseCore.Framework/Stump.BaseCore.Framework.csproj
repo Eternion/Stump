@@ -127,6 +127,7 @@
     <Compile Include="Cryptography\Cryptography.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="IO\ConsoleProcent.cs" />
     <Compile Include="Reflection\AccessorBuilder.cs" />
     <Compile Include="Reflection\DynamicSwitchExecutor.cs" />

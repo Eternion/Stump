@@ -17,35 +17,20 @@
 //  *
 //  *************************************************************************/
 using Castle.ActiveRecord;
+using Stump.Database.Types;
 
 namespace Stump.Database.WorldServer
 {
-
-    [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("subareas")]
-    public sealed class SubAreaRecord : ActiveRecordBase<SubAreaRecord>
+    public sealed class SubAreaRecord : WorldRecord<SubAreaRecord>
     {
+        [PrimaryKey(PrimaryKeyType.Assigned, "SubAreaId")]
+        public int SubAreaId { get; set; }
 
-        [PrimaryKey(PrimaryKeyType.Assigned,"SubAreaId")]
-        public uint SubAreaId
-        {
-            get;
-            set;
-        }
+        [Property("AlignmentSide", NotNull = true, Default = "0")]
+        public int AlignmentSide { get; set; }
 
-        [Property("AlignmentSide", NotNull = true, Default="0")]
-        public int AlignmentSide
-        {
-            get;
-            set;
-        }
-
-        [OneToOne(Cascade= CascadeEnum.Delete)]
-        public PrismRecord Prism
-        {
-            get;
-            set;
-        }
-
+        [OneToOne(Cascade = CascadeEnum.Delete)]
+        public PrismRecord Prism { get; set; }
     }
 }

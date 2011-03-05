@@ -16,14 +16,11 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System;
+using Castle.ActiveRecord;
 
-namespace Stump.Database
+namespace Stump.Database.Types
 {
-    [Flags]
-    public enum DatabaseService
+    public abstract class WorldRecord<T> : ActiveRecordBase<T>
     {
-        AuthServer = 1,
-        WorldServer = 2
     }
 }

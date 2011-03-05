@@ -19,13 +19,13 @@
 using System;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
+using Stump.Database.Types;
 
 namespace Stump.Database.AuthServer
 {
     [Serializable]
-    [AttributeDatabase(DatabaseService.AuthServer)]
     [ActiveRecord("worlds_characters")]
-    public  class WorldCharacterRecord : ActiveRecordBase<WorldCharacterRecord>
+    public class WorldCharacterRecord : AuthRecord<WorldCharacterRecord>
     {
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
@@ -54,32 +54,6 @@ namespace Stump.Database.AuthServer
         {
             get;
             set;
-        }
-
-
-        public static WorldCharacterRecord FindCharacterById(long id)
-        {
-            return FindByPrimaryKey(id);
-        }
-
-        public static WorldCharacterRecord[] FindCharactersByAccount(AccountRecord account)
-        {
-            return FindAll((Restrictions.Eq("Account", account)));
-        }
-
-        public static WorldCharacterRecord[] FindCharactersByServer(WorldRecord world)
-        {
-            return FindAll((Restrictions.Eq("World", world)));
-        }
-
-        public static WorldCharacterRecord FindCharacterByServerAndCharacterId(WorldRecord world, uint characterId)
-        {
-            return FindOne(Restrictions.And(Restrictions.Eq("World", world), Restrictions.Eq("CharacterId", characterId)));
-        }
-
-        public static WorldCharacterRecord[] FindCharactersByAccountAndServer(AccountRecord account, WorldRecord world)
-        {
-            return FindAll(Restrictions.And(Restrictions.Eq("Account", account), Restrictions.Eq("World", world)));
         }
 
     }

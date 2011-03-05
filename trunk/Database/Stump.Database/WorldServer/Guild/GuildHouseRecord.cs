@@ -20,24 +20,13 @@ using Castle.ActiveRecord;
 
 namespace Stump.Database.WorldServer
 {
-    [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("guilds_houses")]
     public sealed class GuildHouseRecord : HouseRecord
     {
-
         [JoinedKey("HouseId")]
-        public uint HouseId
-        {
-            get;
-            set;
-        }
+        public uint HouseId { get; set; }
 
-        [BelongsTo("GuildId", NotNull=true)]
-        public GuildRecord Guild
-        {
-            get;
-            set;
-        }
-
+        [BelongsTo("GuildId", NotNull = true)]
+        public GuildRecord Guild { get; set; }
     }
 }

@@ -20,55 +20,35 @@ using System;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
+using Stump.Database.Types;
 using Stump.Database.WorldServer.StartupAction;
 
 namespace Stump.Database.WorldServer
 {
     [Serializable]
-    [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("accounts")]
-    public sealed class WorldAccountRecord : ActiveRecordBase<WorldAccountRecord>
+    public sealed class WorldAccountRecord : WorldRecord<WorldAccountRecord>
     {
-        private IList<StartupActionRecord> m_startupActions;
-        private IList<WorldAccountRecord> m_friends;
-        private IList<WorldAccountRecord> m_enemies;
-        private IList<MountRecord> m_mounts;
         private IList<BidHouseItemRecord> m_bidhouseItems;
+        private IList<WorldAccountRecord> m_enemies;
+        private IList<WorldAccountRecord> m_friends;
+        private IList<MountRecord> m_mounts;
+        private IList<StartupActionRecord> m_startupActions;
 
         [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
-        public uint Id
-        {
-            get;
-            set;
-        }
+        public uint Id { get; set; }
 
         [Property("Nickname", NotNull = true)]
-        public string Nickname
-        {
-            get;
-            set;
-        }
+        public string Nickname { get; set; }
 
         [Property("LastConnection", NotNull = false)]
-        public DateTime LastConnection
-        {
-            get;
-            set;
-        }
+        public DateTime LastConnection { get; set; }
 
         [Property("LastIp", NotNull = false, Length = 15)]
-        public string LastIp
-        {
-            get;
-            set;
-        }
+        public string LastIp { get; set; }
 
         [Property("BanEndDate")]
-        public DateTime? BanEndDate
-        {
-            get;
-            set;
-        }
+        public DateTime? BanEndDate { get; set; }
 
         public TimeSpan BanRemainingTime
         {
@@ -76,7 +56,7 @@ namespace Stump.Database.WorldServer
             {
                 if (BanEndDate.HasValue)
                 {
-                    var date = BanEndDate.Value.Subtract(DateTime.Now);
+                    TimeSpan date = BanEndDate.Value.Subtract(DateTime.Now);
                     if (date.TotalSeconds <= 0)
                     {
                         BanEndDate = null;
@@ -89,35 +69,38 @@ namespace Stump.Database.WorldServer
             }
         }
 
-        [HasAndBelongsToMany(typeof(StartupActionRecord), Table = "accounts_startup_actions", ColumnKey = "AccountId", ColumnRef = "StartupActionId", Cascade = ManyRelationCascadeEnum.Delete)]
+        [HasAndBelongsToMany(typeof (StartupActionRecord), Table = "accounts_startup_actions", ColumnKey = "AccountId",
+            ColumnRef = "StartupActionId", Cascade = ManyRelationCascadeEnum.Delete)]
         public IList<StartupActionRecord> StartupActions
         {
             get { return m_startupActions ?? new List<StartupActionRecord>(); }
             set { m_startupActions = value; }
         }
 
-        [HasAndBelongsToMany(typeof(WorldAccountRecord), Table = "accounts_friends", ColumnKey = "AccountId", ColumnRef = "FriendAccountId")]
+        [HasAndBelongsToMany(typeof (WorldAccountRecord), Table = "accounts_friends", ColumnKey = "AccountId",
+            ColumnRef = "FriendAccountId")]
         public IList<WorldAccountRecord> Friends
         {
             get { return m_friends ?? new List<WorldAccountRecord>(); }
             set { m_friends = value; }
         }
 
-        [HasAndBelongsToMany(typeof(WorldAccountRecord), Table = "accounts_enemies", ColumnKey = "AccountId", ColumnRef = "EnemyAccountId")]
+        [HasAndBelongsToMany(typeof (WorldAccountRecord), Table = "accounts_enemies", ColumnKey = "AccountId",
+            ColumnRef = "EnemyAccountId")]
         public IList<WorldAccountRecord> Enemies
         {
             get { return m_enemies ?? new List<WorldAccountRecord>(); }
             set { m_enemies = value; }
         }
 
-        [HasMany(typeof(BidHouseItemRecord))]
+        [HasMany(typeof (BidHouseItemRecord))]
         public IList<BidHouseItemRecord> BidHousesItems
         {
             get { return m_bidhouseItems ?? new List<BidHouseItemRecord>(); }
             set { m_bidhouseItems = value; }
         }
 
-        [HasMany(typeof(MountRecord), Table = "stables_mounts", ColumnKey = "AccountId")]
+        [HasMany(typeof (MountRecord), Table = "stables_mounts", ColumnKey = "AccountId")]
         public IList<MountRecord> Mounts
         {
             get { return m_mounts ?? new List<MountRecord>(); }
@@ -125,25 +108,14 @@ namespace Stump.Database.WorldServer
         }
 
         [BelongsTo("HouseId", NotNull = false, NotFoundBehaviour = NotFoundBehaviour.Exception)]
-        public HouseRecord House
-        {
-            get;
-            set;
-        }
+        public HouseRecord House { get; set; }
 
         [BelongsTo("InventoryId", NotNull = true, NotFoundBehaviour = NotFoundBehaviour.Exception)]
-        public InventoryRecord Bank
-        {
-            get;
-            set;
-        }
+        public InventoryRecord Bank { get; set; }
 
         public uint LastConnectionTimeStamp
         {
-            get
-            {
-                return (uint)DateTime.Now.Subtract(LastConnection).TotalHours;
-            }
+            get { return (uint) DateTime.Now.Subtract(LastConnection).TotalHours; }
         }
 
         public bool IsRevertFriend(WorldAccountRecord account)

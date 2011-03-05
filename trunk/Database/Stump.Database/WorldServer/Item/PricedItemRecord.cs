@@ -16,37 +16,20 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using System.Collections.Generic;
 using Castle.ActiveRecord;
-using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database.WorldServer
 {
-    [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("priceditems"), JoinedBase]
     public class PricedItemRecord : ItemRecord
     {
-
         [JoinedKey("ItemGuid")]
-        private long ItemGuid
-        {
-            get;
-            set;
-        }
+        private long ItemGuid { get; set; }
 
         [BelongsTo("CharacterId", NotNull = true)]
-        public SellBagRecord SellBag
-        {
-            get;
-            set;
-        }
+        public SellBagRecord SellBag { get; set; }
 
         [Property("Price")]
-        public uint Price
-        {
-            get;
-            set;
-        }
-
+        public uint Price { get; set; }
     }
 }

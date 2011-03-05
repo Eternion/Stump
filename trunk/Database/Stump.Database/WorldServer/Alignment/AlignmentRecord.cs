@@ -17,55 +17,29 @@
 //  *
 //  *************************************************************************/
 using Castle.ActiveRecord;
+using Stump.Database.Types;
 
 namespace Stump.Database.WorldServer
 {
-
-    [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("characters_alignment")]
-    public sealed class AlignmentRecord : ActiveRecordBase<AlignmentRecord>
+    public sealed class AlignmentRecord : WorldRecord<AlignmentRecord>
     {
-
         [PrimaryKey(PrimaryKeyType.Foreign, "CharacterId")]
-        public uint CharacterId
-        {
-            get;
-            set;
-        }
+        public uint CharacterId { get; set; }
 
         [OneToOne]
-        public CharacterRecord Character
-        {
-            get;
-            set;
-        }
+        public CharacterRecord Character { get; set; }
 
         [Property("AlignmentSide", NotNull = true, Default = "0")]
-        public int AlignmentSide
-        {
-            get;
-            set;
-        }
+        public int AlignmentSide { get; set; }
 
         [Property("AlignmentValue", NotNull = true, Default = "0")]
-        public uint AlignmentValue
-        {
-            get;
-            set;
-        }
+        public uint AlignmentValue { get; set; }
 
         [Property("Honour", NotNull = true, Default = "0")]
-        public uint Honor
-        {
-            get;
-            set;
-        }
+        public uint Honor { get; set; }
 
         [Property("Dishonor", NotNull = true, Default = "0")]
-        public uint Dishonor
-        {
-            get;
-            set;
-        }
+        public uint Dishonor { get; set; }
     }
 }

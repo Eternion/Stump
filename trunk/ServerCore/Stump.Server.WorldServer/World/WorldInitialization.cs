@@ -23,6 +23,7 @@ using NLog;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.IO;
 using Stump.BaseCore.Framework.Utils;
+using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.DataProvider.Data.Areas;
 using Stump.Server.DataProvider.Data.Interactives;
@@ -106,7 +107,7 @@ namespace Stump.Server.WorldServer.World
                     m_areas.Add(area.Id, area);
                 }
                 else
-                    logger.Warn("Area {0} belongs to unexistant SuperArea {1} !", data.id, data.superAreaId);
+                    logger.Warn("Area {0} belongs to unexistant SuperArea {1} !", areaTemplate.Id, areaTemplate.SuperAreaId);
             }
             logger.Info("Loaded {0} Areas", m_areas.Count);
         }
@@ -118,12 +119,23 @@ namespace Stump.Server.WorldServer.World
                 var area = GetArea(subAreaTemplate.AreaId);
                 if (area != null)
                 {
-                    var subArea = new SubArea(subAreaTemplate, area);
+                    SubAreaRecord record;
+                    if (SubAreaRecord.Exists(subAreaTemplate.Id))
+                    {
+                        record = SubAreaRecord.Find(subAreaTemplate.Id);
+                    }
+                    else
+                    {            
+                        record = new SubAreaRecord {SubAreaId = subAreaTemplate.Id, AlignmentSide = 0};
+                        record.CreateAndFlush();
+                        logger.Warn("No record for SubArea {0} {1} in database, create it...",subAreaTemplate.Id, subAreaTemplate.Name);
+                    }
+                    var subArea = new SubArea(subAreaTemplate,record, area);
                     area.SubAreas.Add(subArea.Id, subArea);
                     m_subAreas.Add(subArea.Id, subArea);
                 }
                 else
-                    logger.Warn("SubArea {0} belongs to unexistant Area {1}", subAreaTemplate.id, subAreaTemplate.areaId);
+                    logger.Warn("SubArea {0} belongs to unexistant Area {1}", subAreaTemplate.Id, subAreaTemplate.AreaId);
             }
             logger.Info("Loaded {0} SubAreas", m_areas.Count);
         }
@@ -252,7 +264,13 @@ namespace Stump.Server.WorldServer.World
 
         public void SpawnPrisms()
         {
-
+            foreach (var subArea in m_subAreas)
+            {
+                if (subArea.Value.Record.Prism != null)
+                {
+                    
+                }
+            }
         }
 
         public void SpawnCollectors()

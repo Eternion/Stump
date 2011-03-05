@@ -16,54 +16,27 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using Castle.ActiveRecord;
-using Stump.DofusProtocol.Enums;
+using Stump.Database.Types;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.AuthServer
 {
-    [AttributeDatabase(DatabaseService.WorldServer)]
-    [ActiveRecord("characters_spells")]
-    public class SpellRecord : ActiveRecordBase<SpellRecord>
+    [ActiveRecord("version")]
+    public class AuthVersionRecord : AuthRecord<AuthVersionRecord>, IVersionRecord
     {
-
-        [PrimaryKey(PrimaryKeyType.Identity)]
-        public long Id
+        [PrimaryKey(PrimaryKeyType.Assigned, "Revision")]
+        public uint Revision
         {
             get;
             set;
         }
 
-        [BelongsTo("CharacterId", NotNull=true)]
-        public CharacterRecord Character
+        [Property("UpdateDate")]
+        public DateTime UpdateDate
         {
             get;
             set;
-        }
-
-        [Property("SpellId", NotNull = true)]
-        public uint SpellId
-        {
-            get;
-            set;
-        }
-
-        [Property("Position", NotNull = true, Default="0")]
-        public int Position
-        {
-            get;
-            set;
-        }
-
-        [Property("Level", NotNull = true, Default="1")]
-        public int Level
-        {
-            get;
-            set;
-        }
-
-        public override string ToString()
-        {
-            return (SpellIdEnum) SpellId + " (" + SpellId + ")";
         }
     }
 }

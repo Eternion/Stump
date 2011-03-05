@@ -16,43 +16,11 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
-using Stump.Database.WorldServer;
-using Stump.Server.WorldServer.Entities;
-using Stump.Server.WorldServer.Items;
+using Castle.ActiveRecord;
 
-namespace Stump.Server.WorldServer.World.Storages
+namespace Stump.Database.Types
 {
-
-    public class Storage : IInventoryOwner
+    public abstract class DataRecord<T> : ActiveRecordBase<T>
     {
-
-        public Storage(StorageRecord record)
-        {
-            Record =record;
-            Id = record.StorageId;
-            Password = record.Password;
-            Inventory = new Inventory(record.Inventory, this);
-        }
-
-        public readonly StorageRecord Record;
-
-        public readonly uint Id;
-
-        public string Password
-        {
-            get;
-            set;
-        }
-
-        public readonly Inventory Inventory;
-
-
-        public void Save()
-        {
-            Record.Password = Password;
-            Inventory.Save();
-            Record.SaveAndFlush();
-        }
-
     }
 }

@@ -17,34 +17,20 @@
 //  *
 //  *************************************************************************/
 using Castle.ActiveRecord;
+using Stump.Database.Types;
 
 namespace Stump.Database.WorldServer
 {
-    [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("characters_zaaps")]
-    public class ZaapRecord : ActiveRecordBase<ZaapRecord>
+    public class ZaapRecord : WorldRecord<ZaapRecord>
     {
-
         [PrimaryKey(PrimaryKeyType.Identity)]
-        public long Id
-        {
-            get;
-            set;
-        }
+        public long Id { get; set; }
 
-        [BelongsTo("CharacterId", NotNull=true)]
-        public CharacterRecord Character
-        {
-            get;
-            set;
-        }
+        [BelongsTo("CharacterId", NotNull = true)]
+        public CharacterRecord Character { get; set; }
 
         [Property("ZaapId", NotNull = true)]
-        public int ZaapId
-        {
-            get;
-            set;
-        }
-
+        public int ZaapId { get; set; }
     }
 }

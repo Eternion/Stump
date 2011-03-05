@@ -25,6 +25,7 @@ using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.Reflection;
 using Stump.Database;
 using Stump.Database.AuthServer;
+using Stump.Database.Types;
 using Stump.DofusProtocol;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.AuthServer.Commands;
@@ -38,16 +39,28 @@ namespace Stump.Server.AuthServer
 {
     public class AuthentificationServer : ServerBase<AuthentificationServer>
     {
-        /// <summary>
-        ///   Bag containing client currently under authentification process.
-        /// </summary>
-        //private ConcurrentBag<AuthClient> m_AuthClients = new ConcurrentBag<AuthClient>();
+
+        ///// <summary>
+        /////   DB params
+        ///// </summary>
+        //[Variable]
+        //public static DatabaseConfiguration WorldDBParams;
+
+        ///// <summary>
+        /////   DB params
+        ///// </summary>
+        //[Variable]
+        //public static DatabaseConfiguration DataDBParams;
+
+        public DatabaseAccessor worlddb;
+
+        public DatabaseAccessor datadb;
+
+
         public AuthentificationServer() :
             base(Definitions.ConfigFilePath, Definitions.SchemaFilePath)
         {
         }
-
-        private int m_value = 1;
 
         public override void Initialize()
         {
@@ -58,14 +71,14 @@ namespace Stump.Server.AuthServer
                 ConsoleBase.SetTitle("#Stump Authentification Server");
 
                 logger.Info("Initializing Database...");
-                DatabaseAccessor.Initialize(
-                    Assembly.GetExecutingAssembly(),
-                    Definitions.DatabaseRevision,
-                    DatabaseType.MySQL,
-                    DatabaseService.AuthServer);
+                worlddb = new DatabaseAccessor(new DatabaseConfiguration { Name = "stump_auth" });
+                worlddb.Initialize(Definitions.DatabaseRevision, DatabaseType.MySQL, typeof(AuthRecord<>));
+
+                logger.Info("Starting Database engine...");
+                DatabaseAccessor.Start();
 
                 logger.Info("Opening Database...");
-                DatabaseAccessor.OpenDatabase();
+                worlddb.Check();
 
                 logger.Info("Initializing WorldServers Manager");
                 WorldServerManager.Initialize();
@@ -75,7 +88,7 @@ namespace Stump.Server.AuthServer
                 ProtocolTypeManager.Initialize();
 
                 logger.Info("Register Packets Handlers...");
-                HandlerManager.RegisterAll(typeof (AuthentificationServer).Assembly);
+                HandlerManager.RegisterAll(typeof(AuthentificationServer).Assembly);
 
                 logger.Info("Register Commands...");
                 CommandManager.RegisterAll<AuthCommand, AuthSubCommand>(typeof(AuthCommand).Assembly);

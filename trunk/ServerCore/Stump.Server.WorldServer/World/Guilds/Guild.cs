@@ -20,12 +20,13 @@ using System.Linq;
 using System.Collections.Generic;
 using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Classes;
-using Stump.DofusProtocol.Classes.Custom;
-using Stump.Server.WorldServer.Global;
-using Stump.Server.WorldServer.Global.Maps;
+using Stump.Server.DataProvider.Data.Threshold;
+using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.World.Entities.TaxCollectors;
+using GuildEmblem = Stump.Server.WorldServer.World.Guilds.GuildEmblem;
+using GuildMember = Stump.Server.WorldServer.World.Guilds.GuildMember;
 
-namespace Stump.Server.WorldServer.Entities
+namespace Stump.Server.WorldServer.World.Guilds
 {
     public class Guild
     {
@@ -66,8 +67,8 @@ namespace Stump.Server.WorldServer.Entities
 
         public uint Level
         {
-            get { return Threshold.ThresholdManager.Thresholds["GuildExp"].GetLevel(Experience); }
-            set { Experience = Threshold.ThresholdManager.Thresholds["GuildExp"].GetLowerBound(Experience); }
+            get { return ThresholdManager.Instance["GuildExp"].GetLevel(Experience); }
+            set { Experience = ThresholdManager.Instance["GuildExp"].GetLowerBound(value); }
         }
 
         public List<GuildMember> Members

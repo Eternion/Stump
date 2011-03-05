@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Spells
             SpellPoints = spellPoints;
         }
 
-        public SpellInventory(ISpellsOwner owner, List<SpellRecord> spells,uint spellPoints)
+        public SpellInventory(ISpellsOwner owner, List<CharacterSpellRecord> spells,uint spellPoints)
         {
             Owner = owner;
             SpellPoints = spellPoints;

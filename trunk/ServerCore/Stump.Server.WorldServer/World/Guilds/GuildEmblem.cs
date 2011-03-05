@@ -17,12 +17,8 @@
 //  *
 //  *************************************************************************/
 using Stump.Database.WorldServer;
-using Stump.DofusProtocol.Classes;
-using Stump.DofusProtocol.Classes.Custom;
-using Stump.Server.WorldServer.Global;
-using Stump.Server.WorldServer.Global.Maps;
 
-namespace Stump.Server.WorldServer.Entities
+namespace Stump.Server.WorldServer.World.Guilds
 {
     public class GuildEmblem
     {
@@ -62,7 +58,6 @@ namespace Stump.Server.WorldServer.Entities
             set;
         }
 
-
         public void Save()
         {
             m_record.SymbolShape = SymbolShape;
@@ -74,7 +69,7 @@ namespace Stump.Server.WorldServer.Entities
 
         public DofusProtocol.Classes.GuildEmblem ToGuildEmblem()
         {
-            return new Stump.DofusProtocol.Classes.GuildEmblem(SymbolShape, SymbolColor, BackgroundShape,BackgroundColor);
+            return new DofusProtocol.Classes.GuildEmblem(SymbolShape, SymbolColor, BackgroundShape,BackgroundColor);
         }
 
     }

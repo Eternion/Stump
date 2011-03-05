@@ -17,14 +17,12 @@
 //  *
 //  *************************************************************************/
 using System;
+using Stump.BaseCore.Framework.Utils;
 using Stump.Database.WorldServer;
-using Stump.DofusProtocol.Classes;
-using Stump.DofusProtocol.Classes.Custom;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Global;
-using Stump.Server.WorldServer.Global.Maps;
+using Stump.Server.DataProvider.Data.Threshold;
 
-namespace Stump.Server.WorldServer.Entities
+namespace Stump.Server.WorldServer.World.Guilds
 {
     public class GuildMember
     {
@@ -108,9 +106,6 @@ namespace Stump.Server.WorldServer.Entities
             set;
         }
 
-        public bool Connected
-        { get { return World.World.Instance.IsConnected(Id); } }
-
         public int AlignmentSide
         {
             get;
@@ -123,6 +118,13 @@ namespace Stump.Server.WorldServer.Entities
             set;
         }
 
+        public uint LastConnectionTimestamp
+        {
+            get { return (uint) DateTime.Now.Subtract(LastConnection).TotalMinutes; }
+        }
+
+        public bool IsConnected
+        { get { Singleton<World>.Instance.IsConnected(Id); } }
 
         public void Save()
         {
@@ -135,13 +137,12 @@ namespace Stump.Server.WorldServer.Entities
 
         public DofusProtocol.Classes.GuildMember ToGuildMember()
         {
-            if (Connected)
+            if (IsConnected)
             {
-                var character = World.World.Instance.GetCharacter(Id);
-                return new DofusProtocol.Classes.GuildMember(Id, Threshold.ThresholdManager.Thresholds["CharacterExp"].GetLevel(character.Experience), character.Name, (int)character.Breed, character.Sex == SexTypeEnum.SEX_MALE, Rank, GivenExperience, GivenPercent, Rights, 1, character.Alignment.AlignmentSide, 0, character.Mood);
+                var character = Singleton<World>.Instance.GetCharacter(Id);
+                return new DofusProtocol.Classes.GuildMember(Id, ThresholdManager.Instance["CharacterExp"].GetLevel(character.Experience), character.Name, (int)character.Breed, character.Sex == SexTypeEnum.SEX_MALE, Rank, GivenExperience, GivenPercent, Rights, 1, character.Alignment.AlignmentSide, 0, character.Mood);
             }
-            else
-                return new DofusProtocol.Classes.GuildMember(Id, Threshold.ThresholdManager.Thresholds["CharacterExp"].GetLevel(Experience), Name, (int)Breed, Sex, Rank, GivenExperience, GivenPercent, Rights, 0, AlignmentSide, (uint)DateTime.Now.Subtract(LastConnection).TotalMinutes, 0);
+                return new DofusProtocol.Classes.GuildMember(Id, ThresholdManager.Instance["CharacterExp"].GetLevel(Experience), Name, (int)Breed, Sex, Rank, GivenExperience, GivenPercent, Rights, 0, AlignmentSide, LastConnectionTimestamp, 0);
         }
 
     }

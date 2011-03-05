@@ -19,13 +19,12 @@
 using System;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
+using Stump.Database.Types;
 
 namespace Stump.Database.AuthServer
 {
-
-    [AttributeDatabase(DatabaseService.AuthServer)]
-    [ActiveRecord("ip_banned")]
-    public class IpBannedRecord : ActiveRecordBase<IpBannedRecord>
+    [ActiveRecord("banned_ips")]
+    public class IpBannedRecord : AuthRecord<IpBannedRecord>
     {
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]

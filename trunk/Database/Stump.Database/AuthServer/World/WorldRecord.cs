@@ -20,19 +20,19 @@ using System;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
+using Stump.Database.Types;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database.AuthServer
 {
     [Serializable]
-    [AttributeDatabase(DatabaseService.AuthServer)]
     [ActiveRecord("worlds")]
-    public sealed class WorldRecord : ActiveRecordBase<WorldRecord>
+    public sealed class WorldRecord : AuthRecord<WorldRecord>
     {
         private IList<WorldCharacterRecord> m_characters;
         private IList<DeletedWorldCharacterRecord> m_deletedCharacters;
-        private int m_charsCount = 0;
-        private bool m_connected = false;
+        private int m_charsCount;
+        private bool m_connected;
         private ServerStatusEnum m_state = ServerStatusEnum.OFFLINE;
 
         [PrimaryKey(PrimaryKeyType.Assigned, "Id")]

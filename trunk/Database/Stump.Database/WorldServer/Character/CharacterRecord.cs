@@ -20,153 +20,85 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Castle.ActiveRecord;
-using NHibernate.Criterion;
+using Stump.Database.Types;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Database.WorldServer
 {
-    [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("characters"), JoinedBase]
-    public class CharacterRecord : ActiveRecordBase<CharacterRecord>
+    public class CharacterRecord : WorldRecord<CharacterRecord>
     {
-        private IList<SpellRecord> m_spells;
-        private IList<ZaapRecord> m_zaaps;
         private IList<QuestRecord> m_activeQuests;
         private IList<QuestRecord> m_finishedQuests;
         private IList<JobRecord> m_jobs;
+        private IList<CharacterSpellRecord> m_spells;
+        private IList<ZaapRecord> m_zaaps;
 
         #region Base
 
         [PrimaryKey(PrimaryKeyType.Identity, "Id")]
-        public int Id
-        {
-            get;
-            set;
-        }
+        public int Id { get; set; }
 
         [Property("Name", Length = 18, NotNull = true)]
-        public string Name
-        {
-            get;
-            set;
-        }
+        public string Name { get; set; }
 
-        [Property("Restrictions", NotNull = true, Default="0")]
-        public int Restrictions
-        {
-            get;
-            set;
-        }
+        [Property("Restrictions", NotNull = true, Default = "0")]
+        public int Restrictions { get; set; }
 
         [Property("Breed", NotNull = true)]
-        public PlayableBreedEnum Breed
-        {
-            get;
-            set;
-        }
+        public PlayableBreedEnum Breed { get; set; }
 
         [Property("BaseHealth", NotNull = true)]
-        public uint BaseHealth
-        {
-            get;
-            set;
-        }
+        public uint BaseHealth { get; set; }
 
         [Property("DamageTaken", NotNull = true)]
-        public uint DamageTaken
-        {
-            get;
-            set;
-        }
+        public uint DamageTaken { get; set; }
 
         [Property("LastConnection")]
-        public DateTime LastConnection
-        {
-            get;
-            set;
-        }
+        public DateTime LastConnection { get; set; }
 
         #endregion
 
         #region Look
 
         [Property("Sex", NotNull = true)]
-        public SexTypeEnum Sex
-        {
-            get;
-            set;
-        }
+        public SexTypeEnum Sex { get; set; }
 
         [Property("BonesId", NotNull = true, Default = "1")]
-        private uint BonesId
-        {
-            get;
-            set;
-        }
+        private uint BonesId { get; set; }
 
         [Property("Skins", NotNull = true)]
-        private string Skins
-        {
-            get;
-            set;
-        }
+        private string Skins { get; set; }
 
         [Property("Color1", NotNull = true)]
-        private int Color1
-        {
-            get;
-            set;
-        }
+        private int Color1 { get; set; }
 
         [Property("Color2", NotNull = true)]
-        private int Color2
-        {
-            get;
-            set;
-        }
+        private int Color2 { get; set; }
 
         [Property("Color3", NotNull = true)]
-        private int Color3
-        {
-            get;
-            set;
-        }
+        private int Color3 { get; set; }
 
         [Property("Color4", NotNull = true)]
-        private int Color4
-        {
-            get;
-            set;
-        }
+        private int Color4 { get; set; }
 
         [Property("Color5", NotNull = true)]
-        private int Color5
-        {
-            get;
-            set;
-        }
+        private int Color5 { get; set; }
 
         [Property("Height", NotNull = true)]
-        private int Height
-        {
-            get;
-            set;
-        }
+        private int Height { get; set; }
 
         [Property("Width", NotNull = true)]
-        private int Width
-        {
-            get;
-            set;
-        }
+        private int Width { get; set; }
 
         public EntityLook BaseLook
         {
             get
             {
                 List<uint> skins = Skins.Split(',').ToList().ConvertAll(s => uint.Parse(s));
-                return new EntityLook(BonesId, skins, new List<int>(5) { Color1, Color2, Color3, Color4, Color5 }, new List<int>(2) { Height, Width }, new List<SubEntity>());
+                return new EntityLook(BonesId, skins, new List<int>(5) {Color1, Color2, Color3, Color4, Color5},
+                                      new List<int>(2) {Height, Width}, new List<SubEntity>());
             }
             set
             {
@@ -187,171 +119,94 @@ namespace Stump.Database.WorldServer
                     Height = value.scales[0];
                     Width = value.scales[0];
                 }
-
             }
         }
 
         [Property("TitleId", NotNull = true, Default = "0")]
-        public uint TitleId
-        {
-            get;
-            set;
-        }
+        public uint TitleId { get; set; }
 
         [Property("TitleParam", NotNull = true, Default = "")]
-        public string TitleParam
-        {
-            get;
-            set;
-        }
+        public string TitleParam { get; set; }
 
         [Property("HasRecolor", NotNull = true, Default = "0")]
-        public bool Recolor
-        {
-            get;
-            set;
-        }
+        public bool Recolor { get; set; }
 
         [Property("HasRename", NotNull = true, Default = "0")]
-        public bool Rename
-        {
-            get;
-            set;
-        }
+        public bool Rename { get; set; }
 
         #endregion
 
         #region Position
 
         [Property("MapId", NotNull = true)]
-        public int MapId
-        {
-            get;
-            set;
-        }
+        public int MapId { get; set; }
 
         [Property("CellId", NotNull = true)]
-        public ushort CellId
-        {
-            get;
-            set;
-        }
+        public ushort CellId { get; set; }
 
         [Property("Direction", NotNull = true)]
-        public DirectionsEnum Direction
-        {
-            get;
-            set;
-        }
+        public DirectionsEnum Direction { get; set; }
 
         #endregion
 
         #region Stats
 
         [Property("Strength", NotNull = true)]
-        public int Strength
-        {
-            get;
-            set;
-        }
+        public int Strength { get; set; }
 
         [Property("Chance", NotNull = true)]
-        public int Chance
-        {
-            get;
-            set;
-        }
+        public int Chance { get; set; }
 
         [Property("Vitality", NotNull = true)]
-        public int Vitality
-        {
-            get;
-            set;
-        }
+        public int Vitality { get; set; }
 
         [Property("Wisdom", NotNull = true)]
-        public int Wisdom
-        {
-            get;
-            set;
-        }
+        public int Wisdom { get; set; }
 
         [Property("Intelligence", NotNull = true)]
-        public int Intelligence
-        {
-            get;
-            set;
-        }
+        public int Intelligence { get; set; }
 
         [Property("Agility", NotNull = true)]
-        public int Agility
-        {
-            get;
-            set;
-        }
+        public int Agility { get; set; }
 
         #endregion
 
         #region Points
 
         [Property("Experience", NotNull = true, Default = "0")]
-        public long Experience
-        {
-            get;
-            set;
-        }
+        public long Experience { get; set; }
 
         [Property("EnergyMax", NotNull = true, Default = "10000")]
-        public uint EnergyMax
-        {
-            get;
-            set;
-        }
+        public uint EnergyMax { get; set; }
 
         [Property("Energy", NotNull = true, Default = "10000")]
-        public uint Energy
-        {
-            get;
-            set;
-        }
+        public uint Energy { get; set; }
 
         [Property("StatsPoints", NotNull = true, Default = "0")]
-        public int StatsPoints
-        {
-            get;
-            set;
-        }
+        public int StatsPoints { get; set; }
 
         [Property("SpellsPoints", NotNull = true, Default = "0")]
-        public int SpellsPoints
-        {
-            get;
-            set;
-        }
+        public int SpellsPoints { get; set; }
 
         #endregion
 
         #region Inventory
 
         [BelongsTo("InventoryId", NotNull = true, Cascade = CascadeEnum.Delete)]
-        public InventoryRecord Inventory
-        {
-            get;
-            set;
-        }
+        public InventoryRecord Inventory { get; set; }
 
         #endregion
 
         #region Spell
 
-        [HasMany(typeof(SpellRecord), Cascade = ManyRelationCascadeEnum.Delete)]
-        public IList<SpellRecord> Spells
+        [HasMany(typeof (CharacterSpellRecord), Cascade = ManyRelationCascadeEnum.Delete)]
+        public IList<CharacterSpellRecord> Spells
         {
-            get { return m_spells ?? new List<SpellRecord>(); }
+            get { return m_spells ?? new List<CharacterSpellRecord>(); }
             set { m_spells = value; }
         }
 
-        public IDictionary<uint, SpellRecord> SpellsDictionnary
+        public IDictionary<uint, CharacterSpellRecord> SpellsDictionnary
         {
             get { return Spells.ToDictionary(s => s.SpellId); }
             set { Spells = value.Select(k => k.Value).ToList(); }
@@ -361,7 +216,7 @@ namespace Stump.Database.WorldServer
 
         #region Zaaps
 
-        [HasMany(typeof(ZaapRecord))]
+        [HasMany(typeof (ZaapRecord))]
         public IList<ZaapRecord> Zaaps
         {
             get { return m_zaaps ?? new List<ZaapRecord>(); }
@@ -372,14 +227,14 @@ namespace Stump.Database.WorldServer
 
         #region Quests
 
-        [HasMany(typeof(QuestRecord))]
+        [HasMany(typeof (QuestRecord))]
         public IList<QuestRecord> ActiveQuests
         {
             get { return m_activeQuests ?? new List<QuestRecord>(); }
             set { m_activeQuests = value; }
         }
 
-       // [HasMany(typeof(typeof(int)), ColumnKey="", Table="")]
+        // [HasMany(typeof(typeof(int)), ColumnKey="", Table="")]
         public IList<QuestRecord> FinishedQuests
         {
             get { return m_finishedQuests ?? new List<QuestRecord>(); }
@@ -390,7 +245,7 @@ namespace Stump.Database.WorldServer
 
         #region Jobs
 
-        [HasMany(typeof(JobRecord))]
+        [HasMany(typeof (JobRecord))]
         public IList<JobRecord> Jobs
         {
             get { return m_jobs ?? new List<JobRecord>(); }
@@ -402,33 +257,21 @@ namespace Stump.Database.WorldServer
         #region Alignment
 
         [OneToOne(Cascade = CascadeEnum.Delete)]
-        public AlignmentRecord Alignment
-        {
-            get;
-            set;
-        }
+        public AlignmentRecord Alignment { get; set; }
 
         #endregion
 
         #region Merchant
 
         [OneToOne]
-        public SellBagRecord SellBag
-        {
-            get;
-            set;
-        }
+        public SellBagRecord SellBag { get; set; }
 
         #endregion
 
         #region Guild
 
         [OneToOne]
-        public GuildMemberRecord GuildMember
-        {
-            get;
-            set;
-        }
+        public GuildMemberRecord GuildMember { get; set; }
 
         #endregion
 
@@ -451,6 +294,5 @@ namespace Stump.Database.WorldServer
         {
             return Count();
         }
-
     }
 }

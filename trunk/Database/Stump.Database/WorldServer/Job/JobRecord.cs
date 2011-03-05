@@ -17,42 +17,23 @@
 //  *
 //  *************************************************************************/
 using Castle.ActiveRecord;
+using Stump.Database.Types;
 
 namespace Stump.Database.WorldServer
 {
-
-    [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("characters_jobs")]
-    public sealed class JobRecord : ActiveRecordBase<JobRecord>
+    public sealed class JobRecord : WorldRecord<JobRecord>
     {
-
         [PrimaryKey(PrimaryKeyType.Identity, "Id")]
-        public uint Id
-        {
-            get;
-            set;
-        }
+        public uint Id { get; set; }
 
-        [BelongsTo("CharacterId", NotNull=true)]
-        public CharacterRecord Character
-        {
-            get;
-            set;
-        }
+        [BelongsTo("CharacterId", NotNull = true)]
+        public CharacterRecord Character { get; set; }
 
         [Property("JobId", NotNull = true)]
-        public uint JobId
-        {
-            get;
-            set;
-        }
+        public uint JobId { get; set; }
 
-        [Property("Experience", NotNull = true, Default="0")]
-        public uint Experience
-        {
-            get;
-            set;
-        }
-
+        [Property("Experience", NotNull = true, Default = "0")]
+        public uint Experience { get; set; }
     }
 }

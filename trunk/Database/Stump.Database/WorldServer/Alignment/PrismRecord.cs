@@ -18,41 +18,23 @@
 //  *************************************************************************/
 using System;
 using Castle.ActiveRecord;
+using Stump.Database.Types;
 
 namespace Stump.Database.WorldServer
 {
-
-    [AttributeDatabase(DatabaseService.WorldServer)]
     [ActiveRecord("subareas_prism")]
-    public sealed class PrismRecord : ActiveRecordBase<PrismRecord>
+    public sealed class PrismRecord : WorldRecord<PrismRecord>
     {
-
         [PrimaryKey(PrimaryKeyType.Foreign, "SubAreaId")]
-        public uint SubAreaId
-        {
-            get;
-            set;
-        }
+        public uint SubAreaId { get; set; }
 
         [OneToOne]
-        public SubAreaRecord SubArea
-        {
-            get;
-            set;
-        }
+        public SubAreaRecord SubArea { get; set; }
 
-        [Property("MapId", NotNull=true)]
-        public uint MapId
-        {
-            get;
-            set;
-        }
+        [Property("MapId", NotNull = true)]
+        public uint MapId { get; set; }
 
-        [Property("PlaceDate", NotNull=true)]
-        public DateTime PlaceDate
-        {
-            get;
-            set;
-        }
+        [Property("PlaceDate", NotNull = true)]
+        public DateTime PlaceDate { get; set; }
     }
 }
