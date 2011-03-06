@@ -46,6 +46,7 @@ namespace Stump.DofusProtocol.D2oClasses
 		public int capabilities;
 		public int subAreaId;
 		public int nameId;
+        public int worldMap;
 		public Boolean outdoor;
 		
 	}

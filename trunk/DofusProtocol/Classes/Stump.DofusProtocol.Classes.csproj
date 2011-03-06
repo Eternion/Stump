@@ -134,6 +134,7 @@
     <Compile Include="Types\game\actions\fight\FightTemporaryBoostStateEffect.cs" />
     <Compile Include="Types\game\actions\fight\FightTemporaryBoostWeaponDamagesEffect.cs" />
     <Compile Include="Types\game\actions\fight\FightTemporarySpellBoostEffect.cs" />
+    <Compile Include="Types\game\actions\fight\FightTemporarySpellImmunityEffect.cs" />
     <Compile Include="Types\game\actions\fight\FightTriggeredEffect.cs" />
     <Compile Include="Types\game\actions\fight\GameActionMark.cs" />
     <Compile Include="Types\game\actions\fight\GameActionMarkedCell.cs" />
@@ -294,6 +295,11 @@
     <Compile Include="Types\game\prism\AlignmentBonusInformations.cs" />
     <Compile Include="Types\game\prism\PrismConquestInformation.cs" />
     <Compile Include="Types\game\prism\PrismSubAreaInformation.cs" />
+    <Compile Include="Types\game\shortcut\Shortcut.cs" />
+    <Compile Include="Types\game\shortcut\ShortcutObject.cs" />
+    <Compile Include="Types\game\shortcut\ShortcutObjectItem.cs" />
+    <Compile Include="Types\game\shortcut\ShortcutObjectPreset.cs" />
+    <Compile Include="Types\game\shortcut\ShortcutSpell.cs" />
     <Compile Include="Types\game\startup\StartupActionAddObject.cs" />
     <Compile Include="Types\updater\ContentPart.cs" />
     <Compile Include="Types\version\Version.cs" />

@@ -32,6 +32,6 @@ namespace Stump.DofusProtocol.D2oClasses
 		public int criticalHitProbability;
 		public int criticalHitBonus;
 		public int criticalFailureProbability;
-		
+	    public bool hidden;
 	}
 }

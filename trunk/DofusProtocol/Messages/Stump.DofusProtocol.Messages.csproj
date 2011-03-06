@@ -171,6 +171,7 @@
     <Compile Include="Messages\game\actions\fight\GameActionFightExchangePositionsMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightInvisibilityMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightInvisibleObstacleMessage.cs" />
+    <Compile Include="Messages\game\actions\fight\GameActionFightInvisibleTacklerMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightKillMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightLifePointsVariationMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightMarkCellsMessage.cs" />
@@ -180,8 +181,11 @@
     <Compile Include="Messages\game\actions\fight\GameActionFightReduceDamagesMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightReflectDamagesMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightReflectSpellMessage.cs" />
+    <Compile Include="Messages\game\actions\fight\GameActionFightShieldPointsVariationMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightSlideMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightSpellCastMessage.cs" />
+    <Compile Include="Messages\game\actions\fight\GameActionFightSpellCooldownVariationMessage.cs" />
+    <Compile Include="Messages\game\actions\fight\GameActionFightSpellImmunityMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightStateChangeMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightStealKamaMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightSummonMessage.cs" />
@@ -784,6 +788,12 @@
     <Compile Include="Messages\game\pvp\SetEnablePVPRequestMessage.cs" />
     <Compile Include="Messages\game\report\CharacterReportMessage.cs" />
     <Compile Include="Messages\game\script\CinematicMessage.cs" />
+    <Compile Include="Messages\game\shortcut\ShortcutBarAddErrorMessage.cs" />
+    <Compile Include="Messages\game\shortcut\ShortcutBarContentMessage.cs" />
+    <Compile Include="Messages\game\shortcut\ShortcutBarRefreshMessage.cs" />
+    <Compile Include="Messages\game\shortcut\ShortcutBarRemovedMessage.cs" />
+    <Compile Include="Messages\game\shortcut\ShortcutBarRemoveErrorMessage.cs" />
+    <Compile Include="Messages\game\shortcut\ShortcutBarSwapErrorMessage.cs" />
     <Compile Include="Messages\game\social\ContactLookErrorMessage.cs" />
     <Compile Include="Messages\game\social\ContactLookMessage.cs" />
     <Compile Include="Messages\game\social\ContactLookRequestByIdMessage.cs" />
@@ -802,13 +812,17 @@
     <Compile Include="Messages\security\ClientKeyMessage.cs" />
     <Compile Include="Messages\server\basic\SystemMessageDisplayMessage.cs" />
     <Compile Include="Messages\updater\parts\DownloadCurrentSpeedMessage.cs" />
+    <Compile Include="Messages\updater\parts\DownloadErrorMessage.cs" />
     <Compile Include="Messages\updater\parts\DownloadGetCurrentSpeedRequestMessage.cs" />
     <Compile Include="Messages\updater\parts\DownloadPartMessage.cs" />
     <Compile Include="Messages\updater\parts\DownloadSetSpeedRequestMessage.cs" />
     <Compile Include="Messages\updater\parts\GetPartInfoMessage.cs" />
     <Compile Include="Messages\updater\parts\GetPartsListMessage.cs" />
+    <Compile Include="Messages\updater\parts\PartDownloadInfoMessage.cs" />
     <Compile Include="Messages\updater\parts\PartInfoMessage.cs" />
+    <Compile Include="Messages\updater\parts\PartInstallInfoMessage.cs" />
     <Compile Include="Messages\updater\parts\PartsListMessage.cs" />
+    <Compile Include="Messages\updater\parts\ResumePartMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

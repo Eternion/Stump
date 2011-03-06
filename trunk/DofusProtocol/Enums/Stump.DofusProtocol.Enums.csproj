@@ -195,6 +195,7 @@
     <Compile Include="Export\TeamEnum.cs" />
     <Compile Include="Export\TeamTypeEnum.cs" />
     <Compile Include="Export\TextInformationTypeEnum.cs" />
+    <Compile Include="Export\UpdatableMountBoostEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

@@ -33,6 +33,7 @@ namespace Stump.DofusProtocol.D2oClasses
 		public Boolean eight_directions;
 		public Boolean aura;
 		public List<String> anims;
-		
+	    public uint cooldown;
+
 	}
 }
