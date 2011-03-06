@@ -29,30 +29,30 @@ using Stump.Server.DataProvider.Data.D2oTool;
 
 namespace Stump.Server.DataProvider.Data.Chat
 {
-    public class ChatForbiddenWordManager : DataManager<uint,string>
-    {
+    //public class ChatForbiddenWordManager : DataManager<uint,string>
+    //{
 
-        protected override string GetData(uint id)
-        {
-            var cw = D2OLoader.LoadData<CensoredWord>((int)id);
-            return cw != null ? cw.word : "";
-        }
+        //protected override string GetData(uint id)
+        //{
+        //    var cw = D2OLoader.LoadData<CensoredWord>((int)id);
+        //    return cw != null ? cw.word : "";
+        //}
 
-        protected override Dictionary<uint, string> GetAllData()
-        {
-            return D2OLoader.LoadData<CensoredWord>().ToDictionary(w => w.id, w => w.word);
-        }
+        //protected override Dictionary<uint, string> GetAllData()
+        //{
+        //    return D2OLoader.LoadData<CensoredWord>().ToDictionary(w => w.id, w => w.word);
+        //}
 
-        /// <summary>
-        /// Only with pre-loaded
-        /// </summary>
-        /// <param name="word"></param>
-        /// <returns></returns>
-        public bool IsCensored(string word)
-        {
-            return PreLoadData.ContainsValue(word);
-        }
-    }
+        ///// <summary>
+        ///// Only with pre-loaded
+        ///// </summary>
+        ///// <param name="word"></param>
+        ///// <returns></returns>
+        //public bool IsCensored(string word)
+        //{
+        //    return PreLoadData.ContainsValue(word);
+        //}
+   // }
 }
 
 

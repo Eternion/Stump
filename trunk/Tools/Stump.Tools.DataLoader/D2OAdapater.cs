@@ -7,17 +7,17 @@ using System.Reflection;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.Server.BaseServer.Data.D2oTool;
+using Stump.Server.DataProvider.Data.D2oTool;
 
 namespace Stump.Tools.DataLoader
 {
     public class D2OAdapater : IFileAdapter
     {
-        private static I18nFile m_lastI18NFile;
+        private static I18NFile m_lastI18NFile;
 
         private static readonly Dictionary<string, Type> m_typeByFileName = new Dictionary<string, Type>();
 
-        private D2oFile m_d2oFile;
+        private D2OFile m_d2oFile;
         private FormD2O m_form;
 
             static D2OAdapater()
@@ -86,9 +86,9 @@ namespace Stump.Tools.DataLoader
 
         private void FillDataView()
         {
-            m_d2oFile = new D2oFile(FileName);
+            m_d2oFile = new D2OFile(FileName);
 
-            Dictionary<int, D2oClassDefinition> classes = m_d2oFile.GetClasses();
+            Dictionary<int, D2OClassDefinition> classes = m_d2oFile.GetClasses();
             string[] columns = classes.Values.First().Fields.Select(entry => entry.Key).ToArray();
             m_form.DefineColumns(columns);
 
@@ -101,7 +101,7 @@ namespace Stump.Tools.DataLoader
 
                     if (data != null)
                     {
-                        Dictionary<string, object> fields =
+                        var fields =
                             data.GetType().GetFields(BindingFlags.Public | BindingFlags.GetField | BindingFlags.Instance)
                                 .
                                 ToDictionary(entry => entry.Name, entry => entry.GetValue(data));
@@ -112,7 +112,7 @@ namespace Stump.Tools.DataLoader
                             values[i] = fields[columns[i]];
                         }
 
-                        DataGridViewRow row = m_form.AddRow(values);
+                        var row = m_form.AddRow(values);
                         row.Tag = data;
                     }
                     else
@@ -149,7 +149,7 @@ namespace Stump.Tools.DataLoader
                 if (m_lastI18NFile != null || dialog.ShowDialog(Form) == DialogResult.OK)
                 {
                     if (m_lastI18NFile == null)
-                        m_lastI18NFile = new I18nFile(dialog.FileName);
+                        m_lastI18NFile = new I18NFile(dialog.FileName);
 
                     for (int i = 0; i < m_form.m_dataView.Rows.Count; i++)
                     {

@@ -31,6 +31,8 @@ namespace Stump.DofusProtocol.D2oClasses
 		public int race;
 		public List<MonsterGrade> grades;
 		public String look;
-		
+	    public bool useSummonSlot;
+	    public bool useBombSlot;
+	    public bool canPlay;
 	}
 }

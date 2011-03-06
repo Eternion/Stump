@@ -35,30 +35,29 @@ namespace Stump.DofusProtocol.D2oClasses
 		public const uint RESSOURCES_CATEGORY = 2;
 		public const uint QUEST_CATEGORY = 3;
 		public const uint OTHER_CATEGORY = 4;
-		public uint weight;
 		internal Array _recipes;
 		public int id;
 		public uint nameId;
-		public uint typeId;
+		public int typeId;
 		public uint descriptionId;
-		public uint iconId;
-		public uint level;
+		public int iconId;
+		public int level;
+        public int weight;
 		public Boolean cursed;
 		public int useAnimationId;
 		public Boolean usable;
 		public Boolean targetable;
-		public uint price;
+		public int price;
 		public Boolean twoHanded;
 		public Boolean etheral;
 		public int itemSetId;
 		public String criteria;
 		public Boolean hideEffects;
-		public uint appearanceId;
+		public int appearanceId;
 		public List<uint> recipeIds;
-		public List<uint> favoriteSubAreas;
-		public Boolean bonusIsSecret;
+        public Boolean bonusIsSecret;
 		public List<EffectInstance> possibleEffects;
-		public uint favoriteSubAreasBonus;
-		
+		public List<uint> favoriteSubAreas;
+		public int favoriteSubAreasBonus;		
 	}
 }

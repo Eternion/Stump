@@ -127,7 +127,7 @@ namespace Stump.Server.DataProvider.Data.D2oTool
                                               field.Key, field.Value.KnowType.Name, nativeField.FieldType.Name));
                 }
                 else
-                    throw new Exception(string.Format("Missed field \'{0}\'", field.Key));
+                    throw new Exception(string.Format("Missed field \'{0}\' of type {1}", field.Key,field.Value.KnowType.Name));
             }
         }
 

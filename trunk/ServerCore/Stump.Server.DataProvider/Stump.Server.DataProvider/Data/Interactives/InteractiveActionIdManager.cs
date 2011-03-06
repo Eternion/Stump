@@ -24,17 +24,17 @@ using Stump.Server.DataProvider.Data.D2oTool;
 
 namespace Stump.Server.DataProvider.Data.Interactives
 {
-    public class InteractiveActionIdManager : DataManager<int, int>
-    {
+    //public class InteractiveActionIdManager : DataManager<int, int>
+    //{
 
-        protected override int GetData(int id)
-        {
-            return D2OLoader.LoadData<Interactive>(id).actionId;
-        }
+    //    protected override int GetData(int id)
+    //    {
+    //        return D2OLoader.LoadData<Interactive>(id).actionId;
+    //    }
 
-        protected override Dictionary<int, int> GetAllData()
-        {
-            return D2OLoader.LoadData<Interactive>().ToDictionary(i => i.id, i => i.actionId);
-        }
-    }
+    //    protected override Dictionary<int, int> GetAllData()
+    //    {
+    //        return D2OLoader.LoadData<Interactive>().ToDictionary(i => i.id, i => i.actionId);
+    //    }
+    //}
 }

@@ -64,7 +64,7 @@ namespace Stump.Server.DataProvider.Data.MapTool
             var propertiesCount = reader.ReadUInt();
 
             reader.Seek(propertiesOffset, SeekOrigin.Begin);
-            m_properties.Add(linkFile, new Dictionary<string, string>(propertiesCount));
+            m_properties.Add(linkFile, new Dictionary<string, string>((int)propertiesCount));
 
             for (int i = 0; i < propertiesCount; i++)
             {

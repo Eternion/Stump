@@ -25,25 +25,25 @@ using Stump.Server.DataProvider.Data.D2oTool;
 
 namespace Stump.Server.DataProvider.Data.TaxCollector
 {
-    public class TaxCollectorFirstNameManager : DataManager<int,string>
-    {
-        private static readonly AsyncRandom m_rnd = new AsyncRandom();
+    //public class TaxCollectorFirstNameManager : DataManager<int,string>
+    //{
+    //    private static readonly AsyncRandom m_rnd = new AsyncRandom();
 
-        protected override string GetData(int id)
-        {
-            return D2OLoader.GetI18NText(D2OLoader.LoadData<TaxCollectorFirstname>(id).firstnameId);
-        }
+    //    protected override string GetData(int id)
+    //    {
+    //        return D2OLoader.GetI18NText(D2OLoader.LoadData<TaxCollectorFirstname>(id).firstnameId);
+    //    }
 
-        protected override Dictionary<int, string> GetAllData()
-        {
-            return D2OLoader.LoadData<TaxCollectorFirstname>().ToDictionary(t => t.id, t => D2OLoader.GetI18NText(t.firstnameId));
-        }
+    //    protected override Dictionary<int, string> GetAllData()
+    //    {
+    //        return D2OLoader.LoadData<TaxCollectorFirstname>().ToDictionary(t => t.id, t => D2OLoader.GetI18NText(t.firstnameId));
+    //    }
 
-        public KeyValuePair<int, string> GetRandom()
-        {
-            return PreLoadData.ElementAt(m_rnd.NextInt(PreLoadData.Count));
-        }
-    }
+    //    public KeyValuePair<int, string> GetRandom()
+    //    {
+    //        return PreLoadData.ElementAt(m_rnd.NextInt(PreLoadData.Count));
+    //    }
+    //}
 }
 
 

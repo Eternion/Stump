@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Stump.Server.BaseServer.Data.MapTool;
+using Stump.Server.DataProvider.Data.MapTool;
 using Stump.Tools.DataLoader.Properties;
 
 namespace Stump.Tools.DataLoader
