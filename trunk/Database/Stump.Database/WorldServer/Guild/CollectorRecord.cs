@@ -19,12 +19,14 @@
 using System;
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.Database.WorldServer.Character;
+using Stump.Database.WorldServer.Storage;
 using Stump.DofusProtocol.Enums;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.Guild
 {
     [ActiveRecord("guilds_collectors")]
-    public sealed class CollectorRecord : WorldRecord<CollectorRecord>
+    public sealed class CollectorRecord : WorldBaseRecord<CollectorRecord>
     {
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
         public uint Id { get; set; }

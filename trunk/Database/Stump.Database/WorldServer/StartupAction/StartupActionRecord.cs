@@ -27,7 +27,7 @@ namespace Stump.Database.WorldServer.StartupAction
 {
     [Serializable]
     [ActiveRecord("startup_actions")]
-    public sealed class StartupActionRecord : WorldRecord<StartupActionRecord>
+    public sealed class StartupActionRecord : WorldBaseRecord<StartupActionRecord>
     {
         private IList<WorldAccountRecord> m_accounts;
         private IList<StartupActionItemRecord> m_items;

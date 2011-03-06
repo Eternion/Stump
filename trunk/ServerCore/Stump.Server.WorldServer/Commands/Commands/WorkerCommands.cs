@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 
-namespace Stump.Server.WorldServer.Commands
+namespace Stump.Server.WorldServer.Commands.Commands
 {
     public class WorkerCommands : WorldCommand
     {

@@ -21,13 +21,19 @@ using System.Collections.Generic;
 using System.Linq;
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.Database.WorldServer.Alignment;
+using Stump.Database.WorldServer.Guild;
+using Stump.Database.WorldServer.Job;
+using Stump.Database.WorldServer.Quest;
+using Stump.Database.WorldServer.Storage;
+using Stump.Database.WorldServer.Zaap;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.Character
 {
     [ActiveRecord("characters"), JoinedBase]
-    public class CharacterRecord : WorldRecord<CharacterRecord>
+    public class CharacterRecord : WorldBaseRecord<CharacterRecord>
     {
         private IList<QuestRecord> m_activeQuests;
         private IList<QuestRecord> m_finishedQuests;

@@ -19,10 +19,10 @@
 using Castle.ActiveRecord;
 using Stump.Database.Types;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.Guild
 {
     [ActiveRecord("guilds_emblem")]
-    public sealed class GuildEmblemRecord : WorldRecord<GuildEmblemRecord>
+    public sealed class GuildEmblemRecord : WorldBaseRecord<GuildEmblemRecord>
     {
         [PrimaryKey(PrimaryKeyType.Foreign, "GuildId")]
         public uint GuildId { get; set; }

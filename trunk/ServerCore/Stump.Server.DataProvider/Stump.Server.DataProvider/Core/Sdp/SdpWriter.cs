@@ -17,17 +17,26 @@ namespace Stump.Server.DataProvider.Core
 
         private bool m_headerWrote;
         private bool m_indexTableWrote;
+        private bool m_indexTableOutDated;
 
         public SdpWriter(string filename)
-            : this(File.Open(filename, FileMode.OpenOrCreate))
         {
-        }
+            if (!File.Exists(filename))
+            {
+                File.Create(filename);
+            }
+            else
+            {
+                var reader = new SdpReader(filename);
+                m_indexTable = reader.GetIndexTable();
 
-        public SdpWriter(Stream stream)
-        {
-            BaseStream = stream;
+                m_indexTableWrote = true;
+                m_headerWrote = true;
+            }
 
-            m_writer = new BinaryWriter(stream);
+            BaseStream = File.Open(filename, FileMode.Open);
+
+            m_writer = new BinaryWriter(BaseStream);
         }
 
         public Stream BaseStream
@@ -59,6 +68,7 @@ namespace Stump.Server.DataProvider.Core
         private void WriteHeader()
         {
             m_writer.Write("SDP");
+            m_writer.Write(0L); // allocate space to write the offset of the table
 
             m_headerWrote = true;
         }
@@ -109,32 +119,23 @@ namespace Stump.Server.DataProvider.Core
                 throw new InvalidOperationException("File disposed, can't write anymore");
 
             if (m_indexTableWrote)
-                throw new InvalidOperationException("The end of file is even wrote, can't write anymore");
+                m_indexTableOutDated = true;
 
             lock (m_writer)
             {
                 if (!m_headerWrote)
                     WriteHeader();
 
-                m_indexTable.Add(index, new ObjectIndex(BaseStream.Position, bytes.Length));
+                if (!m_indexTable.ContainsKey(index))
+                    m_indexTable.Add(index, new ObjectIndex(BaseStream.Position, bytes.Length));
+                else
+                {
+                    m_indexTableOutDated = true;
+                    m_indexTable[index] = new ObjectIndex(BaseStream.Position, bytes.Length);
+                }
+
                 m_writer.Write(bytes);
             }
         }
-
-        #region Nested type: ObjectIndex
-
-        private class ObjectIndex
-        {
-            public readonly int Length;
-            public readonly long Offset;
-
-            public ObjectIndex(long offset, int length)
-            {
-                Offset = offset;
-                Length = length;
-            }
-        }
-
-        #endregion
     }
 }

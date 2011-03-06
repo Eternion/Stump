@@ -72,7 +72,7 @@ namespace Stump.Server.AuthServer
 
                 logger.Info("Initializing Database...");
                 worlddb = new DatabaseAccessor(new DatabaseConfiguration { Name = "stump_auth" });
-                worlddb.Initialize(Definitions.DatabaseRevision, DatabaseType.MySQL, typeof(AuthRecord<>));
+                worlddb.Initialize(Definitions.DatabaseRevision, DatabaseType.MySQL, typeof(AuthBaseRecord<>));
 
                 logger.Info("Starting Database engine...");
                 DatabaseAccessor.Start();

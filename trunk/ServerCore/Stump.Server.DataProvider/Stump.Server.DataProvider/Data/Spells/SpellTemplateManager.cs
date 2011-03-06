@@ -86,12 +86,12 @@ namespace Stump.Server.DataProvider.Data.Spells
             WorldServer.Spells.Add((uint) spell.Id, spell);
         }
 
-        protected override SpellTemplate GetData(uint id)
+        protected override SpellTemplate InternalGetOne(uint id)
         {
             throw new NotImplementedException();
         }
 
-        protected override Dictionary<uint, SpellTemplate> GetAllData()
+        protected override Dictionary<uint, SpellTemplate> InternalGetAll()
         {
             m_spellTemplates = D2OLoader.LoadData<Spell>().ToDictionary(s => s.id);
             var levelTemplates = D2OLoader.LoadDataById<SpellLevel>(entry => (int)entry.id);
@@ -105,25 +105,25 @@ namespace Stump.Server.DataProvider.Data.Spells
 
 
 
-        public void SetEffects(IEnumerable<EffectInstance> effects)
-        {
-            m_effects = EffectManager.ConvertExportedEffect(effects);
-        }
-
-        public void SetEffects(IEnumerable<EffectBase> effects)
-        {
-            m_effects = effects.ToArray();
-        }
-
-
-
-        public void SetCriticalEffects(IEnumerable<EffectInstance> effects)
-        {
-            m_criticalEffect = EffectManager.ConvertExportedEffect(effects);
-        }
-
-        public void SetCriticalEffects(IEnumerable<EffectBase> effects)
-        {
-            m_criticalEffect = effects.ToArray();
-        }
+//        public void SetEffects(IEnumerable<EffectInstance> effects)
+//        {
+//            m_effects = EffectManager.ConvertExportedEffect(effects);
+//        }
+//
+//        public void SetEffects(IEnumerable<EffectBase> effects)
+//        {
+//            m_effects = effects.ToArray();
+//        }
+//
+//
+//
+//        public void SetCriticalEffects(IEnumerable<EffectInstance> effects)
+//        {
+//            m_criticalEffect = EffectManager.ConvertExportedEffect(effects);
+//        }
+//
+//        public void SetCriticalEffects(IEnumerable<EffectBase> effects)
+//        {
+//            m_criticalEffect = effects.ToArray();
+//        }
 

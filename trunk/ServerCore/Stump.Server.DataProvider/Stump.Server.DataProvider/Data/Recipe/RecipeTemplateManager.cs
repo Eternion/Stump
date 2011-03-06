@@ -25,7 +25,7 @@ namespace Stump.Server.DataProvider.Data.Recipe
 {
     public class RecipeTemplateManager : DataManager<int, RecipeTemplate>
     {
-        protected override RecipeTemplate GetData(int id)
+        protected override RecipeTemplate InternalGetOne(int id)
         {
             var recipe = D2OLoader.LoadData<DofusProtocol.D2oClasses.Recipe>(id);
 
@@ -40,7 +40,7 @@ namespace Stump.Server.DataProvider.Data.Recipe
                        };
         }
 
-        protected override Dictionary<int, RecipeTemplate> GetAllData()
+        protected override Dictionary<int, RecipeTemplate> InternalGetAll()
         {
             return D2OLoader.LoadData<DofusProtocol.D2oClasses.Recipe>().
                 Select(r => new RecipeTemplate

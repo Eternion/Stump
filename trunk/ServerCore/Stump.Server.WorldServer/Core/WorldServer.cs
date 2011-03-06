@@ -23,6 +23,7 @@ using System.Reflection;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.Database;
 using Stump.Database.AuthServer;
+using Stump.Database.Types;
 using Stump.DofusProtocol;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer;
@@ -49,74 +50,42 @@ namespace Stump.Server.WorldServer
             Port = 3467
         };
 
+        [Variable]
+        public static DatabaseConfiguration WorldDatabaseConfiguration = new DatabaseConfiguration
+        {
+            Host = "localhost",
+            Name = "stump_world",
+            User = "root",
+            Password = "",
+            UpdateFileDir = "./sql_update/world/",
+        };
+
+        [Variable]
+        public static DatabaseConfiguration DataDatabaseConfiguration = new DatabaseConfiguration
+        {
+            Host = "localhost",
+            Name = "stump_data",
+            User = "root",
+            Password = "",
+            UpdateFileDir = "./sql_update/data/",
+        };
+
+        public DatabaseAccessor WorldDbAccessor
+        {
+            get;
+            private set;
+        }
+
+        public DatabaseAccessor DataDbAccessor
+        {
+            get;
+            private set;
+        }
+
         public WorldServer()
             : base(Definitions.ConfigFilePath, Definitions.SchemaFilePath)
         {
         }
-
-//        /// <summary>
-//        ///   ID of current world server
-//        /// </summary>
-//        [Variable]
-//        public static int ServerId
-//        {
-//            get { return ServerInformation.Id; }
-//            set
-//            {
-//                if (ServerInformation == null)
-//                    ServerInformation = new WorldServerInformation();
-//
-//                ServerInformation.Id = value;
-//            }
-//        }
-//
-//        /// <summary>
-//        ///   Name of current world server
-//        /// </summary>
-//        [Variable]
-//        public static string ServerName
-//        {
-//            get { return ServerInformation.Name; }
-//            set
-//            {
-//                if (ServerInformation == null)
-//                    ServerInformation = new WorldServerInformation();
-//
-//                ServerInformation.Name = value;
-//            }
-//        }
-//
-//        /// <summary>
-//        ///   Adress of current world server
-//        /// </summary>
-//        [Variable]
-//        public static string ServerAddress
-//        {
-//            get { return ServerInformation.Address; }
-//            set
-//            {
-//                if (ServerInformation == null)
-//                    ServerInformation = new WorldServerInformation();
-//
-//                ServerInformation.Address = value;
-//            }
-//        }
-//
-//        /// <summary>
-//        ///   Port of current world server
-//        /// </summary>
-//        [Variable]
-//        public static ushort ServerPort
-//        {
-//            get { return ServerInformation.Port; }
-//            set
-//            {
-//                if (ServerInformation == null)
-//                    ServerInformation = new WorldServerInformation();
-//
-//                ServerInformation.Port = value;
-//            }
-//        }
 
         public override void Initialize()
         {
@@ -126,14 +95,20 @@ namespace Stump.Server.WorldServer
             ConsoleBase.SetTitle("#Stump World Server : " + ServerInformation.Name);
 
 
-            logger.Info("Initializing Database...");
-            DatabaseAccessor.Initialize(
-                Definitions.DatabaseRevision,
-                DatabaseType.MySQL,
-                DatabaseService.WorldServer);
+            logger.Info("Initializing World Database...");
+            WorldDbAccessor = new DatabaseAccessor(WorldDatabaseConfiguration, Definitions.DatabaseRevision, typeof(WorldBaseRecord<>));
 
-            logger.Info("Opening Database...");
-            DatabaseAccessor.Check();
+            logger.Info("Initializing Data Database...");
+            DataDbAccessor = new DatabaseAccessor(DataDatabaseConfiguration, Definitions.DataDatabaseRevision, typeof(DataBaseRecord<>));
+
+            logger.Info("Start Database Engine...");
+            DatabaseAccessor.StartEngine();
+
+            logger.Info("Opening World Database...");
+            WorldDbAccessor.OpenDatabase();
+
+            logger.Info("Opening Data Database...");
+            DataDbAccessor.OpenDatabase();
 
             logger.Info("Register Messages...");
             MessageReceiver.Initialize();

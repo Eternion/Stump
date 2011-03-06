@@ -18,11 +18,12 @@
 //  *************************************************************************/
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.Database.WorldServer.Character;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.Quest
 {
     [ActiveRecord("characters_quests")]
-    public class QuestRecord : WorldRecord<QuestRecord>
+    public class QuestRecord : WorldBaseRecord<QuestRecord>
     {
         [PrimaryKey(PrimaryKeyType.Identity, "Id")]
         public uint Id { get; set; }

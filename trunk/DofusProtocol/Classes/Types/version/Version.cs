@@ -1,21 +1,3 @@
-// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
 using System;
 using System.Collections.Generic;
 using Stump.BaseCore.Framework.Utils;
@@ -114,32 +96,32 @@ namespace Stump.DofusProtocol.Classes
 			this.major = (uint)arg1.ReadByte();
 			if ( this.major < 0 )
 			{
-				throw new Exception("Forbidden value (" + this.major + ") on element of Stump.DofusProtocol.Classes.Version.major.");
+				throw new Exception("Forbidden value (" + this.major + ") on element of Stump.DofusProtocol.Classes.Stump.DofusProtocol.Classes.Version.major.");
 			}
 			this.minor = (uint)arg1.ReadByte();
 			if ( this.minor < 0 )
 			{
-				throw new Exception("Forbidden value (" + this.minor + ") on element of Stump.DofusProtocol.Classes.Version.minor.");
+				throw new Exception("Forbidden value (" + this.minor + ") on element of Stump.DofusProtocol.Classes.Stump.DofusProtocol.Classes.Version.minor.");
 			}
 			this.release = (uint)arg1.ReadByte();
 			if ( this.release < 0 )
 			{
-				throw new Exception("Forbidden value (" + this.release + ") on element of Stump.DofusProtocol.Classes.Version.release.");
+				throw new Exception("Forbidden value (" + this.release + ") on element of Stump.DofusProtocol.Classes.Stump.DofusProtocol.Classes.Version.release.");
 			}
 			this.revision = (uint)arg1.ReadUShort();
 			if ( this.revision < 0 || this.revision > 65535 )
 			{
-				throw new Exception("Forbidden value (" + this.revision + ") on element of Stump.DofusProtocol.Classes.Version.revision.");
+				throw new Exception("Forbidden value (" + this.revision + ") on element of Stump.DofusProtocol.Classes.Stump.DofusProtocol.Classes.Version.revision.");
 			}
 			this.patch = (uint)arg1.ReadByte();
 			if ( this.patch < 0 )
 			{
-				throw new Exception("Forbidden value (" + this.patch + ") on element of Stump.DofusProtocol.Classes.Version.patch.");
+				throw new Exception("Forbidden value (" + this.patch + ") on element of Stump.DofusProtocol.Classes.Stump.DofusProtocol.Classes.Version.patch.");
 			}
 			this.buildType = (uint)arg1.ReadByte();
 			if ( this.buildType < 0 )
 			{
-				throw new Exception("Forbidden value (" + this.buildType + ") on element of Stump.DofusProtocol.Classes.Version.buildType.");
+				throw new Exception("Forbidden value (" + this.buildType + ") on element of Stump.DofusProtocol.Classes.Stump.DofusProtocol.Classes.Version.buildType.");
 			}
 		}
 		

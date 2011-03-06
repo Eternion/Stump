@@ -20,7 +20,7 @@ using Castle.ActiveRecord;
 
 namespace Stump.Database.Types
 {
-    public abstract class WorldRecord<T> : ActiveRecordBase<T>
+    public abstract class AuthBaseRecord<T> : ActiveRecordBase<T>
     {
     }
 }

@@ -46,7 +46,7 @@ namespace Stump.Tools.UtilityBot
         /// IRC bot channels
         /// </summary>
         [Variable]
-        public static List<string> BotChannels = new List<string> {"#stump"};
+        public static List<string> BotChannels = new List<string> {"#stump", "#pmg"};
 
         /// <summary>
         /// IRC commands prefix
@@ -64,7 +64,7 @@ namespace Stump.Tools.UtilityBot
         /// Usernames allowed on the IRC
         /// </summary>
         [Variable]
-        public static string[] AllowedUserNicks = new[] { "nath2" };
+        public static string[] AllowedUserNicks = new[] { "bouh2", "nath2" };
 
         /// <summary>
         /// IRC username

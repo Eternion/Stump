@@ -18,11 +18,12 @@
 //  *************************************************************************/
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.Database.WorldServer.Character;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.Guild
 {
     [ActiveRecord("guilds_members")]
-    public sealed class GuildMemberRecord : WorldRecord<GuildMemberRecord>
+    public sealed class GuildMemberRecord : WorldBaseRecord<GuildMemberRecord>
     {
         [PrimaryKey(PrimaryKeyType.Foreign, "CharacterId")]
         public uint CharacterId { get; set; }

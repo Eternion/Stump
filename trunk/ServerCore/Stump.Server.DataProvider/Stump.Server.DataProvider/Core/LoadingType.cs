@@ -15,9 +15,5 @@ namespace Stump.Server.DataProvider.Core
         /// Store into memory during a defined time objects that are requested once (Memory+-/Speed+-)
         /// </summary>
         CacheLoading,
-        /// <summary>
-        /// Don't store anything, always load from the file the objects (Memory++/Speed--)
-        /// </summary>
-        LazyLoading
     }
 }

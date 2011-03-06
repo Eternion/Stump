@@ -24,6 +24,7 @@ using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.IO;
 using Stump.BaseCore.Framework.Utils;
 using Stump.Database.WorldServer;
+using Stump.Database.WorldServer.Alignment;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.DataProvider.Data.Areas;
 using Stump.Server.DataProvider.Data.Interactives;

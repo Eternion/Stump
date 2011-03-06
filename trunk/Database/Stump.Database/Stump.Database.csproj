@@ -126,9 +126,9 @@
     <Compile Include="AuthServer\World\DeletedWorldCharacterRecord.cs" />
     <Compile Include="AuthServer\IpBannedRecord.cs" />
     <Compile Include="DatabaseType.cs" />
-    <Compile Include="Types\AuthRecord.cs" />
-    <Compile Include="Types\DataRecord.cs" />
-    <Compile Include="Types\WorldRecord.cs" />
+    <Compile Include="Types\AuthBaseRecord.cs" />
+    <Compile Include="Types\DataBaseRecord.cs" />
+    <Compile Include="Types\WorldBaseRecord.cs" />
     <Compile Include="WorldServer\Alignment\AlignmentRecord.cs" />
     <Compile Include="WorldServer\Alignment\PrismRecord.cs" />
     <Compile Include="WorldServer\Alignment\SubAreaRecord.cs" />

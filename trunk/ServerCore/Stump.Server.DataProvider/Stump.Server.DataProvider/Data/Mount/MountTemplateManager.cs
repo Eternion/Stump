@@ -36,7 +36,7 @@ namespace Stump.Server.DataProvider.Data.Mount
         [Variable]
         public static string MountFile = "MountsTemplate.xml";
 
-        protected override MountTemplate GetData(uint id)
+        protected override MountTemplate InternalGetOne(uint id)
         {
             using (var sr = new StreamReader(Settings.StaticPath + MountFile))
             {
@@ -48,7 +48,7 @@ namespace Stump.Server.DataProvider.Data.Mount
             }
         }
 
-        protected override Dictionary<uint, MountTemplate> GetAllData()
+        protected override Dictionary<uint, MountTemplate> InternalGetAll()
         {
             using (var sr = new StreamReader(Settings.StaticPath + MountFile))
             {

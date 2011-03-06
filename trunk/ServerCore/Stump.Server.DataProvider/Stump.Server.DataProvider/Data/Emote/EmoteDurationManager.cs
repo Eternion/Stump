@@ -34,7 +34,7 @@ namespace Stump.Server.DataProvider.Data.Emote
         [Variable]
         public static string EmotesFile = "EmotesDuration.xml";
 
-        protected override uint GetData(EmotesEnum id)
+        protected override uint InternalGetOne(EmotesEnum id)
         {
             using (var sr = new StreamReader(Settings.StaticPath + EmotesFile))
             {
@@ -44,7 +44,7 @@ namespace Stump.Server.DataProvider.Data.Emote
             }
         }
 
-        protected override Dictionary<EmotesEnum, uint> GetAllData()
+        protected override Dictionary<EmotesEnum, uint> InternalGetAll()
         {
             using (var sr = new StreamReader(Settings.StaticPath + EmotesFile))
             {

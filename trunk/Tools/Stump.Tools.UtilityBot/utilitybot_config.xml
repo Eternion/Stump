@@ -3,9 +3,9 @@
 <Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="auth_config.xsd">
   <Stump.Tools.UtilityBot>
     <Bot>
-      <DofusSourcePath>
-        C:\Documents and Settings\Thomas\Desktop\Dofus\Dofus 2.0 Decompil\DofusInvoker_2.2.3
-      </DofusSourcePath>
+      <Variable name="DofusSourcePath">
+        C:\Users\Bouh2\Desktop\Dofus\Dofus 2.0 Decompil\DofusInvoker_2.3.3
+      </Variable>
     </Bot>
   </Stump.Tools.UtilityBot>
 </Configuration>

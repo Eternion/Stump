@@ -18,8 +18,9 @@
 //  *************************************************************************/
 using System;
 using Castle.ActiveRecord;
+using Stump.Database.WorldServer.Item;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.BidHouse
 {
     [ActiveRecord("bidhouses_items")]
     public sealed class BidHouseItemRecord : ItemRecord

@@ -18,11 +18,12 @@
 //  *************************************************************************/
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.Database.WorldServer.Character;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.Alignment
 {
     [ActiveRecord("characters_alignment")]
-    public sealed class AlignmentRecord : WorldRecord<AlignmentRecord>
+    public sealed class AlignmentRecord : WorldBaseRecord<AlignmentRecord>
     {
         [PrimaryKey(PrimaryKeyType.Foreign, "CharacterId")]
         public uint CharacterId { get; set; }

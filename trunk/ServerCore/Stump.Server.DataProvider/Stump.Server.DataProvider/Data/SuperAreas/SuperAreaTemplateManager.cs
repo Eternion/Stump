@@ -36,7 +36,7 @@ namespace Stump.Server.DataProvider.Data.SuperAreas
         [Variable]
         public static string SuperAreaFile = "SuperAreaTemplates.xml";
 
-        protected override SuperAreaTemplate GetData(int id)
+        protected override SuperAreaTemplate InternalGetOne(int id)
         {
             using (var sr = new StreamReader(Settings.StaticPath + SuperAreaFile))
             {
@@ -46,7 +46,7 @@ namespace Stump.Server.DataProvider.Data.SuperAreas
             }
         }
 
-        protected override Dictionary<int, SuperAreaTemplate> GetAllData()
+        protected override Dictionary<int, SuperAreaTemplate> InternalGetAll()
         {
             using (var sr = new StreamReader(Settings.StaticPath + SuperAreaFile))
             {

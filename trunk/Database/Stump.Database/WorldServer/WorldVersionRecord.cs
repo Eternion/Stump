@@ -4,7 +4,7 @@ using Stump.Database.Types;
 
 namespace Stump.Database.WorldServer
 {
-    public class WorldVersionRecord : WorldRecord<WorldVersionRecord>, IVersionRecord
+    public class WorldVersionRecord : WorldBaseRecord<WorldVersionRecord>, IVersionRecord
     {
         [PrimaryKey(PrimaryKeyType.Assigned, "Revision")]
         public uint Revision

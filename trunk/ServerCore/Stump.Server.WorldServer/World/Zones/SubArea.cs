@@ -19,6 +19,7 @@
 using System.Collections.Generic;
 using Stump.BaseCore.Framework.Collections;
 using Stump.Database.WorldServer;
+using Stump.Database.WorldServer.Alignment;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.DataProvider.Data.SubAreas;
 using Stump.Server.WorldServer.Entities;

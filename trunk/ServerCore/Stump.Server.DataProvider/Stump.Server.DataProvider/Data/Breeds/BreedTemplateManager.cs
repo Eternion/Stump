@@ -22,6 +22,7 @@ using System.IO;
 using System.Linq;
 using ProtoBuf;
 using Stump.BaseCore.Framework.Attributes;
+using Stump.BaseCore.Framework.Xml;
 using Stump.DofusProtocol.Classes.Extensions;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
@@ -39,7 +40,7 @@ namespace Stump.Server.DataProvider.Data.Breeds
         [Variable]
         public static string BreedFile = "Breeds.xml";
 
-        protected override BreedTemplate GetData(PlayableBreedEnum id)
+        protected override BreedTemplate InternalGetOne(PlayableBreedEnum id)
         {
             Breed breedData = D2OLoader.LoadData<Breed>().FirstOrDefault(b => b.id == (int) id);
 
@@ -48,8 +49,9 @@ namespace Stump.Server.DataProvider.Data.Breeds
 
             using (var reader = new StreamReader(Settings.StaticPath + BreedFile))
             {
+                
                 BreedTemplate template =
-                    Serializer.Deserialize<List<BreedTemplate>>(reader.BaseStream).FirstOrDefault(t => t.Id == id);
+                    XmlUtils.Deserialize<List<BreedTemplate>>(reader.BaseStream).FirstOrDefault(t => t.Id == id);
 
                 if (template == null)
                     throw new Exception(string.Format("The correspondant xml file {0} is unfundable", BreedFile));
@@ -69,12 +71,12 @@ namespace Stump.Server.DataProvider.Data.Breeds
             }
         }
 
-        protected override Dictionary<PlayableBreedEnum, BreedTemplate> GetAllData()
+        protected override Dictionary<PlayableBreedEnum, BreedTemplate> InternalGetAll()
         {
             Dictionary<int, Breed> breedDatas = D2OLoader.LoadData<Breed>().ToDictionary(b => b.id);
             using (var reader = new StreamReader(Settings.StaticPath + BreedFile))
             {
-                var templates = Serializer.Deserialize<List<BreedTemplate>>(reader.BaseStream);
+                var templates = XmlUtils.Deserialize<List<BreedTemplate>>(reader.BaseStream);
 
                 foreach (BreedTemplate template in templates)
                 {
@@ -96,5 +98,6 @@ namespace Stump.Server.DataProvider.Data.Breeds
                 return templates.ToDictionary(b => b.Id);
             }
         }
+
     }
 }

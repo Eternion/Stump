@@ -33,7 +33,7 @@ namespace Stump.Server.DataProvider.Data.SubAreas
         [Variable]
         public static string SubAreaFile = "SubAreaTemplates.xml";
 
-        protected override SubAreaTemplate GetData(int id)
+        protected override SubAreaTemplate InternalGetOne(int id)
         {
             using (var sr = new StreamReader(Settings.StaticPath + SubAreaFile))
             {
@@ -43,7 +43,7 @@ namespace Stump.Server.DataProvider.Data.SubAreas
             }
         }
 
-        protected override Dictionary<int, SubAreaTemplate> GetAllData()
+        protected override Dictionary<int, SubAreaTemplate> InternalGetAll()
         {
             using (var sr = new StreamReader(Settings.StaticPath + SubAreaFile))
             {

@@ -38,19 +38,21 @@ namespace Stump.Server.BaseServer.Database
 {
     public class DatabaseAccessor
     {
-        private static readonly InPlaceConfigurationSource m_source = new InPlaceConfigurationSource();
-        private static readonly List<Type> m_types = new List<Type>();
+        private static readonly InPlaceConfigurationSource m_globalConfig = new InPlaceConfigurationSource();
+        private static readonly List<Type> m_globalTypes = new List<Type>();
 
-        public static void Start()
+        public static void StartEngine()
         {
-            ActiveRecordStarter.Initialize(m_source, m_types.ToArray());
+            ActiveRecordStarter.Initialize(m_globalConfig, m_globalTypes.ToArray());
         }
 
         private readonly DatabaseConfiguration m_config;
 
         private readonly Logger m_logger = LogManager.GetCurrentClassLogger();
 
-        private uint m_databaseRevision;
+        private readonly uint m_databaseRevision;
+        private readonly Type m_recordBaseType;
+
         private Type m_versionType;
         private IVersionRecord m_version;
         private Func<IVersionRecord> m_lastVersionMethod; 
@@ -130,33 +132,37 @@ namespace Stump.Server.BaseServer.Database
 
         #endregion
 
-        public DatabaseAccessor(DatabaseConfiguration config)
+        public DatabaseAccessor(DatabaseConfiguration config, uint databaseRevision, Type recordBaseType)
         {
             m_config = config;
+            m_databaseRevision = databaseRevision;
+            m_recordBaseType = recordBaseType;
         }
 
-        public void Initialize(uint databaseRevision, DatabaseType dbtype, Type classType)
+        public void Initialize()
         {
-            if (IsInitialized) return;
+            if (IsInitialized)
+                return;
 
             if (string.IsNullOrEmpty(m_config.Name))
                 throw new Exception("Cannot access to database. Database's name is not defined");
 
-            var config = ActiveRecordHelper.GetConfiguration(dbtype, m_config.Host, m_config.Name, m_config.User, m_config.Password);
-            
-            m_source.Add(typeof(AuthRecord<>), config);
-            var types = ActiveRecordHelper.GetTables(classType);
-            m_types.AddRange(types);
-            m_types.Add(classType);
+            var connectionInfos = m_config.GetConnectionInfo();
 
-            m_versionType = ActiveRecordHelper.GetVersionType(types);
-            m_lastVersionMethod = ActiveRecordHelper.GetLastestVersionMethod(m_versionType);
+            m_globalConfig.Add(m_recordBaseType, connectionInfos);
 
-            m_databaseRevision = databaseRevision;
+            var recordsType = ActiveRecordHelper.GetTables(m_recordBaseType);
+
+
+            m_globalTypes.AddRange(recordsType);
+            m_globalTypes.Add(m_recordBaseType);
+
+            m_versionType = ActiveRecordHelper.GetVersionType(recordsType);
+            m_lastVersionMethod = ActiveRecordHelper.GetFindVersionMethod(m_versionType);
+
         }
 
-        public void Check()
-
+        public void OpenDatabase()
         {
             if (!IsInitialized)
                 throw new Exception("DatabaseAccessor is not initialized");

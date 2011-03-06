@@ -34,7 +34,7 @@ namespace Stump.Server.DataProvider.Data.House
         public static string HousesDoorsFile = "HousesDoors.xml";
 
 
-        protected override List<short> GetData(int id)
+        protected override List<short> InternalGetOne(int id)
         {
             using (var sr = new StreamReader(Settings.StaticPath + HousesDoorsFile))
             {
@@ -44,7 +44,7 @@ namespace Stump.Server.DataProvider.Data.House
             }
         }
 
-        protected override Dictionary<int, List<short>> GetAllData()
+        protected override Dictionary<int, List<short>> InternalGetAll()
         {
             using (var sr = new StreamReader(Settings.StaticPath + HousesDoorsFile))
             {

@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.BaseCore.Framework.Extensions;
 using Stump.Database.WorldServer;
+using Stump.Database.WorldServer.Storage;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Effects;
 using Stump.Server.WorldServer.Entities;

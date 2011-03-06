@@ -28,57 +28,12 @@ namespace Stump.Database
 {
     public static class ActiveRecordHelper
     {
-        public static Dictionary<string, string> GetConfiguration(DatabaseType dbtype, string host, string dbName, string user, string password)
-        {
-            var props = new Dictionary<string, string>(5);
-
-            switch (dbtype)
-            {
-                case DatabaseType.MySQL:
-                    {
-                        props.Add("connection.driver_class", "NHibernate.Driver.MySqlDataDriver");
-                        props.Add("dialect", "NHibernate.Dialect.MySQLDialect");
-                        props.Add("connection.provider", "NHibernate.Connection.DriverConnectionProvider");
-                        props.Add("connection.connection_string", "Database=" + dbName + ";Data Source=" + host +
-                                                                  ";User Id=" + user + ";Password=" + password);
-                        props.Add("proxyfactory.factory_class",
-                                  "NHibernate.ByteCode.Castle.ProxyFactoryFactory, NHibernate.ByteCode.Castle");
-                        break;
-                    }
-                case DatabaseType.MSSQL2005:
-                    {
-                        props.Add("connection.driver_class", "NHibernate.Driver.SqlClientDriver");
-                        props.Add("dialect", "NHibernate.Dialect.MsSql2005Dialect");
-                        props.Add("connection.provider", "NHibernate.Connection.DriverConnectionProvider");
-                        props.Add("connection.connection_string",
-                                  "Data Source=" + host + ";Initial Catalog=" + dbName + ";User Id=" + user +
-                                  ";Password=" + password + ";");
-                        props.Add("proxyfactory.factory_class",
-                                  "NHibernate.ByteCode.Castle.ProxyFactoryFactory, NHibernate.ByteCode.Castle");
-                        break;
-                    }
-                case DatabaseType.MSSQL2008:
-                    {
-                        props.Add("connection.driver_class", "NHibernate.Driver.SqlClientDriver");
-                        props.Add("dialect", "NHibernate.Dialect.MsSql2008Dialect");
-                        props.Add("connection.provider", "NHibernate.Connection.DriverConnectionProvider");
-                        props.Add("connection.connection_string",
-                                  "Data Source=" + host + ";Initial Catalog=" + dbName + ";User Id=" + user +
-                                  ";Password=" + password + ";");
-                        props.Add("proxyfactory.factory_class",
-                                  "NHibernate.ByteCode.Castle.ProxyFactoryFactory, NHibernate.ByteCode.Castle");
-                        break;
-                    }
-            }
-            return props;
-        }
-
-        public static IEnumerable<Type> GetTables(Type dbType)
+        public static IEnumerable<Type> GetTables(Type recordBaseType)
         {
             var asm = Assembly.GetExecutingAssembly();
             var types = asm.GetTypes();
             
-            return types.Where(t => t.IsSubclassOfGeneric(dbType)).ToArray();
+            return types.Where(t => t.IsSubclassOfGeneric(recordBaseType)).ToArray();
         }
 
         public static Type GetVersionType(IEnumerable<Type> types)
@@ -86,9 +41,9 @@ namespace Stump.Database
             return types.First(t => t.GetInterfaces().Contains(typeof(IVersionRecord)));
         }
 
-        public static Func<IVersionRecord> GetLastestVersionMethod(Type versionType)
+        public static Func<IVersionRecord> GetFindVersionMethod(Type versionType)
         {
-            var method = versionType.BaseType.BaseType.GetMethod("FindAll",Type.EmptyTypes);
+            var method = versionType.BaseType.BaseType.GetMethod("FindAll", Type.EmptyTypes);
 
             var deleg = Delegate.CreateDelegate(typeof (Func<IEnumerable<IVersionRecord>>), method) as Func<IEnumerable<IVersionRecord>>;
             return () => deleg().FirstOrDefault();

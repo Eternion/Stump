@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using Stump.Database.WorldServer;
+using Stump.Database.WorldServer.Guild;
 
 namespace Stump.Server.WorldServer.World.Guilds
 {

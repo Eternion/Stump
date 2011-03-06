@@ -19,6 +19,7 @@
 using System;
 using Stump.BaseCore.Framework.Utils;
 using Stump.Database.WorldServer;
+using Stump.Database.WorldServer.Guild;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Classes.Custom;
 using Stump.Server.DataProvider.Data.TaxCollector;

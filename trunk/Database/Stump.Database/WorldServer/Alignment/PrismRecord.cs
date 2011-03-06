@@ -20,10 +20,10 @@ using System;
 using Castle.ActiveRecord;
 using Stump.Database.Types;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.Alignment
 {
     [ActiveRecord("subareas_prism")]
-    public sealed class PrismRecord : WorldRecord<PrismRecord>
+    public sealed class PrismRecord : WorldBaseRecord<PrismRecord>
     {
         [PrimaryKey(PrimaryKeyType.Foreign, "SubAreaId")]
         public uint SubAreaId { get; set; }

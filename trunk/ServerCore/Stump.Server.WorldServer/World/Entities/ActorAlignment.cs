@@ -1,4 +1,5 @@
 ﻿using Stump.Database.WorldServer;
+using Stump.Database.WorldServer.Alignment;
 using Stump.DofusProtocol.Classes;
 using Stump.Server.WorldServer.Entities;
 

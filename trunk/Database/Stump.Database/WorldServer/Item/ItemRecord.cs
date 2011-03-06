@@ -21,10 +21,10 @@ using Castle.ActiveRecord;
 using Stump.Database.Types;
 using Stump.DofusProtocol.Enums;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.Item
 {
     [ActiveRecord("items"), JoinedBase]
-    public class ItemRecord : WorldRecord<ItemRecord>
+    public class ItemRecord : WorldBaseRecord<ItemRecord>
     {
         private IList<byte[]> m_effects;
 

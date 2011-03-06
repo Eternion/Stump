@@ -19,11 +19,12 @@
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.Database.WorldServer.Guild;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.Paddock
 {
     [ActiveRecord("paddocks_items"), JoinedBase]
-    public class PaddockItemRecord : WorldRecord<PaddockItemRecord>
+    public class PaddockItemRecord : WorldBaseRecord<PaddockItemRecord>
     {
         private IList<MountRecord> m_mounts;
 

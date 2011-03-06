@@ -26,14 +26,14 @@ namespace Stump.Server.DataProvider.Data.Alignment
 {
     public class AlignmentSideTemplateManager : DataManager<int,AlignmentSide>
     {
-        protected override AlignmentSide GetData(int id)
+        protected override AlignmentSide InternalGetOne(int id)
         {
             
             // ROFL FLEMME
             return null;
         }
 
-        protected override Dictionary<int, AlignmentSide> GetAllData()
+        protected override Dictionary<int, AlignmentSide> InternalGetAll()
         {
             var sides = D2OLoader.LoadData<DofusProtocol.D2oClasses.AlignmentSide>();
             var orders = D2OLoader.LoadData<DofusProtocol.D2oClasses.AlignmentOrder>();

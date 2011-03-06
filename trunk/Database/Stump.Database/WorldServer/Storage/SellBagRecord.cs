@@ -19,11 +19,13 @@
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.Database.WorldServer.Character;
+using Stump.Database.WorldServer.Item;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.Storage
 {
     [ActiveRecord("sellbags")]
-    public sealed class SellBagRecord : WorldRecord<SellBagRecord>
+    public sealed class SellBagRecord : WorldBaseRecord<SellBagRecord>
     {
         private IList<PricedItemRecord> m_items;
 

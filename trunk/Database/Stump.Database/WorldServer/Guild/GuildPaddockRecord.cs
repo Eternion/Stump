@@ -18,8 +18,9 @@
 //  *************************************************************************/
 using System.Collections.Generic;
 using Castle.ActiveRecord;
+using Stump.Database.WorldServer.Paddock;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.Guild
 {
     [ActiveRecord("guilds_paddocks")]
     public sealed class GuildPaddockRecord : PaddockRecord

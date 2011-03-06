@@ -126,7 +126,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\Commands\Commands\TeleportCommand.cs" />
+    <Compile Include="Commands\Commands\TeleportCommand.cs" />
     <Compile Include="Helpers\WorldAccountManager.cs" />
     <Compile Include="World\Entities\Actors\Actor.cs" />
     <Compile Include="World\Entities\ActorAlignment.cs" />
@@ -164,12 +164,12 @@
     <Compile Include="World\WorldZones.cs" />
     <Compile Include="World\Groups\IGroupMember.cs" />
     <Compile Include="World\Chat\ChatManager.cs" />
-    <Compile Include="Core\Commands\Commands\ItemCommand.cs" />
-    <Compile Include="Core\Commands\IInGameTrigger.cs" />
-    <Compile Include="Core\Commands\Commands\LookCommand.cs" />
-    <Compile Include="Core\Commands\TriggerChat.cs" />
-    <Compile Include="Core\Commands\TriggerConsole.cs" />
-    <Compile Include="Core\Commands\Commands\WorkerCommands.cs" />
+    <Compile Include="Commands\Commands\ItemCommand.cs" />
+    <Compile Include="Commands\IInGameTrigger.cs" />
+    <Compile Include="Commands\Commands\LookCommand.cs" />
+    <Compile Include="Commands\TriggerChat.cs" />
+    <Compile Include="Commands\TriggerConsole.cs" />
+    <Compile Include="Commands\Commands\WorkerCommands.cs" />
     <Compile Include="World\Elements\CellTrigger.cs" />
     <Compile Include="World\Elements\InteractiveObject.cs" />
     <Compile Include="Handlers\Authorized\AuthorizedHandler.cs" />
@@ -258,10 +258,10 @@
     <Compile Include="World\Spells\Spell.cs" />
     <Compile Include="World\Spells\SpellInventory.cs" />
     <Compile Include="Core\WorldConsole.cs" />
-    <Compile Include="Core\Commands\WorldCommand.cs" />
-    <Compile Include="Core\Commands\WorldConsoleTrigger.cs" />
-    <Compile Include="Core\Commands\WorldSubCommand.cs" />
-    <Compile Include="Core\Commands\ParametersConverter.cs" />
+    <Compile Include="Commands\WorldCommand.cs" />
+    <Compile Include="Commands\WorldConsoleTrigger.cs" />
+    <Compile Include="Commands\WorldSubCommand.cs" />
+    <Compile Include="Commands\ParametersConverter.cs" />
     <Compile Include="Core\Definitions.cs" />
     <Compile Include="Handlers\WorldHandler.cs" />
     <Compile Include="Handlers\PredicatesDefinitions.cs" />

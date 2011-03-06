@@ -36,7 +36,7 @@ namespace Stump.Server.DataProvider.Data.Chat
         [Variable]
         public static string ChannelFile = "Chat/Channels.xml";
 
-        protected override ChannelTemplate GetData(ChannelId id)
+        protected override ChannelTemplate InternalGetOne(ChannelId id)
         {
             using (var sr = new StreamReader(Settings.StaticPath + ChannelFile))
             {
@@ -44,7 +44,7 @@ namespace Stump.Server.DataProvider.Data.Chat
             }
         }
 
-        protected override Dictionary<ChannelId, ChannelTemplate> GetAllData()
+        protected override Dictionary<ChannelId, ChannelTemplate> InternalGetAll()
         {
             using (var sr = new StreamReader(Settings.StaticPath + ChannelFile))
             {

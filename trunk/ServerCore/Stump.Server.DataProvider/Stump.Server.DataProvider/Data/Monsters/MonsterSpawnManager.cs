@@ -37,12 +37,12 @@ namespace Stump.Server.DataProvider.Data.Monsters
         public static string MonsterSpawnFile = "MonstersSpawn.xml";
 
 
-        protected override MonsterSpawn GetData(uint id)
+        protected override MonsterSpawn InternalGetOne(uint id)
         {
             return null;
         }
 
-        protected override Dictionary<uint, MonsterSpawn> GetAllData()
+        protected override Dictionary<uint, MonsterSpawn> InternalGetAll()
         {
             return null;
         }

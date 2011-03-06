@@ -19,10 +19,10 @@
 using Castle.ActiveRecord;
 using Stump.Database.Types;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.Alignment
 {
     [ActiveRecord("subareas")]
-    public sealed class SubAreaRecord : WorldRecord<SubAreaRecord>
+    public sealed class SubAreaRecord : WorldBaseRecord<SubAreaRecord>
     {
         [PrimaryKey(PrimaryKeyType.Assigned, "SubAreaId")]
         public int SubAreaId { get; set; }

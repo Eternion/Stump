@@ -20,13 +20,13 @@ using Castle.ActiveRecord;
 using Stump.Database.Types;
 using Stump.DofusProtocol.Enums;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.Character
 {
     /// <summary>
     /// A Spell learned by a Character with a position and a level
     /// </summary>
     [ActiveRecord("characters_spells")]
-    public class CharacterSpellRecord : WorldRecord<CharacterSpellRecord>
+    public class CharacterSpellRecord : WorldBaseRecord<CharacterSpellRecord>
     {
         [PrimaryKey(PrimaryKeyType.Identity)]
         public long Id { get; set; }

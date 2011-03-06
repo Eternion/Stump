@@ -4,12 +4,7 @@ using System.IO;
 
 namespace Stump.Server.DataProvider.Core
 {
-    /// <summary>
-    /// Read a sdp file. A sdp (Static Data Package) is a packed file containing static datas
-    /// </summary>
-    public class SdpReader : IDisposable
-    {
-        class ObjectIndex
+     class ObjectIndex
         {
             public ObjectIndex(long offset, int length)
             {
@@ -21,6 +16,11 @@ namespace Stump.Server.DataProvider.Core
             public int Length;
         }
 
+    /// <summary>
+    /// Read a sdp file. A sdp (Static Data Package) is a packed file containing static datas
+    /// </summary>
+    public class SdpReader : IDisposable
+    {
         public Stream BaseStream
         {
             get;
@@ -67,6 +67,11 @@ namespace Stump.Server.DataProvider.Core
                         m_reader.ReadInt32()    // length
                         ));
             }
+        }
+
+        internal Dictionary<int, ObjectIndex> GetIndexTable()
+        {
+            return m_indexTable;
         }
 
         public byte[] Read(int index)

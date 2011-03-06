@@ -16,6 +16,7 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -31,11 +32,11 @@ namespace Stump.Server.DataProvider.Data.Areas
         ///   Name of Area templates file
         /// </summary>
         [Variable]
-        public static string AreaFile = "AreaTemplates.xml";
+        public static string AreaFile = "AreaTemplates.bin";
 
-        protected override AreaTemplate GetData(int id)
+        protected override AreaTemplate InternalGetOne(int id)
         {
-            using (var sr = new StreamReader(Settings.StaticPath + AreaFile))
+            using (var sr = new StreamReader(Path.Combine(Settings.StaticPath, AreaFile)))
             {
                 var areas = Serializer.Deserialize<List<AreaTemplate>>(sr.BaseStream);
 
@@ -43,12 +44,27 @@ namespace Stump.Server.DataProvider.Data.Areas
             }
         }
 
-        protected override Dictionary<int, AreaTemplate> GetAllData()
+        protected override Dictionary<int, AreaTemplate> InternalGetAll()
         {
-            using (var sr = new StreamReader(Settings.StaticPath + AreaFile))
+            using (var sr = new StreamReader(Path.Combine(Settings.StaticPath, AreaFile)))
             {
                 return Serializer.Deserialize<List<AreaTemplate>>(sr.BaseStream).ToDictionary(s => s.Id);
             }
+        }
+
+        protected override void FlushAdd(DataModification<int, AreaTemplate> modification)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void FlushRemove(DataModification<int, AreaTemplate> modification)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void FlushModify(DataModification<int, AreaTemplate> modification)
+        {
+            throw new NotImplementedException();
         }
     }
 }

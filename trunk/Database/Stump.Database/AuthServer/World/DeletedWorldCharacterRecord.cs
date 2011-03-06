@@ -21,11 +21,11 @@ using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using Stump.Database.Types;
 
-namespace Stump.Database.AuthServer
+namespace Stump.Database.AuthServer.World
 {
     [Serializable]
     [ActiveRecord("worlds_characters_deleted")]
-    public sealed class DeletedWorldCharacterRecord : AuthRecord<DeletedWorldCharacterRecord>
+    public sealed class DeletedWorldCharacterRecord : AuthBaseRecord<DeletedWorldCharacterRecord>
     {
 
         public DeletedWorldCharacterRecord()

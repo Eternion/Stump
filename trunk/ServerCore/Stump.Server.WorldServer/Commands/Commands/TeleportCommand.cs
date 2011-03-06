@@ -20,13 +20,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
-using Stump.Server.WorldServer.Entities;
-using Stump.Server.WorldServer.Global;
-using Stump.Server.WorldServer.World.Actors.Character;
 using Stump.Server.WorldServer.World.Entities.Characters;
 using Stump.Server.WorldServer.World.Zones;
 
-namespace Stump.Server.WorldServer.Commands
+namespace Stump.Server.WorldServer.Commands.Commands
 {
     public class GoPosCommand : WorldCommand
     {

@@ -33,12 +33,12 @@ namespace Stump.Server.DataProvider.Data.Trigger
         [Variable]
         public static string TriggerFile = "Triggers.xml";
 
-        protected override List<TriggerTemplate> GetData(int id)
+        protected override List<TriggerTemplate> InternalGetOne(int id)
         {
             return null;
         }
 
-        protected override Dictionary<int, List<TriggerTemplate>> GetAllData()
+        protected override Dictionary<int, List<TriggerTemplate>> InternalGetAll()
         {
             using (var sr = new StreamReader(Settings.StaticPath + TriggerFile))
             {

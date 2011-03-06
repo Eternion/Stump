@@ -24,7 +24,7 @@ using Stump.Database.Types;
 namespace Stump.Database.AuthServer
 {
     [ActiveRecord("banned_ips")]
-    public class IpBannedRecord : AuthRecord<IpBannedRecord>
+    public class IpBannedRecord : AuthBaseRecord<IpBannedRecord>
     {
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]

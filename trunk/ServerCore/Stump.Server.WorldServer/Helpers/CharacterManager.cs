@@ -18,6 +18,7 @@
 //  *************************************************************************/
 using System;
 using Stump.Database.WorldServer;
+using Stump.Database.WorldServer.Character;
 using Stump.DofusProtocol.Classes.Custom;
 
 namespace Stump.Server.WorldServer.Helpers

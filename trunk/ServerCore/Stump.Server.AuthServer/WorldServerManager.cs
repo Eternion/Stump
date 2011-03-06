@@ -25,6 +25,7 @@ using NLog;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.Database;
 using Stump.Database.AuthServer;
+using Stump.Database.AuthServer.World;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.AuthServer.Handlers;

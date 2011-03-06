@@ -17,8 +17,9 @@
 //  *
 //  *************************************************************************/
 using Castle.ActiveRecord;
+using Stump.Database.WorldServer.House;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.Guild
 {
     [ActiveRecord("guilds_houses")]
     public sealed class GuildHouseRecord : HouseRecord

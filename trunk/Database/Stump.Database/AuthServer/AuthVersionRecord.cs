@@ -23,7 +23,7 @@ using Stump.Database.Types;
 namespace Stump.Database.AuthServer
 {
     [ActiveRecord("version")]
-    public class AuthVersionRecord : AuthRecord<AuthVersionRecord>, IVersionRecord
+    public class AuthVersionRecord : AuthBaseRecord<AuthVersionRecord>, IVersionRecord
     {
         [PrimaryKey(PrimaryKeyType.Assigned, "Revision")]
         public uint Revision

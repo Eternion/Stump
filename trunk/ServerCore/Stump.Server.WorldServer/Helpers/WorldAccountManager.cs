@@ -20,6 +20,7 @@ using System;
 using Stump.Database.AuthServer;
 using Stump.Database.WorldServer;
 using Stump.Database.WorldServer.StartupAction;
+using Stump.Database.WorldServer.Storage;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.IPC;
 

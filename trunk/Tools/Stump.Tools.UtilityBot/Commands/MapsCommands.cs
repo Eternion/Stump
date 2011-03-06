@@ -26,7 +26,7 @@ namespace Stump.Tools.UtilityBot.Commands
 
         public override void Process(CmdTrigger trigger)
         {
-            trigger.Reply("Generating maps. It can take few minutes.");
+            /*trigger.Reply("Generating maps. It can take few minutes.");
 
             var file = new PakFile(Bot.DofusPath + @"\app\content\maps\maps0.d2p");
 
@@ -71,7 +71,7 @@ namespace Stump.Tools.UtilityBot.Commands
             using (var sw = new StreamWriter(Output+"maps.dat"))
                 Serializer.Serialize(sw.BaseStream, maps);
 
-            trigger.Reply("Maps ripped. Done (3/3)");
+            trigger.Reply("Maps ripped. Done (3/3)");*/
         }
     }
 }

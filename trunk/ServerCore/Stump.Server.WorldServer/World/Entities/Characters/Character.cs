@@ -19,6 +19,7 @@
 using System.Linq;
 using Stump.BaseCore.Framework.Utils;
 using Stump.Database.WorldServer;
+using Stump.Database.WorldServer.Character;
 using Stump.DofusProtocol.Classes;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global;

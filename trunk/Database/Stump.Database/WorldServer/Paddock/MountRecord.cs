@@ -19,11 +19,12 @@
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.Database.WorldServer.Character;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.Paddock
 {
     [ActiveRecord("mounts")]
-    public class MountRecord : WorldRecord<MountRecord>
+    public class MountRecord : WorldBaseRecord<MountRecord>
     {
         private IList<MountRecord> m_ancestors;
         private IList<MountBehaviorRecord> m_behaviors;

@@ -19,6 +19,7 @@
 using System;
 using Stump.BaseCore.Framework.Utils;
 using Stump.Database.WorldServer;
+using Stump.Database.WorldServer.Guild;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.DataProvider.Data.Threshold;
 

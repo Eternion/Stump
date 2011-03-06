@@ -33,7 +33,7 @@ namespace Stump.Server.DataProvider.Data.Threshold
         [Variable]
         public static string ThresholdsFile = "Thresholds.xml";
 
-        protected override ThresholdDictionnary GetData(string id)
+        protected override ThresholdDictionnary InternalGetOne(string id)
         {
             using (var reader = new StreamReader(Settings.StaticPath + ThresholdsFile))
             {
@@ -43,7 +43,7 @@ namespace Stump.Server.DataProvider.Data.Threshold
             }
         }
 
-        protected override Dictionary<string, ThresholdDictionnary> GetAllData()
+        protected override Dictionary<string, ThresholdDictionnary> InternalGetAll()
         {
             using (var reader = new StreamReader(Settings.StaticPath + ThresholdsFile))
             {

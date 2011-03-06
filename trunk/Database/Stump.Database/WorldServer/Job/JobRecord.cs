@@ -18,11 +18,12 @@
 //  *************************************************************************/
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.Database.WorldServer.Character;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.Job
 {
     [ActiveRecord("characters_jobs")]
-    public sealed class JobRecord : WorldRecord<JobRecord>
+    public sealed class JobRecord : WorldBaseRecord<JobRecord>
     {
         [PrimaryKey(PrimaryKeyType.Identity, "Id")]
         public uint Id { get; set; }

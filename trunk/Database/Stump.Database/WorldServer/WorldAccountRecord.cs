@@ -21,13 +21,17 @@ using System.Collections.Generic;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using Stump.Database.Types;
+using Stump.Database.WorldServer.BidHouse;
+using Stump.Database.WorldServer.House;
+using Stump.Database.WorldServer.Paddock;
 using Stump.Database.WorldServer.StartupAction;
+using Stump.Database.WorldServer.Storage;
 
 namespace Stump.Database.WorldServer
 {
     [Serializable]
     [ActiveRecord("accounts")]
-    public sealed class WorldAccountRecord : WorldRecord<WorldAccountRecord>
+    public sealed class WorldAccountRecord : WorldBaseRecord<WorldAccountRecord>
     {
         private IList<BidHouseItemRecord> m_bidhouseItems;
         private IList<WorldAccountRecord> m_enemies;

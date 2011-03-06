@@ -1,21 +1,3 @@
-// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
 using System;
 using System.Collections.Generic;
 using Stump.BaseCore.Framework.Utils;
@@ -92,10 +74,10 @@ namespace Stump.DofusProtocol.Messages
 		public void serializeAs_GameFightJoinMessage(BigEndianWriter arg1)
 		{
 			var loc1 = 0;
-			loc1 = BooleanByteWrapper.SetFlag(loc1, 0, this.canBeCancelled);
-			loc1 = BooleanByteWrapper.SetFlag(loc1, 1, this.canSayReady);
-			loc1 = BooleanByteWrapper.SetFlag(loc1, 2, this.isSpectator);
-			loc1 = BooleanByteWrapper.SetFlag(loc1, 3, this.isFightStarted);
+			BooleanByteWrapper.SetFlag(loc1, 0, this.canBeCancelled);
+			BooleanByteWrapper.SetFlag(loc1, 1, this.canSayReady);
+			BooleanByteWrapper.SetFlag(loc1, 2, this.isSpectator);
+			BooleanByteWrapper.SetFlag(loc1, 3, this.isFightStarted);
 			arg1.WriteByte((byte)loc1);
 			if ( this.timeMaxBeforeFightStart < 0 )
 			{

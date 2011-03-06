@@ -23,6 +23,7 @@ using Castle.ActiveRecord;
 using Stump.BaseCore.Framework.Utils;
 using Stump.Database;
 using Stump.Database.AuthServer;
+using Stump.Database.AuthServer.World;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;

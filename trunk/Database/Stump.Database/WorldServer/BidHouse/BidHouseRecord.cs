@@ -20,10 +20,10 @@ using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.Database.Types;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.BidHouse
 {
     [ActiveRecord("bidhouses")]
-    public sealed class BidHouseRecord : WorldRecord<BidHouseRecord>
+    public sealed class BidHouseRecord : WorldBaseRecord<BidHouseRecord>
     {
         [PrimaryKey(PrimaryKeyType.Assigned, "BidHouseId")]
         public uint BidHouseId { get; set; }

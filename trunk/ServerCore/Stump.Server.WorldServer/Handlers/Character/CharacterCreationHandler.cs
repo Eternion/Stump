@@ -23,6 +23,8 @@ using System.Text.RegularExpressions;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.Utils;
 using Stump.Database.WorldServer;
+using Stump.Database.WorldServer.Character;
+using Stump.Database.WorldServer.Storage;
 using Stump.DofusProtocol.Classes.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;

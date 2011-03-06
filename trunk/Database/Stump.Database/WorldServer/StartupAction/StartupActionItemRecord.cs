@@ -26,7 +26,7 @@ namespace Stump.Database.WorldServer.StartupAction
 {
     [Serializable]
     [ActiveRecord("startup_actions_objects")]
-    public sealed class StartupActionItemRecord : WorldRecord<StartupActionItemRecord>
+    public sealed class StartupActionItemRecord : WorldBaseRecord<StartupActionItemRecord>
     {
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
         public uint Id { get; set; }

@@ -19,6 +19,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using Stump.Database.WorldServer;
+using Stump.Database.WorldServer.Guild;
 using Stump.DofusProtocol.Classes;
 using Stump.Server.DataProvider.Data.Threshold;
 using Stump.Server.WorldServer.Entities;

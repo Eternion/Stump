@@ -98,7 +98,7 @@
     <Compile Include="Data\Areas\AreaTemplateManager.cs" />
     <Compile Include="Data\SubAreas\SubAreaTemplate.cs" />
     <Compile Include="Data\SubAreas\SubAreaTemplateManager.cs" />
-    <Compile Include="Data\D2oTool\D2OClassDefinition.cs" />
+    <Compile Include="Data\D2oTool\D2OClassObject.cs" />
     <Compile Include="Data\D2oTool\D2OFieldDefinition.cs" />
     <Compile Include="Data\D2oTool\D2OFile.cs" />
     <Compile Include="Data\D2oTool\I18nFile.cs" />

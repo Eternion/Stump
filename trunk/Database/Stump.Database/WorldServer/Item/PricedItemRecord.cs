@@ -17,8 +17,9 @@
 //  *
 //  *************************************************************************/
 using Castle.ActiveRecord;
+using Stump.Database.WorldServer.Storage;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.Item
 {
     [ActiveRecord("priceditems"), JoinedBase]
     public class PricedItemRecord : ItemRecord

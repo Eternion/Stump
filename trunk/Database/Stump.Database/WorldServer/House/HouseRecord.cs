@@ -19,10 +19,10 @@
 using Castle.ActiveRecord;
 using Stump.Database.Types;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.House
 {
     [ActiveRecord("accounts_house"), JoinedBase]
-    public class HouseRecord : WorldRecord<HouseRecord>
+    public class HouseRecord : WorldBaseRecord<HouseRecord>
     {
         [PrimaryKey(PrimaryKeyType.Assigned, "HouseId")]
         public uint HouseId { get; set; }

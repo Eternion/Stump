@@ -27,7 +27,7 @@ namespace Stump.Server.DataProvider.Data.Job
 {
     public class JobTemplateManager : DataManager<int,JobTemplate>
     {
-        protected override JobTemplate GetData(int id)
+        protected override JobTemplate InternalGetOne(int id)
         {
             var job = D2OLoader.LoadData<DofusProtocol.D2oClasses.Job>(id);
             var skills = D2OLoader.LoadData<Skill>();
@@ -56,7 +56,7 @@ namespace Stump.Server.DataProvider.Data.Job
                 return template;
             }
         
-        protected override Dictionary<int, JobTemplate> GetAllData()
+        protected override Dictionary<int, JobTemplate> InternalGetAll()
         {
             var jobs = D2OLoader.LoadData<DofusProtocol.D2oClasses.Job>();
             var skills = D2OLoader.LoadData<Skill>();

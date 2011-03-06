@@ -23,11 +23,11 @@ using NHibernate.Criterion;
 using Stump.Database.Types;
 using Stump.DofusProtocol.Enums;
 
-namespace Stump.Database.AuthServer
+namespace Stump.Database.AuthServer.World
 {
     [Serializable]
     [ActiveRecord("worlds")]
-    public sealed class WorldRecord : AuthRecord<WorldRecord>
+    public sealed class WorldRecord : AuthBaseRecord<WorldRecord>
     {
         private IList<WorldCharacterRecord> m_characters;
         private IList<DeletedWorldCharacterRecord> m_deletedCharacters;

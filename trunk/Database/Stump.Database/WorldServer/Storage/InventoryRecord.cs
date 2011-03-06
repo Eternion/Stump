@@ -19,11 +19,12 @@
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.Database.WorldServer.Item;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.Storage
 {
     [ActiveRecord("inventories")]
-    public sealed class InventoryRecord : WorldRecord<InventoryRecord>
+    public sealed class InventoryRecord : WorldBaseRecord<InventoryRecord>
     {
         private IList<ItemRecord> m_items;
 

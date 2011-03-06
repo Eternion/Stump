@@ -15,7 +15,6 @@ namespace Stump.Server.DataProvider.Core
         ///  Contains all of params of the providers
         ///  LoadingType :  - PreLoading    : Load the entire file and store it into memory (Memory--/Speed++)
         ///                 - CacheLoading  : Store into memory during a defined time objects that are requested once (Memory+-/Speed+-)
-        ///                 - LazyLoading   : Don't store anything, always load from the file the objects (Memory++/Speed--)
         ///  
         ///  LifeTime (CacheLoading only)   : Life time of a cached object (in seconds)
         ///  CheckTime (CacheLoading only)  : Time between each check cycle to make the cache clean (in seconds)

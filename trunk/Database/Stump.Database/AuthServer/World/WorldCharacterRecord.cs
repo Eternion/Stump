@@ -18,14 +18,13 @@
 //  *************************************************************************/
 using System;
 using Castle.ActiveRecord;
-using NHibernate.Criterion;
 using Stump.Database.Types;
 
-namespace Stump.Database.AuthServer
+namespace Stump.Database.AuthServer.World
 {
     [Serializable]
     [ActiveRecord("worlds_characters")]
-    public class WorldCharacterRecord : AuthRecord<WorldCharacterRecord>
+    public class WorldCharacterRecord : AuthBaseRecord<WorldCharacterRecord>
     {
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]

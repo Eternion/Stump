@@ -37,15 +37,6 @@ namespace Stump.Tools.UtilityBot
         {
             BotSingleton = new Bot();
 
-             List<Map> list;
-            var e = new Stopwatch();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            e.Start();
-            list = Serializer.Deserialize<List<Map>>(new StreamReader(@"C:\Users\Jérémy\Documents\Visual Studio 2010\Projects\StumpGit\trunk\Run\content\maps\maps.dat").BaseStream);
-            e.Stop();
-            Console.WriteLine(e.ElapsedMilliseconds);
-            GenerateMapsCommand.Process();
             while (true)
                 Thread.Sleep(10);
         }

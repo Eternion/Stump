@@ -20,10 +20,10 @@ using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.Database.Types;
 
-namespace Stump.Database.WorldServer
+namespace Stump.Database.WorldServer.Guild
 {
     [ActiveRecord("guilds")]
-    public sealed class GuildRecord : WorldRecord<GuildRecord>
+    public sealed class GuildRecord : WorldBaseRecord<GuildRecord>
     {
         private IList<CollectorRecord> m_collectors;
         private IList<GuildHouseRecord> m_houses;

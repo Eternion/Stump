@@ -17,6 +17,8 @@
 //  *
 //  *************************************************************************/
 using Stump.Database.WorldServer;
+using Stump.Database.WorldServer.Guild;
+using Stump.Database.WorldServer.Paddock;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Classes.Custom;
 using Stump.Server.WorldServer.Global;

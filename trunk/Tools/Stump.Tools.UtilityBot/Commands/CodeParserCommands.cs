@@ -338,10 +338,7 @@ namespace Stump.Tools.UtilityBot.Commands
                 {@"WriteFloat\(", @"WriteFloat((uint)"},
                 {@"WriteUTF\(", @"WriteUTF((string)"},
                 {@"(?<!(?:class\s|public\s))\bVersion\b", "Stump.DofusProtocol.Classes.Version"},
-                {
-                    @"(?<!(?:class\s\s))\b(?<!Stump\.DofusProtocol\.Classes\.)Version\b([^;\n\r]+);",
-                    @"Stump.DofusProtocol.Classes.Version$1;"
-                    },
+                {@"(?<!(?:class\s\s))\b(?<!Stump\.DofusProtocol\.Classes\.)Version\b([^;\n\r]+);", @"Stump.DofusProtocol.Classes.Version$1;"},
                 {@"(\w+) = new ([\w_]+)\(\)\)\.deserialize\(", "(($1 = new $2()) as $2).deserialize("},
                 {@"= (\w+)\.ReadUShort\(\);", @"= (ushort)$1.ReadUShort();"},
                 {@"ReadUnsignedByte", @"ReadByte"},
