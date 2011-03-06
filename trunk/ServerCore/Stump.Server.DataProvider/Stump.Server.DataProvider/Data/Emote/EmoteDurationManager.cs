@@ -26,13 +26,13 @@ using Stump.Server.DataProvider.Core;
 
 namespace Stump.Server.DataProvider.Data.Emote
 {
-    public class EmoteDurationManager : DataManager<EmotesEnum, uint>
-    {
-        /// <summary>
-        ///   Name of EmoteDuration file
-        /// </summary>
-        [Variable]
-        public static string EmotesFile = "EmotesDuration.xml";
+    //public class EmoteDurationManager : DataManager<EmotesEnum, uint>
+    //{
+    //    /// <summary>
+    //    ///   Name of EmoteDuration file
+    //    /// </summary>
+    //    [Variable]
+    //    public static string EmotesFile = "EmotesDuration.xml";
 
         protected override uint InternalGetOne(EmotesEnum id)
         {
@@ -40,9 +40,9 @@ namespace Stump.Server.DataProvider.Data.Emote
             {
                 var emote = Serializer.Deserialize<List<EmoteDuration>>(sr.BaseStream).FirstOrDefault(element => element.Id == id);
 
-                return emote != null ? emote.Duration : 0;
-            }
-        }
+    //            return emote != null ? emote.Duration : 0;
+    //        }
+    //    }
 
         protected override Dictionary<EmotesEnum, uint> InternalGetAll()
         {

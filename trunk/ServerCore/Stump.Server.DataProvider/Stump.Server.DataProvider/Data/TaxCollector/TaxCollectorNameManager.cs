@@ -25,9 +25,9 @@ using Stump.Server.DataProvider.Data.D2oTool;
 
 namespace Stump.Server.DataProvider.Data.TaxCollector
 {
-    public class TaxCollectorNameManager : DataManager<int,string>
-    {
-        private static readonly AsyncRandom m_rnd = new AsyncRandom();
+    //public class TaxCollectorNameManager : DataManager<int,string>
+    //{
+    //    //private static readonly AsyncRandom m_rnd = new AsyncRandom();
 
         protected override string InternalGetOne(int id)
         {
@@ -39,13 +39,12 @@ namespace Stump.Server.DataProvider.Data.TaxCollector
             return D2OLoader.LoadData<TaxCollectorName>().ToDictionary(t=>t.id, t=>D2OLoader.GetI18NText(t.nameId));
         }
 
-        public KeyValuePair<int, string> GetRandom()
-        {
-            return PreLoadData.ElementAt(m_rnd.NextInt(PreLoadData.Count));
-        }
-    }
+    //    //public KeyValuePair<int, string> GetRandom()
+    //    //{
+    //    //    return PreLoadData.ElementAt(m_rnd.NextInt(PreLoadData.Count));
+    //    //}
+    //}
 }
-
 
 
 

@@ -24,8 +24,8 @@ using Stump.Server.DataProvider.Data.D2oTool;
 
 namespace Stump.Server.DataProvider.Data.Interactives
 {
-    public class InteractiveActionIdManager : DataManager<int, int>
-    {
+    //public class InteractiveActionIdManager : DataManager<int, int>
+    //{
 
         protected override int InternalGetOne(int id)
         {
