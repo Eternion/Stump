@@ -200,7 +200,7 @@ namespace Stump.Server.BaseServer.Database
             }
             catch (Exception ex)
             {
-                throw new Exception("Cannot access to databse. Unknow reason. Exception : " + ex);
+                throw new Exception("Cannot access to database. Unknow reason. Exception : " + ex);
             }
 
 

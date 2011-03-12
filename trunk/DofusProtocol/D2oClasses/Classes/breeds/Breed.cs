@@ -23,12 +23,11 @@ namespace Stump.DofusProtocol.D2oClasses
 		public List<List<uint>> statsPointsForIntelligence;
 		public List<List<uint>> statsPointsForChance;
 		public List<List<uint>> statsPointsForAgility;
-		public List<uint> maleColors;
-		internal Array _skinsForBreed;
 		public List<List<uint>> statsPointsForVitality;
 		public List<List<uint>> statsPointsForWisdom;
-		public List<uint> breedSpellsId;
+		public List<uint> maleColors;
 		public List<uint> femaleColors;
-		
+		public List<uint> breedSpellsId;
+		internal Array _skinsForBreed;		
 	}
 }

@@ -99,7 +99,7 @@ namespace Stump.Server.WorldServer
             WorldDbAccessor = new DatabaseAccessor(WorldDatabaseConfiguration, Definitions.DatabaseRevision, typeof(WorldBaseRecord<>));
 
             logger.Info("Initializing Data Database...");
-            DataDbAccessor = new DatabaseAccessor(DataDatabaseConfiguration, Definitions.DataDatabaseRevision, typeof(DataBaseRecord<>));
+            DataDbAccessor = new DatabaseAccessor(DataDatabaseConfiguration, Definitions.DataDatabaseRevision, typeof(D2OBaseRecord<>));
 
             logger.Info("Start Database Engine...");
             DatabaseAccessor.StartEngine();

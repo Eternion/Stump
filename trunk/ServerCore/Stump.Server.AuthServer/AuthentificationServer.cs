@@ -20,9 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
-using System.Reflection;
-using Stump.BaseCore.Framework.Attributes;
-using Stump.BaseCore.Framework.Reflection;
 using Stump.Database;
 using Stump.Database.AuthServer;
 using Stump.Database.Types;
@@ -71,14 +68,14 @@ namespace Stump.Server.AuthServer
                 ConsoleBase.SetTitle("#Stump Authentification Server");
 
                 logger.Info("Initializing Database...");
-                worlddb = new DatabaseAccessor(new DatabaseConfiguration { Name = "stump_auth" });
-                worlddb.Initialize(Definitions.DatabaseRevision, DatabaseType.MySQL, typeof(AuthBaseRecord<>));
+                worlddb = new DatabaseAccessor(new DatabaseConfiguration { Name = "stump_auth", Host="localhost", User="root", Password="", UpdateFileDir="./sql", DatabaseType = Castle.ActiveRecord.Framework.Config.DatabaseType.MySql }, Definitions.DatabaseRevision, typeof(AuthBaseRecord<>));
+                worlddb.Initialize();
 
                 logger.Info("Starting Database engine...");
-                DatabaseAccessor.Start();
+                DatabaseAccessor.StartEngine();
 
                 logger.Info("Opening Database...");
-                worlddb.Check();
+                worlddb.OpenDatabase();
 
                 logger.Info("Initializing WorldServers Manager");
                 WorldServerManager.Initialize();

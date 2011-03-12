@@ -16,11 +16,51 @@
 //  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  *
 //  *************************************************************************/
+using System;
+using System.Collections.Generic;
 using Castle.ActiveRecord;
+using Stump.Database.Types;
+using Stump.DofusProtocol.D2oClasses;
 
-namespace Stump.Database.Types
+namespace Stump.Database.D2O
 {
-    public abstract class DataBaseRecord<T> : ActiveRecordBase<T>
+    [Serializable]
+    [ActiveRecord("item_sets")]
+    public sealed class ItemSetRecord : D2OBaseRecord<ItemSetRecord>
     {
+        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+        public uint Id
+        {
+            get;
+            set;
+        }
+
+        [Property("NameId")]
+        public uint NameId
+        {
+            get;
+            set;
+        }
+
+        [Property("Items", ColumnType = "Serializable")]
+        public List<uint> Items
+        {
+            get;
+            set;
+        }
+
+        [Property("Effects", ColumnType = "Serializable")]
+        public List<List<EffectInstance>> Effects
+        {
+            get;
+            set;
+        }
+
+        [Property("BonusIsSecret")]
+        public bool BonusIsSecret
+        {
+            get;
+            set;
+        }
     }
 }

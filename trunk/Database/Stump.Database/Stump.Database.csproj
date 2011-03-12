@@ -106,6 +106,9 @@
     <Reference Include="Castle.ActiveRecord">
       <HintPath>..\..\Library\Castle.ActiveRecord.dll</HintPath>
     </Reference>
+    <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\..\Library\Iesi.Collections.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate">
       <HintPath>..\..\Library\NHibernate.dll</HintPath>
     </Reference>
@@ -125,9 +128,45 @@
     <Compile Include="ActiveRecordHelper.cs" />
     <Compile Include="AuthServer\World\DeletedWorldCharacterRecord.cs" />
     <Compile Include="AuthServer\IpBannedRecord.cs" />
+    <Compile Include="D2O\Abuse\AbuseReasonRecord.cs" />
+    <Compile Include="D2O\Alignments\AlignmentBalanceRecord.cs" />
+    <Compile Include="D2O\Alignments\AlignmentEffectRecord.cs" />
+    <Compile Include="D2O\Alignments\AlignmentGiftRecord.cs" />
+    <Compile Include="D2O\Alignments\AlignmentOrderRecord.cs" />
+    <Compile Include="D2O\Alignments\AlignmentRankRecord.cs" />
+    <Compile Include="D2O\Alignments\AlignmentRankJntGiftRecord.cs" />
+    <Compile Include="D2O\Alignments\AlignmentSideRecord.cs" />
+    <Compile Include="D2O\Alignments\AlignmentTitleRecord.cs" />
+    <Compile Include="D2O\AmbientSounds\AmbientSoundRecord.cs" />
+    <Compile Include="D2O\Breeds\BreedRecord.cs" />
+    <Compile Include="D2O\Challenges\ChallengeRecord.cs" />
+    <Compile Include="D2O\Communication\CensoredWordRecord.cs" />
+    <Compile Include="D2O\Communication\ChatChannelRecord.cs" />
+    <Compile Include="D2O\Communication\EmoticonRecord.cs" />
+    <Compile Include="D2O\Communication\InfoMessageRecord.cs" />
+    <Compile Include="D2O\Documents\DocumentRecord.cs" />
+    <Compile Include="D2O\Effects\EffectInstance.cs" />
+    <Compile Include="D2O\Effects\EffectRecord.cs" />
+    <Compile Include="D2O\Effects\instances\EffectInstanceCreature.cs" />
+    <Compile Include="D2O\Effects\instances\EffectInstanceDate.cs" />
+    <Compile Include="D2O\Effects\instances\EffectInstanceDice.cs" />
+    <Compile Include="D2O\Effects\instances\EffectInstanceDuration.cs" />
+    <Compile Include="D2O\Effects\instances\EffectInstanceInteger.cs" />
+    <Compile Include="D2O\Effects\instances\EffectInstanceLadder.cs" />
+    <Compile Include="D2O\Effects\instances\EffectInstanceMinMax.cs" />
+    <Compile Include="D2O\Effects\instances\EffectInstanceMount.cs" />
+    <Compile Include="D2O\Effects\instances\EffectInstanceString.cs" />
+    <Compile Include="D2O\Guild\RankNameRecord.cs" />
+    <Compile Include="D2O\Houses\HouseRecord.cs" />
+    <Compile Include="D2O\Interactives\SkillNameRecord.cs" />
+    <Compile Include="D2O\Interactives\InteractiveRecord.cs" />
+    <Compile Include="D2O\Items\WeaponRecord.cs" />
+    <Compile Include="D2O\Items\ItemTypeRecord.cs" />
+    <Compile Include="D2O\Items\ItemSetRecord.cs" />
+    <Compile Include="D2O\Items\ItemRecord.cs" />
     <Compile Include="DatabaseType.cs" />
     <Compile Include="Types\AuthBaseRecord.cs" />
-    <Compile Include="Types\DataBaseRecord.cs" />
+    <Compile Include="Types\D2OBaseRecord.cs" />
     <Compile Include="Types\WorldBaseRecord.cs" />
     <Compile Include="WorldServer\Alignment\AlignmentRecord.cs" />
     <Compile Include="WorldServer\Alignment\PrismRecord.cs" />
