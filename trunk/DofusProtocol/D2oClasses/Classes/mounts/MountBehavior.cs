@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("MountBehaviors")]
+	[D2OClass("MountBehaviors")]
 	public class MountBehavior : Object
 	{
 		public const String MODULE = "MountBehaviors";

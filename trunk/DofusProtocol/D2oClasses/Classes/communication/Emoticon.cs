@@ -21,7 +21,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("Emoticons")]
+	[D2OClass("Emoticons")]
 	public class Emoticon : Object
 	{
 		internal const String MODULE = "Emoticons";

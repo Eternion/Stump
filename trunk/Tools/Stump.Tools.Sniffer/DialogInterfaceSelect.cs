@@ -36,7 +36,7 @@ namespace Stump.Tools.Sniffer
 
         private void listBoxInterfaces_SelectedIndexChanged(object sender, EventArgs e)
         {
-            buttonOk.Enabled = listBoxInterfaces.SelectedIndex != 1;
+            buttonOk.Enabled = listBoxInterfaces.SelectedIndex != -1;
         }
     }
 }

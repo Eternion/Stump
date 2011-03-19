@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("CensoredWords")]
+	[D2OClass("CensoredWords")]
 	public class CensoredWord : Object
 	{
 		internal const String MODULE = "CensoredWords";

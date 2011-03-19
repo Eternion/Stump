@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("AlignmentRank")]
+	[D2OClass("AlignmentRank")]
 	public class AlignmentRank : Object
 	{
 		internal const String MODULE = "AlignmentRank";

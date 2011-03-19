@@ -64,7 +64,7 @@ namespace Stump.Server.DataProvider.Data.D2oTool
         /// </summary>
         private static readonly List<string> m_checkedFiles = new List<string>();
 
-        private static readonly Dictionary<string, D2OFile> m_loadedFiles = new Dictionary<string, D2OFile>();
+        private static readonly Dictionary<string, D2OReader> m_loadedFiles = new Dictionary<string, D2OReader>();
 
         /// <summary>
         /// Common I18N file
@@ -76,7 +76,7 @@ namespace Stump.Server.DataProvider.Data.D2oTool
 
         private static void ConvertToProtobuf(string filename, IEnumerable filedata)
         {
-            var datafile = new D2OFile(Path.Combine(DataPath, D2ODir, filename));
+            var datafile = new D2OReader(Path.Combine(DataPath, D2ODir, filename));
 
             using (FileStream file = File.Create(Path.GetFileNameWithoutExtension(filename) + ".bin"))
             {
@@ -135,23 +135,23 @@ namespace Stump.Server.DataProvider.Data.D2oTool
         /// <returns></returns>
         public static IEnumerable<T> LoadData<T>(bool ignoreException = false) where T : class
         {
-            object[] attributes = typeof (T).GetCustomAttributes(typeof (AttributeAssociatedFile), false);
+            object[] attributes = typeof (T).GetCustomAttributes(typeof (D2OClassAttribute), false);
 
             if (attributes.Length <= 0)
                 throw new Exception(string.Format("This class '{0}' hasn't any associated d2o file", typeof (T)));
 
-            string filename = attributes.Cast<AttributeAssociatedFile>().First().FilesName.First() + ".d2o";
+            string filename = attributes.Cast<D2OClassAttribute>().First().FilesName.First() + ".d2o";
 
             // read the D2O file directly and convert it into a protobuf file
             if (HasToConvert(filename))
             {
-                D2OFile datafile;
+                D2OReader datafile;
 
                 if (m_loadedFiles.ContainsKey(filename))
                     datafile = m_loadedFiles[filename];
                 else
                 {
-                    datafile = new D2OFile(Path.Combine(DataPath, D2ODir, filename));
+                    datafile = new D2OReader(Path.Combine(DataPath, D2ODir, filename));
                     m_loadedFiles.Add(filename, datafile);
                 }
 
@@ -205,13 +205,13 @@ namespace Stump.Server.DataProvider.Data.D2oTool
             // read the D2O file directly and convert it into a protobuf file
             if (HasToConvert(filename))
             {
-                D2OFile datafile;
+                D2OReader datafile;
 
                 if (m_loadedFiles.ContainsKey(filename))
                     datafile = m_loadedFiles[filename];
                 else
                 {
-                    datafile = new D2OFile(Path.Combine(DataPath, D2ODir, filename));
+                    datafile = new D2OReader(Path.Combine(DataPath, D2ODir, filename));
                     m_loadedFiles.Add(filename, datafile);
                 }
 
@@ -259,22 +259,22 @@ namespace Stump.Server.DataProvider.Data.D2oTool
         /// <returns></returns>
         public static T LoadData<T>(int index, bool ignoreException = false) where T : class
         {
-            object[] attributes = typeof (T).GetCustomAttributes(typeof (AttributeAssociatedFile), false);
+            object[] attributes = typeof (T).GetCustomAttributes(typeof (D2OClassAttribute), false);
 
             if (attributes.Length <= 0)
                 throw new Exception(string.Format("This class '{0}' hasn't any associated d2o file", typeof (T)));
 
-            string filename = attributes.Cast<AttributeAssociatedFile>().First().FilesName.First() + ".d2o";
+            string filename = attributes.Cast<D2OClassAttribute>().First().FilesName.First() + ".d2o";
 
             // we can't convert the D2O file because this function have to be fast
 
-            D2OFile datafile;
+            D2OReader datafile;
 
             if (m_loadedFiles.ContainsKey(filename))
                 datafile = m_loadedFiles[filename];
             else
             {
-                datafile = new D2OFile(Path.Combine(DataPath, D2ODir, filename));
+                datafile = new D2OReader(Path.Combine(DataPath, D2ODir, filename));
                 m_loadedFiles.Add(filename, datafile);
             }
 
@@ -287,13 +287,13 @@ namespace Stump.Server.DataProvider.Data.D2oTool
         /// <returns></returns>
         public static T LoadData<T>(string filename, int index, bool ignoreException = false)
         {
-            D2OFile datafile;
+            D2OReader datafile;
 
             if (m_loadedFiles.ContainsKey(filename))
                 datafile = m_loadedFiles[filename];
             else
             {
-                datafile = new D2OFile(Path.Combine(DataPath, D2ODir, filename + ".d2o"));
+                datafile = new D2OReader(Path.Combine(DataPath, D2ODir, filename + ".d2o"));
                 m_loadedFiles.Add(filename, datafile);
             }
 
@@ -318,12 +318,12 @@ namespace Stump.Server.DataProvider.Data.D2oTool
         public static Dictionary<TKey, TValue> LoadDataByIdAsDictionary<TKey, TValue>(Func<TValue, TKey> idSelector)
             where TValue : class
         {
-            object[] attributes = typeof (TValue).GetCustomAttributes(typeof (AttributeAssociatedFile), false);
+            object[] attributes = typeof (TValue).GetCustomAttributes(typeof (D2OClassAttribute), false);
 
             if (attributes.Length <= 0)
                 throw new Exception(string.Format("This class '{0}' hasn't any associated d2o file", typeof (TValue)));
 
-            string name = attributes.Cast<AttributeAssociatedFile>().First().FilesName.First();
+            string name = attributes.Cast<D2OClassAttribute>().First().FilesName.First();
             var items = new List<TValue>();
 
             return LoadData(name).ToDictionary(entry => idSelector((entry as TValue)), entry => entry as TValue);

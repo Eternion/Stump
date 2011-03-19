@@ -21,7 +21,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("MapPositions")]
+	[D2OClass("MapPositions")]
 	public class MapPosition : Object
 	{
 		internal const int CAPABILITY_ALLOW_FIGHT_CHALLENGES = 4096;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("ChatChannels")]
+	[D2OClass("ChatChannels")]
 	public class ChatChannel : Object
 	{
 		internal const String MODULE = "ChatChannels";

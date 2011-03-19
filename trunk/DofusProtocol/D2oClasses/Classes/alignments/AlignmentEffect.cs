@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("AlignmentEffect")]
+	[D2OClass("AlignmentEffect")]
 	public class AlignmentEffect : Object
 	{
 		internal const String MODULE = "AlignmentEffect";

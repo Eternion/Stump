@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("SpellBombs")]
+	[D2OClass("SpellBombs")]
 	public class SpellBomb : Object
 	{
 		internal const String MODULE = "SpellBombs";

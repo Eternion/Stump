@@ -21,7 +21,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("CensoredContents")]
+	[D2OClass("CensoredContents")]
 	public class CensoredContent : Object
 	{
 		public const String MODULE = "CensoredContents";

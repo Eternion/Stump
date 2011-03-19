@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("MapReferences")]
+	[D2OClass("MapReferences")]
 	public class MapReference : Object
 	{
 		internal const String MODULE = "MapReferences";

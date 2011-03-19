@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Entities
     public class Caracteristic
     {
 
-        public Caracteristic(Stats stats, CaracteristicEnum name, uint baseValue)
+        public Caracteristic(Stats stats, CaracteristicBoostEnum name, uint baseValue)
         {
             m_stats = stats;
             Name = name;
@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Entities
         }
 
         private readonly Stats m_stats;
-        public readonly CaracteristicEnum Name;
+        public readonly CaracteristicBoostEnum Name;
 
         public uint BaseValue
         {

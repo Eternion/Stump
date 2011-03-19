@@ -113,7 +113,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AttributeAssociatedFile.cs" />
+    <Compile Include="D2OClassAttribute.cs" />
     <Compile Include="Classes\abuse\AbuseReasons.cs" />
     <Compile Include="Classes\alignments\AlignmentBalance.cs" />
     <Compile Include="Classes\alignments\AlignmentEffect.cs" />

@@ -17,14 +17,14 @@ namespace Stump.Tools.DataLoader
 
         private static readonly Dictionary<string, Type> m_typeByFileName = new Dictionary<string, Type>();
 
-        private D2OFile m_d2oFile;
+        private D2OReader m_d2OReader;
         private FormD2O m_form;
 
             static D2OAdapater()
         {
-            foreach (Type type in typeof (AttributeAssociatedFile).Assembly.GetTypes())
+            foreach (Type type in typeof (D2OClassAttribute).Assembly.GetTypes())
             {
-                var attribute = type.GetCustomAttributes(typeof (AttributeAssociatedFile), false).FirstOrDefault() as AttributeAssociatedFile;
+                var attribute = type.GetCustomAttributes(typeof (D2OClassAttribute), false).FirstOrDefault() as D2OClassAttribute;
 
                 if (attribute != null)
                 {
@@ -86,9 +86,9 @@ namespace Stump.Tools.DataLoader
 
         private void FillDataView()
         {
-            m_d2oFile = new D2OFile(FileName);
+            m_d2OReader = new D2OReader(FileName);
 
-            Dictionary<int, D2OClassDefinition> classes = m_d2oFile.GetClasses();
+            Dictionary<int, D2OClassDefinition> classes = m_d2OReader.GetClasses();
             string[] columns = classes.Values.First().Fields.Select(entry => entry.Key).ToArray();
             m_form.DefineColumns(columns);
 
@@ -97,7 +97,7 @@ namespace Stump.Tools.DataLoader
             {
                 try
                 {
-                    object data = m_d2oFile.ReadObject(@class.Key);
+                    object data = m_d2OReader.ReadObject(@class.Key);
 
                     if (data != null)
                     {

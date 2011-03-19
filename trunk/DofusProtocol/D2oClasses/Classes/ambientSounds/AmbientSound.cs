@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("AmbientSounds")]
+	[D2OClass("AmbientSounds")]
 	public class AmbientSound : Object
 	{
 		internal const String MODULE = "AmbientSounds";

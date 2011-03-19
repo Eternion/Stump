@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("Mounts")]
+	[D2OClass("Mounts")]
 	public class Mount : Object
 	{
 		public uint id;

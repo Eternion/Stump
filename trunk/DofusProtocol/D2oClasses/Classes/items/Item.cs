@@ -21,7 +21,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("Items")]
+	[D2OClass("Items")]
 	public class Item : Object
 	{
 		public const uint CONSUMABLES_CATEGORY = 1;

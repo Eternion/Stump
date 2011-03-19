@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("InfoMessages")]
+	[D2OClass("InfoMessages")]
 	public class InfoMessage : Object
 	{
 		internal const String MODULE = "InfoMessages";

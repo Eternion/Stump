@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("SpeakingItemsTriggers")]
+	[D2OClass("SpeakingItemsTriggers")]
 	public class SpeakingItemsTrigger : Object
 	{
 		internal const String MODULE = "SpeakingItemsTriggers";

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("RideFood")]
+	[D2OClass("RideFood")]
 	public class RideFood : Object
 	{
 		public uint gid;

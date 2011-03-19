@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("WorldMaps")]
+	[D2OClass("WorldMaps")]
 	public class WorldMap : Object
 	{
 		internal const String MODULE = "WorldMaps";

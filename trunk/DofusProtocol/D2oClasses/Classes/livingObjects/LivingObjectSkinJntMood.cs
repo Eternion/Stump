@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("LivingObjectSkinJntMood")]
+	[D2OClass("LivingObjectSkinJntMood")]
 	public class LivingObjectSkinJntMood : Object
 	{
 		internal const String MODULE = "LivingObjectSkinJntMood";

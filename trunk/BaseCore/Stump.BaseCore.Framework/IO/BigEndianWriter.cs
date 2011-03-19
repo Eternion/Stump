@@ -28,7 +28,12 @@ namespace Stump.BaseCore.Framework.IO
 
         private BinaryWriter m_writer;
 
-        /// <summary>
+        public Stream BaseStream
+        {
+            get { return m_writer.BaseStream; }
+        }
+
+            /// <summary>
         ///   Gets available bytes number in the buffer
         /// </summary>
         public long BytesAvailable

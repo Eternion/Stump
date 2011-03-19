@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("AlignmentBalance")]
+	[D2OClass("AlignmentBalance")]
 	public class AlignmentBalance : Object
 	{
 		internal const String MODULE = "AlignmentBalance";

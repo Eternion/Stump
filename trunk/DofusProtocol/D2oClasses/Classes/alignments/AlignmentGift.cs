@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	
-	[AttributeAssociatedFile("AlignmentGift")]
+	[D2OClass("AlignmentGift")]
 	public class AlignmentGift : Object
 	{
 		internal const String MODULE = "AlignmentGift";
