@@ -27,12 +27,8 @@ using Castle.ActiveRecord.Framework;
 using Castle.ActiveRecord.Framework.Config;
 using MySql.Data.MySqlClient;
 using NLog;
-using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.Utils;
 using Stump.Database;
-using Stump.Database.AuthServer;
-using Stump.Database.Types;
-using DatabaseType = Stump.Database.DatabaseType;
 
 namespace Stump.Server.BaseServer.Database
 {
@@ -55,7 +51,7 @@ namespace Stump.Server.BaseServer.Database
 
         private Type m_versionType;
         private IVersionRecord m_version;
-        private Func<IVersionRecord> m_lastVersionMethod; 
+        private Func<IVersionRecord> m_lastVersionMethod;
 
         public bool IsInitialized
         {
@@ -137,6 +133,7 @@ namespace Stump.Server.BaseServer.Database
             m_config = config;
             m_databaseRevision = databaseRevision;
             m_recordBaseType = recordBaseType;
+            Initialize();
         }
 
         public void Initialize()
@@ -152,7 +149,6 @@ namespace Stump.Server.BaseServer.Database
             m_globalConfig.Add(m_recordBaseType, connectionInfos);
 
             var recordsType = ActiveRecordHelper.GetTables(m_recordBaseType);
-
 
             m_globalTypes.AddRange(recordsType);
             m_globalTypes.Add(m_recordBaseType);
@@ -194,15 +190,14 @@ namespace Stump.Server.BaseServer.Database
 
                 if (innerException == null)
                 {
-                    throw new Exception("Cannot access to database. Be sure that the database names '" + m_config.Name +
+                    throw new Exception("Cannot access to databse. Be sure that the database names '" + m_config.Name +
                                         "' exists. Exception : " + ex);
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception("Cannot access to database. Unknow reason. Exception : " + ex);
+                throw new Exception("Cannot access to database. Unknow reason. Exception : " + ex.Message);
             }
-
 
             if (m_version == null)
             {
@@ -263,7 +258,7 @@ namespace Stump.Server.BaseServer.Database
         {
             try
             {
-                ActiveRecordStarter.CreateSchema();
+                ActiveRecordStarter.CreateSchema(m_recordBaseType);
 
                 m_logger.Info("Schema has been created");
 

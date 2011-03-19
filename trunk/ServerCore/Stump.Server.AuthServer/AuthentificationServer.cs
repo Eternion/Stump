@@ -20,7 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
-using Stump.Database;
+using Stump.BaseCore.Framework.Attributes;
 using Stump.Database.AuthServer;
 using Stump.Database.Types;
 using Stump.DofusProtocol;
@@ -37,21 +37,28 @@ namespace Stump.Server.AuthServer
     public class AuthentificationServer : ServerBase<AuthentificationServer>
     {
 
-        ///// <summary>
-        /////   DB params
-        ///// </summary>
-        //[Variable]
-        //public static DatabaseConfiguration WorldDBParams;
+        [Variable]
+        public static DatabaseConfiguration AuthDatabaseConfiguration = new DatabaseConfiguration
+        {
+            DatabaseType = Castle.ActiveRecord.Framework.Config.DatabaseType.MySql,
+            Host = "localhost",
+            Name = "stump_auth",
+            User = "root",
+            Password = "",
+            UpdateFileDir = "./sql_update/auth/",
+        };
 
-        ///// <summary>
-        /////   DB params
-        ///// </summary>
-        //[Variable]
-        //public static DatabaseConfiguration DataDBParams;
+        public DatabaseAccessor AuthDbAccessor
+        {
+            get;
+            private set;
+        }
 
-        public DatabaseAccessor worlddb;
-
-        public DatabaseAccessor datadb;
+        public DatabaseAccessor DataDbAccessor
+        {
+            get;
+            private set;
+        }
 
 
         public AuthentificationServer() :
@@ -67,15 +74,14 @@ namespace Stump.Server.AuthServer
                 ConsoleInterface = new AuthConsole();
                 ConsoleBase.SetTitle("#Stump Authentification Server");
 
-                logger.Info("Initializing Database...");
-                worlddb = new DatabaseAccessor(new DatabaseConfiguration { Name = "stump_auth", Host="localhost", User="root", Password="", UpdateFileDir="./sql", DatabaseType = Castle.ActiveRecord.Framework.Config.DatabaseType.MySql }, Definitions.DatabaseRevision, typeof(AuthBaseRecord<>));
-                worlddb.Initialize();
+                logger.Info("Initializing Auth Database...");
+                AuthDbAccessor = new DatabaseAccessor(AuthDatabaseConfiguration, Definitions.DatabaseRevision, typeof(AuthBaseRecord<>));
 
-                logger.Info("Starting Database engine...");
+                logger.Info("Start Database Engine...");
                 DatabaseAccessor.StartEngine();
 
-                logger.Info("Opening Database...");
-                worlddb.OpenDatabase();
+                logger.Info("Opening Auth Database...");
+                AuthDbAccessor.OpenDatabase();
 
                 logger.Info("Initializing WorldServers Manager");
                 WorldServerManager.Initialize();
@@ -131,9 +137,9 @@ namespace Stump.Server.AuthServer
         {
             var clients = GetClientsUsingAccount(account).ToArray();
 
-            for (int i = 0; i < clients.Length; i++)
+            foreach (var t in clients)
             {
-                clients[i].Disconnect();
+                t.Disconnect();
             }
 
             if (IpcServer.Instance.GetIpcClients().Any(ipcclient => ipcclient.DisconnectConnectedAccount(account)))

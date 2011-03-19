@@ -142,16 +142,8 @@ namespace Stump.Server.BaseServer.IPC
         /// </summary>
         /// <param name="wsi"></param>
         /// <param name="accountId"></param>
-        /// <param name="banEndDate"></param>
         /// <returns></returns>
-        bool BanAccount(WorldServerInformation wsi, uint accountId, DateTime banEndDate);
-
-        /// <summary>
-        /// Ban an IP
-        /// </summary>
-        /// <param name="wsi"></param>
-        /// <param name="ipBanned"></param>
-        void BanIp(WorldServerInformation wsi, IpBannedRecord ipBanned);
+        bool BlamAccount(WorldServerInformation wsi, uint accountId, SanctionRecord record);
 
         /// <summary>
         /// Check if account exceeds the quota of day character deletion

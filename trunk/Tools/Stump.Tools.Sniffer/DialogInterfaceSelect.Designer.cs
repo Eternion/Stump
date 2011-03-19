@@ -37,8 +37,7 @@
             // 
             this.buttonOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOk.Enabled = false;
-            this.buttonOk.Location = new System.Drawing.Point(19, 206);
+            this.buttonOk.Location = new System.Drawing.Point(124, 176);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 0;
@@ -49,7 +48,7 @@
             // 
             this.buttonCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(110, 206);
+            this.buttonCancel.Location = new System.Drawing.Point(215, 176);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 1;
@@ -58,26 +57,25 @@
             // 
             // listBoxInterfaces
             // 
-            this.listBoxInterfaces.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom )
-                        | System.Windows.Forms.AnchorStyles.Left )
-                        | System.Windows.Forms.AnchorStyles.Right ) ) );
+            this.listBoxInterfaces.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.listBoxInterfaces.FormattingEnabled = true;
             this.listBoxInterfaces.Location = new System.Drawing.Point(12, 12);
             this.listBoxInterfaces.Name = "listBoxInterfaces";
-            this.listBoxInterfaces.Size = new System.Drawing.Size(180, 173);
+            this.listBoxInterfaces.Size = new System.Drawing.Size(390, 134);
             this.listBoxInterfaces.TabIndex = 2;
-            this.listBoxInterfaces.SelectedIndexChanged += new System.EventHandler(this.listBoxInterfaces_SelectedIndexChanged);
             // 
             // DialogInterfaceSelect
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(204, 241);
+            this.ClientSize = new System.Drawing.Size(414, 211);
             this.Controls.Add(this.listBoxInterfaces);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
-            this.MinimumSize = new System.Drawing.Size(220, 275);
+            this.MinimumSize = new System.Drawing.Size(220, 245);
             this.Name = "DialogInterfaceSelect";
             this.Text = "Select the network interface to sniff";
             this.ResumeLayout(false);

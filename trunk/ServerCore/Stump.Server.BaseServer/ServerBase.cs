@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using NLog;
 using Stump.BaseCore.Framework.IO;
 using Stump.BaseCore.Framework.Pool;
+using Stump.BaseCore.Framework.Pool.Task;
 using Stump.BaseCore.Framework.Utils;
 using Stump.BaseCore.Framework.Xml;
 using Stump.Server.BaseServer.Commands;
@@ -149,7 +150,7 @@ namespace Stump.Server.BaseServer
 
             logger.Info("Initializing Configuration...");
             /* Initialize Config File */
-            ConfigReader = new XmlConfigReader( ConfigFilePath, SchemaFilePath);
+            ConfigReader = new XmlConfigReader(ConfigFilePath, SchemaFilePath);
             ConfigReader.DefinesVariables(ref LoadedAssemblies);
 
             /* Set Config Watcher */
@@ -178,7 +179,7 @@ namespace Stump.Server.BaseServer
             MessageListener.Initialize();
 
             if (Settings.InactivityDisconnectionTime.HasValue)
-                TaskPool.RegisterCyclicTask(DisconnectAfkClient, Settings.InactivityDisconnectionTime.Value / 5, null, null);
+                TaskPool.RegisterCyclicTask(DisconnectAfkClient, Settings.InactivityDisconnectionTime.Value / 4, null, null);
 
             MessageListener.ClientConnected += OnClientConnected;
             MessageListener.ClientDisconnected += OnClientDisconnected;
@@ -264,7 +265,8 @@ namespace Stump.Server.BaseServer
         private void DisconnectAfkClient()
         {
             logger.Info("Disconnect AFK Clients");
-            foreach (BaseClient client in MessageListener.ClientList.Where(c => DateTime.Now.Subtract(c.LastActivity).TotalSeconds >= Settings.InactivityDisconnectionTime))
+            var afkClients = MessageListener.ClientList.Where(c => DateTime.Now.Subtract(c.LastActivity).TotalSeconds >= Settings.InactivityDisconnectionTime);
+            foreach (BaseClient client in afkClients)
                 client.Disconnect();
         }
 

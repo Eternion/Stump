@@ -5,6 +5,7 @@
     <Sniffer>
       <LocalIpPattern>192.168.</LocalIpPattern>
       <PortToSniff>5555</PortToSniff>
+      <Logs>True</Logs>
     </Sniffer>
   </Stump.Tools.Sniffer>
 </Configuration>
