@@ -23,6 +23,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Serialization;
 using PcapDotNet.Analysis;
 using PcapDotNet.Core;
 using PcapDotNet.Packets;
@@ -49,13 +51,22 @@ namespace Stump.Tools.Sniffer
         [Variable]
         public static int PortToSniff = 5555;
 
+        /// <summary>
+        /// write all message in a log file
+        /// </summary>
+        [Variable]
+        public static bool Logs = true;
+
+
         private const string ConfigPath = "./sniffer_config.xml";
         private const string SchemaPath = "./sniffer_config.xsd";
 
         private readonly FormMain m_form;
         private readonly Dictionary<string, Assembly> m_loadedAssemblies;
 
-        private  PacketDevice m_selectedDevice;
+        private XmlWriter m_writer;
+
+        private PacketDevice m_selectedDevice;
 
         private IdentifiedClient m_player = new IdentifiedClient("Player");
         private bool m_running;
@@ -77,10 +88,10 @@ namespace Stump.Tools.Sniffer
             ConfigReader = new XmlConfigReader(ConfigPath, SchemaPath);
             ConfigReader.DefinesVariables(ref m_loadedAssemblies);
 
-            
-
             MessageReceiver.Initialize();
             ProtocolTypeManager.Initialize();
+
+            if (Logs) InitLogs();
         }
 
         public XmlConfigReader ConfigReader
@@ -94,11 +105,30 @@ namespace Stump.Tools.Sniffer
             get { return m_running; }
         }
 
-        private System.Diagnostics.Stopwatch time  = new System.Diagnostics.Stopwatch();
         private void IdentifiedClient_OnNewMessage(Message message, string sender)
         {
-
             m_form.AddMessageToListView(message, sender);
+
+            if (Logs)
+            {
+                var tv = new TreeView();
+                Parser.ToTreeView(tv, message);
+                Parser.TreeNodeToXml(tv.Nodes[0], m_writer);
+                //m_writer.Flush();
+            }
+        }
+
+        private void InitLogs()
+        {
+            m_writer = XmlWriter.Create("logs.xml",new XmlWriterSettings { NewLineOnAttributes = true, Indent = true});
+            m_writer.WriteStartDocument();
+            m_writer.WriteStartElement("Messages");
+        }
+
+        public void StopLogs()
+        {
+            m_writer.WriteEndElement();
+            m_writer.Close();
         }
 
         /// <summary>
@@ -118,24 +148,27 @@ namespace Stump.Tools.Sniffer
                     return false;
                 }
 
+                Func<LivePacketDevice, string> deviceInfoProvider =
+                    entry => entry.Description + " ( " + string.Join("  ", entry.Addresses.Where(a => !a.Address.ToString().Contains("Internet6")).Select(a => a.Address)) + " ) ";
+
                 var dialog = new DialogInterfaceSelect
                                  {
-                                     Interfaces = allDevices.Select(entry => entry.Name).ToArray()
+                                     Interfaces = allDevices.Select(deviceInfoProvider).ToArray()
                                  };
                 if (dialog.ShowDialog() == DialogResult.OK && dialog.SelectedInterface != null)
                 {
-                    m_selectedDevice = allDevices.Where(entry => entry.Name == dialog.SelectedInterface).First();
+                    m_selectedDevice = allDevices.Where(entry => deviceInfoProvider(entry) == dialog.SelectedInterface).First();
 
                     IdentifiedClient.OnNewMessage += IdentifiedClient_OnNewMessage;
 
-                } 
+                }
                 else
                     return false;
 
                 m_initialized = true;
             }
 
-            m_thread = new Thread(StartSniffing) {IsBackground = true};
+            m_thread = new Thread(StartSniffing) { IsBackground = true };
             m_thread.Start();
             m_running = true;
 
@@ -180,25 +213,33 @@ namespace Stump.Tools.Sniffer
         /// <param name = "packet"></param>
         private void PacketHandler(Packet packet)
         {
-            IpV4Datagram datagram = packet.Ethernet.IpV4;
-            String ipSource = datagram.Source.ToString();
-            MemoryStream stream = datagram.Tcp.Payload.ToMemoryStream();
-
-            byte[] data = stream.ToArray();
-
-            if (data.Length == 0)
-                return;
-
-            m_form.LbByteNumber.Text = (int.Parse(m_form.LbByteNumber.Text) + data.Length).ToString();
-            m_form.LbPacketNumber.Text = (int.Parse(m_form.LbPacketNumber.Text) + 1).ToString();
-
-            if (ipSource.Contains(LocalIpPattern))
+            try
             {
-                m_player.ProcessReceive(data, 0, data.Length);
+                IpV4Datagram datagram = packet.Ethernet.IpV4;
+                String ipSource = datagram.Source.ToString();
+                MemoryStream stream = datagram.Tcp.Payload.ToMemoryStream();
+
+                byte[] data = stream.ToArray();
+
+                if (data.Length == 0)
+                    return;
+
+                m_form.LbByteNumber.Text = (int.Parse(m_form.LbByteNumber.Text) + data.Length).ToString();
+                m_form.LbPacketNumber.Text = (int.Parse(m_form.LbPacketNumber.Text) + 1).ToString();
+
+                if (ipSource.Contains(LocalIpPattern))
+                {
+                    m_player.ProcessReceive(data, 0, data.Length);
+                }
+                else
+                {
+                    m_server.ProcessReceive(data, 0, data.Length);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                m_server.ProcessReceive(data, 0, data.Length);
+                MessageBox.Show("Error : " + ex.Message);
+                m_writer.Flush();
             }
         }
     }

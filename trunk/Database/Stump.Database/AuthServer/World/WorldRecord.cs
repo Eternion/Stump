@@ -31,6 +31,7 @@ namespace Stump.Database.AuthServer.World
     {
         private IList<WorldCharacterRecord> m_characters;
         private IList<DeletedWorldCharacterRecord> m_deletedCharacters;
+        private IList<ConnectionRecord> m_connections;
         private int m_charsCount;
         private bool m_connected;
         private ServerStatusEnum m_state = ServerStatusEnum.OFFLINE;
@@ -110,6 +111,13 @@ namespace Stump.Database.AuthServer.World
         {
             get { return m_deletedCharacters ?? new List<DeletedWorldCharacterRecord>(); }
             set { m_deletedCharacters = value; }
+        }
+
+        [HasMany(typeof(ConnectionRecord), Lazy=true)]
+        public IList<ConnectionRecord> Connections
+        {
+            get { return m_connections ?? new List<ConnectionRecord>(); }
+            set { m_connections = value; }
         }
 
         public ServerStatusEnum Status

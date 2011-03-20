@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Serialization;
 using Message = Stump.DofusProtocol.Messages.Message;
 
 namespace Stump.Tools.Sniffer
@@ -131,6 +132,46 @@ namespace Stump.Tools.Sniffer
                     else
                     {
                         m_xr.WriteString(node.Text);
+                    }
+                }
+            }
+        }
+
+        public static void TreeNodeToXml(TreeNode tn, XmlWriter writer)
+        {
+            writer.WriteComment("Date : " + DateTime.Now.ToLongTimeString());
+            writer.WriteStartElement(tn.Text);
+
+            WriteXmlNode(tn.Nodes, writer);
+
+            writer.WriteEndElement();
+        }
+
+        private static void WriteXmlNode(TreeNodeCollection tnc, XmlWriter writer)
+        {
+            foreach (TreeNode node in tnc)
+            {
+                if (node.Nodes.Count > 0)
+                {
+                    writer.WriteStartElement(node.Text);
+                    WriteXmlNode(node.Nodes, writer);
+                    writer.WriteEndElement();
+                }
+                else
+                {
+                    if (node.Tag != null && node.Tag.ToString() == "List")
+                    {
+                        writer.WriteStartElement(node.Text);
+                        writer.WriteEndElement();
+                    }
+                    else if (node.Tag != null && node.Tag.ToString() == "Class")
+                    {
+                        writer.WriteStartElement(node.Text);
+                        writer.WriteEndElement();
+                    }
+                    else
+                    {
+                        writer.WriteString(node.Text);
                     }
                 }
             }

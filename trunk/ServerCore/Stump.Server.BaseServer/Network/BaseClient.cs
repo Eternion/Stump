@@ -23,6 +23,7 @@ using NLog;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.IO;
 using Stump.BaseCore.Framework.Pool;
+using Stump.BaseCore.Framework.Pool.Task;
 using Stump.DofusProtocol.Messages;
 using TaskFactoryExtensions = Stump.BaseCore.Framework.Threading.TaskFactoryExtensions;
 
@@ -42,7 +43,7 @@ namespace Stump.Server.BaseServer.Network
                 Close();
                 return;
             }
-            if (Settings.InactivityDisconnectionTime.HasValue)
+            if (Settings.InactivityDisconnectionTime.HasValue || MessageListener.MinMessageInterval.HasValue)
                 LastActivity = DateTime.Now;
             if (MessageReceived != null) MessageReceived(this, message);
         }

@@ -34,7 +34,7 @@ namespace Stump.Server.BaseServer.Network
         /// Current server adress
         /// </summary>
         [Variable]
-        public static string Host = "localhost";
+        public static string Host = "127.0.0.1";
 
         /// <summary>
         /// Server port

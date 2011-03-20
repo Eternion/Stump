@@ -111,13 +111,14 @@ namespace Stump.Server.AuthServer.IPC
             if (account == null)
                 return false;
 
-            account.LastIp = modifiedRecord.LastIp;
-            account.LastConnection = modifiedRecord.LastConnection;
+            account.Connections = modifiedRecord.Connections;
             account.Password = modifiedRecord.Password;
             account.SecretQuestion = modifiedRecord.SecretQuestion;
             account.SecretAnswer = modifiedRecord.SecretAnswer;
             account.Role = modifiedRecord.Role;
-            account.BanEndDate = modifiedRecord.BanEndDate;
+            account.Sanctions = modifiedRecord.Sanctions;
+            account.GivenSanctions = modifiedRecord.GivenSanctions;
+            account.Subscriptions = modifiedRecord.Subscriptions;
 
             account.UpdateAndFlush();
 
@@ -183,22 +184,23 @@ namespace Stump.Server.AuthServer.IPC
             return (IpcServer.IpcSecretKey == secretKey);
         }
 
-        public bool BanAccount(WorldServerInformation wsi, uint accountId, DateTime banEndDate)
+        public bool BlamAccount(WorldServerInformation wsi, uint accountId, SanctionRecord record)
         {
             var account = AccountRecord.FindAccountById(accountId);
 
             if (account == null)
                 return false;
 
-            account.Banned = true;
-            account.BanEndDate = banEndDate;
+            record.Create();
+
+            account.Sanctions.Add(record);
 
             account.UpdateAndFlush();
 
             return true;
         }
 
-        public void BanIp(WorldServerInformation wsi, IpBannedRecord ipBanned)
+        public void BanIp(WorldServerInformation wsi, SanctionRecord ipBanned)
         {
             ipBanned.CreateAndFlush();
         }

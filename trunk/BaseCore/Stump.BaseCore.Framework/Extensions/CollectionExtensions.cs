@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,6 +29,44 @@ namespace Stump.BaseCore.Framework.Extensions
             }
 
             return true;
+        }
+
+        public static T MaxOf<T, T1>(this IList<T> collection, Func<T, T1> selector) where T1 : IComparable<T1>
+        {
+            if (collection.Count == 0) return default(T);
+            
+            var maxT = collection[0];
+            var maxT1 = selector(maxT);
+            
+            for (var i = 1; i < collection.Count - 1; i++)
+            {
+                var currentT1 = selector(collection[i]);
+                if (currentT1.CompareTo( maxT1) > 0)
+                {
+                    maxT = collection[i];
+                    maxT1 = currentT1;
+                }
+            }
+            return maxT;
+        }
+
+        public static T MinOf<T, T1>(this IList<T> collection, Func<T, T1> selector) where T1 : IComparable<T1>
+        {
+            if (collection.Count == 0) return default(T);
+
+            var maxT = collection[0];
+            var maxT1 = selector(maxT);
+
+            for (var i = 1; i < collection.Count - 1; i++)
+            {
+                var currentT1 = selector(collection[i]);
+                if (currentT1.CompareTo(maxT1) < 0)
+                {
+                    maxT = collection[i];
+                    maxT1 = currentT1;
+                }
+            }
+            return maxT;
         }
     }
 }

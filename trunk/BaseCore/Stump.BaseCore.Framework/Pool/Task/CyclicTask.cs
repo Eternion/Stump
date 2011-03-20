@@ -17,6 +17,7 @@
 //  *
 //  *************************************************************************/
 using System;
+using Stump.BaseCore.Framework.Pool.Task;
 
 namespace Stump.BaseCore.Framework.Pool
 {

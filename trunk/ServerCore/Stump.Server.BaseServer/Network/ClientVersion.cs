@@ -35,13 +35,13 @@ namespace Stump.Server.BaseServer.Network
         ///   Define the severity of the client version checking. Set to Light/NoCheck if you have any bugs with it.
         /// </summary>
         [Variable]
-        public static VersionCheckingSeverity Severity = VersionCheckingSeverity.Medium;
+        public static VersionCheckingSeverity Severity = VersionCheckingSeverity.Light;
 
         /// <summary>
         /// Version for the client
         /// </summary>
         [Variable]
-        public static string VersionRequired = "2.3.0.37782.1";
+        public static string VersionRequired = "2.3.3.40497.1";
 
         /// <summary>
         /// Actual version

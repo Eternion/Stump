@@ -145,8 +145,6 @@
     <Compile Include="Database\DatabaseConfiguration.cs" />
     <Compile Include="Definitions.cs" />
     <Compile Include="Handler\IHandlerContainer.cs" />
-    <Compile Include="Initializing\StageStep.cs" />
-    <Compile Include="Initializing\StageManager.cs" />
     <Compile Include="IPC\IRemoteOperationsAuth.cs" />
     <Compile Include="IPC\IRemoteOperationsWorld.cs" />
     <Compile Include="Manager\IInstance.cs" />

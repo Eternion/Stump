@@ -87,15 +87,15 @@
           
 //        }
 
-        protected override SpellTemplate InternalGetOne(uint id)
-        {
-            throw new NotImplementedException();
-        }
+        //protected override SpellTemplate InternalGetOne(uint id)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        protected override Dictionary<uint, SpellTemplate> InternalGetAll()
-        {
-            m_spellTemplates = D2OLoader.LoadData<Spell>().ToDictionary(s => s.id);
-            var levelTemplates = D2OLoader.LoadDataById<SpellLevel>(entry => (int)entry.id);
+        //protected override Dictionary<uint, SpellTemplate> InternalGetAll()
+        //{
+        //    m_spellTemplates = D2OLoader.LoadData<Spell>().ToDictionary(s => s.id);
+        //    var levelTemplates = D2OLoader.LoadDataById<SpellLevel>(entry => (int)entry.id);
 
 //            return null;
 

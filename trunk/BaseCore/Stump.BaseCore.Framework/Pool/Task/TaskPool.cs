@@ -24,16 +24,15 @@ using System.Reflection;
 using Stump.BaseCore.Framework.Attributes;
 using Stump.BaseCore.Framework.Reflection;
 
-
-namespace Stump.BaseCore.Framework.Pool
+namespace Stump.BaseCore.Framework.Pool.Task
 {
     public delegate bool Condition();
 
     public class TaskPool
     {
-        private List<CyclicTask> m_cyclicTasks = new List<CyclicTask>();
-        private readonly object sync = new object();
-        private ConcurrentQueue<Action> m_tasks = new ConcurrentQueue<Action>();
+        private readonly List<CyclicTask> m_cyclicTasks = new List<CyclicTask>();
+        private readonly object m_sync = new object();
+        private readonly ConcurrentQueue<Action> m_tasks = new ConcurrentQueue<Action>();
         private static TaskPool m_instance;
 
         public static TaskPool Instance
@@ -60,25 +59,25 @@ namespace Stump.BaseCore.Framework.Pool
 
         public void RegisterCyclicTask(Action method, int time, Condition condition, uint? maxExecution)
         {
-            lock (sync)
+            lock (m_sync)
                 m_cyclicTasks.Add(new CyclicTask(method, time, condition, maxExecution));
         }
 
         public void RegisterCyclicTask(CyclicTask cyclicTask)
         {
-            lock (sync)
+            lock (m_sync)
                 m_cyclicTasks.Add(cyclicTask);
         }
 
         public void UnregisterCyclicTask(Action method)
         {
-            lock (sync)
+            lock (m_sync)
                 m_cyclicTasks.RemoveAll(m => m.Action == method);
         }
 
         public void UnregisterCyclicTask(CyclicTask cyclicTask)
         {
-            lock (sync)
+            lock (m_sync)
                 m_cyclicTasks.Remove(cyclicTask);
         }
 
@@ -94,7 +93,7 @@ namespace Stump.BaseCore.Framework.Pool
             while (m_tasks.TryDequeue(out m_action))
                 m_action.Invoke();
 
-            lock (sync)
+            lock (m_sync)
             {
                 /* Execute Cyclic Tasks */
                 foreach (var cyclicMethod in m_cyclicTasks.Where(m => m.RequireExecution))

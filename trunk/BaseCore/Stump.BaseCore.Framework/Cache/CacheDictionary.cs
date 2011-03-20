@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Stump.BaseCore.Framework.Pool;
+using Stump.BaseCore.Framework.Pool.Task;
 
 namespace Stump.BaseCore.Framework.Cache
 {

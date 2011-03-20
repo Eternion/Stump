@@ -169,8 +169,8 @@
             // 
             this.BtnStart.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.BtnStart.Name = "BtnStart";
-            this.BtnStart.Size = new System.Drawing.Size(47, 22);
-            this.BtnStart.Text = "Offline";
+            this.BtnStart.Size = new System.Drawing.Size(35, 22);
+            this.BtnStart.Text = "Start";
             this.BtnStart.Click += new System.EventHandler(this.BtnStart_Click);
             // 
             // toolStripSeparator1
@@ -217,7 +217,7 @@
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
-            // Form1
+            // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -229,10 +229,11 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "Form1";
+            this.Name = "FormMain";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "StumpSniffer";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMainFormClosing);
             this.treeViewMenuStrip.ResumeLayout(false);
             this.listViewMenuStrip.ResumeLayout(false);
             this.topToolStrip.ResumeLayout(false);

@@ -10,6 +10,12 @@ namespace Stump.Server.DataProvider.Data.D2oTool
 {
     public class D2OWriter
     {
+        public string Filename
+        {
+            get;
+            set;
+        }
+
         private const int NullIdentifier = unchecked((int)0xAAAAAAAA);
 
         private Dictionary<int, D2OClassDefinition> m_classes;
@@ -42,15 +48,12 @@ namespace Stump.Server.DataProvider.Data.D2oTool
 
         public D2OWriter(string filename)
         {
+            Filename = filename;
+
             if (!File.Exists(filename))
                 CreateWrite(filename);
 
             OpenWrite(File.Open(filename, FileMode.Open));
-        }
-
-        public D2OWriter(Stream stream)
-        {
-            OpenWrite(stream);
         }
 
         private void ResetMembersByReading()
@@ -59,6 +62,7 @@ namespace Stump.Server.DataProvider.Data.D2oTool
 
             m_indexTable = reader.Indexes;
             m_classes = reader.Classes;
+            m_allocatedClassId = m_classes.ToDictionary(entry => entry.Value.ClassType, entry => entry.Key);
             m_objects = reader.ReadObjects();
         }
 
@@ -75,6 +79,7 @@ namespace Stump.Server.DataProvider.Data.D2oTool
             m_indexTable = new Dictionary<int, int>();
             m_classes = new Dictionary<int, D2OClassDefinition>();
             m_objects = new Dictionary<int, object>();
+            m_allocatedClassId = new Dictionary<Type, int>();
         }
 
         public void StartWriting()
@@ -93,6 +98,10 @@ namespace Stump.Server.DataProvider.Data.D2oTool
         {
             lock (m_writingSync)
             {
+                File.WriteAllBytes(Filename, new byte[0]);
+
+                m_writer.Seek(0, SeekOrigin.Begin);
+
                 m_writing = false;
                 m_needToBeSync = false;
 
@@ -133,6 +142,15 @@ namespace Stump.Server.DataProvider.Data.D2oTool
                     m_objects[index] = obj;
                 else
                     m_objects.Add(index, obj);
+            }
+        }
+
+        public void Delete(int index)
+        {
+            lock (m_writingSync)
+            {
+                if (m_objects.ContainsKey(index))
+                    m_objects.Remove(index);
             }
         }
 

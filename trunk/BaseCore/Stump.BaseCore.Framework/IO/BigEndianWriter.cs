@@ -248,6 +248,12 @@ namespace Stump.BaseCore.Framework.IO
         }
 
 
+        public void Seek(int offset, SeekOrigin seekOrigin)
+        {
+            m_writer.BaseStream.Seek(offset, seekOrigin);
+        }
+
+
         public void Clear()
         {
             m_writer = new BinaryWriter(new MemoryStream(), Encoding.UTF8);

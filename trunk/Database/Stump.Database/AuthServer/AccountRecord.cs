@@ -23,8 +23,8 @@ using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using Stump.Database.AuthServer.World;
 using Stump.Database.Types;
-using Stump.Database.WorldServer.StartupAction;
 using Stump.DofusProtocol.Enums;
+using Stump.BaseCore.Framework.Extensions;
 
 namespace Stump.Database.AuthServer
 {
@@ -36,6 +36,10 @@ namespace Stump.Database.AuthServer
         private string m_login = "";
         private IList<WorldCharacterRecord> m_characters;
         private IList<DeletedWorldCharacterRecord> m_deletedCharacters;
+        private IList<ConnectionRecord> m_connections;
+        private IList<SubscriptionRecord> m_subscriptions;
+        private IList<SanctionRecord> m_givenSanctions;
+        private IList<SanctionRecord> m_sanctions;
 
         public AccountRecord()
         {
@@ -70,13 +74,6 @@ namespace Stump.Database.AuthServer
             set;
         }
 
-        [Property("Active", NotNull = true, Default = "1")]
-        public bool Active
-        {
-            get;
-            set;
-        }
-
         [Property("Role", NotNull = true, Default = "1")]
         public RoleEnum Role
         {
@@ -91,29 +88,8 @@ namespace Stump.Database.AuthServer
             set;
         }
 
-        [Property("LastServer", NotNull = false)]
-        public int? LastServer
-        {
-            get;
-            set;
-        }
-
-        [Property("LastConnection", NotNull = false)]
-        public DateTime LastConnection
-        {
-            get;
-            set;
-        }
-
         [Property("Ticket", NotNull = false)]
         public string Ticket
-        {
-            get;
-            set;
-        }
-
-        [Property("LastIp", NotNull = false)]
-        public string LastIp
         {
             get;
             set;
@@ -133,29 +109,15 @@ namespace Stump.Database.AuthServer
             set;
         }
 
+        [Property("Lang", NotNull = true)]
+        public string Lang
+        {
+            get;
+            set;
+        }
+
         [Property("Email", NotNull = true)]
         public string Email
-        {
-            get;
-            set;
-        }
-
-        [Property("SubscriptionEndDate", NotNull = false)]
-        public DateTime? SubscriptionEndDate
-        {
-            get;
-            set;
-        }
-
-        [Property("Banned", NotNull = true, Default = "0")]
-        public bool Banned
-        {
-            get;
-            set;
-        }
-
-        [Property("BanEndDate", NotNull=false)]
-        public DateTime? BanEndDate
         {
             get;
             set;
@@ -186,31 +148,6 @@ namespace Stump.Database.AuthServer
             }
         }
 
-        public double SubscriptionRemainingTime
-        {
-            get
-            {
-                if (SubscriptionEndDate.HasValue)
-                {
-                    double time = SubscriptionEndDate.Value.Subtract(DateTime.Now).TotalMilliseconds;
-                    return time > 0 ? time : 0;
-                }
-                return 0;
-            }
-        }
-
-        public double BanRemainingTime
-        {
-            get
-            {
-                if (BanEndDate.HasValue)
-                {
-                    double time = BanEndDate.Value.Subtract(DateTime.Now).TotalSeconds;
-                    return time > 0 ? time : 0;
-                }
-                return 0;
-            }
-        }
 
         [HasMany(typeof(WorldCharacterRecord), Cascade = ManyRelationCascadeEnum.Delete)]
         public IList<WorldCharacterRecord> Characters
@@ -224,6 +161,34 @@ namespace Stump.Database.AuthServer
         {
             get { return m_deletedCharacters ?? new List<DeletedWorldCharacterRecord>(); }
             set { m_deletedCharacters = value; }
+        }
+
+        [HasMany(typeof(ConnectionRecord))]
+        public IList<ConnectionRecord> Connections
+        {
+            get { return m_connections ?? new List<ConnectionRecord>(); }
+            set { m_connections = value; }
+        }
+
+        [HasMany(typeof(SubscriptionRecord))]
+        public IList<SubscriptionRecord> Subscriptions
+        {
+            get { return m_subscriptions ?? new List<SubscriptionRecord>(); }
+            set { m_subscriptions = value; }
+        }
+
+        [HasMany(typeof(SanctionRecord))]
+        public IList<SanctionRecord> GivenSanctions
+        {
+            get { return m_givenSanctions ?? new List<SanctionRecord>(); }
+            set { m_givenSanctions = value; }
+        }
+
+        [HasMany(typeof(SanctionRecord))]
+        public IList<SanctionRecord> Sanctions
+        {
+            get { return m_sanctions ?? new List<SanctionRecord>(); }
+            set { m_sanctions = value; }
         }
 
 
@@ -242,17 +207,49 @@ namespace Stump.Database.AuthServer
             return Characters.Where(c => c.World.Id == worldId).Select(c => c.CharacterId);
         }
 
-        public void UpdateBanStatus()
+        public ConnectionRecord LastConnection
+        {          
+            get { return Connections.MaxOf(c => c.Date); }
+        }
+
+        public uint SubscriptionRemainingTime
         {
-            /* Update if we have passed BanEndDate */
-            if (Banned && BanEndDate.HasValue && BanRemainingTime == 0)
+            get
             {
-                Banned = false;
-                BanEndDate = null;
-                SaveAndFlush();
+                var time = new TimeSpan();
+
+                for (var i = 0; i < Subscriptions.Count; i++)
+                {
+                    var diff = Subscriptions[i].EndDate.Subtract(DateTime.Now);
+
+                    if (diff > TimeSpan.Zero)
+                        time += diff;
+                    else if (i < Subscriptions.Count - 1)
+                    {
+                        diff = Subscriptions[i].EndDate.Subtract(Subscriptions[i + 1].BuyDate);
+
+                        if (diff > TimeSpan.Zero)
+                            Subscriptions[i + 1].Duration += diff;
+                    }
+                }
+                return (uint)time.TotalMilliseconds;
             }
         }
 
+        public uint BanRemainingTime
+        {
+            get
+            {
+                if (Sanctions.Count == 0) return 0;
+                return (uint)DateTime.Now.Subtract( Sanctions.Max(s => s.EndDate)).TotalSeconds;
+            }
+        }
+
+        public void RemoveOldestConnection()
+        {
+            var olderConn = Connections.MinOf(c => c.Date);
+            olderConn.Delete();
+        }
 
         public static AccountRecord FindAccountById(uint id)
         {

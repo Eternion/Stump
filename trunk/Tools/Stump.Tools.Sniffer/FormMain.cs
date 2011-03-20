@@ -185,5 +185,10 @@ namespace Stump.Tools.Sniffer
         }
 
         #endregion
+
+        private void FormMainFormClosing(object sender, FormClosingEventArgs e)
+        {
+            m_sniffer.StopLogs();
+        }
     }
 }

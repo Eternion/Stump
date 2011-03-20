@@ -37,14 +37,14 @@
 //        [Variable]
 //        public static string MapsFile = "Maps.xml";
 
-        protected override MapTemplate InternalGetOne(int id)
-        {
-            throw new Exception("Hey man, are you crazy ?!");
-        }
+        //protected override MapTemplate InternalGetOne(int id)
+        //{
+        //    throw new Exception("Hey man, are you crazy ?!");
+        //}
 
-        protected override Dictionary<int, MapTemplate> InternalGetAll()
-        {
-            var positions = D2OLoader.LoadDataByIdAsDictionary<int, MapPosition>(entry => entry.id);
+        //protected override Dictionary<int, MapTemplate> InternalGetAll()
+        //{
+        //    var positions = D2OLoader.LoadDataByIdAsDictionary<int, MapPosition>(entry => entry.id);
 
 //            using (var sr = new StreamReader(Settings.StaticPath + MapsFile))
 //            {

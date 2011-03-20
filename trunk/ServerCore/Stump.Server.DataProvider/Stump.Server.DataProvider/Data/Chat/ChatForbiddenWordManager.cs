@@ -32,16 +32,16 @@ namespace Stump.Server.DataProvider.Data.Chat
     //public class ChatForbiddenWordManager : DataManager<uint,string>
     //{
 
-        protected override string InternalGetOne(uint id)
-        {
-            var cw = D2OLoader.LoadData<CensoredWord>((int)id);
-            return cw != null ? cw.word : "";
-        }
+        //protected override string InternalGetOne(uint id)
+        //{
+        //    var cw = D2OLoader.LoadData<CensoredWord>((int)id);
+        //    return cw != null ? cw.word : "";
+        //}
 
-        protected override Dictionary<uint, string> InternalGetAll()
-        {
-            return D2OLoader.LoadData<CensoredWord>().ToDictionary(w => w.id, w => w.word);
-        }
+        //protected override Dictionary<uint, string> InternalGetAll()
+        //{
+        //    return D2OLoader.LoadData<CensoredWord>().ToDictionary(w => w.id, w => w.word);
+        //}
 
         ///// <summary>
         ///// Only with pre-loaded
