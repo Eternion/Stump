@@ -124,6 +124,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Abuse\AbuseReasonsRecord.cs" />
     <Compile Include="Data\AttributeAssociatedFile.cs" />
     <Compile Include="AuthServer\AccountRecord.cs" />
     <Compile Include="ActiveRecordHelper.cs" />
@@ -131,7 +132,6 @@
     <Compile Include="AuthServer\SubscriptionRecord.cs" />
     <Compile Include="AuthServer\World\DeletedWorldCharacterRecord.cs" />
     <Compile Include="AuthServer\SanctionRecord.cs" />
-    <Compile Include="Data\Abuse\AbuseReasonRecord.cs" />
     <Compile Include="Data\Alignments\AlignmentBalanceRecord.cs" />
     <Compile Include="Data\Alignments\AlignmentEffectRecord.cs" />
     <Compile Include="Data\Alignments\AlignmentGiftRecord.cs" />
@@ -215,19 +215,19 @@
     <Compile Include="Data\Misc\TipsRecord.cs" />
     <Compile Include="Data\Misc\PackRecord.cs" />
     <Compile Include="Data\Misc\MonthRecord.cs" />
-    <Compile Include="Data\Monters\MonsterSuperRaceRecord.cs" />
-    <Compile Include="Data\Monters\MonsterRaceRecord.cs" />
-    <Compile Include="Data\Monters\MonsterGrade.cs" />
-    <Compile Include="Data\Monters\MonsterRecord.cs" />
+    <Compile Include="Data\Monsters\MonsterGrade.cs" />
+    <Compile Include="Data\Monsters\MonsterRaceRecord.cs" />
+    <Compile Include="Data\Monsters\MonsterRecord.cs" />
+    <Compile Include="Data\Monsters\MonsterSuperRaceRecord.cs" />
     <Compile Include="Data\Mounts\RideFoodRecord.cs" />
     <Compile Include="Data\Mounts\MountBehaviorRecord.cs" />
     <Compile Include="Data\Mounts\MountRecord.cs" />
     <Compile Include="Data\Notifications\NotificationRecord.cs" />
-    <Compile Include="Data\Npcs\TaxColletorNameRecord.cs" />
-    <Compile Include="Data\Npcs\TaxColletorFirstNameRecord.cs" />
     <Compile Include="Data\Npcs\NpcMessageRecord.cs" />
     <Compile Include="Data\Npcs\NpcActionRecord.cs" />
     <Compile Include="Data\Npcs\NpcRecord.cs" />
+    <Compile Include="Data\Npcs\TaxCollectorFirstNameRecord.cs" />
+    <Compile Include="Data\Npcs\TaxCollectorNameRecord.cs" />
     <Compile Include="Data\Point.cs" />
     <Compile Include="Data\Quests\objectives\QuestObjective.cs" />
     <Compile Include="Data\Quests\objectives\QuestObjectiveBringItemToNpc.cs" />
@@ -317,6 +317,10 @@
     <ProjectReference Include="..\..\DofusProtocol\Classes\Stump.DofusProtocol.Classes.csproj">
       <Project>{10884165-D492-4895-B3EF-32429F7A7F55}</Project>
       <Name>Stump.DofusProtocol.Classes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DofusProtocol\D2oClasses\Stump.DofusProtocol.D2oClasses.csproj">
+      <Project>{33093793-C4BA-4B89-AC82-6E9D00437452}</Project>
+      <Name>Stump.DofusProtocol.D2oClasses</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DofusProtocol\Enums\Stump.DofusProtocol.Enums.csproj">
       <Project>{D7BFF8ED-065B-4A53-9805-595DFEA75A0A}</Project>

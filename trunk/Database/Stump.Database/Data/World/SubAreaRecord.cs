@@ -1,95 +1,90 @@
-﻿// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
-using Stump.Database.Data.AmbientSounds;
 using Stump.Database.Types;
+using Stump.DofusProtocol.D2oClasses.Classes.ambientSounds;
+using Stump.DofusProtocol.D2oClasses.Tool;
 
 namespace Stump.Database.Data.World
 {
     [Serializable]
-    [ActiveRecord("subareas")]
+    [ActiveRecord("sub_area")]
     [AttributeAssociatedFile("SubAreas")]
+    [D2OClass("SubArea", "com.ankamagames.dofus.datacenter.world")]
     public sealed class SubAreaRecord : DataBaseRecord<SubAreaRecord>
     {
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
-        public int Id
-        {
-            get;
-            set;
-        }
 
-        [Property("NameId")]
-        public uint NameId
-        {
-            get;
-            set;
-        }
+       [D2OField("id")]
+       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+       public int Id
+       {
+           get;
+           set;
+       }
 
-        [Property("AreaId")]
-        public int AreaId
-        {
-            get;
-            set;
-        }
+       [D2OField("nameId")]
+       [Property("NameId")]
+       public uint NameId
+       {
+           get;
+           set;
+       }
 
-        [Property("AmbientSounds")]
-        public List<AmbientSoundRecord> AmbientSounds
-        {
-            get;
-            set;
-        }
+       [D2OField("areaId")]
+       [Property("AreaId")]
+       public int AreaId
+       {
+           get;
+           set;
+       }
 
-        [Property("MapIds", ColumnType="Serializable")]
-        public List<uint> MapIds
-        {
-            get;
-            set;
-        }
+       [D2OField("ambientSounds")]
+       [Property("AmbientSounds", ColumnType="Serializable")]
+       public List<AmbientSound> AmbientSounds
+       {
+           get;
+           set;
+       }
 
-        [Property("Bounds", ColumnType="Serializable")]
-        public Rectangle Bounds
-        {
-            get;
-            set;
-        }
+       [D2OField("mapIds")]
+       [Property("MapIds", ColumnType="Serializable")]
+       public List<uint> MapIds
+       {
+           get;
+           set;
+       }
 
-        [Property("Shape", ColumnType = "Serializable")]
-        public List<int> Shape
-        {
-            get;
-            set;
-        }
+       [D2OField("bounds")]
+       [Property("Bounds", ColumnType="Serializable")]
+       public Rectangle Bounds
+       {
+           get;
+           set;
+       }
 
-        [Property("CustomWorldMap", ColumnType = "Serializable")]
-        public List<uint> CustomWorldMap
-        {
-            get;
-            set;
-        }
+       [D2OField("shape")]
+       [Property("Shape", ColumnType="Serializable")]
+       public List<int> Shape
+       {
+           get;
+           set;
+       }
 
-        [Property("PackId")]
-        public int PackId
-        {
-            get;
-            set;
-        }
+       [D2OField("customWorldMap")]
+       [Property("CustomWorldMap", ColumnType="Serializable")]
+       public List<uint> CustomWorldMap
+       {
+           get;
+           set;
+       }
+
+       [D2OField("packId")]
+       [Property("PackId")]
+       public int PackId
+       {
+           get;
+           set;
+       }
+
     }
 }

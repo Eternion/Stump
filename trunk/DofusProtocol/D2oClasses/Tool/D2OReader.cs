@@ -21,11 +21,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
+using System.Reflection.Emit;
 using Stump.BaseCore.Framework.IO;
-using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Classes.breeds;
 
-namespace Stump.Server.DataProvider.Data.D2oTool
+namespace Stump.DofusProtocol.D2oClasses.Tool
 {
     public class D2OReader
     {
@@ -38,6 +40,7 @@ namespace Stump.Server.DataProvider.Data.D2oTool
                                                              {
                                                                  typeof (Breed).Assembly
                                                              };
+        private static Dictionary<Type, Func<object[], object>> objectCreators = new Dictionary<Type, Func<object[], object>>();
 
         private readonly string m_filePath;
 
@@ -151,13 +154,19 @@ namespace Stump.Server.DataProvider.Data.D2oTool
                 for (int l = 0; l < fieldscount; l++)
                 {
                     string fieldname = m_reader.ReadUTF();
-                    int fieldtype = m_reader.ReadInt();
+                    var fieldtype = (D2OFieldType)m_reader.ReadInt();
 
-                    var vectorTypes = new List<int>();
-                    if (fieldtype == -99)
+                    var vectorTypes = new List<Tuple<D2OFieldType, string>>();
+                    if (fieldtype == D2OFieldType.List)
                     {
-                        m_reader.ReadUTF(); // name -> useless
-                        vectorTypes.Add(m_reader.ReadInt());
+                    addVectorType:
+
+                        string name = m_reader.ReadUTF();
+                        var id = (D2OFieldType)m_reader.ReadInt();
+                        vectorTypes.Add(Tuple.Create(id, name));
+
+                        if (id == D2OFieldType.List)
+                            goto addVectorType;
                     }
 
                     FieldInfo field = classType.GetField(fieldname);
@@ -286,27 +295,32 @@ namespace Stump.Server.DataProvider.Data.D2oTool
 
         private object BuildObject(D2OClassDefinition classDefinition, BigEndianReader reader)
         {
-            object obj = Activator.CreateInstance(classDefinition.ClassType);
+            if (!objectCreators.ContainsKey(classDefinition.ClassType))
+            {
+                var creator = CreateObjectBuilder(classDefinition.ClassType,
+                                                  classDefinition.Fields.Select(entry => entry.Value.FieldInfo).ToArray());
 
+                objectCreators.Add(classDefinition.ClassType, creator);
+            }
+
+            var values = new List<object>();
             foreach (D2OFieldDefinition field in classDefinition.Fields.Values)
             {
                 object fieldValue = ReadField(reader, field, field.TypeId);
 
                 if (field.FieldType.IsAssignableFrom(fieldValue.GetType()))
-                    field.FieldInfo.SetValue(obj, fieldValue);
+                    values.Add(fieldValue);
                 else if (fieldValue is IConvertible &&
                          field.FieldType.GetInterface("IConvertible") != null)
-                    field.FieldInfo.SetValue(obj, Convert.ChangeType(fieldValue, field.FieldType));
+                    values.Add(Convert.ChangeType(fieldValue, field.FieldType));
                 else
                 {
                     throw new Exception(string.Format("Field '{0}.{1}' is not of type '{2}'", classDefinition.Name,
                                                       field.Name, fieldValue.GetType()));
                 }
-
-                field.FieldInfo.SetValue(obj, fieldValue);
             }
 
-            return obj;
+            return objectCreators[classDefinition.ClassType](values.ToArray());
         }
 
         public object ReadObject<T>(int index)
@@ -356,23 +370,23 @@ namespace Stump.Server.DataProvider.Data.D2oTool
             }
         }
 
-        private object ReadField(BigEndianReader reader, D2OFieldDefinition field, int typeId, int vectorDimension = 0)
+        private object ReadField(BigEndianReader reader, D2OFieldDefinition field, D2OFieldType typeId, int vectorDimension = 0)
         {
             switch (typeId)
             {
-                case -1:
+                case D2OFieldType.Int:
                     return ReadFieldInt(reader);
-                case -2:
+                case D2OFieldType.Bool:
                     return ReadFieldBool(reader);
-                case -3:
+                case D2OFieldType.String:
                     return ReadFieldUTF(reader);
-                case -4:
+                case D2OFieldType.Double:
                     return ReadFieldDouble(reader);
-                case -5:
+                case D2OFieldType.I18N:
                     return ReadFieldI18n(reader);
-                case -6:
+                case D2OFieldType.UInt:
                     return ReadFieldUInt(reader);
-                case -99:
+                case D2OFieldType.List:
                     return ReadFieldVector(reader, field, vectorDimension);
                 default:
                     return ReadFieldObject(reader);
@@ -387,7 +401,7 @@ namespace Stump.Server.DataProvider.Data.D2oTool
 
             for (int i = 0; i < count; i++)
             {
-                result.Add(ReadField(reader, field, field.VectorTypesId[vectorDimension], ++vectorDimension));
+                result.Add(ReadField(reader, field, field.VectorTypes[vectorDimension].Item1, ++vectorDimension));
             }
 
             return result;
@@ -438,10 +452,57 @@ namespace Stump.Server.DataProvider.Data.D2oTool
 
         internal BigEndianReader CloneReader()
         {
-            Stream streamClone = null;
+            if (m_reader.BaseStream.Position > 0)
+                m_reader.Seek(0, SeekOrigin.Begin);
+
+            Stream streamClone = new MemoryStream();
             m_reader.BaseStream.CopyTo(streamClone);
 
             return new BigEndianReader(streamClone);
+        }
+
+        public void Close()
+        {
+            m_reader.Dispose();
+        }
+
+        private static Func<object[], object> CreateObjectBuilder(Type classType, params FieldInfo[] fields)
+        {
+            IEnumerable<Type> fieldsType = from entry in fields
+                                           select entry.FieldType;
+
+            var method = new DynamicMethod(Guid.NewGuid().ToString("N"), typeof(object), new[] { typeof(object[]) }.ToArray());
+
+            ILGenerator ilGenerator = method.GetILGenerator();
+
+            ilGenerator.DeclareLocal(classType);
+            ilGenerator.DeclareLocal(classType);
+
+            ilGenerator.Emit(OpCodes.Newobj, classType.GetConstructor(new Type[0]));
+            ilGenerator.Emit(OpCodes.Stloc_0);
+            for (int i = 0; i < fields.Length; i++)
+            {
+                ilGenerator.Emit(OpCodes.Ldloc_0);
+                ilGenerator.Emit(OpCodes.Ldarg_0);
+                ilGenerator.Emit(OpCodes.Ldc_I4, i);
+                ilGenerator.Emit(OpCodes.Ldelem_Ref);
+
+                if (fields[i].FieldType.IsClass)
+                    ilGenerator.Emit(OpCodes.Castclass, fields[i].FieldType);
+                else
+                {
+                    ilGenerator.Emit(OpCodes.Unbox_Any, fields[i].FieldType);
+                }
+
+                ilGenerator.Emit(OpCodes.Stfld, fields[i]);
+            }
+
+            ilGenerator.Emit(OpCodes.Ldloc_0);
+            ilGenerator.Emit(OpCodes.Stloc_1);
+            ilGenerator.Emit(OpCodes.Ldloc_1);
+            ilGenerator.Emit(OpCodes.Ret);
+
+            return (Func<object[], object>)method.CreateDelegate(Expression.GetFuncType(new[] { typeof(object[]), typeof(object) }.ToArray()));
         }
     }
 }

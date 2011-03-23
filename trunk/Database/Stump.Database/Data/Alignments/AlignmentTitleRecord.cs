@@ -1,59 +1,41 @@
-﻿// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
 using System;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.DofusProtocol.D2oClasses.Tool;
 
 namespace Stump.Database.Data.Alignments
 {
     [Serializable]
-    [ActiveRecord("alignment_titles")]
+    [ActiveRecord("alignment_title")]
     [AttributeAssociatedFile("AlignmentTitles")]
-    public sealed class AlignmentTitle : DataBaseRecord<AlignmentTitle>
+    [D2OClass("AlignmentTitle", "com.ankamagames.dofus.datacenter.alignments")]
+    public sealed class AlignmentTitleRecord : DataBaseRecord<AlignmentTitleRecord>
     {
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
-        public int Id
-        {
-            get;
-            set;
-        }
 
-        [Property("SideId")]
-        public int SideId
-        {
-            get;
-            set;
-        }
+       [D2OField("sideId")]
+       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+       public int Id
+       {
+           get;
+           set;
+       }
 
-        [Property("NamesId", ColumnType = "Serializable")]
-        public List<int> NamesId
-        {
-            get;
-            set;
-        }
+       [D2OField("namesId")]
+       [Property("NamesId", ColumnType="Serializable")]
+       public List<int> NamesId
+       {
+           get;
+           set;
+       }
 
-        [Property("ShortsId", ColumnType = "Serializable")]
-        public List<int> ShortsId
-        {
-            get;
-            set;
-        }
+       [D2OField("shortsId")]
+       [Property("ShortsId", ColumnType="Serializable")]
+       public List<int> ShortsId
+       {
+           get;
+           set;
+       }
+
     }
 }

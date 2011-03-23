@@ -1,107 +1,104 @@
-﻿// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
-using System;
+﻿using System;
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.DofusProtocol.D2oClasses.Tool;
 
 namespace Stump.Database.Data.Effects
 {
     [Serializable]
-    [ActiveRecord("effects")]
+    [ActiveRecord("effect")]
     [AttributeAssociatedFile("Effects")]
+    [D2OClass("Effect", "com.ankamagames.dofus.datacenter.effects")]
     public sealed class EffectRecord : DataBaseRecord<EffectRecord>
     {
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
-        public int Id
-        {
-            get;
-            set;
-        }
 
-        [Property("DescriptionId")]
-        public uint DescriptionId
-        {
-            get;
-            set;
-        }
+       [D2OField("id")]
+       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+       public int Id
+       {
+           get;
+           set;
+       }
 
-        [Property("IconId")]
-        public uint IconId
-        {
-            get;
-            set;
-        }
+       [D2OField("descriptionId")]
+       [Property("DescriptionId")]
+       public uint DescriptionId
+       {
+           get;
+           set;
+       }
 
-        [Property("Characteristic")]
-        public int Characteristic
-        {
-            get;
-            set;
-        }
+       [D2OField("iconId")]
+       [Property("IconId")]
+       public uint IconId
+       {
+           get;
+           set;
+       }
 
-        [Property("Category")]
-        public uint Category
-        {
-            get;
-            set;
-        }
+       [D2OField("characteristic")]
+       [Property("Characteristic")]
+       public int Characteristic
+       {
+           get;
+           set;
+       }
 
-        [Property("Operator")]
-        public string Operator
-        {
-            get;
-            set;
-        }
+       [D2OField("category")]
+       [Property("Category")]
+       public uint Category
+       {
+           get;
+           set;
+       }
 
-        [Property("ShowInToolTip")]
-        public bool ShowInToolTip
-        {
-            get;
-            set;
-        }
+       [D2OField("operator")]
+       [Property("Operator")]
+       public String Operator
+       {
+           get;
+           set;
+       }
 
-        [Property("UseDice")]
-        public bool UseDice
-        {
-            get;
-            set;
-        }
+       [D2OField("showInTooltip")]
+       [Property("ShowInTooltip")]
+       public Boolean ShowInTooltip
+       {
+           get;
+           set;
+       }
 
-        [Property("ForceMinMax")]
-        public bool ForceMinMax
-        {
-            get;
-            set;
-        }
+       [D2OField("useDice")]
+       [Property("UseDice")]
+       public Boolean UseDice
+       {
+           get;
+           set;
+       }
 
-        [Property("ShowInSet")]
-        public bool ShowInSet
-        {
-            get;
-            set;
-        }
+       [D2OField("forceMinMax")]
+       [Property("ForceMinMax")]
+       public Boolean ForceMinMax
+       {
+           get;
+           set;
+       }
 
-        [Property("BonusType")]
-        public int BonusType
-        {
-            get;
-            set;
-        }
+       [D2OField("showInSet")]
+       [Property("ShowInSet")]
+       public Boolean ShowInSet
+       {
+           get;
+           set;
+       }
+
+       [D2OField("bonusType")]
+       [Property("BonusType")]
+       public int BonusType
+       {
+           get;
+           set;
+       }
+
     }
 }

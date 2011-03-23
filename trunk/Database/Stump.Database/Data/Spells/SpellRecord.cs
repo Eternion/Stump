@@ -1,108 +1,105 @@
-﻿// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
 using System;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.DofusProtocol.D2oClasses.Tool;
 
 namespace Stump.Database.Data.Spells
 {
     [Serializable]
-    [ActiveRecord("spells")]
+    [ActiveRecord("spell")]
     [AttributeAssociatedFile("Spells")]
+    [D2OClass("Spell", "com.ankamagames.dofus.datacenter.spells")]
     public sealed class SpellRecord : DataBaseRecord<SpellRecord>
     {
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
-        public int Id
-        {
-            get;
-            set;
-        }
 
-        [Property("NameId")]
-        public uint NameId
-        {
-            get;
-            set;
-        }
+       [D2OField("id")]
+       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+       public int Id
+       {
+           get;
+           set;
+       }
 
-        [Property("DescriptionId")]
-        public uint DescriptionId
-        {
-            get;
-            set;
-        }
+       [D2OField("nameId")]
+       [Property("NameId")]
+       public uint NameId
+       {
+           get;
+           set;
+       }
 
-        [Property("TypeId")]
-        public uint TypeId
-        {
-            get;
-            set;
-        }
+       [D2OField("descriptionId")]
+       [Property("DescriptionId")]
+       public uint DescriptionId
+       {
+           get;
+           set;
+       }
 
-        [Property("ScriptParams")]
-        public string ScriptParams
-        {
-            get;
-            set;
-        }
+       [D2OField("typeId")]
+       [Property("TypeId")]
+       public uint TypeId
+       {
+           get;
+           set;
+       }
 
-        [Property("ScriptParamsCritical")]
-        public string ScriptParamsCritical
-        {
-            get;
-            set;
-        }
+       [D2OField("scriptParams")]
+       [Property("ScriptParams")]
+       public String ScriptParams
+       {
+           get;
+           set;
+       }
 
-        [Property("ScripId")]
-        public int ScriptId
-        {
-            get;
-            set;
-        }
+       [D2OField("scriptParamsCritical")]
+       [Property("ScriptParamsCritical")]
+       public String ScriptParamsCritical
+       {
+           get;
+           set;
+       }
 
-        [Property("ScriptIdCritical")]
-        public int ScriptIdCritical
-        {
-            get;
-            set;
-        }
+       [D2OField("scriptId")]
+       [Property("ScriptId")]
+       public int ScriptId
+       {
+           get;
+           set;
+       }
 
-        [Property("IconId")]
-        public uint IconId
-        {
-            get;
-            set;
-        }
+       [D2OField("scriptIdCritical")]
+       [Property("ScriptIdCritical")]
+       public int ScriptIdCritical
+       {
+           get;
+           set;
+       }
 
-        [Property("SpellLevel", ColumnType = "Serializable")]
-        public List<uint> SpellLevel
-        {
-            get;
-            set;
-        }
+       [D2OField("iconId")]
+       [Property("IconId")]
+       public uint IconId
+       {
+           get;
+           set;
+       }
 
-        [Property("UseParamCache")]
-        public bool UseParamCache
-        {
-            get;
-            set;
-        }
+       [D2OField("spellLevels")]
+       [Property("SpellLevels", ColumnType="Serializable")]
+       public List<uint> SpellLevels
+       {
+           get;
+           set;
+       }
+
+       [D2OField("useParamCache")]
+       [Property("UseParamCache")]
+       public Boolean UseParamCache
+       {
+           get;
+           set;
+       }
+
     }
 }

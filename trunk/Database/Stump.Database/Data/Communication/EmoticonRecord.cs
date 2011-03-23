@@ -1,95 +1,89 @@
-﻿// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.DofusProtocol.D2oClasses.Tool;
 
 namespace Stump.Database.Data.Communication
 {
     [Serializable]
-    [ActiveRecord("emoticons")]
+    [ActiveRecord("emoticon")]
     [AttributeAssociatedFile("Emoticons")]
+    [D2OClass("Emoticon", "com.ankamagames.dofus.datacenter.communication")]
     public sealed class EmoticonRecord : DataBaseRecord<EmoticonRecord>
     {
 
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
-        public uint Id
-        {
-            get;
-            set;
-        }
+       [D2OField("id")]
+       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+       public uint Id
+       {
+           get;
+           set;
+       }
 
-        [Property("NameId")]
-        public uint NameId
-        {
-            get;
-            set;
-        }
+       [D2OField("nameId")]
+       [Property("NameId")]
+       public uint NameId
+       {
+           get;
+           set;
+       }
 
-        [Property("ShortcutId")]
-        public uint ShortcutId
-        {
-            get;
-            set;
-        }
+       [D2OField("shortcutId")]
+       [Property("ShortcutId")]
+       public uint ShortcutId
+       {
+           get;
+           set;
+       }
 
-        [Property("DefaultAnim")]
-        public string DefaultAnim
-        {
-            get;
-            set;
-        }
+       [D2OField("defaultAnim")]
+       [Property("DefaultAnim")]
+       public String DefaultAnim
+       {
+           get;
+           set;
+       }
 
-        [Property("Instant")]
-        public bool Instant
-        {
-            get;
-            set;
-        }
+       [D2OField("instant")]
+       [Property("Instant")]
+       public Boolean Instant
+       {
+           get;
+           set;
+       }
 
-        [Property("EightDirections")]
-        public bool EightDirections
-        {
-            get;
-            set;
-        }
+       [D2OField("eight_directions")]
+       [Property("Eightdirections")]
+       public Boolean Eightdirections
+       {
+           get;
+           set;
+       }
 
-        [Property("Aura")]
-        public bool Aura
-        {
-            get;
-            set;
-        }
+       [D2OField("aura")]
+       [Property("Aura")]
+       public Boolean Aura
+       {
+           get;
+           set;
+       }
 
-        [Property("Anims",ColumnType="Serializable")]
-        public List<string> Anims
-        {
-            get;
-            set;
-        }
+       [D2OField("anims")]
+       [Property("Anims", ColumnType="Serializable")]
+       public List<String> Anims
+       {
+           get;
+           set;
+       }
 
-        [Property("Cooldown")]
-        public uint Cooldown
-        {
-            get;
-            set;
-        }
+       [D2OField("cooldown")]
+       [Property("Cooldown")]
+       public uint Cooldown
+       {
+           get;
+           set;
+       }
+
     }
 }

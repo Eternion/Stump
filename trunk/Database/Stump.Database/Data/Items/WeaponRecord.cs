@@ -1,102 +1,88 @@
-﻿// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
 using System;
 using Castle.ActiveRecord;
+using Stump.Database.Types;
+using Stump.DofusProtocol.D2oClasses.Tool;
 
 namespace Stump.Database.Data.Items
 {
     [Serializable]
-    [ActiveRecord("weapons")]
-    //[AttributeAssociatedFile("Weapon")]
-    public sealed class WeaponRecord :ItemRecord
+    [ActiveRecord("weapon")]
+    [AttributeAssociatedFile()]
+    [D2OClass("Weapon", "com.ankamagames.dofus.datacenter.items")]
+    public sealed class WeaponRecord : DataBaseRecord<WeaponRecord>
     {
-        [JoinedKey("ItemGuid")]
-        private long ItemGuid { get; set; }
 
-        [Property("ApCost")]
-        public int ApCost
-        {
-            get;
-            set;
-        }
+       [D2OField("apCost")]
+       [Property("ApCost")]
+       public int ApCost
+       {
+           get;
+           set;
+       }
 
-        [Property("MinRange")]
-        public int MinRange
-        {
-            get;
-            set;
-        }
+       [D2OField("minRange")]
+       [Property("MinRange")]
+       public int MinRange
+       {
+           get;
+           set;
+       }
 
-        [Property("WeaponRange")]
-        public int WeaponRange
-        {
-            get;
-            set;
-        }
+       [D2OField("range")]
+       [Property("Range")]
+       public int Range
+       {
+           get;
+           set;
+       }
 
-        [Property("CastInLine")]
-        public bool CastInLine
-        {
-            get;
-            set;
-        }
+       [D2OField("castInLine")]
+       [Property("CastInLine")]
+       public Boolean CastInLine
+       {
+           get;
+           set;
+       }
 
-        [Property("CastInDiagonal")]
-        public bool CastInDiagonal
-        {
-            get;
-            set;
-        }
+       [D2OField("castInDiagonal")]
+       [Property("CastInDiagonal")]
+       public Boolean CastInDiagonal
+       {
+           get;
+           set;
+       }
 
-        [Property("CastTestLos")]
-        public bool CastTestLos
-        {
-            get;
-            set;
-        }
+       [D2OField("castTestLos")]
+       [Property("CastTestLos")]
+       public Boolean CastTestLos
+       {
+           get;
+           set;
+       }
 
-        [Property("CriticalHitProbability")]
-        public int CriticalHitProbability
-        {
-            get;
-            set;
-        }
+       [D2OField("criticalHitProbability")]
+       [Property("CriticalHitProbability")]
+       public int CriticalHitProbability
+       {
+           get;
+           set;
+       }
 
-        [Property("CriticalHitBonus")]
-        public int CriticalHitBonus
-        {
-            get;
-            set;
-        }
+       [D2OField("criticalHitBonus")]
+       [Property("CriticalHitBonus")]
+       public int CriticalHitBonus
+       {
+           get;
+           set;
+       }
 
-        [Property("CriticalFailureProbability")]
-        public int CriticalFailureProbability
-        {
-            get;
-            set;
-        }
+       [D2OField("criticalFailureProbability")]
+       [Property("CriticalFailureProbability")]
+       public int CriticalFailureProbability
+       {
+           get;
+           set;
+       }
 
-        [Property("Hidden")]
-        public bool Hidden
-        {
-            get;
-            set;
-        }
     }
 }

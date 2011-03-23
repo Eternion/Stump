@@ -1,193 +1,210 @@
-﻿// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
 using System;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.Database.Data.Effects.instances;
 using Stump.Database.Types;
+using Stump.DofusProtocol.D2oClasses.Tool;
 
 namespace Stump.Database.Data.Spells
 {
     [Serializable]
-    [ActiveRecord("spell_levels")]
+    [ActiveRecord("spell_level")]
     [AttributeAssociatedFile("SpellLevels")]
+    [D2OClass("SpellLevel", "com.ankamagames.dofus.datacenter.spells")]
     public sealed class SpellLevelRecord : DataBaseRecord<SpellLevelRecord>
     {
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
-        public uint Id
-        {
-            get;
-            set;
-        }
 
-        [Property("SpellId")]
-        public uint SpellId
-        {
-            get;
-            set;
-        }
+       [D2OField("maxCastPerTarget")]
+       [Property("MaxCastPerTarget")]
+       public uint MaxCastPerTarget
+       {
+           get;
+           set;
+       }
 
-        [Property("SpellBreed")]
-        public uint SpellBreed
-        {
-            get;
-            set;
-        }
+       [D2OField("minCastInterval")]
+       [Property("MinCastInterval")]
+       public uint MinCastInterval
+       {
+           get;
+           set;
+       }
 
-        [Property("ApCost")]
-        public uint ApCost
-        {
-            get;
-            set;
-        }
+       [D2OField("minPlayerLevel")]
+       [Property("MinPlayerLevel")]
+       public uint MinPlayerLevel
+       {
+           get;
+           set;
+       }
 
-        [Property("MinRange")]
-        public uint MinRange
-        {
-            get;
-            set;
-        }
+       [D2OField("criticalFailureEndsTurn")]
+       [Property("CriticalFailureEndsTurn")]
+       public Boolean CriticalFailureEndsTurn
+       {
+           get;
+           set;
+       }
 
-        [Property("CastInLine")]
-        public bool CastInLine
-        {
-            get;
-            set;
-        }
+       [D2OField("hideEffects")]
+       [Property("HideEffects")]
+       public Boolean HideEffects
+       {
+           get;
+           set;
+       }
 
-        [Property("CastInDiagonal")]
-        public bool CastInDiagonal
-        {
-            get;
-            set;
-        }
+       [D2OField("minRange")]
+       [Property("MinRange")]
+       public uint MinRange
+       {
+           get;
+           set;
+       }
 
-        [Property("CastTestLos")]
-        public bool CastTestLos
-        {
-            get;
-            set;
-        }
+       [D2OField("statesForbidden")]
+       [Property("StatesForbidden", ColumnType="Serializable")]
+       public List<int> StatesForbidden
+       {
+           get;
+           set;
+       }
 
-        [Property("CriticalHitProbability")]
-        public uint CriticalHitProbability
-        {
-            get;
-            set;
-        }
+       [D2OField("effects")]
+       [Property("Effects", ColumnType="Serializable")]
+       public List<EffectInstanceDice> Effects
+       {
+           get;
+           set;
+       }
 
-        [Property("CriticalFailureProbability")]
-        public uint CriticalFailureProbability
-        {
-            get;
-            set;
-        }
+       [D2OField("criticalEffect")]
+       [Property("CriticalEffect", ColumnType="Serializable")]
+       public List<EffectInstanceDice> CriticalEffect
+       {
+           get;
+           set;
+       }
 
-        [Property("NeedFreeCell")]
-        public bool NeedFreeCell
-        {
-            get;
-            set;
-        }
+       [D2OField("id")]
+       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+       public uint Id
+       {
+           get;
+           set;
+       }
 
-        [Property("NeedFreeTrapCell")]
-        public bool NeedFreeTrapCell
-        {
-            get;
-            set;
-        }
+       [D2OField("spellId")]
+       [Property("SpellId")]
+       public uint SpellId
+       {
+           get;
+           set;
+       }
 
-        [Property("RangeCanBeBoosted")]
-        public bool RangeCanBeBoosted
-        {
-            get;
-            set;
-        }
+       [D2OField("spellBreed")]
+       [Property("SpellBreed")]
+       public uint SpellBreed
+       {
+           get;
+           set;
+       }
 
-        [Property("MaxCastPerTurn")]
-        public uint MaxCastPerTurn
-        {
-            get;
-            set;
-        }
+       [D2OField("apCost")]
+       [Property("ApCost")]
+       public uint ApCost
+       {
+           get;
+           set;
+       }
 
-        [Property("MaxCastPerTarget")]
-        public uint MaxCastPerTarget
-        {
-            get;
-            set;
-        }
+       [D2OField("range")]
+       [Property("Range")]
+       public uint Range
+       {
+           get;
+           set;
+       }
 
-        [Property("MinCastInterval")]
-        public uint MinCastInterval
-        {
-            get;
-            set;
-        }
+       [D2OField("castInLine")]
+       [Property("CastInLine")]
+       public Boolean CastInLine
+       {
+           get;
+           set;
+       }
 
-        [Property("MinPlayerLevel")]
-        public uint MinPlayerLevel
-        {
-            get;
-            set;
-        }
+       [D2OField("castInDiagonal")]
+       [Property("CastInDiagonal")]
+       public Boolean CastInDiagonal
+       {
+           get;
+           set;
+       }
 
-        [Property("CriticalFailureEndsTurn")]
-        public bool CriticalFailureEndsTurn
-        {
-            get;
-            set;
-        }
+       [D2OField("castTestLos")]
+       [Property("CastTestLos")]
+       public Boolean CastTestLos
+       {
+           get;
+           set;
+       }
 
-        [Property("StatesRequired", ColumnType = "Serializable")]
-        public List<int> StatesRequired
-        {
-            get;
-            set;
-        }
+       [D2OField("criticalHitProbability")]
+       [Property("CriticalHitProbability")]
+       public uint CriticalHitProbability
+       {
+           get;
+           set;
+       }
 
-        [Property("StatesForbidden", ColumnType = "Serializable")]
-        public List<int> StatesForbidden
-        {
-            get;
-            set;
-        }
+       [D2OField("statesRequired")]
+       [Property("StatesRequired", ColumnType="Serializable")]
+       public List<int> StatesRequired
+       {
+           get;
+           set;
+       }
 
-        [Property("Effects", ColumnType = "Serializable")]
-        public List<EffectInstanceDice> Effects
-        {
-            get;
-            set;
-        }
+       [D2OField("criticalFailureProbability")]
+       [Property("CriticalFailureProbability")]
+       public uint CriticalFailureProbability
+       {
+           get;
+           set;
+       }
 
-        [Property("CriticalEffect", ColumnType = "Serializable")]
-        public List<EffectInstanceDice> CriticalEffect
-        {
-            get;
-            set;
-        }
+       [D2OField("needFreeCell")]
+       [Property("NeedFreeCell")]
+       public Boolean NeedFreeCell
+       {
+           get;
+           set;
+       }
 
-        [Property("HideEffects")]
-        public bool HideEffects
-        {
-            get;
-            set;
-        }
+       [D2OField("needFreeTrapCell")]
+       [Property("NeedFreeTrapCell")]
+       public Boolean NeedFreeTrapCell
+       {
+           get;
+           set;
+       }
+
+       [D2OField("rangeCanBeBoosted")]
+       [Property("RangeCanBeBoosted")]
+       public Boolean RangeCanBeBoosted
+       {
+           get;
+           set;
+       }
+
+       [D2OField("maxCastPerTurn")]
+       [Property("MaxCastPerTurn")]
+       public uint MaxCastPerTurn
+       {
+           get;
+           set;
+       }
+
     }
 }

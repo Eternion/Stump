@@ -29,6 +29,7 @@ namespace Stump.Tools.UtilityBot.FileParser
     {
         private readonly Dictionary<string, string> AfterParsingReplacementRules = new Dictionary<string, string>
             {
+                {@"com\.(?:[\w_]+\.)*(\w+)(\b|\s)", @"$1$2"},
                 {@"var (\w+) = null;", "object $1 = null;"},
                 {@"new List<(\w+)>\((\w+), (?:true|false)\);", @"new List<$1>($2);"},
             };
@@ -38,7 +39,6 @@ namespace Stump.Tools.UtilityBot.FileParser
             {
                 {@"__AS3__\.vec\.Vector\.", @"List"},
                 {@"\.length", @".Count"},
-                {@"com\.(?:[\w_]+\.)*(\w+)(\b|\s)", @"$1$2"},
                 {@"\(\s*([\w\.]+)\[(\w+)\] as (\w+)\s*\)", @"$1[$2]"},
             };
 
@@ -162,7 +162,7 @@ namespace Stump.Tools.UtilityBot.FileParser
             set;
         }
 
-        public void ParseFile()
+        public void ParseFile(bool ignoreMethods=false)
         {
             m_fileText = ExecuteBeforeParsingReplacement(m_fileText);
             m_fileLines = m_fileText.Split(new[] {"\r\n"}, StringSplitOptions.RemoveEmptyEntries);
@@ -171,6 +171,7 @@ namespace Stump.Tools.UtilityBot.FileParser
                 {
                     Name = ExecuteNameReplacement(GetMatch(@"public class (\w+)\s")),
                     Heritage = ExecuteNameReplacement(GetMatch(@"extends (?:[\w_]+\.)*(\w+)")),
+                    Namespace = ExecuteNameReplacement(GetMatch(@"package ([\w\.]+)")),
                     AccessModifier = AccessModifiers.PUBLIC,
                     // we don't mind about this
                     ClassModifier = ClassInfo.ClassModifiers.NONE
@@ -184,7 +185,8 @@ namespace Stump.Tools.UtilityBot.FileParser
 
             ParseFields();
 
-            ParseMethods();
+            if (!ignoreMethods)
+                ParseMethods();
         }
 
         private void ParseConstructor()

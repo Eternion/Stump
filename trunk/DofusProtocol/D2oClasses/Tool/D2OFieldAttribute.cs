@@ -1,6 +1,6 @@
 using System;
 
-namespace Stump.Server.DataProvider.Data.D2oTool
+namespace Stump.DofusProtocol.D2oClasses.Tool
 {
     public class D2OFieldAttribute : Attribute
     {

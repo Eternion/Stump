@@ -111,6 +111,7 @@
   <ItemGroup>
     <Compile Include="Custom\AcquaintanceErrorEnum.cs" />
     <Compile Include="Custom\ActionsEnum.cs" />
+    <Compile Include="Custom\CaracteristicBoostEnum.cs" />
     <Compile Include="Custom\ChannelId.cs" />
     <Compile Include="Custom\ContinentIdEnum.cs" />
     <Compile Include="Custom\MountBehaviorEnum.cs" />
@@ -128,7 +129,6 @@
     <Compile Include="Custom\RegionIdEnum.cs" />
     <Compile Include="Custom\RoleEnum.cs" />
     <Compile Include="Custom\SexTypeEnum.cs" />
-    <Compile Include="Custom\CaracteristicsIdEnum.cs" />
     <Compile Include="Custom\SpellIdEnum.cs" />
     <Compile Include="Custom\SpellStatesEnum.cs" />
     <Compile Include="Custom\SpellTypesEnum.cs" />

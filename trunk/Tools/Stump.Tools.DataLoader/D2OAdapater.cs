@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.Server.DataProvider.Data.D2oTool;
+using Stump.DofusProtocol.D2oClasses.Tool;
 
 namespace Stump.Tools.DataLoader
 {

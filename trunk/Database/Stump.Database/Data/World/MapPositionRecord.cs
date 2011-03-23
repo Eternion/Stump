@@ -1,95 +1,90 @@
-﻿// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
 using System;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
-using Stump.Database.Data.AmbientSounds;
 using Stump.Database.Types;
+using Stump.DofusProtocol.D2oClasses.Classes.ambientSounds;
+using Stump.DofusProtocol.D2oClasses.Tool;
 
 namespace Stump.Database.Data.World
 {
     [Serializable]
-    [ActiveRecord("map_positions")]
+    [ActiveRecord("map_position")]
     [AttributeAssociatedFile("MapPositions")]
+    [D2OClass("MapPosition", "com.ankamagames.dofus.datacenter.world")]
     public sealed class MapPositionRecord : DataBaseRecord<MapPositionRecord>
     {
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
-        public int Id
-        {
-            get;
-            set;
-        }
 
-        [Property("PosX")]
-        public int PosX
-        {
-            get;
-            set;
-        }
+       [D2OField("id")]
+       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+       public int Id
+       {
+           get;
+           set;
+       }
 
-        [Property("PosY")]
-        public int PosY
-        {
-            get;
-            set;
-        }
+       [D2OField("posX")]
+       [Property("PosX")]
+       public int PosX
+       {
+           get;
+           set;
+       }
 
-        [Property("Sounds")]
-        public List<AmbientSoundRecord> Sounds
-        {
-            get;
-            set;
-        }
+       [D2OField("posY")]
+       [Property("PosY")]
+       public int PosY
+       {
+           get;
+           set;
+       }
 
-        [Property("Capabilities")]
-        public int Capabilities
-        {
-            get;
-            set;
-        }
+       [D2OField("outdoor")]
+       [Property("Outdoor")]
+       public Boolean Outdoor
+       {
+           get;
+           set;
+       }
 
-        [Property("SubAreaId")]
-        public int SubAreaId
-        {
-            get;
-            set;
-        }
+       [D2OField("subAreaId")]
+       [Property("SubAreaId")]
+       public int SubAreaId
+       {
+           get;
+           set;
+       }
 
-        [Property("NameId")]
-        public int NameId
-        {
-            get;
-            set;
-        }
+       [D2OField("capabilities")]
+       [Property("Capabilities")]
+       public int Capabilities
+       {
+           get;
+           set;
+       }
 
-        [Property("WorldMap")]
-        public int WorldMap
-        {
-            get;
-            set;
-        }
+       [D2OField("worldMap")]
+       [Property("WorldMap")]
+       public int WorldMap
+       {
+           get;
+           set;
+       }
 
-        [Property("Outdoor")]
-        public bool Outdoor
-        {
-            get;
-            set;
-        }
+       [D2OField("sounds")]
+       [Property("Sounds", ColumnType="Serializable")]
+       public List<AmbientSound> Sounds
+       {
+           get;
+           set;
+       }
+
+       [D2OField("nameId")]
+       [Property("NameId")]
+       public int NameId
+       {
+           get;
+           set;
+       }
+
     }
 }

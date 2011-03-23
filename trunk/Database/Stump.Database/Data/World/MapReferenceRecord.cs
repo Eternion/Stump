@@ -1,51 +1,40 @@
-﻿// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
 using System;
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.DofusProtocol.D2oClasses.Tool;
 
 namespace Stump.Database.Data.World
 {
     [Serializable]
-    [ActiveRecord("map_references")]
+    [ActiveRecord("map_reference")]
     [AttributeAssociatedFile("MapReferences")]
+    [D2OClass("MapReference", "com.ankamagames.dofus.datacenter.world")]
     public sealed class MapReferenceRecord : DataBaseRecord<MapReferenceRecord>
     {
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
-        public int Id
-        {
-            get;
-            set;
-        }
 
-        [Property("MapId")]
-        public uint MapId
-        {
-            get;
-            set;
-        }
+       [D2OField("id")]
+       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+       public int Id
+       {
+           get;
+           set;
+       }
 
-        [Property("CellId")]
-        public int CellId
-        {
-            get;
-            set;
-        }
+       [D2OField("mapId")]
+       [Property("MapId")]
+       public uint MapId
+       {
+           get;
+           set;
+       }
+
+       [D2OField("cellId")]
+       [Property("CellId")]
+       public int CellId
+       {
+           get;
+           set;
+       }
+
     }
 }

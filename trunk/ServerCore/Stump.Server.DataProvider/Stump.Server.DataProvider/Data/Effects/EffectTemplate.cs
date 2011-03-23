@@ -17,7 +17,7 @@
 //  *
 //  *************************************************************************/
 using Stump.DofusProtocol.Enums;
-using EffectTemplateEx = Stump.DofusProtocol.D2oClasses.Effect;
+using EffectTemplateEx = Stump.DofusProtocol.D2oClasses.Classes.effects.Effect;
 
 namespace Stump.Server.WorldServer.Effects
 {

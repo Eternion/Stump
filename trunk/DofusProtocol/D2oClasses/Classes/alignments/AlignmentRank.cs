@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
-namespace Stump.DofusProtocol.D2oClasses
+using Stump.DofusProtocol.D2oClasses.Tool;
+
+namespace Stump.DofusProtocol.D2oClasses.Classes.alignments
 {
 	
 	[D2OClass("AlignmentRank")]

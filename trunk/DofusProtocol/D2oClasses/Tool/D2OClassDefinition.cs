@@ -17,32 +17,56 @@
 //  *
 //  *************************************************************************/
 using System;
-using Castle.ActiveRecord;
-using Stump.Database.Types;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
-namespace Stump.Database.Data.Monters
+namespace Stump.DofusProtocol.D2oClasses.Tool
 {
-    [Serializable]
-    [ActiveRecord("monster_races")]
-    [AttributeAssociatedFile("MonsterRaces")]
-    public sealed class MonsterRaceRecord : DataBaseRecord<MonsterRaceRecord>
+    [DebuggerDisplay("Name = {Name}")]
+    public class D2OClassDefinition
     {
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+        public D2OClassDefinition(int id, string classname, string packagename, Type classType, IEnumerable<D2OFieldDefinition> fields, long offset)
+        {
+            Id = id;
+            Name = classname;
+            PackageName = packagename;
+            ClassType = classType;
+            Fields = fields.ToDictionary(entry => entry.Name);
+            Offset = offset;
+        }
+
+        public Dictionary<string, D2OFieldDefinition> Fields
+        {
+            get;
+            private set;
+        }
+
         public int Id
         {
             get;
-            set;
+            private set;
         }
 
-        [Property("SuperRaceId")]
-        public int SuperRaceId
+        public string Name
         {
             get;
-            set;
+            private set;
         }
 
-        [Property("NameId")]
-        public uint NameId
+        public string PackageName
+        {
+            get;
+            private set;
+        }
+
+        public Type ClassType
+        {
+            get;
+            private set;
+        }
+
+        internal long Offset
         {
             get;
             set;

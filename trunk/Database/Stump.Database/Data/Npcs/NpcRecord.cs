@@ -1,80 +1,73 @@
-﻿// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.DofusProtocol.D2oClasses.Tool;
 
 namespace Stump.Database.Data.Npcs
 {
     [Serializable]
-    [ActiveRecord("npcs")]
+    [ActiveRecord("npc")]
     [AttributeAssociatedFile("Npcs")]
+    [D2OClass("Npc", "com.ankamagames.dofus.datacenter.npcs")]
     public sealed class NpcRecord : DataBaseRecord<NpcRecord>
     {
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
-        public uint Id
-        {
-            get;
-            set;
-        }
 
-        [Property("NameId")]
-        public uint NameId
-        {
-            get;
-            set;
-        }
+       [D2OField("id")]
+       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+       public int Id
+       {
+           get;
+           set;
+       }
 
-        [Property("DialogMessages", ColumnType="Serializable")]
-        public List<List<int>> DialogMessages
-        {
-            get;
-            set;
-        }
+       [D2OField("nameId")]
+       [Property("NameId")]
+       public uint NameId
+       {
+           get;
+           set;
+       }
 
-        [Property("DialogReplies", ColumnType = "Serializable")]
-        public List<List<int>> DialogReplies
-        {
-            get;
-            set;
-        }
+       [D2OField("dialogMessages")]
+       [Property("DialogMessages", ColumnType="Serializable")]
+       public List<List<int>> DialogMessages
+       {
+           get;
+           set;
+       }
 
-        [Property("Actions", ColumnType = "Serializable")]
-        public List<uint> Actions
-        {
-            get;
-            set;
-        }
+       [D2OField("dialogReplies")]
+       [Property("DialogReplies", ColumnType="Serializable")]
+       public List<List<int>> DialogReplies
+       {
+           get;
+           set;
+       }
 
-        [Property("Gender")]
-        public uint Gender
-        {
-            get;
-            set;
-        }
+       [D2OField("actions")]
+       [Property("Actions", ColumnType="Serializable")]
+       public List<uint> Actions
+       {
+           get;
+           set;
+       }
 
-        [Property("Look")]
-        public string Look
-        {
-            get;
-            set;
-        }
+       [D2OField("gender")]
+       [Property("Gender")]
+       public uint Gender
+       {
+           get;
+           set;
+       }
+
+       [D2OField("look")]
+       [Property("Look")]
+       public String Look
+       {
+           get;
+           set;
+       }
+
     }
 }

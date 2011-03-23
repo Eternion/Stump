@@ -1,86 +1,80 @@
-﻿// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
 using System;
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.DofusProtocol.D2oClasses.Tool;
 
 namespace Stump.Database.Data.Items
 {
     [Serializable]
-    [ActiveRecord("item_types")]
+    [ActiveRecord("item_type")]
     [AttributeAssociatedFile("ItemTypes")]
+    [D2OClass("ItemType", "com.ankamagames.dofus.datacenter.items")]
     public sealed class ItemTypeRecord : DataBaseRecord<ItemTypeRecord>
     {
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
-        public int Id
-        {
-            get;
-            set;
-        }
 
-        [Property("NameId")]
-        public uint NameId
-        {
-            get;
-            set;
-        }
+       [D2OField("id")]
+       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+       public int Id
+       {
+           get;
+           set;
+       }
 
-        [Property("SuperTypeId")]
-        public uint SuperTypeId
-        {
-            get;
-            set;
-        }
+       [D2OField("nameId")]
+       [Property("NameId")]
+       public uint NameId
+       {
+           get;
+           set;
+       }
 
-        [Property("Plural")]
-        public bool Plural
-        {
-            get;
-            set;
-        }
+       [D2OField("superTypeId")]
+       [Property("SuperTypeId")]
+       public uint SuperTypeId
+       {
+           get;
+           set;
+       }
 
-        [Property("Gender")]
-        public uint Gender
-        {
-            get;
-            set;
-        }
+       [D2OField("plural")]
+       [Property("Plural")]
+       public Boolean Plural
+       {
+           get;
+           set;
+       }
 
-        [Property("ZoneSize")]
-        public uint ZoneSize
-        {
-            get;
-            set;
-        }
+       [D2OField("gender")]
+       [Property("Gender")]
+       public uint Gender
+       {
+           get;
+           set;
+       }
 
-        [Property("ZoneShape")]
-        public uint ZoneShape
-        {
-            get;
-            set;
-        }
+       [D2OField("zoneSize")]
+       [Property("ZoneSize")]
+       public uint ZoneSize
+       {
+           get;
+           set;
+       }
 
-        [Property("NeedUseConfirm")]
-        public bool NeedUseConfirm
-        {
-            get;
-            set;
-        }
+       [D2OField("zoneShape")]
+       [Property("ZoneShape")]
+       public uint ZoneShape
+       {
+           get;
+           set;
+       }
+
+       [D2OField("needUseConfirm")]
+       [Property("NeedUseConfirm")]
+       public Boolean NeedUseConfirm
+       {
+           get;
+           set;
+       }
+
     }
 }

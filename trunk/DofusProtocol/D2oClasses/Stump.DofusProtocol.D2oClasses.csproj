@@ -113,7 +113,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="D2OClassAttribute.cs" />
     <Compile Include="Classes\abuse\AbuseReasons.cs" />
     <Compile Include="Classes\alignments\AlignmentBalance.cs" />
     <Compile Include="Classes\alignments\AlignmentEffect.cs" />
@@ -249,8 +248,22 @@
     <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rectangle.cs" />
+    <Compile Include="Tool\D2OClassAttribute.cs" />
+    <Compile Include="Tool\D2OClassDefinition.cs" />
+    <Compile Include="Tool\D2OFieldAttribute.cs" />
+    <Compile Include="Tool\D2oFieldDefinition.cs" />
+    <Compile Include="Tool\D2OFieldType.cs" />
+    <Compile Include="Tool\D2OIgnore.cs" />
+    <Compile Include="Tool\D2OReader.cs" />
+    <Compile Include="Tool\D2OWriter.cs" />
+    <Compile Include="Tool\I18nFile.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\BaseCore\Stump.BaseCore.Framework\Stump.BaseCore.Framework.csproj">
+      <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
+      <Name>Stump.BaseCore.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

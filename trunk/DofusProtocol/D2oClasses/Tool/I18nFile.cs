@@ -23,7 +23,7 @@ using System.IO;
 using System.Linq;
 using Stump.BaseCore.Framework.IO;
 
-namespace Stump.Server.DataProvider.Data.D2oTool
+namespace Stump.DofusProtocol.D2oClasses.Tool
 {
     public class I18NFile : IDisposable
     {

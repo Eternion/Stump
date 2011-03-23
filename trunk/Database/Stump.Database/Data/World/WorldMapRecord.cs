@@ -1,135 +1,136 @@
-﻿// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
-using System;
+﻿using System;
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.DofusProtocol.D2oClasses.Tool;
 
 namespace Stump.Database.Data.World
 {
     [Serializable]
-    [ActiveRecord("world_maps")]
+    [ActiveRecord("world_map")]
     [AttributeAssociatedFile("WorldMaps")]
+    [D2OClass("WorldMap", "com.ankamagames.dofus.datacenter.world")]
     public sealed class WorldMapRecord : DataBaseRecord<WorldMapRecord>
     {
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
-        public int Id
-        {
-            get;
-            set;
-        }
 
-        [Property("OrigineX")]
-        public int OrigineX
-        {
-            get;
-            set;
-        }
+       [D2OField("id")]
+       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+       public int Id
+       {
+           get;
+           set;
+       }
 
-        [Property("OrigineY")]
-        public int OrigineY
-        {
-            get;
-            set;
-        }
+       [D2OField("origineX")]
+       [Property("OrigineX")]
+       public int OrigineX
+       {
+           get;
+           set;
+       }
 
-        [Property("MapWidth")]
-        public double MapWidth
-        {
-            get;
-            set;
-        }
+       [D2OField("origineY")]
+       [Property("OrigineY")]
+       public int OrigineY
+       {
+           get;
+           set;
+       }
 
-        [Property("MapHeight")]
-        public double MapHeight
-        {
-            get;
-            set;
-        }
+       [D2OField("mapWidth")]
+       [Property("MapWidth")]
+       public double MapWidth
+       {
+           get;
+           set;
+       }
 
-        [Property("HorizontalChunck")]
-        public uint HorizontalChunck
-        {
-            get;
-            set;
-        }
+       [D2OField("mapHeight")]
+       [Property("MapHeight")]
+       public double MapHeight
+       {
+           get;
+           set;
+       }
 
-        [Property("VerticalChunck")]
-        public uint VerticalChunck
-        {
-            get;
-            set;
-        }
+       [D2OField("horizontalChunck")]
+       [Property("HorizontalChunck")]
+       public uint HorizontalChunck
+       {
+           get;
+           set;
+       }
 
-        [Property("ViewableEverywhere")]
-        public bool ViewableEverywhere
-        {
-            get;
-            set;
-        }
+       [D2OField("verticalChunck")]
+       [Property("VerticalChunck")]
+       public uint VerticalChunck
+       {
+           get;
+           set;
+       }
 
-        [Property("MinScale")]
-        public double MinScale
-        {
-            get;
-            set;
-        }
+       [D2OField("viewableEverywhere")]
+       [Property("ViewableEverywhere")]
+       public Boolean ViewableEverywhere
+       {
+           get;
+           set;
+       }
 
-        [Property("MaxScale")]
-        public double MaxScale
-        {
-            get;
-            set;
-        }
+       [D2OField("minScale")]
+       [Property("MinScale")]
+       public double MinScale
+       {
+           get;
+           set;
+       }
 
-        [Property("StartScale")]
-        public double StartScale
-        {
-            get;
-            set;
-        }
+       [D2OField("maxScale")]
+       [Property("MaxScale")]
+       public double MaxScale
+       {
+           get;
+           set;
+       }
 
-        [Property("CenterX")]
-        public int CenterX
-        {
-            get;
-            set;
-        }
+       [D2OField("startScale")]
+       [Property("StartScale")]
+       public double StartScale
+       {
+           get;
+           set;
+       }
 
-        [Property("CenterY")]
-        public int CenterY
-        {
-            get;
-            set;
-        }
+       [D2OField("centerX")]
+       [Property("CenterX")]
+       public int CenterX
+       {
+           get;
+           set;
+       }
 
-        [Property("TotalWidth")]
-        public int TotalWidth
-        {
-            get;
-            set;
-        }
+       [D2OField("centerY")]
+       [Property("CenterY")]
+       public int CenterY
+       {
+           get;
+           set;
+       }
 
-        [Property("TotalHeight")]
-        public int TotalHeight
-        {
-            get;
-            set;
-        }
+       [D2OField("totalWidth")]
+       [Property("TotalWidth")]
+       public int TotalWidth
+       {
+           get;
+           set;
+       }
+
+       [D2OField("totalHeight")]
+       [Property("TotalHeight")]
+       public int TotalHeight
+       {
+           get;
+           set;
+       }
+
     }
 }

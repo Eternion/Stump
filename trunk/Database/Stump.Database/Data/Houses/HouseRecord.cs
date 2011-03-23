@@ -1,65 +1,56 @@
-﻿// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
-using System;
+﻿using System;
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.DofusProtocol.D2oClasses.Tool;
 
 namespace Stump.Database.Data.Houses
 {
     [Serializable]
-    [ActiveRecord("houses")]
+    [ActiveRecord("house")]
     [AttributeAssociatedFile("Houses")]
+    [D2OClass("House", "com.ankamagames.dofus.datacenter.houses")]
     public sealed class HouseRecord : DataBaseRecord<HouseRecord>
     {
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
-        public int Id
-        {
-            get;
-            set;
-        }
 
-        [Property("DefaultPrice")]
-        public uint DefaultPrice
-        {
-            get;
-            set;
-        }
+       [D2OField("typeId")]
+       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+       public int Id
+       {
+           get;
+           set;
+       }
 
-        [Property("NameId")]
-        public int NameId
-        {
-            get;
-            set;
-        }
+       [D2OField("defaultPrice")]
+       [Property("DefaultPrice")]
+       public uint DefaultPrice
+       {
+           get;
+           set;
+       }
 
-        [Property("DescriptionId")]
-        public int DescriptionId
-        {
-            get;
-            set;
-        }
+       [D2OField("nameId")]
+       [Property("NameId")]
+       public int NameId
+       {
+           get;
+           set;
+       }
 
-        [Property("GfxId")]
-        public int GfxId
-        {
-            get;
-            set;
-        }
+       [D2OField("descriptionId")]
+       [Property("DescriptionId")]
+       public int DescriptionId
+       {
+           get;
+           set;
+       }
+
+       [D2OField("gfxId")]
+       [Property("GfxId")]
+       public int GfxId
+       {
+           get;
+           set;
+       }
+
     }
 }

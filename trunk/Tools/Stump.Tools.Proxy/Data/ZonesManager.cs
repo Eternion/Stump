@@ -21,6 +21,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Classes.world;
 using Stump.Server.BaseServer.Data;
 
 namespace Stump.Tools.Proxy.Data

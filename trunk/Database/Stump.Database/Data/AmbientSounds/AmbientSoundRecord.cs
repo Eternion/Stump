@@ -1,73 +1,64 @@
-﻿// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
 using System;
 using Castle.ActiveRecord;
 using Stump.Database.Types;
+using Stump.DofusProtocol.D2oClasses.Tool;
 
 namespace Stump.Database.Data.AmbientSounds
 {
     [Serializable]
-    [ActiveRecord("ambient_sounds")]
+    [ActiveRecord("ambient_sound")]
     [AttributeAssociatedFile("AmbientSounds")]
+    [D2OClass("AmbientSound", "com.ankamagames.dofus.datacenter.ambientSounds")]
     public sealed class AmbientSoundRecord : DataBaseRecord<AmbientSoundRecord>
     {
 
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
-        public int Id
-        {
-            get;
-            set;
-        }
+       [D2OField("id")]
+       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+       public int Id
+       {
+           get;
+           set;
+       }
 
-        [Property("Volume")]
-        public uint Volume
-        {
-            get; 
-            set;
-        }
+       [D2OField("volume")]
+       [Property("Volume")]
+       public uint Volume
+       {
+           get;
+           set;
+       }
 
-        [Property("CriterionId")]
-        public int CriterionId
-        {
-            get;
-            set;
-        }
+       [D2OField("criterionId")]
+       [Property("CriterionId")]
+       public int CriterionId
+       {
+           get;
+           set;
+       }
 
-        [Property("SilenceMin")]
-        public uint SilenceMin
-        {
-            get;
-            set;
-        }
+       [D2OField("silenceMin")]
+       [Property("SilenceMin")]
+       public uint SilenceMin
+       {
+           get;
+           set;
+       }
 
-        [Property("SilenceMax")]
-        public uint SilenceMax
-        {
-            get;
-            set;
-        }
+       [D2OField("silenceMax")]
+       [Property("SilenceMax")]
+       public uint SilenceMax
+       {
+           get;
+           set;
+       }
 
-        [Property("Channel")]
-        public int Channel
-        {
-            get;
-            set;
-        }
+       [D2OField("channel")]
+       [Property("Channel")]
+       public int Channel
+       {
+           get;
+           set;
+       }
+
     }
 }

@@ -23,6 +23,17 @@ namespace Stump.BaseCore.Framework.Extensions
 {
     public static class StringExtensions
     {
+        public static string ToUpperFirstLetter(this string source)
+        {
+            if (string.IsNullOrEmpty(source))
+                return string.Empty;
+
+            char[] letters = source.ToCharArray();
+            letters[0] = char.ToUpper(letters[0]);
+
+            return new string(letters);
+        }
+
         public static string RandomString(this Random random, int size)
         {
             var builder = new StringBuilder();

@@ -1,193 +1,242 @@
-﻿// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.Database.Data.Effects;
 using Stump.Database.Types;
+using Stump.DofusProtocol.D2oClasses.Tool;
 
 namespace Stump.Database.Data.Items
 {
     [Serializable]
-    [ActiveRecord("items"), JoinedBase]
+    [ActiveRecord("item")]
     [AttributeAssociatedFile("Items")]
-    public class ItemRecord : DataBaseRecord<ItemRecord>
+    [D2OClass("Item", "com.ankamagames.dofus.datacenter.items")]
+    public sealed class ItemRecord : DataBaseRecord<ItemRecord>
     {
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
-        public int Id
-        {
-            get;
-            set;
-        }
 
-        [Property("NameId")]
-        public uint NameId
-        {
-            get;
-            set;
-        }
+       [D2OField("CONSUMABLES_CATEGORY")]
+       [Property("CONSUMABLESCATEGORY")]
+       public uint CONSUMABLESCATEGORY
+       {
+           get;
+           set;
+       }
 
-        [Property("TypeId")]
-        public int TypeId
-        {
-            get;
-            set;
-        }
+       [D2OField("EQUIPEMENT_CATEGORY")]
+       [Property("EQUIPEMENTCATEGORY")]
+       public uint EQUIPEMENTCATEGORY
+       {
+           get;
+           set;
+       }
 
-        [Property("DescriptionId")]
-        public uint DescriptionId
-        {
-            get;
-            set;
-        }
+       [D2OField("RESSOURCES_CATEGORY")]
+       [Property("RESSOURCESCATEGORY")]
+       public uint RESSOURCESCATEGORY
+       {
+           get;
+           set;
+       }
 
-        [Property("IconId")]
-        public int IconId
-        {
-            get;
-            set;
-        }
+       [D2OField("QUEST_CATEGORY")]
+       [Property("QUESTCATEGORY")]
+       public uint QUESTCATEGORY
+       {
+           get;
+           set;
+       }
 
-        [Property("Level")]
-        public int Level
-        {
-            get;
-            set;
-        }
+       [D2OField("OTHER_CATEGORY")]
+       [Property("OTHERCATEGORY")]
+       public uint OTHERCATEGORY
+       {
+           get;
+           set;
+       }
 
-        [Property("Weight")]
-        public int Weight
-        {
-            get;
-            set;
-        }
+       [D2OField("weight")]
+       [Property("Weight")]
+       public uint Weight
+       {
+           get;
+           set;
+       }
 
-        [Property("Cursed")]
-        public bool Cursed
-        {
-            get;
-            set;
-        }
+       [D2OField("id")]
+       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+       public int Id
+       {
+           get;
+           set;
+       }
 
-        [Property("UseAnimationId")]
-        public int UseAnimationId
-        {
-            get;
-            set;
-        }
+       [D2OField("nameId")]
+       [Property("NameId")]
+       public uint NameId
+       {
+           get;
+           set;
+       }
 
-        [Property("Usable")]
-        public bool Usable
-        {
-            get;
-            set;
-        }
+       [D2OField("typeId")]
+       [Property("TypeId")]
+       public uint TypeId
+       {
+           get;
+           set;
+       }
 
-        [Property("Targetable")]
-        public bool Targetable
-        {
-            get;
-            set;
-        }
+       [D2OField("descriptionId")]
+       [Property("DescriptionId")]
+       public uint DescriptionId
+       {
+           get;
+           set;
+       }
 
-        [Property("Price")]
-        public int Price
-        {
-            get;
-            set;
-        }
+       [D2OField("iconId")]
+       [Property("IconId")]
+       public uint IconId
+       {
+           get;
+           set;
+       }
 
-        [Property("TwoHanded")]
-        public bool TwoHanded
-        {
-            get;
-            set;
-        }
+       [D2OField("level")]
+       [Property("Level")]
+       public uint Level
+       {
+           get;
+           set;
+       }
 
-        [Property("Etheral")]
-        public bool Etheral
-        {
-            get;
-            set;
-        }
+       [D2OField("cursed")]
+       [Property("Cursed")]
+       public Boolean Cursed
+       {
+           get;
+           set;
+       }
 
-        [Property("ItemSetId")]
-        public int ItemSetId
-        {
-            get;
-            set;
-        }
+       [D2OField("useAnimationId")]
+       [Property("UseAnimationId")]
+       public int UseAnimationId
+       {
+           get;
+           set;
+       }
 
-        [Property("Criteria")]
-        public string Criteria
-        {
-            get;
-            set;
-        }
+       [D2OField("usable")]
+       [Property("Usable")]
+       public Boolean Usable
+       {
+           get;
+           set;
+       }
 
-        [Property("HideEffects")]
-        public bool HideEffects
-        {
-            get;
-            set;
-        }
+       [D2OField("targetable")]
+       [Property("Targetable")]
+       public Boolean Targetable
+       {
+           get;
+           set;
+       }
 
-        [Property("AppereanceId")]
-        public int AppearanceId
-        {
-            get;
-            set;
-        }
+       [D2OField("price")]
+       [Property("Price")]
+       public uint Price
+       {
+           get;
+           set;
+       }
 
-        [Property("RecipeIds", ColumnType="Serializable")]
-        public List<uint> RecipeIds
-        {
-            get;
-            set;
-        }
+       [D2OField("twoHanded")]
+       [Property("TwoHanded")]
+       public Boolean TwoHanded
+       {
+           get;
+           set;
+       }
 
-        [Property("IsSecret")]
-        public bool IsSecret
-        {
-            get;
-            set;
-        }
+       [D2OField("etheral")]
+       [Property("Etheral")]
+       public Boolean Etheral
+       {
+           get;
+           set;
+       }
 
-        [Property("PossibleEffects", ColumnType = "Serializable")]
-        public List<EffectInstance> PossibleEffects
-        {
-            get;
-            set;
-        }
+       [D2OField("itemSetId")]
+       [Property("ItemSetId")]
+       public int ItemSetId
+       {
+           get;
+           set;
+       }
 
-        [Property("FavoriteSubAreas", ColumnType = "Serializable")]
-        public List<uint> FavoriteSubAreas
-        {
-            get;
-            set;
-        }
+       [D2OField("criteria")]
+       [Property("Criteria")]
+       public String Criteria
+       {
+           get;
+           set;
+       }
 
-        [Property("FavoriteSubAreasBonus")]
-        public int FavoriteSubAreasBonus
-        {
-            get;
-            set;
-        }
+       [D2OField("hideEffects")]
+       [Property("HideEffects")]
+       public Boolean HideEffects
+       {
+           get;
+           set;
+       }
+
+       [D2OField("appearanceId")]
+       [Property("AppearanceId")]
+       public uint AppearanceId
+       {
+           get;
+           set;
+       }
+
+       [D2OField("recipeIds")]
+       [Property("RecipeIds", ColumnType="Serializable")]
+       public List<uint> RecipeIds
+       {
+           get;
+           set;
+       }
+
+       [D2OField("favoriteSubAreas")]
+       [Property("FavoriteSubAreas", ColumnType="Serializable")]
+       public List<uint> FavoriteSubAreas
+       {
+           get;
+           set;
+       }
+
+       [D2OField("bonusIsSecret")]
+       [Property("BonusIsSecret")]
+       public Boolean BonusIsSecret
+       {
+           get;
+           set;
+       }
+
+       [D2OField("possibleEffects")]
+       [Property("PossibleEffects", ColumnType="Serializable")]
+       public List<EffectInstance> PossibleEffects
+       {
+           get;
+           set;
+       }
+
+       [D2OField("favoriteSubAreasBonus")]
+       [Property("FavoriteSubAreasBonus")]
+       public uint FavoriteSubAreasBonus
+       {
+           get;
+           set;
+       }
+
     }
 }
