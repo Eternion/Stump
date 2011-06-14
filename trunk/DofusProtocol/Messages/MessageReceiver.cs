@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
-using Stump.BaseCore.Framework.Reflection;
 using Stump.BaseCore.Framework.IO;
+using Stump.BaseCore.Framework.Reflection;
 
 namespace Stump.DofusProtocol.Messages
 {
@@ -22,29 +22,27 @@ namespace Stump.DofusProtocol.Messages
 
                 foreach (Type type in asm.GetTypes())
                 {
-                    try
+                    var fieldId = type.GetField("Id");
+
+                    if (fieldId != null)
                     {
-                        FieldInfo fi = type.GetField("protocolId");
+                        var id = (uint)fieldId.GetValue(type);
+                        if (Messages.ContainsKey(id))
+                            throw new AmbiguousMatchException(
+                                string.Format(
+                                    "MessageReceiver() => {0} item is already in the dictionary, old type is : {1}, new type is  {2}",
+                                    id, Messages[id], type));
 
-                        if (fi != null)
-                        {
-                            uint id = (uint)fi.GetValue(type);
+                        Messages.Add(id, type);
 
-                            Messages.Add(id, type);
+                        ConstructorInfo ctor = type.GetConstructor(Type.EmptyTypes);
 
-                            var ctor = type.GetConstructor(Type.EmptyTypes);
+                        if (ctor == null)
+                            throw new Exception(
+                                string.Format("'{0}' doesn't implemented a parameterless constructor",
+                                              type));
 
-                            if (ctor == null)
-                                throw new Exception(
-                                    string.Format("'{0}' doesn't implemented a parameterless constructor",
-                                                  type.ToString()));
-
-                            Constructors.Add(id, ctor.CreateDelegate<Message>());
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
+                        Constructors.Add(id, ctor.CreateDelegate<Message>());
                     }
                 }
         }
@@ -59,9 +57,12 @@ namespace Stump.DofusProtocol.Messages
             if (!Messages.ContainsKey(id))
                throw new KeyNotFoundException(string.Format("Message <id:{0}> doesn't exist", id));
 
-            var message = Constructors[id]();
+            Message message = Constructors[id]();
 
-            message.unpack(reader, 0);
+            if (message == null)
+                throw new KeyNotFoundException(string.Format("Constructors[{0}] (delegate {1}) does not exist", id, Messages[id]));
+
+            message.Unpack(reader);
 
             return message;
         }

@@ -1,19 +1,16 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.world
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("Hints")]
-	public class Hint : Object
+	public class Hint
 	{
-		internal const String MODULE = "Hints";
+		private const String MODULE = "Hints";
 		public int id;
 		public uint categoryId;
 		public uint gfx;
 		public uint nameId;
 		public uint mapId;
 		public uint realMapId;
-		
 	}
 }

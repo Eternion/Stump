@@ -1,11 +1,9 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
+using System.Collections.Generic;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.items.criterion
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
-	public class GroupItemCriterion : Object
+	public class GroupItemCriterion
 	{
-		
 	}
 }

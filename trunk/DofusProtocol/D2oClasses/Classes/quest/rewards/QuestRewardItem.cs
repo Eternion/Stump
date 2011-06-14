@@ -1,8 +1,8 @@
-namespace Stump.DofusProtocol.D2oClasses.Classes.quest.rewards
+using System;
+
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	public class QuestRewardItem : QuestReward
 	{
-		
 	}
 }

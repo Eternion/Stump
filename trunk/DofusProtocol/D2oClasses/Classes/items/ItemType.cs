@@ -1,13 +1,11 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.items
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("ItemTypes")]
-	public class ItemType : Object
+	public class ItemType
 	{
-		internal const String MODULE = "ItemTypes";
+		private const String MODULE = "ItemTypes";
 		public int id;
 		public uint nameId;
 		public uint superTypeId;
@@ -16,6 +14,5 @@ namespace Stump.DofusProtocol.D2oClasses.Classes.items
 		public uint zoneSize;
 		public uint zoneShape;
 		public Boolean needUseConfirm;
-		
 	}
 }

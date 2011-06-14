@@ -1,10 +1,8 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.monsters
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
-	public class MonsterGrade : Object
+	public class MonsterGrade
 	{
 		public uint grade;
 		public int monsterId;
@@ -19,6 +17,5 @@ namespace Stump.DofusProtocol.D2oClasses.Classes.monsters
 		public int lifePoints;
 		public int actionPoints;
 		public int movementPoints;
-		
 	}
 }

@@ -1,18 +1,15 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.alignments
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("AlignmentBalance")]
-	public class AlignmentBalance : Object
+	public class AlignmentBalance
 	{
-		internal const String MODULE = "AlignmentBalance";
+		private const String MODULE = "AlignmentBalance";
 		public int id;
 		public int startValue;
 		public int endValue;
 		public uint nameId;
 		public uint descriptionId;
-		
 	}
 }

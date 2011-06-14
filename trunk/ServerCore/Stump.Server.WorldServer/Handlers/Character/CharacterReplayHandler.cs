@@ -1,31 +1,15 @@
-// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
+
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Stump.BaseCore.Framework.Utils;
+using Stump.BaseCore.Framework.IO;
+using Stump.DofusProtocol.Messages.Framework.IO;
+using Stump.Database;
 using Stump.Database.WorldServer;
-using Stump.Database.WorldServer.Character;
 using Stump.DofusProtocol.Classes.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.DataProvider.Data.Breeds;
+using Stump.Server.WorldServer.Breeds;
 
 namespace Stump.Server.WorldServer.Handlers
 {
@@ -41,7 +25,7 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof(CharacterReplayWithRenameRequestMessage))]
         public static void HandleCharacterReplayWithRenameRequestMessage(WorldClient client, CharacterReplayWithRenameRequestMessage message)
         {
-            var character = client.GetCharacterById(message.characterId);
+            var character = client.Characters.Find(o => o.Id == message.characterId);
 
             /* check null */
             if (character == null)
@@ -58,7 +42,7 @@ namespace Stump.Server.WorldServer.Handlers
                 return;
             }
 
-            var characterName = StringUtils.FirstLetterUpper(message.name.ToLower());
+            string characterName = StringExtensions.FirstLetterUpper(message.name.ToLower());
 
             /* Check name */
             if (!Regex.IsMatch(characterName, "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled))
@@ -67,15 +51,15 @@ namespace Stump.Server.WorldServer.Handlers
                 return;
             }
 
-            /* Bind name and save character */
+            /* Bind look and save character */
             character.Name = characterName;
-            character.Update();
+            character.Save();
         }
 
         [WorldHandler(typeof(CharacterReplayWithRecolorRequestMessage))]
         public static void HandleCharacterReplayWithRecolorRequestMessage(WorldClient client, CharacterReplayWithRecolorRequestMessage message)
         {
-            var character = client.GetCharacterById(message.characterId);
+            var character = client.Characters.Find(o => o.Id == message.characterId);
 
             /* check null */
             if (character == null)
@@ -86,26 +70,26 @@ namespace Stump.Server.WorldServer.Handlers
             }
 
             /* Get character Breed */
-            var breedTemplate = BreedTemplateManager.Instance[(PlayableBreedEnum)character.Breed];
+            BaseBreed breed = BreedManager.GetBreed(character.Breed);
 
             /* Parse character colors */
-            var indexedColors = new List<int>(5);
+            var indexedColors = new List<int>();
             for (int i = 0; i < 5; i++)
             {
-                var color = message.indexedColor[i];
+                int color = message.indexedColor[i];
 
                 if (color == -1)
-                    color = (int)(character.Sex == SexTypeEnum.SEX_MALE ? breedTemplate.MaleColors[i] : breedTemplate.FemaleColors[i]);
+                    color = (int)(character.Sex == SexTypeEnum.SEX_MALE ? breed.MaleColors[i] : breed.FemaleColors[i]);
 
                 indexedColors.Add(int.Parse((i + 1) + color.ToString("X6"), NumberStyles.HexNumber));
             }
 
-            var breedLook = character.Sex == SexTypeEnum.SEX_MALE ? breedTemplate.MaleLook.Copy() : breedTemplate.FemaleLook.Copy();
+            var breedLook = character.Sex == SexTypeEnum.SEX_MALE ? breed.MaleLook.Copy() : breed.FemaleLook.Copy();
             breedLook.indexedColors = indexedColors;
 
             /* Bind look and save character */
             character.BaseLook = breedLook;
-            character.Update();
+            character.Save();
         }
 
     }

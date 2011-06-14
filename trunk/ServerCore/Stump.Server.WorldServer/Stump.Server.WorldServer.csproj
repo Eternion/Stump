@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;WORLD_SERVER</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>..\..\Docs\Stump.Server.WorldServer.xml</DocumentationFile>
@@ -61,44 +61,6 @@
     <CodeAnalysisRuleSetDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisRuleDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release 2|AnyCPU'">
-    <OutputPath>bin\Release 2\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Release\Stump.Server.WorldServer.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisRuleDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release 2|x64'">
-    <OutputPath>bin\x64\Release 2\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Release\Stump.Server.WorldServer.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisRuleDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Final|AnyCPU'">
-    <OutputPath>bin\Final\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Final|x64'">
-    <OutputPath>bin\x64\Final\</OutputPath>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.ActiveRecord">
       <HintPath>..\..\Library\Castle.ActiveRecord.dll</HintPath>
@@ -126,80 +88,170 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\ActionBase.cs" />
+    <Compile Include="Actions\ActionsCharacter\ActionTeleport.cs" />
+    <Compile Include="Actions\CellAction.cs" />
+    <Compile Include="Chat\EmotesManager.cs" />
+    <Compile Include="Entities\Actor.cs" />
+    <Compile Include="Breeds\BreedManager.cs" />
     <Compile Include="Commands\Commands\TeleportCommand.cs" />
+    <Compile Include="Data\ThresholdLoader.cs" />
+    <Compile Include="Entities\ActorAlignment.cs" />
+    <Compile Include="Entities\ContextActor.cs" />
+    <Compile Include="Entities\Fight\FightActor.cs" />
+    <Compile Include="Entities\Fight\FightAIActor.cs" />
+    <Compile Include="Entities\Fight\FightCharacter.cs" />
+    <Compile Include="Entities\Fight\FightMonster.cs" />
+    <Compile Include="Entities\Fight\FightMutant.cs" />
+    <Compile Include="Entities\Fight\FightNamedActor.cs" />
+    <Compile Include="Entities\Fight\FightTaxCollector.cs" />
+    <Compile Include="Entities\RolePlay\Actor.Actions.cs" />
+    <Compile Include="Entities\RolePlay\Actor.cs" />
+    <Compile Include="Entities\Character.Events.cs" />
+    <Compile Include="Entities\Characters\Character.cs" />
+    <Compile Include="Entities\Characters\CharacterRestrictions.cs" />
+    <Compile Include="Entities\Characters\Character.Actions.cs" />
+    <Compile Include="Entities\Characters\Character.Fields.cs" />
+    <Compile Include="Entities\Interfaces\IAligned.cs" />
+    <Compile Include="Entities\Interfaces\IAttackable.cs" />
+    <Compile Include="Entities\Interfaces\IExchanger.cs" />
+    <Compile Include="Entities\Interfaces\IInteractive.cs" />
+    <Compile Include="Entities\Interfaces\IInventoryOwner.cs" />
+    <Compile Include="Entities\Interfaces\ISpellsOwner.cs" />
+    <Compile Include="Entities\Interfaces\ITrader.cs" />
+    <Compile Include="Entities\Merchants\Merchant.cs" />
+    <Compile Include="Entities\Monsters\MonsterGroup.cs" />
+    <Compile Include="Entities\Mounts\Mount.cs" />
+    <Compile Include="Entities\NPCs\NPC.cs" />
+    <Compile Include="Entities\Prisms\Prism.cs" />
+    <Compile Include="Entities\RolePlay\Character.Actions.cs" />
+    <Compile Include="Entities\RolePlay\Character.cs" />
+    <Compile Include="Entities\RolePlay\Character.Fields.cs" />
+    <Compile Include="Entities\RolePlay\GroupMonster.cs" />
+    <Compile Include="Entities\RolePlay\Humanoid.cs" />
+    <Compile Include="Entities\RolePlay\Merchant.cs" />
+    <Compile Include="Entities\RolePlay\MonsterInGroup.cs" />
+    <Compile Include="Entities\RolePlay\Mount.cs" />
+    <Compile Include="Entities\RolePlay\Mutant.cs" />
+    <Compile Include="Entities\RolePlay\NamedActor.cs" />
+    <Compile Include="Entities\RolePlay\NPC.cs" />
+    <Compile Include="Entities\RolePlay\Prism.cs" />
+    <Compile Include="Entities\RolePlay\TaxCollector.cs" />
+    <Compile Include="Entities\TaxCollectors\TaxCollector.cs" />
+    <Compile Include="Entities\Title.cs" />
+    <Compile Include="Extensions\CharacterExtension.cs" />
+    <Compile Include="Global\IContext.cs" />
+    <Compile Include="Groups\IGroupMember.cs" />
+    <Compile Include="Guilds\Guild.cs" />
+    <Compile Include="Guilds\GuildEmblem.cs" />
+    <Compile Include="Guilds\GuildMember.cs" />
+    <Compile Include="Helpers\AccountManager.cs" />
+    <Compile Include="Helpers\CharacterManager.cs" />
+    <Compile Include="Helpers\StartupActionManager.cs" />
     <Compile Include="Helpers\WorldAccountManager.cs" />
-    <Compile Include="World\Entities\Actors\Actor.cs" />
-    <Compile Include="World\Entities\ActorAlignment.cs" />
-    <Compile Include="World\Entities\Actors\Actor_Actions.cs" />
-    <Compile Include="World\Entities\Characters\Character.cs" />
-    <Compile Include="World\Entities\Characters\CharacterRestrictions.cs" />
-    <Compile Include="World\Entities\Characters\Character_Actions.cs" />
-    <Compile Include="World\Entities\Characters\Character_Fields.cs" />
-    <Compile Include="World\Guilds\GuildMember.cs" />
-    <Compile Include="World\Guilds\GuildEmblem.cs" />
-    <Compile Include="World\Guilds\Guild.cs" />
-    <Compile Include="World\House\House.cs" />
-    <Compile Include="World\Mount\Paddock.cs" />
-    <Compile Include="World\Stats\Stats.cs" />
-    <Compile Include="World\Stats\Caracteristic.cs" />
-    <Compile Include="World\Entities\Interfaces\ISpellsOwner.cs" />
-    <Compile Include="World\Entities\Interfaces\IAligned.cs" />
-    <Compile Include="World\Storages\New\Equipment.cs" />
-    <Compile Include="World\Storages\New\Storage.cs" />
-    <Compile Include="World\Item\PricedItem.cs" />
-    <Compile Include="World\Storages\SellBag.cs" />
-    <Compile Include="World\Entities\Extensions\CharacterExtension.cs" />
-    <Compile Include="World\Entities\Interfaces\IAttackable.cs" />
-    <Compile Include="World\Entities\Interfaces\IExchanger.cs" />
-    <Compile Include="World\Entities\Interfaces\IInteractive.cs" />
-    <Compile Include="World\Entities\Interfaces\IInventoryOwner.cs" />
-    <Compile Include="World\Entities\Interfaces\ITrader.cs" />
-    <Compile Include="World\Entities\Merchants\Merchant.cs" />
-    <Compile Include="World\Entities\Monsters\MonsterGroup.cs" />
-    <Compile Include="World\Entities\Mounts\Mount.cs" />
-    <Compile Include="World\Entities\NPCs\NPC.cs" />
-    <Compile Include="World\Entities\Prisms\Prism.cs" />
-    <Compile Include="World\Entities\TaxCollectors\TaxCollector.cs" />
-    <Compile Include="World\WorldActors.cs" />
-    <Compile Include="World\WorldZones.cs" />
-    <Compile Include="World\Groups\IGroupMember.cs" />
-    <Compile Include="World\Chat\ChatManager.cs" />
+    <Compile Include="House\House.cs" />
+    <Compile Include="Threshold\ThresholdDictionnary.cs" />
+    <Compile Include="Threshold\ThresholdManager.cs" />
+    <Compile Include="XmlSerialize\ActionSerialized.cs" />
+    <Compile Include="Actions\CharacterAction.cs" />
+    <Compile Include="Actions\InteractiveAction.cs" />
+    <Compile Include="Actions\NpcAction.cs" />
+    <Compile Include="Actions\ActionsNpcs\ActionDialogLeave.cs" />
+    <Compile Include="Actions\ActionsNpcs\ActionDialogQuestion.cs" />
+    <Compile Include="Chat\ChatManager.cs" />
     <Compile Include="Commands\Commands\ItemCommand.cs" />
     <Compile Include="Commands\IInGameTrigger.cs" />
     <Compile Include="Commands\Commands\LookCommand.cs" />
     <Compile Include="Commands\TriggerChat.cs" />
     <Compile Include="Commands\TriggerConsole.cs" />
     <Compile Include="Commands\Commands\WorkerCommands.cs" />
-    <Compile Include="World\Elements\CellTrigger.cs" />
-    <Compile Include="World\Elements\InteractiveObject.cs" />
+    <Compile Include="Data\InteractiveObjectLoader.cs" />
+    <Compile Include="Data\NpcLoader.cs" />
+    <Compile Include="Dialog\Dialoger.cs" />
+    <Compile Include="Global\Elements\CellTrigger.cs" />
+    <Compile Include="Global\Elements\InteractiveObject.cs" />
     <Compile Include="Handlers\Authorized\AuthorizedHandler.cs" />
+    <Compile Include="Items\ItemToSellInNpcShop.cs" />
+    <Compile Include="Npcs\NpcShopDialog.cs" />
+    <Compile Include="Npcs\NpcShopDialoger.cs" />
+    <Compile Include="Npcs\NpcStartActionSerialized.cs" />
+    <Compile Include="Npcs\NpcDialog.cs" />
+    <Compile Include="Npcs\NpcDialoger.cs" />
+    <Compile Include="Npcs\NpcDialogQuestion.cs" />
+    <Compile Include="Npcs\NpcDialogReply.cs" />
+    <Compile Include="Entities\Interfaces\ILocable.cs" />
+    <Compile Include="Entities\Interfaces\ILocableIdentified.cs" />
+    <Compile Include="Entities\Interfaces\ISpawnEntry.cs" />
     <Compile Include="Handlers\Context\RolePlay\ContextRoleplayNpcHandler.cs" />
-    <Compile Include="Helpers\AccountManager.cs" />
-    <Compile Include="Helpers\CharacterManager.cs" />
-    <Compile Include="World\Exchange\PlayerTrade.cs" />
-    <Compile Include="World\Exchange\TradeManager.cs" />
-    <Compile Include="World\Exchange\Trader.cs" />
-    <Compile Include="World\Exchange\TradeRequest.cs" />
-    <Compile Include="World\Fights\Fight.cs" />
-    <Compile Include="World\Fights\FightManager.cs" />
-    <Compile Include="World\Fights\FightRequest.cs" />
-    <Compile Include="World\Fights\TimeLine.cs" />
-    <Compile Include="World\Zones\SuperArea.cs" />
-    <Compile Include="World\Position\MapPoint.cs" />
-    <Compile Include="World\Position\MovementPath.cs" />
-    <Compile Include="World\Position\VectorIsometric.cs" />
-    <Compile Include="World\Zones\Map.cs" />
-    <Compile Include="World\Zones\Area.cs" />
-    <Compile Include="World\WorldSave.cs" />
-    <Compile Include="World\WorldInitialization.cs" />
-    <Compile Include="World\Zones\SubArea.cs" />
-    <Compile Include="World\Groups\FightGroup.cs" />
-    <Compile Include="World\Groups\FightGroupMember.cs" />
-    <Compile Include="World\Groups\Group.cs" />
-    <Compile Include="World\Groups\GroupMember.cs" />
-    <Compile Include="World\Groups\GroupManager.cs" />
-    <Compile Include="World\Groups\MonsterGroup.cs" />
-    <Compile Include="World\Groups\PartyGroup.cs" />
+    <Compile Include="Npcs\NpcManager.cs" />
+    <Compile Include="Entities\NpcSpawn.cs" />
+    <Compile Include="Manager\AccountManager.cs" />
+    <Compile Include="Manager\CharacterManager.cs" />
+    <Compile Include="Data\ItemLoader.cs" />
+    <Compile Include="Data\MonsterLoader.cs" />
+    <Compile Include="Dialog\IDialog.cs" />
+    <Compile Include="Dialog\IDialogRequest.cs" />
+    <Compile Include="Effects\EffectBase.cs" />
+    <Compile Include="Effects\EffectContext.cs" />
+    <Compile Include="Effects\EffectCreature.cs" />
+    <Compile Include="Effects\EffectDate.cs" />
+    <Compile Include="Effects\EffectDice.cs" />
+    <Compile Include="Effects\EffectDuration.cs" />
+    <Compile Include="Effects\EffectHandleAttribute.cs" />
+    <Compile Include="Effects\EffectInteger.cs" />
+    <Compile Include="Effects\EffectLadder.cs" />
+    <Compile Include="Effects\EffectManager.cs" />
+    <Compile Include="Effects\EffectMinMax.cs" />
+    <Compile Include="Effects\EffectMount.cs" />
+    <Compile Include="Effects\EffectString.cs" />
+    <Compile Include="Effects\EffectTemplate.cs" />
+    <Compile Include="Effects\Executor\FightDamage.cs" />
+    <Compile Include="Effects\Executor\FightEffectAttribute.cs" />
+    <Compile Include="Effects\Executor\FightEffectExecutor.cs" />
+    <Compile Include="Entities\Character.cs" />
+    <Compile Include="Entities\Character.Fields.cs" />
+    <Compile Include="Entities\Character.Stats.cs" />
+    <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Entities\Interfaces\IEntityContainer.cs" />
+    <Compile Include="Entities\Interfaces\ILivingEntity.cs" />
+    <Compile Include="Entities\Interfaces\IMovable.cs" />
+    <Compile Include="Entities\Interfaces\INamedEntity.cs" />
+    <Compile Include="Entities\Interfaces\IOwned.cs" />
+    <Compile Include="Entities\LivingEntity.cs" />
+    <Compile Include="Entities\Monster.cs" />
+    <Compile Include="Entities\MonsterGrade.cs" />
+    <Compile Include="Npcs\NpcStartAction.cs" />
+    <Compile Include="Npcs\NpcTemplate.cs" />
+    <Compile Include="Entities\StatsData.cs" />
+    <Compile Include="Entities\StatsFields.cs" />
+    <Compile Include="Entities\StatsHealth.cs" />
+    <Compile Include="Exchange\PlayerTrade.cs" />
+    <Compile Include="Exchange\TradeManager.cs" />
+    <Compile Include="Exchange\Trader.cs" />
+    <Compile Include="Exchange\TradeRequest.cs" />
+    <Compile Include="Fights\Fight.cs" />
+    <Compile Include="Fights\FightManager.cs" />
+    <Compile Include="Fights\FightRequest.cs" />
+    <Compile Include="Fights\TimeLine.cs" />
+    <Compile Include="Global\WorldSpaces\Continent.cs" />
+    <Compile Include="Global\Position\MapPoint.cs" />
+    <Compile Include="Global\Pathfinding\MovementPath.cs" />
+    <Compile Include="Global\Position\ObjectPosition.cs" />
+    <Compile Include="Global\Position\CellLinked.cs" />
+    <Compile Include="Global\WorldSpaces\Map.cs" />
+    <Compile Include="Data\MapLoader.cs" />
+    <Compile Include="Global\WorldSpaces\Map.Events.cs" />
+    <Compile Include="Global\WorldSpaces\Region.cs" />
+    <Compile Include="Global\World.cs" />
+    <Compile Include="Global\World.Init.cs" />
+    <Compile Include="Global\WorldSpaces\Zone.cs" />
+    <Compile Include="Groups\FightGroup.cs" />
+    <Compile Include="Groups\FightGroupMember.cs" />
+    <Compile Include="Groups\Group.cs" />
+    <Compile Include="Groups\GroupMember.cs" />
+    <Compile Include="Groups\GroupManager.cs" />
+    <Compile Include="Groups\MonsterGroup.cs" />
+    <Compile Include="Groups\PartyGroup.cs" />
     <Compile Include="Handlers\Achievement\AchievementHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsFightHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsHandler.cs" />
@@ -252,24 +304,42 @@
     <Compile Include="Handlers\Startup\StartupHandler.cs" />
     <Compile Include="Handlers\Subscriber\SubscriberHandler.cs" />
     <Compile Include="Handlers\WorldHandlerContainer.cs" />
-    <Compile Include="World\Storages\New\Inventory.cs" />
-    <Compile Include="World\Item\Item.cs" />
-    <Compile Include="Core\Settings.cs" />
-    <Compile Include="World\Spells\Spell.cs" />
-    <Compile Include="World\Spells\SpellInventory.cs" />
-    <Compile Include="Core\WorldConsole.cs" />
+    <Compile Include="Items\Inventory.cs" />
+    <Compile Include="Items\Item.cs" />
+    <Compile Include="Items\ItemManager.cs" />
+    <Compile Include="Items\ItemStored.cs" />
+    <Compile Include="Items\ItemTemplate.cs" />
+    <Compile Include="Items\Weapon.cs" />
+    <Compile Include="Items\WeaponTemplate.cs" />
+    <Compile Include="Npcs\StartActions\ShopAction.cs" />
+    <Compile Include="Npcs\StartActions\TalkAction.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Skills\SkillInstance.cs" />
+    <Compile Include="XmlSerialize\InteractiveElementSerialized.cs" />
+    <Compile Include="XmlSerialize\NpcSerialized.cs" />
+    <Compile Include="XmlSerialize\PartialLocalizable.cs" />
+    <Compile Include="XmlSerialize\SkillInstanceSerialized.cs" />
+    <Compile Include="XmlSerialize\SkillSerialized.cs" />
+    <Compile Include="Skills\SkillBase.cs" />
+    <Compile Include="Skills\SkillUse.cs" />
+    <Compile Include="Spells\Spell.cs" />
+    <Compile Include="Spells\SpellInventory.cs" />
+    <Compile Include="Spells\SpellLevel.cs" />
+    <Compile Include="Spells\SpellManager.cs" />
+    <Compile Include="WorldConsole.cs" />
     <Compile Include="Commands\WorldCommand.cs" />
     <Compile Include="Commands\WorldConsoleTrigger.cs" />
     <Compile Include="Commands\WorldSubCommand.cs" />
     <Compile Include="Commands\ParametersConverter.cs" />
-    <Compile Include="Core\Definitions.cs" />
+    <Compile Include="Definitions.cs" />
     <Compile Include="Handlers\WorldHandler.cs" />
     <Compile Include="Handlers\PredicatesDefinitions.cs" />
-    <Compile Include="Core\IPC\IpcAccessor.cs" />
-    <Compile Include="Core\IPC\IpcOperations.cs" />
-    <Compile Include="Core\WorldClient.cs" />
+    <Compile Include="IPC\IpcAccessor.cs" />
+    <Compile Include="IPC\IpcOperations.cs" />
+    <Compile Include="WorldClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Core\WorldServer.cs" />
+    <Compile Include="WorldServer.cs" />
+    <Compile Include="XmlSerialize\Localizable.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\BaseCore\Stump.BaseCore.Framework\Stump.BaseCore.Framework.csproj">
@@ -280,9 +350,9 @@
       <Project>{D0C51923-20CC-4B7B-ACF2-BA56ACB06232}</Project>
       <Name>Stump.Database</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\DofusProtocol\Classes\Stump.DofusProtocol.Classes.csproj">
+    <ProjectReference Include="..\..\DofusProtocol\Types\Stump.DofusProtocol.Types.csproj">
       <Project>{10884165-D492-4895-B3EF-32429F7A7F55}</Project>
-      <Name>Stump.DofusProtocol.Classes</Name>
+      <Name>Stump.DofusProtocol.Types</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DofusProtocol\Enums\Stump.DofusProtocol.Enums.csproj">
       <Project>{D7BFF8ED-065B-4A53-9805-595DFEA75A0A}</Project>
@@ -300,12 +370,22 @@
       <Project>{011FBAFC-7720-4D36-9C59-71BAE6163C9E}</Project>
       <Name>Stump.Server.BaseServer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Stump.Server.DataProvider\Stump.Server.DataProvider\Stump.Server.DataProvider.csproj">
-      <Project>{944742DD-E4E8-408D-8054-E6F94E31034E}</Project>
-      <Name>Stump.Server.DataProvider</Name>
-    </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Entities\LivingEntity.Events.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Actions\ActionsBase\" />
+    <Folder Include="Actions\ActionsCell\" />
+    <Folder Include="Actors\" />
+    <Folder Include="Entities\Actors\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Global\World.Events.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Entities\Actor.Actions.cs" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

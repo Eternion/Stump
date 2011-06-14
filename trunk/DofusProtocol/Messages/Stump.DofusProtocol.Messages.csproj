@@ -116,6 +116,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BooleanByteWrapper.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageReceiver.cs" />
     <Compile Include="Messages\authorized\AdminCommandMessage.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="Messages\authorized\ConsoleMessage.cs" />
     <Compile Include="Messages\common\basic\BasicPingMessage.cs" />
     <Compile Include="Messages\common\basic\BasicPongMessage.cs" />
+    <Compile Include="Messages\common\NetworkDataContainerMessage.cs" />
     <Compile Include="Messages\connection\HelloConnectMessage.cs" />
     <Compile Include="Messages\connection\IdentificationAccountForceMessage.cs" />
     <Compile Include="Messages\connection\IdentificationAccountForceWithServerIdMessage.cs" />
@@ -289,6 +291,7 @@
     <Compile Include="Messages\game\context\fight\GameFightJoinMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightJoinRequestMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightLeaveMessage.cs" />
+    <Compile Include="Messages\game\context\fight\GameFightNewRoundMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightOptionStateUpdateMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightOptionToggleMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightPlacementPositionRequestMessage.cs" />
@@ -589,6 +592,7 @@
     <Compile Include="Messages\game\guild\tax\TaxCollectorMovementMessage.cs" />
     <Compile Include="Messages\game\guild\tax\TaxCollectorMovementRemoveMessage.cs" />
     <Compile Include="Messages\game\initialization\OnConnectionEventMessage.cs" />
+    <Compile Include="Messages\game\initialization\ServerExperienceModificatorMessage.cs" />
     <Compile Include="Messages\game\initialization\SetCharacterRestrictionsMessage.cs" />
     <Compile Include="Messages\game\interactive\InteractiveElementUpdatedMessage.cs" />
     <Compile Include="Messages\game\interactive\InteractiveMapUpdateMessage.cs" />
@@ -646,6 +650,7 @@
     <Compile Include="Messages\game\inventory\exchanges\ExchangeMountTakenFromPaddockMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectAddedMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectModifyPricedMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectMoveKamaMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectMoveMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectMovePricedMessage.cs" />
@@ -684,6 +689,7 @@
     <Compile Include="Messages\game\inventory\exchanges\ExchangeStartedMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeStartedMountStockMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeStartedWithPodsMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeStartedWithStorageMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeStartOkCraftMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeStartOkCraftWithInformationMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeStartOkHumanVendorMessage.cs" />
@@ -818,11 +824,8 @@
     <Compile Include="Messages\updater\parts\DownloadSetSpeedRequestMessage.cs" />
     <Compile Include="Messages\updater\parts\GetPartInfoMessage.cs" />
     <Compile Include="Messages\updater\parts\GetPartsListMessage.cs" />
-    <Compile Include="Messages\updater\parts\PartDownloadInfoMessage.cs" />
     <Compile Include="Messages\updater\parts\PartInfoMessage.cs" />
-    <Compile Include="Messages\updater\parts\PartInstallInfoMessage.cs" />
     <Compile Include="Messages\updater\parts\PartsListMessage.cs" />
-    <Compile Include="Messages\updater\parts\ResumePartMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -830,9 +833,9 @@
       <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
       <Name>Stump.BaseCore.Framework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Classes\Stump.DofusProtocol.Classes.csproj">
+    <ProjectReference Include="..\Types\Stump.DofusProtocol.Types.csproj">
       <Project>{10884165-D492-4895-B3EF-32429F7A7F55}</Project>
-      <Name>Stump.DofusProtocol.Classes</Name>
+      <Name>Stump.DofusProtocol.Types</Name>
     </ProjectReference>
     <ProjectReference Include="..\Enums\Stump.DofusProtocol.Enums.csproj">
       <Project>{D7BFF8ED-065B-4A53-9805-595DFEA75A0A}</Project>

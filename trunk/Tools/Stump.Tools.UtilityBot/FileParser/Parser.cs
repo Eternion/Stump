@@ -1,21 +1,4 @@
-﻿// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
+﻿
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -208,7 +191,7 @@ namespace Stump.Tools.UtilityBot.FileParser
             Fields = new List<FieldInfo>();
 
             Match matchConst = Regex.Match(m_fileText,
-                                           @"(?<acces>public|protected|private|internal)\s*(?<static>static)?\s*const\s*(?<name>\w+):(?<type>[\w_\.]+(?:<(?:\w+\.)*(?<generictype>[\w_<>]+)>)?)(?<value>\s*=\s*.*)?;");
+                                           @"(?<acces>public|protected|private|internal)\s*(?<static>static)?\s*const\s*(?<name>\w+):(?<type>[\w_\.\*]+(?:<(?:\w+\.)*(?<generictype>[\w_<>]+)>)?)(?<value>\s*=\s*.*)?;");
             while (matchConst.Success)
             {
                 var field = new FieldInfo
@@ -221,7 +204,7 @@ namespace Stump.Tools.UtilityBot.FileParser
                         Name = ExecuteNameReplacement(matchConst.Groups["name"].Value),
                         Type =
                             ExecuteNameReplacement(matchConst.Groups["generictype"].Value == string.Empty
-                                                       ? matchConst.Groups["type"].Value
+                                                       ? (matchConst.Groups["type"].Value == "*" ? "dynamic" : matchConst.Groups["type"].Value)
                                                        : "List<" + matchConst.Groups["generictype"].Value + ">"),
                         Value = ExecuteNameReplacement(matchConst.Groups["value"].Value.Replace("=", "").Trim()),
                         Stereotype = "const",
@@ -342,7 +325,7 @@ namespace Stump.Tools.UtilityBot.FileParser
                     defaultValue = "null";
                 }
 
-                argsType.Add(ExecuteNameReplacement(type));
+                argsType.Add(type == "*" ? "dynamic" : ExecuteNameReplacement(type));
                 argsDefaultValue.Add(ExecuteNameReplacement(defaultValue));
             }
             method.Args = args.ToArray();

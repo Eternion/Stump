@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.npcs
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("Npcs")]
-	public class Npc : Object
+	public class Npc
 	{
-		internal const String MODULE = "Npcs";
+		private const String MODULE = "Npcs";
 		public int id;
 		public uint nameId;
 		public List<List<int>> dialogMessages;
@@ -16,6 +14,5 @@ namespace Stump.DofusProtocol.D2oClasses.Classes.npcs
 		public List<uint> actions;
 		public uint gender;
 		public String look;
-		
 	}
 }

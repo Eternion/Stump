@@ -1,8 +1,8 @@
-namespace Stump.DofusProtocol.D2oClasses.Classes.quest.objectives
+using System;
+
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	public class QuestObjectiveBringItemToNpc : QuestObjective
 	{
-		
 	}
 }

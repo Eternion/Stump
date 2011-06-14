@@ -1,21 +1,17 @@
 using System;
 using System.Collections.Generic;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.breeds
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("Breeds")]
-	public class Breed : Object
+	public class Breed
 	{
-		internal const String MODULE = "Breeds";
-		public List<uint> alternativeMaleSkin;
-		public List<uint> alternativeFemaleSkin;
-		public uint gameplayDescriptionId;
+		private const String MODULE = "Breeds";
 		public int id;
 		public uint shortNameId;
 		public uint longNameId;
 		public uint descriptionId;
+		public uint gameplayDescriptionId;
 		public String maleLook;
 		public String femaleLook;
 		public uint creatureBonesId;
@@ -27,9 +23,10 @@ namespace Stump.DofusProtocol.D2oClasses.Classes.breeds
 		public List<List<uint>> statsPointsForAgility;
 		public List<List<uint>> statsPointsForVitality;
 		public List<List<uint>> statsPointsForWisdom;
+		public List<uint> breedSpellsId;
 		public List<uint> maleColors;
 		public List<uint> femaleColors;
-		public List<uint> breedSpellsId;
-		internal Array _skinsForBreed;		
+		public List<uint> alternativeMaleSkin;
+		public List<uint> alternativeFemaleSkin;
 	}
 }

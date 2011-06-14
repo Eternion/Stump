@@ -1,17 +1,14 @@
 using System;
 using System.Collections.Generic;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.quest
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("Quests")]
-	public class Quest : Object
+	public class Quest
 	{
-		internal const String MODULE = "Quests";
+		private const String MODULE = "Quests";
 		public uint id;
 		public uint nameId;
 		public List<uint> stepIds;
-		
 	}
 }

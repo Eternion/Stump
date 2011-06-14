@@ -1,16 +1,13 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.world
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("MapReferences")]
-	public class MapReference : Object
+	public class MapReference
 	{
-		internal const String MODULE = "MapReferences";
+		private const String MODULE = "MapReferences";
 		public int id;
 		public uint mapId;
 		public int cellId;
-		
 	}
 }

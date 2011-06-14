@@ -8,55 +8,61 @@ namespace Stump.DofusProtocol.Messages
         private const byte BIT_RIGHT_SHIFT_LEN_PACKET_ID = 2;
         private const byte BIT_MASK = 3;
 
-        public abstract uint getMessageId();
-        public abstract void reset();
+        public abstract uint MessageId
+        {
+            get;
+        }
 
-        public abstract void pack(BigEndianWriter writer);
-        public abstract void unpack(BigEndianReader reader, uint arg2);
+        public void Unpack(IDataReader reader)
+        {
+            Deserialize(reader);
+        }
 
-        //public abstract void serialize(BigEndianWriter writer);
-        //public abstract void deserialize(BigEndianReader reader);
+        public void Pack(IDataWriter writer)
+        {
+            Serialize(writer);
+            WritePacket(writer);
+        }
 
-        internal static void WritePacket(BigEndianWriter writer, uint id)
+        public abstract void Serialize(IDataWriter writer);
+        public abstract void Deserialize(IDataReader reader);
+
+        private void WritePacket(IDataWriter writer)
         {
             byte[] packet = writer.Data;
 
             writer.Clear();
 
             byte typeLen = ComputeTypeLen(packet.Length);
-
-            short header = (short)SubComputeStaticHeader(id, typeLen);
-
+            var header = (short)SubComputeStaticHeader(MessageId, typeLen);
             writer.WriteShort(header);
 
             switch (typeLen)
             {
                 case 0:
-                {
-                    break;
-                }
+                    {
+                        break;
+                    }
                 case 1:
-                {
-                    writer.WriteByte((byte) packet.Length);
-                    break;
-                }
+                    {
+                        writer.WriteByte((byte)packet.Length);
+                        break;
+                    }
                 case 2:
-                {
-                    writer.WriteShort((short) packet.Length);
-                    break;
-                }
+                    {
+                        writer.WriteShort((short)packet.Length);
+                        break;
+                    }
                 case 3:
-                {
-                    var _loc_5 = (byte) (packet.Length >> 16 & 255);
-                    var _loc_6 = (short) (packet.Length & 65535);
-                    writer.WriteByte(_loc_5);
-                    writer.WriteShort(_loc_6);
-                    break;
-                }
+                    {
+                        writer.WriteByte((byte)( packet.Length >> 16 & 255 ));
+                        writer.WriteShort((short)( packet.Length & 65535 ));
+                        break;
+                    }
                 default:
-                {
-                    throw new Exception("Packet's length can't be encoded on 4 or more bytes");
-                }
+                    {
+                        throw new Exception("Packet's length can't be encoded on 4 or more bytes");
+                    }
             }
             writer.WriteBytes(packet);
         }

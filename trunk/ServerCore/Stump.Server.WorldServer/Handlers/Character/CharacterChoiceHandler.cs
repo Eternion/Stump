@@ -1,35 +1,17 @@
-// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Stump.BaseCore.Framework.Utils;
+using Stump.BaseCore.Framework.IO;
+using Stump.DofusProtocol.Messages.Framework.IO;
 using Stump.Database.WorldServer;
-using Stump.Database.WorldServer.Character;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.DataProvider.Data.Threshold;
-using Stump.Server.WorldServer.Helpers;
-using Stump.Server.WorldServer.World.Actors.Character;
-using Stump.Server.WorldServer.World.Entities.Characters;
+using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.Manager;
+using Stump.Server.WorldServer.Threshold;
 
 namespace Stump.Server.WorldServer.Handlers
 {
@@ -92,7 +74,7 @@ namespace Stump.Server.WorldServer.Handlers
             }
 
             /* Check if name is free */
-            if (CharacterRecord.IsNameExists(message.name) || !Regex.IsMatch(StringUtils.FirstLetterUpper(message.name.ToLower()),
+            if (CharacterRecord.IsNameExists(message.name) || !Regex.IsMatch(StringExtensions.FirstLetterUpper(message.name.ToLower()),
                                "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled))
             {
                 client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.ERR_NAME_ALREADY_EXISTS));
@@ -100,7 +82,7 @@ namespace Stump.Server.WorldServer.Handlers
             }
 
             /* Set new name */
-            character.Name = StringUtils.FirstLetterUpper(message.name.ToLower());
+            character.Name = StringExtensions.FirstLetterUpper(message.name.ToLower());
             character.Save();
 
             /* Common selection */
@@ -109,15 +91,15 @@ namespace Stump.Server.WorldServer.Handlers
 
         public static void CommonCharacterSelection(WorldClient client, CharacterRecord character)
         {
-            client.ActiveCharacter = new Character(client, character);
+            client.ActiveCharacter = new Character(character, client);
 
             /* Check if we also have a world account */
             if (client.WorldAccount == null)
             {
                 if (!WorldAccountRecord.Exists(client.Account.Id))
-                    client.WorldAccount = WorldAccountManager.CreateWorldAccount(client);
+                    client.WorldAccount = AccountManager.CreateWorldAccount(client);
                 else
-                    client.WorldAccount = WorldAccountRecord.FindById(client.Account.Id);
+                    client.WorldAccount = WorldAccountRecord.FindWorldAccountById(client.Account.Id);
             }
 
             /* Update LastConnection and Last Ip */
@@ -149,7 +131,7 @@ namespace Stump.Server.WorldServer.Handlers
                                                     client.Account.LastConnection.Day,
                                                     client.Account.LastConnection.Hour,
                                                     client.Account.LastConnection.Minute,
-                                                    client.Account.LastIp ?? "{null}");
+                                                    client.Account.LastIp ?? "(null)");
 
             InitializationHandler.SendOnConnectionEventMessage(client, 2);
         }
@@ -174,14 +156,14 @@ namespace Stump.Server.WorldServer.Handlers
                 characterRecord =>
                 new CharacterBaseInformations(
                     (uint)characterRecord.Id,
-                    ThresholdManager.Instance["CharacterExp"].GetLevel(characterRecord.Experience),
+                    ThresholdManager.Thresholds["CharacterExp"].GetLevel(characterRecord.Experience),
                     characterRecord.Name,
                     CharacterManager.GetStuffedCharacterLook(characterRecord).EntityLook,
                     characterRecord.Breed,
                     characterRecord.Sex != SexTypeEnum.SEX_MALE)).ToList();
 
             client.Send(new CharactersListMessage(
-                            client.WorldAccount.StartupActions.Count != 0,
+                            client.Account.StartupActions.Count != 0,
                             characters
                             ));
         }
@@ -196,7 +178,7 @@ namespace Stump.Server.WorldServer.Handlers
             foreach (CharacterRecord c in client.Characters)
             {
                 cbi.Add(new CharacterBaseInformations((uint)c.Id,
-                                                      ThresholdManager.Instance["CharacterExp"].GetLevel(c.Experience),
+                                                      ThresholdManager.Thresholds["CharacterExp"].GetLevel(c.Experience),
                                                       c.Name, CharacterManager.GetStuffedCharacterLook(c).EntityLook,
                                                       c.Breed, c.Sex != SexTypeEnum.SEX_MALE));
 
@@ -215,7 +197,7 @@ namespace Stump.Server.WorldServer.Handlers
                     oth.Add(c.Id);
                 }
             }
-            client.Send(new CharactersListWithModificationsMessage(client.WorldAccount.StartupActions.Count != 0, cbi, ctri,
+            client.Send(new CharactersListWithModificationsMessage(client.Account.StartupActions.Count != 0, cbi, ctri,
                                                                    re, oth));
         }
 

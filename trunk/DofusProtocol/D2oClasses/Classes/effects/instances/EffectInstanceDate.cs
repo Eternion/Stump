@@ -1,6 +1,7 @@
-namespace Stump.DofusProtocol.D2oClasses.Classes.effects.instances
+using System;
+
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	public class EffectInstanceDate : EffectInstance
 	{
 		public uint year;
@@ -8,6 +9,5 @@ namespace Stump.DofusProtocol.D2oClasses.Classes.effects.instances
 		public uint day;
 		public uint hour;
 		public uint minute;
-		
 	}
 }

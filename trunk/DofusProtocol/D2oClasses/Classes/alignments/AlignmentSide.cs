@@ -1,16 +1,13 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.alignments
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("AlignmentSides")]
-	public class AlignmentSide : Object
+	public class AlignmentSide
 	{
-		internal const String MODULE = "AlignmentSides";
+		private const String MODULE = "AlignmentSides";
 		public int id;
 		public uint nameId;
 		public Boolean canConquest;
-		
 	}
 }

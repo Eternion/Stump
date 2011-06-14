@@ -1,16 +1,13 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.alignments
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("AlignmentEffect")]
-	public class AlignmentEffect : Object
+	public class AlignmentEffect
 	{
-		internal const String MODULE = "AlignmentEffect";
+		private const String MODULE = "AlignmentEffect";
 		public int id;
 		public uint characteristicId;
 		public uint descriptionId;
-		
 	}
 }

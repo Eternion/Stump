@@ -1,16 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.spells
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("Spells")]
-	public class Spell : Object
+	public class Spell
 	{
-		internal const String MODULE = "Spells";
-		internal Array _indexedParam;
-		internal Array _indexedCriticalParam;
+		private const String MODULE = "Spells";
 		public int id;
 		public uint nameId;
 		public uint descriptionId;
@@ -22,7 +18,5 @@ namespace Stump.DofusProtocol.D2oClasses.Classes.spells
 		public uint iconId;
 		public List<uint> spellLevels;
 		public Boolean useParamCache = true;
-		internal Array _spellLevels;
-		
 	}
 }

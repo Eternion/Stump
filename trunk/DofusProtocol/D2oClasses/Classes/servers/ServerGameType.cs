@@ -1,15 +1,12 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.servers
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("ServerGameTypes")]
-	public class ServerGameType : Object
+	public class ServerGameType
 	{
-		internal const String MODULE = "ServerGameTypes";
+		private const String MODULE = "ServerGameTypes";
 		public int id;
 		public uint nameId;
-		
 	}
 }

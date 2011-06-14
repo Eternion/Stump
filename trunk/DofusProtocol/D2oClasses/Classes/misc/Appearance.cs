@@ -1,16 +1,13 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.misc
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("Appearances")]
-	public class Appearance : Object
+	public class Appearance
 	{
 		public const String MODULE = "Appearances";
 		public uint id;
 		public uint type;
 		public String data;
-		
 	}
 }

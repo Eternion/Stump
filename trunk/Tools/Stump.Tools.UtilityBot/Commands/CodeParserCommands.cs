@@ -1,21 +1,4 @@
-// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -50,10 +33,12 @@ namespace Stump.Tools.UtilityBot.Commands
 
             IEnumerable<string> files =
                 Directory.EnumerateFiles(
-                    Bot.DofusSourcePath + @"\Scripts\ActionScript 3.0\com\ankamagames\dofus\network\messages\",
+                    Bot.DofusSourcePath + @"\Scripts\ActionScript 3.0\package com\package ankamagames\package dofus\package network\package messages\",
                     "*", SearchOption.AllDirectories);
 
-            foreach (string file in files.Where((entry) => char.IsUpper(Path.GetFileName(entry)[0])))
+            string @namespace = trigger.Args.NextWord();
+
+            foreach (string file in files.Where((entry) => char.IsUpper(Path.GetFileName(entry).Replace("class ", "")[0])))
             {
                 var parser = new AsParser(file, SharedRules.m_replaceRules, SharedRules.m_beforeParsingRules,
                                           SharedRules.m_afterParsingRules, SharedRules.m_ignoredLines);
@@ -67,7 +52,7 @@ namespace Stump.Tools.UtilityBot.Commands
                 }
 
                 string[] splitPath = file.Split('\\');
-                splitPath = splitPath.SkipWhile(entry => entry != "messages").Skip(1).ToArray();
+                splitPath = splitPath.SkipWhile(entry => entry != "package messages").Skip(1).Select(entry => entry.Replace("package ", "").Replace("class ", "")).ToArray();
 
                 string dirPath = Path.GetFullPath(Output) + "/";
                 foreach (string dir in splitPath)
@@ -83,14 +68,14 @@ namespace Stump.Tools.UtilityBot.Commands
 
                 string path = (Output + string.Join("/", splitPath));
 
-                parser.ToCSharp(path.Remove(path.Length - 2, 2) + "cs", "Stump.DofusProtocol.Messages",
+                parser.ToCSharp(path.Remove(path.Length - 2, 2) + "cs", @namespace,
                                 new[]
                                     {
                                         "System",
                                         "System.Collections.Generic",
-                                        "Stump.BaseCore.Framework.Utils",
-                                        "Stump.BaseCore.Framework.IO",
-                                        "Stump.DofusProtocol.Classes"
+                                        "BigEndianStream",
+                                        "DofusProtocol.Messages",
+                                        "DofusProtocol.Classes.Types"
                                     });
             }
 
@@ -118,10 +103,10 @@ namespace Stump.Tools.UtilityBot.Commands
 
             IEnumerable<string> files =
                 Directory.EnumerateFiles(
-                    Bot.DofusSourcePath + @"\Scripts\ActionScript 3.0\com\ankamagames\dofus\network\types\",
+                    Bot.DofusSourcePath + @"\Scripts\ActionScript 3.0\package com\package ankamagames\package dofus\package network\package types\",
                     "*", SearchOption.AllDirectories);
 
-            foreach (string file in files.Where((entry) => char.IsUpper(Path.GetFileName(entry)[0])))
+            foreach (string file in files.Where((entry) => char.IsUpper(Path.GetFileName(entry).Replace("class ", "")[0])))
             {
                 var parser = new AsParser(file, SharedRules.m_replaceRules, SharedRules.m_beforeParsingRules,
                                           SharedRules.m_afterParsingRules, SharedRules.m_ignoredLines);
@@ -135,7 +120,7 @@ namespace Stump.Tools.UtilityBot.Commands
                 }
 
                 string[] splitPath = file.Split('\\');
-                splitPath = splitPath.SkipWhile(entry => entry != "types").Skip(1).ToArray();
+                splitPath = splitPath.SkipWhile(entry => entry != "package types").Skip(1).Select(entry => entry.Replace("package ", "").Replace("class ", "")).ToArray();
 
                 string dirPath = Path.GetFullPath(Output) + "/";
                 foreach (string dir in splitPath)
@@ -151,7 +136,7 @@ namespace Stump.Tools.UtilityBot.Commands
 
                 string path = (Output + string.Join("/", splitPath));
 
-                parser.ToCSharp(path.Remove(path.Length - 2, 2) + "cs", "Stump.DofusProtocol.Classes",
+                parser.ToCSharp(path.Remove(path.Length - 2, 2) + "cs", trigger.Args.NextWord(),
                                 new[]
                                     {
                                         "System",
@@ -505,8 +490,8 @@ namespace Stump.Tools.UtilityBot.Commands
             new Dictionary<string, string>
                 {
                     {@"\bNetworkMessage", @"Message"},
-                    {@"IDataOutput", @"BigEndianWriter"},
-                    {@"IDataInput", @"BigEndianReader"},
+                    {@"\bIDataOutput", @"BigEndianWriter"},
+                    {@"\bIDataInput", @"BigEndianReader"},
                     {@"\bread(?!y)", @"Read"},
                     {@"\bwrite", @"Write"},
                     {@"(Write|Read)Unsigned([^B])", @"$1U$2"},
@@ -519,6 +504,7 @@ namespace Stump.Tools.UtilityBot.Commands
                     {@"writePacket\(arg1, this\.getMessageId\(\), loc1\);", @"writePacket(arg1, this.getMessageId());"},
                     {@"int\(([\w_\d]+)\)", @"int.Parse($1)"},
                     {@"flash\.geom\.", ""},
+                    {@"Vector.([\w_\d]+) = new ([\w_\d]+)();", "$1 = new List<$2>();"},
                 };
 
 
@@ -532,10 +518,10 @@ namespace Stump.Tools.UtilityBot.Commands
                     {@"WriteUInt\(", @"WriteUInt((uint)"},
                     {@"WriteFloat\(", @"WriteFloat((uint)"},
                     {@"WriteUTF\(", @"WriteUTF((string)"},
-                    {@"(?<!(?:class\s|public\s))\bVersion\b", "Stump.DofusProtocol.Classes.Version"},
+                    {@"(?<!(?:class\s|public\s))\bVersion\b", "Classes.Types.Version"},
                     {
-                        @"(?<!(?:class\s\s))\b(?<!Stump\.DofusProtocol\.Classes\.)Version\b([^;\n\r]+);",
-                        @"Stump.DofusProtocol.Classes.Version$1;"
+                        @"(?<!(?:class\s\s))\b(?<!Classes\.Types\.)Version\b([^;\n\r]+);",
+                        @"Classes.Types.Version$1;"
                         },
                     {@"(\w+) = new ([\w_]+)\(\)\)\.deserialize\(", "(($1 = new $2()) as $2).deserialize("},
                     {@"= (\w+)\.ReadUShort\(\);", @"= (ushort)$1.ReadUShort();"},
@@ -571,7 +557,10 @@ namespace Stump.Tools.UtilityBot.Commands
             new List<string>
                 {
                     "var loc1:*=new flash.utils.ByteArray();",
+                    "loc1 = new flash.utils.ByteArray();",
+                    "var loc1:*;",
                     "super();",
+                    "Vector.servers = new int();",
                     "return;",
                     "new DataStoreType(MODULE, true, LOCATION_LOCAL, BIND_COMPUTER);"
                 };

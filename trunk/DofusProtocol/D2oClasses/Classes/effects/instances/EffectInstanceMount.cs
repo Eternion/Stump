@@ -1,11 +1,11 @@
-namespace Stump.DofusProtocol.D2oClasses.Classes.effects.instances
+using System;
+
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	public class EffectInstanceMount : EffectInstance
 	{
-		public double date;
+		public float date;
 		public uint modelId;
 		public uint mountId;
-		
 	}
 }

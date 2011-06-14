@@ -1,30 +1,11 @@
-// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
-using System.Diagnostics.Contracts;
-using Stump.BaseCore.Framework.Utils;
+
+using Stump.BaseCore.Framework.IO;
+using Stump.DofusProtocol.Messages.Framework.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Chat;
 using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Global;
-using Stump.Server.WorldServer.World.Actors.Character;
-using Stump.Server.WorldServer.World.Entities.Characters;
 
 namespace Stump.Server.WorldServer.Handlers
 {
@@ -33,7 +14,7 @@ namespace Stump.Server.WorldServer.Handlers
         [WorldHandler(typeof (ChatClientPrivateMessage))]
         public static void HandleChatClientPrivateMessage(WorldClient client, ChatClientPrivateMessage message)
         {
-            Character chr = World.World.Instance.GetCharacter(message.receiver);
+            Character chr = World.Instance.GetCharacter(message.receiver);
 
             if (chr != null)
             {
@@ -68,12 +49,12 @@ namespace Stump.Server.WorldServer.Handlers
             SendChatServerMessage(client, ChannelId.Information, message, 0, "", 0, "Server", 0);
         }
 
-        public static void SendChatServerMessage(WorldClient client, NamedActor sender, ChannelId channel, string message)
+        public static void SendChatServerMessage(WorldClient client, Entity sender, ChannelId channel, string message)
         {
             SendChatServerMessage(client, sender, channel, message, 0, "");
         }
 
-        public static void SendChatServerMessage(WorldClient client, NamedActor sender, ChannelId channel, string message,
+        public static void SendChatServerMessage(WorldClient client, Entity sender, ChannelId channel, string message,
                                                  int timestamp, string fingerprint)
         {
             client.Send(new ChatServerMessage(
@@ -95,7 +76,7 @@ namespace Stump.Server.WorldServer.Handlers
                                                  int timestamp, string fingerprint)
         {
             if (sender.Client.Account.Role <= RoleEnum.Moderator)
-                message = StringUtils.HtmlEntities(message);
+                message = StringExtensions.HtmlEntities(message);
 
             client.Send(new ChatServerMessage(
                             (uint) channel,
@@ -133,7 +114,7 @@ namespace Stump.Server.WorldServer.Handlers
         {
             {
                 if (client.Account.Role <= RoleEnum.Moderator)
-                    message = StringUtils.HtmlEntities(message);
+                    message = StringExtensions.HtmlEntities(message);
 
                 client.Send(new ChatServerCopyMessage(
                                 (uint) channel,

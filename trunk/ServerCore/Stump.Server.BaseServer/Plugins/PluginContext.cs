@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Stump.BaseCore.Framework.Xml;
 
 namespace Stump.Server.BaseServer.Plugins
 {

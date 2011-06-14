@@ -1,24 +1,8 @@
-// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
+
 using System;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.WorldServer.Breeds;
 
 namespace Stump.Server.WorldServer.Handlers
 {
@@ -33,12 +17,8 @@ namespace Stump.Server.WorldServer.Handlers
                 statsid > CaracteristicsIdEnum.Intelligence)
                 throw new Exception("Wrong statsid");
 
-            /* Forbidden Value */
             if (message.boostPoint <= 0)
-            {
-                client.DisconnectLater(1000);
-                return;
-            }
+                throw new Exception("Client given 0 as boostpoint. Forbidden value.");
 
             BaseBreed breed = BreedManager.GetBreed(client.ActiveCharacter.BreedId);
             int neededpts = breed.GetNeededPointForStats(client.ActiveCharacter.Stats[statsid.ToString()].Base, statsid);
@@ -58,10 +38,9 @@ namespace Stump.Server.WorldServer.Handlers
             CharacterHandler.SendCharacterStatsListMessage(client);
         }
 
-        public static void SendStatsUpgradeResultMessage(WorldClient client, uint usedPoints)
+        public static void SendStatsUpgradeResultMessage(WorldClient client, uint usedpts)
         {
-            client.Send(new StatsUpgradeResultMessage(usedPoints));
+            client.Send(new StatsUpgradeResultMessage(usedpts));
         }
-
     }
 }

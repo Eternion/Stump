@@ -1,21 +1,4 @@
-// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +9,6 @@ using Stump.Server.WorldServer.Entities;
 using Stump.Server.WorldServer.Fights;
 using Stump.Server.WorldServer.Global;
 using Stump.Server.WorldServer.Global.Pathfinding;
-using Stump.Server.WorldServer.World.Entities.Actors;
 
 namespace Stump.Server.WorldServer.Handlers
 {
@@ -52,7 +34,8 @@ namespace Stump.Server.WorldServer.Handlers
         }
 
         [WorldHandler(typeof (GameContextCreateRequestMessage))]
-        public static void HandleGameContextCreateRequestMessage(WorldClient client, GameContextCreateRequestMessage message)
+        public static void HandleGameContextCreateRequestMessage(WorldClient client,
+                                                                 GameContextCreateRequestMessage message)
         {
             SendGameContextDestroyMessage(client);
             SendGameContextCreateMessage(client, 1);
@@ -60,7 +43,7 @@ namespace Stump.Server.WorldServer.Handlers
             CharacterHandler.SendCharacterStatsListMessage(client);
             CharacterHandler.SendLifePointsRegenBeginMessage(client, 60);
 
-            SendCurrentMapMessage(client, (int)client.ActiveCharacter.Map.Id);
+            SendCurrentMapMessage(client, client.ActiveCharacter.Map.Id);
             BasicHandler.SendBasicTimeMessage(client);
 
             World.Instance.SendMessageOfTheDay(client.ActiveCharacter);
@@ -71,7 +54,7 @@ namespace Stump.Server.WorldServer.Handlers
                                                                         GameMapChangeOrientationRequestMessage message)
         {
             client.ActiveCharacter.Position.ChangeLocation((DirectionsEnum) message.direction);
-            client.ActiveCharacter.Map.CallOnAllCharacters(
+            client.ActiveCharacter.Map.Do(
                 charac => SendGameMapChangeOrientationMessage(charac.Client, client.ActiveCharacter));
         }
 
@@ -105,7 +88,7 @@ namespace Stump.Server.WorldServer.Handlers
         {
             // todo : check if cell is available and if moving
 
-            client.ActiveCharacter.StopMove(new VectorIsometric(client.ActiveCharacter.Map, (ushort) message.cellId,
+            client.ActiveCharacter.StopMove(new ObjectPosition(client.ActiveCharacter.Map, (ushort) message.cellId,
                                                                 client.ActiveCharacter.Position.Direction));
         }
 
@@ -119,22 +102,24 @@ namespace Stump.Server.WorldServer.Handlers
             client.Send(new GameContextDestroyMessage());
         }
 
-        public static void SendGameMapChangeOrientationMessage(WorldClient client, Actor actor)
+        public static void SendGameMapChangeOrientationMessage(WorldClient client, Entity entity)
         {
-            client.Send( new GameMapChangeOrientationMessage(new ActorOrientation((int) actor.Id, (uint) actor.Position.Direction)));
+            client.Send(
+                new GameMapChangeOrientationMessage(new ActorOrientation((int) entity.Id,
+                                                                         (uint) entity.Position.Direction)));
         }
 
-        public static void SendGameContextRemoveElementMessage(WorldClient client, Actor actor)
+        public static void SendGameContextRemoveElementMessage(WorldClient client, Entity entity)
         {
-            client.Send(new GameContextRemoveElementMessage((int) actor.Id));
+            client.Send(new GameContextRemoveElementMessage((int) entity.Id));
         }
 
-        public static void SendGameContextRefreshEntityLookMessage(WorldClient client, Actor actor)
+        public static void SendGameContextRefreshEntityLookMessage(WorldClient client, Entity entity)
         {
-            client.Send(new GameContextRefreshEntityLookMessage((int) actor.Id, actor.Look.EntityLook));
+            client.Send(new GameContextRefreshEntityLookMessage((int) entity.Id, entity.Look.EntityLook));
         }
 
-        public static void SendGameMapMovementMessage(WorldClient client, List<uint> movementsKey, Actor actor)
+        public static void SendGameMapMovementMessage(WorldClient client, List<uint> movementsKey, Entity entity)
         {
             client.Send(new GameMapMovementMessage(movementsKey, (int) entity.Id));
         }

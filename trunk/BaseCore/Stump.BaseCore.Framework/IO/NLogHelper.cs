@@ -1,22 +1,4 @@
-﻿// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
-using NLog;
+﻿using NLog;
 using NLog.Config;
 using NLog.Targets;
 using NLog.Win32.Targets;
@@ -33,6 +15,8 @@ namespace Stump.BaseCore.Framework.IO
         /// </remarks>
         public static readonly string LogFilePath = "/logs/"; //  /logs/ = ./logs/
 
+        public static readonly string LogErrorFilePath = "/errors/";
+
         /// <summary>
         ///   Defines the log profile.
         /// </summary>
@@ -43,14 +27,22 @@ namespace Stump.BaseCore.Framework.IO
             var config = new LoggingConfiguration();
 
             var consoleTarget = new ColoredConsoleTarget();
-            consoleTarget.Layout = "<${date:format=HH\\:mm\\:ss}> [${level}] ${message}";
+            consoleTarget.Layout = "<${date:format=HH\\:mm\\:ss}> [${level}] ${stacktrace} : ${message}";
 
             var fileTarget = new FileTarget();
-            fileTarget.FileName = "${basedir}" + LogFilePath + "log" + ".txt";
-            fileTarget.Layout = "<${date:format=HH\\:mm\\:ss}> [${level}] ${message}";
+            fileTarget.FileName = "${basedir}" + LogFilePath + "log_<${date:format=dd-MM-yyyy}>" + ".txt";
+            fileTarget.Layout = "<${date:format=G}> [${level}] ${callsite} : ${message}";
+
+            var fileErrorTarget = new FileTarget();
+            fileErrorTarget.FileName = "${basedir}" + LogFilePath + LogErrorFilePath +
+                                       "error_<${date:format=dd-MM-yyyy}>" + ".txt";
+            fileErrorTarget.Layout = "-------------${level} at ${date:format=G}------------- ${newline} ${callsite} : ${message} ${newline} -------------${level} at ${date:format=G}------------- ${newline}";
 
             if (activefileLog)
+            {
                 config.AddTarget("file", fileTarget);
+                config.AddTarget("file_errors", fileErrorTarget);
+            }
 
             if (activeconsoleLog)
                 config.AddTarget("console", consoleTarget);
@@ -64,44 +56,11 @@ namespace Stump.BaseCore.Framework.IO
             if (activefileLog)
             {
                 var rule = new LoggingRule("*", LogLevel.Debug, fileTarget);
+                rule.DisableLoggingForLevel(LogLevel.Fatal);
+                rule.DisableLoggingForLevel(LogLevel.Error);
                 config.LoggingRules.Add(rule);
-            }
 
-            LogManager.Configuration = config;
-        }
-
-        /// <summary>
-        ///   Defines the log profile.
-        /// </summary>
-        /// <param name = "activefileLog">if set to <c>true</c> logs by file are actived.</param>
-        /// <param name = "activeconsoleLog">if set to <c>true</c> logs on the console are actived.</param>
-        /// <param name = "logName">Name of the log file.</param>
-        public static void DefineLogProfile(bool activefileLog, bool activeconsoleLog, string logName)
-        {
-            var config = new LoggingConfiguration();
-
-            var consoleTarget = new ColoredConsoleTarget();
-            consoleTarget.Layout = "<${date:format=HH\\:mm\\:ss}> [${level}] ${message}";
-
-            var fileTarget = new FileTarget();
-            fileTarget.FileName = "${basedir}" + LogFilePath + logName + ".txt";
-            fileTarget.Layout = "<${date:format=HH\\:mm\\:ss}> [${level}] ${message}";
-
-            if (activefileLog)
-                config.AddTarget("file", fileTarget);
-
-            if (activeconsoleLog)
-                config.AddTarget("console", consoleTarget);
-
-            if (activeconsoleLog)
-            {
-                var rule = new LoggingRule("*", LogLevel.Debug, consoleTarget);
-                config.LoggingRules.Add(rule);
-            }
-
-            if (activefileLog)
-            {
-                var rule = new LoggingRule("*", LogLevel.Debug, fileTarget);
+                rule = new LoggingRule("*", LogLevel.Warn, fileErrorTarget);
                 config.LoggingRules.Add(rule);
             }
 

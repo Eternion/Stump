@@ -1,17 +1,13 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.world
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("SuperAreas")]
-	public class SuperArea : Object
+	public class SuperArea
 	{
-		internal const String MODULE = "SuperAreas";
+		private const String MODULE = "SuperAreas";
 		public int id;
 		public uint nameId;
 		public uint worldmapId;
-		internal Array _allSuperAreas;
-		
 	}
 }

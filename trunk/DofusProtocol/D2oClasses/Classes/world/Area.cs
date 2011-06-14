@@ -1,20 +1,16 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.world
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("Areas")]
-	public class Area : Object
+	public class Area
 	{
-		internal const String MODULE = "Areas";
+		private const String MODULE = "Areas";
 		public int id;
 		public uint nameId;
 		public int superAreaId;
 		public Boolean containHouses;
 		public Boolean containPaddocks;
 		public Rectangle bounds;
-		internal Array _allAreas;
-		
 	}
 }

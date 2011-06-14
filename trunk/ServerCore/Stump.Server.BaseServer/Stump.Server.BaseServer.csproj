@@ -119,9 +119,6 @@
     <Reference Include="NLog">
       <HintPath>..\..\Library\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="protobuf-net">
-      <HintPath>..\..\..\..\..\..\..\Desktop\protobuf-net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -145,6 +142,8 @@
     <Compile Include="Database\DatabaseConfiguration.cs" />
     <Compile Include="Definitions.cs" />
     <Compile Include="Handler\IHandlerContainer.cs" />
+    <Compile Include="Initializing\StageManager.cs" />
+    <Compile Include="Initializing\StageStep.cs" />
     <Compile Include="IPC\IRemoteOperationsAuth.cs" />
     <Compile Include="IPC\IRemoteOperationsWorld.cs" />
     <Compile Include="Manager\IInstance.cs" />
@@ -176,9 +175,9 @@
       <Project>{D0C51923-20CC-4B7B-ACF2-BA56ACB06232}</Project>
       <Name>Stump.Database</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\DofusProtocol\Classes\Stump.DofusProtocol.Classes.csproj">
+    <ProjectReference Include="..\..\DofusProtocol\Types\Stump.DofusProtocol.Types.csproj">
       <Project>{10884165-D492-4895-B3EF-32429F7A7F55}</Project>
-      <Name>Stump.DofusProtocol.Classes</Name>
+      <Name>Stump.DofusProtocol.Types</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DofusProtocol\Enums\Stump.DofusProtocol.Enums.csproj">
       <Project>{D7BFF8ED-065B-4A53-9805-595DFEA75A0A}</Project>

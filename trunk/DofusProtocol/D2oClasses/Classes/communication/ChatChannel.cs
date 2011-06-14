@@ -1,13 +1,11 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.communication
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("ChatChannels")]
-	public class ChatChannel : Object
+	public class ChatChannel
 	{
-		internal const String MODULE = "ChatChannels";
+		private const String MODULE = "ChatChannels";
 		public uint id;
 		public uint nameId;
 		public uint descriptionId;
@@ -15,6 +13,5 @@ namespace Stump.DofusProtocol.D2oClasses.Classes.communication
 		public String shortcutKey;
 		public Boolean isPrivate;
 		public Boolean allowObjects;
-		
 	}
 }

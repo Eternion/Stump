@@ -1,16 +1,13 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.misc
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("Titles")]
-	public class Title : Object
+	public class Title
 	{
-		internal const String MODULE = "Titles";
+		private const String MODULE = "Titles";
 		public int id;
 		public uint nameId;
 		public String color;
-		
 	}
 }

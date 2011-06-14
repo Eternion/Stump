@@ -1,32 +1,12 @@
-// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
 using System;
 using System.Collections.Generic;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.communication
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("Emoticons")]
-	public class Emoticon : Object
+	public class Emoticon
 	{
-		internal const String MODULE = "Emoticons";
+		private const String MODULE = "Emoticons";
 		public uint id;
 		public uint nameId;
 		public uint shortcutId;
@@ -35,7 +15,6 @@ namespace Stump.DofusProtocol.D2oClasses.Classes.communication
 		public Boolean eight_directions;
 		public Boolean aura;
 		public List<String> anims;
-	    public uint cooldown;
-
+		public uint cooldown = 1000;
 	}
 }

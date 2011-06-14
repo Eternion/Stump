@@ -1,29 +1,12 @@
-﻿// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
+﻿
 using System;
 using System.Collections.Generic;
-using Stump.BaseCore.Framework.Pool;
 using Stump.BaseCore.Framework.Pool.Task;
 using Stump.Database.AuthServer;
 using Stump.Database.WorldServer;
 using Stump.Database.WorldServer.Character;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Handlers;
 using Stump.Server.WorldServer.IPC;
 
 namespace Stump.Server.WorldServer.Helpers
@@ -32,7 +15,7 @@ namespace Stump.Server.WorldServer.Helpers
     {
         public static List<CharacterRecord> GetCharactersOnAccount(WorldClient client)
         {
-            var characters = new List<CharacterRecord>(Handlers.CharacterHandler.MaxCharacterSlot);
+            var characters = new List<CharacterRecord>((int)CharacterHandler.MaxCharacterSlot);
             var ids = client.Account.GetWorldCharactersId(WorldServer.ServerInformation.Id);
 
             foreach (var id in ids)
@@ -55,7 +38,7 @@ namespace Stump.Server.WorldServer.Helpers
         public static void AddCharacterOnAccount(CharacterRecord character, WorldClient client)
         {
             if (client.Characters == null)
-                client.Characters = new List<CharacterRecord>(Handlers.CharacterHandler.MaxCharacterSlot);
+                client.Characters = new List<CharacterRecord>((int)CharacterHandler.MaxCharacterSlot);
 
             client.Characters.Insert(0, character);
 

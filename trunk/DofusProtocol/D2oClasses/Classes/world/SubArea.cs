@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Stump.DofusProtocol.D2oClasses.Classes.ambientSounds;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.world
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("SubAreas")]
-	public class SubArea : Object
+	public class SubArea
 	{
-		internal const String MODULE = "SubAreas";
+		private const String MODULE = "SubAreas";
 		public int id;
 		public uint nameId;
 		public int areaId;
@@ -19,7 +16,5 @@ namespace Stump.DofusProtocol.D2oClasses.Classes.world
 		public List<int> shape;
 		public List<uint> customWorldMap;
 		public int packId;
-		internal Array _allSubAreas;
-		
 	}
 }

@@ -30,12 +30,30 @@ namespace Stump.Database.Data.World
            set;
        }
 
+       /// <summary>
+       /// Internal Only. Do not use
+       /// </summary>
        [D2OField("areaId")]
-       [Property("AreaId")]
        public int AreaId
        {
            get;
            set;
+       }
+
+        private AreaRecord m_areaRecord;
+
+       [BelongsTo("AreaId")]
+       public AreaRecord SubArea
+       {
+           get
+           {
+               return m_areaRecord;
+           }
+           set
+           {
+               AreaId = value.Id;
+               m_areaRecord = value;
+           }
        }
 
        [D2OField("ambientSounds")]

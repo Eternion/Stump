@@ -11,8 +11,9 @@ namespace Stump.Database.Data.World
     [D2OClass("Area", "com.ankamagames.dofus.datacenter.world")]
     public sealed class AreaRecord : DataBaseRecord<AreaRecord>
     {
+        private SuperAreaRecord m_superArea;
 
-       [D2OField("id")]
+        [D2OField("id")]
        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
        public int Id
        {
@@ -28,12 +29,28 @@ namespace Stump.Database.Data.World
            set;
        }
 
+       /// <summary>
+       /// Internal Only. Do not use
+       /// </summary>
        [D2OField("superAreaId")]
-       [Property("SuperAreaId")]
        public int SuperAreaId
        {
            get;
            set;
+       }
+
+       [BelongsTo("SubAreaId")]
+       public SuperAreaRecord SuperArea
+       {
+           get
+           {
+               return m_superArea;
+           }
+           set
+           {
+               SuperAreaId = value.Id;
+               m_superArea = value;
+           }
        }
 
        [D2OField("containHouses")]

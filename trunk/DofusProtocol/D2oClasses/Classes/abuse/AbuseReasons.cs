@@ -1,16 +1,13 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.abuse
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("AbuseReasons")]
-	public class AbuseReasons : Object
+	public class AbuseReasons
 	{
-		internal const String MODULE = "AbuseReasons";
+		private const String MODULE = "AbuseReasons";
 		public uint _abuseReasonId;
 		public uint _mask;
 		public int _reasonTextId;
-		
 	}
 }

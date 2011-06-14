@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Stump.DofusProtocol.D2oClasses.Tool
+namespace Stump.DofusProtocol.D2oClasses
 {
     public class D2OClassAttribute : Attribute
     {

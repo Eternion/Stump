@@ -1,15 +1,12 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.quest
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("QuestObjectiveTypes")]
-	public class QuestObjectiveType : Object
+	public class QuestObjectiveType
 	{
-		internal const String MODULE = "QuestObjectiveTypes";
+		private const String MODULE = "QuestObjectiveTypes";
 		public uint id;
 		public uint nameId;
-		
 	}
 }

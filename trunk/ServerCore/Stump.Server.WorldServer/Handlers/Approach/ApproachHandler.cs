@@ -1,21 +1,4 @@
-// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +6,8 @@ using Stump.Database.AuthServer;
 using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.WorldServer.Helpers;
+using Stump.Server.WorldServer.Breeds;
+using Stump.Server.WorldServer.Manager;
 
 namespace Stump.Server.WorldServer.Handlers
 {
@@ -33,7 +17,7 @@ namespace Stump.Server.WorldServer.Handlers
         public static void HandleAuthenticationTicketMessage(WorldClient client, AuthenticationTicketMessage message)
         {
             /* Get Ticket */
-            var ticketAccount = AccountManager.GetAccountByTicket(message.ticket);
+            AccountRecord ticketAccount = AccountManager.GetAccountByTicket(message.ticket);
 
             /* Check null ticket */
             if (ticketAccount == null)
@@ -45,7 +29,7 @@ namespace Stump.Server.WorldServer.Handlers
 
             /* Bind WorldAccount if exist */
             if (WorldAccountRecord.Exists(ticketAccount.Id))
-                client.WorldAccount = WorldAccountRecord.FindById(ticketAccount.Id);
+                client.WorldAccount = WorldAccountRecord.FindWorldAccountById(ticketAccount.Id);
 
             /* WorldAccount is banned */
             if (client.WorldAccount != null && client.WorldAccount.BanRemainingTime != TimeSpan.Zero)
@@ -56,7 +40,7 @@ namespace Stump.Server.WorldServer.Handlers
 
             /* Bind Account & Characters */
             client.Account = ticketAccount;
-            client.Characters = AccountManager.GetCharactersOnAccount(client);
+            client.Characters = CharacterManager.GetCharactersByAccount(client);
 
             /* Ok */
             client.Send(new AuthenticationTicketAcceptedMessage());
@@ -64,7 +48,7 @@ namespace Stump.Server.WorldServer.Handlers
             SendAccountCapabilitiesMessage(client);
             BasicHandler.SendBasicNoOperationMessage(client);
 
-            /* Get console AutoCompletion */
+            /* Just to get console AutoCompletion */
             if (client.Account.Role >= RoleEnum.Moderator)
                 SendConsoleCommandsListMessage(client);
         }
@@ -75,13 +59,13 @@ namespace Stump.Server.WorldServer.Handlers
                             (int) client.Account.Id,
                             true,
                             client.Account.DbAvailableBreeds,
-                            BreedsToFlag(CharacterHandler.AvailableBreeds)
+                            BreedManager.BreedsToFlag(BreedManager.AvailableBreeds)
                             ));
         }
 
         public static void SendAccountLoggingKickedMessage(WorldClient client)
         {
-            var date = client.WorldAccount.BanRemainingTime;
+            TimeSpan date = client.WorldAccount.BanRemainingTime;
             client.Send(new AccountLoggingKickedMessage((uint) date.Days, (uint) date.Hours, (uint) date.Minutes));
         }
 
@@ -91,11 +75,6 @@ namespace Stump.Server.WorldServer.Handlers
                 new ConsoleCommandsListMessage(
                     WorldServer.Instance.CommandManager.AvailableCommands.SelectMany(c => c.Aliases).ToList(),
                     new List<string>(), new List<string>()));
-        }
-
-        private static uint BreedsToFlag(IEnumerable<PlayableBreedEnum> breeds)
-        {
-            return (uint)breeds.Aggregate(0, (current, breedEnum) => current | (1 << (int)breedEnum));
         }
     }
 }

@@ -1,17 +1,14 @@
 using System;
 using System.Collections.Generic;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.alignments
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("AlignmentTitles")]
-	public class AlignmentTitle : Object
+	public class AlignmentTitle
 	{
-		internal const String MODULE = "AlignmentTitles";
+		private const String MODULE = "AlignmentTitles";
 		public int sideId;
 		public List<int> namesId;
 		public List<int> shortsId;
-		
 	}
 }

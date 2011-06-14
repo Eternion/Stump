@@ -1,44 +1,26 @@
-// /*************************************************************************
-//  *
-//  *  Copyright (C) 2010 - 2011 Stump Team
-//  *
-//  *  This program is free software: you can redistribute it and/or modify
-//  *  it under the terms of the GNU General Public License as published by
-//  *  the Free Software Foundation, either version 3 of the License, or
-//  *  (at your option) any later version.
-//  *
-//  *  This program is distributed in the hope that it will be useful,
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  *  GNU General Public License for more details.
-//  *
-//  *  You should have received a copy of the GNU General Public License
-//  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//  *
-//  *************************************************************************/
+
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text.RegularExpressions;
 using Stump.BaseCore.Framework.Attributes;
-using Stump.BaseCore.Framework.Utils;
+using Stump.BaseCore.Framework.IO;
+using Stump.DofusProtocol.Messages.Framework.IO;
 using Stump.Database.WorldServer;
 using Stump.Database.WorldServer.Character;
-using Stump.Database.WorldServer.Storage;
+using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Classes.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.DataProvider.Data.Breeds;
-using Stump.Server.DataProvider.Data.Threshold;
-using Stump.Server.WorldServer.Helpers;
+using Stump.Server.WorldServer.Breeds;
+using Stump.Server.WorldServer.Entities;
+using Stump.Server.WorldServer.Global;
+using Stump.Server.WorldServer.Manager;
+using Stump.Server.WorldServer.Threshold;
 
 namespace Stump.Server.WorldServer.Handlers
 {
     public partial class CharacterHandler : WorldHandlerContainer
     {
-        /// <summary>
-        /// Enable or disable random name suggestion when creation a character
-        /// </summary>
         [Variable]
         public static bool EnableNameSuggestion = true;
 
@@ -46,29 +28,7 @@ namespace Stump.Server.WorldServer.Handlers
         ///   Maximum number of characters you can create/store in your account
         /// </summary>
         [Variable]
-        public static int MaxCharacterSlot = 5;
-
-        /// <summary>
-        /// List of available breeds
-        /// </summary>
-        [Variable]
-        public static List<PlayableBreedEnum> AvailableBreeds = new List<PlayableBreedEnum>
-            {
-                PlayableBreedEnum.Feca,
-                PlayableBreedEnum.Osamodas,
-                PlayableBreedEnum.Enutrof,
-                PlayableBreedEnum.Sram,
-                PlayableBreedEnum.Xelor,
-                PlayableBreedEnum.Ecaflip,
-                PlayableBreedEnum.Eniripsa,
-                PlayableBreedEnum.Iop,
-                PlayableBreedEnum.Cra,
-                PlayableBreedEnum.Sadida,
-                PlayableBreedEnum.Sacrieur,
-                PlayableBreedEnum.Pandawa,
-                PlayableBreedEnum.Roublard,
-                //BreedEnum.Zobal,
-            };
+        public static uint MaxCharacterSlot = 5;
 
         [WorldHandler(typeof(CharacterCreationRequestMessage))]
         public static void HandleCharacterCreationRequestMessage(WorldClient client, CharacterCreationRequestMessage message)
@@ -87,7 +47,7 @@ namespace Stump.Server.WorldServer.Handlers
                 return;
             }
 
-            var characterName = StringUtils.FirstLetterUpper(message.name.ToLower());
+            string characterName = StringExtensions.FirstLetterUpper(message.name.ToLower());
 
             /* Check is name is well formatted */
             if (!Regex.IsMatch(characterName, "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled))
@@ -97,69 +57,69 @@ namespace Stump.Server.WorldServer.Handlers
             }
 
             /* Get character Breed */
-            var breedTemplate = BreedTemplateManager.Instance.Get((PlayableBreedEnum)message.breed);
+            BaseBreed breed = BreedManager.GetBreed(message.breed);
 
             /* Check if breed is available */
-            if (!client.Account.CanUseBreed(message.breed) || !AvailableBreeds.Contains(breedTemplate.Id))
+            if (!client.Account.CanUseBreed(message.breed) || !BreedManager.AvailableBreeds.Contains(breed.Id))
             {
                 client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.ERR_NOT_ALLOWED));
                 return;
             }
 
             /* Parse character colors */
-            var indexedColors = new List<int>(5);
+            var indexedColors = new List<int>();
             for (int i = 0; i < 5; i++)
             {
-                var color = message.colors[i];
+                int color = message.colors[i];
 
                 if (color == -1)
-                    color = (int)(!message.sex ? breedTemplate.MaleColors[i] : breedTemplate.FemaleColors[i]);
+                    color = (int)(!message.sex ? breed.MaleColors[i] : breed.FemaleColors[i]);
 
                 indexedColors.Add(int.Parse((i + 1) + color.ToString("X6"), NumberStyles.HexNumber));
             }
 
-            var breedLook = !message.sex ? breedTemplate.MaleLook.Copy() : breedTemplate.FemaleLook.Copy();
+            var breedLook = !message.sex ? breed.MaleLook.Copy() : breed.FemaleLook.Copy();
             breedLook.indexedColors = indexedColors;
 
             /* Create Inventory */
-            var inventory = new InventoryRecord();
+            // TODO ADD START OBJECTS
+            var inventory = new InventoryRecord { Kamas = (uint)breed.StartKamas };
             inventory.Create();
 
             /* Create Character */
             var character = new CharacterRecord
             {
-                Experience = ThresholdManager.Instance["CharacterExp"].GetLowerBound(breedTemplate.StartLevel),
+                Experience = ThresholdManager.Thresholds["CharacterExp"].GetLowerBound((uint)breed.StartLevel),
                 Name = characterName,
-                Breed = (PlayableBreedEnum) message.breed,
+                Breed = message.breed,
                 Sex = message.sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE,
                 BaseLook = breedLook,
-                MapId = breedTemplate.StartMap,
-                CellId = breedTemplate.StartCell,
-                BaseHealth = breedTemplate.StartHealthPoint,
+                MapId = (int)breed.StartMap,
+                CellId = breed.StartCellId,
+                BaseHealth = breed.StartHealthPoint,
                 DamageTaken = 0,
-                StatsPoints = breedTemplate.StartStatsPoints,
-                SpellsPoints = breedTemplate.StartSpellsPoints,
-                Strength = breedTemplate.StartStrength,
-                Vitality = breedTemplate.StartVitality,
-                Wisdom = breedTemplate.StartWisdom,
-                Intelligence = breedTemplate.StartIntelligence,
-                Chance = breedTemplate.StartChance,
-                Agility = breedTemplate.StartAgility,
+                StatsPoints = 0,
+                SpellsPoints = 0,
+                Strength = 0,
+                Vitality = 0,
+                Wisdom = 0,
+                Intelligence = 0,
+                Chance = 0,
+                Agility = 0,
                 Inventory = inventory
             };
             character.Create();
 
             /* Set Character SpellCollection */
-            var startPos = 64;
-            foreach (var spellTemplate in breedTemplate.LearnableSpells.Where(s => s.ObtainLevel == 1))
+            foreach (SpellIdEnum spellId in breed.StartSpells.Keys)
             {
-                var spell = new CharacterSpellRecord { SpellId = (uint)spellTemplate.Id, Character = character, Position = startPos++, Level = 1 };
+                var spell = new SpellRecord { SpellId = (uint)spellId, Position = breed.StartSpells[spellId], Level = 1 };
                 spell.Create();
                 character.Spells.Add(spell);
             }
 
             /* Save it */
-            AccountManager.AddCharacterOnAccount(character, client);
+            CharacterManager.CreateCharacterOnAccount(character, client);
 
             BasicHandler.SendBasicNoOperationMessage(client);
             client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.OK));
@@ -174,7 +134,7 @@ namespace Stump.Server.WorldServer.Handlers
                 client.Send(new CharacterNameSuggestionFailureMessage((uint)NicknameGeneratingFailureEnum.NICKNAME_GENERATOR_UNAVAILABLE));
                 return;
             }
-            var generatedName = CharacterManager.GetRandomName();
+            string generatedName = CharacterManager.GenerateName();
 
             client.Send(new CharacterNameSuggestionSuccessMessage(generatedName));
         }

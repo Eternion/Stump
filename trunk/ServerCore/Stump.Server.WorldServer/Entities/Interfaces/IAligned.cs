@@ -1,0 +1,14 @@
+﻿
+using Stump.Server.WorldServer.Items;
+
+namespace Stump.Server.WorldServer.Entities
+{
+    public interface IAligned
+    {
+
+        readonly long Id;
+
+        uint Level { get; }
+
+    }
+}

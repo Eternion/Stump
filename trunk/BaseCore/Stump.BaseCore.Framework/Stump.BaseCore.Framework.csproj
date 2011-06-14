@@ -22,6 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>..\..\Docs\Stump.BaseCore.Framework.XML</DocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +33,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -78,6 +80,7 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release 2|x64'">
     <OutputPath>bin\x64\Release 2\</OutputPath>
@@ -97,6 +100,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Final|AnyCPU'">
     <OutputPath>bin\Final\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Final|x64'">
     <OutputPath>bin\x64\Final\</OutputPath>
@@ -120,6 +124,7 @@
     <Compile Include="Attributes\Cyclic.cs" />
     <Compile Include="Attributes\Variable.cs" />
     <Compile Include="Collections\BlockingQueue.cs" />
+    <Compile Include="Collections\CollectionExtensions.cs" />
     <Compile Include="Collections\ConcurrentList.cs" />
     <Compile Include="Collections\LockFreeQueue.cs" />
     <Compile Include="Collections\TimedDictionary.cs" />
@@ -129,11 +134,14 @@
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="IO\ConsoleProcent.cs" />
+    <Compile Include="IO\IDataReader.cs" />
+    <Compile Include="IO\IDataWriter.cs" />
+    <Compile Include="Mathematics\FastRandom.cs" />
     <Compile Include="Reflection\AccessorBuilder.cs" />
     <Compile Include="Reflection\DynamicSwitchExecutor.cs" />
     <Compile Include="Reflection\DynamicExtension.cs" />
     <Compile Include="Reflection\DynamicSwitch.cs" />
-    <Compile Include="Reflection\Extensions.cs" />
+    <Compile Include="Reflection\ReflectionExtensions.cs" />
     <Compile Include="Threading\TaskCompletionSourceExtensions.cs" />
     <Compile Include="Threading\TaskExtensions.cs" />
     <Compile Include="Threading\TaskFactoryExtensions.cs" />
@@ -146,20 +154,16 @@
     <Compile Include="Threading\Messages.cs" />
     <Compile Include="Pool\SocketAsyncEventArgsPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\AsyncRandom.cs" />
+    <Compile Include="Threading\AsyncRandom.cs" />
     <Compile Include="Threading\AsyncTaskPool.cs" />
-    <Compile Include="Utils\BooleanByteWrapper.cs" />
     <Compile Include="Cache\CachedData.cs" />
     <Compile Include="Cache\CacheDictionary.cs" />
-    <Compile Include="Utils\ConditionWaiter.cs" />
+    <Compile Include="Threading\ConditionWaiter.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Pool\Task\CyclicTask.cs" />
-    <Compile Include="Utils\BooleanIntWrapper.cs" />
-    <Compile Include="Utils\FileWatcher.cs" />
-    <Compile Include="Utils\FormatterHelper.cs" />
-    <Compile Include="Utils\Node.cs" />
-    <Compile Include="Utils\Singleton.cs" />
-    <Compile Include="Utils\StringUtils.cs" />
+    <Compile Include="IO\FormatterExtensions.cs" />
+    <Compile Include="Mathematics\Node.cs" />
+    <Compile Include="Reflection\Singleton.cs" />
     <Compile Include="Pool\Task\TaskPool.cs" />
     <Compile Include="Xml\Docs\DocEntry.cs" />
     <Compile Include="Xml\Docs\DotNetDocumentation.cs" />

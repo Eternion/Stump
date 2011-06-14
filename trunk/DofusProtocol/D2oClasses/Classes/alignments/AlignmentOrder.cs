@@ -1,16 +1,13 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.alignments
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("AlignmentOrder")]
-	public class AlignmentOrder : Object
+	public class AlignmentOrder
 	{
-		internal const String MODULE = "AlignmentOrder";
+		private const String MODULE = "AlignmentOrder";
 		public int id;
 		public uint nameId;
 		public uint sideId;
-		
 	}
 }

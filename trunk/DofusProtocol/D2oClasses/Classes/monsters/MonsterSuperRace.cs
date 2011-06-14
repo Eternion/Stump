@@ -1,15 +1,12 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.monsters
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("MonsterSuperRaces")]
-	public class MonsterSuperRace : Object
+	public class MonsterSuperRace
 	{
-		internal const String MODULE = "MonsterSuperRaces";
+		private const String MODULE = "MonsterSuperRaces";
 		public int id;
 		public uint nameId;
-		
 	}
 }

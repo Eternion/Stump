@@ -1,10 +1,8 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.quest.rewards
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
-	public class QuestRewardType : Object
+	public class QuestRewardType
 	{
 		public const String KAMAS = "kamas";
 		public const String EXPERIENCE = "experience";
@@ -12,6 +10,5 @@ namespace Stump.DofusProtocol.D2oClasses.Classes.quest.rewards
 		public const String EMOTE = "emote";
 		public const String JOB = "job";
 		public const String SPELL = "spell";
-		
 	}
 }

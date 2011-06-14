@@ -1,18 +1,15 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.houses
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("Houses")]
-	public class House : Object
+	public class House
 	{
-		internal const String MODULE = "Houses";
+		private const String MODULE = "Houses";
 		public int typeId;
 		public uint defaultPrice;
 		public int nameId;
 		public int descriptionId;
 		public int gfxId;
-		
 	}
 }

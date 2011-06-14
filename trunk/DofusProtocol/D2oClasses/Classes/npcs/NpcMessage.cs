@@ -1,16 +1,13 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.npcs
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("NpcMessages")]
-	public class NpcMessage : Object
+	public class NpcMessage
 	{
-		internal const String MODULE = "NpcMessages";
+		private const String MODULE = "NpcMessages";
 		public int id;
 		public uint messageId;
 		public String messageParams;
-		
 	}
 }

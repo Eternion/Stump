@@ -1,11 +1,25 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Stump.BaseCore.Framework.Extensions
 {
     public static class CollectionExtensions
     {
+        public static string ByteArrayToString(this byte[] byteCryptedMd5)
+        {
+            var output = new StringBuilder(byteCryptedMd5.Length);
+
+            for (int i = 0; i < byteCryptedMd5.Length; i++)
+            {
+                output.Append(byteCryptedMd5[i].ToString("X2"));
+            }
+
+            return output.ToString().ToLower();
+        }
+
         public static bool CompareEnumerable<T>(this IEnumerable<T> ie1, IEnumerable<T> ie2)
         {
             if (ie1.GetType() != ie2.GetType())
@@ -67,6 +81,35 @@ namespace Stump.BaseCore.Framework.Extensions
                 }
             }
             return maxT;
+        }
+
+        /// <summary>
+        /// Returns the string representation of an IEnumerable (all elements, joined by comma)
+        /// </summary>
+        /// <param name="conj">The conjunction to be used between each elements of the collection</param>
+        public static string ToStringCol(this ICollection collection, string conj)
+        {
+            return collection != null ? string.Join(conj, ToStringArr(collection)) : "(null)";
+        }
+
+        public static string ToString(this IEnumerable collection, string conj)
+        {
+            return collection != null ? string.Join(conj, ToStringArr(collection)) : "(null)";
+        }
+
+        public static string[] ToStringArr(this IEnumerable collection)
+        {
+            var strs = new List<string>();
+            var colEnum = collection.GetEnumerator();
+            while (colEnum.MoveNext())
+            {
+                var cur = colEnum.Current;
+                if (cur != null)
+                {
+                    strs.Add(cur.ToString());
+                }
+            }
+            return strs.ToArray();
         }
     }
 }

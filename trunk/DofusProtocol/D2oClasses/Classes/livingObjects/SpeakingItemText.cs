@@ -1,19 +1,16 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.livingObjects
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("SpeakingItemsText")]
-	public class SpeakingItemText : Object
+	public class SpeakingItemText
 	{
-		internal const String MODULE = "SpeakingItemsText";
+		private const String MODULE = "SpeakingItemsText";
 		public int textId;
-		public double textProba;
+		public float textProba;
 		public uint textStringId;
 		public int textLevel;
 		public int textSound;
 		public String textRestriction;
-		
 	}
 }

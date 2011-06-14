@@ -1,23 +1,20 @@
 using System;
 using System.Collections.Generic;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.servers
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("Servers")]
-	public class Server : Object
+	public class Server
 	{
-		internal const String MODULE = "Servers";
+		private const String MODULE = "Servers";
 		public int id;
 		public uint nameId;
 		public uint commentId;
-		public double openingDate;
+		public float openingDate;
 		public String language;
 		public int populationId;
 		public uint gameTypeId;
 		public int communityId;
 		public List<String> restrictedToLanguages;
-		
 	}
 }

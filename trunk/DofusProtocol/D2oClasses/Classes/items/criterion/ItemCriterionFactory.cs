@@ -1,11 +1,8 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.items.criterion
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
-	public class ItemCriterionFactory : Object
+	public class ItemCriterionFactory
 	{
-		
 	}
 }

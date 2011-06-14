@@ -1,15 +1,12 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.npcs
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("TaxCollectorFirstnames")]
-	public class TaxCollectorFirstname : Object
+	public class TaxCollectorFirstname
 	{
-		internal const String MODULE = "TaxCollectorFirstnames";
+		private const String MODULE = "TaxCollectorFirstnames";
 		public int id;
 		public uint firstnameId;
-		
 	}
 }

@@ -1,16 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.livingObjects
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("LivingObjectSkinJntMood")]
-	public class LivingObjectSkinJntMood : Object
+	public class LivingObjectSkinJntMood
 	{
-		internal const String MODULE = "LivingObjectSkinJntMood";
+		private const String MODULE = "LivingObjectSkinJntMood";
 		public int skinId;
 		public List<List<int>> moods;
-		
 	}
 }

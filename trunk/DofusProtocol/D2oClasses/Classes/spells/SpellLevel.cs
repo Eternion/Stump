@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Stump.DofusProtocol.D2oClasses.Classes.effects.instances;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.spells
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("SpellLevels")]
-	public class SpellLevel : Object
+	public class SpellLevel
 	{
-		internal const String MODULE = "SpellLevels";
+		private const String MODULE = "SpellLevels";
 		public uint id;
 		public uint spellId;
 		public uint spellBreed;
@@ -29,11 +26,10 @@ namespace Stump.DofusProtocol.D2oClasses.Classes.spells
 		public uint minCastInterval;
 		public uint minPlayerLevel;
 		public Boolean criticalFailureEndsTurn;
+		public Boolean hideEffects;
 		public List<int> statesRequired;
 		public List<int> statesForbidden;
 		public List<EffectInstanceDice> effects;
 		public List<EffectInstanceDice> criticalEffect;
-		public Boolean hideEffects;
-		
 	}
 }

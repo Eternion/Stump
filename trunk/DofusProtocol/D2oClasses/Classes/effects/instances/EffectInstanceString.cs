@@ -1,12 +1,9 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.effects.instances
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	public class EffectInstanceString : EffectInstance
 	{
 		public String text;
-		
 	}
 }

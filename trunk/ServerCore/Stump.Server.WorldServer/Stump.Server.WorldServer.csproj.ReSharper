@@ -1,0 +1,30 @@
+<Configuration>
+  <NamespaceFolders>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Commands/d:Commands</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Achievement</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Actions</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Approach</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Atlas</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Authorized</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Basic</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Character</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Chat</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context/d:RolePlay</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Context</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Dialog</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Friend</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Guild</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Initialization</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Interactive</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Inventory</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Moderation</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Packs</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Prism</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Pvp</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Report</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Script</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Social</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Startup</SkipFolder>
+    <SkipFolder>A753FDB3-2D64-4993-8BF1-621240F18108/d:Handlers/d:Subscriber</SkipFolder>
+  </NamespaceFolders>
+</Configuration>

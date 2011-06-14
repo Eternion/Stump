@@ -1,16 +1,13 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.interactives
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("Interactives")]
-	public class Interactive : Object
+	public class Interactive
 	{
-		internal const String MODULE = "Interactives";
+		private const String MODULE = "Interactives";
 		public int id;
 		public uint nameId;
 		public int actionId;
-		
 	}
 }

@@ -1,8 +1,8 @@
-namespace Stump.DofusProtocol.D2oClasses.Classes.items.criterion
+using System;
+
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	public class UnusableItemCriterion : ItemCriterion
 	{
-		
 	}
 }

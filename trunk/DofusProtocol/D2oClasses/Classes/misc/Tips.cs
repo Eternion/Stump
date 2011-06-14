@@ -1,15 +1,12 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.misc
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("Tips")]
-	public class Tips : Object
+	public class Tips
 	{
-		internal const String MODULE = "Tips";
+		private const String MODULE = "Tips";
 		public int id;
 		public uint descId;
-		
 	}
 }

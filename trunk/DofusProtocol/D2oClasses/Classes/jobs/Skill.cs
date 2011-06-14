@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.jobs
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("Skills")]
-	public class Skill : Object
+	public class Skill
 	{
-		internal const String MODULE = "Skills";
+		private const String MODULE = "Skills";
 		public int id;
 		public uint nameId;
 		public int parentJobId;
@@ -21,6 +19,5 @@ namespace Stump.DofusProtocol.D2oClasses.Classes.jobs
 		public Boolean isRepair;
 		public int cursor;
 		public Boolean availableInHouse;
-		
 	}
 }

@@ -28,7 +28,7 @@ namespace Stump.Tools.DataLoader
 
                 if (attribute != null)
                 {
-                    m_typeByFileName.Add(attribute.FilesName.FirstOrDefault(), type);
+                    m_typeByFileName.Add(attribute.Name, type);
                 }
             }
         }
@@ -44,6 +44,8 @@ namespace Stump.Tools.DataLoader
             : this()
         {
             FileName = file;
+
+            
         }
 
         #region IFileAdapter Members
@@ -150,6 +152,9 @@ namespace Stump.Tools.DataLoader
                 {
                     if (m_lastI18NFile == null)
                         m_lastI18NFile = new I18NFile(dialog.FileName);
+
+                    string abc = m_lastI18NFile.ReadUiText("ui.link.changelog");
+
 
                     for (int i = 0; i < m_form.m_dataView.Rows.Count; i++)
                     {

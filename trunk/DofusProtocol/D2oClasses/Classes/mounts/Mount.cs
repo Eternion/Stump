@@ -1,16 +1,13 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.mounts
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("Mounts")]
-	public class Mount : Object
+	public class Mount
 	{
 		public uint id;
 		public uint nameId;
 		public String look;
 		public String MODULE = "Mounts";
-		
 	}
 }

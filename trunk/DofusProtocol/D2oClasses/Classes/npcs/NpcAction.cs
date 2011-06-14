@@ -1,15 +1,12 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.npcs
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("NpcActions")]
-	public class NpcAction : Object
+	public class NpcAction
 	{
-		internal const String MODULE = "NpcActions";
+		private const String MODULE = "NpcActions";
 		public int id;
 		public uint nameId;
-		
 	}
 }

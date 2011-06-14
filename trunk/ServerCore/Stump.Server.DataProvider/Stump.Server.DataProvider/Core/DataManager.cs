@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading;
 using NLog;
 using Stump.BaseCore.Framework.Cache;
-using Stump.BaseCore.Framework.Utils;
+using Stump.BaseCore.Framework.Reflection;
 
 namespace Stump.Server.DataProvider.Core
 {

@@ -1,15 +1,12 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.mounts
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("RideFood")]
-	public class RideFood : Object
+	public class RideFood
 	{
 		public uint gid;
 		public uint typeId;
 		public String MODULE = "RideFood";
-		
 	}
 }

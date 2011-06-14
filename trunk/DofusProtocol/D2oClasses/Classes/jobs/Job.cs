@@ -1,19 +1,16 @@
 using System;
 using System.Collections.Generic;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.jobs
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("Jobs")]
-	public class Job : Object
+	public class Job
 	{
-		internal const String MODULE = "Jobs";
+		private const String MODULE = "Jobs";
 		public int id;
 		public uint nameId;
 		public int specializationOfId;
 		public int iconId;
 		public List<int> toolIds;
-		
 	}
 }

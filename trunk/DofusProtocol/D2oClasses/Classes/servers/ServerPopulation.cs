@@ -1,16 +1,13 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.servers
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("ServerPopulations")]
-	public class ServerPopulation : Object
+	public class ServerPopulation
 	{
-		internal const String MODULE = "ServerPopulations";
+		private const String MODULE = "ServerPopulations";
 		public int id;
 		public uint nameId;
 		public int weight;
-		
 	}
 }

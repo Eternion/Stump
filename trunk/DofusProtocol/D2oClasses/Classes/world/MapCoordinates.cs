@@ -1,17 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.world
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("MapCoordinates")]
-	public class MapCoordinates : Object
+	public class MapCoordinates
 	{
-		internal const String MODULE = "MapCoordinates";
-		internal const int UNDEFINED_COORD = int.MinValue;
+		private const String MODULE = "MapCoordinates";
 		public uint compressedCoords;
 		public List<int> mapIds;
-		
 	}
 }

@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.quest
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("QuestSteps")]
-	public class QuestStep : Object
+	public class QuestStep
 	{
-		internal const String MODULE = "QuestSteps";
+		private const String MODULE = "QuestSteps";
 		public uint id;
 		public uint questId;
 		public uint nameId;
@@ -22,6 +20,5 @@ namespace Stump.DofusProtocol.D2oClasses.Classes.quest
 		public List<uint> jobsReward;
 		public List<uint> spellsReward;
 		public List<uint> objectiveIds;
-		
 	}
 }

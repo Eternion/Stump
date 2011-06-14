@@ -1,16 +1,13 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.DofusProtocol.D2oClasses.Classes.guild
+namespace Stump.DofusProtocol.D2oClasses
 {
-	
 	[D2OClass("RankNames")]
-	public class RankName : Object
+	public class RankName
 	{
-		internal const String MODULE = "RankNames";
+		private const String MODULE = "RankNames";
 		public int id;
 		public uint nameId;
 		public int order;
-		
 	}
 }
