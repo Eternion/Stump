@@ -194,6 +194,7 @@
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="IFormAdapter.cs" />
+    <Compile Include="PakFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FormD2O.resx">
@@ -230,17 +231,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\BaseCore\Stump.BaseCore.Framework\Stump.BaseCore.Framework.csproj">
+      <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
+      <Name>Stump.BaseCore.Framework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DofusProtocol\D2oClasses\Stump.DofusProtocol.D2oClasses.csproj">
       <Project>{33093793-C4BA-4B89-AC82-6E9D00437452}</Project>
       <Name>Stump.DofusProtocol.D2oClasses</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ServerCore\Stump.Server.BaseServer\Stump.Server.BaseServer.csproj">
-      <Project>{011FBAFC-7720-4D36-9C59-71BAE6163C9E}</Project>
-      <Name>Stump.Server.BaseServer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ServerCore\Stump.Server.DataProvider\Stump.Server.DataProvider\Stump.Server.DataProvider.csproj">
-      <Project>{944742DD-E4E8-408D-8054-E6F94E31034E}</Project>
-      <Name>Stump.Server.DataProvider</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

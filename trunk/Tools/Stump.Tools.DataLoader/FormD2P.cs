@@ -7,7 +7,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using BrendanGrant.Helpers.FileAssociation;
-using Stump.Server.DataProvider.Data.MapTool;
 using Stump.Tools.DataLoader.Properties;
 
 namespace Stump.Tools.DataLoader
