@@ -1,16 +1,17 @@
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Stump.BaseCore.Framework.IO;
-using Stump.DofusProtocol.Messages.Framework.IO;
+using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.BaseServer.Commands
 {
     public abstract class TriggerBase
     {
+        private readonly Regex m_regexIsNamed = new Regex(@"^(?!\"")(?:-|--)?(\w+)=([^\""\s]*)(?!\"")$", RegexOptions.Compiled);
+        private readonly Regex m_regexVar = new Regex(@"^(?!\"")(?:-|--)([a-zA-Z]+)(?!\"")$", RegexOptions.Compiled);
+
         protected TriggerBase(StringStream args, RoleEnum userRole)
         {
             Args = args;
@@ -32,32 +33,25 @@ namespace Stump.Server.BaseServer.Commands
         public RoleEnum UserRole
         {
             get;
-            set;
+            private set;
         }
 
         public CommandBase BindedCommand
         {
             get;
-            internal set;
+            private set;
         }
 
-
-        public SubCommand BindedSubCommand
+        internal Dictionary<string, IParameter> CommandsParametersByName
         {
             get;
-            internal set;
+            private set;
         }
 
-        internal Dictionary<string, ICommandParameter> CommandsParametersByName
+        internal Dictionary<string, IParameter> CommandsParametersByShortName
         {
             get;
-            set;
-        }
-
-        internal Dictionary<string, ICommandParameter> CommandsParametersByShortName
-        {
-            get;
-            set;
+            private set;
         }
 
         /// <summary>
@@ -70,181 +64,170 @@ namespace Stump.Server.BaseServer.Commands
             Reply(string.Format(format, args));
         }
 
-        private void ReplyError(string message)
+        public void ReplyError(string message)
         {
             Reply("(Error) " + message);
         }
 
-        public virtual T GetArgument<T>(string name)
+        public void ReplyError(string format, params object[] args)
+        {
+            Reply(string.Format("(Error) " + format, args));
+        }
+
+        public virtual T Get<T>(string name)
         {
             if (CommandsParametersByName.ContainsKey(name))
-                return (T)CommandsParametersByName[name].Value;
+                return (T) CommandsParametersByName[name].Value;
             if (CommandsParametersByShortName.ContainsKey(name))
                 return (T) CommandsParametersByShortName[name].Value;
 
             throw new ArgumentException("'" + name + "' is not an existing parameter");
         }
 
-        public virtual bool ArgumentExists(string name)
+        /// <summary>
+        /// Returns true only if the argument as been set by the user
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public virtual bool IsArgumentDefined(string name)
         {
-            ICommandParameter parameter;
+            IParameter parameter;
             if (CommandsParametersByName.ContainsKey(name))
             {
-                parameter = CommandsParametersByName[name];
-
-                return parameter.IsValueDefined;
+                return CommandsParametersByName[name].IsDefined;
             }
             if (CommandsParametersByShortName.ContainsKey(name))
             {
-                parameter = CommandsParametersByShortName[name];
-
-                return parameter.IsValueDefined;
+                return CommandsParametersByShortName[name].IsDefined;
             }
 
             return false;
         }
 
-        public string GetBindedCommandName()
+        /// <summary>
+        /// Bind the trigger to a command instance and initialize his parameters. Returns false whenever an error occurs during the initialization
+        /// </summary>
+        internal bool BindToCommand(CommandBase command)
         {
-            return BindedCommand != null
-                       ? BindedCommand.Aliases.FirstOrDefault() +
-                         (BindedSubCommand != null
-                              ? " " + BindedSubCommand.Aliases.FirstOrDefault()
-                              : "")
-                       : "";
-        }
+            BindedCommand = command;
 
-        internal bool DefineParameters(IEnumerable<ICommandParameter> commandParameters)
-        {
-            return DefineParameters(commandParameters, ReplyError);
-        }
+            if (command is SubCommandContainer) // SubCommandContainer has no params
+                return true;
 
-        internal bool DefineParameters(IEnumerable<ICommandParameter> commandParameters, Action<string> errorDelegate)
-        {
-            var definedParam = new List<ICommandParameter>();
+            var definedParam = new List<IParameter>();
+            var paramToDefine = new List<IParameterDefinition>(BindedCommand.Parameters);
 
             string word = Args.NextWord();
-            while (!string.IsNullOrEmpty(word) && definedParam.Count < commandParameters.Count())
+            while (!string.IsNullOrEmpty(word) && definedParam.Count < BindedCommand.Parameters.Count)
             {
                 if (word.StartsWith("\"") && word.EndsWith("\""))
                     word = word.Remove(word.Length - 1, 1).Remove(0, 1);
 
-                Match matchIsNamed = Regex.Match(word, @"^(?!\"")(?:-|--)?(\w+)=([^\""\s]*)(?!\"")$", RegexOptions.Compiled);
-                Match matchVar = Regex.Match(word, @"^(?!\"")(?:-|--)([a-zA-Z]+)(?!\"")$", RegexOptions.Compiled);
-                if (matchIsNamed.Success)
+
+                if (word.StartsWith("-"))
                 {
-                    string name = matchIsNamed.Groups[1].Value;
-                    string value = matchIsNamed.Groups[2].Value;
-
-                    IEnumerable<ICommandParameter> matchingParams =
-                        commandParameters.Where(entry => IsRightName(entry, name, CommandBase.IgnoreCommandCase));
-
-                    if (matchingParams.Count() == 0)
+                    string name = null;
+                    string value = null;
+                    Match matchIsNamed = m_regexIsNamed.Match(word);
+                    if (matchIsNamed.Success)
                     {
-                        errorDelegate(string.Format("Unknown parameter : {0}", name));
-                        return false;
+                        name = matchIsNamed.Groups[1].Value;
+                        value = matchIsNamed.Groups[2].Value;
+                    }
+                    else
+                    {
+                        Match matchVar = m_regexVar.Match(word);
+                        if (matchVar.Success)
+                        {
+                            name = matchIsNamed.Groups[1].Value;
+                            value = string.Empty;
+                        }
                     }
 
-                    foreach (ICommandParameter commandParameter in matchingParams)
+                    if (!string.IsNullOrEmpty(name)) // if one of both regex success
                     {
+                        IParameterDefinition definition =
+                            paramToDefine.Where(entry => CompareParameterName(entry, name, CommandBase.IgnoreCommandCase)).SingleOrDefault();
+
+                        if (definition == null)
+                        {
+                            ReplyError("Unknown parameter : {0}", word);
+                            return false;
+                        }
+
+                        IParameter parameter = definition.CreateParameter();
+
                         try
                         {
-                            if (string.IsNullOrEmpty(value))
-                                commandParameter.SetDefaultValue();
-                            else
-                                commandParameter.SetStringValue(value, this);
+                            parameter.SetValue(value, this);
                         }
-                        catch(ConverterException ex)
+                        catch (ConverterException)
                         {
-                            errorDelegate(string.Format("Cannot convert : {0} > {1}", word, ex.Message));
+                            ReplyError("Cannot convert : {0} to {1}", word, definition.ValueType);
                             return false;
                         }
                         catch
                         {
-                            errorDelegate(string.Format("Cannot parse : {0}", word));
+                            ReplyError("Cannot parse : {0}", word);
                             return false;
                         }
 
-                        definedParam.Add(commandParameter);
+                        definedParam.Add(parameter);
+                        paramToDefine.Remove(definition);
                     }
                 }
-                else if (matchVar.Success)
-                {
-                    string name = matchVar.Groups[1].Value;
 
-                    IEnumerable<ICommandParameter> matchingParams =
-                        commandParameters.Where(entry => IsRightName(entry, name, CommandBase.IgnoreCommandCase));
 
-                    if (matchingParams.Count() == 0)
-                    {
-                        errorDelegate(string.Format("Unknown parameter : {0}", name));
-                        return false;
-                    }
-
-                    foreach (ICommandParameter commandParameter in matchingParams)
-                    {
-                        try
-                        {
-                            commandParameter.SetDefaultValue();
-                        }
-                        catch (ConverterException ex)
-                        {
-                            errorDelegate(string.Format("Cannot convert : {0} > {1}", word, ex.Message));
-                            return false;
-                        }
-                        catch
-                        {
-                            errorDelegate(string.Format("Cannot parse : {0}", word));
-                            return false;
-                        }
-
-                        definedParam.Add(commandParameter);
-                    }
-                }
                 else
                 {
-                    ICommandParameter next = commandParameters.SkipWhile(definedParam.Contains).First();
+                    IParameterDefinition definition = paramToDefine.First();
+
+                    IParameter parameter = definition.CreateParameter();
 
                     try
                     {
-                        next.SetStringValue(word, this);
+                        parameter.SetValue(word, this);
                     }
                     catch
                     {
-                        errorDelegate(string.Format("Cannot parse : {0}", word));
+                        ReplyError("Cannot parse : {0}", word);
                         return false;
                     }
 
-                    definedParam.Add(next);
+                    definedParam.Add(parameter);
+                    paramToDefine.Remove(definition);
                 }
 
                 word = Args.NextWord();
             }
 
 
-            foreach (ICommandParameter undefinedParameter in
-                commandParameters.Where(entry => !definedParam.Contains(entry)))
+            foreach (var unusedDefinition in paramToDefine)
             {
-                if (!undefinedParameter.SetDefaultValue())
+                if (!unusedDefinition.IsOptional)
                 {
-                    errorDelegate(string.Format("{0} is not defined", undefinedParameter.Name));
+                    ReplyError("{0} is not defined", unusedDefinition.Name);
                     return false;
                 }
 
-                definedParam.Add(undefinedParameter);
+                var parameter = unusedDefinition.CreateParameter();
+
+                parameter.SetValue(string.Empty, this);
+                definedParam.Add(parameter);
             }
 
-            CommandsParametersByName = definedParam.ToDictionary(entry => entry.Name);
-            CommandsParametersByShortName = definedParam.ToDictionary(entry => !string.IsNullOrEmpty(entry.ShortName) ? entry.ShortName : entry.Name);
+            CommandsParametersByName = definedParam.ToDictionary(entry => entry.Definition.Name);
+            CommandsParametersByShortName = definedParam.ToDictionary(entry =>
+                    !string.IsNullOrEmpty(entry.Definition.ShortName) ?
+                        entry.Definition.ShortName : entry.Definition.Name);
             return true;
         }
 
-        public bool IsRightName(ICommandParameter parameter, string name, bool useCase)
+        public static bool CompareParameterName(IParameterDefinition parameter, string name, bool useCase)
         {
             return name.Equals(parameter.Name,
                                useCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture)
-                   ||
-                   name.Equals(parameter.ShortName,
+                   || name.Equals(parameter.ShortName,
                                useCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
         }
     }

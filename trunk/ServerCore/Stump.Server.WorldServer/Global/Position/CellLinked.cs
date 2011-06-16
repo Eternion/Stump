@@ -1,6 +1,6 @@
 ﻿
 using System;
-using Stump.BaseCore.Framework.IO;
+using Stump.Core.IO;
 using Stump.DofusProtocol.Messages.Framework.IO;
 using Stump.Database.Data.World;
 using Stump.Server.WorldServer.Entities;

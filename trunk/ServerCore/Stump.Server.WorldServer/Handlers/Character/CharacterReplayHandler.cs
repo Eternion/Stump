@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Stump.BaseCore.Framework.IO;
 using Stump.DofusProtocol.Messages.Framework.IO;
 using Stump.Database;
 using Stump.Database.WorldServer;

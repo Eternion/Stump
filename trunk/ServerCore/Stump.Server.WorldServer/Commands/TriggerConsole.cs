@@ -1,5 +1,5 @@
 using System;
-using Stump.BaseCore.Framework.IO;
+using Stump.Core.IO;
 using Stump.DofusProtocol.Messages.Framework.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;

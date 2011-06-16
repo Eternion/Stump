@@ -1,5 +1,5 @@
 ﻿using System;
-using Stump.BaseCore.Framework.IO;
+using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Messages
 {

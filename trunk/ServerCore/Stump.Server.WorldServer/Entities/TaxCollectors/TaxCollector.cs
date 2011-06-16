@@ -1,6 +1,6 @@
 ﻿
 using System;
-using Stump.BaseCore.Framework.Reflection;
+using Stump.Core.Reflection;
 using Stump.Database.WorldServer;
 using Stump.Database.WorldServer.Guild;
 using Stump.DofusProtocol.Classes;

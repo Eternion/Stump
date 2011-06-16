@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using NLog;
-using Stump.BaseCore.Framework.Cache;
-using Stump.BaseCore.Framework.Reflection;
+using Stump.Core.Cache;
+using Stump.Core.Reflection;
 
 namespace Stump.Server.DataProvider.Core
 {

@@ -3,7 +3,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using NLog;
-using Stump.BaseCore.Framework.IO;
+using Stump.Core.IO;
 using Stump.DofusProtocol.Messages.Framework.IO;
 using Stump.DofusProtocol.Messages;
 

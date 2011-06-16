@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Stump.BaseCore.Framework.Collections;
+using Stump.Core.Collections;
 using Stump.DofusProtocol.Messages;
 
 namespace Stump.Server.BaseServer.Network

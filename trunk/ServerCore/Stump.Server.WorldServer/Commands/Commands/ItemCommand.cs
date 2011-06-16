@@ -30,29 +30,29 @@ namespace Stump.Server.WorldServer.Commands
             RequiredRole = RoleEnum.Moderator;
             Description = "Add an item to the targeted character";
             ParentCommand = typeof (ItemCommand);
-            Parameters = new List<ICommandParameter>
+            Parameters = new List<IParameter>
                 {
-                    new CommandParameter<ItemTemplate>("template", "item", "Item to add", converter:ParametersConverter.ItemTemplateConverter),
-                    new CommandParameter<Character>("target", "t", "Character who will receive the item", true, converter:ParametersConverter.CharacterConverter),
-                    new CommandParameter<uint>("amount", "amount", "Amount of items to add", true, 1),
-                    new CommandParameter<bool>("max", "max", "Set item's effect to maximal values", true, false)
+                    new ParameterDefinition<ItemTemplate>("template", "item", "Item to add", converter:ParametersConverter.ItemTemplateConverter),
+                    new ParameterDefinition<Character>("target", "t", "Character who will receive the item", true, converter:ParametersConverter.CharacterConverter),
+                    new ParameterDefinition<uint>("amount", "amount", "Amount of items to add", true, 1),
+                    new ParameterDefinition<bool>("max", "max", "Set item's effect to maximal values", true, false)
                 };
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            var itemTemplate = trigger.GetArgument<ItemTemplate>("template");
+            var itemTemplate = trigger.Get<ItemTemplate>("template");
             Character target;
 
-            if (!trigger.ArgumentExists("target") && trigger is IInGameTrigger)
+            if (!trigger.IsArgumentDefined("target") && trigger is IInGameTrigger)
                 target = (trigger as IInGameTrigger).Character;
             else
-                target = trigger.GetArgument<Character>("target");
+                target = trigger.Get<Character>("target");
 
             Item addedItem =
                 target.Inventory.AddItem(
                     itemTemplate,
-                    trigger.GetArgument<uint>("amount"));
+                    trigger.Get<uint>("amount"));
 
             if (addedItem == null)
                 trigger.Reply("Item '{0}'({1}) can't be add for an unknown reason", itemTemplate.Name, itemTemplate.Id);
@@ -71,20 +71,20 @@ namespace Stump.Server.WorldServer.Commands
             RequiredRole = RoleEnum.Moderator;
             Description = "Lists loaded items or items from an inventory with a search pattern";
             ParentCommand = typeof(ItemCommand);
-            Parameters = new List<ICommandParameter>
+            Parameters = new List<IParameter>
                 {
-                    new CommandParameter<string>("pattern", "p", "Search pattern (see docs)", true, "*"),
-                    new CommandParameter<Character>("target", "t", "Where items will be search", true, converter:ParametersConverter.CharacterConverter),
+                    new ParameterDefinition<string>("pattern", "p", "Search pattern (see docs)", true, "*"),
+                    new ParameterDefinition<Character>("target", "t", "Where items will be search", true, converter:ParametersConverter.CharacterConverter),
                 };
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            if(trigger.ArgumentExists("target"))
+            if(trigger.IsArgumentDefined("target"))
             {
-                var target = trigger.GetArgument<Character>("target");
+                var target = trigger.Get<Character>("target");
 
-                var items = ItemManager.GetItemsByPattern(trigger.GetArgument<string>("pattern"), target.Inventory.Items);
+                var items = ItemManager.GetItemsByPattern(trigger.Get<string>("pattern"), target.Inventory.Items);
 
                 foreach (var item in items)
                 {
@@ -93,7 +93,7 @@ namespace Stump.Server.WorldServer.Commands
             }
             else
             {
-                var items = ItemManager.GetItemsByPattern(trigger.GetArgument<string>("pattern"));
+                var items = ItemManager.GetItemsByPattern(trigger.Get<string>("pattern"));
 
                 foreach (var item in items)
                 {

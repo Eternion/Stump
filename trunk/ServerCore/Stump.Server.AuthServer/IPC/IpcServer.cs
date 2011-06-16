@@ -9,8 +9,8 @@ using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Security.Principal;
 using NLog;
-using Stump.BaseCore.Framework.Attributes;
-using Stump.BaseCore.Framework.Reflection;
+using Stump.Core.Attributes;
+using Stump.Core.Reflection;
 using Stump.Server.BaseServer.IPC;
 
 namespace Stump.Server.AuthServer.IPC

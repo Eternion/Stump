@@ -1,4 +1,4 @@
-using Stump.BaseCore.Framework.Attributes;
+using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 

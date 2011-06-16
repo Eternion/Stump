@@ -1,6 +1,6 @@
 ﻿
 using ProtoBuf;
-using Stump.BaseCore.Framework.IO;
+using Stump.Core.IO;
 
 namespace Stump.Server.BaseServer.Data.MapTool
 {

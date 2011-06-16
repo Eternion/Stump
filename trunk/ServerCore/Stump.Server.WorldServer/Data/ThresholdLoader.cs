@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Stump.BaseCore.Framework.Attributes;
+using Stump.Core.Attributes;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Classes.Custom;
 using Stump.DofusProtocol.Messages;

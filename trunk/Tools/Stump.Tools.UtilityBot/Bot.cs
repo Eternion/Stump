@@ -3,8 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Stump.BaseCore.Framework.Attributes;
-using Stump.BaseCore.Framework.Xml;
+using Stump.Core.Attributes;
+using Stump.Core.Xml;
 
 namespace Stump.Tools.UtilityBot
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using Stump.BaseCore.Framework.Extensions;
+using Stump.Core.Extensions;
 
 namespace Stump.DofusProtocol.Types.Extensions
 {

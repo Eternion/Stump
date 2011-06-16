@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{B4F98D0C-2EB6-40DB-9B3C-C721B53B7E17}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BaseCore", "BaseCore", "{017F54F2-C79A-41F4-8F32-992EC67BBFA0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{017F54F2-C79A-41F4-8F32-992EC67BBFA0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{6261B863-0BE9-45F6-8992-FFC2469B689F}"
 EndProject
@@ -33,7 +33,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stump.Server.AuthServer", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stump.Server.WorldServer", "ServerCore\Stump.Server.WorldServer\Stump.Server.WorldServer.csproj", "{A753FDB3-2D64-4993-8BF1-621240F18108}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stump.BaseCore.Framework", "BaseCore\Stump.BaseCore.Framework\Stump.BaseCore.Framework.csproj", "{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stump.Core", "Core\Stump.Core\Stump.Core.csproj", "{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GUI", "GUI", "{455857F1-1A1E-436E-9CB9-DDCF3CD5A6D7}"
 EndProject

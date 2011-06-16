@@ -304,9 +304,9 @@
     <Compile Include="Types\version\Version.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\BaseCore\Stump.BaseCore.Framework\Stump.BaseCore.Framework.csproj">
+    <ProjectReference Include="..\..\BaseCore\Stump.BaseCore.Framework\Stump.Core.csproj">
       <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
-      <Name>Stump.BaseCore.Framework</Name>
+      <Name>Stump.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Enums\Stump.DofusProtocol.Enums.csproj">
       <Project>{D7BFF8ED-065B-4A53-9805-595DFEA75A0A}</Project>

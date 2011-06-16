@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Stump.BaseCore.Framework.Reflection;
+using Stump.Core.Reflection;
 using Version = Stump.DofusProtocol.Types.Version;
 
 namespace Stump.DofusProtocol.Types

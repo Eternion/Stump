@@ -9,8 +9,8 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.XPath;
-using Stump.BaseCore.Framework.Attributes;
-using Stump.BaseCore.Framework.Xml.Docs;
+using Stump.Core.Attributes;
+using Stump.Core.Xml.Docs;
 
 namespace PostBuild
 {

@@ -6,8 +6,8 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Linq;
 using NLog;
-using Stump.BaseCore.Framework.Attributes;
-using Stump.BaseCore.Framework.Pool;
+using Stump.Core.Attributes;
+using Stump.Core.Pool;
 
 namespace Stump.Server.BaseServer.Network
 {

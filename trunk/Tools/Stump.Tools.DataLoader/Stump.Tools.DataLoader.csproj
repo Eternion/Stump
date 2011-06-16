@@ -231,9 +231,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\BaseCore\Stump.BaseCore.Framework\Stump.BaseCore.Framework.csproj">
+    <ProjectReference Include="..\..\BaseCore\Stump.BaseCore.Framework\Stump.Core.csproj">
       <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
-      <Name>Stump.BaseCore.Framework</Name>
+      <Name>Stump.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DofusProtocol\D2oClasses\Stump.DofusProtocol.D2oClasses.csproj">
       <Project>{33093793-C4BA-4B89-AC82-6E9D00437452}</Project>

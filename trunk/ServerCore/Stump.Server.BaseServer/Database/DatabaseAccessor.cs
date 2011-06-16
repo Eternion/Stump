@@ -12,7 +12,7 @@ using Castle.ActiveRecord.Framework.Config;
 using Castle.ActiveRecord.Testing;
 using MySql.Data.MySqlClient;
 using NLog;
-using Stump.BaseCore.Framework.Threading;
+using Stump.Core.Threading;
 using Stump.Database;
 
 namespace Stump.Server.BaseServer.Database

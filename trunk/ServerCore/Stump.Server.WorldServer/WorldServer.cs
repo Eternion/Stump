@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
-using Stump.BaseCore.Framework.Attributes;
+using Stump.Core.Attributes;
 using Stump.Database;
 using Stump.Database.AuthServer;
 using Stump.DofusProtocol;

@@ -6,8 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Squishy.Irc.Commands;
-using Stump.BaseCore.Framework.Attributes;
-using Stump.BaseCore.Framework.Extensions;
+using Stump.Core.Attributes;
+using Stump.Core.Extensions;
 using Stump.Tools.UtilityBot.FileParser;
 using Stump.Tools.UtilityBot.FileWriter;
 

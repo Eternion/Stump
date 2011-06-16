@@ -5,7 +5,7 @@ using System.Text;
 using System.Linq;
 using System.Threading;
 using System.Reflection;
-using Stump.BaseCore.Framework.Attributes;
+using Stump.Core.Attributes;
 using Stump.Server.BaseServer.Handler;
 
 namespace Stump.Server.BaseServer.Network

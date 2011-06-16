@@ -1,355 +1,48 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NLog;
+using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.BaseServer.Commands
 {
-    public class CommandsManager
+    public class CommandsManager : Singleton<CommandsManager>
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private IDictionary<string, CommandBase> m_commandsByAlias;
+        private readonly List<CommandBase> m_registeredCommands;
+        private readonly List<Type> m_registeredTypes;
 
         public CommandsManager()
         {
             m_commandsByAlias = new Dictionary<string, CommandBase>();
+            m_registeredCommands = new List<CommandBase>();
+            m_registeredTypes = new List<Type>();
         }
 
-        public IEnumerable<CommandBase> CommandsByAlias
+        /// <summary>
+        /// Regroup all CommandBase and SubCommandContainer by alias
+        /// </summary>
+        public IDictionary<string, CommandBase> CommandsByAlias
         {
-            get { return m_commandsByAlias.Values; }
+            get { return m_commandsByAlias; }
         }
 
-        public List<CommandBase> AvailableCommands
+        /// <summary>
+        /// Regroup all CommandBase and SubCommandContainer
+        /// </summary>
+        public IEnumerable<CommandBase> AvailableCommands
         {
-            get { return m_commandsByAlias.Values.Distinct().ToList(); }
-        }
-
-        public CommandBase this[string alias]
-        {
-            get { return GetCommand(alias); }
-        }
-
-        public void RegisterAll<T, TC>(Assembly assembly)
-        {
-            if (assembly == null)
-                throw new ArgumentNullException("assembly");
-
-            Type[] callTypes = assembly.GetTypes();
-
-            foreach (Type type in callTypes)
+            get
             {
-                RegisterCommand<T>(type);
-            }
-
-            m_commandsByAlias = m_commandsByAlias.OrderBy(entry => entry.Key).ToDictionary(entry => entry.Key,
-                                                                                           entry => entry.Value);
-
-            foreach (Type type in callTypes)
-            {
-                RegisterSubCommand<TC>(type);
-            }
-
-            foreach (CommandBase command in m_commandsByAlias.Values)
-            {
-                command.SubCommands = command.SubCommands.OrderBy(entry => entry.Aliases.First()).ToList();
+                return m_registeredCommands;
             }
         }
 
-        public void HandleCommand(TriggerBase trigger)
-        {
-            string cmdstring = trigger.Args.NextWord();
-
-            if (CommandBase.IgnoreCommandCase)
-                cmdstring = cmdstring.ToLower();
-
-            try
-            {
-                if (cmdstring == "help" || cmdstring == "?")
-                {
-                    HandleHelpCommand(trigger);
-                    return;
-                }
-                else if (cmdstring == "commandslist")
-                {
-                    HandleListCommand(trigger);
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                trigger.Reply("Raised exception when executing command : " + ex.Message);
-            }
-
-
-            CommandBase cmd = this[cmdstring];
-
-            if (cmd != null && trigger.UserRole >= cmd.RequiredRole)
-            {
-                trigger.BindedCommand = cmd;
-
-                if (cmd.SubCommands.Count > 0)
-                {
-                    // Well a command containing subcmd is considered as 'dummy', meaning there is nothing to do.
-                    // So we want to go and find the given subcommand.
-
-                    string subcmdstring = trigger.Args.NextWord();
-                    SubCommand subcmd;
-                    if (cmd.TryGetSubCommand(subcmdstring, out subcmd))
-                    {
-                        if (trigger.UserRole >= subcmd.RequiredRole)
-                        {
-                            try
-                            {
-                                trigger.BindedSubCommand = subcmd;
-
-                                if (trigger.DefineParameters(subcmd.Parameters))
-                                    subcmd.Execute(trigger);
-                            }
-                            catch (Exception ex)
-                            {
-                                trigger.Reply("Raised exception when executing command : " + ex.Message);
-                            }
-                        }
-                        else
-                            trigger.Reply("Incorrect SubCommand \"{0}\". Type help for command list.", subcmdstring);
-                    }
-                    else
-                    {
-                        // User want to use only cmd even if there are subcmds.
-                        try
-                        {
-                            trigger.BindedSubCommand = subcmd;
-
-                            if (trigger.DefineParameters(cmd.Parameters))
-                                cmd.Execute(trigger);
-                        }
-                        catch (Exception ex)
-                        {
-                            trigger.Reply("Raised exception when executing command : " + ex.Message);
-                        }
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        if (trigger.DefineParameters(cmd.Parameters))
-                            cmd.Execute(trigger);
-                    }
-                    catch (Exception ex)
-                    {
-                        trigger.Reply("Raised exception when executing command : " + ex.Message);
-                    }
-                }
-            }
-            else
-            {
-                trigger.Reply("Incorrect Command \"{0}\". Type help or ? for command list.", cmdstring);
-            }
-        }
-
-        public void HandleHelpCommand(TriggerBase trigger)
-        {
-            string commandStr = trigger.Args.NextWord();
-
-            if (commandStr == string.Empty)
-            {
-                DisplayAllCommands(trigger);
-            }
-            else
-            {
-                CommandBase command = GetCommand(commandStr);
-
-                if (command == null)
-                {
-                    trigger.Reply("Command \"{0}\" doesn't exist", commandStr);
-                    return;
-                }
-
-                string subCommandStr = trigger.Args.NextWord();
-
-                if (subCommandStr == string.Empty)
-                {
-                    DisplayCompleteCommandDescription(trigger, command);
-                }
-                else
-                {
-                    SubCommand subCommand;
-                    command.TryGetSubCommand(subCommandStr, out subCommand);
-
-                    if (subCommand == null)
-                    {
-                        trigger.Reply("SubCommand \"{0} {1}\" doesn't exist", commandStr, subCommandStr);
-                        return;
-                    }
-
-                    DisplayFullSubCommandDescription(trigger, command, subCommand);
-                }
-            }
-        }
-
-        public void HandleListCommand(TriggerBase trigger)
-        {
-            DisplayCommandsList(trigger);
-        }
-
-        private void DisplayCommandsList(TriggerBase trigger)
-        {
-            trigger.Reply(string.Join(", ", from entry in AvailableCommands
-                                            select entry.Aliases.First()));
-        }
-
-        private void DisplayAllCommands(TriggerBase trigger)
-        {
-            foreach (CommandBase command in AvailableCommands)
-            {
-                DisplayCommandDescription(trigger, command);
-
-                foreach (SubCommand subCommand in command.SubCommands)
-                {
-                    DisplaySubCommandDescription(trigger, command, subCommand);
-                }
-            }
-        }
-
-        private static void DisplayCommandDescription(TriggerBase trigger, CommandBase command)
-        {
-            trigger.Reply("{0} {1} - {2}",
-                          string.Join("/", command.Aliases),
-                          command.SubCommands.Count > 0
-                              ? string.Format("({0} subcmds)", command.SubCommands.Count)
-                              : "",
-                          command.Description,
-                          command.Aliases.First());
-        }
-
-        private static void DisplayFullCommandDescription(TriggerBase trigger, CommandBase command)
-        {
-            trigger.Reply("{0} {1} - {2} : {3}",
-                          string.Join("/", command.Aliases),
-                          command.SubCommands.Count > 0
-                              ? string.Format("({0} subcmds)", command.SubCommands.Count)
-                              : "",
-                          command.Description,
-                          command.SubCommands.Count == 0
-                              ? command.Aliases.First() + " " + command.GetSafeUsage()
-                              : "");
-
-            if (command.Parameters != null)
-                foreach (ICommandParameter commandParameter in command.Parameters)
-                {
-                    DisplayCommandParameter(trigger, commandParameter);
-                }
-        }
-
-        private static void DisplaySubCommandDescription(TriggerBase trigger, CommandBase command, SubCommand subcommand)
-        {
-            trigger.Reply("{0} {1} - {2}",
-                          command.Aliases.First(),
-                          string.Join("/", subcommand.Aliases),
-                          subcommand.Description);
-        }
-
-        private static void DisplayFullSubCommandDescription(TriggerBase trigger, CommandBase command,
-                                                             SubCommand subcommand)
-        {
-            trigger.Reply("{0} {1} - {2} : {0} {1} {3}",
-                          command.Aliases.First(),
-                          string.Join("/", subcommand.Aliases),
-                          subcommand.Description,
-                          subcommand.GetSafeUsage());
-
-            foreach (ICommandParameter commandParameter in subcommand.Parameters)
-            {
-                DisplayCommandParameter(trigger, commandParameter);
-            }
-        }
-
-        private static void DisplayCommandParameter(TriggerBase trigger, ICommandParameter commandParameter)
-        {
-            trigger.Reply("\t({0} : {1})",
-                          commandParameter.GetUsage(),
-                          commandParameter.Description ?? "");
-        }
-
-        private static void DisplayCompleteCommandDescription(TriggerBase trigger, CommandBase command)
-        {
-            DisplayFullCommandDescription(trigger, command);
-
-            foreach (SubCommand subCommand in command.SubCommands)
-            {
-                DisplayFullSubCommandDescription(trigger, command, subCommand);
-            }
-        }
-
-        private void RegisterCommand<T>(Type commandType)
-        {
-            if (commandType.IsSubclassOf(typeof (T)))
-            {
-                var command = (T) Activator.CreateInstance(commandType) as CommandBase;
-
-                if (command != null)
-                {
-                    if (command.Aliases == null || command.RequiredRole == RoleEnum.None)
-                    {
-                        logger.Error(
-                            "An error occurred while registering Command : {0}. Either aliases are null or RequiredRole is incorrect.\nPlease check and repair.", commandType.Name);
-                        return;
-                    }
-
-                    // Add to table, mapped by aliases
-                    foreach (string alias in command.Aliases)
-                    {
-                        CommandBase exCommand;
-                        if (!m_commandsByAlias.TryGetValue(alias, out exCommand))
-                        {
-                            m_commandsByAlias[alias] = command;
-                        }
-                        else
-                        {
-                            logger.Error("Found two Commands with Alias \"{0}\": {1} and {2}", alias, exCommand, command);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void RegisterSubCommand<TC>(Type subcommandType)
-        {
-            if (subcommandType.IsSubclassOf(typeof (TC)))
-            {
-                var subcommand = (TC) Activator.CreateInstance(subcommandType) as SubCommand;
-
-                if (subcommand != null)
-                {
-                    if (subcommand.Aliases == null || subcommand.RequiredRole == RoleEnum.None)
-                    {
-                        logger.Error(
-                            "An error occurred while registering SubCommand : {0}. Either aliases are null or RequiredRole is incorrect.\nPlease check and repair.");
-                        return;
-                    }
-
-                    CommandBase parent =
-                        m_commandsByAlias.Values.Where(o => o.GetType() == subcommand.ParentCommand).FirstOrDefault();
-
-
-                    if (parent == null)
-                    {
-                        logger.Error(
-                            "Couldn't find Command when registering SubCommand \"{0}\".\nCheck if ParentCommand was correctly filled out.",
-                            subcommand);
-                        return;
-                    }
-
-                    parent.SubCommands.Add(subcommand);
-                }
-            }
-        }
+        #region Get Method
 
         public CommandBase GetCommand(string alias)
         {
@@ -358,5 +51,176 @@ namespace Stump.Server.BaseServer.Commands
 
             return command;
         }
+
+        public CommandBase this[string alias]
+        {
+            get { return GetCommand(alias); }
+        }
+
+        #endregion
+
+        #region Register Methods
+
+        public void RegisterAll(Assembly assembly)
+        {
+            if (assembly == null)
+                throw new ArgumentNullException("assembly");
+
+            var callTypes = assembly.GetTypes().Where(entry => !entry.IsAbstract);
+
+            foreach (Type type in callTypes)
+            {
+                if (!IsCommandRegister(type))
+                    RegisterCommand(type);
+            }
+
+            SortCommands();
+        }
+
+        private void SortCommands()
+        {
+            m_commandsByAlias = m_commandsByAlias.OrderBy(entry => entry.Key).ToDictionary(entry => entry.Key,
+                                                                               entry => entry.Value);
+
+            foreach (var availableCommand in AvailableCommands.OfType<SubCommandContainer>())
+            {
+                availableCommand.SortSubCommands();
+            }
+        }
+
+        public void RegisterCommand(Type commandType)
+        {
+            if (commandType.IsSubclassOf(typeof(SubCommand)))
+            {
+                RegisterSubCommand(commandType);
+            }
+            else if (commandType.IsSubclassOf(typeof(SubCommandContainer)))
+            {
+                RegisterSubCommandContainer(commandType);
+            }
+            else if (commandType.IsSubclassOf(typeof(CommandBase)))
+            {
+                RegisterCommandBase(commandType);
+            }
+        }
+
+        private void RegisterCommandBase(Type commandType)
+        {
+            var command = Activator.CreateInstance(commandType) as CommandBase;
+
+            if (command == null)
+                throw new Exception(string.Format("Cannot create a new instance of {0}", commandType));
+
+            if (command.Aliases == null || command.RequiredRole == RoleEnum.None)
+            {
+                logger.Error(
+                    "An error occurred while registering Command : {0}. Either aliases are null or RequiredRole is incorrect.\nPlease check and repair.", commandType.Name);
+                return;
+            }
+
+            m_registeredCommands.Add(command);
+            foreach (string alias in command.Aliases)
+            {
+                CommandBase value;
+                if (!m_commandsByAlias.TryGetValue(alias, out value))
+                {
+                    m_commandsByAlias[CommandBase.IgnoreCommandCase ? alias.ToLower() : alias] = command;
+                    m_registeredTypes.Add(commandType);
+                }
+                else
+                {
+                    logger.Error("Found two Commands with Alias \"{0}\": {1} and {2}", alias, value, command);
+                }
+            }
+        }
+
+        private void RegisterSubCommandContainer(Type commandType)
+        {
+            var command = Activator.CreateInstance(commandType) as SubCommandContainer;
+
+            if (command == null)
+                throw new Exception(string.Format("Cannot create a new instance of {0}", commandType));
+
+            if (command.Aliases == null || command.RequiredRole == RoleEnum.None)
+            {
+                logger.Error(
+                    "An error occurred while registering Command : {0}. Either aliases are null or RequiredRole is incorrect.\nPlease check and repair.", commandType.Name);
+                return;
+            }
+
+            m_registeredCommands.Add(command);
+            foreach (string alias in command.Aliases)
+            {
+                CommandBase value;
+                if (!m_commandsByAlias.TryGetValue(alias, out value))
+                {
+                    m_commandsByAlias[CommandBase.IgnoreCommandCase ? alias.ToLower() : alias] = command as CommandBase;
+
+                    m_registeredTypes.Add(commandType);
+                }
+                else
+                {
+                    logger.Error("Found two Commands with Alias \"{0}\": {1} and {2}", alias, value, command);
+                }
+            }
+        }
+
+        private void RegisterSubCommand(Type commandType)
+        {
+            var subcommand = Activator.CreateInstance(commandType) as SubCommand;
+
+            if (subcommand == null)
+                throw new Exception(string.Format("Cannot create a new instance of {0}", commandType));
+
+            if (!IsCommandRegister(subcommand.ParentCommand))
+                RegisterCommand(subcommand.ParentCommand);
+
+            var parentCommand = AvailableCommands.Where(entry => entry.GetType() == subcommand.ParentCommand).SingleOrDefault() as SubCommandContainer;
+
+            if (parentCommand == null)
+                throw new Exception(string.Format("Cannot found declaration of command '{0}'", subcommand.ParentCommand));
+
+            parentCommand.AddSubCommand(subcommand);
+            m_registeredCommands.Add(subcommand);
+            m_registeredTypes.Add(commandType);
+        }
+
+        public bool IsCommandRegister(Type commandType)
+        {
+            return m_registeredTypes.Contains(commandType);
+        }
+
+        #endregion
+
+        #region Handle Method
+
+        public void HandleCommand(TriggerBase trigger)
+        {
+            string cmdstring = trigger.Args.NextWord();
+
+            if (CommandBase.IgnoreCommandCase)
+                cmdstring = cmdstring.ToLower();
+
+            CommandBase cmd = this[cmdstring];
+
+            if (cmd != null && trigger.UserRole >= cmd.RequiredRole)
+            {
+                try
+                {
+                    trigger.BindToCommand(cmd);
+                    cmd.Execute(trigger);
+                }
+                catch (Exception ex)
+                {
+                    trigger.Reply("Raised exception when executing command : " + ex.Message);
+                }
+            }
+            else
+            {
+                trigger.Reply("Incorrect Command \"{0}\". Type commandslist or help for command list.", cmdstring);
+            }
+        }
+
+        #endregion
     }
 }

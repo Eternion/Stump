@@ -129,11 +129,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\CommandBase.cs" />
-    <Compile Include="Commands\CommandParameter.cs" />
+    <Compile Include="Commands\Commands\HelpCommand.cs" />
+    <Compile Include="Commands\Commands\ListCommand.cs" />
+    <Compile Include="Commands\Parameter.cs" />
+    <Compile Include="Commands\IParameter.cs" />
+    <Compile Include="Commands\ParameterDefinition.cs" />
     <Compile Include="Commands\CommandsManager.cs" />
-    <Compile Include="Commands\DummyCommandException.cs" />
-    <Compile Include="Commands\ExecuterBase.cs" />
-    <Compile Include="Commands\ICommandParameter.cs" />
+    <Compile Include="Commands\IParameterDefinition.cs" />
+    <Compile Include="Commands\SubCommandContainer.cs" />
     <Compile Include="Commands\SubCommand.cs" />
     <Compile Include="Commands\TriggerBase.cs" />
     <Compile Include="Commands\ConverterException.cs" />
@@ -144,8 +147,8 @@
     <Compile Include="Handler\IHandlerContainer.cs" />
     <Compile Include="Initializing\StageManager.cs" />
     <Compile Include="Initializing\StageStep.cs" />
-    <Compile Include="IPC\IRemoteOperationsAuth.cs" />
-    <Compile Include="IPC\IRemoteOperationsWorld.cs" />
+    <Compile Include="Manager\IPC\IRemoteOperationsAuth.cs" />
+    <Compile Include="Manager\IPC\IRemoteOperationsWorld.cs" />
     <Compile Include="Manager\IInstance.cs" />
     <Compile Include="Manager\InstanceManager.cs" />
     <Compile Include="Network\BaseClient.cs" />
@@ -164,12 +167,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerBase.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="IPC\WorldServerInformation.cs" />
+    <Compile Include="Manager\IPC\WorldServerInformation.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\BaseCore\Stump.BaseCore.Framework\Stump.BaseCore.Framework.csproj">
+    <ProjectReference Include="..\..\BaseCore\Stump.BaseCore.Framework\Stump.Core.csproj">
       <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
-      <Name>Stump.BaseCore.Framework</Name>
+      <Name>Stump.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Database\Stump.Database\Stump.Database.csproj">
       <Project>{D0C51923-20CC-4B7B-ACF2-BA56ACB06232}</Project>

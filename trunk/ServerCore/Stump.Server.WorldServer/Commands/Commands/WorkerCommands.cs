@@ -28,16 +28,16 @@ namespace Stump.Server.WorldServer.Commands
             ParentCommand = typeof(WorkerCommands);
             RequiredRole = RoleEnum.Administrator;
             Description = "Display the benchmark of treated messages";
-            Parameters = new List<ICommandParameter>
+            Parameters = new List<IParameter>
                 {
-                    new CommandParameter<bool>("order", "o", "Order messages by average treatment time", true, true),
+                    new ParameterDefinition<bool>("order", "o", "Order messages by average treatment time", true, true),
                 };
         }
 
         public override void Execute(TriggerBase trigger)
         {
             trigger.Reply(WorldServer.Instance.WorkerManager.
-                GetDetailedMessageTypes(trigger.GetArgument<bool>("order")));
+                GetDetailedMessageTypes(trigger.Get<bool>("order")));
         }
     }
 
@@ -49,18 +49,18 @@ namespace Stump.Server.WorldServer.Commands
             ParentCommand = typeof(WorkerCommands);
             RequiredRole = RoleEnum.Administrator;
             Description = "Display detailed treatment of a message";
-            Parameters = new List<ICommandParameter>
+            Parameters = new List<IParameter>
                 {
-                    new CommandParameter<string>("name", "n", "Name of the message"),
-                    new CommandParameter<bool>("order", "o", "Order messages by average treatment time", true, true),
+                    new ParameterDefinition<string>("name", "n", "Name of the message"),
+                    new ParameterDefinition<bool>("order", "o", "Order messages by average treatment time", true, true),
                 };
         }
 
         public override void Execute(TriggerBase trigger)
         {
             trigger.Reply(WorldServer.Instance.WorkerManager.GetDetailedMessages(
-                trigger.GetArgument<string>("name"),
-                trigger.GetArgument<bool>("order")));
+                trigger.Get<string>("name"),
+                trigger.Get<bool>("order")));
         }
     }
 
@@ -72,18 +72,18 @@ namespace Stump.Server.WorldServer.Commands
             ParentCommand = typeof(WorkerCommands);
             RequiredRole = RoleEnum.Administrator;
             Description = "Display info about the treatment of a unique message id";
-            Parameters = new List<ICommandParameter>
+            Parameters = new List<IParameter>
                 {
-                    new CommandParameter<string>("name", "n", "Name of the message"),
-                    new CommandParameter<int>("id", "id", "Unique message id's treatment"),
+                    new ParameterDefinition<string>("name", "n", "Name of the message"),
+                    new ParameterDefinition<int>("id", "id", "Unique message id's treatment"),
                 };
         }
 
         public override void Execute(TriggerBase trigger)
         {
             trigger.Reply(WorldServer.Instance.WorkerManager.GetDetailedMessage(
-                trigger.GetArgument<string>("name"),
-                trigger.GetArgument<int>("id")));
+                trigger.Get<string>("name"),
+                trigger.Get<int>("id")));
         }
     }
 }

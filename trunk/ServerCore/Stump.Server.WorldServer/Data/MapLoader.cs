@@ -1,9 +1,9 @@
 
 using System.Collections.Generic;
 using System.IO;
-using Stump.BaseCore.Framework.Attributes;
-using Stump.BaseCore.Framework.IO;
-using Stump.BaseCore.Framework.Xml;
+using Stump.Core.Attributes;
+using Stump.Core.IO;
+using Stump.Core.Xml;
 using Stump.DofusProtocol.Messages.Framework.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.Server.BaseServer.Data;

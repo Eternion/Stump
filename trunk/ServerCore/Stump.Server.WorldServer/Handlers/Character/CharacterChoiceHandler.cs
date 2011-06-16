@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Stump.BaseCore.Framework.IO;
 using Stump.DofusProtocol.Messages.Framework.IO;
 using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Classes;

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
-using Stump.BaseCore.Framework.IO;
+using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.D2oClasses.Tool
 {

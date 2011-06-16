@@ -3,12 +3,12 @@ using System;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using NLog;
-using Stump.BaseCore.Framework.IO;
-using Stump.BaseCore.Framework.Pool;
-using Stump.BaseCore.Framework.Pool.Task;
+using Stump.Core.IO;
+using Stump.Core.Pool;
+using Stump.Core.Pool.Task;
 using Stump.DofusProtocol.Messages.Framework.IO;
 using Stump.DofusProtocol.Messages;
-using TaskFactoryExtensions = Stump.BaseCore.Framework.Threading.TaskFactoryExtensions;
+using TaskFactoryExtensions = Stump.Core.Threading.TaskFactoryExtensions;
 
 namespace Stump.Server.BaseServer.Network
 {

@@ -1,7 +1,7 @@
 
 using System.Collections.Generic;
 using System.IO;
-using Stump.BaseCore.Framework.Attributes;
+using Stump.Core.Attributes;
 using Stump.DofusProtocol.Classes;
 
 namespace Stump.Server.WorldServer.Data

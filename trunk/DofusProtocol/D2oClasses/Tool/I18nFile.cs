@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Stump.BaseCore.Framework.IO;
+using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.D2oClasses.Tool
 {

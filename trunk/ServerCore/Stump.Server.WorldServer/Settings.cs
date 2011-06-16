@@ -1,5 +1,5 @@
 
-using Stump.BaseCore.Framework.Attributes;
+using Stump.Core.Attributes;
 
 namespace Stump.Server.WorldServer
 {

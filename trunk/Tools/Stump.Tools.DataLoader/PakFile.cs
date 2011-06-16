@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Stump.BaseCore.Framework.IO;
+using Stump.Core.IO;
 
 namespace Stump.Tools.DataLoader
 {

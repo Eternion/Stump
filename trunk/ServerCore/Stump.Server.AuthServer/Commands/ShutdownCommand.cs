@@ -17,16 +17,16 @@ namespace Stump.Server.AuthServer.Commands
             Description = "Stop the server";
             Usage = "";
 
-            Parameters = new List<ICommandParameter>
+            Parameters = new List<IParameter>
                 {
-                    new CommandParameter<int>("time", "t", "Stop after [time] seconds", true),
-                    new CommandParameter<object>("cancel", "c", "Cancel a shutting down procedure", true),
+                    new ParameterDefinition<int>("time", "t", "Stop after [time] seconds", true),
+                    new ParameterDefinition<object>("cancel", "c", "Cancel a shutting down procedure", true),
                 };
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            if (trigger.ArgumentExists("cancel") && m_shutdownTimer != null)
+            if (trigger.IsArgumentDefined("cancel") && m_shutdownTimer != null)
             {
                 m_shutdownTimer.Dispose();
 
@@ -34,7 +34,7 @@ namespace Stump.Server.AuthServer.Commands
                 return;
             }
 
-            var time = trigger.GetArgument<int>("time");
+            var time = trigger.Get<int>("time");
 
             if (time > 0)
                 trigger.Reply("Server shutting down in {0} seconds", time);

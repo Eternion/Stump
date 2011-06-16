@@ -15,23 +15,23 @@ namespace Stump.Server.WorldServer.Commands
             Aliases = new[] {"gopos"};
             RequiredRole = RoleEnum.Moderator;
             Description = "Teleport the target given map position (x/y)";
-            Parameters = new List<ICommandParameter>
+            Parameters = new List<IParameter>
                 {
-                    new CommandParameter<Character>("target", "t", "Target to teleport",
+                    new ParameterDefinition<Character>("target", "t", "Target to teleport",
                                                     converter: ParametersConverter.CharacterConverter),
-                    new CommandParameter<int>("x"),
-                    new CommandParameter<int>("y"),
-                    new CommandParameter<int>("continent", "c", "Continent containing the map", true),
+                    new ParameterDefinition<int>("x"),
+                    new ParameterDefinition<int>("y"),
+                    new ParameterDefinition<int>("continent", "c", "Continent containing the map", true),
                 };
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            var point = new Point(trigger.GetArgument<int>("x"), trigger.GetArgument<int>("y"));
-            var target = trigger.GetArgument<Character>("target");
+            var point = new Point(trigger.Get<int>("x"), trigger.Get<int>("y"));
+            var target = trigger.Get<Character>("target");
 
-            Continent continent = trigger.ArgumentExists("continent")
-                                      ? World.Instance.Continents[trigger.GetArgument<int>("continent")]
+            Continent continent = trigger.IsArgumentDefined("continent")
+                                      ? World.Instance.Continents[trigger.Get<int>("continent")]
                                       : target.Continent;
 
             if (!continent.MapsByPosition.ContainsKey(point))

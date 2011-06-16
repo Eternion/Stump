@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
-using Stump.BaseCore.Framework.IO;
-using Stump.BaseCore.Framework.Reflection;
+using Stump.Core.IO;
+using Stump.Core.Reflection;
 
 namespace Stump.DofusProtocol.Messages
 {

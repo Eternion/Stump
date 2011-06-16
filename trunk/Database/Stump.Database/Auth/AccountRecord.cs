@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
-using Stump.BaseCore.Framework.Extensions;
+using Stump.Core.Extensions;
 using Stump.Database.AuthServer.World;
 using Stump.Database.Types;
 using Stump.DofusProtocol.Enums;

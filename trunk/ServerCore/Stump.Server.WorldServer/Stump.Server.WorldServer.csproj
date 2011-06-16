@@ -342,9 +342,9 @@
     <Compile Include="XmlSerialize\Localizable.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\BaseCore\Stump.BaseCore.Framework\Stump.BaseCore.Framework.csproj">
+    <ProjectReference Include="..\..\BaseCore\Stump.BaseCore.Framework\Stump.Core.csproj">
       <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
-      <Name>Stump.BaseCore.Framework</Name>
+      <Name>Stump.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Database\Stump.Database\Stump.Database.csproj">
       <Project>{D0C51923-20CC-4B7B-ACF2-BA56ACB06232}</Project>

@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using ProtoBuf;
 using Squishy.Irc.Commands;
-using Stump.BaseCore.Framework.Attributes;
+using Stump.Core.Attributes;
 using Stump.Server.BaseServer.Data.MapTool;
 
 namespace Stump.Tools.UtilityBot.Commands

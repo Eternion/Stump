@@ -1,7 +1,7 @@
 
 using System;
 using System.Threading.Tasks;
-using Stump.BaseCore.Framework.Threading;
+using Stump.Core.Threading;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Fights;

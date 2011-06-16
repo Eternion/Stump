@@ -1,7 +1,7 @@
 
 using System;
 using System.Diagnostics;
-using Stump.BaseCore.Framework.Attributes;
+using Stump.Core.Attributes;
 using Stump.DofusProtocol.Messages.Framework.IO;
 using Stump.Server.BaseServer;
 using Stump.Server.WorldServer.Commands;

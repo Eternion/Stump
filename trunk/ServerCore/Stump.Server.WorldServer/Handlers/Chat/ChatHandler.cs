@@ -1,5 +1,3 @@
-
-using Stump.BaseCore.Framework.IO;
 using Stump.DofusProtocol.Messages.Framework.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;

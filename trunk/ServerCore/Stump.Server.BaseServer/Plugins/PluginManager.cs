@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using NLog;
-using Stump.BaseCore.Framework.Attributes;
+using Stump.Core.Attributes;
 
 namespace Stump.Server.BaseServer.Plugins
 {

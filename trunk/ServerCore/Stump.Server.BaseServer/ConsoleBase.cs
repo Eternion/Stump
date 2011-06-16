@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
-using Stump.BaseCore.Framework.Attributes;
-using Stump.BaseCore.Framework.Threading;
+using Stump.Core.Attributes;
+using Stump.Core.Threading;
 
 namespace Stump.Server.BaseServer
 {

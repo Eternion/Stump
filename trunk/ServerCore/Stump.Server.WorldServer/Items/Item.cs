@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.BaseCore.Framework.Extensions;
+using Stump.Core.Extensions;
 using Stump.Database;
 using Stump.Database.WorldServer;
 using Stump.DofusProtocol.Classes;

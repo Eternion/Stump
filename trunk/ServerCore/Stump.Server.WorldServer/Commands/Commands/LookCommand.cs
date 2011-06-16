@@ -16,19 +16,19 @@ namespace Stump.Server.WorldServer.Commands
             Aliases = new[] {"look"};
             RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Change the look of the target";
-            Parameters = new List<ICommandParameter>
+            Parameters = new List<IParameter>
                 {
-                    new CommandParameter<Character>("target", "t", "Target who will have another look",
+                    new ParameterDefinition<Character>("target", "t", "Target who will have another look",
                                                     converter: ParametersConverter.CharacterConverter),
-                    new CommandParameter<string>("look", "l", "The new look for the target")
+                    new ParameterDefinition<string>("look", "l", "The new look for the target")
                 };
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            var target = trigger.GetArgument<Character>("target");
+            var target = trigger.Get<Character>("target");
 
-            target.Look = new ExtendedLook(trigger.GetArgument<string>("look").ToEntityLook());
+            target.Look = new ExtendedLook(trigger.Get<string>("look").ToEntityLook());
 
             target.Map.Do(character =>
                                                           ContextHandler.SendGameContextRefreshEntityLookMessage(

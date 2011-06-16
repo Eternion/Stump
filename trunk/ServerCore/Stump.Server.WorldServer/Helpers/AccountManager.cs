@@ -1,7 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using Stump.BaseCore.Framework.Pool.Task;
+using Stump.Core.Pool.Task;
 using Stump.Database.AuthServer;
 using Stump.Database.WorldServer;
 using Stump.Database.WorldServer.Character;

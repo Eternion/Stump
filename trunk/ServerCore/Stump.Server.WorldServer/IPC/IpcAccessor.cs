@@ -7,9 +7,9 @@ using System.Runtime.Remoting.Channels.Tcp;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
-using Stump.BaseCore.Framework.Attributes;
-using Stump.BaseCore.Framework.Reflection;
-using Stump.BaseCore.Framework.Threading;
+using Stump.Core.Attributes;
+using Stump.Core.Reflection;
+using Stump.Core.Threading;
 using Stump.Server.BaseServer.IPC;
 
 namespace Stump.Server.WorldServer.IPC

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
-using Stump.BaseCore.Framework.Attributes;
+using Stump.Core.Attributes;
 using Stump.Database;
 using Stump.Database.AuthServer;
 using Stump.Database.AuthServer.World;

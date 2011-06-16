@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Stump.BaseCore.Framework.Threading;
+using Stump.Core.Threading;
 using Stump.Database.Data.Communication;
 using Stump.Database.Interfaces;
 using Stump.DofusProtocol.Classes;

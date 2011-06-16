@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Castle.ActiveRecord;
-using Stump.BaseCore.Framework.Extensions;
+using Stump.Core.Extensions;
 using Stump.Database.AuthServer;
 
 namespace Stump.Database
