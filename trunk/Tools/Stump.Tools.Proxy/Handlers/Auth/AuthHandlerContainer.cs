@@ -11,7 +11,7 @@ namespace Stump.Tools.Proxy.Handlers.Auth
     {
         public static Dictionary<Type, Predicate<AuthClient>> Predicates = new Dictionary<Type, Predicate<AuthClient>>();
 
-        public bool PredicateSuccess(BaseClient client, Type messageType)
+        public bool CanHandleMessage(BaseClient client, Type messageType)
         {
             if (!Predicates.ContainsKey(messageType))
                 return true;

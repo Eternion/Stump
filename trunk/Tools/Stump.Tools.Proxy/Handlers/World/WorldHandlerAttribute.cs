@@ -4,9 +4,9 @@ using Stump.Server.BaseServer.Handler;
 
 namespace Stump.Tools.Proxy.Handlers.World
 {
-    public class WorldHandler : Handler
+    public class WorldHandlerAttribute : HandlerAttribute
     {
-        public WorldHandler(Type message)
+        public WorldHandlerAttribute(Type message)
             : base(message)
         {
         }

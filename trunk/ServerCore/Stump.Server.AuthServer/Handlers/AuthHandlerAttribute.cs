@@ -5,9 +5,9 @@ using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.AuthServer.Handlers
 {
-    public class AuthHandler : Handler
+    public class AuthHandlerAttribute : HandlerAttribute
     {
-        public AuthHandler(Type message)
+        public AuthHandlerAttribute(Type message)
             : base(message)
         {
         }

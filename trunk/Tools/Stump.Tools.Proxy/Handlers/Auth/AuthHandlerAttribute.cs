@@ -4,9 +4,9 @@ using Stump.Server.BaseServer.Handler;
 
 namespace Stump.Tools.Proxy.Handlers.Auth
 {
-    public class AuthHandler : Handler
+    public class AuthHandlerAttribute : HandlerAttribute
     {
-        public AuthHandler(Type message)
+        public AuthHandlerAttribute(Type message)
             : base(message)
         {
         }
