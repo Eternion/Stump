@@ -8,7 +8,7 @@ namespace Stump.GUI.AuthConsole
     {
         static void Main(string[] args)
         {
-            var server = new AuthentificationServer();
+            var server = new AuthServer();
 
             try
             {

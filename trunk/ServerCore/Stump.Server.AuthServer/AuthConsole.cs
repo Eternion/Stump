@@ -1,10 +1,7 @@
-
 using System;
-using System.Threading;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
-using Stump.DofusProtocol.Messages.Framework.IO;
-using Stump.Server.AuthServer.Commands;
+using Stump.Server.AuthServer.Commands.Trigger;
 using Stump.Server.BaseServer;
 
 namespace Stump.Server.AuthServer
@@ -19,7 +16,7 @@ namespace Stump.Server.AuthServer
 
         public AuthConsole()
         {
-            m_conditionWaiter.Success += m_conditionWaiter_Success;
+            m_conditionWaiter.Success += OnConsoleKeyPressed;
         }
 
         protected override void Process()
@@ -27,11 +24,11 @@ namespace Stump.Server.AuthServer
             m_conditionWaiter.Start();
         }
 
-        private void m_conditionWaiter_Success(object sender, EventArgs e)
+        private void OnConsoleKeyPressed(object sender, EventArgs e)
         {
             EnteringCommand = true;
 
-            if (!AuthentificationServer.Instance.Running)
+            if (!AuthServer.Instance.Running)
             {
                 EnteringCommand = false;
                 return;
@@ -47,7 +44,7 @@ namespace Stump.Server.AuthServer
                 return;
             }
 
-            if (Cmd == null || !AuthentificationServer.Instance.Running)
+            if (Cmd == null || !AuthServer.Instance.Running)
             {
                 EnteringCommand = false;
                 return;
@@ -62,7 +59,7 @@ namespace Stump.Server.AuthServer
                     if (Cmd.StartsWith(CommandPreffix))
                     {
                         Cmd = Cmd.Substring(CommandPreffix.Length);
-                        AuthentificationServer.Instance.CommandManager.HandleCommand(
+                        AuthServer.Instance.CommandManager.HandleCommand(
                             new AuthConsoleTrigger(new StringStream(Cmd)));
                     }
                 }

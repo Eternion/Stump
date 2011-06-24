@@ -7,7 +7,7 @@ namespace Stump.Server.AuthServer.Commands
 {
     public static class ParametersConverter
     {
-        public static Func<string, TriggerBase, RoleEnum> RoleConverter = (entry, trigger) =>
+        public static ConverterHandler<RoleEnum> RoleConverter = (entry, trigger) =>
         {
             RoleEnum result;
             if (Enum.TryParse(entry, true, out result))

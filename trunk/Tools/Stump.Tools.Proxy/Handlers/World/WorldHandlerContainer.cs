@@ -14,7 +14,7 @@ namespace Stump.Tools.Proxy.Handlers.World
 
         #region IHandlerContainer Members
 
-        public bool PredicateSuccess(BaseClient client, Type messageType)
+        public bool CanHandleMessage(BaseClient client, Type messageType)
         {
             if (!Predicates.ContainsKey(messageType))
                 return true;

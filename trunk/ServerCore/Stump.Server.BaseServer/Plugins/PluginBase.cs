@@ -46,6 +46,7 @@ namespace Stump.Server.BaseServer.Plugins
         }
 
         public abstract void Initialize();
+        public abstract void Shutdown();
         public abstract void Dispose();
 
         #endregion

@@ -28,10 +28,10 @@ namespace Stump.Server.BaseServer.Commands.Commands
                 role : trigger.UserRole;
 
             IEnumerable<CommandBase> availableCommands =
-                CommandsManager.Instance.AvailableCommands;
+                CommandManager.Instance.AvailableCommands;
             if (cmd != string.Empty)
             {
-                var command = CommandsManager.Instance.GetCommand(cmd);
+                var command = CommandManager.Instance.GetCommand(cmd);
 
                 if (command == null)
                 {

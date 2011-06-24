@@ -25,6 +25,11 @@ namespace PostBuild
             // TODO : Docs commands & msdn'like
             // TODO : generate config file
 
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+            {
+                Console.WriteLine("Exception raised while generating config : " + e.ExceptionObject);
+            };
+
             if (args[0] == "-config")
             {
                 string path = args[1].Replace("\"", "");

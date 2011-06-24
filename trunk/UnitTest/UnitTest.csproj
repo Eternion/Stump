@@ -96,13 +96,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BaseCore\Stump.BaseCore.Framework\Stump.Core.csproj">
+    <ProjectReference Include="..\Core\Stump.Core\Stump.Core.csproj">
       <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
       <Name>Stump.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Database\Stump.Database\Stump.Database.csproj">
-      <Project>{D0C51923-20CC-4B7B-ACF2-BA56ACB06232}</Project>
-      <Name>Stump.Database</Name>
     </ProjectReference>
     <ProjectReference Include="..\DofusProtocol\Types\Stump.DofusProtocol.Types.csproj">
       <Project>{10884165-D492-4895-B3EF-32429F7A7F55}</Project>
@@ -123,10 +119,6 @@
     <ProjectReference Include="..\ServerCore\Stump.Server.BaseServer\Stump.Server.BaseServer.csproj">
       <Project>{011FBAFC-7720-4D36-9C59-71BAE6163C9E}</Project>
       <Name>Stump.Server.BaseServer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ServerCore\Stump.Server.WorldServer\Stump.Server.WorldServer.csproj">
-      <Project>{A753FDB3-2D64-4993-8BF1-621240F18108}</Project>
-      <Name>Stump.Server.WorldServer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

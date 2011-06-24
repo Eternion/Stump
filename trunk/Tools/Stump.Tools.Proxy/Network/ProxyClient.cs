@@ -88,7 +88,7 @@ namespace Stump.Tools.Proxy.Network
             return m_receivedMessagesStack.FindIndex(0, range, entry => entry.GetType() == message) != -1;
         }
 
-        protected override void OnReceive()
+        protected override void BuildMessage()
         {
             uint len = 0;
 
@@ -109,7 +109,7 @@ namespace Stump.Tools.Proxy.Network
                     len = GetMessageLengthByHeader(header);
                     if (m_buffer.BytesAvailable >= len)
                     {
-                        Message message = MessageReceiver.GetMessage(id,
+                        Message message = MessageReceiver.BuildMessage(id,
                                                                      m_buffer.ReadBytesInNewBigEndianReader((int) len));
 
 
@@ -139,7 +139,7 @@ namespace Stump.Tools.Proxy.Network
             }
             if (m_buffer.BytesAvailable >= m_splittedPacketLength)
             {
-                Message message = MessageReceiver.GetMessage(m_splittedPacketId,
+                Message message = MessageReceiver.BuildMessage(m_splittedPacketId,
                                                              m_buffer.ReadBytesInNewBigEndianReader(
                                                                  (int) m_splittedPacketLength));
 

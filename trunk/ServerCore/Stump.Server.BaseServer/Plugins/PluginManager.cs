@@ -2,13 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Reflection;
 
 namespace Stump.Server.BaseServer.Plugins
 {
-    public static class PluginManager
+    public sealed class PluginManager : Singleton<PluginManager>
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -20,25 +22,30 @@ namespace Stump.Server.BaseServer.Plugins
 
         public delegate void PluginContextHandler(PluginContext pluginContext);
 
-        public static event PluginContextHandler PluginAdded;
+        public event PluginContextHandler PluginAdded;
 
-        private static void InvokePluginAdded(PluginContext pluginContext)
+        private void InvokePluginAdded(PluginContext pluginContext)
         {
             PluginContextHandler handler = PluginAdded;
             if (handler != null) handler(pluginContext);
         }
 
-        public static event PluginContextHandler PluginRemoved;
+        public event PluginContextHandler PluginRemoved;
 
-        private static void InvokePluginRemoved(PluginContext pluginContext)
+        private void InvokePluginRemoved(PluginContext pluginContext)
         {
             PluginContextHandler handler = PluginRemoved;
             if (handler != null) handler(pluginContext);
         }
 
-        public static readonly IList<PluginContext> PluginContexts = new List<PluginContext>();
+        internal readonly IList<PluginContext> PluginContexts = new List<PluginContext>();
 
-        public static void LoadAllPlugins()
+        private PluginManager()
+        {
+
+        }
+
+        public void LoadAllPlugins()
         {
             foreach (var path in PluginsPath)
             {
@@ -60,45 +67,77 @@ namespace Stump.Server.BaseServer.Plugins
             }
         }
 
-        public static void LoadPlugin(string libPath)
+        public PluginContext LoadPlugin(string libPath)
         {
             if (!File.Exists(libPath))
                 throw new FileNotFoundException("File doesn't exist", libPath);
 
             Assembly pluginAssembly = Assembly.LoadFrom(libPath);
+            var pluginContext = new PluginContext(libPath, pluginAssembly);
+            bool initialized = false;
 
+            // search the entry point (the class that implements IPlugin)
             foreach (Type pluginType in pluginAssembly.GetTypes())
             {
                 if (pluginType.IsPublic && !pluginType.IsAbstract)
                 {
-                    Type pluginInterface = pluginType.GetInterface(typeof (IPlugin).Name);
-                    if (pluginInterface != null)
+                    if (pluginType.HasInterface(typeof(IPlugin)))
                     {
-                        var plugin = new PluginContext(libPath, pluginAssembly);
+                        if (initialized)
+                            throw new PluginLoadException("Found 2 classes that implements IPlugin. A plugin can contains only one");
 
-                        plugin.InitPlugin();
+                        pluginContext.Initialize(pluginType);
+                        initialized = true;
+
+                        RegisterPlugin(pluginContext);
                     }
                 }
             }
+
+            return pluginContext;
         }
 
-        public static string GetDefaultDescription(this IPlugin plugin)
+        public void UnLoadPlugin(string name)
         {
-            return string.Format("{0} v{1} by {2}", plugin.Name, plugin.GetType().Assembly.GetName().Version, plugin.Author);
+            var plugin = from entry in PluginContexts
+                         where entry.Plugin.Name.Equals(name)
+                         select entry;
+
+            foreach (var pluginContext in plugin)
+            {
+                UnLoadPlugin(pluginContext);
+            }
         }
 
-        internal static void RegisterPlugin(PluginContext pluginContext)
+        public void UnLoadPlugin(PluginContext context)
+        {
+            context.Plugin.Shutdown();
+            context.Plugin.Dispose();
+
+            UnRegisterPlugin(context);
+        }
+
+        internal void RegisterPlugin(PluginContext pluginContext)
         {
             PluginContexts.Add(pluginContext);
 
             InvokePluginAdded(pluginContext);
         }
 
-        internal static void UnRegisterPlugin(PluginContext pluginContext)
+        internal void UnRegisterPlugin(PluginContext pluginContext)
         {
             PluginContexts.Remove(pluginContext);
 
             InvokePluginRemoved(pluginContext);
+        }
+    }
+
+    public class PluginLoadException : Exception
+    {
+        public PluginLoadException(string exception)
+            : base(exception)
+        {
+
         }
     }
 }

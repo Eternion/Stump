@@ -13,6 +13,17 @@ namespace Stump.Server.BaseServer.Plugins
             PluginAssembly = pluginAssembly;
         }
 
+        internal void Initialize(Type pluginType)
+        {
+            Plugin = (IPlugin)Activator.CreateInstance(pluginType);
+
+            if (Plugin != null)
+            {
+                Plugin.LoadConfig(this);
+                Plugin.Initialize();
+            }
+        }
+
         public string AssemblyPath
         {
             get;
@@ -29,30 +40,6 @@ namespace Stump.Server.BaseServer.Plugins
         {
             get;
             private set;
-        }
-
-        public void InitPlugin()
-        {
-            if (Plugin == null)
-            {
-                foreach (var type in PluginAssembly.GetTypes())
-                {
-                    var interfaces = type.GetInterfaces();
-                    if (interfaces.Contains(typeof(IPlugin)))
-                    {
-                        Plugin = (IPlugin)Activator.CreateInstance(type);
-
-                        if (Plugin != null)
-                        {
-                            Plugin.LoadConfig(this);
-                            Plugin.Initialize();
-
-                            PluginManager.RegisterPlugin(this);
-                        }
-                        break;
-                    }
-                }
-            }
         }
 
         public override string ToString()

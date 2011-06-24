@@ -52,7 +52,7 @@ namespace Stump.DofusProtocol.Messages
         /// </summary>
         /// <param name = "id">id.</param>
         /// <returns></returns>
-        public static Message GetMessage(uint id, BigEndianReader reader)
+        public static Message BuildMessage(uint id, BigEndianReader reader)
         {
             if (!Messages.ContainsKey(id))
                throw new KeyNotFoundException(string.Format("Message <id:{0}> doesn't exist", id));
@@ -65,6 +65,14 @@ namespace Stump.DofusProtocol.Messages
             message.Unpack(reader);
 
             return message;
+        }
+
+        public static Type GetMessageType(uint id)
+        {
+            if (!Messages.ContainsKey(id))
+                throw new KeyNotFoundException(string.Format("Message <id:{0}> doesn't exist", id));
+
+            return Messages[id];
         }
     }
 }

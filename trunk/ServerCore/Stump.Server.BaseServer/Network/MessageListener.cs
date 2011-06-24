@@ -7,6 +7,7 @@ using System.Threading;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Collections;
 using Stump.Core.Pool;
 
 namespace Stump.Server.BaseServer.Network
@@ -62,7 +63,7 @@ namespace Stump.Server.BaseServer.Network
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly SocketAsyncEventArgs m_acceptArgs = new SocketAsyncEventArgs();
-        private readonly List<BaseClient> m_clientList;
+        private readonly ConcurrentList<BaseClient> m_clientList;
         private readonly SemaphoreSlim m_clientSemaphore;
         private readonly Func<Socket, BaseClient> m_delegateCreateClient;
 
@@ -87,7 +88,7 @@ namespace Stump.Server.BaseServer.Network
             m_readBufferSize = BufferSize;
             m_maxConcurrentConnexion = MaxConcurrentConnections;
 
-            m_clientList = new List<BaseClient>(m_maxConcurrentConnexion);
+            m_clientList = new ConcurrentList<BaseClient>();
 
             m_readBufferManager = new BufferManager(m_maxConcurrentConnexion * m_readBufferSize, m_readBufferSize);
 
@@ -109,7 +110,7 @@ namespace Stump.Server.BaseServer.Network
             m_readBufferSize = BufferSize;
             m_maxConcurrentConnexion = MaxConcurrentConnections;
 
-            m_clientList = new List<BaseClient>(m_maxConcurrentConnexion);
+            m_clientList = new ConcurrentList<BaseClient>();
 
             m_readBufferManager = new BufferManager(m_maxConcurrentConnexion * m_readBufferSize, m_readBufferSize);
 
@@ -198,6 +199,7 @@ namespace Stump.Server.BaseServer.Network
 
             SocketAsyncEventArgs readAsyncEventArgs = m_readAsyncEventArgsPool.Pop();
 
+            // create the client instance
             var client = m_delegateCreateClient(e.AcceptSocket);
             readAsyncEventArgs.UserToken = client;
 

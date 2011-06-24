@@ -1,19 +1,16 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Castle.ActiveRecord;
 using Castle.ActiveRecord.Framework;
 using Castle.ActiveRecord.Framework.Config;
-using Castle.ActiveRecord.Testing;
 using MySql.Data.MySqlClient;
 using NLog;
 using Stump.Core.Threading;
-using Stump.Database;
 
 namespace Stump.Server.BaseServer.Database
 {
@@ -22,17 +19,13 @@ namespace Stump.Server.BaseServer.Database
         private static readonly InPlaceConfigurationSource m_globalConfig = new InPlaceConfigurationSource();
         private static readonly List<Type> m_globalTypes = new List<Type>();
 
-        public static void StartEngine()
-        {
-            ActiveRecordStarter.Initialize(m_globalConfig, m_globalTypes.ToArray());
-        }
-
         private readonly DatabaseConfiguration m_config;
 
         private readonly Logger m_logger = LogManager.GetCurrentClassLogger();
 
         private readonly uint m_databaseRevision;
         private readonly Type m_recordBaseType;
+        private readonly Assembly m_assembly;
 
         private Type m_versionType;
         private IVersionRecord m_version;
@@ -113,12 +106,12 @@ namespace Stump.Server.BaseServer.Database
 
         #endregion
 
-        public DatabaseAccessor(DatabaseConfiguration config, uint databaseRevision, Type recordBaseType)
+        public DatabaseAccessor(DatabaseConfiguration config, uint databaseRevision, Type recordBaseType, Assembly assembly)
         {
             m_config = config;
             m_databaseRevision = databaseRevision;
             m_recordBaseType = recordBaseType;
-            Initialize();
+            m_assembly = assembly;
         }
 
         public void Initialize()
@@ -133,7 +126,7 @@ namespace Stump.Server.BaseServer.Database
 
             m_globalConfig.Add(m_recordBaseType, connectionInfos);
 
-            var recordsType = ActiveRecordHelper.GetTables(m_recordBaseType);
+            var recordsType = ActiveRecordHelper.GetTables(m_assembly, m_recordBaseType);
 
             m_globalTypes.AddRange(recordsType);
             m_globalTypes.Add(m_recordBaseType);
@@ -141,6 +134,7 @@ namespace Stump.Server.BaseServer.Database
             m_versionType = ActiveRecordHelper.GetVersionType(recordsType);
             m_lastVersionMethod = ActiveRecordHelper.GetFindVersionMethod(m_versionType);
 
+            ActiveRecordStarter.Initialize(m_globalConfig, m_globalTypes.ToArray());
         }
 
         public void OpenDatabase()

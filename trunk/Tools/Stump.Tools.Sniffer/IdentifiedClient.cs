@@ -69,7 +69,7 @@ namespace Stump.Tools.Sniffer
                     len = GetMessageLengthByHeader(header);
                     if (m_buffer.BytesAvailable >= len)
                     {
-                        Message message = MessageReceiver.GetMessage(id,m_buffer.ReadBytesInNewBigEndianReader((int) len));
+                        Message message = MessageReceiver.BuildMessage(id,m_buffer.ReadBytesInNewBigEndianReader((int) len));
                         if (OnNewMessage != null)
                             OnNewMessage(message, m_name);
 
@@ -98,7 +98,7 @@ namespace Stump.Tools.Sniffer
             }
             if (m_buffer.BytesAvailable >= m_splittedPacketLength)
             {
-                Message message = MessageReceiver.GetMessage(m_splittedPacketId,
+                Message message = MessageReceiver.BuildMessage(m_splittedPacketId,
                                                                 m_buffer.ReadBytesInNewBigEndianReader(
                                                                     (int) m_splittedPacketLength));
                 if (OnNewMessage != null)

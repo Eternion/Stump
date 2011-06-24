@@ -15,8 +15,6 @@ namespace Stump.Core.IO
         /// </remarks>
         public static readonly string LogFilePath = "/logs/"; //  /logs/ = ./logs/
 
-        public static readonly string LogErrorFilePath = "/errors/";
-
         /// <summary>
         ///   Defines the log profile.
         /// </summary>
@@ -27,21 +25,21 @@ namespace Stump.Core.IO
             var config = new LoggingConfiguration();
 
             var consoleTarget = new ColoredConsoleTarget();
-            consoleTarget.Layout = "<${date:format=HH\\:mm\\:ss}> [${level}] ${stacktrace} : ${message}";
+            consoleTarget.Layout = "<${date:format=HH\\:mm\\:ss}> ${message}";
 
             var fileTarget = new FileTarget();
-            fileTarget.FileName = "${basedir}" + LogFilePath + "log_<${date:format=dd-MM-yyyy}>" + ".txt";
+            fileTarget.FileName = "${basedir}" + LogFilePath + "log_${date:format=dd-MM-yyyy}" + ".txt";
             fileTarget.Layout = "<${date:format=G}> [${level}] ${callsite} : ${message}";
 
             var fileErrorTarget = new FileTarget();
-            fileErrorTarget.FileName = "${basedir}" + LogFilePath + LogErrorFilePath +
-                                       "error_<${date:format=dd-MM-yyyy}>" + ".txt";
-            fileErrorTarget.Layout = "-------------${level} at ${date:format=G}------------- ${newline} ${callsite} : ${message} ${newline} -------------${level} at ${date:format=G}------------- ${newline}";
+            fileErrorTarget.FileName = "${basedir}" + LogFilePath +
+                                       "error_${date:format=dd-MM-yyyy}" + ".txt";
+            fileErrorTarget.Layout = "-------------${level} at ${date:format=G}------------- ${newline} ${callsite} : ${message} ${newline}-------------${level} at ${date:format=G}------------- ${newline}";
 
             if (activefileLog)
             {
                 config.AddTarget("file", fileTarget);
-                config.AddTarget("file_errors", fileErrorTarget);
+                config.AddTarget("fileErrors", fileErrorTarget);
             }
 
             if (activeconsoleLog)
@@ -60,8 +58,8 @@ namespace Stump.Core.IO
                 rule.DisableLoggingForLevel(LogLevel.Error);
                 config.LoggingRules.Add(rule);
 
-                rule = new LoggingRule("*", LogLevel.Warn, fileErrorTarget);
-                config.LoggingRules.Add(rule);
+                var errorRule = new LoggingRule("*", LogLevel.Warn, fileErrorTarget);
+                config.LoggingRules.Add(errorRule);
             }
 
             LogManager.Configuration = config;

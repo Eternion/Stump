@@ -26,7 +26,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
 
             if (cmdStr == string.Empty)
             {
-                foreach (var command in CommandsManager.Instance.AvailableCommands)
+                foreach (var command in CommandManager.Instance.AvailableCommands)
                 {
                     DisplayCommandDescription(trigger, command);
 
@@ -39,7 +39,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
             }
             else
             {
-                var command = CommandsManager.Instance.GetCommand(cmdStr);
+                var command = CommandManager.Instance.GetCommand(cmdStr);
 
                 if (command == null)
                 {

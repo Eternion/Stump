@@ -6,7 +6,7 @@ using Stump.Server.BaseServer.Commands;
 
 namespace Stump.Server.AuthServer.Commands
 {
-    public class ShutdownCommand : AuthCommand
+    public class ShutdownCommand : CommandBase
     {
         private Timer m_shutdownTimer;
 
@@ -17,16 +17,16 @@ namespace Stump.Server.AuthServer.Commands
             Description = "Stop the server";
             Usage = "";
 
-            Parameters = new List<IParameter>
+            Parameters = new List<IParameterDefinition>
                 {
-                    new ParameterDefinition<int>("time", "t", "Stop after [time] seconds", true),
-                    new ParameterDefinition<object>("cancel", "c", "Cancel a shutting down procedure", true),
+                    new ParameterDefinition<int>("time", "t", "Stop after [time] seconds", 0),
+                    new ParameterDefinition<bool>("cancel", "c", "Cancel a shutting down procedure", false),
                 };
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            if (trigger.IsArgumentDefined("cancel") && m_shutdownTimer != null)
+            if (trigger.IsArgumentDefined("cancel") && trigger.Get<bool>("cancel") && m_shutdownTimer != null)
             {
                 m_shutdownTimer.Dispose();
 
@@ -44,7 +44,7 @@ namespace Stump.Server.AuthServer.Commands
 
         private static void Shutdown(object arg)
         {
-            AuthentificationServer.Instance.Shutdown();
+            AuthServer.Instance.Shutdown();
         }
     }
 }

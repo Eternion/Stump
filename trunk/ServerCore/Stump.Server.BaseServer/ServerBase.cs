@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -12,15 +11,16 @@ using Stump.Core.IO;
 using Stump.Core.Pool.Task;
 using Stump.Core.Threading;
 using Stump.Core.Xml;
-using Stump.DofusProtocol.Messages.Framework.IO;
 using Stump.Server.BaseServer.Commands;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.BaseServer.Plugins;
 
 namespace Stump.Server.BaseServer
 {
-    public abstract class ServerBase<T> where T : class
+    public abstract class ServerBase<T>
+        where T : class
     {
         /// <summary>
         ///   Class singleton
@@ -54,6 +54,12 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
+        public DatabaseAccessor DatabaseAccessor
+        {
+            get;
+            protected set;
+        }
+
         public ConsoleBase ConsoleInterface
         {
             get;
@@ -61,9 +67,9 @@ namespace Stump.Server.BaseServer
         }
 
         /// <summary>
-        ///   Classe de base de l'execution des commandes.
+        ///   Manage commands
         /// </summary>
-        public CommandsManager CommandManager
+        public CommandManager CommandManager
         {
             get;
             protected set;
@@ -76,7 +82,7 @@ namespace Stump.Server.BaseServer
         }
 
         /// <summary>
-        ///   Classe de gestion du traitement séquencielle et prioritisé des paquetqs
+        ///   Manage packets and dispatch them
         /// </summary>
         public QueueDispatcher QueueDispatcher
         {
@@ -85,7 +91,7 @@ namespace Stump.Server.BaseServer
         }
 
         /// <summary>
-        ///   Classe de Gestion MultiThreading des paquets
+        ///   Manage tasks, that handle packets
         /// </summary>
         public WorkerManager WorkerManager
         {
@@ -102,7 +108,13 @@ namespace Stump.Server.BaseServer
         public TaskPool TaskPool
         {
             get;
-            private set;
+            protected set;
+        }
+
+        public PluginManager PluginManager
+        {
+            get;
+            protected set;
         }
 
         public bool Running
@@ -137,36 +149,39 @@ namespace Stump.Server.BaseServer
             ConfigReader.DefinesVariables(ref LoadedAssemblies);
 
             /* Set Config Watcher */
-            FileWatcher.RegisterFileModification(ConfigFilePath, () =>
-                {
-                    if (ConsoleInterface.AskForSomething("Config has been modified, do you want to reload it ?", 20))
-                    {
-                        ConfigReader = new XmlConfigReader(ConfigFilePath, SchemaFilePath);
-                        ConfigReader.DefinesVariables(ref LoadedAssemblies);
-                        logger.Warn("Config has been reloaded sucessfully");
-                    }
-                });
+            FileWatcherManager.RegisterFileModification
+                (ConfigFilePath,
+                 () =>
+                     {
+                         if (ConsoleInterface.AskAndWait("Config has been modified, do you want to reload it ?", 20))
+                         {
+                             ConfigReader = new XmlConfigReader(ConfigFilePath, SchemaFilePath);
+                             ConfigReader.DefinesVariables(ref LoadedAssemblies);
+                             logger.Warn("Config has been reloaded sucessfully");
+                         }
+                     });
 
             logger.Info("Initialize Task Pool");
             TaskPool = new TaskPool();
             TaskPool.Initialize(Assembly.GetCallingAssembly());
+
+            CommandManager = CommandManager.Instance;
 
             logger.Info("Initializing Network Interfaces...");
             QueueDispatcher = new QueueDispatcher(Settings.EnableBenchmarking);
             HandlerManager = new HandlerManager();
             WorkerManager = new WorkerManager(QueueDispatcher, HandlerManager);
 
-            CommandManager = new CommandsManager();
-
             MessageListener = new MessageListener(QueueDispatcher, CreateClient);
             MessageListener.Initialize();
 
             if (Settings.InactivityDisconnectionTime.HasValue)
-                TaskPool.RegisterCyclicTask(DisconnectAfkClient, Settings.InactivityDisconnectionTime.Value / 4, null, null);
+                TaskPool.RegisterCyclicTask(DisconnectAfkClient, Settings.InactivityDisconnectionTime.Value/4, null, null);
 
             MessageListener.ClientConnected += OnClientConnected;
             MessageListener.ClientDisconnected += OnClientDisconnected;
 
+            PluginManager = PluginManager.Instance;
             PluginManager.PluginAdded += OnPluginAdded;
             PluginManager.PluginRemoved += OnPluginRemoved;
         }
@@ -213,10 +228,10 @@ namespace Stump.Server.BaseServer
             if (args.IsTerminating)
                 logger.Fatal("Application has crashed. An Unhandled Exception has been thrown :");
 
-            logger.Error("Unhandled Exception : " + ((Exception)args.ExceptionObject).Message);
-            logger.Error("Source : {0} Method : {1}", ((Exception)args.ExceptionObject).Source,
-                         ((Exception)args.ExceptionObject).TargetSite);
-            logger.Error("Stack Trace : " + ((Exception)args.ExceptionObject).StackTrace);
+            logger.Error("Unhandled Exception : " + ((Exception) args.ExceptionObject).Message);
+            logger.Error("Source : {0} Method : {1}", ((Exception) args.ExceptionObject).Source,
+                         ((Exception) args.ExceptionObject).TargetSite);
+            logger.Error("Stack Trace : " + ((Exception) args.ExceptionObject).StackTrace);
 
             if (args.IsTerminating)
                 Shutdown();
@@ -232,7 +247,7 @@ namespace Stump.Server.BaseServer
         public virtual void Start()
         {
             logger.Info("Loading Plugins...");
-            PluginManager.LoadAllPlugins();
+            PluginManager.Instance.LoadAllPlugins();
 
             logger.Info("Start listening on port : " + MessageListener.Port + "...");
             MessageListener.Start();
@@ -243,17 +258,19 @@ namespace Stump.Server.BaseServer
         public virtual void Update()
         {
             TaskPool.ProcessUpdate();
+
+            Thread.Yield();
         }
 
         private void DisconnectAfkClient()
         {
             logger.Info("Disconnect AFK Clients");
-            var afkClients = MessageListener.ClientList.Where(c => DateTime.Now.Subtract(c.LastActivity).TotalSeconds >= Settings.InactivityDisconnectionTime);
+            IEnumerable<BaseClient> afkClients = MessageListener.ClientList.Where(c => DateTime.Now.Subtract(c.LastActivity).TotalSeconds >= Settings.InactivityDisconnectionTime);
             foreach (BaseClient client in afkClients)
                 client.Disconnect();
         }
 
-        public abstract BaseClient CreateClient(Socket s);
+        protected abstract BaseClient CreateClient(Socket s);
 
         public abstract void OnShutdown();
 
@@ -275,7 +292,7 @@ namespace Stump.Server.BaseServer
                 Console.WriteLine("Application is now terminated. Wait " + Definitions.ExitWaitTime +
                                   " seconds to exit ... or press any key to cancel");
 
-                if (ConditionWaiter.WaitFor(() => Console.KeyAvailable, Definitions.ExitWaitTime * 1000, 20))
+                if (ConditionWaiter.WaitFor(() => Console.KeyAvailable, Definitions.ExitWaitTime*1000, 20))
                 {
                     Console.ReadKey(false);
 

@@ -24,16 +24,16 @@ namespace Stump.DofusProtocol.Types
 
                 if (field != null)
                 {
-                    var id = (short)field.GetValue(type);
+                    var id = (uint)field.GetValue(type);
 
-                    m_types.Add(id, type);
+                    m_types.Add((short)id, type);
 
                     ConstructorInfo ctor = type.GetConstructor(Type.EmptyTypes);
 
                     if (ctor == null)
                         throw new Exception(string.Format("'{0}' doesn't implemented a parameterless constructor", type));
 
-                    m_typesConstructors.Add(id, ctor.CreateDelegate<object>());
+                    m_typesConstructors.Add((short)id, ctor.CreateDelegate<object>());
                 }
             }
         }

@@ -1,6 +1,6 @@
 ﻿
-using Stump.Database;
-using Stump.Database.AuthServer;
+
+using Stump.Server.BaseServer.IPC.Objects;
 
 namespace Stump.Server.BaseServer.IPC
 {
@@ -9,7 +9,6 @@ namespace Stump.Server.BaseServer.IPC
         /// <summary>
         ///   Disconnect client who use the given account
         /// </summary>
-        /// <param name = "account"></param>
-        bool DisconnectConnectedAccount(AccountRecord account);
+        bool DisconnectConnectedAccount(uint accountId);
     }
 }

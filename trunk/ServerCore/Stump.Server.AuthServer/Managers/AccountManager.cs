@@ -1,18 +1,16 @@
-
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
-using Stump.Database;
-using Stump.Database.AuthServer;
-using Stump.Database.AuthServer.World;
-using Stump.Database.WorldServer.StartupAction;
+using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.AuthServer.Database.Account;
+using Stump.Server.AuthServer.Database.World;
+using Stump.Server.AuthServer.IPC;
 
 namespace Stump.Server.AuthServer.Managers
 {
-    public static class AccountManager
+    public class AccountManager : Singleton<AccountManager>
     {
         /// <summary>
         /// List of available breeds
@@ -39,26 +37,27 @@ namespace Stump.Server.AuthServer.Managers
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
 
-        public static bool CreateAccount(AccountRecord account)
+        public bool CreateAccount(Account account)
         {
-            if (AccountRecord.LoginExist(account.Login.ToLower()))
+            if (Account.LoginExist(account.Login.ToLower()))
                 return false;
 
+            // todo : generate the id to avoid the flush
             account.CreateAndFlush();
+            
+            return true;
+        }
+
+        public bool DeleteAccount(Account account)
+        {
+            account.Delete();
 
             return true;
         }
 
-        public static bool DeleteAccount(AccountRecord account)
+        public WorldCharacter CreateAccountCharacter(Account account, WorldServer world, uint characterId)
         {
-            account.DeleteAndFlush();
-
-            return true;
-        }
-
-        public static WorldCharacterRecord CreateAccountCharacter(AccountRecord account, WorldRecord world, uint characterId)
-        {
-            var character = new WorldCharacterRecord
+            var character = new WorldCharacter
             {
                 Account = account,
                 World = world,
@@ -70,21 +69,7 @@ namespace Stump.Server.AuthServer.Managers
             return character;
         }
 
-        public static DeletedWorldCharacterRecord CreateAccountDeletedCharacter(AccountRecord account, WorldRecord world, uint characterId)
-        {
-            var character = new DeletedWorldCharacterRecord
-            {
-                Account = account,
-                World = world,
-                CharacterId = characterId
-            };
-
-            character.CreateAndFlush();
-
-            return character;
-        }
-
-        public static bool AddAccountCharacter(AccountRecord account, WorldRecord world, uint characterId)
+        public bool AddAccountCharacter(Account account, WorldServer world, uint characterId)
         {
 
             var character = CreateAccountCharacter(account, world, characterId);
@@ -93,12 +78,26 @@ namespace Stump.Server.AuthServer.Managers
                 return false;
 
             account.Characters.Add(character);
-            account.SaveAndFlush();
+            account.Save();
 
             return true;
         }
 
-        public static bool DeleteAccountCharacter(AccountRecord account, WorldRecord world, uint characterId)
+        public DeletedWorldCharacter AddDeletedCharacter(Account account, WorldServer world, uint characterId)
+        {
+            var character = new DeletedWorldCharacter
+                                {
+                                    Account = account,
+                                    World = world,
+                                    CharacterId = characterId
+                                };
+
+            character.Create();
+
+            return character;
+        }
+
+        public bool DeleteAccountCharacter(Account account, WorldServer world, uint characterId)
         {
             var character = account.Characters.FirstOrDefault(c => c.CharacterId == characterId);
 
@@ -106,11 +105,33 @@ namespace Stump.Server.AuthServer.Managers
                 return false;
 
             account.Characters.Remove(character);
-            character.DeleteAndFlush();
-            account.DeletedCharacters.Add(CreateAccountDeletedCharacter(account, world, characterId));
-            account.SaveAndFlush();
+            character.Delete();
+
+            account.DeletedCharacters.Add(AddDeletedCharacter(account, world, characterId));
+            account.Save();
 
             return true;
+        }
+
+
+        public bool DisconnectClientsUsingAccount(Account account)
+        {
+            var clients = AuthServer.Instance.FindClients(entry => entry.Account != null &&
+                entry.Account.Id == account.Id);
+
+            // disconnect clients from auth server
+            foreach (var client in clients)
+            {
+                client.Disconnect();
+            }
+
+            // diconnect clients from game server
+            if (IpcServer.Instance.GetIpcClients().Any(ipcclient => ipcclient.DisconnectConnectedAccount(account.Id)))
+            {
+                return true;
+            }
+
+            return clients.Count() > 0;
         }
     }
 }

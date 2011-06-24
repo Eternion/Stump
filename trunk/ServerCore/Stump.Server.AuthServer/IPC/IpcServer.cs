@@ -12,6 +12,7 @@ using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Reflection;
 using Stump.Server.BaseServer.IPC;
+using Stump.Server.BaseServer.IPC.Objects;
 
 namespace Stump.Server.AuthServer.IPC
 {
@@ -23,16 +24,10 @@ namespace Stump.Server.AuthServer.IPC
         [Variable]
         public static int IpcPort = 9100;
 
-        /// <summary>
-        /// Secret key to use to confirm World Server access
-        /// </summary>
-        [Variable]
-        public static string IpcSecretKey = "000stump000";
-
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly ConcurrentDictionary<WorldServerInformation, IRemoteOperationsWorld> m_ipcclients =
-            new ConcurrentDictionary<WorldServerInformation, IRemoteOperationsWorld>();
+        private readonly ConcurrentDictionary<int, IRemoteOperationsWorld> m_ipcclients =
+            new ConcurrentDictionary<int, IRemoteOperationsWorld>();
 
         public void Initialize()
         {
@@ -54,35 +49,35 @@ namespace Stump.Server.AuthServer.IPC
             }
         }
 
-        public void RegisterTcpClient(WorldServerInformation wsi, int channelPort)
+        public void RegisterTcpClient(WorldServerData wsi, int channelPort)
         {
             string ipcadress = string.Format("tcp://{0}:{1}/", wsi.Address, channelPort);
 
             var remoteobject =
                 (IRemoteOperationsWorld) Activator.GetObject(typeof (IRemoteOperationsWorld), ipcadress + "Remoting");
 
-            m_ipcclients.TryAdd(wsi, remoteobject);
+            if (!m_ipcclients.TryAdd(wsi.Id, remoteobject))
+                throw new Exception(string.Format("Server already registred with id '{0}'", wsi.Id));
         }
 
-        public void UnRegisterTcpClient(WorldServerInformation wsi)
+        public void UnRegisterTcpClient(WorldServerData wsi)
         {
-            IEnumerable<KeyValuePair<WorldServerInformation, IRemoteOperationsWorld>> clients =
-                m_ipcclients.Where(entry => entry.Key.Id == wsi.Id);
+            UnRegisterTcpClient(wsi.Id);
+        }
 
+        public void UnRegisterTcpClient(int id)
+        {
             IRemoteOperationsWorld value;
-            foreach (var client in clients)
-                m_ipcclients.TryRemove(client.Key, out value);
+            if (!m_ipcclients.TryRemove(id, out value))
+                throw new Exception(string.Format("Cannot remove server with id '{0}', maybe it doesn't exist more", id));
         }
 
         public IRemoteOperationsWorld GetIpcClient(int id)
         {
-            IEnumerable<KeyValuePair<WorldServerInformation, IRemoteOperationsWorld>> client =
-                m_ipcclients.Where(entry => entry.Key.Id == id);
+            IRemoteOperationsWorld client;
+            m_ipcclients.TryGetValue(id, out client);
 
-            if (client.Count() <= 0)
-                return null;
-
-            return client.First().Value;
+            return client;
         }
 
         public IRemoteOperationsWorld[] GetIpcClients()
