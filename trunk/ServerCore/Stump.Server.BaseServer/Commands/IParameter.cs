@@ -18,5 +18,6 @@
         }
 
         void SetValue(string str, TriggerBase trigger);
+        void SetDefaultValue(TriggerBase trigger);
     }
 }

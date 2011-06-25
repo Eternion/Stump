@@ -12,5 +12,6 @@ namespace Stump.DofusProtocol.D2oClasses
 		public uint authorId;
 		public uint subTitleId;
 		public uint contentId;
+		public String contentCSS;
 	}
 }

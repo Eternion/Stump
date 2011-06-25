@@ -29,12 +29,12 @@ namespace Stump.Core.IO
 
             var fileTarget = new FileTarget();
             fileTarget.FileName = "${basedir}" + LogFilePath + "log_${date:format=dd-MM-yyyy}" + ".txt";
-            fileTarget.Layout = "<${date:format=G}> [${level}] ${callsite} : ${message}";
+            fileTarget.Layout = "[${level}] <${date:format=G}> ${message}";
 
             var fileErrorTarget = new FileTarget();
             fileErrorTarget.FileName = "${basedir}" + LogFilePath +
                                        "error_${date:format=dd-MM-yyyy}" + ".txt";
-            fileErrorTarget.Layout = "-------------${level} at ${date:format=G}------------- ${newline} ${callsite} : ${message} ${newline}-------------${level} at ${date:format=G}------------- ${newline}";
+            fileErrorTarget.Layout = "-------------${level} at ${date:format=G}------------- ${newline} ${callsite} -> ${newline}\t${message} ${newline}-------------${level} at ${date:format=G}------------- ${newline}";
 
             if (activefileLog)
             {

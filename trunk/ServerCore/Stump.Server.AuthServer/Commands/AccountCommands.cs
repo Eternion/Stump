@@ -31,7 +31,7 @@ namespace Stump.Server.AuthServer.Commands
                     new ParameterDefinition<string>("accountname", "name", "Name of the created account"),
                     new ParameterDefinition<string>("password", "pass", "Password of the created accont"),
                     new ParameterDefinition<RoleEnum>("role", "role", "Role of the created account. See RoleEnum",
-                                                   RoleEnum.Player, ParametersConverter.RoleConverter),
+                                                   RoleEnum.Player, converter:ParametersConverter.RoleConverter),
                     new ParameterDefinition<string>("question", "quest", "Secret question", "dummy?"),
                     new ParameterDefinition<string>("answer", "answer", "Answer to the secret question", "dummy!"),
                 };

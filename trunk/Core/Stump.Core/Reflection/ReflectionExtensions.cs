@@ -16,7 +16,7 @@ namespace Stump.Core.Reflection
 
         public static bool HasInterface(this Type type, Type interfaceType)
         {
-            return type.FindInterfaces(FilterByName, interfaceType.Name).Length > 0;
+            return type.FindInterfaces(FilterByName, interfaceType).Length > 0;
         }
 
         private static bool FilterByName(Type typeObj, Object criteriaObj)

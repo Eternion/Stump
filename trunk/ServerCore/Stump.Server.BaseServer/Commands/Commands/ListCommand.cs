@@ -15,7 +15,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
             Parameters = new List<IParameterDefinition>
             {
                 new ParameterDefinition<string>("command", "cmd", "List specifics sub commands", string.Empty),
-                new ParameterDefinition<RoleEnum>("role", "role", "List commands available for a given role", RoleEnum.None)
+                new ParameterDefinition<RoleEnum>("role", "role", "List commands available for a given role", RoleEnum.None, true) // we must define isOptional = true because RoleEnum.None = default(RoleEnum)
             };
         }
 
@@ -28,7 +28,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
                 role : trigger.UserRole;
 
             IEnumerable<CommandBase> availableCommands =
-                CommandManager.Instance.AvailableCommands;
+                CommandManager.Instance.AvailableCommands.Where(entry => !(entry is SubCommand));
             if (cmd != string.Empty)
             {
                 var command = CommandManager.Instance.GetCommand(cmd);
@@ -46,11 +46,13 @@ namespace Stump.Server.BaseServer.Commands.Commands
             }
 
             var commands = from entry in availableCommands
-                           where !(entry is SubCommandContainer) && entry.RequiredRole <= role
+                           where entry.RequiredRole <= role
                            select entry;
 
             trigger.Reply(string.Join(", ", from entry in commands
-                                            select entry.Aliases.First()));
+                                            select (entry is SubCommandContainer ?
+                                                string.Format("{0}({1})", entry.Aliases.First(), (entry as SubCommandContainer).Count)
+                                                : entry.Aliases.First())));
         }
     }
 }

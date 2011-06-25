@@ -14,6 +14,7 @@ namespace Stump.DofusProtocol.D2oClasses
 		public int fireResistance;
 		public int waterResistance;
 		public int neutralResistance;
+		public int gradeXp;
 		public int lifePoints;
 		public int actionPoints;
 		public int movementPoints;

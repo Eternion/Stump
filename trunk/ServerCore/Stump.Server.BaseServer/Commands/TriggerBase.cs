@@ -9,19 +9,26 @@ namespace Stump.Server.BaseServer.Commands
 {
     public abstract class TriggerBase
     {
-        private readonly Regex m_regexIsNamed = new Regex(@"^(?!\"")(?:-|--)?(\w+)=([^\""\s]*)(?!\"")$", RegexOptions.Compiled);
-        private readonly Regex m_regexVar = new Regex(@"^(?!\"")(?:-|--)([a-zA-Z]+)(?!\"")$", RegexOptions.Compiled);
+        private readonly Regex m_regexIsNamed = new Regex(@"^(?!\"")(?:-|--)?([\w\d]+)=([^\""\s]*)(?!\"")$", RegexOptions.Compiled);
+        private readonly Regex m_regexVar = new Regex(@"^(?!\"")(?:-|--)([\w\d]+)(?!\"")$", RegexOptions.Compiled);
+
+        private TriggerBase()
+        {
+            CommandsParametersByName = new Dictionary<string, IParameter>();
+            CommandsParametersByShortName = new Dictionary<string, IParameter>();
+        }
 
         protected TriggerBase(StringStream args, RoleEnum userRole)
+            : this()
         {
             Args = args;
             UserRole = userRole;
         }
 
         protected TriggerBase(string args, RoleEnum userRole)
+            : this(new StringStream(args), userRole)
         {
-            Args = new StringStream(args);
-            UserRole = userRole;
+
         }
 
         public StringStream Args
@@ -139,7 +146,7 @@ namespace Stump.Server.BaseServer.Commands
                         Match matchVar = m_regexVar.Match(word);
                         if (matchVar.Success)
                         {
-                            name = matchIsNamed.Groups[1].Value;
+                            name = matchVar.Groups[1].Value;
                             value = string.Empty;
                         }
                     }
@@ -212,7 +219,7 @@ namespace Stump.Server.BaseServer.Commands
 
                 var parameter = unusedDefinition.CreateParameter();
 
-                parameter.SetValue(string.Empty, this);
+                parameter.SetDefaultValue(this);
                 definedParam.Add(parameter);
             }
 

@@ -44,6 +44,7 @@ namespace Stump.Server.AuthServer
                 ConsoleInterface = new AuthConsole();
                 ConsoleBase.SetTitle("#Stump Authentification Server");
 
+
                 logger.Info("Initializing Database...");
                 DatabaseAccessor = new DatabaseAccessor(AuthDatabaseConfiguration, Definitions.DatabaseRevision, typeof(AuthBaseRecord<>), Assembly.GetExecutingAssembly());
                 DatabaseAccessor.Initialize();
@@ -73,7 +74,7 @@ namespace Stump.Server.AuthServer
             }
             catch (Exception ex)
             {
-                logger.Fatal("Cannot initialize Server : " + ex);
+                HandleCrashException(ex);
                 Shutdown();
             }
         }

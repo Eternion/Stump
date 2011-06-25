@@ -19,18 +19,19 @@ namespace Stump.Server.AuthServer.Commands
 
             Parameters = new List<IParameterDefinition>
                 {
-                    new ParameterDefinition<int>("time", "t", "Stop after [time] seconds", 0),
-                    new ParameterDefinition<bool>("cancel", "c", "Cancel a shutting down procedure", false),
+                    new ParameterDefinition<int>("time", "t", "Stop after [time] seconds", 0, true),
+                    new ParameterDefinition<bool>("cancel", "c", "Cancel a shutting down procedure", true),
                 };
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            if (trigger.IsArgumentDefined("cancel") && trigger.Get<bool>("cancel") && m_shutdownTimer != null)
+            if (trigger.IsArgumentDefined("cancel") && trigger.Get<bool>("cancel"))
             {
-                m_shutdownTimer.Dispose();
+                if (m_shutdownTimer != null)
+                    m_shutdownTimer.Dispose();
 
-                trigger.Reply("Shutting down procedure is cancel.");
+                trigger.Reply("Shutting down procedure is canceled.");
                 return;
             }
 

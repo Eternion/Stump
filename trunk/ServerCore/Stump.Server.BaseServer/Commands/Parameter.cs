@@ -49,5 +49,12 @@ namespace Stump.Server.BaseServer.Commands
 
             IsDefined = true;
         }
+
+        public void SetDefaultValue(TriggerBase trigger)
+        {
+            Value = (T)Definition.ConvertString(string.Empty, trigger);
+
+            IsDefined = false;
+        }
     }
 }

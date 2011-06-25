@@ -8,7 +8,7 @@ namespace Stump.Server.BaseServer.Commands
     /// <summary>
     /// Represents a command that contains only SubCommands
     /// </summary>
-    public class SubCommandContainer : CommandBase, IEnumerable<SubCommand>
+    public abstract class SubCommandContainer : CommandBase, IEnumerable<SubCommand>
     {
         private readonly List<SubCommand> m_subCommands = new List<SubCommand>();
 
@@ -60,10 +60,11 @@ namespace Stump.Server.BaseServer.Commands
             if (!TryGetSubCommand(IgnoreCommandCase ? str.ToLower() : str, out command))
             {
                 trigger.ReplyError("Cannot found subcommand {0}", str);
+                return;
             }
 
-            trigger.BindToCommand(command);
-            command.Execute(trigger);
+            if (trigger.BindToCommand(command))
+                command.Execute(trigger);
         }
 
         public void AddSubCommand(SubCommand subCommand)
@@ -97,7 +98,7 @@ namespace Stump.Server.BaseServer.Commands
 
             result = query.SingleOrDefault();
 
-            return result == null;
+            return result != null;
         }
     }
 }

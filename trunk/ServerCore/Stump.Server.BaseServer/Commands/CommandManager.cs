@@ -32,7 +32,7 @@ namespace Stump.Server.BaseServer.Commands
         }
 
         /// <summary>
-        /// Regroup all CommandBase and SubCommandContainer
+        /// Regroup all CommandBases, SubCommandContainers and SubCommands
         /// </summary>
         public IEnumerable<CommandBase> AvailableCommands
         {
@@ -207,8 +207,8 @@ namespace Stump.Server.BaseServer.Commands
             {
                 try
                 {
-                    trigger.BindToCommand(cmd);
-                    cmd.Execute(trigger);
+                    if (trigger.BindToCommand(cmd))
+                        cmd.Execute(trigger);
                 }
                 catch (Exception ex)
                 {

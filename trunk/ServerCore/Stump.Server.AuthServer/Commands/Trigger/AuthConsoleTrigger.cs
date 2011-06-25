@@ -20,12 +20,7 @@ namespace Stump.Server.AuthServer.Commands.Trigger
 
         public override void Reply(string text)
         {
-            string name = BindedCommand.Aliases.FirstOrDefault();
-
-            if (!string.IsNullOrEmpty(name))
-                Console.WriteLine(name + " : " + text);
-            else
-                Console.WriteLine(text);
+            Console.WriteLine(" " + text);
         }
     }
 }

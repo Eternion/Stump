@@ -166,6 +166,7 @@ namespace Stump.Server.BaseServer
             TaskPool.Initialize(Assembly.GetCallingAssembly());
 
             CommandManager = CommandManager.Instance;
+            CommandManager.RegisterAll(Assembly.GetExecutingAssembly());
 
             logger.Info("Initializing Network Interfaces...");
             QueueDispatcher = new QueueDispatcher(Settings.EnableBenchmarking);
@@ -225,13 +226,12 @@ namespace Stump.Server.BaseServer
 
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs args)
         {
-            if (args.IsTerminating)
-                logger.Fatal("Application has crashed. An Unhandled Exception has been thrown :");
-
-            logger.Error("Unhandled Exception : " + ((Exception) args.ExceptionObject).Message);
-            logger.Error("Source : {0} Method : {1}", ((Exception) args.ExceptionObject).Source,
-                         ((Exception) args.ExceptionObject).TargetSite);
-            logger.Error("Stack Trace : " + ((Exception) args.ExceptionObject).StackTrace);
+            logger.Fatal(
+                ( args.IsTerminating ? "Application has crashed. An Unhandled Exception has been thrown :\r\n" : "" ) +
+                string.Format(" Unhandled Exception: {0}\r\n", ( (Exception)args.ExceptionObject ).Message) +
+                string.Format(" Source: {0} -> {1}\r\n", ( (Exception)args.ExceptionObject ).Source,
+                         ((Exception) args.ExceptionObject).TargetSite) +
+                string.Format(" Stack Trace:\r\n{0}", ( (Exception)args.ExceptionObject ).StackTrace));
 
             if (args.IsTerminating)
                 Shutdown();
@@ -239,9 +239,11 @@ namespace Stump.Server.BaseServer
 
         public void HandleCrashException(Exception e)
         {
-            logger.Fatal("An exception occurred ! {0} : {1}", e.GetType().Name, e.Message);
-            logger.Fatal("Source : {0} Method : {1}", e.Source, e.TargetSite);
-            logger.Fatal("Stack Trace : " + e.StackTrace);
+            logger.Fatal(
+                string.Format(" Crash Exception : {0}\r\n", e.Message) +
+                string.Format(" Source: {0} -> {1}\r\n", e.Source,
+                        e.TargetSite) +
+                string.Format(" Stack Trace:\r\n{0}", e.StackTrace));
         }
 
         public virtual void Start()

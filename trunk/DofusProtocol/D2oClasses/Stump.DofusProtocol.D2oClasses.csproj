@@ -146,6 +146,7 @@
     <Compile Include="Classes\items\Item.cs" />
     <Compile Include="Classes\items\ItemSet.cs" />
     <Compile Include="Classes\items\ItemType.cs" />
+    <Compile Include="Classes\items\PresetIcon.cs" />
     <Compile Include="Classes\items\Weapon.cs" />
     <Compile Include="Classes\jobs\Job.cs" />
     <Compile Include="Classes\jobs\Recipe.cs" />
@@ -153,13 +154,16 @@
     <Compile Include="Classes\livingObjects\LivingObjectSkinJntMood.cs" />
     <Compile Include="Classes\livingObjects\SpeakingItemsTrigger.cs" />
     <Compile Include="Classes\livingObjects\SpeakingItemText.cs" />
+    <Compile Include="Classes\misc\ActionDescription.cs" />
     <Compile Include="Classes\misc\Appearance.cs" />
     <Compile Include="Classes\misc\CensoredContent.cs" />
     <Compile Include="Classes\misc\Month.cs" />
     <Compile Include="Classes\misc\Pack.cs" />
     <Compile Include="Classes\misc\Tips.cs" />
     <Compile Include="Classes\misc\Title.cs" />
+    <Compile Include="Classes\misc\Url.cs" />
     <Compile Include="Classes\monsters\Monster.cs" />
+    <Compile Include="Classes\monsters\MonsterAnimFunData.cs" />
     <Compile Include="Classes\monsters\MonsterGrade.cs" />
     <Compile Include="Classes\monsters\MonsterRace.cs" />
     <Compile Include="Classes\monsters\MonsterSuperRace.cs" />
@@ -167,6 +171,7 @@
     <Compile Include="Classes\mounts\MountBehavior.cs" />
     <Compile Include="Classes\mounts\RideFood.cs" />
     <Compile Include="Classes\notifications\Notification.cs" />
+    <Compile Include="Classes\notifications\NotificationButton.cs" />
     <Compile Include="Classes\npcs\Npc.cs" />
     <Compile Include="Classes\npcs\NpcAction.cs" />
     <Compile Include="Classes\npcs\NpcMessage.cs" />
@@ -202,6 +207,7 @@
     <Compile Include="Classes\spells\SpellState.cs" />
     <Compile Include="Classes\spells\SpellType.cs" />
     <Compile Include="Classes\world\Area.cs" />
+    <Compile Include="Classes\world\Dungeon.cs" />
     <Compile Include="Classes\world\Hint.cs" />
     <Compile Include="Classes\world\MapCoordinates.cs" />
     <Compile Include="Classes\world\MapPosition.cs" />

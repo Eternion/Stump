@@ -8,14 +8,18 @@ namespace Stump.Server.BaseServer.Commands
 
     public class ParameterDefinition<T> : IParameterDefinition<T>
     {
-        public ParameterDefinition(string name, string shortName = "", string description = "", T defaultValue = default(T),
+        public ParameterDefinition(string name, string shortName = "", string description = "", T defaultValue = default(T), bool isOptional = false,
                                 ConverterHandler<T> converter = null)
         {
             Name = name;
             ShortName = shortName;
             Description = description;
             DefaultValue = defaultValue;
+            IsOptional = isOptional;
             Converter = converter;
+
+            if (!Equals(defaultValue, default(T)))
+                IsOptional = true;
         }
 
         #region ICommandParameter<T> Members
@@ -50,7 +54,8 @@ namespace Stump.Server.BaseServer.Commands
         /// </summary>
         public bool IsOptional
         {
-            get { return !Equals(DefaultValue, default(T)); }
+            get;
+            private set;
         }
 
         public T DefaultValue

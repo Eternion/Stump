@@ -178,6 +178,10 @@
     <Compile Include="Types\game\context\roleplay\ObjectItemInRolePlay.cs" />
     <Compile Include="Types\game\context\roleplay\ObjectItemWithLookInRolePlay.cs" />
     <Compile Include="Types\game\context\roleplay\OrientedObjectItemWithLookInRolePlay.cs" />
+    <Compile Include="Types\game\context\roleplay\party\DungeonPartyFinderPlayer.cs" />
+    <Compile Include="Types\game\context\roleplay\party\PartyGuestInformations.cs" />
+    <Compile Include="Types\game\context\roleplay\party\PartyInvitationMemberInformations.cs" />
+    <Compile Include="Types\game\context\roleplay\party\PartyMemberGeoPosition.cs" />
     <Compile Include="Types\game\context\roleplay\party\PartyMemberInformations.cs" />
     <Compile Include="Types\game\context\roleplay\party\PartyUpdateCommonsInformations.cs" />
     <Compile Include="Types\game\context\TaxCollectorStaticInformations.cs" />
@@ -219,6 +223,7 @@
     <Compile Include="Types\game\guild\tax\TaxCollectorFightersInformation.cs" />
     <Compile Include="Types\game\guild\tax\TaxCollectorInformations.cs" />
     <Compile Include="Types\game\guild\tax\TaxCollectorInformationsInWaitForHelpState.cs" />
+    <Compile Include="Types\game\guild\tax\TaxCollectorLootInformations.cs" />
     <Compile Include="Types\game\guild\tax\TaxCollectorName.cs" />
     <Compile Include="Types\game\house\HouseInformations.cs" />
     <Compile Include="Types\game\house\HouseInformationsExtended.cs" />
@@ -260,6 +265,7 @@
     <Compile Include="Types\game\shortcut\ShortcutObjectPreset.cs" />
     <Compile Include="Types\game\shortcut\ShortcutSpell.cs" />
     <Compile Include="Types\game\startup\StartupActionAddObject.cs" />
+    <Compile Include="Types\secure\TrustCertificate.cs" />
     <Compile Include="Types\updater\ContentPart.cs" />
     <Compile Include="Types\version\Version.cs" />
   </ItemGroup>
@@ -273,6 +279,7 @@
       <Name>Stump.DofusProtocol.Enums</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

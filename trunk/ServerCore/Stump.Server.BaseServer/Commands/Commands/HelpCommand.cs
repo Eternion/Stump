@@ -104,7 +104,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
                               : "");
 
             if (command.Parameters != null)
-                foreach (IParameter commandParameter in command.Parameters)
+                foreach (IParameterDefinition commandParameter in command.Parameters)
                 {
                     DisplayCommandParameter(trigger, commandParameter);
                 }
@@ -125,17 +125,17 @@ namespace Stump.Server.BaseServer.Commands.Commands
                           subcommand.Description,
                           subcommand.GetSafeUsage());
 
-            foreach (IParameter commandParameter in subcommand.Parameters)
+            foreach (IParameterDefinition commandParameter in subcommand.Parameters)
             {
                 DisplayCommandParameter(trigger, commandParameter);
             }
         }
 
-        private static void DisplayCommandParameter(TriggerBase trigger, IParameter parameter)
+        private static void DisplayCommandParameter(TriggerBase trigger, IParameterDefinition parameter)
         {
             trigger.Reply("\t({0} : {1})",
-                          parameter.Definition.GetUsage(),
-                          parameter.Definition.Description ?? "");
+                          parameter.GetUsage(),
+                          parameter.Description ?? "");
         }
     }
 }

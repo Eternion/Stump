@@ -151,6 +151,7 @@
     <Compile Include="Export\SequenceTypeEnum.cs" />
     <Compile Include="Export\ServerConnectionErrorEnum.cs" />
     <Compile Include="Export\ServerStatusEnum.cs" />
+    <Compile Include="Export\ShortcutBarEnum.cs" />
     <Compile Include="Export\SocialContactCategoryEnum.cs" />
     <Compile Include="Export\SubEntityBindingPointCategoryEnum.cs" />
     <Compile Include="Export\SubscriptionRequiredEnum.cs" />
