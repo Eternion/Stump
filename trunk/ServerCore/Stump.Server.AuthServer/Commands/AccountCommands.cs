@@ -51,6 +51,7 @@ namespace Stump.Server.AuthServer.Commands
                     Role = trigger.Get<RoleEnum>("role"),
                     Email = "",
                     AvailableBreeds = AccountManager.AvailableBreeds,
+                    Lang = "fr", // todo manage lang
                 };
 
             if (AccountManager.Instance.CreateAccount(acc))

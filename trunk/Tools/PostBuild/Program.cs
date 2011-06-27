@@ -25,10 +25,7 @@ namespace PostBuild
             // TODO : Docs commands & msdn'like
             // TODO : generate config file
 
-            AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
-            {
-                Console.WriteLine("Exception raised while generating config : " + e.ExceptionObject);
-            };
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) => Console.WriteLine("Exception raised while generating config : " + e.ExceptionObject);
 
             if (args[0] == "-config")
             {
@@ -46,7 +43,7 @@ namespace PostBuild
                     Assembly asm;
                     try
                     {
-                        if (Path.GetFileNameWithoutExtension(file) != "Stump.BaseCore.Framework")
+                        if (Path.GetFileNameWithoutExtension(file) != "Stump.Core")
                             asm = Assembly.LoadFrom(file);
                         else
                             continue;
@@ -120,7 +117,7 @@ namespace PostBuild
                                     }
                                     else if (lastNamespace[i] != currentNamespace[i])
                                     {
-                                        int nsToClose = count - i;
+                                        int nsToClose = lastNamespace.Count - i;
                                         for (int j = 0; j < nsToClose; j++)
                                         {
                                             writer.WriteEndElement();
@@ -134,6 +131,8 @@ namespace PostBuild
 
                                             lastNamespace.Add(currentNamespace[i]);
                                         }
+
+                                        break;
                                     }
                                 }
 

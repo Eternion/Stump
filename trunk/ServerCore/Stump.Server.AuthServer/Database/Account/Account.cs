@@ -77,7 +77,7 @@ namespace Stump.Server.AuthServer.Database.Account
             set;
         }
 
-        [Property("AvailableBreeds", NotNull = true, Default = "8191")]
+        [Property("AvailableBreeds", NotNull = true, Default = "8191")] // 8191 = 0001 1111 1111 1111
         public uint DbAvailableBreeds
         {
             get;
@@ -281,16 +281,5 @@ namespace Stump.Server.AuthServer.Database.Account
         {
             return FindAll(Restrictions.Eq("Role", role));
         }
-
-        public static bool LoginExist(string login)
-        {
-            return Exists(Restrictions.Eq("Login", login.ToLower()));
-        }
-
-        public static bool NicknameExist(string nickname)
-        {
-            return Exists(Restrictions.Eq("Nickname", nickname));
-        }
-
     }
 }

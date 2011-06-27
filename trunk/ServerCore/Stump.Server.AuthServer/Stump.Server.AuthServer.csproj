@@ -68,6 +68,12 @@
     <Compile Include="Database\World\WorldCharacter.cs" />
     <Compile Include="Database\World\WorldServer.cs" />
     <Compile Include="Definitions.cs" />
+    <Compile Include="Handlers\AuthHandlerAttribute.cs" />
+    <Compile Include="Handlers\AuthHandlerContainer.cs" />
+    <Compile Include="Handlers\Connection\ConnectionHandler.cs" />
+    <Compile Include="Handlers\Connection\ConnectionRegisterHandler.cs" />
+    <Compile Include="Handlers\Connection\ConnectionSearchHandler.cs" />
+    <Compile Include="Handlers\PredicatesDefinitions.cs" />
     <Compile Include="IPC\IpcOperations.cs" />
     <Compile Include="IPC\IpcServer.cs" />
     <Compile Include="Managers\AccountManager.cs" />

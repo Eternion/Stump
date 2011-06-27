@@ -205,14 +205,10 @@ namespace Stump.Server.AuthServer.Managers
             }
         }
 
-        public List<GameServerInformations> GetServersInformationList(AuthClient client)
+        public GameServerInformations[] GetServersInformationArray(AuthClient client)
         {
             return m_realmlist.Values.Select(
-                world =>
-                new GameServerInformations((ushort) world.Id, (byte) world.Status,
-                                           (byte) world.Completion,
-                                           world.ServerSelectable,
-                                           client.Account.GetCharactersCountByWorld(world.Id))).ToList();
+                world => GetServerInformation(client, world)).ToArray();
         }
 
         public GameServerInformations GetServerInformation(AuthClient client, WorldServer world)

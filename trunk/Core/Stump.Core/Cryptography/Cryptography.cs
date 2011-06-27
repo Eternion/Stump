@@ -2,10 +2,11 @@
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
+using Stump.Core.Extensions;
 
 namespace Stump.Core.Cryptography
 {
-    public static class Crypt
+    public static class Cryptography
     {
         #region MD5
 
@@ -62,5 +63,11 @@ namespace Stump.Core.Cryptography
         }
 
         #endregion
+
+        public static string EncryptPassword(string password, string key)
+        {
+            return (password.GetMd5() + key).GetMd5();
+        }
     }
+
 }

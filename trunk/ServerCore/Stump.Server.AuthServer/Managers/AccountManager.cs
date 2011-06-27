@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using NHibernate.Criterion;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Reflection;
@@ -37,9 +38,24 @@ namespace Stump.Server.AuthServer.Managers
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
 
+        public Account FindAccount(string login)
+        {
+            return Account.FindAccountByLogin(login);
+        }
+
+        public bool LoginExist(string login)
+        {
+            return Account.Exists(Restrictions.Eq("Login", login.ToLower()));
+        }
+
+        public bool NicknameExist(string nickname)
+        {
+            return Account.Exists(Restrictions.Eq("Nickname", nickname));
+        }
+
         public bool CreateAccount(Account account)
         {
-            if (Account.LoginExist(account.Login.ToLower()))
+            if (LoginExist(account.Login.ToLower()))
                 return false;
 
             // todo : generate the id to avoid the flush

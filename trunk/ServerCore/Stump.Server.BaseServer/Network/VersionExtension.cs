@@ -36,7 +36,7 @@ namespace Stump.Server.BaseServer.Network
         /// Version for the client. 
         /// </summary>
         [Variable]
-        public static Version VersionRequired = new Version(2, 3, 7, 35100, 1, (byte)BuildTypeEnum.RELEASE);
+        public static Version WaitedVersion = new Version(2, 3, 7, 35100, 1, (byte)BuildTypeEnum.RELEASE);
 
         /// <summary>
         /// Actual version
@@ -62,20 +62,20 @@ namespace Stump.Server.BaseServer.Network
                 case VersionCheckingSeverity.None:
                     return true;
                 case VersionCheckingSeverity.Light:
-                    return VersionRequired.major == versionToCompare.major &&
-                           VersionRequired.minor == versionToCompare.minor &&
-                           VersionRequired.release == versionToCompare.release;
+                    return WaitedVersion.major == versionToCompare.major &&
+                           WaitedVersion.minor == versionToCompare.minor &&
+                           WaitedVersion.release == versionToCompare.release;
                 case VersionCheckingSeverity.Medium:
-                    return VersionRequired.major == versionToCompare.major &&
-                           VersionRequired.minor == versionToCompare.minor &&
-                           VersionRequired.release == versionToCompare.release &&
-                           VersionRequired.revision == versionToCompare.revision;
+                    return WaitedVersion.major == versionToCompare.major &&
+                           WaitedVersion.minor == versionToCompare.minor &&
+                           WaitedVersion.release == versionToCompare.release &&
+                           WaitedVersion.revision == versionToCompare.revision;
                 case VersionCheckingSeverity.Heavy:
-                    return VersionRequired.major == versionToCompare.major &&
-                           VersionRequired.minor == versionToCompare.minor &&
-                           VersionRequired.release == versionToCompare.release &&
-                           VersionRequired.revision == versionToCompare.revision &&
-                           VersionRequired.patch == versionToCompare.patch;
+                    return WaitedVersion.major == versionToCompare.major &&
+                           WaitedVersion.minor == versionToCompare.minor &&
+                           WaitedVersion.release == versionToCompare.release &&
+                           WaitedVersion.revision == versionToCompare.revision &&
+                           WaitedVersion.patch == versionToCompare.patch;
             }
 
             return false;

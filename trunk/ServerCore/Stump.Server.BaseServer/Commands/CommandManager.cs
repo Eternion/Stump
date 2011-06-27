@@ -213,6 +213,9 @@ namespace Stump.Server.BaseServer.Commands
                 catch (Exception ex)
                 {
                     trigger.Reply("Raised exception when executing command : " + ex.Message);
+
+                    if (ex.InnerException != null)
+                        trigger.Reply(" => " + ex.InnerException.Message);
                 }
             }
             else
