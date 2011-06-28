@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Threading;
 using Stump.Server.AuthServer;
 
 namespace Stump.GUI.AuthConsole
@@ -18,6 +19,8 @@ namespace Stump.GUI.AuthConsole
                 while (server.Running)
                 {
                     server.Update();
+
+                    Thread.Sleep(1);
                 }
             }
             catch (Exception e)
