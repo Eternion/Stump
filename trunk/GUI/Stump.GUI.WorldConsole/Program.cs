@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Threading;
 using Stump.Server.WorldServer;
 
 namespace Stump.GUI.WorldConsole
@@ -18,6 +19,8 @@ namespace Stump.GUI.WorldConsole
                 while (server.Running)
                 {
                     server.Update();
+
+                    Thread.Sleep(1);
                 }
             }
             catch (Exception e)

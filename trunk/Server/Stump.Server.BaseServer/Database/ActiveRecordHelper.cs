@@ -13,7 +13,7 @@ namespace Stump.Server.BaseServer.Database
         {
             var types = assembly.GetTypes();
             
-            return types.Where(t => t.IsSubclassOfGeneric(recordBaseType)).ToArray();
+            return types.Where(t => t.IsSubclassOfGeneric(recordBaseType));
         }
 
         public static Type GetVersionType(IEnumerable<Type> types)

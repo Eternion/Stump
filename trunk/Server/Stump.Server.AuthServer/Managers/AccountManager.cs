@@ -141,8 +141,10 @@ namespace Stump.Server.AuthServer.Managers
                 client.Disconnect();
             }
 
-            // diconnect clients from game server
-            if (IpcServer.Instance.GetIpcClients().Any(ipcclient => ipcclient.DisconnectConnectedAccount(account.Id)))
+            var lastWorld = account.LastConnection.World;
+
+            // diconnect clients from last game server
+            if (IpcServer.Instance.GetIpcClient(lastWorld.Id).DisconnectConnectedAccount(account.Id))
             {
                 return true;
             }

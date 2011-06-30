@@ -187,7 +187,6 @@ namespace Stump.Server.AuthServer.Database.Account
             set { m_sanctions = value; }
         }
 
-
         public bool CanUseBreed(int breedId)
         {
             return ( DbAvailableBreeds & ( 1 << breedId ) ) == 1;

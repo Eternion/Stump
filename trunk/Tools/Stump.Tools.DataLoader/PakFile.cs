@@ -63,7 +63,9 @@ namespace Stump.Tools.DataLoader
             }
 
             reader.Seek(startOffset, SeekOrigin.Begin);
-            m_indexes = new Dictionary<string, Tuple<int, int, BigEndianReader>>((int)elementsCount);
+            if (m_indexes == null)
+                m_indexes = new Dictionary<string, Tuple<int, int, BigEndianReader>>((int)elementsCount);
+            
             for (int i = 0; i < elementsCount; i++)
             {
                 string indexname = reader.ReadUTF();

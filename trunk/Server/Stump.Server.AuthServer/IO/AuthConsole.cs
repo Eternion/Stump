@@ -4,7 +4,7 @@ using Stump.Core.IO;
 using Stump.Server.AuthServer.Commands.Trigger;
 using Stump.Server.BaseServer;
 
-namespace Stump.Server.AuthServer
+namespace Stump.Server.AuthServer.IO
 {
     public class AuthConsole : ConsoleBase
     {

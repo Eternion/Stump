@@ -97,6 +97,10 @@
       <Project>{011FBAFC-7720-4D36-9C59-71BAE6163C9E}</Project>
       <Name>Stump.Server.BaseServer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Server\Stump.Server.WorldServer\Stump.Server.WorldServer.csproj">
+      <Project>{7A1BEAB5-1A69-48B6-B064-0F6F372AC23B}</Project>
+      <Name>Stump.Server.WorldServer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Tools\PostBuild\PostBuild.csproj">
       <Project>{1B676803-A9AF-4F49-8D67-483D701C9A6B}</Project>
       <Name>PostBuild</Name>

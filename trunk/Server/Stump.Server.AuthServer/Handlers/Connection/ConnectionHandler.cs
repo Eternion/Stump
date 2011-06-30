@@ -70,7 +70,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             /* Wrong Version */
             if (!message.version.IsUpToDate())
             {
-                SendIdentificationFailedForBadVersionMessage(client, VersionExtension.WaitedVersion);
+                SendIdentificationFailedForBadVersionMessage(client, VersionExtension.ExpectedVersion);
                 client.DisconnectLater(1000);
                 return false;
             }

@@ -50,7 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuthConsole.cs" />
+    <Compile Include="IO\AuthConsole.cs" />
     <Compile Include="AuthServer.cs" />
     <Compile Include="Commands\AccountCommands.cs" />
     <Compile Include="Commands\Trigger\AuthConsoleTrigger.cs" />

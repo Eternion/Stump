@@ -1,13 +1,17 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
+using Castle.ActiveRecord.Framework.Config;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.AuthServer.Database;
+using Stump.Server.AuthServer.IO;
 using Stump.Server.AuthServer.IPC;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.AuthServer.Network;
@@ -21,9 +25,9 @@ namespace Stump.Server.AuthServer
     public class AuthServer : ServerBase<AuthServer>
     {
         [Variable]
-        public static DatabaseConfiguration AuthDatabaseConfiguration = new DatabaseConfiguration
+        public static DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
         {
-            DatabaseType = Castle.ActiveRecord.Framework.Config.DatabaseType.MySql,
+            DatabaseType = DatabaseType.MySql,
             Host = "localhost",
             Name = "stump_auth",
             User = "root",
@@ -46,7 +50,7 @@ namespace Stump.Server.AuthServer
 
 
                 logger.Info("Initializing Database...");
-                DatabaseAccessor = new DatabaseAccessor(AuthDatabaseConfiguration, Definitions.DatabaseRevision, typeof(AuthBaseRecord<>), Assembly.GetExecutingAssembly());
+                DatabaseAccessor = new DatabaseAccessor(DatabaseConfiguration, Definitions.DatabaseRevision, typeof(AuthBaseRecord<>), Assembly.GetExecutingAssembly());
                 DatabaseAccessor.Initialize();
 
                 logger.Info("Opening Database...");
@@ -61,9 +65,6 @@ namespace Stump.Server.AuthServer
 
                 logger.Info("Register Commands...");
                 CommandManager.RegisterAll(Assembly.GetExecutingAssembly());
-
-                logger.Info("Starting Console Handler Interface...");
-                ConsoleInterface.Start();
 
                 logger.Info("Start World Servers Manager");
                 WorldServerManager.Instance.Initialize();
@@ -84,6 +85,14 @@ namespace Stump.Server.AuthServer
             CommandManager.RegisterAll(plugincontext.PluginAssembly);
 
             base.OnPluginAdded(plugincontext);
+        }
+
+        public override void Start()
+        {
+            logger.Info("Starting Console Handler Interface...");
+            ConsoleInterface.Start();
+
+            base.Start();
         }
 
         public override void OnShutdown()

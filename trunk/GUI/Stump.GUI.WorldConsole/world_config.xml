@@ -1,5 +1,67 @@
 ﻿<Configuration>
   <Stump.Server.BaseServer>
+    <Network>
+      <VersionExtension>
+        <!--Define the severity of the client version checking. Set to Light/NoCheck if you have any bugs with it.-->
+        <Variable name="Severity" type="VersionCheckingSeverity">
+          <VersionCheckingSeverity>Light</VersionCheckingSeverity>
+        </Variable>
+        <!--Version for the client.-->
+        <Variable name="ExpectedVersion" type="Version">
+          <Version xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <major>2</major>
+            <minor>3</minor>
+            <release>7</release>
+            <revision>35100</revision>
+            <patch>1</patch>
+            <buildType>0</buildType>
+          </Version>
+        </Variable>
+        <!--Actual version-->
+        <Variable name="ActualVersion">1304</Variable>
+        <!--Required version-->
+        <Variable name="RequiredVersion">1304</Variable>
+      </VersionExtension>
+      <WorkerManager>
+        <!--Define worker numbers by processor count.-->
+        <Variable name="AutoWorkerNumber">True</Variable>
+        <!--Number of workers only if AutoWorkerNumber is false-->
+        <Variable name="WorkerThreadNumber">2</Variable>
+      </WorkerManager>
+      <MessageListener>
+        <!--Current server adress-->
+        <Variable name="Host">127.0.0.1</Variable>
+        <!--Server port-->
+        <Variable name="Port">443</Variable>
+        <!--Max number of clients connected-->
+        <Variable name="MaxConcurrentConnections">2000</Variable>
+        <!--Max number of clients waiting for a connection-->
+        <Variable name="MaxPendingConnections">100</Variable>
+        <!--Max number of clients connected on the same IP or NULL for unlimited-->
+        <Variable name="MaxIPConnexions" type="Nullable`1">
+          <int>10</int>
+        </Variable>
+        <!--Min interval between two received message or NULL for unlimited ( in ms )-->
+        <Variable name="MinMessageInterval" type="Nullable`1">
+          <int>1</int>
+        </Variable>
+        <!--Buffer size /!\ Advanced users only /!\-->
+        <Variable name="BufferSize">8192</Variable>
+      </MessageListener>
+    </Network>
+    <ConsoleBase>
+      <!--Define the interval between two condition checks
+            when server is asking something to the user by the console-->
+      <Variable name="AskWaiterInterval">20</Variable>
+    </ConsoleBase>
+    <Settings>
+      <!--Enable/Disable perfomances tracing-->
+      <Variable name="EnableBenchmarking">False</Variable>
+      <!--Disconnect Client after specified time(in s) or NULL for desactivate-->
+      <Variable name="InactivityDisconnectionTime" type="Nullable`1">
+        <int>900</int>
+      </Variable>
+    </Settings>
     <Plugins>
       <PluginManager>
         <Variable name="PluginsPath" type="List`1">
@@ -15,181 +77,8 @@
         <Variable name="IgnoreCommandCase">True</Variable>
       </CommandBase>
     </Commands>
-    <Network>
-      <MessageListener>
-        <!--Current server adress-->
-        <Variable name="Host">127.0.0.1</Variable>
-        <!--Server port-->
-        <Variable name="Port">3467</Variable>
-        <!--Max number of clients connected-->
-        <Variable name="MaxConcurrentConnections">2000</Variable>
-        <!--Max number of clients waiting for a connection-->
-        <Variable name="MaxPendingConnections">100</Variable>
-        <!--Enable/Disable IP restriction-->
-        <Variable name="ActiveIPRestriction">True</Variable>
-        <!--Max number of clients connected on the same IP-->
-        <Variable name="MaxIPConnexions">10</Variable>
-        <!--Buffer size /!\ Advanced users only /!\-->
-        <Variable name="BufferSize">8192</Variable>
-      </MessageListener>
-      <WorkerManager>
-        <!--Define worker numbers by processor count.-->
-        <Variable name="AutoWorkerNumber">True</Variable>
-        <!--Number of workers if AutoWorkerNumber is false-->
-        <Variable name="WorkerThreadNumber">2</Variable>
-      </WorkerManager>
-      <ClientVersion>
-        <!--Define the severity of the client version checking. Set to Light/NoCheck if you have any bugs with it.-->
-        <Variable name="Severity" type="VersionCheckingSeverity">
-          <VersionCheckingSeverity>Medium</VersionCheckingSeverity>
-        </Variable>
-        <!--Version for the client-->
-        <Variable name="VersionRequired">2.3.0.37782.1</Variable>
-        <!--Actual version-->
-        <Variable name="ActualVersion">1304</Variable>
-        <!--Required version-->
-        <Variable name="RequiredVersion">1304</Variable>
-      </ClientVersion>
-    </Network>
-    <Data>
-      <DataLoader>
-        <!--Path to 'data' folder-->
-        <Variable name="DataPath">./../../data</Variable>
-        <!--Name of d2o folder in 'data' folder-->
-        <Variable name="D2ODir">/common/</Variable>
-        <!--Name of i18n folder in 'data' folder-->
-        <Variable name="I18NDir">/i18n/</Variable>
-        <!--Name of the i18n file used by the server-->
-        <Variable name="I18NFileName">i18n_en.d2i</Variable>
-      </DataLoader>
-    </Data>
-    <Settings>
-      <!--Enable/Disable perfomances tracing-->
-      <Variable name="EnableBenchmarking">False</Variable>
-      <!--Disconnect Client after specified time(in s) or NULL for desactivate-->
-      <Variable name="InactivityDisconnectionTime" type="Nullable`1">
-        <unsignedInt>900</unsignedInt>
-      </Variable>
-    </Settings>
-    <ConsoleBase>
-      <!--Define the interval between two condition checks
-            when server is asking something to the user by the console-->
-      <Variable name="AskWaiterInterval">20</Variable>
-    </ConsoleBase>
-    <Database>
-      <DatabaseAccessor>
-        <!--Database user-->
-        <Variable name="LoginUser">root</Variable>
-        <!--Database password-->
-        <Variable name="LoginPassword" />
-        <!--Database host-->
-        <Variable name="LoginHost">localhost</Variable>
-        <!--Database name to connect to-->
-        <Variable name="DatabaseName">stump_world</Variable>
-      </DatabaseAccessor>
-    </Database>
   </Stump.Server.BaseServer>
   <Stump.Server.WorldServer>
-    <Handlers>
-      <SubscriberHandler>
-        <Variable name="EnableSubscriptionLimitation">True</Variable>
-      </SubscriberHandler>
-      <CharacterHandler>
-        <Variable name="MaxDayCharacterDeletion">5</Variable>
-        <Variable name="EnableNameSuggestion">True</Variable>
-      </CharacterHandler>
-    </Handlers>
-    <Fights>
-      <Fight>
-        <!--Delay for player's turn-->
-        <Variable name="TurnTime">35000</Variable>
-        <!--Delay before force turn to end-->
-        <Variable name="TurnEndTimeOut">5000</Variable>
-      </Fight>
-    </Fights>
-    <Breeds>
-      <BreedManager>
-        <!--List of available breeds-->
-        <Variable name="AvailableBreeds" type="List`1">
-          <ArrayOfPlayableBreedEnum xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <PlayableBreedEnum>Feca</PlayableBreedEnum>
-            <PlayableBreedEnum>Osamodas</PlayableBreedEnum>
-            <PlayableBreedEnum>Enutrof</PlayableBreedEnum>
-            <PlayableBreedEnum>Sram</PlayableBreedEnum>
-            <PlayableBreedEnum>Xelor</PlayableBreedEnum>
-            <PlayableBreedEnum>Ecaflip</PlayableBreedEnum>
-            <PlayableBreedEnum>Eniripsa</PlayableBreedEnum>
-            <PlayableBreedEnum>Iop</PlayableBreedEnum>
-            <PlayableBreedEnum>Cra</PlayableBreedEnum>
-            <PlayableBreedEnum>Sadida</PlayableBreedEnum>
-            <PlayableBreedEnum>Sacrieur</PlayableBreedEnum>
-            <PlayableBreedEnum>Pandawa</PlayableBreedEnum>
-            <PlayableBreedEnum>Roublard</PlayableBreedEnum>
-          </ArrayOfPlayableBreedEnum>
-        </Variable>
-      </BreedManager>
-    </Breeds>
-    <WorldConsole>
-      <!--Prefix used for server's commands-->
-      <Variable name="CommandPreffix" />
-    </WorldConsole>
-    <Settings>
-      <!--Path of content folder-->
-      <Variable name="ContentPath">./../../content/</Variable>
-      <!--Path of static folder-->
-      <Variable name="StaticPath">./../../static/</Variable>
-    </Settings>
-    <WorldServer>
-      <Variable name="ServerInformation" type="WorldServerInformation">
-        <WorldServerInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-          <Address>127.0.0.1</Address>
-          <Id>1</Id>
-          <Name>Jiva</Name>
-          <Port>3467</Port>
-        </WorldServerInformation>
-      </Variable>
-    </WorldServer>
-    <Global>
-      <World>
-        <!--Welcome message-->
-        <Variable name="MessageOfTheDay">Bienvenue. Ce serveur est propulsé par Stump.</Variable>
-        <!--Maximum number of characters you can create/store in your account-->
-        <Variable name="MaxCharacterSlot">5</Variable>
-        <Variable name="WorldUpdateInterval">100</Variable>
-      </World>
-    </Global>
-    <Chat>
-      <ChatManager>
-        <!--Prefix used for chat commands-->
-        <Variable name="CommandPrefix">#</Variable>
-      </ChatManager>
-    </Chat>
-    <Data>
-      <MapLoader>
-        <!--Name of maps folder-->
-        <Variable name="MapsDir">maps/</Variable>
-        <Variable name="CellTriggersDir">CellTriggers/</Variable>
-      </MapLoader>
-      <ThresholdLoader>
-        <!--Name of Thresholds folder-->
-        <Variable name="ThresholdsDir">Thresholds/</Variable>
-      </ThresholdLoader>
-      <MonsterLoader>
-        <!--Name of monsters folder-->
-        <Variable name="MapsDir">Monsters/</Variable>
-      </MonsterLoader>
-      <InteractiveObjectLoader>
-        <Variable name="InteractiveObjectsDir">InteractiveObjects/</Variable>
-        <Variable name="SkillActionsDir">SkillActions/</Variable>
-      </InteractiveObjectLoader>
-      <NpcLoader>
-        <!--Name of monsters folder-->
-        <Variable name="NpcsDir">Npcs/</Variable>
-        <Variable name="NpcsQuestionsDir">NpcsQuestions/</Variable>
-        <Variable name="NpcRepliesDir">NpcsReplies/</Variable>
-        <Variable name="NpcActionsDir">NpcsActions/</Variable>
-      </NpcLoader>
-    </Data>
     <IPC>
       <IpcAccessor>
         <!--Delay in seconds where we should retry connecting to remote server.-->
@@ -202,9 +91,38 @@
         <Variable name="IpcAuthPort">9100</Variable>
         <!--IPC world port-->
         <Variable name="IpcWorldPort">9101</Variable>
-        <!--Secret key to use to confirm World Server access-->
-        <Variable name="IpcSecretKey">000stump000</Variable>
       </IpcAccessor>
     </IPC>
+    <WorldServer>
+      <Variable name="ServerInformation" type="WorldServerData">
+        <WorldServerData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <Id>1</Id>
+          <Address>localhost</Address>
+          <Port>3467</Port>
+          <Name>Jiva</Name>
+        </WorldServerData>
+      </Variable>
+      <Variable name="DatabaseConfiguration" type="DatabaseConfiguration">
+        <DatabaseConfiguration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <DatabaseType>MySql</DatabaseType>
+          <UpdateFileDir>./sql_update/world/</UpdateFileDir>
+          <User>root</User>
+          <Password />
+          <Host>localhost</Host>
+          <Name>stump_world</Name>
+        </DatabaseConfiguration>
+      </Variable>
+    </WorldServer>
+    <Settings>
+      <!--Path of content folder-->
+      <Variable name="ContentPath">./../../content/</Variable>
+      <!--Path of static folder-->
+      <Variable name="StaticPath">./../../static/</Variable>
+    </Settings>
+    <IO>
+      <WorldConsole>
+        <Variable name="CommandPreffix" />
+      </WorldConsole>
+    </IO>
   </Stump.Server.WorldServer>
 </Configuration>

@@ -1,131 +1,140 @@
 ﻿<Configuration>
-  <Stump.Server.AuthServer>
-    <Managers>
-      <WorldServerManager>
-        <Variable name="WorldServerTimeout">20</Variable>
-        <Variable name="PingCheckInterval">2000</Variable>
-      </WorldServerManager>
-      <AccountManager>
-        <!--List of available breeds-->
-        <Variable name="AvailableBreeds" type="List`1">
-          <ArrayOfPlayableBreedEnum xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <PlayableBreedEnum>Feca</PlayableBreedEnum>
-            <PlayableBreedEnum>Osamodas</PlayableBreedEnum>
-            <PlayableBreedEnum>Enutrof</PlayableBreedEnum>
-            <PlayableBreedEnum>Sram</PlayableBreedEnum>
-            <PlayableBreedEnum>Xelor</PlayableBreedEnum>
-            <PlayableBreedEnum>Ecaflip</PlayableBreedEnum>
-            <PlayableBreedEnum>Eniripsa</PlayableBreedEnum>
-            <PlayableBreedEnum>Iop</PlayableBreedEnum>
-            <PlayableBreedEnum>Cra</PlayableBreedEnum>
-            <PlayableBreedEnum>Sadida</PlayableBreedEnum>
-            <PlayableBreedEnum>Sacrieur</PlayableBreedEnum>
-            <PlayableBreedEnum>Pandawa</PlayableBreedEnum>
-            <PlayableBreedEnum>Roublard</PlayableBreedEnum>
-          </ArrayOfPlayableBreedEnum>
-        </Variable>
-      </AccountManager>
-    </Managers>
-    <AuthServer>
-      <Variable name="AuthDatabaseConfiguration" type="DatabaseConfiguration">
-        <DatabaseConfiguration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-          <DatabaseType>MySql</DatabaseType>
-          <UpdateFileDir>./sql_update/auth/</UpdateFileDir>
-          <User>root</User>
-          <Password />
-          <Host>localhost</Host>
-          <Name>stump_auth</Name>
-        </DatabaseConfiguration>
-      </Variable>
-    </AuthServer>
-    <AuthConsole>
-      <!--Prefix using for server's commands-->
-      <Variable name="CommandPreffix" />
-    </AuthConsole>
-    <IPC>
-      <IpcServer>
-        <!--IPC port-->
-        <Variable name="IpcPort">9100</Variable>
-      </IpcServer>
-    </IPC>
-  </Stump.Server.AuthServer>
-  <Stump.Server.BaseServer>
-    <Commands>
-      <CommandBase>
-        <!--Enable/Disable case check for server's commands-->
-        <Variable name="IgnoreCommandCase">True</Variable>
-      </CommandBase>
-    </Commands>
-    <Plugins>
-      <PluginManager>
-        <Variable name="PluginsPath" type="List`1">
-          <ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <string>./plugins/</string>
-          </ArrayOfString>
-        </Variable>
-      </PluginManager>
-    </Plugins>
-    <Network>
-      <MessageListener>
-        <!--Current server adress-->
-        <Variable name="Host">127.0.0.1</Variable>
-        <!--Server port-->
-        <Variable name="Port">443</Variable>
-        <!--Max number of clients connected-->
-        <Variable name="MaxConcurrentConnections">2000</Variable>
-        <!--Max number of clients waiting for a connection-->
-        <Variable name="MaxPendingConnections">100</Variable>
-        <!--Max number of clients connected on the same IP or NULL for unlimited-->
-        <Variable name="MaxIPConnexions" type="Nullable`1">
-          <int>10</int>
-        </Variable>
-        <!--Min interval between two received message or NULL for unlimited ( in ms )-->
-        <Variable name="MinMessageInterval" type="Nullable`1">
-          <int>1</int>
-        </Variable>
-        <!--Buffer size /!\ Advanced users only /!\-->
-        <Variable name="BufferSize">8192</Variable>
-      </MessageListener>
-      <WorkerManager>
-        <!--Define worker numbers by processor count.-->
-        <Variable name="AutoWorkerNumber">True</Variable>
-        <!--Number of workers only if AutoWorkerNumber is false-->
-        <Variable name="WorkerThreadNumber">2</Variable>
-      </WorkerManager>
-      <VersionExtension>
-        <!--Define the severity of the client version checking. Set to Light/NoCheck if you have any bugs with it.-->
-        <Variable name="Severity" type="VersionCheckingSeverity">
-          <VersionCheckingSeverity>Light</VersionCheckingSeverity>
-        </Variable>
-        <!--Version for the client-->
-        <Variable name="VersionRequired" type="Version">
-          <Version xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <major>2</major>
-            <minor>3</minor>
-            <release>3</release>
-            <revision>40497</revision>
-            <patch>1</patch>
-            <buildType>0</buildType>
-          </Version>
-        </Variable>
-        <!--Actual version-->
-        <Variable name="ActualVersion">1304</Variable>
-        <!--Required version-->
-        <Variable name="RequiredVersion">1304</Variable>
-      </VersionExtension>
-    </Network>
-    <Settings>
-      <!--Enable/Disable perfomances tracing-->
-      <Variable name="EnableBenchmarking">False</Variable>
-      <!--Disconnect Client after specified time(in s) or NULL for desactivate-->
-      <Variable name="InactivityDisconnectionTime" type="Nullable`1">
-        <int>900</int>
-      </Variable>
-    </Settings>
-    <ConsoleBase>
-      <!--Define the interval between two condition checks
+	<Stump.Server.AuthServer>
+		<IPC>
+			<IpcServer>
+				<!--IPC port-->
+				<Variable name="IpcPort">9100</Variable>
+			</IpcServer>
+		</IPC>
+		<Managers>
+			<AccountManager>
+				<!--List of available breeds-->
+				<Variable name="AvailableBreeds" type="List`1">
+					<ArrayOfPlayableBreedEnum xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+						<PlayableBreedEnum>Feca</PlayableBreedEnum>
+						<PlayableBreedEnum>Osamodas</PlayableBreedEnum>
+						<PlayableBreedEnum>Enutrof</PlayableBreedEnum>
+						<PlayableBreedEnum>Sram</PlayableBreedEnum>
+						<PlayableBreedEnum>Xelor</PlayableBreedEnum>
+						<PlayableBreedEnum>Ecaflip</PlayableBreedEnum>
+						<PlayableBreedEnum>Eniripsa</PlayableBreedEnum>
+						<PlayableBreedEnum>Iop</PlayableBreedEnum>
+						<PlayableBreedEnum>Cra</PlayableBreedEnum>
+						<PlayableBreedEnum>Sadida</PlayableBreedEnum>
+						<PlayableBreedEnum>Sacrieur</PlayableBreedEnum>
+						<PlayableBreedEnum>Pandawa</PlayableBreedEnum>
+						<PlayableBreedEnum>Roublard</PlayableBreedEnum>
+					</ArrayOfPlayableBreedEnum>
+				</Variable>
+			</AccountManager>
+			<WorldServerManager>
+				<Variable name="WorldServerTimeout">20</Variable>
+				<Variable name="PingCheckInterval">2000</Variable>
+			</WorldServerManager>
+		</Managers>
+		<AuthServer>
+			<Variable name="DatabaseConfiguration" type="DatabaseConfiguration">
+				<DatabaseConfiguration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<DatabaseType>MySql</DatabaseType>
+					<UpdateFileDir>./sql_update/auth/</UpdateFileDir>
+					<User>root</User>
+					<Password />
+					<Host>localhost</Host>
+					<Name>stump_auth</Name>
+				</DatabaseConfiguration>
+			</Variable>
+		</AuthServer>
+		<Handlers>
+			<Handlers />
+			<Connection>
+				<ConnectionHandler>
+					<Variable name="MaxConnectionLogs">5</Variable>
+				</ConnectionHandler>
+			</Connection>
+		</Handlers>
+		<IO>
+			<AuthConsole>
+				<Variable name="CommandPreffix" />
+			</AuthConsole>
+		</IO>
+	</Stump.Server.AuthServer>
+	<Stump.Server.BaseServer>
+		<Network>
+			<VersionExtension>
+				<!--Define the severity of the client version checking. Set to Light/NoCheck if you have any bugs with it.-->
+				<Variable name="Severity" type="VersionCheckingSeverity">
+					<VersionCheckingSeverity>Light</VersionCheckingSeverity>
+				</Variable>
+				<!--Version for the client.-->
+				<Variable name="ExpectedVersion" type="Version">
+					<Version xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+						<major>2</major>
+						<minor>3</minor>
+						<release>7</release>
+						<revision>35100</revision>
+						<patch>1</patch>
+						<buildType>0</buildType>
+					</Version>
+				</Variable>
+				<!--Actual version-->
+				<Variable name="ActualVersion">1304</Variable>
+				<!--Required version-->
+				<Variable name="RequiredVersion">1304</Variable>
+			</VersionExtension>
+			<WorkerManager>
+				<!--Define worker numbers by processor count.-->
+				<Variable name="AutoWorkerNumber">True</Variable>
+				<!--Number of workers only if AutoWorkerNumber is false-->
+				<Variable name="WorkerThreadNumber">2</Variable>
+			</WorkerManager>
+			<MessageListener>
+				<!--Current server adress-->
+				<Variable name="Host">127.0.0.1</Variable>
+				<!--Server port-->
+				<Variable name="Port">443</Variable>
+				<!--Max number of clients connected-->
+				<Variable name="MaxConcurrentConnections">2000</Variable>
+				<!--Max number of clients waiting for a connection-->
+				<Variable name="MaxPendingConnections">100</Variable>
+				<!--Max number of clients connected on the same IP or NULL for unlimited-->
+				<Variable name="MaxIPConnexions" type="Nullable`1">
+					<int>10</int>
+				</Variable>
+				<!--Min interval between two received message or NULL for unlimited ( in ms )-->
+				<Variable name="MinMessageInterval" type="Nullable`1">
+					<int>1</int>
+				</Variable>
+				<!--Buffer size /!\ Advanced users only /!\-->
+				<Variable name="BufferSize">8192</Variable>
+			</MessageListener>
+		</Network>
+		<ConsoleBase>
+			<!--Define the interval between two condition checks
             when server is asking something to the user by the console-->
-      <Variable name="AskWaiterInterval">20</Variable>
-    </ConsoleBase>
-  </Stump.Server.BaseServer>
+			<Variable name="AskWaiterInterval">20</Variable>
+		</ConsoleBase>
+		<Settings>
+			<!--Enable/Disable perfomances tracing-->
+			<Variable name="EnableBenchmarking">False</Variable>
+			<!--Disconnect Client after specified time(in s) or NULL for desactivate-->
+			<Variable name="InactivityDisconnectionTime" type="Nullable`1">
+				<int>900</int>
+			</Variable>
+		</Settings>
+		<Plugins>
+			<PluginManager>
+				<Variable name="PluginsPath" type="List`1">
+					<ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+						<string>./plugins/</string>
+					</ArrayOfString>
+				</Variable>
+			</PluginManager>
+		</Plugins>
+		<Commands>
+			<CommandBase>
+				<!--Enable/Disable case check for server's commands-->
+				<Variable name="IgnoreCommandCase">True</Variable>
+			</CommandBase>
+		</Commands>
+	</Stump.Server.BaseServer>
 </Configuration>
