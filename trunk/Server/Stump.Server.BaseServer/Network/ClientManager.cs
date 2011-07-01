@@ -18,18 +18,6 @@ namespace Stump.Server.BaseServer.Network
 
         #region Config Variables
         /// <summary>
-        /// Current server adress
-        /// </summary>
-        [Variable]
-        public static string Host = "127.0.0.1";
-
-        /// <summary>
-        /// Server port
-        /// </summary>
-        [Variable]
-        public static int Port = 443;
-
-        /// <summary>
         /// Max number of clients connected
         /// </summary>
         [Variable]
@@ -119,6 +107,18 @@ namespace Stump.Server.BaseServer.Network
             private set;
         }
 
+        public string Host
+        {
+            get;
+            private set;
+        }
+
+        public int Port
+        {
+            get;
+            private set;
+        }
+
         /// <summary>
         /// Represents a queue containing received messages to treat
         /// </summary>
@@ -172,13 +172,16 @@ namespace Stump.Server.BaseServer.Network
         /// <summary>
         /// Start to listen client connections
         /// </summary>
-        public void Start()
+        public void Start(string address, int port)
         {
             if (!IsInitialized)
                 throw new Exception("Attempt to start ClientManager before initializing it. Call Initialize()");
 
             if (Started)
                 throw new Exception("ClientManager already started");
+
+            Host = address;
+            Port = port;
 
             var ipEndPoint = new IPEndPoint(Dns.GetHostAddresses(Host).First(ip => ip.AddressFamily == AddressFamily.InterNetwork), Port);
             m_listenSocket.Bind(ipEndPoint);

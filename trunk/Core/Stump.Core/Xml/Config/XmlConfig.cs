@@ -10,22 +10,27 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using System.Xml.XPath;
 using NLog;
+using Stump.Core.Attributes;
 using Stump.Core.Reflection;
+using Stump.Core.Xml.Docs;
 
 namespace Stump.Core.Xml.Config
 {
     public class XmlConfig
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private readonly Dictionary<string, Assembly> m_assemblies = new Dictionary<string, Assembly>();
-        private readonly string m_configPath;
-
-        private readonly XmlDocument m_document;
+        private readonly Dictionary<Assembly, string> m_assembliesDocFile = new Dictionary<Assembly, string>();
         private readonly Dictionary<string, XmlConfigNode> m_nodes = new Dictionary<string, XmlConfigNode>();
-        private readonly XmlTextReader m_reader;
-        private readonly XmlSchemaSet m_schema = new XmlSchemaSet();
 
-        private string m_schemaPath;
+        private readonly string m_configPath;
+        private readonly string m_schemaPath;
+
+        private XmlTextReader m_reader;
+
+        private readonly XmlDocument m_document = new XmlDocument();
+        private readonly XmlSchemaSet m_schema = new XmlSchemaSet();
 
         /// <summary>
         ///   Initializes a new instance of the <see cref = "XmlConfig" /> class.
@@ -33,14 +38,7 @@ namespace Stump.Core.Xml.Config
         /// <param name = "uriConfig">The URI config.</param>
         public XmlConfig(string uriConfig)
         {
-            uriConfig = Path.GetFullPath(uriConfig);
-
-            if (!File.Exists(uriConfig))
-                throw new FileNotFoundException("Config file is not found");
-
-            m_reader = new XmlTextReader(new MemoryStream(File.ReadAllBytes(uriConfig)));
-
-            (m_document = new XmlDocument()).Load(m_reader);
+            m_configPath = Path.GetFullPath(uriConfig);
         }
 
         /// <summary>
@@ -50,25 +48,8 @@ namespace Stump.Core.Xml.Config
         /// <param name = "uriSchema">The URI schema.</param>
         public XmlConfig(string uriConfig, string uriSchema)
         {
-            m_configPath = uriConfig = Path.GetFullPath(uriConfig);
-            m_schemaPath = uriSchema = Path.GetFullPath(uriSchema);
-
-            if (!File.Exists(uriConfig))
-                throw new FileNotFoundException("Config file is not found");
-            if (!File.Exists(uriSchema))
-                throw new FileNotFoundException("Schema file is not found");
-
-            m_reader = new XmlTextReader(new MemoryStream(File.ReadAllBytes(uriConfig)));
-
-            (m_document = new XmlDocument()).Load(m_reader);
-
-            using (var reader = new StreamReader(uriSchema))
-            {
-                m_schema.Add(XmlSchema.Read(reader, ValidationEventHandler));
-            }
-
-            m_document.Schemas = m_schema;
-            m_document.Validate(ValidationEventHandler);
+            m_configPath = Path.GetFullPath(uriConfig);
+            m_schemaPath = Path.GetFullPath(uriSchema);
         }
 
         /// <summary>
@@ -92,6 +73,70 @@ namespace Stump.Core.Xml.Config
             private set;
         }
 
+        /// <summary>
+        /// Create a new config file based on the loaded assemblies
+        /// </summary>
+        public void Create(bool overwrite = false)
+        {
+            if (Loaded)
+                throw new Exception("Cannot create a new config file whenever the config file has been loaded");
+
+            if (m_assemblies.Count <= 0)
+                throw new Exception("No assemblies defined");
+
+            if (!overwrite && File.Exists(m_configPath))
+                throw new Exception("Cannot overwrite an existing file");
+
+            foreach (var assembly in m_assemblies.Values)
+            {
+                DotNetDocumentation documentation = null;
+                if (m_assembliesDocFile.ContainsKey(assembly))
+                    if (File.Exists(m_assembliesDocFile[assembly]))
+                        documentation = DotNetDocumentation.Load(m_assembliesDocFile[assembly]);
+
+                foreach(var type in assembly.GetTypes())
+                {
+                    var fields = from field in type.GetFields(BindingFlags.Static | BindingFlags.GetField | BindingFlags.Public | BindingFlags.NonPublic)
+                                 where field.GetCustomAttribute<VariableAttribute>() != null
+                                 select field;
+
+                    foreach (var field in fields)
+                    {
+                        var node = new XmlConfigNode(field);
+
+                        DocEntry member = null;
+                        if (documentation != null)
+                            member = documentation.Members.Where(entry => entry.Name == type.FullName + "." + field.Name).FirstOrDefault();
+
+                        if (member != null)
+                            node.Documentation = member.Summary;
+
+                        m_nodes.Add(node.Path, node);
+                    }
+
+                    var properties = from property in type.GetProperties(BindingFlags.Static | BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.NonPublic)
+                                     where property.GetCustomAttribute<VariableAttribute>() != null
+                                     select property;
+
+                    foreach (var property in properties)
+                    {
+                        var node = new XmlConfigNode(property);
+
+                        DocEntry member = null;
+                        if (documentation != null)
+                            member = documentation.Members.Where(entry => entry.Name == type.FullName + "." + property.Name).FirstOrDefault();
+
+                        if (member != null)
+                            node.Documentation = member.Summary;
+
+                        m_nodes.Add(node.Path, node);
+                    }
+                }
+            }
+
+            BuildConfig();
+        }
+
         public void Load()
         {
             if (Loaded)
@@ -99,6 +144,15 @@ namespace Stump.Core.Xml.Config
 
             if (m_assemblies.Count <= 0)
                 throw new Exception("No assemblies defined");
+
+            if (!File.Exists(m_configPath))
+                throw new FileNotFoundException("Config file is not found");
+
+            m_reader = new XmlTextReader(new MemoryStream(File.ReadAllBytes(m_configPath)));
+            m_document.Load(m_reader);
+
+            if (!string.IsNullOrEmpty(m_schemaPath))
+                CheckSchema();
 
             LoadNodes();
             AssignValuesFromNodes(false);
@@ -124,7 +178,7 @@ namespace Stump.Core.Xml.Config
             if (!Loaded)
                 throw new Exception("Call Load() before saving");
 
-            File.Copy(m_configPath, m_configPath + ".bak");
+            File.Copy(m_configPath, m_configPath + ".bak", true);
 
             BuildConfig();
         }
@@ -136,6 +190,18 @@ namespace Stump.Core.Xml.Config
         public void AddAssembly(Assembly assembly)
         {
             AddAssemblies(assembly);
+        }
+
+        /// <summary>
+        /// Add an assembly where the XmlConfig will search variables to define
+        /// </summary>
+        /// <param name="assembly"></param>
+        /// <param name="docFile">Xml documentation file used to create a new config file</param>
+        public void AddAssembly(Assembly assembly, string docFile)
+        {
+            AddAssembly(assembly);
+
+            m_assembliesDocFile.Add(assembly, docFile);
         }
 
         /// <summary>
@@ -152,6 +218,20 @@ namespace Stump.Core.Xml.Config
         public void RemoveAssembly(Assembly assembly)
         {
             m_assemblies.Remove(assembly.GetName().Name);
+        }
+
+        private void CheckSchema()
+        {
+            if (!File.Exists(m_schemaPath))
+                throw new FileNotFoundException("Schema file is not found");
+
+            using (var reader = new StreamReader(m_schemaPath))
+            {
+                m_schema.Add(XmlSchema.Read(reader, ValidationEventHandler));
+            }
+
+            m_document.Schemas = m_schema;
+            m_document.Validate(ValidationEventHandler);
         }
 
         private void LoadNodes()
@@ -172,6 +252,14 @@ namespace Stump.Core.Xml.Config
                 }
 
                 m_nodes.Add(variableNode.Path, variableNode);
+            }
+        }
+
+        private void CreateNodes()
+        {
+            foreach (var assembly in m_assemblies.Values)
+            {
+                
             }
         }
 
@@ -217,26 +305,11 @@ namespace Stump.Core.Xml.Config
 
                     try
                     {
-                        if (!string.IsNullOrEmpty(xmlConfigNode.Type))
-                        {
-                            Type variableType = SearchType(xmlConfigNode.Type, loadedAssemblies);
+                        object value = xmlConfigNode.Serialized ?
+                            ReadElement(xmlConfigNode.Node, elementType) :
+                            ReadElement(xmlConfigNode.Node.InnerXml, elementType);
 
-                            if (variableType == null)
-                            {
-                                logger.Error(string.Format("[Config] Cannot found the type '{0}' linked to the variable '{1}'", xmlConfigNode.Type, xmlConfigNode.Path));
-                                continue;
-                            }
-
-                            object value = ReadElement(xmlConfigNode.Node, variableType);
-
-                            xmlConfigNode.SetValue(value, reload);
-                        }
-                        else
-                        {
-                            object value = ReadElement(xmlConfigNode.Node.InnerXml, elementType);
-
-                            xmlConfigNode.SetValue(value, reload);
-                        }
+                        xmlConfigNode.SetValue(value, reload);
                     }
                     catch (InvalidCastException)
                     {
@@ -352,6 +425,9 @@ namespace Stump.Core.Xml.Config
                             continue;
                         }
 
+                        if (!string.IsNullOrEmpty(node.Value.Documentation))
+                            writer.WriteComment(node.Value.Documentation);
+
                         writer.WriteStartElement("Variable");
                         writer.WriteAttributeString("name", node.Value.Name);
 
@@ -360,13 +436,14 @@ namespace Stump.Core.Xml.Config
                                               : node.Value.BindedProperty.PropertyType;
 
                         // is primitive type
-                        if (string.IsNullOrEmpty(node.Value.Type) && (elementType.HasInterface(typeof (IConvertible)) || elementType.IsEnum))
+                        if (!node.Value.Serialized)
                         {
+                            writer.WriteAttributeString("serialized", "false");
                             writer.WriteValue(node.Value.GetValue().ToString());
                         }
                         else
                         {
-                            writer.WriteAttributeString("type", node.Value.Type);
+                            writer.WriteAttributeString("serialized", "true");
 
                             var stringWriter = new StringWriter();
                             var xmlWriter = new XmlTextWriter(stringWriter)

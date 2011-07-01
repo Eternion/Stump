@@ -153,6 +153,7 @@ namespace Stump.Server.AuthServer.Managers
                 return false;
             }
 
+#if RELEASE
             if (m_realmlist[world.Id].Password != world.Password)
             {
                 logger.Error(
@@ -160,6 +161,7 @@ namespace Stump.Server.AuthServer.Managers
                     world.Id);
                 return false;
             }
+#endif
 
             if (!m_realmlist[world.Id].Connected)
             {

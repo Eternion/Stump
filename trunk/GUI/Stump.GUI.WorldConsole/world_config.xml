@@ -2,43 +2,49 @@
   <Stump>
     <Server>
       <BaseServer>
-        <Plugins>
-          <PluginManager>
-            <Variable name="PluginsPath" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
-              <ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                <string>./plugins/</string>
-              </ArrayOfString>
-            </Variable>
-          </PluginManager>
-        </Plugins>
+        <ConsoleBase>
+          <!--Define the interval between two condition checks
+            when server is asking something to the user by the console-->
+          <Variable name="AskWaiterInterval" serialized="false">20</Variable>
+        </ConsoleBase>
+        <Settings>
+          <!--Enable/Disable perfomances tracing-->
+          <Variable name="EnableBenchmarking" serialized="false">False</Variable>
+          <!--Disconnect Client after specified time(in s) or NULL for desactivate-->
+          <Variable name="InactivityDisconnectionTime" serialized="true">
+            <int>900</int>
+          </Variable>
+        </Settings>
+        <Commands>
+          <CommandBase>
+            <!--Enable/Disable case check for server's commands-->
+            <Variable name="IgnoreCommandCase" serialized="false">True</Variable>
+          </CommandBase>
+        </Commands>
         <Network>
           <ClientManager>
-            <!--Current server adress-->
-            <Variable name="Host">127.0.0.1</Variable>
-            <!--Server port-->
-            <Variable name="Port">443</Variable>
             <!--Max number of clients connected-->
-            <Variable name="MaxConcurrentConnections">2000</Variable>
+            <Variable name="MaxConcurrentConnections" serialized="false">2000</Variable>
             <!--Max number of clients waiting for a connection-->
-            <Variable name="MaxPendingConnections">100</Variable>
+            <Variable name="MaxPendingConnections" serialized="false">100</Variable>
             <!--Max number of clients connected on the same IP or NULL for unlimited-->
-            <Variable name="MaxIPConnexions" type="System.Nullable`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+            <Variable name="MaxIPConnexions" serialized="true">
               <int>10</int>
             </Variable>
             <!--Min interval between two received message or NULL for unlimited ( in ms )-->
-            <Variable name="MinMessageInterval" type="System.Nullable`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+            <Variable name="MinMessageInterval" serialized="true">
               <int>1</int>
             </Variable>
             <!--Buffer size /!\ Advanced users only /!\-->
-            <Variable name="BufferSize">8192</Variable>
+            <Variable name="BufferSize" serialized="false">8192</Variable>
           </ClientManager>
           <VersionExtension>
             <!--Define the severity of the client version checking. Set to Light/NoCheck if you have any bugs with it.-->
-            <Variable name="Severity" type="Stump.Server.BaseServer.Network.VersionCheckingSeverity">
+            <Variable name="Severity" serialized="true">
               <VersionCheckingSeverity>Light</VersionCheckingSeverity>
             </Variable>
             <!--Version for the client.-->
-            <Variable name="ExpectedVersion" type="Stump.DofusProtocol.Types.Version">
+            <Variable name="ExpectedVersion" serialized="true">
               <Version xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <major>2</major>
                 <minor>3</minor>
@@ -49,46 +55,36 @@
               </Version>
             </Variable>
             <!--Actual version-->
-            <Variable name="ActualVersion">1304</Variable>
+            <Variable name="ActualVersion" serialized="false">1304</Variable>
             <!--Required version-->
-            <Variable name="RequiredVersion">1304</Variable>
+            <Variable name="RequiredVersion" serialized="false">1304</Variable>
           </VersionExtension>
           <WorkerManager>
             <!--Define worker numbers by processor count.-->
-            <Variable name="AutoWorkerNumber">True</Variable>
+            <Variable name="AutoWorkerNumber" serialized="false">True</Variable>
             <!--Number of workers only if AutoWorkerNumber is false-->
-            <Variable name="WorkerThreadNumber">2</Variable>
+            <Variable name="WorkerThreadNumber" serialized="false">2</Variable>
           </WorkerManager>
         </Network>
-        <ConsoleBase>
-          <!--Define the interval between two condition checks
-            when server is asking something to the user by the console-->
-          <Variable name="AskWaiterInterval">20</Variable>
-        </ConsoleBase>
-        <Settings>
-          <!--Enable/Disable perfomances tracing-->
-          <Variable name="EnableBenchmarking">False</Variable>
-          <!--Disconnect Client after specified time(in s) or NULL for desactivate-->
-          <Variable name="InactivityDisconnectionTime" type="System.Nullable`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
-            <int>900</int>
-          </Variable>
-        </Settings>
-        <Commands>
-          <CommandBase>
-            <!--Enable/Disable case check for server's commands-->
-            <Variable name="IgnoreCommandCase">True</Variable>
-          </CommandBase>
-        </Commands>
+        <Plugins>
+          <PluginManager>
+            <Variable name="PluginsPath" serialized="true">
+              <ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <string>./plugins/</string>
+              </ArrayOfString>
+            </Variable>
+          </PluginManager>
+        </Plugins>
       </BaseServer>
       <WorldServer>
         <Settings>
-          <!--Path of content folder-->
-          <Variable name="ContentPath">./../../content/</Variable>
-          <!--Path of static folder-->
-          <Variable name="StaticPath">./../../static/</Variable>
+          <Variable name="ContentPath" serialized="false">./../../content/</Variable>
+          <Variable name="StaticPath" serialized="false">./../../static/</Variable>
         </Settings>
         <WorldServer>
-          <Variable name="ServerInformation" type="Stump.Server.BaseServer.IPC.Objects.WorldServerData">
+          <Variable name="Host" serialized="false">127.0.0.1</Variable>
+          <Variable name="Port" serialized="false">3467</Variable>
+          <Variable name="ServerInformation" serialized="true">
             <WorldServerData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
               <Id>1</Id>
               <Address>localhost</Address>
@@ -96,7 +92,7 @@
               <Name>Jiva</Name>
             </WorldServerData>
           </Variable>
-          <Variable name="DatabaseConfiguration" type="Stump.Server.BaseServer.Database.DatabaseConfiguration">
+          <Variable name="DatabaseConfiguration" serialized="true">
             <DatabaseConfiguration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
               <DatabaseType>MySql</DatabaseType>
               <UpdateFileDir>./sql_update/world/</UpdateFileDir>
@@ -107,25 +103,20 @@
             </DatabaseConfiguration>
           </Variable>
         </WorldServer>
-        <IPC>
-          <IpcAccessor>
-            <!--Delay in seconds where we should retry connecting to remote server.-->
-            <Variable name="ReconnectDelay">10</Variable>
-            <!--Delay for a ping check-->
-            <Variable name="PingDelay">200</Variable>
-            <!--IPC server adress-->
-            <Variable name="IpcAuthAdress">localhost</Variable>
-            <!--IPC authentification port-->
-            <Variable name="IpcAuthPort">9100</Variable>
-            <!--IPC world port-->
-            <Variable name="IpcWorldPort">9101</Variable>
-          </IpcAccessor>
-        </IPC>
         <IO>
           <WorldConsole>
-            <Variable name="CommandPreffix" />
+            <Variable name="CommandPreffix" serialized="false" />
           </WorldConsole>
         </IO>
+        <IPC>
+          <IpcAccessor>
+            <Variable name="ReconnectDelay" serialized="false">10</Variable>
+            <Variable name="PingDelay" serialized="false">200</Variable>
+            <Variable name="IpcAuthAdress" serialized="false">localhost</Variable>
+            <Variable name="IpcAuthPort" serialized="false">9100</Variable>
+            <Variable name="IpcWorldPort" serialized="false">9101</Variable>
+          </IpcAccessor>
+        </IPC>
       </WorldServer>
     </Server>
   </Stump>

@@ -119,10 +119,21 @@ namespace Stump.Server.WorldServer.IPC
 
         public void RegisterWorld()
         {
+            bool haveToSave = string.IsNullOrEmpty(WorldServer.ServerInformation.Password);
+
             if (m_proxyObject.RegisterWorld(ref WorldServer.ServerInformation, IpcWorldPort))
             {
                 IsRegister = true;
                 logger.Info("[IPC] Connection from the authentification server granted");
+
+                if (haveToSave)
+                {
+                    logger.Info("[IPC] Save the new configuration file");
+
+                    WorldServer.Instance.Config.Save();
+                }
+
+                Task.Factory.StartNew(MaintainConnection);
             }
             else
             {

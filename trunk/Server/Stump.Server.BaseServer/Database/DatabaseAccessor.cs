@@ -180,19 +180,11 @@ namespace Stump.Server.BaseServer.Database
 
             if (m_version == null)
             {
-                m_logger.Error(
-                    "Table 'version' is empty, do you want to re-create the schema ? IT WILL ERASE YOUR DATABASE [EXIT IN 60 SECONDS] (y/n)");
-
-                // Wait that user enter any characters
-                if (ConditionWaiter.WaitFor(() => Console.KeyAvailable, 60 * 1000, 35))
+                if (ServerBase.InstanceAsBase.ConsoleInterface.AskAndWait(
+                    "Table 'version' is empty, do you want to re-create the schema ? IT WILL ERASE YOUR DATABASE [EXIT IN 60 SECONDS] (y/n)",
+                    60))
                 {
-                    // wait 'enter'
-                    var response = (char)Console.In.Peek();
-
-                    if (response == 'y')
-                        CreateSchema();
-                    else
-                        throw new Exception("Table 'version' is empty");
+                    CreateSchema();
                 }
                 else
                     throw new Exception("Table 'version' is empty");
@@ -207,19 +199,11 @@ namespace Stump.Server.BaseServer.Database
                     }
                     catch (FileNotFoundException)
                     {
-                        m_logger.Error(
-                            "Update File doesn't exists, do you want to re-create the schema ? IT WILL ERASE YOUR DATABASE [EXIT IN 60 SECONDS] (y/n)");
-
-                        // Wait that user enter any characters
-                        if (ConditionWaiter.WaitFor(() => Console.KeyAvailable, 60 * 1000, 35))
+                        if (ServerBase.InstanceAsBase.ConsoleInterface.AskAndWait(
+                            "Update File doesn't exists, do you want to re-create the schema ? IT WILL ERASE YOUR DATABASE [EXIT IN 60 SECONDS] (y/n)",
+                            60))
                         {
-                            // wait 'enter'
-                            var response = (char)Console.In.Peek();
-
-                            if (response == 'y')
-                                CreateSchema();
-                            else
-                                throw;
+                            CreateSchema();
                         }
                         else
                             throw;
@@ -227,7 +211,7 @@ namespace Stump.Server.BaseServer.Database
                 }
                 else if (m_version.Revision > m_databaseRevision)
                 {
-                    throw new Exception("This version don't support this database version : " + m_version.Revision);
+                    throw new Exception("The actual version don't support this database revision : " + m_version.Revision);
                 }
             }
             IsOpen = true;

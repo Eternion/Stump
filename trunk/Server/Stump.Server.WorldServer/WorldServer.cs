@@ -22,7 +22,19 @@ namespace Stump.Server.WorldServer
 {
     public class WorldServer : ServerBase<WorldServer>
     {
+        /// <summary>
+        /// Current server adress
+        /// </summary>
         [Variable]
+        public static string Host = "127.0.0.1";
+
+        /// <summary>
+        /// Server port
+        /// </summary>
+        [Variable]
+        public static int Port = 3467;
+
+        [Variable(DefinableRunning = true)]
         public static WorldServerData ServerInformation = new WorldServerData
         {
             Id = 1,
@@ -84,6 +96,8 @@ namespace Stump.Server.WorldServer
 
         public override void Start()
         {
+            base.Start();
+
             logger.Info("Starting Console Handler Interface...");
             ConsoleInterface.Start();
 
@@ -91,7 +105,8 @@ namespace Stump.Server.WorldServer
                         IpcAccessor.IpcWorldPort + "...");
             IpcAccessor.Instance.Start();
 
-            base.Start();
+            logger.Info("Start listening on port : " + Port + "...");
+            ClientManager.Start(Host, Port);
         }
 
         protected override BaseClient CreateClient(Socket s)
