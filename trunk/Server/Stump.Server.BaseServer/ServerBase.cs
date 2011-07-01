@@ -82,15 +82,6 @@ namespace Stump.Server.BaseServer
         }
 
         /// <summary>
-        ///   Manage packets and dispatch them
-        /// </summary>
-        public QueueDispatcher QueueDispatcher
-        {
-            get;
-            protected set;
-        }
-
-        /// <summary>
         ///   Manage tasks, that handle packets
         /// </summary>
         public WorkerManager WorkerManager
@@ -99,7 +90,7 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
-        protected MessageListener MessageListener
+        protected ClientManager ClientManager
         {
             get;
             set;
@@ -169,18 +160,14 @@ namespace Stump.Server.BaseServer
             CommandManager.RegisterAll(Assembly.GetExecutingAssembly());
 
             logger.Info("Initializing Network Interfaces...");
-            QueueDispatcher = new QueueDispatcher(Settings.EnableBenchmarking);
-            HandlerManager = new HandlerManager();
-            WorkerManager = new WorkerManager(QueueDispatcher, HandlerManager);
-
-            MessageListener = new MessageListener(QueueDispatcher, CreateClient);
-            MessageListener.Initialize();
+            ClientManager = ClientManager.Instance;
+            ClientManager.Initialize(CreateClient);
 
             if (Settings.InactivityDisconnectionTime.HasValue)
                 TaskPool.RegisterCyclicTask(DisconnectAfkClient, Settings.InactivityDisconnectionTime.Value/4, null, null);
 
-            MessageListener.ClientConnected += OnClientConnected;
-            MessageListener.ClientDisconnected += OnClientDisconnected;
+            ClientManager.ClientConnected += OnClientConnected;
+            ClientManager.ClientDisconnected += OnClientDisconnected;
 
             PluginManager = PluginManager.Instance;
             PluginManager.PluginAdded += OnPluginAdded;
@@ -197,12 +184,12 @@ namespace Stump.Server.BaseServer
             logger.Info("Plugins Loaded : {0}", plugincontext.Plugin.GetDefaultDescription());
         }
 
-        private void OnClientConnected(MessageListener messageListener, BaseClient client)
+        private void OnClientConnected(BaseClient client)
         {
             logger.Info("Client {0} connected", client);
         }
 
-        private void OnClientDisconnected(MessageListener messageListener, BaseClient client)
+        private void OnClientDisconnected(BaseClient client)
         {
             logger.Info("Client {0} disconnected", client);
         }
@@ -251,8 +238,8 @@ namespace Stump.Server.BaseServer
             logger.Info("Loading Plugins...");
             PluginManager.Instance.LoadAllPlugins();
 
-            logger.Info("Start listening on port : " + MessageListener.Port + "...");
-            MessageListener.Start();
+            logger.Info("Start listening on port : " + ClientManager.Port + "...");
+            ClientManager.Start();
 
             Running = true;
         }
@@ -266,8 +253,12 @@ namespace Stump.Server.BaseServer
 
         private void DisconnectAfkClient()
         {
+            // todo : this is not an afk check but a timeout check
             logger.Info("Disconnect AFK Clients");
-            IEnumerable<BaseClient> afkClients = MessageListener.ClientList.Where(c => DateTime.Now.Subtract(c.LastActivity).TotalSeconds >= Settings.InactivityDisconnectionTime);
+
+            IEnumerable<BaseClient> afkClients = ClientManager.FindAll(client =>
+                DateTime.Now.Subtract(client.LastActivity).TotalSeconds >= Settings.InactivityDisconnectionTime);
+
             foreach (BaseClient client in afkClients)
                 client.Disconnect();
         }

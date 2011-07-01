@@ -6,11 +6,11 @@ using System.Linq;
 using System.Threading;
 using System.Reflection;
 using Stump.Core.Attributes;
-using Stump.Server.BaseServer.Handler;
+using Stump.Core.Reflection;
 
 namespace Stump.Server.BaseServer.Network
 {
-    public sealed class WorkerManager
+    public sealed class WorkerManager : Singleton<WorkerManager>
     {
         /// <summary>
         ///   Define worker numbers by processor count.
@@ -24,9 +24,6 @@ namespace Stump.Server.BaseServer.Network
         [Variable]
         public static int WorkerThreadNumber = 2;
 
-        private readonly HandlerManager m_handlerManager;
-        private readonly QueueDispatcher m_queueDispatcher;
-
         private readonly object m_syncRoot = new object();
         private readonly List<Worker> m_workerList = new List<Worker>();
 
@@ -34,13 +31,8 @@ namespace Stump.Server.BaseServer.Network
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkerManager"/> class.
         /// </summary>
-        /// <param name="queueDispatcher">The queue dispatcher.</param>
-        /// <param name="handlerManager">The handler manager.</param>
-        public WorkerManager(QueueDispatcher queueDispatcher, HandlerManager handlerManager)
+        private WorkerManager()
         {
-            m_queueDispatcher = queueDispatcher;
-            m_handlerManager = handlerManager;
-
             if (AutoWorkerNumber)
                 AdaptWorkerNumberWithProcessor();
             else
@@ -63,7 +55,7 @@ namespace Stump.Server.BaseServer.Network
             lock (m_syncRoot)
             {
                 for (int i = 0; i < nbr; i++)
-                    m_workerList.Add(new Worker(m_queueDispatcher, m_handlerManager));
+                    m_workerList.Add(new Worker());
             }
         }
 

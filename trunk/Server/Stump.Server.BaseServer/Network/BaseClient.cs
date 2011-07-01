@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Net.Sockets;
 using NLog;
 using Stump.Core.IO;
@@ -13,55 +12,13 @@ namespace Stump.Server.BaseServer.Network
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public event Action<BaseClient, Message> MessageReceived;
-        public event Action<BaseClient, Message> MessageSended;
-
-        private void NotifyMessageReceived(Message message)
-        {
-            if (MessageListener.MinMessageInterval.HasValue && DateTime.Now.Subtract(LastActivity).TotalMilliseconds < MessageListener.MinMessageInterval)
-            {
-                Close();
-                return;
-            }
-            if (Settings.InactivityDisconnectionTime.HasValue || MessageListener.MinMessageInterval.HasValue)
-                LastActivity = DateTime.Now;
-            if (MessageReceived != null) MessageReceived(this, message);
-        }
-
-        private void NotifyMessageSended(Message message)
-        {
-            if (MessageSended != null) MessageSended(this, message);
-        }
-
-        private const byte BIT_RIGHT_SHIFT_LEN_PACKET_ID = 2;
-        private const byte BIT_MASK = 3;
-
-        private static SocketAsyncEventArgsPool m_argsPool;
-        private static QueueDispatcher m_dispatcher;
-
-        private static bool m_isInitialized;
-
         private readonly BigEndianReader m_buffer = new BigEndianReader();
-        private object m_lock = new object();
-        private bool m_splittedPacket;
-        private uint m_splittedPacketId;
-        private uint m_splittedPacketLength;
-        private int m_staticHeader;
+        private readonly object m_lock = new object();
+        private MessagePart m_currentMessage;
 
-
-        internal static void Initialize(ref SocketAsyncEventArgsPool pool, ref QueueDispatcher dispatcher)
-        {
-            m_argsPool = pool;
-            m_dispatcher = dispatcher;
-
-            m_isInitialized = true;
-        }
 
         protected BaseClient(Socket socket)
         {
-            if (!m_isInitialized)
-                throw new Exception("BaseClient is not initialized");
-
             Socket = socket;
             IP = socket.RemoteEndPoint.ToString();
         }
@@ -89,11 +46,16 @@ namespace Stump.Server.BaseServer.Network
             private set;
         }
 
+        /// <summary>
+        /// Last activity as a socket client (last received packet or sent packet)
+        /// </summary>
         public DateTime LastActivity
         {
             get;
             private set;
         }
+
+        #region IPacketReceiver Members
 
         public virtual void Send(Message message)
         {
@@ -102,7 +64,7 @@ namespace Stump.Server.BaseServer.Network
                 throw new Exception("Attempt to send a packet when client isn't connected");
             }
 
-            SocketAsyncEventArgs args = m_argsPool.Pop();
+            SocketAsyncEventArgs args = ClientManager.Instance.PopWriteSocketAsyncArgs();
 
             byte[] data;
             using (var writer = new BigEndianWriter())
@@ -115,14 +77,44 @@ namespace Stump.Server.BaseServer.Network
 
             if (!Socket.SendAsync(args))
             {
-                m_argsPool.Push(args);
+                ClientManager.Instance.PushWriteSocketAsyncArgs(args);
             }
 
 #if DEBUG
-                Console.WriteLine(string.Format("{0} >> {1}", this, message.GetType().Name));
+            Console.WriteLine(string.Format("{0} >> {1}", this, message.GetType().Name));
 #endif
 
+            LastActivity = DateTime.Now;
             NotifyMessageSended(message);
+        }
+
+        #endregion
+
+        public event Action<BaseClient, Message> MessageReceived;
+        public event Action<BaseClient, Message> MessageSended;
+
+        private void NotifyMessageReceived(Message message)
+        {
+            /* A BOUGER/SUPPRIMER (useless ?)
+             * Un anti flood se mesure en message/min pas avec l'interval entre deux */
+
+            /* if (MessageListener.MinMessageInterval.HasValue && DateTime.Now.Subtract(LastActivity).TotalMilliseconds < MessageListener.MinMessageInterval)
+            {
+                Close();
+                return;
+            }
+            if (Settings.InactivityDisconnectionTime.HasValue || MessageListener.MinMessageInterval.HasValue)
+                LastActivity = DateTime.Now;
+            */
+
+            if (MessageReceived != null)
+                MessageReceived(this, message);
+        }
+
+        private void NotifyMessageSended(Message message)
+        {
+            if (MessageSended != null)
+                MessageSended(this, message);
         }
 
         internal void ProcessReceive(byte[] data, int offset, int count)
@@ -132,9 +124,12 @@ namespace Stump.Server.BaseServer.Network
                 if (!CanReceive)
                     throw new Exception("Cannot receive packet : CanReceive is false");
 
-                m_buffer.Add(data, offset, count);
+                lock (m_lock)
+                {
+                    m_buffer.Add(data, offset, count);
 
-                BuildMessage();
+                    BuildMessage();
+                }
             }
             catch (Exception ex)
             {
@@ -146,101 +141,27 @@ namespace Stump.Server.BaseServer.Network
 
         protected virtual void BuildMessage()
         {
-            uint len = 0;
+            if (m_buffer.BytesAvailable <= 0)
+                return;
 
-            lock (m_lock)
+            if (m_currentMessage == null)
+                m_currentMessage = new MessagePart();
+
+            // if message is complete
+            if (m_currentMessage.Build(m_buffer))
             {
-            replay:
-                if (!m_splittedPacket)
-                {
-                    if (m_buffer.BytesAvailable < 2)
-                    {
-                        return;
-                    }
+                var messageDataReader = new BigEndianReader(m_currentMessage.Data);
+                Message message = MessageReceiver.BuildMessage((uint) m_currentMessage.MessageId.Value, messageDataReader);
+                ClientManager.Instance.MessageQueue.Enqueue(this, message);
 
-                    var header = m_buffer.ReadUShort();
-                    var id = GetMessageIdByHeader(header);
-                    var lenType = header & BIT_MASK;
+                LastActivity = DateTime.Now;
+                NotifyMessageReceived(message);
 
-                    if (m_buffer.BytesAvailable >= lenType)
-                    {
-                        len = GetMessageLengthByLenType(lenType);
-                        if (m_buffer.BytesAvailable >= len)
-                        {
-                            var message = MessageReceiver.BuildMessage(id, m_buffer.ReadBytesInNewBigEndianReader((int) len));
+                m_currentMessage = null;
 
-                            m_dispatcher.Enqueue(this, message);
-
-                            NotifyMessageReceived(message);
-
-                            goto replay;
-                        }
-
-                        m_staticHeader = -1;
-                        m_splittedPacketLength = len;
-                        m_splittedPacketId = id;
-                        m_splittedPacket = true;
-
-                        return;
-                    }
-
-                    m_staticHeader = header;
-                    m_splittedPacketLength = len;
-                    m_splittedPacketId = id;
-                    m_splittedPacket = true;
-                    return;
-                }
-
-                if (m_staticHeader != -1)
-                {
-                    m_splittedPacketLength = GetMessageLengthByLenType(m_staticHeader & BIT_MASK);
-                    m_staticHeader = -1;
-                }
-                if (m_buffer.BytesAvailable >= m_splittedPacketLength)
-                {
-                    var message = MessageReceiver.BuildMessage(m_splittedPacketId, m_buffer.ReadBytesInNewBigEndianReader((int) m_splittedPacketLength));
-
-                    m_dispatcher.Enqueue(this, message);
-                    m_splittedPacket = false;
-
-                    NotifyMessageReceived(message);
-                    goto replay;
-                }
+                BuildMessage(); // there is maybe a second message in the buffer
             }
         }
-
-        private static uint GetMessageIdByHeader(uint header)
-        {
-            return header >> BIT_RIGHT_SHIFT_LEN_PACKET_ID;
-        }
-
-        private uint GetMessageLengthByLenType(int lenType)
-        {
-            switch (lenType)
-            {
-                case 0:
-                    {
-                        return 0;
-                    }
-                case 1:
-                    {
-                        return m_buffer.ReadByte();
-                    }
-                case 2:
-                    {
-                        return m_buffer.ReadUShort();
-                    }
-                case 3:
-                    {
-                        return (uint)((m_buffer.ReadByte() << 16) | (m_buffer.ReadByte() << 8) | m_buffer.ReadByte());
-                    }
-                default:
-                    {
-                        return 0;
-                    }
-            }
-        }
-
 
         /// <summary>
         ///   Disconnect the Client. Cannot reuse the socket.
@@ -269,7 +190,6 @@ namespace Stump.Server.BaseServer.Network
 
         protected virtual void OnDisconnect()
         {
-
         }
 
         protected void Close()

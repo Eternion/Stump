@@ -102,6 +102,7 @@
     <Compile Include="Commands\SubCommand.cs" />
     <Compile Include="Commands\TriggerBase.cs" />
     <Compile Include="Commands\ConverterException.cs" />
+    <Compile Include="Commands\Commands\WorkerCommands.cs" />
     <Compile Include="ConsoleBase.cs" />
     <Compile Include="Database\ActiveRecordHelper.cs" />
     <Compile Include="Database\DatabaseAccessor.cs" />
@@ -121,10 +122,11 @@
     <Compile Include="Network\BaseClient.cs" />
     <Compile Include="Handler\HandlerManager.cs" />
     <Compile Include="Handler\HandlerAttribute.cs" />
+    <Compile Include="Network\ClientManager.cs" />
+    <Compile Include="Network\MessagePart.cs" />
     <Compile Include="Network\VersionExtension.cs" />
     <Compile Include="Network\IPacketReceiver.cs" />
-    <Compile Include="Network\MessageListener.cs" />
-    <Compile Include="Network\QueueDispatcher.cs" />
+    <Compile Include="Network\MessageQueue.cs" />
     <Compile Include="Network\Worker.cs" />
     <Compile Include="Network\WorkerManager.cs" />
     <Compile Include="Plugins\IPlugin.cs" />

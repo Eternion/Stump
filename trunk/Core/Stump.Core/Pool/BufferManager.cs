@@ -34,7 +34,7 @@ namespace Stump.Core.Pool
         #endregion
 
         // Allocates buffer space used by the buffer pool
-        public void InitBuffer()
+        public void InitializeBuffer()
         {
             // create one big large buffer and divide that 
             // out to each SocketAsyncEventArg object

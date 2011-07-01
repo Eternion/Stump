@@ -14,23 +14,14 @@ namespace Stump.Server.BaseServer.Network
     {
         #region Properties
 
-        private readonly HandlerManager m_handlerManager;
-        private readonly QueueDispatcher m_queueDispatcher;
         private readonly List<Tuple<Message, double>> m_treatedMessage = new List<Tuple<Message, double>>(1000);
+        private readonly MessageQueue m_messageQueue = ClientManager.Instance.MessageQueue;
+
+
         private bool m_paused;
         private DateTime m_startDate;
         private Thread m_thread;
         private bool m_wantToStop;
-
-        public QueueDispatcher QueueDispatcher
-        {
-            get { return m_queueDispatcher; }
-        }
-
-        public HandlerManager HandlerManager
-        {
-            get { return m_handlerManager; }
-        }
 
         public bool WantToStop
         {
@@ -84,10 +75,8 @@ namespace Stump.Server.BaseServer.Network
 
         #endregion
 
-        public Worker(QueueDispatcher queueDispatcher, HandlerManager handlerManager)
+        public Worker()
         {
-            m_queueDispatcher = queueDispatcher;
-            m_handlerManager = handlerManager;
             Task.Factory.StartNew(Loop, TaskCreationOptions.LongRunning);
         }
 
@@ -101,19 +90,19 @@ namespace Stump.Server.BaseServer.Network
             {
                 if (!m_paused)
                 {
-                    Tuple<BaseClient, Message> tuple = m_queueDispatcher.Dequeue();
+                    Tuple<BaseClient, Message> tuple = m_messageQueue.Dequeue();
 
                     if (Settings.EnableBenchmarking)
                     {
                         var start = DateTime.Now;
 
-                        m_handlerManager.Dispatch(tuple.Item1, tuple.Item2);
+                        HandlerManager.Instance.Dispatch(tuple.Item1, tuple.Item2);
 
                         TreatedMessage.Add(new Tuple<Message, double>(tuple.Item2, DateTime.Now.Subtract(start).TotalMilliseconds));
                     }
                     else
                     {
-                        m_handlerManager.Dispatch(tuple.Item1, tuple.Item2);
+                        HandlerManager.Instance.Dispatch(tuple.Item1, tuple.Item2);
 
                         Thread.Yield(); // switch thread
                     }

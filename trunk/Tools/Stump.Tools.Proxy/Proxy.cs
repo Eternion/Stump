@@ -72,7 +72,7 @@ namespace Stump.Tools.Proxy
             private set;
         }
 
-        public QueueDispatcher QueueDispatcher
+        public MessageQueue MessageQueue
         {
             get;
             private set;
@@ -108,14 +108,14 @@ namespace Stump.Tools.Proxy
             ConfigReader.DefinesVariables(ref m_loadedAssemblies);
 
             logger.Info("Initializing Network Interfaces...");
-            QueueDispatcher = new QueueDispatcher(false);
+            MessageQueue = new MessageQueue(false);
             HandlerManager = new HandlerManager();
-            WorkerManager = new WorkerManager(QueueDispatcher, HandlerManager);
+            WorkerManager = new WorkerManager(MessageQueue, HandlerManager);
 
-            MessageListenerAuth = new MessageListener(QueueDispatcher, CreateClientAuth, AuthAddress, AuthPort);
+            MessageListenerAuth = new MessageListener(MessageQueue, CreateClientAuth, AuthAddress, AuthPort);
             MessageListenerAuth.Initialize();
 
-            MessageListenerWorld = new MessageListener(QueueDispatcher, CreateClientWorld, WorldAddress, WorldPort);
+            MessageListenerWorld = new MessageListener(MessageQueue, CreateClientWorld, WorldAddress, WorldPort);
             MessageListenerWorld.Initialize();
 
             logger.Info("Initializing Network Messages...");

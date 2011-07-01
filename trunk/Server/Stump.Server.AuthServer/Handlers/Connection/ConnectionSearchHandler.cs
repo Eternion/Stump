@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.AuthServer.Database.Account;
@@ -20,10 +21,10 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 return;
             }
 
-            SendAcquaintanceSearchServerListMessage(client, account.Characters.Select(wcr => (short)wcr.World.Id).Distinct().ToArray());
+            SendAcquaintanceSearchServerListMessage(client, account.Characters.Select(wcr => (short)wcr.World.Id).Distinct());
         }
 
-        public static void SendAcquaintanceSearchServerListMessage(AuthClient client, short[] serverIds)
+        public static void SendAcquaintanceSearchServerListMessage(AuthClient client, IEnumerable<short> serverIds)
         {
             client.Send(new AcquaintanceServerListMessage(serverIds));
         }

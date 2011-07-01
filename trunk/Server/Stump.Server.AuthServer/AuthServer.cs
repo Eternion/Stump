@@ -48,7 +48,6 @@ namespace Stump.Server.AuthServer
                 ConsoleInterface = new AuthConsole();
                 ConsoleBase.SetTitle("#Stump Authentification Server");
 
-
                 logger.Info("Initializing Database...");
                 DatabaseAccessor = new DatabaseAccessor(DatabaseConfiguration, Definitions.DatabaseRevision, typeof(AuthBaseRecord<>), Assembly.GetExecutingAssembly());
                 DatabaseAccessor.Initialize();
@@ -106,9 +105,7 @@ namespace Stump.Server.AuthServer
 
         public IEnumerable<AuthClient> FindClients(Predicate<AuthClient> predicate)
         {
-            return (from AuthClient entry in MessageListener.ClientList
-                    where predicate(entry)
-                    select entry);
+            return ClientManager.FindAll(predicate);
         }
     }
 }

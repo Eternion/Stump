@@ -205,10 +205,10 @@ namespace Stump.Server.AuthServer.Managers
             }
         }
 
-        public GameServerInformations[] GetServersInformationArray(AuthClient client)
+        public IEnumerable<GameServerInformations> GetServersInformationArray(AuthClient client)
         {
             return m_realmlist.Values.Select(
-                world => GetServerInformation(client, world)).ToArray();
+                world => GetServerInformation(client, world));
         }
 
         public GameServerInformations GetServerInformation(AuthClient client, WorldServer world)
