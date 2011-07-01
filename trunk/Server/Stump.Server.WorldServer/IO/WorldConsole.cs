@@ -2,6 +2,9 @@ using System;
 using System.Diagnostics;
 using Stump.Core.Attributes;
 using Stump.Server.BaseServer;
+using Stump.Server.BaseServer.Commands;
+using Stump.Server.WorldServer.Commands;
+using Stump.Server.WorldServer.Commands.Trigger;
 
 namespace Stump.Server.WorldServer.IO
 {
@@ -60,7 +63,7 @@ namespace Stump.Server.WorldServer.IO
                         Cmd = Cmd.Substring(CommandPreffix.Length);
                         var stopwatch = new Stopwatch();
                         stopwatch.Start();
-                        //WorldServer.Instance.CommandManager.HandleCommand(new WorldConsoleTrigger(Cmd));
+                        CommandManager.Instance.HandleCommand(new WorldConsoleTrigger(Cmd));
                         stopwatch.Stop();
 
                         Debug.WriteLine(stopwatch.ElapsedMilliseconds + " ms");

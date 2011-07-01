@@ -28,10 +28,11 @@ namespace Stump.Server.BaseServer.Network
         private readonly List<Worker> m_workerList = new List<Worker>();
 
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WorkerManager"/> class.
-        /// </summary>
         private WorkerManager()
+        {
+        }
+
+        internal void Initialize()
         {
             if (AutoWorkerNumber)
                 AdaptWorkerNumberWithProcessor();

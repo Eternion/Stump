@@ -11,6 +11,7 @@ using Stump.Core.IO;
 using Stump.Core.Pool.Task;
 using Stump.Core.Threading;
 using Stump.Core.Xml;
+using Stump.Core.Xml.Config;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Handler;
@@ -19,7 +20,15 @@ using Stump.Server.BaseServer.Plugins;
 
 namespace Stump.Server.BaseServer
 {
-    public abstract class ServerBase<T>
+    // this methods should be accessible by the BaseServer assembly
+    public abstract class ServerBase
+    {
+        internal static ServerBase InstanceAsBase;
+
+        public abstract void Shutdown();
+    }
+
+    public abstract class ServerBase<T> : ServerBase
         where T : class
     {
         /// <summary>
@@ -48,7 +57,7 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
-        public XmlConfigReader ConfigReader
+        public XmlConfig Config
         {
             get;
             protected set;
@@ -90,10 +99,10 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
-        protected ClientManager ClientManager
+        public ClientManager ClientManager
         {
             get;
-            set;
+            protected set;
         }
 
         public TaskPool TaskPool
@@ -111,16 +120,18 @@ namespace Stump.Server.BaseServer
         public bool Running
         {
             get;
-            set;
+            protected set;
         }
 
         public virtual void Initialize()
         {
+            InstanceAsBase = this;
             Instance = this as T;
 
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
             TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
 
+            PreLoadReferences(Assembly.GetCallingAssembly());
             LoadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToDictionary(entry => entry.GetName().Name);
             AppDomain.CurrentDomain.AssemblyLoad += OnAssemblyLoad;
 
@@ -136,8 +147,9 @@ namespace Stump.Server.BaseServer
 
             logger.Info("Initializing Configuration...");
             /* Initialize Config File */
-            ConfigReader = new XmlConfigReader(ConfigFilePath, SchemaFilePath);
-            ConfigReader.DefinesVariables(ref LoadedAssemblies);
+            Config = new XmlConfig(ConfigFilePath, SchemaFilePath);
+            Config.AddAssemblies(LoadedAssemblies.Values.ToArray());
+            Config.Load();
 
             /* Set Config Watcher */
             FileWatcherManager.RegisterFileModification
@@ -146,8 +158,8 @@ namespace Stump.Server.BaseServer
                      {
                          if (ConsoleInterface.AskAndWait("Config has been modified, do you want to reload it ?", 20))
                          {
-                             ConfigReader = new XmlConfigReader(ConfigFilePath, SchemaFilePath);
-                             ConfigReader.DefinesVariables(ref LoadedAssemblies);
+                             Config = new XmlConfig(ConfigFilePath, SchemaFilePath);
+                             Config.Reload();
                              logger.Warn("Config has been reloaded sucessfully");
                          }
                      });
@@ -160,8 +172,12 @@ namespace Stump.Server.BaseServer
             CommandManager.RegisterAll(Assembly.GetExecutingAssembly());
 
             logger.Info("Initializing Network Interfaces...");
+            HandlerManager = HandlerManager.Instance;
             ClientManager = ClientManager.Instance;
             ClientManager.Initialize(CreateClient);
+            WorkerManager = WorkerManager.Instance;
+            WorkerManager.Initialize();
+
 
             if (Settings.InactivityDisconnectionTime.HasValue)
                 TaskPool.RegisterCyclicTask(DisconnectAfkClient, Settings.InactivityDisconnectionTime.Value/4, null, null);
@@ -172,6 +188,22 @@ namespace Stump.Server.BaseServer
             PluginManager = PluginManager.Instance;
             PluginManager.PluginAdded += OnPluginAdded;
             PluginManager.PluginRemoved += OnPluginRemoved;
+        }
+
+        /// <summary>
+        /// Load before the runtime all referenced assemblies
+        /// </summary>
+        private static void PreLoadReferences(Assembly executingAssembly)
+        {
+            foreach (var assemblyName in executingAssembly.GetReferencedAssemblies())
+            {
+                if (AppDomain.CurrentDomain.GetAssemblies().Count(entry => entry.GetName().FullName == assemblyName.FullName) <= 0)
+                {
+                    var loadedAssembly = Assembly.Load(assemblyName);
+
+                    PreLoadReferences(loadedAssembly);
+                }
+            }
         }
 
         protected virtual void OnPluginRemoved(PluginContext plugincontext)
@@ -206,7 +238,7 @@ namespace Stump.Server.BaseServer
 
         private void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
-            logger.Error("Unobserved Exception : " + e);
+            logger.Error("Unobserved Exception : " + e.Exception);
 
             e.SetObserved();
         }
@@ -267,7 +299,7 @@ namespace Stump.Server.BaseServer
 
         public abstract void OnShutdown();
 
-        public void Shutdown()
+        public override void Shutdown()
         {
             lock (this)
             {

@@ -1,7 +1,9 @@
 
+using System;
 using System.IO;
 using System.Reflection;
 using Stump.Core.Xml;
+using Stump.Core.Xml.Config;
 
 namespace Stump.Server.BaseServer.Plugins
 {
@@ -17,7 +19,7 @@ namespace Stump.Server.BaseServer.Plugins
             get;
         }
 
-        public XmlConfigReader ConfigReader
+        public XmlConfig Config
         {
             get;
             protected set;
@@ -55,12 +57,13 @@ namespace Stump.Server.BaseServer.Plugins
         {
             if (UseConfig)
             {
-                ConfigReader =
-                    new XmlConfigReader(Path.Combine(Path.GetDirectoryName(context.AssemblyPath),
+                Config =
+                    new XmlConfig(Path.Combine(Path.GetDirectoryName(context.AssemblyPath),
                                                    !string.IsNullOrEmpty(ConfigFileName)
                                                        ? ConfigFileName
                                                        : Name + ".xml"));
-                ConfigReader.DefinesVariables(GetType().Assembly);
+                Config.AddAssembly(GetType().Assembly);
+                Config.Load();
             }
         }
     }

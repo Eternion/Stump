@@ -12,6 +12,7 @@ using Stump.Core.IO;
 using Stump.Core.Reflection;
 using Stump.Core.Threading;
 using Stump.Core.Xml;
+using Stump.Core.Xml.Config;
 using Stump.DofusProtocol.Messages.Framework.IO;
 using Stump.DofusProtocol;
 using Stump.DofusProtocol.Messages;
@@ -48,7 +49,7 @@ namespace Stump.Tools.Proxy
 
         private Dictionary<string, Assembly> m_loadedAssemblies;
 
-        public XmlConfigReader ConfigReader
+        public XmlConfig Config
         {
             get;
             private set;
@@ -102,10 +103,10 @@ namespace Stump.Tools.Proxy
             logger = LogManager.GetCurrentClassLogger();
 
             logger.Info("Initializing Configuration...");
-            ConfigReader = new XmlConfigReader(
+            Config = new XmlConfig(
                 "proxy_config.xml",
                 "proxy_config.xsd");
-            ConfigReader.DefinesVariables(ref m_loadedAssemblies);
+            Config.DefinesVariables(ref m_loadedAssemblies);
 
             logger.Info("Initializing Network Interfaces...");
             MessageQueue = new MessageQueue(false);

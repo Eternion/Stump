@@ -7,7 +7,7 @@ namespace Stump.Core.Xml.Docs
 	[XmlRoot("doc")]
 	public class DotNetDocumentation : XmlFile<DotNetDocumentation>
 	{
-		private static readonly Dictionary<char, MemberType> TypeMap = new Dictionary<char,MemberType>();
+		private static readonly Dictionary<char, MemberType> TypeMap = new Dictionary<char, MemberType>();
 
 		static DotNetDocumentation()
 		{
@@ -25,6 +25,7 @@ namespace Stump.Core.Xml.Docs
 			{
 				throw new Exception("Undefined Type-shortcut: " + shortcut);
 			}
+
 			return type;
 		}
 

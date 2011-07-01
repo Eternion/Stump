@@ -55,8 +55,6 @@
     <Compile Include="Commands\AccountCommands.cs" />
     <Compile Include="Commands\Trigger\AuthConsoleTrigger.cs" />
     <Compile Include="Commands\ParametersConverter.cs" />
-    <Compile Include="Commands\ShutdownCommand.cs" />
-    <Compile Include="Commands\WorkerCommands.cs" />
     <Compile Include="Database\Account\Account.cs" />
     <Compile Include="Database\Account\IpBan.cs" />
     <Compile Include="Database\AuthBaseRecord.cs" />

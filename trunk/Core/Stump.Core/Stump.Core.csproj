@@ -83,7 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\Cyclic.cs" />
-    <Compile Include="Attributes\Variable.cs" />
+    <Compile Include="Attributes\VariableAttribute.cs" />
     <Compile Include="Collections\BlockingQueue.cs" />
     <Compile Include="Collections\CollectionExtensions.cs" />
     <Compile Include="Collections\ConcurrentList.cs" />
@@ -127,11 +127,12 @@
     <Compile Include="Mathematics\Node.cs" />
     <Compile Include="Reflection\Singleton.cs" />
     <Compile Include="Pool\Task\TaskPool.cs" />
+    <Compile Include="Xml\Config\XmlConfigNode.cs" />
     <Compile Include="Xml\Docs\DocEntry.cs" />
     <Compile Include="Xml\Docs\DotNetDocumentation.cs" />
     <Compile Include="Xml\Docs\MemberType.cs" />
     <Compile Include="Xml\XmlFile.cs" />
-    <Compile Include="Xml\XmlConfigReader.cs" />
+    <Compile Include="Xml\Config\XmlConfig.cs" />
     <Compile Include="Xml\XmlUtils.cs" />
   </ItemGroup>
   <ItemGroup />

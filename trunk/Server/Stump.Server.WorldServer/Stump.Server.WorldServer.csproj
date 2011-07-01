@@ -56,10 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\Trigger\IInGameTrigger.cs" />
     <Compile Include="Commands\ParametersConverter.cs" />
-    <Compile Include="Commands\Trigger\TriggerChat.cs" />
-    <Compile Include="Commands\Trigger\TriggerConsole.cs" />
     <Compile Include="Commands\Trigger\WorldConsoleTrigger.cs" />
     <Compile Include="Database\WorldBaseRecord.cs" />
     <Compile Include="Database\WorldVersionRecord.cs" />

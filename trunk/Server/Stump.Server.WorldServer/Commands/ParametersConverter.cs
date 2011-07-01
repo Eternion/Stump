@@ -1,20 +1,9 @@
 
-using System;
-using System.Collections.Generic;
-using Stump.DofusProtocol.Classes;
-using Stump.DofusProtocol.Classes.Custom;
-using Stump.DofusProtocol.Classes.Extensions;
-using Stump.Server.BaseServer.Commands;
-using Stump.Server.WorldServer.Commands.Trigger;
-using Stump.Server.WorldServer.Entities;
-using Stump.Server.WorldServer.Global;
-using Stump.Server.WorldServer.Items;
-
 namespace Stump.Server.WorldServer.Commands
 {
     public static class ParametersConverter
     {
-        public static Func<string, TriggerBase, Character> CharacterConverter = (entry, trigger) =>
+        /*public static Func<string, TriggerBase, Character> CharacterConverter = (entry, trigger) =>
         {
             Character target;
 
@@ -48,6 +37,6 @@ namespace Stump.Server.WorldServer.Commands
                 throw new ConverterException(string.Format("'{0}' is not a valid item", entry));
 
             return itemByName;
-        };
+        };*/
     }
 }

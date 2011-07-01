@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Stump.Core.Attributes;
 using Stump.Core.Xml;
+using Stump.Core.Xml.Config;
 
 namespace Stump.Tools.UtilityBot
 {
@@ -80,8 +81,8 @@ namespace Stump.Tools.UtilityBot
         {
             m_loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToDictionary(entry => entry.GetName().Name);
 
-            ConfigReader = new XmlConfigReader(ConfigPath, SchemaPath);
-            ConfigReader.DefinesVariables(ref m_loadedAssemblies);
+            Config = new XmlConfig(ConfigPath, SchemaPath);
+            Config.DefinesVariables(ref m_loadedAssemblies);
 
             Connection = new IrcConnection(BotChannels, CommandPrefix)
                 {
@@ -99,7 +100,7 @@ namespace Stump.Tools.UtilityBot
             private set;
         }
 
-        public XmlConfigReader ConfigReader
+        public XmlConfig Config
         {
             get;
             private set;

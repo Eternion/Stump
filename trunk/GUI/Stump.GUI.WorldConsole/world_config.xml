@@ -1,128 +1,132 @@
 ﻿<Configuration>
-  <Stump.Server.BaseServer>
-    <Network>
-      <VersionExtension>
-        <!--Define the severity of the client version checking. Set to Light/NoCheck if you have any bugs with it.-->
-        <Variable name="Severity" type="VersionCheckingSeverity">
-          <VersionCheckingSeverity>Light</VersionCheckingSeverity>
-        </Variable>
-        <!--Version for the client.-->
-        <Variable name="ExpectedVersion" type="Version">
-          <Version xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <major>2</major>
-            <minor>3</minor>
-            <release>7</release>
-            <revision>35100</revision>
-            <patch>1</patch>
-            <buildType>0</buildType>
-          </Version>
-        </Variable>
-        <!--Actual version-->
-        <Variable name="ActualVersion">1304</Variable>
-        <!--Required version-->
-        <Variable name="RequiredVersion">1304</Variable>
-      </VersionExtension>
-      <WorkerManager>
-        <!--Define worker numbers by processor count.-->
-        <Variable name="AutoWorkerNumber">True</Variable>
-        <!--Number of workers only if AutoWorkerNumber is false-->
-        <Variable name="WorkerThreadNumber">2</Variable>
-      </WorkerManager>
-      <MessageListener>
-        <!--Current server adress-->
-        <Variable name="Host">127.0.0.1</Variable>
-        <!--Server port-->
-        <Variable name="Port">443</Variable>
-        <!--Max number of clients connected-->
-        <Variable name="MaxConcurrentConnections">2000</Variable>
-        <!--Max number of clients waiting for a connection-->
-        <Variable name="MaxPendingConnections">100</Variable>
-        <!--Max number of clients connected on the same IP or NULL for unlimited-->
-        <Variable name="MaxIPConnexions" type="Nullable`1">
-          <int>10</int>
-        </Variable>
-        <!--Min interval between two received message or NULL for unlimited ( in ms )-->
-        <Variable name="MinMessageInterval" type="Nullable`1">
-          <int>1</int>
-        </Variable>
-        <!--Buffer size /!\ Advanced users only /!\-->
-        <Variable name="BufferSize">8192</Variable>
-      </MessageListener>
-    </Network>
-    <ConsoleBase>
-      <!--Define the interval between two condition checks
+  <Stump>
+    <Server>
+      <BaseServer>
+        <Plugins>
+          <PluginManager>
+            <Variable name="PluginsPath" type="System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+              <ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <string>./plugins/</string>
+              </ArrayOfString>
+            </Variable>
+          </PluginManager>
+        </Plugins>
+        <Network>
+          <ClientManager>
+            <!--Current server adress-->
+            <Variable name="Host">127.0.0.1</Variable>
+            <!--Server port-->
+            <Variable name="Port">443</Variable>
+            <!--Max number of clients connected-->
+            <Variable name="MaxConcurrentConnections">2000</Variable>
+            <!--Max number of clients waiting for a connection-->
+            <Variable name="MaxPendingConnections">100</Variable>
+            <!--Max number of clients connected on the same IP or NULL for unlimited-->
+            <Variable name="MaxIPConnexions" type="System.Nullable`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+              <int>10</int>
+            </Variable>
+            <!--Min interval between two received message or NULL for unlimited ( in ms )-->
+            <Variable name="MinMessageInterval" type="System.Nullable`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+              <int>1</int>
+            </Variable>
+            <!--Buffer size /!\ Advanced users only /!\-->
+            <Variable name="BufferSize">8192</Variable>
+          </ClientManager>
+          <VersionExtension>
+            <!--Define the severity of the client version checking. Set to Light/NoCheck if you have any bugs with it.-->
+            <Variable name="Severity" type="Stump.Server.BaseServer.Network.VersionCheckingSeverity">
+              <VersionCheckingSeverity>Light</VersionCheckingSeverity>
+            </Variable>
+            <!--Version for the client.-->
+            <Variable name="ExpectedVersion" type="Stump.DofusProtocol.Types.Version">
+              <Version xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <major>2</major>
+                <minor>3</minor>
+                <release>7</release>
+                <revision>35100</revision>
+                <patch>1</patch>
+                <buildType>0</buildType>
+              </Version>
+            </Variable>
+            <!--Actual version-->
+            <Variable name="ActualVersion">1304</Variable>
+            <!--Required version-->
+            <Variable name="RequiredVersion">1304</Variable>
+          </VersionExtension>
+          <WorkerManager>
+            <!--Define worker numbers by processor count.-->
+            <Variable name="AutoWorkerNumber">True</Variable>
+            <!--Number of workers only if AutoWorkerNumber is false-->
+            <Variable name="WorkerThreadNumber">2</Variable>
+          </WorkerManager>
+        </Network>
+        <ConsoleBase>
+          <!--Define the interval between two condition checks
             when server is asking something to the user by the console-->
-      <Variable name="AskWaiterInterval">20</Variable>
-    </ConsoleBase>
-    <Settings>
-      <!--Enable/Disable perfomances tracing-->
-      <Variable name="EnableBenchmarking">False</Variable>
-      <!--Disconnect Client after specified time(in s) or NULL for desactivate-->
-      <Variable name="InactivityDisconnectionTime" type="Nullable`1">
-        <int>900</int>
-      </Variable>
-    </Settings>
-    <Plugins>
-      <PluginManager>
-        <Variable name="PluginsPath" type="List`1">
-          <ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <string>./plugins/</string>
-          </ArrayOfString>
-        </Variable>
-      </PluginManager>
-    </Plugins>
-    <Commands>
-      <CommandBase>
-        <!--Enable/Disable case check for server's commands-->
-        <Variable name="IgnoreCommandCase">True</Variable>
-      </CommandBase>
-    </Commands>
-  </Stump.Server.BaseServer>
-  <Stump.Server.WorldServer>
-    <IPC>
-      <IpcAccessor>
-        <!--Delay in seconds where we should retry connecting to remote server.-->
-        <Variable name="ReconnectDelay">10</Variable>
-        <!--Delay for a ping check-->
-        <Variable name="PingDelay">200</Variable>
-        <!--IPC server adress-->
-        <Variable name="IpcAuthAdress">localhost</Variable>
-        <!--IPC authentification port-->
-        <Variable name="IpcAuthPort">9100</Variable>
-        <!--IPC world port-->
-        <Variable name="IpcWorldPort">9101</Variable>
-      </IpcAccessor>
-    </IPC>
-    <WorldServer>
-      <Variable name="ServerInformation" type="WorldServerData">
-        <WorldServerData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-          <Id>1</Id>
-          <Address>localhost</Address>
-          <Port>3467</Port>
-          <Name>Jiva</Name>
-        </WorldServerData>
-      </Variable>
-      <Variable name="DatabaseConfiguration" type="DatabaseConfiguration">
-        <DatabaseConfiguration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-          <DatabaseType>MySql</DatabaseType>
-          <UpdateFileDir>./sql_update/world/</UpdateFileDir>
-          <User>root</User>
-          <Password />
-          <Host>localhost</Host>
-          <Name>stump_world</Name>
-        </DatabaseConfiguration>
-      </Variable>
-    </WorldServer>
-    <Settings>
-      <!--Path of content folder-->
-      <Variable name="ContentPath">./../../content/</Variable>
-      <!--Path of static folder-->
-      <Variable name="StaticPath">./../../static/</Variable>
-    </Settings>
-    <IO>
-      <WorldConsole>
-        <Variable name="CommandPreffix" />
-      </WorldConsole>
-    </IO>
-  </Stump.Server.WorldServer>
+          <Variable name="AskWaiterInterval">20</Variable>
+        </ConsoleBase>
+        <Settings>
+          <!--Enable/Disable perfomances tracing-->
+          <Variable name="EnableBenchmarking">False</Variable>
+          <!--Disconnect Client after specified time(in s) or NULL for desactivate-->
+          <Variable name="InactivityDisconnectionTime" type="System.Nullable`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]">
+            <int>900</int>
+          </Variable>
+        </Settings>
+        <Commands>
+          <CommandBase>
+            <!--Enable/Disable case check for server's commands-->
+            <Variable name="IgnoreCommandCase">True</Variable>
+          </CommandBase>
+        </Commands>
+      </BaseServer>
+      <WorldServer>
+        <Settings>
+          <!--Path of content folder-->
+          <Variable name="ContentPath">./../../content/</Variable>
+          <!--Path of static folder-->
+          <Variable name="StaticPath">./../../static/</Variable>
+        </Settings>
+        <WorldServer>
+          <Variable name="ServerInformation" type="Stump.Server.BaseServer.IPC.Objects.WorldServerData">
+            <WorldServerData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+              <Id>1</Id>
+              <Address>localhost</Address>
+              <Port>3467</Port>
+              <Name>Jiva</Name>
+            </WorldServerData>
+          </Variable>
+          <Variable name="DatabaseConfiguration" type="Stump.Server.BaseServer.Database.DatabaseConfiguration">
+            <DatabaseConfiguration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+              <DatabaseType>MySql</DatabaseType>
+              <UpdateFileDir>./sql_update/world/</UpdateFileDir>
+              <User>root</User>
+              <Password />
+              <Host>localhost</Host>
+              <Name>stump_world</Name>
+            </DatabaseConfiguration>
+          </Variable>
+        </WorldServer>
+        <IPC>
+          <IpcAccessor>
+            <!--Delay in seconds where we should retry connecting to remote server.-->
+            <Variable name="ReconnectDelay">10</Variable>
+            <!--Delay for a ping check-->
+            <Variable name="PingDelay">200</Variable>
+            <!--IPC server adress-->
+            <Variable name="IpcAuthAdress">localhost</Variable>
+            <!--IPC authentification port-->
+            <Variable name="IpcAuthPort">9100</Variable>
+            <!--IPC world port-->
+            <Variable name="IpcWorldPort">9101</Variable>
+          </IpcAccessor>
+        </IPC>
+        <IO>
+          <WorldConsole>
+            <Variable name="CommandPreffix" />
+          </WorldConsole>
+        </IO>
+      </WorldServer>
+    </Server>
+  </Stump>
 </Configuration>

@@ -1,10 +1,9 @@
-
 using System;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 
-namespace Stump.Server.WorldServer.Commands
+namespace Stump.Server.WorldServer.Commands.Trigger
 {
     public class WorldConsoleTrigger : TriggerBase
     {

@@ -1,10 +1,8 @@
-
 using System.Collections.Generic;
 using System.Threading;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.BaseServer.Commands;
 
-namespace Stump.Server.AuthServer.Commands
+namespace Stump.Server.BaseServer.Commands.Commands
 {
     public class ShutdownCommand : CommandBase
     {
@@ -45,7 +43,7 @@ namespace Stump.Server.AuthServer.Commands
 
         private static void Shutdown(object arg)
         {
-            AuthServer.Instance.Shutdown();
+            ServerBase.InstanceAsBase.Shutdown();
         }
     }
 }

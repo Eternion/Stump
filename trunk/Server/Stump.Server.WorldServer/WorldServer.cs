@@ -106,9 +106,7 @@ namespace Stump.Server.WorldServer
 
         public IEnumerable<WorldClient> FindClients(Predicate<WorldClient> predicate)
         {
-            return ( from WorldClient entry in MessageListener.ClientList
-                     where predicate(entry)
-                     select entry );
+            return ClientManager.FindAll(predicate);
         }
     }
 }

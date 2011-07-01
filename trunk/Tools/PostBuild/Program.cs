@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -33,13 +32,13 @@ namespace PostBuild
 
                 string output = Path.Combine(path, "default_config.xml");
                 var writer = new XmlTextWriter(output, Encoding.UTF8)
-                             {Formatting = Formatting.Indented, IndentChar = '\t', Indentation = 1};
+                                 {Formatting = Formatting.Indented, IndentChar = '\t', Indentation = 1};
 
                 writer.WriteStartElement("Configuration");
 
+                var lastNamespace = new List<string>();
                 foreach (string file in Directory.EnumerateFiles(path, "Stump*.dll"))
                 {
-                    bool asmWrote = false;
                     Assembly asm;
                     try
                     {
@@ -59,21 +58,21 @@ namespace PostBuild
                     if (File.Exists(docPath))
                         doc = DotNetDocumentation.Load(docPath);
 
-                    var lastNamespace = new List<string>();
-                    foreach (var group in asm.GetTypes().GroupBy(entry => entry.Namespace))
+                    
+                    foreach (var group in asm.GetTypes().OrderBy(entry => entry.Name).GroupBy(entry => entry.Namespace))
                     {
-                        foreach (var type in group)
+                        foreach (var type in group.OrderBy(entry => entry.Name))
                         {
                             bool classWrote = false;
 
                             var memberInfos =
                                 type.GetFields(BindingFlags.Static | BindingFlags.GetField | BindingFlags.Public).Where(
-                                    entry => entry.GetCustomAttributes(typeof (Variable), false).Count() > 0).Concat(
+                                    entry => entry.GetCustomAttributes(typeof (VariableAttribute), false).Count() > 0).Concat(
                                         (IEnumerable<MemberInfo>)
                                         type.GetProperties(BindingFlags.Static | BindingFlags.GetProperty |
                                                            BindingFlags.Public).Where(
                                                                entry =>
-                                                               entry.GetCustomAttributes(typeof (Variable), false).Count
+                                                               entry.GetCustomAttributes(typeof (VariableAttribute), false).Count
                                                                    () > 0));
 
                             if (memberInfos.Count() == 0)
@@ -81,17 +80,10 @@ namespace PostBuild
 
                             foreach (MemberInfo memberInfo in memberInfos)
                             {
-                                if (!asmWrote)
-                                {
-                                    writer.WriteStartElement(asm.GetName().Name);
-
-                                    asmWrote = true;
-                                }
-
                                 List<string> currentNamespace =
-                                    type.Namespace.Replace(asm.GetName().Name, "").Split(new[] {'.'},
-                                                                                         StringSplitOptions.
-                                                                                             RemoveEmptyEntries).ToList();
+                                    type.Namespace.Split(new[] {'.'},
+                                                         StringSplitOptions.
+                                                             RemoveEmptyEntries).ToList();
 
                                 int count = Math.Max(lastNamespace.Count, currentNamespace.Count);
                                 for (int i = 0; i < count; i++)
@@ -110,9 +102,9 @@ namespace PostBuild
                                     {
                                         for (int j = i; j < currentNamespace.Count; j++)
                                         {
-                                            writer.WriteStartElement(currentNamespace[i]);
+                                            writer.WriteStartElement(currentNamespace[j]);
 
-                                            lastNamespace.Add(currentNamespace[i]);
+                                            lastNamespace.Add(currentNamespace[j]);
                                         }
                                     }
                                     else if (lastNamespace[i] != currentNamespace[i])
@@ -127,9 +119,9 @@ namespace PostBuild
 
                                         for (int j = i; j < currentNamespace.Count; j++)
                                         {
-                                            writer.WriteStartElement(currentNamespace[i]);
+                                            writer.WriteStartElement(currentNamespace[j]);
 
-                                            lastNamespace.Add(currentNamespace[i]);
+                                            lastNamespace.Add(currentNamespace[j]);
                                         }
 
                                         break;
@@ -166,14 +158,14 @@ namespace PostBuild
                                 writer.WriteStartElement("Variable");
                                 writer.WriteAttributeString("name", name);
 
-                                if (memberType.GetInterfaces().Contains(typeof(IConvertible)) && !memberType.IsEnum)
+                                if (memberType.GetInterfaces().Contains(typeof (IConvertible)) && !memberType.IsEnum)
                                 {
                                     if (value != null)
                                         writer.WriteString(value.ToString());
                                 }
                                 else
                                 {
-                                    writer.WriteAttributeString("type", memberType.Name);
+                                    writer.WriteAttributeString("type", memberType.IsGenericType ? memberType.FullName : memberType.ToString());
 
                                     var stringWriter = new StringWriter();
                                     var xmlWriter = new XmlTextWriter(stringWriter)
@@ -199,15 +191,11 @@ namespace PostBuild
                                 writer.WriteEndElement();
                         }
                     }
+                }
 
-                    foreach (string ns in lastNamespace)
-                    {
-                        writer.WriteEndElement();
-                    }
-
-                    if (asmWrote)
-                        writer.WriteEndElement();
-
+                foreach (string ns in lastNamespace)
+                {
+                    writer.WriteEndElement();
                 }
 
                 writer.WriteEndElement();

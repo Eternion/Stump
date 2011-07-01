@@ -8,84 +8,6 @@ using System.Xml.Serialization;
 
 namespace Stump.Core.Xml
 {
-	
-	/// <summary>
-	/// This class represents an XML configuration file that is serializable.
-	/// </summary>
-	/// <example>
-	/// The following is an example of how to derive a class from <see cref="XmlFile"/>.
-	/// <code lang="C#">
-	/// 
-	/// //SerializableAttribute is inherited
-	/// public class MyConfig : XmlConfig
-	/// {
-	///		int m_someInt = 23432;
-	///		string m_someStr = "XmlConfig r0x my s0x!";
-	///	
-	///		public int SomeInt
-	///		{
-	///			get
-	///			{
-	///				return m_someInt;
-	///			}
-	///			set
-	///			{
-	///				m_someInt = value;
-	///			}
-	///		}
-	/// 
-	///		public string SomeStr
-	///		{
-	///			get
-	///			{
-	///				return m_someStr;
-	///			}
-	///			set
-	///			{
-	///				m_someStr = value;
-	///			}
-	///		}
-	/// 
-	///		public MyConfig()
-	///		{
-	///		}
-	/// 
-	///		public override void Assign(XmlConfig cfg)
-	///		{
-	///			base.Assign(cfg);
-	///			
-	///			MyConfig mcfg;
-	///			if((mcfg = cfg as MyConfig) != null)
-	///			{
-	///				m_someInt = mcfg.m_someInt;
-	///				m_someStr = mcfg.m_someStr;
-	///			}
-	///		}
-	///	
-	///		[STAThread]
-	///		static void Main()
-	///		{
-	///			MyConfig cfg = new MyConfig();
-	///			cfg.Save(); //default's to config.xml
-	/// 
-	///			MyConfig cfg2 = new MyConfig();
-	///			cfg2.Load(); //default's to config.xml
-	/// 
-	///			MyConfig cfg3 = XmlConfig.Load("config.xml", typeof(MyConfig));
-	///		}
-	/// }
-	/// </code>
-	/// The resulting configuration file:
-	/// <code lang="XML">
-	/// 
-	/// &lt;?xml version="1.0" encoding="utf-8"?&gt;
-	/// &lt;MyConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-	///		&lt;FileName&gt;config.xml&lt;/FileName&gt;
-	///		&lt;SomeInt&gt;23432&lt;/SomeInt&gt;
-	///		&lt;SomeStr&gt;XmlConfig r0x my s0x!&lt;/SomeStr&gt;
-	/// &lt;/MyConfig&gt;
-	/// </code>
-	/// </example>
 	/// <remarks>Exported from WCell project (www.wcell.org)</remarks>
     [Serializable]
 	public class XmlFile<T> : XmlFileBase
@@ -114,7 +36,6 @@ namespace Stump.Core.Xml
 		/// </summary>
 		public virtual bool FileExists(string path)
 		{
-			//return File.Exists((path != "" ? path + "\\" : "") + m_fname);
 			return File.Exists((String.IsNullOrEmpty(path) ? "" : path + "\\") + m_filename);
 		}
 
@@ -200,16 +121,6 @@ namespace Stump.Core.Xml
 		/// </summary>
 		public override string ToString()
 		{
-			//XmlSerializer ser = new XmlSerializer(GetType());
-			//string output;
-
-			//using (MemoryStream stream = new MemoryStream())
-			//{
-			//    ser.Serialize(stream, this);
-			//    output = Encoding.Unicode.GetString(stream.ToArray());
-			//}
-
-			//return output;
 			return FileName;
 		}
 
@@ -223,6 +134,7 @@ namespace Stump.Core.Xml
 			}
 			cfg.FileName = filename;
 			(((XmlFile<T>)(XmlFileBase)cfg)).OnLoad();
+
 			return cfg;
 		}
 
@@ -230,6 +142,7 @@ namespace Stump.Core.Xml
 		{
 			var list = new List<T>();
 			LoadAll(dir, list);
+
 			return list;
 		}
 
@@ -237,6 +150,7 @@ namespace Stump.Core.Xml
 		{
 			var list = new List<T>();
 			LoadAll(dir, list);
+
 			return list;
 		}
 
@@ -265,9 +179,6 @@ namespace Stump.Core.Xml
 						catch (Exception e)
 						{
 							e = new Exception("Error when loading XML-file: " + file, e);
-#if DEBUG
-							Debugger.Break();
-#endif
 							throw e;
 						}
 					}

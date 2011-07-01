@@ -90,9 +90,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\Commands\CommandBase.cs" />
     <Compile Include="Commands\Commands\HelpCommand.cs" />
     <Compile Include="Commands\Commands\ListCommand.cs" />
+    <Compile Include="Commands\Commands\ShutdownCommand.cs" />
     <Compile Include="Commands\Parameter.cs" />
     <Compile Include="Commands\IParameter.cs" />
     <Compile Include="Commands\ParameterDefinition.cs" />

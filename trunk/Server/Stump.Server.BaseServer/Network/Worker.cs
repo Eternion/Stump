@@ -15,7 +15,6 @@ namespace Stump.Server.BaseServer.Network
         #region Properties
 
         private readonly List<Tuple<Message, double>> m_treatedMessage = new List<Tuple<Message, double>>(1000);
-        private readonly MessageQueue m_messageQueue = ClientManager.Instance.MessageQueue;
 
 
         private bool m_paused;
@@ -90,7 +89,7 @@ namespace Stump.Server.BaseServer.Network
             {
                 if (!m_paused)
                 {
-                    Tuple<BaseClient, Message> tuple = m_messageQueue.Dequeue();
+                    Tuple<BaseClient, Message> tuple = ClientManager.Instance.MessageQueue.Dequeue();
 
                     if (Settings.EnableBenchmarking)
                     {

@@ -4,9 +4,6 @@ using System.Xml.Serialization;
 
 namespace Stump.Core.Xml.Docs
 {
-	/// <summary>
-	/// 
-	/// </summary>
 	public class DocEntry
 	{
 		private string m_fullName;
@@ -38,7 +35,7 @@ namespace Stump.Core.Xml.Docs
 				m_fullName = value;
 				m_type = DotNetDocumentation.GetMemberType(m_fullName[0]);
 				var lastIndex = m_fullName.IndexOf('(');
-				// TODO: Method-parameters
+				
 				if (lastIndex < 0)
 				{
 					lastIndex = m_fullName.Length;

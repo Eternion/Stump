@@ -56,7 +56,7 @@ namespace Stump.Server.BaseServer.Network
         /// <summary>
         /// Buffer size /!\ Advanced users only /!\
         /// </summary>
-        [Variable(DefinableByConfig = false, DefinableRunning = false)]
+        [Variable]
         public static int BufferSize = 8192; 
         #endregion
 
@@ -128,7 +128,7 @@ namespace Stump.Server.BaseServer.Network
             private set;
         }
 
-        public void Initialize(CreateClientHandler createClientHandler)
+        internal void Initialize(CreateClientHandler createClientHandler)
         {
             if (IsInitialized)
                 throw new Exception("ClientManager already initialized");

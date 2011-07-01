@@ -14,6 +14,7 @@ using PcapDotNet.Packets;
 using PcapDotNet.Packets.IpV4;
 using Stump.Core.Attributes;
 using Stump.Core.Xml;
+using Stump.Core.Xml.Config;
 using Stump.DofusProtocol;
 using Stump.DofusProtocol.Messages;
 using Message = Stump.DofusProtocol.Messages.Message;
@@ -68,8 +69,8 @@ namespace Stump.Tools.Sniffer
             m_form = form;
             m_loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToDictionary(entry => entry.GetName().Name);
 
-            ConfigReader = new XmlConfigReader(ConfigPath, SchemaPath);
-            ConfigReader.DefinesVariables(ref m_loadedAssemblies);
+            Config = new XmlConfig(ConfigPath, SchemaPath);
+            Config.DefinesVariables(ref m_loadedAssemblies);
 
             MessageReceiver.Initialize();
             ProtocolTypeManager.Initialize();
@@ -77,7 +78,7 @@ namespace Stump.Tools.Sniffer
             if (Logs) InitLogs();
         }
 
-        public XmlConfigReader ConfigReader
+        public XmlConfig Config
         {
             get;
             private set;
