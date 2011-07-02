@@ -460,7 +460,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
             ilGenerator.DeclareLocal(classType);
             ilGenerator.DeclareLocal(classType);
 
-            ilGenerator.Emit(OpCodes.Newobj, classType.GetConstructor(new Type[0]));
+            ilGenerator.Emit(OpCodes.Newobj, classType.GetConstructor(Type.EmptyTypes));
             ilGenerator.Emit(OpCodes.Stloc_0);
             for (int i = 0; i < fields.Length; i++)
             {

@@ -9,7 +9,7 @@ namespace Stump.Server.BaseServer.Network
     {
         #region Properties
 
-        private readonly BlockingQueue<Tuple<BaseClient, Message>> m_commonQueue = new BlockingQueue<Tuple<BaseClient, Message>>(200);
+        private readonly BlockingQueue<ClientMessage> m_commonQueue = new BlockingQueue<ClientMessage>(200);
 
         private bool m_benchmark;
         private uint m_commonMessageTreatedCount;
@@ -38,19 +38,19 @@ namespace Stump.Server.BaseServer.Network
 
         #region Queuing Management
 
-        public void Enqueue(Tuple<BaseClient, Message> tuple)
+        public void Enqueue(ClientMessage mess)
         {
-            m_commonQueue.Enqueue(tuple);
+            m_commonQueue.Enqueue(mess);
         }
 
         public void Enqueue(BaseClient client, Message message)
         {
-            var tuple = new Tuple<BaseClient, Message>(client, message);
+            var mess = new ClientMessage(client, message);
 
-            m_commonQueue.Enqueue(tuple);
+            m_commonQueue.Enqueue(mess);
         }
 
-        internal Tuple<BaseClient, Message> Dequeue()
+        internal ClientMessage Dequeue()
         {
             if (m_benchmark)
                 m_commonMessageTreatedCount++;

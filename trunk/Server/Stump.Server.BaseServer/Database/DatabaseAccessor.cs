@@ -31,7 +31,7 @@ namespace Stump.Server.BaseServer.Database
         private IVersionRecord m_version;
         private Func<IVersionRecord> m_lastVersionMethod;
 
-        public bool IsInitialized
+        public static bool IsInitialized
         {
             get { return ActiveRecordStarter.IsInitialized; }
         }

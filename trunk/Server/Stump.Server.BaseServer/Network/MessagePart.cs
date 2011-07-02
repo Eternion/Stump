@@ -3,7 +3,7 @@ using Stump.Core.IO;
 
 namespace Stump.Server.BaseServer.Network
 {
-    public class MessagePart
+    class MessagePart
     {
         /// <summary>
         /// Set to true when the message is whole

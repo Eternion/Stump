@@ -2,7 +2,6 @@
 using System.Net.Sockets;
 using NLog;
 using Stump.Core.IO;
-using Stump.Core.Pool;
 using Stump.Core.Pool.Task;
 using Stump.DofusProtocol.Messages;
 
