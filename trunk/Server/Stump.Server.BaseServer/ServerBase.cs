@@ -273,8 +273,6 @@ namespace Stump.Server.BaseServer
         public virtual void Update()
         {
             TaskPool.ProcessUpdate();
-
-            Thread.Yield();
         }
 
         private void DisconnectAfkClient()

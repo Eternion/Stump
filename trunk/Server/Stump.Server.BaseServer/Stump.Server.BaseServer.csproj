@@ -83,6 +83,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -124,6 +125,7 @@
     <Compile Include="Handler\HandlerManager.cs" />
     <Compile Include="Handler\HandlerAttribute.cs" />
     <Compile Include="Network\ClientManager.cs" />
+    <Compile Include="Network\ClientMessage.cs" />
     <Compile Include="Network\MessagePart.cs" />
     <Compile Include="Network\VersionExtension.cs" />
     <Compile Include="Network\IPacketReceiver.cs" />
@@ -161,7 +163,9 @@
       <Name>Stump.DofusProtocol.D2oClasses</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Network\Benchmarking\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
