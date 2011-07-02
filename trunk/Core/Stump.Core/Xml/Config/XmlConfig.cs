@@ -169,6 +169,18 @@ namespace Stump.Core.Xml.Config
             if (!Loaded)
                 throw new Exception("Call Load() before reloading");
 
+            if (m_assemblies.Count <= 0)
+                throw new Exception("No assemblies defined");
+
+            if (!File.Exists(m_configPath))
+                throw new FileNotFoundException("Config file is not found");
+
+            m_reader = new XmlTextReader(new MemoryStream(File.ReadAllBytes(m_configPath)));
+            m_document.Load(m_reader);
+
+            if (!string.IsNullOrEmpty(m_schemaPath))
+                CheckSchema();
+
             LoadNodes();
             AssignValuesFromNodes(true);
         }
@@ -252,14 +264,6 @@ namespace Stump.Core.Xml.Config
                 }
 
                 m_nodes.Add(variableNode.Path, variableNode);
-            }
-        }
-
-        private void CreateNodes()
-        {
-            foreach (var assembly in m_assemblies.Values)
-            {
-                
             }
         }
 

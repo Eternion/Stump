@@ -26,13 +26,13 @@ namespace Stump.Server.WorldServer
         /// Current server adress
         /// </summary>
         [Variable]
-        public static string Host = "127.0.0.1";
+        public readonly static string Host = "127.0.0.1";
 
         /// <summary>
         /// Server port
         /// </summary>
         [Variable]
-        public static int Port = 3467;
+        public readonly static int Port = 3467;
 
         [Variable(DefinableRunning = true)]
         public static WorldServerData ServerInformation = new WorldServerData

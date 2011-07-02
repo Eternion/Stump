@@ -131,7 +131,6 @@
     <Compile Include="Xml\Docs\DocEntry.cs" />
     <Compile Include="Xml\Docs\DotNetDocumentation.cs" />
     <Compile Include="Xml\Docs\MemberType.cs" />
-    <Compile Include="Xml\XmlFile.cs" />
     <Compile Include="Xml\Config\XmlConfig.cs" />
     <Compile Include="Xml\XmlUtils.cs" />
   </ItemGroup>
