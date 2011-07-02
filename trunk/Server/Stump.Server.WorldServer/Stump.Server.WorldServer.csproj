@@ -58,16 +58,23 @@
   <ItemGroup>
     <Compile Include="Commands\ParametersConverter.cs" />
     <Compile Include="Commands\Trigger\WorldConsoleTrigger.cs" />
+    <Compile Include="Database\Breeds\Breed.cs" />
+    <Compile Include="Database\Breeds\LearnableSpell.cs" />
     <Compile Include="Database\WorldBaseRecord.cs" />
     <Compile Include="Database\WorldVersionRecord.cs" />
+    <Compile Include="Database\World\Location.cs" />
     <Compile Include="Definitions.cs" />
-    <Compile Include="IPC\IpcAccessor.cs" />
-    <Compile Include="IPC\IpcOperations.cs" />
-    <Compile Include="Network\WorldClient.cs" />
+    <Compile Include="Handlers\PredicatesDefinitions.cs" />
+    <Compile Include="Handlers\WorldHandlerAttribute.cs" />
+    <Compile Include="Handlers\WorldHandlerContainer.cs" />
+    <Compile Include="Core\IPC\IpcAccessor.cs" />
+    <Compile Include="Core\IPC\IpcOperations.cs" />
+    <Compile Include="Core\Network\WorldClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="IO\WorldConsole.cs" />
+    <Compile Include="Core\IO\WorldConsole.cs" />
     <Compile Include="WorldServer.cs" />
+    <Compile Include="World\Breeds\BreedManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">
@@ -95,9 +102,7 @@
       <Name>Stump.Server.BaseServer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Handlers\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

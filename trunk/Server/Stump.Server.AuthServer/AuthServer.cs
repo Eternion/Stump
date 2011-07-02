@@ -81,8 +81,10 @@ namespace Stump.Server.AuthServer
                 WorldServerManager.Instance.Initialize();
                 WorldServerManager.Instance.Start();
 
-                logger.Info("Starting IPC Server..");
+                logger.Info("Initialize IPC Server..");
                 IpcServer.Instance.Initialize();
+
+                InitializationManager.InitializeAll();
             }
             catch (Exception ex)
             {

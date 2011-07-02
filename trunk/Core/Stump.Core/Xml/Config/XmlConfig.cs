@@ -29,8 +29,8 @@ namespace Stump.Core.Xml.Config
 
         private XmlTextReader m_reader;
 
-        private readonly XmlDocument m_document = new XmlDocument();
-        private readonly XmlSchemaSet m_schema = new XmlSchemaSet();
+        private XmlDocument m_document;
+        private XmlSchemaSet m_schema;
 
         /// <summary>
         ///   Initializes a new instance of the <see cref = "XmlConfig" /> class.
@@ -149,6 +149,7 @@ namespace Stump.Core.Xml.Config
                 throw new FileNotFoundException("Config file is not found");
 
             m_reader = new XmlTextReader(new MemoryStream(File.ReadAllBytes(m_configPath)));
+            m_document = new XmlDocument();
             m_document.Load(m_reader);
 
             if (!string.IsNullOrEmpty(m_schemaPath))
@@ -176,6 +177,7 @@ namespace Stump.Core.Xml.Config
                 throw new FileNotFoundException("Config file is not found");
 
             m_reader = new XmlTextReader(new MemoryStream(File.ReadAllBytes(m_configPath)));
+            m_document = new XmlDocument();
             m_document.Load(m_reader);
 
             if (!string.IsNullOrEmpty(m_schemaPath))
@@ -237,6 +239,7 @@ namespace Stump.Core.Xml.Config
             if (!File.Exists(m_schemaPath))
                 throw new FileNotFoundException("Schema file is not found");
 
+            m_schema = new XmlSchemaSet();
             using (var reader = new StreamReader(m_schemaPath))
             {
                 m_schema.Add(XmlSchema.Read(reader, ValidationEventHandler));

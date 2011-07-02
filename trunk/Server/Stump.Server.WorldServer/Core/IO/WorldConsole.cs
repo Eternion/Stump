@@ -3,10 +3,9 @@ using System.Diagnostics;
 using Stump.Core.Attributes;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Commands;
-using Stump.Server.WorldServer.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
 
-namespace Stump.Server.WorldServer.IO
+namespace Stump.Server.WorldServer.Core.IO
 {
     public class WorldConsole : ConsoleBase
     {

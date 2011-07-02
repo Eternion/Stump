@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using NLog;
 using Stump.Core.Reflection;
 
 namespace Stump.Server.BaseServer.Initialization
 {
     public class InitializationManager : Singleton<InitializationManager>
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private readonly List<Type> m_initializedTypes = new List<Type>();
         private readonly Dictionary<Type, List<InitializationMethod>> m_dependances = new Dictionary<Type, List<InitializationMethod>>();
         private readonly Dictionary<InitializationPass, List<InitializationMethod>> m_initializer =
@@ -15,17 +19,23 @@ namespace Stump.Server.BaseServer.Initialization
 
         private InitializationManager()
         {
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (InitializationPass pass in Enum.GetValues(typeof(InitializationPass)))   
             {
-                AddAssembly(assembly);
+                m_initializer.Add(pass, new List<InitializationMethod>());
             }
+        }
+
+        public void AddAssemblies(IEnumerable<Assembly> assemblies)
+        {
+            foreach (var assembly in assemblies)
+                AddAssembly(assembly);
         }
 
         public void AddAssembly(Assembly assembly)
         {
             foreach (var type in assembly.GetTypes())
             {
-                foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Static))
+                foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance))
                 {
                     var attribute = method.GetCustomAttribute<InitializationAttribute>();
 
@@ -50,7 +60,25 @@ namespace Stump.Server.BaseServer.Initialization
                     if (!m_initializer.ContainsKey(attribute.Pass))
                         m_initializer.Add(attribute.Pass, new List<InitializationMethod>());
 
-                    m_initializer[attribute.Pass].Add(new InitializationMethod(attribute, method));
+                    var initializationMethod = new InitializationMethod(attribute, method);
+
+                    
+                    if (method.IsStatic)
+                    {
+                        initializationMethod.Caller = null; // null because it's static
+                    }
+                    // a bit ugly to get the instance in case of a singleton class
+                    else if (type.IsDerivedFromGenericType(typeof(Singleton<>)))
+                    {
+                        var instanceProp = type.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+                        initializationMethod.Caller = instanceProp.GetValue(null, new object[0]);
+                    }
+                    else
+                    {
+                        throw new Exception("Method have to be static or class must inherit Singleton<>");
+                    }
+
+                    m_initializer[attribute.Pass].Add(initializationMethod);
                 }
             }
         }
@@ -70,7 +98,14 @@ namespace Stump.Server.BaseServer.Initialization
             }
             else
             {
-                method.Method.Invoke(null, new object[0]);
+                if (!string.IsNullOrEmpty (method.Attribute.Name))
+                    logger.Info(string.Format("Initialize '{0}'", method.Attribute.Name));
+                else
+                {
+                    logger.Info(string.Format("Initialize '{0}'", method.Method.DeclaringType.Name));
+                }
+
+                method.Method.Invoke(method.Caller, new object[0]);
 
                 method.Initialized = true;
                 m_initializedTypes.Add(method.Method.DeclaringType);

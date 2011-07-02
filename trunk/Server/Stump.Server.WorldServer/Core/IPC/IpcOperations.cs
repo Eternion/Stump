@@ -1,11 +1,10 @@
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Server.BaseServer.IPC;
-using Stump.Server.WorldServer.Network;
+using Stump.Server.WorldServer.Core.Network;
 
-namespace Stump.Server.WorldServer.IPC
+namespace Stump.Server.WorldServer.Core.IPC
 {
     public class IpcOperations : MarshalByRefObject, IRemoteOperationsWorld
     {

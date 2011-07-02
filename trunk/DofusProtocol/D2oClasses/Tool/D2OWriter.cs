@@ -7,7 +7,7 @@ using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.D2oClasses.Tool
 {
-    public class D2OWriter
+    public class D2OWriter : IDisposable
     {
         public string BakFilename
         {
@@ -33,7 +33,10 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
         private bool m_needToBeSync;
         private BigEndianWriter m_writer;
 
-
+        /// <summary>
+        /// Create and flush and empty d2o file
+        /// </summary>
+        /// <param name="path"></param>
         public static void CreateEmptyFile(string path)
         {
             if (File.Exists(path))
@@ -51,14 +54,35 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
             writer.Close();
         }
 
+        /// <summary>
+        /// Create a new instance of D2oWriter
+        /// </summary>
+        /// <param name="filename"></param>
         public D2OWriter(string filename)
         {
             Filename = filename;
 
             if (!File.Exists(filename))
                 CreateWrite(filename);
+            else
+                OpenWrite();
+        }
 
-            OpenWrite();
+        private void CreateWrite(string filename)
+        {
+            m_writer = new BigEndianWriter(File.Create(filename));
+
+            m_indexTable = new Dictionary<int, int>();
+            m_classes = new Dictionary<int, D2OClassDefinition>();
+            m_objects = new Dictionary<int, object>();
+            m_allocatedClassId = new Dictionary<Type, int>();
+        }
+
+        private void OpenWrite()
+        {
+            m_writer = new BigEndianWriter(File.OpenWrite(Filename));
+
+            ResetMembersByReading();
         }
 
         private void ResetMembersByReading()
@@ -73,28 +97,20 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
             reader.Close();
         }
 
-        private void OpenWrite()
+        /// <summary>
+        /// Start editing of the d2o file
+        /// </summary>
+        /// <param name="backupFile"></param>
+        public void StartWriting(bool backupFile = true)
         {
-            ResetMembersByReading();
-        }
+            if (backupFile)
+            {
+                BakFilename = Filename + ".bak";
+                File.Copy(Filename, BakFilename, true);
+            }
 
-        private void CreateWrite(string filename)
-        {
-            m_writer = new BigEndianWriter(File.Create(filename));
-            m_indexTable = new Dictionary<int, int>();
-            m_classes = new Dictionary<int, D2OClassDefinition>();
-            m_objects = new Dictionary<int, object>();
-            m_allocatedClassId = new Dictionary<Type, int>();
-        }
-
-        public void StartWriting()
-        {
-            BakFilename = Filename + ".bak";
-            File.Copy(Filename, BakFilename, true);
-
+            // overwrite existing file
             File.WriteAllBytes(Filename, new byte[0]);
-
-            m_writer = new BigEndianWriter(File.OpenWrite(Filename));
 
             m_writing = true;
             lock (m_writingSync)
@@ -106,6 +122,9 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
             }
         }
 
+        /// <summary>
+        /// End editing of the d2o file, flush the file and dispose ressources
+        /// </summary>
         public void EndWriting()
         {
             lock (m_writingSync)
@@ -135,6 +154,13 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
                 m_writer.Dispose();
             }
         }
+
+        public void Dispose()
+        {
+            if (m_writing)
+                EndWriting();
+        }
+
 
         private void WriteHeader()
         {

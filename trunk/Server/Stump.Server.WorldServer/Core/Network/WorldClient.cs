@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
-using Stump.Server.WorldServer.IPC;
 
-namespace Stump.Server.WorldServer.Network
+namespace Stump.Server.WorldServer.Core.Network
 {
     public sealed class WorldClient : BaseClient
     {

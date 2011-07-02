@@ -181,7 +181,7 @@ namespace Stump.Server.BaseServer.Database
             if (m_version == null)
             {
                 if (ServerBase.InstanceAsBase.ConsoleInterface.AskAndWait(
-                    "Table 'version' is empty, do you want to re-create the schema ? IT WILL ERASE YOUR DATABASE [EXIT IN 60 SECONDS] (y/n)",
+                    "Table 'version' is empty, do you want to re-create the schema ? IT WILL ERASE YOUR DATABASE",
                     60))
                 {
                     CreateSchema();
@@ -200,7 +200,7 @@ namespace Stump.Server.BaseServer.Database
                     catch (FileNotFoundException)
                     {
                         if (ServerBase.InstanceAsBase.ConsoleInterface.AskAndWait(
-                            "Update File doesn't exists, do you want to re-create the schema ? IT WILL ERASE YOUR DATABASE [EXIT IN 60 SECONDS] (y/n)",
+                            "Update File doesn't exist, do you want to re-create the schema ? IT WILL ERASE YOUR DATABASE",
                             60))
                         {
                             CreateSchema();
@@ -236,7 +236,7 @@ namespace Stump.Server.BaseServer.Database
         private void ExecuteUpdateAndCreateSchema()
         {
             if (!Directory.Exists(m_config.UpdateFileDir))
-                throw new Exception(string.Format("Directory {0} isn't found.", m_config.UpdateFileDir));
+                throw new FileNotFoundException(string.Format("Directory {0} isn't found.", m_config.UpdateFileDir));
 
             var files = Directory.GetFiles(m_config.UpdateFileDir, "*", SearchOption.AllDirectories).Where(SelectSqlUpdateFile);
 
@@ -264,7 +264,7 @@ namespace Stump.Server.BaseServer.Database
             {
                 files = files.OrderByDescending(SortSqlUpdateFile);
 
-                if (files.Count() == 0)
+                if (files.Count() == 0) // it's theoretically not possible
                     throw new FileNotFoundException("The update file isn't found");
 
                 ActiveRecordStarter.CreateSchemaFromFile(files.First());

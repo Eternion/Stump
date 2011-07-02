@@ -24,25 +24,38 @@ namespace Stump.Core.Reflection
             return typeObj.ToString() == criteriaObj.ToString();
         }
 
-        [Pure]
         public static T[] GetCustomAttributes<T>(this ICustomAttributeProvider type)
             where T : Attribute
         {
-            Contract.Requires(type != null);
-            Contract.Ensures(Contract.Result<T[]>() != null);
-
             var attribs = type.GetCustomAttributes(typeof(T), false) as T[];
             Contract.Assume(attribs != null);
             return attribs;
         }
 
-        [Pure]
         public static T GetCustomAttribute<T>(this ICustomAttributeProvider type)
             where T : Attribute
         {
-            Contract.Requires(type != null);
-
             return type.GetCustomAttributes<T>().GetOrDefault(0);
+        }
+
+        public static bool IsDerivedFromGenericType(this Type type, Type genericType)
+        {
+            if (type == typeof(object))
+            {
+                return false;
+            }
+
+            if (type == null)
+            {
+                return false;
+            }
+
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == genericType)
+            {
+                return true;
+            }
+
+            return IsDerivedFromGenericType(type.BaseType, genericType);
         }
     }
 }

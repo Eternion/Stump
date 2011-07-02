@@ -13,10 +13,10 @@ using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.BaseServer.Plugins;
+using Stump.Server.WorldServer.Core.IO;
+using Stump.Server.WorldServer.Core.IPC;
+using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.IO;
-using Stump.Server.WorldServer.IPC;
-using Stump.Server.WorldServer.Network;
 
 namespace Stump.Server.WorldServer
 {
@@ -61,10 +61,14 @@ namespace Stump.Server.WorldServer
 
         public override void Initialize()
         {
+
             base.Initialize();
+
 
             ConsoleInterface = new WorldConsole();
             ConsoleBase.SetTitle("#Stump World Server : " + ServerInformation.Name);
+            ConsoleInterface.AskAndWait("fine?", 10);
+            ConsoleInterface.AskAndWait("really?", 10);
 
             logger.Info("Initializing Database...");
             DatabaseAccessor = new DatabaseAccessor(DatabaseConfiguration, Definitions.DatabaseRevision, typeof(WorldBaseRecord<>), Assembly.GetExecutingAssembly());
@@ -85,6 +89,8 @@ namespace Stump.Server.WorldServer
 
             logger.Info("Initializing IPC Client..");
             IpcAccessor.Instance.Initialize();
+
+            InitializationManager.InitializeAll();
         }
 
         protected override void OnPluginAdded(PluginContext plugincontext)

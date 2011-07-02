@@ -103,20 +103,22 @@
             </DatabaseConfiguration>
           </Variable>
         </WorldServer>
-        <IO>
-          <WorldConsole>
-            <Variable name="CommandPreffix" serialized="false" />
-          </WorldConsole>
-        </IO>
-        <IPC>
-          <IpcAccessor>
-            <Variable name="ReconnectDelay" serialized="false">10</Variable>
-            <Variable name="PingDelay" serialized="false">200</Variable>
-            <Variable name="IpcAuthAdress" serialized="false">localhost</Variable>
-            <Variable name="IpcAuthPort" serialized="false">9100</Variable>
-            <Variable name="IpcWorldPort" serialized="false">9101</Variable>
-          </IpcAccessor>
-        </IPC>
+        <Core>
+          <IO>
+            <WorldConsole>
+              <Variable name="CommandPreffix" serialized="false" />
+            </WorldConsole>
+          </IO>
+          <IPC>
+            <IpcAccessor>
+              <Variable name="ReconnectDelay" serialized="false">10</Variable>
+              <Variable name="PingDelay" serialized="false">200</Variable>
+              <Variable name="IpcAuthAdress" serialized="false">localhost</Variable>
+              <Variable name="IpcAuthPort" serialized="false">9100</Variable>
+              <Variable name="IpcWorldPort" serialized="false">9101</Variable>
+            </IpcAccessor>
+          </IPC>
+        </Core>
       </WorldServer>
     </Server>
   </Stump>

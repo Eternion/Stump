@@ -15,6 +15,7 @@ using Stump.Core.Xml.Config;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Handler;
+using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.BaseServer.Plugins;
 
@@ -100,6 +101,12 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
+        public InitializationManager InitializationManager
+        {
+            get;
+            protected set;
+        }
+
         public PluginManager PluginManager
         {
             get;
@@ -175,6 +182,9 @@ namespace Stump.Server.BaseServer
             PluginManager = PluginManager.Instance;
             PluginManager.PluginAdded += OnPluginAdded;
             PluginManager.PluginRemoved += OnPluginRemoved;
+
+            InitializationManager = InitializationManager.Instance;
+            InitializationManager.AddAssemblies(AppDomain.CurrentDomain.GetAssemblies());
         }
 
         /// <summary>
