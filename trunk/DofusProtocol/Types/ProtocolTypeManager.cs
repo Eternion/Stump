@@ -24,7 +24,8 @@ namespace Stump.DofusProtocol.Types
 
                 if (field != null)
                 {
-                    var id = (short)field.GetValue(type);
+                    // le cast uint est obligatoire car l'objet n'a pas de type
+                    short id = (short)((uint)field.GetValue(type));
 
                     m_types.Add(id, type);
 

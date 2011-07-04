@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="Attributes\Cyclic.cs" />
     <Compile Include="Attributes\VariableAttribute.cs" />
+    <Compile Include="Cache\ObjectValidator.cs" />
     <Compile Include="Collections\BlockingQueue.cs" />
     <Compile Include="Collections\CollectionExtensions.cs" />
     <Compile Include="Collections\ConcurrentList.cs" />

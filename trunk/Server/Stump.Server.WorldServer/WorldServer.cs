@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using Castle.ActiveRecord.Framework.Config;
 using Stump.Core.Attributes;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer;
@@ -17,6 +18,7 @@ using Stump.Server.WorldServer.Core.IO;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.World;
 
 namespace Stump.Server.WorldServer
 {
@@ -62,14 +64,9 @@ namespace Stump.Server.WorldServer
 
         public override void Initialize()
         {
-
             base.Initialize();
-
-
             ConsoleInterface = new WorldConsole();
             ConsoleBase.SetTitle("#Stump World Server : " + ServerInformation.Name);
-            ConsoleInterface.AskAndWait("fine?", 10);
-            ConsoleInterface.AskAndWait("really?", 10);
 
             logger.Info("Initializing Database...");
             DatabaseAccessor = new DatabaseAccessor(DatabaseConfiguration, Definitions.DatabaseRevision, typeof(WorldBaseRecord<>), Assembly.GetExecutingAssembly());

@@ -130,7 +130,7 @@ namespace Stump.Server.WorldServer.Database.World
         }
 
         [Property(ColumnType = "Serializable")]
-        public List<Cell> Cells
+        public Cell[] Cells
         {
             get;
             set;

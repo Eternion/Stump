@@ -48,6 +48,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -62,8 +63,16 @@
     <Compile Include="Database\Breeds\LearnableSpell.cs" />
     <Compile Include="Database\WorldBaseRecord.cs" />
     <Compile Include="Database\WorldVersionRecord.cs" />
-    <Compile Include="Database\World\Location.cs" />
-    <Compile Include="Database\World\Map.cs" />
+    <Compile Include="Database\World\AreaRecord.cs" />
+    <Compile Include="Database\World\Cell.cs" />
+    <Compile Include="Database\World\HintRecord.cs" />
+    <Compile Include="Database\World\MapCoordinatesRecord.cs" />
+    <Compile Include="Database\World\MapPositionRecord.cs" />
+    <Compile Include="Database\World\MapRecord.cs" />
+    <Compile Include="Database\World\MapReferenceRecord.cs" />
+    <Compile Include="Database\World\SubAreaRecord.cs" />
+    <Compile Include="Database\World\SuperAreaRecord.cs" />
+    <Compile Include="Database\World\WorldMapRecord.cs" />
     <Compile Include="Definitions.cs" />
     <Compile Include="Handlers\PredicatesDefinitions.cs" />
     <Compile Include="Handlers\WorldHandlerAttribute.cs" />
@@ -95,7 +104,12 @@
     <Compile Include="World\Actors\RolePlay\RolePlayActor.cs" />
     <Compile Include="World\Actors\RolePlay\TaxCollectorNpc.cs" />
     <Compile Include="World\Breeds\BreedManager.cs" />
+    <Compile Include="World\Map\Area.cs" />
+    <Compile Include="World\Map\IContext.cs" />
     <Compile Include="World\Map\Map.cs" />
+    <Compile Include="World\Map\SubArea.cs" />
+    <Compile Include="World\Map\SuperArea.cs" />
+    <Compile Include="World\World.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">
@@ -124,7 +138,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="World\Position\" />
+    <Folder Include="World\Map\Cell\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -235,19 +235,14 @@ namespace Stump.Server.BaseServer
 
         private void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
-            logger.Error("Unobserved Exception : " + e.Exception);
+            HandleCrashException(e.Exception);
 
             e.SetObserved();
         }
 
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs args)
         {
-            logger.Fatal(
-                (args.IsTerminating ? "Application has crashed. An Unhandled Exception has been thrown :\r\n" : "") +
-                string.Format(" Unhandled Exception: {0}\r\n", ((Exception)args.ExceptionObject).Message) +
-                string.Format(" Source: {0} -> {1}\r\n", ((Exception)args.ExceptionObject).Source,
-                         ((Exception)args.ExceptionObject).TargetSite) +
-                string.Format(" Stack Trace:\r\n{0}", ((Exception)args.ExceptionObject).StackTrace));
+            HandleCrashException((Exception) args.ExceptionObject);
 
             if (args.IsTerminating)
                 Shutdown();
@@ -260,6 +255,9 @@ namespace Stump.Server.BaseServer
                 string.Format(" Source: {0} -> {1}\r\n", e.Source,
                         e.TargetSite) +
                 string.Format(" Stack Trace:\r\n{0}", e.StackTrace));
+
+            if (e.InnerException != null)
+                HandleCrashException(e.InnerException);
         }
 
         public virtual void Start()

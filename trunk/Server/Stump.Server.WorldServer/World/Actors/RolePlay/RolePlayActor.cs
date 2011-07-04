@@ -1,6 +1,6 @@
 namespace Stump.Server.WorldServer.World.Actors.RolePlay
 {
-    public class RolePlayActor
+    public abstract class RolePlayActor : ContextActor
     {
         
     }
