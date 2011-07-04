@@ -8,8 +8,8 @@ namespace Stump.Server.BaseServer.Network
 {
     public class ClientMessage
     {
-        private BaseClient m_client;
-        private Message m_message;
+        private readonly BaseClient m_client;
+        private readonly Message m_message;
 
         public ClientMessage(BaseClient client, Message message)
         {

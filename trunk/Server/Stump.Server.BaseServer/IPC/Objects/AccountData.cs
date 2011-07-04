@@ -103,7 +103,7 @@ namespace Stump.Server.BaseServer.IPC.Objects
             }
         }
 
-        public IList<uint> CharactersId
+        public IList<long> CharactersId
         {
             get;
             set;

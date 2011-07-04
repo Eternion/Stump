@@ -102,7 +102,7 @@ namespace Stump.Server.BaseServer.Network
                     Data = reader.ReadBytes((int) reader.BytesAvailable);
                 }
             }
-            //seconde case : the message was splitted and it felt some bytes
+            //second case : the message was splitted and it felt some bytes
             if (Data != null && Length.HasValue && Data.Length < Length)
             {
                 // still felt some bytes ...

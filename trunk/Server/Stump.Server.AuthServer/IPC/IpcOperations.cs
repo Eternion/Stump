@@ -114,12 +114,27 @@ namespace Stump.Server.AuthServer.IPC
             return true;
         }
 
-        public bool CreateAccount(WorldServerData wsi, AccountData account)
+        public bool CreateAccount(WorldServerData wsi, AccountData accountData)
         {
             if (!Manager.CheckWorldAccess(wsi))
                 return false;
 
-            return AccountManager.Instance.CreateAccount(new Account(account));
+            var account = new Account
+                              {
+                                  Id = accountData.Id,
+                                  Login = accountData.Login,
+                                  Password = accountData.Password,
+                                  Nickname = accountData.Nickname,
+                                  Role = accountData.Role,
+                                  AvailableBreeds = accountData.AvailableBreeds,
+                                  Ticket = accountData.Ticket,
+                                  SecretQuestion = accountData.SecretQuestion,
+                                  SecretAnswer = accountData.SecretAnswer,
+                                  Lang = accountData.Lang,
+                                  Email = accountData.Email
+                              };
+
+            return AccountManager.Instance.CreateAccount(account);
         }
 
         public bool DeleteAccount(WorldServerData wsi, string accountname)
