@@ -1,0 +1,1320 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Stump.DofusProtocol.Types.BooleanByteWrapper" Collapsed="true">
+    <Position X="66.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAACAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BooleanByteWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ProtocolTypeManager" Collapsed="true">
+    <Position X="70" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAQACAAAAAAAABAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ProtocolTypeManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameServerInformations" Collapsed="true">
+    <Position X="66.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQCAAAAAAAAAAAAQAIAAAAAACBAAAQgAAAAAAAAAgA=</HashCode>
+      <FileName>Types\connection\GameServerInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.Achievement">
+    <Position X="2.25" Y="43.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAgA=</HashCode>
+      <FileName>Types\game\achievement\Achievement.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.AchievementStartedPercent">
+    <Position X="0.5" Y="46.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAABAAA=</HashCode>
+      <FileName>Types\game\achievement\AchievementStartedPercent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.AchievementStartedValue">
+    <Position X="3.5" Y="46.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAACAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\achievement\AchievementStartedValue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightDispellableEffectExtendedInformations" Collapsed="true">
+    <Position X="68.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACCAAAAAAAAAAAAAAACAAAACBAQAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\action\fight\FightDispellableEffectExtendedInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.AbstractFightDispellableEffect">
+    <Position X="8" Y="32.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACBAAAAAgAEQAAAAAAAAAAACBAEAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\actions\fight\AbstractFightDispellableEffect.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightTemporaryBoostEffect">
+    <Position X="5" Y="36.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAAEAAAAA=</HashCode>
+      <FileName>Types\game\actions\fight\FightTemporaryBoostEffect.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightTemporaryBoostStateEffect">
+    <Position X="1.25" Y="40" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAEAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\actions\fight\FightTemporaryBoostStateEffect.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightTemporaryBoostWeaponDamagesEffect">
+    <Position X="4.5" Y="40" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAABCBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\actions\fight\FightTemporaryBoostWeaponDamagesEffect.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightTemporarySpellBoostEffect">
+    <Position X="8.5" Y="40" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAiAAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\actions\fight\FightTemporarySpellBoostEffect.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightTemporarySpellImmunityEffect">
+    <Position X="11.75" Y="36.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAABAAAAA=</HashCode>
+      <FileName>Types\game\actions\fight\FightTemporarySpellImmunityEffect.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightTriggeredEffect">
+    <Position X="15.25" Y="36.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAABwAAAAAAAAgAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\actions\fight\FightTriggeredEffect.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameActionMark" Collapsed="true">
+    <Position X="59.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAACADDAAAAgEABAAAAAAAA=</HashCode>
+      <FileName>Types\game\actions\fight\GameActionMark.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameActionMarkedCell" Collapsed="true">
+    <Position X="61.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAABBAAQAAAACBAAAAgAAAAAAAAgAA=</HashCode>
+      <FileName>Types\game\actions\fight\GameActionMarkedCell.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ActorAlignmentInformations">
+    <Position X="46.75" Y="7.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACDAAAAkAAABCAAAAAg=</HashCode>
+      <FileName>Types\game\character\alignment\ActorAlignmentInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ActorExtendedAlignmentInformations">
+    <Position X="46.5" Y="11.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAABAAAAAACBAAAAgAAAgAAAABAA=</HashCode>
+      <FileName>Types\game\character\alignment\ActorExtendedAlignmentInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.CharacterBaseCharacteristic" Collapsed="true">
+    <Position X="68.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAABEABCDAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\character\characteristic\CharacterBaseCharacteristic.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.CharacterCharacteristicsInformations" Collapsed="true">
+    <Position X="70" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>SQALIojIABEgwABsB5NBwQIFFCDJqAB4QAByoCgWCgA=</HashCode>
+      <FileName>Types\game\character\characteristic\CharacterCharacteristicsInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.CharacterSpellModification" Collapsed="true">
+    <Position X="56" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgACAAAAAAgAAAAAAAAAAAAAACBAACAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\character\characteristic\CharacterSpellModification.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.CharacterMinimalInformations">
+    <Position X="31.25" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACFEAAAgAAAAAAAAAgA=</HashCode>
+      <FileName>Types\game\character\CharacterMinimalInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.CharacterMinimalPlusLookAndGradeInformations">
+    <Position X="27.5" Y="7.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAgAQAAAAAAAAA=</HashCode>
+      <FileName>Types\game\character\CharacterMinimalPlusLookAndGradeInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.CharacterMinimalPlusLookInformations">
+    <Position X="29.5" Y="4.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAACAAQAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\character\CharacterMinimalPlusLookInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.CharacterBaseInformations">
+    <Position X="33.5" Y="7.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AgACAAAAAAAAAAAAAAQAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\character\choice\CharacterBaseInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.CharacterHardcoreInformations">
+    <Position X="35.25" Y="11.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAIAAAAAAAAAACBAAAAgIAAAAAIAAAA=</HashCode>
+      <FileName>Types\game\character\choice\CharacterHardcoreInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.CharacterToRecolorInformation" Collapsed="true">
+    <Position X="57.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAACgAAAAAAAAAgA=</HashCode>
+      <FileName>Types\game\character\choice\CharacterToRecolorInformation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ActorRestrictionsInformations" Collapsed="true">
+    <Position X="57.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAoAYBABQQIABIAAAAAASBACgAgAQAEBAACSAA=</HashCode>
+      <FileName>Types\game\character\restriction\ActorRestrictionsInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ActorOrientation" Collapsed="true">
+    <Position X="56" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAIAAAAAAAAAAAACBAAAAgAAAAAAAAAgA=</HashCode>
+      <FileName>Types\game\context\ActorOrientation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.EntityDispositionInformations">
+    <Position X="43.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAIAAAAAAAAAAAACBAAAAgAAAAAAAAgAA=</HashCode>
+      <FileName>Types\game\context\EntityDispositionInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.EntityMovementInformations" Collapsed="true">
+    <Position X="64.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAQAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAgA=</HashCode>
+      <FileName>Types\game\context\EntityMovementInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.AbstractFightTeamInformations">
+    <Position X="22.75" Y="12.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAgCBAAgAgAAAAAAgAAAA=</HashCode>
+      <FileName>Types\game\context\fight\AbstractFightTeamInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightCommonInformations" Collapsed="true">
+    <Position X="66.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAgQAAAIMAAAIA=</HashCode>
+      <FileName>Types\game\context\fight\FightCommonInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightExternalInformations" Collapsed="true">
+    <Position X="70" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAQAAAAAAAAAAAAAAAAACACBAAAAgAAAAAIAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\FightExternalInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightLoot" Collapsed="true">
+    <Position X="56" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAABAAAAAAAAAASBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\FightLoot.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightOptionsInformations" Collapsed="true">
+    <Position X="57.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAgAAAAAAAAAAAAAAAAAAQCBAAAAgAAAAAAAAAgA=</HashCode>
+      <FileName>Types\game\context\fight\FightOptionsInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightResultAdditionalData">
+    <Position X="13.75" Y="40.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\FightResultAdditionalData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightResultExperienceData">
+    <Position X="15" Y="43.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAMCAAAAAIUABAAAAAAQAAAAQCBAAAggAAJCABAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\FightResultExperienceData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightResultFighterListEntry">
+    <Position X="3.75" Y="25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAABCBAAAAgAAAAAAAAAgA=</HashCode>
+      <FileName>Types\game\context\fight\FightResultFighterListEntry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightResultListEntry">
+    <Position X="4" Y="21.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACgAAAAAAAAAAAAAAAAAAAACBAAAAiAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\FightResultListEntry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightResultMutantListEntry">
+    <Position X="4" Y="28.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACFAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\FightResultMutantListEntry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightResultPlayerListEntry">
+    <Position X="7" Y="28.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAIACFAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\FightResultPlayerListEntry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightResultPvpData">
+    <Position X="12.5" Y="43.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAABAAAAgCAAAAgACBAAAAgAQAACAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\FightResultPvpData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightResultTaxCollectorListEntry">
+    <Position X="0.75" Y="28.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAQAAAAAAAAAAAAAACVAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\FightResultTaxCollectorListEntry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightTeamInformations">
+    <Position X="21.5" Y="16.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAACAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\FightTeamInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightTeamLightInformations">
+    <Position X="24.25" Y="16.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAACAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\FightTeamLightInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightTeamMemberCharacterInformations">
+    <Position X="18.75" Y="39.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACFEAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\FightTeamMemberCharacterInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightTeamMemberInformations">
+    <Position X="23" Y="36.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAgA=</HashCode>
+      <FileName>Types\game\context\fight\FightTeamMemberInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightTeamMemberMonsterInformations">
+    <Position X="22.5" Y="39.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAQAAAAAAAAACBAAAAgAQAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\FightTeamMemberMonsterInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightTeamMemberTaxCollectorInformations">
+    <Position X="26.25" Y="39.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAACMAAAAAAAAAAAACFAAAQgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\FightTeamMemberTaxCollectorInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameFightAIInformations">
+    <Position X="44" Y="26" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\GameFightAIInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameFightCharacterInformations">
+    <Position X="52.5" Y="29.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAABAAAAAAAAAAAAAAACFAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\GameFightCharacterInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameFightFighterInformations">
+    <Position X="47" Y="22.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAQAAAAAAAAAAAAAAAABCBAAgAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\GameFightFighterInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameFightFighterNamedInformations">
+    <Position X="50.75" Y="26" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBEAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\GameFightFighterNamedInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameFightMinimalStats">
+    <Position X="45.75" Y="36.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>QAALAIDAAAACAABEAJIAAAAAgCBBIAAgAAAAACgEAAA=</HashCode>
+      <FileName>Types\game\context\fight\GameFightMinimalStats.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameFightMinimalStatsPreparation">
+    <Position X="45.5" Y="43" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAQAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\GameFightMinimalStatsPreparation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameFightMonsterInformations">
+    <Position X="42" Y="29.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>IAACAAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAABA=</HashCode>
+      <FileName>Types\game\context\fight\GameFightMonsterInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameFightMonsterWithAlignmentInformations">
+    <Position X="41.5" Y="33" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAABAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\GameFightMonsterWithAlignmentInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameFightMutantInformations">
+    <Position X="49.25" Y="29.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AgACAAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\GameFightMutantInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameFightResumeSlaveInfo" Collapsed="true">
+    <Position X="63" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAgAgABAAAAAABAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\GameFightResumeSlaveInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameFightSpellCooldown" Collapsed="true">
+    <Position X="64.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAgAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\GameFightSpellCooldown.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameFightTaxCollectorInformations">
+    <Position X="45.75" Y="29.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAACIAAAAAAAAAAAACFAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\fight\GameFightTaxCollectorInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FightEntityDispositionInformations">
+    <Position X="41.75" Y="4" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>EAACAAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\FightEntityDispositionInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameContextActorInformations">
+    <Position X="33" Y="18.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAEAAAAAAAAAAAAAACACBAABAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\GameContextActorInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameRolePlayTaxCollectorInformations">
+    <Position X="17.25" Y="25.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAACAACBAIACIAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\GameRolePlayTaxCollectorInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.IdentifiedEntityDispositionInformations">
+    <Position X="45.25" Y="4" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAgA=</HashCode>
+      <FileName>Types\game\context\IdentifiedEntityDispositionInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.MapCoordinates">
+    <Position X="26.75" Y="44.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACEAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\MapCoordinates.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.MapCoordinatesExtended">
+    <Position X="26.5" Y="48" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAIAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\MapCoordinatesExtended.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.AtlasPointsInformations" Collapsed="true">
+    <Position X="63" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBBAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\AtlasPointsInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.BasicGuildInformations">
+    <Position X="43.5" Y="17.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAECBAAAQgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\BasicGuildInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameRolePlayActorInformations">
+    <Position X="25.75" Y="22.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\GameRolePlayActorInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameRolePlayCharacterInformations">
+    <Position X="21" Y="32.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAABAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\GameRolePlayCharacterInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameRolePlayGroupMonsterInformations">
+    <Position X="13.5" Y="25.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAACQAAAAAAAAAAAEAAAAAAAgCBAAIAgAAABAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\GameRolePlayGroupMonsterInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameRolePlayHumanoidInformations">
+    <Position X="22.5" Y="29" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAgCBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\GameRolePlayHumanoidInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameRolePlayMerchantInformations">
+    <Position X="28" Y="29" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAgAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\GameRolePlayMerchantInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameRolePlayMerchantWithGuildInformations">
+    <Position X="27.75" Y="32.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAACAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\GameRolePlayMerchantWithGuildInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameRolePlayMountInformations">
+    <Position X="31.75" Y="29" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACFAAAIgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\GameRolePlayMountInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameRolePlayMutantInformations">
+    <Position X="24.5" Y="32.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AgACAAAAAAAAAAAQAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\GameRolePlayMutantInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameRolePlayNamedActorInformations">
+    <Position X="26" Y="25.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBEAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\GameRolePlayNamedActorInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameRolePlayNpcInformations">
+    <Position X="35" Y="25.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AACCAAAAAAAAAAAAAAQAAAAAACBAAAAgAQAQAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\GameRolePlayNpcInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GameRolePlayPrismInformations">
+    <Position X="38.25" Y="25.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAACAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\GameRolePlayPrismInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GroupMonsterStaticInformations" Collapsed="true">
+    <Position X="68.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACQAAAAAAAAAAAEAAAAAAAACBAAIAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\GroupMonsterStaticInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GuildInformations">
+    <Position X="43.75" Y="21" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAIAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\GuildInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.HumanInformations">
+    <Position X="22.75" Y="43.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAECAIAAAAAAAAAAAIAABAAAACBAAAAgAAAAAAIAgAA=</HashCode>
+      <FileName>Types\game\context\roleplay\HumanInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.HumanWithGuildInformations">
+    <Position X="22.5" Y="47.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAACAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\HumanWithGuildInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.JobCrafterDirectoryEntryJobInfo" Collapsed="true">
+    <Position X="64.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgCAAAAACAAAAAAAAAAAAAAACBAABQgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\job\JobCrafterDirectoryEntryJobInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.JobCrafterDirectoryEntryPlayerInfo" Collapsed="true">
+    <Position X="66.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgACEAIgCAAAAAAAAIUAAAAAACBAAAAgAAABAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\job\JobCrafterDirectoryEntryPlayerInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.JobCrafterDirectoryListEntry" Collapsed="true">
+    <Position X="68.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAACAAAAAAAAAAAAAAACBAABAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\job\JobCrafterDirectoryListEntry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.JobCrafterDirectorySettings" Collapsed="true">
+    <Position X="70" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAACAAAAAAAAAAAAAAACBAABAgAAACAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\job\JobCrafterDirectorySettings.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.JobDescription" Collapsed="true">
+    <Position X="56" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACABAAAAAAAAAAAAAAAAAAACBAABAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\job\JobDescription.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.JobExperience" Collapsed="true">
+    <Position X="57.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgCAAAAQAAAAAAAAAAAAoAAACBAABAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\job\JobExperience.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.MonsterInGroupInformations" Collapsed="true">
+    <Position X="61.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAEAAAAAAAAAAAAAAAACBAAAAgAQAAAAAAABA=</HashCode>
+      <FileName>Types\game\context\roleplay\MonsterInGroupInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.NpcStaticInformations" Collapsed="true">
+    <Position X="66.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACCAAAAAAAAAAAAAAQAAAAAACBAAAAgAQAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\NpcStaticInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectItemInRolePlay">
+    <Position X="33.25" Y="42.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAACAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAgAA=</HashCode>
+      <FileName>Types\game\context\roleplay\ObjectItemInRolePlay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectItemWithLookInRolePlay">
+    <Position X="34" Y="46" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAQAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\ObjectItemWithLookInRolePlay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.OrientedObjectItemWithLookInRolePlay">
+    <Position X="33.75" Y="49.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAIAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\OrientedObjectItemWithLookInRolePlay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.DungeonPartyFinderPlayer" Collapsed="true">
+    <Position X="61.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgACAAAACAAAAAAAAAUAAAAAACFAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\party\DungeonPartyFinderPlayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.PartyGuestInformations" Collapsed="true">
+    <Position X="56" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAIAAAAgAAAABACBEAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\party\PartyGuestInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.PartyInvitationMemberInformations">
+    <Position X="31.75" Y="11.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAACEAIAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\party\PartyInvitationMemberInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.PartyMemberGeoPosition" Collapsed="true">
+    <Position X="57.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACEAIAAAAAAAABAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\party\PartyMemberGeoPosition.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.PartyMemberInformations">
+    <Position X="24.25" Y="7.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAADAAAAAAAAgAAEAQAAAAAAACBAACAgAAAhAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\party\PartyMemberInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.PartyUpdateCommonsInformations" Collapsed="true">
+    <Position X="59.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAADAAAAAAAAgAAEAAAAAAAAACBAACAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\roleplay\party\PartyUpdateCommonsInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.TaxCollectorStaticInformations" Collapsed="true">
+    <Position X="70" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAIACIAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\context\TaxCollectorStaticInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.BidExchangerObjectInfo" Collapsed="true">
+    <Position X="64.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAADAAAAAAgAAAAAAAAAAAAEACBAAEAgAAAIAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\BidExchangerObjectInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectEffect">
+    <Position X="9.75" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAACAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\effects\ObjectEffect.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectEffectCreature">
+    <Position X="6" Y="14.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAIACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\effects\ObjectEffectCreature.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectEffectDate">
+    <Position X="8.5" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAmAAAAAAAAAAAAAAAAAAAAACRAAAAgAAAiAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\effects\ObjectEffectDate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectEffectDice">
+    <Position X="10.75" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAQAAAAAAAAAAAAAAAAAACBAAAAgACAAAAAAQAA=</HashCode>
+      <FileName>Types\game\data\items\effects\ObjectEffectDice.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectEffectDuration">
+    <Position X="13" Y="14.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACABAAAABAAAAAAAAAAAAAACBAAAAgAAAAAEAAAAA=</HashCode>
+      <FileName>Types\game\data\items\effects\ObjectEffectDuration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectEffectInteger">
+    <Position X="15.5" Y="14.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAACAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\effects\ObjectEffectInteger.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectEffectLadder">
+    <Position X="6" Y="18.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAIAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\effects\ObjectEffectLadder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectEffectMinMax">
+    <Position X="18" Y="14.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACEAAAAAAQAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\effects\ObjectEffectMinMax.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectEffectMount">
+    <Position X="1.25" Y="14.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAQAAgAAAAAAAACBAAAAgAAAAAQAAAAA=</HashCode>
+      <FileName>Types\game\data\items\effects\ObjectEffectMount.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectEffectString">
+    <Position X="3.75" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAACAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\effects\ObjectEffectString.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GoldItem">
+    <Position X="3.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACBAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\GoldItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.Item">
+    <Position X="10.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\Item.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectEffects" Collapsed="true">
+    <Position X="68.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAEACBAAEAgAAAIAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\ObjectEffects.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectItem">
+    <Position X="5.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAACAAgAAAAAAAAAIAAEACBAAECgAAAIAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\ObjectItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectItemMinimalInformation">
+    <Position X="8" Y="3.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAACAAAAAAAAAAAAAAAEACBAAEAgAAAIAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\ObjectItemMinimalInformation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectItemNotInContainer">
+    <Position X="11.25" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAACAAgAAAAAAAAAAAAEACBAAECgAAAIAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\ObjectItemNotInContainer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectItemQuantity">
+    <Position X="14" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAgAAAAAAAAAAAAAACBAAACgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\ObjectItemQuantity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectItemToSell">
+    <Position X="16.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAACAAgAAAAAIAAAAAAEACBAAECgAAAIAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\ObjectItemToSell.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectItemToSellInBid">
+    <Position X="16.5" Y="8" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAgAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\ObjectItemToSellInBid.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectItemToSellInHumanVendorShop">
+    <Position X="19" Y="3.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAACAAgAAAEAIAAAAAAEACBAAECgAAAIAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\ObjectItemToSellInHumanVendorShop.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ObjectItemToSellInNpcShop">
+    <Position X="8.25" Y="7.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAIAAAAAAAACBCAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\ObjectItemToSellInNpcShop.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.SellerBuyerDescriptor" Collapsed="true">
+    <Position X="56" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAyAAAAAAAAAAAAAgIAAAAAACBAAAAgAAAAAAYgAAA=</HashCode>
+      <FileName>Types\game\data\items\SellerBuyerDescriptor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.SpellItem">
+    <Position X="1.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAgAAAAAAAAAIAQAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\data\items\SpellItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ProtectedEntityWaitingForHelpInfo" Collapsed="true">
+    <Position X="68.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAQggBAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\fight\ProtectedEntityWaitingForHelpInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FriendInformations">
+    <Position X="36.5" Y="15.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAEAAAAAAAAAAAAAAACBEAAAgEAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\friend\FriendInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FriendOnlineInformations">
+    <Position X="36.5" Y="19.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AgECAAAAAAAAAAAAAAUAAAAAACVAAAAgAAABAAAAAAA=</HashCode>
+      <FileName>Types\game\friend\FriendOnlineInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FriendSpouseInformations">
+    <Position X="18.75" Y="43.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AhACAAAAAAAAACAAAAQAAAAAACZACAAgAAABAAAAAAA=</HashCode>
+      <FileName>Types\game\friend\FriendSpouseInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.FriendSpouseOnlineInformations">
+    <Position X="18.5" Y="48.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAIAAAIAIAgAAAAAAAAAACBAAAAgAAAgAAAAAAA=</HashCode>
+      <FileName>Types\game\friend\FriendSpouseOnlineInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.IgnoredInformations">
+    <Position X="28.75" Y="11.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBEAAAgAAAAAAAAAgA=</HashCode>
+      <FileName>Types\game\friend\IgnoredInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.IgnoredOnlineInformations">
+    <Position X="28.5" Y="15" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AgACAAAAAAAAAAAAAAUAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\friend\IgnoredOnlineInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GuildEmblem" Collapsed="true">
+    <Position X="70" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAKAAAAAAAAgAAAAAAAAAAAACBAAAggAAAAAAAAAEA=</HashCode>
+      <FileName>Types\game\guild\GuildEmblem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.GuildMember">
+    <Position X="38.5" Y="4.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AgECAABAAQAAAAAQAAQAAAAAACBAAAAgIAABIAAAgAA=</HashCode>
+      <FileName>Types\game\guild\GuildMember.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.AdditionalTaxCollectorInformations" Collapsed="true">
+    <Position X="59.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAACAAAAAAAAAAAAAAAACBAAAAgAAAAAQAAAAA=</HashCode>
+      <FileName>Types\game\guild\tax\AdditionalTaxCollectorInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.TaxCollectorBasicInformations" Collapsed="true">
+    <Position X="63" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACEAIAAAACIAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\guild\tax\TaxCollectorBasicInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.TaxCollectorFightersInformation" Collapsed="true">
+    <Position X="64.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAIAAAAgAAAAAAAIAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\guild\tax\TaxCollectorFightersInformation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.TaxCollectorInformations">
+    <Position X="8" Y="43.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAiEAAAEAACIEBAAAAAAAAAAKBAAAAlAABACAAAAAA=</HashCode>
+      <FileName>Types\game\guild\tax\TaxCollectorInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.TaxCollectorInformationsInWaitForHelpState">
+    <Position X="7.5" Y="49.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAQ=</HashCode>
+      <FileName>Types\game\guild\tax\TaxCollectorInformationsInWaitForHelpState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.TaxCollectorLootInformations" Collapsed="true">
+    <Position X="66.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAiAAAAAAAAAABAAAAAAAAAACBAAAAhAABAAAAAAAA=</HashCode>
+      <FileName>Types\game\guild\tax\TaxCollectorLootInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.TaxCollectorName" Collapsed="true">
+    <Position X="68.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAACIAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\guild\tax\TaxCollectorName.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.HouseInformations">
+    <Position X="21.75" Y="19.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AEACAAAAAAAAAAAAgAAAACAAACRAAAIgAAAAAAAAAgA=</HashCode>
+      <FileName>Types\game\house\HouseInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.HouseInformationsExtended">
+    <Position X="21.5" Y="23.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACRAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\house\HouseInformationsExtended.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.HouseInformationsForGuild" Collapsed="true">
+    <Position X="56" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACEAAAAAAIAAAAgAAAACAAACBAAAIgAABAAAAAAAA=</HashCode>
+      <FileName>Types\game\house\HouseInformationsForGuild.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.HouseInformationsForSell" Collapsed="true">
+    <Position X="57.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAADEAAQAAAIIAAAggAAAAAAACBAIAIgAAAAAAAAAAg=</HashCode>
+      <FileName>Types\game\house\HouseInformationsForSell.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.HouseInformationsInside" Collapsed="true">
+    <Position X="59.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgDEAAAAAAAAAAAgAAAACAAACBAAAIgAAAAAAAAAAg=</HashCode>
+      <FileName>Types\game\house\HouseInformationsInside.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.InteractiveElement" Collapsed="true">
+    <Position X="61.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEACAAAAAAAAAAAAAAAEAAAQACBAAAAgBAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\interactive\InteractiveElement.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.InteractiveElementNamedSkill">
+    <Position X="9.5" Y="23" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAIAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\interactive\InteractiveElementNamedSkill.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.InteractiveElementSkill">
+    <Position X="9.5" Y="19.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAQAAAAAABACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\interactive\InteractiveElementSkill.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.MapObstacle" Collapsed="true">
+    <Position X="59.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAkAAAgAAAAAAA=</HashCode>
+      <FileName>Types\game\interactive\MapObstacle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.SkillActionDescription">
+    <Position X="40.5" Y="39.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAABACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\interactive\skill\SkillActionDescription.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.SkillActionDescriptionCollect">
+    <Position X="42" Y="46.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACEAAAAAAQAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\interactive\skill\SkillActionDescriptionCollect.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.SkillActionDescriptionCraft">
+    <Position X="38.75" Y="42.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAgAAAAAAEACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\interactive\skill\SkillActionDescriptionCraft.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.SkillActionDescriptionCraftExtended">
+    <Position X="38.5" Y="46.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAgAAAAIAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\interactive\skill\SkillActionDescriptionCraftExtended.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.SkillActionDescriptionTimed">
+    <Position X="42" Y="42.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAADAAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\interactive\skill\SkillActionDescriptionTimed.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.StatedElement" Collapsed="true">
+    <Position X="59.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAEAAAAAAAAAAAAEAAAAACBAAAAgAIAAAAAAAAA=</HashCode>
+      <FileName>Types\game\interactive\StatedElement.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.Preset" Collapsed="true">
+    <Position X="61.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAASBQAAEgAAAAAAgAAAA=</HashCode>
+      <FileName>Types\game\inventory\preset\Preset.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.PresetItem" Collapsed="true">
+    <Position X="63" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAIACAAIAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\inventory\preset\PresetItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.EntityLook">
+    <Position X="0.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAgAAAAAAAAAACAAAAACADBAAAAgAAIAAAAAAAA=</HashCode>
+      <FileName>Types\game\look\EntityLook.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.SubEntity" Collapsed="true">
+    <Position X="61.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAACAAAAAAAAAAAAAAQAAAAAACBAAAAgAAAAAAAgAAA=</HashCode>
+      <FileName>Types\game\look\SubEntity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ItemDurability" Collapsed="true">
+    <Position X="63" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAIAAAAAAAACBAAAAgEAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\mount\ItemDurability.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.MountClientData" Collapsed="true">
+    <Position X="63" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQiCAACABEQAEQQBAARAAAgCEGFEAAAggQBIAAQIIiI=</HashCode>
+      <FileName>Types\game\mount\MountClientData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.UpdateMountBoost">
+    <Position X="0.5" Y="18.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBBAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\mount\UpdateMountBoost.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.UpdateMountIntBoost">
+    <Position X="0.5" Y="21.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAACAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\mount\UpdateMountIntBoost.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.MountInformationsForPaddock" Collapsed="true">
+    <Position X="64.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAgAAAAAAAACBEAAIgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\paddock\MountInformationsForPaddock.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.PaddockAbandonnedInformations">
+    <Position X="39.5" Y="16.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAQgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\paddock\PaddockAbandonnedInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.PaddockBuyableInformations">
+    <Position X="39.75" Y="13" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAADAAAAAAAAIAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\paddock\PaddockBuyableInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.PaddockContentInformations">
+    <Position X="42.75" Y="13" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACFAIAAAAAAAAAAAAAAAAAACBAAAAgAAAAABAAAAA=</HashCode>
+      <FileName>Types\game\paddock\PaddockContentInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.PaddockInformations">
+    <Position X="41.5" Y="9.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAgAAAAAAAAAAAAAICBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\paddock\PaddockInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.PaddockInformationsForSell" Collapsed="true">
+    <Position X="70" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAADEgAAAAAAIAAAAAAAAAAkACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\paddock\PaddockInformationsForSell.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.PaddockItem">
+    <Position X="31.5" Y="46" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAgEAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\paddock\PaddockItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.PaddockPrivateInformations">
+    <Position X="39.75" Y="20.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACRAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\paddock\PaddockPrivateInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.AlignmentBonusInformations" Collapsed="true">
+    <Position X="61.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAQAAAAAAAAACBAAAAgAAAAAAAAgAA=</HashCode>
+      <FileName>Types\game\prism\AlignmentBonusInformations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.PrismConquestInformation" Collapsed="true">
+    <Position X="64.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAQAAAAAAAAAAAAgACBAAAAgAAAAAAggAAA=</HashCode>
+      <FileName>Types\game\prism\PrismConquestInformation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.PrismSubAreaInformation" Collapsed="true">
+    <Position X="66.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAACEAIAAAAAAAAACAAAAAAgACBAAAAgAAAAAAgAAAA=</HashCode>
+      <FileName>Types\game\prism\PrismSubAreaInformation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.Shortcut">
+    <Position X="35.25" Y="32.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAgAAACAAAAAAA=</HashCode>
+      <FileName>Types\game\shortcut\Shortcut.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ShortcutObject">
+    <Position X="34" Y="35.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\shortcut\ShortcutObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ShortcutObjectItem">
+    <Position X="32.75" Y="39" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAACAAAAAAAAAAAAAACBAAAAgAAAIAAAAAAA=</HashCode>
+      <FileName>Types\game\shortcut\ShortcutObjectItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ShortcutObjectPreset">
+    <Position X="35.25" Y="39" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAgAAAAAAgAAAA=</HashCode>
+      <FileName>Types\game\shortcut\ShortcutObjectPreset.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ShortcutSpell">
+    <Position X="37.75" Y="35.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAgAAAAAAAAAAAAAACBAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\shortcut\ShortcutSpell.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.StartupActionAddObject" Collapsed="true">
+    <Position X="57.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAQAAAEAAAEAgAAAACACBAAAAoAAAAAAAAAAA=</HashCode>
+      <FileName>Types\game\startup\StartupActionAddObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.TrustCertificate" Collapsed="true">
+    <Position X="56" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAACAAAAAAAAACBAAAAgAAAAAAAAAgA=</HashCode>
+      <FileName>Types\secure\TrustCertificate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.ContentPart" Collapsed="true">
+    <Position X="59.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAACBAAAAkAAAAAAAAAgA=</HashCode>
+      <FileName>Types\updater\ContentPart.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.Version" Collapsed="true">
+    <Position X="57.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAACIAAAAAAAAAAAAAAAAABAACBAAABgAAAABAAAIAA=</HashCode>
+      <FileName>Types\version\Version.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.Custom.ExtendedLook">
+    <Position X="0.5" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Custom\ExtendedLook.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stump.DofusProtocol.Types.Extensions.EntityLookExtension" Collapsed="true">
+    <Position X="63" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAEAAAACAAAAAAAgAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Extensions\EntityLookExtension.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
