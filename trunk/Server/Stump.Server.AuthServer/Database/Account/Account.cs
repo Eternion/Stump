@@ -6,7 +6,6 @@ using NHibernate.Criterion;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.AuthServer.Database.World;
-using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Objects;
 
 namespace Stump.Server.AuthServer.Database.Account
@@ -15,31 +14,47 @@ namespace Stump.Server.AuthServer.Database.Account
     [ActiveRecord("accounts")]
     public sealed class Account : AuthBaseRecord<Account>
     {
-
         private string m_login = "";
+
         private IList<WorldCharacter> m_characters;
         private IList<DeletedWorldCharacter> m_deletedCharacters;
         private IList<ConnectionLog> m_connections;
         private IList<SubscriptionLog> m_subscriptions;
-        private IList<Sanction> m_givenSanctions;
         private IList<Sanction> m_sanctions;
-        private List<PlayableBreedEnum> m_breeds;
+        private List<PlayableBreedEnum> m_availableBreeds;
 
         public Account()
         {
             CreationDate = DateTime.Now;
         }
 
-        public Account(AccountData accountData)
-        {
-            CreationDate = DateTime.Now;
-
-            // todo : blabla
-        }
-
         public AccountData Serialize()
         {
-            return new AccountData();
+            var strongestSanction = StrongestSanction;
+
+            return new AccountData
+            {
+                Id = Id,
+                Login = Login,
+                Password = Password,
+                Nickname = Nickname,
+                Role = Role,
+                AvailableBreeds = AvailableBreeds,
+                Ticket = Ticket,
+                SecretQuestion = SecretQuestion,
+                SecretAnswer = SecretAnswer,
+                Lang = Lang,
+                Email = Email,
+                CreationDate = CreationDate,
+
+                BanEndDate = strongestSanction != null ? StrongestSanction.EndDate : default(DateTime),
+                BanReason = strongestSanction != null ? strongestSanction.BanReason : string.Empty,
+                SubscriptionEndDate = DateTime.Now + TimeSpan.FromSeconds (SubscriptionRemainingTime),
+                LastConnection = LastConnection.Date,
+                LastConnectionIp = LastConnection.Ip,
+
+                CharactersId = Characters.Select(entry => entry.Id).ToList(),
+            };
         }
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
@@ -52,7 +67,7 @@ namespace Stump.Server.AuthServer.Database.Account
         [Property("Login", NotNull = true, Length = 19)]
         public string Login
         {
-            get { return m_login.ToLower(); }
+            get { return m_login; }
             set { m_login = value.ToLower(); }
         }
 
@@ -130,14 +145,14 @@ namespace Stump.Server.AuthServer.Database.Account
         {
             get
             {
-                if (m_breeds == null)
+                if (m_availableBreeds == null)
                 {
-                    m_breeds = new List<PlayableBreedEnum>();
-                    m_breeds.AddRange(Enum.GetValues(typeof(PlayableBreedEnum)).Cast<PlayableBreedEnum>().
+                    m_availableBreeds = new List<PlayableBreedEnum>();
+                    m_availableBreeds.AddRange(Enum.GetValues(typeof(PlayableBreedEnum)).Cast<PlayableBreedEnum>().
                         Where(breed => CanUseBreed((int)breed)));
                 }
 
-                return m_breeds;
+                return m_availableBreeds;
             }
             set
             {
@@ -174,36 +189,22 @@ namespace Stump.Server.AuthServer.Database.Account
         }
 
         [HasMany(typeof(Sanction))]
-        public IList<Sanction> GivenSanctions
-        {
-            get { return m_givenSanctions ?? new List<Sanction>(); }
-            set { m_givenSanctions = value; }
-        }
-
-        [HasMany(typeof(Sanction))]
         public IList<Sanction> Sanctions
         {
             get { return m_sanctions ?? new List<Sanction>(); }
             set { m_sanctions = value; }
         }
 
-        public bool CanUseBreed(int breedId)
+        public Sanction StrongestSanction
         {
-            return ( DbAvailableBreeds & ( 1 << breedId ) ) == 1;
-        }
-
-        public byte GetCharactersCountByWorld(int worldId)
-        {
-            return (byte)Characters.Where(entry => entry.World.Id == worldId).Count();
-        }
-
-        public IEnumerable<uint> GetWorldCharactersId(int worldId)
-        {
-            return Characters.Where(c => c.World.Id == worldId).Select(c => c.CharacterId);
+            get
+            {
+                return Sanctions.Count == 0 ? null : Sanctions.MaxOf(entry => entry.EndDate);
+            }
         }
 
         public ConnectionLog LastConnection
-        {          
+        {
             get { return Connections.MaxOf(c => c.Date); }
         }
 
@@ -235,8 +236,15 @@ namespace Stump.Server.AuthServer.Database.Account
         {
             get
             {
-                if (Sanctions.Count == 0) return 0;
-                return (uint)DateTime.Now.Subtract( Sanctions.Max(s => s.EndDate)).TotalSeconds;
+                if (Sanctions.Count == 0)
+                    return 0;
+
+                var remainingTime = DateTime.Now.Subtract( Sanctions.Max(s => s.EndDate)).TotalSeconds;
+
+                if (remainingTime < 0)
+                    return 0;
+
+                return (uint)remainingTime;
             }
         }
 
@@ -244,6 +252,21 @@ namespace Stump.Server.AuthServer.Database.Account
         {
             var olderConn = Connections.MinOf(c => c.Date);
             olderConn.Delete();
+        }
+
+        public bool CanUseBreed(int breedId)
+        {
+            return (DbAvailableBreeds & (1 << breedId)) == 1;
+        }
+
+        public byte GetCharactersCountByWorld(int worldId)
+        {
+            return (byte)Characters.Where(entry => entry.World.Id == worldId).Count();
+        }
+
+        public IEnumerable<uint> GetWorldCharactersId(int worldId)
+        {
+            return Characters.Where(c => c.World.Id == worldId).Select(c => c.CharacterId);
         }
 
         public static Account FindAccountById(uint id)
