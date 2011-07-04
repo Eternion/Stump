@@ -57,6 +57,7 @@ namespace Stump.Server.WorldServer
         public WorldServer()
             : base(Definitions.ConfigFilePath, Definitions.SchemaFilePath)
         {
+           
         }
 
         public override void Initialize()

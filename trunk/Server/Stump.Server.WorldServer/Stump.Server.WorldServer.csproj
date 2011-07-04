@@ -63,6 +63,7 @@
     <Compile Include="Database\WorldBaseRecord.cs" />
     <Compile Include="Database\WorldVersionRecord.cs" />
     <Compile Include="Database\World\Location.cs" />
+    <Compile Include="Database\World\Map.cs" />
     <Compile Include="Definitions.cs" />
     <Compile Include="Handlers\PredicatesDefinitions.cs" />
     <Compile Include="Handlers\WorldHandlerAttribute.cs" />
@@ -74,7 +75,27 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Core\IO\WorldConsole.cs" />
     <Compile Include="WorldServer.cs" />
+    <Compile Include="World\Actors\ContextActor.cs" />
+    <Compile Include="World\Actors\Fight\AIFighter.cs" />
+    <Compile Include="World\Actors\Fight\AlignedMonster.cs" />
+    <Compile Include="World\Actors\Fight\CharacterFighter.cs" />
+    <Compile Include="World\Actors\Fight\Monster.cs" />
+    <Compile Include="World\Actors\Fight\MutantFighter.cs" />
+    <Compile Include="World\Actors\Fight\NamedFighter.cs" />
+    <Compile Include="World\Actors\Fight\TaxCollectorFighter.cs" />
+    <Compile Include="World\Actors\RolePlay\Character.cs" />
+    <Compile Include="World\Actors\RolePlay\GroupMonster.cs" />
+    <Compile Include="World\Actors\RolePlay\Humanoid.cs" />
+    <Compile Include="World\Actors\RolePlay\Merchant.cs" />
+    <Compile Include="World\Actors\RolePlay\MountNpc.cs" />
+    <Compile Include="World\Actors\RolePlay\Mutant.cs" />
+    <Compile Include="World\Actors\RolePlay\NamedActor.cs" />
+    <Compile Include="World\Actors\RolePlay\Npc.cs" />
+    <Compile Include="World\Actors\RolePlay\Prism.cs" />
+    <Compile Include="World\Actors\RolePlay\RolePlayActor.cs" />
+    <Compile Include="World\Actors\RolePlay\TaxCollectorNpc.cs" />
     <Compile Include="World\Breeds\BreedManager.cs" />
+    <Compile Include="World\Map\Map.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">
@@ -102,7 +123,9 @@
       <Name>Stump.Server.BaseServer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="World\Position\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
