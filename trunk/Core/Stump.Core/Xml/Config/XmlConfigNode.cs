@@ -10,15 +10,36 @@ namespace Stump.Core.Xml.Config
     public class XmlConfigNode
     {
         private object m_newValue;
+        private string m_documentation;
 
         public XmlConfigNode(XmlNode node)
         {
             Node = node;
 
             Name = node.Attributes["name"] != null ? node.Attributes["name"].Value : "";
-            Type = node.Attributes["type"] != null ? node.Attributes["type"].Value : "";
+            Serialized = node.Attributes["serialized"] != null ? node.Attributes["serialized"].Value == "true" : false;
             ClassName = GetClassNameFromNode(node);
             Namespace = GetNamespaceFromNode(node);
+        }
+
+        public XmlConfigNode(FieldInfo field)
+        {
+            BindedField = field;
+
+            Name = field.Name;
+            Serialized = !field.FieldType.HasInterface(typeof (IConvertible)) || field.FieldType.IsEnum;
+            ClassName = field.DeclaringType.Name;
+            Namespace = field.DeclaringType.Namespace;
+        }
+
+        public XmlConfigNode(PropertyInfo property)
+        {
+            BindedProperty = property;
+
+            Name = property.Name;
+            Serialized = !property.PropertyType.HasInterface(typeof(IConvertible)) || property.PropertyType.IsEnum;
+            ClassName = property.DeclaringType.Name;
+            Namespace = property.DeclaringType.Namespace;
         }
 
         public XmlNode Node
@@ -57,10 +78,10 @@ namespace Stump.Core.Xml.Config
             private set;
         }
 
-        public string Type
-        {
-            get;
-            private set;
+        public bool Serialized 
+        { 
+            get; 
+            set;
         }
 
         public string Path
@@ -72,10 +93,17 @@ namespace Stump.Core.Xml.Config
         {
             get
             {
-                if (Node.PreviousSibling != null && Node.PreviousSibling.NodeType == XmlNodeType.Comment)
+                if (!string.IsNullOrEmpty(m_documentation))
+                    return m_documentation;
+
+                if (Node != null && Node.PreviousSibling != null && Node.PreviousSibling.NodeType == XmlNodeType.Comment)
                     return Node.PreviousSibling.Value;
 
                 return "";
+            }
+            set
+            {
+                m_documentation = value;
             }
         }
 
@@ -154,7 +182,7 @@ namespace Stump.Core.Xml.Config
                 return BindedProperty.GetValue(null, new object[0]);
             }
 
-            return null;
+            throw new Exception(string.Format("Cannot read the config node '{0}' because no member has been binded to it", Path));
         }
 
         public void SetValue(object value, bool alreadyRunning = false)

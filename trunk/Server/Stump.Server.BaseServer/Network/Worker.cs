@@ -1,12 +1,14 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Handler;
+using ThreadState = System.Threading.ThreadState;
 
 namespace Stump.Server.BaseServer.Network
 {
@@ -14,13 +16,14 @@ namespace Stump.Server.BaseServer.Network
     {
         #region Properties
 
-        private readonly List<Tuple<Message, double>> m_treatedMessage = new List<Tuple<Message, double>>(1000);
+        private readonly List<Tuple<Message, long>> m_treatedMessage = new List<Tuple<Message, long>>(1000);
 
 
         private bool m_paused;
         private DateTime m_startDate;
         private Thread m_thread;
         private bool m_wantToStop;
+        private Stopwatch m_stopWatch = new Stopwatch();
 
         public bool WantToStop
         {
@@ -46,7 +49,7 @@ namespace Stump.Server.BaseServer.Network
 
         public int TreatedMessageCount
         {
-            get { return TreatedMessage.Count; }
+            get { return m_treatedMessage.Count; }
         }
 
         public double TreatedMessageAverageTime
@@ -67,7 +70,7 @@ namespace Stump.Server.BaseServer.Network
             get { return m_thread.ThreadState; }
         }
 
-        public List<Tuple<Message, double>> TreatedMessage
+        public IEnumerable<Tuple<Message, long>> TreatedMessage
         {
             get { return m_treatedMessage; }
         }
@@ -89,21 +92,21 @@ namespace Stump.Server.BaseServer.Network
             {
                 if (!m_paused)
                 {
-                    Tuple<BaseClient, Message> tuple = ClientManager.Instance.MessageQueue.Dequeue();
+                    ClientMessage mess = ClientManager.Instance.MessageQueue.Dequeue();
 
                     if (Settings.EnableBenchmarking)
                     {
-                        var start = DateTime.Now;
+                        m_stopWatch.Restart();
 
-                        HandlerManager.Instance.Dispatch(tuple.Item1, tuple.Item2);
+                        HandlerManager.Instance.Dispatch(mess.Client, mess.Message);
 
-                        TreatedMessage.Add(new Tuple<Message, double>(tuple.Item2, DateTime.Now.Subtract(start).TotalMilliseconds));
+                        m_stopWatch.Stop();
+
+                        m_treatedMessage.Add(new Tuple<Message, long>(mess.Message,m_stopWatch.ElapsedMilliseconds));
                     }
                     else
                     {
-                        HandlerManager.Instance.Dispatch(tuple.Item1, tuple.Item2);
-
-                        Thread.Yield(); // switch thread
+                        HandlerManager.Instance.Dispatch(mess.Client, mess.Message);
                     }
                 }
                 else
@@ -122,11 +125,12 @@ namespace Stump.Server.BaseServer.Network
             result.AppendLine("State : " + m_thread.ThreadState);
             result.AppendLine("Start Date : " + m_startDate.ToLongTimeString());
             result.AppendLine("UpTime : " + UpTime);
-            result.AppendLine("Treated Message : " + TreatedMessage.Count);
-            if (TreatedMessage.Count != 0)
+            result.AppendLine("Treated Message : " + m_treatedMessage.Count);
+            if (m_treatedMessage.Count != 0)
             {
                 result.AppendLine("Average treatment : " + TreatedMessageAverageTime + " ms");
-                foreach (Tuple<Message, double> message in TreatedMessage)
+
+                foreach (var message in m_treatedMessage)
                     result.AppendLine(message.Item1.GetType().Name + " => " + message.Item2);
             }
             return result.ToString();

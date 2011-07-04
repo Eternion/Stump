@@ -12,7 +12,7 @@ namespace Stump.Server.BaseServer.Database
         public static IEnumerable<Type> GetTables(Assembly assembly, Type recordBaseType)
         {
             var types = assembly.GetTypes();
-            
+
             return types.Where(t => t.IsSubclassOfGeneric(recordBaseType));
         }
 
@@ -25,13 +25,26 @@ namespace Stump.Server.BaseServer.Database
         {
             var method = versionType.BaseType.BaseType.GetMethod("FindAll", Type.EmptyTypes);
 
-            var deleg = Delegate.CreateDelegate(typeof (Func<IEnumerable<IVersionRecord>>), method) as Func<IEnumerable<IVersionRecord>>;
+            if (method == null)
+                throw new Exception(string.Format("Can't find method 'FindAll' on type {0}", versionType.Name));
+
+            var deleg = Delegate.CreateDelegate(typeof(Func<IEnumerable<IVersionRecord>>), method) as Func<IEnumerable<IVersionRecord>>;
+
+            if (deleg == null)
+                throw new Exception(
+                    string.Format("Method 'FindAll' on type {0} doesn't return a IEnumerable<IVersionRecord>",
+                                  versionType.Name));
+
             return () => deleg().FirstOrDefault();
         }
 
         public static void CreateVersionRecord(Type versionType, uint revision)
         {
             var instance = Activator.CreateInstance(versionType) as IVersionRecord;
+
+            if (instance == null)
+                throw new Exception(string.Format("Type : {0} doesn't implement IVersionRecord", versionType.Name));
+
             instance.Revision = revision;
             instance.UpdateDate = DateTime.Now;
             instance.CreateAndFlush();
@@ -39,7 +52,12 @@ namespace Stump.Server.BaseServer.Database
 
         public static void DeleteVersionRecord(Type versionType)
         {
-            versionType.BaseType.BaseType.GetMethod("DeleteAll", Type.EmptyTypes).Invoke(null,null);
+            var method = versionType.BaseType.BaseType.GetMethod("DeleteAll", Type.EmptyTypes);
+
+            if (method == null)
+                throw new Exception(string.Format("Can't find method 'DeleteAll' on type {0}", versionType.Name));
+
+            method.Invoke(null, null);
         }
     }
 }

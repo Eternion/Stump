@@ -23,6 +23,12 @@ namespace Stump.Server.BaseServer.Initialization
             private set;
         }
 
+        public object Caller
+        {
+            get;
+            set;
+        }
+
         public bool Initialized
         {
             get;

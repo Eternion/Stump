@@ -34,7 +34,7 @@ namespace Stump.Core.Reflection
                     return instance = (T)Activator.CreateInstance(type);
 
                 ConstructorInfo ctorNonPublic = type.GetConstructor(
-                    BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[0], new ParameterModifier[0]);
+                    BindingFlags.Instance | BindingFlags.NonPublic, null, Type.EmptyTypes, new ParameterModifier[0]);
 
                 if (ctorNonPublic == null)
                 {

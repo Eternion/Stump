@@ -105,10 +105,10 @@ namespace Stump.Server.BaseServer
                 if (ConditionWaiter.WaitFor(() => !EnteringCommand && Console.KeyAvailable, delay * 1000, AskWaiterInterval))
                 {
                     // wait 'enter'
-                    var response = (char)Console.In.Peek();
+                    var response = Console.ReadLine();
 
                     AskingSomething = false;
-                    return response == 'y';
+                    return response == "y" || response == "yes";
                 }
 
                 AskingSomething = false;

@@ -27,13 +27,12 @@ namespace Stump.Core.Pool.Task
         {
             foreach (var type in asm.GetTypes())
             {
-                var m = type.GetMethods();
                 foreach (var method in type.GetMethods())
                 {
                     var attribute = method.GetCustomAttributes(typeof(Cyclic), false).FirstOrDefault() as Cyclic;
                     if (attribute != null)
                     {
-                        m_cyclicTasks.Add(new CyclicTask(Delegate.CreateDelegate(method.GetActionType(), method) as Action, attribute.Time,null, null));
+                        m_cyclicTasks.Add(new CyclicTask(Delegate.CreateDelegate(method.GetActionType(), method) as Action, attribute.Time, null, null));
                     }
                 }
             }

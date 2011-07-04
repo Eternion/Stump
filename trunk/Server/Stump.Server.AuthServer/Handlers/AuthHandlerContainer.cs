@@ -11,7 +11,7 @@ namespace Stump.Server.AuthServer.Handlers
     {
         private static readonly Dictionary<uint, Predicate<AuthClient>> Predicates = new Dictionary<uint, Predicate<AuthClient>>();
 
-        public void Predicate(uint messageId, Predicate<AuthClient> predicate)
+        protected void Predicate(uint messageId, Predicate<AuthClient> predicate)
         {
             Predicates.Add(messageId, predicate);
         }

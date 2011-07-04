@@ -10,6 +10,9 @@ using Stump.Core.Reflection;
 
 namespace Stump.Server.BaseServer.Network
 {
+    /// <summary>
+    /// Manage Workers
+    /// </summary>
     public sealed class WorkerManager : Singleton<WorkerManager>
     {
         /// <summary>
@@ -49,8 +52,9 @@ namespace Stump.Server.BaseServer.Network
         }
 
         /// <summary>
-        ///   Add a Worker
+        /// Add some Worker(s)
         /// </summary>
+        /// <param name="nbr">Number of workers to add</param>
         public void AddWorker(int nbr)
         {
             lock (m_syncRoot)
@@ -61,8 +65,9 @@ namespace Stump.Server.BaseServer.Network
         }
 
         /// <summary>
-        ///   Remove a Worker
+        /// Remove some Workers
         /// </summary>
+        /// <param name="nbr">Number of workers to remove</param>
         public void RemoveWorker(int nbr)
         {
             lock (m_syncRoot)
@@ -78,7 +83,7 @@ namespace Stump.Server.BaseServer.Network
         /// <summary>
         ///   Define Worker number
         /// </summary>
-        /// <param name = "number">number of Worker to set</param>
+        /// <param name = "number">Number of workers to set</param>
         public void SetWorkerNumber(int number)
         {
             if (m_workerList.Count == number)
@@ -90,14 +95,14 @@ namespace Stump.Server.BaseServer.Network
         }
 
         /// <summary>
-        ///   AutoAdapt Worker number with number of processor cores
+        /// AutoAdapt Worker number with number of processor cores.
         /// </summary>
+        /// <remarks>
+        /// Because a worker can fall in sleep status cause of I/O methods,
+        /// we create more workers than core count
+        /// </remarks>
         public void AdaptWorkerNumberWithProcessor()
         {
-            // note : we create more worker than core count 
-            // because a worker can fall in sleep status cause of IO methods
-            // these methods have to be executed in the IO thread
-
             if (Environment.ProcessorCount >= 4)
                 SetWorkerNumber(2 * Environment.ProcessorCount);
             else
@@ -105,9 +110,9 @@ namespace Stump.Server.BaseServer.Network
         }
 
         /// <summary>
-        ///   Stop Sleeped worker and return number of stopped Workers
+        /// Stop Sleeped worker and return number of stopped workers
         /// </summary>
-        /// <returns>number of stopped Worker</returns>
+        /// <returns>Number of stopped workers</returns>
         public int RemoveSleepedWorker()
         {
             lock (m_syncRoot)
@@ -116,7 +121,11 @@ namespace Stump.Server.BaseServer.Network
             }
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="orderByTime"></param>
+        /// <returns></returns>
         public string GetDetailedMessageTypes(bool orderByTime)
         {
             var result = new StringBuilder();

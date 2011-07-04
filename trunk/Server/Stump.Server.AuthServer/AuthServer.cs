@@ -24,6 +24,18 @@ namespace Stump.Server.AuthServer
 {
     public class AuthServer : ServerBase<AuthServer>
     {
+        /// <summary>
+        /// Current server adress
+        /// </summary>
+        [Variable]
+        public static string Host = "127.0.0.1";
+
+        /// <summary>
+        /// Server port
+        /// </summary>
+        [Variable]
+        public static int Port = 443;
+
         [Variable]
         public static DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
         {
@@ -69,8 +81,10 @@ namespace Stump.Server.AuthServer
                 WorldServerManager.Instance.Initialize();
                 WorldServerManager.Instance.Start();
 
-                logger.Info("Starting IPC Server..");
+                logger.Info("Initialize IPC Server..");
                 IpcServer.Instance.Initialize();
+
+                InitializationManager.InitializeAll();
             }
             catch (Exception ex)
             {
@@ -88,10 +102,13 @@ namespace Stump.Server.AuthServer
 
         public override void Start()
         {
+            base.Start();
+
             logger.Info("Starting Console Handler Interface...");
             ConsoleInterface.Start();
 
-            base.Start();
+            logger.Info("Start listening on port : " + Port + "...");
+            ClientManager.Start(Host, Port);
         }
 
         public override void OnShutdown()

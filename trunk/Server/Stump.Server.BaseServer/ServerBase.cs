@@ -15,6 +15,7 @@ using Stump.Core.Xml.Config;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Handler;
+using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.BaseServer.Plugins;
 
@@ -24,17 +25,6 @@ namespace Stump.Server.BaseServer
     public abstract class ServerBase
     {
         internal static ServerBase InstanceAsBase;
-
-        public abstract void Shutdown();
-    }
-
-    public abstract class ServerBase<T> : ServerBase
-        where T : class
-    {
-        /// <summary>
-        ///   Class singleton
-        /// </summary>
-        public static T Instance;
 
         protected Dictionary<string, Assembly> LoadedAssemblies;
         protected Logger logger;
@@ -111,6 +101,12 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
+        public InitializationManager InitializationManager
+        {
+            get;
+            protected set;
+        }
+
         public PluginManager PluginManager
         {
             get;
@@ -126,7 +122,6 @@ namespace Stump.Server.BaseServer
         public virtual void Initialize()
         {
             InstanceAsBase = this;
-            Instance = this as T;
 
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
             TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
@@ -155,14 +150,13 @@ namespace Stump.Server.BaseServer
             FileWatcherManager.RegisterFileModification
                 (ConfigFilePath,
                  () =>
+                 {
+                     if (ConsoleInterface.AskAndWait("Config has been modified, do you want to reload it ?", 20))
                      {
-                         if (ConsoleInterface.AskAndWait("Config has been modified, do you want to reload it ?", 20))
-                         {
-                             Config = new XmlConfig(ConfigFilePath, SchemaFilePath);
-                             Config.Reload();
-                             logger.Warn("Config has been reloaded sucessfully");
-                         }
-                     });
+                         Config.Reload();
+                         logger.Warn("Config has been reloaded sucessfully");
+                     }
+                 });
 
             logger.Info("Initialize Task Pool");
             TaskPool = new TaskPool();
@@ -180,7 +174,7 @@ namespace Stump.Server.BaseServer
 
 
             if (Settings.InactivityDisconnectionTime.HasValue)
-                TaskPool.RegisterCyclicTask(DisconnectAfkClient, Settings.InactivityDisconnectionTime.Value/4, null, null);
+                TaskPool.RegisterCyclicTask(DisconnectAfkClient, Settings.InactivityDisconnectionTime.Value / 4, null, null);
 
             ClientManager.ClientConnected += OnClientConnected;
             ClientManager.ClientDisconnected += OnClientDisconnected;
@@ -188,6 +182,9 @@ namespace Stump.Server.BaseServer
             PluginManager = PluginManager.Instance;
             PluginManager.PluginAdded += OnPluginAdded;
             PluginManager.PluginRemoved += OnPluginRemoved;
+
+            InitializationManager = InitializationManager.Instance;
+            InitializationManager.AddAssemblies(AppDomain.CurrentDomain.GetAssemblies());
         }
 
         /// <summary>
@@ -246,11 +243,11 @@ namespace Stump.Server.BaseServer
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs args)
         {
             logger.Fatal(
-                ( args.IsTerminating ? "Application has crashed. An Unhandled Exception has been thrown :\r\n" : "" ) +
-                string.Format(" Unhandled Exception: {0}\r\n", ( (Exception)args.ExceptionObject ).Message) +
-                string.Format(" Source: {0} -> {1}\r\n", ( (Exception)args.ExceptionObject ).Source,
-                         ((Exception) args.ExceptionObject).TargetSite) +
-                string.Format(" Stack Trace:\r\n{0}", ( (Exception)args.ExceptionObject ).StackTrace));
+                (args.IsTerminating ? "Application has crashed. An Unhandled Exception has been thrown :\r\n" : "") +
+                string.Format(" Unhandled Exception: {0}\r\n", ((Exception)args.ExceptionObject).Message) +
+                string.Format(" Source: {0} -> {1}\r\n", ((Exception)args.ExceptionObject).Source,
+                         ((Exception)args.ExceptionObject).TargetSite) +
+                string.Format(" Stack Trace:\r\n{0}", ((Exception)args.ExceptionObject).StackTrace));
 
             if (args.IsTerminating)
                 Shutdown();
@@ -270,17 +267,12 @@ namespace Stump.Server.BaseServer
             logger.Info("Loading Plugins...");
             PluginManager.Instance.LoadAllPlugins();
 
-            logger.Info("Start listening on port : " + ClientManager.Port + "...");
-            ClientManager.Start();
-
             Running = true;
         }
 
         public virtual void Update()
         {
             TaskPool.ProcessUpdate();
-
-            Thread.Yield();
         }
 
         private void DisconnectAfkClient()
@@ -299,7 +291,7 @@ namespace Stump.Server.BaseServer
 
         public abstract void OnShutdown();
 
-        public override void Shutdown()
+        public void Shutdown()
         {
             lock (this)
             {
@@ -317,7 +309,7 @@ namespace Stump.Server.BaseServer
                 Console.WriteLine("Application is now terminated. Wait " + Definitions.ExitWaitTime +
                                   " seconds to exit ... or press any key to cancel");
 
-                if (ConditionWaiter.WaitFor(() => Console.KeyAvailable, Definitions.ExitWaitTime*1000, 20))
+                if (ConditionWaiter.WaitFor(() => Console.KeyAvailable, Definitions.ExitWaitTime * 1000, 20))
                 {
                     Console.ReadKey(false);
 
@@ -329,6 +321,27 @@ namespace Stump.Server.BaseServer
 
                 Environment.Exit(0);
             }
+        }
+    }
+
+    public abstract class ServerBase<T> : ServerBase
+        where T : class
+    {
+        /// <summary>
+        ///   Class singleton
+        /// </summary>
+        public static T Instance;
+
+
+        protected ServerBase(string configFile, string schemaFile)
+            : base(configFile, schemaFile)
+        {
+        }
+
+        public override void Initialize()
+        {
+            Instance = this as T;
+            base.Initialize();
         }
     }
 }

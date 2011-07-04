@@ -1,53 +1,66 @@
 using System;
 using System.Collections.Generic;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace Stump.Core.Xml.Docs
 {
-	[XmlRoot("doc")]
-	public class DotNetDocumentation : XmlFile<DotNetDocumentation>
-	{
-		private static readonly Dictionary<char, MemberType> TypeMap = new Dictionary<char, MemberType>();
+    [XmlRoot("doc")]
+    public class DotNetDocumentation
+    {
+        private static readonly Dictionary<char, MemberType> TypeMap = new Dictionary<char, MemberType>();
 
-		static DotNetDocumentation()
-		{
-			TypeMap.Add('T', MemberType.Type);
-			TypeMap.Add('F', MemberType.Field);
-			TypeMap.Add('P', MemberType.Property);
-			TypeMap.Add('M', MemberType.Method);
-			TypeMap.Add('E', MemberType.Event);
-		}
+        public static DotNetDocumentation Load(string filename)
+        {
+            DotNetDocumentation cfg;
+            var ser = new XmlSerializer(typeof(DotNetDocumentation));
+            using (var rdr = XmlReader.Create(filename, new XmlReaderSettings()))
+            {
+                cfg = (DotNetDocumentation)ser.Deserialize(rdr);
+            }
 
-		public static MemberType GetMemberType(char shortcut)
-		{
-			MemberType type;
-			if (!TypeMap.TryGetValue(shortcut, out type))
-			{
-				throw new Exception("Undefined Type-shortcut: " + shortcut);
-			}
+            return cfg;
+        }
 
-			return type;
-		}
+        public DotNetDocumentation()
+        {
 
-		protected override void OnLoad()
-		{
+        }
 
-		}
+        static DotNetDocumentation()
+        {
+            TypeMap.Add('T', MemberType.Type);
+            TypeMap.Add('F', MemberType.Field);
+            TypeMap.Add('P', MemberType.Property);
+            TypeMap.Add('M', MemberType.Method);
+            TypeMap.Add('E', MemberType.Event);
+        }
 
-		[XmlElement("assembly")]
+        public static MemberType GetMemberType(char shortcut)
+        {
+            MemberType type;
+            if (!TypeMap.TryGetValue(shortcut, out type))
+            {
+                throw new Exception("Undefined Type-shortcut: " + shortcut);
+            }
+
+            return type;
+        }
+
+        [XmlElement("assembly")]
         public AssemblyInfo Assembly
-		{
-			get;
-			set;
-		}
+        {
+            get;
+            set;
+        }
 
-		[XmlArray("members")]
-		[XmlArrayItem("member")]
-		public DocEntry[] Members
-		{
-			get;
-			set;
-		}
+        [XmlArray("members")]
+        [XmlArrayItem("member")]
+        public DocEntry[] Members
+        {
+            get;
+            set;
+        }
 
         public class AssemblyInfo
         {
