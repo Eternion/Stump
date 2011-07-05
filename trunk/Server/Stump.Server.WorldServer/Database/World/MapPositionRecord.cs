@@ -74,7 +74,6 @@ namespace Stump.Server.WorldServer.Database.World
         /// Internal Only. Do not use
         /// </summary>
         [D2OField("subAreaId")]
-        //[Property("SubAreaId")] // does it work ?
         public int SubAreaId
         {
             get;

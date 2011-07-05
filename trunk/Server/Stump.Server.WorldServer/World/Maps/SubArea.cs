@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Stump.Server.WorldServer.Database.World;
 
-namespace Stump.Server.WorldServer.World.Map
+namespace Stump.Server.WorldServer.World.Maps
 {
     public class SubArea
     {
@@ -22,15 +22,25 @@ namespace Stump.Server.WorldServer.World.Map
         {
             get { return m_maps; }
         }
+
+        public Area Area
+        {
+            get;
+            internal set;
+        }
         
         internal void AddMap(Map map)
         {
             m_maps.Add(map);
+
+            map.SubArea = this;
         }
 
         internal void RemoveMap(Map map)
         {
             m_maps.Remove(map);
+
+            map.SubArea = null;
         }
     }
 }

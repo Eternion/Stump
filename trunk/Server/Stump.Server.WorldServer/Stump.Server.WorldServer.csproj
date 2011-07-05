@@ -88,6 +88,7 @@
     <Compile Include="World\Actors\Fight\AIFighter.cs" />
     <Compile Include="World\Actors\Fight\AlignedMonster.cs" />
     <Compile Include="World\Actors\Fight\CharacterFighter.cs" />
+    <Compile Include="World\Actors\Fight\FightActor.cs" />
     <Compile Include="World\Actors\Fight\Monster.cs" />
     <Compile Include="World\Actors\Fight\MutantFighter.cs" />
     <Compile Include="World\Actors\Fight\NamedFighter.cs" />
@@ -104,11 +105,13 @@
     <Compile Include="World\Actors\RolePlay\RolePlayActor.cs" />
     <Compile Include="World\Actors\RolePlay\TaxCollectorNpc.cs" />
     <Compile Include="World\Breeds\BreedManager.cs" />
-    <Compile Include="World\Map\Area.cs" />
-    <Compile Include="World\Map\IContext.cs" />
-    <Compile Include="World\Map\Map.cs" />
-    <Compile Include="World\Map\SubArea.cs" />
-    <Compile Include="World\Map\SuperArea.cs" />
+    <Compile Include="World\Maps\Area.cs" />
+    <Compile Include="World\Maps\Cells\MapPoint.cs" />
+    <Compile Include="World\Maps\Cells\ObjectPosition.cs" />
+    <Compile Include="World\Maps\IContext.cs" />
+    <Compile Include="World\Maps\Map.cs" />
+    <Compile Include="World\Maps\SubArea.cs" />
+    <Compile Include="World\Maps\SuperArea.cs" />
     <Compile Include="World\World.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -137,9 +140,7 @@
       <Name>Stump.Server.BaseServer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="World\Map\Cell\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

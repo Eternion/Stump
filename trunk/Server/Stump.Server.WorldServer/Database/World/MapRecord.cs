@@ -4,7 +4,7 @@ using Castle.ActiveRecord;
 namespace Stump.Server.WorldServer.Database.World
 {
     [ActiveRecord("maps")]
-    public class MapRecord
+    public class MapRecord : WorldBaseRecord<MapRecord>
     {
         [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
         public int Id
@@ -63,14 +63,8 @@ namespace Stump.Server.WorldServer.Database.World
 
         public bool Outdoor
         {
-            get
-            {
-                return Position.Outdoor;
-            }
-            set
-            {
-                Position.Outdoor = value;
-            }
+            get { return Position.Outdoor; }
+            set { Position.Outdoor = value; }
         }
 
         [Property]

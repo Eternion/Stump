@@ -8,12 +8,14 @@ using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.World.Actors.RolePlay;
+using Stump.Server.WorldServer.World.Maps.Cells;
 
-namespace Stump.Server.WorldServer.World.Map
+namespace Stump.Server.WorldServer.World.Maps
 {
     public class Map : IContext
     {
         #region Events
+
         public event Action<Map, RolePlayActor> ActorEnter;
 
         private void NotifyActorEnter(RolePlayActor actor)
@@ -28,11 +30,28 @@ namespace Stump.Server.WorldServer.World.Map
         {
             Action<Map, RolePlayActor> handler = ActorLeave;
             if (handler != null) handler(this, actor);
-        } 
+        }
+
         #endregion
 
         protected internal MapRecord m_record;
         private readonly ConcurrentDictionary<int, RolePlayActor> m_actors = new ConcurrentDictionary<int, RolePlayActor>();
+
+        /// <summary>
+        /// Array that associate a cell to a map point
+        /// </summary>
+        public static MapPoint[] PointsGrid;
+
+        static Map()
+        {
+            PointsGrid = new MapPoint[MapPoint.MapSize];
+
+            for (ushort i = 0; i < MapPoint.MapSize; i++)
+            {
+                // i is a cell
+                PointsGrid[i] = new MapPoint(i);
+            }
+        }
 
         public Map(MapRecord record)
         {
@@ -40,12 +59,10 @@ namespace Stump.Server.WorldServer.World.Map
         }
 
         #region Properties
+
         public int Id
         {
-            get
-            {
-                return m_record.Id;
-            }
+            get { return m_record.Id; }
         }
 
         public Cell[] Cells
@@ -61,127 +78,71 @@ namespace Stump.Server.WorldServer.World.Map
 
         public uint RelativeId
         {
-            get
-            {
-                return m_record.RelativeId;
-            }
+            get { return m_record.RelativeId; }
         }
 
         public int MapType
         {
-            get
-            {
-                return m_record.MapType;
-            }
+            get { return m_record.MapType; }
         }
 
         public Point Position
         {
-            get
-            {
-                return m_record.Position.Pos;
-            }
+            get { return m_record.Position.Pos; }
         }
 
         public bool Outdoor
         {
-            get
-            {
-                return m_record.Outdoor;
-            }
+            get { return m_record.Outdoor; }
         }
 
         public int TopNeighbourId
         {
-            get
-            {
-                return m_record.TopNeighbourId;
-            }
-            set
-            {
-                m_record.TopNeighbourId = value;
-            }
+            get { return m_record.TopNeighbourId; }
+            set { m_record.TopNeighbourId = value; }
         }
 
         public int BottomNeighbourId
         {
-            get
-            {
-                return m_record.BottomNeighbourId;
-            }
-            set
-            {
-                m_record.BottomNeighbourId = value;
-            }
+            get { return m_record.BottomNeighbourId; }
+            set { m_record.BottomNeighbourId = value; }
         }
 
         public int LeftNeighbourId
         {
-            get
-            {
-                return m_record.LeftNeighbourId;
-            }
-            set
-            {
-                m_record.LeftNeighbourId = value;
-            }
+            get { return m_record.LeftNeighbourId; }
+            set { m_record.LeftNeighbourId = value; }
         }
 
         public int RightNeighbourId
         {
-            get
-            {
-                return m_record.RightNeighbourId;
-            }
-            set
-            {
-                m_record.RightNeighbourId = value;
-            }
+            get { return m_record.RightNeighbourId; }
+            set { m_record.RightNeighbourId = value; }
         }
 
         public int ShadowBonusOnEntities
         {
-            get
-            {
-                return m_record.ShadowBonusOnEntities;
-            }
-            set
-            {
-                m_record.ShadowBonusOnEntities = value;
-            }
+            get { return m_record.ShadowBonusOnEntities; }
+            set { m_record.ShadowBonusOnEntities = value; }
         }
 
         public bool UseLowpassFilter
         {
-            get
-            {
-                return m_record.UseLowpassFilter;
-            }
-            set
-            {
-                m_record.UseLowpassFilter = value;
-            }
+            get { return m_record.UseLowpassFilter; }
+            set { m_record.UseLowpassFilter = value; }
         }
 
         public bool UseReverb
         {
-            get
-            {
-                return m_record.UseReverb;
-            }
-            set
-            {
-                m_record.UseReverb = value;
-            }
+            get { return m_record.UseReverb; }
+            set { m_record.UseReverb = value; }
         }
 
         public int PresetId
         {
-            get
-            {
-                return m_record.PresetId;
-            }
-        } 
+            get { return m_record.PresetId; }
+        }
+
         #endregion
 
         public void Enter(RolePlayActor actor)
@@ -205,6 +166,7 @@ namespace Stump.Server.WorldServer.World.Map
         }
 
         #region Gets
+
         public T GetActor<T>(int id)
             where T : RolePlayActor
         {
@@ -225,7 +187,7 @@ namespace Stump.Server.WorldServer.World.Map
         public IEnumerable<T> GetActors<T>(Predicate<T> predicate)
         {
             return m_actors.OfType<T>();
-        } 
+        }
 
         #endregion
 
@@ -248,6 +210,7 @@ namespace Stump.Server.WorldServer.World.Map
         }
 
         #region MapComplementaryInformationsDataMessage
+
         private ObjectValidator<MapComplementaryInformationsDataMessage> m_mapComplementaryInformationsDataMessage;
 
         private MapComplementaryInformationsDataMessage BuildMapComplementaryInformationsDataMessage()
@@ -267,7 +230,8 @@ namespace Stump.Server.WorldServer.World.Map
         public MapComplementaryInformationsDataMessage GetMapComplementaryInformationsDataMessage()
         {
             return m_mapComplementaryInformationsDataMessage;
-        } 
+        }
+
         #endregion
 
         #endregion

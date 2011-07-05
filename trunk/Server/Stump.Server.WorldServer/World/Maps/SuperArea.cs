@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Stump.Server.WorldServer.Database.World;
 
-namespace Stump.Server.WorldServer.World.Map
+namespace Stump.Server.WorldServer.World.Maps
 {
     public class SuperArea
     {
@@ -21,11 +21,15 @@ namespace Stump.Server.WorldServer.World.Map
         internal void AddArea(Area area)
         {
             m_areas.Add(area);
+
+            area.SuperArea = this;
         }
 
         internal void RemoveArea(Area area)
         {
             m_areas.Remove(area);
+
+            area.SuperArea = null;
         }
     }
 }
