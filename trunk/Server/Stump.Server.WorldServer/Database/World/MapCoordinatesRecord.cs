@@ -7,7 +7,7 @@ using Stump.DofusProtocol.D2oClasses.Tool;
 namespace Stump.Server.WorldServer.Database.World
 {
     [Serializable]
-    [ActiveRecord("map_coordinates")]
+    [ActiveRecord("maps_coordinates")]
     [D2OClass("MapCoordinates", "com.ankamagames.dofus.datacenter.world")]
     public sealed class MapCoordinateRecord : WorldBaseRecord<MapCoordinateRecord>
     {

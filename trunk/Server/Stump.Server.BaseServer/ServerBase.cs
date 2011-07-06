@@ -28,6 +28,7 @@ namespace Stump.Server.BaseServer
 
         protected Dictionary<string, Assembly> LoadedAssemblies;
         protected Logger logger;
+        private bool m_ignoreReload;
 
         protected ServerBase(string configFile, string schemaFile)
         {
@@ -95,7 +96,7 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
-        public TaskPool TaskPool
+        public TaskPool IOTaskPool
         {
             get;
             protected set;
@@ -151,16 +152,18 @@ namespace Stump.Server.BaseServer
                 (ConfigFilePath,
                  () =>
                  {
-                     if (ConsoleInterface.AskAndWait("Config has been modified, do you want to reload it ?", 20))
+                     if (!m_ignoreReload && ConsoleInterface.AskAndWait("Config has been modified, do you want to reload it ?", 20))
                      {
                          Config.Reload();
                          logger.Warn("Config has been reloaded sucessfully");
                      }
+
+                     m_ignoreReload = false;
                  });
 
             logger.Info("Initialize Task Pool");
-            TaskPool = new TaskPool();
-            TaskPool.Initialize(Assembly.GetCallingAssembly());
+            IOTaskPool = new TaskPool();
+            IOTaskPool.Initialize(Assembly.GetCallingAssembly());
 
             CommandManager = CommandManager.Instance;
             CommandManager.RegisterAll(Assembly.GetExecutingAssembly());
@@ -174,7 +177,7 @@ namespace Stump.Server.BaseServer
 
 
             if (Settings.InactivityDisconnectionTime.HasValue)
-                TaskPool.RegisterCyclicTask(DisconnectAfkClient, Settings.InactivityDisconnectionTime.Value / 4, null, null);
+                IOTaskPool.RegisterCyclicTask(DisconnectAfkClient, Settings.InactivityDisconnectionTime.Value / 4, null, null);
 
             ClientManager.ClientConnected += OnClientConnected;
             ClientManager.ClientDisconnected += OnClientDisconnected;
@@ -270,7 +273,16 @@ namespace Stump.Server.BaseServer
 
         public virtual void Update()
         {
-            TaskPool.ProcessUpdate();
+            IOTaskPool.ProcessUpdate();
+        }
+
+        /// <summary>
+        /// Allow the server to ignore the next modification of the config file.
+        /// Use it when you save the config
+        /// </summary>
+        public void IgnoreNextConfigReload()
+        {
+            m_ignoreReload = true;
         }
 
         private void DisconnectAfkClient()

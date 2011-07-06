@@ -10,6 +10,7 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.World.Actors.RolePlay;
+using Stump.Server.WorldServer.World.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.World.Maps;
 
 namespace Stump.Server.WorldServer.World

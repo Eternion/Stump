@@ -78,11 +78,10 @@ namespace Stump.Server.BaseServer.Network
                 if (LengthBytesCount < 0 || LengthBytesCount > 3)
                     throw new Exception("Malformated Message Header, invalid bytes number to read message length (inferior to 0 or superior to 3)");
 
-                if (LengthBytesCount == 0)
-                    Length = 0;
+                Length = 0;
                 
                 // 3..0 or 2..0 or 1..0
-                for (int i = LengthBytesCount.Value - 1; i <= 0; i--)
+                for (int i = LengthBytesCount.Value - 1; i >= 0; i--)
                 {
                     Length |= reader.ReadByte() << (i * 8);
                 }

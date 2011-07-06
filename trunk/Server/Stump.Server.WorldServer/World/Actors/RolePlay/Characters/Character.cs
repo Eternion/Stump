@@ -1,18 +1,25 @@
-using System;
 using Stump.Core.Cache;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Characters;
 
-namespace Stump.Server.WorldServer.World.Actors.RolePlay
+namespace Stump.Server.WorldServer.World.Actors.RolePlay.Characters
 {
     public sealed class Character : Humanoid
     {
-        protected internal CharacterRecord m_record;
+        private readonly CharacterRecord m_record;
 
-        public Character(CharacterRecord record)
+        public Character(CharacterRecord record, WorldClient client)
         {
             m_record = record;
+            Client = client;
+        }
+
+        public WorldClient Client
+        {
+            get;
+            private set;
         }
 
         public override int Id
@@ -20,6 +27,27 @@ namespace Stump.Server.WorldServer.World.Actors.RolePlay
             get { return m_record.Id; }
             protected set { m_record.Id = value; }
         }
+
+        public PlayableBreedEnum Breed
+        {
+            get;
+            set;
+        }
+
+        public SexTypeEnum Sex
+        {
+            get;
+            set;
+        }
+
+        #region Stats
+        public byte Level
+        {
+            get;
+            set;
+        }
+
+        #endregion
 
         #region Alignment
 
@@ -89,7 +117,7 @@ namespace Stump.Server.WorldServer.World.Actors.RolePlay
 
         public void SaveLater()
         {
-            WorldServer.Instance.TaskPool.EnqueueTask(SaveNow);
+            WorldServer.Instance.IOTaskPool.EnqueueTask(SaveNow);
         }
 
         public void SaveNow()
@@ -141,6 +169,22 @@ namespace Stump.Server.WorldServer.World.Actors.RolePlay
         public ActorAlignmentInformations GetActorAlignmentInformations()
         {
             return m_actorAlignmentInformations;
+        }
+
+        #endregion
+
+        #region CharacterBaseInformations
+
+        public CharacterBaseInformations GetCharacterBaseInformations()
+        {
+            return new CharacterBaseInformations(
+                Id,
+                Level,
+                Name,
+                Look,
+                (byte) Breed,
+                Sex == SexTypeEnum.SEX_FEMALE);
+                
         }
 
         #endregion

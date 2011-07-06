@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Attributes;
 using Stump.Core.Reflection;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Breeds;
 
@@ -9,7 +11,37 @@ namespace Stump.Server.WorldServer.World.Breeds
 {
     public class BreedManager : Singleton<BreedManager>
     {
-        private readonly Dictionary<int, Breed> m_breeds = new Dictionary<int, Breed>();
+        /// <summary>
+        /// List of available breeds
+        /// </summary>
+        [Variable]
+        public readonly static List<PlayableBreedEnum> AvailableBreeds = new List<PlayableBreedEnum>
+            {
+                PlayableBreedEnum.Feca,
+                PlayableBreedEnum.Osamodas,
+                PlayableBreedEnum.Enutrof,
+                PlayableBreedEnum.Sram,
+                PlayableBreedEnum.Xelor,
+                PlayableBreedEnum.Ecaflip,
+                PlayableBreedEnum.Eniripsa,
+                PlayableBreedEnum.Iop,
+                PlayableBreedEnum.Cra,
+                PlayableBreedEnum.Sadida,
+                PlayableBreedEnum.Sacrieur,
+                PlayableBreedEnum.Pandawa,
+                PlayableBreedEnum.Roublard,
+                PlayableBreedEnum.Zobal,
+            };
+
+        public uint AvailableBreedsFlags
+        {
+            get
+            {
+                return (uint)AvailableBreeds.Aggregate(0, (current, breedEnum) => current | ( 1 << (int)breedEnum ));
+            }
+        }
+
+            private readonly Dictionary<int, Breed> m_breeds = new Dictionary<int, Breed>();
 
         [Initialization(InitializationPass.Third)]
         public void Initialize()
@@ -18,6 +50,23 @@ namespace Stump.Server.WorldServer.World.Breeds
             {
                 m_breeds.Add(breed.Id, breed);
             }
+        }
+
+        /// <summary>
+        /// Get the breed associated to the given id
+        /// </summary>
+        /// <param name="id"></param>
+        public Breed GetBreed(int id)
+        {
+            Breed breed;
+            m_breeds.TryGetValue(id, out breed);
+
+            return breed;
+        }
+
+        public bool IsBreedAvailable(int id)
+        {
+            return AvailableBreeds.Contains((PlayableBreedEnum)id);
         }
 
         /// <summary>

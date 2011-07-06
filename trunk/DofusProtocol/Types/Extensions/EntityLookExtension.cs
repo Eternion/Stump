@@ -17,7 +17,17 @@ namespace Stump.DofusProtocol.Types.Extensions
             return new Tuple<int, int>(index, color);
         }
 
-        
+        private static int ParseIndexedColor(string str)
+        {
+            int signPos = str.IndexOf("=");
+            bool hexNumber = str[signPos + 1] == '#';
+
+            int index = int.Parse(str.Substring(0, signPos));
+            int color = int.Parse(str.Substring(signPos + (hexNumber ? 2 : 1), str.Length - (signPos + (hexNumber ? 2 : 1))),
+                                  hexNumber ? NumberStyles.HexNumber : NumberStyles.Integer);
+
+            return (index << 24) | color;
+        }
 
         public static EntityLook Copy(this EntityLook entityLook)
         {
@@ -175,18 +185,6 @@ namespace Stump.DofusProtocol.Types.Extensions
             }
 
             return new EntityLook(bonesId, skins, colors, scales, subEntities.ToArray());
-        }
-
-        private static int ParseIndexedColor(string str)
-        {
-            int signPos = str.IndexOf("=");
-            bool hexNumber = str[signPos + 1] == '#';
-
-            int index = int.Parse(str.Substring(0, signPos));
-            int color = int.Parse(str.Substring(signPos + (hexNumber ? 2 : 1), str.Length - (signPos + (hexNumber ? 2 : 1))),
-                                  hexNumber ? NumberStyles.HexNumber : NumberStyles.Integer);
-
-            return (index << 24) | color;
         }
     }
 }

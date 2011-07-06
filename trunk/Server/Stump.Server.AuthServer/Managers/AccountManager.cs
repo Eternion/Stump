@@ -80,7 +80,7 @@ namespace Stump.Server.AuthServer.Managers
                 CharacterId = characterId
             };
 
-            character.CreateAndFlush();
+            character.Create();
 
             return character;
         }
@@ -94,7 +94,7 @@ namespace Stump.Server.AuthServer.Managers
                 return false;
 
             account.Characters.Add(character);
-            account.Save();
+            account.Update();
 
             return true;
         }
@@ -141,12 +141,15 @@ namespace Stump.Server.AuthServer.Managers
                 client.Disconnect();
             }
 
-            var lastWorld = account.LastConnection.World;
-
-            // diconnect clients from last game server
-            if (IpcServer.Instance.GetIpcClient(lastWorld.Id).DisconnectConnectedAccount(account.Id))
+            if (account.LastConnection != null)
             {
-                return true;
+                var lastWorld = account.LastConnection.World;
+
+                // diconnect clients from last game server
+                if (IpcServer.Instance.GetIpcClient(lastWorld.Id).DisconnectConnectedAccount(account.Id))
+                {
+                    return true;
+                }
             }
 
             return clients.Count() > 0;

@@ -19,8 +19,6 @@ namespace Stump.GUI.AuthConsole
                 while (server.Running)
                 {
                     server.Update();
-
-                    Thread.Sleep(1);
                 }
             }
             catch (Exception e)

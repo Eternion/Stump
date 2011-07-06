@@ -6,7 +6,7 @@ using Stump.DofusProtocol.D2oClasses.Tool;
 namespace Stump.Server.WorldServer.Database.World
 {
     [Serializable]
-    [ActiveRecord("hint")]
+    [ActiveRecord("hints")]
     [D2OClass("Hint", "com.ankamagames.dofus.datacenter.world")]
     public sealed class HintRecord : WorldBaseRecord<HintRecord>
     {

@@ -8,7 +8,10 @@ namespace Stump.Server.WorldServer.World.Actors
     {
         protected ContextActor()
         {
+// ReSharper disable DoNotCallOverridableMethodsInConstructor
             Position.PositionChanged += OnPositionChanged;
+            InitializeValidators();
+// ReSharper restore DoNotCallOverridableMethodsInConstructor
         }
 
         private int m_id;
@@ -80,7 +83,7 @@ namespace Stump.Server.WorldServer.World.Actors
 
         protected ObjectValidator<GameContextActorInformations> m_gameContextActorInformations;
 
-        protected GameContextActorInformations BuildGameContextActorInformations()
+        protected virtual GameContextActorInformations BuildGameContextActorInformations()
         {
             return new GameContextActorInformations(
                 Id,

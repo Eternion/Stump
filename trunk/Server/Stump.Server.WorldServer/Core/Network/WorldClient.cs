@@ -1,6 +1,11 @@
-﻿using System.Net.Sockets;
+﻿using System.Collections.Generic;
+using System.Net.Sockets;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
+using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.World.Actors.RolePlay;
+using Stump.Server.WorldServer.World.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Core.Network
 {
@@ -21,17 +26,17 @@ namespace Stump.Server.WorldServer.Core.Network
             set;
         }
 
-        /*public AccountRecord Account
+        public AccountData Account
         {
             get;
             set;
         }
 
-        public WorldAccountRecord WorldAccount
+        /*public WorldAccountRecord WorldAccount
         {
             get;
             set;
-        }
+        }*/
 
         public List<CharacterRecord> Characters
         {
@@ -43,21 +48,21 @@ namespace Stump.Server.WorldServer.Core.Network
         {
             get;
             set;
-        }*/
+        }
 
         protected override void OnDisconnect()
         {
-            /*IpcAccessor.Instance.ProxyObject.DecrementConnectedChars(WorldServer.ServerInformation);
+            //IpcAccessor.Instance.ProxyObject.DecrementConnectedChars(WorldServer.ServerInformation);
             if (ActiveCharacter != null)
             {
-                ActiveCharacter.LogOut();
-            }*/
+                //ActiveCharacter.LogOut();
+            }
             base.OnDisconnect();
         }
 
-        /*public override string ToString()
+        public override string ToString()
         {
             return base.ToString() + (Account != null ? " <" + Account.Login + ">" : "");
-        }*/
+        }
     }
 }

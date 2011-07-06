@@ -132,7 +132,7 @@ namespace Stump.Server.BaseServer.Network
             }
             catch (Exception ex)
             {
-                logger.Error("Forced disconnection " + ToString() + " : " + ex.Message);
+                logger.Error("Forced disconnection " + ToString() + " : " + ex);
 
                 Disconnect();
             }

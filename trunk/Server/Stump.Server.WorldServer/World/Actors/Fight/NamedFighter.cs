@@ -1,6 +1,6 @@
 namespace Stump.Server.WorldServer.World.Actors.Fight
 {
-    public class NamedFighter
+    public abstract class NamedFighter
     {
         
     }

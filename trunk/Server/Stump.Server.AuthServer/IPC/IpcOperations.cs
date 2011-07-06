@@ -109,7 +109,7 @@ namespace Stump.Server.AuthServer.IPC
             account.SecretAnswer = modifiedRecord.SecretAnswer;
             account.Role = modifiedRecord.Role;
 
-            account.UpdateAndFlush();
+            account.Update();
 
             return true;
         }
@@ -178,19 +178,6 @@ namespace Stump.Server.AuthServer.IPC
                 return false;
 
             return AccountManager.Instance.DeleteAccountCharacter(account, world, characterId);
-        }
-
-        public int GetDeletedCharactersNumber(WorldServerData wsi, uint accountId)
-        {
-            if (!Manager.CheckWorldAccess(wsi))
-                return 0;
-
-            var account = Account.FindAccountById(accountId);
-
-            if (account == null)
-                return 0;
-
-            return account.DeletedCharacters.Count;
         }
 
         public bool BlamAccount(WorldServerData wsi, uint victimAccountId, uint bannerAccountId, TimeSpan duration, string reason)

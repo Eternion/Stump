@@ -8,7 +8,7 @@ namespace Stump.Core.Extensions
 {
     public static class StringExtensions
     {
-        public static string ToUpperFirstLetter(this string source)
+        public static string FirstLetterUpper(this string source)
         {
             if (string.IsNullOrEmpty(source))
                 return string.Empty;

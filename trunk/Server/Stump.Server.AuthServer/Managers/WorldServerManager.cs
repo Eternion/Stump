@@ -25,14 +25,21 @@ namespace Stump.Server.AuthServer.Managers
         /// <summary>
         ///   Defines after how many seconds a world server is considered as timed out.
         /// </summary>
-        [Variable]
+        [Variable(true)]
         public static int WorldServerTimeout = 20;
 
         /// <summary>
         /// Interval between two ping to check if world server is still alive (in milliseconds)
         /// </summary>
-        [Variable]
+        [Variable(true)]
         public static int PingCheckInterval = 2000;
+
+        [Variable(true)]
+#if DEBUG
+        public static bool CheckPassword = false;
+#else
+        public static bool CheckPassword = true;
+#endif
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -66,6 +73,7 @@ namespace Stump.Server.AuthServer.Managers
 
             foreach (var worldServer in m_realmlist)
             {
+                worldServer.Value.Connected = false;
                 worldServer.Value.Status = ServerStatusEnum.OFFLINE;
             }
 
@@ -153,15 +161,13 @@ namespace Stump.Server.AuthServer.Managers
                 return false;
             }
 
-#if RELEASE
-            if (m_realmlist[world.Id].Password != world.Password)
+            if (CheckPassword && m_realmlist[world.Id].Password != world.Password)
             {
                 logger.Error(
                     "Server <Id : {0}> has an incorrect passsword",
                     world.Id);
                 return false;
             }
-#endif
 
             if (!m_realmlist[world.Id].Connected)
             {
@@ -237,7 +243,7 @@ namespace Stump.Server.AuthServer.Managers
             if (!m_realmlist.ContainsKey(server.Id))
                 return false;
 
-            if (m_realmlist[server.Id].Password != server.Password)
+            if (CheckPassword && m_realmlist[server.Id].Password != server.Password)
                 return false;
 
             return true;

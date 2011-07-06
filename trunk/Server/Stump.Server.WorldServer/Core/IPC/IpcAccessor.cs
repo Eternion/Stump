@@ -125,14 +125,13 @@ namespace Stump.Server.WorldServer.Core.IPC
                 IsRegister = true;
                 logger.Info("[IPC] Connection from the authentification server granted");
 
-#if RELEASE
                 if (haveToSave)
                 {
                     logger.Info("[IPC] Save the new configuration file");
 
+                    WorldServer.Instance.IgnoreNextConfigReload();
                     WorldServer.Instance.Config.Save();
                 }
-#endif
 
                 Task.Factory.StartNew(MaintainConnection);
             }
@@ -191,16 +190,22 @@ namespace Stump.Server.WorldServer.Core.IPC
                         Connected = false;
                         logger.Warn("Lost connection to : {0}.\nReconnecting in {1} seconds...", IpcAddress,
                                     ReconnectDelay);
+                        
                         NotifyConnectionLost();
-                        Task.Factory.StartNewDelayed(ReconnectDelay*1000, Start);
+                        Task.Factory.StartNewDelayed(ReconnectDelay * 1000, Start);
                     }
                 }
-                catch
+                catch (SocketException)
                 {
                     Connected = false;
                     logger.Warn("Lost connection to : {0}.\nReconnecting in {1} seconds...", IpcAddress, ReconnectDelay);
+                    
                     NotifyConnectionLost();
-                    Task.Factory.StartNewDelayed(ReconnectDelay*1000, Start);
+                    Task.Factory.StartNewDelayed(ReconnectDelay * 1000, Start);
+                }
+                catch(Exception e)
+                {
+                    logger.Error("Exception raised when pinging the auth serveur : " + e);
                 }
 
                 Thread.Sleep(PingDelay);

@@ -9,7 +9,7 @@ using DPoint = System.Drawing.Point;
 namespace Stump.Server.WorldServer.Database.World
 {
     [Serializable]
-    [ActiveRecord("map_position")]
+    [ActiveRecord("maps_position")]
     [D2OClass("MapPosition", "com.ankamagames.dofus.datacenter.world")]
     public sealed class MapPositionRecord : WorldBaseRecord<MapPositionRecord>
     {

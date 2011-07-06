@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Collections;
 using Stump.Core.Reflection;
 
 namespace Stump.Core.Pool.Task
@@ -13,8 +16,9 @@ namespace Stump.Core.Pool.Task
     public class TaskPool
     {
         private readonly List<CyclicTask> m_cyclicTasks = new List<CyclicTask>();
+
         private readonly object m_sync = new object();
-        private readonly ConcurrentQueue<Action> m_tasks = new ConcurrentQueue<Action>();
+        private readonly BlockingQueue<Action> m_tasks = new BlockingQueue<Action>();
         private static TaskPool m_instance;
 
         public static TaskPool Instance
@@ -22,14 +26,13 @@ namespace Stump.Core.Pool.Task
             get { return m_instance ?? (m_instance = new TaskPool()); }
         }
 
-
         public void Initialize(Assembly asm)
         {
             foreach (var type in asm.GetTypes())
             {
                 foreach (var method in type.GetMethods())
                 {
-                    var attribute = method.GetCustomAttributes(typeof(Cyclic), false).FirstOrDefault() as Cyclic;
+                    var attribute = method.GetCustomAttributes(typeof (Cyclic), false).FirstOrDefault() as Cyclic;
                     if (attribute != null)
                     {
                         m_cyclicTasks.Add(new CyclicTask(Delegate.CreateDelegate(method.GetActionType(), method) as Action, attribute.Time, null, null));
@@ -67,21 +70,31 @@ namespace Stump.Core.Pool.Task
             m_tasks.Enqueue(action);
         }
 
-        private Action m_action;
         public void ProcessUpdate()
         {
             /* Execute Tasks */
-            while (m_tasks.TryDequeue(out m_action))
-                m_action.Invoke();
-
-            lock (m_sync)
+            while (m_tasks.Count > 0)
             {
-                /* Execute Cyclic Tasks */
-                foreach (var cyclicMethod in m_cyclicTasks.Where(m => m.RequireExecution))
-                    cyclicMethod.Execute();
-                /* Delete Obsolete Tasks */
-                m_cyclicTasks.RemoveAll(m => m.ReachMaxExecutionNbr);
+                Action action = m_tasks.Dequeue();
+
+                var executerThread = new Thread(() => action());
+                executerThread.Start();
+
+                while ((executerThread.ThreadState & ThreadState.Running) == ThreadState.Running)
+                    // wait until thread end execution, or until thread enter a sleep state
+                {
+                    Thread.Yield(); // give priority to another thread
+                }
             }
+
+            // todo : we maybe should separate TaskPool and CyclicTasks
+
+            /* Execute Cyclic Tasks */
+            foreach (var cyclicMethod in m_cyclicTasks.Where(m => m.RequireExecution))
+                cyclicMethod.Execute();
+
+            /* Delete Obsolete Tasks */
+            m_cyclicTasks.RemoveAll(m => m.ReachMaxExecutionNbr);
         }
     }
 }

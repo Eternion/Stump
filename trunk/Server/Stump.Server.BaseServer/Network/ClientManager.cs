@@ -363,7 +363,7 @@ namespace Stump.Server.BaseServer.Network
         internal SocketAsyncEventArgs PopWriteSocketAsyncArgs()
         {
             if (m_writeAsyncEventArgsPool.Count <= 0)
-                throw new Exception("The writer async argument pool is void");
+                throw new Exception("The writer async argument pool is empty");
 
             return m_writeAsyncEventArgsPool.Pop();
         }
@@ -376,7 +376,7 @@ namespace Stump.Server.BaseServer.Network
         internal SocketAsyncEventArgs PopReadSocketAsyncArgs()
         {
             if (m_readAsyncEventArgsPool.Count <= 0)
-                throw new Exception("The reader async argument pool is void");
+                throw new Exception("The reader async argument pool is empty");
 
             return m_readAsyncEventArgsPool.Pop();
         }

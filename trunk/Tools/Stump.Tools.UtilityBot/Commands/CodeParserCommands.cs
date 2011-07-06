@@ -371,7 +371,7 @@ namespace Stump.Tools.UtilityBot.Commands
                 }
 
                 string[] splitPath = file.Split('\\');
-                splitPath = splitPath.SkipWhile(entry => entry != "datacenter").Skip(1).Select(entry => entry.ToUpperFirstLetter()).ToArray();
+                splitPath = splitPath.SkipWhile(entry => entry != "datacenter").Skip(1).Select(entry => entry.FirstLetterUpper()).ToArray();
 
                 string dirPath = Path.GetFullPath(Output) + "/";
                 foreach (string dir in splitPath)
@@ -410,7 +410,7 @@ namespace Stump.Tools.UtilityBot.Commands
                 if (isPrimaryKey)
                     primaryKeyDefined = true;
 
-                string propertyName = isPrimaryKey ? "Id" : field.Name.Replace("_", "").ToUpperFirstLetter();
+                string propertyName = isPrimaryKey ? "Id" : field.Name.Replace("_", "").FirstLetterUpper();
                 string propertyParam = string.Empty;
 
                 if (field.Type.Contains("Rectangle") || field.Type.Contains("List") || field.Type.Contains("Point"))
@@ -435,7 +435,7 @@ namespace Stump.Tools.UtilityBot.Commands
             string @namespace = "Stump.Database.Data." +
                                 string.Join(".",
                                             parser.Class.Namespace.Split('.').Skip(4).Select(
-                                                entry => entry.ToUpperFirstLetter()));
+                                                entry => entry.FirstLetterUpper()));
             FieldInfo modulefield = parser.Fields.Where(entry => entry.Name == "MODULE").FirstOrDefault();
             string className = (parser.Class.Name.EndsWith("s")
                                     ? parser.Class.Name.Remove(parser.Class.Name.Length - 1, 1)

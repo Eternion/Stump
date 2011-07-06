@@ -8,6 +8,7 @@ using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.World.Actors.RolePlay;
+using Stump.Server.WorldServer.World.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.World.Maps.Cells;
 
 namespace Stump.Server.WorldServer.World.Maps

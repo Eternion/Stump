@@ -61,6 +61,9 @@
     <Compile Include="Commands\Trigger\WorldConsoleTrigger.cs" />
     <Compile Include="Database\Breeds\Breed.cs" />
     <Compile Include="Database\Breeds\LearnableSpell.cs" />
+    <Compile Include="Database\Characters\CharacterRecord.cs" />
+    <Compile Include="Database\Characters\ExperienceRecord.cs" />
+    <Compile Include="Database\Characters\Restrictions.cs" />
     <Compile Include="Database\WorldBaseRecord.cs" />
     <Compile Include="Database\WorldVersionRecord.cs" />
     <Compile Include="Database\World\AreaRecord.cs" />
@@ -74,6 +77,14 @@
     <Compile Include="Database\World\SuperAreaRecord.cs" />
     <Compile Include="Database\World\WorldMapRecord.cs" />
     <Compile Include="Definitions.cs" />
+    <Compile Include="Handlers\Approach\ApproachHandler.cs" />
+    <Compile Include="Handlers\Basic\BasicHandler.cs" />
+    <Compile Include="Handlers\Characters\CharacterChoiceHandler.cs" />
+    <Compile Include="Handlers\Characters\CharacterCreationHandler.cs" />
+    <Compile Include="Handlers\Characters\CharacterDeletionHandler.cs" />
+    <Compile Include="Handlers\Characters\CharacterHandler.cs" />
+    <Compile Include="Handlers\Characters\CharacterReplayHandler.cs" />
+    <Compile Include="Handlers\Characters\CharacterStatsHandler.cs" />
     <Compile Include="Handlers\PredicatesDefinitions.cs" />
     <Compile Include="Handlers\WorldHandlerAttribute.cs" />
     <Compile Include="Handlers\WorldHandlerContainer.cs" />
@@ -84,6 +95,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Core\IO\WorldConsole.cs" />
     <Compile Include="WorldServer.cs" />
+    <Compile Include="World\Accounts\AccountManager.cs" />
     <Compile Include="World\Actors\ContextActor.cs" />
     <Compile Include="World\Actors\Fight\AIFighter.cs" />
     <Compile Include="World\Actors\Fight\AlignedMonster.cs" />
@@ -93,7 +105,9 @@
     <Compile Include="World\Actors\Fight\MutantFighter.cs" />
     <Compile Include="World\Actors\Fight\NamedFighter.cs" />
     <Compile Include="World\Actors\Fight\TaxCollectorFighter.cs" />
-    <Compile Include="World\Actors\RolePlay\Character.cs" />
+    <Compile Include="World\Actors\RolePlay\Characters\Character.cs" />
+    <Compile Include="World\Actors\RolePlay\Characters\CharacterManager.cs" />
+    <Compile Include="World\Actors\RolePlay\Characters\ExperienceManager.cs" />
     <Compile Include="World\Actors\RolePlay\GroupMonster.cs" />
     <Compile Include="World\Actors\RolePlay\Humanoid.cs" />
     <Compile Include="World\Actors\RolePlay\Merchant.cs" />

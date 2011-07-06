@@ -65,18 +65,14 @@ namespace Stump.Server.BaseServer.IPC
         /// </summary>
         /// <param name="characterId"></param>
         bool AddAccountCharacter(WorldServerData wsi, uint accountId, uint characterId);
+
         /// <summary>
         /// Delete a character of the account
         /// </summary>
         /// <param name="wsi"></param>
+        /// <param name="accountId"></param>
         /// <param name="characterId"></param>
         bool DeleteAccountCharacter(WorldServerData wsi, uint accountId, uint characterId);
-        /// <summary>
-        /// Check if account exceeds the quota of day character deletion
-        /// </summary>
-        /// <param name="wsi"></param>
-        /// <returns></returns>
-        int GetDeletedCharactersNumber(WorldServerData wsi, uint accountId);
         /// <summary>
         /// Ban an account
         /// </summary>

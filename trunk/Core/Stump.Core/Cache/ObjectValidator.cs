@@ -2,14 +2,21 @@ using System;
 
 namespace Stump.Core.Cache
 {
-    public class ObjectValidator<T>
+    public sealed class ObjectValidator<T>
     {
+        public event Action<ObjectValidator<T>> ObjectInvalidated;
+
+        private void NotifyObjectInvalidated()
+        {
+            Action<ObjectValidator<T>> handler = ObjectInvalidated;
+            if (handler != null)
+                handler(this);
+        }
+
+
         private readonly object m_sync = new object();
-
         private bool m_isValid;
-
         private T m_instance;
-
         private readonly Func<T> m_creator;
 
         public ObjectValidator(Func<T> creator)
@@ -20,6 +27,8 @@ namespace Stump.Core.Cache
         public void Invalidate()
         {
             m_isValid = false;
+
+            NotifyObjectInvalidated();
         }
 
         public static implicit operator T(ObjectValidator<T> validator)
@@ -42,6 +51,15 @@ namespace Stump.Core.Cache
 
     public class ObjectValidator<T, TContext>
     {
+        public event Action<ObjectValidator<T, TContext>> ObjectInvalidated;
+
+        private void NotifyObjectInvalidated()
+        {
+            Action<ObjectValidator<T, TContext>> handler = ObjectInvalidated;
+            if (handler != null)
+                handler(this);
+        }
+
         private readonly object m_sync = new object();
 
         private bool m_isValid;
@@ -60,6 +78,8 @@ namespace Stump.Core.Cache
         public void Invalidate()
         {
             m_isValid = false;
+
+            NotifyObjectInvalidated();
         }
 
         public static implicit operator T(ObjectValidator<T, TContext> validator)

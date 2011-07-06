@@ -6,7 +6,7 @@ using Stump.DofusProtocol.D2oClasses.Tool;
 namespace Stump.Server.WorldServer.Database.World
 {
     [Serializable]
-    [ActiveRecord("area")]
+    [ActiveRecord("areas")]
     [D2OClass("Area", "com.ankamagames.dofus.datacenter.world")]
     public sealed class AreaRecord : WorldBaseRecord<AreaRecord>
     {
