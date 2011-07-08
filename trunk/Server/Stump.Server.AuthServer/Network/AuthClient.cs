@@ -16,7 +16,7 @@ namespace Stump.Server.AuthServer.Network
         {
             Key = new Random().RandomString(32);
 
-            Send(new ProtocolRequired(VersionExtension.RequiredVersion, VersionExtension.ActualVersion));
+            Send(new ProtocolRequired(VersionExtension.ProtocolRequired, VersionExtension.ActualProtocol));
             Send(new HelloConnectMessage(1, Key));
 
             CanReceive = true;
@@ -63,7 +63,7 @@ namespace Stump.Server.AuthServer.Network
 
         public override string ToString()
         {
-            return base.ToString() + (Account != null ? " <" + Account.Login + ">" : "");
+            return base.ToString() + (Account != null ? " (" + Account.Login + ")" : "");
         }
     }
 }

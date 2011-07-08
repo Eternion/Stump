@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Core.Network
         public WorldClient(Socket socket)
             : base(socket)
         {
-            Send(new ProtocolRequired(VersionExtension.RequiredVersion, VersionExtension.ActualVersion));
+            Send(new ProtocolRequired(VersionExtension.ProtocolRequired, VersionExtension.ActualProtocol));
             Send(new HelloGameMessage());
 
             CanReceive = true;
@@ -62,7 +62,7 @@ namespace Stump.Server.WorldServer.Core.Network
 
         public override string ToString()
         {
-            return base.ToString() + (Account != null ? " <" + Account.Login + ">" : "");
+            return base.ToString() + (Account != null ? " (" + Account.Login + ")" : "");
         }
     }
 }

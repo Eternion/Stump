@@ -8,6 +8,7 @@ namespace Stump.Server.BaseServer.IPC.Objects
     /// <summary>
     /// Represents a serialized Account
     /// </summary>
+    [Serializable]
     public class AccountData
     {
         private List<PlayableBreedEnum> m_breeds;

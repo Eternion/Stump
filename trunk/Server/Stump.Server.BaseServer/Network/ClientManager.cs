@@ -61,7 +61,7 @@ namespace Stump.Server.BaseServer.Network
 
         private void NotifyClientDisconnected(BaseClient client)
         {
-            Action<BaseClient> handler = ClientConnected;
+            Action<BaseClient> handler = ClientDisconnected;
             if (handler != null) handler(client);
         } 
         #endregion

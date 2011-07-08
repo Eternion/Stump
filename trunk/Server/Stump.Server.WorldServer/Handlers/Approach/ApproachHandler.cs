@@ -49,6 +49,8 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             SendAccountCapabilitiesMessage(client);
             BasicHandler.SendBasicNoOperationMessage(client);
 
+            client.Send(new TrustStatusMessage(true)); // usage -> ?
+
             /* Just to get console AutoCompletion */
             if (client.Account.Role >= RoleEnum.Moderator)
                 SendConsoleCommandsListMessage(client);
@@ -74,7 +76,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             client.Send(
                 new ConsoleCommandsListMessage(
                     WorldServer.Instance.CommandManager.AvailableCommands.SelectMany(c => c.Aliases),
-                    new List<string>(), new List<string>()));
+                    new string[0],  new string[0]));
         }
     }
 }

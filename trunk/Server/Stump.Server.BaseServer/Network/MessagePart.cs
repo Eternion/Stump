@@ -67,13 +67,13 @@ namespace Stump.Server.BaseServer.Network
             if (IsValid)
                 return true;
 
-            if (reader.BytesAvailable > 2 && !Header.HasValue)
+            if (reader.BytesAvailable >= 2 && !Header.HasValue)
             {
                 Header = reader.ReadShort();
             }
 
             if (LengthBytesCount.HasValue &&
-                reader.BytesAvailable > LengthBytesCount && !Length.HasValue)
+                reader.BytesAvailable >= LengthBytesCount && !Length.HasValue)
             {
                 if (LengthBytesCount < 0 || LengthBytesCount > 3)
                     throw new Exception("Malformated Message Header, invalid bytes number to read message length (inferior to 0 or superior to 3)");
@@ -90,6 +90,9 @@ namespace Stump.Server.BaseServer.Network
             // first case : no data read
             if (Data == null && Length.HasValue)
             {
+                if (Length == 0)
+                    Data = new byte[0];
+
                 // enough bytes in the buffer to build a complete message
                 if (reader.BytesAvailable >= Length)
                 {

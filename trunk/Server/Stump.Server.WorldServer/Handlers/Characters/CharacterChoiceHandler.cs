@@ -161,7 +161,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     characterRecord.Sex != SexTypeEnum.SEX_MALE));
 
             client.Send(new CharactersListMessage(
-                            false, //client.Account.StartupActions.Count != 0,
+                            true, //client.Account.StartupActions.Count != 0,
                             characters
                             ));
         }

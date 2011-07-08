@@ -144,9 +144,10 @@ namespace Stump.Server.AuthServer.Managers
             if (account.LastConnection != null)
             {
                 var lastWorld = account.LastConnection.World;
-
+                var client = IpcServer.Instance.GetIpcClient(lastWorld.Id);
+               
                 // diconnect clients from last game server
-                if (IpcServer.Instance.GetIpcClient(lastWorld.Id).DisconnectConnectedAccount(account.Id))
+                if (client != null && client.DisconnectConnectedAccount(account.Id))
                 {
                     return true;
                 }

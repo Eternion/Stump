@@ -42,13 +42,13 @@ namespace Stump.Server.BaseServer.Network
         /// Actual version
         /// </summary>
         [Variable]
-        public static int ActualVersion = 1304;
+        public static int ActualProtocol = 1375;
 
         /// <summary>
         /// Required version
         /// </summary>
         [Variable]
-        public static int RequiredVersion = 1304;
+        public static int ProtocolRequired = 1375;
 
         /// <summary>
         /// Compare the given version and the required version
