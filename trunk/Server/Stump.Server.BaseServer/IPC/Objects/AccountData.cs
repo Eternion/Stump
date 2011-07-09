@@ -158,7 +158,9 @@ namespace Stump.Server.BaseServer.IPC.Objects
 
         public bool CanUseBreed(int breedId)
         {
-            return ( BreedFlags & (1 << breedId) ) == 1;
+            int flag = ( 1 << breedId );
+            return ( BreedFlags & flag ) == flag;
         }
+
     }
 }

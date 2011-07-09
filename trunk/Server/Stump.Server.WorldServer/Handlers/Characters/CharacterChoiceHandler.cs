@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -11,6 +12,7 @@ using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.World.Actors.RolePlay;
 using Stump.Server.WorldServer.World.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.World.Breeds;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
 {
@@ -158,10 +160,12 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     characterRecord.Name,
                     characterRecord.EntityLook,
                     (byte) characterRecord.Breed,
-                    characterRecord.Sex != SexTypeEnum.SEX_MALE));
+                    characterRecord.Sex != SexTypeEnum.SEX_MALE)).ToList();
+
+            characters.Add(new CharacterBaseInformations(1, 1, "lol", new EntityLook(1, new short[] {11}, new int[5], new short[] {100}, new SubEntity[0]), 2, true));
 
             client.Send(new CharactersListMessage(
-                            true, //client.Account.StartupActions.Count != 0,
+                            false, //client.Account.StartupActions.Count != 0,
                             characters
                             ));
         }

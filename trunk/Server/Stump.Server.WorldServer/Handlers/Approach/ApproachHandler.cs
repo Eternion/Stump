@@ -45,9 +45,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
 
             /* Ok */
             client.Send(new AuthenticationTicketAcceptedMessage());
-            BasicHandler.SendBasicTimeMessage(client);
             SendAccountCapabilitiesMessage(client);
-            BasicHandler.SendBasicNoOperationMessage(client);
 
             client.Send(new TrustStatusMessage(true)); // usage -> ?
 
@@ -59,10 +57,10 @@ namespace Stump.Server.WorldServer.Handlers.Approach
         public static void SendAccountCapabilitiesMessage(WorldClient client)
         {
             client.Send(new AccountCapabilitiesMessage(
-                            (int) client.Account.Id,
-                            true,
-                            (short) client.Account.BreedFlags,
-                            (short) BreedManager.Instance.AvailableBreedsFlags));
+                            (int)client.Account.Id,
+                            false,
+                            (short)client.Account.BreedFlags,
+                            (short)BreedManager.Instance.AvailableBreedsFlags));
         }
 
         /*public static void SendAccountLoggingKickedMessage(WorldClient client)

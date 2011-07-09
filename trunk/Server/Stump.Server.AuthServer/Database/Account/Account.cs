@@ -33,29 +33,27 @@ namespace Stump.Server.AuthServer.Database.Account
             var strongestSanction = StrongestSanction;
 
             return new AccountData
-            {
-                Id = Id,
-                Login = Login,
-                Password = Password,
-                Nickname = Nickname,
-                Role = Role,
-                AvailableBreeds = AvailableBreeds,
-                Ticket = Ticket,
-                SecretQuestion = SecretQuestion,
-                SecretAnswer = SecretAnswer,
-                Lang = Lang,
-                Email = Email,
-                CreationDate = CreationDate,
-
-                BanEndDate = strongestSanction != null ? StrongestSanction.EndDate : default(DateTime),
-                BanReason = strongestSanction != null ? strongestSanction.BanReason : string.Empty,
-                SubscriptionEndDate = DateTime.Now + TimeSpan.FromSeconds (SubscriptionRemainingTime),
-                LastConnection = LastConnection.Date,
-                LastConnectionIp = LastConnection.Ip,
-
-                CharactersId = Characters.Select(entry => entry.CharacterId).ToList(),
-                DeletedCharactersCount = DeletedCharacters.Count,
-            };
+                       {
+                           Id = Id,
+                           Login = Login,
+                           Password = Password,
+                           Nickname = Nickname,
+                           Role = Role,
+                           AvailableBreeds = AvailableBreeds,
+                           Ticket = Ticket,
+                           SecretQuestion = SecretQuestion,
+                           SecretAnswer = SecretAnswer,
+                           Lang = Lang,
+                           Email = Email,
+                           CreationDate = CreationDate,
+                           BanEndDate = strongestSanction != null ? StrongestSanction.EndDate : default(DateTime),
+                           BanReason = strongestSanction != null ? strongestSanction.BanReason : string.Empty,
+                           SubscriptionEndDate = DateTime.Now + TimeSpan.FromSeconds(SubscriptionRemainingTime),
+                           LastConnection = LastConnection.Date,
+                           LastConnectionIp = LastConnection.Ip,
+                           CharactersId = Characters.Select(entry => entry.CharacterId).ToList(),
+                           DeletedCharactersCount = DeletedCharacters.Count,
+                       };
         }
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
@@ -93,11 +91,17 @@ namespace Stump.Server.AuthServer.Database.Account
             set;
         }
 
+        private uint m_dbAvailableBreeds;
+
         [Property("AvailableBreeds", NotNull = true, Default = "8191")] // 8191 = 0001 1111 1111 1111
-        public uint DbAvailableBreeds
+            public uint DbAvailableBreeds
         {
-            get;
-            set;
+            get { return m_dbAvailableBreeds; }
+            set
+            {
+                m_dbAvailableBreeds = value;
+                m_availableBreeds = null;
+            }
         }
 
         [Property("Ticket", NotNull = false)]
@@ -135,7 +139,7 @@ namespace Stump.Server.AuthServer.Database.Account
             set;
         }
 
-        [Property("CreationDate",NotNull=true)]
+        [Property("CreationDate", NotNull = true)]
         public DateTime CreationDate
         {
             get;
@@ -149,47 +153,44 @@ namespace Stump.Server.AuthServer.Database.Account
                 if (m_availableBreeds == null)
                 {
                     m_availableBreeds = new List<PlayableBreedEnum>();
-                    m_availableBreeds.AddRange(Enum.GetValues(typeof(PlayableBreedEnum)).Cast<PlayableBreedEnum>().
-                        Where(breed => CanUseBreed((int)breed)));
+                    m_availableBreeds.AddRange(Enum.GetValues(typeof (PlayableBreedEnum)).Cast<PlayableBreedEnum>().
+                                                   Where(breed => CanUseBreed((int) breed)));
                 }
 
                 return m_availableBreeds;
             }
-            set
-            {
-                DbAvailableBreeds = (uint)value.Aggregate(0, (current, breedEnum) => current | ( 1 << (int)breedEnum ));
-            }
+            set { DbAvailableBreeds = (uint) value.Aggregate(0, (current, breedEnum) => current | (1 << (int) breedEnum)); }
         }
 
-        [HasMany(typeof(WorldCharacter), Cascade = ManyRelationCascadeEnum.Delete)]
+        [HasMany(typeof (WorldCharacter), Cascade = ManyRelationCascadeEnum.Delete)]
         public IList<WorldCharacter> Characters
         {
             get { return m_characters ?? new List<WorldCharacter>(); }
             set { m_characters = value; }
         }
 
-        [HasMany(typeof(DeletedWorldCharacter), Cascade = ManyRelationCascadeEnum.Delete)]
+        [HasMany(typeof (DeletedWorldCharacter), Cascade = ManyRelationCascadeEnum.Delete)]
         public IList<DeletedWorldCharacter> DeletedCharacters
         {
             get { return m_deletedCharacters ?? new List<DeletedWorldCharacter>(); }
             set { m_deletedCharacters = value; }
         }
 
-        [HasMany(typeof(ConnectionLog))]
+        [HasMany(typeof (ConnectionLog))]
         public IList<ConnectionLog> Connections
         {
             get { return m_connections ?? new List<ConnectionLog>(); }
             set { m_connections = value; }
         }
 
-        [HasMany(typeof(SubscriptionLog))]
+        [HasMany(typeof (SubscriptionLog))]
         public IList<SubscriptionLog> Subscriptions
         {
             get { return m_subscriptions ?? new List<SubscriptionLog>(); }
             set { m_subscriptions = value; }
         }
 
-        [HasMany(typeof(Sanction))]
+        [HasMany(typeof (Sanction))]
         public IList<Sanction> Sanctions
         {
             get { return m_sanctions ?? new List<Sanction>(); }
@@ -198,10 +199,7 @@ namespace Stump.Server.AuthServer.Database.Account
 
         public Sanction StrongestSanction
         {
-            get
-            {
-                return Sanctions.Count == 0 ? null : Sanctions.MaxOf(entry => entry.EndDate);
-            }
+            get { return Sanctions.Count == 0 ? null : Sanctions.MaxOf(entry => entry.EndDate); }
         }
 
         public ConnectionLog LastConnection
@@ -229,7 +227,7 @@ namespace Stump.Server.AuthServer.Database.Account
                             Subscriptions[i + 1].Duration += diff;
                     }
                 }
-                return (uint)time.TotalMilliseconds;
+                return (uint) time.TotalMilliseconds;
             }
         }
 
@@ -240,12 +238,12 @@ namespace Stump.Server.AuthServer.Database.Account
                 if (Sanctions.Count == 0)
                     return 0;
 
-                var remainingTime = DateTime.Now.Subtract( Sanctions.Max(s => s.EndDate)).TotalSeconds;
+                var remainingTime = DateTime.Now.Subtract(Sanctions.Max(s => s.EndDate)).TotalSeconds;
 
                 if (remainingTime < 0)
                     return 0;
 
-                return (uint)remainingTime;
+                return (uint) remainingTime;
             }
         }
 
@@ -257,12 +255,13 @@ namespace Stump.Server.AuthServer.Database.Account
 
         public bool CanUseBreed(int breedId)
         {
-            return (DbAvailableBreeds & (1 << breedId)) == 1;
+            int flag = (1 << breedId);
+            return ( DbAvailableBreeds & flag ) == flag;
         }
 
         public byte GetCharactersCountByWorld(int worldId)
         {
-            return (byte)Characters.Where(entry => entry.World.Id == worldId).Count();
+            return (byte) Characters.Where(entry => entry.World.Id == worldId).Count();
         }
 
         public IEnumerable<uint> GetWorldCharactersId(int worldId)
