@@ -3,6 +3,7 @@ using System;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	[D2OClass("ChatChannels")]
+	[Serializable]
 	public class ChatChannel
 	{
 		private const String MODULE = "ChatChannels";

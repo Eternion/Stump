@@ -3,7 +3,7 @@ using System;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	[D2OClass("AmbientSounds")]
-    [Serializable]
+	[Serializable]
 	public class AmbientSound
 	{
 		private const String MODULE = "AmbientSounds";

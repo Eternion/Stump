@@ -1,7 +1,4 @@
 <Configuration>
-  <CodeAnnotations>
-    <DefaultNamespace>JetBrains.Annotations</DefaultNamespace>
-  </CodeAnnotations>
   <Daemon.SolutionSettings>
     <SkipFilesAndFolders>
       <Item>10884165-D492-4895-B3EF-32429F7A7F55</Item>

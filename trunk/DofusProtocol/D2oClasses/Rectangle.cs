@@ -1,5 +1,8 @@
+using System;
+
 namespace Stump.DofusProtocol.D2oClasses
 {
+    [Serializable]
     public class Rectangle
     {
         public int x;

@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Database.World
 
        [D2OField("compressedCoords")]
        [Property("CompressedCoords")]
-       public uint CompressedCoords
+       public int CompressedCoords
        {
            get;
            set;

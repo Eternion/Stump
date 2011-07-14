@@ -294,7 +294,17 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
                     values.Add(fieldValue);
                 else if (fieldValue is IConvertible &&
                          field.FieldType.GetInterface("IConvertible") != null)
-                    values.Add(Convert.ChangeType(fieldValue, field.FieldType));
+                {
+                    try
+                    {
+                        values.Add(Convert.ChangeType(fieldValue, field.FieldType));
+                    }
+                    catch
+                    {
+                        throw new Exception(string.Format("Field '{0}.{1}' is not of type '{2}'", classDefinition.Name,
+                                  field.Name, fieldValue.GetType()));
+                    }
+                }
                 else
                 {
                     throw new Exception(string.Format("Field '{0}.{1}' is not of type '{2}'", classDefinition.Name,
@@ -379,11 +389,21 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
         private object ReadFieldVector(BigEndianReader reader, D2OFieldDefinition field, int vectorDimension)
         {
             int count = reader.ReadInt();
-            var result = (IList)Activator.CreateInstance(field.FieldType);
+
+            Type vectorType = field.FieldType;
+            for (int i = 0; i < vectorDimension; i++)
+            {
+                vectorType = vectorType.GetGenericArguments()[0];
+            }
+
+            var result = (IList)Activator.CreateInstance(vectorType);
 
             for (int i = 0; i < count; i++)
             {
-                result.Add(ReadField(reader, field, field.VectorTypes[vectorDimension].Item1, ++vectorDimension));
+                vectorDimension++;
+                // i didn't found a way to have thez correct dimension so i just add "- 1"
+                result.Add(ReadField(reader, field, field.VectorTypes[vectorDimension - 1].Item1, vectorDimension));
+                vectorDimension--;
             }
 
             return result;

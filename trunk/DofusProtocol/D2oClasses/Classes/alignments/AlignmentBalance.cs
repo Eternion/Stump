@@ -3,6 +3,7 @@ using System;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	[D2OClass("AlignmentBalance")]
+	[Serializable]
 	public class AlignmentBalance
 	{
 		private const String MODULE = "AlignmentBalance";

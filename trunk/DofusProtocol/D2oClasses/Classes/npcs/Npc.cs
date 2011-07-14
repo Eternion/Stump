@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	[D2OClass("Npcs")]
+	[Serializable]
 	public class Npc
 	{
 		private const String MODULE = "Npcs";

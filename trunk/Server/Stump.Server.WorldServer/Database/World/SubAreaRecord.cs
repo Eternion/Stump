@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
@@ -49,7 +50,9 @@ namespace Stump.Server.WorldServer.Database.World
            }
            set
            {
-               AreaId = value.Id;
+               if (value != null)
+                AreaId = value.Id;
+
                m_areaRecord = value;
            }
        }
@@ -102,5 +105,17 @@ namespace Stump.Server.WorldServer.Database.World
            set;
        }
 
+       protected override bool BeforeSave(IDictionary state)
+       {
+           // that's a hack to update SubAreaId field without setting SubArea property.
+           if (Area == null && AreaId > 0)
+               Area = new AreaRecord
+               {
+                   Id = AreaId
+               };
+
+
+           return base.BeforeSave(state);
+       }
     }
 }

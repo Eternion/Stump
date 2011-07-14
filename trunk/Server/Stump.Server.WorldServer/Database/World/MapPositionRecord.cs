@@ -1,7 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
-using Castle.ActiveRecord.Queries;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using DPoint = System.Drawing.Point;
@@ -13,8 +13,7 @@ namespace Stump.Server.WorldServer.Database.World
     [D2OClass("MapPosition", "com.ankamagames.dofus.datacenter.world")]
     public sealed class MapPositionRecord : WorldBaseRecord<MapPositionRecord>
     {
-        private int m_posX;
-        private int m_posY;
+        private DPoint m_pos;
         private SubAreaRecord m_subArea;
 
         [D2OField("id")]
@@ -29,11 +28,13 @@ namespace Stump.Server.WorldServer.Database.World
         [Property("PosX")]
         public int PosX
         {
-            get { return m_posX; }
+            get
+            {
+                return m_pos.X;
+            }
             set
             {
-                m_posX = value;
-                Pos = new DPoint(PosX, PosY);
+                m_pos.X = value;
             }
         }
 
@@ -41,24 +42,25 @@ namespace Stump.Server.WorldServer.Database.World
         [Property("PosY")]
         public int PosY
         {
-            get { return m_posY; }
+            get
+            {
+                return m_pos.Y;
+            }
             set
             {
-                m_posY = value;
-                Pos = new DPoint(PosX, PosY);
+                m_pos.Y = value;
             }
         }
 
-        private DPoint m_pos;
-
         public DPoint Pos
         {
-            get { return m_pos; }
+            get
+            {
+                return m_pos;
+            }
             set
             {
                 m_pos = value;
-                PosX = value.X;
-                PosY = value.Y;
             }
         }
 
@@ -83,10 +85,14 @@ namespace Stump.Server.WorldServer.Database.World
         [BelongsTo("SubAreaId")]
         public SubAreaRecord SubArea
         {
-            get { return m_subArea; }
+            get
+            {
+                return m_subArea;
+            }
             set
             {
-                SubAreaId = value.Id;
+                if (value != null)
+                    SubAreaId = value.Id;
                 m_subArea = value;
             }
         }
@@ -123,16 +129,16 @@ namespace Stump.Server.WorldServer.Database.World
             set;
         }
 
-        protected override void OnSave()
+        protected override bool BeforeSave(IDictionary state)
         {
-            // that's a hack to update SubAreaId field without setting SubArea property.
-            if (SubArea == null)
-                SubArea = new SubAreaRecord()
-                {
-                    Id = SubAreaId
-                };
+            if (SubArea == null && SubAreaId > 0)
+                SubArea = new SubAreaRecord
+                    {
+                        Id = SubAreaId
+                    };
 
-            base.OnSave();
+
+            return base.BeforeSave(state);
         }
     }
 }

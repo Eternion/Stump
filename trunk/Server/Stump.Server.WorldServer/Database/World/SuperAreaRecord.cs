@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
@@ -45,9 +46,23 @@ namespace Stump.Server.WorldServer.Database.World
             }
             set
             {
+                if (value != null)
+                    WorldmapId = (uint) value.Id;
                 m_worldMap = value;
-                WorldmapId = (uint)value.Id;
             }
+        }
+
+        protected override bool BeforeSave(IDictionary state)
+        {
+            // that's a hack to update SubAreaId field without setting SubArea property.
+            if (WorldMap == null && WorldmapId > 0)
+                WorldMap = new WorldMapRecord
+                {
+                    Id = (int) WorldmapId
+                };
+
+
+            return base.BeforeSave(state);
         }
     }
 }

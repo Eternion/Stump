@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	[D2OClass("SpellLevels")]
+	[Serializable]
 	public class SpellLevel
 	{
 		private const String MODULE = "SpellLevels";

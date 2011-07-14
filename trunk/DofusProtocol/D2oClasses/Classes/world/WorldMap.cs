@@ -3,6 +3,7 @@ using System;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	[D2OClass("WorldMaps")]
+	[Serializable]
 	public class WorldMap
 	{
 		private const String MODULE = "WorldMaps";

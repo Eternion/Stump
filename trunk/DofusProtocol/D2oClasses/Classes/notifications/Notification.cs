@@ -3,6 +3,7 @@ using System;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	[D2OClass("Notifications")]
+	[Serializable]
 	public class Notification
 	{
 		private const String MODULE = "Notifications";

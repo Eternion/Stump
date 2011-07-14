@@ -3,6 +3,7 @@ using System;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	[D2OClass("ItemTypes")]
+	[Serializable]
 	public class ItemType
 	{
 		private const String MODULE = "ItemTypes";

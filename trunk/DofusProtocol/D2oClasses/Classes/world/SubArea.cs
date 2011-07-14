@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	[D2OClass("SubAreas")]
+	[Serializable]
 	public class SubArea
 	{
 		private const String MODULE = "SubAreas";

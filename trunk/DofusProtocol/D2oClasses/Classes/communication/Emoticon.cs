@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	[D2OClass("Emoticons")]
+	[Serializable]
 	public class Emoticon
 	{
 		private const String MODULE = "Emoticons";

@@ -3,6 +3,7 @@ using System;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	[D2OClass("RideFood")]
+	[Serializable]
 	public class RideFood
 	{
 		public uint gid;

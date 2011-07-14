@@ -67,6 +67,12 @@ namespace Stump.Core.Xml.Config
             }
         }
 
+        public bool IgnoreUnloadedAssemblies
+        {
+            get;
+            set;
+        }
+
         public bool Loaded
         {
             get;
@@ -284,7 +290,9 @@ namespace Stump.Core.Xml.Config
 
                     if (classType == null)
                     {
-                        logger.Error(string.Format("[Config] Cannot found the class '{0}', is the assembly loaded ?", xmlConfigNode.Namespace + "." + xmlConfigNode.ClassName));
+                        if (!IgnoreUnloadedAssemblies)
+                            logger.Error(string.Format("[Config] Cannot found the class '{0}', is the assembly loaded ?", xmlConfigNode.Namespace + "." + xmlConfigNode.ClassName));
+                        
                         continue;
                     }
 

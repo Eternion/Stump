@@ -2,6 +2,7 @@ using System;
 
 namespace Stump.DofusProtocol.D2oClasses
 {
+	[Serializable]
 	public class MonsterGrade
 	{
 		public uint grade;

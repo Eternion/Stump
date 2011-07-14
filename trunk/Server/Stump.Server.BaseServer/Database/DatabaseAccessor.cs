@@ -217,6 +217,11 @@ namespace Stump.Server.BaseServer.Database
             IsOpen = true;
         }
 
+        public void CloseDatabase()
+        {
+            ActiveRecordStarter.ResetInitializationFlag();
+        }
+
         internal void CreateSchema()
         {
             try

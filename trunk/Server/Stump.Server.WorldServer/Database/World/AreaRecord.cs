@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
@@ -47,7 +48,8 @@ namespace Stump.Server.WorldServer.Database.World
            }
            set
            {
-               SuperAreaId = value.Id;
+               if (value != null)
+                SuperAreaId = value.Id;
                m_superArea = value;
            }
        }
@@ -76,5 +78,17 @@ namespace Stump.Server.WorldServer.Database.World
            set;
        }
 
+       protected override bool BeforeSave(IDictionary state)
+       {
+           // that's a hack to update SuperAreaId field without setting SubArea property.
+           if (SuperArea == null && SuperAreaId > 0)
+               SuperArea = new SuperAreaRecord
+               {
+                   Id = SuperAreaId
+               };
+
+
+           return base.BeforeSave(state);
+       }
     }
 }

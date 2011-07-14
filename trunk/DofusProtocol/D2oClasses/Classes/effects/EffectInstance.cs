@@ -2,6 +2,7 @@ using System;
 
 namespace Stump.DofusProtocol.D2oClasses
 {
+	[Serializable]
 	public class EffectInstance
 	{
 		public uint effectId;
@@ -11,5 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
 		public int modificator;
 		public Boolean trigger;
 		public Boolean hidden;
+		public uint zoneSize;
+		public uint zoneShape;
 	}
 }

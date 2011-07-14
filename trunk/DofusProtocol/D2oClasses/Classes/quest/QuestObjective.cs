@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	[D2OClass("QuestObjectives")]
+	[Serializable]
 	public class QuestObjective
 	{
 		private const String MODULE = "QuestObjectives";

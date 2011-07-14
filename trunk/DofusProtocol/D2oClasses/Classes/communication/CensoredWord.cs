@@ -3,6 +3,7 @@ using System;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	[D2OClass("CensoredWords")]
+	[Serializable]
 	public class CensoredWord
 	{
 		private const String MODULE = "CensoredWords";

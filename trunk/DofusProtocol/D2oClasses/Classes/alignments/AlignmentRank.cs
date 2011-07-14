@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace Stump.DofusProtocol.D2oClasses
 {
 	[D2OClass("AlignmentRank")]
+	[Serializable]
 	public class AlignmentRank
 	{
 		private const String MODULE = "AlignmentRank";
