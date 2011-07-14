@@ -96,7 +96,10 @@
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="IO\ConsoleProcent.cs" />
-    <Compile Include="IO\FileWatcherManager.cs" />
+    <Compile Include="IO\Watchers\FileWatcher.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="IO\Watchers\FileWatcherManager.cs" />
     <Compile Include="IO\IDataReader.cs" />
     <Compile Include="IO\IDataWriter.cs" />
     <Compile Include="Mathematics\FastRandom.cs" />

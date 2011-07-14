@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using Stump.Core.IO;
+using Stump.Core.IO.Watchers;
 using Stump.Core.Pool.Task;
 using Stump.Core.Threading;
 using Stump.Core.Xml;
@@ -148,8 +149,7 @@ namespace Stump.Server.BaseServer
             Config.Load();
 
             /* Set Config Watcher */
-            FileWatcherManager.RegisterFileModification
-                (ConfigFilePath,
+            FileWatcherManager.Watch(ConfigFilePath, WatcherType.Modification,
                  () =>
                  {
                      if (!m_ignoreReload && ConsoleInterface.AskAndWait("Config has been modified, do you want to reload it ?", 20))
