@@ -17,6 +17,13 @@ namespace Stump.Server.WorldServer.World.Maps.Cells
             if (handler != null)
                 handler(this);
         }
+        
+        public ObjectPosition(Map map, Cell cell, DirectionsEnum direction)
+        {
+            m_map = map;
+            m_cell = cell;
+            m_direction = direction;
+        }
 
         private DirectionsEnum m_direction;
 

@@ -40,12 +40,20 @@ namespace Stump.Tools.CacheManager
                     Type.DefaultBinder, Type.EmptyTypes, null);
 
                 deleteAllMethod.Invoke(null, new object[0]);
-                foreach (var obj in reader.ReadObjects().Values)
-                {
-                    var row = table.GenerateRow(obj);
 
+                var objects = reader.ReadObjects().Values.ToArray();
+                int cursorLeft = Console.CursorLeft;
+                int cursorTop = Console.CursorTop;
+                for (int i = 0; i < objects.Length; i++)
+                {
+                    var row = table.GenerateRow(objects[i]);
                     ((ActiveRecordBase) row).Create();
+
+                    Console.SetCursorPosition(cursorLeft, cursorTop);
+                    Console.Write("{0}/{1} ({2}%)", i, objects.Length, (int)((i / (double)objects.Length) * 100d));
                 }
+
+                Console.SetCursorPosition(cursorLeft, cursorTop);
             }
         }
 

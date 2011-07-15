@@ -8,6 +8,11 @@ namespace Stump.Server.WorldServer.Database.Characters
     [ActiveRecord("characters")]
     public class CharacterRecord : WorldBaseRecord<CharacterRecord>
     {
+        public CharacterRecord()
+        {
+            TitleParam = string.Empty; // why doesn't it work with Attribute ? dunno :x
+        }
+
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
         public int Id
         {
@@ -36,13 +41,45 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        [Field("EntityLook")]
-        private string m_look;
+        private string m_lookAsString;
+
+        [Property("EntityLook")]
+        private string LookAsString
+        {
+            get
+            {
+                if (EntityLook == null)
+                    return string.Empty;
+
+                if (string.IsNullOrEmpty(m_lookAsString))
+                    m_lookAsString = EntityLook.ConvertToString();
+
+                return m_lookAsString;
+            }
+            set
+            {
+                m_lookAsString = value;
+
+                if (value != null)
+                    EntityLook = m_lookAsString.ToEntityLook();
+            }
+        }
+
+        private EntityLook m_entityLook;
 
         public EntityLook EntityLook
         {
-            get;
-            set;
+            get
+            {
+                return m_entityLook;
+            }
+            set
+            {
+                m_entityLook = value;
+
+                if (value != null)
+                    m_lookAsString = value.ConvertToString();
+            }
         }
 
         [Property("TitleId", NotNull = true, Default = "0")]
@@ -198,7 +235,7 @@ namespace Stump.Server.WorldServer.Database.Characters
         #endregion
 
         [Nested]
-        public Restrictions Restrictionses
+        public Restrictions Restrictions
         {
             get;
             set;
@@ -222,20 +259,6 @@ namespace Stump.Server.WorldServer.Database.Characters
         public static int GetCount()
         {
             return Count();
-        }
-
-        protected override bool BeforeSave(System.Collections.IDictionary state)
-        {
-            m_look = EntityLook.ConvertToString();
-
-            return base.BeforeSave(state);
-        }
-
-        protected override void OnLoad(object id)
-        {
-            EntityLook = m_look.ToEntityLook();
-
-            base.OnLoad(id);
         }
     }
 }

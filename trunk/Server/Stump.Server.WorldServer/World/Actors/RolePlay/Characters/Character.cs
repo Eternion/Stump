@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.World.Maps.Cells;
 
 namespace Stump.Server.WorldServer.World.Actors.RolePlay.Characters
 {
@@ -24,8 +25,54 @@ namespace Stump.Server.WorldServer.World.Actors.RolePlay.Characters
 
         public override int Id
         {
-            get { return m_record.Id; }
-            protected set { m_record.Id = value; }
+            get
+            {
+                return m_record.Id;
+            }
+            protected set
+            {
+                m_record.Id = value;
+                base.Id = value;
+            }
+        }
+
+        public override EntityLook Look
+        {
+            get
+            {
+                return m_record.EntityLook;
+            }
+            protected set
+            {
+                m_record.EntityLook = value;
+                base.Look = value;
+            }
+        }
+
+        public override string Name
+        {
+            get
+            {
+                return m_record.Name;
+            }
+            protected set
+            {
+                m_record.Name = value;
+                base.Name = value;
+            }
+        }
+
+        public override ObjectPosition Position
+        {
+            get
+            {
+                // todo
+                return base.Position;
+            }
+            protected set
+            {
+                base.Position = value;
+            }
         }
 
         public PlayableBreedEnum Breed
@@ -41,6 +88,7 @@ namespace Stump.Server.WorldServer.World.Actors.RolePlay.Characters
         }
 
         #region Stats
+
         public byte Level
         {
             get;
@@ -51,11 +99,19 @@ namespace Stump.Server.WorldServer.World.Actors.RolePlay.Characters
 
         #region Alignment
 
+        private byte m_alignmentGrade;
         private AlignmentSideEnum m_alignmentSide;
+
+        private byte m_alignmentValue;
+        private int m_characterPower;
+        private ushort m_dishonor;
 
         public AlignmentSideEnum AlignmentSide
         {
-            get { return m_alignmentSide; }
+            get
+            {
+                return m_alignmentSide;
+            }
             private set
             {
                 m_alignmentSide = value;
@@ -63,11 +119,12 @@ namespace Stump.Server.WorldServer.World.Actors.RolePlay.Characters
             }
         }
 
-        private byte m_alignmentValue;
-
         public byte AlignmentValue
         {
-            get { return m_alignmentValue; }
+            get
+            {
+                return m_alignmentValue;
+            }
             private set
             {
                 m_alignmentValue = value;
@@ -75,11 +132,12 @@ namespace Stump.Server.WorldServer.World.Actors.RolePlay.Characters
             }
         }
 
-        private byte m_alignmentGrade;
-
         public byte AlignmentGrade
         {
-            get { return m_alignmentGrade; }
+            get
+            {
+                return m_alignmentGrade;
+            }
             private set
             {
                 m_alignmentGrade = value;
@@ -87,11 +145,12 @@ namespace Stump.Server.WorldServer.World.Actors.RolePlay.Characters
             }
         }
 
-        private ushort m_dishonor;
-
         public ushort Dishonor
         {
-            get { return m_dishonor; }
+            get
+            {
+                return m_dishonor;
+            }
             private set
             {
                 m_dishonor = value;
@@ -99,11 +158,12 @@ namespace Stump.Server.WorldServer.World.Actors.RolePlay.Characters
             }
         }
 
-        private int m_characterPower;
-
         public int CharacterPower
         {
-            get { return m_characterPower; }
+            get
+            {
+                return m_characterPower;
+            }
             private set
             {
                 m_characterPower = value;
@@ -132,7 +192,8 @@ namespace Stump.Server.WorldServer.World.Actors.RolePlay.Characters
         {
             base.InitializeValidators();
 
-            m_actorAlignmentInformations = new ObjectValidator<ActorAlignmentInformations>(BuildActorAlignmentInformations);
+            m_actorAlignmentInformations =
+                new ObjectValidator<ActorAlignmentInformations>(BuildActorAlignmentInformations);
             m_actorAlignmentInformations.ObjectInvalidated += OnAlignementInvalidation;
         }
 
@@ -184,7 +245,6 @@ namespace Stump.Server.WorldServer.World.Actors.RolePlay.Characters
                 Look,
                 (byte) Breed,
                 Sex == SexTypeEnum.SEX_FEMALE);
-                
         }
 
         #endregion
