@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -13,16 +12,18 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
 {
     public class D2OReader
     {
-        private const int NullIdentifier = unchecked((int)0xAAAAAAAA);
+        private const int NullIdentifier = unchecked((int) 0xAAAAAAAA);
 
         /// <summary>
         /// Contains all assembly where the reader search d2o class
         /// </summary>
         public static List<Assembly> ClassesContainers = new List<Assembly>
-                                                             {
-                                                                 typeof (Breed).Assembly
-                                                             };
-        private static Dictionary<Type, Func<object[], object>> objectCreators = new Dictionary<Type, Func<object[], object>>();
+            {
+                typeof (Breed).Assembly
+            };
+
+        private static readonly Dictionary<Type, Func<object[], object>> objectCreators =
+            new Dictionary<Type, Func<object[], object>>();
 
         private readonly string m_filePath;
 
@@ -111,7 +112,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
             m_indextablelen = m_reader.ReadInt();
 
             // init table index
-            m_indextable = new Dictionary<int, int>(m_indextablelen / 8);
+            m_indextable = new Dictionary<int, int>(m_indextablelen/8);
             for (int i = 0; i < m_indextablelen; i += 8)
             {
                 m_indextable.Add(m_reader.ReadInt(), m_reader.ReadInt());
@@ -136,15 +137,15 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
                 for (int l = 0; l < fieldscount; l++)
                 {
                     string fieldname = m_reader.ReadUTF();
-                    var fieldtype = (D2OFieldType)m_reader.ReadInt();
+                    var fieldtype = (D2OFieldType) m_reader.ReadInt();
 
                     var vectorTypes = new List<Tuple<D2OFieldType, string>>();
                     if (fieldtype == D2OFieldType.List)
                     {
-                    addVectorType:
+                        addVectorType:
 
                         string name = m_reader.ReadUTF();
-                        var id = (D2OFieldType)m_reader.ReadInt();
+                        var id = (D2OFieldType) m_reader.ReadInt();
                         vectorTypes.Add(Tuple.Create(id, name));
 
                         if (id == D2OFieldType.List)
@@ -153,7 +154,8 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
 
                     FieldInfo field = classType.GetField(fieldname);
 
-                    fields.Add(new D2OFieldDefinition(fieldname, fieldtype, field, m_reader.BaseStream.Position, vectorTypes.ToArray()));
+                    fields.Add(new D2OFieldDefinition(fieldname, fieldtype, field, m_reader.BaseStream.Position,
+                                                      vectorTypes.ToArray()));
                 }
 
                 m_classes.Add(classId,
@@ -186,7 +188,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
         /// <returns></returns>
         public Dictionary<int, T> ReadObjects<T>(bool allownulled = false)
         {
-            if (!IsTypeDefined(typeof(T)))
+            if (!IsTypeDefined(typeof (T)))
                 throw new Exception("The file doesn't contain this class");
 
             var result = new Dictionary<int, T>(m_indextable.Count);
@@ -199,12 +201,12 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
 
                     int classid = reader.ReadInt();
 
-                    if (m_classes[classid].ClassType == typeof(T) ||
-                        m_classes[classid].ClassType.IsSubclassOf(typeof(T)))
+                    if (m_classes[classid].ClassType == typeof (T) ||
+                        m_classes[classid].ClassType.IsSubclassOf(typeof (T)))
                     {
                         try
                         {
-                            result.Add(index.Key, (T)BuildObject(m_classes[classid], reader));
+                            result.Add(index.Key, (T) BuildObject(m_classes[classid], reader));
                         }
                         catch
                         {
@@ -253,14 +255,19 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
         /// <summary>
         ///   Get an object from his index
         /// </summary>
-        /// <param name = "index"></param>
+        /// <param name="cloneReader">When sets to true it copies the reader to have a thread safe method</param>
         /// <returns></returns>
-        public object ReadObject(int index)
+        public object ReadObject(int index, bool cloneReader = false)
         {
-            using (BigEndianReader reader = CloneReader())
+            if (cloneReader)
             {
-                return ReadObject(index, reader);
+                using (BigEndianReader reader = CloneReader())
+                {
+                    return ReadObject(index, reader);
+                }
             }
+
+            return ReadObject(index, m_reader);
         }
 
         private object ReadObject(int index, BigEndianReader reader)
@@ -279,8 +286,9 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
         {
             if (!objectCreators.ContainsKey(classDefinition.ClassType))
             {
-                var creator = CreateObjectBuilder(classDefinition.ClassType,
-                                                  classDefinition.Fields.Select(entry => entry.Value.FieldInfo).ToArray());
+                Func<object[], object> creator = CreateObjectBuilder(classDefinition.ClassType,
+                                                                     classDefinition.Fields.Select(
+                                                                         entry => entry.Value.FieldInfo).ToArray());
 
                 objectCreators.Add(classDefinition.ClassType, creator);
             }
@@ -302,7 +310,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
                     catch
                     {
                         throw new Exception(string.Format("Field '{0}.{1}' is not of type '{2}'", classDefinition.Name,
-                                  field.Name, fieldValue.GetType()));
+                                                          field.Name, fieldValue.GetType()));
                     }
                 }
                 else
@@ -325,7 +333,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
 
         private T ReadObject<T>(int index, BigEndianReader reader)
         {
-            if (!IsTypeDefined(typeof(T)))
+            if (!IsTypeDefined(typeof (T)))
                 throw new Exception("The file doesn't contain this class");
 
             int offset = m_indextable[index];
@@ -333,11 +341,11 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
 
             int classid = reader.ReadInt();
 
-            if (m_classes[classid].ClassType != typeof(T) && !m_classes[classid].ClassType.IsSubclassOf(typeof(T)))
+            if (m_classes[classid].ClassType != typeof (T) && !m_classes[classid].ClassType.IsSubclassOf(typeof (T)))
                 throw new Exception(string.Format("Wrong type, try to read object with {1} instead of {0}",
-                                                  typeof(T).Name, m_classes[classid].ClassType.Name));
+                                                  typeof (T).Name, m_classes[classid].ClassType.Name));
 
-            return (T)BuildObject(m_classes[classid], reader);
+            return (T) BuildObject(m_classes[classid], reader);
         }
 
         public Dictionary<int, D2OClassDefinition> GetClasses()
@@ -351,18 +359,16 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
         /// </summary>
         public D2OClassDefinition GetClass(int index)
         {
-            using (BigEndianReader reader = CloneReader())
-            {
-                int offset = m_indextable[index];
-                reader.Seek(offset, SeekOrigin.Begin);
+            int offset = m_indextable[index];
+            m_reader.Seek(offset, SeekOrigin.Begin);
 
-                int classid = reader.ReadInt();
+            int classid = m_reader.ReadInt();
 
-                return m_classes[classid];
-            }
+            return m_classes[classid];
         }
 
-        private object ReadField(BigEndianReader reader, D2OFieldDefinition field, D2OFieldType typeId, int vectorDimension = 0)
+        private object ReadField(BigEndianReader reader, D2OFieldDefinition field, D2OFieldType typeId,
+                                 int vectorDimension = 0)
         {
             switch (typeId)
             {
@@ -396,7 +402,14 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
                 vectorType = vectorType.GetGenericArguments()[0];
             }
 
-            var result = (IList)Activator.CreateInstance(vectorType);
+            if (!objectCreators.ContainsKey(vectorType))
+            {
+                Func<object[], object> creator = CreateObjectBuilder(vectorType, new FieldInfo[0]);
+
+                objectCreators.Add(vectorType, creator);
+            }
+
+            var result = objectCreators[vectorType](new object[0]) as IList;
 
             for (int i = 0; i < count; i++)
             {
@@ -473,7 +486,8 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
             IEnumerable<Type> fieldsType = from entry in fields
                                            select entry.FieldType;
 
-            var method = new DynamicMethod(Guid.NewGuid().ToString("N"), typeof(object), new[] { typeof(object[]) }.ToArray());
+            var method = new DynamicMethod(Guid.NewGuid().ToString("N"), typeof (object),
+                                           new[] {typeof (object[])}.ToArray());
 
             ILGenerator ilGenerator = method.GetILGenerator();
 
@@ -504,7 +518,9 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
             ilGenerator.Emit(OpCodes.Ldloc_1);
             ilGenerator.Emit(OpCodes.Ret);
 
-            return (Func<object[], object>)method.CreateDelegate(Expression.GetFuncType(new[] { typeof(object[]), typeof(object) }.ToArray()));
+            return
+                (Func<object[], object>)
+                method.CreateDelegate(Expression.GetFuncType(new[] {typeof (object[]), typeof (object)}.ToArray()));
         }
     }
 }

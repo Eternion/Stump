@@ -27,7 +27,7 @@ namespace Stump.Core.Reflection
         }
 
         /// <summary>
-        /// Create a delegate for an action, flemme pour une fonction x]
+        /// Create a delegate for an action
         /// </summary>
         /// <param name="method"></param>
         /// <param name="delegParams"></param>

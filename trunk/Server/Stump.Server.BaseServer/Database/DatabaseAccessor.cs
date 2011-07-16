@@ -11,6 +11,7 @@ using Castle.ActiveRecord.Framework.Config;
 using MySql.Data.MySqlClient;
 using NLog;
 using Stump.Core.Threading;
+using Stump.Server.BaseServer.Database.Interfaces;
 
 namespace Stump.Server.BaseServer.Database
 {

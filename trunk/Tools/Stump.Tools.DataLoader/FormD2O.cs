@@ -56,6 +56,45 @@ namespace Stump.Tools.DataLoader
             return row;
         }
 
+        public DataGridViewRow[] AddRows(IEnumerable<object[]> values)
+        {
+            var rows = new List<DataGridViewRow>();
+
+            foreach (var value in values)
+            {
+                var row = new DataGridViewRow();
+
+                foreach (object obj in value)
+                {
+                    if (obj is IEnumerable && !(obj is string))
+                    {
+                        var cell = new DataGridViewTextBoxCell
+                        {
+                            Value = GetEnumerableValue(obj as IEnumerable),
+                            Tag = obj,
+                        };
+                        row.Cells.Add(cell);
+                    }
+                    else
+                    {
+                        var cell = new DataGridViewTextBoxCell
+                        {
+                            Value = obj,
+                            Tag = obj,
+                        };
+                        row.Cells.Add(cell);
+                    }
+                }
+
+                rows.Add(row);
+            }
+
+            var result = rows.ToArray();
+
+            m_dataView.Rows.AddRange(result);
+            return result;
+        }
+
         private static string GetEnumerableValue(IEnumerable enumerable)
         {
             string result = "{";

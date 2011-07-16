@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Castle.ActiveRecord;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
@@ -16,6 +17,7 @@ namespace Stump.Tools.CacheManager
         {
             TableType = tableType;
             ClassAttribute = tableType.GetCustomAttribute<D2OClassAttribute>();
+            TableName = tableType.GetCustomAttribute<ActiveRecordAttribute>().Table;
 
             if (ClassAttribute == null)
                 throw new Exception("A d2o table must have the D2OClass attribute");
@@ -31,6 +33,12 @@ namespace Stump.Tools.CacheManager
                                                     select new D2OTableField(entry);
 
             Fields = (fields.Concat(properties)).ToArray();
+        }
+
+        public string TableName
+        {
+            get;
+            set;
         }
 
         public D2OClassAttribute ClassAttribute

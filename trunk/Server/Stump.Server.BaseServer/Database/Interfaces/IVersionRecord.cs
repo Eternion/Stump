@@ -1,7 +1,6 @@
 using System;
-using Castle.ActiveRecord;
 
-namespace Stump.Server.BaseServer.Database
+namespace Stump.Server.BaseServer.Database.Interfaces
 {
     public interface IVersionRecord
     {

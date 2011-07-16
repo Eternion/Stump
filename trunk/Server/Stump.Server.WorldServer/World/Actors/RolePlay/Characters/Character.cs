@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.World.Maps;
 using Stump.Server.WorldServer.World.Maps.Cells;
 
 namespace Stump.Server.WorldServer.World.Actors.RolePlay.Characters
@@ -15,6 +16,8 @@ namespace Stump.Server.WorldServer.World.Actors.RolePlay.Characters
         {
             m_record = record;
             Client = client;
+
+            LoadRecord();
         }
 
         public WorldClient Client
@@ -62,29 +65,28 @@ namespace Stump.Server.WorldServer.World.Actors.RolePlay.Characters
             }
         }
 
-        public override ObjectPosition Position
+        public PlayableBreedEnum Breed
         {
             get
             {
-                // todo
-                return base.Position;
+                return m_record.Breed;
             }
-            protected set
+            private set
             {
-                base.Position = value;
+                m_record.Breed = value;
             }
-        }
-
-        public PlayableBreedEnum Breed
-        {
-            get;
-            set;
         }
 
         public SexTypeEnum Sex
         {
-            get;
-            set;
+            get
+            {
+                return m_record.Sex;
+            }
+            private set
+            {
+                m_record.Sex = value;
+            }
         }
 
         #region Stats
@@ -92,7 +94,7 @@ namespace Stump.Server.WorldServer.World.Actors.RolePlay.Characters
         public byte Level
         {
             get;
-            set;
+            private set;
         }
 
         #endregion
@@ -173,7 +175,7 @@ namespace Stump.Server.WorldServer.World.Actors.RolePlay.Characters
 
         #endregion
 
-        #region Save
+        #region Save & Load
 
         public void SaveLater()
         {
@@ -182,6 +184,17 @@ namespace Stump.Server.WorldServer.World.Actors.RolePlay.Characters
 
         public void SaveNow()
         {
+        }
+
+        private void LoadRecord()
+        {
+            Map map = World.Instance.GetMap(m_record.MapId);
+            Position = new ObjectPosition(
+                map,
+                map.Cells[m_record.CellId],
+                m_record.Direction);
+
+            Level = ExperienceManager.Instance.GetCharacterLevel(m_record.Experience);
         }
 
         #endregion

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Castle.ActiveRecord;
 using Stump.Core.Extensions;
+using Stump.Server.BaseServer.Database.Interfaces;
 
 namespace Stump.Server.BaseServer.Database
 {

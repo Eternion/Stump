@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using NLog;
 using Stump.Core.IO;
 using Stump.Core.Xml.Config;
@@ -14,13 +15,16 @@ namespace Stump.Tools.CacheManager
     internal class Program
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        public static string D2OFolder = "./data/";
 
         public static string AuthConfigPath = "../../../../GUI/Stump.GUI.AuthConsole/auth_config.xml";
         public static string WorldConfigPath = "../../../../GUI/Stump.GUI.WorldConsole/world_config.xml";
 
         private static void Main(string[] args)
         {
+            string dofusDataPath = args.Length == 0 ? FindDofusDataPath() : args[0];
+            string d2OFolder = Path.Combine(dofusDataPath, "common");
+            string d2IFolder = Path.Combine(dofusDataPath, "i18n");
+
             NLogHelper.DefineLogProfile(false, true);
 
             XmlConfig config;
@@ -41,7 +45,7 @@ namespace Stump.Tools.CacheManager
             dbAccessor.OpenDatabase();
 
             logger.Info("Building Auth Database...");
-            var dbBuilder = new DatabaseBuilder(typeof (AuthServer).Assembly, D2OFolder);
+            var dbBuilder = new DatabaseBuilder(typeof (AuthServer).Assembly, d2OFolder, d2IFolder);
             dbBuilder.Build();
 
             dbAccessor.CloseDatabase();
@@ -64,11 +68,57 @@ namespace Stump.Tools.CacheManager
             dbAccessor.OpenDatabase();
 
             logger.Info("Building World Database");
-            dbBuilder = new DatabaseBuilder(typeof (WorldServer).Assembly, D2OFolder);
+            dbBuilder = new DatabaseBuilder(typeof (WorldServer).Assembly, d2OFolder, d2IFolder);
             dbBuilder.Build();
 
             logger.Info("All tasks done.");
             Console.Read();
+        }
+
+        private static string FindDofusDataPath()
+        {
+            string programFiles = Environment.GetEnvironmentVariable("programfiles(x86)");
+
+            if (string.IsNullOrEmpty(programFiles))
+                programFiles = Environment.GetEnvironmentVariable("programfiles");
+
+            string dofusDataPath;
+
+            if (string.IsNullOrEmpty(programFiles))
+                dofusDataPath =  Path.Combine(AskDofusPath(), "Dofus 2", "app", "data");
+
+            dofusDataPath = Path.Combine(programFiles, "Dofus 2", "app", "data");
+
+            if (Directory.Exists(dofusDataPath))
+                return dofusDataPath;
+
+            dofusDataPath = Path.Combine(AskDofusPath(), "Dofus 2", "app", "data");
+
+            if (!Directory.Exists(dofusDataPath))
+                Exit("Dofus data path not found");
+
+            return string.Empty;
+        }
+
+        private static string AskDofusPath()
+        {
+            logger.Warn("Dofus path not found. Enter Dofus 2 root folder (%programFiles%/Dofus 2):");
+
+            return Path.GetFullPath(Console.ReadLine());
+        }
+
+        private static void Exit(string reason = "", bool error = false)
+        {
+            if (!string.IsNullOrEmpty(reason))
+                if (error)
+                    logger.Error(reason);
+                else
+                    logger.Info(reason);
+
+            Console.WriteLine("Press enter to exit");
+            Console.Read();
+
+            Environment.Exit(-1);
         }
     }
 }

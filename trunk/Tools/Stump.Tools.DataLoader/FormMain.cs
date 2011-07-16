@@ -66,7 +66,10 @@ namespace Stump.Tools.DataLoader
 
                 var adapter = (IFileAdapter)Activator.CreateInstance(m_adapters[ext], fileName);
 
+                labelLoading.Visible = true;
+                Refresh();
                 adapter.Open();
+                labelLoading.Visible = false;
 
                 adapter.Form.MdiParent = this;
                 adapter.Form.Show();
@@ -117,6 +120,12 @@ namespace Stump.Tools.DataLoader
                     OpenFile(file.ToString());
                 }
             }
+        }
+
+        private void FormMainResize(object sender, EventArgs e)
+        {
+            labelLoading.Top = Height / 2 - labelLoading.Height / 2;
+            labelLoading.Left = Width / 2 - labelLoading.Width / 2;
         }
     }
 }

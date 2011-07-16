@@ -109,7 +109,9 @@
     <Compile Include="Database\ActiveRecordHelper.cs" />
     <Compile Include="Database\DatabaseAccessor.cs" />
     <Compile Include="Database\DatabaseConfiguration.cs" />
-    <Compile Include="Database\IVersionRecord.cs" />
+    <Compile Include="Database\Interfaces\ITextRecord.cs" />
+    <Compile Include="Database\Interfaces\ITextUIRecord.cs" />
+    <Compile Include="Database\Interfaces\IVersionRecord.cs" />
     <Compile Include="Definitions.cs" />
     <Compile Include="Handler\IHandlerContainer.cs" />
     <Compile Include="Initialization\InitializationAttribute.cs" />

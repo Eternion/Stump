@@ -1,6 +1,7 @@
 ﻿using System;
 using Castle.ActiveRecord;
 using Stump.Server.BaseServer.Database;
+using Stump.Server.BaseServer.Database.Interfaces;
 
 namespace Stump.Server.AuthServer.Database
 {

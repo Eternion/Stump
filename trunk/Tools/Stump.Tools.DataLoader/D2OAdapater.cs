@@ -20,11 +20,12 @@ namespace Stump.Tools.DataLoader
         private D2OReader m_d2OReader;
         private FormD2O m_form;
 
-            static D2OAdapater()
+        static D2OAdapater()
         {
             foreach (Type type in typeof (D2OClassAttribute).Assembly.GetTypes())
             {
-                var attribute = type.GetCustomAttributes(typeof (D2OClassAttribute), false).FirstOrDefault() as D2OClassAttribute;
+                var attribute =
+                    type.GetCustomAttributes(typeof (D2OClassAttribute), false).FirstOrDefault() as D2OClassAttribute;
 
                 if (attribute != null)
                 {
@@ -44,25 +45,37 @@ namespace Stump.Tools.DataLoader
             : this()
         {
             FileName = file;
-
-            
         }
 
         #region IFileAdapter Members
 
-        public string FileName { get; private set; }
+        public string FileName
+        {
+            get;
+            private set;
+        }
 
         public string ExtensionSupport
         {
-            get { return "d2o"; }
+            get
+            {
+                return "d2o";
+            }
         }
 
         public Form Form
         {
-            get { return m_form; }
+            get
+            {
+                return m_form;
+            }
         }
 
-        public ToolStripMenuItem MenuItem { get; private set; }
+        public ToolStripMenuItem MenuItem
+        {
+            get;
+            private set;
+        }
 
         public void Open()
         {
@@ -72,10 +85,10 @@ namespace Stump.Tools.DataLoader
                 throw new ArgumentException(string.Format("'{0}' is not a valid D2O file", FileName));
 
             m_form = new FormD2O(this)
-                         {
-                             Text = Path.GetFileName(FileName),
-                             Adapter = this
-                         };
+                {
+                    Text = Path.GetFileName(FileName),
+                    Adapter = this
+                };
             FillDataView();
         }
 
@@ -94,39 +107,25 @@ namespace Stump.Tools.DataLoader
             string[] columns = classes.Values.First().Fields.Select(entry => entry.Key).ToArray();
             m_form.DefineColumns(columns);
 
-            var copy = new ConcurrentStack<object>();
-            foreach (var @class in classes)
+            Dictionary<int, object> objects = m_d2OReader.ReadObjects(true);
+
+            m_form.AddRows(from entry in objects.Values
+                           select entry != null ? GetObjectFieldsValue(entry, columns) : new object[] { "(null or error)" });
+        }
+
+        private static object[] GetObjectFieldsValue(object obj, string[] columns)
+        {
+            Dictionary<string, object> fields =
+                obj.GetType().GetFields(BindingFlags.Public | BindingFlags.GetField | BindingFlags.Instance).
+                ToDictionary(entry => entry.Name, entry => entry.GetValue(obj));
+
+            var values = new object[columns.Length];
+            for (int i = 0; i < columns.Length; i++)
             {
-                try
-                {
-                    object data = m_d2OReader.ReadObject(@class.Key);
-
-                    if (data != null)
-                    {
-                        var fields =
-                            data.GetType().GetFields(BindingFlags.Public | BindingFlags.GetField | BindingFlags.Instance)
-                                .
-                                ToDictionary(entry => entry.Name, entry => entry.GetValue(data));
-
-                        var values = new object[columns.Length];
-                        for (int i = 0; i < columns.Length; i++)
-                        {
-                            values[i] = fields[columns[i]];
-                        }
-
-                        var row = m_form.AddRow(values);
-                        row.Tag = data;
-                    }
-                    else
-                    {
-                        m_form.AddRow("(null)");
-                    }
-                }
-                catch
-                {
-                    m_form.AddRow(string.Format("Error thrown when parsing (?) <id:{0}>", @class.Key));
-                }
+                values[i] = fields[columns[i]];
             }
+
+            return values;
         }
 
         private void AttachToI18N(object sender, EventArgs eventArgs)
@@ -135,18 +134,18 @@ namespace Stump.Tools.DataLoader
                                 select entry.HeaderText).ToArray();
 
             var dialogSelect = new FormSelect(columns, columns.Where(entry => entry.ToLower().Contains("nameid")))
-                                   {Text = @"Select columns to convert..."};
+                {Text = @"Select columns to convert..."};
 
             if (dialogSelect.ShowDialog(Form) == DialogResult.OK)
             {
                 var dialog = new OpenFileDialog
-                                 {
-                                     Title = @"Select the d2i file used to found the text by the name's id...",
-                                     CheckFileExists = true,
-                                     CheckPathExists = true,
-                                     Filter = @"d2i files (*.d2i)|*.d2i",
-                                     Multiselect = false
-                                 };
+                    {
+                        Title = @"Select the d2i file used to found the text by the name's id...",
+                        CheckFileExists = true,
+                        CheckPathExists = true,
+                        Filter = @"d2i files (*.d2i)|*.d2i",
+                        Multiselect = false
+                    };
 
                 if (m_lastI18NFile != null || dialog.ShowDialog(Form) == DialogResult.OK)
                 {
@@ -190,10 +189,10 @@ namespace Stump.Tools.DataLoader
         private void ToJson(object sender, EventArgs eventArgs)
         {
             var dialog = new SaveFileDialog
-                             {
-                                 Title = @"Create the output JSON file",
-                                 FileName = Path.GetFileNameWithoutExtension(FileName) + ".json",
-                             };
+                {
+                    Title = @"Create the output JSON file",
+                    FileName = Path.GetFileNameWithoutExtension(FileName) + ".json",
+                };
 
             if (dialog.ShowDialog(Form) == DialogResult.OK)
             {
@@ -215,7 +214,7 @@ namespace Stump.Tools.DataLoader
 
                                 if (entry.Tag is Tuple<uint, string>)
                                 {
-                                    return ( entry.Tag as Tuple<uint, string> ).Item2;
+                                    return (entry.Tag as Tuple<uint, string>).Item2;
                                 }
 
                                 return entry.Tag;

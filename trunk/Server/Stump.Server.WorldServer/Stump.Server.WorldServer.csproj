@@ -64,6 +64,8 @@
     <Compile Include="Database\Characters\CharacterRecord.cs" />
     <Compile Include="Database\Characters\ExperienceRecord.cs" />
     <Compile Include="Database\Characters\Restrictions.cs" />
+    <Compile Include="Database\I18n\TextRecord.cs" />
+    <Compile Include="Database\I18n\TextUIRecord.cs" />
     <Compile Include="Database\WorldBaseRecord.cs" />
     <Compile Include="Database\WorldVersionRecord.cs" />
     <Compile Include="Database\World\AreaRecord.cs" />

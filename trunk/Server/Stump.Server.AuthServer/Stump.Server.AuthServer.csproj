@@ -50,6 +50,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\I18n\TextUIRecord.cs" />
+    <Compile Include="Database\I18n\TextRecord.cs" />
     <Compile Include="IO\AuthConsole.cs" />
     <Compile Include="AuthServer.cs" />
     <Compile Include="Commands\AccountCommands.cs" />
