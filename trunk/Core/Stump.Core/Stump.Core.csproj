@@ -80,6 +80,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="zlib.net">
+      <HintPath>..\..\Library\zlib.net.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\Cyclic.cs" />
@@ -102,6 +105,7 @@
     <Compile Include="IO\Watchers\FileWatcherManager.cs" />
     <Compile Include="IO\IDataReader.cs" />
     <Compile Include="IO\IDataWriter.cs" />
+    <Compile Include="IO\ZipHelper.cs" />
     <Compile Include="Mathematics\FastRandom.cs" />
     <Compile Include="Reflection\AccessorBuilder.cs" />
     <Compile Include="Reflection\DynamicSwitchExecutor.cs" />

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using BrendanGrant.Helpers.FileAssociation;
+using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Tools.DataLoader.Properties;
 
 namespace Stump.Tools.DataLoader

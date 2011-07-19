@@ -48,13 +48,13 @@ namespace Stump.Server.WorldServer.Database.World
         ///   Zone Id which owns this map.
         /// </summary>
         [Property]
-        public int ZoneId
+        public int SubAreaId
         {
             get;
             set;
         }
 
-        [BelongsTo("PositionId")]
+        [OneToOne]
         public MapPositionRecord Position
         {
             get;

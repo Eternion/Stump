@@ -8,12 +8,15 @@ using Stump.Server.AuthServer.Database;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database;
+using Stump.Tools.CacheManager.SQL;
 using Definitions = Stump.Server.AuthServer.Definitions;
 
 namespace Stump.Tools.CacheManager
 {
     internal class Program
     {
+        public static MySqlAccessor DBAccessor;
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public static string AuthConfigPath = "../../../../GUI/Stump.GUI.AuthConsole/auth_config.xml";
@@ -21,9 +24,10 @@ namespace Stump.Tools.CacheManager
 
         private static void Main(string[] args)
         {
-            string dofusDataPath = args.Length == 0 ? FindDofusDataPath() : args[0];
-            string d2OFolder = Path.Combine(dofusDataPath, "common");
-            string d2IFolder = Path.Combine(dofusDataPath, "i18n");
+            string dofusPath = args.Length == 0 ? FindDofusPath() : args[0];
+            string d2OFolder = Path.Combine(dofusPath, "data", "common");
+            string d2IFolder = Path.Combine(dofusPath, "data", "i18n");
+            string mapsFolder = Path.Combine(dofusPath, "content", "maps");
 
             NLogHelper.DefineLogProfile(false, true);
 
@@ -37,18 +41,14 @@ namespace Stump.Tools.CacheManager
             }
 
             logger.Info("Opening Auth Database");
-            var dbAccessor = new DatabaseAccessor(AuthServer.DatabaseConfiguration,
-                                                  Definitions.DatabaseRevision,
-                                                  typeof (AuthBaseRecord<>),
-                                                  typeof (AuthServer).Assembly);
-            dbAccessor.Initialize();
-            dbAccessor.OpenDatabase();
+            DBAccessor = new MySqlAccessor(AuthServer.DatabaseConfiguration);
+            DBAccessor.Open();
 
             logger.Info("Building Auth Database...");
             var dbBuilder = new DatabaseBuilder(typeof (AuthServer).Assembly, d2OFolder, d2IFolder);
             dbBuilder.Build();
 
-            dbAccessor.CloseDatabase();
+            DBAccessor.Close();
 
             if (!string.IsNullOrEmpty(WorldConfigPath))
             {
@@ -60,22 +60,21 @@ namespace Stump.Tools.CacheManager
             }
 
             logger.Info("Opening World Database");
-            dbAccessor = new DatabaseAccessor(WorldServer.DatabaseConfiguration,
-                                              Server.WorldServer.Definitions.DatabaseRevision,
-                                              typeof (WorldBaseRecord<>),
-                                              typeof (WorldServer).Assembly);
-            dbAccessor.Initialize();
-            dbAccessor.OpenDatabase();
+            DBAccessor = new MySqlAccessor(WorldServer.DatabaseConfiguration);
+            DBAccessor.Open();
 
             logger.Info("Building World Database");
+            Maps.MapLoader.LoadMaps(mapsFolder);
             dbBuilder = new DatabaseBuilder(typeof (WorldServer).Assembly, d2OFolder, d2IFolder);
             dbBuilder.Build();
+
+            DBAccessor.Close();
 
             logger.Info("All tasks done.");
             Console.Read();
         }
 
-        private static string FindDofusDataPath()
+        private static string FindDofusPath()
         {
             string programFiles = Environment.GetEnvironmentVariable("programfiles(x86)");
 
@@ -85,14 +84,14 @@ namespace Stump.Tools.CacheManager
             string dofusDataPath;
 
             if (string.IsNullOrEmpty(programFiles))
-                dofusDataPath =  Path.Combine(AskDofusPath(), "Dofus 2", "app", "data");
+                dofusDataPath =  Path.Combine(AskDofusPath(), "app");
 
-            dofusDataPath = Path.Combine(programFiles, "Dofus 2", "app", "data");
+            dofusDataPath = Path.Combine(programFiles, "Dofus 2", "app");
 
             if (Directory.Exists(dofusDataPath))
                 return dofusDataPath;
 
-            dofusDataPath = Path.Combine(AskDofusPath(), "Dofus 2", "app", "data");
+            dofusDataPath = Path.Combine(AskDofusPath(), "app");
 
             if (!Directory.Exists(dofusDataPath))
                 Exit("Dofus data path not found");

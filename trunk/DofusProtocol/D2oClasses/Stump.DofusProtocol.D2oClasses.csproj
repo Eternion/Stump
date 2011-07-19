@@ -227,6 +227,7 @@
     <Compile Include="Tool\D2OReader.cs" />
     <Compile Include="Tool\D2OWriter.cs" />
     <Compile Include="Tool\I18nFile.cs" />
+    <Compile Include="Tool\PakFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">

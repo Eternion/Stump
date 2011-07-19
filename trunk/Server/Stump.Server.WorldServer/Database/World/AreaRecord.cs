@@ -11,8 +11,6 @@ namespace Stump.Server.WorldServer.Database.World
     [D2OClass("Area", "com.ankamagames.dofus.datacenter.world")]
     public sealed class AreaRecord : WorldBaseRecord<AreaRecord>
     {
-       private SuperAreaRecord m_superArea;
-
        [D2OField("id")]
        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
        public int Id
@@ -29,29 +27,12 @@ namespace Stump.Server.WorldServer.Database.World
            set;
        }
 
-       /// <summary>
-       /// Internal Only. Do not use
-       /// </summary>
        [D2OField("superAreaId")]
+       [Property("SubAreaId")]
        public int SuperAreaId
        {
            get;
            set;
-       }
-
-       [BelongsTo("SubAreaId")]
-       public SuperAreaRecord SuperArea
-       {
-           get
-           {
-               return m_superArea;
-           }
-           set
-           {
-               if (value != null)
-                SuperAreaId = value.Id;
-               m_superArea = value;
-           }
        }
 
        [D2OField("containHouses")]
@@ -76,19 +57,6 @@ namespace Stump.Server.WorldServer.Database.World
        {
            get;
            set;
-       }
-
-       protected override bool BeforeSave(IDictionary state)
-       {
-           // that's a hack to update SuperAreaId field without setting SubArea property.
-           if (SuperArea == null && SuperAreaId > 0)
-               SuperArea = new SuperAreaRecord
-               {
-                   Id = SuperAreaId
-               };
-
-
-           return base.BeforeSave(state);
        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Tools.DataLoader.Properties;
 
 namespace Stump.Tools.DataLoader

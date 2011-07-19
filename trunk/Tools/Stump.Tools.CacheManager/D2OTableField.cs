@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using Castle.ActiveRecord;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses.Tool;
 
@@ -20,9 +21,16 @@ namespace Stump.Tools.CacheManager
         {
             m_property = property;
             Attribute = property.GetCustomAttribute<D2OFieldAttribute>();
+            DBAttribute = property.GetCustomAttribute<PropertyAttribute>();
         }
 
         public D2OFieldAttribute Attribute
+        {
+            get;
+            set;
+        }
+
+        public PropertyAttribute DBAttribute
         {
             get;
             set;

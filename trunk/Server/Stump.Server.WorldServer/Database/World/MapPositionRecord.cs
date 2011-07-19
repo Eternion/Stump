@@ -13,12 +13,19 @@ namespace Stump.Server.WorldServer.Database.World
     [D2OClass("MapPosition", "com.ankamagames.dofus.datacenter.world")]
     public sealed class MapPositionRecord : WorldBaseRecord<MapPositionRecord>
     {
+        private int m_mapId;
         private DPoint m_pos;
-        private SubAreaRecord m_subArea;
 
         [D2OField("id")]
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+        [PrimaryKey(PrimaryKeyType.Foreign, "Id")]
         public int Id
+        {
+            get;
+            set;
+        }
+
+        [OneToOne]
+        public MapRecord Map
         {
             get;
             set;
@@ -28,40 +35,22 @@ namespace Stump.Server.WorldServer.Database.World
         [Property("PosX")]
         public int PosX
         {
-            get
-            {
-                return m_pos.X;
-            }
-            set
-            {
-                m_pos.X = value;
-            }
+            get { return m_pos.X; }
+            set { m_pos.X = value; }
         }
 
         [D2OField("posY")]
         [Property("PosY")]
         public int PosY
         {
-            get
-            {
-                return m_pos.Y;
-            }
-            set
-            {
-                m_pos.Y = value;
-            }
+            get { return m_pos.Y; }
+            set { m_pos.Y = value; }
         }
 
         public DPoint Pos
         {
-            get
-            {
-                return m_pos;
-            }
-            set
-            {
-                m_pos = value;
-            }
+            get { return m_pos; }
+            set { m_pos = value; }
         }
 
         [D2OField("outdoor")]
@@ -72,29 +61,12 @@ namespace Stump.Server.WorldServer.Database.World
             set;
         }
 
-        /// <summary>
-        /// Internal Only. Do not use
-        /// </summary>
         [D2OField("subAreaId")]
+        [Property("SubAreaId")]
         public int SubAreaId
         {
             get;
             set;
-        }
-
-        [BelongsTo("SubAreaId")]
-        public SubAreaRecord SubArea
-        {
-            get
-            {
-                return m_subArea;
-            }
-            set
-            {
-                if (value != null)
-                    SubAreaId = value.Id;
-                m_subArea = value;
-            }
         }
 
         [D2OField("capabilities")]
@@ -127,18 +99,6 @@ namespace Stump.Server.WorldServer.Database.World
         {
             get;
             set;
-        }
-
-        protected override bool BeforeSave(IDictionary state)
-        {
-            if (SubArea == null && SubAreaId > 0)
-                SubArea = new SubAreaRecord
-                    {
-                        Id = SubAreaId
-                    };
-
-
-            return base.BeforeSave(state);
         }
     }
 }

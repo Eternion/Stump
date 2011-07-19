@@ -4,14 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Castle.ActiveRecord;
 using NLog;
-using Stump.Core.Extensions;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
-using Stump.Server.BaseServer.Database.Interfaces;
-using Stump.Server.WorldServer.Database.World;
+using Stump.Tools.CacheManager.SQL;
 
 namespace Stump.Tools.CacheManager
 {
@@ -20,8 +19,8 @@ namespace Stump.Tools.CacheManager
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly Assembly m_assembly;
-        private readonly string m_d2oFolder; 
-        private string m_d2iFolder;
+        private readonly string m_d2iFolder;
+        private readonly string m_d2oFolder;
         private D2OReader[] m_d2oReaders;
 
         public DatabaseBuilder(Assembly assembly, string d2oFolder, string d2iFolder)
@@ -39,71 +38,62 @@ namespace Stump.Tools.CacheManager
 
         private void BuildD2ITables()
         {
-            var textRecordType = m_assembly.GetTypes().Where(entry => entry.Name == "TextRecord").Single();
-            var textUIRecordType = m_assembly.GetTypes().Where(entry => entry.Name == "TextUIRecord").Single();
+            Type textRecordType = m_assembly.GetTypes().Where(entry => entry.Name == "TextRecord").Single();
+            Type textUIRecordType = m_assembly.GetTypes().Where(entry => entry.Name == "TextUIRecord").Single();
 
             // delete all existing rows. BE CAREFUL !!
-            var deleteAllMethod = textRecordType.GetMethod("DeleteAll",
-                                                            BindingFlags.Static | BindingFlags.Public | BindingFlags.InvokeMethod | BindingFlags.FlattenHierarchy,
-                                                            Type.DefaultBinder, Type.EmptyTypes, null);
-            deleteAllMethod.Invoke(null, new object[0]);
-
-
-            deleteAllMethod = textUIRecordType.GetMethod("DeleteAll",
-                                                            BindingFlags.Static | BindingFlags.Public | BindingFlags.InvokeMethod | BindingFlags.FlattenHierarchy,
-                                                            Type.DefaultBinder, Type.EmptyTypes, null);
-            deleteAllMethod.Invoke(null, new object[0]);
-
+            Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildDelete("texts"));
+            Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildDelete("texts_ui"));
 
             var d2iFiles = new Dictionary<string, I18NFile>();
-            foreach (var file in Directory.EnumerateFiles(m_d2iFolder, "*.d2i"))
+            foreach (string file in Directory.EnumerateFiles(m_d2iFolder, "*.d2i"))
             {
-                var match = Regex.Match(Path.GetFileName(file), @"i18n_(\w+)\.d2i");
+                Match match = Regex.Match(Path.GetFileName(file), @"i18n_(\w+)\.d2i");
                 var i18NFile = new I18NFile(file);
 
                 d2iFiles.Add(match.Groups[1].Value, i18NFile);
             }
 
             logger.Info("Build table 'texts' ...");
-            var records = new Dictionary<int, ITextRecord>();
+            var records = new Dictionary<int, Dictionary<string, object>>();
             foreach (var file in d2iFiles)
             {
                 foreach (var text in file.Value.ReadAllText())
                 {
                     if (!records.ContainsKey(text.Key))
                     {
-                        records.Add(text.Key, Activator.CreateInstance(textRecordType) as ITextRecord);
-                        records[text.Key].Id = (uint) text.Key;
+                        records.Add(text.Key, new Dictionary<string, object>());
+                        records[text.Key].Add("Id", (uint) text.Key);
                     }
 
                     switch (file.Key)
                     {
                         case "fr":
-                            records[text.Key].Fr = text.Value;
+                            records[text.Key].Add("French", text.Value);
                             break;
                         case "en":
-                            records[text.Key].En = text.Value;
+                            records[text.Key].Add("English", text.Value);
                             break;
                         case "de":
-                            records[text.Key].De = text.Value;
+                            records[text.Key].Add("German", text.Value);
                             break;
                         case "it":
-                            records[text.Key].It = text.Value;
+                            records[text.Key].Add("Italian", text.Value);
                             break;
                         case "es":
-                            records[text.Key].Es = text.Value;
+                            records[text.Key].Add("Spanish", text.Value);
                             break;
                         case "ja":
-                            records[text.Key].Ja = text.Value;
+                            records[text.Key].Add("Japanish", text.Value);
                             break;
                         case "nl":
-                            records[text.Key].Nl = text.Value;
+                            records[text.Key].Add("Dutsh", text.Value);
                             break;
                         case "pt":
-                            records[text.Key].Pt = text.Value;
+                            records[text.Key].Add("Portugese", text.Value);
                             break;
                         case "ru":
-                            records[text.Key].Ru = text.Value;
+                            records[text.Key].Add("Russish", text.Value);
                             break;
                     }
                 }
@@ -112,57 +102,58 @@ namespace Stump.Tools.CacheManager
             int cursorLeft = Console.CursorLeft;
             int cursorTop = Console.CursorTop;
             int counter = 0;
-            foreach (var textRecord in records)
+            foreach (var record in records)
             {
-                textRecord.Value.Create();
+                Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsertInto("texts", record.Value));
                 counter++;
 
                 Console.SetCursorPosition(cursorLeft, cursorTop);
-                Console.Write("{0}/{1} ({2}%)", counter, records.Count, (int)((counter / (double)records.Count) * 100d));
+                Console.Write("{0}/{1} ({2}%)", counter, records.Count, (int) ((counter/(double) records.Count)*100d));
             }
+
             Console.SetCursorPosition(cursorLeft, cursorTop);
 
 
             logger.Info("Build table 'texts_ui' ...");
-            var recordsUI = new Dictionary<string, ITextUIRecord>();
+            var recordsUi = new Dictionary<string, Dictionary<string, object>>();
             foreach (var file in d2iFiles)
             {
                 foreach (var text in file.Value.ReadAllUiText())
                 {
-                    if (!recordsUI.ContainsKey(text.Key))
+                    if (!recordsUi.ContainsKey(text.Key))
                     {
-                        recordsUI.Add(text.Key, Activator.CreateInstance(textUIRecordType) as ITextUIRecord);
-                        recordsUI[text.Key].Name = text.Key;
+                        recordsUi.Add(text.Key, new Dictionary<string, object>());
+                        recordsUi[text.Key].Add("Name", text.Key);
                     }
 
                     switch (file.Key)
                     {
                         case "fr":
-                            recordsUI[text.Key].Fr = text.Value;
+                            recordsUi[text.Key].Add("French", text.Value);
                             break;
                         case "en":
-                            recordsUI[text.Key].En = text.Value;
+                            recordsUi[text.Key].Add("English", text.Value);
                             break;
                         case "de":
-                            recordsUI[text.Key].De = text.Value;
+                            recordsUi[text.Key].Add("German", text.Value);
                             break;
                         case "it":
-                            recordsUI[text.Key].It = text.Value;
+                            recordsUi[text.Key].Add("Italian", text.Value);
                             break;
                         case "es":
-                            recordsUI[text.Key].Es = text.Value;
+                            recordsUi[text.Key].Add("Spanish", text.Value);
                             break;
                         case "ja":
-                            recordsUI[text.Key].Ja = text.Value;
+                            recordsUi[text.Key].Add("Japanish", text.Value);
                             break;
                         case "nl":
-                            recordsUI[text.Key].Nl = text.Value;
+                            recordsUi[text.Key].Add("Dutsh", text.Value);
                             break;
                         case "pt":
-                            recordsUI[text.Key].Pt = text.Value;
+                            recordsUi[text.Key].Add("Portugese", text.Value);
                             break;
                         case "ru":
-                            recordsUI[text.Key].Ru = text.Value;
+                            recordsUi[text.Key].Add("Russish", text.Value);
                             break;
                     }
                 }
@@ -171,43 +162,39 @@ namespace Stump.Tools.CacheManager
             cursorLeft = Console.CursorLeft;
             cursorTop = Console.CursorTop;
             counter = 0;
-            foreach (var textRecord in recordsUI)
+            foreach (var record in recordsUi)
             {
-                textRecord.Value.Create();
+                Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsertInto("texts_ui", record.Value));
                 counter++;
 
                 Console.SetCursorPosition(cursorLeft, cursorTop);
-                Console.Write("{0}/{1} ({2}%)", counter, recordsUI.Count, (int)((counter / (double)recordsUI.Count) * 100d));
+                Console.Write("{0}/{1} ({2}%)", counter, records.Count, (int)((counter / (double)recordsUi.Count) * 100d));
             }
-            Console.SetCursorPosition(cursorLeft, cursorTop);
 
+            Console.SetCursorPosition(cursorLeft, cursorTop);
         }
 
         private void BuildD2OTables()
         {
-            foreach (var table in GetTables())
+            foreach (D2OTable table in GetTables())
             {
                 logger.Info("Build table '{0}' ...", table.TableName);
-                
-                var reader = FindD2OFile(table);
+
+                D2OReader reader = FindD2OFile(table);
 
                 // delete all existing rows. BE CAREFUL !!
-                var deleteAllMethod = table.TableType.GetMethod("DeleteAll",
-                                                                BindingFlags.Static | BindingFlags.Public | BindingFlags.InvokeMethod | BindingFlags.FlattenHierarchy,
-                                                                Type.DefaultBinder, Type.EmptyTypes, null);
+                Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildDelete(table.TableName));
 
-                deleteAllMethod.Invoke(null, new object[0]);
-
-                var objects = reader.ReadObjects().Values.ToArray();
+                object[] objects = reader.ReadObjects().Values.ToArray();
                 int cursorLeft = Console.CursorLeft;
                 int cursorTop = Console.CursorTop;
                 for (int i = 0; i < objects.Length; i++)
                 {
-                    var row = table.GenerateRow(objects[i]);
-                    ((ActiveRecordBase) row).Create();
+                    Dictionary<string, object> row = table.GenerateRow(objects[i]);
+                    Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsertInto(table.TableName, row));
 
                     Console.SetCursorPosition(cursorLeft, cursorTop);
-                    Console.Write("{0}/{1} ({2}%)", i, objects.Length, (int)((i / (double)objects.Length) * 100d));
+                    Console.Write("{0}/{1} ({2}%)", i, objects.Length, (int) ((i/(double) objects.Length)*100d));
                 }
 
                 Console.SetCursorPosition(cursorLeft, cursorTop);
@@ -223,18 +210,45 @@ namespace Stump.Tools.CacheManager
                    select new D2OTable(type);
         }
 
+        internal static Dictionary<string, string> GetNamesRelations(Type type)
+        {
+            var result = new Dictionary<string, string>();
+            foreach (PropertyInfo property in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+            {
+                var d2oattribute = property.GetCustomAttribute<D2OFieldAttribute>();
+                var dbattribute = property.GetCustomAttribute<PropertyAttribute>();
+
+                if (d2oattribute == null)
+                    continue;
+
+                if (dbattribute != null && !string.IsNullOrEmpty(dbattribute.Column))
+                {
+                    result.Add(d2oattribute.FieldName, dbattribute.Column);
+                }
+                else
+                {
+                    result.Add(d2oattribute.FieldName, property.Name);
+                }
+            }
+
+            return result;
+        }
+
         private D2OReader FindD2OFile(D2OTable table)
         {
             if (m_d2oReaders == null)
             {
                 m_d2oReaders = (from file in Directory.EnumerateFiles(m_d2oFolder, "*.d2o")
-                                where Path.GetExtension(file) == "d2o" // it's a fucking quirk with 3 characters length extensions
+                                where Path.GetExtension(file) == ".d2o"
+                                // it's a fucking quirk with 3 characters length extensions
                                 select new D2OReader(file)).ToArray();
             }
 
-            return m_d2oReaders.Where(entry => 
-                entry.Classes.Values.Count(subentry => subentry.Name == table.ClassAttribute.Name &&
-                    subentry.PackageName == table.ClassAttribute.PackageName) > 0).Single();
+            return m_d2oReaders.Where(entry =>
+                                      entry.Classes.Values.Count(
+                                          subentry => subentry.Name == table.ClassAttribute.Name &&
+                                                      subentry.PackageName == table.ClassAttribute.PackageName) > 0).
+                Single();
         }
     }
 }

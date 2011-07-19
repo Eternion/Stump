@@ -7,7 +7,7 @@ using Stump.DofusProtocol.D2oClasses.Tool;
 namespace Stump.Server.WorldServer.Database.World
 {
     [Serializable]
-    [ActiveRecord("superAreas")]
+    [ActiveRecord("superareas")]
     [D2OClass("SuperArea", "com.ankamagames.dofus.datacenter.world")]
     public sealed class SuperAreaRecord : WorldBaseRecord<SuperAreaRecord>
     {
@@ -29,40 +29,11 @@ namespace Stump.Server.WorldServer.Database.World
         }
 
         [D2OField("worldmapId")]
+        [Property("WorldmapId")]
         public uint WorldmapId
         {
             get;
             set;
-        }
-
-        private WorldMapRecord m_worldMap;
-
-        [BelongsTo("WorldMapId")]
-        public WorldMapRecord WorldMap
-        {
-            get
-            {
-                return m_worldMap;
-            }
-            set
-            {
-                if (value != null)
-                    WorldmapId = (uint) value.Id;
-                m_worldMap = value;
-            }
-        }
-
-        protected override bool BeforeSave(IDictionary state)
-        {
-            // that's a hack to update SubAreaId field without setting SubArea property.
-            if (WorldMap == null && WorldmapId > 0)
-                WorldMap = new WorldMapRecord
-                {
-                    Id = (int) WorldmapId
-                };
-
-
-            return base.BeforeSave(state);
         }
     }
 }
