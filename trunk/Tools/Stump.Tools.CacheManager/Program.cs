@@ -16,8 +16,8 @@ namespace Stump.Tools.CacheManager
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static string AuthConfigPath = "../../../../GUI/Stump.GUI.AuthConsole/auth_config.xml";
-        public static string WorldConfigPath = "../../../../GUI/Stump.GUI.WorldConsole/world_config.xml";
+        public static string AuthConfigPath = "../../../../Run/Debug/AuthServer/auth_config.xml";
+        public static string WorldConfigPath = "../../../../Run/Debug/WorldServer/world_config.xml";
 
         private static void Main(string[] args)
         {

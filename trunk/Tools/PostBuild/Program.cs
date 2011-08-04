@@ -23,45 +23,7 @@ namespace PostBuild
         private static void Main(string[] args)
         {
             // TODO : Docs commands & msdn'like
-            // TODO : generate config file
 
-            AppDomain.CurrentDomain.UnhandledException += (sender, e) => Console.WriteLine("Exception raised while generating config : " + e.ExceptionObject);
-            //Debugger.Launch();
-            if (args[0] == "-config")
-            {
-                string path = args[1].Replace("\"", "");
-
-                string output = Path.Combine(path, "default_config.xml");
-                var config = new XmlConfig(output); 
-
-                foreach (string file in Directory.EnumerateFiles(path, "Stump*.dll"))
-                {
-                    Assembly asm;
-                    try
-                    {
-                        if (Path.GetFileNameWithoutExtension(file) != "Stump.Core")
-                            asm = Assembly.LoadFrom(file);
-                        else
-                            continue;
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-
-                    string docPath = Path.Combine(path, Path.GetFileNameWithoutExtension(file) + ".xml");
-
-                    if (File.Exists(docPath))
-                        config.AddAssembly(asm, docPath);
-                    else
-                        config.AddAssembly(asm);
-
-                }
-
-                config.Create(true);
-
-                Console.WriteLine("Default config file generetad : {0}", output);
-            }
         }
     }
 }

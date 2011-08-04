@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
+using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.World.Actors.RolePlay;
 using Stump.Server.WorldServer.World.Actors.RolePlay.Characters;
@@ -32,11 +33,11 @@ namespace Stump.Server.WorldServer.Core.Network
             set;
         }
 
-        /*public WorldAccountRecord WorldAccount
+        public WorldAccount WorldAccount
         {
             get;
             set;
-        }*/
+        }
 
         public List<CharacterRecord> Characters
         {

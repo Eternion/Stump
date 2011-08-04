@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Commands\ParametersConverter.cs" />
     <Compile Include="Commands\Trigger\WorldConsoleTrigger.cs" />
+    <Compile Include="Database\Accounts\WorldAccount.cs" />
     <Compile Include="Database\Breeds\Breed.cs" />
     <Compile Include="Database\Breeds\LearnableSpell.cs" />
     <Compile Include="Database\Characters\CharacterRecord.cs" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
@@ -144,9 +145,17 @@ namespace Stump.Server.BaseServer
 
             logger.Info("Initializing Configuration...");
             /* Initialize Config File */
-            Config = new XmlConfig(ConfigFilePath, SchemaFilePath);
+            Config = new XmlConfig(ConfigFilePath);
             Config.AddAssemblies(LoadedAssemblies.Values.ToArray());
-            Config.Load();
+
+            if (!File.Exists(ConfigFilePath))
+            {
+                Config.Create();
+                logger.Info("Config file created");
+            }
+            else
+                Config.Load();
+
 
             /* Set Config Watcher */
             FileWatcherManager.Watch(ConfigFilePath, WatcherType.Modification,

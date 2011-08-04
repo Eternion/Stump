@@ -8,8 +8,10 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Handlers.Basic;
+using Stump.Server.WorldServer.World.Accounts;
 using Stump.Server.WorldServer.World.Actors.RolePlay;
 using Stump.Server.WorldServer.World.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.World.Breeds;
@@ -93,22 +95,18 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         {
             client.ActiveCharacter = new Character(character, client);
 
-            /*// Check if we also have a world account
+            // Check if we also have a world account
             if (client.WorldAccount == null)
             {
-                if (!WorldAccountRecord.Exists(client.Account.Id))
-                    client.WorldAccount = AccountManager.CreateWorldAccount(client);
-                else
-                    client.WorldAccount = WorldAccountRecord.FindWorldAccountById(client.Account.Id);
+                client.WorldAccount = !WorldAccount.Exists(client.Account.Id) ?
+                    AccountManager.CreateWorldAccount(client) :
+                    WorldAccount.FindById(client.Account.Id);
             }
+            
 
-            // Update LastConnection and Last Ip
-            client.WorldAccount.LastConnection = DateTime.Now;
-            client.WorldAccount.LastIp = client.IP;
-            client.WorldAccount.Update();
-
+           
             SendCharacterSelectedSuccessMessage(client);
-
+            /*
             InventoryHandler.SendInventoryContentMessage(client);
             InventoryHandler.SendInventoryWeightMessage(client);
 
@@ -134,6 +132,11 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                                                     client.Account.LastIp ?? "(null)");
 
             InitializationHandler.SendOnConnectionEventMessage(client, 2);*/
+
+            // Update LastConnection and Last Ip
+            client.WorldAccount.LastConnection = DateTime.Now;
+            client.WorldAccount.LastIp = client.IP;
+            client.WorldAccount.Update();
         }
 
         [WorldHandler(CharactersListRequestMessage.Id)]
@@ -161,8 +164,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     characterRecord.EntityLook,
                     (byte) characterRecord.Breed,
                     characterRecord.Sex != SexTypeEnum.SEX_MALE)).ToList();
-
-            characters.Add(new CharacterBaseInformations(1, 1, "lol", new EntityLook(1, new short[] {11}, new int[5], new short[] {100}, new SubEntity[0]), 2, true));
 
             client.Send(new CharactersListMessage(
                             false, //client.Account.StartupActions.Count != 0,
