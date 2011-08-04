@@ -1,12 +1,15 @@
 ﻿
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using BrendanGrant.Helpers.FileAssociation;
+using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.Tools.DataLoader.D2P;
 using Stump.Tools.DataLoader.Properties;
 
 namespace Stump.Tools.DataLoader
@@ -28,7 +31,7 @@ namespace Stump.Tools.DataLoader
 
         #endregion
 
-        private static readonly string[] Extensions = FileAssociationInfo.GetExtensions();
+        private static readonly Hashtable Extensions = RegisteredFileType.GetFileTypeAndIcon();
         private static readonly Dictionary<string, Icon> AssociatedIcon = new Dictionary<string, Icon>();
 
         private static Icon DirectoryIcon;
@@ -161,33 +164,45 @@ namespace Stump.Tools.DataLoader
                 index++;
             }
 
+            var list = new List<ListViewItem>();
+            var iconList = new List<Image>();
             foreach (PakFile.PakedFileInfo file in CurrentDirectory.Files.Values)
             {
                 string ext = Path.GetExtension(file.Name);
 
                 if (!AssociatedIcon.ContainsKey(ext))
                 {
-                    if (Extensions.Count(entry => entry == ext) == 0)
+                    if (!Extensions.ContainsKey(ext))
                     {
                         AssociatedIcon.Add(ext, Icon.FromHandle(Resources.page_white.GetHicon()));
                     }
                     else
                     {
-                        var fileInfo = new FileAssociationInfo(ext);
-                        var programAssociationInfo = new ProgramAssociationInfo(fileInfo.ProgID);
+                        var icon = RegisteredFileType.ExtractIconFromFile(Extensions[ext].ToString(), false);
 
-                        AssociatedIcon.Add(ext, new Icon(programAssociationInfo.DefaultIcon.Path));
+                        if (icon != null)
+                        {
+                            AssociatedIcon.Add(ext, icon);
+                        }
+                        else
+                        {
+                            AssociatedIcon.Add(ext, Icon.FromHandle(Resources.page_white.GetHicon()));
+                        }
                     }
                 }
 
-                m_iconFilesList.Images.Add(AssociatedIcon[ext]);
+                iconList.Add(AssociatedIcon[ext].ToBitmap());
 
-                m_filesView.Items.Add(
+                list.Add(
                     new ListViewItem(new[] {file.Name, file.Size.ToString(), file.Index.ToString(), file.Container},
                                      index) {Tag = file});
 
                 index++;
             }
+            m_filesView.BeginUpdate();
+            Task.Factory.StartNew( () => m_iconFilesList.Images.AddRange(iconList.ToArray()));
+            m_filesView.Items.AddRange(list.ToArray());
+            m_filesView.EndUpdate();
         }
 
         private void ExtractItems(ListView.SelectedListViewItemCollection items)

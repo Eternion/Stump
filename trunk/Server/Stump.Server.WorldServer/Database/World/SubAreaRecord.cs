@@ -8,7 +8,7 @@ using Stump.DofusProtocol.D2oClasses.Tool;
 namespace Stump.Server.WorldServer.Database.World
 {
     [Serializable]
-    [ActiveRecord("subAreas")]
+    [ActiveRecord("subareas")]
     [D2OClass("SubArea", "com.ankamagames.dofus.datacenter.world")]
     public sealed class SubAreaRecord : WorldBaseRecord<SubAreaRecord>
     {
@@ -29,32 +29,12 @@ namespace Stump.Server.WorldServer.Database.World
            set;
        }
 
-       /// <summary>
-       /// Internal Only. Do not use
-       /// </summary>
        [D2OField("areaId")]
+       [Property("AreaId")]
        public int AreaId
        {
            get;
            set;
-       }
-
-       private AreaRecord m_areaRecord;
-
-       [BelongsTo("AreaId")]
-       public AreaRecord Area
-       {
-           get
-           {
-               return m_areaRecord;
-           }
-           set
-           {
-               if (value != null)
-                AreaId = value.Id;
-
-               m_areaRecord = value;
-           }
        }
 
        [D2OField("ambientSounds")]
@@ -103,19 +83,6 @@ namespace Stump.Server.WorldServer.Database.World
        {
            get;
            set;
-       }
-
-       protected override bool BeforeSave(IDictionary state)
-       {
-           // that's a hack to update SubAreaId field without setting SubArea property.
-           if (Area == null && AreaId > 0)
-               Area = new AreaRecord
-               {
-                   Id = AreaId
-               };
-
-
-           return base.BeforeSave(state);
        }
     }
 }

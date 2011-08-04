@@ -15,13 +15,13 @@ namespace Stump.Server.AuthServer.Network
             : base(socket)
         {
             Key = new Random().RandomString(32);
-
+            
             Send(new ProtocolRequired(VersionExtension.ProtocolRequired, VersionExtension.ActualProtocol));
             Send(new HelloConnectMessage(1, Key));
 
             CanReceive = true;
         }
-
+        
         public string Login
         {
             get { return m_login; }

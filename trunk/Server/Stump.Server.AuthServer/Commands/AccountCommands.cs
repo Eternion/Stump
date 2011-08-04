@@ -1,6 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.AuthServer.Database.Account;
 using Stump.Server.AuthServer.Managers;
@@ -26,15 +24,13 @@ namespace Stump.Server.AuthServer.Commands
             ParentCommand = typeof (AccountCommands);
             RequiredRole = RoleEnum.Administrator;
             Description = "Create a new account.";
-            Parameters = new List<IParameterDefinition>
-                {
-                    new ParameterDefinition<string>("accountname", "name", "Name of the created account"),
-                    new ParameterDefinition<string>("password", "pass", "Password of the created accont"),
-                    new ParameterDefinition<RoleEnum>("role", "role", "Role of the created account. See RoleEnum",
-                                                   RoleEnum.Player, converter:ParametersConverter.RoleConverter),
-                    new ParameterDefinition<string>("question", "quest", "Secret question", "dummy?"),
-                    new ParameterDefinition<string>("answer", "answer", "Answer to the secret question", "dummy!"),
-                };
+
+            AddParameter<string>("accountname", "name", "Name of the created account");
+            AddParameter<string>("password", "pass", "Password of the created accont");
+            AddParameter("role", "role", "Role of the created account. See RoleEnum",
+                         RoleEnum.Player, converter: ParametersConverter.RoleConverter);
+            AddParameter("question", "quest", "Secret question", "dummy?");
+            AddParameter("answer", "answer", "Answer to the secret question", "dummy!");
         }
 
         public override void Execute(TriggerBase trigger)
@@ -51,7 +47,8 @@ namespace Stump.Server.AuthServer.Commands
                     Role = trigger.Get<RoleEnum>("role"),
                     Email = "",
                     AvailableBreeds = AccountManager.AvailableBreeds,
-                    Lang = "fr", // todo manage lang
+                    Lang = "fr",
+                    // todo manage lang
                 };
 
             if (AccountManager.Instance.CreateAccount(acc))

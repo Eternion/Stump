@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Castle.ActiveRecord;
+using Stump.Core.Extensions;
+using Stump.Core.IO;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
@@ -12,6 +14,7 @@ namespace Stump.Tools.CacheManager
     public class D2OTable
     {
         private static readonly Dictionary<Tuple<Type, string>, FieldInfo> typeFields = new Dictionary<Tuple<Type, string>, FieldInfo>();
+        private Dictionary<string, string> m_relations;
 
         public D2OTable(Type tableType)
         {
@@ -33,6 +36,8 @@ namespace Stump.Tools.CacheManager
                                                     select new D2OTableField(entry);
 
             Fields = (fields.Concat(properties)).ToArray();
+
+            m_relations = DatabaseBuilder.GetNamesRelations(TableType);
         }
 
         public string TableName
@@ -59,10 +64,10 @@ namespace Stump.Tools.CacheManager
             set;
         }
 
-        public object GenerateRow(object obj)
+        public Dictionary<string, object> GenerateRow(object obj)
         {
             var objType = obj.GetType();
-            var row = Activator.CreateInstance(TableType);
+            var row = new Dictionary<string, object>();
 
             foreach (var field in Fields)
             {
@@ -77,7 +82,10 @@ namespace Stump.Tools.CacheManager
                     objField = typeFields[tuple];
                 }
 
-                field.SetValue(row, objField.GetValue(obj));
+                if (field.DBAttribute != null && field.DBAttribute.ColumnType == "Serializable")
+                    row.Add(m_relations[field.Attribute.FieldName], objField.GetValue(obj).ToBinary());
+                else
+                    row.Add(m_relations[field.Attribute.FieldName], objField.GetValue(obj));
             }
 
             return row;

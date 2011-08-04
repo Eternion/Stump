@@ -20,7 +20,7 @@ namespace Stump.Core.IO
                 formatter.AssemblyFormat = FormatterAssemblyStyle.Simple;
                 formatter.Serialize(stream, obj);
 
-                return stream.GetBuffer();
+                return stream.ToArray();
             }
         }
 

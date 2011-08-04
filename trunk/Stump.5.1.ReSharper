@@ -76,4 +76,16 @@
       </Template>
     </FileTemplates>
   </SharedSolutionTemplateManager>
+  <CustomStructuralPatterns>
+    <Pattern Severity="SUGGESTION">
+      <ReplacePattern IsNull="True" />
+      <SearchPattern>$type$ $var$</SearchPattern>
+      <Params />
+      <Placeholders>
+        <ExpressionPlaceholder Name="Revision" ExpressionType="System.UInt32" ExactType="True" />
+        <IdentifierPlaceholder Name="var" Type="" ExactType="False" RegEx="" CaseSensitive="True" />
+        <TypePlaceholder Name="type" Type="System.UInt32" ExactType="True" />
+      </Placeholders>
+    </Pattern>
+  </CustomStructuralPatterns>
 </Configuration>

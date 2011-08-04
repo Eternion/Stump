@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Tools.DataLoader.Properties;
 
 namespace Stump.Tools.DataLoader
@@ -95,7 +96,7 @@ namespace Stump.Tools.DataLoader
             if (m_form.CurrentDirectory.Path != directoryName && !m_form.CurrentDirectory.Directories.ContainsKey(directoryName))
                 throw new FileNotFoundException(string.Format("{0} is not found", directoryName));
 
-            destDirectory = Path.GetFullPath(destDirectory);
+            destDirectory = Path.GetFullPath(destDirectory) + "/";
 
             var directory = m_form.CurrentDirectory.Path != directoryName ? m_form.CurrentDirectory.Directories[directoryName] : m_form.CurrentDirectory;
 

@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using Stump.Core.IO;
 
-namespace Stump.Tools.DataLoader
+namespace Stump.DofusProtocol.D2oClasses.Tool
 {
     public class PakFile : IDisposable
     {

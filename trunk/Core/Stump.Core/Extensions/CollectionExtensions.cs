@@ -8,16 +8,28 @@ namespace Stump.Core.Extensions
 {
     public static class CollectionExtensions
     {
-        public static string ByteArrayToString(this byte[] byteCryptedMd5)
+        public static string ByteArrayToString(this byte[] bytes)
         {
-            var output = new StringBuilder(byteCryptedMd5.Length);
+            var output = new StringBuilder(bytes.Length);
 
-            for (int i = 0; i < byteCryptedMd5.Length; i++)
+            for (int i = 0; i < bytes.Length; i++)
             {
-                output.Append(byteCryptedMd5[i].ToString("X2"));
+                output.Append(bytes[i].ToString("X2"));
             }
 
             return output.ToString().ToLower();
+        }
+
+        public static string EncodeByteArray(this byte[] bytes)
+        {
+            var output = new StringBuilder(bytes.Length);
+
+            foreach (byte t in bytes)
+            {
+                output.Append((char)t);
+            }
+
+            return output.ToString();
         }
 
         public static bool CompareEnumerable<T>(this IEnumerable<T> ie1, IEnumerable<T> ie2)
