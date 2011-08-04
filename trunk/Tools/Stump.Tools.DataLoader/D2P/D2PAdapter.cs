@@ -96,7 +96,7 @@ namespace Stump.Tools.DataLoader
             if (m_form.CurrentDirectory.Path != directoryName && !m_form.CurrentDirectory.Directories.ContainsKey(directoryName))
                 throw new FileNotFoundException(string.Format("{0} is not found", directoryName));
 
-            destDirectory = Path.GetFullPath(destDirectory);
+            destDirectory = Path.GetFullPath(destDirectory) + "/";
 
             var directory = m_form.CurrentDirectory.Path != directoryName ? m_form.CurrentDirectory.Directories[directoryName] : m_form.CurrentDirectory;
 

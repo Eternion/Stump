@@ -23,18 +23,5 @@ namespace Stump.Core.IO
             zoutput.Write(inputReader.ReadBytes((int) input.Length), 0, (int) input.Length);
             zoutput.Flush();
         }
-
-        private static void CopyStream(Stream input, Stream output)
-        {
-            var buffer = new byte[1024];
-            int len;
-
-            while ((len = input.Read(buffer, 0, 1024)) > 0)
-            {
-                output.Write(buffer, 0, len);
-            }
-
-            output.Flush();
-        }
     }
 }

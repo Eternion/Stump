@@ -32,7 +32,7 @@ namespace Stump.Tools.CacheManager
             NLogHelper.DefineLogProfile(false, true);
 
             XmlConfig config;
-            if (!string.IsNullOrEmpty(AuthConfigPath))
+            if (!string.IsNullOrEmpty(Path.GetFullPath(AuthConfigPath)))
             {
                 logger.Info("Opening Auth Config");
                 config = new XmlConfig(AuthConfigPath) {IgnoreUnloadedAssemblies = true};
@@ -50,7 +50,7 @@ namespace Stump.Tools.CacheManager
 
             DBAccessor.Close();
 
-            if (!string.IsNullOrEmpty(WorldConfigPath))
+            if (!string.IsNullOrEmpty(Path.GetFullPath(WorldConfigPath)))
             {
                 logger.Info("Opening World Config");
                 config =
@@ -64,7 +64,9 @@ namespace Stump.Tools.CacheManager
             DBAccessor.Open();
 
             logger.Info("Building World Database");
+            // build maps
             Maps.MapLoader.LoadMaps(mapsFolder);
+
             dbBuilder = new DatabaseBuilder(typeof (WorldServer).Assembly, d2OFolder, d2IFolder);
             dbBuilder.Build();
 

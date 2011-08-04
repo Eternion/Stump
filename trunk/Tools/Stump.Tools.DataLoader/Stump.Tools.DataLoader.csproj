@@ -81,6 +81,7 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\Release\</OutputPath>
@@ -97,11 +98,9 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FileAssociation">
-      <HintPath>..\..\Library\FileAssociation.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web.Extensions" />
@@ -115,20 +114,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="D2OAdapater.cs" />
-    <Compile Include="D2PAdapter.cs" />
-    <Compile Include="FormD2O.cs">
+    <Compile Include="D2O\D2OAdapater.cs" />
+    <Compile Include="D2P\D2PAdapter.cs" />
+    <Compile Include="D2O\FormD2O.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormD2O.Designer.cs">
+    <Compile Include="D2O\FormD2O.Designer.cs">
       <DependentUpon>FormD2O.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormD2P.cs">
+    <Compile Include="D2P\FormD2P.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormD2P.Designer.cs">
+    <Compile Include="D2P\FormD2P.Designer.cs">
       <DependentUpon>FormD2P.cs</DependentUpon>
     </Compile>
+    <Compile Include="D2P\RegisteredFileType.cs" />
     <Compile Include="FormSelect.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -145,10 +145,10 @@
     <Compile Include="IFormAdapter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="FormD2O.resx">
+    <EmbeddedResource Include="D2O\FormD2O.resx">
       <DependentUpon>FormD2O.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormD2P.resx">
+    <EmbeddedResource Include="D2P\FormD2P.resx">
       <DependentUpon>FormD2P.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
@@ -194,6 +194,7 @@
   <ItemGroup>
     <None Include="Resources\arrow_out.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

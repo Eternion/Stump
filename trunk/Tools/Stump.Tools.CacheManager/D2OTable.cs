@@ -83,7 +83,7 @@ namespace Stump.Tools.CacheManager
                 }
 
                 if (field.DBAttribute != null && field.DBAttribute.ColumnType == "Serializable")
-                    row.Add(m_relations[field.Attribute.FieldName], "0x" + objField.GetValue(obj).ToBinary().ByteArrayToString());
+                    row.Add(m_relations[field.Attribute.FieldName], objField.GetValue(obj).ToBinary());
                 else
                     row.Add(m_relations[field.Attribute.FieldName], objField.GetValue(obj));
             }

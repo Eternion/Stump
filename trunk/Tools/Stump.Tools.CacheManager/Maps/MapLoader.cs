@@ -189,7 +189,7 @@ namespace Stump.Tools.CacheManager.Maps
                 cells[i] = cell;
             }
 
-            values.Add("Cells", "0x" + cells.ToBinary().ByteArrayToString());
+            values.Add("Cells",  cells.ToBinary());
 
             return values;
         }

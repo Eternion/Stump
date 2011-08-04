@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Stump.Core.Extensions;
 
 namespace Stump.Tools.CacheManager.SQL
 {
@@ -46,9 +47,16 @@ namespace Stump.Tools.CacheManager.SQL
 
             foreach (var value in values)
             {
-                builder.Append("'");
-                builder.Append(value.Value.ToString().Replace(@"\", @"\\").Replace("'", @"\'").Replace("\"", "\\\"").Replace("\n", "\\n").Replace("‘", "\\‘"));
-                builder.Append("'");
+                if (value.Value is byte[])
+                {
+                    builder.Append("0x" + ((byte[])value.Value).ByteArrayToString());
+                }
+                else
+                {
+                    builder.Append("'");
+                    builder.Append(value.Value.ToString().Replace(@"\", @"\\").Replace("'", @"\'").Replace("\"", "\\\"").Replace("\n", "\\n").Replace("‘", "\\‘"));
+                    builder.Append("'");
+                }
 
                 if (!value.Equals(values.Last()))
                     builder.Append(",");

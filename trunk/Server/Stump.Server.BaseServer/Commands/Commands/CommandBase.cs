@@ -44,6 +44,12 @@ namespace Stump.Server.BaseServer.Commands
             protected set;
         }
 
+        public void AddParameter<T>(string name, string shortName = "", string description = "", T defaultValue = default(T), bool isOptional = false,
+                                ConverterHandler<T> converter = null)
+        {
+            Parameters.Add(new ParameterDefinition<T>(name, shortName, description, defaultValue, isOptional, converter));
+        }
+
         public string GetSafeUsage()
         {
             if (string.IsNullOrEmpty(Usage))
