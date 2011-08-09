@@ -1,24 +1,46 @@
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Worlds.Chat;
 
 namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay
 {
     public abstract class NamedActor : RolePlayActor
     {
-        private string m_name;
+        #region Network
 
         public virtual string Name
         {
-            get { return m_name; }
-            protected set
-            {
-                m_name = value;
-                m_gameContextActorInformations.Invalidate();
-            }
+            get;
+            protected set;
         }
 
-        protected override GameContextActorInformations BuildGameContextActorInformations()
+        public override GameContextActorInformations GetGameContextActorInformations()
         {
             return new GameRolePlayNamedActorInformations(Id, Look, GetEntityDispositionInformations(), Name);
         }
+        #endregion
+
+        #region Actions
+
+        #region Chat
+
+        public void Say(string message)
+        {
+            Say(ChannelId.General, message);
+        }
+
+        public void Say(ChannelId channel, string message)
+        {
+            if (ChatManager.Instance.ChatHandlers.Length <= (int) channel)
+                return;
+
+            ChatManager.ChatParserDelegate handler = ChatManager.Instance.ChatHandlers[(int) channel];
+
+            Context.DoForAll(entry => handler(entry.Client, channel, message));
+        }
+
+        #endregion
+        
+        #endregion
     }
 }

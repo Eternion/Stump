@@ -83,28 +83,14 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             inventory.Create();*/
 
             /* Create Character */
-            var character = new CharacterRecord
+            var character = new CharacterRecord(breed)
             {
                 Experience = 0,//ThresholdManager.Thresholds["CharacterExp"].GetLowerBound((uint)breed.StartLevel),
                 Name = characterName,
-                Breed = (PlayableBreedEnum) message.breed,
                 Sex = message.sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE,
                 EntityLook = breedLook,
-                MapId = breed.StartMap,
-                CellId = breed.StartCell,
-                BaseHealth = breed.StartHealthPoint,
-                DamageTaken = 0,
-                StatsPoints = 0,
-                SpellsPoints = 0,
-                Strength = 0,
-                Vitality = 0,
-                Wisdom = 0,
-                Intelligence = 0,
-                Chance = 0,
-                Agility = 0,
                 //Inventory = inventory
             };
-            character.Create();
 
             /* Set Character SpellCollection */
             /*foreach (SpellIdEnum spellId in breed.StartSpells.Keys)

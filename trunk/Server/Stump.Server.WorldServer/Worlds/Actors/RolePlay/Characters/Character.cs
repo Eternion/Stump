@@ -2,14 +2,18 @@ using Stump.Core.Cache;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Worlds.Actors.Interfaces;
+using Stump.Server.WorldServer.Worlds.Actors.Stats;
+using Stump.Server.WorldServer.Worlds.Breeds;
 using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 {
-    public sealed class Character : Humanoid
+    public sealed class Character : Humanoid, IStatsOwner
     {
         private readonly CharacterRecord m_record;
 
@@ -20,7 +24,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
             LoadRecord();
         }
-
 
         #region Properties
 
@@ -76,15 +79,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             set { Position.Direction = value; }
         }
 
-        protected override void OnPositionChanged(ObjectPosition position)
-        {
-            m_record.MapId = position.Map.Id;
-            m_record.CellId = position.Cell.Id;
-            m_record.Direction = position.Direction;
-
-            base.OnPositionChanged(position);
-        }
-
         #endregion
 
         #region Apparence
@@ -105,10 +99,20 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             private set { m_record.Sex = value; }
         }
 
-        public PlayableBreedEnum Breed
+        public PlayableBreedEnum BreedId
         {
             get { return m_record.Breed; }
-            private set { m_record.Breed = value; }
+            private set
+            {
+                m_record.Breed = value; 
+                Breed = BreedManager.Instance.GetBreed(value);
+            }
+        }
+
+        public Breed Breed
+        {
+            get;
+            private set;
         }
 
         #endregion
@@ -121,65 +125,85 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             private set;
         }
 
+        public long Experience
+        {
+            get { return m_record.Experience; }
+            set { m_record.Experience = value; }
+        }
+
+        public long LowerBoundExperience
+        {
+            get;
+            private set;
+        }
+
+        public long UpperBoundExperience
+        {
+            get;
+            private set;
+        }
+
+        public ushort StatsPoints
+        {
+            get { return m_record.StatsPoints; }
+            set { m_record.StatsPoints = value; }
+        }
+
+        public ushort SpellsPoints
+        {
+            get { return m_record.SpellsPoints; }
+            set { m_record.SpellsPoints = value; }
+        }
+
+        public short EnergyMax
+        {
+            get { return m_record.EnergyMax; }
+            set { m_record.EnergyMax = value; }
+        }
+
+        public short Energy
+        {
+            get { return m_record.Energy; }
+            set { m_record.Energy = value; }
+        }
+
+        public StatsFields Stats
+        {
+            get;
+            private set;
+        }
+
         #endregion
 
         #region Alignment
 
-        private byte m_alignmentGrade;
-        private AlignmentSideEnum m_alignmentSide;
-
-        private byte m_alignmentValue;
-        private int m_characterPower;
-        private ushort m_dishonor;
-
         public AlignmentSideEnum AlignmentSide
         {
-            get { return m_alignmentSide; }
-            private set
-            {
-                m_alignmentSide = value;
-                m_actorAlignmentInformations.Invalidate();
-            }
+            get;
+            private set;
         }
 
         public byte AlignmentValue
         {
-            get { return m_alignmentValue; }
-            private set
-            {
-                m_alignmentValue = value;
-                m_actorAlignmentInformations.Invalidate();
-            }
+            get;
+            private set;
         }
 
         public byte AlignmentGrade
         {
-            get { return m_alignmentGrade; }
-            private set
-            {
-                m_alignmentGrade = value;
-                m_actorAlignmentInformations.Invalidate();
-            }
+            get;
+            private set;
         }
 
         public ushort Dishonor
         {
-            get { return m_dishonor; }
-            private set
-            {
-                m_dishonor = value;
-                m_actorAlignmentInformations.Invalidate();
-            }
+            get;
+            private set;
         }
 
         public int CharacterPower
         {
-            get { return m_characterPower; }
-            private set
-            {
-                m_characterPower = value;
-                m_actorAlignmentInformations.Invalidate();
-            }
+            get { return Id + Level; }
         }
 
         #endregion
@@ -194,14 +218,25 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             if (InWorld)
                 return;
 
-            Position.Map.Enter(this);
+            Map.Enter(this);
             World.Instance.Enter(this);
+
+            // todo: send MOTD
 
             InWorld = true;
         }
 
         public void LogOut()
         {
+            if (InWorld)
+            {
+                if (Map != null)
+                    Map.Leave(this);
+
+                World.Instance.Leave(this);
+            }
+
+            SaveLater();
         }
 
         #region Save & Load
@@ -213,33 +248,34 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         public void SaveNow()
         {
+            m_record.MapId = Map.Id;
+            m_record.CellId = Cell.Id;
+            m_record.Direction = Direction;
+
+            m_record.Save();
         }
 
         private void LoadRecord()
         {
+            Breed = BreedManager.Instance.GetBreed(BreedId);
+
             Map map = World.Instance.GetMap(m_record.MapId);
             Position = new ObjectPosition(
                 map,
                 map.Cells[m_record.CellId],
                 m_record.Direction);
 
+            Stats = new StatsFields(this, m_record);
             Level = ExperienceManager.Instance.GetCharacterLevel(m_record.Experience);
+            LowerBoundExperience = ExperienceManager.Instance.GetCharacterLevelExperience(Level);
+            UpperBoundExperience = ExperienceManager.Instance.GetCharacterNextLevelExperience(Level);
         }
 
         #endregion
 
         #region Network
 
-        protected override void InitializeValidators()
-        {
-            base.InitializeValidators();
-
-            m_actorAlignmentInformations =
-                new ObjectValidator<ActorAlignmentInformations>(BuildActorAlignmentInformations);
-            m_actorAlignmentInformations.ObjectInvalidated += OnAlignementInvalidation;
-        }
-
-        protected override GameContextActorInformations BuildGameContextActorInformations()
+        public override GameContextActorInformations GetGameContextActorInformations()
         {
             return new GameRolePlayCharacterInformations(
                 Id,
@@ -252,26 +288,33 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         #region ActorAlignmentInformations
 
-        private ObjectValidator<ActorAlignmentInformations> m_actorAlignmentInformations;
-
-        private void OnAlignementInvalidation(ObjectValidator<ActorAlignmentInformations> validator)
-        {
-            m_gameContextActorInformations.Invalidate();
-        }
-
-        private ActorAlignmentInformations BuildActorAlignmentInformations()
+        public ActorAlignmentInformations GetActorAlignmentInformations()
         {
             return new ActorAlignmentInformations(
-                (byte) AlignmentSide,
+                (byte)AlignmentSide,
                 AlignmentValue,
                 AlignmentGrade,
                 Dishonor,
                 CharacterPower);
         }
 
-        public ActorAlignmentInformations GetActorAlignmentInformations()
+        #endregion
+
+        #region ActorExtendedAlignmentInformations
+
+        public ActorExtendedAlignmentInformations GetActorAlignmentExtendInformations()
         {
-            return m_actorAlignmentInformations;
+            return new ActorExtendedAlignmentInformations(
+                            (byte)AlignmentSide,
+                            AlignmentValue,
+                            AlignmentGrade,
+                            Dishonor,
+                            CharacterPower,
+                            0,
+                            0,
+                            0,
+                            false
+                            );
         }
 
         #endregion
@@ -285,7 +328,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 Level,
                 Name,
                 Look,
-                (byte) Breed,
+                (byte) BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE);
         }
 

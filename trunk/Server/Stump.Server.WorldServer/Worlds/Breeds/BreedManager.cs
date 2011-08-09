@@ -52,6 +52,11 @@ namespace Stump.Server.WorldServer.Worlds.Breeds
             }
         }
 
+        public Breed GetBreed(PlayableBreedEnum breed)
+        {
+            return GetBreed((int)breed);
+        }
+
         /// <summary>
         /// Get the breed associated to the given id
         /// </summary>

@@ -2,7 +2,7 @@ using Stump.DofusProtocol.Messages;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
-    public partial class ContextHandler
+    public partial class ContextRoleplayHandler
     {
         /*public static void SendGameRolePlayPlayerFightFriendlyAnsweredMessage(WorldClient client, Character replier,
                                                                               Character source, Character target,

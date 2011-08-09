@@ -4,7 +4,7 @@ using Stump.Server.WorldServer.Core.Network;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
-    public partial class ContextHandler : WorldHandlerContainer
+    public partial class ContextRoleplayHandler : WorldHandlerContainer
     {
         public static void SendSpellForgottenMessage(WorldClient client)
         {

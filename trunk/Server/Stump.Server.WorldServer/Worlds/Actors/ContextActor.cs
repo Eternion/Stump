@@ -1,6 +1,11 @@
+using System;
 using Stump.Core.Cache;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Handlers.Chat;
+using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
+using Stump.Server.WorldServer.Worlds.Maps.Pathfinding;
 
 namespace Stump.Server.WorldServer.Worlds.Actors
 {
@@ -8,82 +13,48 @@ namespace Stump.Server.WorldServer.Worlds.Actors
     {
         protected ContextActor()
         {
-// ReSharper disable DoNotCallOverridableMethodsInConstructor
-            InitializeValidators();
-// ReSharper restore DoNotCallOverridableMethodsInConstructor
         }
-
-        private int m_id;
 
         public virtual int Id
         {
-            get { return m_id; }
-            protected set
-            {
-                m_id = value;
-                m_gameContextActorInformations.Invalidate();
-            }
+            get;
+            protected set;
         }
-
-        private EntityLook m_look;
 
         public virtual EntityLook Look
         {
-            get { return m_look; }
-            protected set
+            get;
+            protected set;
+        }
+
+        public virtual IContext Context
+        {
+            get
             {
-                m_look = value;
-                m_gameContextActorInformations.Invalidate();
+                return Position.Map;
             }
         }
 
-        private ObjectPosition m_position;
-
         public virtual ObjectPosition Position
         {
-            get { return m_position; }
-            protected set
-            {
-                m_position = value;
-                m_position.PositionChanged += OnPositionChanged;
-                m_gameContextActorInformations.Invalidate();
-            }
+            get;
+            protected set;
         }
 
         #region Network
 
-        protected virtual void InitializeValidators()
-        {
-            m_entityDispositionInformations = new ObjectValidator<EntityDispositionInformations>(BuildEntityDispositionInformations);
-            m_gameContextActorInformations = new ObjectValidator<GameContextActorInformations>(BuildGameContextActorInformations);
-        }
-
         #region EntityDispositionInformations
 
-        protected ObjectValidator<EntityDispositionInformations> m_entityDispositionInformations;
-
-        protected virtual void OnPositionChanged(ObjectPosition position)
+        public virtual EntityDispositionInformations GetEntityDispositionInformations()
         {
-            m_entityDispositionInformations.Invalidate();
-        }
-
-        protected virtual EntityDispositionInformations BuildEntityDispositionInformations()
-        {
-            return new EntityDispositionInformations(Position.Cell.Id, (byte) Position.Direction);
-        }
-
-        public EntityDispositionInformations GetEntityDispositionInformations()
-        {
-            return m_entityDispositionInformations;
+            return new EntityDispositionInformations(Position.Cell.Id, (byte)Position.Direction);
         }
 
         #endregion
 
         #region GameContextActorInformations
 
-        protected ObjectValidator<GameContextActorInformations> m_gameContextActorInformations;
-
-        protected virtual GameContextActorInformations BuildGameContextActorInformations()
+        public virtual GameContextActorInformations GetGameContextActorInformations()
         {
             return new GameContextActorInformations(
                 Id,
@@ -91,17 +62,123 @@ namespace Stump.Server.WorldServer.Worlds.Actors
                 GetEntityDispositionInformations());
         }
 
-        public GameContextActorInformations GetGameContextActorInformations()
-        {
-            return m_gameContextActorInformations;
-        }
-
-
-        public IdentifiedEntityDispositionInformations GetIdentifiedEntityDispositionInformations()
+        public virtual IdentifiedEntityDispositionInformations GetIdentifiedEntityDispositionInformations()
         {
             return new IdentifiedEntityDispositionInformations(Position.Cell.Id, (byte) Position.Direction, Id);
         }
 
+        #endregion
+
+        #endregion
+
+        #region Actions
+
+        #region Chat
+
+        public void DisplaySmiley(byte smileyId)
+        {
+            Context.DoForAll(entry => ChatHandler.SendChatSmileyMessage(entry.Client, this, smileyId));
+        }
+
+        #endregion
+
+        #region Moving
+        public event Action<ContextActor, MovementPath> StartMoving;
+
+        public void NotifyStartMoving(MovementPath path)
+        {
+            Action<ContextActor, MovementPath> handler = StartMoving;
+            if (handler != null) handler(this, path);
+        }
+
+        public event Action<ContextActor, MovementPath, bool> StopMoving;
+
+        public void NotifyStopMoving(MovementPath path, bool canceled)
+        {
+            Action<ContextActor, MovementPath, bool> handler = StopMoving;
+            if (handler != null) handler(this, path, canceled);
+        }
+
+        public event Action<ContextActor, ObjectPosition> InstantMoved;
+
+        public void NotifyTeleported(ObjectPosition path)
+        {
+            Action<ContextActor, ObjectPosition> handler = InstantMoved;
+            if (handler != null) handler(this, path);
+        }
+
+        private bool m_isMoving;
+        protected MovementPath m_movingPath;
+
+        public bool IsMoving
+        {
+            get
+            {
+                return m_isMoving && m_movingPath != null;
+            }
+            protected set
+            {
+                m_isMoving = value;
+            }
+        }
+
+        public virtual bool CanMove()
+        {
+            return !IsMoving;
+        }
+
+        public bool StartMove(MovementPath movementPath)
+        {
+            if (!CanMove())
+                return false;
+
+            IsMoving = true;
+            m_movingPath = movementPath;
+
+            NotifyStartMoving(movementPath);
+
+            return true;
+        }
+
+        public virtual bool MoveInstant(ObjectPosition destination)
+        {
+            if (!CanMove())
+                return true;
+
+            Position = destination;
+
+            NotifyTeleported(destination);
+
+            return true;
+        }
+
+        public virtual bool StopMove()
+        {
+            if (!IsMoving)
+                return false;
+
+            Position = m_movingPath.End;
+            IsMoving = false;
+
+            NotifyStopMoving(m_movingPath, false);
+            m_movingPath = null;
+
+            return true;
+        }
+
+        public virtual bool StopMove(ObjectPosition currentObjectPosition)
+        {
+            if (!IsMoving || !m_movingPath.Contains(currentObjectPosition.Cell.Id))
+                return false;
+
+            Position = currentObjectPosition;
+            IsMoving = false;
+
+            NotifyStopMoving(m_movingPath, true);
+            m_movingPath = null;
+
+            return true;
+        }
         #endregion
 
         #endregion

@@ -5,6 +5,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Worlds.Accounts;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
@@ -29,16 +30,10 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             }
 
             /* Bind WorldAccount if exist */
-            /*if (WorldAccountRecord.Exists(ticketAccount.Id))
-                client.WorldAccount = WorldAccountRecord.FindWorldAccountById(ticketAccount.Id);*/
+            if (WorldAccount.Exists(ticketAccount.Id))
+                client.WorldAccount = WorldAccount.FindById(ticketAccount.Id);
             
-            /* WorldAccount is banned */
-            /*if (client.WorldAccount != null && client.WorldAccount.BanRemainingTime != TimeSpan.Zero)
-            {
-                SendAccountLoggingKickedMessage(client);
-                return;
-            }
-            */
+            
             /* Bind Account & Characters */
             client.Account = ticketAccount;
             client.Characters = CharacterManager.Instance.GetCharactersByAccount(client);
@@ -62,12 +57,6 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                             (short)client.Account.BreedFlags,
                             (short)BreedManager.Instance.AvailableBreedsFlags));
         }
-
-        /*public static void SendAccountLoggingKickedMessage(WorldClient client)
-        {
-            TimeSpan date = client.WorldAccount.BanRemainingTime;
-            client.Send(new AccountLoggingKickedMessage((uint) date.Days, (uint) date.Hours, (uint) date.Minutes));
-        }*/
 
         public static void SendConsoleCommandsListMessage(WorldClient client)
         {

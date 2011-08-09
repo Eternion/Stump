@@ -2,12 +2,14 @@ using System.Collections.Generic;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Worlds.Actors.Stats;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
 {
     public partial class CharacterHandler : WorldHandlerContainer
     {
-        /*
+        
         public static void SendLifePointsRegenBeginMessage(WorldClient client, byte regenRate)
         {
             client.Send(new LifePointsRegenBeginMessage(regenRate));
@@ -15,14 +17,14 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
         public static void SendUpdateLifePointsMessage(WorldClient client, byte lifePoint)
         {
-            client.Send(new UpdateLifePointsMessage(lifePoint, (uint)((StatsHealth)client.ActiveCharacter.Stats["Health"]).TotalMax));
+            client.Send(new UpdateLifePointsMessage(lifePoint, ((StatsHealth)client.ActiveCharacter.Stats["Health"]).TotalMax));
         }
 
         public static void SendLifePointsRegenEndMessage(WorldClient client)
         {
             client.Send(new LifePointsRegenEndMessage(
-                (uint)client.ActiveCharacter.Stats["Health"].Total,
-                (uint)((StatsHealth)client.ActiveCharacter.Stats["Health"]).TotalMax,
+                client.ActiveCharacter.Stats["Health"].Total,
+                ((StatsHealth)client.ActiveCharacter.Stats["Health"]).TotalMax,
                 0));
         }
 
@@ -32,33 +34,18 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 new CharacterStatsListMessage(
                     new CharacterCharacteristicsInformations(
                         client.ActiveCharacter.Experience, // EXPERIENCE
-                        ThresholdManager.Thresholds["CharacterExp"].GetLowerBound(client.ActiveCharacter.Experience), // EXPERIENCE level floor 
-                        ThresholdManager.Thresholds["CharacterExp"].GetUpperBound(client.ActiveCharacter.Experience), // EXPERIENCE nextlevel floor 
+                        client.ActiveCharacter.LowerBoundExperience, // EXPERIENCE level floor 
+                        client.ActiveCharacter.UpperBoundExperience, // EXPERIENCE nextlevel floor 
 
-                        (uint)client.ActiveCharacter.Inventory.Kamas,
-                // Amount of kamas.
+                        0, // Amount of kamas.
 
-                        (uint)client.ActiveCharacter.StatsPoint,
-                // Stats points
-                        (uint)client.ActiveCharacter.SpellsPoints,
-                // Spell points
+                        client.ActiveCharacter.StatsPoints, // Stats points
+                        client.ActiveCharacter.SpellsPoints, // Spell points
 
                         // Alignment
-                        new ActorExtendedAlignmentInformations(
-                            0, // alignmentSide
-                            0, // alignmentValue 
-                            10, // alignmentGrade 
-                            0, // dishonor
-                            0, // characterPower
-                            0, // honor points
-                            0, // honorGradeFloor
-                            0, // honorNextGradeFloor
-                            false // pvpEnabled
-                            ),
-                        (uint)client.ActiveCharacter.Stats["Health"].
-                                   Total, // Life points
-                        (uint)((StatsHealth)client.ActiveCharacter.Stats["Health"]).
-                                   TotalMax, // Max Life points
+                        client.ActiveCharacter.GetActorAlignmentExtendInformations(),
+                        client.ActiveCharacter.Stats["Health"].Total, // Life points
+                        ((StatsHealth)client.ActiveCharacter.Stats["Health"]).TotalMax, // Max Life points
 
                         client.ActiveCharacter.Energy, // Energy points
                         client.ActiveCharacter.EnergyMax, // maxEnergyPoints
@@ -82,7 +69,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                         client.ActiveCharacter.Stats["SummonLimit"],
                         client.ActiveCharacter.Stats["DamageReflection"],
                         client.ActiveCharacter.Stats["CriticalHit"],
-                        client.ActiveCharacter.Inventory.WeaponCriticalHit,
+                        0, //client.ActiveCharacter.Inventory.WeaponCriticalHit,
                         client.ActiveCharacter.Stats["CriticalMiss"],
                         client.ActiveCharacter.Stats["HealBonus"],
                         client.ActiveCharacter.Stats["DamageBonus"],
@@ -138,6 +125,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         public static void SendCharacterLevelUpInformationMessage(WorldClient client, Character character, byte level)
         {
             client.Send(new CharacterLevelUpInformationMessage(level, character.Name, character.Id, 0));
-        }*/
+        }
     }
 }

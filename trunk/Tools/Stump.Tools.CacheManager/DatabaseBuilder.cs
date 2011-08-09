@@ -274,8 +274,13 @@ namespace Stump.Tools.CacheManager
 
         private void ExecutePatchs()
         {
+            if (!Directory.Exists("./"+ m_patchsFolder + "/"))
+                return;
+
             foreach (var sqlFile in Directory.EnumerateFiles("./"+ m_patchsFolder + "/", "*.sql"))
             {
+                logger.Info("Execute patch '{0}'", sqlFile);
+
                 Program.DBAccessor.ExecuteNonQuery(File.ReadAllText(sqlFile));
             }
         }

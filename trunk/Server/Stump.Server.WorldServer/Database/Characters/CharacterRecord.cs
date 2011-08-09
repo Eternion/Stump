@@ -2,15 +2,42 @@ using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
+using Stump.Server.WorldServer.Database.Breeds;
 
 namespace Stump.Server.WorldServer.Database.Characters
 {
     [ActiveRecord("characters")]
     public class CharacterRecord : WorldBaseRecord<CharacterRecord>
     {
+        private EntityLook m_entityLook;
+        private string m_lookAsString;
+
         public CharacterRecord()
         {
             TitleParam = string.Empty; // why doesn't it work with Attribute ? dunno :x
+        }
+
+        public CharacterRecord(Breed breed)
+            : this()
+        {
+            Breed = (PlayableBreedEnum)breed.Id;
+
+            BaseHealth = breed.StartHealthPoint;
+            AP = breed.StartActionPoints;
+            MP = breed.StartMovementPoints;
+            Prospection = breed.StartProspection;
+            SpellsPoints = breed.StartSpellsPoints;
+            StatsPoints = breed.StartStatsPoints;
+            Strength = breed.StartStrength;
+            Vitality = breed.StartVitality;
+            Wisdom = breed.StartWisdom;
+            Chance = breed.StartChance;
+            Intelligence = breed.StartIntelligence;
+            Agility = breed.StartAgility;
+
+            MapId = breed.StartMap;
+            CellId = breed.StartCell;
+            Direction = breed.StartDirection;
         }
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
@@ -41,8 +68,6 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        private string m_lookAsString;
-
         [Property("EntityLook")]
         private string LookAsString
         {
@@ -65,14 +90,9 @@ namespace Stump.Server.WorldServer.Database.Characters
             }
         }
 
-        private EntityLook m_entityLook;
-
         public EntityLook EntityLook
         {
-            get
-            {
-                return m_entityLook;
-            }
+            get { return m_entityLook; }
             set
             {
                 m_entityLook = value;
@@ -110,6 +130,13 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
+        [Nested]
+        public Restrictions Restrictions
+        {
+            get;
+            set;
+        }
+
         #region Position
 
         [Property("MapId", NotNull = true)]
@@ -138,56 +165,77 @@ namespace Stump.Server.WorldServer.Database.Characters
         #region Stats
 
         [Property("BaseHealth", NotNull = true)]
-        public uint BaseHealth
+        public ushort BaseHealth
         {
             get;
             set;
         }
 
         [Property("DamageTaken", NotNull = true)]
-        public uint DamageTaken
+        public ushort DamageTaken
+        {
+            get;
+            set;
+        }
+
+        [Property("AP", NotNull = true)]
+        public ushort AP
+        {
+            get;
+            set;
+        }
+
+        [Property("MP", NotNull = true)]
+        public ushort MP
+        {
+            get;
+            set;
+        }
+
+        [Property("Prospection", NotNull = true)]
+        public ushort Prospection
         {
             get;
             set;
         }
 
         [Property("Strength", NotNull = true)]
-        public int Strength
+        public short Strength
         {
             get;
             set;
         }
 
         [Property("Chance", NotNull = true)]
-        public int Chance
+        public short Chance
         {
             get;
             set;
         }
 
         [Property("Vitality", NotNull = true)]
-        public int Vitality
+        public short Vitality
         {
             get;
             set;
         }
 
         [Property("Wisdom", NotNull = true)]
-        public int Wisdom
+        public short Wisdom
         {
             get;
             set;
         }
 
         [Property("Intelligence", NotNull = true)]
-        public int Intelligence
+        public short Intelligence
         {
             get;
             set;
         }
 
         [Property("Agility", NotNull = true)]
-        public int Agility
+        public short Agility
         {
             get;
             set;
@@ -205,41 +253,34 @@ namespace Stump.Server.WorldServer.Database.Characters
         }
 
         [Property("EnergyMax", NotNull = true, Default = "10000")]
-        public uint EnergyMax
+        public short EnergyMax
         {
             get;
             set;
         }
 
         [Property("Energy", NotNull = true, Default = "10000")]
-        public uint Energy
+        public short Energy
         {
             get;
             set;
         }
 
         [Property("StatsPoints", NotNull = true, Default = "0")]
-        public int StatsPoints
+        public ushort StatsPoints
         {
             get;
             set;
         }
 
         [Property("SpellsPoints", NotNull = true, Default = "0")]
-        public int SpellsPoints
+        public ushort SpellsPoints
         {
             get;
             set;
         }
 
         #endregion
-
-        [Nested]
-        public Restrictions Restrictions
-        {
-            get;
-            set;
-        }
 
         public static CharacterRecord FindById(int characterId)
         {

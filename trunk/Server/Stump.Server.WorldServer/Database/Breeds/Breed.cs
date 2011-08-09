@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
@@ -252,28 +253,35 @@ namespace Stump.Server.WorldServer.Database.Breeds
 
 
         [Property("StartActionPoints")]
-        public uint StartActionPoints
+        public ushort StartActionPoints
         {
             get;
             set;
         }
 
         [Property("StartMovementPoints")]
-        public uint StartMovementPoints
+        public ushort StartMovementPoints
         {
             get;
             set;
         }
 
         [Property("StartHealthPoint")]
-        public uint StartHealthPoint
+        public ushort StartHealthPoint
+        {
+            get;
+            set;
+        }
+
+        [Property("StartProspection")]
+        public ushort StartProspection
         {
             get;
             set;
         }
 
         [Property("StartStatsPoints")]
-        public int StartStatsPoints
+        public ushort StartStatsPoints
         {
             get;
             set;
@@ -287,52 +295,85 @@ namespace Stump.Server.WorldServer.Database.Breeds
         }
 
         [Property("StartStrength")]
-        public ushort StartStrength
+        public short StartStrength
         {
             get;
             set;
         }
 
         [Property("StartVitality")]
-        public ushort StartVitality
+        public short StartVitality
         {
             get;
             set;
         }
 
         [Property("StartWisdom")]
-        public ushort StartWisdom
+        public short StartWisdom
         {
             get;
             set;
         }
 
         [Property("StartIntelligence")]
-        public ushort StartIntelligence
+        public short StartIntelligence
         {
             get;
             set;
         }
 
         [Property("StartChance")]
-        public ushort StartChance
+        public short StartChance
         {
             get;
             set;
         }
 
         [Property("StartAgility")]
-        public ushort StartAgility
+        public short StartAgility
         {
             get;
             set;
         }
 
         [Property("StartLevel")]
-        public uint StartLevel
+        public byte StartLevel
         {
             get;
             set;
+        }
+
+        public uint GetNeededPointForStats(short actualpoints, StatsBoostTypeEnum statsid)
+        {
+            switch (statsid)
+            {
+                case StatsBoostTypeEnum.Agility:
+                    return GetPoints(actualpoints, StatsPointsForAgility);
+                case StatsBoostTypeEnum.Chance:
+                    return GetPoints(actualpoints, StatsPointsForChance);
+                case StatsBoostTypeEnum.Intelligence:
+                    return GetPoints(actualpoints, StatsPointsForIntelligence);
+                case StatsBoostTypeEnum.Strength:
+                    return GetPoints(actualpoints, StatsPointsForStrength);
+                case StatsBoostTypeEnum.Wisdom:
+                    return GetPoints(actualpoints, StatsPointsForWisdom);
+                case StatsBoostTypeEnum.Vitality:
+                    return GetPoints(actualpoints, StatsPointsForVitality);
+                default:
+                    throw new ArgumentException("statsid");
+            }
+        }
+
+        private static uint GetPoints(int actualpoints, List<List<uint>> thresholds)
+        {
+            for (int i = 0; i < thresholds.Count - 1; i++)
+            {
+                if (thresholds[i][0] < actualpoints &&
+                    thresholds[i + 1][0] > actualpoints)
+                    return thresholds[i][1];
+            }
+
+            return thresholds.Last()[1];
         }
     }
 

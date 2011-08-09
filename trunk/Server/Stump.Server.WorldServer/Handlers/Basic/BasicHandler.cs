@@ -22,8 +22,8 @@ namespace Stump.Server.WorldServer.Handlers.Basic
             Character character = client.ActiveCharacter;
 
             /* Send informations about it */
-            //client.Send(new BasicWhoIsMessage(true, (byte) character.Client.Account.Role,
-            //                                  character.Client.WorldAccount.Nickname, character.Name, character.Zone.Id));
+            client.Send(new BasicWhoIsMessage(true, (byte) character.Client.Account.Role,
+                                              character.Client.WorldAccount.Nickname, character.Name, (short) character.Map.SubArea.Id));
         }
 
         [WorldHandler(BasicWhoIsRequestMessage.Id)]
@@ -40,10 +40,10 @@ namespace Stump.Server.WorldServer.Handlers.Basic
                 /* Send info about it */
             else
             {
-                /*client.Send(new BasicWhoIsMessage(message.search == client.ActiveCharacter.Name,
+                client.Send(new BasicWhoIsMessage(message.search == client.ActiveCharacter.Name,
                                                   (byte) character.Client.Account.Role,
                                                   character.Client.WorldAccount.Nickname, character.Name,
-                                                  character.Zone.Id));*/
+                                                  (short) character.Map.SubArea.Id));
             }
         }
 

@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using Stump.Core.Exceptions;
+using Castle.ActiveRecord;
 using Stump.Core.Reflection;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
@@ -56,7 +56,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             character.Delete();
             client.Characters.Remove(character);
 
-            WorldServer.Instance.IOTaskPool.EnqueueTask(() => IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(WorldServer.ServerInformation, client.Account.Id, (uint) character.Id));
+            WorldServer.Instance.IOTaskPool.EnqueueTask(
+                () => IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(WorldServer.ServerInformation, client.Account.Id, (uint) character.Id));
 
         }
 

@@ -17,11 +17,25 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells
             if (handler != null)
                 handler(this);
         }
-        
+
+        public ObjectPosition(Map map, Cell cell)
+        {
+            m_map = map;
+            m_cell = cell;
+            m_direction = DirectionsEnum.DIRECTION_EAST;
+        }
+
         public ObjectPosition(Map map, Cell cell, DirectionsEnum direction)
         {
             m_map = map;
             m_cell = cell;
+            m_direction = direction;
+        }
+
+        public ObjectPosition(Map map, short cellId, DirectionsEnum direction)
+        {
+            m_map = map;
+            m_cell = map.Cells[cellId];
             m_direction = direction;
         }
 
@@ -46,6 +60,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells
             set
             {
                 m_cell = value;
+                m_point = null;
 
                 NotifyPositionChanged();
             }
@@ -62,6 +77,13 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells
 
                 NotifyPositionChanged();
             }
+        }
+
+        private MapPoint m_point;
+
+        public MapPoint Point
+        {
+            get { return m_point ?? (m_point = new MapPoint((ushort) Cell.Id)); }
         }
     }
 }

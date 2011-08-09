@@ -8,7 +8,7 @@ using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
-    public partial class ContextHandler
+    public partial class ContextRoleplayHandler
     {
         [WorldHandler(EmotePlayRequestMessage.Id)]
         public static void HandleEmotePlayRequestMessage(WorldClient client, EmotePlayRequestMessage message)

@@ -3,7 +3,7 @@ using Stump.DofusProtocol.Messages;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
-    public partial class ContextHandler
+    public partial class ContextRoleplayHandler
     {
         /*[WorldHandler(typeof (NpcGenericActionRequestMessage))]
         public static void HandleNpcGenericActionRequestMessage(WorldClient client,

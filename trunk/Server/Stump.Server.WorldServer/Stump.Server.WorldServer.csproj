@@ -58,6 +58,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\ParametersConverter.cs" />
+    <Compile Include="Commands\Trigger\IInGameTrigger.cs" />
+    <Compile Include="Commands\Trigger\TriggerChat.cs" />
     <Compile Include="Commands\Trigger\WorldConsoleTrigger.cs" />
     <Compile Include="Database\Accounts\WorldAccount.cs" />
     <Compile Include="Database\Breeds\Breed.cs" />
@@ -90,6 +92,10 @@
     <Compile Include="Handlers\Characters\CharacterHandler.cs" />
     <Compile Include="Handlers\Characters\CharacterReplayHandler.cs" />
     <Compile Include="Handlers\Characters\CharacterStatsHandler.cs" />
+    <Compile Include="Handlers\Chat\ChatChannelHandler.cs" />
+    <Compile Include="Handlers\Chat\ChatHandler.cs" />
+    <Compile Include="Handlers\Chat\ChatReportHandler.cs" />
+    <Compile Include="Handlers\Chat\ChatSmileyHandler.cs" />
     <Compile Include="Handlers\Context\ContextDisplayHandler.cs" />
     <Compile Include="Handlers\Context\ContextFightHandler.cs" />
     <Compile Include="Handlers\Context\ContextHandler.cs" />
@@ -123,6 +129,7 @@
     <Compile Include="Worlds\Actors\Fight\MutantFighter.cs" />
     <Compile Include="Worlds\Actors\Fight\NamedFighter.cs" />
     <Compile Include="Worlds\Actors\Fight\TaxCollectorFighter.cs" />
+    <Compile Include="Worlds\Actors\Interfaces\IStatsOwner.cs" />
     <Compile Include="Worlds\Actors\RolePlay\Characters\Character.cs" />
     <Compile Include="Worlds\Actors\RolePlay\Characters\CharacterManager.cs" />
     <Compile Include="Worlds\Actors\RolePlay\Characters\ExperienceManager.cs" />
@@ -136,14 +143,19 @@
     <Compile Include="Worlds\Actors\RolePlay\Prism.cs" />
     <Compile Include="Worlds\Actors\RolePlay\RolePlayActor.cs" />
     <Compile Include="Worlds\Actors\RolePlay\TaxCollectorNpc.cs" />
+    <Compile Include="Worlds\Actors\Stats\StatsFields.cs" />
+    <Compile Include="Worlds\Actors\Stats\StatsHealth.cs" />
     <Compile Include="Worlds\Breeds\BreedManager.cs" />
+    <Compile Include="Worlds\Chat\ChatManager.cs" />
     <Compile Include="Worlds\Maps\Area.cs" />
     <Compile Include="Worlds\Maps\Cells\MapPoint.cs" />
     <Compile Include="Worlds\Maps\Cells\ObjectPosition.cs" />
     <Compile Include="Worlds\Maps\IContext.cs" />
     <Compile Include="Worlds\Maps\Map.cs" />
+    <Compile Include="Worlds\Maps\Pathfinding\MovementPath.cs" />
     <Compile Include="Worlds\Maps\SubArea.cs" />
     <Compile Include="Worlds\Maps\SuperArea.cs" />
+    <Compile Include="Worlds\Actors\Stats\StatsData.cs" />
     <Compile Include="Worlds\World.cs" />
   </ItemGroup>
   <ItemGroup>

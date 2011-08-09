@@ -4,7 +4,7 @@ using Stump.Server.WorldServer.Core.Network;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
-    public partial class ContextHandler
+    public partial class ContextRoleplayHandler
     {
         [WorldHandler(QuestListRequestMessage.Id)]
         public static void HandleQuestListRequestMessage(WorldClient client, QuestListRequestMessage message)

@@ -1,6 +1,6 @@
 ﻿namespace Stump.DofusProtocol.Enums
 {
-    public enum CaracteristicEnum
+    public enum StatsBoostTypeEnum
     {
         Strength = 0xA,
         Vitality = 0xB,

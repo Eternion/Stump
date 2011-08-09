@@ -6,8 +6,12 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Characters;
+using Stump.Server.WorldServer.Worlds;
 using Stump.Server.WorldServer.Worlds.Actors;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Worlds.Maps.Cells;
+using Stump.Server.WorldServer.Worlds.Maps.Pathfinding;
 
 namespace Stump.Server.WorldServer.Handlers.Context
 {
@@ -25,13 +29,10 @@ namespace Stump.Server.WorldServer.Handlers.Context
             SendGameContextDestroyMessage(client);
             SendGameContextCreateMessage(client, 1);
 
-            /*CharacterHandler.SendCharacterStatsListMessage(client);
-            CharacterHandler.SendLifePointsRegenBeginMessage(client, 60);*/
+            CharacterHandler.SendCharacterStatsListMessage(client);
+            CharacterHandler.SendLifePointsRegenBeginMessage(client, 60);
 
-            RolePlay.ContextHandler.SendCurrentMapMessage(client, client.ActiveCharacter.Map.Id);
-            BasicHandler.SendBasicTimeMessage(client);
-
-            //World.Instance.SendMessageOfTheDay(client.ActiveCharacter);
+            client.ActiveCharacter.LogIn();
         }
 
         [WorldHandler(GameMapChangeOrientationRequestMessage.Id)]
@@ -39,7 +40,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                                         GameMapChangeOrientationRequestMessage message)
         {
             client.ActiveCharacter.Direction = (DirectionsEnum) message.direction;
-            client.ActiveCharacter.Map.Do(
+            client.ActiveCharacter.Map.DoForAll(
                 charac => SendGameMapChangeOrientationMessage(charac.Client, client.ActiveCharacter));
         }
 
@@ -47,34 +48,25 @@ namespace Stump.Server.WorldServer.Handlers.Context
         [WorldHandler(GameMapMovementRequestMessage.Id)]
         public static void HandleGameMapMovementRequestMessage(WorldClient client, GameMapMovementRequestMessage message)
         {
-            /*if (!client.ActiveCharacter.CanMove())
+            if (!client.ActiveCharacter.CanMove())
                 return;
 
             var movementPath = new MovementPath(client.ActiveCharacter.Map, message.keyMovements);
 
-            if (client.ActiveCharacter.IsInFight)
-            {
-                client.ActiveCharacter.Fighter.Move(movementPath);
-            }
-            else
-            {
-                client.ActiveCharacter.Move(movementPath);
-            }*/
+            client.ActiveCharacter.StartMove(movementPath);
         }
 
         [WorldHandler(GameMapMovementConfirmMessage.Id)]
         public static void HandleGameMapMovementConfirmMessage(WorldClient client, GameMapMovementConfirmMessage message)
         {
-            //client.ActiveCharacter.MovementEnded();
+            client.ActiveCharacter.StopMove();
         }
 
         [WorldHandler(GameMapMovementCancelMessage.Id)]
         public static void HandleGameMapMovementCancelMessage(WorldClient client, GameMapMovementCancelMessage message)
         {
-            // todo : check if cell is available and if moving
-
-            /*client.ActiveCharacter.StopMove(new ObjectPosition(client.ActiveCharacter.Map, (ushort) message.cellId,
-                                                               client.ActiveCharacter.Position.Direction));*/
+            client.ActiveCharacter.StopMove(new ObjectPosition(client.ActiveCharacter.Map, message.cellId,
+                                                               client.ActiveCharacter.Position.Direction));
         }
 
         public static void SendGameContextCreateMessage(WorldClient client, byte context)
@@ -104,7 +96,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameContextRefreshEntityLookMessage(actor.Id, actor.Look));
         }
 
-        public static void SendGameMapMovementMessage(WorldClient client, IEnumerable<short> movementsKey, RolePlayActor actor)
+        public static void SendGameMapMovementMessage(WorldClient client, IEnumerable<short> movementsKey, ContextActor actor)
         {
             client.Send(new GameMapMovementMessage(movementsKey, actor.Id));
         }

@@ -4,25 +4,18 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 {
     public abstract class FightActor : ContextActor
     {
-        private FightActor m_carriedActor;
-
         public FightActor CarriedActor
         {
-            get { return m_carriedActor; }
-            protected set
-            {
-                m_carriedActor = value;
-
-                m_entityDispositionInformations.Invalidate();
-            }
+            get;
+            protected set;
         }
 
-        protected override EntityDispositionInformations BuildEntityDispositionInformations()
+        public override EntityDispositionInformations GetEntityDispositionInformations()
         {
             if (CarriedActor != null)
                 return new FightEntityDispositionInformations(Position.Cell.Id, (byte) Position.Direction, CarriedActor.Id);
 
-            return base.BuildEntityDispositionInformations();
+            return base.GetEntityDispositionInformations();
         }
     }
 }

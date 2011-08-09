@@ -128,7 +128,10 @@
     <Folder Include="auth_patchs\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="world_patchs\experiences.sql" />
+    <Content Include="world_patchs\breeds.sql" />
+    <Content Include="world_patchs\experiences.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

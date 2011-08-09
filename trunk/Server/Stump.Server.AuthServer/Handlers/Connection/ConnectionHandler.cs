@@ -44,7 +44,6 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             {
                 SendServersListMessage(client);
             }
-
         }
 
         [AuthHandler(IdentificationWithServerIdMessage.Id)]

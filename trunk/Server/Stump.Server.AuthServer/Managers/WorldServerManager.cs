@@ -10,9 +10,11 @@ using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.AuthServer.Database.World;
+using Stump.Server.AuthServer.Handlers.Connection;
 using Stump.Server.AuthServer.IPC;
 using Stump.Server.AuthServer.Network;
 using Stump.Server.BaseServer.IPC.Objects;
+using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.AuthServer.Managers
 {
@@ -42,6 +44,39 @@ namespace Stump.Server.AuthServer.Managers
 #endif
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        public event Action<WorldServer> ServerAdded;
+
+        private void NotifyServerAdded(WorldServer server)
+        {
+            OnServerAdded(server);
+
+            Action<WorldServer> handler = ServerAdded;
+            if (handler != null) 
+                handler(server);
+        }
+
+        public event Action<WorldServer> ServerRemoved;
+
+        private void NotifyServerRemoved(WorldServer server)
+        {
+            OnServerRemoved(server);
+
+            Action<WorldServer> handler = ServerRemoved;
+            if (handler != null) 
+                handler(server);
+        }
+
+        public event Action<WorldServer> ServerStateChanged;
+
+        private void NotifyServerStateChanged(WorldServer server)
+        {
+            OnServerStateChanged(server);
+
+            Action<WorldServer> handler = ServerStateChanged;
+            if (handler != null) 
+                handler(server);
+        }
 
         private Dictionary<int, WorldServer> m_realmlist;
 
@@ -177,7 +212,7 @@ namespace Stump.Server.AuthServer.Managers
 
                 logger.Info("Registered World : \"{0}\" <Id : {1}> <{2}>", world.Name, world.Id, world.Address);
 
-                OnServerChange(m_realmlist[world.Id]);
+                NotifyServerAdded(m_realmlist[world.Id]);
                 return true;
             }
             logger.Error("Tried to register the server <Id : {0}> twice.", world.Id);
@@ -209,7 +244,7 @@ namespace Stump.Server.AuthServer.Managers
             if (world != null)
             {
                 world.Status = state;
-                OnServerChange(world);
+                NotifyServerStateChanged(world);
             }
         }
 
@@ -275,7 +310,7 @@ namespace Stump.Server.AuthServer.Managers
                     m_realmlist[world.Id].Connected = false;
                     m_realmlist[world.Id].Status = ServerStatusEnum.OFFLINE;
 
-                    OnServerChange(m_realmlist[world.Id]);
+                    NotifyServerRemoved(m_realmlist[world.Id]);
                 }
                 logger.Info("Unregistered \"{0}\" <Id : {1}> <{2}>", world.Name, world.Id, world.Address);
             }
@@ -297,13 +332,13 @@ namespace Stump.Server.AuthServer.Managers
                     m_realmlist[world.Id].Connected = false;
                     m_realmlist[world.Id].Status = ServerStatusEnum.OFFLINE;
 
-                    OnServerChange(m_realmlist[world.Id]);
+                    NotifyServerRemoved(m_realmlist[world.Id]);
                 }
                 logger.Info("Unregistered \"{0}\" <Id : {1}> <{2}>", world.Name, world.Id, world.Ip);
             }
         }
 
-        private bool AskAddWorldRecord(WorldServerData worldServerData)
+        private static bool AskAddWorldRecord(WorldServerData worldServerData)
         {
             return
                 AuthServer.Instance.ConsoleInterface.AskAndWait(
@@ -336,16 +371,22 @@ namespace Stump.Server.AuthServer.Managers
             }
         }
 
-        private void OnServerListChange()
+        private static void OnServerAdded(WorldServer worldServer)
         {
-            /*Parallel.ForEach(AuthentificationServer.Instance.GetClientsLookingOfServers(),
-                             ConnectionHandler.SendServersListMessage);*/
+            ClientManager.Instance.FindAll<AuthClient>(entry => entry.LookingOfServers).
+                DoForAll(entry => ConnectionHandler.SendServerStatusUpdateMessage(entry, worldServer));
         }
 
-        private void OnServerChange(WorldServer world)
+        private static void OnServerRemoved(WorldServer worldServer)
         {
-            /*Parallel.ForEach(AuthServer.Instance.GetClientsLookingOfServers(),
-                client => ConnectionHandler.SendServerStatusUpdateMessage(client,world));*/
+            ClientManager.Instance.FindAll<AuthClient>(entry => entry.LookingOfServers).
+                DoForAll(entry => ConnectionHandler.SendServerStatusUpdateMessage(entry, worldServer));
+        }
+
+        private static void OnServerStateChanged(WorldServer worldServer)
+        {
+            ClientManager.Instance.FindAll<AuthClient>(entry => entry.LookingOfServers).
+                DoForAll(entry => ConnectionHandler.SendServerStatusUpdateMessage(entry, worldServer));
         }
     }
 }

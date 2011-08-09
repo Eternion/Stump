@@ -17,27 +17,16 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay
         public void AddFollowingCharacter(RolePlayActor actor)
         {
             m_followingCharacters.Add(actor);
-
-            m_humanInformations.Invalidate();
         }
 
         public void RemoveFollowingCharacter(RolePlayActor actor)
         {
             m_followingCharacters.Remove(actor);
-
-            m_humanInformations.Invalidate();
         }
 
         #region Network
-		protected override void InitializeValidators()
-        {
-            base.InitializeValidators();
 
-            m_humanInformations = new ObjectValidator<HumanInformations>(BuildHumanInformations);
-            m_humanInformations.ObjectInvalidated += OnHumanInformationsInvalidation;
-        }
-
-        protected override GameContextActorInformations BuildGameContextActorInformations()
+        public override GameContextActorInformations GetGameContextActorInformations()
         {
             return new GameRolePlayHumanoidInformations(
                 Id,
@@ -49,26 +38,14 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay
 
         #region HumanInformations
 
-        protected ObjectValidator<HumanInformations> m_humanInformations;
-
-        protected virtual void OnHumanInformationsInvalidation(ObjectValidator<HumanInformations> validator)
-        {
-            m_gameContextActorInformations.Invalidate();
-        }
-
-        protected virtual HumanInformations BuildHumanInformations()
+        public virtual HumanInformations GetHumanInformations()
         {
             return new HumanInformations(FollowingCharacters.Select(entry => entry.Look),
-                0, // todo : emote
+                255, // todo : emote
                 0,
                 new ActorRestrictionsInformations(), // todo : restrictions
                 0, // todo : title
                 "");
-        }
-
-        public HumanInformations GetHumanInformations()
-        {
-            return m_humanInformations;
         }
 
         #endregion 

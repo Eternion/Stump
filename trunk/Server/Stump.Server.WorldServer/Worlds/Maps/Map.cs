@@ -1,15 +1,21 @@
 using System;
-using System.Linq;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using Stump.Core.Cache;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Handlers.Basic;
+using Stump.Server.WorldServer.Handlers.Context;
+using Stump.Server.WorldServer.Handlers.Context.RolePlay;
+using Stump.Server.WorldServer.Worlds.Actors;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
+using Stump.Server.WorldServer.Worlds.Maps.Pathfinding;
 
 namespace Stump.Server.WorldServer.Worlds.Maps
 {
@@ -37,18 +43,19 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             Action<Map, RolePlayActor> handler = ActorLeave;
             if (handler != null)
                 handler(this, actor);
-
         }
 
         #endregion
-
-        protected internal MapRecord Record;
-        private readonly ConcurrentDictionary<int, RolePlayActor> m_actors = new ConcurrentDictionary<int, RolePlayActor>();
 
         /// <summary>
         /// Array that associate a cell to a map point
         /// </summary>
         public static MapPoint[] PointsGrid;
+
+        private readonly ConcurrentDictionary<int, RolePlayActor> m_actors = new ConcurrentDictionary<int, RolePlayActor>();
+        private readonly Dictionary<int, MapNeighbour> m_mapsAround = new Dictionary<int, MapNeighbour>();
+
+        protected internal MapRecord Record;
 
         static Map()
         {
@@ -66,9 +73,23 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             Record = record;
 
             InitializeValidators();
+            InitializeMapArrounds();
+        }
+
+        private void InitializeMapArrounds()
+        {
+            m_mapsAround.Add(TopNeighbourId, MapNeighbour.Top);
+            m_mapsAround.Add(BottomNeighbourId, MapNeighbour.Bottom);
+            m_mapsAround.Add(LeftNeighbourId, MapNeighbour.Left);
+            m_mapsAround.Add(RightNeighbourId, MapNeighbour.Right);
         }
 
         #region Properties
+
+        private Map m_bottomNeighbour;
+        private Map m_leftNeighbour;
+        private Map m_rightNeighbour;
+        private Map m_topNeighbour;
 
         public int Id
         {
@@ -112,10 +133,20 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             set { Record.TopNeighbourId = value; }
         }
 
+        public Map TopNeighbour
+        {
+            get { return m_topNeighbour ?? (m_topNeighbour = World.Instance.GetMap(TopNeighbourId)); }
+        }
+
         public int BottomNeighbourId
         {
             get { return Record.BottomNeighbourId; }
             set { Record.BottomNeighbourId = value; }
+        }
+
+        public Map BottomNeighbour
+        {
+            get { return m_bottomNeighbour ?? (m_bottomNeighbour = World.Instance.GetMap(BottomNeighbourId)); }
         }
 
         public int LeftNeighbourId
@@ -124,10 +155,20 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             set { Record.LeftNeighbourId = value; }
         }
 
+        public Map LeftNeighbour
+        {
+            get { return m_leftNeighbour ?? (m_leftNeighbour = World.Instance.GetMap(LeftNeighbourId)); }
+        }
+
         public int RightNeighbourId
         {
             get { return Record.RightNeighbourId; }
             set { Record.RightNeighbourId = value; }
+        }
+
+        public Map RightNeighbour
+        {
+            get { return m_rightNeighbour ?? (m_rightNeighbour = World.Instance.GetMap(RightNeighbourId)); }
         }
 
         public int ShadowBonusOnEntities
@@ -155,6 +196,93 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         #endregion
 
+        #region Gets
+
+        #region Neighbour
+
+        public Map GetNeighbouringMap(MapNeighbour mapNeighbour)
+        {
+            switch (mapNeighbour)
+            {
+                case MapNeighbour.Top:
+                    return TopNeighbour;
+                case MapNeighbour.Bottom:
+                    return BottomNeighbour;
+                case MapNeighbour.Right:
+                    return RightNeighbour;
+                case MapNeighbour.Left:
+                    return LeftNeighbour;
+                default:
+                    throw new ArgumentException("mapNeighbour");
+            }
+        }
+
+        public MapNeighbour GetMapRelativePosition(int mapid)
+        {
+            return !m_mapsAround.ContainsKey(mapid) ? MapNeighbour.None : m_mapsAround[mapid];
+        }
+
+        /// <summary>
+        ///   Calculate which cell our character will walk on once map changed. Returns 0 if not found
+        /// </summary>
+        public short GetCellAfterChangeMap(short currentCell, MapNeighbour mapneighbour)
+        {
+            switch (mapneighbour)
+            {
+                case MapNeighbour.Top:
+                    return (short) (currentCell + 532);
+                case MapNeighbour.Bottom:
+                    return (short)( currentCell - 532 );
+                case MapNeighbour.Right:
+                    return (short)( currentCell - 13 );
+                case MapNeighbour.Left:
+                    return (short)( currentCell + 13 );
+                default:
+                    return 0;
+            }
+        }
+
+        #endregion
+
+        public IEnumerable<Character> GetAllCharacters()
+        {
+            return GetActors<Character>();
+        }
+
+        public void DoForAll(Action<Character> action)
+        {
+            foreach (Character character in GetAllCharacters())
+            {
+                action(character);
+            }
+        }
+
+        public T GetActor<T>(int id)
+            where T : RolePlayActor
+        {
+            return m_actors[id] as T;
+        }
+
+        public T GetActor<T>(Predicate<T> predicate)
+            where T : RolePlayActor
+        {
+            return m_actors.Values.OfType<T>().Where(entry => predicate(entry)).SingleOrDefault();
+        }
+
+        public IEnumerable<T> GetActors<T>()
+        {
+            return m_actors.Values.OfType<T>(); // after a benchmark we conclued that it takes approximatively 10 ticks
+        }
+
+        public IEnumerable<T> GetActors<T>(Predicate<T> predicate)
+        {
+            return m_actors.Values.OfType<T>();
+        }
+
+        #endregion
+
+        #region Enter/Leave
+
         public void Enter(RolePlayActor actor)
         {
             if (m_actors.TryAdd(actor.Id, actor))
@@ -175,41 +303,54 @@ namespace Stump.Server.WorldServer.Worlds.Maps
                 throw new Exception(string.Format("Could not remove actor '{0}' of the map", actor));
         }
 
-        #region Gets
-
-        public T GetActor<T>(int id)
-            where T : RolePlayActor
-        {
-            return m_actors[id] as T;
-        }
-
-        public T GetActor<T>(Predicate<T> predicate)
-            where T : RolePlayActor
-        {
-            return m_actors.OfType<T>().Where(entry => predicate(entry)).SingleOrDefault();
-        }
-
-        public IEnumerable<T> GetActors<T>()
-        {
-            return m_actors.OfType<T>(); // after a benchmark we conclued that it takes approximatively 10 ticks
-        }
-
-        public IEnumerable<T> GetActors<T>(Predicate<T> predicate)
-        {
-            return m_actors.OfType<T>();
-        }
-
-        #endregion
-
         private void OnEnter(RolePlayActor actor)
         {
             m_mapComplementaryInformationsDataMessage.Invalidate();
+
+            actor.StartMoving += OnActorStartMoving;
+            actor.StopMoving += OnActorStopMoving;
+
+            if (actor is Character)
+            {
+                var character = actor as Character;
+
+                ContextRoleplayHandler.SendCurrentMapMessage(character.Client, Id);
+                BasicHandler.SendBasicTimeMessage(character.Client);
+            }
+
+            DoForAll(entry => ContextRoleplayHandler.SendGameRolePlayShowActorMessage(entry.Client, actor));
         }
 
         private void OnLeave(RolePlayActor actor)
         {
             m_mapComplementaryInformationsDataMessage.Invalidate();
+
+            actor.StartMoving -= OnActorStartMoving;
+            actor.StopMoving -= OnActorStopMoving;
+
+            DoForAll(entry => ContextHandler.SendGameContextRemoveElementMessage(entry.Client, actor));
         }
+
+        #endregion
+
+        #region Actor Actions
+
+        private void OnActorStartMoving(ContextActor actor, MovementPath path)
+        {
+            List<short> movementsKey = path.GetServerMovementKeys();
+
+            DoForAll(delegate(Character entry)
+                         {
+                             ContextHandler.SendGameMapMovementMessage(entry.Client, movementsKey, actor);
+                             BasicHandler.SendBasicNoOperationMessage(entry.Client);
+                         });
+        }
+
+        private void OnActorStopMoving(ContextActor actor, MovementPath path, bool canceled)
+        {
+        }
+
+        #endregion
 
         #region Network
 
@@ -225,8 +366,6 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         private MapComplementaryInformationsDataMessage BuildMapComplementaryInformationsDataMessage()
         {
-            
-
             return new MapComplementaryInformationsDataMessage(
                 (short) SubArea.Id,
                 Id,
@@ -248,17 +387,38 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         #endregion
 
-        public IEnumerable<Character> GetAllCharacters()
+        #region Equality Members
+
+        public bool Equals(Map other)
         {
-            return GetActors<Character>();
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(other.Id, Id);
         }
 
-        public void Do(Action<Character> action)
+        public override bool Equals(object obj)
         {
-            foreach (var character in GetAllCharacters())
-            {
-                action(character);
-            }
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != typeof(Map)) return false;
+            return Equals((Map)obj);
         }
+
+        public override int GetHashCode()
+        {
+            return ( Record != null ? Record.GetHashCode() : 0 );
+        }
+
+        public static bool operator ==(Map left, Map right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(Map left, Map right)
+        {
+            return !Equals(left, right);
+        }
+
+        #endregion
     }
 }
