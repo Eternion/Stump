@@ -20,20 +20,23 @@ namespace Stump.Tools.CacheManager
 
         private readonly Assembly m_assembly;
         private readonly string m_d2iFolder;
+        private readonly string m_patchsFolder;
         private readonly string m_d2oFolder;
         private D2OReader[] m_d2oReaders;
 
-        public DatabaseBuilder(Assembly assembly, string d2oFolder, string d2iFolder)
+        public DatabaseBuilder(Assembly assembly, string d2oFolder, string d2iFolder, string patchsFolder)
         {
             m_assembly = assembly;
             m_d2oFolder = d2oFolder;
             m_d2iFolder = d2iFolder;
+            m_patchsFolder = patchsFolder;
         }
 
         public void Build()
         {
             BuildD2ITables();
             BuildD2OTables();
+            ExecutePatchs();
         }
 
         private void BuildD2ITables()
@@ -69,31 +72,40 @@ namespace Stump.Tools.CacheManager
                     switch (file.Key)
                     {
                         case "fr":
-                            records[text.Key].Add("French", text.Value);
+                            if (string.IsNullOrEmpty(Program.SpecificLanguage) || Program.SpecificLanguage.Contains("fr"))
+                                records[text.Key].Add("French", text.Value);
                             break;
                         case "en":
-                            records[text.Key].Add("English", text.Value);
+                            if (string.IsNullOrEmpty(Program.SpecificLanguage) || Program.SpecificLanguage.Contains("en"))
+                                records[text.Key].Add("English", text.Value);
                             break;
                         case "de":
-                            records[text.Key].Add("German", text.Value);
+                            if (string.IsNullOrEmpty(Program.SpecificLanguage) || Program.SpecificLanguage.Contains("de"))
+                                records[text.Key].Add("German", text.Value);
                             break;
                         case "it":
-                            records[text.Key].Add("Italian", text.Value);
+                            if (string.IsNullOrEmpty(Program.SpecificLanguage) || Program.SpecificLanguage.Contains("it"))
+                                records[text.Key].Add("Italian", text.Value);
                             break;
                         case "es":
-                            records[text.Key].Add("Spanish", text.Value);
+                            if (string.IsNullOrEmpty(Program.SpecificLanguage) || Program.SpecificLanguage.Contains("es"))
+                                records[text.Key].Add("Spanish", text.Value);
                             break;
                         case "ja":
-                            records[text.Key].Add("Japanish", text.Value);
+                            if (string.IsNullOrEmpty(Program.SpecificLanguage) || Program.SpecificLanguage.Contains("ja"))
+                                records[text.Key].Add("Japanish", text.Value);
                             break;
                         case "nl":
-                            records[text.Key].Add("Dutsh", text.Value);
+                            if (string.IsNullOrEmpty(Program.SpecificLanguage) || Program.SpecificLanguage.Contains("nl"))
+                                records[text.Key].Add("Dutsh", text.Value);
                             break;
                         case "pt":
-                            records[text.Key].Add("Portugese", text.Value);
+                            if (string.IsNullOrEmpty(Program.SpecificLanguage) || Program.SpecificLanguage.Contains("pt"))
+                                records[text.Key].Add("Portugese", text.Value);
                             break;
                         case "ru":
-                            records[text.Key].Add("Russish", text.Value);
+                            if (string.IsNullOrEmpty(Program.SpecificLanguage) || Program.SpecificLanguage.Contains("ru"))
+                                records[text.Key].Add("Russish", text.Value);
                             break;
                     }
                 }
@@ -129,31 +141,40 @@ namespace Stump.Tools.CacheManager
                     switch (file.Key)
                     {
                         case "fr":
-                            recordsUi[text.Key].Add("French", text.Value);
+                            if (string.IsNullOrEmpty(Program.SpecificLanguage) || Program.SpecificLanguage.Contains("fr"))
+                                recordsUi[text.Key].Add("French", text.Value);
                             break;
                         case "en":
-                            recordsUi[text.Key].Add("English", text.Value);
+                            if (string.IsNullOrEmpty(Program.SpecificLanguage) || Program.SpecificLanguage.Contains("en"))
+                                recordsUi[text.Key].Add("English", text.Value);
                             break;
                         case "de":
-                            recordsUi[text.Key].Add("German", text.Value);
+                            if (string.IsNullOrEmpty(Program.SpecificLanguage) || Program.SpecificLanguage.Contains("de"))
+                                recordsUi[text.Key].Add("German", text.Value);
                             break;
                         case "it":
-                            recordsUi[text.Key].Add("Italian", text.Value);
+                            if (string.IsNullOrEmpty(Program.SpecificLanguage) || Program.SpecificLanguage.Contains("it"))
+                                recordsUi[text.Key].Add("Italian", text.Value);
                             break;
                         case "es":
-                            recordsUi[text.Key].Add("Spanish", text.Value);
+                            if (string.IsNullOrEmpty(Program.SpecificLanguage) || Program.SpecificLanguage.Contains("es"))
+                                recordsUi[text.Key].Add("Spanish", text.Value);
                             break;
                         case "ja":
-                            recordsUi[text.Key].Add("Japanish", text.Value);
+                            if (string.IsNullOrEmpty(Program.SpecificLanguage) || Program.SpecificLanguage.Contains("ja"))
+                                recordsUi[text.Key].Add("Japanish", text.Value);
                             break;
                         case "nl":
-                            recordsUi[text.Key].Add("Dutsh", text.Value);
+                            if (string.IsNullOrEmpty(Program.SpecificLanguage) || Program.SpecificLanguage.Contains("nl"))
+                                recordsUi[text.Key].Add("Dutsh", text.Value);
                             break;
                         case "pt":
-                            recordsUi[text.Key].Add("Portugese", text.Value);
+                            if (string.IsNullOrEmpty(Program.SpecificLanguage) || Program.SpecificLanguage.Contains("pt"))
+                                recordsUi[text.Key].Add("Portugese", text.Value);
                             break;
                         case "ru":
-                            recordsUi[text.Key].Add("Russish", text.Value);
+                            if (string.IsNullOrEmpty(Program.SpecificLanguage) || Program.SpecificLanguage.Contains("ru"))
+                                recordsUi[text.Key].Add("Russish", text.Value);
                             break;
                     }
                 }
@@ -168,7 +189,7 @@ namespace Stump.Tools.CacheManager
                 counter++;
 
                 Console.SetCursorPosition(cursorLeft, cursorTop);
-                Console.Write("{0}/{1} ({2}%)", counter, records.Count, (int)((counter / (double)recordsUi.Count) * 100d));
+                Console.Write("{0}/{1} ({2}%)", counter, records.Count, (int) ((counter/(double) recordsUi.Count)*100d));
             }
 
             Console.SetCursorPosition(cursorLeft, cursorTop);
@@ -249,6 +270,14 @@ namespace Stump.Tools.CacheManager
                                           subentry => subentry.Name == table.ClassAttribute.Name &&
                                                       subentry.PackageName == table.ClassAttribute.PackageName) > 0).
                 Single();
+        }
+
+        private void ExecutePatchs()
+        {
+            foreach (var sqlFile in Directory.EnumerateFiles("./"+ m_patchsFolder + "/", "*.sql"))
+            {
+                Program.DBAccessor.ExecuteNonQuery(File.ReadAllText(sqlFile));
+            }
         }
     }
 }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -11,10 +10,9 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Handlers.Basic;
-using Stump.Server.WorldServer.World.Accounts;
-using Stump.Server.WorldServer.World.Actors.RolePlay;
-using Stump.Server.WorldServer.World.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.World.Breeds;
+using Stump.Server.WorldServer.Handlers.Initialization;
+using Stump.Server.WorldServer.Worlds.Accounts;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
 {
@@ -98,13 +96,12 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             // Check if we also have a world account
             if (client.WorldAccount == null)
             {
-                client.WorldAccount = !WorldAccount.Exists(client.Account.Id) ?
-                    AccountManager.CreateWorldAccount(client) :
-                    WorldAccount.FindById(client.Account.Id);
+                client.WorldAccount = !WorldAccount.Exists(client.Account.Id)
+                                          ? AccountManager.CreateWorldAccount(client)
+                                          : WorldAccount.FindById(client.Account.Id);
             }
-            
 
-           
+
             SendCharacterSelectedSuccessMessage(client);
             /*
             InventoryHandler.SendInventoryContentMessage(client);
@@ -119,19 +116,20 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             PvpHandler.SendAlignmentRankUpdateMessage(client);
             PvpHandler.SendAlignmentSubAreasListMessage(client);
-
+            */
             InitializationHandler.SendSetCharacterRestrictionsMessage(client);
 
             BasicHandler.SendTextInformationMessage(client, 1, 89);
-            BasicHandler.SendTextInformationMessage(client, 0, 152,
-                                                    client.Account.LastConnection.Year,
-                                                    client.Account.LastConnection.Month,
-                                                    client.Account.LastConnection.Day,
-                                                    client.Account.LastConnection.Hour,
-                                                    client.Account.LastConnection.Minute,
-                                                    client.Account.LastIp ?? "(null)");
+            if (client.Account.LastConnection != default(DateTime))
+                BasicHandler.SendTextInformationMessage(client, 0, 152,
+                                                        client.Account.LastConnection.Year,
+                                                        client.Account.LastConnection.Month,
+                                                        client.Account.LastConnection.Day,
+                                                        client.Account.LastConnection.Hour,
+                                                        client.Account.LastConnection.Minute,
+                                                        client.Account.LastConnectionIp ?? "(null)");
 
-            InitializationHandler.SendOnConnectionEventMessage(client, 2);*/
+            InitializationHandler.SendOnConnectionEventMessage(client, 2);
 
             // Update LastConnection and Last Ip
             client.WorldAccount.LastConnection = DateTime.Now;
@@ -155,7 +153,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
         public static void SendCharactersListMessage(WorldClient client)
         {
-            var characters = client.Characters.Select(
+            List<CharacterBaseInformations> characters = client.Characters.Select(
                 characterRecord =>
                 new CharacterBaseInformations(
                     characterRecord.Id,
@@ -166,7 +164,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     characterRecord.Sex != SexTypeEnum.SEX_MALE)).ToList();
 
             client.Send(new CharactersListMessage(
-                            false, //client.Account.StartupActions.Count != 0,
+                            client.WorldAccount != null && client.WorldAccount.StartupActions.Count != 0,
                             characters
                             ));
         }
@@ -200,7 +198,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     unusableCharacters.Add(characterRecord.Id);
                 }
             }
-            client.Send(new CharactersListWithModificationsMessage(false, //client.Account.StartupActions.Count != 0,
+            client.Send(new CharactersListWithModificationsMessage(client.WorldAccount.StartupActions.Count != 0,
                                                                    characterBaseInformations,
                                                                    charactersToRecolor,
                                                                    charactersToRename,

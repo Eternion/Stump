@@ -1,16 +1,66 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Stump.Core.Threading;
 
 namespace Stump.Core.Pool.Task
 {
     public class CyclicTask
     {
-        public CyclicTask(Action method, int delay, Condition condition, uint? maxExecution)
+        #region Delegates
+
+        public delegate bool Predicate();
+
+        #endregion
+
+        public event Action<CyclicTask> TaskEnded;
+
+        private readonly uint? m_callsLimit;
+        private readonly Predicate m_condition;
+        private readonly TimeSpan m_intervalDelay;
+        private readonly TimeSpan m_firstCallDelay;
+
+        private uint m_callsCount;
+        private DateTime m_lastCall;
+
+        private bool m_cancel;
+
+        public CyclicTask(Action action, TimeSpan intervalDelay)
+
         {
-            Action = method;
-            ExecutionDelay = TimeSpan.FromSeconds(delay);
-            Condition = condition;
-            MaxExecutionNbr = maxExecution;
-            LastCall = DateTime.Now;
+            Action = action;
+            m_intervalDelay = intervalDelay;
+            m_lastCall = DateTime.Now;
+        }
+
+        public CyclicTask(Action action, TimeSpan intervalDelay, TimeSpan firstCallDelay)
+
+        {
+            Action = action;
+            m_intervalDelay = intervalDelay;
+            m_firstCallDelay = firstCallDelay;
+            m_lastCall = intervalDelay > firstCallDelay ? DateTime.Now - (intervalDelay - firstCallDelay) : DateTime.Now;
+        }
+
+        public CyclicTask(Action action, TimeSpan intervalDelay, Predicate condition, uint? callsLimit)
+
+        {
+            Action = action;
+            m_intervalDelay = intervalDelay;
+            m_condition = condition;
+            m_callsLimit = callsLimit;
+            m_lastCall = DateTime.Now;
+        }
+
+        public CyclicTask(Action action, TimeSpan intervalDelay, TimeSpan firstCallDelay, Predicate condition, uint? callsLimit)
+
+        {
+            Action = action;
+            m_intervalDelay = intervalDelay;
+            m_firstCallDelay = firstCallDelay;
+            m_condition = condition;
+            m_callsLimit = callsLimit;
+            m_lastCall = intervalDelay > firstCallDelay ? DateTime.Now - (intervalDelay - firstCallDelay) : DateTime.Now;
         }
 
         public Action Action
@@ -19,61 +69,62 @@ namespace Stump.Core.Pool.Task
             private set;
         }
 
-        private TimeSpan ExecutionDelay
-        {
-            get;
-            set;
-        }
-
-        private Condition Condition
-        {
-            get;
-            set;
-        }
-
-        private uint? MaxExecutionNbr
-        {
-            get;
-            set;
-        }
-
-        private DateTime LastCall
-        {
-            get;
-            set;
-        }
-
-        private uint CurrentExecutionNbr
-        {
-            get;
-            set;
-        }
-
         public bool RequireExecution
         {
-            get { return ReachDelay && SuitCondition; }
+            get { return ReachDelay && SuitCondition && Alive; }
         }
 
         private bool SuitCondition
         {
-            get { return Condition == null || Condition(); }
+            get { return m_condition == null || m_condition(); }
         }
 
         private bool ReachDelay
         {
-            get { return DateTime.Now.Subtract(LastCall) >= ExecutionDelay; }
+            get { return DateTime.Now.Subtract(m_lastCall) >= m_intervalDelay; }
         }
 
-        public bool ReachMaxExecutionNbr
+        public bool Alive
         {
-            get { return MaxExecutionNbr.HasValue && (CurrentExecutionNbr == MaxExecutionNbr); }
+            get
+            {
+                return ( !m_callsLimit.HasValue || m_callsCount < m_callsLimit ) && !m_cancel;
+            }
         }
 
-        public void Execute()
+        internal void Start()
         {
-            Action.Invoke();
-            LastCall = DateTime.Now;
-            CurrentExecutionNbr++;
+            Compute();
+        }
+
+        internal void Stop()
+        {
+            m_cancel = true;
+        }
+
+        private void Compute()
+        {
+            var delay = (int) (m_callsCount == 0 && m_firstCallDelay != default(TimeSpan) ?
+                m_firstCallDelay.TotalMilliseconds : m_intervalDelay.TotalMilliseconds);
+
+            System.Threading.Tasks.Task.Factory.StartNewDelayed(delay,
+            delegate {
+                if (RequireExecution)
+                {
+                    Action();
+
+                    m_lastCall = DateTime.Now;
+                    m_callsCount++;
+                }
+
+                if (Alive)
+                    Compute();
+                else
+                {
+                    if (TaskEnded != null)
+                        TaskEnded(this);
+                }
+            });
         }
     }
 }

@@ -237,7 +237,7 @@ namespace Stump.Server.WorldServer.Database.Breeds
         }
 
         [Property("StartCell")]
-        public ushort StartCell
+        public short StartCell
         {
             get;
             set;

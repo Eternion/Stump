@@ -1,18 +1,21 @@
-using System.Collections.Generic;
+using System;
+using System.Collections;
 using Castle.ActiveRecord;
+using Stump.Core.IO;
 
 namespace Stump.Server.WorldServer.Database.World
 {
     [ActiveRecord("maps")]
     public class MapRecord : WorldBaseRecord<MapRecord>
     {
+        private byte[] m_compressedCells;
+
         [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
         public int Id
         {
             get;
             set;
         }
-
 
         /// <summary>
         ///   Map version of this map.
@@ -63,8 +66,8 @@ namespace Stump.Server.WorldServer.Database.World
 
         public bool Outdoor
         {
-            get { return Position.Outdoor; }
-            set { Position.Outdoor = value; }
+            get { return Position != null ? Position.Outdoor : false; }
+            set { if (Position != null) Position.Outdoor = value; }
         }
 
         [Property]
@@ -123,11 +126,42 @@ namespace Stump.Server.WorldServer.Database.World
             set;
         }
 
-        [Property(ColumnType = "Serializable")]
+        [Property(ColumnType = "BinaryBlob", NotNull = true)]
+        private byte[] CompressedCells
+        {
+            get { return m_compressedCells; }
+            set
+            {
+                m_compressedCells = value;
+                byte[] uncompressedCells = ZipHelper.Uncompress(m_compressedCells);
+
+                Cells = new Cell[uncompressedCells.Length/Cell.StructSize];
+                for (int i = 0, j = 0; i < uncompressedCells.Length; i += Cell.StructSize, j++)
+                {
+                    Cells[j] = new Cell();
+                    Cells[j].Deserialize(uncompressedCells, i);
+                }
+            }
+        }
+
         public Cell[] Cells
         {
             get;
             set;
+        }
+
+        protected override bool BeforeSave(IDictionary state)
+        {
+            CompressedCells = new byte[Cells.Length*Cell.StructSize];
+
+            for (int i = 0; i < Cells.Length; i++)
+            {
+                Array.Copy(Cells[i].Serialize(), 0, CompressedCells, i*Cell.StructSize, Cell.StructSize);
+            }
+
+            CompressedCells = ZipHelper.Compress(CompressedCells);
+
+            return base.BeforeSave(state);
         }
     }
 }

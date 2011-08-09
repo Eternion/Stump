@@ -104,6 +104,12 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
+        public CyclicTaskPool CyclicTaskPool
+        {
+            get;
+            protected set;
+        }
+
         public InitializationManager InitializationManager
         {
             get;
@@ -172,7 +178,9 @@ namespace Stump.Server.BaseServer
 
             logger.Info("Initialize Task Pool");
             IOTaskPool = new TaskPool();
-            IOTaskPool.Initialize(Assembly.GetCallingAssembly());
+
+            CyclicTaskPool = new CyclicTaskPool();
+            CyclicTaskPool.Initialize(LoadedAssemblies.Values.ToArray());
 
             CommandManager = CommandManager.Instance;
             CommandManager.RegisterAll(Assembly.GetExecutingAssembly());
@@ -184,9 +192,8 @@ namespace Stump.Server.BaseServer
             WorkerManager = WorkerManager.Instance;
             WorkerManager.Initialize();
 
-
             if (Settings.InactivityDisconnectionTime.HasValue)
-                IOTaskPool.RegisterCyclicTask(DisconnectAfkClient, Settings.InactivityDisconnectionTime.Value / 4, null, null);
+                CyclicTaskPool.RegisterCyclicTask(DisconnectAfkClient, Settings.InactivityDisconnectionTime.Value / 4);
 
             ClientManager.ClientConnected += OnClientConnected;
             ClientManager.ClientDisconnected += OnClientDisconnected;

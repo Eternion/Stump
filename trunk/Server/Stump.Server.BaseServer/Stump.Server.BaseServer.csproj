@@ -91,7 +91,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\Commands\CommandBase.cs" />
+    <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\Commands\HelpCommand.cs" />
     <Compile Include="Commands\Commands\ListCommand.cs" />
     <Compile Include="Commands\Commands\ShutdownCommand.cs" />
@@ -109,6 +109,9 @@
     <Compile Include="Database\ActiveRecordHelper.cs" />
     <Compile Include="Database\DatabaseAccessor.cs" />
     <Compile Include="Database\DatabaseConfiguration.cs" />
+    <Compile Include="Database\Data\Blob.cs" />
+    <Compile Include="Database\Data\CBlob.cs" />
+    <Compile Include="Database\Data\IRawSerializable.cs" />
     <Compile Include="Database\Interfaces\ITextRecord.cs" />
     <Compile Include="Database\Interfaces\ITextUIRecord.cs" />
     <Compile Include="Database\Interfaces\IVersionRecord.cs" />

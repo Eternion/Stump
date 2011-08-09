@@ -107,6 +107,7 @@
     <Compile Include="IO\IDataWriter.cs" />
     <Compile Include="IO\ZipHelper.cs" />
     <Compile Include="Mathematics\FastRandom.cs" />
+    <Compile Include="Pool\Task\CyclicTaskPool.cs" />
     <Compile Include="Reflection\AccessorBuilder.cs" />
     <Compile Include="Reflection\DynamicSwitchExecutor.cs" />
     <Compile Include="Reflection\DynamicExtension.cs" />
@@ -125,9 +126,6 @@
     <Compile Include="Pool\SocketAsyncEventArgsPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Threading\AsyncRandom.cs" />
-    <Compile Include="Threading\AsyncTaskPool.cs" />
-    <Compile Include="Cache\CachedData.cs" />
-    <Compile Include="Cache\CacheDictionary.cs" />
     <Compile Include="Threading\ConditionWaiter.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Pool\Task\CyclicTask.cs" />

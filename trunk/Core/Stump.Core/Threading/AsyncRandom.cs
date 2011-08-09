@@ -14,7 +14,10 @@ namespace Stump.Core.Threading
         public AsyncRandom()
             : base (Environment.TickCount + Thread.CurrentThread.ManagedThreadId + m_incrementer)
         {
-            Interlocked.Increment(ref m_incrementer);
+            unchecked
+            {
+                Interlocked.Increment(ref m_incrementer);
+            }
         }
 
         public AsyncRandom(int seed)

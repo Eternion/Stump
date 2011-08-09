@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Server.BaseServer.Commands.Commands;
 
 namespace Stump.Server.BaseServer.Commands
 {

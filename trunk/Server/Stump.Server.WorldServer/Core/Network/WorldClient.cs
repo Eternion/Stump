@@ -3,10 +3,10 @@ using System.Net.Sockets;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
+using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Characters;
-using Stump.Server.WorldServer.World.Actors.RolePlay;
-using Stump.Server.WorldServer.World.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Core.Network
 {
@@ -53,10 +53,9 @@ namespace Stump.Server.WorldServer.Core.Network
 
         protected override void OnDisconnect()
         {
-            //IpcAccessor.Instance.ProxyObject.DecrementConnectedChars(WorldServer.ServerInformation);
             if (ActiveCharacter != null)
             {
-                //ActiveCharacter.LogOut();
+                ActiveCharacter.LogOut();
             }
             base.OnDisconnect();
         }

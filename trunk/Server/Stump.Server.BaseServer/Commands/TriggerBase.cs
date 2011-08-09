@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Commands.Commands;
 
 namespace Stump.Server.BaseServer.Commands
 {

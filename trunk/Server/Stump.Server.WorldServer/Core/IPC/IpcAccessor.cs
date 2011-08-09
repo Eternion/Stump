@@ -10,6 +10,7 @@ using Stump.Core.Attributes;
 using Stump.Core.Reflection;
 using Stump.Core.Threading;
 using Stump.Server.BaseServer.IPC;
+using Stump.Server.WorldServer.Worlds;
 
 namespace Stump.Server.WorldServer.Core.IPC
 {
@@ -26,6 +27,12 @@ namespace Stump.Server.WorldServer.Core.IPC
         /// </summary>
         [Variable(DefinableRunning = true)]
         public static int PingDelay = 200;
+
+        /// <summary>
+        /// Deflay between two characters count update (in seconds)
+        /// </summary>
+        [Variable(DefinableRunning = true)]
+        public static int CharactersCountUpdateDelay = 300;
 
         /// <summary>
         /// IPC server adress
@@ -170,6 +177,8 @@ namespace Stump.Server.WorldServer.Core.IPC
                         logger.Warn("[IPC] Couldn't connect to : {0} Retrying in : {1} seconds...", IpcAddress,
                                     ReconnectDelay);
                         Task.Factory.StartNewDelayed(ReconnectDelay*1000, Start);
+                        WorldServer.Instance.CyclicTaskPool.RegisterCyclicTask(() => ProxyObject.UpdateConnectedChars(WorldServer.ServerInformation, World.Instance.CharacterCount),
+                                                                               CharactersCountUpdateDelay*1000);
                     }
                 }
             }

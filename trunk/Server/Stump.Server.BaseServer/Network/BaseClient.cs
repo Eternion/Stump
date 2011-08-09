@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using NLog;
 using Stump.Core.IO;
 using Stump.Core.Pool.Task;
@@ -182,9 +183,9 @@ namespace Stump.Server.BaseServer.Network
         public void DisconnectLater(int timeToWait = 0)
         {
             if (timeToWait == 0)
-                TaskPool.Instance.EnqueueTask(Disconnect);
+                ServerBase.InstanceAsBase.IOTaskPool.EnqueueTask(Disconnect);
             else
-                TaskPool.Instance.RegisterCyclicTask(Disconnect, timeToWait, null, null);
+                ServerBase.InstanceAsBase.CyclicTaskPool.RegisterCyclicTask(Disconnect, timeToWait, callsLimit:1);
         }
 
         protected virtual void OnDisconnect()

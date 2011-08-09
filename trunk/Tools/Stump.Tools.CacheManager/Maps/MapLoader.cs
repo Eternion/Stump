@@ -6,7 +6,7 @@ using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.World.Maps.Cells;
+using Stump.Server.WorldServer.Worlds.Maps.Cells;
 using Stump.Tools.CacheManager.SQL;
 
 namespace Stump.Tools.CacheManager.Maps
@@ -32,7 +32,7 @@ namespace Stump.Tools.CacheManager.Maps
                     var data = d2pFile.ReadFile(file);
 
                     var uncompressedMap = new MemoryStream();
-                    ZipHelper.Uncompress(new MemoryStream(data), uncompressedMap);
+                    ZipHelper.Deflate(new MemoryStream(data), uncompressedMap);
                     uncompressedMap.Seek(0, SeekOrigin.Begin);
 
                     var values = ReadMap(new BigEndianReader(uncompressedMap));
@@ -189,7 +189,16 @@ namespace Stump.Tools.CacheManager.Maps
                 cells[i] = cell;
             }
 
-            values.Add("Cells",  cells.ToBinary());
+            var compressedCells = new byte[cells.Length * Cell.StructSize];
+
+            for (int i = 0; i < cells.Length; i++)
+            {
+                Array.Copy(cells[i].Serialize(), 0, compressedCells, i * Cell.StructSize, Cell.StructSize);
+            }
+
+            compressedCells = ZipHelper.Compress(compressedCells);
+
+            values.Add("CompressedCells",  compressedCells);
 
             return values;
         }

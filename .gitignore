@@ -5,7 +5,7 @@
 *.user
 *.*.user
 *.vsp
-/trunk/_ReSharper.Stump
+_ReSharper.*/
 
 # Output path
 bin/

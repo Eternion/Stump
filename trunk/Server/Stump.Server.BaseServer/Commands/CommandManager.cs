@@ -5,6 +5,7 @@ using System.Reflection;
 using NLog;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Commands.Commands;
 
 namespace Stump.Server.BaseServer.Commands
 {

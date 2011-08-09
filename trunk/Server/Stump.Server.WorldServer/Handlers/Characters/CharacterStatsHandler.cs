@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.World.Actors.RolePlay;
-using Stump.Server.WorldServer.World.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
 {

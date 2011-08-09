@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.World.Actors.RolePlay;
-using Stump.Server.WorldServer.World.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Worlds;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Handlers.Basic
 {
@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Handlers.Basic
         public static void HandleBasicWhoIsRequestMessage(WorldClient client, BasicWhoIsRequestMessage message)
         {
             /* Get character */
-            Character character = World.World.Instance.GetCharacter(message.search);
+            Character character = World.Instance.GetCharacter(message.search);
 
             /* check null */
             if (character == null)

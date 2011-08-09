@@ -67,6 +67,8 @@
     <Compile Include="Database\Characters\Restrictions.cs" />
     <Compile Include="Database\I18n\TextRecord.cs" />
     <Compile Include="Database\I18n\TextUIRecord.cs" />
+    <Compile Include="Database\Startup\StartupActionItemRecord.cs" />
+    <Compile Include="Database\Startup\StartupActionRecord.cs" />
     <Compile Include="Database\WorldBaseRecord.cs" />
     <Compile Include="Database\WorldVersionRecord.cs" />
     <Compile Include="Database\World\AreaRecord.cs" />
@@ -88,6 +90,19 @@
     <Compile Include="Handlers\Characters\CharacterHandler.cs" />
     <Compile Include="Handlers\Characters\CharacterReplayHandler.cs" />
     <Compile Include="Handlers\Characters\CharacterStatsHandler.cs" />
+    <Compile Include="Handlers\Context\ContextDisplayHandler.cs" />
+    <Compile Include="Handlers\Context\ContextFightHandler.cs" />
+    <Compile Include="Handlers\Context\ContextHandler.cs" />
+    <Compile Include="Handlers\Context\ContextMountHandler.cs" />
+    <Compile Include="Handlers\Context\ContextNotificationHandler.cs" />
+    <Compile Include="Handlers\Context\RolePlay\ContextRoleplayEmoteHandler.cs" />
+    <Compile Include="Handlers\Context\RolePlay\ContextRoleplayFightHandler.cs" />
+    <Compile Include="Handlers\Context\RolePlay\ContextRoleplayHandler.cs" />
+    <Compile Include="Handlers\Context\RolePlay\ContextRoleplayNpcHandler.cs" />
+    <Compile Include="Handlers\Context\RolePlay\ContextRoleplayQuestHandler.cs" />
+    <Compile Include="Handlers\Context\RolePlay\ContextRoleplaySpellHandler.cs" />
+    <Compile Include="Handlers\Context\RolePlay\ContextRoleplayStatsHandler.cs" />
+    <Compile Include="Handlers\Initialization\InitializationHandler.cs" />
     <Compile Include="Handlers\PredicatesDefinitions.cs" />
     <Compile Include="Handlers\WorldHandlerAttribute.cs" />
     <Compile Include="Handlers\WorldHandlerContainer.cs" />
@@ -98,38 +113,38 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Core\IO\WorldConsole.cs" />
     <Compile Include="WorldServer.cs" />
-    <Compile Include="World\Accounts\AccountManager.cs" />
-    <Compile Include="World\Actors\ContextActor.cs" />
-    <Compile Include="World\Actors\Fight\AIFighter.cs" />
-    <Compile Include="World\Actors\Fight\AlignedMonster.cs" />
-    <Compile Include="World\Actors\Fight\CharacterFighter.cs" />
-    <Compile Include="World\Actors\Fight\FightActor.cs" />
-    <Compile Include="World\Actors\Fight\Monster.cs" />
-    <Compile Include="World\Actors\Fight\MutantFighter.cs" />
-    <Compile Include="World\Actors\Fight\NamedFighter.cs" />
-    <Compile Include="World\Actors\Fight\TaxCollectorFighter.cs" />
-    <Compile Include="World\Actors\RolePlay\Characters\Character.cs" />
-    <Compile Include="World\Actors\RolePlay\Characters\CharacterManager.cs" />
-    <Compile Include="World\Actors\RolePlay\Characters\ExperienceManager.cs" />
-    <Compile Include="World\Actors\RolePlay\GroupMonster.cs" />
-    <Compile Include="World\Actors\RolePlay\Humanoid.cs" />
-    <Compile Include="World\Actors\RolePlay\Merchant.cs" />
-    <Compile Include="World\Actors\RolePlay\MountNpc.cs" />
-    <Compile Include="World\Actors\RolePlay\Mutant.cs" />
-    <Compile Include="World\Actors\RolePlay\NamedActor.cs" />
-    <Compile Include="World\Actors\RolePlay\Npc.cs" />
-    <Compile Include="World\Actors\RolePlay\Prism.cs" />
-    <Compile Include="World\Actors\RolePlay\RolePlayActor.cs" />
-    <Compile Include="World\Actors\RolePlay\TaxCollectorNpc.cs" />
-    <Compile Include="World\Breeds\BreedManager.cs" />
-    <Compile Include="World\Maps\Area.cs" />
-    <Compile Include="World\Maps\Cells\MapPoint.cs" />
-    <Compile Include="World\Maps\Cells\ObjectPosition.cs" />
-    <Compile Include="World\Maps\IContext.cs" />
-    <Compile Include="World\Maps\Map.cs" />
-    <Compile Include="World\Maps\SubArea.cs" />
-    <Compile Include="World\Maps\SuperArea.cs" />
-    <Compile Include="World\World.cs" />
+    <Compile Include="Worlds\Accounts\AccountManager.cs" />
+    <Compile Include="Worlds\Actors\ContextActor.cs" />
+    <Compile Include="Worlds\Actors\Fight\AIFighter.cs" />
+    <Compile Include="Worlds\Actors\Fight\AlignedMonster.cs" />
+    <Compile Include="Worlds\Actors\Fight\CharacterFighter.cs" />
+    <Compile Include="Worlds\Actors\Fight\FightActor.cs" />
+    <Compile Include="Worlds\Actors\Fight\Monster.cs" />
+    <Compile Include="Worlds\Actors\Fight\MutantFighter.cs" />
+    <Compile Include="Worlds\Actors\Fight\NamedFighter.cs" />
+    <Compile Include="Worlds\Actors\Fight\TaxCollectorFighter.cs" />
+    <Compile Include="Worlds\Actors\RolePlay\Characters\Character.cs" />
+    <Compile Include="Worlds\Actors\RolePlay\Characters\CharacterManager.cs" />
+    <Compile Include="Worlds\Actors\RolePlay\Characters\ExperienceManager.cs" />
+    <Compile Include="Worlds\Actors\RolePlay\GroupMonster.cs" />
+    <Compile Include="Worlds\Actors\RolePlay\Humanoid.cs" />
+    <Compile Include="Worlds\Actors\RolePlay\Merchant.cs" />
+    <Compile Include="Worlds\Actors\RolePlay\MountNpc.cs" />
+    <Compile Include="Worlds\Actors\RolePlay\Mutant.cs" />
+    <Compile Include="Worlds\Actors\RolePlay\NamedActor.cs" />
+    <Compile Include="Worlds\Actors\RolePlay\Npc.cs" />
+    <Compile Include="Worlds\Actors\RolePlay\Prism.cs" />
+    <Compile Include="Worlds\Actors\RolePlay\RolePlayActor.cs" />
+    <Compile Include="Worlds\Actors\RolePlay\TaxCollectorNpc.cs" />
+    <Compile Include="Worlds\Breeds\BreedManager.cs" />
+    <Compile Include="Worlds\Maps\Area.cs" />
+    <Compile Include="Worlds\Maps\Cells\MapPoint.cs" />
+    <Compile Include="Worlds\Maps\Cells\ObjectPosition.cs" />
+    <Compile Include="Worlds\Maps\IContext.cs" />
+    <Compile Include="Worlds\Maps\Map.cs" />
+    <Compile Include="Worlds\Maps\SubArea.cs" />
+    <Compile Include="Worlds\Maps\SuperArea.cs" />
+    <Compile Include="Worlds\World.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">
@@ -157,7 +172,6 @@
       <Name>Stump.Server.BaseServer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Types;
 
 namespace Stump.Tools.Proxy.Network
 {

@@ -4,12 +4,8 @@ using NLog;
 using Stump.Core.IO;
 using Stump.Core.Xml.Config;
 using Stump.Server.AuthServer;
-using Stump.Server.AuthServer.Database;
-using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer;
-using Stump.Server.WorldServer.Database;
 using Stump.Tools.CacheManager.SQL;
-using Definitions = Stump.Server.AuthServer.Definitions;
 
 namespace Stump.Tools.CacheManager
 {
@@ -22,6 +18,11 @@ namespace Stump.Tools.CacheManager
         public static string AuthConfigPath = "../../../../Run/Debug/AuthServer/auth_config.xml";
         public static string WorldConfigPath = "../../../../Run/Debug/WorldServer/world_config.xml";
 
+        /// <summary>
+        /// Store only the text of given languages separated by a comma. Or leave blank to store all texts
+        /// </summary>
+        public static string SpecificLanguage = "fr,en";
+
         private static void Main(string[] args)
         {
             string dofusPath = args.Length == 0 ? FindDofusPath() : args[0];
@@ -30,7 +31,7 @@ namespace Stump.Tools.CacheManager
             string mapsFolder = Path.Combine(dofusPath, "content", "maps");
 
             NLogHelper.DefineLogProfile(false, true);
-
+            
             XmlConfig config;
             if (!string.IsNullOrEmpty(Path.GetFullPath(AuthConfigPath)))
             {
@@ -45,7 +46,7 @@ namespace Stump.Tools.CacheManager
             DBAccessor.Open();
 
             logger.Info("Building Auth Database...");
-            var dbBuilder = new DatabaseBuilder(typeof (AuthServer).Assembly, d2OFolder, d2IFolder);
+            var dbBuilder = new DatabaseBuilder(typeof (AuthServer).Assembly, d2OFolder, d2IFolder, "auth_patchs");
             dbBuilder.Build();
 
             DBAccessor.Close();
@@ -67,7 +68,7 @@ namespace Stump.Tools.CacheManager
             // build maps
             Maps.MapLoader.LoadMaps(mapsFolder);
 
-            dbBuilder = new DatabaseBuilder(typeof (WorldServer).Assembly, d2OFolder, d2IFolder);
+            dbBuilder = new DatabaseBuilder(typeof (WorldServer).Assembly, d2OFolder, d2IFolder, "world_patchs");
             dbBuilder.Build();
 
             DBAccessor.Close();

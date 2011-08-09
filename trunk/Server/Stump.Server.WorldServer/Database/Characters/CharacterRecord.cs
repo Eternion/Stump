@@ -120,7 +120,7 @@ namespace Stump.Server.WorldServer.Database.Characters
         }
 
         [Property("CellId", NotNull = true)]
-        public ushort CellId
+        public short CellId
         {
             get;
             set;

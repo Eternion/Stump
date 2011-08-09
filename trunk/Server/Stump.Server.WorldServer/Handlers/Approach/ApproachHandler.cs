@@ -6,9 +6,9 @@ using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Handlers.Basic;
-using Stump.Server.WorldServer.World.Accounts;
-using Stump.Server.WorldServer.World.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.World.Breeds;
+using Stump.Server.WorldServer.Worlds.Accounts;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Worlds.Breeds;
 
 namespace Stump.Server.WorldServer.Handlers.Approach
 {
