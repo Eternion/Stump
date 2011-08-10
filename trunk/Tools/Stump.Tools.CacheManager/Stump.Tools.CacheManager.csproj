@@ -128,7 +128,9 @@
     <Folder Include="auth_patchs\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="world_patchs\breeds.sql" />
+    <Content Include="world_patchs\breeds.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="world_patchs\experiences.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

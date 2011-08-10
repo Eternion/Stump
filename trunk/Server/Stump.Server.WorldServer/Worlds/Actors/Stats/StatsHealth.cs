@@ -1,4 +1,5 @@
 ﻿using System;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Worlds.Actors.Interfaces;
 
 namespace Stump.Server.WorldServer.Worlds.Actors.Stats
@@ -6,12 +7,12 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
     public class StatsHealth : StatsData
     {
         private static readonly Func<IStatsOwner, int, int, int, int, int, int> FormuleLife =
-            (owner, valueBase, valueEquiped, valueGiven, valueBonus, damageTaken) => valueBase + valueEquiped + valueBonus + owner.Stats["Vitality"] - damageTaken;
+            (owner, valueBase, valueEquiped, valueGiven, valueBonus, damageTaken) => valueBase + valueEquiped + valueBonus + owner.Stats[CaracteristicsEnum.Vitality] - damageTaken;
 
         protected new Func<IStatsOwner, int, int, int, int, int, int> m_formule;
 
         public StatsHealth(IStatsOwner owner, ushort valueBase, ushort damageTaken)
-            : base(owner, "Health", (short) valueBase)
+            : base(owner, CaracteristicsEnum.Health, (short)valueBase)
         {
             m_formule = FormuleLife;
             DamageTaken = damageTaken;

@@ -1,3 +1,4 @@
+using System;
 using Stump.Core.Cache;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -119,6 +120,16 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         #region Stats
 
+        public delegate void LevelChangedHandler(Character character, byte currentLevel, int difference);
+        public event LevelChangedHandler LevelChanged;
+
+        public void NotifyLevelChanged(byte currentlevel, int difference)
+        {
+            LevelChangedHandler handler = LevelChanged;
+            if (handler != null)
+                handler(this, currentlevel, difference);
+        }
+
         public byte Level
         {
             get;
@@ -128,7 +139,23 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         public long Experience
         {
             get { return m_record.Experience; }
-            set { m_record.Experience = value; }
+            set
+            {
+                m_record.Experience = value;
+                if (value >= UpperBoundExperience)
+                {
+                    var lastLevel = Level;
+
+                    Level = ExperienceManager.Instance.GetCharacterLevel(m_record.Experience);
+
+                    LowerBoundExperience = ExperienceManager.Instance.GetCharacterLevelExperience(Level);
+                    UpperBoundExperience = ExperienceManager.Instance.GetCharacterNextLevelExperience(Level);
+
+                    var difference = Level - lastLevel;
+
+                    NotifyLevelChanged(Level, difference);
+                }
+            }
         }
 
         public long LowerBoundExperience
@@ -251,6 +278,17 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             m_record.MapId = Map.Id;
             m_record.CellId = Cell.Id;
             m_record.Direction = Direction;
+
+            m_record.AP = (ushort) Stats[CaracteristicsEnum.AP].Base;
+            m_record.MP = (ushort) Stats[CaracteristicsEnum.MP].Base;
+            m_record.Strength = Stats[CaracteristicsEnum.Strength].Base;
+            m_record.Agility = Stats[CaracteristicsEnum.Agility].Base;
+            m_record.Chance = Stats[CaracteristicsEnum.Chance].Base;
+            m_record.Intelligence = Stats[CaracteristicsEnum.Intelligence].Base;
+            m_record.Wisdom = Stats[CaracteristicsEnum.Wisdom].Base;
+            m_record.BaseHealth = (ushort) (Stats[CaracteristicsEnum.Health] as StatsHealth).Base;
+            m_record.DamageTaken = (ushort) ( Stats[CaracteristicsEnum.Health] as StatsHealth ).DamageTaken;
+
 
             m_record.Save();
         }

@@ -1,4 +1,5 @@
 using System;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Worlds.Actors.Interfaces;
 
@@ -12,7 +13,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
         protected short m_valueEquiped;
         protected short m_valueGiven;
 
-        public StatsData(IStatsOwner owner, string name, short valueBase)
+        public StatsData(IStatsOwner owner, CaracteristicsEnum name, short valueBase)
             : this(
                 owner, name, valueBase,
                 delegate(IStatsOwner _owner, int valuebase, int valueequiped, int valuegiven, int valuebonus)
@@ -25,7 +26,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
         {
         }
 
-        public StatsData(IStatsOwner owner, string name, short valueBase, Func<IStatsOwner, int, int, int, int, int> formule)
+        public StatsData(IStatsOwner owner, CaracteristicsEnum name, short valueBase, Func<IStatsOwner, int, int, int, int, int> formule)
         {
             m_valueBase = valueBase;
             m_formule = formule;
@@ -39,7 +40,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
             protected set;
         }
 
-        public string Name
+        public CaracteristicsEnum Name
         {
             get;
             protected set;

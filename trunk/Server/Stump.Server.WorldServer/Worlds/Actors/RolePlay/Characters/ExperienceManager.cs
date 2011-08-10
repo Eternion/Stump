@@ -10,7 +10,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
     public class ExperienceManager : Singleton<ExperienceManager>
     {
         private readonly Dictionary<byte, ExperienceRecord> m_records = new Dictionary<byte, ExperienceRecord>();
-
+        private KeyValuePair<byte, ExperienceRecord> m_highestLevel;
 
         [Initialization(InitializationPass.Fourth)]
         public void Initialize()
@@ -19,6 +19,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             {
                 m_records.Add(record.Level, record);
             }
+
+            m_highestLevel = m_records.OrderByDescending(entry => entry.Key).FirstOrDefault();
         }
 
         #region Character
@@ -67,6 +69,9 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         {
             try
             {
+                if (experience >= m_highestLevel.Value.CharacterExp)
+                    return m_highestLevel.Key;
+
                 return (byte) (m_records.First(entry => entry.Value.CharacterExp > experience).Key - 1);
             }
             catch (InvalidOperationException ex)

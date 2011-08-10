@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Core.Network;
@@ -9,6 +10,16 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
     public partial class ContextRoleplayHandler : WorldHandlerContainer
     {
+        private readonly static Dictionary<StatsBoostTypeEnum, CaracteristicsEnum> m_statsEnumRelations = new Dictionary<StatsBoostTypeEnum, CaracteristicsEnum>
+            {
+                {StatsBoostTypeEnum.Strength, CaracteristicsEnum.Strength},
+                {StatsBoostTypeEnum.Agility, CaracteristicsEnum.Agility},
+                {StatsBoostTypeEnum.Chance, CaracteristicsEnum.Chance},
+                {StatsBoostTypeEnum.Wisdom, CaracteristicsEnum.Wisdom},
+                {StatsBoostTypeEnum.Intelligence, CaracteristicsEnum.Intelligence},
+                {StatsBoostTypeEnum.Vitality, CaracteristicsEnum.Vitality},
+            };
+            
         [WorldHandler(StatsUpgradeRequestMessage.Id)]
         public static void HandleStatsUpgradeRequestMessage(WorldClient client, StatsUpgradeRequestMessage message)
         {
@@ -22,14 +33,14 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                 throw new Exception("Client given 0 as boostpoint. Forbidden value.");
 
             var breed = client.ActiveCharacter.Breed;
-            uint neededpts = breed.GetNeededPointForStats(client.ActiveCharacter.Stats[statsid.ToString()].Base, statsid);
+            uint neededpts = breed.GetNeededPointForStats(client.ActiveCharacter.Stats[m_statsEnumRelations[statsid]].Base, statsid);
 
             var boost = (short) (message.boostPoint/ (double)neededpts);
 
             if (boost < 0)
                 throw new Exception("Client is attempt to use more points that he has.");
 
-            client.ActiveCharacter.Stats[statsid.ToString()].Base += boost;
+            client.ActiveCharacter.Stats[m_statsEnumRelations[statsid]].Base += boost;
 
             SendStatsUpgradeResultMessage(client, message.boostPoint);
             CharacterHandler.SendCharacterStatsListMessage(client);

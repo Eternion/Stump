@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
 using Stump.Server.WorldServer.Worlds.Actors.Interfaces;
@@ -17,20 +18,20 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
         private static readonly Func<IStatsOwner, int, int, int, int, int> FormuleInitiative =
             (owner, valueBase, valueEquiped, valueGiven, valueBonus) =>
             {
-                return owner.Stats["Health"].Total <= 0
+                return owner.Stats[CaracteristicsEnum.Health].Total <= 0
                            ? 0
                            : ( valueBase + valueEquiped + valueBonus +
-                              owner.Stats["Chance"] +
-                              owner.Stats["Intelligence"] +
-                              owner.Stats["Agility"] +
-                              owner.Stats["Strengh"] ) *
-                             ( owner.Stats["Health"].Total /
-                             ( (StatsHealth)owner.Stats["Health"] ).TotalMax );
+                              owner.Stats[CaracteristicsEnum.Chance] +
+                              owner.Stats[CaracteristicsEnum.Intelligence] +
+                              owner.Stats[CaracteristicsEnum.Agility] +
+                              owner.Stats[CaracteristicsEnum.Strength] ) *
+                             ( owner.Stats[CaracteristicsEnum.Health].Total /
+                             ( (StatsHealth)owner.Stats[CaracteristicsEnum.Health] ).TotalMax );
             };
 
         private static readonly Func<IStatsOwner, int, int, int, int, int> FormuleProspecting =
             (owner, valueBase, valueEquiped, valueGiven, valueBonus) =>
-            valueBase + valueEquiped + valueBonus + (int)( owner.Stats["Chance"] / 10d );
+            valueBase + valueEquiped + valueBonus + (int)( owner.Stats[CaracteristicsEnum.Chance] / 10d );
 
         #endregion
 
@@ -41,7 +42,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
             Initialize(record);
         }
 
-        public Dictionary<string, StatsData> Fields
+        public Dictionary<CaracteristicsEnum, StatsData> Fields
         {
             get;
             private set;
@@ -57,11 +58,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
         {
             get
             {
-                return this["Health"] as StatsHealth;
+                return this[CaracteristicsEnum.Health] as StatsHealth;
             }
         }
 
-        public StatsData this[string name]
+        public StatsData this[CaracteristicsEnum name]
         {
             get
             {
@@ -72,72 +73,72 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
 
         public void Initialize(CharacterRecord record)
         {
-            Fields = new Dictionary<string, StatsData>
+            Fields = new Dictionary<CaracteristicsEnum, StatsData>
                 {
-                    {"Health", new StatsHealth(Owner, record.BaseHealth, record.DamageTaken)},
-                    {"Initiative", new StatsData(Owner, "Initiative", 0, FormuleInitiative)},
-                    {"Prospecting", new StatsData(Owner, "Prospecting", (short) record.Prospection, FormuleProspecting)},
-                    {"AP", new StatsData(Owner, "AP", (short) record.AP)},
-                    {"MP", new StatsData(Owner, "MP", (short) record.MP)},
-                    {"Strength", new StatsData(Owner, "Strength", record.Strength)},
-                    {"Vitality", new StatsData(Owner, "Vitality", record.Vitality)},
-                    {"Wisdom", new StatsData(Owner, "Wisdom", record.Wisdom)},
-                    {"Chance", new StatsData(Owner, "Chance", record.Chance)},
-                    {"Agility", new StatsData(Owner, "Agility", record.Agility)},
-                    {"Intelligence", new StatsData(Owner, "Intelligence", record.Intelligence)},
-                    {"Range", new StatsData(Owner, "Range", 0)},
-                    {"SummonLimit", new StatsData(Owner, "SummonLimit", 1)},
-                    {"DamageReflection", new StatsData(Owner, "DamageReflection", 0)},
-                    {"CriticalHit", new StatsData(Owner, "CriticalHit", 0)},
-                    {"CriticalMiss", new StatsData(Owner, "CriticalMiss", 0)},
-                    {"HealBonus", new StatsData(Owner, "HealBonus", 0)},
-                    {"DamageBonus", new StatsData(Owner, "DamageBonus", 0)},
-                    {"WeaponDamageBonus", new StatsData(Owner, "WeaponDamageBonus", 0)},
-                    {"DamageBonusPercent", new StatsData(Owner, "DamageBonusPercent", 0)},
-                    {"TrapBonus", new StatsData(Owner, "TrapBonus", 0)},
-                    {"TrapBonusPercent", new StatsData(Owner, "TrapBonusPercent", 0)},
-                    {"PermanentDamagePercent", new StatsData(Owner, "PermanentDamagePercent", 0)},
-                    {"TackleBlock", new StatsData(Owner, "TackleBlock", 0)},
-                    {"TackleEvade", new StatsData(Owner, "TackleEvade", 0)},
-                    {"APAttack", new StatsData(Owner, "APAttack", 0)},
-                    {"MPAttack", new StatsData(Owner, "MPAttack", 0)},
-                    {"PushDamageBonus", new StatsData(Owner, "PushDamageBonus", 0)},
-                    {"CriticalDamageBonus", new StatsData(Owner, "CriticalDamageBonus", 0)},
-                    {"NeutralDamageBonus", new StatsData(Owner, "NeutralDamageBonus", 0)},
-                    {"EarthDamageBonus", new StatsData(Owner, "EarthDamageBonus", 0)},
-                    {"WaterDamageBonus", new StatsData(Owner, "WaterDamageBonus", 0)},
-                    {"AirDamageBonus", new StatsData(Owner, "AirDamageBonus", 0)},
-                    {"FireDamageBonus", new StatsData(Owner, "FireDamageBonus", 0)},
-                    {"DodgeAPProbability", new StatsData(Owner, "DodgeAPProbability", 0)},
-                    {"DodgeMPProbability", new StatsData(Owner, "DodgeMPProbability", 0)},
-                    {"NeutralResistPercent", new StatsData(Owner, "NeutralResistPercent", 0)},
-                    {"EarthResistPercent", new StatsData(Owner, "EarthResistPercent", 0)},
-                    {"WaterResistPercent", new StatsData(Owner, "WaterResistPercent", 0)},
-                    {"AirResistPercent", new StatsData(Owner, "AirResistPercent", 0)},
-                    {"FireResistPercent", new StatsData(Owner, "FireResistPercent", 0)},
-                    {"NeutralElementReduction", new StatsData(Owner, "NeutralElementReduction", 0)},
-                    {"EarthElementReduction", new StatsData(Owner, "EarthElementReduction", 0)},
-                    {"WaterElementReduction", new StatsData(Owner, "WaterElementReduction", 0)},
-                    {"AirElementReduction", new StatsData(Owner, "AirElementReduction", 0)},
-                    {"FireElementReduction", new StatsData(Owner, "FireElementReduction", 0)},
-                    {"PushDamageReduction", new StatsData(Owner, "PushDamageReduction", 0)},
-                    {"CriticalDamageReduction", new StatsData(Owner, "CriticalDamageReduction", 0)},
-                    {"PvpNeutralResistPercent", new StatsData(Owner, "PvpNeutralResistPercent", 0)},
-                    {"PvpEarthResistPercent", new StatsData(Owner, "PvpEarthResistPercent", 0)},
-                    {"PvpWaterResistPercent", new StatsData(Owner, "PvpWaterResistPercent", 0)},
-                    {"PvpAirResistPercent", new StatsData(Owner, "PvpAirResistPercent", 0)},
-                    {"PvpFireResistPercent", new StatsData(Owner, "PvpFireResistPercent", 0)},
-                    {"PvpNeutralElementReduction", new StatsData(Owner, "PvpNeutralElementReduction", 0)},
-                    {"PvpEarthElementReduction", new StatsData(Owner, "PvpEarthElementReduction", 0)},
-                    {"PvpWaterElementReduction", new StatsData(Owner, "PvpWaterElementReduction", 0)},
-                    {"PvpAirElementReduction", new StatsData(Owner, "PvpAirElementReduction", 0)},
-                    {"PvpFireElementReduction", new StatsData(Owner, "PvpFireElementReduction", 0)},
-                    {"GlobalDamageReduction", new StatsData(Owner, "GlobalDamageReduction", 0)},
-                    {"DamageMultiplicator", new StatsData(Owner, "DamageMultiplicator", 0)},
-                    {"PhysicalDamage", new StatsData(Owner, "PhysicalDamage", 0)},
-                    {"MagicDamage", new StatsData(Owner, "MagicDamage", 0)},
-                    {"PhysicalDamageReduction", new StatsData(Owner, "PhysicalDamageReduction", 0)},
-                    {"MagicDamageReduction", new StatsData(Owner, "MagicDamageReduction", 0)}
+                    {CaracteristicsEnum.Health, new StatsHealth(Owner, record.BaseHealth, record.DamageTaken)},
+                    {CaracteristicsEnum.Initiative, new StatsData(Owner, CaracteristicsEnum.Initiative, 0, FormuleInitiative)},
+                    {CaracteristicsEnum.Prospecting, new StatsData(Owner, CaracteristicsEnum.Prospecting, (short) record.Prospection, FormuleProspecting)},
+                    {CaracteristicsEnum.AP, new StatsData(Owner, CaracteristicsEnum.AP, (short) record.AP)},
+                    {CaracteristicsEnum.MP, new StatsData(Owner, CaracteristicsEnum.MP, (short) record.MP)},
+                    {CaracteristicsEnum.Strength, new StatsData(Owner, CaracteristicsEnum.Strength, record.Strength)},
+                    {CaracteristicsEnum.Vitality, new StatsData(Owner, CaracteristicsEnum.Vitality, record.Vitality)},
+                    {CaracteristicsEnum.Wisdom, new StatsData(Owner, CaracteristicsEnum.Wisdom, record.Wisdom)},
+                    {CaracteristicsEnum.Chance, new StatsData(Owner, CaracteristicsEnum.Chance, record.Chance)},
+                    {CaracteristicsEnum.Agility, new StatsData(Owner, CaracteristicsEnum.Agility, record.Agility)},
+                    {CaracteristicsEnum.Intelligence, new StatsData(Owner, CaracteristicsEnum.Intelligence, record.Intelligence)},
+                    {CaracteristicsEnum.Range, new StatsData(Owner, CaracteristicsEnum.Range, 0)},
+                    {CaracteristicsEnum.SummonLimit, new StatsData(Owner, CaracteristicsEnum.SummonLimit, 1)},
+                    {CaracteristicsEnum.DamageReflection, new StatsData(Owner, CaracteristicsEnum.DamageReflection, 0)},
+                    {CaracteristicsEnum.CriticalHit, new StatsData(Owner, CaracteristicsEnum.CriticalHit, 0)},
+                    {CaracteristicsEnum.CriticalMiss, new StatsData(Owner, CaracteristicsEnum.CriticalMiss, 0)},
+                    {CaracteristicsEnum.HealBonus, new StatsData(Owner, CaracteristicsEnum.HealBonus, 0)},
+                    {CaracteristicsEnum.DamageBonus, new StatsData(Owner, CaracteristicsEnum.DamageBonus, 0)},
+                    {CaracteristicsEnum.WeaponDamageBonus, new StatsData(Owner, CaracteristicsEnum.WeaponDamageBonus, 0)},
+                    {CaracteristicsEnum.DamageBonusPercent, new StatsData(Owner, CaracteristicsEnum.DamageBonusPercent, 0)},
+                    {CaracteristicsEnum.TrapBonus, new StatsData(Owner, CaracteristicsEnum.TrapBonus, 0)},
+                    {CaracteristicsEnum.TrapBonusPercent, new StatsData(Owner, CaracteristicsEnum.TrapBonusPercent, 0)},
+                    {CaracteristicsEnum.PermanentDamagePercent, new StatsData(Owner, CaracteristicsEnum.PermanentDamagePercent, 0)},
+                    {CaracteristicsEnum.TackleBlock, new StatsData(Owner, CaracteristicsEnum.TackleBlock, 0)},
+                    {CaracteristicsEnum.TackleEvade, new StatsData(Owner, CaracteristicsEnum.TackleEvade, 0)},
+                    {CaracteristicsEnum.APAttack, new StatsData(Owner, CaracteristicsEnum.APAttack, 0)},
+                    {CaracteristicsEnum.MPAttack, new StatsData(Owner, CaracteristicsEnum.MPAttack, 0)},
+                    {CaracteristicsEnum.PushDamageBonus, new StatsData(Owner, CaracteristicsEnum.PushDamageBonus, 0)},
+                    {CaracteristicsEnum.CriticalDamageBonus, new StatsData(Owner, CaracteristicsEnum.CriticalDamageBonus, 0)},
+                    {CaracteristicsEnum.NeutralDamageBonus, new StatsData(Owner, CaracteristicsEnum.NeutralDamageBonus, 0)},
+                    {CaracteristicsEnum.EarthDamageBonus, new StatsData(Owner, CaracteristicsEnum.EarthDamageBonus, 0)},
+                    {CaracteristicsEnum.WaterDamageBonus, new StatsData(Owner, CaracteristicsEnum.WaterDamageBonus, 0)},
+                    {CaracteristicsEnum.AirDamageBonus, new StatsData(Owner, CaracteristicsEnum.AirDamageBonus, 0)},
+                    {CaracteristicsEnum.FireDamageBonus, new StatsData(Owner, CaracteristicsEnum.FireDamageBonus, 0)},
+                    {CaracteristicsEnum.DodgeAPProbability, new StatsData(Owner, CaracteristicsEnum.DodgeAPProbability, 0)},
+                    {CaracteristicsEnum.DodgeMPProbability, new StatsData(Owner, CaracteristicsEnum.DodgeMPProbability, 0)},
+                    {CaracteristicsEnum.NeutralResistPercent, new StatsData(Owner, CaracteristicsEnum.NeutralResistPercent, 0)},
+                    {CaracteristicsEnum.EarthResistPercent, new StatsData(Owner, CaracteristicsEnum.EarthResistPercent, 0)},
+                    {CaracteristicsEnum.WaterResistPercent, new StatsData(Owner, CaracteristicsEnum.WaterResistPercent, 0)},
+                    {CaracteristicsEnum.AirResistPercent, new StatsData(Owner, CaracteristicsEnum.AirResistPercent, 0)},
+                    {CaracteristicsEnum.FireResistPercent, new StatsData(Owner, CaracteristicsEnum.FireResistPercent, 0)},
+                    {CaracteristicsEnum.NeutralElementReduction, new StatsData(Owner, CaracteristicsEnum.NeutralElementReduction, 0)},
+                    {CaracteristicsEnum.EarthElementReduction, new StatsData(Owner, CaracteristicsEnum.EarthElementReduction, 0)},
+                    {CaracteristicsEnum.WaterElementReduction, new StatsData(Owner, CaracteristicsEnum.WaterElementReduction, 0)},
+                    {CaracteristicsEnum.AirElementReduction, new StatsData(Owner, CaracteristicsEnum.AirElementReduction, 0)},
+                    {CaracteristicsEnum.FireElementReduction, new StatsData(Owner, CaracteristicsEnum.FireElementReduction, 0)},
+                    {CaracteristicsEnum.PushDamageReduction, new StatsData(Owner, CaracteristicsEnum.PushDamageReduction, 0)},
+                    {CaracteristicsEnum.CriticalDamageReduction, new StatsData(Owner, CaracteristicsEnum.CriticalDamageReduction, 0)},
+                    {CaracteristicsEnum.PvpNeutralResistPercent, new StatsData(Owner, CaracteristicsEnum.PvpNeutralResistPercent, 0)},
+                    {CaracteristicsEnum.PvpEarthResistPercent, new StatsData(Owner, CaracteristicsEnum.PvpEarthResistPercent, 0)},
+                    {CaracteristicsEnum.PvpWaterResistPercent, new StatsData(Owner, CaracteristicsEnum.PvpWaterResistPercent, 0)},
+                    {CaracteristicsEnum.PvpAirResistPercent, new StatsData(Owner, CaracteristicsEnum.PvpAirResistPercent, 0)},
+                    {CaracteristicsEnum.PvpFireResistPercent, new StatsData(Owner, CaracteristicsEnum.PvpFireResistPercent, 0)},
+                    {CaracteristicsEnum.PvpNeutralElementReduction, new StatsData(Owner, CaracteristicsEnum.PvpNeutralElementReduction, 0)},
+                    {CaracteristicsEnum.PvpEarthElementReduction, new StatsData(Owner, CaracteristicsEnum.PvpEarthElementReduction, 0)},
+                    {CaracteristicsEnum.PvpWaterElementReduction, new StatsData(Owner, CaracteristicsEnum.PvpWaterElementReduction, 0)},
+                    {CaracteristicsEnum.PvpAirElementReduction, new StatsData(Owner, CaracteristicsEnum.PvpAirElementReduction, 0)},
+                    {CaracteristicsEnum.PvpFireElementReduction, new StatsData(Owner, CaracteristicsEnum.PvpFireElementReduction, 0)},
+                    {CaracteristicsEnum.GlobalDamageReduction, new StatsData(Owner, CaracteristicsEnum.GlobalDamageReduction, 0)},
+                    {CaracteristicsEnum.DamageMultiplicator, new StatsData(Owner, CaracteristicsEnum.DamageMultiplicator, 0)},
+                    {CaracteristicsEnum.PhysicalDamage, new StatsData(Owner, CaracteristicsEnum.PhysicalDamage, 0)},
+                    {CaracteristicsEnum.MagicDamage, new StatsData(Owner, CaracteristicsEnum.MagicDamage, 0)},
+                    {CaracteristicsEnum.PhysicalDamageReduction, new StatsData(Owner, CaracteristicsEnum.PhysicalDamageReduction, 0)},
+                    {CaracteristicsEnum.MagicDamageReduction, new StatsData(Owner, CaracteristicsEnum.MagicDamageReduction, 0)}
                 };
 
             // custom fields

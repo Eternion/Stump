@@ -204,14 +204,23 @@ namespace Stump.Tools.CacheManager
                 D2OReader reader = FindD2OFile(table);
 
                 // delete all existing rows. BE CAREFUL !!
-                Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildDelete(table.TableName));
+                if (table.Inheritance == null)
+                    Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildDelete(table.TableName));
 
                 object[] objects = reader.ReadObjects().Values.ToArray();
                 int cursorLeft = Console.CursorLeft;
                 int cursorTop = Console.CursorTop;
                 for (int i = 0; i < objects.Length; i++)
                 {
+                    if (!IsSubClassOf(objects[i].GetType(), table.ClassAttribute.Name))
+                        continue;
+
                     Dictionary<string, object> row = table.GenerateRow(objects[i]);
+
+                    // row might already exists
+                    if (table.Inheritance != null && row.ContainsKey("Id"))
+                        Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildDelete(table.TableName, "Id = " + row["Id"]));
+
                     Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsertInto(table.TableName, row));
 
                     Console.SetCursorPosition(cursorLeft, cursorTop);
@@ -220,6 +229,17 @@ namespace Stump.Tools.CacheManager
 
                 Console.SetCursorPosition(cursorLeft, cursorTop);
             }
+        }
+
+        private static bool IsSubClassOf(Type type, string compareTypeName)
+        {
+            if (type.Name == compareTypeName)
+                return true;
+
+            if (type.BaseType == typeof(object) || type.BaseType == null)
+                return false;
+
+            return IsSubClassOf(type.BaseType, compareTypeName);
         }
 
         private IEnumerable<D2OTable> GetTables()

@@ -1,6 +1,6 @@
 ﻿namespace Stump.DofusProtocol.Enums
 {
-    public enum EffectsEnum
+    public enum EffectsEnum : short
     {
         Effect_Teleport = 4,
         /* Teleports over a maximum range of #1 cells. */
