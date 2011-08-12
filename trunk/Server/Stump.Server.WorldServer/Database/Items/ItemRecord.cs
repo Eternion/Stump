@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Handlers.Effects;
+using Stump.Server.WorldServer.Worlds.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Database.Items
 {
@@ -9,7 +9,7 @@ namespace Stump.Server.WorldServer.Database.Items
     public class ItemRecord : WorldBaseRecord<ItemRecord>
     {
         [PrimaryKey(PrimaryKeyType.Native, "Guid")]
-        public long Guid
+        public int Guid
         {
             get;
             set;
@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Database.Items
         }
 
         [Property("Stack", NotNull = true, Default = "0")]
-        public uint Stack
+        public int Stack
         {
             get;
             set;

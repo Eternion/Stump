@@ -1,7 +1,7 @@
 ﻿using System;
 using Stump.DofusProtocol.Enums;
 
-namespace Stump.Server.WorldServer.Handlers.Effects
+namespace Stump.Server.WorldServer.Worlds.Effects
 {
     public class EffectHandleAttribute : Attribute
     {

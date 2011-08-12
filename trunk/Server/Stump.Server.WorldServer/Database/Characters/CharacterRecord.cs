@@ -1,8 +1,10 @@
+using System;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Database.Breeds;
+using Stump.Server.WorldServer.Database.Items;
 
 namespace Stump.Server.WorldServer.Database.Characters
 {
@@ -275,6 +277,13 @@ namespace Stump.Server.WorldServer.Database.Characters
 
         [Property("SpellsPoints", NotNull = true, Default = "0")]
         public ushort SpellsPoints
+        {
+            get;
+            set;
+        }
+
+        [OneToOne]
+        public InventoryRecord Inventory
         {
             get;
             set;

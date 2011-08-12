@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\Commands\ItemCommand.cs" />
     <Compile Include="Commands\ParametersConverter.cs" />
     <Compile Include="Commands\Trigger\IInGameTrigger.cs" />
     <Compile Include="Commands\Trigger\TriggerChat.cs" />
@@ -115,20 +116,13 @@
     <Compile Include="Handlers\Context\RolePlay\ContextRoleplayQuestHandler.cs" />
     <Compile Include="Handlers\Context\RolePlay\ContextRoleplaySpellHandler.cs" />
     <Compile Include="Handlers\Context\RolePlay\ContextRoleplayStatsHandler.cs" />
-    <Compile Include="Handlers\Effects\Instances\EffectBase.cs" />
-    <Compile Include="Handlers\Effects\EffectContext.cs" />
-    <Compile Include="Handlers\Effects\Instances\EffectCreature.cs" />
-    <Compile Include="Handlers\Effects\Instances\EffectDate.cs" />
-    <Compile Include="Handlers\Effects\Instances\EffectDice.cs" />
-    <Compile Include="Handlers\Effects\Instances\EffectDuration.cs" />
-    <Compile Include="Handlers\Effects\EffectHandleAttribute.cs" />
-    <Compile Include="Handlers\Effects\Instances\EffectInteger.cs" />
-    <Compile Include="Handlers\Effects\Instances\EffectLadder.cs" />
-    <Compile Include="Handlers\Effects\EffectManager.cs" />
-    <Compile Include="Handlers\Effects\Instances\EffectMinMax.cs" />
-    <Compile Include="Handlers\Effects\Instances\EffectMount.cs" />
-    <Compile Include="Handlers\Effects\Instances\EffectString.cs" />
     <Compile Include="Handlers\Initialization\InitializationHandler.cs" />
+    <Compile Include="Handlers\Inventory\InventoryExchangesHandler.cs" />
+    <Compile Include="Handlers\Inventory\InventoryHandler.cs" />
+    <Compile Include="Handlers\Inventory\InventoryItemsHandler.cs" />
+    <Compile Include="Handlers\Inventory\InventoryPresetHandler.cs" />
+    <Compile Include="Handlers\Inventory\InventorySpellsHandler.cs" />
+    <Compile Include="Handlers\Inventory\InventoryStorageHandler.cs" />
     <Compile Include="Handlers\PredicatesDefinitions.cs" />
     <Compile Include="Handlers\WorldHandlerAttribute.cs" />
     <Compile Include="Handlers\WorldHandlerContainer.cs" />
@@ -149,6 +143,7 @@
     <Compile Include="Worlds\Actors\Fight\MutantFighter.cs" />
     <Compile Include="Worlds\Actors\Fight\NamedFighter.cs" />
     <Compile Include="Worlds\Actors\Fight\TaxCollectorFighter.cs" />
+    <Compile Include="Worlds\Actors\Interfaces\IInventoryOwner.cs" />
     <Compile Include="Worlds\Actors\Interfaces\IStatsOwner.cs" />
     <Compile Include="Worlds\Actors\RolePlay\Characters\Character.cs" />
     <Compile Include="Worlds\Actors\RolePlay\Characters\CharacterManager.cs" />
@@ -167,6 +162,24 @@
     <Compile Include="Worlds\Actors\Stats\StatsHealth.cs" />
     <Compile Include="Worlds\Breeds\BreedManager.cs" />
     <Compile Include="Worlds\Chat\ChatManager.cs" />
+    <Compile Include="Worlds\Effects\EffectContext.cs" />
+    <Compile Include="Worlds\Effects\EffectHandleAttribute.cs" />
+    <Compile Include="Worlds\Effects\EffectManager.cs" />
+    <Compile Include="Worlds\Effects\Instances\EffectBase.cs" />
+    <Compile Include="Worlds\Effects\Instances\EffectCreature.cs" />
+    <Compile Include="Worlds\Effects\Instances\EffectDate.cs" />
+    <Compile Include="Worlds\Effects\Instances\EffectDice.cs" />
+    <Compile Include="Worlds\Effects\Instances\EffectDuration.cs" />
+    <Compile Include="Worlds\Effects\Instances\EffectInteger.cs" />
+    <Compile Include="Worlds\Effects\Instances\EffectLadder.cs" />
+    <Compile Include="Worlds\Effects\Instances\EffectMinMax.cs" />
+    <Compile Include="Worlds\Effects\Instances\EffectMount.cs" />
+    <Compile Include="Worlds\Effects\Instances\EffectString.cs" />
+    <Compile Include="Worlds\Items\Inventory.cs" />
+    <Compile Include="Worlds\Items\Item.cs" />
+    <Compile Include="Worlds\Items\ItemManager.cs" />
+    <Compile Include="Worlds\Items\ItemsCollection.cs" />
+    <Compile Include="Worlds\Items\ItemsStorage.cs" />
     <Compile Include="Worlds\Maps\Area.cs" />
     <Compile Include="Worlds\Maps\Cells\MapPoint.cs" />
     <Compile Include="Worlds\Maps\Cells\ObjectPosition.cs" />
@@ -204,9 +217,7 @@
       <Name>Stump.Server.BaseServer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Handlers\Items\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

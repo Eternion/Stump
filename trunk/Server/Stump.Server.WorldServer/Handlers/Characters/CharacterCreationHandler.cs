@@ -9,6 +9,7 @@ using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Breeds;
@@ -77,10 +78,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             var breedLook = !message.sex ? breed.MaleLook.Copy() : breed.FemaleLook.Copy();
             breedLook.indexedColors = indexedColors;
 
-            /* Create Inventory */
-            // TODO ADD START OBJECTS
-            /*var inventory = new InventoryRecord { Kamas = (uint)breed.StartKamas };
-            inventory.Create();*/
 
             /* Create Character */
             var character = new CharacterRecord(breed)
@@ -89,8 +86,11 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 Name = characterName,
                 Sex = message.sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE,
                 EntityLook = breedLook,
-                //Inventory = inventory
             };
+
+            /* Create Inventory */
+            // TODO ADD START OBJECTS
+            var inventory = new InventoryRecord(character);
 
             /* Set Character SpellCollection */
             /*foreach (SpellIdEnum spellId in breed.StartSpells.Keys)
@@ -100,8 +100,13 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 character.Spells.Add(spell);
             }*/
 
+
             /* Save it */
             CharacterManager.Instance.CreateCharacterOnAccount(character, client);
+
+
+            character.Inventory = inventory;
+            inventory.Create();
 
             BasicHandler.SendBasicNoOperationMessage(client);
             client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.OK));

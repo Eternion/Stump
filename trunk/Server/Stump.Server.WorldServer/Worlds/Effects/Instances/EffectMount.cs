@@ -1,7 +1,8 @@
 ﻿using System;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Types;
 
-namespace Stump.Server.WorldServer.Handlers.Effects
+namespace Stump.Server.WorldServer.Worlds.Effects.Instances
 {
     [Serializable]
     public class EffectMount : EffectBase
@@ -16,6 +17,14 @@ namespace Stump.Server.WorldServer.Handlers.Effects
             m_mountId = mountid;
             m_date = date;
             m_modelId = (short) modelid;
+        }
+
+        public EffectMount(EffectInstanceMount effect)
+            : base((short)effect.effectId)
+        {
+           m_mountId = (int) effect.mountId;
+           m_date = effect.date;
+           m_modelId = (short) effect.modelId;
         }
 
         public override int ProtocoleId

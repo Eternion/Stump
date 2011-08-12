@@ -9,12 +9,14 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.Interfaces;
 using Stump.Server.WorldServer.Worlds.Actors.Stats;
 using Stump.Server.WorldServer.Worlds.Breeds;
+using Stump.Server.WorldServer.Worlds.Items;
 using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 {
-    public sealed class Character : Humanoid, IStatsOwner
+    public sealed class Character : Humanoid,
+        IStatsOwner, IInventoryOwner
     {
         private readonly CharacterRecord m_record;
 
@@ -48,6 +50,12 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 m_record.Id = value;
                 base.Id = value;
             }
+        }
+
+        public Inventory Inventory
+        {
+            get;
+            private set;
         }
 
         public override string Name
@@ -307,6 +315,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             Level = ExperienceManager.Instance.GetCharacterLevel(m_record.Experience);
             LowerBoundExperience = ExperienceManager.Instance.GetCharacterLevelExperience(Level);
             UpperBoundExperience = ExperienceManager.Instance.GetCharacterNextLevelExperience(Level);
+
+            Inventory = new Inventory(this, m_record.Inventory);
         }
 
         #endregion

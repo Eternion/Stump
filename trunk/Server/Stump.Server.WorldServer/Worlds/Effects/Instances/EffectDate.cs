@@ -2,7 +2,7 @@
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Types;
 
-namespace Stump.Server.WorldServer.Handlers.Effects
+namespace Stump.Server.WorldServer.Worlds.Effects.Instances
 {
     [Serializable]
     public class EffectDate : EffectBase

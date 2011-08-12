@@ -5,7 +5,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Effects;
 
-namespace Stump.Server.WorldServer.Handlers.Effects
+namespace Stump.Server.WorldServer.Worlds.Effects.Instances
 {
     public enum EffectGenerationContext
     {

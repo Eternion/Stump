@@ -10,7 +10,10 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Handlers.Basic;
+using Stump.Server.WorldServer.Handlers.Chat;
+using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Initialization;
+using Stump.Server.WorldServer.Handlers.Inventory;
 using Stump.Server.WorldServer.Worlds.Accounts;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 
@@ -103,20 +106,20 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
 
             SendCharacterSelectedSuccessMessage(client);
-            /*
+            
             InventoryHandler.SendInventoryContentMessage(client);
             InventoryHandler.SendInventoryWeightMessage(client);
 
-            InventoryHandler.SendSpellListMessage(client, true);
-            ContextHandler.SendSpellForgottenMessage(client);
+            //InventoryHandler.SendSpellListMessage(client, true);
+            //ContextHandler.SendSpellForgottenMessage(client);
             ContextHandler.SendNotificationListMessage(client, new List<int>());
 
-            ContextHandler.SendEmoteListMessage(client, new List<uint>());
-            ChatHandler.SendEnabledChannelsMessage(client, new List<uint>(), new List<uint>());
+            //ContextHandler.SendEmoteListMessage(client, new List<uint>());
+            ChatHandler.SendEnabledChannelsMessage(client, new List<byte>(), new List<byte>());
 
-            PvpHandler.SendAlignmentRankUpdateMessage(client);
-            PvpHandler.SendAlignmentSubAreasListMessage(client);
-            */
+            //PvpHandler.SendAlignmentRankUpdateMessage(client);
+            //PvpHandler.SendAlignmentSubAreasListMessage(client);
+            
             InitializationHandler.SendSetCharacterRestrictionsMessage(client);
 
             BasicHandler.SendTextInformationMessage(client, 1, 89);

@@ -1,9 +1,17 @@
 
+using System;
+using Stump.Server.BaseServer.Commands;
+using Stump.Server.WorldServer.Commands.Trigger;
+using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Worlds;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Worlds.Items;
+
 namespace Stump.Server.WorldServer.Commands
 {
     public static class ParametersConverter
     {
-        /*public static Func<string, TriggerBase, Character> CharacterConverter = (entry, trigger) =>
+        public static ConverterHandler<Character> CharacterConverter = (entry, trigger) =>
         {
             Character target;
 
@@ -18,12 +26,12 @@ namespace Stump.Server.WorldServer.Commands
             return target;
         };
 
-        public static Func<string, TriggerBase, ItemTemplate> ItemTemplateConverter = (entry, trigger) =>
+        public static ConverterHandler<ItemTemplate> ItemTemplateConverter = (entry, trigger) =>
         {
             int outvalue;
             if (int.TryParse(entry, out outvalue))
             {
-                ItemTemplate itemById = ItemManager.GetTemplate(outvalue);
+                ItemTemplate itemById = ItemManager.Instance.GetTemplate(outvalue);
 
                 if (itemById == null)
                     throw new ConverterException(string.Format("'{0}' is not a valid item", entry));
@@ -31,12 +39,12 @@ namespace Stump.Server.WorldServer.Commands
                 return itemById;
             }
 
-            ItemTemplate itemByName = ItemManager.GetTemplate(entry, CommandBase.IgnoreCommandCase);
+            ItemTemplate itemByName = null;// = ItemManager.Instance.GetTemplate(entry, CommandBase.IgnoreCommandCase);
 
             if (itemByName == null)
                 throw new ConverterException(string.Format("'{0}' is not a valid item", entry));
 
             return itemByName;
-        };*/
+        };
     }
 }

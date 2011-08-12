@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
                         if (_owner == null)
                             throw new ArgumentNullException("_owner");
 
-                        return valuebase + valuegiven + valuebonus;
+                        return valuebase + valueequiped + valuegiven + valuebonus;
                     })
         {
         }

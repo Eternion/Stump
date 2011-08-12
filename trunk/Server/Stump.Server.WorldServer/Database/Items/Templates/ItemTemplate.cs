@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.Server.WorldServer.Worlds.Effects;
+using Stump.Server.WorldServer.Worlds.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Database.Items.Templates
 {
@@ -193,12 +196,25 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set;
         }
 
+        private List<EffectBase> m_effects;
+
+        public List<EffectBase> Effects
+        {
+            get { return m_effects ?? (m_effects = new List<EffectBase>(PossibleEffects.Select(EffectManager.ConvertExportedEffect))); }
+            set { m_effects = value; }
+        }
+
         [D2OField("favoriteSubAreasBonus")]
         [Property("FavoriteSubAreasBonus")]
         public uint FavoriteSubAreasBonus
         {
             get;
             set;
+        }
+
+        public string Name
+        {
+            get { return "(name)"; }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Castle.ActiveRecord;
+using Stump.Server.WorldServer.Database.Characters;
 
 namespace Stump.Server.WorldServer.Database.Items
 {
@@ -8,21 +9,38 @@ namespace Stump.Server.WorldServer.Database.Items
     {
         private IList<ItemRecord> m_items;
 
-        [PrimaryKey(PrimaryKeyType.Identity, "Id")]
-        public uint Id
+        public InventoryRecord()
+        {
+            
+        }
+
+        public InventoryRecord(CharacterRecord character)
+        {
+            Owner = character;
+        }
+
+        [PrimaryKey(PrimaryKeyType.Foreign, "Id")]
+        public int Id
+        {
+            get;
+            set;
+        }
+
+        [OneToOne]
+        public CharacterRecord Owner
         {
             get;
             set;
         }
 
         [Property("Kamas", NotNull = true, Default = "0")]
-        public long Kamas
+        public int Kamas
         {
             get;
             set;
         }
 
-        [HasMany(typeof (ItemRecord), Table = "inventories_items", ColumnKey = "InventoryId",
+        [HasMany(typeof (ItemRecord), Table = "items", ColumnKey = "InventoryId",
             Cascade = ManyRelationCascadeEnum.Delete)]
         public IList<ItemRecord> Items
         {

@@ -7,6 +7,7 @@ using NLog;
 using Stump.Core.Reflection;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
+using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Maps;
@@ -189,6 +190,37 @@ namespace Stump.Server.WorldServer.Worlds
         public IEnumerable<Character> GetCharacters(Predicate<Character> predicate)
         {
             return m_charactersById.Values.Where(k => predicate(k));
+        }
+
+        /// <summary>
+        /// Get a character by a search pattern. *account = current character used by account, name = character by his name.
+        /// </summary>
+        /// <returns></returns>
+        public Character GetCharacterByPattern(string pattern)
+        {
+            if (pattern[0] == '*')
+            {
+                string name = pattern.Remove(0, 1);
+
+
+
+                return ClientManager.Instance.FindAll<WorldClient>(entry => entry.Account.Login == name).
+                    Select(entry => entry.ActiveCharacter).SingleOrDefault();
+            }
+
+            return GetCharacter(pattern);
+        }
+
+        /// <summary>
+        /// Get a character by a search pattern. * = caller, *(account) = current character used by account, name = character by his name.
+        /// </summary>
+        /// <returns></returns>
+        public Character GetCharacterByPattern(Character caller, string pattern)
+        {
+            if (pattern == "*")
+                return caller;
+
+            return GetCharacterByPattern(pattern);
         }
 
         public void CallOnCharacters(Action<Character> action)
