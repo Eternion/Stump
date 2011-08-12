@@ -28,7 +28,12 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             get;
             internal set;
         }
-        
+
+        public SuperArea SuperArea
+        {
+            get { return Area.SuperArea; }
+        }
+
         internal void AddMap(Map map)
         {
             m_maps.Add(map);

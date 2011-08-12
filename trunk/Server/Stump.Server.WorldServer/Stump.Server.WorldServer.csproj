@@ -58,9 +58,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Commands\ItemCommand.cs" />
+    <Compile Include="Commands\Commands\LookCommand.cs" />
+    <Compile Include="Commands\Commands\TeleportCommand.cs" />
     <Compile Include="Commands\ParametersConverter.cs" />
     <Compile Include="Commands\Trigger\IInGameTrigger.cs" />
     <Compile Include="Commands\Trigger\TriggerChat.cs" />
+    <Compile Include="Commands\Trigger\TriggerConsole.cs" />
     <Compile Include="Commands\Trigger\WorldConsoleTrigger.cs" />
     <Compile Include="Database\Accounts\WorldAccount.cs" />
     <Compile Include="Database\Breeds\Breed.cs" />
@@ -94,6 +97,7 @@
     <Compile Include="Database\World\WorldMapRecord.cs" />
     <Compile Include="Definitions.cs" />
     <Compile Include="Handlers\Approach\ApproachHandler.cs" />
+    <Compile Include="Handlers\Authorized\AuthorizedHandler.cs" />
     <Compile Include="Handlers\Basic\BasicHandler.cs" />
     <Compile Include="Handlers\Characters\CharacterChoiceHandler.cs" />
     <Compile Include="Handlers\Characters\CharacterCreationHandler.cs" />

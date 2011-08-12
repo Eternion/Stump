@@ -165,9 +165,9 @@ namespace Stump.Server.WorldServer.Worlds.Items
         /// Found an item template contains in a given list with a pattern
         /// </summary>
         /// <remarks>
-        /// When @ precede the pattern the case is ignored
+        /// When @ precede the pattern, then the case is ignored
         /// * is a joker, it can be placed at the begin or at the end or both
-        /// it means that characters are ignored
+        /// it means that characters are ignored (include letters, numbers, spaces and underscores)
         /// 
         /// Note : We use RegExp for the pattern. '*' are remplaced by '[\w\d_]*'
         /// </remarks>
@@ -179,7 +179,6 @@ namespace Stump.Server.WorldServer.Worlds.Items
         /// 
         /// returns : abc and Abd
         /// </example>
-        // todo : enhanced the method to do like this '{Level>100;Name~coiffe...}'
         public IEnumerable<ItemTemplate> GetItemsByPattern(string pattern, IEnumerable<ItemTemplate> list)
         {
             if (pattern == "*")

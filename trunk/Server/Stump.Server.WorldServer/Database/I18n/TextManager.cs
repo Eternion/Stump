@@ -42,23 +42,23 @@ namespace Stump.Server.WorldServer.Database.I18n
             switch (lang)
             {
                 case Languages.English:
-                    return record.En;
+                    return record.En ?? "(not found)";
                 case Languages.French:
-                    return record.Fr;
+                    return record.Fr ?? "(not found)";
                 case Languages.German:
-                    return record.De;
+                    return record.De ?? "(not found)";
                 case Languages.Spanish:
-                    return record.Es;
+                    return record.Es ?? "(not found)";
                 case Languages.Italian:
-                    return record.It;
+                    return record.It ?? "(not found)";
                 case Languages.Japanish:
-                    return record.Ja;
+                    return record.Ja ?? "(not found)";
                 case Languages.Dutsh:
-                    return record.Nl;
+                    return record.Nl ?? "(not found)";
                 case Languages.Portugese:
-                    return record.Pt;
+                    return record.Pt ?? "(not found)";
                 case Languages.Russish:
-                    return record.Ru;
+                    return record.Ru ?? "(not found)";
                 default:
                     return "(not found)";
             }
@@ -78,23 +78,23 @@ namespace Stump.Server.WorldServer.Database.I18n
             switch (lang)
             {
                 case Languages.English:
-                    return record.En;
+                    return record.En ?? "(not found)";
                 case Languages.French:
-                    return record.Fr;
+                    return record.Fr ?? "(not found)";
                 case Languages.German:
-                    return record.De;
+                    return record.De ?? "(not found)";
                 case Languages.Spanish:
-                    return record.Es;
+                    return record.Es ?? "(not found)";
                 case Languages.Italian:
-                    return record.It;
+                    return record.It ?? "(not found)";
                 case Languages.Japanish:
-                    return record.Ja;
+                    return record.Ja ?? "(not found)";
                 case Languages.Dutsh:
-                    return record.Nl;
+                    return record.Nl ?? "(not found)";
                 case Languages.Portugese:
-                    return record.Pt;
+                    return record.Pt ?? "(not found)";
                 case Languages.Russish:
-                    return record.Ru;
+                    return record.Ru ?? "(not found)";
                 default:
                     return "(not found)";
             }

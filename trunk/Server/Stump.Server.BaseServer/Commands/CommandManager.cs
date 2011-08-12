@@ -213,7 +213,7 @@ namespace Stump.Server.BaseServer.Commands
                 }
                 catch (Exception ex)
                 {
-                    trigger.Reply("Raised exception when executing command : " + ex.Message);
+                    trigger.ReplyError("Raised exception when executing command : " + ex.Message);
 
                     if (ex.InnerException != null)
                         trigger.Reply(" => " + ex.InnerException.Message);
@@ -221,7 +221,7 @@ namespace Stump.Server.BaseServer.Commands
             }
             else
             {
-                trigger.Reply("Incorrect Command \"{0}\". Type commandslist or help for command list.", cmdstring);
+                trigger.ReplyError("Incorrect Command \"{0}\". Type commandslist or help for command list.", cmdstring);
             }
         }
 

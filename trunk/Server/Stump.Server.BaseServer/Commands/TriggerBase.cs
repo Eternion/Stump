@@ -72,14 +72,14 @@ namespace Stump.Server.BaseServer.Commands
             Reply(string.Format(format, args));
         }
 
-        public void ReplyError(string message)
+        public virtual void ReplyError(string message)
         {
             Reply("(Error) " + message);
         }
 
         public void ReplyError(string format, params object[] args)
         {
-            Reply(string.Format("(Error) " + format, args));
+            ReplyError(string.Format(format, args));
         }
 
         public virtual T Get<T>(string name)

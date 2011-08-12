@@ -92,13 +92,36 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         #region Apparence
 
-        public override EntityLook Look
+        public bool CustomLookActivated
         {
-            get { return m_record.EntityLook; }
+            get;
+            set;
+        }
+
+        public EntityLook CustomLook
+        {
+            get;
+            set;
+        }
+
+        public EntityLook RealLook
+        {
+            get
+            {
+                return m_record.EntityLook;
+            }
             protected set
             {
                 m_record.EntityLook = value;
                 base.Look = value;
+            }
+        }
+
+        public override EntityLook Look
+        {
+            get
+            {
+                return ( CustomLookActivated && CustomLook != null ? CustomLook : RealLook );
             }
         }
 

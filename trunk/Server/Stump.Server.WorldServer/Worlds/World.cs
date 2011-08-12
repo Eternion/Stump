@@ -66,7 +66,7 @@ namespace Stump.Server.WorldServer.Worlds
             foreach (var map in m_maps.Values)
             {
                 if (map.Record.Position == null)
-                    return; 
+                    continue;
 
                 SubArea subArea;
                 if (m_subAreas.TryGetValue(map.Record.Position.SubAreaId, out subArea))
@@ -108,7 +108,7 @@ namespace Stump.Server.WorldServer.Worlds
 
         public Map GetMap(int x, int y, bool outdoor = true)
         {
-            return m_maps.Values.Where(entry => entry.Position.X == x && entry.Position.Y == y && entry.Outdoor == outdoor).SingleOrDefault();
+            return m_maps.Values.Where(entry => entry.Position.X == x && entry.Position.Y == y && entry.Outdoor == outdoor).FirstOrDefault();
         }
 
         public IEnumerable<Map> GetMaps(int x, int y)

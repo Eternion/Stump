@@ -84,6 +84,36 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             m_mapsAround.Add(RightNeighbourId, MapNeighbour.Right);
         }
 
+        public bool Equals(Map other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(other.Id, Id);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != typeof (Map)) return false;
+            return Equals((Map) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Record != null ? Record.GetHashCode() : 0);
+        }
+
+        public static bool operator ==(Map left, Map right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(Map left, Map right)
+        {
+            return !Equals(left, right);
+        }
+
         #region Properties
 
         private Map m_bottomNeighbour;
@@ -105,6 +135,16 @@ namespace Stump.Server.WorldServer.Worlds.Maps
         {
             get;
             internal set;
+        }
+
+        public Area Area
+        {
+            get { return SubArea.Area; }
+        }
+
+        public SuperArea SuperArea
+        {
+            get { return Area.SuperArea; }
         }
 
         public uint RelativeId
@@ -232,11 +272,11 @@ namespace Stump.Server.WorldServer.Worlds.Maps
                 case MapNeighbour.Top:
                     return (short) (currentCell + 532);
                 case MapNeighbour.Bottom:
-                    return (short)( currentCell - 532 );
+                    return (short) (currentCell - 532);
                 case MapNeighbour.Right:
-                    return (short)( currentCell - 13 );
+                    return (short) (currentCell - 13);
                 case MapNeighbour.Left:
-                    return (short)( currentCell + 13 );
+                    return (short) (currentCell + 13);
                 default:
                     return 0;
             }
@@ -384,40 +424,6 @@ namespace Stump.Server.WorldServer.Worlds.Maps
         }
 
         #endregion
-
-        #endregion
-
-        #region Equality Members
-
-        public bool Equals(Map other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Equals(other.Id, Id);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof(Map)) return false;
-            return Equals((Map)obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return ( Record != null ? Record.GetHashCode() : 0 );
-        }
-
-        public static bool operator ==(Map left, Map right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(Map left, Map right)
-        {
-            return !Equals(left, right);
-        }
 
         #endregion
     }
