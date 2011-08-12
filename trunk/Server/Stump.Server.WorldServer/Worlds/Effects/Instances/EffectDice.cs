@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
 
         public override object[] GetValues()
         {
-            return new object[] {DiceNum, DiceFace, (short) Value};
+            return new object[] {DiceNum, DiceFace, Value};
         }
 
         public override ObjectEffect GetObjectEffect()
@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
 
         public override EffectBase GenerateEffect(EffectGenerationContext context)
         {
-            if (context == EffectGenerationContext.Spell || EffectManager.IsEffectRandomable(EffectId))
+            if (context == EffectGenerationContext.Spell || EffectManager.Instance.IsEffectRandomable(EffectId))
             {
                 var random = new AsyncRandom();
                 short result = 0;

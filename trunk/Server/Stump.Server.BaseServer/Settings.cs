@@ -1,5 +1,6 @@
 ﻿
 using Stump.Core.Attributes;
+using Stump.Server.BaseServer.I18n;
 
 namespace Stump.Server.BaseServer
 {
@@ -12,12 +13,15 @@ namespace Stump.Server.BaseServer
         /// Enable/Disable perfomances tracing
         /// </summary>
         [Variable]
-        public static bool EnableBenchmarking;
+        public static readonly bool EnableBenchmarking;
 
         /// <summary>
         ///   Disconnect Client after specified time(in s) or NULL for desactivate
         /// </summary>
         [Variable]
-        public static int? InactivityDisconnectionTime = 900;
+        public static readonly int? InactivityDisconnectionTime = 900;
+
+        [Variable]
+        public static readonly Languages Language = Languages.English;
     }
 }

@@ -69,6 +69,7 @@
     <Compile Include="Database\Characters\ExperienceRecord.cs" />
     <Compile Include="Database\Characters\Restrictions.cs" />
     <Compile Include="Database\Effects\EffectRecord.cs" />
+    <Compile Include="Database\I18n\TextManager.cs" />
     <Compile Include="Database\I18n\TextRecord.cs" />
     <Compile Include="Database\I18n\TextUIRecord.cs" />
     <Compile Include="Database\Items\InventoryRecord.cs" />

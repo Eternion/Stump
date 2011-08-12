@@ -7,6 +7,7 @@ using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
+using Stump.Server.WorldServer.Database.I18n;
 
 namespace Stump.Server.WorldServer.Database.Breeds
 {
@@ -57,12 +58,32 @@ namespace Stump.Server.WorldServer.Database.Breeds
             set;
         }
 
+        private string m_shortName;
+
+        public string ShortName
+        {
+            get
+            {
+                return m_shortName ?? ( m_shortName = TextManager.Instance.GetText(ShortNameId) );
+            }
+        }
+
         [D2OField("longNameId")]
         [Property("LongNameId")]
         public uint LongNameId
         {
             get;
             set;
+        }
+
+        private string m_longName;
+
+        public string LongName
+        {
+            get
+            {
+                return m_longName ?? ( m_longName = TextManager.Instance.GetText(LongNameId) );
+            }
         }
 
         [D2OField("descriptionId")]

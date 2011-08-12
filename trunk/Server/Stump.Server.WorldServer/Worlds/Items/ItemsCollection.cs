@@ -15,11 +15,7 @@ namespace Stump.Server.WorldServer.Worlds.Items
         #region Delegates
 
         public delegate void ItemAddedEventHandler(ItemsCollection sender, Item item);
-
-        public delegate void ItemMovedEventHandler(ItemsCollection sender, Item item, CharacterInventoryPositionEnum oldPosition);
-
         public delegate void ItemRemovedEventHandler(ItemsCollection sender, Item item);
-
         public delegate void ItemStackChangedEventHandler(ItemsCollection sender, Item item, int difference);
 
         #endregion

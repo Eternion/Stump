@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
@@ -9,28 +9,14 @@ using Stump.Server.WorldServer.Worlds.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Worlds.Effects
 {
-    public static class EffectManager
+    public class EffectManager : Singleton<EffectManager>
     {
-        private static Dictionary<short, EffectRecord> Effects = new Dictionary<short, EffectRecord>();
-
-        private static readonly Dictionary<Type, Type> LinkedEffectType = new Dictionary<Type, Type>
-                                                                              {
-                                                                                  {typeof (EffectInstance), typeof (EffectBase)},
-                                                                                  {typeof (EffectInstanceCreature), typeof (EffectCreature)},
-                                                                                  {typeof (EffectInstanceDate), typeof (EffectDate)},
-                                                                                  {typeof (EffectInstanceDice), typeof (EffectDice)},
-                                                                                  {typeof (EffectInstanceDuration), typeof (EffectDuration)},
-                                                                                  {typeof (EffectInstanceLadder), typeof (EffectLadder)},
-                                                                                  {typeof (EffectInstanceMinMax), typeof (EffectMinMax)},
-                                                                                  {typeof (EffectInstanceMount), typeof (EffectMount)},
-                                                                                  {typeof (EffectInstanceString), typeof (EffectString)},
-                                                                                  {typeof (EffectInstanceInteger), typeof (EffectString)},
-                                                                              };
+        private Dictionary<short, EffectRecord> m_effects = new Dictionary<short, EffectRecord>();
 
         [Initialization(InitializationPass.Third)]
-        public static void Intialize()
+        public void Intialize()
         {
-            Effects = EffectRecord.FindAll().ToDictionary(entry => (short) entry.Id);
+            m_effects = EffectRecord.FindAll().ToDictionary(entry => (short) entry.Id);
         }
 
         /// <summary>
@@ -38,7 +24,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects
         /// </summary>
         /// <param name = "effect"></param>
         /// <returns></returns>
-        public static EffectBase ConvertExportedEffect(EffectInstance effect)
+        public EffectBase ConvertExportedEffect(EffectInstance effect)
         {
             if (effect is EffectInstanceLadder)
                 return new EffectLadder(effect as EffectInstanceLadder);
@@ -62,22 +48,22 @@ namespace Stump.Server.WorldServer.Worlds.Effects
             return new EffectBase(effect);
         }
 
-        public static IEnumerable<EffectBase> ConvertExportedEffect(IEnumerable<EffectInstance> effects)
+        public IEnumerable<EffectBase> ConvertExportedEffect(IEnumerable<EffectInstance> effects)
         {
             return effects.Select(ConvertExportedEffect);
         }
 
-        public static EffectRecord GetTemplate(short id)
+        public EffectRecord GetTemplate(short id)
         {
-            return !Effects.ContainsKey(id) ? null : Effects[id];
+            return !m_effects.ContainsKey(id) ? null : m_effects[id];
         }
 
-        public static bool IsEffectRandomable(EffectsEnum effect)
+        public bool IsEffectRandomable(EffectsEnum effect)
         {
-            return RandomablesEffects.Contains(effect);
+            return m_randomablesEffects.Contains(effect);
         }
 
-        public static EffectInstance GuessRealEffect(EffectInstance effect)
+        public EffectInstance GuessRealEffect(EffectInstance effect)
         {
             if (!(effect is EffectInstanceDice))
                 return effect;
@@ -126,120 +112,121 @@ namespace Stump.Server.WorldServer.Worlds.Effects
         /// <summary>
         ///   Effects that are random when a new item is generated
         /// </summary>
-        private static readonly EffectsEnum[] RandomablesEffects = new[]
-                                                                       {
-                                                                           EffectsEnum.Effect_AddMP,
-                                                                           EffectsEnum.Effect_AddGlobalDamageReduction_105,
-                                                                           EffectsEnum.Effect_AddDamageReflection,
-                                                                           EffectsEnum.Effect_AddHealth,
-                                                                           EffectsEnum.Effect_AddAP_111,
-                                                                           EffectsEnum.Effect_AddDamageBonus,
-                                                                           EffectsEnum.Effect_AddDamageMultiplicator,
-                                                                           EffectsEnum.Effect_AddCriticalHit,
-                                                                           EffectsEnum.Effect_SubRange,
-                                                                           EffectsEnum.Effect_AddRange,
-                                                                           EffectsEnum.Effect_AddStrength,
-                                                                           EffectsEnum.Effect_AddAgility,
-                                                                           EffectsEnum.Effect_AddAP_120,
-                                                                           EffectsEnum.Effect_AddDamageBonus_121,
-                                                                           EffectsEnum.Effect_AddCriticalMiss,
-                                                                           EffectsEnum.Effect_AddChance,
-                                                                           EffectsEnum.Effect_AddWisdom,
-                                                                           EffectsEnum.Effect_AddVitality,
-                                                                           EffectsEnum.Effect_AddIntelligence,
-                                                                           EffectsEnum.Effect_AddMP_128,
-                                                                           EffectsEnum.Effect_SubRange_135,
-                                                                           EffectsEnum.Effect_AddRange_136,
-                                                                           EffectsEnum.Effect_AddPhysicalDamage_137,
-                                                                           EffectsEnum.Effect_IncreaseDamage_138,
-                                                                           EffectsEnum.Effect_AddPhysicalDamage_142,
-                                                                           EffectsEnum.Effect_SubDamageBonus,
-                                                                           EffectsEnum.Effect_SubChance,
-                                                                           EffectsEnum.Effect_SubVitality,
-                                                                           EffectsEnum.Effect_SubAgility,
-                                                                           EffectsEnum.Effect_SubIntelligence,
-                                                                           EffectsEnum.Effect_SubWisdom,
-                                                                           EffectsEnum.Effect_SubStrength,
-                                                                           EffectsEnum.Effect_IncreaseWeight,
-                                                                           EffectsEnum.Effect_DecreaseWeight,
-                                                                           EffectsEnum.Effect_IncreaseAPAvoid,
-                                                                           EffectsEnum.Effect_IncreaseMPAvoid,
-                                                                           EffectsEnum.Effect_SubDodgeAPProbability,
-                                                                           EffectsEnum.Effect_SubDodgeMPProbability,
-                                                                           EffectsEnum.Effect_AddGlobalDamageReduction,
-                                                                           EffectsEnum.Effect_AddDamageBonusPercent,
-                                                                           EffectsEnum.Effect_SubAP,
-                                                                           EffectsEnum.Effect_SubMP,
-                                                                           EffectsEnum.Effect_SubCriticalHit,
-                                                                           EffectsEnum.Effect_SubMagicDamageReduction,
-                                                                           EffectsEnum.Effect_SubPhysicalDamageReduction,
-                                                                           EffectsEnum.Effect_AddInitiative,
-                                                                           EffectsEnum.Effect_SubInitiative,
-                                                                           EffectsEnum.Effect_AddProspecting,
-                                                                           EffectsEnum.Effect_SubProspecting,
-                                                                           EffectsEnum.Effect_AddHealBonus,
-                                                                           EffectsEnum.Effect_SubHealBonus,
-                                                                           EffectsEnum.Effect_AddSummonLimit,
-                                                                           EffectsEnum.Effect_AddMagicDamageReduction,
-                                                                           EffectsEnum.Effect_AddPhysicalDamageReduction,
-                                                                           EffectsEnum.Effect_SubDamageBonusPercent,
-                                                                           EffectsEnum.Effect_AddEarthResistPercent,
-                                                                           EffectsEnum.Effect_AddWaterResistPercent,
-                                                                           EffectsEnum.Effect_AddAirResistPercent,
-                                                                           EffectsEnum.Effect_AddFireResistPercent,
-                                                                           EffectsEnum.Effect_AddNeutralResistPercent,
-                                                                           EffectsEnum.Effect_SubEarthResistPercent,
-                                                                           EffectsEnum.Effect_SubWaterResistPercent,
-                                                                           EffectsEnum.Effect_SubAirResistPercent,
-                                                                           EffectsEnum.Effect_SubFireResistPercent,
-                                                                           EffectsEnum.Effect_SubNeutralResistPercent,
-                                                                           EffectsEnum.Effect_AddTrapBonus,
-                                                                           EffectsEnum.Effect_AddTrapBonusPercent,
-                                                                           EffectsEnum.Effect_AddEarthElementReduction,
-                                                                           EffectsEnum.Effect_AddWaterElementReduction,
-                                                                           EffectsEnum.Effect_AddAirElementReduction,
-                                                                           EffectsEnum.Effect_AddFireElementReduction,
-                                                                           EffectsEnum.Effect_AddNeutralElementReduction,
-                                                                           EffectsEnum.Effect_SubEarthElementReduction,
-                                                                           EffectsEnum.Effect_SubWaterElementReduction,
-                                                                           EffectsEnum.Effect_SubAirElementReduction,
-                                                                           EffectsEnum.Effect_SubFireElementReduction,
-                                                                           EffectsEnum.Effect_SubNeutralElementReduction,
-                                                                           EffectsEnum.Effect_AddPvpEarthResistPercent,
-                                                                           EffectsEnum.Effect_AddPvpWaterResistPercent,
-                                                                           EffectsEnum.Effect_AddPvpAirResistPercent,
-                                                                           EffectsEnum.Effect_AddPvpFireResistPercent,
-                                                                           EffectsEnum.Effect_AddPvpNeutralResistPercent,
-                                                                           EffectsEnum.Effect_SubPvpEarthResistPercent,
-                                                                           EffectsEnum.Effect_SubPvpWaterResistPercent,
-                                                                           EffectsEnum.Effect_SubPvpAirResistPercent,
-                                                                           EffectsEnum.Effect_SubPvpFireResistPercent,
-                                                                           EffectsEnum.Effect_SubPvpNeutralResistPercent,
-                                                                           EffectsEnum.Effect_AddPvpEarthElementReduction,
-                                                                           EffectsEnum.Effect_AddPvpWaterElementReduction,
-                                                                           EffectsEnum.Effect_AddPvpAirElementReduction,
-                                                                           EffectsEnum.Effect_AddPvpFireElementReduction,
-                                                                           EffectsEnum.Effect_AddPvpNeutralElementReduction,
-                                                                           EffectsEnum.Effect_AddGlobalDamageReduction_265,
-                                                                           EffectsEnum.Effect_AddPushDamageBonus,
-                                                                           EffectsEnum.Effect_SubPushDamageBonus,
-                                                                           EffectsEnum.Effect_AddPushDamageReduction,
-                                                                           EffectsEnum.Effect_SubPushDamageReduction,
-                                                                           EffectsEnum.Effect_AddCriticalDamageBonus,
-                                                                           EffectsEnum.Effect_SubCriticalDamageBonus,
-                                                                           EffectsEnum.Effect_AddCriticalDamageReduction,
-                                                                           EffectsEnum.Effect_SubCriticalDamageReduction,
-                                                                           EffectsEnum.Effect_AddEarthDamageBonus,
-                                                                           EffectsEnum.Effect_SubEarthDamageBonus,
-                                                                           EffectsEnum.Effect_AddFireDamageBonus,
-                                                                           EffectsEnum.Effect_SubFireDamageBonus,
-                                                                           EffectsEnum.Effect_AddWaterDamageBonus,
-                                                                           EffectsEnum.Effect_SubWaterDamageBonus,
-                                                                           EffectsEnum.Effect_AddAirDamageBonus,
-                                                                           EffectsEnum.Effect_SubAirDamageBonus,
-                                                                           EffectsEnum.Effect_AddNeutralDamageBonus,
-                                                                           EffectsEnum.Effect_SubNeutralDamageBonus,
-                                                                       };
+        private readonly EffectsEnum[] m_randomablesEffects =
+            new[]
+                {
+                    EffectsEnum.Effect_AddMP,
+                    EffectsEnum.Effect_AddGlobalDamageReduction_105,
+                    EffectsEnum.Effect_AddDamageReflection,
+                    EffectsEnum.Effect_AddHealth,
+                    EffectsEnum.Effect_AddAP_111,
+                    EffectsEnum.Effect_AddDamageBonus,
+                    EffectsEnum.Effect_AddDamageMultiplicator,
+                    EffectsEnum.Effect_AddCriticalHit,
+                    EffectsEnum.Effect_SubRange,
+                    EffectsEnum.Effect_AddRange,
+                    EffectsEnum.Effect_AddStrength,
+                    EffectsEnum.Effect_AddAgility,
+                    EffectsEnum.Effect_AddAP_120,
+                    EffectsEnum.Effect_AddDamageBonus_121,
+                    EffectsEnum.Effect_AddCriticalMiss,
+                    EffectsEnum.Effect_AddChance,
+                    EffectsEnum.Effect_AddWisdom,
+                    EffectsEnum.Effect_AddVitality,
+                    EffectsEnum.Effect_AddIntelligence,
+                    EffectsEnum.Effect_AddMP_128,
+                    EffectsEnum.Effect_SubRange_135,
+                    EffectsEnum.Effect_AddRange_136,
+                    EffectsEnum.Effect_AddPhysicalDamage_137,
+                    EffectsEnum.Effect_IncreaseDamage_138,
+                    EffectsEnum.Effect_AddPhysicalDamage_142,
+                    EffectsEnum.Effect_SubDamageBonus,
+                    EffectsEnum.Effect_SubChance,
+                    EffectsEnum.Effect_SubVitality,
+                    EffectsEnum.Effect_SubAgility,
+                    EffectsEnum.Effect_SubIntelligence,
+                    EffectsEnum.Effect_SubWisdom,
+                    EffectsEnum.Effect_SubStrength,
+                    EffectsEnum.Effect_IncreaseWeight,
+                    EffectsEnum.Effect_DecreaseWeight,
+                    EffectsEnum.Effect_IncreaseAPAvoid,
+                    EffectsEnum.Effect_IncreaseMPAvoid,
+                    EffectsEnum.Effect_SubDodgeAPProbability,
+                    EffectsEnum.Effect_SubDodgeMPProbability,
+                    EffectsEnum.Effect_AddGlobalDamageReduction,
+                    EffectsEnum.Effect_AddDamageBonusPercent,
+                    EffectsEnum.Effect_SubAP,
+                    EffectsEnum.Effect_SubMP,
+                    EffectsEnum.Effect_SubCriticalHit,
+                    EffectsEnum.Effect_SubMagicDamageReduction,
+                    EffectsEnum.Effect_SubPhysicalDamageReduction,
+                    EffectsEnum.Effect_AddInitiative,
+                    EffectsEnum.Effect_SubInitiative,
+                    EffectsEnum.Effect_AddProspecting,
+                    EffectsEnum.Effect_SubProspecting,
+                    EffectsEnum.Effect_AddHealBonus,
+                    EffectsEnum.Effect_SubHealBonus,
+                    EffectsEnum.Effect_AddSummonLimit,
+                    EffectsEnum.Effect_AddMagicDamageReduction,
+                    EffectsEnum.Effect_AddPhysicalDamageReduction,
+                    EffectsEnum.Effect_SubDamageBonusPercent,
+                    EffectsEnum.Effect_AddEarthResistPercent,
+                    EffectsEnum.Effect_AddWaterResistPercent,
+                    EffectsEnum.Effect_AddAirResistPercent,
+                    EffectsEnum.Effect_AddFireResistPercent,
+                    EffectsEnum.Effect_AddNeutralResistPercent,
+                    EffectsEnum.Effect_SubEarthResistPercent,
+                    EffectsEnum.Effect_SubWaterResistPercent,
+                    EffectsEnum.Effect_SubAirResistPercent,
+                    EffectsEnum.Effect_SubFireResistPercent,
+                    EffectsEnum.Effect_SubNeutralResistPercent,
+                    EffectsEnum.Effect_AddTrapBonus,
+                    EffectsEnum.Effect_AddTrapBonusPercent,
+                    EffectsEnum.Effect_AddEarthElementReduction,
+                    EffectsEnum.Effect_AddWaterElementReduction,
+                    EffectsEnum.Effect_AddAirElementReduction,
+                    EffectsEnum.Effect_AddFireElementReduction,
+                    EffectsEnum.Effect_AddNeutralElementReduction,
+                    EffectsEnum.Effect_SubEarthElementReduction,
+                    EffectsEnum.Effect_SubWaterElementReduction,
+                    EffectsEnum.Effect_SubAirElementReduction,
+                    EffectsEnum.Effect_SubFireElementReduction,
+                    EffectsEnum.Effect_SubNeutralElementReduction,
+                    EffectsEnum.Effect_AddPvpEarthResistPercent,
+                    EffectsEnum.Effect_AddPvpWaterResistPercent,
+                    EffectsEnum.Effect_AddPvpAirResistPercent,
+                    EffectsEnum.Effect_AddPvpFireResistPercent,
+                    EffectsEnum.Effect_AddPvpNeutralResistPercent,
+                    EffectsEnum.Effect_SubPvpEarthResistPercent,
+                    EffectsEnum.Effect_SubPvpWaterResistPercent,
+                    EffectsEnum.Effect_SubPvpAirResistPercent,
+                    EffectsEnum.Effect_SubPvpFireResistPercent,
+                    EffectsEnum.Effect_SubPvpNeutralResistPercent,
+                    EffectsEnum.Effect_AddPvpEarthElementReduction,
+                    EffectsEnum.Effect_AddPvpWaterElementReduction,
+                    EffectsEnum.Effect_AddPvpAirElementReduction,
+                    EffectsEnum.Effect_AddPvpFireElementReduction,
+                    EffectsEnum.Effect_AddPvpNeutralElementReduction,
+                    EffectsEnum.Effect_AddGlobalDamageReduction_265,
+                    EffectsEnum.Effect_AddPushDamageBonus,
+                    EffectsEnum.Effect_SubPushDamageBonus,
+                    EffectsEnum.Effect_AddPushDamageReduction,
+                    EffectsEnum.Effect_SubPushDamageReduction,
+                    EffectsEnum.Effect_AddCriticalDamageBonus,
+                    EffectsEnum.Effect_SubCriticalDamageBonus,
+                    EffectsEnum.Effect_AddCriticalDamageReduction,
+                    EffectsEnum.Effect_SubCriticalDamageReduction,
+                    EffectsEnum.Effect_AddEarthDamageBonus,
+                    EffectsEnum.Effect_SubEarthDamageBonus,
+                    EffectsEnum.Effect_AddFireDamageBonus,
+                    EffectsEnum.Effect_SubFireDamageBonus,
+                    EffectsEnum.Effect_AddWaterDamageBonus,
+                    EffectsEnum.Effect_SubWaterDamageBonus,
+                    EffectsEnum.Effect_AddAirDamageBonus,
+                    EffectsEnum.Effect_SubAirDamageBonus,
+                    EffectsEnum.Effect_AddNeutralDamageBonus,
+                    EffectsEnum.Effect_SubNeutralDamageBonus,
+                };
 
         #endregion
     }

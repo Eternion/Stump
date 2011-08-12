@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
@@ -28,9 +29,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
             ParentCommand = typeof (ItemCommand);
 
             AddParameter("template", "item", "Item to add", converter:ParametersConverter.ItemTemplateConverter);
-            AddParameter("target", "t", "Character who will receive the item", converter:ParametersConverter.CharacterConverter);
+            AddParameter("target", "t", "Character who will receive the item", isOptional:true, converter:ParametersConverter.CharacterConverter);
             AddParameter("amount", "amount", "Amount of items to add", 1u);
-            AddParameter("max", "max", "Set item's effect to maximal values", true);
+            AddParameter<bool>("max", "max", "Set item's effect to maximal values", isOptional:true);
             
         }
 
@@ -58,19 +59,19 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
     }
 
-    /*public class ItemListCommand : SubCommand
+    public class ItemListCommand : SubCommand
     {
+        [Variable]
+        public static readonly int LimitItemList = 20;
+
         public ItemListCommand()
         {
             Aliases = new[] { "list", "ls" };
             RequiredRole = RoleEnum.Moderator;
             Description = "Lists loaded items or items from an inventory with a search pattern";
             ParentCommand = typeof(ItemCommand);
-            Parameters = new List<IParameter>
-                {
-                    new ParameterDefinition<string>("pattern", "p", "Search pattern (see docs)", true, "*"),
-                    new ParameterDefinition<Character>("target", "t", "Where items will be search", true, converter:ParametersConverter.CharacterConverter),
-                };
+            AddParameter("pattern", "p", "Search pattern (see docs)", "*");
+            AddParameter("target", "t", "Where items will be search", converter:ParametersConverter.CharacterConverter, isOptional:true);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -79,7 +80,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             {
                 var target = trigger.Get<Character>("target");
 
-                var items = ItemManager.GetItemsByPattern(trigger.Get<string>("pattern"), target.Inventory.Items);
+                var items = ItemManager.Instance.GetItemsByPattern(trigger.Get<string>("pattern"), target.Inventory.Items);
 
                 foreach (var item in items)
                 {
@@ -88,13 +89,24 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
             else
             {
-                var items = ItemManager.GetItemsByPattern(trigger.Get<string>("pattern"));
+                var items = ItemManager.Instance.GetItemsByPattern(trigger.Get<string>("pattern"));
 
+                int counter = 0;
                 foreach (var item in items)
                 {
+                    if (counter >= LimitItemList)
+                    {
+                        trigger.Reply("... (limit reached : {0})", LimitItemList);
+                        break;
+                    }
+
                     trigger.Reply("'{0}'({1})", item.Name, item.Id);
+                    counter++;
                 }
+
+                if (counter == 0)
+                    trigger.Reply("No results");
             }
         }
-    }*/
+    }
 }

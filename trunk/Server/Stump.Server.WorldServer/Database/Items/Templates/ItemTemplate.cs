@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Worlds.Effects;
 using Stump.Server.WorldServer.Worlds.Effects.Instances;
 
@@ -44,6 +45,16 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set;
         }
 
+        private string m_name;
+
+        public string Name
+        {
+            get
+            {
+                return m_name ?? ( m_name = TextManager.Instance.GetText(NameId) );
+            }
+        }
+
         [D2OField("typeId")]
         [Property("TypeId")]
         public uint TypeId
@@ -58,6 +69,16 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
         {
             get;
             set;
+        }
+
+        private string m_description;
+
+        public string Descrption
+        {
+            get
+            {
+                return m_description ?? ( m_description = TextManager.Instance.GetText(DescriptionId) );
+            }
         }
 
         [D2OField("iconId")]
@@ -200,7 +221,10 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
 
         public List<EffectBase> Effects
         {
-            get { return m_effects ?? (m_effects = new List<EffectBase>(PossibleEffects.Select(EffectManager.ConvertExportedEffect))); }
+            get
+            {
+                return m_effects ?? ( m_effects = new List<EffectBase>(PossibleEffects.Select(EffectManager.Instance.ConvertExportedEffect)) );
+            }
             set { m_effects = value; }
         }
 
@@ -212,9 +236,5 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set;
         }
 
-        public string Name
-        {
-            get { return "(name)"; }
-        }
     }
 }

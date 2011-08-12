@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.Server.WorldServer.Database.I18n;
 using DPoint = System.Drawing.Point;
 
 namespace Stump.Server.WorldServer.Database.World
@@ -13,7 +14,6 @@ namespace Stump.Server.WorldServer.Database.World
     [D2OClass("MapPosition", "com.ankamagames.dofus.datacenter.world")]
     public sealed class MapPositionRecord : WorldBaseRecord<MapPositionRecord>
     {
-        private int m_mapId;
         private DPoint m_pos;
 
         [D2OField("id")]
@@ -99,6 +99,16 @@ namespace Stump.Server.WorldServer.Database.World
         {
             get;
             set;
+        }
+
+        private string m_name;
+
+        public string Name
+        {
+            get
+            {
+                return m_name ?? ( m_name = TextManager.Instance.GetText(NameId) );
+            }
         }
     }
 }

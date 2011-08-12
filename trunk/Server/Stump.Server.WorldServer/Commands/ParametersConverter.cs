@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Commands
                 return itemById;
             }
 
-            ItemTemplate itemByName = null;// = ItemManager.Instance.GetTemplate(entry, CommandBase.IgnoreCommandCase);
+            ItemTemplate itemByName = ItemManager.Instance.GetTemplate(entry, CommandBase.IgnoreCommandCase);
 
             if (itemByName == null)
                 throw new ConverterException(string.Format("'{0}' is not a valid item", entry));

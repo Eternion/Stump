@@ -24,13 +24,13 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         public EffectBase(short id)
         {
             m_id = id;
-            m_template = EffectManager.GetTemplate(id);
+            m_template = EffectManager.Instance.GetTemplate(id);
         }
 
         public EffectBase(EffectInstance effect)
         {
             m_id = (short) effect.effectId;
-            m_template = EffectManager.GetTemplate(m_id);
+            m_template = EffectManager.Instance.GetTemplate(m_id);
         }
 
         public virtual int ProtocoleId
@@ -51,7 +51,10 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
 
         public EffectRecord Template
         {
-            get { return m_template ?? (m_template = EffectManager.GetTemplate(m_id)); }
+            get
+            {
+                return m_template ?? ( m_template = EffectManager.Instance.GetTemplate(m_id) );
+            }
             protected set { m_template = value; }
         }
 
@@ -96,7 +99,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         public static EffectBase DeSerialize(byte[] buffer)
         {
             var effect = buffer.ToObject<EffectBase>();
-            effect.Template = EffectManager.GetTemplate(effect.Id);
+            effect.Template = EffectManager.Instance.GetTemplate(effect.Id);
 
             return effect;
         }

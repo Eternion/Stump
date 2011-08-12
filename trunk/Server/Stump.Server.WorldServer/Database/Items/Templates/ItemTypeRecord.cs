@@ -2,6 +2,7 @@ using System;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.Server.WorldServer.Database.I18n;
 
 namespace Stump.Server.WorldServer.Database.Items.Templates
 {
@@ -25,6 +26,16 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
        {
            get;
            set;
+       }
+
+       private string m_name;
+
+       public string Name
+       {
+           get
+           {
+               return m_name ?? ( m_name = TextManager.Instance.GetText(NameId) );
+           }
        }
 
        [D2OField("superTypeId")]

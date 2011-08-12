@@ -123,7 +123,7 @@ namespace Stump.Server.WorldServer.Worlds.Items
             return !m_itemTemplates.ContainsKey(id) ? null : m_itemTemplates[id];
         }
 
-        /*public ItemTemplate GetTemplate(string name, bool ignorecase)
+        public ItemTemplate GetTemplate(string name, bool ignorecase)
         {
             return
                 m_itemTemplates.Values.Where(
@@ -132,7 +132,7 @@ namespace Stump.Server.WorldServer.Worlds.Items
                                       ignorecase
                                           ? StringComparison.InvariantCultureIgnoreCase
                                           : StringComparison.InvariantCulture)).FirstOrDefault();
-        }*/
+        }
 
         public ItemTypeRecord GetItemType(int id)
         {
@@ -180,7 +180,7 @@ namespace Stump.Server.WorldServer.Worlds.Items
         /// returns : abc and Abd
         /// </example>
         // todo : enhanced the method to do like this '{Level>100;Name~coiffe...}'
-        /*public IEnumerable<ItemTemplate> GetItemsByPattern(string pattern, IEnumerable<ItemTemplate> list)
+        public IEnumerable<ItemTemplate> GetItemsByPattern(string pattern, IEnumerable<ItemTemplate> list)
         {
             if (pattern == "*")
                 return list;
@@ -227,7 +227,7 @@ namespace Stump.Server.WorldServer.Worlds.Items
             pattern = pattern.Replace("*", @"[\w\d\s_]*");
 
             return list.Where(entry => Regex.Match(entry.Template.Name, pattern, ignorecase ? RegexOptions.IgnoreCase : RegexOptions.None).Success);
-        }*/
+        }
 
         #endregion
 
