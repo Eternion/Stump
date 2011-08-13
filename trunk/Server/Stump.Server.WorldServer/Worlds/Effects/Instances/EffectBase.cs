@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         protected short m_id;
 
         [NonSerialized]
-        protected EffectRecord m_template;
+        protected EffectTemplate m_template;
 
         public EffectBase(short id)
         {
@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
             get { return (EffectsEnum) Id; }
         }
 
-        public EffectRecord Template
+        public EffectTemplate Template
         {
             get
             {

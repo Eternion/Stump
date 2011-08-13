@@ -108,6 +108,7 @@
     <Compile Include="IO\ZipHelper.cs" />
     <Compile Include="Mathematics\FastRandom.cs" />
     <Compile Include="Pool\Task\CyclicTaskPool.cs" />
+    <Compile Include="Pool\UniqueIdProvider.cs" />
     <Compile Include="Reflection\AccessorBuilder.cs" />
     <Compile Include="Reflection\DynamicSwitchExecutor.cs" />
     <Compile Include="Reflection\DynamicExtension.cs" />

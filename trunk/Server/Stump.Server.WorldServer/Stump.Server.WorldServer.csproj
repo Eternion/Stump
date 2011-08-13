@@ -71,7 +71,7 @@
     <Compile Include="Database\Characters\CharacterRecord.cs" />
     <Compile Include="Database\Characters\ExperienceRecord.cs" />
     <Compile Include="Database\Characters\Restrictions.cs" />
-    <Compile Include="Database\Effects\EffectRecord.cs" />
+    <Compile Include="Database\Effects\EffectTemplate.cs" />
     <Compile Include="Database\I18n\TextManager.cs" />
     <Compile Include="Database\I18n\TextRecord.cs" />
     <Compile Include="Database\I18n\TextUIRecord.cs" />
@@ -180,6 +180,9 @@
     <Compile Include="Worlds\Effects\Instances\EffectMinMax.cs" />
     <Compile Include="Worlds\Effects\Instances\EffectMount.cs" />
     <Compile Include="Worlds\Effects\Instances\EffectString.cs" />
+    <Compile Include="Worlds\Effects\Parser\EffectParser.cs" />
+    <Compile Include="Worlds\Groups\Group.cs" />
+    <Compile Include="Worlds\Groups\GroupManager.cs" />
     <Compile Include="Worlds\Items\Inventory.cs" />
     <Compile Include="Worlds\Items\Item.cs" />
     <Compile Include="Worlds\Items\ItemManager.cs" />

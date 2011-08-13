@@ -8,7 +8,7 @@ namespace Stump.Server.WorldServer.Database.Effects
     [Serializable]
     [ActiveRecord("effects")]
     [D2OClass("Effect", "com.ankamagames.dofus.datacenter.effects")]
-    public class EffectRecord : WorldBaseRecord<EffectRecord>
+    public class EffectTemplate : WorldBaseRecord<EffectTemplate>
     {
         [PrimaryKey(PrimaryKeyType.Assigned)]
         [D2OField("id")]

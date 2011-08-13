@@ -122,8 +122,6 @@
     <Compile Include="IPC\Objects\AccountData.cs" />
     <Compile Include="IPC\IRemoteOperationsAuth.cs" />
     <Compile Include="IPC\IRemoteOperationsWorld.cs" />
-    <Compile Include="Manager\IInstance.cs" />
-    <Compile Include="Manager\InstanceManager.cs" />
     <Compile Include="Network\BaseClient.cs" />
     <Compile Include="Handler\HandlerManager.cs" />
     <Compile Include="Handler\HandlerAttribute.cs" />

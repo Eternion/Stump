@@ -11,12 +11,12 @@ namespace Stump.Server.WorldServer.Worlds.Effects
 {
     public class EffectManager : Singleton<EffectManager>
     {
-        private Dictionary<short, EffectRecord> m_effects = new Dictionary<short, EffectRecord>();
+        private Dictionary<short, EffectTemplate> m_effects = new Dictionary<short, EffectTemplate>();
 
         [Initialization(InitializationPass.Third)]
         public void Intialize()
         {
-            m_effects = EffectRecord.FindAll().ToDictionary(entry => (short) entry.Id);
+            m_effects = EffectTemplate.FindAll().ToDictionary(entry => (short) entry.Id);
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects
             return effects.Select(ConvertExportedEffect);
         }
 
-        public EffectRecord GetTemplate(short id)
+        public EffectTemplate GetTemplate(short id)
         {
             return !m_effects.ContainsKey(id) ? null : m_effects[id];
         }

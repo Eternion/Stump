@@ -5,7 +5,6 @@ using System.Reflection;
 using NLog;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.BaseServer.Commands.Commands;
 
 namespace Stump.Server.BaseServer.Commands
 {
@@ -216,7 +215,7 @@ namespace Stump.Server.BaseServer.Commands
                     trigger.ReplyError("Raised exception when executing command : " + ex.Message);
 
                     if (ex.InnerException != null)
-                        trigger.Reply(" => " + ex.InnerException.Message);
+                        trigger.ReplyError(" => " + ex.InnerException.Message);
                 }
             }
             else

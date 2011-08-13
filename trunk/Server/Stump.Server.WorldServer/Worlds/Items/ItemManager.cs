@@ -162,7 +162,7 @@ namespace Stump.Server.WorldServer.Worlds.Items
         }
 
         /// <summary>
-        /// Found an item template contains in a given list with a pattern
+        /// Find an item template contains in a given list with a pattern
         /// </summary>
         /// <remarks>
         /// When @ precede the pattern, then the case is ignored
@@ -201,11 +201,47 @@ namespace Stump.Server.WorldServer.Worlds.Items
             return list.Where(entry => Regex.Match(entry.Name, pattern, ignorecase ? RegexOptions.IgnoreCase : RegexOptions.None).Success);
         }
 
+        /// <summary>
+        /// Find an item template by a pattern
+        /// </summary>
+        /// <remarks>
+        /// When @ precede the pattern, then the case is ignored
+        /// * is a joker, it can be placed at the begin or at the end or both
+        /// it means that characters are ignored (include letters, numbers, spaces and underscores)
+        /// 
+        /// Note : We use RegExp for the pattern. '*' are remplaced by '[\w\d_]*'
+        /// </remarks>
+        /// <example>
+        /// pattern :   @Ab*
+        /// list :  abc
+        ///         Abd
+        ///         ace
+        /// 
+        /// returns : abc and Abd
+        /// </example>
         public IEnumerable<ItemTemplate> GetItemsByPattern(string pattern)
         {
             return GetItemsByPattern(pattern, m_itemTemplates.Values);
         }
 
+        /// <summary>
+        /// Find an item instancce contains in a given list with a pattern
+        /// </summary>
+        /// <remarks>
+        /// When @ precede the pattern, then the case is ignored
+        /// * is a joker, it can be placed at the begin or at the end or both
+        /// it means that characters are ignored (include letters, numbers, spaces and underscores)
+        /// 
+        /// Note : We use RegExp for the pattern. '*' are remplaced by '[\w\d_]*'
+        /// </remarks>
+        /// <example>
+        /// pattern :   @Ab*
+        /// list :  abc
+        ///         Abd
+        ///         ace
+        /// 
+        /// returns : abc and Abd
+        /// </example>
         public IEnumerable<Item> GetItemsByPattern(string pattern, IEnumerable<Item> list)
         {
             if (pattern == "*")
