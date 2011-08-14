@@ -357,6 +357,9 @@ namespace Stump.Server.AuthServer.Managers
                 {
                     foreach (WorldServer worldServer in m_realmlist.Values)
                     {
+                        if (!worldServer.Connected)
+                            continue;
+
                         // check if the world server has pinged recently
                         if ((DateTime.Now - worldServer.LastPing).TotalMilliseconds > WorldServerTimeout*1000)
                         {

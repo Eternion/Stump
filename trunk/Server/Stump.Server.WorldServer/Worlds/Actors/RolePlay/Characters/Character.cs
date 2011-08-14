@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Stump.Core.Cache;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -9,9 +10,12 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.Interfaces;
 using Stump.Server.WorldServer.Worlds.Actors.Stats;
 using Stump.Server.WorldServer.Worlds.Breeds;
+using Stump.Server.WorldServer.Worlds.Dialog;
 using Stump.Server.WorldServer.Worlds.Items;
 using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
+using Stump.Server.WorldServer.Worlds.Notifications;
+using Stump.Server.WorldServer.Worlds.Parties;
 
 namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 {
@@ -28,6 +32,25 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             LoadRecord();
         }
 
+        #region Events
+        public event Action<Character> LoggedIn;
+
+        public void NotifyLoggedIn()
+        {
+            Action<Character> handler = LoggedIn;
+            if (handler != null) handler(this);
+        }
+
+        public event Action<Character> LoggedOut;
+
+        public void NotifyLoggedOut()
+        {
+            Action<Character> handler = LoggedOut;
+            if (handler != null) handler(this);
+        }
+
+        #endregion
+
         #region Properties
 
         public WorldClient Client
@@ -42,6 +65,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             private set;
         }
 
+        #region Identifier
         public override int Id
         {
             get { return m_record.Id; }
@@ -50,12 +74,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 m_record.Id = value;
                 base.Id = value;
             }
-        }
-
-        public Inventory Inventory
-        {
-            get;
-            private set;
         }
 
         public override string Name
@@ -67,6 +85,16 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 base.Name = value;
             }
         }
+        #endregion
+
+        #region Inventory
+        public Inventory Inventory
+        {
+            get;
+            private set;
+        }
+
+        #endregion
 
         #region Position
 
@@ -86,6 +114,43 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         {
             get { return Position.Direction; }
             set { Position.Direction = value; }
+        }
+
+        #endregion
+
+        #region Dialog
+        public IDialogRequest DialogRequest
+        {
+            get;
+            private set;
+        }
+
+        public bool IsInDialogRequest
+        {
+            get { return DialogRequest != null; }
+        }
+
+        #endregion
+
+        #region Party
+
+        private readonly Dictionary<int, PartyInvitation> m_partyInvitations
+            = new Dictionary<int, PartyInvitation>();
+
+        public Party Party
+        {
+            get;
+            private set;
+        }
+
+        public bool IsInParty
+        {
+            get { return Party != null; }
+        }
+
+        public bool IsPartyLeader
+        {
+            get { return IsInParty && Party.Leader == this; }
         }
 
         #endregion
@@ -231,6 +296,16 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             private set;
         }
 
+        public int LifePoints
+        {
+            get { return Stats[CaracteristicsEnum.Health].Total; }
+        }
+
+        public int MaxLifePoints
+        {
+            get { return ((StatsHealth) Stats[CaracteristicsEnum.Health]).TotalMax; }
+        }
+
         #endregion
 
         #region Alignment
@@ -268,6 +343,157 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         #endregion
 
+        #region Actions
+        
+        #region Dialog
+        public void DisplayNotification(Notification notification)
+        {
+            notification.Display();
+        }
+
+        public void OpenDialogRequest(IDialogRequest dialogRequest)
+        {
+            if (dialogRequest.Source != this &&
+                dialogRequest.Target != this)
+                return;
+
+            dialogRequest.Source.DialogRequest = dialogRequest;
+            dialogRequest.Target.DialogRequest = dialogRequest;
+        }
+
+        public void CloseDialogRequest()
+        {
+            if (!IsInDialogRequest) 
+                return;
+
+            var dialog = DialogRequest;
+
+            dialog.Target.DialogRequest = null;
+            dialog.Source.DialogRequest = null;
+        }
+
+        public void AcceptRequest()
+        {
+            if (!IsInDialogRequest)
+                return;
+
+            if (DialogRequest.Target == this)
+                DialogRequest.AcceptDialog();
+        }
+
+        public void DeniedRequest()
+        {
+            if (!IsInDialogRequest)
+                return;
+
+            if (DialogRequest.Target == this)
+                DialogRequest.DeniedDialog();
+        }
+
+        public void CancelRequest()
+        {
+            if (!IsInDialogRequest)
+                return;
+
+            if (DialogRequest.Source == this)
+                DialogRequest.CancelDialog();
+        }
+
+        #endregion
+
+        #region Party
+        public void Invite(Character target)
+        {
+            if (!IsInParty)
+            {
+                var party = PartyManager.Instance.Create(this);
+
+                EnterParty(party);
+            }
+
+            if (target.m_partyInvitations.ContainsKey(Party.Id))
+                return; // already invited
+
+            var invitation = new PartyInvitation(Party, this, target);
+            target.m_partyInvitations.Add(Party.Id, invitation);
+
+            Party.AddGuest(target);
+            invitation.Display();
+        }
+
+        public PartyInvitation GetInvitation(int id)
+        {
+            return m_partyInvitations.ContainsKey(id) ? m_partyInvitations[id] : null;
+        }
+
+        public bool RemoveInvitation(PartyInvitation invitation)
+        {
+            return m_partyInvitations.Remove(invitation.Party.Id);
+        }
+
+        public void EnterParty(Party party)
+        {
+            if (IsInParty)
+                LeaveParty();
+
+            if (m_partyInvitations.ContainsKey(party.Id))
+                m_partyInvitations.Remove(party.Id);
+
+            foreach (var partyInvitation in m_partyInvitations)
+            {
+                partyInvitation.Value.Deny();
+            }
+
+            Party = party;
+            Party.MemberRemoved += OnPartyMemberRemoved;
+            Party.PartyDeleted += OnPartyDeleted;
+
+            if (party.IsMember(this))
+                return;
+
+            if (!party.PromoteGuestToMember(this))
+            {
+                Party.MemberRemoved -= OnPartyMemberRemoved;
+                Party.PartyDeleted -= OnPartyDeleted;
+                Party = null;
+            }
+        }
+
+        public void LeaveParty()
+        {
+            if (!IsInParty)
+                return;
+
+            Party.MemberRemoved -= OnPartyMemberRemoved;
+            Party.PartyDeleted -= OnPartyDeleted;
+            Party.RemoveMember(this);
+            Party = null;
+        }
+
+        private void OnPartyMemberRemoved(Party party, Character member, bool kicked)
+        {
+            if (member != this)
+                return;
+
+            Party.MemberRemoved -= OnPartyMemberRemoved;
+            Party.PartyDeleted -= OnPartyDeleted;
+            Party = null;
+        }
+
+        private void OnPartyDeleted(Party party)
+        {
+            Party.MemberRemoved -= OnPartyMemberRemoved;
+            Party.PartyDeleted -= OnPartyDeleted;
+            Party = null;
+        }
+
+
+        #endregion
+
+        #endregion
+
+        #region Save & Load
+
         /// <summary>
         ///   Spawn the character on the map. It can be called once.
         /// </summary>
@@ -291,13 +517,14 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 if (Map != null)
                     Map.Leave(this);
 
+                if (IsInParty)
+                    LeaveParty();
+
                 World.Instance.Leave(this);
             }
 
             SaveLater();
         }
-
-        #region Save & Load
 
         public void SaveLater()
         {
@@ -346,6 +573,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         #region Network
 
+        #region GameRolePlayCharacterInformations
         public override GameContextActorInformations GetGameContextActorInformations()
         {
             return new GameRolePlayCharacterInformations(
@@ -356,6 +584,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 GetHumanInformations(),
                 GetActorAlignmentInformations());
         }
+        #endregion
 
         #region ActorAlignmentInformations
 
@@ -401,6 +630,54 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 Look,
                 (byte) BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE);
+        }
+
+        #endregion
+
+        #region PartyMemberInformations
+
+        public PartyInvitationMemberInformations GetPartyInvitationMemberInformations()
+        {
+            return new PartyInvitationMemberInformations(
+                Id,
+                Level,
+                Name,
+                Look,
+                (byte)BreedId,
+                Sex == SexTypeEnum.SEX_FEMALE,
+                (short) Map.Position.X,
+                (short) Map.Position.Y,
+                Map.Id);
+        }
+
+        public PartyMemberInformations GetPartyMemberInformations()
+        {
+            return new PartyMemberInformations(
+                Id,
+                Level,
+                Name,
+                Look,
+                LifePoints,
+                MaxLifePoints,
+                (short) Stats[CaracteristicsEnum.Prospecting].Total,
+                0,
+                (short) Stats[CaracteristicsEnum.Initiative].Total,
+                false,
+                0);
+        }
+
+        public PartyGuestInformations GetPartyGuestInformations(Party party)
+        {
+            if (!m_partyInvitations.ContainsKey(party.Id))
+                return new PartyGuestInformations();
+
+            var invitation = m_partyInvitations[party.Id];
+
+            return new PartyGuestInformations(
+                Id,
+                invitation.Source.Id,
+                Name,
+                Look);
         }
 
         #endregion

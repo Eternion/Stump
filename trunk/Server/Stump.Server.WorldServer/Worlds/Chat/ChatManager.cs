@@ -95,20 +95,14 @@ namespace Stump.Server.WorldServer.Worlds.Chat
 
         public void SayGroup(WorldClient client, ChannelId chanid, string msg)
         {
-//            if (client.ActiveCharacter.IsInGroup)
-//            {
-//                Action<Character> action = charac =>
-//                {
-//                    if (charac.Client.ActiveCharacter.GroupMember == client.ActiveCharacter.GroupMember)
-//                        ChatHandler.SendChatServerMessage(charac.Client, client.ActiveCharacter, chanid, msg);
-//                };
-//
-//                client.ActiveCharacter.Map.CallOnAllCharacters(action);
-//            }
-//            else
-//            {
-                // Envoyer message d'erreur "pas de groupe".
-//            }
+            if (client.ActiveCharacter.IsInParty)
+            {
+                client.ActiveCharacter.Party.DoForAll(entry => ChatHandler.SendChatServerMessage(entry.Client, client.ActiveCharacter, chanid, msg));
+            }
+            else
+            {
+                // todo : send message "no parties"
+            }
         }
 
         #endregion

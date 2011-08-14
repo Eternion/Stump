@@ -141,6 +141,8 @@ namespace Stump.Core.Xml.Config
             }
 
             BuildConfig();
+
+            Loaded = true;
         }
 
         public void Load()

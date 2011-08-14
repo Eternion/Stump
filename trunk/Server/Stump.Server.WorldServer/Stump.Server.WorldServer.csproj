@@ -30,6 +30,14 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.ActiveRecord">
       <HintPath>..\..\Library\Castle.ActiveRecord.dll</HintPath>
@@ -121,6 +129,7 @@
     <Compile Include="Handlers\Context\RolePlay\ContextRoleplayQuestHandler.cs" />
     <Compile Include="Handlers\Context\RolePlay\ContextRoleplaySpellHandler.cs" />
     <Compile Include="Handlers\Context\RolePlay\ContextRoleplayStatsHandler.cs" />
+    <Compile Include="Handlers\Context\RolePlay\Party\PartyHandler.cs" />
     <Compile Include="Handlers\Initialization\InitializationHandler.cs" />
     <Compile Include="Handlers\Inventory\InventoryExchangesHandler.cs" />
     <Compile Include="Handlers\Inventory\InventoryHandler.cs" />
@@ -167,6 +176,9 @@
     <Compile Include="Worlds\Actors\Stats\StatsHealth.cs" />
     <Compile Include="Worlds\Breeds\BreedManager.cs" />
     <Compile Include="Worlds\Chat\ChatManager.cs" />
+    <Compile Include="Worlds\Dialog\Dialoger.cs" />
+    <Compile Include="Worlds\Dialog\IDialog.cs" />
+    <Compile Include="Worlds\Dialog\IDialogRequest.cs" />
     <Compile Include="Worlds\Effects\EffectContext.cs" />
     <Compile Include="Worlds\Effects\EffectHandleAttribute.cs" />
     <Compile Include="Worlds\Effects\EffectManager.cs" />
@@ -181,8 +193,10 @@
     <Compile Include="Worlds\Effects\Instances\EffectMount.cs" />
     <Compile Include="Worlds\Effects\Instances\EffectString.cs" />
     <Compile Include="Worlds\Effects\Parser\EffectParser.cs" />
-    <Compile Include="Worlds\Groups\Group.cs" />
-    <Compile Include="Worlds\Groups\GroupManager.cs" />
+    <Compile Include="Worlds\Notifications\Notification.cs" />
+    <Compile Include="Worlds\Parties\Party.cs" />
+    <Compile Include="Worlds\Parties\PartyInvitation.cs" />
+    <Compile Include="Worlds\Parties\PartyManager.cs" />
     <Compile Include="Worlds\Items\Inventory.cs" />
     <Compile Include="Worlds\Items\Item.cs" />
     <Compile Include="Worlds\Items\ItemManager.cs" />

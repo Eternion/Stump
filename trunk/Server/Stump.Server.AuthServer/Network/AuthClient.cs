@@ -57,7 +57,7 @@ namespace Stump.Server.AuthServer.Network
 
         public void Save()
         {
-            Account.UpdateAndFlush();
+            Account.Save();
         }
 
 

@@ -249,8 +249,8 @@ namespace Stump.Server.AuthServer.Database.Account
 
         public void RemoveOldestConnection()
         {
-            var olderConn = Connections.MinOf(c => c.Date);
-            olderConn.Delete();
+            Connections.Remove(LastConnection);
+            LastConnection.Delete();
         }
 
         public bool CanUseBreed(int breedId)

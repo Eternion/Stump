@@ -208,8 +208,8 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                                            Account = client.Account,
                                            Ip = client.IP
                                        };
-            connectionRecord.Create();
             client.Account.Connections.Add(connectionRecord);
+            connectionRecord.Save();
 
             /* Remove the oldest Connection */
             if (client.Account.Connections.Count > MaxConnectionLogs)

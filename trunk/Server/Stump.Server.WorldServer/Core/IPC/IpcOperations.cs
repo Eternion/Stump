@@ -10,7 +10,7 @@ namespace Stump.Server.WorldServer.Core.IPC
     {
         public bool DisconnectConnectedAccount(uint accountId)
         {
-            IEnumerable<WorldClient> clients = WorldServer.Instance.FindClients(account => true);
+            IEnumerable<WorldClient> clients = WorldServer.Instance.FindClients(client => client.Account.Id == accountId);
 
             foreach (WorldClient client in clients)
             {
