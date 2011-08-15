@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Worlds.Breeds
         {
             get
             {
-                return (uint)AvailableBreeds.Aggregate(0, (current, breedEnum) => current | ( 1 << (int)breedEnum ));
+                return (uint)AvailableBreeds.Aggregate(0, (current, breedEnum) => current | ( 1 << ((int)breedEnum - 1) ));
             }
         }
 
