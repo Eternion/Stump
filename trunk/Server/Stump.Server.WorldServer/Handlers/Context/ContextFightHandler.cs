@@ -84,9 +84,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                                                   message)
         {
             if (message.accept)
-                client.ActiveCharacter.DialogRequest.AcceptDialog();
+                client.ActiveCharacter.RequestBox.AcceptDialog();
             else
-                ((FightRequest) client.ActiveCharacter.DialogRequest).DeniedDialog(client.ActiveCharacter);
+                ((FightRequest) client.ActiveCharacter.RequestBox).DeniedDialog(client.ActiveCharacter);
         }
 
         public static void SendGameFightStartMessage(WorldClient client)

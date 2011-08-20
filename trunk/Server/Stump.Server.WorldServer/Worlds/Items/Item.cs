@@ -44,9 +44,7 @@ namespace Stump.Server.WorldServer.Worlds.Items
                     List<EffectBase> effects)
         {
             Template = template;
-            Position = position;
-            Stack = stack;
-            Effects = effects;
+
             Record = new ItemRecord // create the associated record
             {
                 Guid = guid,

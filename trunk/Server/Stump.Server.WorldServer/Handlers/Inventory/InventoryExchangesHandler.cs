@@ -5,18 +5,20 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Worlds;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Worlds.Exchange;
+using Item = Stump.Server.WorldServer.Worlds.Items.Item;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
-    public partial class InventoryHandler : WorldHandlerContainer
+    public partial class InventoryHandler
     {
-        /*[WorldHandler(ExchangePlayerRequestMessage.Id)]
+        [WorldHandler(ExchangePlayerRequestMessage.Id)]
         public static void HandleExchangePlayerRequestMessage(WorldClient client, ExchangePlayerRequestMessage message)
         {
             switch ((ExchangeTypeEnum) message.exchangeType)
             {
                 case ExchangeTypeEnum.PLAYER_TRADE:
-                    Character target = World.Instance.GetCharacter(message.target);
+                    var target = World.Instance.GetCharacter(message.target);
 
                     if (target == null)
                     {
@@ -30,21 +32,17 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                         return;
                     }
 
-                    if (target.IsInDialog || target.IsDialogRequested)
+                    if (target.IsInRequest() || target.IsTrading())
                     {
                         SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_CHARACTER_OCCUPIED);
                         return;
                     }
 
-                    var dialogRequest = new TradeRequest(client.ActiveCharacter, target);
-                    client.ActiveCharacter.DialogRequest = dialogRequest;
-                    target.DialogRequest = dialogRequest;
+                    var request = new PlayerTradeRequest(client.ActiveCharacter, target);
+                    client.ActiveCharacter.OpenRequestBox(request);
+                    target.OpenRequestBox(request);
 
-
-                    SendExchangeRequestedTradeMessage(client, (ExchangeTypeEnum) message.exchangeType,
-                                                      client.ActiveCharacter, target);
-                    SendExchangeRequestedTradeMessage(target.Client, (ExchangeTypeEnum) message.exchangeType,
-                                                      client.ActiveCharacter, target);
+                    request.Open();
 
                     break;
                 default:
@@ -56,42 +54,38 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ExchangeAcceptMessage.Id)]
         public static void HandleExchangeAcceptMessage(WorldClient client, ExchangeAcceptMessage message)
         {
-            if (client.ActiveCharacter.IsDialogRequested &&
-                client.ActiveCharacter.DialogRequest is TradeRequest &&
-                client.ActiveCharacter.DialogRequest.Target == client.ActiveCharacter)
+            if (client.ActiveCharacter.IsInRequest() &&
+                client.ActiveCharacter.RequestBox is PlayerTradeRequest)
             {
-                client.ActiveCharacter.DialogRequest.AcceptDialog();
+                client.ActiveCharacter.AcceptRequest();
             }
         }
 
         [WorldHandler(ExchangeObjectMoveKamaMessage.Id)]
         public static void HandleExchangeObjectMoveKamaMessage(WorldClient client, ExchangeObjectMoveKamaMessage message)
         {
-            ((PlayerTrade) client.ActiveCharacter.Dialog).SetKamas((Trader) client.ActiveCharacter.Dialoger,
-                                                                   (uint) message.quantity);
+            if (!client.ActiveCharacter.IsTrading())
+                return;
+            
+            client.ActiveCharacter.Trader.SetKamas((uint) message.quantity);
         }
 
         [WorldHandler(ExchangeObjectMoveMessage.Id)]
         public static void HandleExchangeObjectMoveMessage(WorldClient client, ExchangeObjectMoveMessage message)
         {
-            var guid = (long) message.objectUID;
+            if (!client.ActiveCharacter.IsTrading())
+                return;
 
-            if (message.quantity > 0)
-                ((PlayerTrade) client.ActiveCharacter.Dialog).AddItem((Trader) client.ActiveCharacter.Dialoger, guid,
-                                                                      (uint) message.quantity);
-            else if (message.quantity < 0)
-                ((PlayerTrade) client.ActiveCharacter.Dialog).RemoveItem((Trader) client.ActiveCharacter.Dialoger, guid,
-                                                                         (uint) (-message.quantity));
+            client.ActiveCharacter.Trader.MoveItem(message.objectUID, message.quantity);
         }
 
         [WorldHandler(ExchangeReadyMessage.Id)]
         public static void HandleExchangeReadyMessage(WorldClient client, ExchangeReadyMessage message)
         {
-            ((PlayerTrade) client.ActiveCharacter.Dialog).ToggleReady((Trader) client.ActiveCharacter.Dialoger,
-                                                                      message.ready);
+           client.ActiveCharacter.Trader.ToggleReady(message.ready);
         }
 
-        [WorldHandler(ExchangeBuyMessage.Id)]
+        /*[WorldHandler(ExchangeBuyMessage.Id)]
         public static void HandleExchangeBuyMessage(WorldClient client, ExchangeBuyMessage message)
         {
             ((NpcShopDialog) client.ActiveCharacter.Dialog).BuyItem((int) message.objectToBuyId, message.quantity);
@@ -101,31 +95,31 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void HandleExchangeSellMessage(WorldClient client, ExchangeSellMessage message)
         {
             ((NpcShopDialog) client.ActiveCharacter.Dialog).SellItem((int) message.objectToSellId, message.quantity);
-        }
+        }*/
 
         public static void SendExchangeRequestedTradeMessage(WorldClient client, ExchangeTypeEnum type, Character source,
                                                              Character target)
         {
             client.Send(new ExchangeRequestedTradeMessage(
                             (byte) type,
-                            (uint) source.Id,
-                            (uint) target.Id));
+                            source.Id,
+                            target.Id));
         }
 
         public static void SendExchangeStartedWithPodsMessage(WorldClient client, PlayerTrade playerTrade)
         {
             client.Send(new ExchangeStartedWithPodsMessage(
                             (byte) ExchangeTypeEnum.PLAYER_TRADE,
-                            (int) playerTrade.SourceTrader.Character.Id,
-                            playerTrade.SourceTrader.Character.Inventory.Weight,
-                            playerTrade.SourceTrader.Character.Inventory.WeightTotal,
-                            (int) playerTrade.SourceTrader.Character.Id,
-                            playerTrade.TargetTrader.Character.Inventory.Weight,
-                            playerTrade.TargetTrader.Character.Inventory.WeightTotal
+                            playerTrade.FirstTrader.Character.Id,
+                            (int) playerTrade.FirstTrader.Character.Inventory.Weight,
+                            (int) playerTrade.FirstTrader.Character.Inventory.WeightTotal,
+                            playerTrade.SecondTrader.Character.Id,
+                            (int) playerTrade.SecondTrader.Character.Inventory.Weight,
+                            (int) playerTrade.SecondTrader.Character.Inventory.WeightTotal
                             ));
         }
 
-        public static void SendExchangeStartOkNpcShopMessage(WorldClient client, int npcId, uint tokenId,
+        public static void SendExchangeStartOkNpcShopMessage(WorldClient client, int npcId, int tokenId,
                                                              List<ObjectItemToSellInNpcShop> items)
         {
             client.Send(new ExchangeStartOkNpcShopMessage(npcId, tokenId, items));
@@ -138,27 +132,27 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
         public static void SendExchangeObjectAddedMessage(WorldClient client, bool remote, Item item)
         {
-            client.Send(new ExchangeObjectAddedMessage(remote, item.ToNetworkItem()));
+            client.Send(new ExchangeObjectAddedMessage(remote, item.GetObjectItem()));
         }
 
         public static void SendExchangeObjectModifiedMessage(WorldClient client, bool remote, Item item)
         {
-            client.Send(new ExchangeObjectModifiedMessage(remote, item.ToNetworkItem()));
+            client.Send(new ExchangeObjectModifiedMessage(remote, item.GetObjectItem()));
         }
 
-        public static void SendExchangeObjectRemovedMessage(WorldClient client, bool remote, long guid)
+        public static void SendExchangeObjectRemovedMessage(WorldClient client, bool remote, int guid)
         {
-            client.Send(new ExchangeObjectRemovedMessage(remote, (uint) guid));
+            client.Send(new ExchangeObjectRemovedMessage(remote, guid));
         }
 
-        public static void SendExchangeIsReadyMessage(WorldClient client, Trader trader, bool ready)
+        public static void SendExchangeIsReadyMessage(WorldClient client, ITrader trader, bool ready)
         {
-            client.Send(new ExchangeIsReadyMessage((uint) trader.Character.Id, ready));
+            client.Send(new ExchangeIsReadyMessage(trader.Actor.Id, ready));
         }
 
         public static void SendExchangeErrorMessage(WorldClient client, ExchangeErrorEnum errorEnum)
         {
             client.Send(new ExchangeErrorMessage((byte) errorEnum));
-        }*/
+        }
     }
 }

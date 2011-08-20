@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Worlds.Actors.Interfaces;
 using Stump.Server.WorldServer.Worlds.Actors.Stats;
 using Stump.Server.WorldServer.Worlds.Breeds;
 using Stump.Server.WorldServer.Worlds.Dialog;
+using Stump.Server.WorldServer.Worlds.Exchange;
 using Stump.Server.WorldServer.Worlds.Items;
 using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
@@ -119,15 +120,56 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         #endregion
 
         #region Dialog
-        public IDialogRequest DialogRequest
+        public void SetDialoger(IDialoger dialoger)
+        {
+            Dialoger = dialoger;
+        }
+
+        public void ResetDialoger()
+        {
+            Dialoger = null;
+        }
+
+        public void OpenRequestBox(IRequestBox request)
+        {
+            RequestBox = request;
+        }
+
+        public void ResetRequestBox()
+        {
+            RequestBox = null;
+        }
+
+        public bool IsBusy()
+        {
+            return IsInRequest() || IsDialoging();
+        }
+
+        public IDialoger Dialoger
         {
             get;
             private set;
         }
 
-        public bool IsInDialogRequest
+        public IDialog Dialog
         {
-            get { return DialogRequest != null; }
+            get { return Dialoger != null ? Dialoger.Dialog : null; }
+        }
+
+        public bool IsDialoging()
+        {
+            return Dialoger != null;
+        }
+
+        public IRequestBox RequestBox
+        {
+            get;
+            private set;
+        }
+
+        public bool IsInRequest()
+        {
+            return RequestBox != null;
         }
 
         #endregion
@@ -143,14 +185,42 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             private set;
         }
 
-        public bool IsInParty
+        public bool IsInParty()
         {
-            get { return Party != null; }
+            return Party != null;
         }
 
-        public bool IsPartyLeader
+        public bool IsPartyLeader()
         {
-            get { return IsInParty && Party.Leader == this; }
+            return IsInParty() && Party.Leader == this;
+        }
+
+        #endregion
+
+        #region Trade
+        public ITrade Trade
+        {
+            get { return Dialog as ITrade; }
+        }
+
+        public PlayerTrade PlayerTrade
+        {
+            get { return Trade as PlayerTrade; }
+        }
+
+        public PlayerTrader Trader
+        {
+            get { return Dialoger as PlayerTrader; }
+        }
+
+        public bool IsTrading()
+        {
+            return Trade != null;
+        }
+
+        public bool IsTradingWithPlayer()
+        {
+            return PlayerTrade != null;
         }
 
         #endregion
@@ -351,60 +421,40 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             notification.Display();
         }
 
-        public void OpenDialogRequest(IDialogRequest dialogRequest)
-        {
-            if (dialogRequest.Source != this &&
-                dialogRequest.Target != this)
-                return;
-
-            dialogRequest.Source.DialogRequest = dialogRequest;
-            dialogRequest.Target.DialogRequest = dialogRequest;
-        }
-
-        public void CloseDialogRequest()
-        {
-            if (!IsInDialogRequest) 
-                return;
-
-            var dialog = DialogRequest;
-
-            dialog.Target.DialogRequest = null;
-            dialog.Source.DialogRequest = null;
-        }
-
         public void AcceptRequest()
         {
-            if (!IsInDialogRequest)
+            if (!IsInRequest())
                 return;
 
-            if (DialogRequest.Target == this)
-                DialogRequest.AcceptDialog();
+            if (RequestBox.Target == this)
+                RequestBox.Accept();
         }
 
         public void DeniedRequest()
         {
-            if (!IsInDialogRequest)
+            if (!IsInRequest())
                 return;
 
-            if (DialogRequest.Target == this)
-                DialogRequest.DeniedDialog();
+            if (RequestBox.Target == this)
+                RequestBox.Deny();
         }
 
         public void CancelRequest()
         {
-            if (!IsInDialogRequest)
+            if (!IsInRequest())
                 return;
 
-            if (DialogRequest.Source == this)
-                DialogRequest.CancelDialog();
+            if (RequestBox.Source == this)
+                RequestBox.Cancel();
         }
+
 
         #endregion
 
         #region Party
         public void Invite(Character target)
         {
-            if (!IsInParty)
+            if (!IsInParty())
             {
                 var party = PartyManager.Instance.Create(this);
 
@@ -433,7 +483,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         public void EnterParty(Party party)
         {
-            if (IsInParty)
+            if (IsInParty())
                 LeaveParty();
 
             if (m_partyInvitations.ContainsKey(party.Id))
@@ -461,7 +511,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         public void LeaveParty()
         {
-            if (!IsInParty)
+            if (!IsInParty())
                 return;
 
             Party.MemberRemoved -= OnPartyMemberRemoved;
@@ -517,7 +567,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 if (Map != null)
                     Map.Leave(this);
 
-                if (IsInParty)
+                if (IsInParty())
                     LeaveParty();
 
                 World.Instance.Leave(this);

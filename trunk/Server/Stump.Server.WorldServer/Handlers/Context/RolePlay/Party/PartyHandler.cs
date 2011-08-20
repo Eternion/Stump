@@ -62,7 +62,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
         [WorldHandler(PartyCancelInvitationMessage.Id)]
         public static void HandlePartyCancelInvitationMessage(WorldClient client, PartyCancelInvitationMessage message)
         {
-            if (!client.ActiveCharacter.IsInParty)
+            if (!client.ActiveCharacter.IsInParty())
                 return;
 
             var guest = client.ActiveCharacter.Party.GetGuest(message.guestId);
@@ -81,7 +81,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
         [WorldHandler(PartyLeaveRequestMessage.Id)]
         public static void HandlePartyLeaveRequestMessage(WorldClient client, PartyLeaveRequestMessage message)
         {
-            if (!client.ActiveCharacter.IsInParty)
+            if (!client.ActiveCharacter.IsInParty())
                 return;
 
             // todo : check something ?
@@ -92,7 +92,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
         [WorldHandler(PartyAbdicateThroneMessage.Id)]
         public static void HandlePartyAbdicateThroneMessage(WorldClient client, PartyAbdicateThroneMessage message)
         {
-            if (!client.ActiveCharacter.IsPartyLeader)
+            if (!client.ActiveCharacter.IsPartyLeader())
                 return;
 
             var member = client.ActiveCharacter.Party.GetMember(message.playerId);
@@ -103,7 +103,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
         [WorldHandler(PartyKickRequestMessage.Id)]
         public static void HandlePartyKickRequestMessage(WorldClient client, PartyKickRequestMessage message)
         {
-            if (!client.ActiveCharacter.IsPartyLeader)
+            if (!client.ActiveCharacter.IsPartyLeader())
                 return;
 
             var member = client.ActiveCharacter.Party.GetMember(message.playerId);

@@ -5,6 +5,8 @@ using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Effects;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Worlds.Effects.Handlers.Items;
 using Stump.Server.WorldServer.Worlds.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Worlds.Effects
@@ -56,6 +58,13 @@ namespace Stump.Server.WorldServer.Worlds.Effects
         public EffectTemplate GetTemplate(short id)
         {
             return !m_effects.ContainsKey(id) ? null : m_effects[id];
+        }
+
+        public ItemEffectHandler GetItemEffectHandler(Character target, Items.Item item, EffectBase effect)
+        {
+            // todo : manage handlers by attribute
+
+            return new DefaultItemEffect(target, item, effect);
         }
 
         public bool IsEffectRandomable(EffectsEnum effect)

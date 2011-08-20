@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Worlds.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Database.Items

@@ -7,11 +7,16 @@ namespace Stump.Core.Pool
     public class UniqueIdProvider
     {
         private readonly ConcurrentQueue<int> m_freeIds = new ConcurrentQueue<int>();
-        private int m_nextId;
+        protected int NextId;
 
         public UniqueIdProvider()
         {
             
+        }
+
+        public UniqueIdProvider(int maxId)
+        {
+            NextId = maxId + 1;
         }
 
         public UniqueIdProvider(IEnumerable<int> freeIds)
@@ -30,19 +35,19 @@ namespace Stump.Core.Pool
             {
                 if (!m_freeIds.TryDequeue(out id))
                 {
-                    id = m_nextId;
-                    Interlocked.Increment(ref m_nextId);
+                    id = NextId;
+                    Interlocked.Increment(ref NextId);
                 }
                 else
                 {
-                    id = m_nextId;
-                    Interlocked.Increment(ref m_nextId);
+                    id = NextId;
+                    Interlocked.Increment(ref NextId);
                 }
             }
             else
             {
-                id = m_nextId;
-                Interlocked.Increment(ref m_nextId);
+                id = NextId;
+                Interlocked.Increment(ref NextId);
             }
 
             return id;

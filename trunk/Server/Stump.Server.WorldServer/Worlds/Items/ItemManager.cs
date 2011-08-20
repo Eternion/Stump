@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using NLog;
+using Stump.Core.Pool;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
@@ -19,7 +21,6 @@ namespace Stump.Server.WorldServer.Worlds.Items
         #region Fields
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
 
         /// <summary>
         ///   Array containing every Item template loaded from database.
@@ -276,7 +277,7 @@ namespace Stump.Server.WorldServer.Worlds.Items
         {
             if (!item.CanBeSave)
             {
-                item.Create(); // get the guid
+                item.Create();
 
                 if (!m_loadedItems.TryAdd(item.Guid, item))
                 {
@@ -307,7 +308,6 @@ namespace Stump.Server.WorldServer.Worlds.Items
                                       item.Guid));
                 }
 
-                item.Create(); // write the item in the DB if no errors
             }
         }
 

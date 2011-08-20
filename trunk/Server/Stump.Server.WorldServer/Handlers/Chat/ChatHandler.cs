@@ -34,7 +34,12 @@ namespace Stump.Server.WorldServer.Handlers.Chat
         [WorldHandler(ChatClientMultiMessage.Id)]
         public static void HandleChatClientMultiMessage(WorldClient client, ChatClientMultiMessage message)
         {
-            client.ActiveCharacter.Say((ChannelId) message.channel, message.content);
+            var handler = ChatManager.Instance.ChatHandlers[message.channel];
+
+            if (handler != null)
+            {
+                handler(client, (ChannelId) message.channel, message.content);
+            }
         }
 
         public static void SendChatServerMessage(WorldClient client, string message)

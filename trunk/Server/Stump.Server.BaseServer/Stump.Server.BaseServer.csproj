@@ -146,6 +146,7 @@
     <Compile Include="Database\Interfaces\ITextRecord.cs" />
     <Compile Include="Database\Interfaces\ITextUIRecord.cs" />
     <Compile Include="Database\Interfaces\IVersionRecord.cs" />
+    <Compile Include="Database\RecordState.cs" />
     <Compile Include="Definitions.cs" />
     <Compile Include="Handler\IHandlerContainer.cs" />
     <Compile Include="I18n\Languages.cs" />

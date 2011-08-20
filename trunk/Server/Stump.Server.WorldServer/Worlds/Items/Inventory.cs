@@ -9,6 +9,7 @@ using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Inventory;
 using Stump.Server.WorldServer.Worlds.Actors.Interfaces;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Worlds.Effects;
 using Stump.Server.WorldServer.Worlds.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Worlds.Items
@@ -174,6 +175,10 @@ namespace Stump.Server.WorldServer.Worlds.Items
         public void Save()
         {
             Record.Save();
+            foreach (var item in m_items)
+            {
+                item.Value.Save();
+            }
         }
 
         /*public void ApplyItemsEffect()
@@ -194,6 +199,16 @@ namespace Stump.Server.WorldServer.Worlds.Items
                 }
             }
         }*/
+
+        private void ApplyItemEffects(Item item)
+        {
+            foreach (var effect in item.Effects)
+            {
+                var handler = EffectManager.Instance.GetItemEffectHandler(Owner, item, effect);
+
+                handler.Apply();
+            }
+        }
 
         protected override void OnItemAdded(Item item)
         {
@@ -233,8 +248,9 @@ namespace Stump.Server.WorldServer.Worlds.Items
             m_itemsByPosition[item.Position].Add(item);
 
             // Update entity skin
-
-            //ApplyItemsEffect();
+            if (lastPosition != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED && item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED ||
+                lastPosition == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED && item.Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
+                ApplyItemEffects(item);
 
             InventoryHandler.SendObjectMovementMessage(Owner.Client, item);
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);

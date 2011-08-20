@@ -74,6 +74,7 @@
     <Compile Include="Commands\Trigger\TriggerConsole.cs" />
     <Compile Include="Commands\Trigger\WorldConsoleTrigger.cs" />
     <Compile Include="Database\Accounts\WorldAccount.cs" />
+    <Compile Include="Database\AssignedIdRecord.cs" />
     <Compile Include="Database\Breeds\Breed.cs" />
     <Compile Include="Database\Breeds\LearnableSpell.cs" />
     <Compile Include="Database\Characters\CharacterRecord.cs" />
@@ -176,12 +177,17 @@
     <Compile Include="Worlds\Actors\Stats\StatsHealth.cs" />
     <Compile Include="Worlds\Breeds\BreedManager.cs" />
     <Compile Include="Worlds\Chat\ChatManager.cs" />
-    <Compile Include="Worlds\Dialog\Dialoger.cs" />
     <Compile Include="Worlds\Dialog\IDialog.cs" />
-    <Compile Include="Worlds\Dialog\IDialogRequest.cs" />
+    <Compile Include="Worlds\Dialog\IDialoger.cs" />
+    <Compile Include="Worlds\Dialog\IRequestBox.cs" />
     <Compile Include="Worlds\Effects\EffectContext.cs" />
     <Compile Include="Worlds\Effects\EffectHandleAttribute.cs" />
     <Compile Include="Worlds\Effects\EffectManager.cs" />
+    <Compile Include="Worlds\Effects\Handlers\DefaultHandlerAttribute.cs" />
+    <Compile Include="Worlds\Effects\Handlers\EffectHandler.cs" />
+    <Compile Include="Worlds\Effects\Handlers\EffectHandlerAttribute.cs" />
+    <Compile Include="Worlds\Effects\Handlers\Items\DefaultItemEffect.cs" />
+    <Compile Include="Worlds\Effects\Handlers\Items\ItemEffectHandler.cs" />
     <Compile Include="Worlds\Effects\Instances\EffectBase.cs" />
     <Compile Include="Worlds\Effects\Instances\EffectCreature.cs" />
     <Compile Include="Worlds\Effects\Instances\EffectDate.cs" />
@@ -192,7 +198,12 @@
     <Compile Include="Worlds\Effects\Instances\EffectMinMax.cs" />
     <Compile Include="Worlds\Effects\Instances\EffectMount.cs" />
     <Compile Include="Worlds\Effects\Instances\EffectString.cs" />
-    <Compile Include="Worlds\Effects\Parser\EffectParser.cs" />
+    <Compile Include="Worlds\Exchange\ITrade.cs" />
+    <Compile Include="Worlds\Exchange\ITrader.cs" />
+    <Compile Include="Worlds\Exchange\PlayerTrade.cs" />
+    <Compile Include="Worlds\Exchange\PlayerTrader.cs" />
+    <Compile Include="Worlds\Exchange\PlayerTradeRequest.cs" />
+    <Compile Include="Worlds\Exchange\TradeManager.cs" />
     <Compile Include="Worlds\Notifications\Notification.cs" />
     <Compile Include="Worlds\Parties\Party.cs" />
     <Compile Include="Worlds\Parties\PartyInvitation.cs" />
@@ -239,7 +250,10 @@
       <Name>Stump.Server.BaseServer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Worlds\Effects\Handlers\Spells\" />
+    <Folder Include="Worlds\Effects\Handlers\Useables\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

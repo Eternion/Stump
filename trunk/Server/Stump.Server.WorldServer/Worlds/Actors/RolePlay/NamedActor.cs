@@ -24,20 +24,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay
 
         #region Chat
 
-        public void Say(string message)
-        {
-            Say(ChannelId.General, message);
-        }
-
-        public void Say(ChannelId channel, string message)
-        {
-            if (ChatManager.Instance.ChatHandlers.Length <= (int) channel)
-                return;
-
-            ChatManager.ChatParserDelegate handler = ChatManager.Instance.ChatHandlers[(int) channel];
-
-            Context.DoForAll(entry => handler(entry.Client, channel, message));
-        }
+        // todo
 
         #endregion
         

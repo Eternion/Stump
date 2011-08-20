@@ -95,7 +95,7 @@ namespace Stump.Server.WorldServer.Worlds.Chat
 
         public void SayGroup(WorldClient client, ChannelId chanid, string msg)
         {
-            if (client.ActiveCharacter.IsInParty)
+            if (client.ActiveCharacter.IsInParty())
             {
                 client.ActiveCharacter.Party.DoForAll(entry => ChatHandler.SendChatServerMessage(entry.Client, client.ActiveCharacter, chanid, msg));
             }
