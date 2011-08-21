@@ -100,7 +100,7 @@ namespace Stump.Server.BaseServer.IPC.Objects
             }
             set
             {
-                BreedFlags = (uint)value.Aggregate(0, (current, breedEnum) => current | ( 1 << (int)breedEnum ));
+                BreedFlags = (uint)value.Aggregate(0, (current, breedEnum) => current | ( 1 << ( (int)breedEnum - 1 ) ));
             }
         }
 
@@ -158,7 +158,10 @@ namespace Stump.Server.BaseServer.IPC.Objects
 
         public bool CanUseBreed(int breedId)
         {
-            int flag = ( 1 >> breedId );
+            if (breedId <= 0)
+                return false;
+
+            int flag = ( 1 << (breedId - 1) );
             return ( BreedFlags & flag ) == flag;
         }
 

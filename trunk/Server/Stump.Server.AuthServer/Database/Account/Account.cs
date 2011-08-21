@@ -93,7 +93,7 @@ namespace Stump.Server.AuthServer.Database.Account
 
         private uint m_dbAvailableBreeds;
 
-        [Property("AvailableBreeds", NotNull = true, Default = "8191")] // 8191 = 0001 1111 1111 1111
+        [Property("AvailableBreeds", NotNull = true, Default = "16383")] // 16383 = 0011 1111 1111 1111
             public uint DbAvailableBreeds
         {
             get { return m_dbAvailableBreeds; }
@@ -159,7 +159,10 @@ namespace Stump.Server.AuthServer.Database.Account
 
                 return m_availableBreeds;
             }
-            set { DbAvailableBreeds = (uint) value.Aggregate(0, (current, breedEnum) => current | (1 << (int) breedEnum)); }
+            set
+            {
+                DbAvailableBreeds = (uint)value.Aggregate(0, (current, breedEnum) => current | ( 1 << ( (int)breedEnum - 1 ) ));
+            }
         }
 
         [HasMany(typeof (WorldCharacter), Cascade = ManyRelationCascadeEnum.Delete)]
@@ -255,7 +258,10 @@ namespace Stump.Server.AuthServer.Database.Account
 
         public bool CanUseBreed(int breedId)
         {
-            int flag = (1 << breedId);
+            if (breedId <= 0)
+                return false;
+
+            int flag = (1 << (breedId - 1));
             return ( DbAvailableBreeds & flag ) == flag;
         }
 
