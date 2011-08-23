@@ -11,16 +11,18 @@ using Stump.Server.WorldServer.Worlds.Breeds;
 
 namespace Stump.Server.WorldServer.Worlds.Actors.Stats
 {
+    public delegate int StatsFormulasHandler(IStatsOwner target, int @base, int equiped, int given, int context);
+
     public class StatsFields
     {
         #region Formulas
 
-        private static readonly Func<IStatsOwner, int, int, int, int, int> FormuleInitiative =
-            (owner, valueBase, valueEquiped, valueGiven, valueBonus) =>
+        private static readonly StatsFormulasHandler FormuleInitiative =
+            (owner, valueBase, valueEquiped, valueGiven, valueContext) =>
             {
                 return owner.Stats[CaracteristicsEnum.Health].Total <= 0
                            ? 0
-                           : ( valueBase + valueEquiped + valueBonus +
+                           : ( valueBase + valueEquiped + valueContext +
                               owner.Stats[CaracteristicsEnum.Chance] +
                               owner.Stats[CaracteristicsEnum.Intelligence] +
                               owner.Stats[CaracteristicsEnum.Agility] +
@@ -29,9 +31,9 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
                              ( (StatsHealth)owner.Stats[CaracteristicsEnum.Health] ).TotalMax );
             };
 
-        private static readonly Func<IStatsOwner, int, int, int, int, int> FormuleProspecting =
-            (owner, valueBase, valueEquiped, valueGiven, valueBonus) =>
-            valueBase + valueEquiped + valueBonus + (int)( owner.Stats[CaracteristicsEnum.Chance] / 10d );
+        private static readonly StatsFormulasHandler FormuleProspecting =
+            (owner, valueBase, valueEquiped, valueGiven, valueContext) =>
+            valueBase + valueEquiped + valueContext + (int)( owner.Stats[CaracteristicsEnum.Chance] / 10d );
 
         #endregion
 
@@ -75,7 +77,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
         {
             Fields = new Dictionary<CaracteristicsEnum, StatsData>
                 {
-                    {CaracteristicsEnum.Health, new StatsHealth(Owner, record.BaseHealth, record.DamageTaken)},
+                    {CaracteristicsEnum.Health, new StatsHealth(Owner, (short) record.BaseHealth, (short) record.DamageTaken)},
                     {CaracteristicsEnum.Initiative, new StatsData(Owner, CaracteristicsEnum.Initiative, 0, FormuleInitiative)},
                     {CaracteristicsEnum.Prospecting, new StatsData(Owner, CaracteristicsEnum.Prospecting, (short) record.Prospection, FormuleProspecting)},
                     {CaracteristicsEnum.AP, new StatsData(Owner, CaracteristicsEnum.AP, (short) record.AP)},

@@ -87,7 +87,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
         public static void SendObjectErrorMessage(WorldClient client, ObjectErrorEnum error)
         {
-            client.Send(new ObjectErrorMessage((byte) error));
+            client.Send(new ObjectErrorMessage((sbyte) error));
         }
     }
 }

@@ -265,9 +265,9 @@ namespace Stump.Server.AuthServer.Database.Account
             return ( DbAvailableBreeds & flag ) == flag;
         }
 
-        public byte GetCharactersCountByWorld(int worldId)
+        public sbyte GetCharactersCountByWorld(int worldId)
         {
-            return (byte) Characters.Where(entry => entry.World.Id == worldId).Count();
+            return (sbyte) Characters.Where(entry => entry.World.Id == worldId).Count();
         }
 
         public IEnumerable<uint> GetWorldCharactersId(int worldId)

@@ -101,7 +101,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                                                              Character target)
         {
             client.Send(new ExchangeRequestedTradeMessage(
-                            (byte) type,
+                            (sbyte) type,
                             source.Id,
                             target.Id));
         }
@@ -109,7 +109,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendExchangeStartedWithPodsMessage(WorldClient client, PlayerTrade playerTrade)
         {
             client.Send(new ExchangeStartedWithPodsMessage(
-                            (byte) ExchangeTypeEnum.PLAYER_TRADE,
+                            (sbyte) ExchangeTypeEnum.PLAYER_TRADE,
                             playerTrade.FirstTrader.Character.Id,
                             (int) playerTrade.FirstTrader.Character.Inventory.Weight,
                             (int) playerTrade.FirstTrader.Character.Inventory.WeightTotal,
@@ -152,7 +152,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
         public static void SendExchangeErrorMessage(WorldClient client, ExchangeErrorEnum errorEnum)
         {
-            client.Send(new ExchangeErrorMessage((byte) errorEnum));
+            client.Send(new ExchangeErrorMessage((sbyte) errorEnum));
         }
     }
 }

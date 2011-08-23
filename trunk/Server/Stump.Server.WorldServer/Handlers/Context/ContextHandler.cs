@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                                client.ActiveCharacter.Position.Direction));
         }
 
-        public static void SendGameContextCreateMessage(WorldClient client, byte context)
+        public static void SendGameContextCreateMessage(WorldClient client, sbyte context)
         {
             client.Send(new GameContextCreateMessage(context));
         }
@@ -83,7 +83,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
         {
             client.Send(
                 new GameMapChangeOrientationMessage(new ActorOrientation(actor.Id,
-                                                                         (byte) actor.Position.Direction)));
+                                                                         (sbyte) actor.Position.Direction)));
         }
 
         public static void SendGameContextRemoveElementMessage(WorldClient client, ContextActor actor)

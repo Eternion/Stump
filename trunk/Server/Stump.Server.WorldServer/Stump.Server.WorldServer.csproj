@@ -204,6 +204,8 @@
     <Compile Include="Worlds\Exchange\PlayerTrader.cs" />
     <Compile Include="Worlds\Exchange\PlayerTradeRequest.cs" />
     <Compile Include="Worlds\Exchange\TradeManager.cs" />
+    <Compile Include="Worlds\Fights\Fight.cs" />
+    <Compile Include="Worlds\Fights\FightTeam.cs" />
     <Compile Include="Worlds\Notifications\Notification.cs" />
     <Compile Include="Worlds\Parties\Party.cs" />
     <Compile Include="Worlds\Parties\PartyInvitation.cs" />

@@ -31,7 +31,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
         public static void SendAcquaintanceSearchErrorMessage(AuthClient client, AcquaintanceErrorEnum reason)
         {
-            client.Send(new AcquaintanceSearchErrorMessage((byte)reason));
+            client.Send(new AcquaintanceSearchErrorMessage((sbyte) reason));
         }
 
     }

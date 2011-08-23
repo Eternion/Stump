@@ -6,7 +6,7 @@ namespace Stump.Server.WorldServer.Handlers.Initialization
 {
     public class InitializationHandler : WorldHandlerContainer
     {
-        public static void SendOnConnectionEventMessage(WorldClient client, byte eventType)
+        public static void SendOnConnectionEventMessage(WorldClient client, sbyte eventType)
         {
             client.Send(new OnConnectionEventMessage(eventType));
         }

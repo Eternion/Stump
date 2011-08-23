@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             client.ActiveCharacter.DisplaySmiley(message.smileyId);
         }
 
-        public static void SendChatSmileyMessage(WorldClient client, Character character, byte smileyId)
+        public static void SendChatSmileyMessage(WorldClient client, Character character, sbyte smileyId)
         {
             client.Send(new ChatSmileyMessage(
                             character.Id,
@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                             (int) character.Client.Account.Id));
         }
 
-        public static void SendChatSmileyMessage(WorldClient client, ContextActor entity, byte smileyId)
+        public static void SendChatSmileyMessage(WorldClient client, ContextActor entity, sbyte smileyId)
         {
             client.Send(new ChatSmileyMessage(
                             entity.Id,

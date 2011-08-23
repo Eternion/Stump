@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
 
         public virtual EntityDispositionInformations GetEntityDispositionInformations()
         {
-            return new EntityDispositionInformations(Position.Cell.Id, (byte)Position.Direction);
+            return new EntityDispositionInformations(Position.Cell.Id, (sbyte)Position.Direction);
         }
 
         #endregion
@@ -64,7 +64,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
 
         public virtual IdentifiedEntityDispositionInformations GetIdentifiedEntityDispositionInformations()
         {
-            return new IdentifiedEntityDispositionInformations(Position.Cell.Id, (byte) Position.Direction, Id);
+            return new IdentifiedEntityDispositionInformations(Position.Cell.Id, (sbyte) Position.Direction, Id);
         }
 
         #endregion
@@ -75,7 +75,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
 
         #region Chat
 
-        public void DisplaySmiley(byte smileyId)
+        public void DisplaySmiley(sbyte smileyId)
         {
             Context.DoForAll(entry => ChatHandler.SendChatSmileyMessage(entry.Client, this, smileyId));
         }

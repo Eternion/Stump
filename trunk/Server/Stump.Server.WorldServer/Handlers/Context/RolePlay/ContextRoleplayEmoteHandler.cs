@@ -17,27 +17,27 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             //client.ActiveCharacter.StartEmote((EmotesEnum) message.emoteId, 0);
         }
 
-        public static void SendEmotePlayMessage(WorldClient client, Character character, EmotesEnum emote, uint duration)
+        public static void SendEmotePlayMessage(WorldClient client, Character character, EmotesEnum emote, byte duration)
         {
             client.Send(new EmotePlayMessage(
-                            (byte) emote,
-                            (byte) duration,
+                            (sbyte) emote,
+                            duration,
                             character.Id,
                             (int) character.Client.Account.Id
                             ));
         }
 
-        public static void SendEmotePlayMessage(WorldClient client, ContextActor actor, EmotesEnum emote, uint duration)
+        public static void SendEmotePlayMessage(WorldClient client, ContextActor actor, EmotesEnum emote, byte duration)
         {
             client.Send(new EmotePlayMessage(
-                            (byte) emote,
-                            (byte) duration,
+                            (sbyte) emote,
+                            duration,
                             actor.Id,
                             0
                             ));
         }
 
-        public static void SendEmoteListMessage(WorldClient client, IEnumerable<byte> emoteList)
+        public static void SendEmoteListMessage(WorldClient client, IEnumerable<sbyte> emoteList)
         {
             client.Send(new EmoteListMessage(emoteList));
         }

@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             }
             else
             {
-                client.Send(new ChatErrorMessage((byte) ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND));
+                client.Send(new ChatErrorMessage((sbyte) ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND));
             }
         }
 
@@ -56,7 +56,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                                                  int timestamp, string fingerprint)
         {
             client.Send(new ChatServerMessage(
-                            (byte) channel,
+                            (sbyte) channel,
                             message,
                             timestamp,
                             fingerprint,
@@ -77,7 +77,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                 message = message.HtmlEntities();
 
             client.Send(new ChatServerMessage(
-                            (byte) channel,
+                            (sbyte) channel,
                             message,
                             timestamp,
                             fingerprint,
@@ -91,7 +91,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                                                  int accountId)
         {
             client.Send(new ChatServerMessage(
-                            (byte) channel,
+                            (sbyte) channel,
                             message,
                             timestamp,
                             fingerprint,
@@ -115,7 +115,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                     message = message.HtmlEntities();
 
                 client.Send(new ChatServerCopyMessage(
-                                (byte) channel,
+                                (sbyte) channel,
                                 message,
                                 timestamp,
                                 fingerprint,

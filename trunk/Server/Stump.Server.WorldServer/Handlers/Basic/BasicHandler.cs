@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Handlers.Basic
             Character character = client.ActiveCharacter;
 
             /* Send informations about it */
-            client.Send(new BasicWhoIsMessage(true, (byte) character.Client.Account.Role,
+            client.Send(new BasicWhoIsMessage(true, (sbyte) character.Client.Account.Role,
                                               character.Client.WorldAccount.Nickname, character.Name, (short) character.Map.SubArea.Id));
         }
 
@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Handlers.Basic
             else
             {
                 client.Send(new BasicWhoIsMessage(message.search == client.ActiveCharacter.Name,
-                                                  (byte) character.Client.Account.Role,
+                                                  (sbyte) character.Client.Account.Role,
                                                   character.Client.WorldAccount.Nickname, character.Name,
                                                   (short) character.Map.SubArea.Id));
             }
@@ -56,19 +56,19 @@ namespace Stump.Server.WorldServer.Handlers.Basic
         /// <remarks>
         ///   Message id = <paramref name = "msgType" /> * 10000 + <paramref name = "msgId" />
         /// </remarks>
-        public static void SendTextInformationMessage(WorldClient client, byte msgType, short msgId,
+        public static void SendTextInformationMessage(WorldClient client, sbyte msgType, short msgId,
                                                       params string[] arguments)
         {
             client.Send(new TextInformationMessage(msgType, msgId, arguments));
         }
 
-        public static void SendTextInformationMessage(WorldClient client, byte msgType, short msgId,
+        public static void SendTextInformationMessage(WorldClient client, sbyte msgType, short msgId,
                                                       params object[] arguments)
         {
             client.Send(new TextInformationMessage(msgType, msgId, arguments.Select(entry => entry.ToString())));
         }
 
-        public static void SendTextInformationMessage(WorldClient client, byte msgType, short msgId)
+        public static void SendTextInformationMessage(WorldClient client, sbyte msgType, short msgId)
         {
             client.Send(new TextInformationMessage(msgType, msgId, new string[0]));
         }

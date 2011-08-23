@@ -51,6 +51,7 @@ namespace Stump.Core.IO
         /// </summary>
         /// <returns></returns>
         void WriteByte(byte @byte);
+        void WriteSByte(sbyte @byte);
 
         /// <summary>
         ///   Write a Float into the buffer

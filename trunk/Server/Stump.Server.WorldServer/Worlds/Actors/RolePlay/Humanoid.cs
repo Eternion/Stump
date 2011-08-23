@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay
         public virtual HumanInformations GetHumanInformations()
         {
             return new HumanInformations(FollowingCharacters.Select(entry => entry.Look),
-                255, // todo : emote
+                -1, // todo : emote
                 0,
                 new ActorRestrictionsInformations(), // todo : restrictions
                 0, // todo : title

@@ -118,7 +118,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         {
             if (!EnableNameSuggestion)
             {
-                client.Send(new CharacterNameSuggestionFailureMessage((byte)NicknameGeneratingFailureEnum.NICKNAME_GENERATOR_UNAVAILABLE));
+                client.Send(new CharacterNameSuggestionFailureMessage((sbyte)NicknameGeneratingFailureEnum.NICKNAME_GENERATOR_UNAVAILABLE));
                 return;
             }
 

@@ -194,7 +194,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
 
         public static void SendPartyCannotJoinErrorMessage(WorldClient client, PartyJoinErrorEnum reason)
         {
-            client.Send(new PartyCannotJoinErrorMessage((byte)reason));
+            client.Send(new PartyCannotJoinErrorMessage((sbyte)reason));
         }
     }
 }

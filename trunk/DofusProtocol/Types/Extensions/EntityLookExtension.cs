@@ -179,7 +179,7 @@ namespace Stump.DofusProtocol.Types.Extensions
                     i++;
                 } while (hookDepth > 0);
 
-                subEntities.Add(new SubEntity(category, index, ToEntityLook(subEntity.ToString())));
+                subEntities.Add(new SubEntity((sbyte)category, (sbyte)index, ToEntityLook(subEntity.ToString())));
 
                 cursorPos = i + 1; // ignore the comma or the last '}' char
             }

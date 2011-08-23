@@ -115,7 +115,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             ContextHandler.SendNotificationListMessage(client, new List<int>());
 
             //ContextHandler.SendEmoteListMessage(client, new List<uint>());
-            ChatHandler.SendEnabledChannelsMessage(client, new List<byte>(), new List<byte>());
+            ChatHandler.SendEnabledChannelsMessage(client, new List<sbyte>(), new List<sbyte>());
 
             //PvpHandler.SendAlignmentRankUpdateMessage(client);
             //PvpHandler.SendAlignmentSubAreasListMessage(client);
@@ -163,7 +163,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience),
                     characterRecord.Name,
                     characterRecord.EntityLook,
-                    (byte) characterRecord.Breed,
+                    (sbyte) characterRecord.Breed,
                     characterRecord.Sex != SexTypeEnum.SEX_MALE)).ToList();
 
             client.Send(new CharactersListMessage(
@@ -184,7 +184,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 characterBaseInformations.Add(new CharacterBaseInformations(characterRecord.Id,
                                                                             ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience),
                                                                             characterRecord.Name, characterRecord.EntityLook,
-                                                                            (byte) characterRecord.Breed, characterRecord.Sex != SexTypeEnum.SEX_MALE));
+                                                                            (sbyte) characterRecord.Breed, characterRecord.Sex != SexTypeEnum.SEX_MALE));
 
                 if (characterRecord.Rename)
                 {

@@ -135,17 +135,17 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
         public static void SendIdentificationFailedMessage(AuthClient client, IdentificationFailureReasonEnum reason)
         {
-            client.Send(new IdentificationFailedMessage((byte)reason));
+            client.Send(new IdentificationFailedMessage((sbyte) reason));
         }
 
         public static void SendIdentificationFailedForBadVersionMessage(AuthClient client, DofusProtocol.Types.Version version)
         {
-            client.Send(new IdentificationFailedForBadVersionMessage((byte)IdentificationFailureReasonEnum.BAD_VERSION, version));
+            client.Send(new IdentificationFailedForBadVersionMessage((sbyte) IdentificationFailureReasonEnum.BAD_VERSION, version));
         }
 
         public static void SendIdentificationFailedBannedMessage(AuthClient client, uint time)
         {
-            client.Send(new IdentificationFailedBannedMessage((byte)IdentificationFailureReasonEnum.BANNED, (int) time));
+            client.Send(new IdentificationFailedBannedMessage((sbyte) IdentificationFailureReasonEnum.BANNED, (int) time));
         }
 
         #endregion
@@ -229,7 +229,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
         public static void SendSelectServerRefusedMessage(AuthClient client, WorldServer world, ServerConnectionErrorEnum reason)
         {
-            client.Send(new SelectedServerRefusedMessage((short) world.Id, (byte) reason, (byte) world.Status));
+            client.Send(new SelectedServerRefusedMessage((short) world.Id, (sbyte) reason, (sbyte) world.Status));
         }
 
         public static void SendServersListMessage(AuthClient client)

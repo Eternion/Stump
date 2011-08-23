@@ -7,6 +7,7 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Worlds.Actors.Fight;
 using Stump.Server.WorldServer.Worlds.Actors.Interfaces;
 using Stump.Server.WorldServer.Worlds.Actors.Stats;
 using Stump.Server.WorldServer.Worlds.Breeds;
@@ -36,7 +37,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         #region Events
         public event Action<Character> LoggedIn;
 
-        public void NotifyLoggedIn()
+        private void NotifyLoggedIn()
         {
             Action<Character> handler = LoggedIn;
             if (handler != null) handler(this);
@@ -44,7 +45,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         public event Action<Character> LoggedOut;
 
-        public void NotifyLoggedOut()
+        private void NotifyLoggedOut()
         {
             Action<Character> handler = LoggedOut;
             if (handler != null) handler(this);
@@ -245,7 +246,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             {
                 return m_record.EntityLook;
             }
-            protected set
+            private set
             {
                 m_record.EntityLook = value;
                 base.Look = value;
@@ -386,13 +387,13 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             private set;
         }
 
-        public byte AlignmentValue
+        public sbyte AlignmentValue
         {
             get;
             private set;
         }
 
-        public byte AlignmentGrade
+        public sbyte AlignmentGrade
         {
             get;
             private set;
@@ -430,7 +431,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 RequestBox.Accept();
         }
 
-        public void DeniedRequest()
+        public void DenyRequest()
         {
             if (!IsInRequest())
                 return;
@@ -540,6 +541,14 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         #endregion
 
+        #region Fight
+        public CharacterFighter JoinFight(Fights.Fight fight)
+        {
+            return new CharacterFighter();
+        }
+
+        #endregion
+
         #endregion
 
         #region Save & Load
@@ -641,7 +650,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         public ActorAlignmentInformations GetActorAlignmentInformations()
         {
             return new ActorAlignmentInformations(
-                (byte)AlignmentSide,
+                (sbyte)AlignmentSide,
                 AlignmentValue,
                 AlignmentGrade,
                 Dishonor,
@@ -655,7 +664,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         public ActorExtendedAlignmentInformations GetActorAlignmentExtendInformations()
         {
             return new ActorExtendedAlignmentInformations(
-                            (byte)AlignmentSide,
+                            (sbyte)AlignmentSide,
                             AlignmentValue,
                             AlignmentGrade,
                             Dishonor,
@@ -678,7 +687,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 Level,
                 Name,
                 Look,
-                (byte) BreedId,
+                (sbyte) BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE);
         }
 
@@ -693,7 +702,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 Level,
                 Name,
                 Look,
-                (byte)BreedId,
+                (sbyte)BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE,
                 (short) Map.Position.X,
                 (short) Map.Position.Y,

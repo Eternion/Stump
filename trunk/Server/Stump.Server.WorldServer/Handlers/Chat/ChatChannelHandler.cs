@@ -11,7 +11,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
         {
         }
 
-        public static void SendEnabledChannelsMessage(WorldClient client, List<byte> allows, List<byte> disallows)
+        public static void SendEnabledChannelsMessage(WorldClient client, List<sbyte> allows, List<sbyte> disallows)
         {
             client.Send(new EnabledChannelsMessage(allows, disallows));
         }

@@ -7,29 +7,29 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
 {
     public class StatsData
     {
-        protected Func<IStatsOwner, int, int, int, int, int> m_formule;
+        protected StatsFormulasHandler m_formulas;
         protected short m_valueBase;
-        protected short m_valueBonus;
+        protected short m_valueContext;
         protected short m_valueEquiped;
         protected short m_valueGiven;
 
         public StatsData(IStatsOwner owner, CaracteristicsEnum name, short valueBase)
             : this(
                 owner, name, valueBase,
-                delegate(IStatsOwner _owner, int valuebase, int valueequiped, int valuegiven, int valuebonus)
+                delegate(IStatsOwner _owner, int valuebase, int valueequiped, int valuegiven, int valuecontext)
                     {
                         if (_owner == null)
                             throw new ArgumentNullException("_owner");
 
-                        return valuebase + valueequiped + valuegiven + valuebonus;
+                        return valuebase + valueequiped + valuegiven + valuecontext;
                     })
         {
         }
 
-        public StatsData(IStatsOwner owner, CaracteristicsEnum name, short valueBase, Func<IStatsOwner, int, int, int, int, int> formule)
+        public StatsData(IStatsOwner owner, CaracteristicsEnum name, short valueBase, StatsFormulasHandler formulas)
         {
             m_valueBase = valueBase;
-            m_formule = formule;
+            m_formulas = formulas;
             Name = name;
             Owner = owner;
         }
@@ -46,37 +46,43 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
             protected set;
         }
 
-        public short Base
+        public virtual short Base
         {
             get { return m_valueBase; }
             set { m_valueBase = value; }
         }
 
-        public short Equiped
+        public virtual short Equiped
         {
             get { return m_valueEquiped; }
             set { m_valueEquiped = value; }
         }
 
-        public short Given
+        public virtual short Given
         {
             get { return m_valueGiven; }
             set { m_valueGiven = value; }
         }
 
-        public short Bonus
+        public virtual short Context
         {
-            get { return m_valueBonus; }
-            set { m_valueBonus = value; }
+            get
+            {
+                return m_valueContext;
+            }
+            set
+            {
+                m_valueContext = value;
+            }
         }
 
         public virtual int Total
         {
             get
             {
-                if (m_formule != null)
+                if (m_formulas != null)
                 {
-                    int result = m_formule(Owner, m_valueBase, m_valueEquiped, m_valueGiven, m_valueBonus);
+                    int result = m_formulas(Owner, Base, Equiped, Given, Context);
 
                     return result;
                 }
@@ -92,9 +98,9 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
         {
             get
             {
-                if (m_formule != null)
+                if (m_formulas != null)
                 {
-                    int result = m_formule(Owner, m_valueBase, m_valueEquiped, m_valueGiven, m_valueBonus);
+                    int result = m_formulas(Owner, Base, Equiped, Given, Context);
 
                     return result < 0 ? 0 : result;
                 }
@@ -145,7 +151,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
 
         public static implicit operator CharacterBaseCharacteristic(StatsData s1)
         {
-            return new CharacterBaseCharacteristic(s1.Base, s1.Equiped, s1.Given, s1.Bonus);
+            return new CharacterBaseCharacteristic(s1.Base, s1.Equiped, s1.Given, s1.Context);
         }
     }
 }

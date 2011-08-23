@@ -56,7 +56,7 @@ namespace Stump.Server.WorldServer.Handlers.Authorized
 
         public static void SendConsoleMessage(WorldClient client, ConsoleMessageTypeEnum type, string text)
         {
-            client.Send(new ConsoleMessage((byte) type, text));
+            client.Send(new ConsoleMessage((sbyte) type, text));
         }
     }
 }

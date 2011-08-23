@@ -51,6 +51,7 @@ namespace Stump.Core.IO
         /// </summary>
         /// <returns></returns>
         byte ReadByte();
+        sbyte ReadSByte();
 
         /// <summary>
         ///   Returns N bytes from the buffer

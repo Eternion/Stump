@@ -141,6 +141,10 @@ namespace Stump.Core.IO
             m_writer.Write(@byte);
         }
 
+        public void WriteSByte(sbyte @byte)
+        {
+            m_writer.Write(@byte);
+        }
         /// <summary>
         ///   Write a Float into the buffer
         /// </summary>

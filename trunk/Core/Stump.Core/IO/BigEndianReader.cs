@@ -150,6 +150,11 @@ namespace Stump.Core.IO
             return m_reader.ReadByte();
         }
 
+        public sbyte ReadSByte()
+        {
+            return m_reader.ReadSByte();
+        }
+
         /// <summary>
         ///   Returns N bytes from the buffer
         /// </summary>

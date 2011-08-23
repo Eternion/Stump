@@ -3,7 +3,7 @@
 
 namespace Stump.DofusProtocol.Enums
 {
-	public enum BuildTypeEnum
+	public enum BuildTypeEnum : sbyte
 	{
 		RELEASE = 0,
 		BETA = 1,

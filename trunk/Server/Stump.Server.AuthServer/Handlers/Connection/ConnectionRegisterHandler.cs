@@ -17,28 +17,28 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             /* Check the Username */
             if (!CheckNickName(nickname))
             {
-                client.Send(new NicknameRefusedMessage((byte)NicknameErrorEnum.INVALID_NICK));
+                client.Send(new NicknameRefusedMessage((sbyte) NicknameErrorEnum.INVALID_NICK));
                 return;
             }
 
             /* Same as Login */
             if (nickname == client.Account.Login)
             {
-                client.Send(new NicknameRefusedMessage((byte)NicknameErrorEnum.SAME_AS_LOGIN));
+                client.Send(new NicknameRefusedMessage((sbyte) NicknameErrorEnum.SAME_AS_LOGIN));
                 return;
             }
 
             /* Look like Login */
             if (client.Account.Login.Contains(nickname))
             {
-                client.Send(new NicknameRefusedMessage((byte)NicknameErrorEnum.TOO_SIMILAR_TO_LOGIN));
+                client.Send(new NicknameRefusedMessage((sbyte) NicknameErrorEnum.TOO_SIMILAR_TO_LOGIN));
                 return;
             }
 
             /* Already Used */
             if (AccountManager.Instance.NicknameExist(nickname))
             {
-                client.Send(new NicknameRefusedMessage((byte)NicknameErrorEnum.ALREADY_USED));
+                client.Send(new NicknameRefusedMessage((sbyte) NicknameErrorEnum.ALREADY_USED));
                 return;
             }
 
