@@ -1,7 +1,7 @@
 using Stump.Server.WorldServer.Handlers.Inventory;
 using Stump.Server.WorldServer.Worlds.Items;
 
-namespace Stump.Server.WorldServer.Worlds.Exchange
+namespace Stump.Server.WorldServer.Worlds.Exchanges
 {
     public class PlayerTrade : ITrade
     {

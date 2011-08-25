@@ -7,6 +7,6 @@ namespace Stump.Server.WorldServer.Worlds.Maps
     public interface IContext
     {
         IEnumerable<Character> GetAllCharacters();
-        void DoForAll(Action<Character> action);
+        void ForEach(Action<Character> action);
     }
 }

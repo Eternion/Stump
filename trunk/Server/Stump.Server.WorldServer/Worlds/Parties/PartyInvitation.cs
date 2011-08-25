@@ -1,7 +1,6 @@
 using System;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Worlds.Dialog;
 using Stump.Server.WorldServer.Worlds.Notifications;
 
 namespace Stump.Server.WorldServer.Worlds.Parties

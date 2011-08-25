@@ -179,7 +179,7 @@ namespace Stump.Server.AuthServer.Database.Account
             set { m_deletedCharacters = value; }
         }
 
-        [HasMany(typeof (ConnectionLog))]
+        [HasMany(typeof(ConnectionLog))]
         public IList<ConnectionLog> Connections
         {
             get { return m_connections ?? new List<ConnectionLog>(); }
@@ -292,7 +292,7 @@ namespace Stump.Server.AuthServer.Database.Account
 
         public static Account FindAccountByTicket(string ticket)
         {
-            return FindAll().First(a => a.Ticket == ticket);
+            return FindOne(Restrictions.Eq("Ticket", ticket));
         }
 
         public static Account[] FindAccountsByEmail(string email)

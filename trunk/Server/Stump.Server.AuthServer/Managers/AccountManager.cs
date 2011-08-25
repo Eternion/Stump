@@ -3,6 +3,7 @@ using System.Linq;
 using NHibernate.Criterion;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Collections;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.AuthServer.Database.Account;
@@ -13,6 +14,9 @@ namespace Stump.Server.AuthServer.Managers
 {
     public class AccountManager : Singleton<AccountManager>
     {
+        private readonly Dictionary<uint, Account> m_accountsCache = new Dictionary<uint, Account>();
+        private readonly object m_locker = new object();
+
         /// <summary>
         /// List of available breeds
         /// </summary>
@@ -40,7 +44,31 @@ namespace Stump.Server.AuthServer.Managers
 
         public Account FindAccount(string login)
         {
-            return Account.FindAccountByLogin(login);
+            var account =  Account.FindAccountByLogin(login);
+
+            Account cachedAccount;
+            if (m_accountsCache.TryGetValue(account.Id, out cachedAccount))
+            {
+                m_accountsCache[account.Id] = account;
+            }
+            else
+            {
+                lock (m_locker)
+                    m_accountsCache.Add(account.Id, account);
+            }
+
+            return account;
+        }
+
+        public Account FindRegisteredAccountByTicket(string ticket)
+        {
+            Account account;
+            lock (m_locker)
+            {
+                account = m_accountsCache.Values.Where(entry => entry.Ticket == ticket).SingleOrDefault();
+            }
+
+            return account;
         }
 
         public bool LoginExist(string login)
@@ -58,8 +86,7 @@ namespace Stump.Server.AuthServer.Managers
             if (LoginExist(account.Login.ToLower()))
                 return false;
 
-            // todo : generate the id to avoid the flush
-            account.CreateAndFlush();
+            account.Save();
             
             return true;
         }
@@ -133,7 +160,7 @@ namespace Stump.Server.AuthServer.Managers
         public bool DisconnectClientsUsingAccount(Account account)
         {
             var clients = AuthServer.Instance.FindClients(entry => entry.Account != null &&
-                entry.Account.Id == account.Id);
+                entry.Account.Id == account.Id).ToArray();
 
             // disconnect clients from auth server
             foreach (var client in clients)
@@ -153,7 +180,7 @@ namespace Stump.Server.AuthServer.Managers
                 }
             }
 
-            return clients.Count() > 0;
+            return clients.Length > 0;
         }
     }
 }

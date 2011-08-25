@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using NLog;
 using Stump.Core.Collections;
 
 namespace Stump.Core.Pool.Task
@@ -7,6 +8,7 @@ namespace Stump.Core.Pool.Task
     public class TaskPool
     {
         private readonly BlockingQueue<Action> m_tasks = new BlockingQueue<Action>();
+        private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public void EnqueueTask(Action action)
         {
@@ -20,10 +22,22 @@ namespace Stump.Core.Pool.Task
             {
                 Action action = m_tasks.Dequeue();
 
-                var executerThread = new Thread(() => action());
+                var executerThread = new Thread(
+                    delegate()
+                        {
+                            try
+                            {
+                                action();
+                            }
+                            catch(Exception ex)
+                            {
+                                logger.Error("Exception occurs in the task Pool : {0}", ex);
+                            }
+                        });
+
                 executerThread.Start();
 
-                while ((executerThread.ThreadState & ThreadState.Running) == ThreadState.Running)
+                while (executerThread.ThreadState == ThreadState.Running)
                     // wait until thread end execution, or until thread enter a sleep state
                 {
                     Thread.Yield(); // give priority to another thread

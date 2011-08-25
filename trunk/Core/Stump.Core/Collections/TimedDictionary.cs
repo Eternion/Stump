@@ -8,7 +8,7 @@ namespace Stump.Core.Collections
     /// </summary>
     /// <typeparam name = "TKey">The type of the key.</typeparam>
     /// <typeparam name = "TData">The type of the data.</typeparam>
-    public sealed class TimedDictionary<TKey, TData>
+    public sealed class TimedDictionary<TKey, TData> : Dictionary<TKey, TData>
     {
         #region Properties
 

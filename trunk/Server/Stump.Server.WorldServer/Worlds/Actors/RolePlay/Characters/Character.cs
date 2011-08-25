@@ -7,12 +7,14 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
 using Stump.Server.WorldServer.Worlds.Actors.Interfaces;
 using Stump.Server.WorldServer.Worlds.Actors.Stats;
 using Stump.Server.WorldServer.Worlds.Breeds;
-using Stump.Server.WorldServer.Worlds.Dialog;
-using Stump.Server.WorldServer.Worlds.Exchange;
+using Stump.Server.WorldServer.Worlds.Dialogs;
+using Stump.Server.WorldServer.Worlds.Exchanges;
+using Stump.Server.WorldServer.Worlds.Fights;
 using Stump.Server.WorldServer.Worlds.Items;
 using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
@@ -412,10 +414,34 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         #endregion
 
+        #region Fight
+        public CharacterFighter Fighter
+        {
+            get;
+            private set;
+        }
+
+        public Fights.Fight Fight
+        {
+            get { return Fighter.Fight; }
+        }
+
+        public FightTeam Team
+        {
+            get { return Fighter.Team; }
+        }
+
+        public bool IsFighting()
+        {
+            return Fighter != null;
+        }
+
+        #endregion
+
         #endregion
 
         #region Actions
-        
+
         #region Dialog
         public void DisplayNotification(Notification notification)
         {
@@ -542,12 +568,23 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         #endregion
 
         #region Fight
-        public CharacterFighter JoinFight(Fights.Fight fight)
+        public FighterRefusedReasonEnum CanRequestFight(Character target)
         {
-            return new CharacterFighter();
+            return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
+        }
+
+        public CharacterFighter JoinFight(FightTeam team)
+        {
+            ContextHandler.SendGameContextDestroyMessage(Client);
+            ContextHandler.SendGameContextCreateMessage(Client, 2);
+
+            ContextHandler.SendGameFightStartingMessage(Client, team.Fight.FightType);
+
+            return Fighter = new CharacterFighter(this, team);
         }
 
         #endregion
+
 
         #endregion
 

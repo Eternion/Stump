@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Stump.Core.Pool;
 using Stump.Core.Reflection;
 
-namespace Stump.Server.WorldServer.Worlds.Exchange
+namespace Stump.Server.WorldServer.Worlds.Exchanges
 {
     public class TradeManager : Singleton<TradeManager>
     {

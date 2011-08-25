@@ -7,11 +7,10 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Handlers.Chat;
-using Stump.Server.WorldServer.Worlds.Actors;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 
-namespace Stump.Server.WorldServer.Worlds.Chat
+namespace Stump.Server.WorldServer.Worlds.Chats
 {
     public class ChatManager : Singleton<ChatManager>
     {
@@ -67,7 +66,7 @@ namespace Stump.Server.WorldServer.Worlds.Chat
                 Action<Character> action =
                     charac => ChatHandler.SendChatServerMessage(charac.Client, client.ActiveCharacter, chanid, msg);
 
-                    client.ActiveCharacter.Context.DoForAll(action);
+                    client.ActiveCharacter.Context.ForEach(action);
             }
         }
 
@@ -76,7 +75,7 @@ namespace Stump.Server.WorldServer.Worlds.Chat
                 Action<Character> action =
                     entry => ChatHandler.SendChatServerMessage(entry.Client, actor, chanid, msg);
 
-                actor.Context.DoForAll(action);
+                actor.Context.ForEach(action);
         }
 
         public void SayAdministrators(WorldClient client, ChannelId chanid, string msg)
@@ -89,7 +88,7 @@ namespace Stump.Server.WorldServer.Worlds.Chat
                         ChatHandler.SendChatServerMessage(charac.Client, client.ActiveCharacter, chanid, msg);
                 };
 
-                client.ActiveCharacter.Context.DoForAll(action);
+                client.ActiveCharacter.Context.ForEach(action);
             }
         }
 

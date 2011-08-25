@@ -74,7 +74,12 @@ namespace Stump.Server.AuthServer.IPC
             if (!Manager.CheckWorldAccess(wsi))
                 return null;
 
-            return Account.FindAccountByTicket(ticket).Serialize();
+            var account = AccountManager.Instance.FindRegisteredAccountByTicket(ticket);
+            
+            if (account == null)
+                return null;
+
+            return account.Serialize();
         }
 
         public AccountData GetAccountByNickname(WorldServerData wsi, string nickname)

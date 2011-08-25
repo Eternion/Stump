@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Stump.Core.Cache;
+using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -54,6 +55,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         private readonly ConcurrentDictionary<int, RolePlayActor> m_actors = new ConcurrentDictionary<int, RolePlayActor>();
         private readonly Dictionary<int, MapNeighbour> m_mapsAround = new Dictionary<int, MapNeighbour>();
+        private readonly UniqueIdProvider m_contextualIds = new UniqueIdProvider(sbyte.MinValue);
 
         protected internal MapRecord Record;
 
@@ -238,6 +240,16 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         #region Gets
 
+        public sbyte GetNextContextualId()
+        {
+            return (sbyte) m_contextualIds.Pop();
+        }
+
+        public void FreeContextualId(sbyte id)
+        {
+            m_contextualIds.Push(id);
+        }
+
         #region Neighbour
 
         public Map GetNeighbouringMap(MapNeighbour mapNeighbour)
@@ -289,7 +301,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             return GetActors<Character>();
         }
 
-        public void DoForAll(Action<Character> action)
+        public void ForEach(Action<Character> action)
         {
             foreach (Character character in GetAllCharacters())
             {
@@ -358,7 +370,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
                 BasicHandler.SendBasicTimeMessage(character.Client);
             }
 
-            DoForAll(entry => ContextRoleplayHandler.SendGameRolePlayShowActorMessage(entry.Client, actor));
+            ForEach(entry => ContextRoleplayHandler.SendGameRolePlayShowActorMessage(entry.Client, actor));
         }
 
         private void OnLeave(RolePlayActor actor)
@@ -368,7 +380,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             actor.StartMoving -= OnActorStartMoving;
             actor.StopMoving -= OnActorStopMoving;
 
-            DoForAll(entry => ContextHandler.SendGameContextRemoveElementMessage(entry.Client, actor));
+            ForEach(entry => ContextHandler.SendGameContextRemoveElementMessage(entry.Client, actor));
         }
 
         #endregion
@@ -379,7 +391,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
         {
             List<short> movementsKey = path.GetServerMovementKeys();
 
-            DoForAll(delegate(Character entry)
+            ForEach(delegate(Character entry)
                          {
                              ContextHandler.SendGameMapMovementMessage(entry.Client, movementsKey, actor);
                              BasicHandler.SendBasicNoOperationMessage(entry.Client);

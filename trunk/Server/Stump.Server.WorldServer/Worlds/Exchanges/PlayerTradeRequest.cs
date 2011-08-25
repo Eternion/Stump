@@ -1,10 +1,9 @@
-using System;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Handlers.Inventory;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Worlds.Dialog;
+using Stump.Server.WorldServer.Worlds.Dialogs;
 
-namespace Stump.Server.WorldServer.Worlds.Exchange
+namespace Stump.Server.WorldServer.Worlds.Exchanges
 {
     public class PlayerTradeRequest : IRequestBox
     {
@@ -67,7 +66,7 @@ namespace Stump.Server.WorldServer.Worlds.Exchange
             Deny();
         }
 
-        public void Close()
+        private void Close()
         {
             Source.ResetRequestBox();
             Target.ResetRequestBox();

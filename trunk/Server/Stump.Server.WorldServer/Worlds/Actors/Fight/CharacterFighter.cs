@@ -1,3 +1,4 @@
+using System;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Worlds.Actors.Interfaces;
@@ -11,19 +12,15 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 {
     public sealed class CharacterFighter : NamedFighter
     {
+        public CharacterFighter(Character character, FightTeam team)
+            : base(team)
+        {
+            Character = character;
+            Look = Character.Look;
+            Position = Character.Position;
+        }
+
         public Character Character
-        {
-            get;
-            private set;
-        }
-
-        public Fights.Fight Fight
-        {
-            get;
-            private set;
-        }
-
-        public FightTeam Team
         {
             get;
             private set;
@@ -39,11 +36,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             get { return Character.Name; }
         }
 
-        public override IContext Context
-        {
-            get { return Fight; }
-        }
-
         public override EntityLook Look
         {
             get;
@@ -56,27 +48,20 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             protected set;
         }
 
+        public override ObjectPosition MapPosition
+        {
+            get
+            {
+                return Character.Position; 
+            }
+        }
+
         public override StatsFields Stats
         {
             get { return Character.Stats; }
         }
 
-        public bool IsAlive()
-        {
-            return Stats[CaracteristicsEnum.Health].Total > 0;
-        }
-
-        public bool IsFighterTurn()
-        {
-            return false;
-        }
-
-        public override bool CanMove()
-        {
-            return IsFighterTurn();
-        }
-
-        public override GameContextActorInformations GetGameContextActorInformations()
+        public override GameFightFighterInformations GetGameFightFighterInformations()
         {
             return new GameFightCharacterInformations(Id,
                 Look, 

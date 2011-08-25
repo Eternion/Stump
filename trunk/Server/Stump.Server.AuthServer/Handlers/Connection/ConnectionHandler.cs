@@ -1,4 +1,5 @@
 using System;
+using Castle.ActiveRecord;
 using Stump.Core.Attributes;
 using Stump.Core.Cryptography;
 using Stump.Core.Extensions;
@@ -9,16 +10,12 @@ using Stump.Server.AuthServer.Database.World;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.AuthServer.Network;
 using Stump.Server.BaseServer.Network;
+using Version = Stump.DofusProtocol.Types.Version;
 
 namespace Stump.Server.AuthServer.Handlers.Connection
 {
     public partial class ConnectionHandler : AuthHandlerContainer
     {
-        public ConnectionHandler()
-        {
-            Predicate(ServerSelectionMessage.Id, PredicatesDefinitions.IsLookingOfServers);
-        }
-
         /// <summary>
         /// Max Number of connection to logs in the database
         /// </summary>
@@ -35,7 +32,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 return;
 
             /* If autoconnect, send to the lastServer */
-            var lastConnection = client.Account.LastConnection;
+            ConnectionLog lastConnection = client.Account.LastConnection;
             if (message.autoconnect && lastConnection != null && WorldServerManager.Instance.CanAccessToWorld(client, lastConnection.World))
             {
                 SendSelectServerData(client, lastConnection.World);
@@ -61,7 +58,6 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             {
                 SendServersListMessage(client);
             }
-
         }
 
         private static bool HandleIndentification(AuthClient client, IdentificationMessage message)
@@ -79,7 +75,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             client.Password = message.password.EscapeString();
 
             /* Get corresponding account */
-            var account = AccountManager.Instance.FindAccount(client.Login);
+            Account account = AccountManager.Instance.FindAccount(client.Login);
 
             /* Invalid password */
             if (account == null || Cryptography.EncryptPassword(account.Password, client.Key) != client.Password)
@@ -90,7 +86,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             }
 
             /* Check Sanctions */
-            var banRemainingTime = account.BanRemainingTime;
+            uint banRemainingTime = account.BanRemainingTime;
             if (banRemainingTime > 0)
             {
                 SendIdentificationFailedBannedMessage(client, banRemainingTime);
@@ -123,10 +119,10 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         public static void SendIdentificationSuccessMessage(AuthClient client, bool wasAlreadyConnected)
         {
             client.Send(new IdentificationSuccessMessage(
-                            client.Account.Role >= RoleEnum.Moderator,             
+                            client.Account.Role >= RoleEnum.Moderator,
                             wasAlreadyConnected,
                             client.Account.Nickname,
-                            (int)client.Account.Id,
+                            (int) client.Account.Id,
                             0, // community ID ? ( se trouve dans le d2p, utilisé pour trouver les serveurs de la communauté )
                             client.Account.SecretQuestion,
                             client.Account.SubscriptionRemainingTime));
@@ -138,7 +134,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             client.Send(new IdentificationFailedMessage((sbyte) reason));
         }
 
-        public static void SendIdentificationFailedForBadVersionMessage(AuthClient client, DofusProtocol.Types.Version version)
+        public static void SendIdentificationFailedForBadVersionMessage(AuthClient client, Version version)
         {
             client.Send(new IdentificationFailedForBadVersionMessage((sbyte) IdentificationFailureReasonEnum.BAD_VERSION, version));
         }
@@ -155,7 +151,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         [AuthHandler(ServerSelectionMessage.Id)]
         public static void HandleServerSelectionMessage(AuthClient client, ServerSelectionMessage message)
         {
-            var world = WorldServerManager.Instance.GetWorldServer(message.serverId);
+            WorldServer world = WorldServerManager.Instance.GetWorldServer(message.serverId);
 
             /* World not exist */
             if (world == null)
@@ -209,13 +205,23 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                                            Ip = client.IP
                                        };
             client.Account.Connections.Add(connectionRecord);
-            connectionRecord.Save();
 
             /* Remove the oldest Connection */
             if (client.Account.Connections.Count > MaxConnectionLogs)
                 client.Account.RemoveOldestConnection();
 
-            client.Save();
+            AuthServer.Instance.IOTaskPool.EnqueueTask(delegate()
+                                                           {
+                                                               using (new SessionScope())
+                                                               {
+                                                                   connectionRecord.Save();
+
+                                                                   if (connectionRecord.Id == 0)
+                                                                       throw new Exception("FUUUUUUUUUUUUUUUUU");
+
+                                                                   client.SaveNow();
+                                                               }
+                                                           });
 
             client.Send(new SelectedServerDataMessage(
                             (short) world.Id,
@@ -245,5 +251,9 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
         #endregion
 
+        public ConnectionHandler()
+        {
+            Predicate(ServerSelectionMessage.Id, PredicatesDefinitions.IsLookingOfServers);
+        }
     }
 }

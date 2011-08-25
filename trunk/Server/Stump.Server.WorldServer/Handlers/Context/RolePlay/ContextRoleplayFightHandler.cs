@@ -1,16 +1,18 @@
 using Stump.DofusProtocol.Messages;
+using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
     public partial class ContextRoleplayHandler
     {
-        /*public static void SendGameRolePlayPlayerFightFriendlyAnsweredMessage(WorldClient client, Character replier,
+        public static void SendGameRolePlayPlayerFightFriendlyAnsweredMessage(WorldClient client, Character replier,
                                                                               Character source, Character target,
                                                                               bool accepted)
         {
-            client.Send(new GameRolePlayPlayerFightFriendlyAnsweredMessage((int) replier.Id,
-                                                                           (uint) source.Id,
-                                                                           (uint) target.Id,
+            client.Send(new GameRolePlayPlayerFightFriendlyAnsweredMessage(replier.Id,
+                                                                           source.Id,
+                                                                           target.Id,
                                                                            accepted));
         }
 
@@ -18,8 +20,8 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                                                                                Character source,
                                                                                Character target)
         {
-            client.Send(new GameRolePlayPlayerFightFriendlyRequestedMessage((uint) requester.Id, (uint) source.Id,
-                                                                            (uint) target.Id));
-        }*/
+            client.Send(new GameRolePlayPlayerFightFriendlyRequestedMessage(requester.Id, source.Id,
+                                                                            target.Id));
+        }
     }
 }

@@ -77,7 +77,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
 
         public void DisplaySmiley(sbyte smileyId)
         {
-            Context.DoForAll(entry => ChatHandler.SendChatSmileyMessage(entry.Client, this, smileyId));
+            Context.ForEach(entry => ChatHandler.SendChatSmileyMessage(entry.Client, this, smileyId));
         }
 
         #endregion

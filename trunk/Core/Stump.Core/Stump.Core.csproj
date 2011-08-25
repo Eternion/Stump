@@ -123,14 +123,13 @@
     <Compile Include="Attributes\VariableAttribute.cs" />
     <Compile Include="Cache\ObjectValidator.cs" />
     <Compile Include="Collections\BlockingQueue.cs" />
-    <Compile Include="Collections\CollectionExtensions.cs" />
     <Compile Include="Collections\ConcurrentList.cs" />
     <Compile Include="Collections\LockFreeQueue.cs" />
     <Compile Include="Collections\TimedDictionary.cs" />
     <Compile Include="Collections\TimedList.cs" />
     <Compile Include="Cryptography\Cryptography.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
-    <Compile Include="Extensions\CollectionExtensions.cs" />
+    <Compile Include="Collections\CollectionExtensions.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="IO\ConsoleProcent.cs" />
     <Compile Include="IO\Watchers\FileWatcher.cs">

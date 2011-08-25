@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             target.CustomLook = trigger.Get<string>("look").ToEntityLook();
             target.CustomLookActivated = true;
 
-            target.Map.DoForAll(character =>
+            target.Map.ForEach(character =>
                                 ContextHandler.SendGameContextRefreshEntityLookMessage(
                                     character.Client, target));
         }

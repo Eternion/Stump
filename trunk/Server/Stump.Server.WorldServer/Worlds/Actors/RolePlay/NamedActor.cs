@@ -1,6 +1,4 @@
-using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.Worlds.Chat;
 
 namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay
 {

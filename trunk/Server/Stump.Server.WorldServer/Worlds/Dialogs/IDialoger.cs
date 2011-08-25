@@ -1,6 +1,6 @@
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 
-namespace Stump.Server.WorldServer.Worlds.Dialog
+namespace Stump.Server.WorldServer.Worlds.Dialogs
 {
     public interface IDialoger
     {

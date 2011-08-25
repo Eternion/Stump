@@ -5,7 +5,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Worlds;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Worlds.Exchange;
+using Stump.Server.WorldServer.Worlds.Exchanges;
 using Item = Stump.Server.WorldServer.Worlds.Items.Item;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory

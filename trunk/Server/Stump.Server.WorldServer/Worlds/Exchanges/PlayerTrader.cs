@@ -1,12 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Worlds.Dialog;
+using Stump.Server.WorldServer.Worlds.Dialogs;
 using Stump.Server.WorldServer.Worlds.Items;
 
-namespace Stump.Server.WorldServer.Worlds.Exchange
+namespace Stump.Server.WorldServer.Worlds.Exchanges
 {
     public class PlayerTrader : ITrader, IDialoger
     {

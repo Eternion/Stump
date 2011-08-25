@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay;
 using Stump.Server.WorldServer.Worlds.Items;
 
-namespace Stump.Server.WorldServer.Worlds.Exchange
+namespace Stump.Server.WorldServer.Worlds.Exchanges
 {
     public delegate void ItemMovedHandler(ITrader trader, Item item, bool modified, int difference);
     public delegate void KamasChangedHandler(ITrader trader, uint kamasAmount);

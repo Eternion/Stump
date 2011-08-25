@@ -57,6 +57,11 @@ namespace Stump.Server.AuthServer.Network
 
         public void Save()
         {
+            AuthServer.Instance.IOTaskPool.EnqueueTask(() => Account.Save());
+        }
+
+        internal void SaveNow()
+        {
             Account.Save();
         }
 

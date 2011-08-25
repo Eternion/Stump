@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                                         GameMapChangeOrientationRequestMessage message)
         {
             client.ActiveCharacter.Direction = (DirectionsEnum) message.direction;
-            client.ActiveCharacter.Map.DoForAll(
+            client.ActiveCharacter.Map.ForEach(
                 charac => SendGameMapChangeOrientationMessage(charac.Client, client.ActiveCharacter));
         }
 

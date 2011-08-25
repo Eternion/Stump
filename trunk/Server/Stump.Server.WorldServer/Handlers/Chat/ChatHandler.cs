@@ -3,10 +3,9 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Worlds;
-using Stump.Server.WorldServer.Worlds.Actors;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Worlds.Chat;
+using Stump.Server.WorldServer.Worlds.Chats;
 
 namespace Stump.Server.WorldServer.Handlers.Chat
 {

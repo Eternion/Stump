@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Stump.Core.Collections;
+using Stump.Core.Extensions;
 
 namespace Stump.Core.Reflection
 {
