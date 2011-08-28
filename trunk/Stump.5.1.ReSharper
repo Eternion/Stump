@@ -9,17 +9,6 @@
   </Daemon.SolutionSettings>
   <SharedSolutionTemplateManager>
     <LiveTemplates>
-      <Template uid="1ad94c49-30cc-47a8-8523-d1db1853615d" shortcut="send" description="Send function" text="public static void Send$NAME$($SERVER$Client client)&#xD;&#xA;{&#xD;&#xA;	client.Send(new $NAME$($END$));&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
-        <Context>
-          <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
-        </Context>
-        <Categories />
-        <Variables>
-          <Variable name="NAME" expression="" initialRange="0" />
-          <Variable name="SERVER" expression="list(&quot;World, Auth&quot;)" initialRange="0" />
-        </Variables>
-        <CustomProperties />
-      </Template>
       <Template uid="60a69f27-744e-4486-9309-5e383f281ae0" shortcut="hctor" description="Handler constructor" text="$CLASSNAME$()&#xD;&#xA;{&#xD;&#xA;	Predicates = new Dictionary&lt;Type, Predicate&lt;$SERVICE$Client&gt;&gt;&#xD;&#xA;    {&#xD;&#xA;		$END$&#xD;&#xA;    };&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
         <Context>
           <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
@@ -49,6 +38,17 @@
         <Categories />
         <Variables>
           <Variable name="NAME" expression="" initialRange="0" />
+          <Variable name="SERVER" expression="list(&quot;World, Auth&quot;)" initialRange="0" />
+        </Variables>
+        <CustomProperties />
+      </Template>
+      <Template uid="1ad94c49-30cc-47a8-8523-d1db1853615d" shortcut="send" description="Send function" text="public static void Send$NAME$($SERVER$Client client)&#xD;&#xA;{&#xD;&#xA;	client.Send(new $NAME$($END$));&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
+        <Context>
+          <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+        </Context>
+        <Categories />
+        <Variables>
+          <Variable name="NAME" expression="" initialRange="1" />
           <Variable name="SERVER" expression="list(&quot;World, Auth&quot;)" initialRange="0" />
         </Variables>
         <CustomProperties />

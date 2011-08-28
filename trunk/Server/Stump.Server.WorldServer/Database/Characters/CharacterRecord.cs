@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Database.Characters
         public CharacterRecord(Breed breed)
             : this()
         {
-            Breed = (PlayableBreedEnum)breed.Id;
+            Breed = (PlayableBreedEnum) breed.Id;
 
             BaseHealth = breed.StartHealthPoint;
             AP = breed.StartActionPoints;
@@ -166,6 +166,8 @@ namespace Stump.Server.WorldServer.Database.Characters
 
         #region Stats
 
+        private IList<CharacterSpellRecord> m_spells;
+
         [Property("BaseHealth", NotNull = true)]
         public ushort BaseHealth
         {
@@ -241,6 +243,13 @@ namespace Stump.Server.WorldServer.Database.Characters
         {
             get;
             set;
+        }
+
+        [HasMany(typeof (CharacterSpellRecord), Cascade = ManyRelationCascadeEnum.Delete)]
+        public IList<CharacterSpellRecord> Spells
+        {
+            get { return m_spells ?? new List<CharacterSpellRecord>(); }
+            set { m_spells = value; }
         }
 
         #endregion

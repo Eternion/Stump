@@ -1,16 +1,32 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Castle.ActiveRecord;
+using Stump.Core.Attributes;
 using Stump.Core.Reflection;
+using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Database.Items;
+using Stump.Server.WorldServer.Worlds.Breeds;
+using Stump.Server.WorldServer.Worlds.Spells;
 
 namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 {
     public class CharacterManager : Singleton<CharacterManager>
     {
+        /// <summary>
+        ///   Maximum number of characters you can create/store in your account
+        /// </summary>
+        [Variable]
+        public static uint MaxCharacterSlot = 5;
+
+        private static Regex m_nameCheckerRegex = new Regex("^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled);
+
         public List<CharacterRecord> GetCharactersByAccount(WorldClient client)
         {
             var characters = new List<CharacterRecord>();
@@ -37,18 +53,70 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             return characters;
         }
 
-        public bool CreateCharacterOnAccount(CharacterRecord character, WorldClient client)
+        public CharacterCreationResultEnum CreateCharacter(WorldClient client, string name, sbyte breedId, bool sex, IEnumerable<int> colors)
         {
+            if (client.Characters.Count >= MaxCharacterSlot)
+                return CharacterCreationResultEnum.ERR_TOO_MANY_CHARACTERS;
+
+            if (CharacterRecord.DoesNameExists(name))
+                return CharacterCreationResultEnum.ERR_NAME_ALREADY_EXISTS;
+
+            if (!m_nameCheckerRegex.IsMatch(name))
+                return CharacterCreationResultEnum.ERR_INVALID_NAME;
+
+            var breed = BreedManager.Instance.GetBreed(breedId);
+
+            if (breed == null ||
+                client.Account.CanUseBreed(breedId) || !BreedManager.Instance.IsBreedAvailable(breedId))
+                return CharacterCreationResultEnum.ERR_NOT_ALLOWED;
+
+            var indexedColors = new List<int>();
+            int i = 0;
+            foreach (var color in colors)
+            {
+                if (color == -1)
+                    indexedColors.Add((int)( !sex ? breed.MaleColors[i] : breed.FemaleColors[i] ));
+                else
+                    indexedColors.Add(( i + 1 ) << 24 | color);
+
+                i++;
+            }
+
+            var look = !sex ? breed.MaleLook.Copy() : breed.FemaleLook.Copy();
+            look.indexedColors = indexedColors;
+
+            var record = new CharacterRecord(breed)
+            {
+                Experience = ExperienceManager.Instance.GetCharacterLevel(breed.StartLevel),
+                Name = name,
+                Sex = sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE,
+                EntityLook = look,
+            };
+
+
+            var inventory = new InventoryRecord(record);
+            record.Inventory = inventory;
+            // add items here
+
+            var spells = new List<CharacterSpellRecord>();
+            foreach (var learnableSpell in breed.LearnableSpells.Where(entry => entry.ObtainLevel <= breed.StartLevel))
+            {
+                spells.Add(SpellManager.Instance.CreateSpellRecord(record, SpellManager.Instance.GetSpellTemplate(learnableSpell.Id)));
+            }
+
+            record.Spells = spells;
+
             if (client.Characters == null)
                 client.Characters = new List<CharacterRecord>();
 
-            character.CreateAndFlush(); // we have to flush to get the id TODO : ID generator
-            client.Characters.Insert(0, character);
+            record.Save(); // is it a good way ?
+            client.Characters.Insert(0, record);
 
             WorldServer.Instance.IOTaskPool.EnqueueTask(() => IpcAccessor.Instance.ProxyObject.AddAccountCharacter(WorldServer.ServerInformation,
                                                                                                            client.Account.Id,
-                                                                                                           (uint)character.Id));
-            return true;
+                                                                                                           (uint)record.Id));
+
+            return CharacterCreationResultEnum.OK;
         }
 
         public void DeleteCharacterOnAccount(CharacterRecord character, WorldClient client)
@@ -60,7 +128,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 () => IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(WorldServer.ServerInformation, client.Account.Id, (uint) character.Id));
 
         }
-
 
         #region Character Name Random Generation
 

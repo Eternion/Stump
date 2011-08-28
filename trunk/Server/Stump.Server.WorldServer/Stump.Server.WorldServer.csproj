@@ -90,6 +90,12 @@
     <Compile Include="Database\Items\Templates\ItemSetRecord.cs" />
     <Compile Include="Database\Items\Templates\ItemTypeRecord.cs" />
     <Compile Include="Database\Items\Templates\WeaponTemplate.cs" />
+    <Compile Include="Database\Characters\CharacterSpellRecord.cs" />
+    <Compile Include="Database\Spells\SpellBombTemplate.cs" />
+    <Compile Include="Database\Spells\SpellLevelTemplate.cs" />
+    <Compile Include="Database\Spells\SpellTemplate.cs" />
+    <Compile Include="Database\Spells\SpellState.cs" />
+    <Compile Include="Database\Spells\SpellType.cs" />
     <Compile Include="Database\Startup\StartupActionItemRecord.cs" />
     <Compile Include="Database\Startup\StartupActionRecord.cs" />
     <Compile Include="Database\WorldBaseRecord.cs" />
@@ -228,6 +234,9 @@
     <Compile Include="Worlds\Maps\SubArea.cs" />
     <Compile Include="Worlds\Maps\SuperArea.cs" />
     <Compile Include="Worlds\Actors\Stats\StatsData.cs" />
+    <Compile Include="Worlds\Spells\Spell.cs" />
+    <Compile Include="Worlds\Spells\SpellInventory.cs" />
+    <Compile Include="Worlds\Spells\SpellManager.cs" />
     <Compile Include="Worlds\World.cs" />
   </ItemGroup>
   <ItemGroup>

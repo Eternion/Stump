@@ -20,6 +20,7 @@ using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 using Stump.Server.WorldServer.Worlds.Notifications;
 using Stump.Server.WorldServer.Worlds.Parties;
+using Stump.Server.WorldServer.Worlds.Spells;
 
 namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 {
@@ -27,6 +28,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         IStatsOwner, IInventoryOwner
     {
         private readonly CharacterRecord m_record;
+
+        internal CharacterRecord Record
+        {
+            get { return m_record; }
+        }
 
         public Character(CharacterRecord record, WorldClient client)
         {
@@ -379,6 +385,12 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             get { return ((StatsHealth) Stats[CaracteristicsEnum.Health]).TotalMax; }
         }
 
+        public SpellInventory Spells
+        {
+            get;
+            private set;
+        }
+
         #endregion
 
         #region Alignment
@@ -627,7 +639,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             WorldServer.Instance.IOTaskPool.EnqueueTask(SaveNow);
         }
 
-        public void SaveNow()
+        internal void SaveNow()
         {
             m_record.MapId = Map.Id;
             m_record.CellId = Cell.Id;
@@ -663,6 +675,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             UpperBoundExperience = ExperienceManager.Instance.GetCharacterNextLevelExperience(Level);
 
             Inventory = new Inventory(this, m_record.Inventory);
+            Spells = new SpellInventory(this);
         }
 
         #endregion

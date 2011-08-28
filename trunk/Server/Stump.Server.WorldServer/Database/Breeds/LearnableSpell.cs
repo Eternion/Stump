@@ -20,8 +20,8 @@ namespace Stump.Server.WorldServer.Database.Breeds
             set;
         }
 
-        [Property("Spell")]
-        public SpellIdEnum Spell
+        [Property("SpellId")]
+        public int SpellId
         {
             get;
             set;
