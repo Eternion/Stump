@@ -7,8 +7,14 @@ namespace Stump.Core.Pool.Task
 {
     public class TaskPool
     {
-        private readonly BlockingQueue<Action> m_tasks = new BlockingQueue<Action>();
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        private BlockingQueue<Action> m_tasks = new BlockingQueue<Action>();
+
+        public void Clear()
+        {
+            m_tasks = new BlockingQueue<Action>();
+        }
 
         public void EnqueueTask(Action action)
         {

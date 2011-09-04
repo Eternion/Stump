@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Database.Spells
        }
 
        [D2OField("range")]
-       [Property("Range")]
+       [Property("`Range`")]
        public uint Range
        {
            get;

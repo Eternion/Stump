@@ -5,10 +5,11 @@ using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Items;
+using Shortcut = Stump.Server.WorldServer.Database.Shortcuts.Shortcut;
 
 namespace Stump.Server.WorldServer.Database.Characters
 {
-    [ActiveRecord("characters")]
+    [ActiveRecord("characters", Access=PropertyAccess.Property)]
     public class CharacterRecord : WorldBaseRecord<CharacterRecord>
     {
         private EntityLook m_entityLook;
@@ -167,6 +168,7 @@ namespace Stump.Server.WorldServer.Database.Characters
         #region Stats
 
         private IList<CharacterSpellRecord> m_spells;
+        private IList<Shortcut> m_shortcuts;
 
         [Property("BaseHealth", NotNull = true)]
         public ushort BaseHealth
@@ -298,6 +300,22 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
+        #endregion
+
+        #region Shortcuts
+        [HasMany(typeof(Shortcut), Table = "shortcuts", ColumnKey = "CharacterId",
+            Cascade = ManyRelationCascadeEnum.Delete)]
+        public IList<Shortcut> Shortcuts
+        {
+            get
+            {
+                return m_shortcuts ?? new List<Shortcut>();
+            }
+            set
+            {
+                m_shortcuts = value;
+            }
+        }
         #endregion
 
         public static CharacterRecord FindById(int characterId)

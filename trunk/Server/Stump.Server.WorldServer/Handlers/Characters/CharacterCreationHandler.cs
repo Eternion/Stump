@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
            
             SendCharacterCreationResultMessage(client, result);
             
-            if (result != CharacterCreationResultEnum.OK)
+            if (result == CharacterCreationResultEnum.OK)
             {
                 BasicHandler.SendBasicNoOperationMessage(client);
                 SendCharactersListMessage(client);

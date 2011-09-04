@@ -16,7 +16,7 @@ namespace Stump.DofusProtocol.D2oClasses
 		public String scriptParamsCritical;
 		public int scriptId;
 		public int scriptIdCritical;
-		public uint iconId;
+		public int iconId;
 		public List<uint> spellLevels;
 		public Boolean useParamCache = true;
 	}

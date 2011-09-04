@@ -30,6 +30,12 @@ namespace Stump.Core.Pool.Task
             }
         }
 
+        public void Clear()
+        {
+            foreach (var task in m_cyclicTasks.ToArray())
+                UnregisterCyclicTask(task);
+        }
+
         public void RegisterCyclicTask(Action method, int interval)
         {
             RegisterCyclicTask(new CyclicTask(method, TimeSpan.FromSeconds(interval)));
@@ -52,7 +58,7 @@ namespace Stump.Core.Pool.Task
 
         public void UnregisterCyclicTask(Action method)
         {
-            foreach (CyclicTask task in m_cyclicTasks.Where(entry => entry.Action == method))
+            foreach (CyclicTask task in m_cyclicTasks.Where(entry => entry.Action == method).ToArray())
                 UnregisterCyclicTask(task);
         }
 

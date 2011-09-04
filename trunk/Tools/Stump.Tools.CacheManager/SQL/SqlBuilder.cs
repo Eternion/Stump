@@ -35,7 +35,7 @@ namespace Stump.Tools.CacheManager.SQL
             foreach (var value in values)
             {
                 builder.Append("`");
-                builder.Append(value.Key);
+                builder.Append(EscapeField(value.Key));
                 builder.Append("`");
 
                 if (!value.Equals(values.Last()))
@@ -54,7 +54,7 @@ namespace Stump.Tools.CacheManager.SQL
                 else
                 {
                     builder.Append("'");
-                    builder.Append(value.Value.ToString().Replace(@"\", @"\\").Replace("'", @"\'").Replace("\"", "\\\"").Replace("\n", "\\n").Replace("‘", "\\‘"));
+                    builder.Append(EscapeField(value.Value.ToString()));
                     builder.Append("'");
                 }
 
@@ -65,6 +65,11 @@ namespace Stump.Tools.CacheManager.SQL
             builder.Append(")");
 
             return builder.ToString();
+        }
+
+        public static string EscapeField(string field)
+        {
+            return field.Replace("`", "").Replace(@"\", @"\\").Replace("'", @"\'").Replace("\"", "\\\"").Replace("\n", "\\n").Replace("‘", "\\‘");
         }
     }
 }

@@ -1,15 +1,16 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Castle.ActiveRecord;
 using Stump.Core.Attributes;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Worlds.Breeds;
@@ -25,7 +26,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         [Variable]
         public static uint MaxCharacterSlot = 5;
 
-        private static Regex m_nameCheckerRegex = new Regex("^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled);
+        private static readonly Regex m_nameCheckerRegex = new Regex("^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled);
 
         public List<CharacterRecord> GetCharactersByAccount(WorldClient client)
         {
@@ -33,22 +34,22 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
             characters.AddRange(
                 client.Account.CharactersId.Select(delegate(uint id)
-                {
-                    try
-                    {
-                        return CharacterRecord.FindById((int) id);
-                    }
-                    catch (NotFoundException)
-                    {
-                        // character do not exist, then we remove it from the auth database
-                        WorldServer.Instance.IOTaskPool.EnqueueTask(() =>
-                                                            IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(
-                                                                WorldServer.ServerInformation,
-                                                                client.Account.Id,
-                                                                id));
-                        return null;
-                    }
-                }).Where(character => character != null));
+                                                       {
+                                                           try
+                                                           {
+                                                               return CharacterRecord.FindById((int) id);
+                                                           }
+                                                           catch (NotFoundException)
+                                                           {
+                                                               // character do not exist, then we remove it from the auth database
+                                                               WorldServer.Instance.IOTaskPool.EnqueueTask(() =>
+                                                                                                           IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(
+                                                                                                               WorldServer.ServerInformation,
+                                                                                                               client.Account.Id,
+                                                                                                               id));
+                                                               return null;
+                                                           }
+                                                       }).Where(character => character != null));
 
             return characters;
         }
@@ -64,44 +65,52 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             if (!m_nameCheckerRegex.IsMatch(name))
                 return CharacterCreationResultEnum.ERR_INVALID_NAME;
 
-            var breed = BreedManager.Instance.GetBreed(breedId);
+            Breed breed = BreedManager.Instance.GetBreed(breedId);
 
             if (breed == null ||
-                client.Account.CanUseBreed(breedId) || !BreedManager.Instance.IsBreedAvailable(breedId))
+                !client.Account.CanUseBreed(breedId) || !BreedManager.Instance.IsBreedAvailable(breedId))
                 return CharacterCreationResultEnum.ERR_NOT_ALLOWED;
 
             var indexedColors = new List<int>();
             int i = 0;
-            foreach (var color in colors)
+            foreach (int color in colors)
             {
-                if (color == -1)
-                    indexedColors.Add((int)( !sex ? breed.MaleColors[i] : breed.FemaleColors[i] ));
-                else
-                    indexedColors.Add(( i + 1 ) << 24 | color);
+                List<uint> breedColors = !sex ? breed.MaleColors : breed.FemaleColors;
+                if (breedColors.Count > i)
+                {
+                    if (color == -1)
+                        indexedColors.Add((i + 1) << 24 | (int) breedColors[i]);
+                    else
+                        indexedColors.Add((i + 1) << 24 | color);
+                }
 
                 i++;
             }
 
-            var look = !sex ? breed.MaleLook.Copy() : breed.FemaleLook.Copy();
+            EntityLook look = !sex ? breed.MaleLook.Copy() : breed.FemaleLook.Copy();
             look.indexedColors = indexedColors;
 
             var record = new CharacterRecord(breed)
-            {
-                Experience = ExperienceManager.Instance.GetCharacterLevel(breed.StartLevel),
-                Name = name,
-                Sex = sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE,
-                EntityLook = look,
-            };
+                             {
+                                 Experience = ExperienceManager.Instance.GetCharacterLevel(breed.StartLevel),
+                                 Name = name,
+                                 Sex = sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE,
+                                 EntityLook = look,
+                             };
 
+            record.Save(); // is it a good way ?
 
             var inventory = new InventoryRecord(record);
             record.Inventory = inventory;
+            inventory.Save();
             // add items here
 
             var spells = new List<CharacterSpellRecord>();
-            foreach (var learnableSpell in breed.LearnableSpells.Where(entry => entry.ObtainLevel <= breed.StartLevel))
+            foreach (LearnableSpell learnableSpell in breed.LearnableSpells.Where(entry => entry.ObtainLevel <= breed.StartLevel))
             {
-                spells.Add(SpellManager.Instance.CreateSpellRecord(record, SpellManager.Instance.GetSpellTemplate(learnableSpell.Id)));
+                CharacterSpellRecord spellRecord = SpellManager.Instance.CreateSpellRecord(record, SpellManager.Instance.GetSpellTemplate(learnableSpell.Id));
+                spellRecord.Save();
+                spells.Add(spellRecord);
             }
 
             record.Spells = spells;
@@ -109,12 +118,12 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             if (client.Characters == null)
                 client.Characters = new List<CharacterRecord>();
 
-            record.Save(); // is it a good way ?
+
             client.Characters.Insert(0, record);
 
             WorldServer.Instance.IOTaskPool.EnqueueTask(() => IpcAccessor.Instance.ProxyObject.AddAccountCharacter(WorldServer.ServerInformation,
-                                                                                                           client.Account.Id,
-                                                                                                           (uint)record.Id));
+                                                                                                                   client.Account.Id,
+                                                                                                                   (uint) record.Id));
 
             return CharacterCreationResultEnum.OK;
         }
@@ -126,7 +135,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
             WorldServer.Instance.IOTaskPool.EnqueueTask(
                 () => IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(WorldServer.ServerInformation, client.Account.Id, (uint) character.Id));
-
         }
 
         #region Character Name Random Generation
@@ -148,7 +156,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
                 for (int i = 0; i < namelen - 1; i++)
                 {
-                    name += ( ( i & 1 ) != 1 ) ? RandomConsonant(rand) : RandomVowel(rand);
+                    name += ((i & 1) != 1) ? RandomConsonant(rand) : RandomVowel(rand);
                 }
             } while (CharacterRecord.DoesNameExists(name));
 

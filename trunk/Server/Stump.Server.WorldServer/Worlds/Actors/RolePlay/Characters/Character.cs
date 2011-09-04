@@ -20,6 +20,7 @@ using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 using Stump.Server.WorldServer.Worlds.Notifications;
 using Stump.Server.WorldServer.Worlds.Parties;
+using Stump.Server.WorldServer.Worlds.Shortcuts;
 using Stump.Server.WorldServer.Worlds.Spells;
 
 namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
@@ -450,6 +451,14 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         #endregion
 
+        #region Shortcuts
+        public ShortcutBar Shortcuts
+        {
+            get;
+            private set;
+        }
+        #endregion
+
         #endregion
 
         #region Actions
@@ -652,8 +661,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             m_record.Chance = Stats[CaracteristicsEnum.Chance].Base;
             m_record.Intelligence = Stats[CaracteristicsEnum.Intelligence].Base;
             m_record.Wisdom = Stats[CaracteristicsEnum.Wisdom].Base;
-            m_record.BaseHealth = (ushort) (Stats[CaracteristicsEnum.Health] as StatsHealth).Base;
-            m_record.DamageTaken = (ushort) ( Stats[CaracteristicsEnum.Health] as StatsHealth ).DamageTaken;
+            m_record.BaseHealth = (ushort) Stats[CaracteristicsEnum.Health].Base;
+            m_record.DamageTaken = (ushort) ( (StatsHealth) Stats[CaracteristicsEnum.Health] ).DamageTaken;
 
 
             m_record.Save();
@@ -676,6 +685,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
             Inventory = new Inventory(this, m_record.Inventory);
             Spells = new SpellInventory(this);
+            Shortcuts = new ShortcutBar(this);
         }
 
         #endregion

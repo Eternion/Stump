@@ -74,7 +74,6 @@
     <Compile Include="Commands\Trigger\TriggerConsole.cs" />
     <Compile Include="Commands\Trigger\WorldConsoleTrigger.cs" />
     <Compile Include="Database\Accounts\WorldAccount.cs" />
-    <Compile Include="Database\AssignedIdRecord.cs" />
     <Compile Include="Database\Breeds\Breed.cs" />
     <Compile Include="Database\Breeds\LearnableSpell.cs" />
     <Compile Include="Database\Characters\CharacterRecord.cs" />
@@ -91,6 +90,9 @@
     <Compile Include="Database\Items\Templates\ItemTypeRecord.cs" />
     <Compile Include="Database\Items\Templates\WeaponTemplate.cs" />
     <Compile Include="Database\Characters\CharacterSpellRecord.cs" />
+    <Compile Include="Database\Shortcuts\ItemShortcut.cs" />
+    <Compile Include="Database\Shortcuts\Shortcut.cs" />
+    <Compile Include="Database\Shortcuts\SpellShortcut.cs" />
     <Compile Include="Database\Spells\SpellBombTemplate.cs" />
     <Compile Include="Database\Spells\SpellLevelTemplate.cs" />
     <Compile Include="Database\Spells\SpellTemplate.cs" />
@@ -145,6 +147,7 @@
     <Compile Include="Handlers\Inventory\InventorySpellsHandler.cs" />
     <Compile Include="Handlers\Inventory\InventoryStorageHandler.cs" />
     <Compile Include="Handlers\PredicatesDefinitions.cs" />
+    <Compile Include="Handlers\Shortcuts\ShortcutHandler.cs" />
     <Compile Include="Handlers\WorldHandlerAttribute.cs" />
     <Compile Include="Handlers\WorldHandlerContainer.cs" />
     <Compile Include="Core\IPC\IpcAccessor.cs" />
@@ -234,6 +237,7 @@
     <Compile Include="Worlds\Maps\SubArea.cs" />
     <Compile Include="Worlds\Maps\SuperArea.cs" />
     <Compile Include="Worlds\Actors\Stats\StatsData.cs" />
+    <Compile Include="Worlds\Shortcuts\ShortcutBar.cs" />
     <Compile Include="Worlds\Spells\Spell.cs" />
     <Compile Include="Worlds\Spells\SpellInventory.cs" />
     <Compile Include="Worlds\Spells\SpellManager.cs" />

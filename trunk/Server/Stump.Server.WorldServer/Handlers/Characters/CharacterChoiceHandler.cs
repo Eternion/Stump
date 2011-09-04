@@ -14,6 +14,7 @@ using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Initialization;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using Stump.Server.WorldServer.Handlers.Shortcuts;
 using Stump.Server.WorldServer.Worlds.Accounts;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 
@@ -110,7 +111,9 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             InventoryHandler.SendInventoryContentMessage(client);
             InventoryHandler.SendInventoryWeightMessage(client);
 
-            //InventoryHandler.SendSpellListMessage(client, true);
+            InventoryHandler.SendSpellListMessage(client, true);
+            ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.OBJECT);
+            ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.SPELL);
             //ContextHandler.SendSpellForgottenMessage(client);
             ContextHandler.SendNotificationListMessage(client, new List<int>());
 
