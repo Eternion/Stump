@@ -116,7 +116,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells
             return Math.Abs(m_x - point.X) + Math.Abs(m_y - point.Y);
         }
 
-        public DirectionsEnum OrientationTo(MapPoint point)
+        public DirectionsEnum OrientationToAdjacent(MapPoint point)
         {
             var vector = new Point
                              {
@@ -160,25 +160,25 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells
             return DirectionsEnum.DIRECTION_EAST;
         }
 
-        public uint AdvancedOrientationTo(MapPoint point, Boolean param2 = true)
+        public DirectionsEnum OrientationTo(MapPoint point, Boolean diagonal = true)
         {
-            int x = point.X - m_x;
-            int y = m_y - point.Y;
-            double orientation = Math.Acos(x/Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2)))*180/Math.PI*
-                            (point.Y > m_y ? (-1) : (1));
-            if (param2)
-            {
-                orientation = Math.Round(orientation/90)*2 + 1;
-            }
-            else
-            {
-                orientation = Math.Round(orientation/45) + 1;
-            }
+            int dx = point.X - m_x;
+            int dy = m_y - point.Y;
+
+            double distance = Math.Sqrt(dx*dx + dy*dy);
+            double angleInRadians = Math.Acos(dx / distance);
+
+            double angleInDegrees = angleInRadians * 180 / Math.PI;
+            double transformedAngle = angleInDegrees * (point.Y > m_y ? ( -1 ) : ( 1 ));
+
+            double orientation = !diagonal ? Math.Round(transformedAngle / 90) * 2 + 1 : Math.Round(transformedAngle / 45) + 1;
+
             if (orientation < 0)
             {
                 orientation = orientation + 8;
             }
-            return (uint) orientation;
+
+            return (DirectionsEnum) (uint) orientation;
         }
 
         public MapPoint GetNearestCellInDirection(DirectionsEnum direction)

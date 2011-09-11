@@ -18,6 +18,13 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells
                 handler(this);
         }
 
+        public ObjectPosition(ObjectPosition position)
+        {
+            m_map = position.Map;
+            m_cell = position.Cell;
+            m_direction = position.Direction;
+        }
+
         public ObjectPosition(Map map, Cell cell)
         {
             m_map = map;

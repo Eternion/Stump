@@ -31,6 +31,11 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             client.Send(new CurrentMapMessage(mapId));
         }
 
+        public static void SendMapFightCountMessage(WorldClient client, short fightsCount)
+        {
+            client.Send(new MapFightCountMessage(fightsCount));
+        }
+
         public static void SendMapComplementaryInformationsDataMessage(WorldClient client)
         {
             client.Send(client.ActiveCharacter.Map.GetMapComplementaryInformationsDataMessage());

@@ -85,7 +85,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
         #region Moving
         public event Action<ContextActor, MovementPath> StartMoving;
 
-        public void NotifyStartMoving(MovementPath path)
+        protected void NotifyStartMoving(MovementPath path)
         {
             Action<ContextActor, MovementPath> handler = StartMoving;
             if (handler != null) handler(this, path);
@@ -93,7 +93,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
 
         public event Action<ContextActor, MovementPath, bool> StopMoving;
 
-        public void NotifyStopMoving(MovementPath path, bool canceled)
+        protected void NotifyStopMoving(MovementPath path, bool canceled)
         {
             Action<ContextActor, MovementPath, bool> handler = StopMoving;
             if (handler != null) handler(this, path, canceled);
@@ -101,39 +101,37 @@ namespace Stump.Server.WorldServer.Worlds.Actors
 
         public event Action<ContextActor, ObjectPosition> InstantMoved;
 
-        public void NotifyTeleported(ObjectPosition path)
+        protected void NotifyTeleported(ObjectPosition path)
         {
             Action<ContextActor, ObjectPosition> handler = InstantMoved;
             if (handler != null) handler(this, path);
         }
 
         private bool m_isMoving;
-        protected MovementPath m_movingPath;
 
-        public bool IsMoving
+        public MovementPath MovementPath
         {
-            get
-            {
-                return m_isMoving && m_movingPath != null;
-            }
-            protected set
-            {
-                m_isMoving = value;
-            }
+            get;
+            private set;
+        }
+
+        public virtual bool IsMoving()
+        {
+            return m_isMoving && MovementPath != null;
         }
 
         public virtual bool CanMove()
         {
-            return !IsMoving;
+            return !IsMoving();
         }
 
-        public bool StartMove(MovementPath movementPath)
+        public virtual bool StartMove(MovementPath movementPath)
         {
             if (!CanMove())
                 return false;
 
-            IsMoving = true;
-            m_movingPath = movementPath;
+            m_isMoving = true;
+            MovementPath = movementPath;
 
             NotifyStartMoving(movementPath);
 
@@ -154,28 +152,28 @@ namespace Stump.Server.WorldServer.Worlds.Actors
 
         public virtual bool StopMove()
         {
-            if (!IsMoving)
+            if (!IsMoving())
                 return false;
 
-            Position = m_movingPath.End;
-            IsMoving = false;
+            Position = MovementPath.End;
+            m_isMoving = false;
 
-            NotifyStopMoving(m_movingPath, false);
-            m_movingPath = null;
+            NotifyStopMoving(MovementPath, false);
+            MovementPath = null;
 
             return true;
         }
 
         public virtual bool StopMove(ObjectPosition currentObjectPosition)
         {
-            if (!IsMoving || !m_movingPath.Contains(currentObjectPosition.Cell.Id))
+            if (!IsMoving() || !MovementPath.Contains(currentObjectPosition.Cell.Id))
                 return false;
 
             Position = currentObjectPosition;
-            IsMoving = false;
+            m_isMoving = false;
 
-            NotifyStopMoving(m_movingPath, true);
-            m_movingPath = null;
+            NotifyStopMoving(MovementPath, true);
+            MovementPath = null;
 
             return true;
         }

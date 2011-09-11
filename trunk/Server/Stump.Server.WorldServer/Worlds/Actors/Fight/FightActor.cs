@@ -23,9 +23,37 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                 handler(this, isReady);
         }
 
+        public event Action<FightActor, bool> TurnReadyStateChanged;
+
+        private void NotifyTurnReadyStateChanged(bool isReady)
+        {
+            Action<FightActor, bool> handler = TurnReadyStateChanged;
+            if (handler != null)
+                handler(this, isReady);
+        }
+
+        public event Action<FightActor, Cell> CellShown;
+
+        private void NotifyCellShown(Cell cell)
+        {
+            var handler = CellShown;
+            if (handler != null)
+                CellShown(this, cell);
+        }
+
+        public event Action<FightActor, int, FightActor> LifePointsChanged;
+
+        private void NotifyLifePointsChanged(int delta, FightActor from)
+        {
+            var handler = LifePointsChanged;
+
+            if (handler != null)
+                handler(this, delta, from);
+        }
+
         public event Action<FightActor> FighterLeft;
 
-        private void NotifyFightLeft()
+        internal void NotifyFightLeft()
         {
             Action<FightActor> handler = FighterLeft;
             if (handler != null)
@@ -61,12 +89,40 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         public event Action<FightActor, FightActor> Dead;
 
-        public void NotifyDead(FightActor killedBy)
+        private void NotifyDead(FightActor killedBy)
         {
             Action<FightActor, FightActor> handler = Dead;
             if (handler != null)
                 handler(this, killedBy);
         }
+
+        public event Action<FightActor, SequenceTypeEnum> SequenceStarted;
+
+        private void NotifySequenceStarted(SequenceTypeEnum sequenceType)
+        {
+            var handler = SequenceStarted;
+            if (handler != null)
+                handler(this, sequenceType);
+        }
+
+        public event Action<FightActor, SequenceTypeEnum> SequenceEnded;
+
+        private void NotifySequenceEnded(SequenceTypeEnum sequenceType)
+        {
+            var handler = SequenceEnded;
+            if (handler != null)
+                handler(this, sequenceType);
+        }
+
+        public event Action<FightActor, SequenceTypeEnum> SequenceActionEnded;
+
+        private void NotifySequenceActionEnded(SequenceTypeEnum sequenceType)
+        {
+            var handler = SequenceActionEnded;
+            if (handler != null)
+                handler(this, sequenceType);
+        }
+
         #endregion
 
         protected FightActor(FightTeam team)
@@ -102,6 +158,18 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         {
             get;
             protected set;
+        }
+
+        public SequenceTypeEnum Sequence
+        {
+            get;
+            private set;
+        }
+
+        public bool IsSequencing
+        {
+            get;
+            private set;
         }
 
         #region Stats
@@ -190,6 +258,24 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             private set;
         }
 
+        public void ToggleTurnReady(bool ready)
+        {
+            IsTurnReady = ready;
+
+            NotifyTurnReadyStateChanged(ready);
+        }
+
+        public bool IsTurnReady
+        {
+            get;
+            internal set;
+        }
+
+        public void ShowCell(Cell cell)
+        {
+            NotifyCellShown(cell);
+        }
+
         public bool IsAlive()
         {
             return Stats[CaracteristicsEnum.Health].Total > 0;
@@ -198,6 +284,33 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         public bool IsDead()
         {
             return !IsAlive();
+        }
+
+        public bool IsTeamLeader()
+        {
+            return Team.Leader == this;
+        }
+
+        public bool IsFighterTurn()
+        {
+            return Fight.TimeLine.Current == this;
+        }
+
+        public override bool CanMove()
+        {
+            return base.CanMove() && IsFighterTurn();
+        }
+
+        public virtual bool CanPlay()
+        {
+            return IsAlive();
+        }
+
+        public void PassTurn()
+        {
+            Fight.RequestTurnEnd(this);
+
+            NotifyTurnPassed();
         }
 
         public void Die()
@@ -212,7 +325,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
             DamageTaken += damage;
 
-            //NotifyLoseLifePoints(damage, from);
+            NotifyLifePointsChanged(-damage, from);
 
             if (IsDead())
                 NotifyDead(from);
@@ -227,7 +340,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
             DamageTaken += damage;
 
-            //NotifyLoseLifePoints(damage);
+            NotifyLifePointsChanged(-damage, null);
 
             if (IsDead())
                 NotifyDead(null);
@@ -242,6 +355,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
             DamageTaken -= healPoints;
 
+            NotifyLifePointsChanged(healPoints, null);
+
             return healPoints;
         }
 
@@ -250,22 +365,48 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             if (!Fight.CanChangePosition(this, cell))
                 return; 
 
-            // todo : found direction
-
             Position.Cell = cell;
 
             NotifyPrePlacementChanged(Position);
         }
 
-        public bool IsFighterTurn()
+        public bool StartSequence(SequenceTypeEnum sequenceType)
         {
-            return false;
+            if (IsSequencing)
+                return false;
+
+            IsSequencing = true;
+            Sequence = sequenceType;
+
+            NotifySequenceStarted(sequenceType);
+
+            return true;
         }
 
-        public override bool CanMove()
+        public bool EndSequence()
         {
-            return IsFighterTurn();
+            if (!IsSequencing)
+                return false;
+
+            IsSequencing = false;
+
+            NotifySequenceEnded(Sequence);
+
+            return true;
         }
+
+        public void EndSequenceAction()
+        {
+            switch (Sequence)
+            {
+                case SequenceTypeEnum.SEQUENCE_MOVE:
+                    StopMove();
+                    break;
+            }
+
+            NotifySequenceActionEnded(Sequence);
+        }
+
 
         public override EntityDispositionInformations GetEntityDispositionInformations()
         {

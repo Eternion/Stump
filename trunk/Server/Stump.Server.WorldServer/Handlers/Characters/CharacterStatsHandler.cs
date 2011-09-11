@@ -16,17 +16,19 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             client.Send(new LifePointsRegenBeginMessage(regenRate));
         }
 
-        public static void SendUpdateLifePointsMessage(WorldClient client, byte lifePoint)
+        public static void SendUpdateLifePointsMessage(WorldClient client)
         {
-            client.Send(new UpdateLifePointsMessage(lifePoint, ((StatsHealth)client.ActiveCharacter.Stats[CaracteristicsEnum.Health]).TotalMax));
+            client.Send(new UpdateLifePointsMessage(
+                client.ActiveCharacter.Stats[CaracteristicsEnum.Health].Total,
+                ( (StatsHealth)client.ActiveCharacter.Stats[CaracteristicsEnum.Health] ).TotalMax));
         }
 
-        public static void SendLifePointsRegenEndMessage(WorldClient client)
+        public static void SendLifePointsRegenEndMessage(WorldClient client, int recoveredLife)
         {
             client.Send(new LifePointsRegenEndMessage(
                 client.ActiveCharacter.Stats[CaracteristicsEnum.Health].Total,
                 ((StatsHealth)client.ActiveCharacter.Stats[CaracteristicsEnum.Health]).TotalMax,
-                0));
+                recoveredLife));
         }
 
         public static void SendCharacterStatsListMessage(WorldClient client)

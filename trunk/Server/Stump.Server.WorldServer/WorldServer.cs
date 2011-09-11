@@ -7,6 +7,7 @@ using System.Reflection;
 using Castle.ActiveRecord.Framework.Config;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer;
@@ -19,6 +20,7 @@ using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Worlds.Maps.Cells;
 
 namespace Stump.Server.WorldServer
 {

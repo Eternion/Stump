@@ -73,6 +73,10 @@
     <Compile Include="Commands\Trigger\TriggerChat.cs" />
     <Compile Include="Commands\Trigger\TriggerConsole.cs" />
     <Compile Include="Commands\Trigger\WorldConsoleTrigger.cs" />
+    <Compile Include="Handlers\Actions\ActionsFightHandler.cs" />
+    <Compile Include="Handlers\Actions\ActionsHandler.cs" />
+    <Compile Include="Handlers\Actions\ActionsSequenceHandler.cs" />
+    <Compile Include="Rates.cs" />
     <Compile Include="Database\Accounts\WorldAccount.cs" />
     <Compile Include="Database\Breeds\Breed.cs" />
     <Compile Include="Database\Breeds\LearnableSpell.cs" />
@@ -214,11 +218,11 @@
     <Compile Include="Worlds\Exchanges\PlayerTradeRequest.cs" />
     <Compile Include="Worlds\Exchanges\TradeManager.cs" />
     <Compile Include="Worlds\Fights\Fight.cs" />
-    <Compile Include="Worlds\Fights\FightBlade.cs" />
     <Compile Include="Worlds\Fights\FightManager.cs" />
     <Compile Include="Worlds\Fights\FightRequest.cs" />
     <Compile Include="Worlds\Fights\FightState.cs" />
     <Compile Include="Worlds\Fights\FightTeam.cs" />
+    <Compile Include="Worlds\Fights\TimeLine.cs" />
     <Compile Include="Worlds\Notifications\Notification.cs" />
     <Compile Include="Worlds\Parties\Party.cs" />
     <Compile Include="Worlds\Parties\PartyInvitation.cs" />

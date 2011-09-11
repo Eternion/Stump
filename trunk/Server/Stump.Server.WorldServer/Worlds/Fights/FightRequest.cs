@@ -42,8 +42,8 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
             var fight = FightManager.Instance.Create(Source.Map, FightTypeEnum.FIGHT_TYPE_CHALLENGE);
 
-            fight.BlueTeam.AddFighter(Source.JoinFight(fight.BlueTeam));
-            fight.RedTeam.AddFighter(Target.JoinFight(fight.RedTeam));
+            fight.BlueTeam.AddFighter(Source.CreateFighter(fight.BlueTeam));
+            fight.RedTeam.AddFighter(Target.CreateFighter(fight.RedTeam));
 
             fight.StartPlacementPhase();
 

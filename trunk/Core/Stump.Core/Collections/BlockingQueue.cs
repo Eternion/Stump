@@ -7,11 +7,11 @@ namespace Stump.Core.Collections
     {
         private readonly object m_lockObj = new object();
         private readonly Queue<T> m_queue;
-        private bool m_isWaiting;
 
         public bool IsWaiting
         {
-            get { return m_isWaiting; }
+            get;
+            private set;
         }
 
         public int Count
@@ -47,10 +47,10 @@ namespace Stump.Core.Collections
             {
                 while (m_queue.Count == 0)
                 {
-                    m_isWaiting = true;
+                    IsWaiting = true;
                     Monitor.Wait(m_lockObj);
                 }
-                m_isWaiting = false;
+                IsWaiting = false;
                 return m_queue.Dequeue();
             }
         }

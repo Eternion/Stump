@@ -6,6 +6,8 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Worlds.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Worlds.Fights
 {
@@ -19,6 +21,15 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             Action<FightTeam, FightActor> handler = FighterAdded;
             if (handler != null)
                 handler(this, fighter);
+        }
+
+        public event Action<FightTeam, FightOptionsEnum> TeamOptionsChanged;
+
+        private void NotifyTeamOptionsChanged(FightOptionsEnum option)
+        {
+            var handler = TeamOptionsChanged;
+            if (handler != null)
+                handler(this, option);
         }
 
         public event Action<FightTeam, FightActor> FighterRemoved;
@@ -40,8 +51,6 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             Id = id;
             PlacementCells = placementCells;
             TeamType = teamType;
-
-            Blade = new FightBlade(this);
         }
 
         public sbyte Id
@@ -50,7 +59,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             private set;
         }
 
-        public FightBlade Blade
+        public ObjectPosition BladePosition
         {
             get;
             private set;
@@ -82,14 +91,119 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             }
         }
 
+        public bool IsSecret
+        {
+            get;
+            set;
+        }
+
+        public bool IsRestrictedToParty
+        {
+            get;
+            set;
+        }
+
+        public bool IsClosed
+        {
+            get;
+            set;
+        }
+
+        public bool IsAskingForHelp
+        {
+            get;
+            set;
+        }
+
+        public void ToggleOption(FightOptionsEnum option)
+        {
+            switch (option)
+            {
+                case FightOptionsEnum.FIGHT_OPTION_SET_CLOSED:
+                    IsClosed = !IsClosed;
+                    break;
+                case FightOptionsEnum.FIGHT_OPTION_ASK_FOR_HELP:
+                    IsAskingForHelp = !IsAskingForHelp;
+                    break;
+                case FightOptionsEnum.FIGHT_OPTION_SET_SECRET:
+                    IsSecret = !IsSecret;
+                    break;
+                case FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY:
+                    IsRestrictedToParty = !IsRestrictedToParty;
+                    break;
+            }
+
+            NotifyTeamOptionsChanged(option);
+        }
+
+        public bool GetOptionState(FightOptionsEnum option)
+        {
+            switch (option)
+            {
+                case FightOptionsEnum.FIGHT_OPTION_SET_CLOSED:
+                    return IsClosed;
+                case FightOptionsEnum.FIGHT_OPTION_ASK_FOR_HELP:
+                    return IsAskingForHelp;
+                case FightOptionsEnum.FIGHT_OPTION_SET_SECRET:
+                    return IsSecret;
+                case FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY:
+                    return IsRestrictedToParty;
+                default:
+                    return false;
+            }
+        }
+
         public bool AreAllReady()
         {
             return m_fighters.All(entry => entry.IsReady);
         }
 
+        public bool AreAllTurnReady()
+        {
+            return m_fighters.All(entry => entry.IsTurnReady);
+        }
+
+        public bool AreAllDead()
+        {
+            return m_fighters.Count <= 0 || m_fighters.All(entry => entry.IsDead());
+        }
+
+        public void SetAllTurnReady(bool isReady)
+        {
+            foreach (var actor in m_fighters)
+            {
+                actor.IsTurnReady = isReady;
+            }
+        }
+
         public bool IsFull()
         {
             return Fight.State == FightState.Placement && m_fighters.Count > PlacementCells.Count();
+        }
+
+        public FighterRefusedReasonEnum CanJoin(Character character)
+        {
+            if (Fight.State != FightState.Placement)
+                return FighterRefusedReasonEnum.TOO_LATE;
+
+            if (IsFull())
+                return FighterRefusedReasonEnum.TEAM_FULL;
+
+            if (IsClosed)
+                return FighterRefusedReasonEnum.TEAM_LIMITED_BY_MAINCHARACTER;
+
+            if (IsSecret)
+                return FighterRefusedReasonEnum.TEAM_LIMITED_BY_MAINCHARACTER;
+
+            if (IsRestrictedToParty && Leader is CharacterFighter)
+            {
+                var leader = Leader as CharacterFighter;
+
+                if (!leader.Character.IsInParty() || !leader.Character.Party.IsInGroup(character))
+                    return FighterRefusedReasonEnum.TEAM_LIMITED_BY_MAINCHARACTER;
+            }
+
+            return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }
 
         public bool AddFighter(FightActor actor)
@@ -104,7 +218,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
                 m_fighters.Add(actor);
 
                 if (firstFighter)
-                    Blade.Move(actor.MapPosition);
+                    BladePosition = actor.MapPosition;
 
                 NotifyFighterAdded(actor);
                 return true;
@@ -183,6 +297,15 @@ namespace Stump.Server.WorldServer.Worlds.Fights
                 (sbyte) TeamType,
                 m_fighters.Select(entry => entry.GetFightTeamMemberInformations())
                 );
+        }
+
+        public FightOptionsInformations GetFightOptionsInformations()
+        {
+            return new FightOptionsInformations(
+                IsSecret,
+                IsRestrictedToParty,
+                IsClosed,
+                IsAskingForHelp);
         }
     }
 }

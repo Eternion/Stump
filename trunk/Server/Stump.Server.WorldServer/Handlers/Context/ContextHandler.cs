@@ -4,10 +4,12 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Worlds;
 using Stump.Server.WorldServer.Worlds.Actors;
+using Stump.Server.WorldServer.Worlds.Actors.Fight;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
@@ -19,20 +21,23 @@ namespace Stump.Server.WorldServer.Handlers.Context
     {
         private ContextHandler()
         {
-
+            
         }
 
         [WorldHandler(GameContextCreateRequestMessage.Id)]
         public static void HandleGameContextCreateRequestMessage(WorldClient client,
                                                                  GameContextCreateRequestMessage message)
         {
+            if (client.ActiveCharacter.InWorld)
+                return;
+
             SendGameContextDestroyMessage(client);
             SendGameContextCreateMessage(client, 1);
 
             CharacterHandler.SendCharacterStatsListMessage(client);
-            CharacterHandler.SendLifePointsRegenBeginMessage(client, 60);
 
             client.ActiveCharacter.LogIn();
+            client.ActiveCharacter.StartRegen();
         }
 
         [WorldHandler(GameMapChangeOrientationRequestMessage.Id)]
@@ -69,6 +74,15 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                                client.ActiveCharacter.Position.Direction));
         }
 
+        [WorldHandler(ShowCellRequestMessage.Id)]
+        public static void HandleShowCellRequestMessage(WorldClient client, ShowCellRequestMessage message)
+        {
+            if (!client.ActiveCharacter.IsFighting())
+                return;
+
+            client.ActiveCharacter.Fighter.ShowCell(client.ActiveCharacter.Map.Cells[message.cellId]);
+        }
+
         public static void SendGameContextCreateMessage(WorldClient client, sbyte context)
         {
             client.Send(new GameContextCreateMessage(context));
@@ -89,6 +103,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void SendGameContextRemoveElementMessage(WorldClient client, ContextActor actor)
         {
             client.Send(new GameContextRemoveElementMessage(actor.Id));
+        }
+
+        public static void SendShowCellMessage(WorldClient client, ContextActor source, Cell cell)
+        {
+            client.Send(new ShowCellMessage(source.Id, cell.Id));
         }
 
         public static void SendGameContextRefreshEntityLookMessage(WorldClient client, ContextActor actor)

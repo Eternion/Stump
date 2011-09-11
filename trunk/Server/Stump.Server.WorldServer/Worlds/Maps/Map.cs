@@ -15,6 +15,7 @@ using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Worlds.Actors;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Worlds.Fights;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 using Stump.Server.WorldServer.Worlds.Maps.Pathfinding;
 
@@ -46,6 +47,24 @@ namespace Stump.Server.WorldServer.Worlds.Maps
                 handler(this, actor);
         }
 
+        public event Action<Map, Fight> FightCreated;
+
+        private void NotifyFightCreated(Fight fight)
+        {
+            Action<Map, Fight> handler = FightCreated;
+            if (handler != null)
+                handler(this, fight);
+        }
+
+        public event Action<Map, Fight> FightRemoved;
+
+        private void NotifyFightRemoved(Fight fight)
+        {
+            Action<Map, Fight> handler = FightRemoved;
+            if (handler != null)
+                handler(this, fight);
+        }
+
         #endregion
 
         /// <summary>
@@ -54,8 +73,9 @@ namespace Stump.Server.WorldServer.Worlds.Maps
         public static MapPoint[] PointsGrid;
 
         private readonly ConcurrentDictionary<int, RolePlayActor> m_actors = new ConcurrentDictionary<int, RolePlayActor>();
-        private readonly Dictionary<int, MapNeighbour> m_mapsAround = new Dictionary<int, MapNeighbour>();
         private readonly UniqueIdProvider m_contextualIds = new UniqueIdProvider(sbyte.MinValue);
+        private readonly List<Fight> m_fights = new List<Fight>();
+        private readonly Dictionary<int, MapNeighbour> m_mapsAround = new Dictionary<int, MapNeighbour>();
 
         protected internal MapRecord Record;
 
@@ -240,6 +260,19 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         #region Gets
 
+        public IEnumerable<Character> GetAllCharacters()
+        {
+            return GetActors<Character>();
+        }
+
+        public void ForEach(Action<Character> action)
+        {
+            foreach (Character character in GetAllCharacters())
+            {
+                action(character);
+            }
+        }
+
         public sbyte GetNextContextualId()
         {
             return (sbyte) m_contextualIds.Pop();
@@ -248,6 +281,28 @@ namespace Stump.Server.WorldServer.Worlds.Maps
         public void FreeContextualId(sbyte id)
         {
             m_contextualIds.Push(id);
+        }
+
+        public T GetActor<T>(int id)
+            where T : RolePlayActor
+        {
+            return m_actors[id] as T;
+        }
+
+        public T GetActor<T>(Predicate<T> predicate)
+            where T : RolePlayActor
+        {
+            return m_actors.Values.OfType<T>().Where(entry => predicate(entry)).SingleOrDefault();
+        }
+
+        public IEnumerable<T> GetActors<T>()
+        {
+            return m_actors.Values.OfType<T>(); // after a benchmark we conclued that it takes approximatively 10 ticks
+        }
+
+        public IEnumerable<T> GetActors<T>(Predicate<T> predicate)
+        {
+            return m_actors.Values.OfType<T>();
         }
 
         #region Neighbour
@@ -296,39 +351,31 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         #endregion
 
-        public IEnumerable<Character> GetAllCharacters()
+        #endregion
+
+        #region Fights
+
+        public void AddFight(Fight fight)
         {
-            return GetActors<Character>();
+            if (fight.Map != this)
+                return;
+
+            m_fights.Add(fight);
+
+            ForEach(character => ContextRoleplayHandler.SendMapFightCountMessage(character.Client,
+                                                                                 (short) m_fights.Count));
+
+            NotifyFightCreated(fight);
         }
 
-        public void ForEach(Action<Character> action)
+        public void RemoveFight(Fight fight)
         {
-            foreach (Character character in GetAllCharacters())
-            {
-                action(character);
-            }
-        }
+            m_fights.Remove(fight);
 
-        public T GetActor<T>(int id)
-            where T : RolePlayActor
-        {
-            return m_actors[id] as T;
-        }
+            ForEach(character => ContextRoleplayHandler.SendMapFightCountMessage(character.Client,
+                                                                                 (short) m_fights.Count));
 
-        public T GetActor<T>(Predicate<T> predicate)
-            where T : RolePlayActor
-        {
-            return m_actors.Values.OfType<T>().Where(entry => predicate(entry)).SingleOrDefault();
-        }
-
-        public IEnumerable<T> GetActors<T>()
-        {
-            return m_actors.Values.OfType<T>(); // after a benchmark we conclued that it takes approximatively 10 ticks
-        }
-
-        public IEnumerable<T> GetActors<T>(Predicate<T> predicate)
-        {
-            return m_actors.Values.OfType<T>();
+            NotifyFightRemoved(fight);
         }
 
         #endregion
@@ -357,26 +404,43 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         private void OnEnter(RolePlayActor actor)
         {
-            m_mapComplementaryInformationsDataMessage.Invalidate();
-
             actor.StartMoving += OnActorStartMoving;
             actor.StopMoving += OnActorStopMoving;
+
+            ForEach(entry => ContextRoleplayHandler.SendGameRolePlayShowActorMessage(entry.Client, actor));
 
             if (actor is Character)
             {
                 var character = actor as Character;
 
                 ContextRoleplayHandler.SendCurrentMapMessage(character.Client, Id);
+
+                if (m_fights.Count > 0)
+                    ContextRoleplayHandler.SendMapFightCountMessage(character.Client, (short)m_fights.Count);
+
+                SendActorsActions(character);
+
                 BasicHandler.SendBasicTimeMessage(character.Client);
             }
+        }
 
-            ForEach(entry => ContextRoleplayHandler.SendGameRolePlayShowActorMessage(entry.Client, actor));
+        private void SendActorsActions(Character character)
+        {
+            foreach (RolePlayActor actor in m_actors.Values)
+            {
+                if (actor.IsMoving())
+                {
+                    List<short> moveKeys = actor.MovementPath.GetServerMovementKeys();
+                    RolePlayActor actorMoving = actor;
+
+                    ContextHandler.SendGameMapMovementMessage(character.Client, moveKeys, actorMoving);
+                    BasicHandler.SendBasicNoOperationMessage(character.Client);
+                }
+            }
         }
 
         private void OnLeave(RolePlayActor actor)
         {
-            m_mapComplementaryInformationsDataMessage.Invalidate();
-
             actor.StartMoving -= OnActorStartMoving;
             actor.StopMoving -= OnActorStopMoving;
 
@@ -392,10 +456,10 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             List<short> movementsKey = path.GetServerMovementKeys();
 
             ForEach(delegate(Character entry)
-                         {
-                             ContextHandler.SendGameMapMovementMessage(entry.Client, movementsKey, actor);
-                             BasicHandler.SendBasicNoOperationMessage(entry.Client);
-                         });
+                        {
+                            ContextHandler.SendGameMapMovementMessage(entry.Client, movementsKey, actor);
+                            BasicHandler.SendBasicNoOperationMessage(entry.Client);
+                        });
         }
 
         private void OnActorStopMoving(ContextActor actor, MovementPath path, bool canceled)
@@ -408,15 +472,12 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         private void InitializeValidators()
         {
-            m_mapComplementaryInformationsDataMessage =
-                new ObjectValidator<MapComplementaryInformationsDataMessage>(BuildMapComplementaryInformationsDataMessage);
+            // for later
         }
 
         #region MapComplementaryInformationsDataMessage
 
-        private ObjectValidator<MapComplementaryInformationsDataMessage> m_mapComplementaryInformationsDataMessage;
-
-        private MapComplementaryInformationsDataMessage BuildMapComplementaryInformationsDataMessage()
+        public MapComplementaryInformationsDataMessage GetMapComplementaryInformationsDataMessage()
         {
             return new MapComplementaryInformationsDataMessage(
                 (short) SubArea.Id,
@@ -427,12 +488,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
                 new InteractiveElement[0],
                 new StatedElement[0],
                 new MapObstacle[0],
-                new FightCommonInformations[0]);
-        }
-
-        public MapComplementaryInformationsDataMessage GetMapComplementaryInformationsDataMessage()
-        {
-            return m_mapComplementaryInformationsDataMessage;
+                m_fights.Select(entry => entry.GetFightCommonInformations()));
         }
 
         #endregion

@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay
 
         public bool Teleport(MapNeighbour mapNeighbour)
         {
-            if (IsMoving)
+            if (IsMoving())
                 StopMove();
 
             var destination = new ObjectPosition(Position.Map.GetNeighbouringMap(mapNeighbour),
@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay
 
         public virtual bool Teleport(ObjectPosition destination)
         {
-            if (IsMoving)
+            if (IsMoving())
                 StopMove();
 
             if (Position.Map == destination.Map)

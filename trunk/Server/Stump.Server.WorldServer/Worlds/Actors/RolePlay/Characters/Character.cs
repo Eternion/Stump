@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Stump.Core.Cache;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
 using Stump.Server.WorldServer.Worlds.Actors.Interfaces;
@@ -26,14 +26,9 @@ using Stump.Server.WorldServer.Worlds.Spells;
 namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 {
     public sealed class Character : Humanoid,
-        IStatsOwner, IInventoryOwner
+                                    IStatsOwner, IInventoryOwner
     {
         private readonly CharacterRecord m_record;
-
-        internal CharacterRecord Record
-        {
-            get { return m_record; }
-        }
 
         public Character(CharacterRecord record, WorldClient client)
         {
@@ -44,6 +39,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         }
 
         #region Events
+
         public event Action<Character> LoggedIn;
 
         private void NotifyLoggedIn()
@@ -77,15 +73,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         }
 
         #region Identifier
-        public override int Id
-        {
-            get { return m_record.Id; }
-            protected set
-            {
-                m_record.Id = value;
-                base.Id = value;
-            }
-        }
 
         public override string Name
         {
@@ -96,9 +83,21 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 base.Name = value;
             }
         }
+
+        public override int Id
+        {
+            get { return m_record.Id; }
+            protected set
+            {
+                m_record.Id = value;
+                base.Id = value;
+            }
+        }
+
         #endregion
 
         #region Inventory
+
         public Inventory Inventory
         {
             get;
@@ -130,6 +129,24 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         #endregion
 
         #region Dialog
+
+        public IDialoger Dialoger
+        {
+            get;
+            private set;
+        }
+
+        public IDialog Dialog
+        {
+            get { return Dialoger != null ? Dialoger.Dialog : null; }
+        }
+
+        public IRequestBox RequestBox
+        {
+            get;
+            private set;
+        }
+
         public void SetDialoger(IDialoger dialoger)
         {
             Dialoger = dialoger;
@@ -155,26 +172,9 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             return IsInRequest() || IsDialoging();
         }
 
-        public IDialoger Dialoger
-        {
-            get;
-            private set;
-        }
-
-        public IDialog Dialog
-        {
-            get { return Dialoger != null ? Dialoger.Dialog : null; }
-        }
-
         public bool IsDialoging()
         {
             return Dialoger != null;
-        }
-
-        public IRequestBox RequestBox
-        {
-            get;
-            private set;
         }
 
         public bool IsInRequest()
@@ -208,6 +208,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         #endregion
 
         #region Trade
+
         public ITrade Trade
         {
             get { return Dialog as ITrade; }
@@ -251,10 +252,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         public EntityLook RealLook
         {
-            get
-            {
-                return m_record.EntityLook;
-            }
+            get { return m_record.EntityLook; }
             private set
             {
                 m_record.EntityLook = value;
@@ -264,10 +262,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         public override EntityLook Look
         {
-            get
-            {
-                return ( CustomLookActivated && CustomLook != null ? CustomLook : RealLook );
-            }
+            get { return (CustomLookActivated && CustomLook != null ? CustomLook : RealLook); }
         }
 
         public SexTypeEnum Sex
@@ -281,7 +276,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             get { return m_record.Breed; }
             private set
             {
-                m_record.Breed = value; 
+                m_record.Breed = value;
                 Breed = BreedManager.Instance.GetBreed(value);
             }
         }
@@ -296,15 +291,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         #region Stats
 
-        public delegate void LevelChangedHandler(Character character, byte currentLevel, int difference);
-        public event LevelChangedHandler LevelChanged;
+        #region Delegates
 
-        public void NotifyLevelChanged(byte currentlevel, int difference)
-        {
-            LevelChangedHandler handler = LevelChanged;
-            if (handler != null)
-                handler(this, currentlevel, difference);
-        }
+        public delegate void LevelChangedHandler(Character character, byte currentLevel, int difference);
+
+        #endregion
 
         public byte Level
         {
@@ -320,14 +311,14 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 m_record.Experience = value;
                 if (value >= UpperBoundExperience)
                 {
-                    var lastLevel = Level;
+                    byte lastLevel = Level;
 
                     Level = ExperienceManager.Instance.GetCharacterLevel(m_record.Experience);
 
                     LowerBoundExperience = ExperienceManager.Instance.GetCharacterLevelExperience(Level);
                     UpperBoundExperience = ExperienceManager.Instance.GetCharacterNextLevelExperience(Level);
 
-                    var difference = Level - lastLevel;
+                    int difference = Level - lastLevel;
 
                     NotifyLevelChanged(Level, difference);
                 }
@@ -370,12 +361,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             set { m_record.Energy = value; }
         }
 
-        public StatsFields Stats
-        {
-            get;
-            private set;
-        }
-
         public int LifePoints
         {
             get { return Stats[CaracteristicsEnum.Health].Total; }
@@ -390,6 +375,21 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         {
             get;
             private set;
+        }
+
+        public StatsFields Stats
+        {
+            get;
+            private set;
+        }
+
+        public event LevelChangedHandler LevelChanged;
+
+        public void NotifyLevelChanged(byte currentlevel, int difference)
+        {
+            LevelChangedHandler handler = LevelChanged;
+            if (handler != null)
+                handler(this, currentlevel, difference);
         }
 
         #endregion
@@ -428,6 +428,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         #endregion
 
         #region Fight
+
         public CharacterFighter Fighter
         {
             get;
@@ -452,18 +453,71 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         #endregion
 
         #region Shortcuts
+
         public ShortcutBar Shortcuts
         {
             get;
             private set;
         }
+
+        #endregion
+
+        #region Regen
+
+        public byte RegenSpeed
+        {
+            get;
+            private set;
+        }
+
+        public DateTime? RegenStartTime
+        {
+            get;
+            private set;
+        }
+
         #endregion
 
         #endregion
 
         #region Actions
 
+        #region Move
+        public override bool StartMove(Maps.Pathfinding.MovementPath movementPath)
+        {
+            if (IsFighting())
+                return Fighter.StartMove(movementPath);
+
+            return base.StartMove(movementPath);
+        }
+
+        public override bool StopMove()
+        {
+            if (IsFighting())
+                return Fighter.StopMove();
+
+            return base.StopMove();
+        }
+
+        public override bool MoveInstant(ObjectPosition destination)
+        {
+            if (IsFighting())
+                return Fighter.MoveInstant(destination);
+
+            return base.MoveInstant(destination);
+        }
+
+        public override bool StopMove(ObjectPosition currentObjectPosition)
+        {
+            if (IsFighting())
+                return Fighter.StopMove(currentObjectPosition);
+
+            return base.StopMove(currentObjectPosition);
+        }
+        #endregion
+
         #region Dialog
+
         public void DisplayNotification(Notification notification)
         {
             notification.Display();
@@ -496,15 +550,15 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 RequestBox.Cancel();
         }
 
-
         #endregion
 
         #region Party
+
         public void Invite(Character target)
         {
             if (!IsInParty())
             {
-                var party = PartyManager.Instance.Create(this);
+                Party party = PartyManager.Instance.Create(this);
 
                 EnterParty(party);
             }
@@ -585,17 +639,20 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             Party = null;
         }
 
-
         #endregion
 
         #region Fight
+
         public FighterRefusedReasonEnum CanRequestFight(Character target)
         {
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }
 
-        public CharacterFighter JoinFight(FightTeam team)
+        public CharacterFighter CreateFighter(FightTeam team)
         {
+            Map.Leave(this);
+            StopRegen();
+
             ContextHandler.SendGameContextDestroyMessage(Client);
             ContextHandler.SendGameContextCreateMessage(Client, 2);
 
@@ -604,8 +661,84 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             return Fighter = new CharacterFighter(this, team);
         }
 
+        /// <summary>
+        /// Rejoin the map after a fight
+        /// </summary>
+        public void RejoinMap()
+        {
+            if (!IsFighting())
+                return;
+
+            Fighter.NotifyFightLeft();
+            Fighter = null;
+
+            ContextHandler.SendGameContextDestroyMessage(Client);
+            ContextHandler.SendGameContextCreateMessage(Client, 1);
+
+            CharacterHandler.SendCharacterStatsListMessage(Client);
+
+            Map.Enter(this);
+
+            StartRegen();
+        }
+
         #endregion
 
+        #region Regen
+
+        public bool IsRegenActive()
+        {
+            return RegenStartTime.HasValue;
+        }
+
+        public void StartRegen()
+        {
+            StartRegen((byte) (Rates.RegenRate*20f));
+        }
+
+        public void StartRegen(byte lifePerMinute)
+        {
+            if (IsRegenActive())
+                StopRegen();
+
+            RegenStartTime = DateTime.Now;
+            RegenSpeed = lifePerMinute;
+
+            CharacterHandler.SendLifePointsRegenBeginMessage(Client, RegenSpeed);
+        }
+
+        public void StopRegen()
+        {
+            if (!IsRegenActive())
+                return;
+
+            var regainedLife = (int) Math.Floor((DateTime.Now - RegenStartTime).Value.TotalMinutes*RegenSpeed);
+
+            if (LifePoints + regainedLife > MaxLifePoints)
+                regainedLife = MaxLifePoints - LifePoints;
+
+            ((StatsHealth) Stats[CaracteristicsEnum.Health]).DamageTaken -= (short) regainedLife;
+            RegenStartTime = null;
+            RegenSpeed = 0;
+
+            CharacterHandler.SendLifePointsRegenEndMessage(Client, regainedLife);
+        }
+
+        public void UpdateRegenedLife()
+        {
+            var regainedLife = (int) Math.Floor((DateTime.Now - RegenStartTime).Value.TotalMinutes*RegenSpeed);
+
+            if (LifePoints + regainedLife > MaxLifePoints)
+                regainedLife = MaxLifePoints - LifePoints;
+
+            ((StatsHealth) Stats[CaracteristicsEnum.Health]).DamageTaken -= (short) regainedLife;
+
+            CharacterHandler.SendUpdateLifePointsMessage(Client);
+
+            RegenStartTime = DateTime.Now;
+        }
+
+        #endregion
 
         #endregion
 
@@ -662,7 +795,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             m_record.Intelligence = Stats[CaracteristicsEnum.Intelligence].Base;
             m_record.Wisdom = Stats[CaracteristicsEnum.Wisdom].Base;
             m_record.BaseHealth = (ushort) Stats[CaracteristicsEnum.Health].Base;
-            m_record.DamageTaken = (ushort) ( (StatsHealth) Stats[CaracteristicsEnum.Health] ).DamageTaken;
+            m_record.DamageTaken = (ushort) ((StatsHealth) Stats[CaracteristicsEnum.Health]).DamageTaken;
 
 
             m_record.Save();
@@ -693,6 +826,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         #region Network
 
         #region GameRolePlayCharacterInformations
+
         public override GameContextActorInformations GetGameContextActorInformations()
         {
             return new GameRolePlayCharacterInformations(
@@ -703,6 +837,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 GetHumanInformations(),
                 GetActorAlignmentInformations());
         }
+
         #endregion
 
         #region ActorAlignmentInformations
@@ -710,7 +845,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         public ActorAlignmentInformations GetActorAlignmentInformations()
         {
             return new ActorAlignmentInformations(
-                (sbyte)AlignmentSide,
+                (sbyte) AlignmentSide,
                 AlignmentValue,
                 AlignmentGrade,
                 Dishonor,
@@ -724,16 +859,16 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         public ActorExtendedAlignmentInformations GetActorAlignmentExtendInformations()
         {
             return new ActorExtendedAlignmentInformations(
-                            (sbyte)AlignmentSide,
-                            AlignmentValue,
-                            AlignmentGrade,
-                            Dishonor,
-                            CharacterPower,
-                            0,
-                            0,
-                            0,
-                            false
-                            );
+                (sbyte) AlignmentSide,
+                AlignmentValue,
+                AlignmentGrade,
+                Dishonor,
+                CharacterPower,
+                0,
+                0,
+                0,
+                false
+                );
         }
 
         #endregion
@@ -762,7 +897,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 Level,
                 Name,
                 Look,
-                (sbyte)BreedId,
+                (sbyte) BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE,
                 (short) Map.Position.X,
                 (short) Map.Position.Y,
@@ -790,7 +925,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             if (!m_partyInvitations.ContainsKey(party.Id))
                 return new PartyGuestInformations();
 
-            var invitation = m_partyInvitations[party.Id];
+            PartyInvitation invitation = m_partyInvitations[party.Id];
 
             return new PartyGuestInformations(
                 Id,
@@ -802,5 +937,10 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         #endregion
 
         #endregion
+
+        internal CharacterRecord Record
+        {
+            get { return m_record; }
+        }
     }
 }
