@@ -193,14 +193,16 @@
     <Compile Include="Worlds\Dialogs\IDialog.cs" />
     <Compile Include="Worlds\Dialogs\IDialoger.cs" />
     <Compile Include="Worlds\Dialogs\IRequestBox.cs" />
-    <Compile Include="Worlds\Effects\EffectContext.cs" />
-    <Compile Include="Worlds\Effects\EffectHandleAttribute.cs" />
     <Compile Include="Worlds\Effects\EffectManager.cs" />
-    <Compile Include="Worlds\Effects\Handlers\DefaultHandlerAttribute.cs" />
+    <Compile Include="Worlds\Effects\EffectSchoolEnum.cs" />
+    <Compile Include="Worlds\Effects\Handlers\DefaultEffectHandlerAttribute.cs" />
     <Compile Include="Worlds\Effects\Handlers\EffectHandler.cs" />
     <Compile Include="Worlds\Effects\Handlers\EffectHandlerAttribute.cs" />
     <Compile Include="Worlds\Effects\Handlers\Items\DefaultItemEffect.cs" />
     <Compile Include="Worlds\Effects\Handlers\Items\ItemEffectHandler.cs" />
+    <Compile Include="Worlds\Effects\Handlers\Spells\Damage\DirectDamage.cs" />
+    <Compile Include="Worlds\Effects\Handlers\Spells\DefaultSpellEffect.cs" />
+    <Compile Include="Worlds\Effects\Handlers\Spells\SpellEffectHandler.cs" />
     <Compile Include="Worlds\Effects\Instances\EffectBase.cs" />
     <Compile Include="Worlds\Effects\Instances\EffectCreature.cs" />
     <Compile Include="Worlds\Effects\Instances\EffectDate.cs" />
@@ -223,6 +225,15 @@
     <Compile Include="Worlds\Fights\FightState.cs" />
     <Compile Include="Worlds\Fights\FightTeam.cs" />
     <Compile Include="Worlds\Fights\TimeLine.cs" />
+    <Compile Include="Worlds\Maps\Cells\Shapes\Cone.cs" />
+    <Compile Include="Worlds\Maps\Cells\Shapes\Cross.cs" />
+    <Compile Include="Worlds\Maps\Cells\Shapes\DirectionsEnum.cs" />
+    <Compile Include="Worlds\Maps\Cells\Shapes\HalfLozenge.cs" />
+    <Compile Include="Worlds\Maps\Cells\Shapes\IShape.cs" />
+    <Compile Include="Worlds\Maps\Cells\Shapes\Line.cs" />
+    <Compile Include="Worlds\Maps\Cells\Shapes\Lozenge.cs" />
+    <Compile Include="Worlds\Maps\Cells\Shapes\Square.cs" />
+    <Compile Include="Worlds\Maps\Cells\Shapes\Zone.cs" />
     <Compile Include="Worlds\Notifications\Notification.cs" />
     <Compile Include="Worlds\Parties\Party.cs" />
     <Compile Include="Worlds\Parties\PartyInvitation.cs" />
@@ -274,7 +285,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Worlds\Effects\Handlers\Spells\" />
     <Folder Include="Worlds\Effects\Handlers\Useables\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

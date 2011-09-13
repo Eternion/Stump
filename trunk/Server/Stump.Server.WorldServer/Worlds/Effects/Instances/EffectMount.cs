@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         }
 
         public EffectMount(EffectInstanceMount effect)
-            : base((short)effect.effectId)
+            : base(effect)
         {
            m_mountId = (int) effect.mountId;
            m_date = effect.date;

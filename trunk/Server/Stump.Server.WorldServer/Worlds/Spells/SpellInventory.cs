@@ -44,6 +44,16 @@ namespace Stump.Server.WorldServer.Worlds.Spells
             return null;
         }
 
+        public bool HasSpell(int id)
+        {
+            return m_spells.ContainsKey(id);
+        }
+
+        public bool HasSpell(Spell spell)
+        {
+            return m_spells.ContainsKey(spell.Id);
+        }
+
         public IEnumerable<Spell> GetSpells()
         {
             return m_spells.Values; 

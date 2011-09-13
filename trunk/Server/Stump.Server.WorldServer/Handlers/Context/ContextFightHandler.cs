@@ -5,6 +5,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Fights;
@@ -13,12 +14,20 @@ namespace Stump.Server.WorldServer.Handlers.Context
 {
     public partial class ContextHandler : WorldHandlerContainer
     {
-        /*[WorldHandler(GameActionFightCastRequestMessage.Id)]
+        [WorldHandler(GameActionFightCastRequestMessage.Id)]
         public static void HandleGameActionFightCastRequestMessage(WorldClient client,
                                                                    GameActionFightCastRequestMessage message)
         {
-            client.ActiveCharacter.Fighter.CastSpell(message.spellId, message.cellId);
-        }*/
+            if (!client.ActiveCharacter.IsFighting())
+                return;
+
+            var spell = client.ActiveCharacter.Spells.GetSpell(message.spellId);
+
+            if (spell == null)
+                return;
+
+            client.ActiveCharacter.Fighter.CastSpell(spell, client.ActiveCharacter.Map.Cells[message.cellId]);
+        }
 
         [WorldHandler(GameFightTurnFinishMessage.Id)]
         public static void HandleGameFightTurnFinishMessage(WorldClient client, GameFightTurnFinishMessage message)
@@ -259,7 +268,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightRemoveTeamMemberMessage(WorldClient client, FightActor fighter)
         {
-            client.Send(new GameFightRemoveTeamMemberMessage((short) fighter.Fight.Id, fighter.Team.Id, fighter.Id);
+            client.Send(new GameFightRemoveTeamMemberMessage((short) fighter.Fight.Id, fighter.Team.Id, fighter.Id));
         }
 
         public static void SendGameFightLeaveMessage(WorldClient client, FightActor fighter)
@@ -280,12 +289,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameFightOptionStateUpdateMessage((short) team.Fight.Id, team.Id, (sbyte)option, state));
         }
 
-        /*public static void SendGameActionFightSpellCastMessage(WorldClient client, uint actionId, LivingEntity source,
-                                                               ushort cellId, bool critical, bool silentCast,
-                                                               SpellLevel spell)
+        public static void SendGameActionFightSpellCastMessage(WorldClient client, ActionsEnum actionId, FightActor caster,
+                                                               Cell cell, FightSpellCastCriticalEnum critical, bool silentCast,
+                                                               Worlds.Spells.Spell spell)
         {
-            client.Send(new GameActionFightSpellCastMessage(actionId, (int) source.Id, cellId, (uint) (critical ? 1 : 0),
-                                                            silentCast, (uint) spell.Spell.Id, (uint) spell.Level));
-        }*/
+            client.Send(new GameActionFightSpellCastMessage((short) actionId, caster.Id, cell.Id, (sbyte) (critical),
+                                                            silentCast, (short) spell.Id, spell.CurrentLevel));
+        }
     }
 }

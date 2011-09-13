@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         }
 
         public EffectInteger(EffectInstanceInteger effect)
-            : base((short)effect.effectId)
+            : base(effect)
         {
             m_value = (short) effect.value;
         }

@@ -16,32 +16,52 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
     [Serializable]
     public class EffectBase
     {
-        protected short m_id;
-
         [NonSerialized]
         protected EffectTemplate m_template;
-
-        public EffectBase(short id)
-        {
-            m_id = id;
-            m_template = EffectManager.Instance.GetTemplate(id);
-        }
-
-        public EffectBase(EffectInstance effect)
-        {
-            m_id = (short) effect.effectId;
-            m_template = EffectManager.Instance.GetTemplate(m_id);
-        }
 
         public virtual int ProtocoleId
         {
             get { return 76; }
         }
 
+        public EffectBase(short id)
+        {
+            Id = id;
+            m_template = EffectManager.Instance.GetTemplate(id);
+        }
+
+        public EffectBase(short id, int targetId, int duration, int random, int modificator, bool trigger, bool hidden, uint zoneSize, uint zoneShape)
+        {
+            Id = id;
+            TargetId = targetId;
+            Duration = duration;
+            Random = random;
+            Modificator = modificator;
+            Trigger = trigger;
+            Hidden = hidden;
+            ZoneSize = zoneSize;
+            ZoneShape = zoneShape;
+        }
+
+        public EffectBase(EffectInstance effect)
+        {
+            Id = (short) effect.effectId;
+            m_template = EffectManager.Instance.GetTemplate(Id);
+
+            TargetId = effect.targetId;
+            Duration = effect.duration;
+            Random = effect.random;
+            Modificator = effect.modificator;
+            Trigger = effect.trigger;
+            Hidden = effect.hidden;
+            ZoneSize = effect.zoneSize;
+            ZoneShape = effect.zoneShape;
+        }
+
         public short Id
         {
-            get { return m_id; }
-            protected set { m_id = value; }
+            get;
+            protected set;
         }
 
         public EffectsEnum EffectId
@@ -53,9 +73,57 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         {
             get
             {
-                return m_template ?? ( m_template = EffectManager.Instance.GetTemplate(m_id) );
+                return m_template ?? ( m_template = EffectManager.Instance.GetTemplate(Id) );
             }
             protected set { m_template = value; }
+        }
+
+        public int TargetId
+        {
+            get;
+            set;
+        }
+
+        public int Duration
+        {
+            get;
+            set;
+        }
+
+        public int Random
+        {
+            get;
+            set;
+        }
+
+        public int Modificator
+        {
+            get;
+            set;
+        }
+
+        public bool Trigger
+        {
+            get;
+            set;
+        }
+
+        public bool Hidden
+        {
+            get;
+            set;
+        }
+
+        public uint ZoneSize
+        {
+            get;
+            set;
+        }
+
+        public uint ZoneShape
+        {
+            get;
+            set;
         }
 
         public virtual object[] GetValues()
@@ -71,6 +139,16 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         public virtual ObjectEffect GetObjectEffect()
         {
             return new ObjectEffect(Id);
+        }
+
+        public static byte[] Serialize(EffectBase effect)
+        {
+            return effect.ToBinary();
+        }
+
+        public static EffectBase DeSerialize(byte[] buffer)
+        {
+            return buffer.ToObject<EffectBase>();
         }
 
         public override bool Equals(object obj)
@@ -91,29 +169,16 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
             return !Equals(left, right);
         }
 
-        public static byte[] Serialize(EffectBase effect)
-        {
-            return effect.ToBinary();
-        }
-
-        public static EffectBase DeSerialize(byte[] buffer)
-        {
-            var effect = buffer.ToObject<EffectBase>();
-            effect.Template = EffectManager.Instance.GetTemplate(effect.Id);
-
-            return effect;
-        }
-
         public bool Equals(EffectBase other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return other.m_id == m_id;
+            return other.Id == Id;
         }
 
         public override int GetHashCode()
         {
-            return m_id.GetHashCode();
+            return Id.GetHashCode();
         }
     }
 }

@@ -122,7 +122,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Pathfinding
             MpCost = Path.Count - 1;
         }
 
-        public IEnumerable<ushort> GetCells()
+        public IEnumerable<short> GetCells()
         {
             return Path.Select(t => t.Point.CellId);
         }
@@ -136,7 +136,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Pathfinding
         {
             foreach (var pathElement in
                 from key in keys
-                let mapPoint = new MapPoint((ushort) (key & 4095))
+                let mapPoint = new MapPoint((short) (key & 4095))
                 let direction = (DirectionsEnum) ((key >> 12) & 7)
                 select new ObjectPosition(Map, Map.Cells[mapPoint.CellId], direction))
             {

@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Types
                     if (ctor == null)
                         throw new Exception(string.Format("'{0}' doesn't implemented a parameterless constructor", type));
 
-                    m_typesConstructors.Add(id, ctor.CreateDelegate<object>());
+                    m_typesConstructors.Add(id, ctor.CreateDelegate<Func<object>>());
                 }
             }
         }

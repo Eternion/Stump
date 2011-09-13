@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
@@ -6,7 +7,7 @@ using Stump.Server.WorldServer.Worlds.Items;
 
 namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Items
 {
-    [DefaultHandler]
+    [DefaultEffectHandler]
     public class DefaultItemEffect : ItemEffectHandler
     {
         #region Delegates
@@ -297,8 +298,8 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Items
 
         #endregion
 
-        public DefaultItemEffect(Character target, Item item, EffectBase effect)
-            : base(target, item, effect)
+        public DefaultItemEffect(EffectBase effect, Character target, Item item)
+            : base(effect, target, item)
         {
         }
 

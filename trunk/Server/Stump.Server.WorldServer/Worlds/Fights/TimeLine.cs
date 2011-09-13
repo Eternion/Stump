@@ -271,8 +271,11 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         {
             Stop();
 
-            m_turnEndTimer.Dispose();
-            m_turnTimer.Dispose();
+            if (m_turnEndTimer != null)
+                m_turnEndTimer.Dispose();
+
+            if (m_turnTimer != null)
+                m_turnTimer.Dispose();
         }
     }
 }

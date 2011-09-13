@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.World;
 
 namespace Stump.Server.WorldServer.Worlds.Maps.Cells
 {
@@ -27,13 +28,20 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells
         private static readonly Point[] OrthogonalGridReference = new Point[MapSize];
 
 
-        private ushort m_cellId;
+        private short m_cellId;
         private int m_x;
         private int m_y;
 
-        public MapPoint(ushort cellId)
+        public MapPoint(short cellId)
         {
             m_cellId = cellId;
+
+            SetFromCellId();
+        }
+
+        public MapPoint(Cell cell)
+        {
+            m_cellId = cell.Id;
 
             SetFromCellId();
         }
@@ -54,7 +62,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells
             SetFromCoords();
         }
 
-        public ushort CellId
+        public short CellId
         {
             get { return m_cellId; }
             set
@@ -89,7 +97,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells
             if (!m_initialized)
                 InitializeStaticGrid();
 
-            m_cellId = (ushort) ((m_x - m_y)*MapWidth + m_y + (m_x - m_y)/2);
+            m_cellId = (short) ((m_x - m_y)*MapWidth + m_y + (m_x - m_y)/2);
         }
 
         private void SetFromCellId()

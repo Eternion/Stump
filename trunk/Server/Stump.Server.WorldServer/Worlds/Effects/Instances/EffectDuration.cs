@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         }
 
         public EffectDuration(EffectInstanceDuration effect)
-            : base((short)effect.effectId)
+            : base(effect)
         {
             m_days = (short) effect.days;
             m_hours = (short) effect.hours;

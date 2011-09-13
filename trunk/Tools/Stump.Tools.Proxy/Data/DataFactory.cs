@@ -70,7 +70,7 @@ namespace Stump.Tools.Proxy.Data
 
                 var npcReply = new NpcDialogReply(replyId,
                                                   new ActionTeleport(message.mapId, (ushort) client.Disposition.cellId,
-                                                                     (DirectionsEnum) client.Disposition.direction));
+                                                                     (OrdinalDirectionsEnum) client.Disposition.direction));
 
                 if (!Directory.Exists(Output + NpcRepliesDir))
                 {
@@ -90,7 +90,7 @@ namespace Stump.Tools.Proxy.Data
 
                 var action = new ActionTeleport(message.mapId,
                                                 (ushort) client.Disposition.cellId,
-                                                (DirectionsEnum) client.Disposition.direction);
+                                                (OrdinalDirectionsEnum) client.Disposition.direction);
 
                 var skill = new SkillInstance(skillId,
                                               new SkillUse(duration, actions: action));
@@ -105,7 +105,7 @@ namespace Stump.Tools.Proxy.Data
                                               CellTrigger.TriggerEvent.OnReached,
                                               new ActionTeleport(client.CurrentMap,
                                                                  (ushort) client.Disposition.cellId,
-                                                                 (DirectionsEnum) client.Disposition.direction));
+                                                                 (OrdinalDirectionsEnum) client.Disposition.direction));
 
                 SerializeToXml(
                     GetDirectoryPath(client, client.LastMap, CellTriggersDir) + client.LastMap + "_" + client.GuessCellTrigger + "_" +

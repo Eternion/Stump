@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         }
 
         public EffectMinMax(EffectInstanceMinMax effect)
-            : base((short)effect.effectId)
+            : base(effect)
         {
             m_maxvalue = (short) effect.max;
             m_minvalue = (short) effect.min;
@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
             {
                 var rand = new AsyncRandom();
 
-                return new EffectInteger(m_id, (short) rand.Next(ValueMin,  ValueMax + 1));
+                return new EffectInteger(Id, (short) rand.Next(ValueMin,  ValueMax + 1));
             }
 
             return this;

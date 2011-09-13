@@ -42,7 +42,7 @@ namespace Stump.DofusProtocol.Messages
                                 string.Format("'{0}' doesn't implemented a parameterless constructor",
                                               type));
 
-                        Constructors.Add(id, ctor.CreateDelegate<Message>());
+                        Constructors.Add(id, ctor.CreateDelegate<Func<Message>>());
                     }
                 }
         }

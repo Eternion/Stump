@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         }
 
         public EffectDate(EffectInstanceDate effect)
-            : base((short)effect.effectId)
+            : base(effect)
         {
             m_year = (short) effect.year;
             m_month = (short) effect.month;

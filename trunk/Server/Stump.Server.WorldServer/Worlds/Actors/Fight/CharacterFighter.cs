@@ -9,6 +9,7 @@ using Stump.Server.WorldServer.Worlds.Actors.Stats;
 using Stump.Server.WorldServer.Worlds.Fights;
 using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
+using Stump.Server.WorldServer.Worlds.Spells;
 
 namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 {
@@ -77,6 +78,31 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         public override StatsFields Stats
         {
             get { return Character.Stats; }
+        }
+
+        public override bool CanCastSpell(Spell spell, Cell cell)
+        {
+            if (!IsFighterTurn())
+                return false;
+
+            if (!Character.Spells.HasSpell(spell.Id))
+                return false;
+
+            var spellLevel = spell.CurrentSpellLevel;
+            var point = new MapPoint(cell);
+
+            if (point.DistanceTo(Position.Point) > spellLevel.Range ||
+                point.DistanceTo(Position.Point) < spellLevel.MinRange)
+                return false;
+
+            if (Stats[CaracteristicsEnum.AP].Total < spellLevel.ApCost)
+                return false;
+
+            // todo : check casts per turn
+            // todo : check cooldown
+            // todo : check states
+
+            return true;
         }
 
 

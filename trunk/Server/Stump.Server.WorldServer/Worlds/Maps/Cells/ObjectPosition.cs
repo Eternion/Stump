@@ -90,7 +90,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells
 
         public MapPoint Point
         {
-            get { return m_point ?? (m_point = new MapPoint((ushort) Cell.Id)); }
+            get { return m_point ?? (m_point = new MapPoint(Cell)); }
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         }
 
         public EffectLadder(EffectInstanceLadder effect)
-            : base((short)effect.effectId, (short)effect.monsterFamilyId)
+            : base(effect)
         {
             m_monsterCount = (short) effect.monsterCount;
         }

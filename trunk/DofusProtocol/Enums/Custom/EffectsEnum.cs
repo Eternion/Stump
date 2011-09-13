@@ -127,7 +127,7 @@
         /// </summary>
         Effect_DamageAir = 98,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2 (fire)
+        /// Damage: #1{~1~2 to }#2 (fire)   
         /// </summary>
         Effect_DamageFire = 99,
         /// <summary>

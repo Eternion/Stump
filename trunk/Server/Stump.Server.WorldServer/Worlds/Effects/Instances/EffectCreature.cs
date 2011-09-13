@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         }
 
         public EffectCreature(EffectInstanceCreature effect)
-            : base((short)effect.effectId)
+            : base(effect)
         {
             m_monsterfamily = (short) effect.monsterFamilyId;
         }

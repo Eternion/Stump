@@ -83,7 +83,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
         {
             PointsGrid = new MapPoint[MapPoint.MapSize];
 
-            for (ushort i = 0; i < MapPoint.MapSize; i++)
+            for (short i = 0; i < MapPoint.MapSize; i++)
             {
                 // i is a cell
                 PointsGrid[i] = new MapPoint(i);

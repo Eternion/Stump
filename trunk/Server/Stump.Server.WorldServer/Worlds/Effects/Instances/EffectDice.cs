@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         }
 
         public EffectDice(EffectInstanceDice effect)
-            : base((short)effect.effectId, (short)effect.value)
+            : base(effect)
         {
             m_dicenum = (short) effect.diceNum;
             m_diceface = (short) effect.diceSide;
@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
 
         public override EffectBase GenerateEffect(EffectGenerationContext context)
         {
-            if (context == EffectGenerationContext.Spell || EffectManager.Instance.IsEffectRandomable(EffectId))
+            /*if (context == EffectGenerationContext.Spell || EffectManager.Instance.IsEffectRandomable(EffectId))
             {
                 var random = new AsyncRandom();
                 short result = 0;
@@ -62,7 +62,13 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
                     result += (short)random.Next(1, m_diceface + 2);
                 }
 
-                return new EffectInteger(m_id, result);
+                return new EffectInteger(Id, result);
+            }*/
+            if (context == EffectGenerationContext.Spell || EffectManager.Instance.IsEffectRandomable(EffectId))
+            {
+                var rand = new AsyncRandom();
+
+                return new EffectInteger(Id, (short)rand.Next(m_dicenum, m_diceface + 1));
             }
 
             return this;

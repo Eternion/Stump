@@ -758,13 +758,15 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             // todo: send MOTD
 
             InWorld = true;
+
+            NotifyLoggedIn();
         }
 
         public void LogOut()
         {
             if (InWorld)
             {
-                if (Map != null)
+                if (Map != null && !IsFighting())
                     Map.Leave(this);
 
                 if (IsInParty())
@@ -772,6 +774,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
                 World.Instance.Leave(this);
             }
+
+            NotifyLoggedOut();
 
             SaveLater();
         }

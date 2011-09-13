@@ -5,13 +5,13 @@ using Stump.Server.WorldServer.Worlds.Items;
 
 namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Items
 {
-    public abstract class ItemEffectHandler 
+    public abstract class ItemEffectHandler : EffectHandler
     {
-        protected ItemEffectHandler(Character target, Item item, EffectBase effect)
+        protected ItemEffectHandler(EffectBase effect, Character target, Item item)
+            : base (effect)
         {
             Target = target;
             Item = item;
-            Effect = effect;
         }
 
         public Character Target
@@ -29,16 +29,6 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Items
         public bool Equiped
         {
             get { return Item.IsEquiped(); }
-        }
-
-        public EffectBase Effect
-        {
-            get;
-            protected set;
-        }
-
-        public virtual void Apply()
-        {
         }
     }
 }

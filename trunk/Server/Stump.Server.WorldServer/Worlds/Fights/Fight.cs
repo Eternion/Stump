@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
@@ -16,11 +17,14 @@ using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 using Stump.Server.WorldServer.Worlds.Maps.Pathfinding;
+using Stump.Server.WorldServer.Worlds.Spells;
 
 namespace Stump.Server.WorldServer.Worlds.Fights
 {
     public class Fight : IContext, IDisposable
     {
+        #region Config
+
         [Variable]
         public static int PlacementPhaseTime = 30000;
 
@@ -35,6 +39,14 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         /// </summary>
         [Variable]
         public static int TurnEndTimeOut = 5000;
+
+        /// <summary>
+        ///   Delay before force turn to end
+        /// </summary>
+        [Variable]
+        public static int EndFightTimeOut = 10000;
+
+        #endregion
 
         #region Events
 
@@ -99,6 +111,8 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         #endregion
 
+        #region Constructor
+
         public Fight(int id, FightTypeEnum fightType, Map fightMap, FightTeam blueTeam, FightTeam redTeam)
         {
             Id = id;
@@ -118,10 +132,13 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             CreationTime = DateTime.Now;
         }
 
+        #endregion
+
         #region Properties
 
         private readonly List<FightActor> m_fighters = new List<FightActor>();
         private readonly FightTeam[] m_teams;
+        private Timer m_endFightTimer;
 
         public int Id
         {
@@ -226,6 +243,8 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         #endregion
 
+        #region Events Binders
+
         private void UnBindFightersEvents()
         {
             foreach (var fighter in m_fighters)
@@ -243,6 +262,9 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
             actor.StartMoving -= OnStartMoving;
             actor.StopMoving -= OnStopMoving;
+            actor.FightPointsVariation -= OnFightPointsVariation;
+            actor.SpellCasting -= OnSpellCasting;
+            actor.SpellCasted -= OnSpellCasted;
             actor.TurnReadyStateChanged -= OnSetTurnReady;
             actor.Dead -= OnDead;
             actor.SequenceStarted -= OnSequenceStarted;
@@ -282,10 +304,19 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
                 actor.StartMoving += OnStartMoving;
                 actor.StopMoving += OnStopMoving;
+                actor.FightPointsVariation += OnFightPointsVariation;
+                actor.LifePointsChanged += OnLifePointsChanged;
+
+                actor.SpellCasting += OnSpellCasting;
+                actor.SpellCasted += OnSpellCasted;
 
                 actor.TurnReadyStateChanged += OnSetTurnReady;
                 actor.Dead += OnDead;
+            }
 
+            if (State == FightState.Ended)
+            {
+                actor.TurnReadyStateChanged += OnSetTurnReady;
             }
 
             var fighter = actor as CharacterFighter;
@@ -295,6 +326,8 @@ namespace Stump.Server.WorldServer.Worlds.Fights
                 fighter.Character.LoggedOut += OnLoggedOut;
             }
         }
+
+        #endregion
 
         #region Placement phase
 
@@ -404,15 +437,6 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             
         }
 
-        private void OnSetTurnReady(FightActor fighter, bool isReady)
-        {
-            if (State != FightState.Fighting)
-                return;
-
-            if (RedTeam.AreAllTurnReady() && BlueTeam.AreAllTurnReady())
-                ConfirmTurnEnd();
-        }
-
 
         /// <summary>
         ///   Check if a character can change position (before the fight is started).
@@ -474,6 +498,8 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         #endregion
 
+        #region Fighting phase
+
         public void StartFight()
         {
             RedTeam.SetAllTurnReady(false);
@@ -531,6 +557,8 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         {
             RedTeam.SetAllTurnReady(false);
             BlueTeam.SetAllTurnReady(false);
+
+            currentFighter.ResetPoints();
         }
 
         public void RequestTurnEnd(FightActor fighter)
@@ -553,11 +581,28 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         #endregion
 
+        private void OnSetTurnReady(FightActor fighter, bool isReady)
+        {
+            if (!RedTeam.AreAllTurnReady() || !BlueTeam.AreAllTurnReady())
+                return;
+
+            if (State == FightState.Ended)
+                EndFight();
+            else if (State == FightState.Fighting)
+                ConfirmTurnEnd();
+        }
+
         private void OnDead(FightActor fighter, FightActor killedBy)
         {
-            fighter.StartSequence(SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH);
+            if (killedBy == null || !killedBy.IsSequencing)
+                fighter.StartSequence(SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH);
+
             ForEach(entry => ActionsHandler.SendGameActionFightDeathMessage(entry.Client, fighter));
-            fighter.EndSequence();
+
+            if (killedBy != null && killedBy.IsSequencing)
+                killedBy.EndSequence(5);
+            else
+                fighter.EndSequence();
 
             CheckFightEnd();
         }
@@ -572,17 +617,8 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             var movementsKeys = path.GetServerMovementKeys();
 
             fighter.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-
-            ForEach(entry =>
-                        {
-                            ContextHandler.SendGameMapMovementMessage(entry.Client, movementsKeys, fighter);
-                            ActionsHandler.SendGameActionFightPointsVariationMessage(entry.Client,
-                                                                                     ActionsEnum.
-                                                                                         ACTION_CHARACTER_MOVEMENT_POINTS_USE,
-                                                                                     fighter, fighter, (short) -path.MpCost);
-
-                        });
-
+            ForEach(entry => ContextHandler.SendGameMapMovementMessage(entry.Client, movementsKeys, fighter));
+            fighter.UseMP((short) path.MpCost);
             fighter.EndSequence();
         }
 
@@ -599,34 +635,49 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             }
         }
 
+        private void OnFightPointsVariation(FightActor actor, ActionsEnum action, FightActor source, FightActor target, short delta)
+        {
+            ForEach(entry => ActionsHandler.
+                SendGameActionFightPointsVariationMessage(entry.Client, ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_USE,
+                                                                                     source, target, delta));
+        }
+
+        private void OnLifePointsChanged(FightActor actor, int delta, FightActor from)
+        {
+            ForEach(entry => ActionsHandler.SendGameActionFightLifePointsVariationMessage(entry.Client, from ?? actor, actor, (short)delta));
+        }
+
+        private void OnSpellCasting(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical)
+        {
+            ForEach(entry => ContextHandler.SendGameActionFightSpellCastMessage(entry.Client, ActionsEnum.ACTION_FIGHT_CAST_SPELL,
+                caster, target, critical, false, spell));
+
+            if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
+                caster.EndSequence();
+        }
+
+        private void OnSpellCasted(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical)
+        {
+            if (caster.IsSequencing)
+                caster.EndSequence();
+        }
+
         private void OnSequenceStarted(FightActor fighter, SequenceTypeEnum sequenceType)
         {
             ForEach(entry => ActionsHandler.SendSequenceStartMessage(entry.Client, fighter, sequenceType));
         }
 
-        private void OnSequenceEnded(FightActor fighter, SequenceTypeEnum sequenceType)
+        private void OnSequenceEnded(FightActor fighter, SequenceTypeEnum sequenceType, short actionEnd)
         {
             // todo : find actionid utility
-            ForEach(entry => ActionsHandler.SendSequenceEndMessage(entry.Client, fighter, FindSequenceId(sequenceType), sequenceType));
-        }
-
-        private static short FindSequenceId(SequenceTypeEnum sequenceTypeEnum)
-        {
-            switch (sequenceTypeEnum)
-            {
-                case SequenceTypeEnum.SEQUENCE_MOVE:
-                    return 3;
-                case SequenceTypeEnum.SEQUENCE_SPELL:
-                    return 4;
-                case SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH:
-                    return 5;
-                default:
-                    return 1;
-            }
+            ForEach(entry => ActionsHandler.SendSequenceEndMessage(entry.Client, fighter, actionEnd, sequenceType));
         }
 
         public void SetFightState(FightState state)
         {
+            if (State == state)
+                return;
+
             State = state;
 
             NotifyStateChanged();
@@ -696,8 +747,12 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         public void CheckFightEnd()
         {
             if (RedTeam.AreAllDead() || BlueTeam.AreAllDead())
-                EndFight();
+                RequestEndFight();
         }
+
+        #endregion
+
+        #region End Fight phase
 
         public void CancelFight()
         {
@@ -716,8 +771,28 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             Dispose();
         }
 
+        public void RequestEndFight()
+        {
+            SetFightState(FightState.Ended);
+
+            ForEach(
+                entry => ContextHandler.SendGameFightTurnReadyRequestMessage(entry.Client, TimeLine.Current));
+
+            m_endFightTimer = new Timer(ForceEndFight, null, EndFightTimeOut, Timeout.Infinite);
+        }
+
+        private void ForceEndFight(object state)
+        {
+            m_endFightTimer.Dispose();
+
+            EndFight();
+        }
+
         public void EndFight()
         {
+            if (m_endFightTimer != null)
+                m_endFightTimer.Dispose();
+
             SetFightState(FightState.Ended);
 
             ForEach(character =>
@@ -729,6 +804,20 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             NotifyFightEnded();
             Dispose();
         }
+
+        public void Dispose()
+        {
+            UnBindFightersEvents();
+
+            if (TimeLine != null)
+                TimeLine.Dispose();
+
+            Map.RemoveFight(this);
+
+            FightManager.Instance.Remove(this);
+        }
+
+        #endregion
 
         #region Get Methods
 
@@ -818,16 +907,6 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         #endregion
 
-        #endregion
-
-        public void Dispose()
-        {
-            UnBindFightersEvents();
-
-            if (TimeLine != null)
-                TimeLine.Dispose();
-
-            FightManager.Instance.Remove(this);
-        }
+        #endregion        
     }
 }

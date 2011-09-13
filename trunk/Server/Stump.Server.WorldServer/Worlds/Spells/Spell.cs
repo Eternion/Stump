@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Worlds.Spells
         {
             get
             {
-                return Record.Id;
+                return Record.SpellId;
             }
         }
 
