@@ -45,6 +45,9 @@ namespace Stump.Server.WorldServer.Handlers.Authorized
             if (client.Account.Role < RoleEnum.GameMaster_Padawan)
                 return;
 
+            if (client.ActiveCharacter == null)
+                return;
+
             WorldServer.Instance.CommandManager.HandleCommand(new TriggerConsole(new StringStream(message.content),
                                                                                  client.ActiveCharacter));
         }

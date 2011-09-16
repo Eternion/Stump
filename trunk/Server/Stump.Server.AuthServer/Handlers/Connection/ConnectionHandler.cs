@@ -33,7 +33,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
             /* If autoconnect, send to the lastServer */
             ConnectionLog lastConnection = client.Account.LastConnection;
-            if (message.autoconnect && lastConnection != null && WorldServerManager.Instance.CanAccessToWorld(client, lastConnection.World))
+            if (message.autoconnect && lastConnection != null && WorldServerManager.Instance.CanAccessToWorld(client, lastConnection.World.Id))
             {
                 SendSelectServerData(client, lastConnection.World);
             }
@@ -250,10 +250,5 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         }
 
         #endregion
-
-        public ConnectionHandler()
-        {
-            Predicate(ServerSelectionMessage.Id, PredicatesDefinitions.IsLookingOfServers);
-        }
     }
 }

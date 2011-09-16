@@ -48,13 +48,13 @@ namespace Stump.Server.BaseServer.Plugins
             {
                 if (!Directory.Exists(path) && !File.Exists(path))
                 {
-                    logger.Error("Cannot load unexistant plugin path {0}", PluginsPath);
+                    logger.Error("Cannot load unexistant plugin path {0}", path);
                     return;
                 }
 
                 if (File.GetAttributes(path).HasFlag(FileAttributes.Directory))
                 {
-                    foreach (var file in Directory.EnumerateFiles(path))
+                    foreach (var file in Directory.EnumerateFiles(path, "*.dll"))
                     {
                         LoadPlugin(file);
                     }

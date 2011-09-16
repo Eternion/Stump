@@ -62,7 +62,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
         {
             client.Send(
                 new ConsoleCommandsListMessage(
-                    WorldServer.Instance.CommandManager.CommandsByAlias.Values.SelectMany(c => c.Aliases),
+                    WorldServer.Instance.CommandManager.AvailableCommands.SelectMany(c => c.Aliases),
                     new string[0],  new string[0]));
         }
     }

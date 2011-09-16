@@ -229,13 +229,13 @@ namespace Stump.Server.BaseServer.Database
             {
                 ActiveRecordStarter.CreateSchema(m_recordBaseType);
 
-                m_logger.Info("Schema has been created");
+                m_logger.Info("Database schema rev. {0} has been created", m_databaseRevision);
 
                 ActiveRecordHelper.CreateVersionRecord(m_versionType, m_databaseRevision);
             }
             catch (Exception ex)
             {
-                m_logger.Error("Cannot create schema : " + ex);
+                throw new Exception("Cannot create schema : " + ex);
             }
         }
 

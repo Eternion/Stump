@@ -15,18 +15,8 @@ namespace Stump.Server.WorldServer.Commands.Trigger
         {
         }
 
-        public TriggerChat(StringStream args, RoleEnum role)
-            : base(args, role, null)
-        {
-        }
-
         public TriggerChat(string args, Character character)
             : base(args, character == null ? RoleEnum.Administrator : character.Client.Account.Role, character)
-        {
-        }
-
-        public TriggerChat(string args, RoleEnum role)
-            : base(args, role, null)
         {
         }
 
