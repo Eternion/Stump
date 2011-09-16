@@ -40,8 +40,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
             var itemTemplate = trigger.Get<ItemTemplate>("template");
             Character target;
 
-            if (!trigger.IsArgumentDefined("target") && trigger is IInGameTrigger)
-                target = (trigger as IInGameTrigger).Character;
+            if (!trigger.IsArgumentDefined("target") && trigger is GameTrigger)
+                target = (trigger as GameTrigger).Character;
             else
                 target = trigger.Get<Character>("target");
 
@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             if (addedItem == null)
                 trigger.Reply("Item '{0}'({1}) can't be add for an unknown reason", itemTemplate.Name, itemTemplate.Id);
-            else if (trigger is IInGameTrigger && (trigger as IInGameTrigger).Character.Id == target.Id)
+            else if (trigger is GameTrigger && (trigger as GameTrigger).Character.Id == target.Id)
                 trigger.Reply("Added '{0}'({1}) to your inventory.", itemTemplate.Name, itemTemplate.Id);
             else
                 trigger.Reply("Added '{0}'({1}) to '{2}' inventory.", itemTemplate.Name, itemTemplate.Id, target.Name);

@@ -15,8 +15,8 @@ namespace Stump.Server.WorldServer.Commands
         {
             Character target;
 
-            if (trigger is IInGameTrigger && (trigger as IInGameTrigger).Character != null)
-                target = World.Instance.GetCharacterByPattern((trigger as IInGameTrigger).Character, entry);
+            if (trigger is GameTrigger && (trigger as GameTrigger).Character != null)
+                target = World.Instance.GetCharacterByPattern((trigger as GameTrigger).Character, entry);
             else
                 target = World.Instance.GetCharacterByPattern(entry);
 

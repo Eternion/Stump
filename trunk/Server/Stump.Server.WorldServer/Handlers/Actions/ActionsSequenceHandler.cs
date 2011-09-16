@@ -2,6 +2,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
+using Stump.Server.WorldServer.Worlds.Fights;
 
 namespace Stump.Server.WorldServer.Handlers.Actions
 {
@@ -12,10 +13,10 @@ namespace Stump.Server.WorldServer.Handlers.Actions
             client.Send(new SequenceStartMessage((sbyte) sequenceType, entity.Id));
         }
 
-        public static void SendSequenceEndMessage(WorldClient client, FightActor entity, short actionId,
+        public static void SendSequenceEndMessage(WorldClient client, FightActor entity, FightSequenceAction endAction,
                                                   SequenceTypeEnum sequenceType)
         {
-            client.Send(new SequenceEndMessage(actionId, entity.Id, (sbyte) sequenceType));
+            client.Send(new SequenceEndMessage((short) endAction, entity.Id, (sbyte)sequenceType));
         }
     }
 }

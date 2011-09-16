@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Worlds.Parties
             Party.RemoveGuest(Target);
 
             PartyHandler.SendPartyInvitationCancelledForGuestMessage(Target.Client, Target, this);
-            Party.DoForAll(entry => PartyHandler.SendPartyRefuseInvitationNotificationMessage(entry.Client, this));
+            Party.ForEach(entry => PartyHandler.SendPartyRefuseInvitationNotificationMessage(entry.Client, this));
         }
 
         public void Cancel()
@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Worlds.Parties
             Party.RemoveGuest(Target);
 
             PartyHandler.SendPartyInvitationCancelledForGuestMessage(Target.Client, Source, this);
-            Party.DoForAll(entry => PartyHandler.SendPartyCancelInvitationNotificationMessage(entry.Client, this));
+            Party.ForEach(entry => PartyHandler.SendPartyCancelInvitationNotificationMessage(entry.Client, this));
         }
 
         public override void Display()

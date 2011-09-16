@@ -9,14 +9,14 @@ namespace Stump.Server.BaseServer.Plugins
 {
     public abstract class PluginBase : IPlugin
     {
-        public abstract bool UseConfig
+        public virtual bool UseConfig
         {
-            get;
+            get { return false; }
         }
 
-        public abstract string ConfigFileName
+        public virtual string ConfigFileName
         {
-            get;
+            get { return null; }
         }
 
         public XmlConfig Config
@@ -55,16 +55,16 @@ namespace Stump.Server.BaseServer.Plugins
 
         public virtual void LoadConfig(PluginContext context)
         {
-            if (UseConfig)
-            {
-                Config =
-                    new XmlConfig(Path.Combine(Path.GetDirectoryName(context.AssemblyPath),
-                                                   !string.IsNullOrEmpty(ConfigFileName)
-                                                       ? ConfigFileName
-                                                       : Name + ".xml"));
-                Config.AddAssembly(GetType().Assembly);
-                Config.Load();
-            }
+            if (!UseConfig)
+                return;
+
+            Config =
+                new XmlConfig(Path.Combine(Path.GetDirectoryName(context.AssemblyPath),
+                                           !string.IsNullOrEmpty(ConfigFileName)
+                                               ? ConfigFileName
+                                               : Name + ".xml"));
+            Config.AddAssembly(GetType().Assembly);
+            Config.Load();
         }
     }
 }

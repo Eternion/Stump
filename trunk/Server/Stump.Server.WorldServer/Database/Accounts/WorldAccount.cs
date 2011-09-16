@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
+using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Database.Startup;
 
 namespace Stump.Server.WorldServer.Database.Accounts

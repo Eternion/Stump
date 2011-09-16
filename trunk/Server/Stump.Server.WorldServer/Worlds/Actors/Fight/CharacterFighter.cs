@@ -15,8 +15,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 {
     public sealed class CharacterFighter : NamedFighter
     {
-
-
         private short m_damageTakenBeforeFight;
 
         public CharacterFighter(Character character, FightTeam team)
@@ -120,6 +118,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                     field.Context = 0;
                 }
             }
+        }
+
+        public override FightTeamMemberInformations GetFightTeamMemberInformations()
+        {
+            return new FightTeamMemberCharacterInformations(Id, Name, Character.Level);
         }
 
         public override GameFightFighterInformations GetGameFightFighterInformations()

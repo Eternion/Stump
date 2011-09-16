@@ -36,7 +36,7 @@ namespace Stump.Server.AuthServer.Managers
                 PlayableBreedEnum.Sacrieur,
                 PlayableBreedEnum.Pandawa,
                 PlayableBreedEnum.Roublard,
-                //BreedEnum.Zobal,
+                PlayableBreedEnum.Zobal,
             };
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -45,6 +45,9 @@ namespace Stump.Server.AuthServer.Managers
         public Account FindAccount(string login)
         {
             var account =  Account.FindAccountByLogin(login);
+
+            if (account == null)
+                return null;
 
             Account cachedAccount;
             if (m_accountsCache.TryGetValue(account.Id, out cachedAccount))

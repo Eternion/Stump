@@ -109,7 +109,6 @@
     <Compile Include="Custom\AcquaintanceErrorEnum.cs" />
     <Compile Include="Custom\ActionsEnum.cs" />
     <Compile Include="Custom\StatsBoostTypeEnum.cs" />
-    <Compile Include="Custom\ChannelId.cs" />
     <Compile Include="Custom\ContinentIdEnum.cs" />
     <Compile Include="Custom\MountBehaviorEnum.cs" />
     <Compile Include="Custom\MapType.cs" />

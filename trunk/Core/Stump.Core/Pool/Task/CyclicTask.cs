@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using NLog;
 using Stump.Core.Threading;
 
 namespace Stump.Core.Pool.Task
@@ -12,6 +13,8 @@ namespace Stump.Core.Pool.Task
         public delegate bool Predicate();
 
         #endregion
+
+        private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public event Action<CyclicTask> TaskEnded;
 
@@ -108,10 +111,18 @@ namespace Stump.Core.Pool.Task
                 m_firstCallDelay.TotalMilliseconds : m_intervalDelay.TotalMilliseconds);
 
             System.Threading.Tasks.Task.Factory.StartNewDelayed(delay,
-            delegate {
+            delegate
+            {
                 if (RequireExecution)
                 {
-                    Action();
+                    try
+                    {
+                        Action();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error("Exception occurs on cylictask {0} : {1}", Action.Method.Name, ex);
+                    }
 
                     m_lastCall = DateTime.Now;
                     m_callsCount++;

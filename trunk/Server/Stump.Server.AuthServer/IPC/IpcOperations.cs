@@ -212,6 +212,32 @@ namespace Stump.Server.AuthServer.IPC
             return true;
         }
 
+
+        public bool BlamAccount(WorldServerData wsi, uint victimAccountId, TimeSpan duration, string reason)
+        {
+            if (!Manager.CheckWorldAccess(wsi))
+                return false;
+
+            var victimAccount = Account.FindAccountById(victimAccountId);
+
+            if (victimAccount == null)
+                return false;
+
+            var record = new Sanction
+            {
+                Account = victimAccount,
+                BanReason = reason,
+                Duration = duration
+            };
+            record.Create();
+
+            // todo : check if it is necessary
+            victimAccount.Sanctions.Add(record);
+            victimAccount.Update();
+
+            return true;
+        }
+
         public bool BanIp(WorldServerData wsi, string ipToBan, uint bannerAccountId, TimeSpan duration, string reason)
         {
             if (!Manager.CheckWorldAccess(wsi))

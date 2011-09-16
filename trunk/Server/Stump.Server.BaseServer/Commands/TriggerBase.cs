@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands.Commands;
+using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.BaseServer.Commands
 {
@@ -50,6 +52,11 @@ namespace Stump.Server.BaseServer.Commands
             private set;
         }
 
+        public abstract bool CanFormat
+        {
+            get;
+        }
+
         internal Dictionary<string, IParameter> CommandsParametersByName
         {
             get;
@@ -74,12 +81,47 @@ namespace Stump.Server.BaseServer.Commands
 
         public virtual void ReplyError(string message)
         {
-            Reply("(Error) " + message);
+            if (!CanFormat)
+                Reply("(Error) " + message);
+            else
+                Reply(Bold("(Error)") + " " + message);
         }
 
         public void ReplyError(string format, params object[] args)
         {
             ReplyError(string.Format(format, args));
+        }
+
+        public string Bold(string message)
+        {
+            if (!CanFormat)
+                return message; 
+
+            return "<b>" + message + "</b>";
+        }
+
+        public string Underline(string message)
+        {
+            if (!CanFormat)
+                return message;
+
+            return "<u>" + message + "</u>";
+        }
+
+        public string Italic(string message)
+        {
+            if (!CanFormat)
+                return message;
+
+            return "<i>" + message + "</i>";
+        }
+
+        public string Color(string message, Color color)
+        {
+            if (!CanFormat)
+                return message;
+
+            return "<font color=\"#" + color.ToArgb().ToString("X") + "\">" + message + "</font>";
         }
 
         public virtual T Get<T>(string name)
@@ -111,6 +153,8 @@ namespace Stump.Server.BaseServer.Commands
 
             return false;
         }
+
+        public abstract BaseClient GetSource();
 
         /// <summary>
         /// Bind the trigger to a command instance and initialize his parameters. Returns false whenever an error occurs during the initialization

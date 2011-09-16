@@ -163,11 +163,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                 handler(this, sequenceType);
         }
 
-        public event Action<FightActor, SequenceTypeEnum, short> SequenceEnded;
+        public event Action<FightActor, SequenceTypeEnum, FightSequenceAction> SequenceEnded;
 
-        private void NotifySequenceEnded(SequenceTypeEnum sequenceType, short actionEnd)
+        private void NotifySequenceEnded(SequenceTypeEnum sequenceType, FightSequenceAction actionEnd)
         {
-            Action<FightActor, SequenceTypeEnum, short> handler = SequenceEnded;
+            Action<FightActor, SequenceTypeEnum, FightSequenceAction> handler = SequenceEnded;
             if (handler != null)
                 handler(this, sequenceType, actionEnd);
         }
@@ -225,6 +225,12 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         {
             get;
             private set;
+        }
+
+        public FightSequenceAction LastSequenceAction
+        {
+            get;
+            set;
         }
 
         public bool IsSequencing
@@ -363,7 +369,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             Stats[CaracteristicsEnum.MP].Context -= amount;
             UsedMP += amount;
 
-            NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_USE, this, this, (short) (-amount));
+            NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_USE, this, this, (short) (-amount));
 
             return true;
         }
@@ -635,6 +641,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
             IsSequencing = true;
             Sequence = sequenceType;
+            LastSequenceAction = FindSequenceEndAction(Sequence);
 
             NotifySequenceStarted(sequenceType);
 
@@ -648,19 +655,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
             IsSequencing = false;
 
-            NotifySequenceEnded(Sequence, FindSequenceEndAction(Sequence));
-
-            return true;
-        }
-
-        public bool EndSequence(short actionEnd)
-        {
-            if (!IsSequencing)
-                return false;
-
-            IsSequencing = false;
-
-            NotifySequenceEnded(Sequence, actionEnd);
+            NotifySequenceEnded(Sequence, LastSequenceAction);
 
             return true;
         }
@@ -677,18 +672,18 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             NotifySequenceActionEnded(Sequence);
         }
 
-        private static short FindSequenceEndAction(SequenceTypeEnum sequenceTypeEnum)
+        private static FightSequenceAction FindSequenceEndAction(SequenceTypeEnum sequenceTypeEnum)
         {
             switch (sequenceTypeEnum)
             {
                 case SequenceTypeEnum.SEQUENCE_MOVE:
-                    return 3;
+                    return FightSequenceAction.Move;
                 case SequenceTypeEnum.SEQUENCE_SPELL:
-                    return 4;
+                    return FightSequenceAction.Spell;
                 case SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH:
-                    return 5;
+                    return FightSequenceAction.Death;
                 default:
-                    return 1;
+                    return FightSequenceAction.None;
             }
         }
 

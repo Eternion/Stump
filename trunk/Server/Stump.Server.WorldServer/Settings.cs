@@ -8,16 +8,7 @@ namespace Stump.Server.WorldServer
     /// </summary>
     public class Settings
     {
-        /// <summary>
-        /// Path of content folder
-        /// </summary>
-        [Variable]
-        public static string ContentPath = "./../../content/";
-
-        /// <summary>
-        /// Path of static folder
-        /// </summary>
-        [Variable]
-        public static string StaticPath = "./../../static/";
+        [Variable(true)]
+        public static string MOTD = "Bienvenue sur le serveur test de <b>Stump v. pre-alpha by bouh2</b>";
     }
 }

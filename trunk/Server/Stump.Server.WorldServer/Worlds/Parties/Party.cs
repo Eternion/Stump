@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Worlds.Parties
 
         protected virtual void OnLeaderChanged(Character leader)
         {
-            DoForAll(entry => PartyHandler.SendPartyLeaderUpdateMessage(entry.Client, leader));
+            ForEach(entry => PartyHandler.SendPartyLeaderUpdateMessage(entry.Client, leader));
         }
 
         public event MemberAddedHandler GuestAdded;
@@ -49,7 +49,9 @@ namespace Stump.Server.WorldServer.Worlds.Parties
 
         protected virtual void OnGuestAdded(Character guest)
         {
-            DoForAll(entry => PartyHandler.SendPartyNewGuestMessage(entry.Client, this, guest));
+
+
+            ForEach(entry => PartyHandler.SendPartyNewGuestMessage(entry.Client, this, guest));
         }
 
         public event MemberRemovedHandler GuestRemoved;
@@ -103,7 +105,7 @@ namespace Stump.Server.WorldServer.Worlds.Parties
             else
                 member.Client.Send(new PartyLeaveMessage());
 
-            DoForAll(entry => PartyHandler.SendPartyMemberRemoveMessage(entry.Client, member));
+            ForEach(entry => PartyHandler.SendPartyMemberRemoveMessage(entry.Client, member));
         }
 
         public event Action<Party> PartyDeleted;
@@ -119,7 +121,7 @@ namespace Stump.Server.WorldServer.Worlds.Parties
 
         protected virtual void OnGroupDisbanded()
         {
-            DoForAll(entry => PartyHandler.SendPartyDeletedMessage(entry.Client, this));
+            ForEach(entry => PartyHandler.SendPartyDeletedMessage(entry.Client, this));
         }
 
         #endregion
@@ -152,7 +154,7 @@ namespace Stump.Server.WorldServer.Worlds.Parties
         {
             get { return m_restricted; }
             private set { m_restricted = value;
-                DoForAll(entry => PartyHandler.SendPartyRestrictedMessage(entry.Client, m_restricted)); }
+                ForEach(entry => PartyHandler.SendPartyRestrictedMessage(entry.Client, m_restricted)); }
         }
 
         public bool IsFull
@@ -331,10 +333,10 @@ namespace Stump.Server.WorldServer.Worlds.Parties
             if (!IsInGroup(character))
                 return;
 
-            DoForAll(entry => PartyHandler.SendPartyUpdateMessage(entry.Client, character), character);
+            ForEach(entry => PartyHandler.SendPartyUpdateMessage(entry.Client, character), character);
         }
 
-        public void DoForAll(Action<Character> action)
+        public void ForEach(Action<Character> action)
         {
             foreach (var character in Members)
             {
@@ -342,7 +344,7 @@ namespace Stump.Server.WorldServer.Worlds.Parties
             }
         }
 
-        public void DoForAll(Action<Character> action, Character except)
+        public void ForEach(Action<Character> action, Character except)
         {
             foreach (var character in Members)
             {

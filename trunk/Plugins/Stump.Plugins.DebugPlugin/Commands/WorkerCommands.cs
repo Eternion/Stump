@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Network;
 
-namespace Stump.Server.BaseServer.Commands.Commands
+namespace Stump.Plugins.DebugPlugin.Commands
 {
     public class WorkerCommands : SubCommandContainer
     {

@@ -278,6 +278,9 @@ namespace Stump.Server.AuthServer.Managers
             if (!m_realmlist.ContainsKey(server.Id))
                 return false;
 
+            if (!m_realmlist[server.Id].Connected)
+                return false;
+
             if (CheckPassword && m_realmlist[server.Id].Password != server.Password)
                 return false;
 
@@ -351,7 +354,7 @@ namespace Stump.Server.AuthServer.Managers
         /// </summary>
         private void CheckPing()
         {
-            while (AuthServer.Instance.Running)
+            while (AuthServer.Instance.Running || AuthServer.Instance.Initializing)
             {
                 lock (m_sync)
                 {

@@ -79,7 +79,8 @@ namespace Stump.Server.BaseServer.IPC
         /// <param name="wsi"></param>
         /// <returns></returns>
         bool BlamAccount(WorldServerData wsi, uint victimAccountId, uint bannerAccountId, TimeSpan duration, string reason);
-        
+        bool BlamAccount(WorldServerData wsi, uint victimAccountId, TimeSpan duration, string reason);
+
         bool BanIp(WorldServerData wsi, string ipToBan, uint bannerAccountId, TimeSpan duration, string reason);
     }
 }

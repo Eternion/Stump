@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
@@ -7,6 +8,7 @@ using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Handlers.Characters;
+using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
 using Stump.Server.WorldServer.Worlds.Actors.Interfaces;
@@ -28,6 +30,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
     public sealed class Character : Humanoid,
                                     IStatsOwner, IInventoryOwner
     {
+        private readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private readonly CharacterRecord m_record;
 
         public Character(CharacterRecord record, WorldClient client)
@@ -108,6 +112,17 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         #region Position
 
+        public override IContext Context
+        {
+            get
+            {
+                if (IsFighting())
+                    return Fight;
+
+                return Map;
+            }
+        }
+
         public Map Map
         {
             get { return Position.Map; }
@@ -180,6 +195,16 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         public bool IsInRequest()
         {
             return RequestBox != null;
+        }
+
+        public bool IsRequestSource()
+        {
+            return IsInRequest() && RequestBox.Source == this;
+        }
+
+        public bool IsRequestTarget()
+        {
+            return IsInRequest() && RequestBox.Target == this;
         }
 
         #endregion
@@ -482,6 +507,14 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         #region Actions
 
+        #region Chat
+        public void SendServerMessage(string message)
+        {
+            ChatHandler.SendChatServerMessage(Client, message);
+        }
+
+        #endregion
+
         #region Move
         public override bool StartMove(Maps.Pathfinding.MovementPath movementPath)
         {
@@ -546,8 +579,10 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             if (!IsInRequest())
                 return;
 
-            if (RequestBox.Source == this)
+            if (IsRequestSource())
                 RequestBox.Cancel();
+            else if (IsRequestTarget())
+                DenyRequest();
         }
 
         #endregion
@@ -583,6 +618,14 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             return m_partyInvitations.Remove(invitation.Party.Id);
         }
 
+        public void DenyAllInvitations()
+        {
+            foreach (var partyInvitation in m_partyInvitations)
+            {
+                partyInvitation.Value.Deny();
+            }
+        }
+
         public void EnterParty(Party party)
         {
             if (IsInParty())
@@ -591,10 +634,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             if (m_partyInvitations.ContainsKey(party.Id))
                 m_partyInvitations.Remove(party.Id);
 
-            foreach (var partyInvitation in m_partyInvitations)
-            {
-                partyInvitation.Value.Deny();
-            }
+            DenyAllInvitations();
 
             Party = party;
             Party.MemberRemoved += OnPartyMemberRemoved;
@@ -755,7 +795,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             Map.Enter(this);
             World.Instance.Enter(this);
 
-            // todo: send MOTD
+            SendServerMessage(Settings.MOTD);
 
             InWorld = true;
 
@@ -764,20 +804,37 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         public void LogOut()
         {
-            if (InWorld)
+            try
             {
-                if (Map != null && !IsFighting())
-                    Map.Leave(this);
+                if (InWorld)
+                {
+                    DenyAllInvitations();
 
-                if (IsInParty())
-                    LeaveParty();
+                    if (IsInRequest())
+                        CancelRequest();
 
-                World.Instance.Leave(this);
+                    if (IsDialoging())
+                        Dialog.Close();
+
+                    if (IsInParty())
+                        LeaveParty();
+
+                    if (Map != null && !IsFighting())
+                        Map.Leave(this);
+
+                    World.Instance.Leave(this);
+                }
+
+                NotifyLoggedOut();
             }
-
-            NotifyLoggedOut();
-
-            SaveLater();
+            catch(Exception ex)
+            {
+                logger.Error("Cannot perfom OnLoggout actions, but trying to Save character : {0}", ex);
+            }
+            finally
+            {
+                SaveLater();
+            }
         }
 
         public void SaveLater()

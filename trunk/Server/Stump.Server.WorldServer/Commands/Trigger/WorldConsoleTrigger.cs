@@ -2,6 +2,7 @@ using System;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
+using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.WorldServer.Commands.Trigger
 {
@@ -17,9 +18,22 @@ namespace Stump.Server.WorldServer.Commands.Trigger
         {
         }
 
+        public override bool CanFormat
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public override void Reply(string text)
         {
             Console.WriteLine(" " + text);
+        }
+
+        public override BaseClient GetSource()
+        {
+            return null;
         }
     }
 }

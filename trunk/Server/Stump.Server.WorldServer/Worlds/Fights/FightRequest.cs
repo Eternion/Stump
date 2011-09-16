@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         public void Cancel()
         {
             ContextRoleplayHandler.
-                SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Source.Client, Source, Source, Target, false);
+                SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Target.Client, Source, Source, Target, false);
 
             Close();
         }

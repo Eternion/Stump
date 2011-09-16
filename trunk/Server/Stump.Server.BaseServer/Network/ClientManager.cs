@@ -247,7 +247,7 @@ namespace Stump.Server.BaseServer.Network
             if (MaxIPConnexions.HasValue &&
                 CountClientWithSameIp(( (IPEndPoint) e.AcceptSocket.RemoteEndPoint ).Address) > MaxIPConnexions.Value)
             {
-                logger.Error("Client {0} try to connect more {1} time", e.AcceptSocket.RemoteEndPoint.ToString(), MaxIPConnexions.Value);
+                logger.Error("Client {0} try to connect more {1} times", e.AcceptSocket.RemoteEndPoint.ToString(), MaxIPConnexions.Value);
                 m_semaphore.Release();
 
                 StartAccept();
@@ -342,10 +342,16 @@ namespace Stump.Server.BaseServer.Network
 
             if (client != null)
             {
-                client.Disconnect();
-                m_clients.Remove(client);
+                try
+                {
+                    client.Disconnect();
+                }
+                finally
+                {
+                    m_clients.Remove(client);
 
-                NotifyClientDisconnected(client);
+                    NotifyClientDisconnected(client);
+                }
             }
 
             m_semaphore.Release();

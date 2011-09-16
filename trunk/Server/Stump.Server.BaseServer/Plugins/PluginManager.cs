@@ -12,13 +12,10 @@ namespace Stump.Server.BaseServer.Plugins
 {
     public sealed class PluginManager : Singleton<PluginManager>
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        [Variable]
-        public static List<string> PluginsPath = new List<string>
-            {
-                "./plugins/"
-            };
+        [Variable(true)]
+        public static List<string> PluginsPath = new List<string>{"./plugins/"};
 
         public delegate void PluginContextHandler(PluginContext pluginContext);
 
@@ -49,10 +46,10 @@ namespace Stump.Server.BaseServer.Plugins
         {
             foreach (var path in PluginsPath)
             {
-                if(!File.Exists(path))
+                if (!Directory.Exists(path) && !File.Exists(path))
                 {
-                    logger.Error("Cannot load unexistant plugin path {0}", path);
-                    continue;
+                    logger.Error("Cannot load unexistant plugin path {0}", PluginsPath);
+                    return;
                 }
 
                 if (File.GetAttributes(path).HasFlag(FileAttributes.Directory))
@@ -97,10 +94,11 @@ namespace Stump.Server.BaseServer.Plugins
             return pluginContext;
         }
 
-        public void UnLoadPlugin(string name)
+        public void UnLoadPlugin(string name, bool ignoreCase = false)
         {
             var plugin = from entry in PluginContexts
-                         where entry.Plugin.Name.Equals(name)
+                         where entry.Plugin.Name.Equals(name, ignoreCase ?
+                            StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture)
                          select entry;
 
             foreach (var pluginContext in plugin)
@@ -115,6 +113,21 @@ namespace Stump.Server.BaseServer.Plugins
             context.Plugin.Dispose();
 
             UnRegisterPlugin(context);
+        }
+
+        public PluginContext GetPlugin(string name, bool ignoreCase = false)
+        {
+            var plugins = from entry in PluginContexts
+                         where entry.Plugin.Name.Equals(name, ignoreCase ?
+                            StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture)
+                         select entry;
+
+            return plugins.FirstOrDefault();
+        }
+
+        public PluginContext[] GetPlugins()
+        {
+            return PluginContexts.ToArray();
         }
 
         internal void RegisterPlugin(PluginContext pluginContext)

@@ -223,13 +223,13 @@ namespace Stump.Server.WorldServer.Worlds
             return GetCharacterByPattern(pattern);
         }
 
-        public void CallOnCharacters(Action<Character> action)
+        public void ForEachCharacter(Action<Character> action)
         {
             foreach (var key in m_charactersById)
                 action(key.Value);
         }
 
-        public void CallOnCharacters(Predicate<Character> predicate, Action<Character> action)
+        public void ForEachCharacter(Predicate<Character> predicate, Action<Character> action)
         {
             foreach (var key in m_charactersById.Where(k => predicate(k.Value)))
                 action(key.Value);

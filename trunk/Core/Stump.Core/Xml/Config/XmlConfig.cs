@@ -502,6 +502,10 @@ namespace Stump.Core.Xml.Config
             {
                 return new XmlSerializer(type).Deserialize(new StringReader((element as XmlNode).InnerXml));
             }
+            if (element is string)
+            {
+                element = UnEscapeXml(element as string);
+            }
             if (type.IsEnum)
             {
                 return new XmlSerializer(type).Deserialize(new StringReader(element.ToString()));
@@ -514,6 +518,20 @@ namespace Stump.Core.Xml.Config
                     return null;
 
             return Convert.ChangeType(element, type, CultureInfo.InvariantCulture);
+        }
+
+        private static string UnEscapeXml(string xmlString)
+        {
+            if (string.IsNullOrEmpty(xmlString))
+                return xmlString;
+
+            xmlString = xmlString.Replace("&apos;", "'");
+            xmlString = xmlString.Replace("&quot;", "\"");
+            xmlString = xmlString.Replace("&gt;", ">");
+            xmlString = xmlString.Replace("&lt;", "<");
+            xmlString = xmlString.Replace("&amp;", "&");
+
+            return xmlString;
         }
     }
 }

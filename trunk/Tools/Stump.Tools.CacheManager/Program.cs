@@ -25,12 +25,26 @@ namespace Stump.Tools.CacheManager
 
         private static void Main(string[] args)
         {
-            string dofusPath = args.Length == 0 ? FindDofusPath() : args[0];
+            NLogHelper.DefineLogProfile(false, true);
+
+            foreach (var s in args)
+            {
+                Console.WriteLine(s);
+
+            }
+
+            logger.Info("Parameters : [auth config path] [world config path] [dofus dir path] [languages]");
+
+            AuthConfigPath = args.Length > 0 ? args[0] : AuthConfigPath;
+            WorldConfigPath = args.Length > 1 ? args[1] : WorldConfigPath;
+
+            string dofusPath = args.Length > 2 ? args[2] : FindDofusPath();
             string d2OFolder = Path.Combine(dofusPath, "data", "common");
             string d2IFolder = Path.Combine(dofusPath, "data", "i18n");
             string mapsFolder = Path.Combine(dofusPath, "content", "maps");
 
-            NLogHelper.DefineLogProfile(false, true);
+            SpecificLanguage = args.Length > 3 ? args[3] : SpecificLanguage;
+
             
             XmlConfig config;
             if (!string.IsNullOrEmpty(Path.GetFullPath(AuthConfigPath)))

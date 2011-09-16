@@ -80,6 +80,9 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         {
             UnBindFightersEvents();
             BindFightersEvents();
+
+            if (State != FightState.Placement)
+                HideBlades();
         }
 
         public Action<Fight, FightActor, Cell> CellShown;
@@ -263,6 +266,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             actor.StartMoving -= OnStartMoving;
             actor.StopMoving -= OnStopMoving;
             actor.FightPointsVariation -= OnFightPointsVariation;
+            actor.LifePointsChanged -= OnLifePointsChanged;
             actor.SpellCasting -= OnSpellCasting;
             actor.SpellCasted -= OnSpellCasted;
             actor.TurnReadyStateChanged -= OnSetTurnReady;
@@ -275,7 +279,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
             if (fighter != null)
             {
-                fighter.Character.LoggedOut += OnLoggedOut;
+                fighter.Character.LoggedOut -= OnLoggedOut;
             }
         }
 
@@ -347,6 +351,9 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         public void ShowBlades()
         {
+            if (BladesVisible)
+                return;
+
             Map.ForEach(character => ContextHandler.SendGameRolePlayShowChallengeMessage(character.Client, this));
 
             RedTeam.TeamOptionsChanged += OnTeamOptionsChanged;
@@ -357,6 +364,9 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         public void HideBlades()
         {
+            if (!BladesVisible)
+                return;
+
             Map.ForEach(character => ContextHandler.SendGameRolePlayRemoveChallengeMessage(character.Client, this));
 
             RedTeam.TeamOptionsChanged -= OnTeamOptionsChanged;
@@ -480,14 +490,9 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         public void LeaveFight(CharacterFighter fighter)
         {
-            if (State == FightState.Fighting)
-            {
-                fighter.Die();
-            }
+            ForEach(entry => ContextHandler.SendGameFightLeaveMessage(entry.Client, fighter));
 
             fighter.Team.RemoveFighter(fighter);
-
-            ForEach(entry => ContextHandler.SendGameFightLeaveMessage(entry.Client, fighter));
 
             ContextHandler.SendGameFightEndMessage(fighter.Character.Client, this);
             CharacterHandler.SendCharactersListMessage(fighter.Character.Client);
@@ -600,11 +605,9 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             ForEach(entry => ActionsHandler.SendGameActionFightDeathMessage(entry.Client, fighter));
 
             if (killedBy != null && killedBy.IsSequencing)
-                killedBy.EndSequence(5);
+                killedBy.LastSequenceAction = FightSequenceAction.Death;
             else
                 fighter.EndSequence();
-
-            CheckFightEnd();
         }
 
         private void OnStartMoving(ContextActor actor, MovementPath path)
@@ -660,6 +663,8 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         {
             if (caster.IsSequencing)
                 caster.EndSequence();
+
+            CheckFightEnd();
         }
 
         private void OnSequenceStarted(FightActor fighter, SequenceTypeEnum sequenceType)
@@ -667,10 +672,10 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             ForEach(entry => ActionsHandler.SendSequenceStartMessage(entry.Client, fighter, sequenceType));
         }
 
-        private void OnSequenceEnded(FightActor fighter, SequenceTypeEnum sequenceType, short actionEnd)
+        private void OnSequenceEnded(FightActor fighter, SequenceTypeEnum sequenceType, FightSequenceAction sequenceEndAction)
         {
             // todo : find actionid utility
-            ForEach(entry => ActionsHandler.SendSequenceEndMessage(entry.Client, fighter, actionEnd, sequenceType));
+            ForEach(entry => ActionsHandler.SendSequenceEndMessage(entry.Client, fighter, sequenceEndAction, sequenceType));
         }
 
         public void SetFightState(FightState state)
@@ -727,6 +732,9 @@ namespace Stump.Server.WorldServer.Worlds.Fights
                     ContextHandler.SendGameFightUpdateTeamMessage(character.Client, this, BlueTeam);
                 }
             }
+
+            if (BladesVisible)
+                Map.ForEach(entry => ContextHandler.SendGameFightUpdateTeamMessage(entry.Client, this, team));
         }
 
         private void OnFighterRemoved(FightTeam team, FightActor fighter)
@@ -746,8 +754,13 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         public void CheckFightEnd()
         {
-            if (RedTeam.AreAllDead() || BlueTeam.AreAllDead())
+            if (!RedTeam.AreAllDead() && !BlueTeam.AreAllDead())
+                return;
+
+            if (State == FightState.Fighting)
                 RequestEndFight();
+            else
+                EndFight();
         }
 
         #endregion
@@ -816,7 +829,6 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
             FightManager.Instance.Remove(this);
         }
-
         #endregion
 
         #region Get Methods

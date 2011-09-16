@@ -45,15 +45,21 @@ namespace Stump.Core.IO
             if (activeconsoleLog)
                 config.AddTarget("console", consoleTarget);
 
+#if DEBUG
+            var level = LogLevel.Debug;
+#else
+            var level = LogLevel.Info;
+#endif
+
             if (activeconsoleLog)
             {
-                var rule = new LoggingRule("*", LogLevel.Debug, consoleTarget);
+                var rule = new LoggingRule("*", level, consoleTarget);
                 config.LoggingRules.Add(rule);
             }
 
             if (activefileLog)
             {
-                var rule = new LoggingRule("*", LogLevel.Debug, fileTarget);
+                var rule = new LoggingRule("*", level, fileTarget);
                 rule.DisableLoggingForLevel(LogLevel.Fatal);
                 rule.DisableLoggingForLevel(LogLevel.Error);
                 config.LoggingRules.Add(rule);

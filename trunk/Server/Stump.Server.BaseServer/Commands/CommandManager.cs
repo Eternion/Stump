@@ -77,17 +77,6 @@ namespace Stump.Server.BaseServer.Commands
             SortCommands();
         }
 
-        private void SortCommands()
-        {
-            m_commandsByAlias = m_commandsByAlias.OrderBy(entry => entry.Key).ToDictionary(entry => entry.Key,
-                                                                               entry => entry.Value);
-
-            foreach (var availableCommand in AvailableCommands.OfType<SubCommandContainer>())
-            {
-                availableCommand.SortSubCommands();
-            }
-        }
-
         public void RegisterCommand(Type commandType)
         {
             if (commandType.IsSubclassOf(typeof(SubCommand)))
@@ -183,6 +172,46 @@ namespace Stump.Server.BaseServer.Commands
             parentCommand.AddSubCommand(subcommand);
             m_registeredCommands.Add(subcommand);
             m_registeredTypes.Add(commandType);
+        }
+
+        public void UnRegisterAll(Assembly assembly)
+        {
+            if (assembly == null)
+                throw new ArgumentNullException("assembly");
+
+            var callTypes = assembly.GetTypes().Where(entry => !entry.IsAbstract);
+
+            foreach (Type type in callTypes)
+            {
+                if (IsCommandRegister(type))
+                    UnRegisterCommand(type);
+            }
+        }
+
+        public void UnRegisterCommand(Type commandType)
+        {
+            var command = Activator.CreateInstance(commandType) as CommandBase;
+
+            if (command == null)
+                return;
+
+            foreach (var alias in command.Aliases)
+            {
+                m_commandsByAlias.Remove(alias);
+            }
+
+            m_registeredTypes.Remove(commandType);
+        }
+
+        private void SortCommands()
+        {
+            m_commandsByAlias = m_commandsByAlias.OrderBy(entry => entry.Key).ToDictionary(entry => entry.Key,
+                                                                               entry => entry.Value);
+
+            foreach (var availableCommand in AvailableCommands.OfType<SubCommandContainer>())
+            {
+                availableCommand.SortSubCommands();
+            }
         }
 
         public bool IsCommandRegister(Type commandType)

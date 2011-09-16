@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        [BelongsTo("CharacterId", NotNull = true)]
+        [BelongsTo("CharacterId")]
         public CharacterRecord Character
         {
             get;

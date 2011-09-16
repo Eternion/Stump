@@ -51,7 +51,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
 
             trigger.Reply(string.Join(", ", from entry in commands
                                             select (entry is SubCommandContainer ?
-                                                string.Format("{0}({1})", entry.Aliases.First(), (entry as SubCommandContainer).Count)
+                                                string.Format(trigger.CanFormat ? "<b>{0}</b>({1})" : "{0}({1})", entry.Aliases.First(), ( entry as SubCommandContainer ).Count)
                                                 : entry.Aliases.First())));
         }
     }

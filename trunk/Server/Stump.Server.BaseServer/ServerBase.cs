@@ -128,9 +128,16 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
+        public bool Initializing
+        {
+            get;
+            protected set;
+        }
+
         public virtual void Initialize()
         {
             InstanceAsBase = this;
+            Initializing = true;
 
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
             TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
@@ -224,12 +231,12 @@ namespace Stump.Server.BaseServer
 
         protected virtual void OnPluginRemoved(PluginContext plugincontext)
         {
-            logger.Info("Plugins Unloaded : {0}", plugincontext.Plugin.GetDefaultDescription());
+            logger.Info("Plugin Unloaded : {0}", plugincontext.Plugin.GetDefaultDescription());
         }
 
         protected virtual void OnPluginAdded(PluginContext plugincontext)
         {
-            logger.Info("Plugins Loaded : {0}", plugincontext.Plugin.GetDefaultDescription());
+            logger.Info("Plugin Loaded : {0}", plugincontext.Plugin.GetDefaultDescription());
         }
 
         private void OnClientConnected(BaseClient client)
@@ -285,6 +292,7 @@ namespace Stump.Server.BaseServer
             PluginManager.Instance.LoadAllPlugins();
 
             Running = true;
+            Initializing = false;
         }
 
         public virtual void Update()
@@ -304,7 +312,6 @@ namespace Stump.Server.BaseServer
         private void DisconnectAfkClient()
         {
             // todo : this is not an afk check but a timeout check
-            logger.Info("Disconnect AFK Clients");
 
             IEnumerable<BaseClient> afkClients = ClientManager.FindAll(client =>
                 DateTime.Now.Subtract(client.LastActivity).TotalSeconds >= Settings.InactivityDisconnectionTime);

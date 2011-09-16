@@ -61,7 +61,7 @@ namespace Stump.Server.BaseServer.Network
         {
             if (Socket == null || !Connected)
             {
-                throw new Exception("Attempt to send a packet when client isn't connected");
+               logger.Debug("Attempt to send a packet when client isn't connected");
             }
 
             SocketAsyncEventArgs args = ClientManager.Instance.PopWriteSocketAsyncArgs();
@@ -168,10 +168,19 @@ namespace Stump.Server.BaseServer.Network
         /// </summary>
         public void Disconnect()
         {
-            if (Connected)
+            if (!Connected)
+                return;
+
+            try
             {
                 OnDisconnect();
-
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Exception occurs while disconnecting client {0} : {1}", ToString(), ex);
+            }
+            finally
+            {
                 Close();
             }
         }
