@@ -109,6 +109,8 @@ namespace Stump.Server.AuthServer
 
             logger.Info("Start listening on port : " + Port + "...");
             ClientManager.Start(Host, Port);
+
+            StartTime = DateTime.Now;
         }
 
         public override void OnShutdown()

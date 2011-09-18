@@ -196,9 +196,14 @@ namespace Stump.Server.WorldServer.Worlds.Parties
             private set;
         }
 
+        public bool CanInvite(Character character)
+        {
+            return !IsMember(character) && !IsGuest(character);
+        }
+
         public bool AddGuest(Character character)
         {
-            if (IsFull)
+            if (IsFull || !CanInvite(character))
                 return false;
 
             lock (m_guestLocker)

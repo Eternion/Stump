@@ -61,11 +61,12 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         private Timer m_turnTimer;
         private Timer m_turnEndTimer;
 
-        public TimeLine(Fight fight)
+        public TimeLine(Fight fight, List<FightActor> fighters)
         {
             Fight = fight;
             Index = -1;
             State = TimeLineState.Stopped;
+            Fighters = fighters;
         }
 
         public Fight Fight
@@ -138,7 +139,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             ForceEndTurn(null);
         }
 
-        public void InsertAfterCurrent(FightActor fighter)
+        /*public void InsertAfterCurrent(FightActor fighter)
         {
             Insert(Index + 1, fighter);
         }
@@ -149,7 +150,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             {
                 Fighters.Insert(index, fighter);
             }
-        }
+        }*/
 
         private void Initialize()
         {

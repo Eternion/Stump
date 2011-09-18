@@ -20,6 +20,7 @@ using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Worlds;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 
 namespace Stump.Server.WorldServer
@@ -113,6 +114,8 @@ namespace Stump.Server.WorldServer
 
             logger.Info("Start listening on port : " + Port + "...");
             ClientManager.Start(Host, Port);
+
+            StartTime = DateTime.Now;
         }
 
         protected override BaseClient CreateClient(Socket s)
@@ -122,6 +125,7 @@ namespace Stump.Server.WorldServer
 
         public override void OnShutdown()
         {
+            World.Instance.Save();
         }
 
 

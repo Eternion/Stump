@@ -8,5 +8,10 @@ namespace Stump.Server.WorldServer.Handlers
             : base(messageId)
         {
         }
+
+        public WorldHandlerAttribute(uint messageId, bool handledByIOTask)
+            : base(messageId, handledByIOTask)
+        {
+        }
     }
 }

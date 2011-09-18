@@ -11,5 +11,10 @@ namespace Stump.Server.AuthServer.Handlers
             : base(messageId)
         {
         }
+
+        public AuthHandlerAttribute(uint messageId, bool handledByIOTask)
+            : base(messageId, handledByIOTask)
+        {
+        }
     }
 }

@@ -128,6 +128,20 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
+        public DateTime StartTime
+        {
+            get;
+            protected set;
+        }
+
+        public TimeSpan UpTime
+        {
+            get
+            {
+                return DateTime.Now - StartTime;
+            }
+        }
+
         public bool Initializing
         {
             get;

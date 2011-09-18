@@ -235,5 +235,13 @@ namespace Stump.Server.WorldServer.Worlds
                 action(key.Value);
         }
         #endregion
+
+        public void Save()
+        {
+            foreach (var character in m_charactersById.Values)
+            {
+                character.SaveNow();
+            }
+        }
     }
 }

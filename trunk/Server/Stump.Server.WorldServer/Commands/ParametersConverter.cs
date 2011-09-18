@@ -1,6 +1,7 @@
 
 using System;
 using Stump.Server.BaseServer.Commands;
+using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Worlds;

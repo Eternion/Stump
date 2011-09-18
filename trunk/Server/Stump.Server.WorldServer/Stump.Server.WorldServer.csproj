@@ -98,11 +98,13 @@
     <Compile Include="Commands\Commands\KickCommand.cs" />
     <Compile Include="Commands\Commands\LookCommand.cs" />
     <Compile Include="Commands\Commands\TeleportCommand.cs" />
+    <Compile Include="Commands\Commands\WhoCommand.cs" />
     <Compile Include="Commands\ParametersConverter.cs" />
     <Compile Include="Commands\Trigger\GameTrigger.cs" />
     <Compile Include="Commands\Trigger\TriggerChat.cs" />
     <Compile Include="Commands\Trigger\TriggerConsole.cs" />
     <Compile Include="Commands\Trigger\WorldConsoleTrigger.cs" />
+    <Compile Include="Database\Npcs\NpcTemplate.cs" />
     <Compile Include="Handlers\Actions\ActionsFightHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsSequenceHandler.cs" />
@@ -213,7 +215,7 @@
     <Compile Include="Worlds\Actors\RolePlay\MountNpc.cs" />
     <Compile Include="Worlds\Actors\RolePlay\Mutant.cs" />
     <Compile Include="Worlds\Actors\RolePlay\NamedActor.cs" />
-    <Compile Include="Worlds\Actors\RolePlay\Npc.cs" />
+    <Compile Include="Worlds\Actors\RolePlay\Npcs\Npc.cs" />
     <Compile Include="Worlds\Actors\RolePlay\Prism.cs" />
     <Compile Include="Worlds\Actors\RolePlay\RolePlayActor.cs" />
     <Compile Include="Worlds\Actors\RolePlay\TaxCollectorNpc.cs" />

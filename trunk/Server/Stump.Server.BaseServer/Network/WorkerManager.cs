@@ -121,11 +121,7 @@ namespace Stump.Server.BaseServer.Network
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="orderByTime"></param>
-        /// <returns></returns>
+        
         public string GetDetailedMessageTypes(bool orderByTime)
         {
             var result = new StringBuilder();

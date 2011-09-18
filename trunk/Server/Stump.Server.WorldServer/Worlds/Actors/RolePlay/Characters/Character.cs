@@ -598,6 +598,9 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 EnterParty(party);
             }
 
+            if (!Party.CanInvite(target))
+                return;
+
             if (target.m_partyInvitations.ContainsKey(Party.Id))
                 return; // already invited
 
@@ -825,6 +828,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                     World.Instance.Leave(this);
                 }
 
+                UnLoadRecord();
+
                 NotifyLoggedOut();
             }
             catch(Exception ex)
@@ -880,6 +885,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             Inventory = new Inventory(this, m_record.Inventory);
             Spells = new SpellInventory(this);
             Shortcuts = new ShortcutBar(this);
+        }
+
+        private void UnLoadRecord()
+        {
+            Inventory.Dispose();
         }
 
         #endregion

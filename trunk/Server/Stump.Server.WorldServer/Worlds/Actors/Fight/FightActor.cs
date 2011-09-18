@@ -482,8 +482,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         public short InflictDamage(short damage, EffectSchoolEnum school, FightActor from, bool pvp = false)
         {
-            damage = 100;
-
             damage = CalculateDamage(damage, school);
             damage = CalculateDamageResistance(damage, school, pvp);
 

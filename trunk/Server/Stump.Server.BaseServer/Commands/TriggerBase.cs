@@ -213,9 +213,9 @@ namespace Stump.Server.BaseServer.Commands
                         {
                             parameter.SetValue(value, this);
                         }
-                        catch (ConverterException)
+                        catch (ConverterException ex)
                         {
-                            ReplyError("Cannot convert : {0} to {1}", word, definition.ValueType);
+                            ReplyError(ex.Message);
                             return false;
                         }
                         catch
@@ -239,6 +239,11 @@ namespace Stump.Server.BaseServer.Commands
                     try
                     {
                         parameter.SetValue(word, this);
+                    }
+                    catch (ConverterException ex)
+                    {
+                        ReplyError(ex.Message);
+                        return false;
                     }
                     catch
                     {

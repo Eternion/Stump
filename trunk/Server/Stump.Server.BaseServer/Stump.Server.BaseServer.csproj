@@ -128,6 +128,7 @@
   <ItemGroup>
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\Commands\HelpCommand.cs" />
+    <Compile Include="Commands\Commands\InfoCommand.cs" />
     <Compile Include="Commands\Commands\ListCommand.cs" />
     <Compile Include="Commands\Commands\PluginsCommand.cs" />
     <Compile Include="Commands\Commands\ShutdownCommand.cs" />
@@ -200,9 +201,7 @@
       <Name>Stump.DofusProtocol.D2oClasses</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Network\Benchmarking\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

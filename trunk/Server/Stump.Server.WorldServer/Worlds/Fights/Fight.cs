@@ -524,7 +524,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
             SetFightState(FightState.Fighting);
 
-            TimeLine = new TimeLine(this);
+            TimeLine = new TimeLine(this, m_fighters);
             TimeLine.TurnStarted += OnTurnStarted;
             TimeLine.TurnEndRequest += OnTurnEndRequest;
             TimeLine.TurnEnded += OnTurnEnded;
@@ -641,8 +641,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         private void OnFightPointsVariation(FightActor actor, ActionsEnum action, FightActor source, FightActor target, short delta)
         {
             ForEach(entry => ActionsHandler.
-                SendGameActionFightPointsVariationMessage(entry.Client, ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_USE,
-                                                                                     source, target, delta));
+                SendGameActionFightPointsVariationMessage(entry.Client, action, source, target, delta));
         }
 
         private void OnLifePointsChanged(FightActor actor, int delta, FightActor from)
@@ -740,6 +739,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         private void OnFighterRemoved(FightTeam team, FightActor fighter)
         {
             m_fighters.Remove(fighter);
+            UnBindFighterEvents(fighter);
 
             ForEach(entry => ContextHandler.SendGameFightRemoveTeamMemberMessage(entry.Client, fighter));
 

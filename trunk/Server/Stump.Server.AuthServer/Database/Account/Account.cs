@@ -241,7 +241,7 @@ namespace Stump.Server.AuthServer.Database.Account
                 if (Sanctions.Count == 0)
                     return 0;
 
-                var remainingTime = DateTime.Now.Subtract(Sanctions.Max(s => s.EndDate)).TotalSeconds;
+                var remainingTime = (Sanctions.Max(s => s.EndDate) - DateTime.Now).TotalMinutes;
 
                 if (remainingTime < 0)
                     return 0;

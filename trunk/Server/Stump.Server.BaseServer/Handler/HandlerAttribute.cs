@@ -11,9 +11,22 @@ namespace Stump.Server.BaseServer.Handler
             MessageId = messageId;
         }
 
+        protected HandlerAttribute(uint messageId, bool handledByIOTask)
+        {
+            MessageId = messageId;
+            HandledByIOTask = handledByIOTask;
+        }
+
+        public bool HandledByIOTask
+        {
+            get;
+            private set;
+        }
+
         public uint MessageId
         {
-            get; private set;
+            get; 
+            private set;
         }
 
         public override string ToString()

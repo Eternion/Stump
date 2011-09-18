@@ -89,6 +89,14 @@ namespace Stump.Server.BaseServer.Network
             get { return m_clients; }
         }
 
+        public int Count
+        {
+            get
+            {
+                return m_clients.Count;
+            }
+        }
+
         public bool Paused
         {
             get;

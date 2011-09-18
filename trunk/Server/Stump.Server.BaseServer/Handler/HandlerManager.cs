@@ -153,7 +153,10 @@ namespace Stump.Server.BaseServer.Handler
                     Console.WriteLine(string.Format("{0} << {1}", client, message));
 #endif
 
-                    handler.Action(client, message);
+                    if (handler.Attribute.HandledByIOTask)
+                        ServerBase.InstanceAsBase.IOTaskPool.EnqueueTask(() => handler.Action(client, message));
+                    else
+                        handler.Action(client, message);
                 }
                 catch (Exception ex)
                 {

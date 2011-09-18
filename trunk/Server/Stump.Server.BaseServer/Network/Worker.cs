@@ -102,7 +102,7 @@ namespace Stump.Server.BaseServer.Network
 
                         m_stopWatch.Stop();
 
-                        m_treatedMessage.Add(new Tuple<Message, long>(mess.Message,m_stopWatch.ElapsedMilliseconds));
+                        m_treatedMessage.Add(new Tuple<Message, long>(mess.Message, m_stopWatch.ElapsedMilliseconds));
                     }
                     else
                     {
@@ -110,7 +110,7 @@ namespace Stump.Server.BaseServer.Network
                     }
                 }
                 else
-                    Thread.Sleep(1);
+                    Thread.Yield();
             }
         }
 
