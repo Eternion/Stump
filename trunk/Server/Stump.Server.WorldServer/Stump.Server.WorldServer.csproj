@@ -104,7 +104,14 @@
     <Compile Include="Commands\Trigger\TriggerChat.cs" />
     <Compile Include="Commands\Trigger\TriggerConsole.cs" />
     <Compile Include="Commands\Trigger\WorldConsoleTrigger.cs" />
+    <Compile Include="Database\Npcs\Actions\NpcTalkAction.cs" />
+    <Compile Include="Database\Npcs\NpcAction.cs" />
+    <Compile Include="Database\Npcs\NpcMessage.cs" />
+    <Compile Include="Database\Npcs\NpcReply.cs" />
+    <Compile Include="Database\Npcs\NpcSpawn.cs" />
     <Compile Include="Database\Npcs\NpcTemplate.cs" />
+    <Compile Include="Database\Npcs\Replies\NpcContinueDialog.cs" />
+    <Compile Include="Database\Npcs\Replies\NpcEndDialog.cs" />
     <Compile Include="Handlers\Actions\ActionsFightHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsSequenceHandler.cs" />
@@ -216,6 +223,7 @@
     <Compile Include="Worlds\Actors\RolePlay\Mutant.cs" />
     <Compile Include="Worlds\Actors\RolePlay\NamedActor.cs" />
     <Compile Include="Worlds\Actors\RolePlay\Npcs\Npc.cs" />
+    <Compile Include="Worlds\Actors\RolePlay\Npcs\NpcManager.cs" />
     <Compile Include="Worlds\Actors\RolePlay\Prism.cs" />
     <Compile Include="Worlds\Actors\RolePlay\RolePlayActor.cs" />
     <Compile Include="Worlds\Actors\RolePlay\TaxCollectorNpc.cs" />

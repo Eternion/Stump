@@ -8,6 +8,7 @@ using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context;
@@ -15,6 +16,7 @@ using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Worlds.Actors;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Worlds.Fights;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 using Stump.Server.WorldServer.Worlds.Maps.Pathfinding;
@@ -67,17 +69,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         #endregion
 
-        /// <summary>
-        /// Array that associate a cell to a map point
-        /// </summary>
-        public static MapPoint[] PointsGrid;
-
-        private readonly ConcurrentDictionary<int, RolePlayActor> m_actors = new ConcurrentDictionary<int, RolePlayActor>();
-        private readonly UniqueIdProvider m_contextualIds = new UniqueIdProvider(sbyte.MinValue);
-        private readonly List<Fight> m_fights = new List<Fight>();
-        private readonly Dictionary<int, MapNeighbour> m_mapsAround = new Dictionary<int, MapNeighbour>();
-
-        protected internal MapRecord Record;
+        #region Constructors
 
         static Map()
         {
@@ -106,38 +98,21 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             m_mapsAround.Add(RightNeighbourId, MapNeighbour.Right);
         }
 
-        public bool Equals(Map other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Equals(other.Id, Id);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof (Map)) return false;
-            return Equals((Map) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return (Record != null ? Record.GetHashCode() : 0);
-        }
-
-        public static bool operator ==(Map left, Map right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(Map left, Map right)
-        {
-            return !Equals(left, right);
-        }
+        #endregion
 
         #region Properties
 
+        /// <summary>
+        /// Array that associate a cell to a map point
+        /// </summary>
+        public static MapPoint[] PointsGrid;
+
+        private readonly ConcurrentDictionary<int, RolePlayActor> m_actors = new ConcurrentDictionary<int, RolePlayActor>();
+        private readonly ReversedUniqueIdProvider m_contextualIds = new ReversedUniqueIdProvider(0);
+        private readonly List<Fight> m_fights = new List<Fight>();
+        private readonly Dictionary<int, MapNeighbour> m_mapsAround = new Dictionary<int, MapNeighbour>();
+
+        protected internal MapRecord Record;
         private Map m_bottomNeighbour;
         private Map m_leftNeighbour;
         private Map m_rightNeighbour;
@@ -258,98 +233,40 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         #endregion
 
-        #region Gets
-
-        public IEnumerable<Character> GetAllCharacters()
+        #region Npcs
+        public Npc SpawnNpc(NpcTemplate template, ObjectPosition position)
         {
-            return GetActors<Character>();
+            if (position.Map != this)
+                throw new Exception("Try to spawn a npc on the wrong map");
+
+            var id = GetNextContextualId();
+
+            var npc = new Npc(id, template, position);
+
+            Enter(npc);
+
+            return npc;
         }
 
-        public void ForEach(Action<Character> action)
+        public void UnSpawnNpc(sbyte id, bool throwOnError = true)
         {
-            foreach (Character character in GetAllCharacters())
-            {
-                action(character);
-            }
+            var npc = GetActor<Npc>(id);
+
+            if (npc != null)
+                UnSpawnNpc(npc);
+            else if (throwOnError)
+                throw new Exception(string.Format("Npc with id {0} not found, cannot unspawn an unexistant npc", id));
         }
 
-        public sbyte GetNextContextualId()
+        public void UnSpawnNpc(Npc npc)
         {
-            return (sbyte) m_contextualIds.Pop();
+            if (GetActor<Npc>(npc.Id) != npc)
+                throw new Exception(string.Format("Npc with id {0} not found, cannot unspawn an unexistant npc", npc.Id));
+
+            Leave(npc);
+
+            FreeContextualId((sbyte) npc.Id);
         }
-
-        public void FreeContextualId(sbyte id)
-        {
-            m_contextualIds.Push(id);
-        }
-
-        public T GetActor<T>(int id)
-            where T : RolePlayActor
-        {
-            return m_actors[id] as T;
-        }
-
-        public T GetActor<T>(Predicate<T> predicate)
-            where T : RolePlayActor
-        {
-            return m_actors.Values.OfType<T>().Where(entry => predicate(entry)).SingleOrDefault();
-        }
-
-        public IEnumerable<T> GetActors<T>()
-        {
-            return m_actors.Values.OfType<T>(); // after a benchmark we conclued that it takes approximatively 10 ticks
-        }
-
-        public IEnumerable<T> GetActors<T>(Predicate<T> predicate)
-        {
-            return m_actors.Values.OfType<T>();
-        }
-
-        #region Neighbour
-
-        public Map GetNeighbouringMap(MapNeighbour mapNeighbour)
-        {
-            switch (mapNeighbour)
-            {
-                case MapNeighbour.Top:
-                    return TopNeighbour;
-                case MapNeighbour.Bottom:
-                    return BottomNeighbour;
-                case MapNeighbour.Right:
-                    return RightNeighbour;
-                case MapNeighbour.Left:
-                    return LeftNeighbour;
-                default:
-                    throw new ArgumentException("mapNeighbour");
-            }
-        }
-
-        public MapNeighbour GetMapRelativePosition(int mapid)
-        {
-            return !m_mapsAround.ContainsKey(mapid) ? MapNeighbour.None : m_mapsAround[mapid];
-        }
-
-        /// <summary>
-        ///   Calculate which cell our character will walk on once map changed. Returns 0 if not found
-        /// </summary>
-        public short GetCellAfterChangeMap(short currentCell, MapNeighbour mapneighbour)
-        {
-            switch (mapneighbour)
-            {
-                case MapNeighbour.Top:
-                    return (short) (currentCell + 532);
-                case MapNeighbour.Bottom:
-                    return (short) (currentCell - 532);
-                case MapNeighbour.Right:
-                    return (short) (currentCell - 13);
-                case MapNeighbour.Left:
-                    return (short) (currentCell + 13);
-                default:
-                    return 0;
-            }
-        }
-
-        #endregion
 
         #endregion
 
@@ -464,6 +381,135 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         private void OnActorStopMoving(ContextActor actor, MovementPath path, bool canceled)
         {
+        }
+
+        #endregion
+
+        #region Gets
+
+        public IEnumerable<Character> GetAllCharacters()
+        {
+            return GetActors<Character>();
+        }
+
+        public void ForEach(Action<Character> action)
+        {
+            foreach (Character character in GetAllCharacters())
+            {
+                action(character);
+            }
+        }
+
+        public sbyte GetNextContextualId()
+        {
+            return (sbyte) m_contextualIds.Pop();
+        }
+
+        public void FreeContextualId(sbyte id)
+        {
+            m_contextualIds.Push(id);
+        }
+
+        public T GetActor<T>(int id)
+            where T : RolePlayActor
+        {
+            return m_actors[id] as T;
+        }
+
+        public T GetActor<T>(Predicate<T> predicate)
+            where T : RolePlayActor
+        {
+            return m_actors.Values.OfType<T>().Where(entry => predicate(entry)).SingleOrDefault();
+        }
+
+        public IEnumerable<T> GetActors<T>()
+        {
+            return m_actors.Values.OfType<T>(); // after a benchmark we conclued that it takes approximatively 10 ticks
+        }
+
+        public IEnumerable<T> GetActors<T>(Predicate<T> predicate)
+        {
+            return m_actors.Values.OfType<T>();
+        }
+
+        #region Neighbors
+
+        public Map GetNeighbouringMap(MapNeighbour mapNeighbour)
+        {
+            switch (mapNeighbour)
+            {
+                case MapNeighbour.Top:
+                    return TopNeighbour;
+                case MapNeighbour.Bottom:
+                    return BottomNeighbour;
+                case MapNeighbour.Right:
+                    return RightNeighbour;
+                case MapNeighbour.Left:
+                    return LeftNeighbour;
+                default:
+                    throw new ArgumentException("mapNeighbour");
+            }
+        }
+
+        public MapNeighbour GetMapRelativePosition(int mapid)
+        {
+            return !m_mapsAround.ContainsKey(mapid) ? MapNeighbour.None : m_mapsAround[mapid];
+        }
+
+        /// <summary>
+        ///   Calculate which cell our character will walk on once map changed. Returns 0 if not found
+        /// </summary>
+        public short GetCellAfterChangeMap(short currentCell, MapNeighbour mapneighbour)
+        {
+            switch (mapneighbour)
+            {
+                case MapNeighbour.Top:
+                    return (short) (currentCell + 532);
+                case MapNeighbour.Bottom:
+                    return (short) (currentCell - 532);
+                case MapNeighbour.Right:
+                    return (short) (currentCell - 13);
+                case MapNeighbour.Left:
+                    return (short) (currentCell + 13);
+                default:
+                    return 0;
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Equality Members
+
+        public bool Equals(Map other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(other.Id, Id);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != typeof (Map)) return false;
+            return Equals((Map) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Record != null ? Record.GetHashCode() : 0);
+        }
+
+        public static bool operator ==(Map left, Map right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(Map left, Map right)
+        {
+            return !Equals(left, right);
         }
 
         #endregion

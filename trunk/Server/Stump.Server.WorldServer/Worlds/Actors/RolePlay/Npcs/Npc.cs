@@ -8,8 +8,9 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
 {
     public sealed class Npc : RolePlayActor
     {
-        public Npc(NpcTemplate template, ObjectPosition position)
+        public Npc(int id, NpcTemplate template, ObjectPosition position)
         {
+            Id = id;
             Template = template;
             Position = position;
         }

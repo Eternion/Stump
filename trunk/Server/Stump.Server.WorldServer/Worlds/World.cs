@@ -10,6 +10,7 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Worlds.Maps;
 
 namespace Stump.Server.WorldServer.Worlds
@@ -59,6 +60,9 @@ namespace Stump.Server.WorldServer.Worlds
 
             logger.Info("Load super areas...");
             m_superAreas = SuperAreaRecord.FindAll().ToDictionary(entry => entry.Id, entry => new SuperArea(entry));
+
+            logger.Info("Spawn npcs ...");
+            SpawnNpcs();
         }
 
         private void SetLinks()
@@ -91,6 +95,16 @@ namespace Stump.Server.WorldServer.Worlds
                 {
                     superArea.AddArea(area);
                 }
+            }
+        }
+
+        private void SpawnNpcs()
+        {
+            foreach (var npcSpawn in NpcManager.Instance.GetNpcSpawns())
+            {
+                var position = npcSpawn.GetPosition();
+
+                position.Map.SpawnNpc(npcSpawn.Template, position);
             }
         }
 

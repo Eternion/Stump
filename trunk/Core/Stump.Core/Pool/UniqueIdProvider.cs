@@ -6,8 +6,8 @@ namespace Stump.Core.Pool
 {
     public class UniqueIdProvider
     {
-        private readonly ConcurrentQueue<int> m_freeIds = new ConcurrentQueue<int>();
-        private int m_nextId;
+        protected readonly ConcurrentQueue<int> m_freeIds = new ConcurrentQueue<int>();
+        protected int m_nextId;
 
         public UniqueIdProvider()
         {
@@ -27,7 +27,7 @@ namespace Stump.Core.Pool
             }
         }
 
-        public int Pop()
+        public virtual int Pop()
         {
             int id;
 

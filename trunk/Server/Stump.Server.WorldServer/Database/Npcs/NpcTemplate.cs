@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.DofusProtocol.Types;
+using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Database.I18n;
 
 namespace Stump.Server.WorldServer.Database.Npcs
 {
     [ActiveRecord("npcs")]
     [D2OClass("Npc", "com.ankamagames.dofus.datacenter.npcs")]
-    public class NpcTemplate
+    public class NpcTemplate : WorldBaseRecord<NpcTemplate>
     {
 
         [D2OField("id")]
@@ -70,13 +72,49 @@ namespace Stump.Server.WorldServer.Database.Npcs
             set;
         }
 
+        private string m_lookAsString;
+        private EntityLook m_entityLook;
+
         [D2OField("look")]
         [Property("Look")]
-        public String Look
+        private string LookAsString
+        {
+            get
+            {
+                if (Look == null)
+                    return string.Empty;
+
+                if (string.IsNullOrEmpty(m_lookAsString))
+                    m_lookAsString = Look.ConvertToString();
+
+                return m_lookAsString;
+            }
+            set
+            {
+                m_lookAsString = value;
+
+                if (value != null)
+                    Look = m_lookAsString.ToEntityLook();
+            }
+        }
+
+        public EntityLook Look
+        {
+            get { return m_entityLook; }
+            set
+            {
+                m_entityLook = value;
+
+                if (value != null)
+                    m_lookAsString = value.ConvertToString();
+            }
+        }
+
+        [Property]
+        public short SpecialArtworkId
         {
             get;
             set;
         }
-
     }
 }
