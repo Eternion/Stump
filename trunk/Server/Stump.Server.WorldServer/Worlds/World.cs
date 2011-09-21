@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Worlds
 
         #region Initialization
 
-        [Initialization(InitializationPass.Fifth)]
+        [Initialization(InitializationPass.Seventh)]
         public void Initialize()
         {
             // maps

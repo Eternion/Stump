@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Reflection;
@@ -14,7 +15,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
         private Dictionary<uint, NpcReply> m_npcsReplies;
         private Dictionary<int, NpcMessage> m_npcsMessages;
 
-        [Initialization(InitializationPass.Seventh)]
+        [Initialization(InitializationPass.Fifth)]
         public void Initialize()
         {
             m_npcsSpawns = NpcSpawn.FindAll().ToDictionary(entry => entry.Id);
@@ -46,5 +47,17 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
 
             return template;
         }
+
+        public NpcTemplate GetNpcTemplate(string name, bool ignorecase)
+        {
+            return
+                m_npcsTemplates.Values.Where(
+                    entry =>
+                    entry.Name.Equals(name,
+                                      ignorecase
+                                          ? StringComparison.InvariantCultureIgnoreCase
+                                          : StringComparison.InvariantCulture)).FirstOrDefault();
+        }
+
     }
 }

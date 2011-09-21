@@ -97,6 +97,7 @@
     <Compile Include="Commands\Commands\ItemCommand.cs" />
     <Compile Include="Commands\Commands\KickCommand.cs" />
     <Compile Include="Commands\Commands\LookCommand.cs" />
+    <Compile Include="Commands\Commands\NpcsCommands.cs" />
     <Compile Include="Commands\Commands\TeleportCommand.cs" />
     <Compile Include="Commands\Commands\WhoCommand.cs" />
     <Compile Include="Commands\ParametersConverter.cs" />

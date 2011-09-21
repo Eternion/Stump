@@ -175,8 +175,8 @@ namespace Stump.Server.BaseServer.Commands
                 if (word.StartsWith("\"") && word.EndsWith("\""))
                     word = word.Remove(word.Length - 1, 1).Remove(0, 1);
 
-
-                if (word.StartsWith("-"))
+                bool parsed = false;
+                if (word.StartsWith("-")) // becareful it can be the minus sign
                 {
                     string name = null;
                     string value = null;
@@ -201,36 +201,39 @@ namespace Stump.Server.BaseServer.Commands
                         IParameterDefinition definition =
                             paramToDefine.Where(entry => CompareParameterName(entry, name, CommandBase.IgnoreCommandCase)).SingleOrDefault();
 
-                        if (definition == null)
+                        if (definition != null)
                         {
-                            ReplyError("Unknown parameter : {0}", word);
-                            return false;
-                        }
+                            /*{
+                                ReplyError("Unknown parameter : {0}", word);
+                                return false;
+                            }*/
 
-                        IParameter parameter = definition.CreateParameter();
+                            IParameter parameter = definition.CreateParameter();
 
-                        try
-                        {
-                            parameter.SetValue(value, this);
-                        }
-                        catch (ConverterException ex)
-                        {
-                            ReplyError(ex.Message);
-                            return false;
-                        }
-                        catch
-                        {
-                            ReplyError("Cannot parse : {0}", word);
-                            return false;
-                        }
+                            try
+                            {
+                                parameter.SetValue(value, this);
+                            }
+                            catch (ConverterException ex)
+                            {
+                                ReplyError(ex.Message);
+                                return false;
+                            }
+                            catch
+                            {
+                                ReplyError("Cannot parse : {0}", word);
+                                return false;
+                            }
 
-                        definedParam.Add(parameter);
-                        paramToDefine.Remove(definition);
+                            definedParam.Add(parameter);
+                            paramToDefine.Remove(definition);
+                            parsed = true;
+                        }
                     }
                 }
 
 
-                else
+                if (!parsed)
                 {
                     IParameterDefinition definition = paramToDefine.First();
 

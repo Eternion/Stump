@@ -161,6 +161,12 @@ namespace Stump.Server.BaseServer.Commands
             if (subcommand == null)
                 throw new Exception(string.Format("Cannot create a new instance of {0}", commandType));
 
+            if (subcommand.ParentCommand == null)
+            {
+                logger.Error("The subcommand {0} has no parent command and cannot be registered", commandType);
+                return;
+            }
+
             if (!IsCommandRegister(subcommand.ParentCommand))
                 RegisterCommand(subcommand.ParentCommand);
 

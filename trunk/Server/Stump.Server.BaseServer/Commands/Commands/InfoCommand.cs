@@ -15,7 +15,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            trigger.Reply("Uptime : " + trigger.Bold("{0}") + " Players : " + trigger.Bold("{1}"), ServerBase.InstanceAsBase.UpTime.ToString("hh:mm:ss"), ServerBase.InstanceAsBase.ClientManager.Count);
+            trigger.Reply("Uptime : " + trigger.Bold("{0}") + " Players : " + trigger.Bold("{1}"), ServerBase.InstanceAsBase.UpTime.ToString(@"hh\:mm\:ss"), ServerBase.InstanceAsBase.ClientManager.Count);
         }
     }
 }
