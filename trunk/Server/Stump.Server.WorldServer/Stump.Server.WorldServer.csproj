@@ -105,6 +105,9 @@
     <Compile Include="Commands\Trigger\TriggerChat.cs" />
     <Compile Include="Commands\Trigger\TriggerConsole.cs" />
     <Compile Include="Commands\Trigger\WorldConsoleTrigger.cs" />
+    <Compile Include="Database\Items\Shops\ItemToSell.cs" />
+    <Compile Include="Database\Items\Shops\NpcItem.cs" />
+    <Compile Include="Database\Npcs\Actions\NpcBuySellAction.cs" />
     <Compile Include="Database\Npcs\Actions\NpcTalkAction.cs" />
     <Compile Include="Database\Npcs\NpcAction.cs" />
     <Compile Include="Database\Npcs\NpcMessage.cs" />
@@ -235,6 +238,8 @@
     <Compile Include="Worlds\Dialogs\IDialog.cs" />
     <Compile Include="Worlds\Dialogs\IDialoger.cs" />
     <Compile Include="Worlds\Dialogs\IRequestBox.cs" />
+    <Compile Include="Worlds\Dialogs\Npcs\NpcDialog.cs" />
+    <Compile Include="Worlds\Dialogs\Npcs\NpcShopDialog.cs" />
     <Compile Include="Worlds\Effects\EffectManager.cs" />
     <Compile Include="Worlds\Effects\EffectSchoolEnum.cs" />
     <Compile Include="Worlds\Effects\Handlers\DefaultEffectHandlerAttribute.cs" />

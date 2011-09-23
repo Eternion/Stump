@@ -10,7 +10,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
     {
         public override void Execute(Npc npc, Character character)
         {
-            
+            character.LeaveDialog();
         }
     }
 }

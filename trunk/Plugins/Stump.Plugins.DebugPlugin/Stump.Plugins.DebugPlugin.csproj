@@ -44,10 +44,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Benchmarking\BenchmarkEntry.cs" />
-    <Compile Include="Benchmarking\Benchmarker.cs" />
-    <Compile Include="Benchmarking\Graphic.cs" />
-    <Compile Include="Commands\BenchmarkCommands.cs" />
     <Compile Include="Commands\WorkerCommands.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

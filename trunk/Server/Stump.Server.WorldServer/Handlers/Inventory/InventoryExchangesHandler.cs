@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Worlds;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Worlds.Dialogs.Npcs;
 using Stump.Server.WorldServer.Worlds.Exchanges;
 using Item = Stump.Server.WorldServer.Worlds.Items.Item;
 
@@ -119,10 +121,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                             ));
         }
 
-        public static void SendExchangeStartOkNpcShopMessage(WorldClient client, int npcId, int tokenId,
-                                                             List<ObjectItemToSellInNpcShop> items)
+        public static void SendExchangeStartOkNpcShopMessage(WorldClient client, NpcShopDialog dialog)
         {
-            client.Send(new ExchangeStartOkNpcShopMessage(npcId, tokenId, items));
+            client.Send(new ExchangeStartOkNpcShopMessage(dialog.Npc.Id, 0 /* wtf?! */, dialog.Items.Select(entry => entry.GetNetworkItem() as ObjectItemToSellInNpcShop)));
         }
 
         public static void SendExchangeLeaveMessage(WorldClient client, bool success)

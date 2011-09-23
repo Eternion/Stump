@@ -19,5 +19,10 @@ namespace Stump.Server.WorldServer.Handlers.Dialogs
 
             client.ActiveCharacter.Dialog.Close();
         }
+
+        public static void SendLeaveDialogMessage(WorldClient client)
+        {
+            client.Send(new LeaveDialogMessage());
+        }
     }
 }

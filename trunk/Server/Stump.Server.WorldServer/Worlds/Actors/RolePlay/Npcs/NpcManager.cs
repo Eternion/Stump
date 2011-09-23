@@ -59,5 +59,13 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
                                           : StringComparison.InvariantCulture)).FirstOrDefault();
         }
 
+        public NpcMessage GetNpcMessage(int id)
+        {
+            NpcMessage message;
+            if (m_npcsMessages.TryGetValue(id, out message))
+                return message;
+
+            return message;
+        }
     }
 }

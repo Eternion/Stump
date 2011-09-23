@@ -56,8 +56,8 @@ namespace Stump.Server.WorldServer.Worlds.Exchanges
             InventoryHandler.SendExchangeLeaveMessage(SecondTrader.Character.Client,
                                                       FirstTrader.ReadyToApply && SecondTrader.ReadyToApply);
 
-            FirstTrader.Character.ResetDialoger();
-            SecondTrader.Character.ResetDialoger();
+            FirstTrader.Character.ResetDialog();
+            SecondTrader.Character.ResetDialog();
         }
 
         #endregion

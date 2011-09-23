@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             client.Send(
                 new InventoryContentMessage(
-                    client.ActiveCharacter.Inventory.Items.Select(entry => entry.GetObjectItem()).ToList(),
+                    client.ActiveCharacter.Inventory.Items.Select(entry => entry.GetObjectItem()),
                     client.ActiveCharacter.Inventory.Kamas));
         }
 

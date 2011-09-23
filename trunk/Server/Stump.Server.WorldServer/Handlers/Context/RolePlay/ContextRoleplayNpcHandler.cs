@@ -1,37 +1,41 @@
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database.Npcs;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
     public partial class ContextRoleplayHandler
     {
-        /*[WorldHandler(typeof (NpcGenericActionRequestMessage))]
+        [WorldHandler(NpcGenericActionRequestMessage.Id)]
         public static void HandleNpcGenericActionRequestMessage(WorldClient client,
                                                                 NpcGenericActionRequestMessage message)
         {
-            var npc = client.ActiveCharacter.Map.Get<NpcSpawn>(message.npcId);
+            var npc = client.ActiveCharacter.Map.GetActor<Npc>(message.npcId);
 
             if (npc == null)
                 return;
 
-            npc.Interact((NpcActionTypeEnum) message.npcActionId, client.ActiveCharacter);
+            npc.InteractWith((NpcActionTypeEnum) message.npcActionId, client.ActiveCharacter);
         }
 
-        [WorldHandler(typeof (NpcDialogReplyMessage))]
+        [WorldHandler(NpcDialogReplyMessage.Id)]
         public static void HandleNpcDialogReplyMessage(WorldClient client, NpcDialogReplyMessage message)
         {
-            ((NpcDialog) client.ActiveCharacter.Dialog).Reply(message.replyId);
+            client.ActiveCharacter.ReplyToNpc(message.replyId);
         }
 
-        public static void SendNpcDialogCreationMessage(WorldClient client, NpcSpawn npc)
+        public static void SendNpcDialogCreationMessage(WorldClient client, Npc npc)
         {
-            client.Send(new NpcDialogCreationMessage(npc.Map.Id, npc.ContextualId));
+            client.Send(new NpcDialogCreationMessage(npc.Position.Map.Id, npc.Id));
         }
 
-        public static void SendNpcDialogQuestionMessage(WorldClient client, NpcDialogQuestion question)
+        public static void SendNpcDialogQuestionMessage(WorldClient client, NpcMessage message)
         {
-            client.Send(new NpcDialogQuestionMessage(question.Id, question.Parameters.ToList(),
-                                                     question.Replies.Keys.ToList()));
-        }*/
+            client.Send(new NpcDialogQuestionMessage((short) message.Id, message.Parameters,
+                                                     message.Replies.Select(entry => (short) entry.Id)));
+        }
     }
 }

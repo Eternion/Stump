@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Database.I18n;
@@ -58,10 +60,27 @@ namespace Stump.Server.WorldServer.Database.Npcs
 
         [D2OField("actions")]
         [Property("Actions", ColumnType = "Serializable")]
-        public List<uint> Actions
+        public List<uint> ActionsIds
         {
             get;
             set;
+        }
+
+        private IList<NpcAction> m_actions;
+
+        [HasMany(typeof(NpcAction))]
+        public IList<NpcAction> Actions
+        {
+            get
+            {
+                return m_actions ?? ( m_actions = new List<NpcAction>() );
+            }
+            set { m_actions = value; }
+        }
+
+        public NpcAction GetNpcAction(NpcActionTypeEnum actionType)
+        {
+            return Actions.Where(entry => entry.ActionType == actionType).FirstOrDefault();
         }
 
         [D2OField("gender")]

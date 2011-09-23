@@ -15,6 +15,7 @@ using Stump.Server.WorldServer.Worlds.Actors.Interfaces;
 using Stump.Server.WorldServer.Worlds.Actors.Stats;
 using Stump.Server.WorldServer.Worlds.Breeds;
 using Stump.Server.WorldServer.Worlds.Dialogs;
+using Stump.Server.WorldServer.Worlds.Dialogs.Npcs;
 using Stump.Server.WorldServer.Worlds.Exchanges;
 using Stump.Server.WorldServer.Worlds.Fights;
 using Stump.Server.WorldServer.Worlds.Items;
@@ -145,15 +146,29 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         #region Dialog
 
+        private IDialoger m_dialoger;
+
         public IDialoger Dialoger
         {
-            get;
-            private set;
+            get { return m_dialoger; }
+            private set
+            {
+                m_dialoger = value;
+                m_dialog = value != null ? m_dialoger.Dialog : null;
+            }
         }
+
+        private IDialog m_dialog;
 
         public IDialog Dialog
         {
-            get { return Dialoger != null ? Dialoger.Dialog : null; }
+            get { return m_dialog; }
+            private set
+            {
+                m_dialog = value;
+                if (m_dialog == null)
+                    m_dialoger = null;
+            }
         }
 
         public IRequestBox RequestBox
@@ -167,7 +182,12 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             Dialoger = dialoger;
         }
 
-        public void ResetDialoger()
+        public void SetDialog(IDialog dialog)
+        {
+            Dialog = dialog;
+        }
+
+        public void ResetDialog()
         {
             Dialoger = null;
         }
@@ -189,7 +209,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         public bool IsDialoging()
         {
-            return Dialoger != null;
+            return Dialog != null;
         }
 
         public bool IsInRequest()
@@ -205,6 +225,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         public bool IsRequestTarget()
         {
             return IsInRequest() && RequestBox.Target == this;
+        }
+
+        public bool IsTalkingWithNpc()
+        {
+            return Dialog is NpcDialog;
         }
 
         #endregion
@@ -554,6 +579,23 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         public void DisplayNotification(Notification notification)
         {
             notification.Display();
+        }
+
+        public void LeaveDialog()
+        {
+            if (IsInRequest())
+                CancelRequest();
+
+            else if (IsDialoging())
+                Dialog.Close();
+        }
+
+        public void ReplyToNpc(short replyId)
+        {
+            if (!IsTalkingWithNpc())
+                return;
+
+            ( (NpcDialog)Dialog ).Reply(replyId);
         }
 
         public void AcceptRequest()

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Cache;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -41,18 +42,20 @@ namespace Stump.Server.WorldServer.Worlds.Items
         }
 
         internal Item(ItemTemplate template, int guid, CharacterInventoryPositionEnum position, int stack,
-                    List<EffectBase> effects)
+                      List<EffectBase> effects)
         {
             Template = template;
 
             Record = new ItemRecord // create the associated record
-            {
-                Guid = guid,
-                ItemId = template.Id,
-                Stack = stack,
-                Position = position,
-                Effects = effects
-            };
+                         {
+                             Guid = guid,
+                             ItemId = template.Id,
+                             Stack = stack,
+                             Position = position,
+                             Effects = effects
+                         };
+
+            m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);
         }
 
         internal Item(ItemRecord record)
@@ -63,6 +66,8 @@ namespace Stump.Server.WorldServer.Worlds.Items
             Stack = Record.Stack;
             Position = Record.Position;
             Effects = new List<EffectBase>(Record.Effects);
+
+            m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);
         }
 
         internal Item(ItemTemplate template, CharacterInventoryPositionEnum position, int stack,
@@ -71,13 +76,16 @@ namespace Stump.Server.WorldServer.Worlds.Items
             Template = template;
 
             Record = new ItemRecord // create the associated record
-            {
-                Guid = -1, // unassigned guid. ITEM CANNOT BE USED !
-                ItemId = template.Id,
-                Stack = stack,
-                Position = position,
-                Effects = effects
-            };
+                         {
+                             Guid = -1,
+                             // unassigned guid. ITEM CANNOT BE USED !
+                             ItemId = template.Id,
+                             Stack = stack,
+                             Position = position,
+                             Effects = effects
+                         };
+
+            m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);
         }
 
         #endregion
@@ -91,9 +99,9 @@ namespace Stump.Server.WorldServer.Worlds.Items
         /// <returns></returns>
         public bool IsStackableWith(Item compared)
         {
-            return ( compared.ItemId == ItemId &&
+            return (compared.ItemId == ItemId &&
                     compared.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED &&
-                    compared.Effects.CompareEnumerable(Effects) );
+                    compared.Effects.CompareEnumerable(Effects));
         }
 
         /// <summary>
@@ -103,10 +111,10 @@ namespace Stump.Server.WorldServer.Worlds.Items
         /// <returns></returns>
         public bool MustStackWith(Item compared)
         {
-            return ( compared.ItemId == ItemId &&
+            return (compared.ItemId == ItemId &&
                     compared.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED &&
                     compared.Position == Position &&
-                    compared.Effects.CompareEnumerable(Effects) );
+                    compared.Effects.CompareEnumerable(Effects));
         }
 
         public void StackItem(uint amount)
@@ -114,7 +122,7 @@ namespace Stump.Server.WorldServer.Worlds.Items
             if (Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
                 return;
 
-            Stack += (int)amount;
+            Stack += (int) amount;
         }
 
         public void UnStackItem(uint amount)
@@ -122,7 +130,7 @@ namespace Stump.Server.WorldServer.Worlds.Items
             if (Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
                 return;
 
-            Stack -= (int)amount;
+            Stack -= (int) amount;
         }
 
         public bool IsEquiped()
@@ -130,7 +138,16 @@ namespace Stump.Server.WorldServer.Worlds.Items
             return Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED;
         }
 
-        public ObjectItem GetObjectItem()
+        public override string ToString()
+        {
+            return string.Format("Item \"{0}\" <Id:{1}>", Enum.GetName(typeof (ItemIdEnum), ItemId), ItemId);
+        }
+
+        #region ObjectItem
+
+        private readonly ObjectValidator<ObjectItem> m_objectItemValidator;
+
+        private ObjectItem BuildObjectItem()
         {
             return new ObjectItem(
                 (byte) Position,
@@ -142,77 +159,77 @@ namespace Stump.Server.WorldServer.Worlds.Items
                 Stack);
         }
 
-        public override string ToString()
+        public ObjectItem GetObjectItem()
         {
-            return string.Format("Item \"{0}\" <Id:{1}>", Enum.GetName(typeof(ItemIdEnum), ItemId), ItemId);
+            return m_objectItemValidator;
         }
+
+        #endregion
 
         #endregion
 
         #region Properties
 
+        private ItemTemplate m_template;
+
         public ItemTemplate Template
         {
-            get;
-            protected set;
+            get { return m_template; }
+            protected set
+            {
+                m_template = value;
+                m_objectItemValidator.Invalidate();
+            }
         }
 
         public int Guid
         {
-            get
-            {
-                return Record.Guid;
-            }
+            get { return Record.Guid; }
             internal set
             {
                 Record.Guid = value;
+                m_objectItemValidator.Invalidate();
             }
         }
 
         public short ItemId
         {
-            get
-            {
-                return (short) Template.Id;
-            }
+            get { return (short) Template.Id; }
         }
 
         public int Stack
         {
             get { return Record.Stack; }
-            set { Record.Stack = value; }
+            set
+            {
+                Record.Stack = value;
+                m_objectItemValidator.Invalidate();
+            }
         }
 
         public CharacterInventoryPositionEnum Position
         {
-            get
-            {
-                return Record.Position;
-            }
+            get { return Record.Position; }
             set
             {
                 Record.Position = value;
+                m_objectItemValidator.Invalidate();
             }
         }
 
         public List<EffectBase> Effects
         {
-            get
-            {
-                return Record.Effects;
-            }
+            get { return Record.Effects; }
             private set
             {
                 Record.Effects = value;
+                m_objectItemValidator.Invalidate();
             }
         }
 
         internal bool CanBeSave
         {
-            get
-            {
-                return Guid != -1;
-            }
+            get { return Guid != -1; }
         }
 
         #endregion
@@ -245,5 +262,4 @@ namespace Stump.Server.WorldServer.Worlds.Items
 
         #endregion
     }
-
 }

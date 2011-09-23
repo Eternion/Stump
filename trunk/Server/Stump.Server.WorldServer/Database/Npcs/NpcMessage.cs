@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
@@ -10,6 +9,10 @@ namespace Stump.Server.WorldServer.Database.Npcs
     [D2OClass("NpcMessage", "com.ankamagames.dofus.datacenter.npcs")]
     public sealed class NpcMessage : WorldBaseRecord<NpcMessage>
     {
+        private IList<string> m_parameters;
+        private string m_parametersAsString;
+        private IList<NpcReply> m_replies;
+
         [D2OField("id")]
         [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
         public int Id
@@ -28,15 +31,27 @@ namespace Stump.Server.WorldServer.Database.Npcs
 
         [D2OField("messageParams")]
         [Property("MessageParams")]
-        public string MessageParams
+        internal string ParametersAsString
         {
-            get;
-            set;
+            get { return m_parametersAsString; }
+            set
+            {
+                m_parametersAsString = value;
+                m_parameters = value.Split('|');
+            }
         }
 
-        private IList<NpcReply> m_replies;
+        public IList<string> Parameters
+        {
+            get { return m_parameters; }
+            set
+            {
+                m_parameters = value;
+                ParametersAsString = string.Join("|", value);
+            }
+        }
 
-        [HasMany(typeof(NpcReply), "MessageId", "npcs_replies", Cascade = ManyRelationCascadeEnum.Delete)]
+        [HasMany(typeof (NpcReply), "MessageId", "npcs_replies", Cascade = ManyRelationCascadeEnum.Delete)]
         public IList<NpcReply> Replies
         {
             get { return m_replies ?? (m_replies = new List<NpcReply>()); }

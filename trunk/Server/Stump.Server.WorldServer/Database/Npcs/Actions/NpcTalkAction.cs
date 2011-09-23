@@ -3,6 +3,7 @@ using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Worlds.Dialogs.Npcs;
 
 namespace Stump.Server.WorldServer.Database.Npcs.Actions
 {
@@ -19,7 +20,9 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
 
         public override void Execute(Npc npc, Character character)
         {
-            // start dialog
+            var dialog = new NpcDialog(character, npc);
+
+            dialog.Open();
         }
     }
 }

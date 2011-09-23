@@ -43,21 +43,26 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
             protected set;
         }
 
-        public void InteractWith(NpcActionTypeEnum action, Character dialoguer)
+        public void InteractWith(NpcActionTypeEnum actionType, Character dialoguer)
         {
-            if (!CanInteractWith(action, dialoguer))
+            if (!CanInteractWith(actionType, dialoguer))
                 return;
 
+            var action = Template.GetNpcAction(actionType);
 
+            action.Execute(this, dialoguer);
         }
 
         public bool CanInteractWith(NpcActionTypeEnum action, Character dialoguer)
         {
-            return Template.Actions.Contains((uint)action) && dialoguer.Map == Position.Map;
+            return Template.ActionsIds.Contains((uint)action) && dialoguer.Map == Position.Map;
         }
 
         public void SpeakWith(Character dialoguer)
         {
+            if (!CanInteractWith(NpcActionTypeEnum.ACTION_TALK, dialoguer))
+                return;
+
 
         }
 
