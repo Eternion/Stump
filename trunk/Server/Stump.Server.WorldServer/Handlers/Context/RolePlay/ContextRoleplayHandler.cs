@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 
         public static void SendMapComplementaryInformationsDataMessage(WorldClient client)
         {
-            client.Send(client.ActiveCharacter.Map.GetMapComplementaryInformationsDataMessage());
+            client.Send(client.ActiveCharacter.Map.GetMapComplementaryInformationsDataMessage(client.ActiveCharacter));
         }
 
         public static void SendGameRolePlayShowActorMessage(WorldClient client, RolePlayActor actor)

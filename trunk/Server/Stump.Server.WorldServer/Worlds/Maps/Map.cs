@@ -8,16 +8,20 @@ using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
+using Stump.Server.WorldServer.Handlers.Interactives;
 using Stump.Server.WorldServer.Worlds.Actors;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Worlds.Fights;
+using Stump.Server.WorldServer.Worlds.Interactives;
+using Stump.Server.WorldServer.Worlds.Interactives.Skills;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 using Stump.Server.WorldServer.Worlds.Maps.Pathfinding;
 
@@ -67,6 +71,39 @@ namespace Stump.Server.WorldServer.Worlds.Maps
                 handler(this, fight);
         }
 
+        public event Action<Map, InteractiveObject> InteractiveSpawned;
+
+        private void NotifyInteractiveSpawned(InteractiveObject interactive)
+        {
+            OnInteractiveSpawned(interactive);
+
+            Action<Map, InteractiveObject> handler = InteractiveSpawned;
+            if (handler != null)
+                handler(this, interactive);
+        }
+
+        public event Action<Map, InteractiveObject> InteractiveUnSpawned;
+
+        private void NotifyInteractiveUnSpawned(InteractiveObject interactive)
+        {
+            OnInteractiveUnSpawned(interactive);
+
+            Action<Map, InteractiveObject> handler = InteractiveUnSpawned;
+            if (handler != null)
+                handler(this, interactive);
+        }
+
+        public event Action<Map, Character, InteractiveObject, Skill> InteractiveUsed;
+
+        private void NotifyInteractiveUsed(Character user, InteractiveObject interactive, Skill skill)
+        {
+            OnInteractiveUsed(user, interactive, skill);
+
+            Action<Map, Character, InteractiveObject, Skill> handler = InteractiveUsed;
+            if (handler != null)
+                handler(this, user, interactive, skill);
+        }
+
         #endregion
 
         #region Constructors
@@ -110,6 +147,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
         private readonly ConcurrentDictionary<int, RolePlayActor> m_actors = new ConcurrentDictionary<int, RolePlayActor>();
         private readonly ReversedUniqueIdProvider m_contextualIds = new ReversedUniqueIdProvider(0);
         private readonly List<Fight> m_fights = new List<Fight>();
+        private readonly Dictionary<int, InteractiveObject> m_interactives = new Dictionary<int, InteractiveObject>();
         private readonly Dictionary<int, MapNeighbour> m_mapsAround = new Dictionary<int, MapNeighbour>();
 
         protected internal MapRecord Record;
@@ -266,6 +304,56 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             Leave(npc);
 
             FreeContextualId((sbyte) npc.Id);
+        }
+
+        #endregion
+
+        #region Interactives
+
+        public InteractiveObject SpawnInteractive(InteractiveSpawn spawn)
+        {
+            var interactiveObject = new InteractiveObject(spawn);
+
+            m_interactives.Add(interactiveObject.Id, interactiveObject);
+
+            NotifyInteractiveSpawned(interactiveObject);
+
+            return interactiveObject;
+        }
+
+        private void OnInteractiveSpawned(InteractiveObject interactive)
+        {
+
+        }
+
+        public void UnSpawnInteractive(InteractiveObject interactive)
+        {
+            m_interactives.Remove(interactive.Id);
+
+            NotifyInteractiveUnSpawned(interactive);
+        }
+
+        private void OnInteractiveUnSpawned(InteractiveObject interactive)
+        {
+
+        }
+
+        public void UseInteractiveObject(Character character, int interactiveId, int skillId)
+        {
+            var interactiveObject = GetInteractiveObject(interactiveId);
+            var skill = interactiveObject.GetSkill(skillId);
+
+            if (skill.IsEnabled(character))
+            {
+                skill.Execute(character);
+
+                NotifyInteractiveUsed(character, interactiveObject, skill);
+            }
+        }
+
+        private void OnInteractiveUsed(Character user, InteractiveObject interactiveObject, Skill skill)
+        {
+            ForEach(character => InteractiveHandler.SendInteractiveUsedMessage(character.Client, user, interactiveObject, skill));
         }
 
         #endregion
@@ -432,6 +520,11 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             return m_actors.Values.OfType<T>();
         }
 
+        public InteractiveObject GetInteractiveObject(int id)
+        {
+            return m_interactives[id];
+        }
+
         #region Neighbors
 
         public Map GetNeighbouringMap(MapNeighbour mapNeighbour)
@@ -523,7 +616,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         #region MapComplementaryInformationsDataMessage
 
-        public MapComplementaryInformationsDataMessage GetMapComplementaryInformationsDataMessage()
+        public MapComplementaryInformationsDataMessage GetMapComplementaryInformationsDataMessage(Character character)
         {
             return new MapComplementaryInformationsDataMessage(
                 (short) SubArea.Id,
@@ -531,7 +624,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
                 0,
                 new HouseInformations[0],
                 m_actors.Select(entry => entry.Value.GetGameContextActorInformations() as GameRolePlayActorInformations),
-                new InteractiveElement[0],
+                m_interactives.Select(entry => entry.Value.GetInteractiveElement(character)),
                 new StatedElement[0],
                 new MapObstacle[0],
                 m_fights.Select(entry => entry.GetFightCommonInformations()));

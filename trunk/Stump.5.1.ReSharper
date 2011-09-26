@@ -20,17 +20,6 @@
         </Variables>
         <CustomProperties />
       </Template>
-      <Template uid="1cbe847c-b229-47ff-aaf5-d395e06d1b6c" shortcut="valid" description="Create and implents methods of a ObjectValidator" text="#region $NAME$&#xD;&#xA;private ObjectValidator&lt;$NAME$&gt; m_$LNAME$;&#xD;&#xA;&#xD;&#xA;private $NAME$ Build$NAME$()&#xD;&#xA;{&#xD;&#xA;	return new $NAME$(&#xD;&#xA;	$END$);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public $NAME$ Get$NAME$()&#xD;&#xA;{&#xD;&#xA;	return m_$LNAME$;&#xD;&#xA;}&#xD;&#xA;#endregion" reformat="True" shortenQualifiedReferences="True">
-        <Context>
-          <CSharpContext context="Everywhere" minimumLanguageVersion="3.0" />
-        </Context>
-        <Categories />
-        <Variables>
-          <Variable name="NAME" expression="" initialRange="0" />
-          <Variable name="LNAME" expression="decapitalize(NAME)" initialRange="-1" />
-        </Variables>
-        <CustomProperties />
-      </Template>
       <Template uid="469daf04-b472-4aab-b057-4708d8561c48" shortcut="handle" description="Handle function" text="[$SERVER$Handler($NAME$.Id)]&#xD;&#xA;public static void Handle$NAME$($SERVER$Client client, $NAME$ message)&#xD;&#xA;{&#xD;&#xA;&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
         <Context>
           <CSharpContext context="Everywhere" minimumLanguageVersion="2.0" />
@@ -50,6 +39,17 @@
         <Variables>
           <Variable name="NAME" expression="" initialRange="1" />
           <Variable name="SERVER" expression="list(&quot;World, Auth&quot;)" initialRange="0" />
+        </Variables>
+        <CustomProperties />
+      </Template>
+      <Template uid="1cbe847c-b229-47ff-aaf5-d395e06d1b6c" shortcut="valid" description="Create and implents methods of a ObjectValidator" text="#region $NAME$&#xD;&#xA;private ObjectValidator&lt;$NAME$&gt; m_$LNAME$;&#xD;&#xA;&#xD;&#xA;private $NAME$ Build$NAME$()&#xD;&#xA;{&#xD;&#xA;	return new $NAME$(&#xD;&#xA;	$END$);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public $NAME$ Get$NAME$()&#xD;&#xA;{&#xD;&#xA;	return m_$LNAME$;&#xD;&#xA;}&#xD;&#xA;#endregion" reformat="True" shortenQualifiedReferences="True">
+        <Context>
+          <CSharpContext context="Everywhere" minimumLanguageVersion="3.0" />
+        </Context>
+        <Categories />
+        <Variables>
+          <Variable name="NAME" expression="" initialRange="1" />
+          <Variable name="LNAME" expression="decapitalize(NAME)" initialRange="-1" />
         </Variables>
         <CustomProperties />
       </Template>

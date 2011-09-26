@@ -105,6 +105,10 @@
     <Compile Include="Commands\Trigger\TriggerChat.cs" />
     <Compile Include="Commands\Trigger\TriggerConsole.cs" />
     <Compile Include="Commands\Trigger\WorldConsoleTrigger.cs" />
+    <Compile Include="Database\Interactives\InteractiveSpawn.cs" />
+    <Compile Include="Database\Interactives\InteractiveTemplate.cs" />
+    <Compile Include="Database\Interactives\Skills\SkillTemplate.cs" />
+    <Compile Include="Database\Interactives\Skills\SkillTeleportTemplate.cs" />
     <Compile Include="Database\Items\Shops\ItemToSell.cs" />
     <Compile Include="Database\Items\Shops\NpcItem.cs" />
     <Compile Include="Database\Npcs\Actions\NpcBuySellAction.cs" />
@@ -120,6 +124,7 @@
     <Compile Include="Handlers\Actions\ActionsHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsSequenceHandler.cs" />
     <Compile Include="Handlers\Dialogs\DialogHandler.cs" />
+    <Compile Include="Handlers\Interactives\InteractiveHandler.cs" />
     <Compile Include="Rates.cs" />
     <Compile Include="Database\Accounts\WorldAccount.cs" />
     <Compile Include="Database\Breeds\Breed.cs" />
@@ -273,6 +278,10 @@
     <Compile Include="Worlds\Fights\FightState.cs" />
     <Compile Include="Worlds\Fights\FightTeam.cs" />
     <Compile Include="Worlds\Fights\TimeLine.cs" />
+    <Compile Include="Worlds\Interactives\InteractiveObject.cs" />
+    <Compile Include="Worlds\Interactives\InteractiveManager.cs" />
+    <Compile Include="Worlds\Interactives\Skills\Skill.cs" />
+    <Compile Include="Worlds\Interactives\Skills\SkillTeleport.cs" />
     <Compile Include="Worlds\Maps\Cells\Shapes\Cone.cs" />
     <Compile Include="Worlds\Maps\Cells\Shapes\Cross.cs" />
     <Compile Include="Worlds\Maps\Cells\Shapes\DirectionsEnum.cs" />

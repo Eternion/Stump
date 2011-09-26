@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Worlds.Interactives;
 using Stump.Server.WorldServer.Worlds.Maps;
 
 namespace Stump.Server.WorldServer.Worlds
@@ -63,6 +64,9 @@ namespace Stump.Server.WorldServer.Worlds
 
             logger.Info("Spawn npcs ...");
             SpawnNpcs();
+
+            logger.Info("Spawn interactives ...");
+            SpawnInteractives();
         }
 
         private void SetLinks()
@@ -105,6 +109,22 @@ namespace Stump.Server.WorldServer.Worlds
                 var position = npcSpawn.GetPosition();
 
                 position.Map.SpawnNpc(npcSpawn.Template, position);
+            }
+        }
+
+        private void SpawnInteractives()
+        {
+            foreach (var interactive in InteractiveManager.Instance.GetInteractiveSpawns())
+            {
+                var map = interactive.GetMap();
+
+                if (map == null)
+                {
+                    logger.Error("Cannot spawn interactive id={0} : map {1} doesn't exist", interactive.Id, interactive.MapId);
+                    continue;
+                }
+
+                map.SpawnInteractive(interactive);
             }
         }
 
