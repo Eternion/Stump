@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
@@ -14,7 +15,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 
         public static void SendQuestListMessage(WorldClient client)
         {
-            client.Send(new QuestListMessage(new List<short>(), new List<short>()));
+            client.Send(new QuestListMessage(new short[0], new short[0], new QuestActiveInformations[0]));
         }
     }
 }

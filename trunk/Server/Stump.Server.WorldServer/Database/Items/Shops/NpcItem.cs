@@ -22,18 +22,18 @@ namespace Stump.Server.WorldServer.Database.Items.Shops
             set;
         }
 
-        public int Price
+        public float Price
         {
             get
             {
-                return CustomPrice.HasValue ? CustomPrice.Value : (int) Item.Price;
+                return CustomPrice.HasValue ? CustomPrice.Value : (float)Item.Price;
             }
         }
 
-        private int? m_customPrice;
+        private float? m_customPrice;
 
         [Property(NotNull = false)]
-        public int? CustomPrice
+        public float? CustomPrice
         {
             get { return m_customPrice; }
             set
@@ -67,7 +67,7 @@ namespace Stump.Server.WorldServer.Database.Items.Shops
                 0,
                 false,
                 Item.Effects.Select(entry => entry.GetObjectEffect()),
-                CustomPrice.HasValue ? CustomPrice.Value : (int)Item.Price,
+                (int) (CustomPrice.HasValue ? CustomPrice.Value : Item.Price),
                 BuyCriterion);
         }
 

@@ -15,5 +15,6 @@ namespace Stump.DofusProtocol.D2oClasses
 		public List<uint> actions;
 		public uint gender;
 		public String look;
+		public int tokenShop;
 	}
 }

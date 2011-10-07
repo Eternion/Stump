@@ -6,34 +6,56 @@ using Stump.DofusProtocol.D2oClasses.Tool;
 
 namespace Stump.Tools.CacheManager
 {
-    public class D2OTableField
+    public class D2OField
     {
         private readonly FieldInfo m_field;
         private readonly PropertyInfo m_property;
 
-        public D2OTableField(FieldInfo field)
+        public D2OField(FieldInfo field)
         {
             m_field = field;
-            Attribute = field.GetCustomAttribute<D2OFieldAttribute>();
+            D2OAttr = field.GetCustomAttribute<D2OFieldAttribute>();
+            DbBelongsAttr = field.GetCustomAttribute<BelongsToAttribute>();
         }
 
-        public D2OTableField(PropertyInfo property)
+        public D2OField(PropertyInfo property)
         {
             m_property = property;
-            Attribute = property.GetCustomAttribute<D2OFieldAttribute>();
-            DBAttribute = property.GetCustomAttribute<PropertyAttribute>();
+            D2OAttr = property.GetCustomAttribute<D2OFieldAttribute>();
+            DbPropAttr = property.GetCustomAttribute<PropertyAttribute>();
+            DbBelongsAttr = property.GetCustomAttribute<BelongsToAttribute>();
         }
 
-        public D2OFieldAttribute Attribute
+        public D2OFieldAttribute D2OAttr
         {
             get;
             set;
         }
 
-        public PropertyAttribute DBAttribute
+        public PropertyAttribute DbPropAttr
         {
             get;
             set;
+        }
+
+        public BelongsToAttribute DbBelongsAttr
+        {
+            get;
+            set;
+        }
+
+        public string GetDatabaseFieldName()
+        {
+            if (DbPropAttr != null && DbPropAttr.Column != null)
+                return DbPropAttr.Column;
+
+            if (DbBelongsAttr != null && DbBelongsAttr.Column != null)
+                return DbBelongsAttr.Column;
+
+            if (m_field != null)
+                return m_field.Name;
+
+            return m_property.Name;
         }
 
         public object GetValue(object instance)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
@@ -88,13 +89,13 @@ namespace Stump.Server.WorldServer.Worlds.Dialogs.Npcs
            }
 
             var saleItem = Items.Where(entry => entry.Item.Id == item.ItemId).FirstOrDefault();
-
+    
             int price;
 
             if (saleItem != null)
-                price = saleItem.Price / 10;
+                price = (int)Math.Ceiling(saleItem.Price / 10);
             else
-                price = (int) (item.Template.Price / 10);
+                price = (int)Math.Ceiling(item.Template.Price / 10);
 
             if (price == 0)
                 price = 1;

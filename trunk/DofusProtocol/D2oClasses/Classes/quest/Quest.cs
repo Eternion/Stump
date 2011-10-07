@@ -11,5 +11,12 @@ namespace Stump.DofusProtocol.D2oClasses
 		public uint id;
 		public uint nameId;
 		public List<uint> stepIds;
+		public uint categoryId;
+		public Boolean isRepeatable;
+		public uint repeatType;
+		public uint repeatLimit;
+		public Boolean isDungeonQuest;
+		public uint levelMin;
+		public uint levelMax;
 	}
 }

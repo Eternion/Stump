@@ -21,5 +21,12 @@ namespace Stump.Server.WorldServer.Database
             get;
             set;
         }
+
+        [Property]
+        public string DofusVersion
+        {
+            get;
+            set;
+        }
     }
 }

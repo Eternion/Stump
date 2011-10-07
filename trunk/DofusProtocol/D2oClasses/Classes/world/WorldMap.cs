@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Stump.DofusProtocol.D2oClasses
 {
@@ -22,5 +23,6 @@ namespace Stump.DofusProtocol.D2oClasses
 		public int centerY;
 		public int totalWidth;
 		public int totalHeight;
+		public List<String> zoom;
 	}
 }

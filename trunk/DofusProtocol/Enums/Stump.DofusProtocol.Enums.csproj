@@ -108,6 +108,7 @@
   <ItemGroup>
     <Compile Include="Custom\AcquaintanceErrorEnum.cs" />
     <Compile Include="Custom\ActionsEnum.cs" />
+    <Compile Include="Custom\SpellShapeEnum.cs" />
     <Compile Include="Custom\StatsBoostTypeEnum.cs" />
     <Compile Include="Custom\ContinentIdEnum.cs" />
     <Compile Include="Custom\MountBehaviorEnum.cs" />
@@ -138,6 +139,7 @@
     <Compile Include="Export\CharacterInventoryPositionEnum.cs" />
     <Compile Include="Export\CharacterSpellModificationTypeEnum.cs" />
     <Compile Include="Export\ChatActivableChannelsEnum.cs" />
+    <Compile Include="Export\ChatChannelsMultiEnum.cs" />
     <Compile Include="Export\ChatErrorEnum.cs" />
     <Compile Include="Export\CompassTypeEnum.cs" />
     <Compile Include="Export\ConsoleMessageTypeEnum.cs" />
@@ -159,6 +161,7 @@
     <Compile Include="Export\GameActionMarkTypeEnum.cs" />
     <Compile Include="Export\GameContextEnum.cs" />
     <Compile Include="Export\GameHierarchyEnum.cs" />
+    <Compile Include="Export\GameRolePlayNpcQuestFlagEnum.cs" />
     <Compile Include="Export\GuildCreationResultEnum.cs" />
     <Compile Include="Export\GuildInformationsTypeEnum.cs" />
     <Compile Include="Export\GuildInvitationStateEnum.cs" />
@@ -173,6 +176,7 @@
     <Compile Include="Export\ObjectErrorEnum.cs" />
     <Compile Include="Export\PartStateEnum.cs" />
     <Compile Include="Export\PartyJoinErrorEnum.cs" />
+    <Compile Include="Export\PartyTypeEnum.cs" />
     <Compile Include="Export\PaymentTypeEnum.cs" />
     <Compile Include="Export\PlayableBreedEnum.cs" />
     <Compile Include="Export\PlayerLifeStatusEnum.cs" />
@@ -181,12 +185,13 @@
     <Compile Include="Export\PresetSaveResultEnum.cs" />
     <Compile Include="Export\PresetSaveUpdateErrorEnum.cs" />
     <Compile Include="Export\PresetUseResultEnum.cs" />
+    <Compile Include="Export\PvpArenaStepEnum.cs" />
+    <Compile Include="Export\PvpArenaTypeEnum.cs" />
     <Compile Include="Export\SequenceTypeEnum.cs" />
     <Compile Include="Export\ServerConnectionErrorEnum.cs" />
     <Compile Include="Export\ServerStatusEnum.cs" />
     <Compile Include="Export\ShortcutBarEnum.cs" />
     <Compile Include="Export\SocialContactCategoryEnum.cs" />
-    <Compile Include="Export\SpellShapeEnum.cs" />
     <Compile Include="Export\SubEntityBindingPointCategoryEnum.cs" />
     <Compile Include="Export\SubscriptionRequiredEnum.cs" />
     <Compile Include="Export\TaxCollectorErrorReasonEnum.cs" />

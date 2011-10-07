@@ -25,6 +25,7 @@ namespace Stump.DofusProtocol.D2oClasses
 		public uint maxCastPerTurn;
 		public uint maxCastPerTarget;
 		public uint minCastInterval;
+		public uint initialCooldown;
 		public uint minPlayerLevel;
 		public Boolean criticalFailureEndsTurn;
 		public Boolean hideEffects;

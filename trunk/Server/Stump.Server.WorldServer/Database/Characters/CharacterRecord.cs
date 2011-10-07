@@ -89,7 +89,7 @@ namespace Stump.Server.WorldServer.Database.Characters
                 m_lookAsString = value;
 
                 if (value != null)
-                    EntityLook = m_lookAsString.ToEntityLook();
+                    m_entityLook = m_lookAsString.ToEntityLook();
             }
         }
 

@@ -36,7 +36,7 @@ namespace Stump.Server.BaseServer.Network
         /// Version for the client. 
         /// </summary>
         [Variable]
-        public static Version ExpectedVersion = new Version(2, 3, 7, 35100, 1, (sbyte) BuildTypeEnum.RELEASE);
+        public static Version ExpectedVersion = new Version(2, 4, 0, 49943, 1, (sbyte) BuildTypeEnum.RELEASE);
 
         /// <summary>
         /// Actual version

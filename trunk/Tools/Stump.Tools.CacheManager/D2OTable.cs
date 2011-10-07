@@ -30,8 +30,8 @@ namespace Stump.Tools.CacheManager
             if (RecordAttribute == null)
                 throw new Exception("A d2o table must have the ActiveRecord attribute");
 
-            if (!( tableType.BaseType.IsGenericType && tableType.BaseType.GetGenericTypeDefinition() == typeof(WorldBaseRecord<>) ) &&
-                !( tableType.BaseType.IsGenericType && tableType.BaseType.GetGenericTypeDefinition() == typeof(AuthBaseRecord<>) ))
+            if (!(tableType.BaseType.IsGenericType && tableType.BaseType.GetGenericTypeDefinition() == typeof (WorldBaseRecord<>)) &&
+                !(tableType.BaseType.IsGenericType && tableType.BaseType.GetGenericTypeDefinition() == typeof (AuthBaseRecord<>)))
                 Inheritance = tableType.BaseType;
 
             if (string.IsNullOrEmpty(RecordAttribute.Table) && Inheritance != null)
@@ -73,7 +73,7 @@ namespace Stump.Tools.CacheManager
             set;
         }
 
-        public D2OTableField[] Fields
+        public D2OField[] Fields
         {
             get;
             set;
@@ -84,19 +84,19 @@ namespace Stump.Tools.CacheManager
             Type objType = obj.GetType();
             var row = new Dictionary<string, object>();
 
-            foreach (D2OTableField field in Fields)
+            foreach (D2OField field in Fields)
             {
-                Tuple<Type, string> tuple = Tuple.Create(objType, field.Attribute.FieldName);
+                Tuple<Type, string> tuple = Tuple.Create(objType, field.D2OAttr.FieldName);
                 FieldInfo objField;
 
                 lock (typeFields)
                 {
                     if (!typeFields.ContainsKey(tuple))
                     {
-                        var fieldInfo = objType.GetField(field.Attribute.FieldName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-                        
+                        FieldInfo fieldInfo = objType.GetField(field.D2OAttr.FieldName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+
                         if (fieldInfo == null)
-                            throw new Exception(string.Format("Field '{0}.{1}' not found", objType.Name, field.Attribute.FieldName));
+                            throw new Exception(string.Format("Field '{0}.{1}' not found", objType.Name, field.D2OAttr.FieldName));
 
                         typeFields.Add(tuple, fieldInfo);
                     }
@@ -104,10 +104,18 @@ namespace Stump.Tools.CacheManager
                     objField = typeFields[tuple];
                 }
 
-                if (field.DBAttribute != null && field.DBAttribute.ColumnType == "Serializable")
-                    row.Add(m_relations[field.Attribute.FieldName], objField.GetValue(obj).ToBinary());
+                string columnName = field.GetDatabaseFieldName();
+                object value;
+                object fieldValue = objField.GetValue(obj);
+
+                if (field.DbPropAttr != null && field.DbPropAttr.ColumnType == "Serializable")
+                    value = fieldValue.ToBinary();
+                else if (fieldValue is bool)
+                    value = ((bool) fieldValue) ? 1 : 0;
                 else
-                    row.Add(m_relations[field.Attribute.FieldName], objField.GetValue(obj));
+                    value = fieldValue;
+
+                row.Add(columnName, value);
             }
 
             if (!string.IsNullOrEmpty(RecordAttribute.DiscriminatorValue))
@@ -116,19 +124,19 @@ namespace Stump.Tools.CacheManager
             return row;
         }
 
-        private static D2OTableField[] FindD2OFields(Type type)
+        private static D2OField[] FindD2OFields(Type type)
         {
-            var result = new List<D2OTableField>();
+            var result = new List<D2OField>();
 
             result.AddRange(from entry in type.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
                             let attribute = entry.GetCustomAttribute<D2OFieldAttribute>()
                             where attribute != null
-                            select new D2OTableField(entry));
+                            select new D2OField(entry));
 
             result.AddRange(from entry in type.GetProperties(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
                             let attribute = entry.GetCustomAttribute<D2OFieldAttribute>()
                             where attribute != null
-                            select new D2OTableField(entry));
+                            select new D2OField(entry));
 
             return result.ToArray();
         }

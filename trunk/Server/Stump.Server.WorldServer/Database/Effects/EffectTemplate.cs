@@ -83,6 +83,22 @@ namespace Stump.Server.WorldServer.Database.Effects
         }
 
         [Property]
+        [D2OField("boost")]
+        public bool Boost
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        [D2OField("active")]
+        public bool Active
+        {
+            get;
+            set;
+        }
+
+        [Property]
         [D2OField("showInSet")]
         public bool ShowInSet
         {

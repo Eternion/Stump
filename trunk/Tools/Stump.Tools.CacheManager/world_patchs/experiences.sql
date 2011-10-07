@@ -1,4 +1,5 @@
-﻿INSERT INTO `experiences` VALUES ('1', '0');
+﻿DELETE * FROM experiences;
+INSERT INTO `experiences` VALUES ('1', '0');
 INSERT INTO `experiences` VALUES ('2', '110');
 INSERT INTO `experiences` VALUES ('3', '650');
 INSERT INTO `experiences` VALUES ('4', '1500');

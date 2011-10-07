@@ -17,14 +17,14 @@ namespace Stump.DofusProtocol.D2oClasses
 		public uint nameId;
 		public uint typeId;
 		public uint descriptionId;
-		public uint iconId;
+		public int iconId;
 		public uint level;
 		public uint weight;
 		public Boolean cursed;
 		public int useAnimationId;
 		public Boolean usable;
 		public Boolean targetable;
-		public uint price;
+		public float price;
 		public Boolean twoHanded;
 		public Boolean etheral;
 		public int itemSetId;

@@ -131,7 +131,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
 
         [D2OField("price")]
         [Property("Price")]
-        public uint Price
+        public float Price
         {
             get;
             set;

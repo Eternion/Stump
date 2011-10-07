@@ -307,16 +307,25 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
                     {
                         values.Add(Convert.ChangeType(fieldValue, field.FieldType));
                     }
+                    catch (OverflowException)
+                    {
+                        if (fieldValue is int && field.FieldType == typeof(uint))
+                            values.Add(unchecked((uint)(int)fieldValue));
+
+                        else
+                            throw new Exception(string.Format("Field '{0}.{1}' with value {2} is not of type '{3}'", classDefinition.Name,
+                                                              field.Name, fieldValue, fieldValue.GetType()));
+                    }
                     catch
                     {
-                        throw new Exception(string.Format("Field '{0}.{1}' is not of type '{2}'", classDefinition.Name,
-                                                          field.Name, fieldValue.GetType()));
+                        throw new Exception(string.Format("Field '{0}.{1}' with value {2} is not of type '{3}'", classDefinition.Name,
+                                                          field.Name, fieldValue, fieldValue.GetType()));
                     }
                 }
                 else
                 {
-                    throw new Exception(string.Format("Field '{0}.{1}' is not of type '{2}'", classDefinition.Name,
-                                                      field.Name, fieldValue.GetType()));
+                    throw new Exception(string.Format("Field '{0}.{1}' with value {2} is not of type '{3}'", classDefinition.Name,
+                                                      field.Name, fieldValue, fieldValue.GetType()));
                 }
             }
 
@@ -522,5 +531,18 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
                 (Func<object[], object>)
                 method.CreateDelegate(Expression.GetFuncType(new[] {typeof (object[]), typeof (object)}.ToArray()));
         }
+    }
+
+    internal class UncheckedFormatProvider : IFormatProvider
+    {
+
+        #region IFormatProvider Members
+
+        public object GetFormat(Type formatType)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

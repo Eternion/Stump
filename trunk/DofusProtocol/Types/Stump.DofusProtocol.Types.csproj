@@ -196,6 +196,7 @@
     <Compile Include="Types\game\context\roleplay\GameRolePlayMutantInformations.cs" />
     <Compile Include="Types\game\context\roleplay\GameRolePlayNamedActorInformations.cs" />
     <Compile Include="Types\game\context\roleplay\GameRolePlayNpcInformations.cs" />
+    <Compile Include="Types\game\context\roleplay\GameRolePlayNpcWithQuestInformations.cs" />
     <Compile Include="Types\game\context\roleplay\GameRolePlayPrismInformations.cs" />
     <Compile Include="Types\game\context\roleplay\GroupMonsterStaticInformations.cs" />
     <Compile Include="Types\game\context\roleplay\GuildInformations.cs" />
@@ -218,6 +219,9 @@
     <Compile Include="Types\game\context\roleplay\party\PartyMemberGeoPosition.cs" />
     <Compile Include="Types\game\context\roleplay\party\PartyMemberInformations.cs" />
     <Compile Include="Types\game\context\roleplay\party\PartyUpdateCommonsInformations.cs" />
+    <Compile Include="Types\game\context\roleplay\quest\GameRolePlayNpcQuestFlag.cs" />
+    <Compile Include="Types\game\context\roleplay\quest\QuestActiveDetailedInformations.cs" />
+    <Compile Include="Types\game\context\roleplay\quest\QuestActiveInformations.cs" />
     <Compile Include="Types\game\context\TaxCollectorStaticInformations.cs" />
     <Compile Include="Types\game\data\items\BidExchangerObjectInfo.cs" />
     <Compile Include="Types\game\data\items\effects\ObjectEffect.cs" />
@@ -244,6 +248,7 @@
     <Compile Include="Types\game\data\items\SellerBuyerDescriptor.cs" />
     <Compile Include="Types\game\data\items\SpellItem.cs" />
     <Compile Include="Types\game\fight\ProtectedEntityWaitingForHelpInfo.cs" />
+    <Compile Include="Types\game\friend\AbstractContactInformations.cs" />
     <Compile Include="Types\game\friend\FriendInformations.cs" />
     <Compile Include="Types\game\friend\FriendOnlineInformations.cs" />
     <Compile Include="Types\game\friend\FriendSpouseInformations.cs" />
@@ -291,8 +296,8 @@
     <Compile Include="Types\game\paddock\PaddockItem.cs" />
     <Compile Include="Types\game\paddock\PaddockPrivateInformations.cs" />
     <Compile Include="Types\game\prism\AlignmentBonusInformations.cs" />
-    <Compile Include="Types\game\prism\PrismConquestInformation.cs" />
     <Compile Include="Types\game\prism\PrismSubAreaInformation.cs" />
+    <Compile Include="Types\game\prism\VillageConquestPrismInformation.cs" />
     <Compile Include="Types\game\shortcut\Shortcut.cs" />
     <Compile Include="Types\game\shortcut\ShortcutObject.cs" />
     <Compile Include="Types\game\shortcut\ShortcutObjectItem.cs" />

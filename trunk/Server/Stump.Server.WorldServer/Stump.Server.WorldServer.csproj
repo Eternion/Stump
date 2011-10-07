@@ -111,6 +111,11 @@
     <Compile Include="Database\Interactives\Skills\SkillTeleportTemplate.cs" />
     <Compile Include="Database\Items\Shops\ItemToSell.cs" />
     <Compile Include="Database\Items\Shops\NpcItem.cs" />
+    <Compile Include="Database\Monsters\MonsterGrade.cs" />
+    <Compile Include="Database\Monsters\MonsterRace.cs" />
+    <Compile Include="Database\Monsters\MonsterSpell.cs" />
+    <Compile Include="Database\Monsters\MonsterSuperRace.cs" />
+    <Compile Include="Database\Monsters\MonsterTemplate.cs" />
     <Compile Include="Database\Npcs\Actions\NpcBuySellAction.cs" />
     <Compile Include="Database\Npcs\Actions\NpcTalkAction.cs" />
     <Compile Include="Database\Npcs\NpcAction.cs" />
@@ -228,6 +233,7 @@
     <Compile Include="Worlds\Actors\RolePlay\GroupMonster.cs" />
     <Compile Include="Worlds\Actors\RolePlay\Humanoid.cs" />
     <Compile Include="Worlds\Actors\RolePlay\Merchant.cs" />
+    <Compile Include="Worlds\Actors\RolePlay\Monsters\MonsterManager.cs" />
     <Compile Include="Worlds\Actors\RolePlay\MountNpc.cs" />
     <Compile Include="Worlds\Actors\RolePlay\Mutant.cs" />
     <Compile Include="Worlds\Actors\RolePlay\NamedActor.cs" />

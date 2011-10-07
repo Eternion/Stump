@@ -119,13 +119,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="D2OTable.cs" />
-    <Compile Include="D2OTableField.cs" />
+    <Compile Include="D2OField.cs" />
     <Compile Include="DatabaseBuilder.cs" />
     <Compile Include="Maps\MapLoader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SQL\MySqlAccessor.cs" />
-    <Compile Include="SQL\SqlBuilder.cs" />
+    <Compile Include="Sql\MySqlAccessor.cs" />
+    <Compile Include="Sql\SqlBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">

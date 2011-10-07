@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Worlds.Parties
         /// <summary>
         ///   Maximum number of characters that can be in a same group.
         /// </summary>
-        protected const int MaxMemberCount = 8;
+        public const int MaxMemberCount = 8;
 
         #region Events
 
@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Worlds.Parties
 
         protected virtual void OnLeaderChanged(Character leader)
         {
-            ForEach(entry => PartyHandler.SendPartyLeaderUpdateMessage(entry.Client, leader));
+            ForEach(entry => PartyHandler.SendPartyLeaderUpdateMessage(entry.Client, this, leader));
         }
 
         public event MemberAddedHandler GuestAdded;
@@ -49,8 +49,6 @@ namespace Stump.Server.WorldServer.Worlds.Parties
 
         protected virtual void OnGuestAdded(Character guest)
         {
-
-
             ForEach(entry => PartyHandler.SendPartyNewGuestMessage(entry.Client, this, guest));
         }
 
@@ -101,11 +99,11 @@ namespace Stump.Server.WorldServer.Worlds.Parties
         protected virtual void OnMemberRemoved(Character member, bool kicked)
         {
             if (kicked)
-                PartyHandler.SendPartyKickedByMessage(member.Client, Leader);
+                PartyHandler.SendPartyKickedByMessage(member.Client, this, Leader);
             else
                 member.Client.Send(new PartyLeaveMessage());
 
-            ForEach(entry => PartyHandler.SendPartyMemberRemoveMessage(entry.Client, member));
+            ForEach(entry => PartyHandler.SendPartyMemberRemoveMessage(entry.Client, this, member));
         }
 
         public event Action<Party> PartyDeleted;
@@ -148,13 +146,21 @@ namespace Stump.Server.WorldServer.Worlds.Parties
             private set;
         }
 
+        public PartyTypeEnum Type
+        {
+            get
+            {
+                return PartyTypeEnum.PARTY_TYPE_UNDEFINED;
+            }
+        }
+
         private bool m_restricted;
 
         public bool Restricted
         {
             get { return m_restricted; }
             private set { m_restricted = value;
-                ForEach(entry => PartyHandler.SendPartyRestrictedMessage(entry.Client, m_restricted)); }
+                ForEach(entry => PartyHandler.SendPartyRestrictedMessage(entry.Client, this, m_restricted)); }
         }
 
         public bool IsFull
@@ -338,7 +344,7 @@ namespace Stump.Server.WorldServer.Worlds.Parties
             if (!IsInGroup(character))
                 return;
 
-            ForEach(entry => PartyHandler.SendPartyUpdateMessage(entry.Client, character), character);
+            ForEach(entry => PartyHandler.SendPartyUpdateMessage(entry.Client, this, character), character);
         }
 
         public void ForEach(Action<Character> action)

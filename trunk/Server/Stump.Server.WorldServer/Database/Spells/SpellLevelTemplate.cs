@@ -151,6 +151,14 @@ namespace Stump.Server.WorldServer.Database.Spells
            set;
        }
 
+       [D2OField("initialCooldown")]
+       [Property("InitialCooldown")]
+       public uint InitialCooldown
+       {
+           get;
+           set;
+       }
+
        [D2OField("minPlayerLevel")]
        [Property("MinPlayerLevel")]
        public uint MinPlayerLevel

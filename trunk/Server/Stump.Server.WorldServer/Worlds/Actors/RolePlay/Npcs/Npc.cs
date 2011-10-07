@@ -73,8 +73,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
                                                    GetEntityDispositionInformations(),
                                                    (short)Template.Id,
                                                    Template.Gender != 0,
-                                                   Template.SpecialArtworkId,
-                                                   false);
+                                                   Template.SpecialArtworkId);
         }
     }
 }

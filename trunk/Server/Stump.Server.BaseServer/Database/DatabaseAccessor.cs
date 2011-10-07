@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -8,7 +9,9 @@ using System.Text.RegularExpressions;
 using Castle.ActiveRecord;
 using Castle.ActiveRecord.Framework;
 using Castle.ActiveRecord.Framework.Config;
+using Castle.ActiveRecord.Framework.Internal;
 using MySql.Data.MySqlClient;
+using NHibernate.Engine;
 using NLog;
 using Stump.Core.Threading;
 using Stump.Server.BaseServer.Database.Interfaces;

@@ -100,7 +100,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
         {
             get
             {
-                if (Look == null)
+                if (m_entityLook == null)
                     return string.Empty;
 
                 if (string.IsNullOrEmpty(m_lookAsString))
@@ -113,7 +113,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
                 m_lookAsString = value;
 
                 if (value != null)
-                    Look = m_lookAsString.ToEntityLook();
+                    m_entityLook = m_lookAsString.ToEntityLook();
             }
         }
 
@@ -131,6 +131,14 @@ namespace Stump.Server.WorldServer.Database.Npcs
 
         [Property]
         public short SpecialArtworkId
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        [D2OField("tokenShop")]
+        public bool TokenShop
         {
             get;
             set;

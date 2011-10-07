@@ -172,8 +172,8 @@
     <Compile Include="Messages\game\actions\fight\GameActionFightKillMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightLifePointsVariationMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightMarkCellsMessage.cs" />
+    <Compile Include="Messages\game\actions\fight\GameActionFightModifyEffectsDurationMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightNoSpellCastMessage.cs" />
-    <Compile Include="Messages\game\actions\fight\GameActionFightPassNextTurnsMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightPointsVariationMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightReduceDamagesMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightReflectDamagesMessage.cs" />
@@ -205,6 +205,7 @@
     <Compile Include="Messages\game\approach\AuthenticationTicketRefusedMessage.cs" />
     <Compile Include="Messages\game\approach\AuthenticationTicketWithClientPacksMessage.cs" />
     <Compile Include="Messages\game\approach\HelloGameMessage.cs" />
+    <Compile Include="Messages\game\approach\ServerOptionalFeaturesMessage.cs" />
     <Compile Include="Messages\game\atlas\AtlasPointInformationsMessage.cs" />
     <Compile Include="Messages\game\atlas\compass\CompassResetMessage.cs" />
     <Compile Include="Messages\game\atlas\compass\CompassUpdateMessage.cs" />
@@ -220,9 +221,12 @@
     <Compile Include="Messages\game\basic\BasicWhoIsMessage.cs" />
     <Compile Include="Messages\game\basic\BasicWhoIsNoMatchMessage.cs" />
     <Compile Include="Messages\game\basic\BasicWhoIsRequestMessage.cs" />
+    <Compile Include="Messages\game\basic\NumericWhoIsMessage.cs" />
+    <Compile Include="Messages\game\basic\NumericWhoIsRequestMessage.cs" />
     <Compile Include="Messages\game\basic\TextInformationMessage.cs" />
     <Compile Include="Messages\game\character\choice\CharacterFirstSelectionMessage.cs" />
     <Compile Include="Messages\game\character\choice\CharacterSelectedErrorMessage.cs" />
+    <Compile Include="Messages\game\character\choice\CharacterSelectedErrorMissingMapPackMessage.cs" />
     <Compile Include="Messages\game\character\choice\CharacterSelectedForceMessage.cs" />
     <Compile Include="Messages\game\character\choice\CharacterSelectedForceReadyMessage.cs" />
     <Compile Include="Messages\game\character\choice\CharacterSelectedSuccessMessage.cs" />
@@ -271,14 +275,16 @@
     <Compile Include="Messages\game\chat\smiley\MoodSmileyRequestMessage.cs" />
     <Compile Include="Messages\game\chat\smiley\MoodSmileyResultMessage.cs" />
     <Compile Include="Messages\game\context\display\DisplayNumericalValueMessage.cs" />
+    <Compile Include="Messages\game\context\dungeon\DungeonEnteredMessage.cs" />
+    <Compile Include="Messages\game\context\dungeon\DungeonKeyRingMessage.cs" />
+    <Compile Include="Messages\game\context\dungeon\DungeonKeyRingUpdateMessage.cs" />
+    <Compile Include="Messages\game\context\dungeon\DungeonLeftMessage.cs" />
     <Compile Include="Messages\game\context\fight\challenge\ChallengeDungeonStackedBonusMessage.cs" />
     <Compile Include="Messages\game\context\fight\challenge\ChallengeInfoMessage.cs" />
     <Compile Include="Messages\game\context\fight\challenge\ChallengeResultMessage.cs" />
     <Compile Include="Messages\game\context\fight\challenge\ChallengeTargetsListMessage.cs" />
     <Compile Include="Messages\game\context\fight\challenge\ChallengeTargetsListRequestMessage.cs" />
     <Compile Include="Messages\game\context\fight\challenge\ChallengeTargetUpdateMessage.cs" />
-    <Compile Include="Messages\game\context\fight\challenge\DungeonEnteredMessage.cs" />
-    <Compile Include="Messages\game\context\fight\challenge\DungeonLeftMessage.cs" />
     <Compile Include="Messages\game\context\fight\character\GameFightShowFighterMessage.cs" />
     <Compile Include="Messages\game\context\fight\character\GameFightShowFighterRandomStaticPoseMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightEndMessage.cs" />
@@ -376,14 +382,19 @@
     <Compile Include="Messages\game\context\roleplay\emote\EmotePlayRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\emote\EmoteRemoveMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\ErrorMapNotFoundMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaFightAnswerMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaFighterStatusMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaFightPropositionMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaRegisterMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaRegistrationStatusMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaUnregisterMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaUpdatePlayerInfosMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayAggressionMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayFightRequestCanceledMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayPlayerFightFriendlyAnsweredMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayPlayerFightFriendlyAnswerMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayPlayerFightFriendlyRequestedMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayPlayerFightRequestMessage.cs" />
-    <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayPVPArenaFightAnsweredMessage.cs" />
-    <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayPVPArenaFightRequestedMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayRemoveChallengeMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayShowChallengeMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\GameRolePlayShowActorMessage.cs" />
@@ -457,6 +468,8 @@
     <Compile Include="Messages\game\context\roleplay\paddock\PaddockToSellFilterMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\paddock\PaddockToSellListMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\paddock\PaddockToSellListRequestMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\party\AbstractPartyEventMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\party\AbstractPartyMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\DungeonPartyFinderAvailableDungeonsMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\DungeonPartyFinderAvailableDungeonsRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\DungeonPartyFinderListenErrorMessage.cs" />
@@ -475,6 +488,7 @@
     <Compile Include="Messages\game\context\roleplay\party\PartyFollowMemberRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyFollowStatusUpdateMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyFollowThisMemberRequestMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\party\PartyInvitationArenaRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyInvitationCancelledForGuestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyInvitationDetailsMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyInvitationDetailsRequestMessage.cs" />
@@ -490,9 +504,12 @@
     <Compile Include="Messages\game\context\roleplay\party\PartyLeaveMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyLeaveRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyLocateMembersMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\party\PartyLoyaltyStatusMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyMemberEjectedMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyMemberRemoveMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\party\PartyModifiableStatusMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyNewGuestMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\party\PartyPledgeLoyaltyRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyRefuseInvitationMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyRefuseInvitationNotificationMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyRestrictedMessage.cs" />
@@ -510,7 +527,6 @@
     <Compile Include="Messages\game\context\roleplay\quest\QuestStartRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\quest\QuestStepInfoMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\quest\QuestStepInfoRequestMessage.cs" />
-    <Compile Include="Messages\game\context\roleplay\quest\QuestStepNoInfoMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\quest\QuestStepStartedMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\quest\QuestStepValidatedMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\quest\QuestValidatedMessage.cs" />
@@ -617,6 +633,12 @@
     <Compile Include="Messages\game\interactive\InteractiveUsedMessage.cs" />
     <Compile Include="Messages\game\interactive\InteractiveUseEndedMessage.cs" />
     <Compile Include="Messages\game\interactive\InteractiveUseRequestMessage.cs" />
+    <Compile Include="Messages\game\interactive\meeting\TeleportBuddiesAnswerMessage.cs" />
+    <Compile Include="Messages\game\interactive\meeting\TeleportBuddiesMessage.cs" />
+    <Compile Include="Messages\game\interactive\meeting\TeleportBuddiesRequestedMessage.cs" />
+    <Compile Include="Messages\game\interactive\meeting\TeleportToBuddyAnswerMessage.cs" />
+    <Compile Include="Messages\game\interactive\meeting\TeleportToBuddyCloseMessage.cs" />
+    <Compile Include="Messages\game\interactive\meeting\TeleportToBuddyOfferMessage.cs" />
     <Compile Include="Messages\game\interactive\StatedElementUpdatedMessage.cs" />
     <Compile Include="Messages\game\interactive\StatedMapUpdateMessage.cs" />
     <Compile Include="Messages\game\interactive\zaap\TeleportDestinationsListMessage.cs" />
@@ -624,6 +646,7 @@
     <Compile Include="Messages\game\interactive\zaap\ZaapListMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeAcceptMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidHouseBuyMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeBidHouseBuyResultMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidHouseGenericItemAddedMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidHouseGenericItemRemovedMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidHouseInListAddedMessage.cs" />
@@ -739,7 +762,6 @@
     <Compile Include="Messages\game\inventory\items\InventoryWeightMessage.cs" />
     <Compile Include="Messages\game\inventory\items\LivingObjectChangeSkinRequestMessage.cs" />
     <Compile Include="Messages\game\inventory\items\LivingObjectDissociateMessage.cs" />
-    <Compile Include="Messages\game\inventory\items\LivingObjectFeedMessage.cs" />
     <Compile Include="Messages\game\inventory\items\LivingObjectMessageMessage.cs" />
     <Compile Include="Messages\game\inventory\items\LivingObjectMessageRequestMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ObjectAddedMessage.cs" />
@@ -747,6 +769,7 @@
     <Compile Include="Messages\game\inventory\items\ObjectDeleteMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ObjectDropMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ObjectErrorMessage.cs" />
+    <Compile Include="Messages\game\inventory\items\ObjectFeedMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ObjectFoundWhileRecoltingMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ObjectJobAddedMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ObjectModifiedMessage.cs" />
@@ -757,6 +780,7 @@
     <Compile Include="Messages\game\inventory\items\ObjectSetPositionMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ObjectsQuantityMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ObjectUseMessage.cs" />
+    <Compile Include="Messages\game\inventory\items\ObjectUseMultipleMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ObjectUseOnCellMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ObjectUseOnCharacterMessage.cs" />
     <Compile Include="Messages\game\inventory\items\SetUpdateMessage.cs" />
@@ -807,8 +831,6 @@
     <Compile Include="Messages\game\pvp\AlignmentRankUpdateMessage.cs" />
     <Compile Include="Messages\game\pvp\AlignmentSubAreasListMessage.cs" />
     <Compile Include="Messages\game\pvp\AlignmentSubAreaUpdateMessage.cs" />
-    <Compile Include="Messages\game\pvp\GetPVPActivationCostMessage.cs" />
-    <Compile Include="Messages\game\pvp\PVPActivationCostMessage.cs" />
     <Compile Include="Messages\game\pvp\SetEnablePVPRequestMessage.cs" />
     <Compile Include="Messages\game\report\CharacterReportMessage.cs" />
     <Compile Include="Messages\game\script\CinematicMessage.cs" />
@@ -850,6 +872,8 @@
     <Compile Include="Messages\updater\parts\GetPartsListMessage.cs" />
     <Compile Include="Messages\updater\parts\PartInfoMessage.cs" />
     <Compile Include="Messages\updater\parts\PartsListMessage.cs" />
+    <Compile Include="Messages\web\ankabox\MailStatusMessage.cs" />
+    <Compile Include="Messages\web\ankabox\NewMailMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

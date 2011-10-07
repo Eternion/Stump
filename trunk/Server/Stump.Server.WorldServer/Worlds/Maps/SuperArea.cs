@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
             foreach (Map map in area.Maps)
             {
-                if (map.Outdoor)
+                if (map.Outdoor && !m_mapsByPoint.ContainsKey(map.Position))
                     m_mapsByPoint.Add(map.Position, map);
             }
 

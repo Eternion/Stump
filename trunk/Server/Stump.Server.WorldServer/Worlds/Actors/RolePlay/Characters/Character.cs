@@ -1014,7 +1014,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 Sex == SexTypeEnum.SEX_FEMALE,
                 (short) Map.Position.X,
                 (short) Map.Position.Y,
-                Map.Id);
+                Map.Id,
+                (short) Map.SubArea.Id);
         }
 
         public PartyMemberInformations GetPartyMemberInformations()

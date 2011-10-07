@@ -755,6 +755,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                 (short) Stats[CaracteristicsEnum.AP].Total,
                 (short) Stats[CaracteristicsEnum.MP].Total,
                 Stats[CaracteristicsEnum.SummonLimit].Total,
+                false, // summoned = ?
                 (short) Stats[CaracteristicsEnum.NeutralResistPercent].Total,
                 (short) Stats[CaracteristicsEnum.EarthResistPercent].Total,
                 (short) Stats[CaracteristicsEnum.WaterResistPercent].Total,

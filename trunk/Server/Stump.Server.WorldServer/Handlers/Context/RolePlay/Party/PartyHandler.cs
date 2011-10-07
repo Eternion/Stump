@@ -6,7 +6,6 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Worlds;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Parties;
-using WorldParty = Stump.Server.WorldServer.Worlds.Parties.Party;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
 {
@@ -111,34 +110,34 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
             client.ActiveCharacter.Party.Kick(member);
         }
 
-        public static void SendPartyKickedByMessage(WorldClient client, Character kicker)
+        public static void SendPartyKickedByMessage(WorldClient client, Worlds.Parties.Party party, Character kicker)
         {
-            client.Send(new PartyKickedByMessage(kicker.Id));
+            client.Send(new PartyKickedByMessage(party.Id, kicker.Id));
         }
 
-        public static void SendPartyLeaderUpdateMessage(WorldClient client, Character leader)
+        public static void SendPartyLeaderUpdateMessage(WorldClient client, Worlds.Parties.Party party, Character leader)
         {
-            client.Send(new PartyLeaderUpdateMessage(leader.Id));
+            client.Send(new PartyLeaderUpdateMessage(party.Id, leader.Id));
         }
 
-        public static void SendPartyRestrictedMessage(WorldClient client, bool restricted)
+        public static void SendPartyRestrictedMessage(WorldClient client, Worlds.Parties.Party party, bool restricted)
         {
-            client.Send(new PartyRestrictedMessage(restricted));
+            client.Send(new PartyRestrictedMessage(party.Id, restricted));
         }
 
-        public static void SendPartyUpdateMessage(WorldClient client, Character member)
+        public static void SendPartyUpdateMessage(WorldClient client, Worlds.Parties.Party party, Character member)
         {
-            client.Send(new PartyUpdateMessage(member.GetPartyMemberInformations()));
+            client.Send(new PartyUpdateMessage(party.Id, member.GetPartyMemberInformations()));
         }
 
-        public static void SendPartyNewGuestMessage(WorldClient client, WorldParty party, Character guest)
+        public static void SendPartyNewGuestMessage(WorldClient client, Worlds.Parties.Party party, Character guest)
         {
-            client.Send(new PartyNewGuestMessage(guest.GetPartyGuestInformations(party)));
+            client.Send(new PartyNewGuestMessage(party.Id, guest.GetPartyGuestInformations(party)));
         }
 
-        public static void SendPartyMemberRemoveMessage(WorldClient client, Character leaver)
+        public static void SendPartyMemberRemoveMessage(WorldClient client, Worlds.Parties.Party party, Character leaver)
         {
-            client.Send(new PartyMemberRemoveMessage(leaver.Id));
+            client.Send(new PartyMemberRemoveMessage(party.Id, leaver.Id));
         }
 
         public static void SendPartyInvitationCancelledForGuestMessage(WorldClient client, Character canceller, PartyInvitation invitation)
@@ -149,32 +148,37 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
         public static void SendPartyCancelInvitationNotificationMessage(WorldClient client, PartyInvitation invitation)
         {
             client.Send(new PartyCancelInvitationNotificationMessage(
+                invitation.Party.Id,
                 invitation.Source.Id,
                 invitation.Target.Id));
         }
 
         public static void SendPartyRefuseInvitationNotificationMessage(WorldClient client, PartyInvitation invitation)
         {
-            client.Send(new PartyRefuseInvitationNotificationMessage(invitation.Target.Id));
+            client.Send(new PartyRefuseInvitationNotificationMessage(invitation.Party.Id, invitation.Target.Id));
         }
 
-        public static void SendPartyDeletedMessage(WorldClient client, WorldParty party)
+        public static void SendPartyDeletedMessage(WorldClient client, Worlds.Parties.Party party)
         {
             client.Send(new PartyDeletedMessage(party.Id));
         }
 
-        public static void SendPartyJoinMessage(WorldClient client, WorldParty party)
+        public static void SendPartyJoinMessage(WorldClient client, Worlds.Parties.Party party)
         {
             client.Send(new PartyJoinMessage(party.Id,
+                (sbyte)party.Type,
                 party.Leader.Id,
+                Worlds.Parties.Party.MaxMemberCount,
                 party.Members.Select(entry => entry.GetPartyMemberInformations()),
                 party.Guests.Select(entry => entry.GetPartyGuestInformations(party)),
                 party.Restricted));
         }
 
-        public static void SendPartyInvitationMessage(WorldClient client, WorldParty party, Character from)
+        public static void SendPartyInvitationMessage(WorldClient client, Worlds.Parties.Party party, Character from)
         {
             client.Send(new PartyInvitationMessage(party.Id,
+                (sbyte)party.Type,
+                Worlds.Parties.Party.MaxMemberCount,
                 from.Id,
                 from.Name,
                 client.ActiveCharacter.Id // what is that ?
@@ -185,6 +189,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
         {
             client.Send(new PartyInvitationDetailsMessage(
                 invitation.Party.Id,
+                (sbyte)invitation.Party.Type,
                 invitation.Source.Id,
                 invitation.Source.Name,
                 invitation.Party.Leader.Id,
@@ -192,9 +197,14 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
                 ));
         }    
 
+        public static void SendPartyCannotJoinErrorMessage(WorldClient client, Worlds.Parties.Party party, PartyJoinErrorEnum reason)
+        {
+            client.Send(new PartyCannotJoinErrorMessage(party.Id, (sbyte)reason));
+        }
+
         public static void SendPartyCannotJoinErrorMessage(WorldClient client, PartyJoinErrorEnum reason)
         {
-            client.Send(new PartyCannotJoinErrorMessage((sbyte)reason));
+            client.Send(new PartyCannotJoinErrorMessage(0, (sbyte)reason));
         }
     }
 }

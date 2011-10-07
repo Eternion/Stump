@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
@@ -131,5 +132,12 @@ namespace Stump.Server.WorldServer.Database.World
            set;
        }
 
+       [Property]
+       [D2OField("zoom")]
+       public List<string> Zoom
+       {
+           get;
+           set;
+       }
     }
 }

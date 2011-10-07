@@ -10,7 +10,9 @@ using NLog;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Tools.CacheManager.SQL;
+using MonsterGrade = Stump.Server.WorldServer.Database.Monsters.MonsterGrade;
 
 namespace Stump.Tools.CacheManager
 {
@@ -217,6 +219,9 @@ namespace Stump.Tools.CacheManager
 
                     Dictionary<string, object> row = table.GenerateRow(objects[i]);
 
+                    if (objects[i] is Monster)
+                        BuildMonsterGrades(objects[i] as Monster);
+
                     // row might already exists
                     if (table.Inheritance != null && row.ContainsKey("Id"))
                         Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildDelete(table.TableName, "Id = " + row["Id"]));
@@ -228,6 +233,21 @@ namespace Stump.Tools.CacheManager
                 }
 
                 Console.SetCursorPosition(cursorLeft, cursorTop);
+            }
+        }
+
+        private D2OTable m_monsterGradeTable;
+        private void BuildMonsterGrades(Monster monster)
+        {
+            if (m_monsterGradeTable == null)
+               m_monsterGradeTable = new D2OTable(typeof(MonsterGrade));
+
+            foreach (var monsterGrade in monster.grades)
+            {
+                var row = m_monsterGradeTable.GenerateRow(monsterGrade);
+
+                Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildDelete(m_monsterGradeTable.TableName, "MonsterId = " + row["MonsterId"] + " AND Grade = " + row["Grade"]));
+                Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsertInto(m_monsterGradeTable.TableName, row));
             }
         }
 
@@ -247,7 +267,7 @@ namespace Stump.Tools.CacheManager
             return from type in m_assembly.GetTypes()
                    where type.IsDerivedFromGenericType(typeof (ActiveRecordBase<>))
                    let attribute = type.GetCustomAttribute<D2OClassAttribute>()
-                   where attribute != null
+                   where attribute != null && attribute.AutoBuild
                    select new D2OTable(type);
         }
 
