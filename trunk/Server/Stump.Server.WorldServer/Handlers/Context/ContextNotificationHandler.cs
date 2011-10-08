@@ -6,7 +6,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 {
     public partial class ContextHandler : WorldHandlerContainer
     {
-        public static void SendNotificationListMessage(WorldClient client, List<int> notifications)
+        public static void SendNotificationListMessage(WorldClient client, IEnumerable<int> notifications)
         {
             client.Send(new NotificationListMessage(notifications));
         }

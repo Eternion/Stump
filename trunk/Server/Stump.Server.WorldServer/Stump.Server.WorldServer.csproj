@@ -129,6 +129,7 @@
     <Compile Include="Handlers\Actions\ActionsHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsSequenceHandler.cs" />
     <Compile Include="Handlers\Dialogs\DialogHandler.cs" />
+    <Compile Include="Handlers\Friends\FriendHandler.cs" />
     <Compile Include="Handlers\Interactives\InteractiveHandler.cs" />
     <Compile Include="Rates.cs" />
     <Compile Include="Database\Accounts\WorldAccount.cs" />
@@ -196,7 +197,7 @@
     <Compile Include="Handlers\Context\RolePlay\ContextRoleplayQuestHandler.cs" />
     <Compile Include="Handlers\Context\RolePlay\ContextRoleplaySpellHandler.cs" />
     <Compile Include="Handlers\Context\RolePlay\ContextRoleplayStatsHandler.cs" />
-    <Compile Include="Handlers\Context\RolePlay\Party\PartyHandler.cs" />
+    <Compile Include="Handlers\Party\PartyHandler.cs" />
     <Compile Include="Handlers\Initialization\InitializationHandler.cs" />
     <Compile Include="Handlers\Inventory\InventoryExchangesHandler.cs" />
     <Compile Include="Handlers\Inventory\InventoryHandler.cs" />

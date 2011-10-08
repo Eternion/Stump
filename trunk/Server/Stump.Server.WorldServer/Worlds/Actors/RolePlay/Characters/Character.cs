@@ -996,7 +996,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 Name,
                 Look,
                 (sbyte) BreedId,
-                Sex == SexTypeEnum.SEX_FEMALE);
+                Sex == SexTypeEnum.SEX_MALE);
         }
 
         #endregion
@@ -1011,7 +1011,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 Name,
                 Look,
                 (sbyte) BreedId,
-                Sex == SexTypeEnum.SEX_FEMALE,
+                Sex == SexTypeEnum.SEX_MALE,
                 (short) Map.Position.X,
                 (short) Map.Position.Y,
                 Map.Id,

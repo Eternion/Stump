@@ -40,6 +40,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
 
             /* Ok */
             client.Send(new AuthenticationTicketAcceptedMessage());
+            SendServerOptionalFeaturesMessage(client, new short[0]);
             SendAccountCapabilitiesMessage(client);
 
             client.Send(new TrustStatusMessage(true)); // usage -> ?
@@ -47,6 +48,11 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             /* Just to get console AutoCompletion */
             if (client.Account.Role >= RoleEnum.Moderator)
                 SendConsoleCommandsListMessage(client);
+        }
+
+        public static void SendServerOptionalFeaturesMessage(WorldClient client, IEnumerable<short> features)
+        {
+            client.Send(new ServerOptionalFeaturesMessage(features));
         }
 
         public static void SendAccountCapabilitiesMessage(WorldClient client)

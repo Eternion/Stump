@@ -12,6 +12,8 @@ using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
+using Stump.Server.WorldServer.Handlers.Context.RolePlay;
+using Stump.Server.WorldServer.Handlers.Friends;
 using Stump.Server.WorldServer.Handlers.Initialization;
 using Stump.Server.WorldServer.Handlers.Inventory;
 using Stump.Server.WorldServer.Handlers.Shortcuts;
@@ -105,25 +107,32 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                                           : WorldAccount.FindById(client.Account.Id);
             }
 
+            ContextRoleplayHandler.SendGameRolePlayArenaUpdatePlayerInfosMessage(client);
+            ContextHandler.SendNotificationListMessage(client, new[] { 0 });
 
             SendCharacterSelectedSuccessMessage(client);
-            
-            InventoryHandler.SendInventoryContentMessage(client);
-            InventoryHandler.SendInventoryWeightMessage(client);
 
-            InventoryHandler.SendSpellListMessage(client, true);
+            InventoryHandler.SendInventoryContentMessage(client);
+
             ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.OBJECT);
             ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.SPELL);
             //ContextHandler.SendSpellForgottenMessage(client);
-            ContextHandler.SendNotificationListMessage(client, new List<int>());
 
             //ContextHandler.SendEmoteListMessage(client, new List<uint>());
-            ChatHandler.SendEnabledChannelsMessage(client, new List<sbyte>(), new List<sbyte>());
+            ChatHandler.SendEnabledChannelsMessage(client, new sbyte[] { 0, 1, 2, 3, 4, 5, 6, 7, 12, 13, 9, 10 }, new sbyte[] {8, 7});
 
             //PvpHandler.SendAlignmentRankUpdateMessage(client);
             //PvpHandler.SendAlignmentSubAreasListMessage(client);
+
+            InventoryHandler.SendSpellListMessage(client, true);
             
             InitializationHandler.SendSetCharacterRestrictionsMessage(client);
+
+            InventoryHandler.SendInventoryWeightMessage(client);
+
+            FriendHandler.SendFriendWarnOnConnectionStateMessage(client, false);
+            FriendHandler.SendFriendWarnOnLevelGainStateMessage(client, false);
+            FriendHandler.SendGuildMemberWarnOnConnectionStateMessage(client, false);
 
             BasicHandler.SendTextInformationMessage(client, 1, 89);
             if (client.Account.LastConnection != default(DateTime))
@@ -135,7 +144,9 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                                                         client.Account.LastConnection.Minute,
                                                         client.Account.LastConnectionIp ?? "(null)");
 
-            InitializationHandler.SendOnConnectionEventMessage(client, 2);
+            //InitializationHandler.SendOnConnectionEventMessage(client, 2);
+
+            ContextRoleplayHandler.SendGameRolePlayArenaUpdatePlayerInfosMessage(client);
 
             // Update LastConnection and Last Ip
             client.WorldAccount.LastConnection = DateTime.Now;

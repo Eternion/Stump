@@ -94,7 +94,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                              {
                                  Experience = ExperienceManager.Instance.GetCharacterLevel(breed.StartLevel),
                                  Name = name,
-                                 Sex = sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE,
+                                 Sex = sex ? SexTypeEnum.SEX_MALE : SexTypeEnum.SEX_FEMALE,
                                  EntityLook = look,
                              };
 

@@ -23,5 +23,10 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             client.Send(new GameRolePlayPlayerFightFriendlyRequestedMessage(requester.Id, source.Id,
                                                                             target.Id));
         }
+
+        public static void SendGameRolePlayArenaUpdatePlayerInfosMessage(WorldClient client)
+        {
+            client.Send(new GameRolePlayArenaUpdatePlayerInfosMessage(0, 0, 0, 0, 0));
+        }
     }
 }
