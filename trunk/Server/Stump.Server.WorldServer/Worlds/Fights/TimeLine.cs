@@ -61,12 +61,14 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         private Timer m_turnTimer;
         private Timer m_turnEndTimer;
 
+        private List<FightActor> m_fighters;
+
         public TimeLine(Fight fight, List<FightActor> fighters)
         {
             Fight = fight;
             Index = -1;
             State = TimeLineState.Stopped;
-            Fighters = fighters;
+            m_fighters = fighters;
         }
 
         public Fight Fight
@@ -86,11 +88,6 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             private set;
         }
 
-        public List<FightActor> Fighters
-        {
-            get;
-            private set;
-        }
 
         public int RoundNumber
         {
@@ -108,10 +105,10 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         {
             get
             {
-                if (Index < 0 || Index >= Fighters.Count)
+                if (Index < 0 || Index >= m_fighters.Count)
                     return null;
 
-                return Fighters[Index];
+                return m_fighters[Index];
             }
         }
 
@@ -120,7 +117,6 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             if (IsStarted)
                 return;
 
-            Initialize();
             StartTurn();
         }
 
@@ -139,6 +135,11 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             ForceEndTurn(null);
         }
 
+        public IEnumerable<FightActor> GetTimeLine()
+        {
+            return m_fighters;
+        }
+
         /*public void InsertAfterCurrent(FightActor fighter)
         {
             Insert(Index + 1, fighter);
@@ -152,8 +153,11 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             }
         }*/
 
-        private void Initialize()
+        public void ReorganizeTimeLine()
         {
+            if (IsStarted)
+                return;
+
             var redFighters = Fight.RedTeam.GetAllFighters().
                 OrderByDescending(entry => entry.Stats[CaracteristicsEnum.Initiative].Total);
             var blueFighters = Fight.BlueTeam.GetAllFighters().
@@ -167,8 +171,8 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             var timeLine = new List<FightActor>();
 
             bool hasRed;
-            bool hasBlue;
-            while ((hasRed = redEnumerator.MoveNext()) && (hasBlue = blueEnumerator.MoveNext()))
+            bool hasBlue = false;
+            while ((hasRed = redEnumerator.MoveNext()) || (hasBlue = blueEnumerator.MoveNext()))
             {
                 if (redFighterFirst)
                 {
@@ -188,7 +192,11 @@ namespace Stump.Server.WorldServer.Worlds.Fights
                 }
             }
 
-            Fighters = timeLine;
+            // a bit ugly :/
+            // update the list from Fight instance
+            m_fighters.Clear();
+            m_fighters.AddRange(timeLine);
+
             Index = 0;
             RoundNumber = 1;
         }
@@ -207,25 +215,41 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         private object m_locker = new object();
         private void EndTurnRequested(object dummy)
         {
-            lock (m_locker)
+            try
             {
-                if (State != TimeLineState.TurnInProgress)
-                    return;
+                lock (m_locker)
+                {
+                    if (State != TimeLineState.TurnInProgress)
+                        return;
 
-                m_turnTimer.Dispose();
-                State = TimeLineState.TurnEndRequested;
+                    m_turnTimer.Dispose();
+                    State = TimeLineState.TurnEndRequested;
 
-                NotifyTurnEndRequested(Current);
+                    NotifyTurnEndRequested(Current);
 
-                m_turnEndTimer = new Timer(ForceEndTurn, null, Fight.TurnEndTimeOut, Timeout.Infinite);
+                    m_turnEndTimer = new Timer(ForceEndTurn, null, Fight.TurnEndTimeOut, Timeout.Infinite);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Unhandled Thread Exception : {0}", ex);
+                Dispose();
             }
         }
 
         private void ForceEndTurn(object dummy)
         {
-            m_turnEndTimer.Dispose();
+            try
+            {
+                m_turnEndTimer.Dispose();
 
-            EndTurn();
+                EndTurn();
+            }
+            catch(Exception ex)
+            {
+                logger.Error("Unhandled Thread Exception : {0}", ex);
+                Dispose();
+            }
         }
 
         private void EndTurn()
@@ -245,19 +269,19 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         private bool SwitchFighter()
         {
-            if (Fighters.Count == 0)
+            if (m_fighters.Count == 0)
                 return false;
 
             int counter = 0;
-            int index = (Index + 1) < Fighters.Count ? Index + 1 : 0;
+            int index = (Index + 1) < m_fighters.Count ? Index + 1 : 0;
 
-            while (!Fighters[index].CanPlay() && counter < Fighters.Count)
+            while (!m_fighters[index].CanPlay() && counter < m_fighters.Count)
             {
-                index = ( index + 1 ) < Fighters.Count ? index + 1 : 0;
+                index = ( index + 1 ) < m_fighters.Count ? index + 1 : 0;
                 counter++;
             }
 
-            if (!Fighters[index].CanPlay()) // no fighter can play
+            if (!m_fighters[index].CanPlay()) // no fighter can play
                 return false;
 
             if (index == 0)

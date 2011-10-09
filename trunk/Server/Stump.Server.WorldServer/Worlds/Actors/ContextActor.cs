@@ -2,6 +2,7 @@ using System;
 using Stump.Core.Cache;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
@@ -39,6 +40,21 @@ namespace Stump.Server.WorldServer.Worlds.Actors
         {
             get;
             protected set;
+        }
+
+        public Map Map
+        {
+            get { return Position.Map; }
+        }
+
+        public Cell Cell
+        {
+            get { return Position.Cell; }
+        }
+
+        public DirectionsEnum Direction
+        {
+            get { return Position.Direction; }
         }
 
         #region Network

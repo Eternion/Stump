@@ -21,6 +21,7 @@ using Stump.Server.WorldServer.Worlds.Fights;
 using Stump.Server.WorldServer.Worlds.Items;
 using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
+using Stump.Server.WorldServer.Worlds.Maps.Pathfinding;
 using Stump.Server.WorldServer.Worlds.Notifications;
 using Stump.Server.WorldServer.Worlds.Parties;
 using Stump.Server.WorldServer.Worlds.Shortcuts;
@@ -541,10 +542,21 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         #endregion
 
         #region Move
-        public override bool StartMove(Maps.Pathfinding.MovementPath movementPath)
+        private MovementPath m_lastMove;
+        public ObjectPosition GetPositionBeforeMove()
+        {
+            if (m_lastMove != null)
+                return m_lastMove.Start;
+
+            return Position;
+        }
+
+        public override bool StartMove(MovementPath movementPath)
         {
             if (IsFighting())
                 return Fighter.StartMove(movementPath);
+
+            m_lastMove = movementPath;
 
             return base.StartMove(movementPath);
         }
@@ -778,16 +790,16 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         public void StartRegen()
         {
-            StartRegen((byte) (Rates.RegenRate*20f));
+            StartRegen((byte)( 20f / Rates.RegenRate ));
         }
 
-        public void StartRegen(byte lifePerMinute)
+        public void StartRegen(byte timePerHp)
         {
             if (IsRegenActive())
                 StopRegen();
 
             RegenStartTime = DateTime.Now;
-            RegenSpeed = lifePerMinute;
+            RegenSpeed = timePerHp;
 
             CharacterHandler.SendLifePointsRegenBeginMessage(Client, RegenSpeed);
         }
@@ -797,7 +809,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             if (!IsRegenActive())
                 return;
 
-            var regainedLife = (int) Math.Floor((DateTime.Now - RegenStartTime).Value.TotalMinutes*RegenSpeed);
+            var regainedLife = (int) Math.Floor((DateTime.Now - RegenStartTime).Value.TotalSeconds / (RegenSpeed / 10));
 
             if (LifePoints + regainedLife > MaxLifePoints)
                 regainedLife = MaxLifePoints - LifePoints;
@@ -811,7 +823,10 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         public void UpdateRegenedLife()
         {
-            var regainedLife = (int) Math.Floor((DateTime.Now - RegenStartTime).Value.TotalMinutes*RegenSpeed);
+            if (!IsRegenActive())
+                return;
+
+            var regainedLife = (int)Math.Floor(( DateTime.Now - RegenStartTime ).Value.TotalSeconds / (RegenSpeed / 10));
 
             if (LifePoints + regainedLife > MaxLifePoints)
                 regainedLife = MaxLifePoints - LifePoints;
@@ -868,6 +883,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                         Map.Leave(this);
 
                     World.Instance.Leave(this);
+                    InWorld = false;
                 }
 
                 UnLoadRecord();

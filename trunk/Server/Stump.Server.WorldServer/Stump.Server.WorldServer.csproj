@@ -97,6 +97,7 @@
     <Compile Include="Commands\Commands\ItemCommand.cs" />
     <Compile Include="Commands\Commands\KickCommand.cs" />
     <Compile Include="Commands\Commands\LookCommand.cs" />
+    <Compile Include="Commands\Commands\MonsterCommands.cs" />
     <Compile Include="Commands\Commands\NpcsCommands.cs" />
     <Compile Include="Commands\Commands\TeleportCommand.cs" />
     <Compile Include="Commands\Commands\WhoCommand.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Database\Npcs\NpcTemplate.cs" />
     <Compile Include="Database\Npcs\Replies\NpcContinueDialog.cs" />
     <Compile Include="Database\Npcs\Replies\NpcEndDialog.cs" />
+    <Compile Include="Database\Spells\ISpellRecord.cs" />
     <Compile Include="Handlers\Actions\ActionsFightHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsSequenceHandler.cs" />
@@ -222,7 +224,7 @@
     <Compile Include="Worlds\Actors\Fight\AlignedMonster.cs" />
     <Compile Include="Worlds\Actors\Fight\CharacterFighter.cs" />
     <Compile Include="Worlds\Actors\Fight\FightActor.cs" />
-    <Compile Include="Worlds\Actors\Fight\Monster.cs" />
+    <Compile Include="Worlds\Actors\Fight\MonsterFighter.cs" />
     <Compile Include="Worlds\Actors\Fight\MutantFighter.cs" />
     <Compile Include="Worlds\Actors\Fight\NamedFighter.cs" />
     <Compile Include="Worlds\Actors\Fight\TaxCollectorFighter.cs" />
@@ -231,9 +233,10 @@
     <Compile Include="Worlds\Actors\RolePlay\Characters\Character.cs" />
     <Compile Include="Worlds\Actors\RolePlay\Characters\CharacterManager.cs" />
     <Compile Include="Worlds\Actors\RolePlay\Characters\ExperienceManager.cs" />
-    <Compile Include="Worlds\Actors\RolePlay\GroupMonster.cs" />
+    <Compile Include="Worlds\Actors\RolePlay\Monsters\MonsterGroup.cs" />
     <Compile Include="Worlds\Actors\RolePlay\Humanoid.cs" />
     <Compile Include="Worlds\Actors\RolePlay\Merchant.cs" />
+    <Compile Include="Worlds\Actors\RolePlay\Monsters\Monster.cs" />
     <Compile Include="Worlds\Actors\RolePlay\Monsters\MonsterManager.cs" />
     <Compile Include="Worlds\Actors\RolePlay\MountNpc.cs" />
     <Compile Include="Worlds\Actors\RolePlay\Mutant.cs" />
@@ -317,6 +320,7 @@
     <Compile Include="Worlds\Maps\SuperArea.cs" />
     <Compile Include="Worlds\Actors\Stats\StatsData.cs" />
     <Compile Include="Worlds\Shortcuts\ShortcutBar.cs" />
+    <Compile Include="Worlds\Spells\CharacterSpell.cs" />
     <Compile Include="Worlds\Spells\Spell.cs" />
     <Compile Include="Worlds\Spells\SpellInventory.cs" />
     <Compile Include="Worlds\Spells\SpellManager.cs" />

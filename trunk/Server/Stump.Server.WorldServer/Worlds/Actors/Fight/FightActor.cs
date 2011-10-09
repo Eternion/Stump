@@ -242,7 +242,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         public bool IsReady
         {
             get;
-            private set;
+            protected set;
         }
 
         public bool IsTurnReady
@@ -319,6 +319,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             Position.Cell = cell;
 
             NotifyPrePlacementChanged(Position);
+        }
+
+        public virtual ObjectPosition GetLeaderBladePosition()
+        {
+            return MapPosition.Clone();
         }
 
         #endregion
@@ -439,7 +444,9 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         public void Die()
         {
-            InflictDirectDamage((short) LifePoints);
+            DamageTaken += (short)LifePoints;
+
+            NotifyDead(null);
         }
 
         public short InflictDirectDamage(short damage, FightActor from)
@@ -722,7 +729,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         public override bool CanMove()
         {
-            return base.CanMove() && IsFighterTurn();
+            return IsFighterTurn();
         }
 
         public virtual bool CanPlay()
@@ -754,8 +761,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                 0, // shieldsPoints = ?
                 (short) Stats[CaracteristicsEnum.AP].Total,
                 (short) Stats[CaracteristicsEnum.MP].Total,
-                Stats[CaracteristicsEnum.SummonLimit].Total,
-                false, // summoned = ?
+                0,
+                false,
                 (short) Stats[CaracteristicsEnum.NeutralResistPercent].Total,
                 (short) Stats[CaracteristicsEnum.EarthResistPercent].Total,
                 (short) Stats[CaracteristicsEnum.WaterResistPercent].Total,

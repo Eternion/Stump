@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using Stump.Core.Mathematics;
 
@@ -7,7 +8,7 @@ namespace Stump.Core.Threading
     /// <summary>
     ///   Represent a Random class that generate a thread unique seed
     /// </summary>
-    public sealed class AsyncRandom : FastRandom
+    public sealed class AsyncRandom : Random
     {
         private static int m_incrementer = 0;
 
@@ -23,6 +24,7 @@ namespace Stump.Core.Threading
         public AsyncRandom(int seed)
             : base(seed)
         {
+            
         }
     }
 }

@@ -1,11 +1,12 @@
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Database.Spells;
 
 namespace Stump.Server.WorldServer.Database.Monsters
 {
     [ActiveRecord("monsters_spells")]
-    public class MonsterSpell : WorldBaseRecord<MonsterGrade>
+    public class MonsterSpell : WorldBaseRecord<MonsterGrade>, ISpellRecord
     {
         [PrimaryKey(PrimaryKeyType.Native)]
         public int Id

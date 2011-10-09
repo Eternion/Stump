@@ -7,7 +7,7 @@ namespace Stump.Server.WorldServer
     public static class Rates
     {
         /// <summary>
-        /// Life regen rate (default 1 => 20 points per minutes)
+        /// Life regen rate (default 1 => 1hp/2seconds. Max = 20)
         /// </summary>
         [Variable]
         public static float RegenRate = 1;

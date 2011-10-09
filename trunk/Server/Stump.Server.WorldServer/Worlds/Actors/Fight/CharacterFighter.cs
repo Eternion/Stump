@@ -78,6 +78,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             get { return Character.Stats; }
         }
 
+        public override ObjectPosition GetLeaderBladePosition()
+        {
+            return Character.GetPositionBeforeMove();
+        }
+
         public override bool CanCastSpell(Spell spell, Cell cell)
         {
             if (!IsFighterTurn())
@@ -93,7 +98,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                 point.DistanceTo(Position.Point) < spellLevel.MinRange)
                 return false;
 
-            if (Stats[CaracteristicsEnum.AP].Total < spellLevel.ApCost)
+            if (AP < spellLevel.ApCost)
                 return false;
 
             // todo : check casts per turn
@@ -112,6 +117,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                 {
                     if (Fight.FightType == FightTypeEnum.FIGHT_TYPE_CHALLENGE)
                         field.Context = m_damageTakenBeforeFight;
+                    else
+                        field.Context--;
                 }
                 else
                 {

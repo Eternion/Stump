@@ -1,5 +1,6 @@
 ﻿using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.Spells;
 
 namespace Stump.Server.WorldServer.Database.Characters
 {
@@ -7,7 +8,7 @@ namespace Stump.Server.WorldServer.Database.Characters
     /// A Spell learned by a Character with a position and a level
     /// </summary>
     [ActiveRecord("characters_spells")]
-    public class CharacterSpellRecord : WorldBaseRecord<CharacterSpellRecord>
+    public class CharacterSpellRecord : WorldBaseRecord<CharacterSpellRecord>, ISpellRecord
     {
         [PrimaryKey(PrimaryKeyType.Native)]
         public int Id

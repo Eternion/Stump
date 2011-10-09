@@ -92,5 +92,10 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells
         {
             get { return m_point ?? (m_point = new MapPoint(Cell)); }
         }
+
+        public ObjectPosition Clone()
+        {
+            return new ObjectPosition(Map, Cell, Direction);
+        }
     }
 }

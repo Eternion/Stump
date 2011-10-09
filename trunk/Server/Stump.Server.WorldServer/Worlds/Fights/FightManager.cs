@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             var redTeam = new FightTeam(0, new[] { map.Cells[328], map.Cells[356], map.Cells[357] }, TeamEnum.TEAM_CHALLENGER);
             var blueTeam = new FightTeam(1, new[] { map.Cells[370], map.Cells[355], map.Cells[354] }, TeamEnum.TEAM_CHALLENGER);
 
-            var fight = new Fight(m_idProvider.Pop(), FightTypeEnum.FIGHT_TYPE_CHALLENGE, map, blueTeam, redTeam);
+            var fight = new Fight(m_idProvider.Pop(), type, map, blueTeam, redTeam);
 
             m_fights.Add(fight.Id, fight);
 

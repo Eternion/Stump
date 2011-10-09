@@ -4,9 +4,11 @@ using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Worlds;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Worlds.Items;
 using Stump.Server.WorldServer.Worlds.Maps;
@@ -88,6 +90,27 @@ namespace Stump.Server.WorldServer.Commands
 
             if (templateByName == null)
                 throw new ConverterException(string.Format("'{0}' is not a npc template name", entry));
+
+            return templateByName;
+        };
+
+        public static ConverterHandler<MonsterTemplate> MonsterTemplateConverter = (entry, trigger) =>
+        {
+            int outvalue;
+            if (int.TryParse(entry, out outvalue))
+            {
+                var template = MonsterManager.Instance.GetTemplate(outvalue);
+
+                if (template == null)
+                    throw new ConverterException(string.Format("'{0}' is not a valid monster template id", entry));
+
+                return template;
+            }
+
+            var templateByName = MonsterManager.Instance.GetTemplate(entry, CommandBase.IgnoreCommandCase);
+
+            if (templateByName == null)
+                throw new ConverterException(string.Format("'{0}' is not a monster template name", entry));
 
             return templateByName;
         };

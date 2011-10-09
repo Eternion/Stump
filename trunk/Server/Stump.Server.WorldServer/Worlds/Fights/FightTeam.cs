@@ -218,7 +218,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
                 m_fighters.Add(actor);
 
                 if (firstFighter)
-                    BladePosition = actor.MapPosition;
+                    BladePosition = actor.GetLeaderBladePosition();
 
                 NotifyFighterAdded(actor);
                 return true;

@@ -10,9 +10,11 @@ namespace Stump.Server.WorldServer.Worlds.Spells
 {
     public class Spell
     {
-        public Spell(CharacterSpellRecord record)
+        private readonly ISpellRecord m_record;
+
+        public Spell(ISpellRecord record)
         {
-            Record = record;
+            m_record = record;
             Template = SpellManager.Instance.GetSpellTemplate(Id);
             SpellType = SpellManager.Instance.GetSpellType(Template.TypeId);
             int level = 1;
@@ -25,14 +27,8 @@ namespace Stump.Server.WorldServer.Worlds.Spells
         {
             get
             {
-                return Record.SpellId;
+                return m_record.SpellId;
             }
-        }
-
-        public CharacterSpellRecord Record
-        {
-            get;
-            private set;
         }
 
         public SpellTemplate Template
@@ -49,10 +45,13 @@ namespace Stump.Server.WorldServer.Worlds.Spells
 
         public sbyte CurrentLevel
         {
-            get { return Record.Level; }
+            get
+            {
+                return m_record.Level;
+            }
             internal set
             {
-                Record.Level = value;
+                m_record.Level = value;
             }
         }
 
@@ -68,11 +67,7 @@ namespace Stump.Server.WorldServer.Worlds.Spells
         {
             get
             {
-                return Record.Position;
-            }
-            private set
-            {
-                Record.Position = value;
+                return 63; // always 63 ?
             }
         }
 

@@ -9,6 +9,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Interactives;
+using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Handlers.Basic;
@@ -18,6 +19,7 @@ using Stump.Server.WorldServer.Handlers.Interactives;
 using Stump.Server.WorldServer.Worlds.Actors;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Worlds.Fights;
 using Stump.Server.WorldServer.Worlds.Interactives;
@@ -158,12 +160,18 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         public int Id
         {
-            get { return Record.Id; }
+            get
+            {
+                return Record.Id;
+            }
         }
 
         public Cell[] Cells
         {
-            get { return Record.Cells; }
+            get
+            {
+                return Record.Cells;
+            }
         }
 
         public SubArea SubArea
@@ -174,99 +182,174 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         public Area Area
         {
-            get { return SubArea.Area; }
+            get
+            {
+                return SubArea.Area;
+            }
         }
 
         public SuperArea SuperArea
         {
-            get { return Area.SuperArea; }
+            get
+            {
+                return Area.SuperArea;
+            }
         }
 
         public uint RelativeId
         {
-            get { return Record.RelativeId; }
+            get
+            {
+                return Record.RelativeId;
+            }
         }
 
         public int MapType
         {
-            get { return Record.MapType; }
+            get
+            {
+                return Record.MapType;
+            }
         }
 
         public Point Position
         {
-            get { return Record.Position.Pos; }
+            get
+            {
+                return Record.Position.Pos;
+            }
         }
 
         public bool Outdoor
         {
-            get { return Record.Outdoor; }
+            get
+            {
+                return Record.Outdoor;
+            }
         }
 
         public int TopNeighbourId
         {
-            get { return Record.TopNeighbourId; }
-            set { Record.TopNeighbourId = value; }
+            get
+            {
+                return Record.TopNeighbourId;
+            }
+            set
+            {
+                Record.TopNeighbourId = value;
+            }
         }
 
         public Map TopNeighbour
         {
-            get { return m_topNeighbour ?? (m_topNeighbour = World.Instance.GetMap(TopNeighbourId)); }
+            get
+            {
+                return m_topNeighbour ?? ( m_topNeighbour = World.Instance.GetMap(TopNeighbourId) );
+            }
         }
 
         public int BottomNeighbourId
         {
-            get { return Record.BottomNeighbourId; }
-            set { Record.BottomNeighbourId = value; }
+            get
+            {
+                return Record.BottomNeighbourId;
+            }
+            set
+            {
+                Record.BottomNeighbourId = value;
+            }
         }
 
         public Map BottomNeighbour
         {
-            get { return m_bottomNeighbour ?? (m_bottomNeighbour = World.Instance.GetMap(BottomNeighbourId)); }
+            get
+            {
+                return m_bottomNeighbour ?? ( m_bottomNeighbour = World.Instance.GetMap(BottomNeighbourId) );
+            }
         }
 
         public int LeftNeighbourId
         {
-            get { return Record.LeftNeighbourId; }
-            set { Record.LeftNeighbourId = value; }
+            get
+            {
+                return Record.LeftNeighbourId;
+            }
+            set
+            {
+                Record.LeftNeighbourId = value;
+            }
         }
 
         public Map LeftNeighbour
         {
-            get { return m_leftNeighbour ?? (m_leftNeighbour = World.Instance.GetMap(LeftNeighbourId)); }
+            get
+            {
+                return m_leftNeighbour ?? ( m_leftNeighbour = World.Instance.GetMap(LeftNeighbourId) );
+            }
         }
 
         public int RightNeighbourId
         {
-            get { return Record.RightNeighbourId; }
-            set { Record.RightNeighbourId = value; }
+            get
+            {
+                return Record.RightNeighbourId;
+            }
+            set
+            {
+                Record.RightNeighbourId = value;
+            }
         }
 
         public Map RightNeighbour
         {
-            get { return m_rightNeighbour ?? (m_rightNeighbour = World.Instance.GetMap(RightNeighbourId)); }
+            get
+            {
+                return m_rightNeighbour ?? ( m_rightNeighbour = World.Instance.GetMap(RightNeighbourId) );
+            }
         }
 
         public int ShadowBonusOnEntities
         {
-            get { return Record.ShadowBonusOnEntities; }
-            set { Record.ShadowBonusOnEntities = value; }
+            get
+            {
+                return Record.ShadowBonusOnEntities;
+            }
+            set
+            {
+                Record.ShadowBonusOnEntities = value;
+            }
         }
 
         public bool UseLowpassFilter
         {
-            get { return Record.UseLowpassFilter; }
-            set { Record.UseLowpassFilter = value; }
+            get
+            {
+                return Record.UseLowpassFilter;
+            }
+            set
+            {
+                Record.UseLowpassFilter = value;
+            }
         }
 
         public bool UseReverb
         {
-            get { return Record.UseReverb; }
-            set { Record.UseReverb = value; }
+            get
+            {
+                return Record.UseReverb;
+            }
+            set
+            {
+                Record.UseReverb = value;
+            }
         }
 
         public int PresetId
         {
-            get { return Record.PresetId; }
+            get
+            {
+                return Record.PresetId;
+            }
         }
 
         #endregion
@@ -286,14 +369,16 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             return npc;
         }
 
-        public void UnSpawnNpc(sbyte id, bool throwOnError = true)
+        public bool UnSpawnNpc(sbyte id)
         {
             var npc = GetActor<Npc>(id);
 
-            if (npc != null)
-                UnSpawnNpc(npc);
-            else if (throwOnError)
-                throw new Exception(string.Format("Npc with id {0} not found, cannot unspawn an unexistant npc", id));
+            if (npc == null)
+                return false;
+
+            Leave(npc);
+
+            return true;
         }
 
         public void UnSpawnNpc(Npc npc)
@@ -302,8 +387,6 @@ namespace Stump.Server.WorldServer.Worlds.Maps
                 throw new Exception(string.Format("Npc with id {0} not found, cannot unspawn an unexistant npc", npc.Id));
 
             Leave(npc);
-
-            FreeContextualId((sbyte) npc.Id);
         }
 
         #endregion
@@ -358,6 +441,51 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         #endregion
 
+        #region Monsters
+        public MonsterGroup SpawnMonsterGroup(MonsterGrade monster, ObjectPosition position)
+        {
+            if (position.Map != this)
+                throw new Exception("Try to spawn a monster group on the wrong map");
+            var id = GetNextContextualId();
+
+            var group = new MonsterGroup(id, position);
+
+            group.AddMonster(new Monster(monster, group));
+
+            Enter(group);
+
+            return group;
+        }
+
+        public MonsterGroup SpawnMonsterGroup(IEnumerable<MonsterGrade> monsters, ObjectPosition position)
+        {
+            if (position.Map != this)
+                throw new Exception("Try to spawn a monster group on the wrong map");
+            var id = GetNextContextualId();
+
+            var group = new MonsterGroup(id, position);
+
+            foreach (var grade in monsters)
+                group.AddMonster(new Monster(grade, group));
+
+            Enter(group);
+
+            return group;
+        }
+
+        public bool UnSpawnMonsterGroup(sbyte id)
+        {
+            var group = GetActor<MonsterGroup>(id);
+
+            if (group == null)
+                return false;
+
+            Leave(group);
+
+            return true;
+        }
+        #endregion
+
         #region Fights
 
         public void AddFight(Fight fight)
@@ -368,7 +496,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             m_fights.Add(fight);
 
             ForEach(character => ContextRoleplayHandler.SendMapFightCountMessage(character.Client,
-                                                                                 (short) m_fights.Count));
+                                                                                 (short)m_fights.Count));
 
             NotifyFightCreated(fight);
         }
@@ -378,7 +506,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             m_fights.Remove(fight);
 
             ForEach(character => ContextRoleplayHandler.SendMapFightCountMessage(character.Client,
-                                                                                 (short) m_fights.Count));
+                                                                                 (short)m_fights.Count));
 
             NotifyFightRemoved(fight);
         }
@@ -407,6 +535,12 @@ namespace Stump.Server.WorldServer.Worlds.Maps
                 throw new Exception(string.Format("Could not remove actor '{0}' of the map", actor));
         }
 
+        public void Refresh(RolePlayActor actor)
+        {
+            if (IsActor(actor))
+                ForEach(entry => ContextRoleplayHandler.SendGameRolePlayShowActorMessage(entry.Client, actor));
+        }
+
         private void OnEnter(RolePlayActor actor)
         {
             actor.StartMoving += OnActorStartMoving;
@@ -414,24 +548,23 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
             ForEach(entry => ContextRoleplayHandler.SendGameRolePlayShowActorMessage(entry.Client, actor));
 
-            if (actor is Character)
-            {
-                var character = actor as Character;
+            var character = actor as Character;
 
-                ContextRoleplayHandler.SendCurrentMapMessage(character.Client, Id);
+            if (character == null)
+                return;
 
-                if (m_fights.Count > 0)
-                    ContextRoleplayHandler.SendMapFightCountMessage(character.Client, (short)m_fights.Count);
+            ContextRoleplayHandler.SendCurrentMapMessage(character.Client, Id);
 
-                SendActorsActions(character);
+            if (m_fights.Count > 0)
+                ContextRoleplayHandler.SendMapFightCountMessage(character.Client, (short)m_fights.Count);
 
-                BasicHandler.SendBasicTimeMessage(character.Client);
-            }
+            SendActorsActions(character);
+            BasicHandler.SendBasicTimeMessage(character.Client);
         }
 
         private void SendActorsActions(Character character)
         {
-            foreach (RolePlayActor actor in m_actors.Values)
+            foreach (var actor in m_actors.Values)
             {
                 if (actor.IsMoving())
                 {
@@ -450,6 +583,9 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             actor.StopMoving -= OnActorStopMoving;
 
             ForEach(entry => ContextHandler.SendGameContextRemoveElementMessage(entry.Client, actor));
+
+            if (actor is MonsterGroup || actor is Npc)
+                FreeContextualId((sbyte) actor.Id);
         }
 
         #endregion
@@ -469,6 +605,15 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         private void OnActorStopMoving(ContextActor actor, MovementPath path, bool canceled)
         {
+            if (!( actor is Character ))
+                return;
+
+            var character = actor as Character;
+
+            var monster = GetActor<MonsterGroup>(entry => entry.Cell.Id == character.Cell.Id);
+
+            if (monster != null)
+                monster.FightWith(character);
         }
 
         #endregion
@@ -490,7 +635,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         public sbyte GetNextContextualId()
         {
-            return (sbyte) m_contextualIds.Pop();
+            return (sbyte)m_contextualIds.Pop();
         }
 
         public void FreeContextualId(sbyte id)
@@ -498,10 +643,24 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             m_contextualIds.Push(id);
         }
 
+        public bool IsActor(int id)
+        {
+            return m_actors.ContainsKey(id);
+        }
+
+        public bool IsActor(RolePlayActor actor)
+        {
+            return IsActor(actor.Id);
+        }
+
         public T GetActor<T>(int id)
             where T : RolePlayActor
         {
-            return m_actors[id] as T;
+            RolePlayActor actor;
+            if (m_actors.TryGetValue(id, out actor))
+                return actor as T;
+
+            return null;
         }
 
         public T GetActor<T>(Predicate<T> predicate)
@@ -557,13 +716,13 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             switch (mapneighbour)
             {
                 case MapNeighbour.Top:
-                    return (short) (currentCell + 532);
+                    return (short)( currentCell + 532 );
                 case MapNeighbour.Bottom:
-                    return (short) (currentCell - 532);
+                    return (short)( currentCell - 532 );
                 case MapNeighbour.Right:
-                    return (short) (currentCell - 13);
+                    return (short)( currentCell - 13 );
                 case MapNeighbour.Left:
-                    return (short) (currentCell + 13);
+                    return (short)( currentCell + 13 );
                 default:
                     return 0;
             }
@@ -586,13 +745,13 @@ namespace Stump.Server.WorldServer.Worlds.Maps
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof (Map)) return false;
-            return Equals((Map) obj);
+            if (obj.GetType() != typeof(Map)) return false;
+            return Equals((Map)obj);
         }
 
         public override int GetHashCode()
         {
-            return (Record != null ? Record.GetHashCode() : 0);
+            return ( Record != null ? Record.GetHashCode() : 0 );
         }
 
         public static bool operator ==(Map left, Map right)
@@ -619,7 +778,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
         public MapComplementaryInformationsDataMessage GetMapComplementaryInformationsDataMessage(Character character)
         {
             return new MapComplementaryInformationsDataMessage(
-                (short) SubArea.Id,
+                (short)SubArea.Id,
                 Id,
                 0,
                 new HouseInformations[0],
@@ -627,7 +786,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
                 m_interactives.Select(entry => entry.Value.GetInteractiveElement(character)),
                 new StatedElement[0],
                 new MapObstacle[0],
-                m_fights.Select(entry => entry.GetFightCommonInformations()));
+                m_fights.Where(entry => entry.BladesVisible).Select(entry => entry.GetFightCommonInformations()));
         }
 
         #endregion

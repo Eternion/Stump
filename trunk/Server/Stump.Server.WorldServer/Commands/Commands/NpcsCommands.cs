@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] { "spawn" };
             RequiredRole = RoleEnum.GameMaster;
-            Description = "Spawn an npc on the current location";
+            Description = "Spawn a npc on the current location";
             ParentCommand = typeof(NpcsCommands);
             AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);
             AddParameter("map", "map", "Map id", isOptional: true, converter:ParametersConverter.MapConverter);

@@ -108,7 +108,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             }
 
             ContextRoleplayHandler.SendGameRolePlayArenaUpdatePlayerInfosMessage(client);
-            ContextHandler.SendNotificationListMessage(client, new[] { 0 });
+            ContextHandler.SendNotificationListMessage(client, new[] { 0x7FFFFFFF });
 
             SendCharacterSelectedSuccessMessage(client);
 

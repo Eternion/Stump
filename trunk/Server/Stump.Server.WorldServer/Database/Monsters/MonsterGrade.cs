@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
 
         [D2OField("grade")]
         [Property("Grade")]
-        public uint Grade
+        public uint GradeId
         {
             get;
             set;
@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
 
         [D2OField("monsterId")]
         [BelongsTo("MonsterId")]
-        public MonsterTemplate Monster
+        public MonsterTemplate Template
         {
             get;
             set;

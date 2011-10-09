@@ -9,7 +9,7 @@ namespace Stump.Server.WorldServer.Worlds.Spells
 {
     public class SpellInventory
     {
-        private readonly Dictionary<int, Spell> m_spells = new Dictionary<int, Spell>();
+        private readonly Dictionary<int, CharacterSpell> m_spells = new Dictionary<int, CharacterSpell>();
         private readonly object m_locker = new object();
 
         public SpellInventory(Character owner)
@@ -29,15 +29,15 @@ namespace Stump.Server.WorldServer.Worlds.Spells
         {
             foreach (var record in Owner.Record.Spells)
             {
-                var spell = new Spell(record);
+                var spell = new CharacterSpell(record);
 
                 m_spells.Add(spell.Id, spell);
             }
         }
 
-        public Spell GetSpell(int id)
+        public CharacterSpell GetSpell(int id)
         {
-            Spell spell;
+            CharacterSpell spell;
             if (m_spells.TryGetValue(id, out spell))
                 return spell;
 
@@ -49,17 +49,17 @@ namespace Stump.Server.WorldServer.Worlds.Spells
             return m_spells.ContainsKey(id);
         }
 
-        public bool HasSpell(Spell spell)
+        public bool HasSpell(CharacterSpell spell)
         {
             return m_spells.ContainsKey(spell.Id);
         }
 
-        public IEnumerable<Spell> GetSpells()
+        public IEnumerable<CharacterSpell> GetSpells()
         {
             return m_spells.Values; 
         }
 
-        public Spell LearnSpell(int id)
+        public CharacterSpell LearnSpell(int id)
         {
             var template = SpellManager.Instance.GetSpellTemplate(id);
 
@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Worlds.Spells
             var record = SpellManager.Instance.CreateSpellRecord(Owner.Record, template);
             Owner.Record.Spells.Add(record);
 
-            var spell = new Spell(record);
+            var spell = new CharacterSpell(record);
 
             lock (m_locker)
                 m_spells.Add(spell.Id, spell);
@@ -121,7 +121,7 @@ namespace Stump.Server.WorldServer.Worlds.Spells
             if (spell == null)
                 return;
 
-            // todo move to shortcut bar
+            Owner.Shortcuts.AddSpellShortcut(position, (short) id);
         }
     }
 }
