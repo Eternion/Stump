@@ -11,14 +11,30 @@ namespace Stump.Server.WorldServer.Worlds.Spells
     public class Spell
     {
         private readonly ISpellRecord m_record;
+        private readonly int m_id;
+        private sbyte m_level;
 
         public Spell(ISpellRecord record)
         {
             m_record = record;
+            m_id = m_record.SpellId;
+            m_level = m_record.Level;
+
             Template = SpellManager.Instance.GetSpellTemplate(Id);
             SpellType = SpellManager.Instance.GetSpellType(Template.TypeId);
-            int level = 1;
-            ByLevel = SpellManager.Instance.GetSpellLevels(Id).ToDictionary(entry => level++);
+            int counter = 1;
+            ByLevel = SpellManager.Instance.GetSpellLevels(Id).ToDictionary(entry => counter++);
+        }
+
+        public Spell(int id, sbyte level)
+        {
+            m_id = id;
+            m_level = level;
+
+            Template = SpellManager.Instance.GetSpellTemplate(Id);
+            SpellType = SpellManager.Instance.GetSpellType(Template.TypeId);
+            int counter = 1;
+            ByLevel = SpellManager.Instance.GetSpellLevels(Id).ToDictionary(entry => counter++);
         }
 
         #region Properties
@@ -27,7 +43,7 @@ namespace Stump.Server.WorldServer.Worlds.Spells
         {
             get
             {
-                return m_record.SpellId;
+                return m_id;
             }
         }
 
@@ -47,11 +63,12 @@ namespace Stump.Server.WorldServer.Worlds.Spells
         {
             get
             {
-                return m_record.Level;
+                return m_level;
             }
             internal set
             {
                 m_record.Level = value;
+                m_level = value;
             }
         }
 

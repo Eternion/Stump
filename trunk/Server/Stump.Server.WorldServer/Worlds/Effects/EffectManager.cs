@@ -23,14 +23,14 @@ namespace Stump.Server.WorldServer.Worlds.Effects
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private delegate ItemEffectHandler ItemEffectConstructor(Character target, Items.Item item, EffectBase effect);
-        private delegate SpellEffectHandler SpellEffectConstructor(EffectBase effect, FightActor caster, Spells.Spell spell, Cell targetedCell);
+        private delegate SpellEffectHandler SpellEffectConstructor(EffectBase effect, FightActor caster, Spells.Spell spell, Cell targetedCell, bool critical);
 
         private Dictionary<short, EffectTemplate> m_effects = new Dictionary<short, EffectTemplate>();
         private readonly Dictionary<EffectsEnum, ItemEffectConstructor> m_itemsEffectHandler = new Dictionary<EffectsEnum, ItemEffectConstructor>();
         private readonly Dictionary<EffectsEnum, SpellEffectConstructor> m_spellsEffectHandler = new Dictionary<EffectsEnum, SpellEffectConstructor>();
 
         [Initialization(InitializationPass.Third)]
-        public void Intialize()
+        public void Initialize()
         {
             m_effects = EffectTemplate.FindAll().ToDictionary(entry => (short) entry.Id);
 
@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects
                     }
                     else if (type.IsSubclassOf(typeof(SpellEffectHandler)))
                     {
-                        var ctor = type.GetConstructor(new[] { typeof(EffectBase), typeof(FightActor), typeof(Spells.Spell), typeof(Cell) });
+                        var ctor = type.GetConstructor(new[] { typeof(EffectBase), typeof(FightActor), typeof(Spells.Spell), typeof(Cell), typeof(bool) });
                         m_spellsEffectHandler.Add(effect, ctor.CreateDelegate<SpellEffectConstructor>());
                     }
                 }
@@ -118,15 +118,15 @@ namespace Stump.Server.WorldServer.Worlds.Effects
             return new DefaultItemEffect(effect, target, item);
         }
 
-        public SpellEffectHandler GetSpellEffectHandler(EffectBase effect, FightActor caster, Spells.Spell spell, Cell targetedCell)
+        public SpellEffectHandler GetSpellEffectHandler(EffectBase effect, FightActor caster, Spells.Spell spell, Cell targetedCell, bool critical)
         {
             SpellEffectConstructor handler;
             if (m_spellsEffectHandler.TryGetValue(effect.EffectId, out handler))
             {
-                return handler(effect, caster, spell, targetedCell);
+                return handler(effect, caster, spell, targetedCell, critical);
             }
 
-            return new DefaultSpellEffect(effect, caster, spell, targetedCell);
+            return new DefaultSpellEffect(effect, caster, spell, targetedCell, critical);
         }
 
         public bool IsEffectRandomable(EffectsEnum effect)

@@ -255,6 +255,15 @@
     <Compile Include="Worlds\Dialogs\IRequestBox.cs" />
     <Compile Include="Worlds\Dialogs\Npcs\NpcDialog.cs" />
     <Compile Include="Worlds\Dialogs\Npcs\NpcShopDialog.cs" />
+    <Compile Include="Worlds\Fights\Buffs\Buff.cs" />
+    <Compile Include="Worlds\Fights\Buffs\BuffType.cs" />
+    <Compile Include="Worlds\Fights\Buffs\SpellImmunityBuff.cs" />
+    <Compile Include="Worlds\Fights\Buffs\TriggerBuff.cs" />
+    <Compile Include="Worlds\Fights\Buffs\SpellBuff.cs" />
+    <Compile Include="Worlds\Fights\Buffs\StateBuff.cs" />
+    <Compile Include="Worlds\Fights\Buffs\StatBuff.cs" />
+    <Compile Include="Worlds\Fights\Buffs\TriggerType.cs" />
+    <Compile Include="Worlds\Fights\Buffs\WeaponBuff.cs" />
     <Compile Include="Worlds\Effects\EffectManager.cs" />
     <Compile Include="Worlds\Effects\EffectSchoolEnum.cs" />
     <Compile Include="Worlds\Effects\Handlers\DefaultEffectHandlerAttribute.cs" />
@@ -288,6 +297,11 @@
     <Compile Include="Worlds\Fights\FightState.cs" />
     <Compile Include="Worlds\Fights\FightTeam.cs" />
     <Compile Include="Worlds\Fights\TimeLine.cs" />
+    <Compile Include="Worlds\Fights\Triggers\Glyph.cs" />
+    <Compile Include="Worlds\Fights\Triggers\MarkShape.cs" />
+    <Compile Include="Worlds\Fights\Triggers\MarkTrigger.cs" />
+    <Compile Include="Worlds\Fights\Triggers\Trap.cs" />
+    <Compile Include="Worlds\Fights\Triggers\TriggerType.cs" />
     <Compile Include="Worlds\Interactives\InteractiveObject.cs" />
     <Compile Include="Worlds\Interactives\InteractiveManager.cs" />
     <Compile Include="Worlds\Interactives\Skills\Skill.cs" />

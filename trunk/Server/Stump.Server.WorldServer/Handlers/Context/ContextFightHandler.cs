@@ -9,6 +9,8 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Fights;
+using Stump.Server.WorldServer.Worlds.Fights.Buffs;
+using Stump.Server.WorldServer.Worlds.Fights.Triggers;
 
 namespace Stump.Server.WorldServer.Handlers.Context
 {
@@ -295,6 +297,28 @@ namespace Stump.Server.WorldServer.Handlers.Context
         {
             client.Send(new GameActionFightSpellCastMessage((short) actionId, caster.Id, cell.Id, (sbyte) (critical),
                                                             silentCast, (short) spell.Id, spell.CurrentLevel));
+        }
+
+        public static void SendAbstractGameActionFightTargetedAbilityMessage(WorldClient client, Buff buff)
+        {
+            client.Send(new GameActionFightDispellableEffectMessage(buff.Effect.Id, buff.Caster.Id, buff.GetAbstractFightDispellableEffect()));
+        }
+
+        public static void SendGameActionFightMarkCellsMessage(WorldClient client, MarkTrigger trigger)
+        {
+            var action = trigger.Type == GameActionMarkTypeEnum.GLYPH ? ActionsEnum.ACTION_FIGHT_ADD_GLYPH_CASTING_SPELL : ActionsEnum.ACTION_FIGHT_ADD_TRAP_CASTING_SPELL;
+            client.Send(new GameActionFightMarkCellsMessage((short)action, trigger.Caster.Id, trigger.GetGameActionMark()));
+        }
+
+        public static void SendGameActionFightUnmarkCellsMessage(WorldClient client, MarkTrigger trigger)
+        {
+            client.Send(new GameActionFightUnmarkCellsMessage(310, trigger.Caster.Id, trigger.Id));
+        }
+
+        public static void SendGameActionFightTriggerGlyphTrapMessage(WorldClient client, MarkTrigger trigger, FightActor target, Worlds.Spells.Spell triggeredSpell)
+        {
+            var action = trigger.Type == GameActionMarkTypeEnum.GLYPH ? ActionsEnum.ACTION_FIGHT_TRIGGER_GLYPH : ActionsEnum.ACTION_FIGHT_TRIGGER_TRAP;
+            client.Send(new GameActionFightTriggerGlyphTrapMessage((short)action, trigger.Caster.Id, trigger.Id, target.Id, (short) triggeredSpell.Id));
         }
     }
 }

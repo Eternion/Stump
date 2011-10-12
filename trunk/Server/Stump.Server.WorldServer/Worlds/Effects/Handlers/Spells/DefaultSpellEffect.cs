@@ -9,8 +9,8 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells
     [DefaultEffectHandler]
     public class DefaultSpellEffect : SpellEffectHandler
     {
-        public DefaultSpellEffect(EffectBase effect, FightActor caster, Spell spell, Cell targetedCell)
-            : base(effect, caster, spell, targetedCell)
+        public DefaultSpellEffect(EffectBase effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
+            : base(effect, caster, spell, targetedCell, critical)
         {
         }
 

@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
 using Stump.Server.WorldServer.Worlds.Effects.Instances;
 using Stump.Server.WorldServer.Worlds.Fights;
+using Stump.Server.WorldServer.Worlds.Fights.Buffs;
 using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Worlds.Spells;
@@ -16,12 +17,13 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells
     {
         private Zone m_effectZone;
 
-        protected SpellEffectHandler(EffectBase effect, FightActor caster, Spell spell, Cell targetedCell)
+        protected SpellEffectHandler(EffectBase effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect)
         {
             Caster = caster;
             Spell = spell;
             TargetedCell = targetedCell;
+            Critical = critical;
         }
 
         public FightActor Caster
@@ -42,10 +44,16 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells
             private set;
         }
 
+        public bool Critical
+        {
+            get;
+            private set;
+        }
+
         public Zone EffectZone
         {
             get { return m_effectZone ?? (m_effectZone = new Zone((SpellShapeEnum) Effect.ZoneShape, Effect.ZoneSize)); }
-            private set
+            set
             {
                 m_effectZone = value;
 
@@ -84,6 +92,35 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells
         public IEnumerable<FightActor> GetAffectedActors(Predicate<FightActor> predicate)
         {
             return Fight.GetAllFighters(AffectedCells).Where(entry => predicate(entry));
+        }
+
+        public StatBuff AddStatBuff(FightActor target, short value, CaracteristicsEnum caracteritic, bool dispelable)
+        {
+            int id = target.PopNextBuffId();
+            var buff = new StatBuff(id, target, Caster, Effect, Spell, value, caracteritic, Critical, dispelable);
+
+            target.AddAndApplyBuff(buff);
+
+            return buff;
+        }
+
+        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, TriggerType trigger, TriggerBuffApplyHandler applyTrigger)
+        {
+            int id = target.PopNextBuffId();
+            var buff = new TriggerBuff(id, target, Caster, Effect, Spell, Critical, dispelable, trigger, applyTrigger);
+
+            target.AddAndApplyBuff(buff);
+
+            return buff;
+        }
+        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, TriggerType trigger, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
+        {
+            int id = target.PopNextBuffId();
+            var buff = new TriggerBuff(id, target, Caster, Effect, Spell, Critical, dispelable, trigger, applyTrigger, removeTrigger);
+
+            target.AddAndApplyBuff(buff);
+
+            return buff;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
@@ -48,6 +49,11 @@ namespace Stump.Server.WorldServer.Worlds.Spells
             return null;
         }
 
+        public IEnumerable<SpellTemplate> GetSpellTemplates()
+        {
+            return m_spells.Values;
+        }
+
         public SpellLevelTemplate GetSpellLevel(int id)
         {
             SpellLevelTemplate template;
@@ -59,7 +65,7 @@ namespace Stump.Server.WorldServer.Worlds.Spells
 
         public IEnumerable<SpellLevelTemplate> GetSpellLevels(int id)
         {
-            return m_spellsLevels.Values.Where(entry => entry.SpellId == id).OrderBy(entry => entry.Id);
+            return m_spellsLevels.Values.Where(entry => entry.Spell.Id == id).OrderBy(entry => entry.Id);
         }
 
         public SpellType GetSpellType(uint id)

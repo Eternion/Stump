@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
 using Stump.Server.WorldServer.Worlds.Effects.Instances;
+using Stump.Server.WorldServer.Worlds.Fights.Buffs;
 using Stump.Server.WorldServer.Worlds.Spells;
 
 namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells.Damage
@@ -14,8 +15,8 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells.Damage
     [EffectHandler(EffectsEnum.Effect_DamageNeutral)]
     public class DirectDamage : SpellEffectHandler
     {
-        public DirectDamage(EffectBase effect, FightActor caster, Spell spell, Cell targetedCell)
-            : base(effect, caster, spell, targetedCell)
+        public DirectDamage(EffectBase effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
+            : base(effect, caster, spell, targetedCell, critical)
         {
         }
 
@@ -26,18 +27,29 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells.Damage
             if (integerEffect == null)
                 return;
 
-            if (Effect.Duration > 0)
-            {
-                // todo : add buff
-                return;
-            }
-
             foreach (FightActor actor in GetAffectedActors())
             {
-                var inflictedDamage = actor.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), Caster, actor is CharacterFighter);
+                if (Effect.Duration > 0)
+                {
+                    AddTriggerBuff(actor, true, TriggerType.TURN_BEGIN, DamageBuffTrigger);
+                }
+                else
+                {
+                    short inflictedDamage = actor.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), Caster, actor is CharacterFighter);
 
-                // todo : reflected damage ?
+                    // todo : reflected damage ?
+                }
             }
+        }
+
+        private static void DamageBuffTrigger(TriggerBuff buff, TriggerType trigger)
+        {
+            var integerEffect = buff.Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
+
+            if (integerEffect == null)
+                return;
+
+            buff.Target.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), buff.Caster, buff.Target is CharacterFighter);
         }
 
         private static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)

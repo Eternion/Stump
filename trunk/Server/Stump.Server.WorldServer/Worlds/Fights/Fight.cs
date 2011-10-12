@@ -16,10 +16,13 @@ using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Worlds.Actors;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Worlds.Fights.Buffs;
+using Stump.Server.WorldServer.Worlds.Fights.Triggers;
 using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 using Stump.Server.WorldServer.Worlds.Maps.Pathfinding;
 using Stump.Server.WorldServer.Worlds.Spells;
+using TriggerType = Stump.Server.WorldServer.Worlds.Fights.Buffs.TriggerType;
 
 namespace Stump.Server.WorldServer.Worlds.Fights
 {
@@ -155,7 +158,8 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         #region Properties
 
         private readonly List<FightActor> m_fighters = new List<FightActor>();
-        private readonly ReversedUniqueIdProvider m_contextualIds = new ReversedUniqueIdProvider(0);
+        private readonly ReversedUniqueIdProvider m_contextualIdProvider = new ReversedUniqueIdProvider(0);
+        private readonly UniqueIdProvider m_triggerIdProvider = new  UniqueIdProvider();
         private readonly FightTeam[] m_teams;
         private Timer m_endFightTimer;
         private Timer m_placementTimer;
@@ -281,6 +285,8 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             actor.LifePointsChanged -= OnLifePointsChanged;
             actor.SpellCasting -= OnSpellCasting;
             actor.SpellCasted -= OnSpellCasted;
+            actor.BuffAdded -= OnBuffAdded;
+            actor.BuffRemoved -= OnBuffRemoved;
             actor.TurnReadyStateChanged -= OnSetTurnReady;
             actor.Dead -= OnDead;
             actor.SequenceStarted -= OnSequenceStarted;
@@ -325,6 +331,9 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
                 actor.SpellCasting += OnSpellCasting;
                 actor.SpellCasted += OnSpellCasted;
+
+                actor.BuffAdded += OnBuffAdded;
+                actor.BuffRemoved += OnBuffRemoved;
 
                 actor.TurnReadyStateChanged += OnSetTurnReady;
                 actor.Dead += OnDead;
@@ -467,7 +476,6 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         /// </summary>
         private void OnSetReady(FightActor fighter, bool isReady)
         {
-
             if (State != FightState.Placement)
                 return;
 
@@ -578,6 +586,10 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         private void OnTurnStarted(TimeLine sender, FightActor currentfighter)
         {
+            currentfighter.DecrementAllCastedBuffsDuration();
+            currentfighter.TriggerBuffs(TriggerType.TURN_BEGIN);
+            TriggerMarks(currentfighter.Cell, currentfighter, Triggers.TriggerType.TURN_BEGIN);
+
             ForEach(entry =>
             {
                 ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this);
@@ -605,6 +617,8 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         private void OnTurnEnded(TimeLine sender, FightActor currentFighter)
         {
+            currentFighter.TriggerBuffs(TriggerType.TURN_END);
+
             RedTeam.SetAllTurnReady(false);
             BlueTeam.SetAllTurnReady(false);
 
@@ -627,6 +641,54 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         public void ConfirmTurnEnd()
         {
             TimeLine.ConfirmTurnEnd();
+        }
+
+        #endregion
+
+        #region Triggers
+        private readonly List<MarkTrigger> m_triggers = new List<MarkTrigger>();
+        public void AddTriger(MarkTrigger trigger)
+        {
+            trigger.Triggered += OnMarkTriggered;
+            m_triggers.Add(trigger);
+
+            ForEach(entry => ContextHandler.SendGameActionFightMarkCellsMessage(entry.Client, trigger));
+        }
+
+        public void RemoveTrigger(MarkTrigger trigger)
+        {
+            trigger.Triggered -= OnMarkTriggered;
+            m_triggers.Remove(trigger);
+
+            ForEach(entry => ContextHandler.SendGameActionFightUnmarkCellsMessage(entry.Client, trigger));
+        }
+
+        public void TriggerMarks(Cell cell, FightActor trigger, Triggers.TriggerType triggerType)
+        {
+            foreach (var markTrigger in m_triggers)
+            {
+                if (markTrigger.TriggerType == triggerType && markTrigger.ContainsCell(cell))
+                {
+                    trigger.StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
+                    markTrigger.Trigger(trigger);
+                    trigger.EndSequence();
+                }
+            }
+        }
+
+        public int PopNextTriggerId()
+        {
+            return m_triggerIdProvider.Pop();
+        }
+
+        public void FreeTriggerId(int id)
+        {
+            m_triggerIdProvider.Push(id);
+        }
+
+        private void OnMarkTriggered(MarkTrigger markTrigger, FightActor trigger, Spell triggerSpell)
+        {
+            ForEach(entry => ContextHandler.SendGameActionFightTriggerGlyphTrapMessage(entry.Client, markTrigger, trigger, triggerSpell));
         }
 
         #endregion
@@ -667,6 +729,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             fighter.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
             ForEach(entry => ContextHandler.SendGameMapMovementMessage(entry.Client, movementsKeys, fighter));
             fighter.UseMP((short) path.MpCost);
+            fighter.TriggerBuffs(TriggerType.MOVE);
             fighter.EndSequence();
         }
 
@@ -676,6 +739,8 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
             if (!fighter.IsFighterTurn())
                 return;
+
+            TriggerMarks(fighter.Cell, fighter, Triggers.TriggerType.MOVE);
 
             if (canceled)
             {
@@ -709,6 +774,16 @@ namespace Stump.Server.WorldServer.Worlds.Fights
                 caster.EndSequence();
 
             CheckFightEnd();
+        }
+
+        private void OnBuffRemoved(FightActor target, Buff buff)
+        {
+
+        }
+
+        private void OnBuffAdded(FightActor target, Buff buff)
+        {
+            ForEach(entry => ContextHandler.SendAbstractGameActionFightTargetedAbilityMessage(entry.Client, buff));
         }
 
         private void OnSequenceStarted(FightActor fighter, SequenceTypeEnum sequenceType)
@@ -920,12 +995,12 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         public sbyte GetNextContextualId()
         {
-            return (sbyte)m_contextualIds.Pop();
+            return (sbyte)m_contextualIdProvider.Pop();
         }
 
         public void FreeContextualId(sbyte id)
         {
-            m_contextualIds.Push(id);
+            m_contextualIdProvider.Push(id);
         }
 
         public FightActor GetOneFighter(int id)
@@ -971,6 +1046,11 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         public IEnumerable<FightActor> GetAllFighters(Cell[] cells)
         {
             return GetAllFighters<FightActor>(entry => cells.Contains(entry.Position.Cell));
+        }
+
+        public IEnumerable<FightActor> GetAllFighters(IEnumerable<Cell> cells)
+        {
+            return GetAllFighters(cells.ToArray());
         }
 
         public IEnumerable<FightActor> GetAllFighters(Predicate<FightActor> predicate)

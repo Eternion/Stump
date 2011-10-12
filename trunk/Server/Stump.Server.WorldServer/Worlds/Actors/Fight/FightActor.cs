@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
+using Stump.Core.Pool;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.Interfaces;
 using Stump.Server.WorldServer.Worlds.Actors.Stats;
 using Stump.Server.WorldServer.Worlds.Effects;
 using Stump.Server.WorldServer.Worlds.Effects.Instances;
 using Stump.Server.WorldServer.Worlds.Fights;
+using Stump.Server.WorldServer.Worlds.Fights.Buffs;
 using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 using Stump.Server.WorldServer.Worlds.Spells;
@@ -102,6 +105,22 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                 handler(this, spell, target, critical);
         }
 
+        public event Action<FightActor, Buff> BuffAdded;
+
+        private void NotifyBuffAdded(Buff buff)
+        {
+            Action<FightActor, Buff> handler = BuffAdded;
+            if (handler != null) handler(this, buff);
+        }
+
+        public event Action<FightActor, Buff> BuffRemoved;
+
+        private void NotifyBuffRemoved(Buff buff)
+        {
+            Action<FightActor, Buff> handler = BuffRemoved;
+            if (handler != null) handler(this, buff);
+        }
+
         public event Action<FightActor, FightActor> Dead;
 
         private void NotifyDead(FightActor killedBy)
@@ -128,10 +147,10 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             switch (action)
             {
                 case ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_USE:
-                    NotifyApUsed((short) (-delta));
+                    NotifyApUsed((short)( -delta ));
                     break;
                 case ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_USE:
-                    NotifyMpUsed((short) (-delta));
+                    NotifyMpUsed((short)( -delta ));
                     break;
             }
         }
@@ -194,9 +213,14 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         #region Properties
 
+
+
         public Fights.Fight Fight
         {
-            get { return Team.Fight; }
+            get
+            {
+                return Team.Fight;
+            }
         }
 
         public FightTeam Team
@@ -207,7 +231,10 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         public override IContext Context
         {
-            get { return Fight; }
+            get
+            {
+                return Fight;
+            }
         }
 
         public abstract ObjectPosition MapPosition
@@ -255,23 +282,38 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         public int LifePoints
         {
-            get { return Stats[CaracteristicsEnum.Health].Total; }
+            get
+            {
+                return Stats[CaracteristicsEnum.Health].Total;
+            }
         }
 
         public int MaxLifePoints
         {
-            get { return ((StatsHealth) Stats[CaracteristicsEnum.Health]).TotalMax; }
+            get
+            {
+                return ( (StatsHealth)Stats[CaracteristicsEnum.Health] ).TotalMax;
+            }
         }
 
         public short DamageTaken
         {
-            get { return Stats[CaracteristicsEnum.Health].Context; }
-            set { Stats[CaracteristicsEnum.Health].Context = value; }
+            get
+            {
+                return Stats[CaracteristicsEnum.Health].Context;
+            }
+            set
+            {
+                Stats[CaracteristicsEnum.Health].Context = value;
+            }
         }
 
         public int AP
         {
-            get { return Stats[CaracteristicsEnum.AP].Total; }
+            get
+            {
+                return Stats[CaracteristicsEnum.AP].Total;
+            }
         }
 
         public short UsedAP
@@ -282,7 +324,10 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         public int MP
         {
-            get { return Stats[CaracteristicsEnum.MP].Total; }
+            get
+            {
+                return Stats[CaracteristicsEnum.MP].Total;
+            }
         }
 
         public short UsedMP
@@ -361,7 +406,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             Stats[CaracteristicsEnum.AP].Context -= amount;
             UsedAP += amount;
 
-            NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_USE, this, this, (short) (-amount));
+            NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_USE, this, this, (short)( -amount ));
 
             return true;
         }
@@ -374,7 +419,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             Stats[CaracteristicsEnum.MP].Context -= amount;
             UsedMP += amount;
 
-            NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_USE, this, this, (short) (-amount));
+            NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_USE, this, this, (short)( -amount ));
 
             return true;
         }
@@ -397,21 +442,14 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             if (!CanCastSpell(spell, cell))
                 return;
 
-            var random = new AsyncRandom();
-
             StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
-            var critical = FightSpellCastCriticalEnum.NORMAL;
-
-            if (random.Next((int) spellLevel.CriticalFailureProbability) == 0)
-                critical = FightSpellCastCriticalEnum.CRITICAL_FAIL;
-
-            else if (random.Next((int)spellLevel.CriticalHitProbability) == 0)
-                critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
+            var random = new AsyncRandom();
+            var critical = RollCriticalDice(spellLevel);
 
             NotifySpellCasting(spell, cell, critical);
 
-            UseAP((short) spellLevel.ApCost);
+            UseAP((short)spellLevel.ApCost);
 
             if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
             {
@@ -434,12 +472,27 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                     }
                 }
 
-                var handler = EffectManager.Instance.GetSpellEffectHandler(effect, this, spell, cell);
+                var handler = EffectManager.Instance.GetSpellEffectHandler(effect, this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
 
                 handler.Apply();
             }
 
             NotifySpellCasted(spell, cell, critical);
+        }
+
+        public FightSpellCastCriticalEnum RollCriticalDice(SpellLevelTemplate spell)
+        {
+            var random = new AsyncRandom();
+
+            var critical = FightSpellCastCriticalEnum.NORMAL;
+
+            if (random.Next((int)spell.CriticalFailureProbability) == 0)
+                critical = FightSpellCastCriticalEnum.CRITICAL_FAIL;
+
+            else if (random.Next((int)spell.CriticalHitProbability) == 0)
+                critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
+
+            return critical;
         }
 
         public void Die()
@@ -452,14 +505,18 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         public short InflictDirectDamage(short damage, FightActor from)
         {
             if (LifePoints - damage < 0)
-                damage = (short) LifePoints;
+                damage = (short)LifePoints;
 
             DamageTaken += damage;
+
+            TriggerBuffs(TriggerType.BEFORE_ATTACKED);
 
             NotifyLifePointsChanged(-damage, from);
 
             if (IsDead())
                 NotifyDead(from);
+
+            TriggerBuffs(TriggerType.AFTER_ATTACKED);
 
             return damage;
         }
@@ -467,14 +524,19 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         public short InflictDirectDamage(short damage)
         {
             if (LifePoints - damage < 0)
-                damage = (short) LifePoints;
+                damage = (short)LifePoints;
 
             DamageTaken += damage;
+
+            TriggerBuffs(TriggerType.BEFORE_ATTACKED);
 
             NotifyLifePointsChanged(-damage, null);
 
             if (IsDead())
                 NotifyDead(null);
+
+            TriggerBuffs(TriggerType.AFTER_ATTACKED);
+
 
             return damage;
         }
@@ -498,7 +560,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         public short HealDirect(short healPoints)
         {
             if (LifePoints + healPoints > MaxLifePoints)
-                healPoints = (short) (MaxLifePoints - LifePoints);
+                healPoints = (short)( MaxLifePoints - LifePoints );
 
             DamageTaken -= healPoints;
 
@@ -519,25 +581,25 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             switch (type)
             {
                 case EffectSchoolEnum.Neutral:
-                    return (short) (damage*
-                                    (100 + Stats[CaracteristicsEnum.Strength] + Stats[CaracteristicsEnum.DamageBonusPercent] + Stats[CaracteristicsEnum.DamageMultiplicator].Total*100)/100d +
-                                    (Stats[CaracteristicsEnum.DamageBonus].Total + Stats[CaracteristicsEnum.PhysicalDamage].Total));
+                    return (short)( damage *
+                                    ( 100 + Stats[CaracteristicsEnum.Strength] + Stats[CaracteristicsEnum.DamageBonusPercent] + Stats[CaracteristicsEnum.DamageMultiplicator].Total * 100 ) / 100d +
+                                    ( Stats[CaracteristicsEnum.DamageBonus].Total + Stats[CaracteristicsEnum.PhysicalDamage].Total ) );
                 case EffectSchoolEnum.Earth:
-                    return (short) (damage*
-                                    (100 + Stats[CaracteristicsEnum.Strength] + Stats[CaracteristicsEnum.DamageBonusPercent] + Stats[CaracteristicsEnum.DamageMultiplicator].Total*100)/100d +
-                                    (Stats[CaracteristicsEnum.DamageBonus].Total + Stats[CaracteristicsEnum.PhysicalDamage].Total));
+                    return (short)( damage *
+                                    ( 100 + Stats[CaracteristicsEnum.Strength] + Stats[CaracteristicsEnum.DamageBonusPercent] + Stats[CaracteristicsEnum.DamageMultiplicator].Total * 100 ) / 100d +
+                                    ( Stats[CaracteristicsEnum.DamageBonus].Total + Stats[CaracteristicsEnum.PhysicalDamage].Total ) );
                 case EffectSchoolEnum.Air:
-                    return (short) (damage*
-                                    (100 + Stats[CaracteristicsEnum.Agility] + Stats[CaracteristicsEnum.DamageBonusPercent] + Stats[CaracteristicsEnum.DamageMultiplicator].Total*100)/100d +
-                                    (Stats[CaracteristicsEnum.DamageBonus].Total + Stats[CaracteristicsEnum.MagicDamage].Total));
+                    return (short)( damage *
+                                    ( 100 + Stats[CaracteristicsEnum.Agility] + Stats[CaracteristicsEnum.DamageBonusPercent] + Stats[CaracteristicsEnum.DamageMultiplicator].Total * 100 ) / 100d +
+                                    ( Stats[CaracteristicsEnum.DamageBonus].Total + Stats[CaracteristicsEnum.MagicDamage].Total ) );
                 case EffectSchoolEnum.Water:
-                    return (short) (damage*
-                                    (100 + Stats[CaracteristicsEnum.Chance] + Stats[CaracteristicsEnum.DamageBonusPercent] + Stats[CaracteristicsEnum.DamageMultiplicator].Total*100)/100d +
-                                    (Stats[CaracteristicsEnum.DamageBonus].Total + Stats[CaracteristicsEnum.MagicDamage].Total));
+                    return (short)( damage *
+                                    ( 100 + Stats[CaracteristicsEnum.Chance] + Stats[CaracteristicsEnum.DamageBonusPercent] + Stats[CaracteristicsEnum.DamageMultiplicator].Total * 100 ) / 100d +
+                                    ( Stats[CaracteristicsEnum.DamageBonus].Total + Stats[CaracteristicsEnum.MagicDamage].Total ) );
                 case EffectSchoolEnum.Fire:
-                    return (short) (damage*
-                                    (100 + Stats[CaracteristicsEnum.Intelligence] + Stats[CaracteristicsEnum.DamageBonusPercent] + Stats[CaracteristicsEnum.DamageMultiplicator].Total*100)/100d +
-                                    (Stats[CaracteristicsEnum.DamageBonus].Total + Stats[CaracteristicsEnum.MagicDamage].Total));
+                    return (short)( damage *
+                                    ( 100 + Stats[CaracteristicsEnum.Intelligence] + Stats[CaracteristicsEnum.DamageBonusPercent] + Stats[CaracteristicsEnum.DamageMultiplicator].Total * 100 ) / 100d +
+                                    ( Stats[CaracteristicsEnum.DamageBonus].Total + Stats[CaracteristicsEnum.MagicDamage].Total ) );
                 default:
                     return damage;
             }
@@ -574,12 +636,12 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                     return 0;
             }
 
-            return (short) (( 1 - percentResistance / 100d ) * ( damage - fixResistance ));
+            return (short)( ( 1 - percentResistance / 100d ) * ( damage - fixResistance ) );
         }
 
         public short CalculateHeal(int heal)
         {
-            return (short) (heal * ( 100 + Stats[CaracteristicsEnum.Intelligence].Total ) / 100d + Stats[CaracteristicsEnum.HealBonus].Total);
+            return (short)( heal * ( 100 + Stats[CaracteristicsEnum.Intelligence].Total ) / 100d + Stats[CaracteristicsEnum.HealBonus].Total );
         }
 
         public short CalculateArmorValue(int reduction, EffectSchoolEnum type)
@@ -608,7 +670,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
             return (short)( reduction *
                             Math.Max(1 + Stats[schoolCaracteristic].Total / 100d,
-                                     1 + ( Stats[CaracteristicsEnum.Intelligence].Total / 200d ) + ( Stats[schoolCaracteristic].Total / 200d )));
+                                     1 + ( Stats[CaracteristicsEnum.Intelligence].Total / 200d ) + ( Stats[schoolCaracteristic].Total / 200d )) );
         }
 
         public short CalculateWeaponDamage(short damage, EffectSchoolEnum school)
@@ -634,6 +696,87 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         }
 
         #endregion
+
+        #endregion
+
+        #region Buffs
+        private readonly UniqueIdProvider m_buffIdProvider = new UniqueIdProvider();
+        private readonly List<Buff> m_buffList = new List<Buff>();
+
+        public int PopNextBuffId()
+        {
+            return m_buffIdProvider.Pop();
+        }
+
+        public void FreeBuffId(int id)
+        {
+            m_buffIdProvider.Push(id);
+        }
+
+        public void AddAndApplyBuff(Buff buff)
+        {
+            AddBuff(buff);
+
+            if (!( buff is TriggerBuff ) ||
+                ( ( buff as TriggerBuff ).Trigger & TriggerType.BUFF_ADDED ) != TriggerType.BUFF_ADDED)
+                buff.Apply();
+        }
+
+        public void AddBuff(Buff buff)
+        {
+            m_buffList.Add(buff);
+
+            NotifyBuffAdded(buff);
+        }
+
+        public void RemoveAndDispellBuff(Buff buff)
+        {
+            RemoveBuff(buff);
+
+            buff.Remove();
+        }
+
+        public void RemoveBuff(Buff buff)
+        {
+            m_buffList.Remove(buff);
+
+            NotifyBuffRemoved(buff);
+        }
+
+        public void TriggerBuffs(TriggerType trigger)
+        {
+            foreach (var buff in m_buffList)
+            {
+                var triggerBuff = buff as TriggerBuff;
+
+                if (triggerBuff == null)
+                    continue;
+
+                if (( triggerBuff.Trigger & trigger ) == trigger)
+                    triggerBuff.Apply(trigger);
+            }
+        }
+
+        public void DecrementBuffsDuration(FightActor caster)
+        {
+            foreach (var buff in m_buffList)
+            {
+                if (buff.Caster == caster)
+                    if (buff.DecrementDuration())
+                        RemoveAndDispellBuff(buff);
+            }
+        }
+
+        /// <summary>
+        /// Decrement the duration of all the buffs that the fighter casted.
+        /// </summary>
+        public void DecrementAllCastedBuffsDuration()
+        {
+            foreach (var fighter in Fight.GetAllFighters())
+            {
+                fighter.DecrementBuffsDuration(this);
+            }
+        }
 
         #endregion
 
@@ -746,7 +889,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         public override EntityDispositionInformations GetEntityDispositionInformations()
         {
             if (CarriedActor != null)
-                return new FightEntityDispositionInformations(Position.Cell.Id, (sbyte) Position.Direction, CarriedActor.Id);
+                return new FightEntityDispositionInformations(Position.Cell.Id, (sbyte)Position.Direction, CarriedActor.Id);
 
             return base.GetEntityDispositionInformations();
         }
@@ -755,24 +898,24 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         {
             return new GameFightMinimalStats(
                 Stats[CaracteristicsEnum.Health].Total,
-                ((StatsHealth) Stats[CaracteristicsEnum.Health]).TotalMax,
+                ( (StatsHealth)Stats[CaracteristicsEnum.Health] ).TotalMax,
                 Stats[CaracteristicsEnum.Health].Base,
                 Stats[CaracteristicsEnum.PermanentDamagePercent].Total,
                 0, // shieldsPoints = ?
-                (short) Stats[CaracteristicsEnum.AP].Total,
-                (short) Stats[CaracteristicsEnum.MP].Total,
+                (short)Stats[CaracteristicsEnum.AP].Total,
+                (short)Stats[CaracteristicsEnum.MP].Total,
                 0,
                 false,
-                (short) Stats[CaracteristicsEnum.NeutralResistPercent].Total,
-                (short) Stats[CaracteristicsEnum.EarthResistPercent].Total,
-                (short) Stats[CaracteristicsEnum.WaterResistPercent].Total,
-                (short) Stats[CaracteristicsEnum.AirResistPercent].Total,
-                (short) Stats[CaracteristicsEnum.FireResistPercent].Total,
-                (short) Stats[CaracteristicsEnum.DodgeAPProbability].Total,
-                (short) Stats[CaracteristicsEnum.DodgeMPProbability].Total,
-                (short) Stats[CaracteristicsEnum.TackleBlock].Total,
-                (short) Stats[CaracteristicsEnum.TackleEvade].Total,
-                (int) GameActionFightInvisibilityStateEnum.VISIBLE // invisibility state
+                (short)Stats[CaracteristicsEnum.NeutralResistPercent].Total,
+                (short)Stats[CaracteristicsEnum.EarthResistPercent].Total,
+                (short)Stats[CaracteristicsEnum.WaterResistPercent].Total,
+                (short)Stats[CaracteristicsEnum.AirResistPercent].Total,
+                (short)Stats[CaracteristicsEnum.FireResistPercent].Total,
+                (short)Stats[CaracteristicsEnum.DodgeAPProbability].Total,
+                (short)Stats[CaracteristicsEnum.DodgeMPProbability].Total,
+                (short)Stats[CaracteristicsEnum.TackleBlock].Total,
+                (short)Stats[CaracteristicsEnum.TackleEvade].Total,
+                (int)GameActionFightInvisibilityStateEnum.VISIBLE // invisibility state
                 );
         }
 

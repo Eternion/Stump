@@ -6,6 +6,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells.Shapes
     public class Zone : IShape
     {
         private IShape m_shape;
+
         private SpellShapeEnum m_shapeType;
 
         public Zone(SpellShapeEnum shape, uint radius)
@@ -22,6 +23,11 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells.Shapes
                 m_shapeType = value;
                 InitializeShape();
             }
+        }
+
+        public IShape Shape
+        {
+            get { return m_shape; }
         }
 
         #region IShape Members
