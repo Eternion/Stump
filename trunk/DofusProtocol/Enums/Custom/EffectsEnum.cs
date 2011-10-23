@@ -13,7 +13,7 @@
         /// <summary>
         /// Makes you move forward #1 square(s)
         /// </summary>
-        Effect_MoveForward = 6,
+        Effect_PullForward = 6,
         /// <summary>
         /// Get a divorce
         /// </summary>
@@ -137,7 +137,7 @@
         /// <summary>
         /// Lost AP for the target: #1{~1~2 to }#2
         /// </summary>
-        Effect_MakeLostAP = 101,
+        Effect_RemoveAP = 101,
         /// <summary>
         /// Damage reduced by #1{~1~2 to }#2
         /// </summary>
@@ -201,7 +201,7 @@
         /// <summary>
         /// Adds +#1{~1~2 to }#2 AP
         /// </summary>
-        Effect_AddAP_120 = 120,
+        Effect_RegainAP = 120,
         /// <summary>
         /// +#1{~1~2 to }#2 damage
         /// </summary>
@@ -647,31 +647,31 @@
         /// <summary>
         /// Damage reduced by #1{~1~2 to }#2
         /// </summary>
-        Effect_AddGlobalDamageReduction_265 = 265,
+        Effect_AddArmorDamageReduction = 265,
         /// <summary>
         /// #1{~1~2 to }#2 Chance theft
         /// </summary>
-        Effect_266 = 266,
+        Effect_StealChance = 266,
         /// <summary>
         /// #1{~1~2 to }#2 Vitality theft
         /// </summary>
-        Effect_267 = 267,
+        Effect_StealVitality = 267,
         /// <summary>
         /// #1{~1~2 to }#2 Agility theft
         /// </summary>
-        Effect_268 = 268,
+        Effect_StealAgility = 268,
         /// <summary>
         /// #1{~1~2 to }#2 Intelligence theft
         /// </summary>
-        Effect_269 = 269,
+        Effect_StealIntelligence = 269,
         /// <summary>
         /// #1{~1~2 to }#2 Wisdom theft
         /// </summary>
-        Effect_270 = 270,
+        Effect_StealWisdom = 270,
         /// <summary>
         /// #1{~1~2 to }#2 Strength theft
         /// </summary>
-        Effect_271 = 271,
+        Effect_StealStrength = 271,
         /// <summary>
         /// Damage: #1{~1~2 to }#2% of the attacker's lost HP (water)
         /// </summary>
@@ -753,7 +753,7 @@
         /// <summary>
         /// Steals #1{~1~2 to }#2 range
         /// </summary>
-        Effect_320 = 320,
+        Effect_StealRange = 320,
         /// <summary>
         /// Change a colour
         /// </summary>
@@ -765,11 +765,11 @@
         /// <summary>
         /// Sets a grade #2 trap
         /// </summary>
-        Effect_400 = 400,
+        Effect_Trap = 400,
         /// <summary>
         /// Sets a grade #2 glyph
         /// </summary>
-        Effect_401 = 401,
+        Effect_Glyph = 401,
         /// <summary>
         /// Sets a grade #2 glyph
         /// </summary>
@@ -1439,11 +1439,11 @@
         /// </summary>
         Effect_998 = 998,
         Effect_999 = 999,
-        /*  */
         /// <summary>
         /// 2
         /// </summary>
         Effect_1002 = 1002,
+        Effect_SubResistances = 1077,
         End,
     }
 }

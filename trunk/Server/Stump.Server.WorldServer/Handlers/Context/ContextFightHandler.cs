@@ -299,7 +299,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                             silentCast, (short) spell.Id, spell.CurrentLevel));
         }
 
-        public static void SendAbstractGameActionFightTargetedAbilityMessage(WorldClient client, Buff buff)
+        public static void SendGameActionFightDispellableEffectMessage(WorldClient client, Buff buff)
         {
             client.Send(new GameActionFightDispellableEffectMessage(buff.Effect.Id, buff.Caster.Id, buff.GetAbstractFightDispellableEffect()));
         }

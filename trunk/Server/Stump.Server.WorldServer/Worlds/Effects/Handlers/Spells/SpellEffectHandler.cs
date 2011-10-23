@@ -17,13 +17,20 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells
     {
         private Zone m_effectZone;
 
-        protected SpellEffectHandler(EffectBase effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
+        protected SpellEffectHandler(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect)
         {
+            Dice = effect;
             Caster = caster;
             Spell = spell;
             TargetedCell = targetedCell;
             Critical = critical;
+        }
+
+        public EffectDice Dice
+        {
+            get;
+            private set;
         }
 
         public FightActor Caster
@@ -107,7 +114,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells
         public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, TriggerType trigger, TriggerBuffApplyHandler applyTrigger)
         {
             int id = target.PopNextBuffId();
-            var buff = new TriggerBuff(id, target, Caster, Effect, Spell, Critical, dispelable, trigger, applyTrigger);
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Critical, dispelable, trigger, applyTrigger);
 
             target.AddAndApplyBuff(buff);
 
@@ -116,7 +123,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells
         public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, TriggerType trigger, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
         {
             int id = target.PopNextBuffId();
-            var buff = new TriggerBuff(id, target, Caster, Effect, Spell, Critical, dispelable, trigger, applyTrigger, removeTrigger);
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Critical, dispelable, trigger, applyTrigger, removeTrigger);
 
             target.AddAndApplyBuff(buff);
 

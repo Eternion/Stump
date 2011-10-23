@@ -24,11 +24,12 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Triggers
                 handler(this, target, triggeredSpell);
         }
 
-        protected MarkTrigger(short id, FightActor caster, Spell castedSpell, params MarkShape[] shapes)
+        protected MarkTrigger(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, params MarkShape[] shapes)
         {
             Id = id;
             Caster = caster;
             CastedSpell = castedSpell;
+            OriginEffect = originEffect;
             Shapes = shapes;
         }
 
@@ -48,6 +49,12 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Triggers
         {
             get;
             private set;
+        }
+
+        public EffectDice OriginEffect
+        {
+            get;
+            set;
         }
 
         public Fight Fight

@@ -164,7 +164,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Items
                     {EffectsEnum.Effect_AddInitiative, CaracteristicsEnum.Initiative},
                     {EffectsEnum.Effect_AddProspecting, CaracteristicsEnum.Prospecting},
                     {EffectsEnum.Effect_AddAP_111, CaracteristicsEnum.AP},
-                    {EffectsEnum.Effect_AddAP_120, CaracteristicsEnum.AP},
+                    {EffectsEnum.Effect_RegainAP, CaracteristicsEnum.AP},
                     {EffectsEnum.Effect_AddMP, CaracteristicsEnum.MP},
                     {EffectsEnum.Effect_AddMP_128, CaracteristicsEnum.MP},
                     {EffectsEnum.Effect_AddStrength, CaracteristicsEnum.Strength},

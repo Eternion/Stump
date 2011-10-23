@@ -189,49 +189,49 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells
             return (DirectionsEnum) (uint) orientation;
         }
 
-        public MapPoint GetNearestCellInDirection(DirectionsEnum direction)
+        public MapPoint GetCellInDirection(DirectionsEnum direction, short step)
         {
             MapPoint mapPoint = null;
             switch (direction)
             {
                 case DirectionsEnum.DIRECTION_EAST:
                     {
-                        mapPoint = new MapPoint(m_x + 1, m_y + 1);
+                        mapPoint = new MapPoint(m_x + step, m_y + step);
                         break;
                     }
                 case DirectionsEnum.DIRECTION_SOUTH_EAST:
                     {
-                        mapPoint = new MapPoint(m_x + 1, m_y);
+                        mapPoint = new MapPoint(m_x + step, m_y);
                         break;
                     }
                 case DirectionsEnum.DIRECTION_SOUTH:
                     {
-                        mapPoint = new MapPoint(m_x + 1, m_y - 1);
+                        mapPoint = new MapPoint(m_x + step, m_y - 1);
                         break;
                     }
                 case DirectionsEnum.DIRECTION_SOUTH_WEST:
                     {
-                        mapPoint = new MapPoint(m_x, m_y - 1);
+                        mapPoint = new MapPoint(m_x, m_y - step);
                         break;
                     }
                 case DirectionsEnum.DIRECTION_WEST:
                     {
-                        mapPoint = new MapPoint(m_x - 1, m_y - 1);
+                        mapPoint = new MapPoint(m_x - step, m_y - step);
                         break;
                     }
                 case DirectionsEnum.DIRECTION_NORTH_WEST:
                     {
-                        mapPoint = new MapPoint(m_x - 1, m_y);
+                        mapPoint = new MapPoint(m_x - step, m_y);
                         break;
                     }
                 case DirectionsEnum.DIRECTION_NORTH:
                     {
-                        mapPoint = new MapPoint(m_x - 1, m_y + 1);
+                        mapPoint = new MapPoint(m_x - step, m_y + step);
                         break;
                     }
                 case DirectionsEnum.DIRECTION_NORTH_EAST:
                     {
-                        mapPoint = new MapPoint(m_x, m_y + 1);
+                        mapPoint = new MapPoint(m_x, m_y + step);
                         break;
                     }
             }
@@ -243,6 +243,11 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells
                     return null;
 
             return null;
+        }
+
+        public MapPoint GetNearestCellInDirection(DirectionsEnum direction)
+        {
+            return GetCellInDirection(direction, 1);
         }
 
         public static bool IsInMap(int x, int y)

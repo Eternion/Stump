@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
             // valid == true anyway
             if (message.valid && client.ActiveCharacter.IsFighting())
             {
-                client.ActiveCharacter.Fighter.EndSequenceAction();
+                client.ActiveCharacter.Fighter.AcknowledgeAction();
             }
         }
     }

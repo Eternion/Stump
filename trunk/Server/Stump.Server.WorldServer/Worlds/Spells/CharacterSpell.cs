@@ -7,6 +7,7 @@ namespace Stump.Server.WorldServer.Worlds.Spells
         public CharacterSpell(CharacterSpellRecord record)
             : base(record)
         {
+            Record = record;
         }
 
         public CharacterSpellRecord Record

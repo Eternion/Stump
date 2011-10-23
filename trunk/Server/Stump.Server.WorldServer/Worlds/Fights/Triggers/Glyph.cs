@@ -13,22 +13,43 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Triggers
 {
     public class Glyph : MarkTrigger
     {
-        public Glyph(short id, FightActor caster, Spell castedSpell, Spell glyphSpell, Cell centerCell, sbyte size)
-            : base(id, caster, castedSpell, new MarkShape(caster.Fight, centerCell, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, size, Color.DarkRed))
+        public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell, Cell centerCell, sbyte size, Color color)
+            : base(id, caster, castedSpell, originEffect, new MarkShape(caster.Fight, centerCell, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, size, color))
         {
             GlyphSpell = glyphSpell;
+            Duration = originEffect.Duration;
         }
 
-        public Glyph(short id, FightActor caster, Spell castedSpell, Spell glyphSpell, params MarkShape[] shapes)
-            : base(id, caster, castedSpell, shapes)
+        public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell, Cell centerCell, GameActionMarkCellsTypeEnum type, sbyte size, Color color)
+            : base(id, caster, castedSpell, originEffect, new MarkShape(caster.Fight, centerCell, type, size, color))
         {
             GlyphSpell = glyphSpell;
+            Duration = originEffect.Duration;
+        }
+
+
+        public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell, params MarkShape[] shapes)
+            : base(id, caster, castedSpell, originEffect, shapes)
+        {
+            GlyphSpell = glyphSpell;
+            Duration = originEffect.Duration;
         }
 
         public Spell GlyphSpell
         {
             get;
             private set;
+        }
+
+        public int Duration
+        {
+            get;
+            private set;
+        }
+
+        public bool DecrementDuration()
+        {
+            return (Duration--) <= 0;
         }
 
         public override GameActionMarkTypeEnum Type

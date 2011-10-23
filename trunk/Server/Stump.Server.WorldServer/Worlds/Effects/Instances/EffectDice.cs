@@ -68,7 +68,13 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
             {
                 var rand = new AsyncRandom();
 
-                return new EffectInteger(Id, (short)rand.Next(m_dicenum, m_diceface + 1));
+                var max = m_dicenum >= m_diceface ? m_dicenum : m_diceface;
+                var min = m_dicenum <= m_diceface ? m_dicenum : m_diceface;
+
+                if (min == 0)
+                    return new EffectInteger(Id, max);
+
+                return new EffectInteger(Id, (short)rand.Next(min, max + 1));
             }
 
             return this;

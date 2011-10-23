@@ -15,14 +15,20 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Triggers
 {
     public class Trap : MarkTrigger
     {
-        public Trap(short id, FightActor caster, Spell spell, Spell trapSpell, Cell centerCell, sbyte size, GameActionMarkCellsTypeEnum shape)
-            : base(id, caster, spell, new MarkShape(caster.Fight, centerCell, shape, size, Color.Brown))
+        public Trap(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell, Cell centerCell, sbyte size)
+            : base(id, caster, castedSpell, originEffect, new MarkShape(caster.Fight, centerCell, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, size, Color.Brown))
+        {
+            TrapSpell = glyphSpell;
+        }
+
+        public Trap(short id, FightActor caster, Spell spell, EffectDice originEffect, Spell trapSpell, Cell centerCell, GameActionMarkCellsTypeEnum shape, sbyte size)
+            : base(id, caster, spell, originEffect, new MarkShape(caster.Fight, centerCell, shape, size, Color.Brown))
         {
             TrapSpell = trapSpell;
         }
 
-        public Trap(short id, FightActor caster, Spell spell, Spell trapSpell, params MarkShape[] shapes)
-            : base(id, caster, spell, shapes)
+        public Trap(short id, FightActor caster, Spell spell, EffectDice originEffect, Spell trapSpell, params MarkShape[] shapes)
+            : base(id, caster, spell, originEffect ,shapes)
         {
             TrapSpell = trapSpell;
         }
@@ -52,7 +58,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Triggers
                 foreach (var effect in TrapSpell.CurrentSpellLevel.Effects)
                 {
                     var handler = EffectManager.Instance.GetSpellEffectHandler(effect, Caster, TrapSpell, shape.Cell, false);
-                    handler.EffectZone = new Zone(shape.Shape == GameActionMarkCellsTypeEnum.CELLS_CROSS ? SpellShapeEnum.X : SpellShapeEnum.C, (uint)shape.Size);
+                    handler.EffectZone = new Zone(shape.Shape == GameActionMarkCellsTypeEnum.CELLS_CROSS ? SpellShapeEnum.Q : SpellShapeEnum.C, (uint)shape.Size);
 
                     handler.Apply();
                 }

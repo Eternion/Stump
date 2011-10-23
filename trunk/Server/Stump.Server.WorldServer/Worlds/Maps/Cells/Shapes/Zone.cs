@@ -49,10 +49,17 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells.Shapes
             set { m_shape.Direction = value; }
         }
 
+        private uint m_radius;
+
         public uint Radius
         {
-            get { return m_shape.Radius; }
-            set { m_shape.Radius = value; }
+            get { return m_radius; }
+            set
+            {
+                m_radius = value; 
+                if (m_shape != null)
+                    m_shape.Radius = value;
+            }
         }
 
         public Cell[] GetCells(Cell centerCell, Map map)

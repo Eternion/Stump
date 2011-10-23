@@ -22,7 +22,10 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             Id = Fight.GetNextContextualId();
             Monster = monster;
             Look = monster.Look.Copy();
-            Position = new ObjectPosition(monster.Group.Position);
+
+            Cell cell;
+            Fight.FindRandomFreeCell(this, out cell, false);
+            Position = new ObjectPosition(monster.Group.Map, cell, monster.Group.Direction);
         }
 
         public Monster Monster

@@ -1,3 +1,5 @@
+using System;
+
 namespace Stump.Server.WorldServer.Worlds.Effects
 {
     public enum EffectSchoolEnum

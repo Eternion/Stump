@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Stump.Core.Pool;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
@@ -12,6 +13,7 @@ using Stump.Server.WorldServer.Worlds.Effects;
 using Stump.Server.WorldServer.Worlds.Effects.Instances;
 using Stump.Server.WorldServer.Worlds.Fights;
 using Stump.Server.WorldServer.Worlds.Fights.Buffs;
+using Stump.Server.WorldServer.Worlds.Fights.Buffs.Customs;
 using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 using Stump.Server.WorldServer.Worlds.Spells;
@@ -57,6 +59,15 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
             if (handler != null)
                 handler(this, delta, from);
+        }
+
+        public event Action<FightActor, FightActor, int> DamageReducted;
+
+        private void NotifyDamageReducted(FightActor source, int reduction)
+        {
+            Action<FightActor, FightActor, int> handler = DamageReducted;
+            if (handler != null)
+                handler(this, source, reduction);
         }
 
         public event Action<FightActor> FighterLeft;
@@ -125,9 +136,16 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         private void NotifyDead(FightActor killedBy)
         {
+            OnDead(killedBy);
+
             Action<FightActor, FightActor> handler = Dead;
             if (handler != null)
                 handler(this, killedBy);
+        }
+
+        protected virtual void OnDead(FightActor killedBy)
+        {
+            RemoveAndDispellAllBuffs();
         }
 
         public delegate void FightPointsVariationHandler(FightActor actor, ActionsEnum action, FightActor source, FightActor target, short delta);
@@ -212,7 +230,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         #endregion
 
         #region Properties
-
 
 
         public Fights.Fight Fight
@@ -424,6 +441,52 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             return true;
         }
 
+        public bool LostAP(short amount)
+        {
+            if (Stats[CaracteristicsEnum.AP].Total - amount < 0)
+                return false;
+
+            Stats[CaracteristicsEnum.AP].Context -= amount;
+            UsedAP += amount;
+
+            NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_LOST, this, this, (short)( -amount ));
+
+            return true;
+        }
+
+        public bool LostMP(short amount)
+        {
+            if (Stats[CaracteristicsEnum.MP].Total - amount < 0)
+                return false;
+
+            Stats[CaracteristicsEnum.MP].Context -= amount;
+            UsedMP += amount;
+
+            NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_LOST, this, this, (short)( -amount ));
+
+            return true;
+        }
+
+        public bool RegainAP(short amount)
+        {
+            Stats[CaracteristicsEnum.AP].Context += amount;
+            UsedAP -= amount;
+
+            NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_WIN, this, this, (short)( amount ));
+
+            return true;
+        }
+
+        public bool RegainMP(short amount)
+        {
+            Stats[CaracteristicsEnum.MP].Context += amount;
+            UsedMP -= amount;
+
+            NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_WIN, this, this, (short)( amount ));
+
+            return true;
+        }
+
         public void ResetPoints()
         {
             Stats[CaracteristicsEnum.AP].Context += UsedAP;
@@ -486,13 +549,21 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
             var critical = FightSpellCastCriticalEnum.NORMAL;
 
-            if (random.Next((int)spell.CriticalFailureProbability) == 0)
+            if (spell.CriticalHitProbability != 0 && random.Next((int)spell.CriticalFailureProbability) == 0)
                 critical = FightSpellCastCriticalEnum.CRITICAL_FAIL;
 
-            else if (random.Next((int)spell.CriticalHitProbability) == 0)
+            else if (spell.CriticalHitProbability != 0 && random.Next((int)spell.CriticalHitProbability) == 0)
                 critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
 
             return critical;
+        }
+
+        public int GetReflectedSpellLevel()
+        {
+            if (m_buffList.OfType<SpellReflectionBuff>().Count() == 0)
+                return 0;
+
+            return m_buffList.OfType<SpellReflectionBuff>().Max(entry => entry.ReflectedLevel);
         }
 
         public void Die()
@@ -546,6 +617,16 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             damage = CalculateDamage(damage, school);
             damage = CalculateDamageResistance(damage, school, pvp);
 
+            short reduction = CalculateArmorReduction(school);
+
+            if (reduction > 0)
+                NotifyDamageReducted(this, reduction);
+
+            damage -= reduction;
+
+            if (damage == 0)
+                return 0;
+
             return InflictDirectDamage(damage);
         }
 
@@ -553,6 +634,16 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         {
             damage = CalculateDamage(damage, school);
             damage = CalculateDamageResistance(damage, school, pvp);
+
+            short reduction = CalculateArmorReduction(school);
+
+            if (reduction > 0)
+                NotifyDamageReducted(from, reduction);
+
+            damage -= reduction;
+
+            if (damage == 0)
+                return 0;
 
             return InflictDirectDamage(damage, from);
         }
@@ -665,12 +756,37 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                     schoolCaracteristic = CaracteristicsEnum.Intelligence;
                     break;
                 default:
-                    return 0;
+                    return (short) (reduction * (1 + Stats[CaracteristicsEnum.Intelligence].Total / 200d));
             }
 
             return (short)( reduction *
                             Math.Max(1 + Stats[schoolCaracteristic].Total / 100d,
                                      1 + ( Stats[CaracteristicsEnum.Intelligence].Total / 200d ) + ( Stats[schoolCaracteristic].Total / 200d )) );
+        }
+
+        public short CalculateArmorReduction(EffectSchoolEnum damageType)
+        {
+            int specificArmor = 0;
+            switch (damageType)
+            {
+                case EffectSchoolEnum.Neutral:
+                    specificArmor = Stats[CaracteristicsEnum.NeutralDamageArmor].Total;
+                    break;
+                case EffectSchoolEnum.Earth:
+                    specificArmor = Stats[CaracteristicsEnum.EarthDamageArmor].Total;
+                    break;
+                case EffectSchoolEnum.Air:
+                    specificArmor = Stats[CaracteristicsEnum.AirDamageArmor].Total;
+                    break;
+                case EffectSchoolEnum.Water:
+                    specificArmor = Stats[CaracteristicsEnum.WaterDamageArmor].Total;
+                    break;
+                case EffectSchoolEnum.Fire:
+                    specificArmor = Stats[CaracteristicsEnum.FireDamageArmor].Total;
+                    break;
+            }
+
+            return (short) (specificArmor + Stats[CaracteristicsEnum.GlobalDamageReduction].Total);
         }
 
         public short CalculateWeaponDamage(short damage, EffectSchoolEnum school)
@@ -718,7 +834,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             AddBuff(buff);
 
             if (!( buff is TriggerBuff ) ||
-                ( ( buff as TriggerBuff ).Trigger & TriggerType.BUFF_ADDED ) != TriggerType.BUFF_ADDED)
+                ( ( buff as TriggerBuff ).Trigger & TriggerType.BUFF_ADDED ) == TriggerType.BUFF_ADDED)
                 buff.Apply();
         }
 
@@ -743,6 +859,19 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             NotifyBuffRemoved(buff);
         }
 
+        public void RemoveAndDispellAllBuffs()
+        {
+            var copyOfBuffs = m_buffList.ToArray();
+
+            foreach (var buff in copyOfBuffs)
+            {
+                buff.Remove();
+                m_buffList.Remove(buff);
+
+                NotifyBuffRemoved(buff);
+            }
+        }
+
         public void TriggerBuffs(TriggerType trigger)
         {
             foreach (var buff in m_buffList)
@@ -753,17 +882,28 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                     continue;
 
                 if (( triggerBuff.Trigger & trigger ) == trigger)
+                {
+                    StartSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
                     triggerBuff.Apply(trigger);
+                    EndSequence();
+                }
             }
         }
 
         public void DecrementBuffsDuration(FightActor caster)
         {
+            var buffsToRemove = new List<Buff>();
+
             foreach (var buff in m_buffList)
             {
                 if (buff.Caster == caster)
                     if (buff.DecrementDuration())
-                        RemoveAndDispellBuff(buff);
+                        buffsToRemove.Add(buff);
+            }
+
+            foreach (var buff in buffsToRemove)
+            {
+                m_buffList.Remove(buff);
             }
         }
 
@@ -808,7 +948,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             return true;
         }
 
-        public void EndSequenceAction()
+        public virtual void AcknowledgeAction()
         {
             switch (Sequence)
             {

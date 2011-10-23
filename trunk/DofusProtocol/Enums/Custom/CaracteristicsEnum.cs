@@ -70,5 +70,12 @@ namespace Stump.DofusProtocol.Enums
         MagicDamage = 62,
         PhysicalDamageReduction = 63,
         MagicDamageReduction = 64,
+
+        // custom adds
+        WaterDamageArmor,
+        EarthDamageArmor,
+        NeutralDamageArmor,
+        AirDamageArmor,
+        FireDamageArmor,
     }
 }

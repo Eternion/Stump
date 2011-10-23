@@ -10,22 +10,30 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Buffs
 
     public class TriggerBuff : Buff
     {
-        public TriggerBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, TriggerType trigger, TriggerBuffApplyHandler applyTrigger)
+        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, bool critical, bool dispelable, TriggerType trigger, TriggerBuffApplyHandler applyTrigger)
             : base(id, target, caster, effect, spell, critical, dispelable)
         {
             Trigger = trigger;
+            Dice = effect;
             ApplyTrigger = applyTrigger;
         }
 
-        public TriggerBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, TriggerType trigger, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
+        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, bool critical, bool dispelable, TriggerType trigger, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
             : base(id, target, caster, effect, spell, critical, dispelable)
         {
             Trigger = trigger;
+            Dice = effect;
             ApplyTrigger = applyTrigger;
             RemoveTrigger = removeTrigger;
         }
 
         public TriggerType Trigger
+        {
+            get;
+            private set;
+        }
+
+        public EffectDice Dice
         {
             get;
             private set;
@@ -65,7 +73,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Buffs
         {
             var values = Effect.GetValues();
 
-            return new FightTriggeredEffect(Id, Target.Id, Duration, (sbyte)( Dispelable ? 0 : 1 ), (short) Spell.Id, 0, (int) values[0], (int) values[1], (int) values[2], 0);
+            return new FightTriggeredEffect(Id, Target.Id, Duration, (sbyte)( Dispelable ? 0 : 1 ), (short)Spell.Id, 0, (short)values[0], (short)values[1], (short)values[2], 0);
         }
     }
 }

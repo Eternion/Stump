@@ -22,7 +22,10 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         {
             Character = character;
             Look = Character.Look.Copy();
-            Position = new ObjectPosition(character.Position);
+
+            Cell cell;
+            Fight.FindRandomFreeCell(this, out cell, false);
+            Position = new ObjectPosition(character.Map, cell, character.Direction);
 
             FighterLeft += OnFightLeft;
 
@@ -108,6 +111,10 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             return true;
         }
 
+        public override void AcknowledgeAction()
+        {
+            base.AcknowledgeAction();
+        }
 
         private void OnFightLeft(FightActor fightActor)
         {
@@ -117,9 +124,10 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                 {
                     if (Fight.FightType == FightTypeEnum.FIGHT_TYPE_CHALLENGE)
                         field.Context = m_damageTakenBeforeFight;
-                    else
-                        field.Context--;
+                    else if (field.Total <= 0)
+                        field.Context = (short) ((field as StatsHealth).TotalMax - 1);
                 }
+
                 else
                 {
                     field.Context = 0;

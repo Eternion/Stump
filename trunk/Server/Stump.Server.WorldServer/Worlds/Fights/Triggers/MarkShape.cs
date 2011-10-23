@@ -20,8 +20,8 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Triggers
             Size = size;
             Color = color;
 
-            m_zone = Shape == GameActionMarkCellsTypeEnum.CELLS_CIRCLE ?
-                new Zone(SpellShapeEnum.C, (uint)size) : new Zone(SpellShapeEnum.X, (uint)size);
+            m_zone = Shape == GameActionMarkCellsTypeEnum.CELLS_CROSS ?
+                new Zone(SpellShapeEnum.Q, (uint)size) : new Zone(SpellShapeEnum.C, (uint)size);
             m_cells = m_zone.GetCells(Cell, fight.Map);
         }
 

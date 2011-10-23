@@ -6,6 +6,7 @@ using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Server.WorldServer.Worlds.Effects;
 using Stump.Server.WorldServer.Worlds.Effects.Instances;
+using Stump.Server.WorldServer.Worlds.Spells;
 
 namespace Stump.Server.WorldServer.Database.Spells
 {
@@ -26,11 +27,18 @@ namespace Stump.Server.WorldServer.Database.Spells
         }
 
         [D2OField("spellId")]
-        [BelongsTo("SpellId")]
-        public SpellTemplate Spell
+        [Property("SpellId")]
+        public int SpellId
         {
             get;
             set;
+        }
+
+        private SpellTemplate m_spell;
+
+        public SpellTemplate Spell
+        {
+            get { return m_spell ?? (m_spell = SpellManager.Instance.GetSpellTemplate(SpellId)); }
         }
 
         [D2OField("spellBreed")]

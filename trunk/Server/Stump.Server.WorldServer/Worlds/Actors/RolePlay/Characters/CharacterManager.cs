@@ -92,7 +92,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
             var record = new CharacterRecord(breed)
                              {
-                                 Experience = ExperienceManager.Instance.GetCharacterLevel(breed.StartLevel),
+                                 Experience = ExperienceManager.Instance.GetCharacterLevelExperience(breed.StartLevel),
                                  Name = name,
                                  Sex = sex ? SexTypeEnum.SEX_MALE : SexTypeEnum.SEX_FEMALE,
                                  EntityLook = look,
@@ -108,7 +108,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             var spells = new List<CharacterSpellRecord>();
             foreach (LearnableSpell learnableSpell in breed.LearnableSpells.Where(entry => entry.ObtainLevel <= breed.StartLevel))
             {
-                CharacterSpellRecord spellRecord = SpellManager.Instance.CreateSpellRecord(record, SpellManager.Instance.GetSpellTemplate(learnableSpell.Id));
+                CharacterSpellRecord spellRecord = SpellManager.Instance.CreateSpellRecord(record, SpellManager.Instance.GetSpellTemplate(learnableSpell.SpellId));
                 spellRecord.Save();
                 spells.Add(spellRecord);
             }

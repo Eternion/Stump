@@ -1,6 +1,7 @@
 using System;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
 using Stump.Server.WorldServer.Worlds.Effects.Instances;
 using Stump.Server.WorldServer.Worlds.Fights.Buffs;
@@ -15,7 +16,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells.Damage
     [EffectHandler(EffectsEnum.Effect_DamageNeutral)]
     public class DirectDamage : SpellEffectHandler
     {
-        public DirectDamage(EffectBase effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
+        public DirectDamage(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
         {
         }
@@ -35,11 +36,25 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells.Damage
                 }
                 else
                 {
-                    short inflictedDamage = actor.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), Caster, actor is CharacterFighter);
+                    // spell reflected
+                    if (actor.GetReflectedSpellLevel() >= Spell.CurrentLevel)
+                    {
+                        NotifySpellReflected(actor);
+                        Caster.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), Caster, Caster is CharacterFighter);
+                    }
+                    else
+                    {
+                        short inflictedDamage = actor.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), Caster, actor is CharacterFighter);
 
-                    // todo : reflected damage ?
+                        // todo : reflected damage ?
+                    }
                 }
             }
+        }
+
+        private void NotifySpellReflected(FightActor source)
+        {
+            Fight.ForEach(entry => ActionsHandler.SendGameActionFightReflectSpellMessage(entry.Client, source, Caster));
         }
 
         private static void DamageBuffTrigger(TriggerBuff buff, TriggerType trigger)

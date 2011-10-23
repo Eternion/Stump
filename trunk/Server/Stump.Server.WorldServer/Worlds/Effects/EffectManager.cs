@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private delegate ItemEffectHandler ItemEffectConstructor(Character target, Items.Item item, EffectBase effect);
-        private delegate SpellEffectHandler SpellEffectConstructor(EffectBase effect, FightActor caster, Spells.Spell spell, Cell targetedCell, bool critical);
+        private delegate SpellEffectHandler SpellEffectConstructor(EffectDice effect, FightActor caster, Spells.Spell spell, Cell targetedCell, bool critical);
 
         private Dictionary<short, EffectTemplate> m_effects = new Dictionary<short, EffectTemplate>();
         private readonly Dictionary<EffectsEnum, ItemEffectConstructor> m_itemsEffectHandler = new Dictionary<EffectsEnum, ItemEffectConstructor>();
@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects
                     }
                     else if (type.IsSubclassOf(typeof(SpellEffectHandler)))
                     {
-                        var ctor = type.GetConstructor(new[] { typeof(EffectBase), typeof(FightActor), typeof(Spells.Spell), typeof(Cell), typeof(bool) });
+                        var ctor = type.GetConstructor(new[] { typeof(EffectDice), typeof(FightActor), typeof(Spells.Spell), typeof(Cell), typeof(bool) });
                         m_spellsEffectHandler.Add(effect, ctor.CreateDelegate<SpellEffectConstructor>());
                     }
                 }
@@ -118,7 +118,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects
             return new DefaultItemEffect(effect, target, item);
         }
 
-        public SpellEffectHandler GetSpellEffectHandler(EffectBase effect, FightActor caster, Spells.Spell spell, Cell targetedCell, bool critical)
+        public SpellEffectHandler GetSpellEffectHandler(EffectDice effect, FightActor caster, Spells.Spell spell, Cell targetedCell, bool critical)
         {
             SpellEffectConstructor handler;
             if (m_spellsEffectHandler.TryGetValue(effect.EffectId, out handler))
@@ -198,7 +198,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects
                     EffectsEnum.Effect_AddRange,
                     EffectsEnum.Effect_AddStrength,
                     EffectsEnum.Effect_AddAgility,
-                    EffectsEnum.Effect_AddAP_120,
+                    EffectsEnum.Effect_RegainAP,
                     EffectsEnum.Effect_AddDamageBonus_121,
                     EffectsEnum.Effect_AddCriticalMiss,
                     EffectsEnum.Effect_AddChance,
@@ -278,7 +278,6 @@ namespace Stump.Server.WorldServer.Worlds.Effects
                     EffectsEnum.Effect_AddPvpAirElementReduction,
                     EffectsEnum.Effect_AddPvpFireElementReduction,
                     EffectsEnum.Effect_AddPvpNeutralElementReduction,
-                    EffectsEnum.Effect_AddGlobalDamageReduction_265,
                     EffectsEnum.Effect_AddPushDamageBonus,
                     EffectsEnum.Effect_SubPushDamageBonus,
                     EffectsEnum.Effect_AddPushDamageReduction,

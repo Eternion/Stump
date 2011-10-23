@@ -4,6 +4,7 @@ using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Server.WorldServer.Database.I18n;
+using Stump.Server.WorldServer.Worlds.Spells;
 
 namespace Stump.Server.WorldServer.Database.Spells
 {
@@ -13,7 +14,6 @@ namespace Stump.Server.WorldServer.Database.Spells
     {
         private string m_description;
         private string m_name;
-        private IList<SpellLevelTemplate> m_spellLevels;
 
         [D2OField("id")]
         [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
@@ -98,11 +98,12 @@ namespace Stump.Server.WorldServer.Database.Spells
             set;
         }
 
-        [HasMany(typeof (SpellLevelTemplate))]
-        public IList<SpellLevelTemplate> SpellLevels
+        [D2OField("spellLevels")]
+        [Property("SpellLevels", ColumnType = "Serializable")]
+        public List<uint> SpellLevelsIds
         {
-            get { return m_spellLevels ?? (m_spellLevels = new List<SpellLevelTemplate>()); }
-            set { m_spellLevels = value; }
+            get;
+            set;
         }
 
         [D2OField("useParamCache")]
