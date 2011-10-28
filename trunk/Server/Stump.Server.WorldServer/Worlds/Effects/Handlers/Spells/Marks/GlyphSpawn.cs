@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Worlds.Spells;
 namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells.Marks
 {
     [EffectHandler(EffectsEnum.Effect_Glyph)]
+    [EffectHandler(EffectsEnum.Effect_Glyph_402)]
     public class GlyphSpawn : SpellEffectHandler
     {
         private Logger logger = LogManager.GetCurrentClassLogger();

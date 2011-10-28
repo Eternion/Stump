@@ -62,12 +62,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             protected set;
         }
 
-        public override ObjectPosition Position
-        {
-            get;
-            protected set;
-        }
-
         public override ObjectPosition MapPosition
         {
             get
@@ -109,11 +103,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             // todo : check states
 
             return true;
-        }
-
-        public override void AcknowledgeAction()
-        {
-            base.AcknowledgeAction();
         }
 
         private void OnFightLeft(FightActor fightActor)

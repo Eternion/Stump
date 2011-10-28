@@ -8,7 +8,14 @@ namespace Stump.Server.WorldServer.Database.Npcs
     public abstract class NpcReply : WorldBaseRecord<NpcReply>
     {
         [PrimaryKey(PrimaryKeyType.Native)]
-        public uint Id
+        public int Id
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public int ReplyId
         {
             get;
             set;

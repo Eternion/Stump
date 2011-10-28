@@ -100,65 +100,39 @@ namespace Stump.DofusProtocol.Types
 			flag1 = BooleanByteWrapper.SetFlag(flag1, 3, isFecondationReady);
 			writer.WriteByte(flag1);
 			writer.WriteDouble(id);
-			writer.WriteByte(flag1);
 			writer.WriteInt(model);
 			writer.WriteUShort((ushort)ancestor.Count());
 			foreach (var entry in ancestor)
 			{
-				writer.WriteByte(flag1);
 				writer.WriteInt(entry);
 			}
 			writer.WriteUShort((ushort)behaviors.Count());
 			foreach (var entry in behaviors)
 			{
-				writer.WriteByte(flag1);
 				writer.WriteInt(entry);
 			}
-			writer.WriteByte(flag1);
 			writer.WriteUTF(name);
-			writer.WriteByte(flag1);
 			writer.WriteInt(ownerId);
-			writer.WriteByte(flag1);
 			writer.WriteDouble(experience);
-			writer.WriteByte(flag1);
 			writer.WriteDouble(experienceForLevel);
-			writer.WriteByte(flag1);
 			writer.WriteDouble(experienceForNextLevel);
-			writer.WriteByte(flag1);
 			writer.WriteSByte(level);
-			writer.WriteByte(flag1);
 			writer.WriteInt(maxPods);
-			writer.WriteByte(flag1);
 			writer.WriteInt(stamina);
-			writer.WriteByte(flag1);
 			writer.WriteInt(staminaMax);
-			writer.WriteByte(flag1);
 			writer.WriteInt(maturity);
-			writer.WriteByte(flag1);
 			writer.WriteInt(maturityForAdult);
-			writer.WriteByte(flag1);
 			writer.WriteInt(energy);
-			writer.WriteByte(flag1);
 			writer.WriteInt(energyMax);
-			writer.WriteByte(flag1);
 			writer.WriteInt(serenity);
-			writer.WriteByte(flag1);
 			writer.WriteInt(aggressivityMax);
-			writer.WriteByte(flag1);
 			writer.WriteInt(serenityMax);
-			writer.WriteByte(flag1);
 			writer.WriteInt(love);
-			writer.WriteByte(flag1);
 			writer.WriteInt(loveMax);
-			writer.WriteByte(flag1);
 			writer.WriteInt(fecondationTime);
-			writer.WriteByte(flag1);
 			writer.WriteInt(boostLimiter);
-			writer.WriteByte(flag1);
 			writer.WriteDouble(boostMax);
-			writer.WriteByte(flag1);
 			writer.WriteInt(reproductionCount);
-			writer.WriteByte(flag1);
 			writer.WriteInt(reproductionCountMax);
 			writer.WriteUShort((ushort)effectList.Count());
 			foreach (var entry in effectList)

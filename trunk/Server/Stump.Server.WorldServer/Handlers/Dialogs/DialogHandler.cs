@@ -8,16 +8,13 @@ namespace Stump.Server.WorldServer.Handlers.Dialogs
         [WorldHandler(LeaveDialogRequestMessage.Id)]
         public static void HandleLeaveDialogRequestMessage(WorldClient client, LeaveDialogRequestMessage message)
         {
-            client.ActiveCharacter.DenyRequest();
+            client.ActiveCharacter.LeaveDialog();
         }
 
         [WorldHandler(LeaveDialogMessage.Id)]
         public static void HandleLeaveDialogMessage(WorldClient client, LeaveDialogMessage message)
         {
-            if (!client.ActiveCharacter.IsDialoging())
-                return;
-
-            client.ActiveCharacter.Dialog.Close();
+            client.ActiveCharacter.LeaveDialog();
         }
 
         public static void SendLeaveDialogMessage(WorldClient client)

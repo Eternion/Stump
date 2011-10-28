@@ -49,14 +49,10 @@ namespace Stump.DofusProtocol.Types
 			writer.WriteUShort((ushort)doorsOnMap.Count());
 			foreach (var entry in doorsOnMap)
 			{
-				writer.WriteByte(flag1);
 				writer.WriteInt(entry);
 			}
-			writer.WriteByte(flag1);
 			writer.WriteUTF(ownerName);
-			writer.WriteByte(flag1);
 			writer.WriteShort(modelId);
-			writer.WriteByte(flag1);
 		}
 		
 		public virtual void Deserialize(IDataReader reader)

@@ -7,6 +7,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Effects.Instances;
 using Stump.Server.WorldServer.Worlds.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Worlds.Spells;
@@ -95,5 +96,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Triggers
 
         public abstract void Trigger(FightActor trigger);
         public abstract GameActionMark GetGameActionMark();
+        public abstract GameActionMark GetHiddenGameActionMark();
+        public abstract bool DoesSeeTrigger(FightActor fighter);
     }
 }

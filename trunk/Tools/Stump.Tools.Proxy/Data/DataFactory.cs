@@ -1,71 +1,38 @@
-
-using System.IO;
+using System;
 using System.Linq;
-using Stump.Core.Attributes;
-using Stump.Core.Xml;
-using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.WorldServer.Actions.ActionsCharacter;
-using Stump.Server.WorldServer.Actions.ActionsNpcs;
-using Stump.Server.WorldServer.Global.Maps;
-using Stump.Server.WorldServer.Items;
-using Stump.Server.WorldServer.Npcs;
-using Stump.Server.WorldServer.Npcs.StartActions;
-using Stump.Server.WorldServer.Skills;
-using Stump.Server.WorldServer.XmlSerialize;
+using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Database.Interactives;
+using Stump.Server.WorldServer.Database.Interactives.Skills;
+using Stump.Server.WorldServer.Database.Items.Shops;
+using Stump.Server.WorldServer.Database.Npcs;
+using Stump.Server.WorldServer.Database.Npcs.Actions;
+using Stump.Server.WorldServer.Database.Npcs.Replies;
+using Stump.Server.WorldServer.Database.World.Triggers;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Worlds.Interactives;
+using Stump.Server.WorldServer.Worlds.Items;
+using Stump.Server.WorldServer.Worlds.Maps.Cells.Triggers;
 using Stump.Tools.Proxy.Network;
 
 namespace Stump.Tools.Proxy.Data
 {
     public static class DataFactory
     {
-        [Variable]
-        public static string Output = "./../../static/";
-
-        [Variable]
-        public static string NpcDir = "Npcs/";
-
-        [Variable]
-        public static string NpcQuestionsDir = "NpcsQuestions/";
-
-        [Variable]
-        public static string NpcRepliesDir = "NpcsReplies/";
-
-        [Variable]
-        public static string NpcActionsDir = "NpcsActions/";
-
-        [Variable]
-        public static string MonstersDir = "Monsters/";
-
-        [Variable]
-        public static string InteractiveObjectsDir = "InteractiveObjects/";
-
-        [Variable]
-        public static string SkillActionsDir = "SkillActions/";
-
-        [Variable]
-        public static string CellTriggersDir = "CellTriggers/";
-
         public static void HandleNpcQuestion(WorldClient client, NpcDialogQuestionMessage dialogQuestionMessage)
         {
-            BuildActionNpcQuestion(client, dialogQuestionMessage);
+            NpcMessage message = NpcManager.Instance.GetNpcMessage(dialogQuestionMessage.messageId);
+            BuildActionNpcQuestion(client, dialogQuestionMessage, message);
 
-            if (!Directory.Exists(Output + NpcQuestionsDir))
-            {
-                Directory.CreateDirectory(Output + NpcQuestionsDir);
-            }
-
-            SerializeToXml(
-                Output + NpcQuestionsDir + dialogQuestionMessage.messageId + ".xml",
-                dialogQuestionMessage);
+            client.LastNpcMessage = message;
         }
 
         public static void BuildActionTeleport(WorldClient client, CurrentMapMessage message)
         {
-            if (client.GuessNpcReply != null)
+            /*if (client.GuessNpcReply != null)
             {
-                uint replyId = client.GuessNpcReply.replyId;
+                int replyId = client.GuessNpcReply.replyId;
                 client.GuessNpcReply = null; // clear it as fast as possible
 
                 var npcReply = new NpcDialogReply(replyId,
@@ -79,76 +46,147 @@ namespace Stump.Tools.Proxy.Data
 
                 SerializeToXml(Output + NpcRepliesDir + replyId + ".xml",
                                npcReply);
-            }
-            else if (client.GuessSkillAction != null)
+            }*/
+            if (client.GuessSkillAction != null)
             {
-                uint mapId = client.GuessSkillAction.Item1;
-                uint skillId = client.GuessSkillAction.Item2.skillInstanceUid;
-                uint elementId = client.GuessSkillAction.Item2.elemId;
-                uint duration = client.GuessSkillAction.Item3.duration;
+                var map = client.GuessSkillAction.Item1;
+                int skillId = client.GuessSkillAction.Item2.skillInstanceUid;
+                int elementId = client.GuessSkillAction.Item2.elemId;
+                int duration = client.GuessSkillAction.Item3.duration;
                 client.GuessSkillAction = null;
 
-                var action = new ActionTeleport(message.mapId,
-                                                (ushort) client.Disposition.cellId,
-                                                (OrdinalDirectionsEnum) client.Disposition.direction);
+                var skill = new SkillTeleportTemplate
+                                {
+                                    MapId = client.CurrentMap.Id,
+                                    CellId = client.Disposition.cellId,
+                                    Direction = (DirectionsEnum) client.Disposition.direction,
+                                    Condition = string.Empty,
+                                    Duration = (uint) duration,
+                                };
 
-                var skill = new SkillInstance(skillId,
-                                              new SkillUse(duration, actions: action));
+                InteractiveSpawn io = InteractiveManager.Instance.GetOneSpawn(entry => entry.MapId == map.Id && entry.ElementId == elementId);
 
-                SerializeToXml(
-                    GetDirectoryPath(client, mapId, SkillActionsDir) + mapId + "_" + elementId + "_" + skillId + ".xml",
-                    new SkillInstanceSerialized(mapId, elementId, skill));
+                if (io == null)
+                    return;
+
+
+                ExecuteIOTask(() =>
+                                  {
+                                      if (io.Template == null && io.Skills.Count > 0)
+                                          return;
+
+                                      if (io.Template != null && io.Template.Skills.Count(entry => entry is SkillTeleportTemplate &&
+                                                                            (entry as SkillTeleportTemplate).CellId == skill.CellId &&
+                                                                            (entry as SkillTeleportTemplate).MapId == skill.MapId &&
+                                                                            (entry as SkillTeleportTemplate).Direction == skill.Direction) > 0)
+                                          return;
+
+                                      skill.Save();
+                                      if (io.Template == null)
+                                      {
+                                          io.Skills.Add(skill);
+                                          io.Save();
+                                      }
+                                      else
+                                      {
+                                          io.Template.Skills.Add(skill);
+                                          io.Template.Save();
+                                      }
+
+                                      client.SendChatMessage("Teleport skill added");
+                                  });
             }
             else if (client.GuessCellTrigger != null)
             {
-                var trigger = new CellTrigger((ushort) client.GuessCellTrigger, client.LastMap,
-                                              CellTrigger.TriggerEvent.OnReached,
-                                              new ActionTeleport(client.CurrentMap,
-                                                                 (ushort) client.Disposition.cellId,
-                                                                 (OrdinalDirectionsEnum) client.Disposition.direction));
+                if (client.LastMap.Cells[client.GuessCellTrigger.Value].MapChangeData > 0)
+                    return;
 
-                SerializeToXml(
-                    GetDirectoryPath(client, client.LastMap, CellTriggersDir) + client.LastMap + "_" + client.GuessCellTrigger + "_" +
-                    (int) CellTrigger.TriggerEvent.OnReached + ".xml",
-                    trigger);
+                var trigger = new TeleportTriggerRecord
+                                  {
+                                      MapId = client.LastMap.Id,
+                                      CellId = (short) client.GuessCellTrigger.Value,
+                                      TriggerType = CellTriggerType.END_MOVE_ON,
+                                      Condition = string.Empty,
+                                      DestinationCellId = client.Disposition.cellId,
+                                      DestinationMapId = client.CurrentMap.Id,
+                                  };
 
                 client.GuessCellTrigger = null;
+
+                ExecuteIOTask(() =>
+                                  {
+                                      if (CellTriggerManager.Instance.GetOneCellTrigger(entry => entry is TeleportTriggerRecord &&
+                                                                                                 (entry as TeleportTriggerRecord).MapId == trigger.MapId &&
+                                                                                                 (entry as TeleportTriggerRecord).CellId == trigger.CellId &&
+                                                                                                 (entry as TeleportTriggerRecord).DestinationCellId == trigger.DestinationCellId &&
+                                                                                                 (entry as TeleportTriggerRecord).DestinationMapId == trigger.DestinationMapId &&
+                                                                                                 (entry as TeleportTriggerRecord).TriggerType == trigger.TriggerType) != null)
+                                          return;
+
+                                      CellTriggerManager.Instance.AddCellTrigger(trigger);
+
+                                      client.SendChatMessage("Cell trigger added");
+
+                                  });
             }
         }
 
-        public static void BuildActionNpcQuestion(WorldClient client, NpcDialogQuestionMessage dialogQuestionMessage)
+        public static void BuildActionNpcQuestion(WorldClient client, NpcDialogQuestionMessage dialogQuestionMessage, NpcMessage currentMessage)
         {
             if (!client.GuessAction)
                 return;
 
             if (client.GuessNpcReply != null)
             {
-                uint replyId = client.GuessNpcReply.replyId;
+                int replyId = client.GuessNpcReply.replyId;
                 client.GuessNpcReply = null; // clear it as fast as possible
 
-                var npcReply = new NpcDialogReply(replyId,
-                                                  new ActionDialogQuestion((int) dialogQuestionMessage.messageId));
+                var npcReply = new ContinueDialogReply
+                                   {
+                                       ReplyId = replyId,
+                                       Message = client.LastNpcMessage,
+                                       NextMessage = currentMessage
+                                   };
 
-                if (!Directory.Exists(Output + NpcRepliesDir))
-                {
-                    Directory.CreateDirectory(Output + NpcRepliesDir);
-                }
+                ExecuteIOTask(() =>
+                                  {
+                                      if (client.LastNpcMessage.Replies.Count(entry => entry is ContinueDialogReply &&
+                                                                                       ( entry as ContinueDialogReply ).ReplyId == npcReply.ReplyId &&
+                                                                                       (entry as ContinueDialogReply).NextMessage.Id == npcReply.NextMessage.Id) > 0)
+                                          return;
 
-                SerializeToXml(Output + NpcRepliesDir + replyId + ".xml",
-                               npcReply);
+                                      npcReply.Save();
+                                      client.LastNpcMessage.Replies.Add(npcReply);
+                                      client.LastNpcMessage.Save();
+
+                                      client.SendChatMessage("Npc reply added");
+                                  });
             }
             else if (client.GuessNpcFirstAction != null)
             {
-                uint npcId = client.MapNpcs[client.GuessNpcFirstAction.npcId].npcId;
-                uint actionId = client.GuessNpcFirstAction.npcActionId;
+                int npcId = client.MapNpcs[client.GuessNpcFirstAction.npcId].npcId;
+                int actionId = client.GuessNpcFirstAction.npcActionId;
                 client.GuessNpcFirstAction = null;
 
-                NpcStartActionSerialized actionSerialized = new TalkAction((int) npcId,
-                                                                           (int) dialogQuestionMessage.messageId);
+                var action = new NpcTalkAction
+                                 {
+                                     Npc = NpcManager.Instance.GetNpcTemplate(npcId),
+                                     Message = currentMessage
+                                 };
 
-                SerializeToXml(
-                    GetDirectoryPath(client, NpcActionsDir) + client.CurrentMap + "_" + npcId + "_" + actionId + ".xml",
-                    actionSerialized);
+
+                ExecuteIOTask(() =>
+                                  {
+                                      if (action.Npc.Actions.Count(entry => entry is NpcTalkAction) > 0)
+                                          return;
+
+                                      action.Npc.Actions.Add(action);
+
+                                      action.Save();
+                                      action.Npc.Save();
+
+                                      client.SendChatMessage("Npc action added");
+                                  });
             }
         }
 
@@ -160,18 +198,24 @@ namespace Stump.Tools.Proxy.Data
             if (client.GuessNpcReply == null)
                 return;
 
-            uint replyId = client.GuessNpcReply.replyId;
+            int replyId = client.GuessNpcReply.replyId;
             client.GuessNpcReply = null;
 
-            var npcReply = new NpcDialogReply(replyId, new ActionDialogLeave());
+            var npcReply = new EndDialogReply {ReplyId = replyId, Message = client.LastNpcMessage};
 
-            if (!Directory.Exists(Output + NpcRepliesDir))
-            {
-                Directory.CreateDirectory(Output + NpcRepliesDir);
-            }
 
-            SerializeToXml(Output + NpcRepliesDir + replyId + ".xml",
-                           npcReply);
+            ExecuteIOTask(() =>
+                              {
+                                  if (client.LastNpcMessage.Replies.Count(entry => entry is EndDialogReply &&
+                                                                                   ( entry as EndDialogReply ).ReplyId == npcReply.ReplyId) > 0)
+                                      return;
+
+                                  npcReply.Save();
+                                  client.LastNpcMessage.Replies.Add(npcReply);
+                                  client.LastNpcMessage.Save();
+
+                                  client.SendChatMessage("Npc reply added");
+                              });
         }
 
         public static void BuildActionNpcShop(WorldClient client, ExchangeStartOkNpcShopMessage npcShopMessage)
@@ -182,18 +226,35 @@ namespace Stump.Tools.Proxy.Data
             if (client.GuessNpcFirstAction == null)
                 return;
 
-            uint actionId = client.GuessNpcFirstAction.npcActionId;
-            uint npcId = client.MapNpcs[client.GuessNpcFirstAction.npcId].npcId;
+            int actionId = client.GuessNpcFirstAction.npcActionId;
+            int npcId = client.MapNpcs[client.GuessNpcFirstAction.npcId].npcId;
             client.GuessNpcFirstAction = null;
 
-            NpcStartActionSerialized action = new ShopAction((int) npcId, npcShopMessage.tokenId,
-                                                             npcShopMessage.objectsInfos.Select(
-                                                                 entry => new ItemToSellInNpcShop(entry)).ToList());
+            var action = new NpcBuySellAction
+                             {
+                                 Npc = NpcManager.Instance.GetNpcTemplate(npcId),
+                                 Items = npcShopMessage.objectsInfos.Select(
+                                     entry =>
+                                     new NpcItem
+                                         {
+                                             Item = ItemManager.Instance.GetTemplate(entry.objectGID),
+                                             Npc = NpcManager.Instance.GetNpcTemplate(npcId),
+                                             BuyCriterion = string.Empty,
+                                             CustomPrice = entry.objectPrice
+                                         }).ToList()
+                             };
 
-            SerializeToXml(
-                GetDirectoryPath(client, NpcActionsDir) + client.CurrentMap + "_" + npcId + "_" +
-                actionId + ".xml",
-                action);
+            ExecuteIOTask(() =>
+                              {
+                                  if (action.Npc.Actions.Count(entry => entry is NpcBuySellAction) > 0)
+                                      return;
+
+                                  action.Save();
+                                  action.Npc.Actions.Add(action);
+                                  action.Npc.Save();
+
+                                  client.SendChatMessage("Npc shop added");
+                              });
         }
 
         public static void HandleActorInformations(WorldClient client, GameRolePlayActorInformations actorInformations)
@@ -204,57 +265,52 @@ namespace Stump.Tools.Proxy.Data
 
         public static void HandleNpcInformations(WorldClient client, GameRolePlayNpcInformations npcInformations)
         {
-            SerializeToXml(
-                GetDirectoryPath(client, NpcDir) + client.CurrentMap + "_" + npcInformations.npcId + ".xml",
-                new NpcSerialized(client.CurrentMap, npcInformations));
+            var spawn = new NpcSpawn
+                            {
+                                CellId = npcInformations.disposition.cellId,
+                                Direction = (DirectionsEnum) npcInformations.disposition.direction,
+                                MapId = client.CurrentMap.Id,
+                                Template = NpcManager.Instance.GetNpcTemplate(npcInformations.npcId),
+                                Look = npcInformations.look,
+                            };
+
+            ExecuteIOTask(() =>
+                              {
+                                  if (NpcManager.Instance.GetOneNpcSpawn(entry =>
+                                                                         entry.CellId == spawn.CellId &&
+                                                                         entry.Direction == spawn.Direction &&
+                                                                         entry.MapId == spawn.MapId) != null)
+                                      return;
+
+                                  NpcManager.Instance.AddNpcSpawn(spawn);
+                                  client.SendChatMessage("Npc added");
+                              });
         }
 
         public static void HandleInteractiveObject(WorldClient client, InteractiveElement interactiveElement)
         {
-            SerializeToXml(
-                GetDirectoryPath(client, InteractiveObjectsDir) + client.CurrentMap + "_" + interactiveElement.elementId +
-                ".xml",
-                new InteractiveElementSerialized(client.CurrentMap, interactiveElement));
+            var ioSpawn = new InteractiveSpawn
+                              {
+                                  Template = InteractiveManager.Instance.GetTemplate(interactiveElement.elementTypeId),
+                                  ElementId = interactiveElement.elementId,
+                                  MapId = client.CurrentMap.Id,
+                              };
+
+            ExecuteIOTask(() =>
+                              {
+                                  if (InteractiveManager.Instance.GetOneSpawn(entry =>
+                                                                              entry.MapId == ioSpawn.MapId &&
+                                                                              entry.ElementId == ioSpawn.ElementId) != null)
+                                      return;
+
+                                  InteractiveManager.Instance.AddInteractiveSpawn(ioSpawn);
+                                  client.SendChatMessage("Interactive Object added");
+                              });
         }
 
-        public static string GetDirectoryPath(WorldClient client, string specificDirectory)
+        public static void ExecuteIOTask(Action action)
         {
-            string zoneName = ZonesManager.GetRegionNameByMap(client.CurrentMap);
-
-            if (!Directory.Exists(Output + specificDirectory))
-            {
-                Directory.CreateDirectory(Output + specificDirectory);
-            }
-
-            if (!Directory.Exists(Output + specificDirectory + zoneName))
-            {
-                Directory.CreateDirectory(Output + specificDirectory + zoneName);
-            }
-
-            return Output + specificDirectory + zoneName + "/";
-        }
-
-        public static string GetDirectoryPath(WorldClient client, uint mapId, string specificDirectory)
-        {
-            string zoneName = ZonesManager.GetRegionNameByMap(mapId);
-
-            if (!Directory.Exists(Output + specificDirectory))
-            {
-                Directory.CreateDirectory(Output + specificDirectory);
-            }
-
-            if (!Directory.Exists(Output + specificDirectory + zoneName))
-            {
-                Directory.CreateDirectory(Output + specificDirectory + zoneName);
-            }
-
-            return Output + specificDirectory + zoneName + "/";
-        }
-
-        public static void SerializeToXml<T>(string path, T item)
-        {
-            if (!File.Exists(path))
-                XmlUtils.Serialize(path, item);
+            Proxy.Instance.IOTaskPool.EnqueueTask(action);
         }
     }
 }

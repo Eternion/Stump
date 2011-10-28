@@ -7,7 +7,7 @@ using Stump.Server.WorldServer.Worlds.Dialogs.Npcs;
 namespace Stump.Server.WorldServer.Database.Npcs.Replies
 {
     [ActiveRecord(DiscriminatorValue = "Dialog")]
-    public class NpcContinueDialog : NpcReply
+    public class ContinueDialogReply : NpcReply
     {
         [BelongsTo("NextMessageId", Cascade = CascadeEnum.Delete)]
         public NpcMessage NextMessage

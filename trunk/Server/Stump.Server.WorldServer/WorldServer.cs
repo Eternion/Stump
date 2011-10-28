@@ -59,7 +59,7 @@ namespace Stump.Server.WorldServer
             Name = "stump_world",
             User = "root",
             Password = "",
-            UpdateFileDir = "./sql_update/world/",
+            UpdateFileDir = "./sql_update/",
         };
 
         public WorldServer()
@@ -126,7 +126,7 @@ namespace Stump.Server.WorldServer
             return new WorldClient(s);
         }
 
-        public override void OnShutdown()
+        protected override void OnShutdown()
         {
             World.Instance.Save();
         }

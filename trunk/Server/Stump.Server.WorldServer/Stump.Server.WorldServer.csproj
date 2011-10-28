@@ -124,9 +124,11 @@
     <Compile Include="Database\Npcs\NpcReply.cs" />
     <Compile Include="Database\Npcs\NpcSpawn.cs" />
     <Compile Include="Database\Npcs\NpcTemplate.cs" />
-    <Compile Include="Database\Npcs\Replies\NpcContinueDialog.cs" />
-    <Compile Include="Database\Npcs\Replies\NpcEndDialog.cs" />
+    <Compile Include="Database\Npcs\Replies\ContinueDialogReply.cs" />
+    <Compile Include="Database\Npcs\Replies\EndDialogReply.cs" />
     <Compile Include="Database\Spells\ISpellRecord.cs" />
+    <Compile Include="Database\World\Triggers\CellTriggerRecord.cs" />
+    <Compile Include="Database\World\Triggers\TeleportTriggerRecord.cs" />
     <Compile Include="Handlers\Actions\ActionsFightHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsSequenceHandler.cs" />
@@ -257,9 +259,13 @@
     <Compile Include="Worlds\Dialogs\Npcs\NpcShopDialog.cs" />
     <Compile Include="Worlds\Effects\Handlers\Spells\Armor\DamageArmor.cs" />
     <Compile Include="Worlds\Effects\Handlers\Spells\Armor\SpellReflection.cs" />
-    <Compile Include="Worlds\Effects\Handlers\Spells\Buffs\RegainAP.cs" />
-    <Compile Include="Worlds\Effects\Handlers\Spells\Debuffs\RemoveAP.cs" />
+    <Compile Include="Worlds\Effects\Handlers\Spells\Buffs\APBuff.cs" />
+    <Compile Include="Worlds\Effects\Handlers\Spells\Buffs\MPBuff.cs" />
+    <Compile Include="Worlds\Effects\Handlers\Spells\Buffs\StatsBuff.cs" />
+    <Compile Include="Worlds\Effects\Handlers\Spells\Debuffs\APDebuff.cs" />
+    <Compile Include="Worlds\Effects\Handlers\Spells\Debuffs\MPDebuff.cs" />
     <Compile Include="Worlds\Effects\Handlers\Spells\Debuffs\Resistances.cs" />
+    <Compile Include="Worlds\Effects\Handlers\Spells\Debuffs\StatsDebuff.cs" />
     <Compile Include="Worlds\Effects\Handlers\Spells\Marks\GlyphSpawn.cs" />
     <Compile Include="Worlds\Effects\Handlers\Spells\Marks\TrapSpawn.cs" />
     <Compile Include="Worlds\Effects\Handlers\Spells\Move\Pull.cs" />
@@ -321,6 +327,7 @@
     <Compile Include="Worlds\Interactives\InteractiveManager.cs" />
     <Compile Include="Worlds\Interactives\Skills\Skill.cs" />
     <Compile Include="Worlds\Interactives\Skills\SkillTeleport.cs" />
+    <Compile Include="Worlds\Maps\Cells\Triggers\CellTrigger.cs" />
     <Compile Include="Worlds\Maps\Cells\Shapes\Cone.cs" />
     <Compile Include="Worlds\Maps\Cells\Shapes\Cross.cs" />
     <Compile Include="Worlds\Maps\Cells\Shapes\DirectionsEnum.cs" />
@@ -330,6 +337,9 @@
     <Compile Include="Worlds\Maps\Cells\Shapes\Lozenge.cs" />
     <Compile Include="Worlds\Maps\Cells\Shapes\Square.cs" />
     <Compile Include="Worlds\Maps\Cells\Shapes\Zone.cs" />
+    <Compile Include="Worlds\Maps\Cells\Triggers\CellTriggerManager.cs" />
+    <Compile Include="Worlds\Maps\Cells\Triggers\CellTriggerType.cs" />
+    <Compile Include="Worlds\Maps\Cells\Triggers\TeleportTrigger.cs" />
     <Compile Include="Worlds\Notifications\Notification.cs" />
     <Compile Include="Worlds\Parties\Party.cs" />
     <Compile Include="Worlds\Parties\PartyInvitation.cs" />

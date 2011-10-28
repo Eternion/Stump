@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Worlds.Dialogs.Npcs
 
         public void Reply(short replyId)
         {
-            var reply = CurrentMessage.Replies.Where(entry => entry.Id == replyId).FirstOrDefault();
+            var reply = CurrentMessage.Replies.Where(entry => entry.ReplyId == replyId).FirstOrDefault();
 
             if (reply != null)
                 Reply(reply);

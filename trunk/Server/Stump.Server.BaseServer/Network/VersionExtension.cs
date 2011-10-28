@@ -29,25 +29,25 @@ namespace Stump.Server.BaseServer.Network
         /// <summary>
         ///   Define the severity of the client version checking. Set to Light/NoCheck if you have any bugs with it.
         /// </summary>
-        [Variable]
+        [Variable(true)]
         public static VersionCheckingSeverity Severity = VersionCheckingSeverity.Light;
 
         /// <summary>
         /// Version for the client. 
         /// </summary>
-        [Variable]
-        public static Version ExpectedVersion = new Version(2, 4, 2, 50422, 1, (sbyte) BuildTypeEnum.RELEASE);
+        [Variable(true)]
+        public static Version ExpectedVersion = new Version(2, 4, 4, 50860, 1, (sbyte) BuildTypeEnum.RELEASE);
 
         /// <summary>
         /// Actual version
         /// </summary>
-        [Variable]
+        [Variable(true)]
         public static int ActualProtocol = 1412;
 
         /// <summary>
         /// Required version
         /// </summary>
-        [Variable]
+        [Variable(true)]
         public static int ProtocolRequired = 1409;
 
         /// <summary>

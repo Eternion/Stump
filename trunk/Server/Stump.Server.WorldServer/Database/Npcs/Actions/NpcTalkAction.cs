@@ -18,11 +18,19 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
             }
         }
 
+        [BelongsTo("MessageId")]
+        public NpcMessage Message
+        {
+            get;
+            set;
+        }
+
         public override void Execute(Npc npc, Character character)
         {
             var dialog = new NpcDialog(character, npc);
 
             dialog.Open();
+            dialog.ChangeMessage(Message);
         }
     }
 }

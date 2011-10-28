@@ -127,9 +127,9 @@ namespace Stump.Server.BaseServer.Database
                 throw new Exception("Cannot access to database. Database's name is not defined");
 
             var connectionInfos = m_config.GetConnectionInfo();
-
+            connectionInfos.Add("show_sql", "true");
             m_globalConfig.Add(m_recordBaseType, connectionInfos);
-
+            
             var recordsType = ActiveRecordHelper.GetTables(m_assembly, m_recordBaseType);
 
             m_globalTypes.AddRange(recordsType);
@@ -275,7 +275,8 @@ namespace Stump.Server.BaseServer.Database
 
                 if (files.Count() == 0) // it's theoretically not possible
                     throw new FileNotFoundException("The update file isn't found");
-
+                
+                // why does I have a null ref exception there ?????
                 ActiveRecordStarter.CreateSchemaFromFile(files.First());
             }
 

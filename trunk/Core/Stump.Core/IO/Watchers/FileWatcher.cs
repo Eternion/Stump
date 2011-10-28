@@ -24,18 +24,22 @@ namespace Stump.Core.IO.Watchers
             Deleted += OnDeleted;
             Created += OnCreated;
             Changed += OnChanged;
+
+            EnableRaisingEvents = true;
         }
 
         private void OnChanged(object sender, FileSystemEventArgs e)
         {
-            if (e.FullPath == FullPath && Watching && Type == WatcherType.Modification &&
+            if (System.IO.Path.GetFullPath(e.FullPath) == FullPath && Watching && Type == WatcherType.Modification &&
                 (DateTime.Now - m_lastModification).TotalMilliseconds > 100d) // it's a hack because sometimes it raises the event twice
             {
                 m_lastModification = DateTime.Now;
-
+                EnableRaisingEvents = false;
                 Watching = false;
                 Action(FullPath);
                 Watching = true;
+                EnableRaisingEvents = true;
+
             }
         }
 

@@ -2,17 +2,18 @@
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
-using Stump.DofusProtocol.Classes;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.WorldServer.Global.Maps;
+using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Worlds.Maps.Cells;
 using Stump.Tools.Proxy.Data;
 using Stump.Tools.Proxy.Network;
+using ServerWorld = Stump.Server.WorldServer.Worlds.World;
 
 namespace Stump.Tools.Proxy.Handlers.World
 {
     public class MapDataHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof (MapComplementaryInformationsDataMessage))]
+        [WorldHandler(MapComplementaryInformationsDataMessage.Id)]
         public static void HandleMapComplementaryInformationsDataMessage(WorldClient client,
                                                                          MapComplementaryInformationsDataMessage message)
         {
@@ -20,9 +21,9 @@ namespace Stump.Tools.Proxy.Handlers.World
 
             client.MapNpcs.Clear();
             client.MapIOs.Clear();
-            client.CurrentMap = message.mapId;
+            client.CurrentMap = ServerWorld.Instance.GetMap(message.mapId);
 
-            Parallel.ForEach(message.actors, actor =>
+            foreach(var actor in message.actors)
             {
                 DataFactory.HandleActorInformations(client, actor);
 
@@ -32,14 +33,14 @@ namespace Stump.Tools.Proxy.Handlers.World
                 else if (actor is GameRolePlayCharacterInformations &&
                          (actor as GameRolePlayCharacterInformations).contextualId == client.CharacterInformations.id)
                     client.Disposition = actor.disposition;
-            });
+            }
 
-            Parallel.ForEach(message.interactiveElements, entry =>
+            foreach(var entry in message.interactiveElements)
             {
                 DataFactory.HandleInteractiveObject(client, entry);
 
-                client.MapIOs.Add((int) entry.elementId, entry);
-            });
+                client.MapIOs.Add(entry.elementId, entry);
+            }
 
             client.GuessCellTrigger = null;
             client.GuessNpcFirstAction = null;
@@ -47,10 +48,13 @@ namespace Stump.Tools.Proxy.Handlers.World
             client.GuessSkillAction = null;
         }
 
-        [WorldHandler(typeof (GameMapMovementMessage))]
+        [WorldHandler(GameMapMovementMessage.Id)]
         public static void HandleGameMapMovementConfirmMessage(WorldClient client, GameMapMovementMessage message)
         {
             client.Send(message);
+
+            if (message.actorId != client.CharacterInformations.id)
+                return;
 
             var cell = (ushort) (message.keyMovements.Last() & 4095);
 

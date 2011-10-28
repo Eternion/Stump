@@ -131,12 +131,12 @@ namespace Stump.Core.Xml.Config
                 throw new Exception(string.Format("Node already binded to a property : {0}", BindedProperty.Name));
 
             if (!fieldInfo.IsStatic)
-                throw new Exception(string.Format("A variable field have to be static : {0} is not static", BindedField.Name));
+                throw new Exception(string.Format("A variable field have to be static : {0} is not static", fieldInfo.Name));
 
             Attribute = fieldInfo.GetCustomAttribute<VariableAttribute>();
 
             if (Attribute == null)
-                throw new Exception(string.Format("{0} has no variable attribute", BindedField.Name));
+                throw new Exception(string.Format("{0} has no variable attribute", fieldInfo.Name));
 
             BindedField = fieldInfo;
         }

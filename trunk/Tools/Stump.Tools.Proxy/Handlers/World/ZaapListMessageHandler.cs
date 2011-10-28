@@ -6,7 +6,7 @@ namespace Stump.Tools.Proxy.Handlers.World
 {
     public class ZaapListMessageHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof (ZaapListMessage))]
+        [WorldHandler(ZaapListMessage.Id)]
         public static void HandleZaapListMessage(WorldClient client, ZaapListMessage message)
         {
             client.Send(message);

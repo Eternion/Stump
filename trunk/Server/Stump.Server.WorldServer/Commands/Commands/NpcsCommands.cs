@@ -57,7 +57,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            var npc = position.Map.SpawnNpc(template, position);
+            var npc = position.Map.SpawnNpc(template, position, template.Look);
 
             trigger.Reply("Npc {0} spawned", npc.Id);
         }

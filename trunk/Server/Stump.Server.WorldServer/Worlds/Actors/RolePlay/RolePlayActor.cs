@@ -1,6 +1,7 @@
 using System;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 
@@ -47,6 +48,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay
             return Teleport(destination);
         }
 
+        public bool Teleport(Map map, Cell cell)
+        {
+            return Teleport(new ObjectPosition(map, cell));
+        }
+
         public virtual bool Teleport(ObjectPosition destination)
         {
             if (IsMoving())
@@ -56,7 +62,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay
                 return MoveInstant(destination);
 
             Position.Map.Leave(this);
-            Position = destination;
+            Position = destination.Clone();
             Position.Map.Enter(this);
 
             NotifyMapChanged(Position.Map);

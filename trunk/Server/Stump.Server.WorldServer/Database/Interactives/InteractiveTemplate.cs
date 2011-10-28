@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
             set;
         }
 
-        [HasAndBelongsToMany(Table = "interactives_skills", ColumnKey = "InteractiveId", ColumnRef = "SkillId")]
+        [HasAndBelongsToMany(Table = "interactives_templates_skills", ColumnKey = "InteractiveId", ColumnRef = "SkillId")]
         public IList<SkillTemplate> Skills
         {
             get { return m_skills ?? (m_skills = new List<SkillTemplate>()); }

@@ -6,7 +6,7 @@ namespace Stump.Server.WorldServer
     /// </summary>
     public static class Definitions
     {
-        public const uint DatabaseRevision = 33;
+        public const uint DatabaseRevision = 36;
 
         public static string ConfigFilePath = "./world_config.xml";
         public static string SchemaFilePath = "./world_config.xsd";

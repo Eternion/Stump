@@ -6,7 +6,7 @@ namespace Stump.Tools.Proxy.Handlers.World
 {
     public class WorldHandlerAttribute : HandlerAttribute
     {
-        public WorldHandlerAttribute(Type message)
+        public WorldHandlerAttribute(uint message)
             : base(message)
         {
         }

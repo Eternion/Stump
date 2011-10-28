@@ -265,24 +265,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             protected set;
         }
 
-        public SequenceTypeEnum Sequence
-        {
-            get;
-            private set;
-        }
-
-        public FightSequenceAction LastSequenceAction
-        {
-            get;
-            set;
-        }
-
-        public bool IsSequencing
-        {
-            get;
-            private set;
-        }
-
         public bool IsReady
         {
             get;
@@ -500,12 +482,15 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         public virtual void CastSpell(Spell spell, Cell cell)
         {
+            if (!IsFighterTurn())
+                return;
+
             var spellLevel = spell.CurrentSpellLevel;
 
             if (!CanCastSpell(spell, cell))
                 return;
 
-            StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
+            Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
             var random = new AsyncRandom();
             var critical = RollCriticalDice(spellLevel);
@@ -850,6 +835,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             RemoveBuff(buff);
 
             buff.Remove();
+
+            FreeBuffId(buff.Id);
         }
 
         public void RemoveBuff(Buff buff)
@@ -857,6 +844,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             m_buffList.Remove(buff);
 
             NotifyBuffRemoved(buff);
+
+            FreeBuffId(buff.Id);
         }
 
         public void RemoveAndDispellAllBuffs()
@@ -883,9 +872,9 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
                 if (( triggerBuff.Trigger & trigger ) == trigger)
                 {
-                    StartSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
+                    Fight.StartSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
                     triggerBuff.Apply(trigger);
-                    EndSequence();
+                    Fight.EndSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
                 }
             }
         }
@@ -903,7 +892,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
             foreach (var buff in buffsToRemove)
             {
-                m_buffList.Remove(buff);
+                RemoveAndDispellBuff(buff);
             }
         }
 
@@ -917,64 +906,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                 fighter.DecrementBuffsDuration(this);
             }
         }
-
-        #endregion
-
-        #region Sequences
-
-        public bool StartSequence(SequenceTypeEnum sequenceType)
-        {
-            if (IsSequencing)
-                return false;
-
-            IsSequencing = true;
-            Sequence = sequenceType;
-            LastSequenceAction = FindSequenceEndAction(Sequence);
-
-            NotifySequenceStarted(sequenceType);
-
-            return true;
-        }
-
-        public bool EndSequence()
-        {
-            if (!IsSequencing)
-                return false;
-
-            IsSequencing = false;
-
-            NotifySequenceEnded(Sequence, LastSequenceAction);
-
-            return true;
-        }
-
-        public virtual void AcknowledgeAction()
-        {
-            switch (Sequence)
-            {
-                case SequenceTypeEnum.SEQUENCE_MOVE:
-                    StopMove();
-                    break;
-            }
-
-            NotifySequenceActionEnded(Sequence);
-        }
-
-        private static FightSequenceAction FindSequenceEndAction(SequenceTypeEnum sequenceTypeEnum)
-        {
-            switch (sequenceTypeEnum)
-            {
-                case SequenceTypeEnum.SEQUENCE_MOVE:
-                    return FightSequenceAction.Move;
-                case SequenceTypeEnum.SEQUENCE_SPELL:
-                    return FightSequenceAction.Spell;
-                case SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH:
-                    return FightSequenceAction.Death;
-                default:
-                    return FightSequenceAction.None;
-            }
-        }
-
 
         #endregion
 

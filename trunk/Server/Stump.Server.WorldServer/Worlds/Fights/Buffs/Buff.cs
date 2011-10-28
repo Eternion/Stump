@@ -1,3 +1,4 @@
+using System;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
 using Stump.Server.WorldServer.Worlds.Effects.Instances;
@@ -18,6 +19,20 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Buffs
             Spell = spell;
             Critical = critical;
             Dispelable = dispelable;
+
+            Duration = (short)Effect.Duration;
+        }
+
+        protected Buff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, short customActionId)
+        {
+            Id = id;
+            Target = target;
+            Caster = caster;
+            Effect = effect;
+            Spell = spell;
+            Critical = critical;
+            Dispelable = dispelable;
+            CustomActionId = customActionId;
 
             Duration = (short)Effect.Duration;
         }
@@ -71,6 +86,12 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Buffs
             private set;
         }
 
+        public short? CustomActionId
+        {
+            get;
+            private set;
+        }
+
         public virtual BuffType Type
         {
             get
@@ -88,11 +109,6 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Buffs
             }
         }
 
-        public abstract void Apply();
-        public abstract void Remove();
-
-        public abstract AbstractFightDispellableEffect GetAbstractFightDispellableEffect();
-
         /// <summary>
         /// Decrement Duration and return true whenever the buff is over
         /// </summary>
@@ -101,5 +117,18 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Buffs
         {
             return Duration-- <= 0;
         }
+
+        public abstract void Apply();
+        public abstract void Remove();
+
+        public virtual short GetActionId()
+        {
+            if (CustomActionId.HasValue)
+                return CustomActionId.Value;
+
+            return (short) Effect.EffectId;
+        }
+
+        public abstract AbstractFightDispellableEffect GetAbstractFightDispellableEffect();
     }
 }

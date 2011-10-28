@@ -6,7 +6,7 @@ namespace Stump.Tools.Proxy.Handlers.World
 {
     public class ProtocolRequiredMessageHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof(ProtocolRequired))]
+        [WorldHandler(ProtocolRequired.Id)]
         public static void ProtocolRequiredMessage(ProxyClient client, ProtocolRequired message)
         {
             if (!(client is WorldClient))

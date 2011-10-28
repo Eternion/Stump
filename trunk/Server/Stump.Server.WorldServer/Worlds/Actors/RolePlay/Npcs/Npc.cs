@@ -8,11 +8,12 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
 {
     public sealed class Npc : RolePlayActor
     {
-        public Npc(int id, NpcTemplate template, ObjectPosition position)
+        public Npc(int id, NpcTemplate template, ObjectPosition position, EntityLook look)
         {
             Id = id;
             Template = template;
             Position = position;
+            Look = look;
         }
 
         public NpcTemplate Template
@@ -34,11 +35,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
 
         public override EntityLook Look
         {
-            get { return Template.Look; }
-        }
-
-        public override ObjectPosition Position
-        {
             get;
             protected set;
         }
@@ -55,7 +51,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
 
         public bool CanInteractWith(NpcActionTypeEnum action, Character dialoguer)
         {
-            return Template.ActionsIds.Contains((uint)action) && dialoguer.Map == Position.Map;
+            return Template.ActionsIds.Contains((uint)action) && dialoguer.Map == Position.Map && Template.GetNpcAction(action) != null;
         }
 
         public void SpeakWith(Character dialoguer)

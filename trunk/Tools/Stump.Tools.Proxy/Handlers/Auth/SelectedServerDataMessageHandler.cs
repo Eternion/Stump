@@ -6,7 +6,7 @@ namespace Stump.Tools.Proxy.Handlers.Auth
 {
     public class SelectedServerDataMessageHandler : AuthHandlerContainer
     {
-        [AuthHandler(typeof (SelectedServerDataMessage))]
+        [AuthHandler(SelectedServerDataMessage.Id)]
         public static void HandleSelectedServerDataMessage(AuthClient client, SelectedServerDataMessage message)
         {
             WorldClient.PushTicket(message.ticket, message);
@@ -17,7 +17,7 @@ namespace Stump.Tools.Proxy.Handlers.Auth
                     serverId = message.serverId,
                     ticket = message.ticket,
                     address = Proxy.WorldAddress,
-                    port = (uint)Proxy.WorldPort
+                    port = (ushort) Proxy.WorldPort
                 };
 
             client.Send(customMessage);

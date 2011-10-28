@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         public EffectBase(short id, int targetId, int duration, int random, int modificator, bool trigger, bool hidden, uint zoneSize, uint zoneShape)
         {
             Id = id;
-            TargetId = targetId;
+            Targets = (SpellTargetType) targetId;
             Duration = duration;
             Random = random;
             Modificator = modificator;
@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
             Id = (short) effect.effectId;
             m_template = EffectManager.Instance.GetTemplate(Id);
 
-            TargetId = effect.targetId;
+            Targets = (SpellTargetType) effect.targetId;
             Duration = effect.duration;
             Random = effect.random;
             Modificator = effect.modificator;
@@ -78,7 +78,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
             protected set { m_template = value; }
         }
 
-        public int TargetId
+        public SpellTargetType Targets
         {
             get;
             set;

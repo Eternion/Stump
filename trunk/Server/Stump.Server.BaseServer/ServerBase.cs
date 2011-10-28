@@ -336,7 +336,7 @@ namespace Stump.Server.BaseServer
 
         protected abstract BaseClient CreateClient(Socket s);
 
-        public virtual void OnShutdown()
+        protected virtual void OnShutdown()
         {
             CyclicTaskPool.Clear();
             IOTaskPool.Clear();

@@ -45,9 +45,7 @@ namespace Stump.DofusProtocol.Types
 			flag1 = BooleanByteWrapper.SetFlag(flag1, 2, pvpEnabled);
 			writer.WriteByte(flag1);
 			writer.WriteInt(mapId);
-			writer.WriteByte(flag1);
 			writer.WriteShort(subAreaId);
-			writer.WriteByte(flag1);
 		}
 		
 		public override void Deserialize(IDataReader reader)

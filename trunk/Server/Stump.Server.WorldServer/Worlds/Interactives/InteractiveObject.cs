@@ -25,11 +25,19 @@ namespace Stump.Server.WorldServer.Worlds.Interactives
             private set;
         }
 
+        public bool CanSelectSkill
+        {
+            get { return Template != null; }
+        }
+
         public int Id
         {
             get { return Spawn.ElementId; }
         }
 
+        /// <summary>
+        /// Can be null
+        /// </summary>
         public InteractiveTemplate Template
         {
             get { return Spawn.Template; }
@@ -37,7 +45,7 @@ namespace Stump.Server.WorldServer.Worlds.Interactives
 
         private void GenerateSkills()
         {
-            foreach (SkillTemplate skillTemplate in Template.Skills)
+            foreach (SkillTemplate skillTemplate in Spawn.GetSkills())
             {
                 int id = InteractiveManager.Instance.PopSkillId();
 
@@ -82,7 +90,7 @@ namespace Stump.Server.WorldServer.Worlds.Interactives
         public InteractiveElement GetInteractiveElement(Character character)
         {
             return
-               new InteractiveElement(Id, Template.Id, GetEnabledElementSkills(character), GetDisabledElementSkills(character));
+                new InteractiveElement(Id, Template != null ? Template.Id : -1, GetEnabledElementSkills(character), GetDisabledElementSkills(character));
         }
     }
 }

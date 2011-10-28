@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Pool;
@@ -33,6 +34,27 @@ namespace Stump.Server.WorldServer.Worlds.Interactives
         public IEnumerable<InteractiveSpawn> GetInteractiveSpawns()
         {
             return m_interactivesSpawns.Values;
+        }
+
+        public InteractiveSpawn GetOneSpawn(Predicate<InteractiveSpawn> predicate)
+        {
+            return m_interactivesSpawns.Values.Where(entry => predicate(entry)).FirstOrDefault();
+        }
+
+        public InteractiveTemplate GetTemplate(int id)
+        {
+            InteractiveTemplate template;
+            if (m_interactivesTemplates.TryGetValue(id, out template))
+                return template;
+
+            return template;
+        }
+
+        public void AddInteractiveSpawn(InteractiveSpawn spawn)
+        {
+            spawn.Save();
+
+            m_interactivesSpawns.Add(spawn.Id, spawn);
         }
     }
 }

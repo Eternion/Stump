@@ -7,7 +7,7 @@ namespace Stump.Tools.Proxy.Handlers.World
 {
     public class NpcsHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof (NpcDialogQuestionMessage))]
+        [WorldHandler(NpcDialogQuestionMessage.Id)]
         public static void HandleNpcDialogQuestionMessage(WorldClient client, NpcDialogQuestionMessage message)
         {
             client.Send(message);
@@ -15,7 +15,7 @@ namespace Stump.Tools.Proxy.Handlers.World
             DataFactory.HandleNpcQuestion(client, message);
         }
 
-        [WorldHandler(typeof(NpcDialogReplyMessage))]
+        [WorldHandler(NpcDialogReplyMessage.Id)]
         public static void HandleNpcDialogReplyMessage(WorldClient client, NpcDialogReplyMessage message)
         {
             client.GuessNpcReply = message;
@@ -23,7 +23,7 @@ namespace Stump.Tools.Proxy.Handlers.World
             client.Server.Send(message);
         }
 
-        [WorldHandler(typeof (LeaveDialogMessage))]
+        [WorldHandler(LeaveDialogMessage.Id)]
         public static void HandleLeaveDialogMessage(WorldClient client, LeaveDialogMessage message)
         {
             client.Send(message);
@@ -31,7 +31,7 @@ namespace Stump.Tools.Proxy.Handlers.World
             DataFactory.BuildActionNpcLeave(client, message);
         }
 
-        [WorldHandler(typeof(LeaveDialogRequestMessage))]
+        [WorldHandler(LeaveDialogRequestMessage.Id)]
         public static void HandleLeaveDialogRequestMessage(WorldClient client, LeaveDialogRequestMessage message)
         {
             client.GuessNpcReply = null;
@@ -39,7 +39,7 @@ namespace Stump.Tools.Proxy.Handlers.World
             client.Server.Send(message);
         }
 
-        [WorldHandler(typeof(NpcGenericActionRequestMessage))]
+        [WorldHandler(NpcGenericActionRequestMessage.Id)]
         public static void HandleNpcGenericActionRequestMessage(WorldClient client, NpcGenericActionRequestMessage message)
         {
             client.GuessNpcFirstAction = message;
@@ -48,7 +48,7 @@ namespace Stump.Tools.Proxy.Handlers.World
         }
 
 
-        [WorldHandler(typeof (ExchangeStartOkNpcShopMessage))]
+        [WorldHandler(ExchangeStartOkNpcShopMessage.Id)]
         public static void HandleExchangeStartOkNpcShopMessage(WorldClient client, ExchangeStartOkNpcShopMessage message)
         {
             client.Send(message);

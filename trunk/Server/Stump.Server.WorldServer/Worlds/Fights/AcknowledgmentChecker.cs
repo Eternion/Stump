@@ -12,8 +12,8 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         /// <summary>
         /// Delay in ms before a fighter is declared as lagger.
         /// </summary>
-        [Variable]
-        public const int CheckTimeout = 5000;
+        [Variable(true)]
+        public static readonly int CheckTimeout = 5000;
 
         public event Action<AcknowledgmentChecker, FightActor, FightSequenceAction> Success;
 

@@ -12,7 +12,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
         private Dictionary<uint, NpcSpawn> m_npcsSpawns;
         private Dictionary<int, NpcTemplate> m_npcsTemplates;
         private Dictionary<uint, NpcAction> m_npcsActions;
-        private Dictionary<uint, NpcReply> m_npcsReplies;
+        private Dictionary<int, NpcReply> m_npcsReplies;
         private Dictionary<int, NpcMessage> m_npcsMessages;
 
         [Initialization(InitializationPass.Fifth)]
@@ -32,6 +32,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
                 return spawn;
 
             return spawn;
+        }
+
+        public NpcSpawn GetOneNpcSpawn(Predicate<NpcSpawn> predicate)
+        {
+            return m_npcsSpawns.Values.Where(entry => predicate(entry)).FirstOrDefault();
         }
 
         public IEnumerable<NpcSpawn> GetNpcSpawns()
@@ -66,6 +71,13 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
                 return message;
 
             return message;
+        }
+
+        public void AddNpcSpawn(NpcSpawn spawn)
+        {
+            spawn.Save();
+
+            m_npcsSpawns.Add(spawn.Id, spawn);
         }
     }
 }

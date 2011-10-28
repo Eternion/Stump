@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -9,18 +10,27 @@ using System.Threading;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
+using Stump.Core.Pool.Task;
 using Stump.Core.Reflection;
 using Stump.Core.Threading;
-using Stump.Core.Xml;
 using Stump.Core.Xml.Config;
-using Stump.DofusProtocol.Messages.Framework.IO;
-using Stump.DofusProtocol;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.BaseServer;
+using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.Network;
+using Stump.Server.WorldServer;
+using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.I18n;
+using Stump.Server.WorldServer.Worlds;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Worlds.Effects;
+using Stump.Server.WorldServer.Worlds.Interactives;
+using Stump.Server.WorldServer.Worlds.Items;
+using Stump.Server.WorldServer.Worlds.Maps.Cells.Triggers;
 using Stump.Tools.Proxy.Data;
 using Stump.Tools.Proxy.Network;
+using Definitions = Stump.Server.BaseServer.Definitions;
 
 namespace Stump.Tools.Proxy
 {
@@ -55,19 +65,13 @@ namespace Stump.Tools.Proxy
             private set;
         }
 
-        public MessageListener MessageListenerAuth
+        public ClientManager AuthClientManager
         {
             get;
             private set;
         }
 
-        public MessageListener MessageListenerWorld
-        {
-            get;
-            private set;
-        }
-
-        public WorkerManager WorkerManager
+        public ClientManager WorldClientManager
         {
             get;
             private set;
@@ -85,6 +89,18 @@ namespace Stump.Tools.Proxy
             private set;
         }
 
+        public DatabaseAccessor DatabaseAccessor
+        {
+            get;
+            private set;
+        }
+
+        public TaskPool IOTaskPool
+        {
+            get;
+            private set;
+        }
+
         public bool Running
         {
             get;
@@ -95,50 +111,94 @@ namespace Stump.Tools.Proxy
         {
             AppDomain.CurrentDomain.UnhandledException += (OnUnhandledException);
 
-            m_loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToDictionary(entry => entry.GetName().Name);
-            AppDomain.CurrentDomain.AssemblyLoad += OnAssemblyLoad;
-
             NLogHelper.DefineLogProfile(true, true);
             NLogHelper.EnableLogging();
             logger = LogManager.GetCurrentClassLogger();
 
+            logger.Info("Load all assemblies...");
+
+            PreLoadReferences(Assembly.GetExecutingAssembly());
+            m_loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToDictionary(entry => entry.GetName().Name);
+            AppDomain.CurrentDomain.AssemblyLoad += OnAssemblyLoad;
+
             logger.Info("Initializing Configuration...");
-            Config = new XmlConfig(
-                "proxy_config.xml",
-                "proxy_config.xsd");
-            Config.DefinesVariables(ref m_loadedAssemblies);
+            Config = new XmlConfig("proxy_config.xml");
+            Config.AddAssemblies(m_loadedAssemblies.Values.ToArray());
+
+            if (!File.Exists("proxy_config.xml"))
+                Config.Create();
+            else
+                Config.Load();
 
             logger.Info("Initializing Network Interfaces...");
             MessageQueue = new MessageQueue(false);
             HandlerManager = new HandlerManager();
-            WorkerManager = new WorkerManager(MessageQueue, HandlerManager);
-
-            MessageListenerAuth = new MessageListener(MessageQueue, CreateClientAuth, AuthAddress, AuthPort);
-            MessageListenerAuth.Initialize();
-
-            MessageListenerWorld = new MessageListener(MessageQueue, CreateClientWorld, WorldAddress, WorldPort);
-            MessageListenerWorld.Initialize();
+            HandlerManager.RegisterAll(Assembly.GetExecutingAssembly());
+            IOTaskPool = new TaskPool();
 
             logger.Info("Initializing Network Messages...");
             MessageReceiver.Initialize();
             ProtocolTypeManager.Initialize();
-            HandlerManager.RegisterAll(typeof(Proxy).Assembly);
+            AuthClientManager = new ClientManager();
+            AuthClientManager.Initialize(CreateClientAuth);
+            WorldClientManager = new ClientManager();
+            WorldClientManager.Initialize(CreateClientWorld);
 
-            logger.Info("Loading Static Data...");
-            ZonesManager.Initialize();
+            logger.Info("Loading Database...");
+            DatabaseAccessor = new DatabaseAccessor(
+                WorldServer.DatabaseConfiguration,
+                Server.WorldServer.Definitions.DatabaseRevision,
+                typeof(WorldBaseRecord<>),
+                typeof(WorldBaseRecord<>).Assembly);
+            DatabaseAccessor.Initialize();
+
+            logger.Info("Open Database...");
+            DatabaseAccessor.OpenDatabase();
+
+            logger.Info("Loading some others stuff...");
+            TextManager.Instance.Intialize();
+            EffectManager.Instance.Initialize();
+            ItemManager.Instance.Initialize();
+            InteractiveManager.Instance.Initialize();
+            NpcManager.Instance.Initialize();
+            CellTriggerManager.Instance.Initialize();
+            World.Instance.Initialize();
 
             Start();
+        }
+
+        
+        /// <summary>
+        /// Load before the runtime all referenced assemblies
+        /// </summary>
+        private static void PreLoadReferences(Assembly executingAssembly)
+        {
+            foreach (var assemblyName in executingAssembly.GetReferencedAssemblies())
+            {
+                if (AppDomain.CurrentDomain.GetAssemblies().Count(entry => entry.GetName().FullName == assemblyName.FullName) <= 0)
+                {
+                    var loadedAssembly = Assembly.Load(assemblyName);
+
+                    PreLoadReferences(loadedAssembly);
+                }
+            }
+
         }
 
         public void Start()
         {
             logger.Info("Start listening on port : " + AuthPort + "...");
-            MessageListenerAuth.Start();
+            AuthClientManager.Start(AuthAddress, AuthPort);
 
             logger.Info("Start listening on port : " + WorldPort + "...");
-            MessageListenerWorld.Start();
+            WorldClientManager.Start(WorldAddress, WorldPort);
 
             Running = true;
+        }
+
+        public void Update()
+        {
+            IOTaskPool.ProcessUpdate();
         }
 
         public BaseClient CreateClientAuth(Socket s)

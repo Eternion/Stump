@@ -773,7 +773,7 @@
         /// <summary>
         /// Sets a grade #2 glyph
         /// </summary>
-        Effect_402 = 402,
+        Effect_Glyph_402 = 402,
         /// <summary>
         /// Kills and replaces with a summon
         /// </summary>

@@ -1,9 +1,12 @@
 using System;
+using System.Diagnostics;
+using Stump.Core.Extensions;
 using Stump.Core.IO;
+using System.Linq;
 
 namespace Stump.Server.BaseServer.Network
 {
-    class MessagePart
+    public class MessagePart
     {
         /// <summary>
         /// Set to true when the message is whole
@@ -110,15 +113,31 @@ namespace Stump.Server.BaseServer.Network
                 // still miss some bytes ...
                 if (Data.Length + reader.BytesAvailable < Length)
                 {
+                    Debug.WriteLine("Data.Length + reader.BytesAvailable < Length");
+                    Debug.WriteLine("BytesAvailable = " + reader.BytesAvailable + " ; Data.Length = " + Data.Length);
+
                     Array.Resize(ref m_data, (int)( Data.Length + reader.BytesAvailable ));
-                    Array.Copy(reader.ReadBytes((int)reader.BytesAvailable), 0, Data, Data.Length, reader.BytesAvailable);
+                    var array = reader.ReadBytes((int)reader.BytesAvailable);
+                    Debug.WriteLine("array content : " + String.Join(" ", array.Select(entry => entry.ToString("X"))));
+
+                    Array.Copy(array, 0, Data, Data.Length, reader.BytesAvailable);
                 }
                 // there is enough bytes in the buffer to complete the message :)
                 if (Data.Length + reader.BytesAvailable >= Length)
                 {
+                    Debug.WriteLine("Data.Length + reader.BytesAvailable >= Length");
                     int bytesToRead = Length.Value - Data.Length;
+
+                    Debug.WriteLine("bytesToRead = " + bytesToRead + " ; Data.Length = " + Data.Length);
+
                     Array.Resize(ref m_data, Data.Length + bytesToRead);
-                    Array.Copy(reader.ReadBytes(bytesToRead), 0, Data, Data.Length, bytesToRead);
+                    var array = reader.ReadBytes(bytesToRead);
+
+                    Debug.WriteLine("array content : " + String.Join(" ", array.Select(entry => entry.ToString("X"))));
+
+                    Array.Copy(array, 0, Data, Data.Length - bytesToRead, bytesToRead);
+
+                    Debug.WriteLine("Data content : " + String.Join(" ", array.Select(entry => entry.ToString("X"))));
                 }
             }
 

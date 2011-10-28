@@ -67,6 +67,11 @@ namespace Stump.Core.Xml.Config
             }
         }
 
+        public string FilePath
+        {
+            get { return m_configPath; }
+        }
+
         public bool IgnoreUnloadedAssemblies
         {
             get;
@@ -85,7 +90,7 @@ namespace Stump.Core.Xml.Config
         public void Create(bool overwrite = false)
         {
             if (Loaded)
-                throw new Exception("Cannot create a new config file whenever the config file has been loaded");
+                Unload();
 
             if (m_assemblies.Count <= 0)
                 throw new Exception("No assemblies defined");
@@ -145,6 +150,14 @@ namespace Stump.Core.Xml.Config
             Loaded = true;
         }
 
+        private void Unload()
+        {
+            if (!Loaded)
+                return;
+
+            m_nodes.Clear();
+        }
+
         public void Load()
         {
             if (Loaded)
@@ -193,6 +206,31 @@ namespace Stump.Core.Xml.Config
 
             LoadNodes();
             AssignValuesFromNodes(true);
+        }
+
+        /// <summary>
+        /// Reload the config completely
+        /// </summary>
+        public void Reset()
+        {
+            if (!Loaded)
+                return;
+
+            if (m_assemblies.Count <= 0)
+                throw new Exception("No assemblies defined");
+
+            if (!File.Exists(m_configPath))
+                throw new FileNotFoundException("Config file is not found");
+
+            m_reader = new XmlTextReader(new MemoryStream(File.ReadAllBytes(m_configPath)));
+            m_document = new XmlDocument();
+            m_document.Load(m_reader);
+
+            if (!string.IsNullOrEmpty(m_schemaPath))
+                CheckSchema();
+
+            LoadNodes();
+            AssignValuesFromNodes(false);
         }
 
         public void Save()

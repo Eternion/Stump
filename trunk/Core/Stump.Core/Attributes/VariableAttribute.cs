@@ -8,7 +8,7 @@ namespace Stump.Core.Attributes
     {
         public VariableAttribute(bool definableByConfig = false)
         {
-            DefinableRunning = false;
+            DefinableRunning = definableByConfig;
         }
 
         ///<summary>

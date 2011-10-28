@@ -15,6 +15,13 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Buffs
             Caracteristic = caracteristic;
         }
 
+        public StatBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, short value, CaracteristicsEnum caracteristic, bool critical, bool dispelable, short customActionId)
+            : base(id, target, caster, effect, spell, critical, dispelable, customActionId)
+        {
+            Value = value;
+            Caracteristic = caracteristic;
+        }
+
         public short Value
         {
             get;
@@ -39,7 +46,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Buffs
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {
-            return new FightTemporaryBoostEffect(Id, Target.Id, Duration, (sbyte) (Dispelable ? 0 : 1), (short) Spell.Id, 0, Value);
+            return new FightTemporaryBoostEffect(Id, Target.Id, Duration, (sbyte) (Dispelable ? 0 : 1), (short) Spell.Id, 0, (short)System.Math.Abs(Value));
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
@@ -77,6 +78,16 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Triggers
         public override GameActionMark GetGameActionMark()
         {
             return new GameActionMark(Caster.Id, CastedSpell.Id, Id, (sbyte) Type, Shapes.Select(entry => entry.GetGameActionMarkedCell()));
+        }
+
+        public override GameActionMark GetHiddenGameActionMark()
+        {
+            return GetGameActionMark();
+        }
+
+        public override bool DoesSeeTrigger(FightActor fighter)
+        {
+            return true;
         }
     }
 }

@@ -64,17 +64,11 @@ namespace Stump.DofusProtocol.Types
 			flag1 = BooleanByteWrapper.SetFlag(flag1, 6, isIncarnationExperience);
 			writer.WriteByte(flag1);
 			writer.WriteDouble(experience);
-			writer.WriteByte(flag1);
 			writer.WriteDouble(experienceLevelFloor);
-			writer.WriteByte(flag1);
 			writer.WriteDouble(experienceNextLevelFloor);
-			writer.WriteByte(flag1);
 			writer.WriteInt(experienceFightDelta);
-			writer.WriteByte(flag1);
 			writer.WriteInt(experienceForGuild);
-			writer.WriteByte(flag1);
 			writer.WriteInt(experienceForMount);
-			writer.WriteByte(flag1);
 		}
 		
 		public override void Deserialize(IDataReader reader)

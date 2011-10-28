@@ -11,9 +11,9 @@ namespace Stump.Server.WorldServer.Handlers.Actions
                                                                   GameActionAcknowledgementMessage message)
         {
             // valid == true anyway
-            if (message.valid && client.ActiveCharacter.IsFighting())
+            if (message.valid && client.ActiveCharacter.IsFighting() && client.ActiveCharacter.Fighter.IsFighterTurn())
             {
-                client.ActiveCharacter.Fighter.AcknowledgeAction();
+                client.ActiveCharacter.Fighter.Fight.AcknowledgeAction();
             }
         }
     }

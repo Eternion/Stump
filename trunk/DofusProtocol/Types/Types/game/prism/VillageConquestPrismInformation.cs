@@ -40,9 +40,7 @@ namespace Stump.DofusProtocol.Types
 			flag1 = BooleanByteWrapper.SetFlag(flag1, 1, isInRoom);
 			writer.WriteByte(flag1);
 			writer.WriteShort(areaId);
-			writer.WriteByte(flag1);
 			writer.WriteSByte(areaAlignment);
-			writer.WriteByte(flag1);
 		}
 		
 		public virtual void Deserialize(IDataReader reader)

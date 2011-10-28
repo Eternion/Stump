@@ -6,7 +6,7 @@ namespace Stump.Tools.Proxy.Handlers.World
 {
     public class HelloGameMessageHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof (HelloGameMessage))]
+        [WorldHandler(HelloGameMessage.Id)]
         public static void HandleHelloGameMessage(WorldClient client, HelloGameMessage message)
         {
             client.Server.Send(new AuthenticationTicketMessage("fr", client.Ticket));

@@ -27,6 +27,23 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Buffs
             RemoveTrigger = removeTrigger;
         }
 
+        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, bool critical, bool dispelable, TriggerType trigger, TriggerBuffApplyHandler applyTrigger, short customActionId)
+            : base(id, target, caster, effect, spell, critical, dispelable, customActionId)
+        {
+            Trigger = trigger;
+            Dice = effect;
+            ApplyTrigger = applyTrigger;
+        }
+
+        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, bool critical, bool dispelable, TriggerType trigger, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger, short customActionId)
+            : base(id, target, caster, effect, spell, critical, dispelable, customActionId)
+        {
+            Trigger = trigger;
+            Dice = effect;
+            ApplyTrigger = applyTrigger;
+            RemoveTrigger = removeTrigger;
+        }
+
         public TriggerType Trigger
         {
             get;

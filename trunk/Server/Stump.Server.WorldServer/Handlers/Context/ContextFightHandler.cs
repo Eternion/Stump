@@ -301,13 +301,13 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameActionFightDispellableEffectMessage(WorldClient client, Buff buff)
         {
-            client.Send(new GameActionFightDispellableEffectMessage(buff.Effect.Id, buff.Caster.Id, buff.GetAbstractFightDispellableEffect()));
+            client.Send(new GameActionFightDispellableEffectMessage(buff.GetActionId(), buff.Caster.Id, buff.GetAbstractFightDispellableEffect()));
         }
 
-        public static void SendGameActionFightMarkCellsMessage(WorldClient client, MarkTrigger trigger)
+        public static void SendGameActionFightMarkCellsMessage(WorldClient client, MarkTrigger trigger, bool visible = true)
         {
             var action = trigger.Type == GameActionMarkTypeEnum.GLYPH ? ActionsEnum.ACTION_FIGHT_ADD_GLYPH_CASTING_SPELL : ActionsEnum.ACTION_FIGHT_ADD_TRAP_CASTING_SPELL;
-            client.Send(new GameActionFightMarkCellsMessage((short)action, trigger.Caster.Id, trigger.GetGameActionMark()));
+            client.Send(new GameActionFightMarkCellsMessage((short)action, trigger.Caster.Id, visible ? trigger.GetHiddenGameActionMark() : trigger.GetGameActionMark()));
         }
 
         public static void SendGameActionFightUnmarkCellsMessage(WorldClient client, MarkTrigger trigger)

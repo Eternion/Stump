@@ -6,8 +6,8 @@ namespace Stump.Tools.Proxy.Handlers.Auth
 {
     public class AuthHandlerAttribute : HandlerAttribute
     {
-        public AuthHandlerAttribute(Type message)
-            : base(message)
+        public AuthHandlerAttribute(uint messageId)
+            : base(messageId)
         {
         }
     }

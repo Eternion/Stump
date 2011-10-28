@@ -44,7 +44,7 @@ namespace Stump.Server.AuthServer
             Name = "stump_auth",
             User = "root",
             Password = "",
-            UpdateFileDir = "./sql_update/auth/",
+            UpdateFileDir = "./sql_update/",
         };
 
         public AuthServer() :
@@ -113,7 +113,7 @@ namespace Stump.Server.AuthServer
             StartTime = DateTime.Now;
         }
 
-        public override void OnShutdown()
+        protected override void OnShutdown()
         {
         }
 

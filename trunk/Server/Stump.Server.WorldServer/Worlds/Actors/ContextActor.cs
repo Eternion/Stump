@@ -36,10 +36,18 @@ namespace Stump.Server.WorldServer.Worlds.Actors
             }
         }
 
-        public virtual ObjectPosition Position
+        private ObjectPosition m_position;
+
+        public ObjectPosition Position
         {
-            get;
-            protected set;
+            get { return m_position; }
+            protected set {
+                if (m_position != null)
+                    m_position.PositionChanged -= NotifyPositionChanged;
+
+                m_position = value;
+                m_position.PositionChanged += NotifyPositionChanged;
+            }
         }
 
         public Map Map
@@ -111,8 +119,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors
 
         protected void NotifyStopMoving(MovementPath path, bool canceled)
         {
+            NotifyPositionChanged(Position);
+
             Action<ContextActor, MovementPath, bool> handler = StopMoving;
-            if (handler != null) handler(this, path, canceled);
+            if (handler != null)
+                handler(this, path, canceled);
         }
 
         public event Action<ContextActor, ObjectPosition> InstantMoved;
@@ -121,6 +132,14 @@ namespace Stump.Server.WorldServer.Worlds.Actors
         {
             Action<ContextActor, ObjectPosition> handler = InstantMoved;
             if (handler != null) handler(this, path);
+        }
+
+        public event Action<ContextActor, ObjectPosition> PositionChanged;
+
+        protected void NotifyPositionChanged(ObjectPosition position)
+        {
+            Action<ContextActor, ObjectPosition> handler = PositionChanged;
+            if (handler != null) handler(this, position);
         }
 
         private bool m_isMoving;

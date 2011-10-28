@@ -1,6 +1,8 @@
 using System;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Types;
+using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Database.Npcs
@@ -41,6 +43,47 @@ namespace Stump.Server.WorldServer.Database.Npcs
         {
             get;
             set;
+        }
+
+
+        private string m_lookAsString;
+        private EntityLook m_entityLook;
+
+        [Property("Look", NotNull = false)]
+        private string LookAsString
+        {
+            get
+            {
+                if (m_entityLook == null)
+                    return string.Empty;
+
+                if (string.IsNullOrEmpty(m_lookAsString))
+                    m_lookAsString = Look.ConvertToString();
+
+                return m_lookAsString;
+            }
+            set
+            {
+                m_lookAsString = value;
+
+                if (value != null)
+                    m_entityLook = m_lookAsString.ToEntityLook();
+            }
+        }
+
+        public EntityLook Look
+        {
+            get
+            {
+                return m_entityLook ?? Template.Look;
+            }
+            set
+            {
+                m_entityLook = value;
+
+                if (value != null)
+                    m_lookAsString = value.ConvertToString();
+            }
         }
 
         public ObjectPosition GetPosition()

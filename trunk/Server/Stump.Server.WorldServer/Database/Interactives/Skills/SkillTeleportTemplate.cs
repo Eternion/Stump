@@ -13,6 +13,8 @@ namespace Stump.Server.WorldServer.Database.Interactives.Skills
     [ActiveRecord(DiscriminatorValue = "Teleport")]
     public class SkillTeleportTemplate : SkillTemplate
     {
+        private bool m_mustRefreshPosition;
+
         private int m_cellId;
         private DirectionsEnum m_direction;
         private int m_mapId;
@@ -25,7 +27,7 @@ namespace Stump.Server.WorldServer.Database.Interactives.Skills
             set
             {
                 m_mapId = value;
-                RefreshPosition();
+                m_mustRefreshPosition = true;
             }
         }
 
@@ -36,7 +38,7 @@ namespace Stump.Server.WorldServer.Database.Interactives.Skills
             set
             {
                 m_cellId = value;
-                RefreshPosition();
+                m_mustRefreshPosition = true;
             }
         }
 
@@ -47,7 +49,7 @@ namespace Stump.Server.WorldServer.Database.Interactives.Skills
             set
             {
                 m_direction = value;
-                RefreshPosition();
+                m_mustRefreshPosition = true;
             }
         }
 
@@ -87,8 +89,10 @@ namespace Stump.Server.WorldServer.Database.Interactives.Skills
 
         public ObjectPosition GetPosition()
         {
-            if (m_position  == null)
+            if (m_position == null || m_mustRefreshPosition)
                 RefreshPosition();
+
+            m_mustRefreshPosition = false;
 
             return m_position;
         }

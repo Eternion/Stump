@@ -6,7 +6,7 @@ namespace Stump.Tools.Proxy.Handlers.World
 {
     public class ChatClientMultiMessageHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof (ChatClientMultiMessage))]
+        [WorldHandler(ChatClientMultiMessage.Id)]
         public static void ChatAbstractClientMessage(WorldClient client, ChatClientMultiMessage message)
         {
             // todo : process command

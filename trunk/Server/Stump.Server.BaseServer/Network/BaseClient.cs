@@ -64,7 +64,7 @@ namespace Stump.Server.BaseServer.Network
                logger.Debug("Attempt to send a packet when client isn't connected");
             }
 
-            SocketAsyncEventArgs args = ClientManager.Instance.PopWriteSocketAsyncArgs();
+            var args = PopWriteSocketAsyncArgs();
 
             byte[] data;
             using (var writer = new BigEndianWriter())
@@ -88,6 +88,26 @@ namespace Stump.Server.BaseServer.Network
             NotifyMessageSended(message);
         }
 
+        protected virtual SocketAsyncEventArgs PopWriteSocketAsyncArgs()
+        {
+            return ClientManager.Instance.PopWriteSocketAsyncArgs();
+        }
+
+        protected virtual void PushWriteSocketAsyncArgs(SocketAsyncEventArgs args)
+        {
+            ClientManager.Instance.PushWriteSocketAsyncArgs(args);
+        }
+
+        protected virtual SocketAsyncEventArgs PopReadSocketAsyncArgs()
+        {
+            return ClientManager.Instance.PopReadSocketAsyncArgs();
+        }
+
+        protected virtual void PushReadSocketAsyncArgs(SocketAsyncEventArgs args)
+        {
+            ClientManager.Instance.PushReadSocketAsyncArgs(args);
+        }
+
         #endregion
 
         public event Action<BaseClient, Message> MessageReceived;
@@ -95,6 +115,8 @@ namespace Stump.Server.BaseServer.Network
 
         private void NotifyMessageReceived(Message message)
         {
+            OnMessageReceived(message);
+
             /* A BOUGER/SUPPRIMER (useless ?)
              * Un anti flood se mesure en message/min pas avec l'interval entre deux */
 
@@ -109,6 +131,11 @@ namespace Stump.Server.BaseServer.Network
 
             if (MessageReceived != null)
                 MessageReceived(this, message);
+        }
+
+        protected virtual void OnMessageReceived(Message message)
+        {
+            ClientManager.Instance.MessageQueue.Enqueue(this, message);
         }
 
         private void NotifyMessageSended(Message message)
@@ -152,7 +179,6 @@ namespace Stump.Server.BaseServer.Network
             {
                 var messageDataReader = new BigEndianReader(m_currentMessage.Data);
                 Message message = MessageReceiver.BuildMessage((uint) m_currentMessage.MessageId.Value, messageDataReader);
-                ClientManager.Instance.MessageQueue.Enqueue(this, message);
 
                 LastActivity = DateTime.Now;
                 NotifyMessageReceived(message);

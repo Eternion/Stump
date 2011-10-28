@@ -6,6 +6,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Effects;
 using Stump.Server.WorldServer.Worlds.Effects.Instances;
 using Stump.Server.WorldServer.Worlds.Maps.Cells.Shapes;
@@ -19,21 +20,30 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Triggers
             : base(id, caster, castedSpell, originEffect, new MarkShape(caster.Fight, centerCell, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, size, Color.Brown))
         {
             TrapSpell = glyphSpell;
+            VisibleState = GameActionFightInvisibilityStateEnum.INVISIBLE;
         }
 
         public Trap(short id, FightActor caster, Spell spell, EffectDice originEffect, Spell trapSpell, Cell centerCell, GameActionMarkCellsTypeEnum shape, sbyte size)
             : base(id, caster, spell, originEffect, new MarkShape(caster.Fight, centerCell, shape, size, Color.Brown))
         {
             TrapSpell = trapSpell;
+            VisibleState = GameActionFightInvisibilityStateEnum.INVISIBLE;
         }
 
         public Trap(short id, FightActor caster, Spell spell, EffectDice originEffect, Spell trapSpell, params MarkShape[] shapes)
             : base(id, caster, spell, originEffect ,shapes)
         {
             TrapSpell = trapSpell;
+            VisibleState = GameActionFightInvisibilityStateEnum.INVISIBLE;
         }
 
         public Spell TrapSpell
+        {
+            get;
+            private set;
+        }
+
+        public GameActionFightInvisibilityStateEnum VisibleState
         {
             get;
             private set;
@@ -47,6 +57,11 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Triggers
         public override TriggerType TriggerType
         {
             get { return TriggerType.MOVE; }
+        }
+
+        public override bool DoesSeeTrigger(FightActor fighter)
+        {
+            return VisibleState != GameActionFightInvisibilityStateEnum.INVISIBLE || fighter.IsFriendlyWith(Caster);
         }
 
         public override void Trigger(FightActor trigger)
@@ -63,6 +78,11 @@ namespace Stump.Server.WorldServer.Worlds.Fights.Triggers
                     handler.Apply();
                 }
             }
+        }
+
+        public override GameActionMark GetHiddenGameActionMark()
+        {
+            return new GameActionMark(Caster.Id, CastedSpell.Id, Id, (sbyte)Type, new GameActionMarkedCell[0]);
         }
 
         public override GameActionMark GetGameActionMark()

@@ -25,6 +25,9 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells.Debuffs
 
             foreach (FightActor actor in GetAffectedActors())
             {
+                if (actor == Caster) // just an ugly hack
+                    continue;
+
                 var buff = new ResistancesDebuff(actor.PopNextBuffId(), actor, Caster, integerEffect, Spell, integerEffect.Value, false, true);
                 actor.AddAndApplyBuff(buff);
             }

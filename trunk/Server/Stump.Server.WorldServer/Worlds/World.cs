@@ -9,10 +9,12 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Database.World.Triggers;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Worlds.Interactives;
 using Stump.Server.WorldServer.Worlds.Maps;
+using Stump.Server.WorldServer.Worlds.Maps.Cells.Triggers;
 
 namespace Stump.Server.WorldServer.Worlds
 {
@@ -67,6 +69,9 @@ namespace Stump.Server.WorldServer.Worlds
 
             logger.Info("Spawn interactives ...");
             SpawnInteractives();
+
+            logger.Info("Spawn cell triggers ...");
+            SpawnCellTriggers();
         }
 
         private void SetLinks()
@@ -108,7 +113,7 @@ namespace Stump.Server.WorldServer.Worlds
             {
                 var position = npcSpawn.GetPosition();
 
-                position.Map.SpawnNpc(npcSpawn.Template, position);
+                position.Map.SpawnNpc(npcSpawn.Template, position, npcSpawn.Look);
             }
         }
 
@@ -125,6 +130,16 @@ namespace Stump.Server.WorldServer.Worlds
                 }
 
                 map.SpawnInteractive(interactive);
+            }
+        }
+
+        private void SpawnCellTriggers()
+        {
+            foreach (var cellTrigger in CellTriggerManager.Instance.GetCellTriggers())
+            {
+                var trigger = cellTrigger.GenerateTrigger();
+
+                trigger.Position.Map.AddTrigger(trigger);
             }
         }
 

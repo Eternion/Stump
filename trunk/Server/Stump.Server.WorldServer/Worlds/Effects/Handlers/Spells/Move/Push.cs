@@ -40,14 +40,15 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells.Move
                         actor.InflictDamage((short) new AsyncRandom().Next(1, 5), EffectSchoolEnum.Unknown, Caster);
                         break;
                     }
+
+                    lastCell = nextCell;
                 }
 
                 var endCell = lastCell;
-
-                actor.Position.Cell = Map.Cells[endCell.CellId];
-
                 var actorCopy = actor;
                 Fight.ForEach(entry => ActionsHandler.SendGameActionFightSlideMessage(entry.Client, Caster, actorCopy, startCell.CellId, endCell.CellId));
+
+                actor.Position.Cell = Map.Cells[endCell.CellId];
             }
         }
     }

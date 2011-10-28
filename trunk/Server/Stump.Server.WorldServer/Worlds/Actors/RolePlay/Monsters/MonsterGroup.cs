@@ -33,12 +33,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters
             private set;
         }
 
-        public override ObjectPosition Position
-        {
-            get;
-            protected set;
-        }
-
         public Monster Leader
         {
             get;
@@ -99,11 +93,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters
             if (character.Map != Map)
                 return;
 
-            var fight = FightManager.Instance.Create(Map, FightTypeEnum.FIGHT_TYPE_PvM);
+            Fights.Fight fight = FightManager.Instance.Create(Map, FightTypeEnum.FIGHT_TYPE_PvM);
 
             fight.RedTeam.AddFighter(character.CreateFighter(fight.RedTeam));
 
-            foreach (var monster in CreateFighters(fight.BlueTeam))
+            foreach (MonsterFighter monster in CreateFighters(fight.BlueTeam))
                 fight.BlueTeam.AddFighter(monster);
 
             fight.StartPlacementPhase();
@@ -151,27 +145,19 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters
             return m_monsters;
         }
 
+        public IEnumerable<Monster> GetMonstersWithoutLeader()
+        {
+            return m_monsters.Where(entry => entry != Leader);
+        }
+
         public override GameContextActorInformations GetGameContextActorInformations()
         {
-            if (m_monsters.Count > 1)
-            {
-                return new GameRolePlayGroupMonsterInformations(Id,
-                                                                Leader.Look,
-                                                                GetEntityDispositionInformations(),
-                                                                Leader.Template.Id,
-                                                                (sbyte) Leader.Grade.GradeId,
-                                                                m_monsters.Select(entry => entry.GetMonsterInGroupInformations()),
-                                                                AgeBonus,
-                                                                -1,
-                                                                false);
-            }
-
             return new GameRolePlayGroupMonsterInformations(Id,
                                                             Leader.Look,
                                                             GetEntityDispositionInformations(),
                                                             Leader.Template.Id,
                                                             (sbyte) Leader.Grade.GradeId,
-                                                            new MonsterInGroupInformations[0],
+                                                            GetMonstersWithoutLeader().Select(entry => entry.GetMonsterInGroupInformations()),
                                                             AgeBonus,
                                                             -1,
                                                             false);

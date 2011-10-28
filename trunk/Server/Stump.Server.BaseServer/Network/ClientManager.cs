@@ -130,13 +130,13 @@ namespace Stump.Server.BaseServer.Network
         /// <summary>
         /// Represents a queue containing received messages to treat
         /// </summary>
-        internal MessageQueue MessageQueue
+        public MessageQueue MessageQueue
         {
             get;
             private set;
         }
 
-        internal void Initialize(CreateClientHandler createClientHandler)
+        public void Initialize(CreateClientHandler createClientHandler)
         {
             if (IsInitialized)
                 throw new Exception("ClientManager already initialized");
@@ -374,7 +374,7 @@ namespace Stump.Server.BaseServer.Network
             PushWriteSocketAsyncArgs(e);
         }
 
-        internal SocketAsyncEventArgs PopWriteSocketAsyncArgs()
+        public SocketAsyncEventArgs PopWriteSocketAsyncArgs()
         {
             if (m_writeAsyncEventArgsPool.Count <= 0)
                 throw new Exception("The writer async argument pool is empty");
@@ -382,12 +382,12 @@ namespace Stump.Server.BaseServer.Network
             return m_writeAsyncEventArgsPool.Pop();
         }
 
-        internal void PushWriteSocketAsyncArgs(SocketAsyncEventArgs args)
+        public void PushWriteSocketAsyncArgs(SocketAsyncEventArgs args)
         {
             m_writeAsyncEventArgsPool.Push(args);
         }
 
-        internal SocketAsyncEventArgs PopReadSocketAsyncArgs()
+        public SocketAsyncEventArgs PopReadSocketAsyncArgs()
         {
             if (m_readAsyncEventArgsPool.Count <= 0)
                 throw new Exception("The reader async argument pool is empty");
@@ -395,7 +395,7 @@ namespace Stump.Server.BaseServer.Network
             return m_readAsyncEventArgsPool.Pop();
         }
 
-        internal void PushReadSocketAsyncArgs(SocketAsyncEventArgs args)
+        public void PushReadSocketAsyncArgs(SocketAsyncEventArgs args)
         {
             m_readAsyncEventArgsPool.Push(args);
         }

@@ -6,11 +6,13 @@ using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
 namespace Stump.Server.WorldServer.Database.Npcs.Replies
 {
     [ActiveRecord(DiscriminatorValue = "EndDialog")]
-    public class NpcEndDialog : NpcReply
+    public class EndDialogReply : NpcReply
     {
         public override void Execute(Npc npc, Character character)
         {
             character.LeaveDialog();
         }
+
+
     }
 }

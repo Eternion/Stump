@@ -1,11 +1,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net;
+using System.Drawing;
 using System.Net.Sockets;
-using Stump.DofusProtocol.Classes;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Network;
+using Stump.Server.WorldServer.Database.Npcs;
+using Stump.Server.WorldServer.Worlds.Maps;
 
 namespace Stump.Tools.Proxy.Network
 {
@@ -28,6 +31,36 @@ namespace Stump.Tools.Proxy.Network
             m_tickets.Remove(ticket);
 
             return result;
+        }
+
+        public WorldClient(Socket socket)
+            : base(socket)
+        {
+            MapNpcs = new Dictionary<int, GameRolePlayNpcInformations>();
+            MapIOs = new Dictionary<int, InteractiveElement>();
+
+            Send(new ProtocolRequired(VersionExtension.ProtocolRequired, VersionExtension.ActualProtocol));
+            Send(new HelloGameMessage());
+        }
+
+        protected override SocketAsyncEventArgs PopWriteSocketAsyncArgs()
+        {
+            return Proxy.Instance.WorldClientManager.PopWriteSocketAsyncArgs();
+        }
+
+        protected override void PushWriteSocketAsyncArgs(SocketAsyncEventArgs args)
+        {
+            Proxy.Instance.WorldClientManager.PushWriteSocketAsyncArgs(args);
+        }
+
+        protected override SocketAsyncEventArgs PopReadSocketAsyncArgs()
+        {
+            return Proxy.Instance.WorldClientManager.PopReadSocketAsyncArgs();
+        }
+
+        protected override void PushReadSocketAsyncArgs(SocketAsyncEventArgs args)
+        {
+            Proxy.Instance.WorldClientManager.PushReadSocketAsyncArgs(args);
         }
 
         public string Ticket
@@ -61,13 +94,19 @@ namespace Stump.Tools.Proxy.Network
             set;
         }
 
+        public NpcMessage LastNpcMessage
+        {
+            get;
+            set;
+        }
+
         public NpcGenericActionRequestMessage GuessNpcFirstAction
         {
             get;
             set;
         }
 
-        public Tuple<uint, InteractiveUseRequestMessage, InteractiveUsedMessage> GuessSkillAction
+        public Tuple<Map, InteractiveUseRequestMessage, InteractiveUsedMessage> GuessSkillAction
         {
             get;
             set;
@@ -85,15 +124,15 @@ namespace Stump.Tools.Proxy.Network
             set;
         }
 
-        public uint LastMap
+        public Map LastMap
         {
             get;
             set;
         }
 
-        private uint m_currentMap;
+        private Map m_currentMap;
 
-        public uint CurrentMap
+        public Map CurrentMap
         {
             get { return m_currentMap; }
             set
@@ -137,19 +176,27 @@ namespace Stump.Tools.Proxy.Network
         }
 
         private Action m_delegateToCall;
+
         public void CallWhenTeleported(Action action)
         {
             m_delegateToCall = action;
         }
 
-        public WorldClient(Socket socket)
-            : base(socket)
+        public void SendChatMessage(string message)
         {
-            MapNpcs = new Dictionary<int, GameRolePlayNpcInformations>();
-            MapIOs = new Dictionary<int, InteractiveElement>();
+            SendChatMessage(message, Color.BlueViolet);
+        }
 
-            Send(new ProtocolRequired(1304, 1304));
-            Send(new HelloGameMessage());
+        public void SendChatMessage(string message, Color color)
+        {
+            Send(new ChatServerMessage(
+                            (sbyte)ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,
+                            "<font color=\"#" + color.ToArgb().ToString("X") + "\">" + "[PROXY] : " + message + "</font>",
+                            0,
+                            "",
+                            0,
+                            "",
+                            0));
         }
     }
 }

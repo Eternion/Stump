@@ -15,7 +15,6 @@ namespace Stump.Tools.Proxy.Network
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly List<Message> m_receivedMessagesStack = new List<Message>(20);
-
         private readonly List<Message> m_sendedMessagesStack = new List<Message>(20);
         private readonly object m_syncLock = new object();
         protected bool m_isInCriticalZone;
@@ -25,8 +24,6 @@ namespace Stump.Tools.Proxy.Network
         public ProxyClient(Socket socket)
             : base(socket)
         {
-            MessageReceived += OnClientMessageReceived;
-
             CanReceive = true;
         }
 
@@ -88,68 +85,6 @@ namespace Stump.Tools.Proxy.Network
             return m_receivedMessagesStack.FindIndex(0, range, entry => entry.GetType() == message) != -1;
         }
 
-        protected override void BuildMessage()
-        {
-            uint len = 0;
-
-            replay:
-            if (!m_splittedPacket)
-            {
-                if (m_buffer.BytesAvailable < 2)
-                {
-                    return;
-                }
-
-                // get the header
-                uint header = m_buffer.ReadUShort();
-                uint id = GetMessageIdByHeader(header);
-
-                if (m_buffer.BytesAvailable >= (header & BIT_MASK))
-                {
-                    len = GetMessageLengthByHeader(header);
-                    if (m_buffer.BytesAvailable >= len)
-                    {
-                        Message message = MessageReceiver.BuildMessage(id,
-                                                                     m_buffer.ReadBytesInNewBigEndianReader((int) len));
-
-
-                        NotifyMessageReceived(message);
-                        goto replay;
-                    }
-
-                    m_staticHeader = -1;
-                    m_splittedPacketLength = len;
-                    m_splittedPacketId = id;
-                    m_splittedPacket = true;
-
-                    return;
-                }
-
-                m_staticHeader = (int) header;
-                m_splittedPacketLength = len;
-                m_splittedPacketId = id;
-                m_splittedPacket = true;
-                return;
-            }
-
-            if (m_staticHeader != -1)
-            {
-                m_splittedPacketLength = GetMessageLengthByHeader((uint) m_staticHeader);
-                m_staticHeader = -1;
-            }
-            if (m_buffer.BytesAvailable >= m_splittedPacketLength)
-            {
-                Message message = MessageReceiver.BuildMessage(m_splittedPacketId,
-                                                             m_buffer.ReadBytesInNewBigEndianReader(
-                                                                 (int) m_splittedPacketLength));
-
-                m_splittedPacket = false;
-
-                NotifyMessageReceived(message);
-                goto replay;
-            }
-        }
-
         private void OnServerConnected(ServerConnection connection)
         {
             IsBinded = true;
@@ -180,7 +115,7 @@ namespace Stump.Tools.Proxy.Network
                     m_receivedMessagesStack.Insert(0, message);
                 }
 
-                if (Proxy.Instance.HandlerManager.IsRegister(message.GetType()))
+                if (Proxy.Instance.HandlerManager.IsRegister(message.MessageId))
                     Proxy.Instance.HandlerManager.Dispatch(this, message);
                 else
                     Send(message);
@@ -202,22 +137,22 @@ namespace Stump.Tools.Proxy.Network
             }
         }
 
-        private void OnClientMessageReceived(BaseClient client, Message message)
+        protected override void OnMessageReceived(Message message)
         {
             try
             {
-                if (!(message is BasicNoOperationMessage))
+                if (!( message is BasicNoOperationMessage ))
                 {
                     m_sendedMessagesStack.TrimExcess();
                     m_sendedMessagesStack.Insert(0, message);
                 }
 
-                if (Proxy.Instance.HandlerManager.IsRegister(message.GetType()))
+                if (Proxy.Instance.HandlerManager.IsRegister(message.MessageId))
                     Proxy.Instance.HandlerManager.Dispatch(this, message);
                 else
                 {
                     if (!IsBinded)
-                        throw new Exception("Attempt to send a packet to the server but the client is not bind to it");
+                        throw new Exception("Attempt to send a packet to the server but the client is not bind to him");
 
                     m_serverConnection.Send(message);
                 }

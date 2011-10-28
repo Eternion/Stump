@@ -8,7 +8,7 @@ namespace Stump.Tools.Proxy.Handlers.World
 {
     public class TeleportHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof (CurrentMapMessage))]
+        [WorldHandler(CurrentMapMessage.Id)]
         public static void HandleCurrentMapMessage(WorldClient client, CurrentMapMessage message)
         {
             client.Send(message);
@@ -22,7 +22,7 @@ namespace Stump.Tools.Proxy.Handlers.World
             }
         }
 
-        [WorldHandler(typeof (TeleportDestinationsListMessage))]
+        [WorldHandler(TeleportDestinationsListMessage.Id)]
         public static void HandleTeleportDestinationsListMessage(WorldClient client, TeleportDestinationsListMessage message)
         {
             client.Send(message);

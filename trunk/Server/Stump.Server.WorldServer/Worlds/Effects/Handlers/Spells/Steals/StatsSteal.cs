@@ -30,8 +30,10 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells.Steals
                 if (integerEffect == null)
                     return;
 
-                AddStatBuff(actor, (short)( -integerEffect.Value ), GetEffectCaracteristic(Effect.EffectId), true);
-                AddStatBuff(Caster, integerEffect.Value, GetEffectCaracteristic(Effect.EffectId), true);
+                var displayedEffects = GetBuffDisplayedEffect(Effect.EffectId);
+
+                AddStatBuff(actor, (short) (-(integerEffect.Value)), GetEffectCaracteristic(Effect.EffectId), true, (short)displayedEffects[1]);
+                AddStatBuff(Caster, integerEffect.Value, GetEffectCaracteristic(Effect.EffectId), true, (short)displayedEffects[0]);
             }
         }
 
@@ -53,6 +55,29 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells.Steals
                     return CaracteristicsEnum.Strength;
                 case EffectsEnum.Effect_StealRange:
                     return CaracteristicsEnum.Range;
+                default:
+                    throw new Exception("No associated caracteristic to effect '" + effect + "'");
+            }
+        }
+
+        private static EffectsEnum[] GetBuffDisplayedEffect(EffectsEnum effect)
+        {
+            switch (effect)
+            {
+                case EffectsEnum.Effect_StealChance:
+                    return new[] { EffectsEnum.Effect_AddChance, EffectsEnum.Effect_SubChance };
+                case EffectsEnum.Effect_StealVitality:
+                    return new[] { EffectsEnum.Effect_AddVitality, EffectsEnum.Effect_SubVitality };
+                case EffectsEnum.Effect_StealWisdom:
+                    return new[] { EffectsEnum.Effect_AddWisdom, EffectsEnum.Effect_SubWisdom };
+                case EffectsEnum.Effect_StealIntelligence:
+                    return new[] { EffectsEnum.Effect_AddIntelligence, EffectsEnum.Effect_SubIntelligence };
+                case EffectsEnum.Effect_StealAgility:
+                    return new[] { EffectsEnum.Effect_AddAgility, EffectsEnum.Effect_SubAgility };
+                case EffectsEnum.Effect_StealStrength:
+                    return new[] { EffectsEnum.Effect_AddStrength, EffectsEnum.Effect_SubStrength };
+                case EffectsEnum.Effect_StealRange:
+                    return new[] { EffectsEnum.Effect_AddRange, EffectsEnum.Effect_SubRange };
                 default:
                     throw new Exception("No associated caracteristic to effect '" + effect + "'");
             }

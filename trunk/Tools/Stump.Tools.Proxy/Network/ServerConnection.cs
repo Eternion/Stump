@@ -4,8 +4,8 @@ using System.Net;
 using System.Net.Sockets;
 using NLog;
 using Stump.Core.IO;
-using Stump.DofusProtocol.Messages.Framework.IO;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer.Network;
 
 namespace Stump.Tools.Proxy.Network
 {
@@ -19,8 +19,6 @@ namespace Stump.Tools.Proxy.Network
 
         #endregion
 
-        private const byte BIT_RIGHT_SHIFT_LEN_PACKET_ID = 2;
-        private const byte BIT_MASK = 3;
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly BigEndianReader m_buffer = new BigEndianReader();
@@ -30,10 +28,9 @@ namespace Stump.Tools.Proxy.Network
         private int m_bytesReaded;
         private int m_bytesSended;
 
-        private bool m_splittedPacket;
-        private uint m_splittedPacketId;
-        private uint m_splittedPacketLength;
-        private int m_staticHeader;
+        private MessagePart m_currentMessage;
+
+        private object m_sync = new object();
 
         public ServerConnection(String ip, Int16 port)
         {
@@ -70,11 +67,12 @@ namespace Stump.Tools.Proxy.Network
 
                 if (availableBytes > 0)
                 {
-                    m_buffer.Add(m_localBuffer, 0, availableBytes);
+                    lock (m_sync)
+                        m_buffer.Add(m_localBuffer, 0, availableBytes);
 
                     m_bytesReaded += availableBytes;
 
-                    Receive();
+                    BuildMessage();
 
                     AsyncReceive();
                 }
@@ -83,7 +81,7 @@ namespace Stump.Tools.Proxy.Network
                     Disconnect();
                 }
             }
-            catch (SocketException ex)
+            catch (Exception ex)
             {
                 logger.Error(string.Format("Error on receive : {0}", ex.Message));
                 Disconnect();
@@ -121,106 +119,27 @@ namespace Stump.Tools.Proxy.Network
 
         #region Message Processor
 
-        private void Receive()
+        private void BuildMessage()
         {
-            uint len = 0;
-
-            replay:
-            if (!m_splittedPacket)
-            {
-                if (m_buffer.BytesAvailable < 2)
-                {
-                    return;
-                }
-
-                // get the header
-                uint header = m_buffer.ReadUShort();
-                uint id = GetMessageIdByHeader(header);
-
-                if (m_buffer.BytesAvailable >= (header & BIT_MASK))
-                {
-                    len = GetMessageLengthByHeader(header);
-                    if (m_buffer.BytesAvailable >= len)
-                    {
-                        Message message = MessageReceiver.BuildMessage(id,
-                                                                     m_buffer.ReadBytesInNewBigEndianReader((int) len));
-
-                        NotifyMessageReceived(message);
-                        goto replay;
-                    }
-
-                    m_staticHeader = -1;
-                    m_splittedPacketLength = len;
-                    m_splittedPacketId = id;
-                    m_splittedPacket = true;
-
-                    return;
-                }
-
-                m_staticHeader = (int) header;
-                m_splittedPacketLength = len;
-                m_splittedPacketId = id;
-                m_splittedPacket = true;
+            if (m_buffer.BytesAvailable <= 0)
                 return;
-            }
 
-            if (m_staticHeader != -1)
-            {
-                m_splittedPacketLength = GetMessageLengthByHeader((uint) m_staticHeader);
-                m_staticHeader = -1;
-            }
-            if (m_buffer.BytesAvailable >= m_splittedPacketLength)
-            {
-                Message message = MessageReceiver.BuildMessage(m_splittedPacketId,
-                                                             m_buffer.ReadBytesInNewBigEndianReader(
-                                                                 (int) m_splittedPacketLength));
+            if (m_currentMessage == null)
+                m_currentMessage = new MessagePart();
 
-                NotifyMessageReceived(message);
-                m_splittedPacket = false;
+            // if message is complete
+            lock (m_sync)
+                if (!m_currentMessage.Build(m_buffer))
+                    return;
 
-                goto replay;
-            }
-        }
+            var messageDataReader = new BigEndianReader(m_currentMessage.Data);
+            Message message = MessageReceiver.BuildMessage((uint)m_currentMessage.MessageId.Value, messageDataReader);
 
-        private static uint GetMessageIdByHeader(uint header)
-        {
-            return header >> BIT_RIGHT_SHIFT_LEN_PACKET_ID;
-        }
+            NotifyMessageReceived(message);
 
-        private uint GetMessageLengthByHeader(uint header)
-        {
-            uint lenType = header & BIT_MASK;
-            uint len = 0;
-            switch (lenType)
-            {
-                case 0:
-                {
-                    break;
-                }
-                case 1:
-                {
-                    len = m_buffer.ReadByte();
-                    break;
-                }
-                case 2:
-                {
-                    len = m_buffer.ReadUShort();
-                    break;
-                }
-                case 3:
-                {
-                    len =
-                        (uint)
-                        (((m_buffer.ReadByte() & 255) << 16) + ((m_buffer.ReadByte() & 255) << 8) +
-                         (m_buffer.ReadByte() & 255));
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return len;
+            m_currentMessage = null;
+
+            BuildMessage(); // there is maybe a second message in the buffer
         }
 
         #endregion
@@ -235,7 +154,7 @@ namespace Stump.Tools.Proxy.Network
         public void Send(Message message)
         {
             var writer = new BigEndianWriter();
-            message.pack(writer);
+            message.Pack(writer);
 
             Send(writer.Data);
         }

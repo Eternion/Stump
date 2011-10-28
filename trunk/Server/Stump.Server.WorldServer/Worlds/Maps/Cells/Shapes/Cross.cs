@@ -108,7 +108,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells.Shapes
 
             var centerPoint = new MapPoint(centerCell);
 
-            for (var i = (int) Radius; i > 0; i++)
+            for (var i = (int) Radius; i > 0; i--)
             {
                 if (i < MinRadius)
                     continue;
@@ -117,23 +117,23 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells.Shapes
                 {
                     if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y) && !disabledDirections.Contains(DirectionsEnum.DOWN_RIGHT))
                         result.Add(map.Cells[new MapPoint(centerPoint.X + i, centerPoint.Y).CellId]);
-                    if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y) && disabledDirections.Contains(DirectionsEnum.UP_LEFT))
+                    if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y) && !disabledDirections.Contains(DirectionsEnum.UP_LEFT))
                         result.Add(map.Cells[new MapPoint(centerPoint.X - i, centerPoint.Y).CellId]);
-                    if (MapPoint.IsInMap(centerPoint.X, centerPoint.Y + i) && disabledDirections.Contains(DirectionsEnum.UP_RIGHT))
+                    if (MapPoint.IsInMap(centerPoint.X, centerPoint.Y + i) && !disabledDirections.Contains(DirectionsEnum.UP_RIGHT))
                         result.Add(map.Cells[new MapPoint(centerPoint.X, centerPoint.Y + i).CellId]);
-                    if (MapPoint.IsInMap(centerPoint.X, centerPoint.Y - i) && disabledDirections.Contains(DirectionsEnum.DOWN_LEFT))
+                    if (MapPoint.IsInMap(centerPoint.X, centerPoint.Y - i) && !disabledDirections.Contains(DirectionsEnum.DOWN_LEFT))
                         result.Add(map.Cells[new MapPoint(centerPoint.X, centerPoint.Y - i).CellId]);
                 }
 
                 if (Diagonal || AllDirections)
                 {
-                    if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y - i) && disabledDirections.Contains(DirectionsEnum.DOWN))
+                    if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y - i) && !disabledDirections.Contains(DirectionsEnum.DOWN))
                         result.Add(map.Cells[new MapPoint(centerPoint.X + i, centerPoint.Y - i).CellId]);
-                    if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y + i) && disabledDirections.Contains(DirectionsEnum.UP))
+                    if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y + i) && !disabledDirections.Contains(DirectionsEnum.UP))
                         result.Add(map.Cells[new MapPoint(centerPoint.X - i, centerPoint.Y + i).CellId]);
-                    if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y + i) && disabledDirections.Contains(DirectionsEnum.RIGHT))
+                    if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y + i) && !disabledDirections.Contains(DirectionsEnum.RIGHT))
                         result.Add(map.Cells[new MapPoint(centerPoint.X + i, centerPoint.Y + i).CellId]);
-                    if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y - i) && disabledDirections.Contains(DirectionsEnum.LEFT))
+                    if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y - i) && !disabledDirections.Contains(DirectionsEnum.LEFT))
                         result.Add(map.Cells[new MapPoint(centerPoint.X - i, centerPoint.Y - i).CellId]);
                 }
             }

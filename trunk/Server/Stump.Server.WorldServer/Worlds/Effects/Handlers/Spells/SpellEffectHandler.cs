@@ -86,6 +86,41 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells
             get { return Fight.Map; }
         }
 
+        public bool IsValidTarget(FightActor actor)
+        {
+            if (Effect.Targets == SpellTargetType.NONE || Effect.Targets == SpellTargetType.ALL)
+                return true;
+
+            if (Caster == actor &&
+                !Effect.Targets.HasFlag(SpellTargetType.SELF) &&
+                !Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF))
+                return false;
+
+            // todo : summons
+
+            if (Caster.IsFriendlyWith(actor) && 
+                Effect.Targets.HasFlag(SpellTargetType.ALLY_1) ||
+                Effect.Targets.HasFlag(SpellTargetType.ALLY_2) ||
+                Effect.Targets.HasFlag(SpellTargetType.ALLY_3) ||
+                Effect.Targets.HasFlag(SpellTargetType.ALLY_4) ||
+                Effect.Targets.HasFlag(SpellTargetType.ALLY_5) ||
+                Effect.Targets.HasFlag(SpellTargetType.ALLY_SUMMONS) ||
+                Effect.Targets.HasFlag(SpellTargetType.ALLY_STATIC_SUMMONS))
+                return true;
+
+            if (Caster.IsEnnemyWith(actor) &&
+                Effect.Targets.HasFlag(SpellTargetType.ENNEMY_1) ||
+                Effect.Targets.HasFlag(SpellTargetType.ENNEMY_2) ||
+                Effect.Targets.HasFlag(SpellTargetType.ENNEMY_3) ||
+                Effect.Targets.HasFlag(SpellTargetType.ENNEMY_4) ||
+                Effect.Targets.HasFlag(SpellTargetType.ENNEMY_5) ||
+                Effect.Targets.HasFlag(SpellTargetType.ENNEMY_SUMMONS) ||
+                Effect.Targets.HasFlag(SpellTargetType.ENNEMY_STATIC_SUMMONS))
+                return true;
+
+            return false;
+        }
+
         public void RefreshZone()
         {
             AffectedCells = EffectZone.GetCells(TargetedCell, Map);
@@ -93,18 +128,38 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells
 
         public IEnumerable<FightActor> GetAffectedActors()
         {
-            return Fight.GetAllFighters(AffectedCells);
+            if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF))
+                return new [] { Caster };
+
+            return Fight.GetAllFighters(AffectedCells).Where(IsValidTarget);
         }
 
         public IEnumerable<FightActor> GetAffectedActors(Predicate<FightActor> predicate)
         {
-            return Fight.GetAllFighters(AffectedCells).Where(entry => predicate(entry));
+            if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) && predicate(Caster))
+                return new[] { Caster };
+            
+            if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF))
+                return new FightActor[0];
+
+
+            return GetAffectedActors().Where(entry => predicate(entry));
         }
 
         public StatBuff AddStatBuff(FightActor target, short value, CaracteristicsEnum caracteritic, bool dispelable)
         {
             int id = target.PopNextBuffId();
             var buff = new StatBuff(id, target, Caster, Effect, Spell, value, caracteritic, Critical, dispelable);
+
+            target.AddAndApplyBuff(buff);
+
+            return buff;
+        }
+
+        public StatBuff AddStatBuff(FightActor target, short value, CaracteristicsEnum caracteritic, bool dispelable, short customActionId)
+        {
+            int id = target.PopNextBuffId();
+            var buff = new StatBuff(id, target, Caster, Effect, Spell, value, caracteritic, Critical, dispelable, customActionId);
 
             target.AddAndApplyBuff(buff);
 

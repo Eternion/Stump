@@ -7,7 +7,7 @@ namespace Stump.Tools.Proxy.Handlers.World
 {
     public class AuthenticationTicketMessageHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof (AuthenticationTicketMessage))]
+        [WorldHandler(AuthenticationTicketMessage.Id)]
         public static void HandleAuthenticationTicketMessage(WorldClient client, AuthenticationTicketMessage message)
         {
             var serverDataMessage = WorldClient.PopTicket(message.ticket);

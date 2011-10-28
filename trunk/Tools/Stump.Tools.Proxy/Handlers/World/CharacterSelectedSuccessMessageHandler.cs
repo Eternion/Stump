@@ -6,7 +6,7 @@ namespace Stump.Tools.Proxy.Handlers.World
 {
     public class CharacterSelectedSuccessMessageHandler : WorldHandlerContainer
     {
-        [WorldHandler(typeof (CharacterSelectedSuccessMessage))]
+        [WorldHandler(CharacterSelectedSuccessMessage.Id)]
         public static void ChatAbstractClientMessage(WorldClient client, CharacterSelectedSuccessMessage message)
         {
             client.CharacterInformations = message.infos;

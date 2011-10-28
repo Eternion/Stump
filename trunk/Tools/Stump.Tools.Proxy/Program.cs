@@ -8,10 +8,12 @@ namespace Stump.Tools.Proxy
     {
         private static void Main()
         {
-            Proxy.Instance.Initialize();
+            var proxy = Proxy.Instance;
 
-            while(true)
-                Thread.Sleep(20);
+            proxy.Initialize();
+
+            while (true)
+                proxy.Update();
         }
     }
 }
