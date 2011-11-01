@@ -34,10 +34,10 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         private void InitializeCharacterFighter()
         {
-            m_damageTakenBeforeFight = Stats[CaracteristicsEnum.Health].Context;
+            m_damageTakenBeforeFight = Stats.Health.Context;
 
             if (Fight.FightType == FightTypeEnum.FIGHT_TYPE_CHALLENGE)
-                Stats[CaracteristicsEnum.Health].Context = 0;
+                Stats.Health.Context = 0;
         }
 
         public Character Character

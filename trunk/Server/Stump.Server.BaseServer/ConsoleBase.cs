@@ -15,7 +15,7 @@ namespace Stump.Server.BaseServer
         /// Define the interval between two condition checks
         /// when server is asking something to the user by the console
         /// </summary>
-        [Variable]
+        [Variable(true)]
         public static int AskWaiterInterval = 20;
 
         private Logger logger = LogManager.GetCurrentClassLogger();

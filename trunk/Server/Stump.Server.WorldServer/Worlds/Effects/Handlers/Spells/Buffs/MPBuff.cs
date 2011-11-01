@@ -18,13 +18,13 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells.Buffs
 
         public override void Apply()
         {
-            var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
-
-            if (integerEffect == null)
-                return;
-
             foreach (FightActor actor in GetAffectedActors())
             {
+                var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
+
+                if (integerEffect == null)
+                    return;
+
                 if (Effect.Duration > 0)
                 {
                     AddStatBuff(actor, integerEffect.Value, CaracteristicsEnum.MP, true);

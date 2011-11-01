@@ -542,7 +542,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             {
                 if (actor.IsMoving())
                 {
-                    List<short> moveKeys = actor.MovementPath.GetServerMovementKeys();
+                    var moveKeys = actor.MovementPath.GetServerPathKeys();
                     RolePlayActor actorMoving = actor;
 
                     ContextHandler.SendGameMapMovementMessage(character.Client, moveKeys, actorMoving);
@@ -566,9 +566,9 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         #region Actor Actions
 
-        private void OnActorStartMoving(ContextActor actor, MovementPath path)
+        private void OnActorStartMoving(ContextActor actor, Path path)
         {
-            List<short> movementsKey = path.GetServerMovementKeys();
+            var movementsKey = path.GetServerPathKeys();
 
             ForEach(delegate(Character entry)
                         {
@@ -577,7 +577,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
                         });
         }
 
-        private void OnActorStopMoving(ContextActor actor, MovementPath path, bool canceled)
+        private void OnActorStopMoving(ContextActor actor, Path path, bool canceled)
         {
             if (!(actor is Character))
                 return;
@@ -765,5 +765,29 @@ namespace Stump.Server.WorldServer.Worlds.Maps
         #endregion
 
         #endregion
+    }
+
+    public class MapCellsInformationProvider : ICellsInformationProvider
+    {
+        public MapCellsInformationProvider(Map map)
+        {
+            Map = map;
+        }
+
+        public Map Map
+        {
+            get;
+            private set;
+        }
+
+        public bool IsCellWalkable(short cell)
+        {
+            return Map.Cells[cell].Walkable && !Map.Cells[cell].NonWalkableDuringRP;
+        }
+
+        public CellInformation GetCellInformation(short cell)
+        {
+            return new CellInformation(Map.Cells[cell], IsCellWalkable(cell));
+        }
     }
 }

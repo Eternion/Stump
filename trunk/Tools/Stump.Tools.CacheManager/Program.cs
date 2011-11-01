@@ -30,7 +30,6 @@ namespace Stump.Tools.CacheManager
             foreach (var s in args)
             {
                 Console.WriteLine(s);
-
             }
 
             logger.Info("Parameters : [auth config path] [world config path] [dofus dir path] [languages]");

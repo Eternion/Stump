@@ -9,13 +9,20 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 {
     public abstract class AIFighter : FightActor
     {
-        protected AIFighter(FightTeam team)
+        protected AIFighter(FightTeam team, Spell[] spells)
             : base(team)
         {
+            Spells = spells;
             Fight.TimeLine.TurnStarted += OnTurnStarted;
             Fight.RequestTurnReady += OnRequestTurnReady;
 
             IsReady = true;
+        }
+
+        public Spell[] Spells
+        {
+            get;
+            set;
         }
 
         private void OnRequestTurnReady(Fights.Fight obj)

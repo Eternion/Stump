@@ -82,7 +82,6 @@ namespace Stump.Tools.UtilityBot
             m_loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToDictionary(entry => entry.GetName().Name);
 
             Config = new XmlConfig(ConfigPath, SchemaPath);
-            Config.DefinesVariables(ref m_loadedAssemblies);
 
             Connection = new IrcConnection(BotChannels, CommandPrefix)
                 {

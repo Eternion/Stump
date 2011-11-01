@@ -93,6 +93,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI\Fights\Actions\AIFightCellsInformationProvider.cs" />
+    <Compile Include="AI\Fights\Actions\SpellSelector.cs" />
+    <Compile Include="AI\Fights\Behaviors\AIBehavior.cs" />
+    <Compile Include="AI\Fights\Behaviors\EfficienceCalculator.cs" />
+    <Compile Include="AI\Fights\Threat\ThreatCalculator.cs" />
+    <Compile Include="AI\Fights\Threat\VisibleSpellInformation.cs" />
     <Compile Include="Commands\Commands\BanCommand.cs" />
     <Compile Include="Commands\Commands\ItemCommand.cs" />
     <Compile Include="Commands\Commands\KickCommand.cs" />
@@ -340,6 +346,10 @@
     <Compile Include="Worlds\Maps\Cells\Triggers\CellTriggerManager.cs" />
     <Compile Include="Worlds\Maps\Cells\Triggers\CellTriggerType.cs" />
     <Compile Include="Worlds\Maps\Cells\Triggers\TeleportTrigger.cs" />
+    <Compile Include="Worlds\Maps\Pathfinding\CellInformation.cs" />
+    <Compile Include="Worlds\Maps\Pathfinding\ICellsInformationProvider.cs" />
+    <Compile Include="Worlds\Maps\Pathfinding\Path.cs" />
+    <Compile Include="Worlds\Maps\Pathfinding\Pathfinder.cs" />
     <Compile Include="Worlds\Notifications\Notification.cs" />
     <Compile Include="Worlds\Parties\Party.cs" />
     <Compile Include="Worlds\Parties\PartyInvitation.cs" />
@@ -354,7 +364,6 @@
     <Compile Include="Worlds\Maps\Cells\ObjectPosition.cs" />
     <Compile Include="Worlds\Maps\IContext.cs" />
     <Compile Include="Worlds\Maps\Map.cs" />
-    <Compile Include="Worlds\Maps\Pathfinding\MovementPath.cs" />
     <Compile Include="Worlds\Maps\SubArea.cs" />
     <Compile Include="Worlds\Maps\SuperArea.cs" />
     <Compile Include="Worlds\Actors\Stats\StatsData.cs" />

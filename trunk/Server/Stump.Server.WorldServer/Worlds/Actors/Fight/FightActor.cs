@@ -283,7 +283,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         {
             get
             {
-                return Stats[CaracteristicsEnum.Health].Total;
+                return Stats.Health.Total;
             }
         }
 
@@ -291,7 +291,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         {
             get
             {
-                return ( (StatsHealth)Stats[CaracteristicsEnum.Health] ).TotalMax;
+                return Stats.Health.TotalMax;
             }
         }
 
@@ -299,11 +299,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         {
             get
             {
-                return Stats[CaracteristicsEnum.Health].Context;
+                return Stats.Health.Context;
             }
             set
             {
-                Stats[CaracteristicsEnum.Health].Context = value;
+                Stats.Health.Context = value;
             }
         }
 
@@ -913,7 +913,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         public bool IsAlive()
         {
-            return Stats[CaracteristicsEnum.Health].Total > 0;
+            return Stats.Health.Total > 0;
         }
 
         public bool IsDead()
@@ -968,9 +968,9 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         public virtual GameFightMinimalStats GetGameFightMinimalStats()
         {
             return new GameFightMinimalStats(
-                Stats[CaracteristicsEnum.Health].Total,
-                ( (StatsHealth)Stats[CaracteristicsEnum.Health] ).TotalMax,
-                Stats[CaracteristicsEnum.Health].Base,
+                Stats.Health.Total,
+                Stats.Health.TotalMax,
+                Stats.Health.Base,
                 Stats[CaracteristicsEnum.PermanentDamagePercent].Total,
                 0, // shieldsPoints = ?
                 (short)Stats[CaracteristicsEnum.AP].Total,

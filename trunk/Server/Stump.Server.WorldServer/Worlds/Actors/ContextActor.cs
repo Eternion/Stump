@@ -107,21 +107,21 @@ namespace Stump.Server.WorldServer.Worlds.Actors
         #endregion
 
         #region Moving
-        public event Action<ContextActor, MovementPath> StartMoving;
+        public event Action<ContextActor, Path> StartMoving;
 
-        protected void NotifyStartMoving(MovementPath path)
+        protected void NotifyStartMoving(Path path)
         {
-            Action<ContextActor, MovementPath> handler = StartMoving;
+            Action<ContextActor, Path> handler = StartMoving;
             if (handler != null) handler(this, path);
         }
 
-        public event Action<ContextActor, MovementPath, bool> StopMoving;
+        public event Action<ContextActor, Path, bool> StopMoving;
 
-        protected void NotifyStopMoving(MovementPath path, bool canceled)
+        protected void NotifyStopMoving(Path path, bool canceled)
         {
             NotifyPositionChanged(Position);
 
-            Action<ContextActor, MovementPath, bool> handler = StopMoving;
+            Action<ContextActor, Path, bool> handler = StopMoving;
             if (handler != null)
                 handler(this, path, canceled);
         }
@@ -144,7 +144,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
 
         private bool m_isMoving;
 
-        public MovementPath MovementPath
+        public Path MovementPath
         {
             get;
             private set;
@@ -160,7 +160,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
             return !IsMoving();
         }
 
-        public virtual bool StartMove(MovementPath movementPath)
+        public virtual bool StartMove(Path movementPath)
         {
             if (!CanMove())
                 return false;
@@ -190,7 +190,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
             if (!IsMoving())
                 return false;
 
-            Position = MovementPath.End;
+            Position = MovementPath.EndPathPosition;
             m_isMoving = false;
 
             NotifyStopMoving(MovementPath, false);

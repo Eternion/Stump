@@ -19,15 +19,15 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         public static void SendUpdateLifePointsMessage(WorldClient client)
         {
             client.Send(new UpdateLifePointsMessage(
-                client.ActiveCharacter.Stats[CaracteristicsEnum.Health].Total,
-                ( (StatsHealth)client.ActiveCharacter.Stats[CaracteristicsEnum.Health] ).TotalMax));
+                client.ActiveCharacter.Stats.Health.Total,
+                client.ActiveCharacter.Stats.Health.TotalMax));
         }
 
         public static void SendLifePointsRegenEndMessage(WorldClient client, int recoveredLife)
         {
             client.Send(new LifePointsRegenEndMessage(
-                client.ActiveCharacter.Stats[CaracteristicsEnum.Health].Total,
-                ((StatsHealth)client.ActiveCharacter.Stats[CaracteristicsEnum.Health]).TotalMax,
+                client.ActiveCharacter.Stats.Health.Total,
+                client.ActiveCharacter.Stats.Health.TotalMax,
                 recoveredLife));
         }
 
@@ -47,8 +47,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
                         // Alignment
                         client.ActiveCharacter.GetActorAlignmentExtendInformations(),
-                        client.ActiveCharacter.Stats[CaracteristicsEnum.Health].Total, // Life points
-                        ((StatsHealth)client.ActiveCharacter.Stats[CaracteristicsEnum.Health]).TotalMax, // Max Life points
+                        client.ActiveCharacter.Stats.Health.Total, // Life points
+                        client.ActiveCharacter.Stats.Health.TotalMax, // Max Life points
 
                         client.ActiveCharacter.Energy, // Energy points
                         client.ActiveCharacter.EnergyMax, // maxEnergyPoints

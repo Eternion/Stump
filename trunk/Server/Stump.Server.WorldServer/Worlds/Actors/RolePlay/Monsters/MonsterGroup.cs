@@ -55,13 +55,13 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters
             return false;
         }
 
-        public override bool StartMove(MovementPath movementPath)
+        public override bool StartMove(Path movementPath)
         {
             if (!CanMove())
                 return false;
 
-            Position = movementPath.End;
-            List<short> keys = movementPath.GetServerMovementKeys();
+            Position = movementPath.EndPathPosition;
+            var keys = movementPath.GetServerPathKeys();
 
             Map.ForEach(entry => ContextHandler.SendGameMapMovementMessage(entry.Client, keys, this));
 

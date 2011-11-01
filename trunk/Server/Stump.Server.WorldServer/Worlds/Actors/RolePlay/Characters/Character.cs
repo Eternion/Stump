@@ -414,12 +414,12 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         public int LifePoints
         {
-            get { return Stats[CaracteristicsEnum.Health].Total; }
+            get { return Stats.Health.Total; }
         }
 
         public int MaxLifePoints
         {
-            get { return ((StatsHealth) Stats[CaracteristicsEnum.Health]).TotalMax; }
+            get { return Stats.Health.TotalMax; }
         }
 
         public SpellInventory Spells
@@ -542,16 +542,16 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         #endregion
 
         #region Move
-        private MovementPath m_lastMove;
+        private Path m_lastMove;
         public ObjectPosition GetPositionBeforeMove()
         {
             if (m_lastMove != null)
-                return m_lastMove.Start;
+                return m_lastMove.EndPathPosition;
 
             return Position;
         }
 
-        public override bool StartMove(MovementPath movementPath)
+        public override bool StartMove(Path movementPath)
         {
             if (IsFighting())
                 return Fighter.StartMove(movementPath);
@@ -814,7 +814,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             if (LifePoints + regainedLife > MaxLifePoints)
                 regainedLife = MaxLifePoints - LifePoints;
 
-            ((StatsHealth) Stats[CaracteristicsEnum.Health]).DamageTaken -= (short) regainedLife;
+            Stats.Health.DamageTaken -= (short) regainedLife;
             RegenStartTime = null;
             RegenSpeed = 0;
 
@@ -831,7 +831,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             if (LifePoints + regainedLife > MaxLifePoints)
                 regainedLife = MaxLifePoints - LifePoints;
 
-            ((StatsHealth) Stats[CaracteristicsEnum.Health]).DamageTaken -= (short) regainedLife;
+            Stats.Health.DamageTaken -= (short) regainedLife;
 
             CharacterHandler.SendUpdateLifePointsMessage(Client);
 
@@ -918,8 +918,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             m_record.Chance = Stats[CaracteristicsEnum.Chance].Base;
             m_record.Intelligence = Stats[CaracteristicsEnum.Intelligence].Base;
             m_record.Wisdom = Stats[CaracteristicsEnum.Wisdom].Base;
-            m_record.BaseHealth = (ushort) Stats[CaracteristicsEnum.Health].Base;
-            m_record.DamageTaken = (ushort) ((StatsHealth) Stats[CaracteristicsEnum.Health]).DamageTaken;
+            m_record.BaseHealth = (ushort) Stats.Health.Base;
+            m_record.DamageTaken = (ushort) Stats.Health.DamageTaken;
 
 
             m_record.Save();

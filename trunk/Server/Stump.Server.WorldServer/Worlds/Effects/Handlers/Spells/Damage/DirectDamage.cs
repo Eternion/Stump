@@ -23,13 +23,13 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells.Damage
 
         public override void Apply()
         {
-            var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
-
-            if (integerEffect == null)
-                return;
-
             foreach (FightActor actor in GetAffectedActors())
             {
+                var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
+
+                if (integerEffect == null)
+                    return;
+
                 if (Effect.Duration > 0)
                 {
                     AddTriggerBuff(actor, true, TriggerType.TURN_BEGIN, DamageBuffTrigger);

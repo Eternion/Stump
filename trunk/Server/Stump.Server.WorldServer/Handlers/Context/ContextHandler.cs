@@ -56,7 +56,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (!client.ActiveCharacter.CanMove())
                 return;
 
-            var movementPath = new MovementPath(client.ActiveCharacter.Map, message.keyMovements);
+            var movementPath = Path.BuildFromCompressedPath(client.ActiveCharacter.Map, message.keyMovements);
 
             client.ActiveCharacter.StartMove(movementPath);
         }

@@ -1,11 +1,8 @@
-using System;
 using System.Linq;
-using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
-using Stump.Server.WorldServer.Database.Monsters;
+using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Worlds.Actors.Stats;
 using Stump.Server.WorldServer.Worlds.Fights;
@@ -17,7 +14,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
     public sealed class MonsterFighter : AIFighter
     {
         public MonsterFighter(FightTeam team, Monster monster)
-            : base(team)
+            : base(team, monster.Spells)
         {
             Id = Fight.GetNextContextualId();
             Monster = monster;
@@ -36,10 +33,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         public override ObjectPosition MapPosition
         {
-            get
-            {
-                return Monster.Group.Position;
-            }
+            get { return Monster.Group.Position; }
         }
 
         public override StatsFields Stats
@@ -55,7 +49,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             if (Monster.Spells.Count(entry => entry.Id == spell.Id) <= 0)
                 return false;
 
-            var spellLevel = spell.CurrentSpellLevel;
+            SpellLevelTemplate spellLevel = spell.CurrentSpellLevel;
             var point = new MapPoint(cell);
 
             if (point.DistanceTo(Position.Point) > spellLevel.Range ||

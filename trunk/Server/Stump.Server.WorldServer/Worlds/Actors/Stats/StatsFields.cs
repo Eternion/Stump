@@ -15,15 +15,15 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
         private static readonly StatsFormulasHandler FormuleInitiative =
             (owner, valueBase, valueEquiped, valueGiven, valueContext) =>
                 {
-                    return owner.Stats[CaracteristicsEnum.Health].Total <= 0
+                    return owner.Stats.Health.Total <= 0
                                ? 0
                                : (valueBase + valueEquiped + valueContext +
                                   owner.Stats[CaracteristicsEnum.Chance] +
                                   owner.Stats[CaracteristicsEnum.Intelligence] +
                                   owner.Stats[CaracteristicsEnum.Agility] +
                                   owner.Stats[CaracteristicsEnum.Strength])*
-                                 (owner.Stats[CaracteristicsEnum.Health].Total/
-                                  ((StatsHealth) owner.Stats[CaracteristicsEnum.Health]).TotalMax);
+                                 (owner.Stats.Health.Total/
+                                  owner.Stats.Health.TotalMax);
                 };
 
         private static readonly StatsFormulasHandler FormuleProspecting =
@@ -61,6 +61,16 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
         public StatsHealth Health
         {
             get { return this[CaracteristicsEnum.Health] as StatsHealth; }
+        }
+
+        public StatsData AP
+        {
+            get { return this[CaracteristicsEnum.AP]; }
+        }
+
+        public StatsData MP
+        {
+            get { return this[CaracteristicsEnum.MP]; }
         }
 
         public StatsData this[CaracteristicsEnum name]
@@ -140,8 +150,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
                              {CaracteristicsEnum.MagicDamage, new StatsData(Owner, CaracteristicsEnum.MagicDamage, 0)},
                              {CaracteristicsEnum.PhysicalDamageReduction, new StatsData(Owner, CaracteristicsEnum.PhysicalDamageReduction, 0)},
                              {CaracteristicsEnum.MagicDamageReduction, new StatsData(Owner, CaracteristicsEnum.MagicDamageReduction, 0)},
-
-                             
                              // custom fields
 
                              {CaracteristicsEnum.WaterDamageArmor, new StatsData(Owner, CaracteristicsEnum.WaterDamageArmor, 0)},
@@ -150,7 +158,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
                              {CaracteristicsEnum.AirDamageArmor, new StatsData(Owner, CaracteristicsEnum.AirDamageArmor, 0)},
                              {CaracteristicsEnum.FireDamageArmor, new StatsData(Owner, CaracteristicsEnum.FireDamageArmor, 0)},
                          };
-
         }
 
         public void Initialize(MonsterGrade record)
@@ -221,7 +228,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
                              {CaracteristicsEnum.MagicDamage, new StatsData(Owner, CaracteristicsEnum.MagicDamage, 0)},
                              {CaracteristicsEnum.PhysicalDamageReduction, new StatsData(Owner, CaracteristicsEnum.PhysicalDamageReduction, 0)},
                              {CaracteristicsEnum.MagicDamageReduction, new StatsData(Owner, CaracteristicsEnum.MagicDamageReduction, 0)},
-
                              // custom fields
 
                              {CaracteristicsEnum.WaterDamageArmor, new StatsData(Owner, CaracteristicsEnum.WaterDamageArmor, 0)},
