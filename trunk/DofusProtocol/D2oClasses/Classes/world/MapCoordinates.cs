@@ -8,7 +8,7 @@ namespace Stump.DofusProtocol.D2oClasses
 	public class MapCoordinates
 	{
 		private const String MODULE = "MapCoordinates";
-		public uint compressedCoords;
+		public int compressedCoords;
 		public List<int> mapIds;
 	}
 }

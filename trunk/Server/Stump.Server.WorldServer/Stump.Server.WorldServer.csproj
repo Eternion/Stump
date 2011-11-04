@@ -93,7 +93,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI\Fights\Actions\AIAction.cs" />
     <Compile Include="AI\Fights\Actions\AIFightCellsInformationProvider.cs" />
+    <Compile Include="AI\Fights\Actions\MoveAction.cs" />
+    <Compile Include="AI\Fights\Actions\SpellCastAction.cs" />
     <Compile Include="AI\Fights\Actions\SpellSelector.cs" />
     <Compile Include="AI\Fights\Behaviors\AIBehavior.cs" />
     <Compile Include="AI\Fights\Behaviors\EfficienceCalculator.cs" />

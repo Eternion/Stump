@@ -14,63 +14,63 @@ namespace Stump.Server.AuthServer.Database.I18n
             set;
         }
 
-        [Property("French")]
+        [Property("French", ColumnType = "StringClob", SqlType = "MediumText")]
         public string Fr
         {
             get;
             set;
         }
 
-        [Property("English")]
+        [Property("English", ColumnType = "StringClob", SqlType = "MediumText")]
         public string En
         {
             get;
             set;
         }
 
-        [Property("German")]
+        [Property("German", ColumnType = "StringClob", SqlType = "MediumText")]
         public string De
         {
             get;
             set;
         }
 
-        [Property("Spanish")]
+        [Property("Spanish", ColumnType = "StringClob", SqlType = "MediumText")]
         public string Es
         {
             get;
             set;
         }
 
-        [Property("Italian")]
+        [Property("Italian", ColumnType = "StringClob", SqlType = "MediumText")]
         public string It
         {
             get;
             set;
         }
 
-        [Property("Japanish")]
+        [Property("Japanish", ColumnType = "StringClob", SqlType = "MediumText")]
         public string Ja
         {
             get;
             set;
         }
 
-        [Property("Dutsh")]
+        [Property("Dutsh", ColumnType = "StringClob", SqlType = "MediumText")]
         public string Nl
         {
             get;
             set;
         }
 
-        [Property("Portugese")]
+        [Property("Portugese", ColumnType = "StringClob", SqlType = "MediumText")]
         public string Pt
         {
             get;
             set;
         }
 
-        [Property("Russish")]
+        [Property("Russish", ColumnType = "StringClob", SqlType = "MediumText")]
         public string Ru
         {
             get;

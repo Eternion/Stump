@@ -132,7 +132,7 @@ namespace Stump.Server.WorldServer.Database.World
            set;
        }
 
-       [Property]
+       [Property(ColumnType = "Serializable")]
        [D2OField("zoom")]
        public List<string> Zoom
        {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Castle.ActiveRecord;
@@ -111,7 +112,11 @@ namespace Stump.Tools.CacheManager
                 if (field.DbPropAttr != null && field.DbPropAttr.ColumnType == "Serializable")
                     value = fieldValue.ToBinary();
                 else if (fieldValue is bool)
-                    value = ((bool) fieldValue) ? 1 : 0;
+                    value = ( (bool)fieldValue ) ? 1 : 0;
+                else if (fieldValue is float) // hack
+                    value = ( (float)fieldValue ).ToString(CultureInfo.InvariantCulture);
+                else if (fieldValue is double) // hack
+                    value = ( (double)fieldValue ).ToString(CultureInfo.InvariantCulture);
                 else
                     value = fieldValue;
 

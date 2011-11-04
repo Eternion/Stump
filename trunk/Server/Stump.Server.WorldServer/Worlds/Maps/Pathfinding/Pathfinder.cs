@@ -62,7 +62,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Pathfinding
             private set;
         }
 
-        public Path FindPath(short startCell, short endCell, bool diagonal, short movementPoints = (short)-1)
+        public Path FindPath(short startCell, short endCell, bool diagonal, int movementPoints = (short)-1)
         {
             var success = false;
 

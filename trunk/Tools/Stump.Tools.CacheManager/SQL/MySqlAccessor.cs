@@ -8,7 +8,7 @@ namespace Stump.Tools.CacheManager.SQL
 {
     public class MySqlAccessor
     {
-        private MySqlConnection m_connection;
+        private readonly MySqlConnection m_connection;
 
         public MySqlAccessor(DatabaseConfiguration configuration)
         {
@@ -18,6 +18,11 @@ namespace Stump.Tools.CacheManager.SQL
 
             m_connection = new MySqlConnection(string.Format("Database={0};Data Source={1};User Id={2};Password={3}",
                 configuration.Name, configuration.Host, configuration.User, configuration.Password));
+        }
+
+        public MySqlConnection Connection
+        {
+            get { return m_connection; }
         }
 
         public void Open()

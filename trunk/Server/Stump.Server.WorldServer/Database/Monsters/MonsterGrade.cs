@@ -122,42 +122,42 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
-        [Property("Strength", NotNull = true)]
+        [Property("Strength")]
         public short Strength
         {
             get;
             set;
         }
 
-        [Property("Chance", NotNull = true)]
+        [Property("Chance")]
         public short Chance
         {
             get;
             set;
         }
 
-        [Property("Vitality", NotNull = true)]
+        [Property("Vitality")]
         public short Vitality
         {
             get;
             set;
         }
 
-        [Property("Wisdom", NotNull = true)]
+        [Property("Wisdom")]
         public short Wisdom
         {
             get;
             set;
         }
 
-        [Property("Intelligence", NotNull = true)]
+        [Property("Intelligence")]
         public short Intelligence
         {
             get;
             set;
         }
 
-        [Property("Agility", NotNull = true)]
+        [Property("Agility")]
         public short Agility
         {
             get;

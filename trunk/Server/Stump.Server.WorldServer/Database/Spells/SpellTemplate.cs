@@ -59,7 +59,7 @@ namespace Stump.Server.WorldServer.Database.Spells
         }
 
         [D2OField("scriptParams")]
-        [Property("ScriptParams")]
+        [Property("ScriptParams", ColumnType = "StringClob", SqlType = "MediumText")]
         public String ScriptParams
         {
             get;
@@ -67,7 +67,7 @@ namespace Stump.Server.WorldServer.Database.Spells
         }
 
         [D2OField("scriptParamsCritical")]
-        [Property("ScriptParamsCritical")]
+        [Property("ScriptParamsCritical", ColumnType = "StringClob", SqlType = "MediumText")]
         public String ScriptParamsCritical
         {
             get;
@@ -92,7 +92,7 @@ namespace Stump.Server.WorldServer.Database.Spells
 
         [D2OField("iconId")]
         [Property("IconId")]
-        public uint IconId
+        public int IconId
         {
             get;
             set;

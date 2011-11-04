@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -116,6 +117,7 @@ namespace Stump.Tools.CacheManager
             int cursorLeft = Console.CursorLeft;
             int cursorTop = Console.CursorTop;
             int counter = 0;
+            Program.DBAccessor.ExecuteNonQuery("START TRANSACTION");
             foreach (var record in records)
             {
                 Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsertInto("texts", record.Value));
@@ -124,7 +126,7 @@ namespace Stump.Tools.CacheManager
                 Console.SetCursorPosition(cursorLeft, cursorTop);
                 Console.Write("{0}/{1} ({2}%)", counter, records.Count, (int) ((counter/(double) records.Count)*100d));
             }
-
+            Program.DBAccessor.ExecuteNonQuery("COMMIT");
             Console.SetCursorPosition(cursorLeft, cursorTop);
 
 
