@@ -37,14 +37,12 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Pathfinding
 
         public Cell StartCell
         {
-            get;
-            private set;
+            get { return m_cellsPath[0]; }
         }
 
         public Cell EndCell
         {
-            get;
-            private set;
+            get { return m_cellsPath[m_cellsPath.Length - 1]; }
         }
 
         public ObjectPosition EndPathPosition

@@ -152,7 +152,7 @@ namespace Stump.Tools.DataLoader
                     if (m_lastI18NFile == null)
                         m_lastI18NFile = new I18NFile(dialog.FileName);
 
-                    string abc = m_lastI18NFile.ReadUiText("ui.link.changelog");
+                    string abc = m_lastI18NFile.GetText("ui.link.changelog");
 
 
                     for (int i = 0; i < m_form.m_dataView.Rows.Count; i++)
@@ -162,7 +162,7 @@ namespace Stump.Tools.DataLoader
                             if (m_form.m_dataView.Rows[i].Cells[column].Value is int)
                             {
                                 string text =
-                                    m_lastI18NFile.ReadText((int) m_form.m_dataView.Rows[i].Cells[column].Value);
+                                    m_lastI18NFile.GetText((int)m_form.m_dataView.Rows[i].Cells[column].Value);
 
                                 m_form.m_dataView.Rows[i].Cells[column].Tag = Tuple.Create(
                                     (int) m_form.m_dataView.Rows[i].Cells[column].Value, text);
@@ -172,7 +172,7 @@ namespace Stump.Tools.DataLoader
                             else if (m_form.m_dataView.Rows[i].Cells[column].Value is uint)
                             {
                                 string text =
-                                    m_lastI18NFile.ReadText((int) ((uint) m_form.m_dataView.Rows[i].Cells[column].Value));
+                                    m_lastI18NFile.GetText((int)( (uint)m_form.m_dataView.Rows[i].Cells[column].Value ));
 
 
                                 m_form.m_dataView.Rows[i].Cells[column].Tag = Tuple.Create(

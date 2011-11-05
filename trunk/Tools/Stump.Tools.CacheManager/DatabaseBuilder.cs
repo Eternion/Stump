@@ -64,7 +64,7 @@ namespace Stump.Tools.CacheManager
             var records = new Dictionary<int, Dictionary<string, object>>();
             foreach (var file in d2iFiles)
             {
-                foreach (var text in file.Value.ReadAllText())
+                foreach (var text in file.Value.GetAllText())
                 {
                     if (!records.ContainsKey(text.Key))
                     {
@@ -134,7 +134,7 @@ namespace Stump.Tools.CacheManager
             var recordsUi = new Dictionary<string, Dictionary<string, object>>();
             foreach (var file in d2iFiles)
             {
-                foreach (var text in file.Value.ReadAllUiText())
+                foreach (var text in file.Value.GetAllUiText())
                 {
                     if (!recordsUi.ContainsKey(text.Key))
                     {
