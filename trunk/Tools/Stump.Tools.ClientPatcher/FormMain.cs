@@ -17,7 +17,11 @@ namespace Stump.Tools.ClientPatcher
 {
     public partial class FormMain : Form
     {
+#if DEBUG
+        public const string ServerAddress = "localhost";
+#else
         public const string ServerAddress = "188.165.237.43";
+#endif
         public const string OfficialServerAddress = "213.248.126.180";
 
         public FormMain()
