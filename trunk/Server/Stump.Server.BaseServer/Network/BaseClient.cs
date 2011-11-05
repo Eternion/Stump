@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using NLog;
@@ -20,7 +21,7 @@ namespace Stump.Server.BaseServer.Network
         protected BaseClient(Socket socket)
         {
             Socket = socket;
-            IP = socket.RemoteEndPoint.ToString();
+            IP = ( (IPEndPoint)socket.RemoteEndPoint ).Address.ToString();
         }
 
         public Socket Socket

@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,107 +7,126 @@ using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.D2oClasses.Tool
 {
-    public class I18NFile : IDisposable
+    public class I18NFile
     {
-        private Dictionary<int, int> m_indexTable;
-        private Dictionary<string, int> m_textTable = new Dictionary<string, int>(500);
-        private readonly string m_filePath;
-        private BigEndianReader m_reader;
+        private readonly string m_uri;
+        private readonly Dictionary<string, string> m_textIndexes = new Dictionary<string, string>();
+        private readonly Dictionary<int, string> m_indexes = new Dictionary<int, string>();
 
-        public string FilePath
+        public I18NFile(string uri)
         {
-            get { return m_filePath; }
-        }
-
-        public string FileName
-        {
-            get { return Path.GetFileNameWithoutExtension(FilePath); }
-        }
-
-        public I18NFile(string path)
-        {
-            m_filePath = path;
-
+            m_uri = uri;
             Init();
         }
 
         private void Init()
         {
-            m_reader = new BigEndianReader(File.ReadAllBytes(FilePath));
-
-            var headeroffset = m_reader.ReadInt();
-
-            m_reader.Seek(headeroffset, SeekOrigin.Begin);
-
-            var indexlen = m_reader.ReadInt();
-            m_indexTable = new Dictionary<int, int>(indexlen / 8);
-
-            for (int i = 0; i < indexlen; i += 8)
+            using (var reader = new BigEndianReader(new StreamReader(m_uri).BaseStream))
             {
-                int index = m_reader.ReadInt();
-                int offset = m_reader.ReadInt();
+                var indexPos = reader.ReadInt();
+                reader.Seek(indexPos, SeekOrigin.Begin);
+                var indexLen = reader.ReadInt();
 
-                if (m_indexTable.ContainsKey(index))
+                for (int i = 0; i < indexLen; i += 8)
                 {
-                    Debug.WriteLine(index + " already set"); // it don't throw an exception
-                    continue;
+                    var key = reader.ReadInt();
+                    var dataPos = reader.ReadInt();
+                    var pos = (int)reader.BaseStream.Position;
+                    reader.Seek(dataPos, SeekOrigin.Begin);
+                    m_indexes.Add(key, reader.ReadUTF());
+                    reader.Seek(pos, SeekOrigin.Begin);
                 }
 
-                m_indexTable.Add(index, offset);
+                while (reader.BytesAvailable > 0)
+                {
+                    var key = reader.ReadUTF();
+                    var dataPos = reader.ReadInt();
+                    var pos = (int)reader.BaseStream.Position;
+                    reader.Seek(dataPos, SeekOrigin.Begin);
+                    m_textIndexes.Add(key, reader.ReadUTF());
+                    reader.Seek(pos, SeekOrigin.Begin);
+                }
             }
+        }
 
-            while (m_reader.BaseStream.Position < m_reader.BaseStream.Length)
+        public string GetText(int id)
+        {
+            if (m_indexes.ContainsKey(id))
             {
-                m_textTable.Add(m_reader.ReadUTF(), m_reader.ReadInt());
+                return m_indexes[id];
             }
+            return "{null}";
         }
 
-        public string ReadText(int index)
+        public string GetText(string id)
         {
-            if (!m_indexTable.ContainsKey(index))
-                return "{undefined}";
-
-            m_reader.Seek(m_indexTable[index], SeekOrigin.Begin);
-
-            return m_reader.ReadUTF();
+            if (m_textIndexes.ContainsKey(id))
+            {
+                return m_textIndexes[id];
+            }
+            return "{null}";
         }
 
-        public string ReadUiText(string nameIndex)
+        public void SetText(int id, string value)
         {
-            if (!m_textTable.ContainsKey(nameIndex))
-                return "{undefined}";
-
-            m_reader.Seek(m_textTable[nameIndex], SeekOrigin.Begin);
-
-            return m_reader.ReadUTF();
+            if (m_indexes.ContainsKey(id))
+                m_indexes[id] = value;
+            else
+                m_indexes.Add(id, value);
         }
 
-        public Dictionary<int, string> ReadAllText()
+        public void SetText(string id, string value)
         {
-            return m_indexTable.ToDictionary(index => index.Key, index => ReadText(index.Key));
+            if (m_textIndexes.ContainsKey(id))
+                m_textIndexes[id] = value;
+            else
+                m_textIndexes.Add(id, value);
         }
 
-        public Dictionary<string, string> ReadAllUiText()
+        public Dictionary<int, string> GetAllText()
         {
-            return m_textTable.ToDictionary(index => index.Key, index => ReadUiText(index.Key));
+            return m_indexes;
         }
 
-        public bool Exists(int index)
+        public Dictionary<string, string> GetAllUiText()
         {
-            return m_indexTable.ContainsKey(index);
+            return m_textIndexes;
         }
 
-        public bool ExistsUi(string nameIndex)
+        public void Update()
         {
-            return m_textTable.ContainsKey(nameIndex);
-        }
+            using (var writer = new BigEndianWriter(new StreamWriter(m_uri).BaseStream))
+            {
+                var indexTable = new BigEndianWriter();
+                writer.Seek(4, SeekOrigin.Begin);
 
-        public void Dispose()
-        {
-            m_indexTable = null;
-            m_textTable = null;
-            m_reader.Dispose();
-            m_reader = null;
+                foreach (var index in m_indexes)
+                {
+                    indexTable.WriteInt(index.Key);
+                    indexTable.WriteInt((int)writer.Position);
+                    writer.WriteUTF(index.Value);
+                }
+
+                var indexLen = (int)indexTable.Position;
+
+                foreach (var index in m_textIndexes)
+                {
+                    indexTable.WriteUTF(index.Key);
+                    indexTable.WriteInt((int)writer.Position);
+                    writer.WriteUTF(index.Value);
+                }
+
+                var indexPos = (int)writer.Position;
+
+                /* write index at end */
+                var indexData = indexTable.Data;
+                writer.WriteInt(indexLen);
+                writer.WriteBytes(indexData);
+
+                /* write index pos at begin */
+                writer.Seek(0, SeekOrigin.Begin);
+                writer.WriteInt(indexPos);
+            }
         }
     }
 }

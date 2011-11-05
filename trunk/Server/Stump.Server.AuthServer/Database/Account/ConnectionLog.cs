@@ -28,7 +28,7 @@ namespace Stump.Server.AuthServer.Database.Account
             set;
         }
 
-        [Property("Ip", NotNull = false, Length = 15)]
+        [Property("Ip", NotNull = false, Length = 28)]
         public string Ip
         {
             get;

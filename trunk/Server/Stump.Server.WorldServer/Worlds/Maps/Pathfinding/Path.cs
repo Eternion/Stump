@@ -124,28 +124,25 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Pathfinding
         {
             var completePath = new List<Cell>();
 
-            int i = 0;
-            while (i < m_compressedPath.Length - 1)
+            for (int i = 0; i < m_compressedPath.Length - 1; i++)
             {
+                completePath.Add(m_compressedPath[i].Cell);
+
                 int l = 0;
                 var nextPoint = m_compressedPath[i].Point;
                 while (( nextPoint = nextPoint.GetNearestCellInDirection(m_compressedPath[i].Direction) ) != null &&
-                       nextPoint.CellId != m_compressedPath[i + l + 1].Cell.Id)
+                      nextPoint.CellId != m_compressedPath[i + 1].Cell.Id)
                 {
                     if (l > MapPoint.MapHeight * 2 + MapPoint.MapWidth)
                         throw new Exception("Path too long. Maybe an orientation problem ?");
 
-                    if (m_compressedPath.Length > i + l + 1)
-                        completePath.Insert(i + l + 1, Map.Cells[nextPoint.CellId]);
-                    else
-                        completePath.Add(Map.Cells[nextPoint.CellId]);
+                    completePath.Add(Map.Cells[nextPoint.CellId]);
 
                     l++;
                 }
-
-                i++;
-                i += l;
             }
+
+            completePath.Add(m_compressedPath[m_compressedPath.Length - 1].Cell);
 
             return completePath.ToArray();
         }

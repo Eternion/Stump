@@ -78,7 +78,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             Account account = AccountManager.Instance.FindAccount(client.Login);
 
             /* Invalid password */
-            if (account == null || Cryptography.EncryptPassword(account.Password, client.Key) != client.Password)
+            if (account == null || !AccountManager.Instance.CompareAccountPassword(account, client.Password, client.Key))
             {
                 SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.WRONG_CREDENTIALS);
                 client.DisconnectLater(1000);

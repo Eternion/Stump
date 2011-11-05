@@ -97,7 +97,7 @@ namespace Stump.Server.WorldServer.Database.Breeds
         private string m_maleLookString;
 
         [D2OField("maleLook")]
-        [Property("MaleLook")]
+        [Property("MaleLook", ColumnType = "StringClob", SqlType = "Text")]
         private String MaleLookString
         {
             get
@@ -124,7 +124,7 @@ namespace Stump.Server.WorldServer.Database.Breeds
         private string m_femaleLookString;
 
         [D2OField("femaleLook")]
-        [Property("FemaleLook")]
+        [Property("FemaleLook", ColumnType = "StringClob", SqlType = "Text")]
         private String FemaleLookString
         {
             get

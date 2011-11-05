@@ -36,13 +36,13 @@ namespace Stump.Server.BaseServer.Network
         /// Version for the client. 
         /// </summary>
         [Variable(true)]
-        public static Version ExpectedVersion = new Version(2, 4, 4, 50860, 1, (sbyte) BuildTypeEnum.RELEASE);
+        public static Version ExpectedVersion = new Version(2, 4, 6, 50860, 1, (sbyte) BuildTypeEnum.RELEASE);
 
         /// <summary>
         /// Actual version
         /// </summary>
         [Variable(true)]
-        public static int ActualProtocol = 1412;
+        public static int ActualProtocol = 1413;
 
         /// <summary>
         /// Required version

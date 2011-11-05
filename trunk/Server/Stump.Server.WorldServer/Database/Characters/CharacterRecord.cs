@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        [Property("Name", Length = 18, NotNull = true)]
+        [Property("Name", Length = 24, NotNull = true)]
         public string Name
         {
             get;
@@ -71,7 +71,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        [Property("EntityLook")]
+        [Property("EntityLook", ColumnType = "StringClob", SqlType = "Text")]
         private string LookAsString
         {
             get
@@ -112,7 +112,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        [Property("TitleParam", NotNull = true, Default = "")]
+        [Property("TitleParam", NotNull = true, Default = "", ColumnType = "StringClob", SqlType = "Text")]
         public string TitleParam
         {
             get;

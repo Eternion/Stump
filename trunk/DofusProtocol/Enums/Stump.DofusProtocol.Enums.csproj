@@ -192,7 +192,7 @@
     <Compile Include="Export\ServerStatusEnum.cs" />
     <Compile Include="Export\ShortcutBarEnum.cs" />
     <Compile Include="Export\SocialContactCategoryEnum.cs" />
-    <Compile Include="Export\SpellTargetType.cs" />
+    <Compile Include="Custom\SpellTargetType.cs" />
     <Compile Include="Export\SubEntityBindingPointCategoryEnum.cs" />
     <Compile Include="Export\SubscriptionRequiredEnum.cs" />
     <Compile Include="Export\TaxCollectorErrorReasonEnum.cs" />

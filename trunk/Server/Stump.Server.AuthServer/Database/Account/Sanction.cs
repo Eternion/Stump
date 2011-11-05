@@ -46,7 +46,7 @@ namespace Stump.Server.AuthServer.Database.Account
             set;
         }
 
-        [Property("BanReason")]
+        [Property("BanReason", ColumnType = "StringClob", SqlType = "Text")]
         public string BanReason
         {
             get;

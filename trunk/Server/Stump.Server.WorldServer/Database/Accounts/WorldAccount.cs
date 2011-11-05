@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Database.Accounts
             get { return (uint) DateTime.Now.Subtract(LastConnection).TotalHours; }
         }
 
-        [Property("LastIp", NotNull = false, Length = 15)]
+        [Property("LastIp", NotNull = false, Length = 28)]
         public string LastIp
         {
             get;
