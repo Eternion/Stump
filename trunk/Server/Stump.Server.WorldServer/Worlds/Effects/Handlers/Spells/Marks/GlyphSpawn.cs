@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells.Marks
     [EffectHandler(EffectsEnum.Effect_Glyph_402)]
     public class GlyphSpawn : SpellEffectHandler
     {
-        private Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public GlyphSpawn(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)

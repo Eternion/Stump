@@ -542,21 +542,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         #endregion
 
         #region Move
-        private Path m_lastMove;
-        public ObjectPosition GetPositionBeforeMove()
-        {
-            if (m_lastMove != null)
-                return m_lastMove.EndPathPosition;
-
-            return Position;
-        }
 
         public override bool StartMove(Path movementPath)
         {
             if (IsFighting())
                 return Fighter.StartMove(movementPath);
-
-            m_lastMove = movementPath;
 
             return base.StartMove(movementPath);
         }

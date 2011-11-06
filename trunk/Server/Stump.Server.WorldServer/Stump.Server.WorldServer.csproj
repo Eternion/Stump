@@ -33,6 +33,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <PlatformTarget>x86</PlatformTarget>
@@ -96,10 +97,13 @@
     <Compile Include="AI\Fights\Actions\AIAction.cs" />
     <Compile Include="AI\Fights\Actions\AIFightCellsInformationProvider.cs" />
     <Compile Include="AI\Fights\Actions\MoveAction.cs" />
+    <Compile Include="AI\Fights\Actions\MoveFarFrom.cs" />
+    <Compile Include="AI\Fights\Actions\MoveNearTo.cs" />
     <Compile Include="AI\Fights\Actions\SpellCastAction.cs" />
     <Compile Include="AI\Fights\Actions\SpellSelector.cs" />
     <Compile Include="AI\Fights\Behaviors\AIBehavior.cs" />
     <Compile Include="AI\Fights\Behaviors\EfficienceCalculator.cs" />
+    <Compile Include="AI\Fights\Brain\Brain.cs" />
     <Compile Include="AI\Fights\Threat\ThreatCalculator.cs" />
     <Compile Include="AI\Fights\Threat\VisibleSpellInformation.cs" />
     <Compile Include="Commands\Commands\BanCommand.cs" />

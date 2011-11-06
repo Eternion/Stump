@@ -160,6 +160,15 @@ namespace Stump.Server.WorldServer.Worlds.Actors
             return !IsMoving();
         }
 
+        private ObjectPosition m_lastPosition;
+        public ObjectPosition GetPositionBeforeMove()
+        {
+            if (m_lastPosition != null)
+                return m_lastPosition;
+
+            return Position;
+        }
+
         public virtual bool StartMove(Path movementPath)
         {
             if (!CanMove())
@@ -178,6 +187,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
             if (!CanMove())
                 return true;
 
+            m_lastPosition = Position;
             Position = destination;
 
             NotifyTeleported(destination);
@@ -190,6 +200,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
             if (!IsMoving())
                 return false;
 
+            m_lastPosition = Position;
             Position = MovementPath.EndPathPosition;
             m_isMoving = false;
 
@@ -204,6 +215,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
             if (!IsMoving() || !MovementPath.Contains(currentObjectPosition.Cell.Id))
                 return false;
 
+            m_lastPosition = Position;
             Position = currentObjectPosition;
             m_isMoving = false;
 

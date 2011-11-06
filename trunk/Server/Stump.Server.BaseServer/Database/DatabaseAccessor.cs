@@ -127,7 +127,9 @@ namespace Stump.Server.BaseServer.Database
                 throw new Exception("Cannot access to database. Database's name is not defined");
 
             var connectionInfos = m_config.GetConnectionInfo();
+#if DEBUG
             connectionInfos.Add("show_sql", "true");
+#endif
             m_globalConfig.Add(m_recordBaseType, connectionInfos);
             
             var recordsType = ActiveRecordHelper.GetTables(m_assembly, m_recordBaseType);

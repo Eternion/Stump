@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using Stump.Server.WorldServer.AI.Fights.Brain;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.Stats;
 using Stump.Server.WorldServer.Worlds.Fights;
@@ -14,16 +16,23 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             : base(team)
         {
             Spells = spells;
+            Brain = new Brain(this);
             Fight.TimeLine.TurnStarted += OnTurnStarted;
             Fight.RequestTurnReady += OnRequestTurnReady;
 
             IsReady = true;
         }
 
+        public Brain Brain
+        {
+            get;
+            private set;
+        }
+
         public Spell[] Spells
         {
             get;
-            set;
+            private set;
         }
 
         private void OnRequestTurnReady(Fights.Fight obj)
@@ -41,7 +50,31 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         private void PlayIA()
         {
+            Brain.Play();
+
             Fight.RequestTurnEnd(this);
         }
+
+        #region AI Methods
+        public FightActor GetNearestFighter()
+        {
+            return GetNearestFighter(entry => true);
+        }
+
+        public FightActor GetNearestAlly()
+        {
+            return GetNearestFighter(entry => entry.IsFriendlyWith(this));
+        }
+
+        public FightActor GetNearestEnnemy()
+        {
+            return GetNearestFighter(entry => entry.IsEnnemyWith(this));
+        }
+
+        public FightActor GetNearestFighter(Predicate<FightActor> predicate)
+        {
+            return Fight.GetAllFighters(predicate).OrderBy(entry => entry.Position.Point.DistanceTo(Position.Point)).FirstOrDefault();
+        }
+        #endregion
     }
 }

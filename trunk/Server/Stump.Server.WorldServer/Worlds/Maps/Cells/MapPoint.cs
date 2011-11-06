@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
@@ -206,7 +207,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells
                     }
                 case DirectionsEnum.DIRECTION_SOUTH:
                     {
-                        mapPoint = new MapPoint(m_x + step, m_y - 1);
+                        mapPoint = new MapPoint(m_x + step, m_y - step);
                         break;
                     }
                 case DirectionsEnum.DIRECTION_SOUTH_WEST:
@@ -248,6 +249,25 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells
         public MapPoint GetNearestCellInDirection(DirectionsEnum direction)
         {
             return GetCellInDirection(direction, 1);
+        }
+
+        public IEnumerable<MapPoint> GetAdjacentCells(Func<short, bool> predicate)
+        {
+            var southEast = new MapPoint(m_x + 1, m_y);
+            if (IsInMap(southEast.X, southEast.Y) && predicate(southEast.CellId))
+                yield return southEast;
+
+            var southWest = new MapPoint(m_x, m_y - 1);
+            if (IsInMap(southWest.X, southWest.Y) && predicate(southWest.CellId))
+                yield return southWest;
+
+            var northEast = new MapPoint(m_x, m_y + 1);
+            if (IsInMap(northEast.X, northEast.Y) && predicate(northEast.CellId))
+                yield return northEast;
+
+            var northWest = new MapPoint(m_x - 1, m_y);
+            if (IsInMap(northWest.X, northWest.Y) && predicate(northWest.CellId))
+                yield return northWest;
         }
 
         public static bool IsInMap(int x, int y)

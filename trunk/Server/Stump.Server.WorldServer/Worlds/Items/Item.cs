@@ -44,6 +44,7 @@ namespace Stump.Server.WorldServer.Worlds.Items
         internal Item(ItemTemplate template, int guid, CharacterInventoryPositionEnum position, int stack,
                       List<EffectBase> effects)
         {
+            m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);
             Template = template;
 
             Record = new ItemRecord // create the associated record
@@ -54,12 +55,12 @@ namespace Stump.Server.WorldServer.Worlds.Items
                              Position = position,
                              Effects = effects
                          };
-
-            m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);
         }
 
         internal Item(ItemRecord record)
         {
+            m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);
+
             Record = record;
 
             Template = ItemManager.Instance.GetTemplate(Record.ItemId);
@@ -67,12 +68,12 @@ namespace Stump.Server.WorldServer.Worlds.Items
             Position = Record.Position;
             Effects = new List<EffectBase>(Record.Effects);
 
-            m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);
         }
 
         internal Item(ItemTemplate template, CharacterInventoryPositionEnum position, int stack,
                       List<EffectBase> effects)
         {
+            m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);
             Template = template;
 
             Record = new ItemRecord // create the associated record
@@ -84,8 +85,6 @@ namespace Stump.Server.WorldServer.Worlds.Items
                              Position = position,
                              Effects = effects
                          };
-
-            m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);
         }
 
         #endregion

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
@@ -19,6 +20,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                                                     converter: ParametersConverter.CharacterConverter);
            AddParameter<int>("x");
            AddParameter<int>("y");
+           AddParameter<short>("cellId", "cell", "Cell destination", isOptional: true);
            AddParameter<int>("superArea", "area", "Super area containing the map", isOptional:true);
            AddParameter("outDoor", "out", defaultValue: true);
         }
@@ -41,14 +43,19 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
                 else
                 {
-                    target.Teleport(new ObjectPosition(map, target.Cell, target.Direction));
+                    var cell = trigger.IsArgumentDefined("cell") ? map.Cells[trigger.Get<short>("cell")] : target.Cell;
+
+                    target.Teleport(new ObjectPosition(map, cell, target.Direction));
 
                     trigger.Reply("Teleported.");
                 }
             }
             else
             {
-                target.Teleport(new ObjectPosition(superArea.MapsByPosition[point], target.Cell, target.Direction));
+                var map = superArea.MapsByPosition[point];
+                var cell = trigger.IsArgumentDefined("cell") ? map.Cells[trigger.Get<short>("cell")] : target.Cell;
+
+                target.Teleport(new ObjectPosition(map, cell, target.Direction));
 
                 trigger.Reply("Teleported.");
             }
@@ -64,7 +71,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Description = "Teleport the target given map id";
             AddParameter("target", "t", "Target to teleport",
                                                     converter: ParametersConverter.CharacterConverter);
-            AddParameter<int>("mapId", "id");
+            AddParameter<int>("mapId", "id", "Map destination");
+            AddParameter<short>("cellId", "cell", "Cell destination", isOptional:true);
+
         }
 
         public override void Execute(TriggerBase trigger)
@@ -78,7 +87,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
             else
             {
-                target.Teleport(new ObjectPosition(map, target.Cell, target.Direction));
+                var cell = trigger.IsArgumentDefined("cell") ? map.Cells[trigger.Get<short>("cell")] : target.Cell;
+
+                target.Teleport(new ObjectPosition(map, cell, target.Direction));
 
                 trigger.Reply("Teleported.");
             }

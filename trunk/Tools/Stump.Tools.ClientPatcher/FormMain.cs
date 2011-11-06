@@ -55,9 +55,9 @@ namespace Stump.Tools.ClientPatcher
             // change the config file
             var config = new XmlDocument();
             config.Load(Path.Combine(dofusPath, "config.xml"));
-            var configNavigator = document.CreateNavigator();
+            var configNavigator = config.CreateNavigator();
 
-            configNavigator.SelectSingleNode("//<entry [@key='connection.host']").SetValue(ServerAddress);
+            configNavigator.SelectSingleNode("//entry[@key='connection.host']").SetValue(ServerAddress);
 
             config.Save(Path.Combine(dofusPath, "config.xml"));
 
@@ -97,9 +97,9 @@ namespace Stump.Tools.ClientPatcher
             // reset the config
             var config = new XmlDocument();
             config.Load(Path.Combine(dofusPath, "config.xml"));
-            var configNavigator = document.CreateNavigator();
+            var configNavigator = config.CreateNavigator();
 
-            configNavigator.SelectSingleNode("//<entry [@key='connection.host']").SetValue(OfficialServerAddress);
+            configNavigator.SelectSingleNode("//entry[@key='connection.host']").SetValue(OfficialServerAddress);
 
             config.Save(Path.Combine(dofusPath, "config.xml"));
 

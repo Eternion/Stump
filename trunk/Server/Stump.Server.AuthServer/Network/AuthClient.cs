@@ -14,8 +14,8 @@ namespace Stump.Server.AuthServer.Network
         public AuthClient(Socket socket)
             : base(socket)
         {
-            //Key = new Random().RandomString(32);
-            Key = string.Empty;
+            Key = new Random().RandomString(32);
+
             Send(new ProtocolRequired(VersionExtension.ProtocolRequired, VersionExtension.ActualProtocol));
             Send(new HelloConnectMessage(1, Key));
 

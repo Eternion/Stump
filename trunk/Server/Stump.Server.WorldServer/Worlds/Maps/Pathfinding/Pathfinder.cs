@@ -139,7 +139,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Pathfinding
                 usedMP++;
                 matrix[location].Status = NodeState.Closed;
 
-                if (usedMP >= movementPoints)
+                if (movementPoints > 0 && usedMP > movementPoints)
                 {
                     success = true;
                     endCell = location;

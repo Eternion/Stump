@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\BugCommand.cs" />
+    <Compile Include="Commands\DebugCommands.cs" />
     <Compile Include="Commands\WorkerCommands.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,6 +61,10 @@
       <Project>{D7BFF8ED-065B-4A53-9805-595DFEA75A0A}</Project>
       <Name>Stump.DofusProtocol.Enums</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DofusProtocol\Messages\Stump.DofusProtocol.Messages.csproj">
+      <Project>{53092D2E-8F37-4889-B6B7-B359E093E3F4}</Project>
+      <Name>Stump.DofusProtocol.Messages</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Server\Stump.Server.BaseServer\Stump.Server.BaseServer.csproj">
       <Project>{011FBAFC-7720-4D36-9C59-71BAE6163C9E}</Project>

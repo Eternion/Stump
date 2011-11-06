@@ -143,6 +143,9 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             m_teams = new[] {RedTeam, BlueTeam};
 
             TimeLine = new TimeLine(this, m_fighters);
+            TimeLine.TurnStarted += OnTurnStarted;
+            TimeLine.TurnEndRequest += OnTurnEndRequest;
+            TimeLine.TurnEnded += OnTurnEnded;
 
             BlueTeam.FighterAdded += OnFighterAdded;
             BlueTeam.FighterRemoved += OnFighterRemoved;
@@ -626,9 +629,6 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
             SetFightState(FightState.Fighting);
 
-            TimeLine.TurnStarted += OnTurnStarted;
-            TimeLine.TurnEndRequest += OnTurnEndRequest;
-            TimeLine.TurnEnded += OnTurnEnded;
             TimeLine.ReorganizeTimeLine();
 
             ForEach(character =>
