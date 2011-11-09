@@ -2,6 +2,7 @@ using System;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
 using Stump.Server.WorldServer.Worlds.Spells;
+using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Actions
 {
@@ -26,9 +27,14 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             private set;
         }
 
-        public override void Execute()
+        protected override RunStatus Run(object context)
         {
+            if (!Fighter.CanCastSpell(Spell, Target))
+                return RunStatus.Failure;
+
             Fighter.CastSpell(Spell, Target);
+
+            return RunStatus.Success;
         }
     }
 }

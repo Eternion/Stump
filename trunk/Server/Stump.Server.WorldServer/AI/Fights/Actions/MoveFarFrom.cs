@@ -1,5 +1,6 @@
 using System;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
+using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Actions
 {
@@ -17,16 +18,16 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             private set;
         }
 
-        public override void Execute()
+        protected override RunStatus Run(object context)
         {
             var orientation = From.Position.Point.OrientationTo(Fighter.Position.Point);
             var destination = Fighter.Position.Point.GetCellInDirection(orientation, (short) Fighter.MP);
 
             if (destination == null)
-                return;
+                return RunStatus.Failure;
 
             var moveAction = new MoveAction(Fighter, destination);
-            moveAction.Execute();
+            return moveAction.YieldExecute(context);
         }
     }
 }

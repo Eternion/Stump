@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
+using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Actions
 {
-    public abstract class AIAction
+    public abstract class AIAction : Action
     {
         protected AIAction(AIFighter fighter)
         {
@@ -15,6 +17,14 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             private set;
         }
 
-        public abstract void Execute();
+        public RunStatus YieldExecute(object context)
+        {
+            return Run(context);
+        }
+
+        protected override RunStatus Run(object context)
+        {
+            return RunStatus.Failure;
+        }
     }
 }

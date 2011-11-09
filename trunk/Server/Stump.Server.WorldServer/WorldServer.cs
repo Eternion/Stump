@@ -25,6 +25,7 @@ using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
+using TreeSharp;
 
 namespace Stump.Server.WorldServer
 {

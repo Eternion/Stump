@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 using Stump.Server.WorldServer.Worlds.Maps.Pathfinding;
+using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Actions
 {
@@ -43,10 +44,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             }
         }
 
-        public override void Execute()
+        protected override RunStatus Run(object context)
         {
             var pathfinder = new Pathfinder(new AIFightCellsInformationProvider(Fighter.Fight, Fighter));
             var path = pathfinder.FindPath(Fighter.Position.Cell.Id, DestinationId, false, Fighter.MP);
+
+            if (path == null)
+                return RunStatus.Failure;
 
 #if DEBUG            
             var completepath = pathfinder.FindPath(Fighter.Position.Cell.Id, DestinationId, false);
@@ -62,16 +66,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
 #endif
 
             Fighter.StartMove(path);
+            return RunStatus.Success;
         }
 
         private static void ClearDisplayedCells(WorldClient client)
         {
             client.Send(new DebugClearHighlightCellsMessage());
-        }
-
-        private static void DisplayCell(WorldClient client, short cell)
-        {
-            client.Send(new ShowCellMessage(client.ActiveCharacter.Id, cell));
         }
 
         public static void DisplayPath(WorldClient client, Path path)

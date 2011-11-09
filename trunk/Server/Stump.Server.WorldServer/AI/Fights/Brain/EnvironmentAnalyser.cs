@@ -11,9 +11,9 @@ using Stump.Server.WorldServer.Worlds.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain
 {
-    public class EnvironnmentAnalyser
+    public class EnvironmentAnalyser
     {
-        public EnvironnmentAnalyser(AIFighter fighter)
+        public EnvironmentAnalyser(AIFighter fighter)
         {
             Fighter = fighter;
             CellInformationProvider = new AIFightCellsInformationProvider(Fighter.Fight, Fighter);

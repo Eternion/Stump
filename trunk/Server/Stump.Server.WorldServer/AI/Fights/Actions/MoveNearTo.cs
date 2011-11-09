@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
+using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Actions
 {
@@ -18,7 +19,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             private set;
         }
 
-        public override void Execute()
+        protected override RunStatus Run(object context)
         {
             var cellInfoProvider = new AIFightCellsInformationProvider(Fighter.Fight, Fighter);
 
@@ -26,10 +27,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             var cell = Target.Position.Point.GetAdjacentCells(cellInfoProvider.IsCellWalkable).OrderBy(entry => entry.DistanceTo(Fighter.Position.Point)).FirstOrDefault();
 
             if (cell == null)
-                return;
+                return RunStatus.Failure;
 
             var moveAction = new MoveAction(Fighter, cell);
-            moveAction.Execute();
+            return moveAction.YieldExecute(context);
         }
     }
 }

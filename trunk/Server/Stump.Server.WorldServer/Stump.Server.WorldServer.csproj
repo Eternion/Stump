@@ -34,6 +34,9 @@
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Debug\</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <PlatformTarget>x86</PlatformTarget>
@@ -101,7 +104,7 @@
     <Compile Include="AI\Fights\Actions\MoveFarFrom.cs" />
     <Compile Include="AI\Fights\Actions\MoveNearTo.cs" />
     <Compile Include="AI\Fights\Actions\SpellCastAction.cs" />
-    <Compile Include="AI\Fights\Brain\EnvironnmentAnalyser.cs" />
+    <Compile Include="AI\Fights\Brain\EnvironmentAnalyser.cs" />
     <Compile Include="AI\Fights\Brain\SpellSelector.cs" />
     <Compile Include="AI\Fights\Behaviors\AIBehavior.cs" />
     <Compile Include="AI\Fights\Behaviors\EfficienceCalculator.cs" />
@@ -404,6 +407,10 @@
     <ProjectReference Include="..\..\DofusProtocol\Types\Stump.DofusProtocol.Types.csproj">
       <Project>{10884165-D492-4895-B3EF-32429F7A7F55}</Project>
       <Name>Stump.DofusProtocol.Types</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Library\TreeSharp\TreeSharp.csproj">
+      <Project>{8BFDD80E-9E64-4386-B676-ED3CFDF1B095}</Project>
+      <Name>TreeSharp</Name>
     </ProjectReference>
     <ProjectReference Include="..\Stump.Server.BaseServer\Stump.Server.BaseServer.csproj">
       <Project>{011FBAFC-7720-4D36-9C59-71BAE6163C9E}</Project>

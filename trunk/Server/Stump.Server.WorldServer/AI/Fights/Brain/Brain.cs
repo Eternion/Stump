@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using Stump.Server.WorldServer.AI.Fights.Actions;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
+using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain
 {
@@ -10,7 +12,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
         {
             Fighter = fighter;
             SpellSelector = new SpellSelector(Fighter);
-            Environnment = new EnvironnmentAnalyser(Fighter);
+            Environment = new EnvironmentAnalyser(Fighter);
         }
 
         public AIFighter Fighter
@@ -25,7 +27,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             private set;
         }
 
-        public EnvironnmentAnalyser Environnment
+        public EnvironmentAnalyser Environment
         {
             get;
             private set;
@@ -33,17 +35,33 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         public void Play()
         {
-            
-            var actions = new List<AIAction>();
             var spell = SpellSelector.GetBestSpell();
+            var target = Environment.GetNearestEnnemy();
 
-            if (spell == null)
+            var tree = new PrioritySelector(
+                new DecoratorContinue(ctx => spell == null, new FleeAction(Fighter)),
+                new PrioritySelector(
+                    new DecoratorContinue(ctx => Fighter.CanCastSpell(spell, target.Cell),
+                        new Sequence(
+                            new SpellCastAction(Fighter, spell, target.Cell),
+                            new FleeAction(Fighter))),
+                     new Sequence(
+                         new MoveNearTo(Fighter, target),
+                            new DecoratorContinue(ctx => Fighter.CanCastSpell(spell, target.Cell),
+                                new Sequence(
+                                    new SpellCastAction(Fighter, spell, target.Cell),
+                                    new FleeAction(Fighter))))));
+
+
+            tree.Execute(this).All(entry => true);
+
+            /*if (spell == null)
             {
                 actions.Add(new FleeAction(Fighter));
             }
             else
             {
-                var target = Environnment.GetNearestEnnemy();
+                
 
                 if (!Fighter.CanCastSpell(spell, target.Cell))
                 {
@@ -62,15 +80,15 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                 }
             }
 
-            ExecuteActions(actions);
+            ExecuteActions(actions);*/
         }
 
-        public void ExecuteActions(IEnumerable<AIAction> actions)
+        /*public void ExecuteActions(IEnumerable<AIAction> actions)
         {
             foreach (var action in actions)
             {
                 action.Execute();
             }
-        }
+        }*/
     }
 }

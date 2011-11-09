@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
+using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Actions
 {
@@ -11,15 +13,15 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
         {
         }
 
-        public override void Execute()
+        protected override RunStatus Run(object context)
         {
-            var fleeCell = Fighter.Brain.Environnment.GetCellToFlee();
+            var fleeCell = Fighter.Brain.Environment.GetCellToFlee();
 
             if (fleeCell.Equals(default(Cell)))
-                return;
+                return RunStatus.Failure;
 
             var moveaction = new MoveAction(Fighter, fleeCell);
-            moveaction.Execute();
+            return moveaction.YieldExecute(context);
         }
     }
 }
