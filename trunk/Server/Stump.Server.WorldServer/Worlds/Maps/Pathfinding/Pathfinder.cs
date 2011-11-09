@@ -1,13 +1,15 @@
 using System;
+using System.Drawing;
 using System.Linq;
 using System.Collections.Generic;
 using Stump.Core.Attributes;
 using Stump.Core.Collections;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Worlds.Maps.Pathfinding
 {
-    internal struct PathNode
+    public struct PathNode
     {
         public short Cell;
         public double F;
@@ -17,7 +19,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Pathfinding
         public NodeState Status;
     }
 
-    internal enum NodeState : byte
+    public enum NodeState : byte
     {
         None,
         Open,
@@ -29,26 +31,28 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Pathfinding
         [Variable(true)]
         public static int SearchLimit = 500;
 
-        private static readonly int[] Directions = new[]
+        [Variable(true)]
+        public static int EstimateHeuristic = 1;
+
+        private static readonly DirectionsEnum[] Directions = new[]
             {
-                (int) MapPoint.MapWidth,
-                (int) (MapPoint.MapWidth - 1),
-                (int) (-MapPoint.MapWidth),
-                (int) (-MapPoint.MapWidth + 1),
-                1,
-                (int) ((MapPoint.MapWidth*2) - 1),
-                -1,
-                (int) (-((MapPoint.MapWidth*2) + 1))
+                DirectionsEnum.DIRECTION_SOUTH_WEST,
+                DirectionsEnum.DIRECTION_NORTH_WEST,
+                DirectionsEnum.DIRECTION_NORTH_EAST,
+                DirectionsEnum.DIRECTION_SOUTH_EAST,
+                DirectionsEnum.DIRECTION_SOUTH,
+                DirectionsEnum.DIRECTION_WEST,
+                DirectionsEnum.DIRECTION_NORTH,
+                DirectionsEnum.DIRECTION_EAST
             };
 
         private static double GetHeuristic(MapPoint pointA, MapPoint pointB)
         {
-            return Math.Abs(pointA.X - pointB.X) + Math.Abs(pointA.Y - pointB.Y);
-        }
+            var dxy = new Point(Math.Abs(pointB.X - pointA.X), Math.Abs(pointB.Y - pointA.Y));
+            var orthogonalValue = Math.Abs(dxy.X - dxy.Y);
+            var diagonalValue = Math.Abs(((dxy.X + dxy.Y) -  orthogonalValue) / 2);
 
-        private static double GetNeighborDistance(MapPoint pointA, MapPoint pointB)
-        {
-            return GetHeuristic(pointA, pointB);
+            return EstimateHeuristic * ( diagonalValue + orthogonalValue + dxy.X + dxy.Y );
         }
 
         public Pathfinder(ICellsInformationProvider cellsInformationProvider)
@@ -74,22 +78,23 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Pathfinding
             var endPoint = new MapPoint(endCell);
 
             var location = startCell;
-            var locationPoint = new MapPoint(location);
 
             var counter = 0;
-            var usedMP = 0;
+
+            if (movementPoints == 0)
+                return Path.GetEmptyPath(CellsInformationProvider.Map, CellsInformationProvider.Map.Cells[startCell]);
 
             matrix[location].Cell = location;
-            matrix[location].G = 0;
-            matrix[location].H = GetHeuristic(startPoint, endPoint); 
-            matrix[location].F = matrix[location].H;
             matrix[location].Parent = -1;
+            matrix[location].G = 0;
+            matrix[location].F = EstimateHeuristic;
             matrix[location].Status = NodeState.Open;
 
             openList.Push(location);
             while (openList.Count > 0)
             {
                 location = openList.Pop();
+                var locationPoint = new MapPoint(location);
 
                 if (matrix[location].Status == NodeState.Closed)
                     continue;
@@ -106,22 +111,22 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Pathfinding
 
                 for (int i = 0; i < (diagonal ? 8 : 4); i++)
                 {
-                    var newLocation = (short) (location + Directions[i]);
-                    var newLocationPoint = new MapPoint(newLocation);
+                    var newLocationPoint = locationPoint.GetNearestCellInDirection(Directions[i]);
+                    var newLocation = newLocationPoint.CellId;
 
-                    if (!MapPoint.IsInMap(newLocationPoint.X, newLocationPoint.Y))
+                    if (newLocation < 0 || newLocation >= MapPoint.MapSize)
                         continue;
 
-                    if (newLocation >= MapPoint.MapSize)
+                    if (!MapPoint.IsInMap(newLocationPoint.X, newLocationPoint.Y))
                         continue;
 
                     if (!CellsInformationProvider.IsCellWalkable(newLocation))
                         continue;
 
-                    double newG = matrix[location].G + GetNeighborDistance(locationPoint, newLocationPoint);
+                    double newG = matrix[location].G + 1;
 
-                    if (( matrix[newLocation].Status == NodeState.Open ||
-                        matrix[newLocation].Status == NodeState.Closed ) &&
+                    if ((matrix[newLocation].Status == NodeState.Open ||
+                        matrix[newLocation].Status == NodeState.Closed) &&
                         matrix[newLocation].G <= newG)
                         continue;
 
@@ -129,32 +134,23 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Pathfinding
                     matrix[newLocation].Parent = location;
                     matrix[newLocation].G = newG;
                     matrix[newLocation].H = GetHeuristic(newLocationPoint, endPoint);
-                    matrix[newLocation].F = matrix[newLocation].G + matrix[newLocation].H;
-                    openList.Push(newLocation);
+                    matrix[newLocation].F = newG + matrix[newLocation].H;
 
+                    openList.Push(newLocation);
                     matrix[newLocation].Status = NodeState.Open;
             }
 
                 counter++;
-                usedMP++;
                 matrix[location].Status = NodeState.Closed;
-
-                if (movementPoints > 0 && usedMP > movementPoints)
-                {
-                    success = true;
-                    endCell = location;
-                    break;
-                }
             }
 
             if (success)
             {
-                PathNode node = matrix[endCell];
+                var node = matrix[endCell];
 
                 while (node.Parent != -1)
                 {
                     closedList.Add(node);
-
                     node = matrix[node.Parent];
                 }
 
@@ -162,6 +158,9 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Pathfinding
             }
 
             closedList.Reverse();
+
+            if (movementPoints > 0 && closedList.Count + 1> movementPoints)
+                return new Path(CellsInformationProvider.Map, closedList.Take(movementPoints + 1).Select(entry => CellsInformationProvider.Map.Cells[entry.Cell]));
 
             return new Path(CellsInformationProvider.Map, closedList.Select(entry => CellsInformationProvider.Map.Cells[entry.Cell]));
         }

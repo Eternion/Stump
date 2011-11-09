@@ -70,7 +70,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells.Shapes
                         {
                             if (MinRadius == 0 || Math.Abs(centerPoint.X - x) + Math.Abs(y) >= MinRadius)
                                 if (MapPoint.IsInMap(x, centerPoint.Y + y))
-                                    result.Add(GetCell(x, y + centerPoint.Y, map));
+                                    AddCellIfValid(x, y + centerPoint.Y, map, result);
 
                             y++;
                         }
@@ -87,7 +87,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells.Shapes
                         {
                             if (MinRadius == 0 || Math.Abs(x) + Math.Abs(centerPoint.Y - y) >= MinRadius)
                                 if (MapPoint.IsInMap(x + centerPoint.X, y))
-                                    result.Add(GetCell(x + centerPoint.X, y, map));
+                                    AddCellIfValid(x + centerPoint.X, y, map, result);
 
                             x++;
                         }
@@ -104,7 +104,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells.Shapes
                         {
                             if (MinRadius == 0 || Math.Abs(centerPoint.X - x) + Math.Abs(y) >= MinRadius)
                                 if (MapPoint.IsInMap(x, centerPoint.Y + y))
-                                    result.Add(GetCell(x, y + centerPoint.Y, map));
+                                    AddCellIfValid(x, y + centerPoint.Y, map, result);
 
                             y++;
                         }
@@ -121,7 +121,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells.Shapes
                         {
                             if (MinRadius == 0 || Math.Abs(x) + Math.Abs(centerPoint.Y - y) >= MinRadius)
                                 if (MapPoint.IsInMap(x + centerPoint.X, y))
-                                    result.Add(GetCell(x + centerPoint.X, y, map));
+                                    AddCellIfValid(x + centerPoint.X, y, map, result);
 
                             x++;
                         }
@@ -135,11 +135,13 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells.Shapes
             return result.ToArray();
         }
 
-        private static Cell GetCell(int x, int y, Map map)
+        private static void AddCellIfValid(int x, int y, Map map, IList<Cell> container)
         {
-            return map.Cells[new MapPoint(x, y).CellId];
-        }
+            if (!MapPoint.IsInMap(x, y))
+                return;
 
+            container.Add(map.Cells[MapPoint.CoordToCellId(x, y)]);
+        }
         #endregion
     }
 }

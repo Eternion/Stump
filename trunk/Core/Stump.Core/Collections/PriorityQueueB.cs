@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Stump.Core.Collections
@@ -10,7 +12,7 @@ namespace Stump.Core.Collections
         void Update(int i);
     }
 
-    public class PriorityQueueB<T> : IPriorityQueue<T>
+    public class PriorityQueueB<T> : IPriorityQueue<T>, IEnumerable<T>
     {
         protected IComparer<T> Comparer;
         protected List<T> InnerList = new List<T>();
@@ -111,8 +113,8 @@ namespace Stump.Core.Collections
         /// <param name="i">The index of the changed object.</param>
         public void Update(int i)
         {
-            int p = i;
-            int p2;
+            int p = i,pn;
+            int p2, p1;
             do
             {
                 if (p == 0)
@@ -130,8 +132,8 @@ namespace Stump.Core.Collections
                 return;
             do
             {
-                int pn = p;
-                int p1 = 2*p + 1;
+                pn = p;
+                p1 = 2*p + 1;
                 p2 = 2*p + 2;
                 if (InnerList.Count > p1 && OnCompare(p, p1) > 0)
                     p = p1;
@@ -185,6 +187,16 @@ namespace Stump.Core.Collections
 
             if (index != -1)
                 InnerList.RemoveAt(index);
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return InnerList.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

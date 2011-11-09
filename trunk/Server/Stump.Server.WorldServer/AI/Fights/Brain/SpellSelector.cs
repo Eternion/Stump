@@ -3,7 +3,7 @@ using Stump.Server.WorldServer.Worlds.Actors.Fight;
 using Stump.Server.WorldServer.Worlds.Effects.Instances;
 using Stump.Server.WorldServer.Worlds.Spells;
 
-namespace Stump.Server.WorldServer.AI.Fights.Actions
+namespace Stump.Server.WorldServer.AI.Fights.Brain
 {
     public class SpellSelector
     {

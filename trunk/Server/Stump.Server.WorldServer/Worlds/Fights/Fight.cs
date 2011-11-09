@@ -8,6 +8,7 @@ using Stump.Core.Extensions;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.AI.Fights.Actions;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Characters;

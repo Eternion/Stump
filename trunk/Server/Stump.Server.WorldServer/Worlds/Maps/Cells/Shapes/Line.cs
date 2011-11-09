@@ -50,35 +50,35 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells.Shapes
                 {
                     case DirectionsEnum.LEFT:
                         if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y - i))
-                            result.Add(GetCell(centerPoint.X - i, centerPoint.Y - i, map));
+                            AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         break;
                     case DirectionsEnum.UP:
                         if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y + i))
-                            result.Add(GetCell(centerPoint.X - i, centerPoint.Y - i, map));
+                            AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         break;
                     case DirectionsEnum.RIGHT:
                         if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y + i))
-                            result.Add(GetCell(centerPoint.X - i, centerPoint.Y - i, map));
+                            AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         break;
                     case DirectionsEnum.DOWN:
                         if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y - i))
-                            result.Add(GetCell(centerPoint.X - i, centerPoint.Y - i, map));
+                            AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         break;
                     case DirectionsEnum.UP_LEFT:
                         if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y))
-                            result.Add(GetCell(centerPoint.X - i, centerPoint.Y - i, map));
+                            AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         break;
                     case DirectionsEnum.DOWN_LEFT:
                         if (MapPoint.IsInMap(centerPoint.X, centerPoint.Y - i))
-                            result.Add(GetCell(centerPoint.X - i, centerPoint.Y - i, map));
+                            AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         break;
                     case DirectionsEnum.DOWN_RIGHT:
                         if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y))
-                            result.Add(GetCell(centerPoint.X - i, centerPoint.Y - i, map));
+                            AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         break;
                     case DirectionsEnum.UP_RIGHT:
                         if (MapPoint.IsInMap(centerPoint.X, centerPoint.Y + i))
-                            result.Add(GetCell(centerPoint.X - i, centerPoint.Y - i, map));
+                            AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         break;
                 }
             }
@@ -86,11 +86,13 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells.Shapes
             return result.ToArray();
         }
 
-        private static Cell GetCell(int x, int y, Map map)
+        private static void AddCellIfValid(int x, int y, Map map, IList<Cell> container)
         {
-            return map.Cells[new MapPoint(x, y).CellId];
-        }
+            if (!MapPoint.IsInMap(x, y))
+                return;
 
+            container.Add(map.Cells[MapPoint.CoordToCellId(x, y)]);
+        }
         #endregion
     }
 }

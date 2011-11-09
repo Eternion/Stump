@@ -96,11 +96,13 @@
   <ItemGroup>
     <Compile Include="AI\Fights\Actions\AIAction.cs" />
     <Compile Include="AI\Fights\Actions\AIFightCellsInformationProvider.cs" />
+    <Compile Include="AI\Fights\Actions\FleeAction.cs" />
     <Compile Include="AI\Fights\Actions\MoveAction.cs" />
     <Compile Include="AI\Fights\Actions\MoveFarFrom.cs" />
     <Compile Include="AI\Fights\Actions\MoveNearTo.cs" />
     <Compile Include="AI\Fights\Actions\SpellCastAction.cs" />
-    <Compile Include="AI\Fights\Actions\SpellSelector.cs" />
+    <Compile Include="AI\Fights\Brain\EnvironnmentAnalyser.cs" />
+    <Compile Include="AI\Fights\Brain\SpellSelector.cs" />
     <Compile Include="AI\Fights\Behaviors\AIBehavior.cs" />
     <Compile Include="AI\Fights\Behaviors\EfficienceCalculator.cs" />
     <Compile Include="AI\Fights\Brain\Brain.cs" />
@@ -355,6 +357,7 @@
     <Compile Include="Worlds\Maps\Cells\Triggers\TeleportTrigger.cs" />
     <Compile Include="Worlds\Maps\Pathfinding\CellInformation.cs" />
     <Compile Include="Worlds\Maps\Pathfinding\ICellsInformationProvider.cs" />
+    <Compile Include="Worlds\Maps\Pathfinding\NodesComparer.cs" />
     <Compile Include="Worlds\Maps\Pathfinding\Path.cs" />
     <Compile Include="Worlds\Maps\Pathfinding\Pathfinder.cs" />
     <Compile Include="Worlds\Notifications\Notification.cs" />

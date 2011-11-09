@@ -74,7 +74,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             client.Send(new ShowCellMessage(client.ActiveCharacter.Id, cell));
         }
 
-        private static void DisplayPath(WorldClient client, Path path)
+        public static void DisplayPath(WorldClient client, Path path)
         {
             var random = new Random();
             var buffer = new byte[3];

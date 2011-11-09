@@ -128,7 +128,7 @@ namespace Stump.Server.BaseServer.Database
 
             var connectionInfos = m_config.GetConnectionInfo();
 #if DEBUG
-            connectionInfos.Add("show_sql", "true");
+            //connectionInfos.Add("show_sql", "true");
 #endif
             m_globalConfig.Add(m_recordBaseType, connectionInfos);
             

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using NLog;
 using Stump.Server.WorldServer.AI.Fights.Brain;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.Stats;
@@ -12,6 +13,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 {
     public abstract class AIFighter : FightActor
     {
+        protected static Logger logger = LogManager.GetCurrentClassLogger();
+
         protected AIFighter(FightTeam team, Spell[] spells)
             : base(team)
         {
@@ -50,31 +53,18 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         private void PlayIA()
         {
-            Brain.Play();
-
-            Fight.RequestTurnEnd(this);
+            try
+            {
+                Brain.Play();
+            }
+            catch (Exception ex)
+            {
+                logger.Error("AI engine failed : {0}", ex);
+            }
+            finally
+            {
+                Fight.RequestTurnEnd(this);
+            }
         }
-
-        #region AI Methods
-        public FightActor GetNearestFighter()
-        {
-            return GetNearestFighter(entry => true);
-        }
-
-        public FightActor GetNearestAlly()
-        {
-            return GetNearestFighter(entry => entry.IsFriendlyWith(this));
-        }
-
-        public FightActor GetNearestEnnemy()
-        {
-            return GetNearestFighter(entry => entry.IsEnnemyWith(this));
-        }
-
-        public FightActor GetNearestFighter(Predicate<FightActor> predicate)
-        {
-            return Fight.GetAllFighters(predicate).OrderBy(entry => entry.Position.Point.DistanceTo(Position.Point)).FirstOrDefault();
-        }
-        #endregion
     }
 }

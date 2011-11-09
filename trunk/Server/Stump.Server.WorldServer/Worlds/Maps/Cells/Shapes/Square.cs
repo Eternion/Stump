@@ -68,8 +68,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells.Shapes
                 {
                     if (MinRadius == 0 || Math.Abs(centerPoint.X - x) + Math.Abs(centerPoint.Y - y) >= MinRadius)
                         if (!DiagonalFree || Math.Abs(centerPoint.X - x) != Math.Abs(centerPoint.Y - y))
-                            if (MapPoint.IsInMap(x, y))
-                                result.Add(GetCell(x, y, map));
+                             AddCellIfValid(x, y, map, result);
 
                     y++;
                 }
@@ -80,11 +79,13 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells.Shapes
             return result.ToArray();
         }
 
-        private static Cell GetCell(int x, int y, Map map)
+        private static void AddCellIfValid(int x, int y, Map map, IList<Cell> container)
         {
-            return map.Cells[new MapPoint(x, y).CellId];
-        }
+            if (!MapPoint.IsInMap(x, y))
+                return;
 
+            container.Add(map.Cells[MapPoint.CoordToCellId(x, y)]);
+        }
         #endregion
     }
 }

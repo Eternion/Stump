@@ -10,6 +10,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
         {
             Fighter = fighter;
             SpellSelector = new SpellSelector(Fighter);
+            Environnment = new EnvironnmentAnalyser(Fighter);
         }
 
         public AIFighter Fighter
@@ -24,19 +25,25 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             private set;
         }
 
+        public EnvironnmentAnalyser Environnment
+        {
+            get;
+            private set;
+        }
 
         public void Play()
         {
+            
             var actions = new List<AIAction>();
             var spell = SpellSelector.GetBestSpell();
 
             if (spell == null)
             {
-                actions.Add(new MoveFarFrom(Fighter, Fighter.GetNearestEnnemy()));
+                actions.Add(new FleeAction(Fighter));
             }
             else
             {
-                var target = Fighter.GetNearestEnnemy();
+                var target = Environnment.GetNearestEnnemy();
 
                 if (!Fighter.CanCastSpell(spell, target.Cell))
                 {
@@ -45,13 +52,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                     if (Fighter.CanCastSpell(spell, target.Cell))
                     {
                         actions.Add(new SpellCastAction(Fighter, spell, target.Cell));
-                        actions.Add(new MoveFarFrom(Fighter, target));
+                        actions.Add(new FleeAction(Fighter));
                     }
                 }
                 else     
                 {
                     actions.Add(new SpellCastAction(Fighter, spell, target.Cell));
-                    actions.Add(new MoveFarFrom(Fighter, target));
+                    actions.Add(new FleeAction(Fighter));
                 }
             }
 
