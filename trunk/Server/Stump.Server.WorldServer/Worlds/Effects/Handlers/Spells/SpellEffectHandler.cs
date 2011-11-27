@@ -184,5 +184,10 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells
 
             return buff;
         }
+
+        public virtual bool RequireSilentCast()
+        {
+            return false;
+        }
     }
 }

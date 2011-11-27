@@ -4,6 +4,7 @@ using Castle.ActiveRecord;
 using Stump.Core.Cache;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Npcs;
+using Stump.Server.WorldServer.Database.Npcs.Actions;
 
 namespace Stump.Server.WorldServer.Database.Items.Shops
 {
@@ -15,8 +16,8 @@ namespace Stump.Server.WorldServer.Database.Items.Shops
             m_objectItemToSellInNpcShop = new ObjectValidator<ObjectItemToSellInNpcShop>(BuildObjectItemToSellInNpcShop);
         }
 
-        [BelongsTo("NpcId")]
-        public NpcTemplate Npc
+        [BelongsTo("NpcShop")]
+        public NpcBuySellAction NpcShop
         {
             get;
             set;

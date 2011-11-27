@@ -25,6 +25,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters
         {
             Stats = new StatsFields(this, Grade);
             Spells = Grade.Spells.Select(entry => new Spell(entry)).ToArray();
+            DroppableItems = Template.DroppableItems.ToArray();
         }
 
         public MonsterFighter CreateFighter(FightTeam team)
@@ -72,7 +73,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters
             private set;
         }
 
-        public int Loots
+        public DroppableItem[] DroppableItems
         {
             get;
             private set;

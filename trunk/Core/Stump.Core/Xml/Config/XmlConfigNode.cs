@@ -24,7 +24,7 @@ namespace Stump.Core.Xml.Config
 
         public XmlConfigNode(FieldInfo field)
         {
-            BindedField = field;
+            BindToField(field);
 
             Name = field.Name;
             Serialized = !field.FieldType.HasInterface(typeof (IConvertible)) || field.FieldType.IsEnum;
@@ -34,7 +34,7 @@ namespace Stump.Core.Xml.Config
 
         public XmlConfigNode(PropertyInfo property)
         {
-            BindedProperty = property;
+            BindToProperty(property);
 
             Name = property.Name;
             Serialized = !property.PropertyType.HasInterface(typeof(IConvertible)) || property.PropertyType.IsEnum;

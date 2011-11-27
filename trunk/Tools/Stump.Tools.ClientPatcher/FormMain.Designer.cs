@@ -28,41 +28,61 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.buttonPatch = new System.Windows.Forms.Button();
             this.buttonUnpatch = new System.Windows.Forms.Button();
+            this.textBoxDofusPath = new System.Windows.Forms.TextBox();
+            this.buttonBrowse = new System.Windows.Forms.Button();
+            this.buttonProxyPatch = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonPatch
             // 
-            this.buttonPatch.Location = new System.Drawing.Point(70, 18);
+            resources.ApplyResources(this.buttonPatch, "buttonPatch");
             this.buttonPatch.Name = "buttonPatch";
-            this.buttonPatch.Size = new System.Drawing.Size(104, 23);
-            this.buttonPatch.TabIndex = 0;
-            this.buttonPatch.Text = "Patch !";
             this.buttonPatch.UseVisualStyleBackColor = true;
             this.buttonPatch.Click += new System.EventHandler(this.ButtonPatchClick);
             // 
             // buttonUnpatch
             // 
-            this.buttonUnpatch.Location = new System.Drawing.Point(70, 47);
+            resources.ApplyResources(this.buttonUnpatch, "buttonUnpatch");
             this.buttonUnpatch.Name = "buttonUnpatch";
-            this.buttonUnpatch.Size = new System.Drawing.Size(104, 23);
-            this.buttonUnpatch.TabIndex = 1;
-            this.buttonUnpatch.Text = "Remove Patch";
             this.buttonUnpatch.UseVisualStyleBackColor = true;
             this.buttonUnpatch.Click += new System.EventHandler(this.ButtonUnpatchClick);
             // 
+            // textBoxDofusPath
+            // 
+            resources.ApplyResources(this.textBoxDofusPath, "textBoxDofusPath");
+            this.textBoxDofusPath.Name = "textBoxDofusPath";
+            // 
+            // buttonBrowse
+            // 
+            resources.ApplyResources(this.buttonBrowse, "buttonBrowse");
+            this.buttonBrowse.Name = "buttonBrowse";
+            this.buttonBrowse.UseVisualStyleBackColor = true;
+            this.buttonBrowse.Click += new System.EventHandler(this.ButtonBrowseClick);
+            // 
+            // buttonProxyPatch
+            // 
+            resources.ApplyResources(this.buttonProxyPatch, "buttonProxyPatch");
+            this.buttonProxyPatch.Name = "buttonProxyPatch";
+            this.buttonProxyPatch.UseVisualStyleBackColor = true;
+            this.buttonProxyPatch.Click += new System.EventHandler(this.ButtonProxyPatchClick);
+            // 
             // FormMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(245, 89);
+            this.Controls.Add(this.buttonProxyPatch);
+            this.Controls.Add(this.buttonBrowse);
+            this.Controls.Add(this.textBoxDofusPath);
             this.Controls.Add(this.buttonUnpatch);
             this.Controls.Add(this.buttonPatch);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "FormMain";
-            this.Text = "Client Patcher";
+            this.Load += new System.EventHandler(this.OnFormMainLoad);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -70,6 +90,9 @@
 
         private System.Windows.Forms.Button buttonPatch;
         private System.Windows.Forms.Button buttonUnpatch;
+        private System.Windows.Forms.TextBox textBoxDofusPath;
+        private System.Windows.Forms.Button buttonBrowse;
+        private System.Windows.Forms.Button buttonProxyPatch;
     }
 }
 

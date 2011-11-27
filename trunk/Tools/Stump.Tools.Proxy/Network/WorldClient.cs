@@ -1,7 +1,7 @@
-
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Net.Sockets;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -15,52 +15,22 @@ namespace Stump.Tools.Proxy.Network
     public class WorldClient : ProxyClient
     {
         private static readonly Dictionary<string, SelectedServerDataMessage> m_tickets = new Dictionary<string, SelectedServerDataMessage>();
-
-        public static void PushTicket(string ticket, SelectedServerDataMessage server)
-        {
-            m_tickets.Add(ticket, server);
-        }
-
-        public static SelectedServerDataMessage PopTicket(string ticket)
-        {
-            if (!m_tickets.ContainsKey(ticket))
-                return null;
-
-            var result = m_tickets[ticket];
-
-            m_tickets.Remove(ticket);
-
-            return result;
-        }
+        private FightTeamInformations m_blueTeam;
+        private Map m_currentMap;
+        private Action m_delegateToCall;
+        private EntityDispositionInformations m_disposition;
+        private NpcDialogReplyMessage m_guessNpcReply;
+        private FightTeamInformations m_redTeam;
 
         public WorldClient(Socket socket)
             : base(socket)
         {
             MapNpcs = new Dictionary<int, GameRolePlayNpcInformations>();
             MapIOs = new Dictionary<int, InteractiveElement>();
+            Actors = new Dictionary<int, GameContextActorInformations>();
 
             Send(new ProtocolRequired(VersionExtension.ProtocolRequired, VersionExtension.ActualProtocol));
             Send(new HelloGameMessage());
-        }
-
-        protected override SocketAsyncEventArgs PopWriteSocketAsyncArgs()
-        {
-            return Proxy.Instance.WorldClientManager.PopWriteSocketAsyncArgs();
-        }
-
-        protected override void PushWriteSocketAsyncArgs(SocketAsyncEventArgs args)
-        {
-            Proxy.Instance.WorldClientManager.PushWriteSocketAsyncArgs(args);
-        }
-
-        protected override SocketAsyncEventArgs PopReadSocketAsyncArgs()
-        {
-            return Proxy.Instance.WorldClientManager.PopReadSocketAsyncArgs();
-        }
-
-        protected override void PushReadSocketAsyncArgs(SocketAsyncEventArgs args)
-        {
-            Proxy.Instance.WorldClientManager.PushReadSocketAsyncArgs(args);
         }
 
         public string Ticket
@@ -74,8 +44,6 @@ namespace Stump.Tools.Proxy.Network
             get;
             set;
         }
-
-        private NpcDialogReplyMessage m_guessNpcReply;
 
         public NpcDialogReplyMessage GuessNpcReply
         {
@@ -130,17 +98,33 @@ namespace Stump.Tools.Proxy.Network
             set;
         }
 
-        private Map m_currentMap;
-
         public Map CurrentMap
         {
             get { return m_currentMap; }
             set
             {
                 LastMap = m_currentMap;
-                
+
                 m_currentMap = value;
             }
+        }
+
+        public bool IsInFight
+        {
+            get;
+            set;
+        }
+
+        public GameFightJoinMessage Fight
+        {
+            get;
+            set;
+        }
+
+        public Dictionary<int, GameContextActorInformations> Actors
+        {
+            get;
+            set;
         }
 
         public ushort? GuessCellTrigger
@@ -148,8 +132,6 @@ namespace Stump.Tools.Proxy.Network
             get;
             set;
         }
-
-        private EntityDispositionInformations m_disposition;
 
         public EntityDispositionInformations Disposition
         {
@@ -169,13 +151,45 @@ namespace Stump.Tools.Proxy.Network
 
         public bool GuessAction
         {
-            get
-            {
-                return GuessNpcReply != null || GuessNpcFirstAction != null || GuessSkillAction != null || GuessCellTrigger != null;
-            }
+            get { return GuessNpcReply != null || GuessNpcFirstAction != null || GuessSkillAction != null || GuessCellTrigger != null; }
         }
 
-        private Action m_delegateToCall;
+        public static void PushTicket(string ticket, SelectedServerDataMessage server)
+        {
+            m_tickets.Add(ticket, server);
+        }
+
+        public static SelectedServerDataMessage PopTicket(string ticket)
+        {
+            if (!m_tickets.ContainsKey(ticket))
+                return null;
+
+            SelectedServerDataMessage result = m_tickets[ticket];
+
+            m_tickets.Remove(ticket);
+
+            return result;
+        }
+
+        protected override SocketAsyncEventArgs PopWriteSocketAsyncArgs()
+        {
+            return Proxy.Instance.WorldClientManager.PopWriteSocketAsyncArgs();
+        }
+
+        protected override void PushWriteSocketAsyncArgs(SocketAsyncEventArgs args)
+        {
+            Proxy.Instance.WorldClientManager.PushWriteSocketAsyncArgs(args);
+        }
+
+        protected override SocketAsyncEventArgs PopReadSocketAsyncArgs()
+        {
+            return Proxy.Instance.WorldClientManager.PopReadSocketAsyncArgs();
+        }
+
+        protected override void PushReadSocketAsyncArgs(SocketAsyncEventArgs args)
+        {
+            Proxy.Instance.WorldClientManager.PushReadSocketAsyncArgs(args);
+        }
 
         public void CallWhenTeleported(Action action)
         {
@@ -190,13 +204,13 @@ namespace Stump.Tools.Proxy.Network
         public void SendChatMessage(string message, Color color)
         {
             Send(new ChatServerMessage(
-                            (sbyte)ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,
-                            "<font color=\"#" + color.ToArgb().ToString("X") + "\">" + "[PROXY] : " + message + "</font>",
-                            0,
-                            "",
-                            0,
-                            "",
-                            0));
+                     (sbyte) ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,
+                     "<font color=\"#" + color.ToArgb().ToString("X") + "\">" + "[PROXY] : " + message + "</font>",
+                     0,
+                     "",
+                     0,
+                     "",
+                     0));
         }
     }
 }

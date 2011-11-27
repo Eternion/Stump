@@ -8,7 +8,6 @@ using Stump.Core.Extensions;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.AI.Fights.Actions;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Characters;
@@ -508,7 +507,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             enumerator.Dispose();
         }
 
-        public DirectionsEnum FoundPlacementDirection(FightActor fighter)
+        public DirectionsEnum FindPlacementDirection(FightActor fighter)
         {
             FightTeam team = fighter.Team == RedTeam ? BlueTeam : RedTeam;
 
@@ -576,7 +575,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         {
             foreach (FightActor fighter in m_fighters)
             {
-                fighter.Position.Direction = FoundPlacementDirection(fighter);
+                fighter.Position.Direction = FindPlacementDirection(fighter);
             }
         }
 
@@ -678,7 +677,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             if (!fighter.IsFighterTurn())
                 return;
 
-            var movementsKeys = path.GetServerPathKeys();
+            IEnumerable<short> movementsKeys = path.GetServerPathKeys();
 
             StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
             ForEach(entry => ContextHandler.SendGameMapMovementMessage(entry.Client, movementsKeys, fighter));
@@ -718,16 +717,16 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             ForEach(entry => ActionsHandler.SendGameActionFightLifePointsVariationMessage(entry.Client, from ?? actor, actor, (short) delta));
         }
 
-        private void OnSpellCasting(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical)
+        private void OnSpellCasting(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
             ForEach(entry => ContextHandler.SendGameActionFightSpellCastMessage(entry.Client, ActionsEnum.ACTION_FIGHT_CAST_SPELL,
-                                                                                caster, target, critical, false, spell));
+                                                                                caster, target, critical, silentCast, spell));
 
             if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
                 EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
         }
 
-        private void OnSpellCasted(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical)
+        private void OnSpellCasted(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
             EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
@@ -1066,6 +1065,18 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         #region End Fight phase
 
+        public static readonly double[] GroupCoefficients = new[]
+                                                                {
+                                                                    1,
+                                                                    1.1,
+                                                                    1.5,
+                                                                    2.3,
+                                                                    3.1,
+                                                                    3.6,
+                                                                    4.2,
+                                                                    4.7
+                                                                };
+
         public void Dispose()
         {
             UnBindFightersEvents();
@@ -1073,9 +1084,99 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             if (TimeLine != null)
                 TimeLine.Dispose();
 
+            if (m_placementTimer != null)
+                m_placementTimer.Dispose();
+
             Map.RemoveFight(this);
 
             FightManager.Instance.Remove(this);
+            GC.SuppressFinalize(this);
+        }
+
+        private int CalculateWinExp(CharacterFighter fighter)
+        {
+            IEnumerable<MonsterFighter> monsters = fighter.OpposedTeam.GetAllFighters<MonsterFighter>(entry => entry.IsDead());
+            IEnumerable<CharacterFighter> players = fighter.Team.GetAllFighters<CharacterFighter>();
+
+            if (monsters.Count() <= 0 || players.Count() <= 0)
+                return 0;
+
+            int sumPlayersLevel = players.Sum(entry => entry.Level);
+            byte maxPlayerLevel = players.Max(entry => entry.Level);
+            int sumMonstersLevel = monsters.Sum(entry => entry.Level);
+            byte maxMonsterLevel = monsters.Max(entry => entry.Level);
+            int sumMonsterXp = monsters.Sum(entry => entry.Monster.Grade.GradeXp);
+
+            int levelCoeff = 1;
+            if (sumPlayersLevel - 5 > sumMonstersLevel)
+                levelCoeff = sumMonstersLevel/sumPlayersLevel;
+            else if (sumPlayersLevel + 10 < sumMonstersLevel)
+                levelCoeff = (sumPlayersLevel + 10)/sumMonstersLevel;
+
+            double xpRatio = Math.Min(fighter.Level, Math.Truncate(2.5*maxMonsterLevel))/sumPlayersLevel*100;
+
+            int regularGroupRatio = players.Where(entry => entry.Level >= maxPlayerLevel/3).Sum(entry => 1);
+
+            if (regularGroupRatio <= 0)
+                regularGroupRatio = 1;
+
+            double baseXp = Math.Truncate(xpRatio/100*Math.Truncate(sumMonsterXp*GroupCoefficients[regularGroupRatio - 1]*levelCoeff));
+            int multiplicator = AgeBonus <= 0 ? 1 : 1 + AgeBonus/100;
+            var xp = (int) Math.Truncate(Math.Truncate(baseXp*(100 + fighter.Stats[CaracteristicsEnum.Wisdom].Total)/100)*multiplicator*Rates.XpRate);
+
+            return xp;
+        }
+
+        private void ShareLoots()
+        {
+            foreach (FightTeam team in m_teams)
+            {
+                IEnumerable<FightActor> droppers = (team == RedTeam ? BlueTeam : RedTeam).GetAllFighters(entry => entry.IsDead());
+                IOrderedEnumerable<CharacterFighter> looters = team.GetAllFighters<CharacterFighter>().OrderByDescending(entry => entry.Stats[CaracteristicsEnum.Prospecting].Total);
+                int teamPP = team.GetAllFighters().Sum(entry => entry.Stats[CaracteristicsEnum.Prospecting].Total);
+                long kamas = droppers.Sum(entry => entry.GetDroppedKamas());
+
+                foreach (CharacterFighter looter in looters)
+                {
+                    int looterPP = looter.Stats[CaracteristicsEnum.Prospecting].Total;
+
+                    looter.Loot.Kamas = (int) (kamas*(looterPP/teamPP));
+
+                    foreach (FightActor dropper in droppers)
+                    {
+                        foreach(var item in dropper.RollLoot(looter))
+                            looter.Loot.AddItem(item);
+                    }
+                }
+            }
+        }
+
+        private void ForceEndFight(object state)
+        {
+            try
+            {
+                m_endFightTimer.Dispose();
+
+                EndFight();
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Unhandled Thread Exception : {0}", ex);
+                Dispose();
+            }
+        }
+
+        public void RequestEndFight()
+        {
+            SetFightState(FightState.Ended);
+
+            TimeLine.Dispose();
+
+            NotifyRequestTurnReady();
+            ForEach(
+                entry => ContextHandler.SendGameFightTurnReadyRequestMessage(entry.Client, TimeLine.Current));
+
+            m_endFightTimer = new Timer(ForceEndFight, null, EndFightTimeOut, Timeout.Infinite);
         }
 
         public void CancelFight()
@@ -1095,34 +1196,6 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             Dispose();
         }
 
-        public void RequestEndFight()
-        {
-            SetFightState(FightState.Ended);
-
-            TimeLine.Dispose();
-
-            NotifyRequestTurnReady();
-            ForEach(
-                entry => ContextHandler.SendGameFightTurnReadyRequestMessage(entry.Client, TimeLine.Current));
-
-            m_endFightTimer = new Timer(ForceEndFight, null, EndFightTimeOut, Timeout.Infinite);
-        }
-
-        private void ForceEndFight(object state)
-        {
-            try
-            {
-                m_endFightTimer.Dispose();
-
-                EndFight();
-            }
-            catch (Exception ex)
-            {
-                logger.Error("Unhandled Thread Exception : {0}", ex);
-                Dispose();
-            }
-        }
-
         public void EndFight()
         {
             TimeLine.Dispose();
@@ -1132,9 +1205,19 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
             SetFightState(FightState.Ended);
 
+            ShareLoots();
+
+            foreach (var fighter in GetAllFighters<CharacterFighter>())
+                fighter.SetEarnedExperience(CalculateWinExp(fighter));
+
+            var results = GetAllFighters().Select(entry => entry.GetFightResult());
+
+            foreach (var fightResult in results)
+                fightResult.Apply();   
+
             ForEach(character =>
                         {
-                            ContextHandler.SendGameFightEndMessage(character.Client, this);
+                            ContextHandler.SendGameFightEndMessage(character.Client, this, results.Select(entry => entry.GetFightResultListEntry()));
                             character.RejoinMap();
                         });
 
@@ -1296,12 +1379,12 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             private set;
         }
 
+        #region ICellsInformationProvider Members
+
         public Map Map
         {
             get { return Fight.Map; }
         }
-
-        #region ICellsInformationProvider Members
 
         public bool IsCellWalkable(short cell)
         {

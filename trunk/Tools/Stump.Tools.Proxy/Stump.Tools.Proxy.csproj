@@ -81,7 +81,7 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\Run\Release\Proxy\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -97,7 +97,9 @@
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.ActiveRecord, Version=2.1.2.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL" />
+    <Reference Include="Castle.ActiveRecord">
+      <HintPath>..\..\Library\Castle.ActiveRecord.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\..\Library\NLog.dll</HintPath>
     </Reference>
@@ -119,6 +121,7 @@
     <Compile Include="Handlers\Auth\SelectedServerDataMessageHandler.cs" />
     <Compile Include="Handlers\World\AuthenticationTicketMessageHandler.cs" />
     <Compile Include="Handlers\Auth\IdentificationSuccessMessageHandler.cs" />
+    <Compile Include="Handlers\World\FightHandler.cs" />
     <Compile Include="Handlers\World\HelloGameMessageHandler.cs" />
     <Compile Include="Handlers\World\InteractiveObjectsHandler.cs" />
     <Compile Include="Handlers\World\NpcsHandler.cs" />

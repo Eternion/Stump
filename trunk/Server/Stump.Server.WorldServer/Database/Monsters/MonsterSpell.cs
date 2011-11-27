@@ -6,7 +6,7 @@ using Stump.Server.WorldServer.Database.Spells;
 namespace Stump.Server.WorldServer.Database.Monsters
 {
     [ActiveRecord("monsters_spells")]
-    public class MonsterSpell : WorldBaseRecord<MonsterGrade>, ISpellRecord
+    public class MonsterSpell : WorldBaseRecord<MonsterSpell>, ISpellRecord
     {
         [PrimaryKey(PrimaryKeyType.Native)]
         public int Id

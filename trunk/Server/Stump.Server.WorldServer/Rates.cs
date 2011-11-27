@@ -11,5 +11,8 @@ namespace Stump.Server.WorldServer
         /// </summary>
         [Variable]
         public static float RegenRate = 1;
+
+        [Variable]
+        public static float XpRate = 1;
     }
 }

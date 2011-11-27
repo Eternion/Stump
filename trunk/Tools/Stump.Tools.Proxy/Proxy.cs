@@ -23,6 +23,7 @@ using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Worlds;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Worlds.Effects;
 using Stump.Server.WorldServer.Worlds.Interactives;
@@ -38,7 +39,7 @@ namespace Stump.Tools.Proxy
     {
         private static Logger logger;
 
-        [Variable]
+        [Variable(Priority = 20)]
         public static string AuthAddress = "127.0.0.1";
 
         [Variable]
@@ -47,7 +48,7 @@ namespace Stump.Tools.Proxy
         [Variable]
         public static string WorldAddress = "127.0.0.1";
 
-        [Variable]
+        [Variable(Priority = 21)]
         public static int WorldPort = 5556;
 
         [Variable]
@@ -161,6 +162,7 @@ namespace Stump.Tools.Proxy
             ItemManager.Instance.Initialize();
             InteractiveManager.Instance.Initialize();
             NpcManager.Instance.Initialize();
+            MonsterManager.Instance.Initialize();
             CellTriggerManager.Instance.Initialize();
             World.Instance.Initialize();
 

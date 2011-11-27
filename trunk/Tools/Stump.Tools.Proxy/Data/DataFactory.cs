@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -6,13 +7,17 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Database.Interactives.Skills;
 using Stump.Server.WorldServer.Database.Items.Shops;
+using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Database.Npcs.Replies;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Database.World.Triggers;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Worlds.Interactives;
 using Stump.Server.WorldServer.Worlds.Items;
+using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells.Triggers;
 using Stump.Tools.Proxy.Network;
 
@@ -49,7 +54,7 @@ namespace Stump.Tools.Proxy.Data
             }*/
             if (client.GuessSkillAction != null)
             {
-                var map = client.GuessSkillAction.Item1;
+                Map map = client.GuessSkillAction.Item1;
                 int skillId = client.GuessSkillAction.Item2.skillInstanceUid;
                 int elementId = client.GuessSkillAction.Item2.elemId;
                 int duration = client.GuessSkillAction.Item3.duration;
@@ -76,9 +81,9 @@ namespace Stump.Tools.Proxy.Data
                                           return;
 
                                       if (io.Template != null && io.Template.Skills.Count(entry => entry is SkillTeleportTemplate &&
-                                                                            (entry as SkillTeleportTemplate).CellId == skill.CellId &&
-                                                                            (entry as SkillTeleportTemplate).MapId == skill.MapId &&
-                                                                            (entry as SkillTeleportTemplate).Direction == skill.Direction) > 0)
+                                                                                                   (entry as SkillTeleportTemplate).CellId == skill.CellId &&
+                                                                                                   (entry as SkillTeleportTemplate).MapId == skill.MapId &&
+                                                                                                   (entry as SkillTeleportTemplate).Direction == skill.Direction) > 0)
                                           return;
 
                                       skill.Save();
@@ -126,7 +131,6 @@ namespace Stump.Tools.Proxy.Data
                                       CellTriggerManager.Instance.AddCellTrigger(trigger);
 
                                       client.SendChatMessage("Cell trigger added");
-
                                   });
             }
         }
@@ -151,7 +155,7 @@ namespace Stump.Tools.Proxy.Data
                 ExecuteIOTask(() =>
                                   {
                                       if (client.LastNpcMessage.Replies.Count(entry => entry is ContinueDialogReply &&
-                                                                                       ( entry as ContinueDialogReply ).ReplyId == npcReply.ReplyId &&
+                                                                                       (entry as ContinueDialogReply).ReplyId == npcReply.ReplyId &&
                                                                                        (entry as ContinueDialogReply).NextMessage.Id == npcReply.NextMessage.Id) > 0)
                                           return;
 
@@ -207,7 +211,7 @@ namespace Stump.Tools.Proxy.Data
             ExecuteIOTask(() =>
                               {
                                   if (client.LastNpcMessage.Replies.Count(entry => entry is EndDialogReply &&
-                                                                                   ( entry as EndDialogReply ).ReplyId == npcReply.ReplyId) > 0)
+                                                                                   (entry as EndDialogReply).ReplyId == npcReply.ReplyId) > 0)
                                       return;
 
                                   npcReply.Save();
@@ -230,30 +234,79 @@ namespace Stump.Tools.Proxy.Data
             int npcId = client.MapNpcs[client.GuessNpcFirstAction.npcId].npcId;
             client.GuessNpcFirstAction = null;
 
-            var action = new NpcBuySellAction
-                             {
-                                 Npc = NpcManager.Instance.GetNpcTemplate(npcId),
-                                 Items = npcShopMessage.objectsInfos.Select(
-                                     entry =>
-                                     new NpcItem
-                                         {
-                                             Item = ItemManager.Instance.GetTemplate(entry.objectGID),
-                                             Npc = NpcManager.Instance.GetNpcTemplate(npcId),
-                                             BuyCriterion = string.Empty,
-                                             CustomPrice = entry.objectPrice
-                                         }).ToList()
-                             };
 
             ExecuteIOTask(() =>
                               {
+                                  var action = new NpcBuySellAction
+                                                   {
+                                                       Npc = NpcManager.Instance.GetNpcTemplate(npcId),
+                                                       Items = new List<NpcItem>()
+                                                   };
+
                                   if (action.Npc.Actions.Count(entry => entry is NpcBuySellAction) > 0)
                                       return;
 
                                   action.Save();
+
+                                  foreach (ObjectItemToSellInNpcShop objInfo in npcShopMessage.objectsInfos)
+                                  {
+                                      var item = new NpcItem
+                                                     {
+                                                         Item = ItemManager.Instance.GetTemplate(objInfo.objectGID),
+                                                         NpcShop = action,
+                                                         BuyCriterion = string.Empty,
+                                                         CustomPrice = objInfo.objectPrice
+                                                     };
+                                      action.Items.Add(item);
+                                      item.Save();
+                                  }
+
                                   action.Npc.Actions.Add(action);
-                                  action.Npc.Save();
+                                  //action.Npc.Save();
 
                                   client.SendChatMessage("Npc shop added");
+                              });
+        }
+
+        public static void BuildMonsterSpell(WorldClient client, GameFightMonsterInformations monster, GameActionFightSpellCastMessage spell)
+        {
+            ExecuteIOTask(() =>
+                              {
+                                  var monsterSpell = new MonsterSpell();
+                                  MonsterGrade grade = MonsterManager.Instance.GetMonsterGrade(monster.creatureGenericId, monster.creatureGrade);
+
+                                  if (MonsterManager.Instance.GetOneMonsterSpell(entry =>
+                                                                                 entry.MonsterGrade.Id == grade.Id &&
+                                                                                 entry.SpellId == spell.spellId) != null)
+                                      return;
+
+                                  monsterSpell.MonsterGrade = grade;
+                                  monsterSpell.SpellId = spell.spellId;
+                                  monsterSpell.Level = spell.spellLevel;
+
+                                  MonsterManager.Instance.AddMonsterSpell(monsterSpell);
+                                  client.SendChatMessage("Monster spell added");
+                              });
+        }
+
+        public static void BuildMapFightPlacement(WorldClient client, Map map, IEnumerable<short> blueCells, IEnumerable<short> redCells)
+        {
+            if (map.Record.FightPositions != null)
+                return;
+
+            ExecuteIOTask(() =>
+                              {
+                                  map.Record.FightPositions = new MapFightPositionsRecord
+                                                                  {
+                                                                      BlueCells = blueCells.ToArray(),
+                                                                      RedCells = redCells.ToArray(),
+                                                                      Map = map.Record
+                                                                  };
+
+                                  map.Record.FightPositions.Save();
+                                  map.Record.Save();
+
+                                  client.SendChatMessage("Fights placements added");
                               });
         }
 
@@ -261,6 +314,8 @@ namespace Stump.Tools.Proxy.Data
         {
             if (actorInformations is GameRolePlayNpcInformations)
                 HandleNpcInformations(client, actorInformations as GameRolePlayNpcInformations);
+            else if (actorInformations is GameRolePlayGroupMonsterInformations)
+                HandleMonsterGroup(client, actorInformations as GameRolePlayGroupMonsterInformations);
         }
 
         public static void HandleNpcInformations(WorldClient client, GameRolePlayNpcInformations npcInformations)
@@ -284,6 +339,39 @@ namespace Stump.Tools.Proxy.Data
 
                                   NpcManager.Instance.AddNpcSpawn(spawn);
                                   client.SendChatMessage("Npc added");
+                              });
+        }
+
+        public static void HandleMonsterGroup(WorldClient client, GameRolePlayGroupMonsterInformations monsterGroup)
+        {
+            HandleMonsterSpawn(client, monsterGroup.mainCreatureGenericId, client.CurrentMap);
+
+            foreach (MonsterInGroupInformations monster in monsterGroup.underlings)
+            {
+                HandleMonsterSpawn(client, monster.creatureGenericId, client.CurrentMap);
+            }
+        }
+
+        public static void HandleMonsterSpawn(WorldClient client, int creatureId, Map currentMap)
+        {
+            ExecuteIOTask(() =>
+                              {
+                                  if (MonsterManager.Instance.GetOneMonsterSpawn(entry =>
+                                                                                 entry.SubArea.Id == currentMap.SubArea.Id &&
+                                                                                 entry.MonsterId == creatureId) != null)
+                                      return;
+
+                                  var spawn = new MonsterSpawn
+                                                  {
+                                                      MonsterId = creatureId,
+                                                      MinGrade = 1,
+                                                      MaxGrade = 5,
+                                                      Frequency = 1.0,
+                                                      SubArea = client.CurrentMap.SubArea.Record
+                                                  };
+
+                                  MonsterManager.Instance.AddMonsterSpawn(spawn);
+                                  client.SendChatMessage("Monster spawn added");
                               });
         }
 

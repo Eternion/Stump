@@ -389,7 +389,7 @@ namespace Stump.Server.WorldServer.Database.Breeds
         {
             for (int i = 0; i < thresholds.Count - 1; i++)
             {
-                if (thresholds[i][0] < actualpoints &&
+                if (thresholds[i][0] <= actualpoints &&
                     thresholds[i + 1][0] > actualpoints)
                     return thresholds[i][1];
             }

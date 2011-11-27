@@ -1,5 +1,4 @@
 using System;
-using Stump.Core.Cache;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
@@ -12,9 +11,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
 {
     public abstract class ContextActor
     {
-        protected ContextActor()
-        {
-        }
+        private ObjectPosition m_position;
 
         public virtual int Id
         {
@@ -30,18 +27,14 @@ namespace Stump.Server.WorldServer.Worlds.Actors
 
         public virtual IContext Context
         {
-            get
-            {
-                return Position.Map;
-            }
+            get { return Position.Map; }
         }
-
-        private ObjectPosition m_position;
 
         public ObjectPosition Position
         {
             get { return m_position; }
-            protected set {
+            protected set
+            {
                 if (m_position != null)
                     m_position.PositionChanged -= NotifyPositionChanged;
 
@@ -53,16 +46,19 @@ namespace Stump.Server.WorldServer.Worlds.Actors
         public Map Map
         {
             get { return Position.Map; }
+            set { Position.Map = value; }
         }
 
         public Cell Cell
         {
             get { return Position.Cell; }
+            set { Position.Cell = value; }
         }
 
         public DirectionsEnum Direction
         {
             get { return Position.Direction; }
+            set { Position.Direction = value; }
         }
 
         #region Network
@@ -71,7 +67,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
 
         public virtual EntityDispositionInformations GetEntityDispositionInformations()
         {
-            return new EntityDispositionInformations(Position.Cell.Id, (sbyte)Position.Direction);
+            return new EntityDispositionInformations(Position.Cell.Id, (sbyte) Position.Direction);
         }
 
         #endregion
@@ -107,6 +103,16 @@ namespace Stump.Server.WorldServer.Worlds.Actors
         #endregion
 
         #region Moving
+
+        private bool m_isMoving;
+        private ObjectPosition m_lastPosition;
+
+        public Path MovementPath
+        {
+            get;
+            private set;
+        }
+
         public event Action<ContextActor, Path> StartMoving;
 
         protected void NotifyStartMoving(Path path)
@@ -142,14 +148,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors
             if (handler != null) handler(this, position);
         }
 
-        private bool m_isMoving;
-
-        public Path MovementPath
-        {
-            get;
-            private set;
-        }
-
         public virtual bool IsMoving()
         {
             return m_isMoving && MovementPath != null;
@@ -160,7 +158,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors
             return !IsMoving();
         }
 
-        private ObjectPosition m_lastPosition;
         public ObjectPosition GetPositionBeforeMove()
         {
             if (m_lastPosition != null)
@@ -224,6 +221,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
 
             return true;
         }
+
         #endregion
 
         #endregion

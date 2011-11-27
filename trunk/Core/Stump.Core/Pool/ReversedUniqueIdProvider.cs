@@ -30,11 +30,6 @@ namespace Stump.Core.Pool
                     id = m_nextId;
                     Interlocked.Decrement(ref m_nextId);
                 }
-                else
-                {
-                    id = m_nextId;
-                    Interlocked.Decrement(ref m_nextId);
-                }
             }
             else
             {

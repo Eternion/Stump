@@ -37,10 +37,11 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 
             var boost = (short) (message.boostPoint/ (double)neededpts);
 
-            if (boost < 0)
+            if (boost < 1 || message.boostPoint > client.ActiveCharacter.StatsPoints)
                 throw new Exception("Client is attempt to use more points that he has.");
 
             client.ActiveCharacter.Stats[m_statsEnumRelations[statsid]].Base += boost;
+            client.ActiveCharacter.StatsPoints -= (ushort)message.boostPoint;
 
             SendStatsUpgradeResultMessage(client, message.boostPoint);
             CharacterHandler.SendCharacterStatsListMessage(client);

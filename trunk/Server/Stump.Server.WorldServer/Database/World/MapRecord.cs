@@ -64,6 +64,13 @@ namespace Stump.Server.WorldServer.Database.World
             set;
         }
 
+        [OneToOne]
+        public MapFightPositionsRecord FightPositions
+        {
+            get;
+            set;
+        }
+
         public bool Outdoor
         {
             get { return Position != null ? Position.Outdoor : false; }

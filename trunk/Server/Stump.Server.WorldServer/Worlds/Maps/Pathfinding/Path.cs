@@ -55,6 +55,11 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Pathfinding
             get { return m_cellsPath.Length - 1; }
         }
 
+        public bool IsEmpty()
+        {
+            return m_cellsPath.Length == 0;
+        }
+
         public DirectionsEnum GetEndCellDirection()
         {
             if (m_cellsPath.Length <= 1)

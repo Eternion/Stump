@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Database.World.Triggers;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Worlds.Interactives;
 using Stump.Server.WorldServer.Worlds.Maps;
@@ -72,6 +73,9 @@ namespace Stump.Server.WorldServer.Worlds
 
             logger.Info("Spawn cell triggers ...");
             SpawnCellTriggers();
+
+            logger.Info("Spawn monsters ...");
+            SpawnMonsters();
         }
 
         private void SetLinks()
@@ -140,6 +144,17 @@ namespace Stump.Server.WorldServer.Worlds
                 var trigger = cellTrigger.GenerateTrigger();
 
                 trigger.Position.Map.AddTrigger(trigger);
+            }
+        }
+
+        private void SpawnMonsters()
+        {
+            foreach (var spawn in MonsterManager.Instance.GetMonsterSpawns())
+            {
+                if (spawn.Map != null)
+                    GetMap(spawn.Map.Id).AddMonsterSpawn(spawn);
+                else if (spawn.SubArea != null)
+                    GetSubArea(spawn.SubArea.Id).AddMonsterSpawn(spawn);
             }
         }
 

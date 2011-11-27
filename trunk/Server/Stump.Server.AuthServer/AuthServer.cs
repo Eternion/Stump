@@ -36,7 +36,7 @@ namespace Stump.Server.AuthServer
         [Variable]
         public static int Port = 443;
 
-        [Variable]
+        [Variable(Priority = 10)]
         public static DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
         {
             DatabaseType = DatabaseType.MySql,

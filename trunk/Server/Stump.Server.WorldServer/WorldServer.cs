@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer
             Port = 3467,
         };
 
-        [Variable]
+        [Variable(Priority = 10)]
         public static DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
         {
             DatabaseType = DatabaseType.MySql,

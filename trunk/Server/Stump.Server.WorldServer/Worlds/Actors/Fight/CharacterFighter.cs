@@ -7,6 +7,8 @@ using Stump.Server.WorldServer.Worlds.Actors.Interfaces;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Actors.Stats;
 using Stump.Server.WorldServer.Worlds.Fights;
+using Stump.Server.WorldServer.Worlds.Fights.Results;
+using Stump.Server.WorldServer.Worlds.Fights.Results.Data;
 using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 using Stump.Server.WorldServer.Worlds.Spells;
@@ -16,6 +18,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
     public sealed class CharacterFighter : NamedFighter
     {
         private short m_damageTakenBeforeFight;
+        private int m_earnedExp;
 
         public CharacterFighter(Character character, FightTeam team)
             : base(team)
@@ -67,6 +70,14 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             get
             {
                 return Character.Position; 
+            }
+        }
+
+        public override byte Level
+        {
+            get
+            {
+                return Character.Level;
             }
         }
 
@@ -122,6 +133,30 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                     field.Context = 0;
                 }
             }
+        }
+
+        public void SetEarnedExperience(int experience)
+        {
+            m_earnedExp = experience;
+        }
+
+        public override IFightResult GetFightResult()
+        {
+            if (m_earnedExp > 0)
+            {
+                var expData = new FightExperienceData(Character)
+                                  {
+                                      ExperienceFightDelta = m_earnedExp,
+                                      ShowExperience = true,
+                                      ShowExperienceFightDelta = true,
+                                      ShowExperienceLevelFloor = true,
+                                      ShowExperienceNextLevelFloor = true
+                                  };
+
+                return new FightPlayerResult(this, GetFighterOutcome(), Loot, expData);
+            }
+
+            return new FightPlayerResult(this, GetFighterOutcome(), Loot);
         }
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations()

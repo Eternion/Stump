@@ -2,6 +2,7 @@ using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Worlds.Spells;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
@@ -12,6 +13,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void HandleSpellUpgradeRequestMessage(WorldClient client, SpellUpgradeRequestMessage message)
         {
             client.ActiveCharacter.Spells.BoostSpell(message.spellId);
+            CharacterHandler.SendCharacterStatsListMessage(client);
         }
 
         public static void SendSpellUpgradeSuccessMessage(WorldClient client, Spell spell)

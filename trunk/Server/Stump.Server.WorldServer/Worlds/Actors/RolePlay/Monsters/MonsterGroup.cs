@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
@@ -13,6 +14,15 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters
 {
     public sealed class MonsterGroup : RolePlayActor
     {
+        public event Action<MonsterGroup, Character> EnterFight;
+
+        private void NotifyEnterFight(Character character)
+        {
+            var handler = EnterFight;
+            if (handler != null)
+                EnterFight(this, character);
+        }
+
         private readonly List<Monster> m_monsters = new List<Monster>();
 
         public MonsterGroup(int id, ObjectPosition position)
@@ -101,6 +111,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters
                 fight.BlueTeam.AddFighter(monster);
 
             fight.StartPlacementPhase();
+
+            NotifyEnterFight(character);
         }
 
         public IEnumerable<MonsterFighter> CreateFighters(FightTeam team)

@@ -10,13 +10,17 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.Interfaces;
 using Stump.Server.WorldServer.Worlds.Actors.Stats;
 using Stump.Server.WorldServer.Worlds.Effects;
+using Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Worlds.Effects.Instances;
 using Stump.Server.WorldServer.Worlds.Fights;
 using Stump.Server.WorldServer.Worlds.Fights.Buffs;
 using Stump.Server.WorldServer.Worlds.Fights.Buffs.Customs;
+using Stump.Server.WorldServer.Worlds.Fights.Results;
+using Stump.Server.WorldServer.Worlds.Items;
 using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 using Stump.Server.WorldServer.Worlds.Spells;
+using FightLoot = Stump.Server.WorldServer.Worlds.Fights.FightLoot;
 
 namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 {
@@ -97,23 +101,23 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                 handler(this);
         }
 
-        public delegate void SpellCastingHandler(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical);
+        public delegate void SpellCastingHandler(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast);
         public event SpellCastingHandler SpellCasting;
 
-        private void NotifySpellCasting(Spell spell, Cell target, FightSpellCastCriticalEnum critical)
+        private void NotifySpellCasting(Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
             SpellCastingHandler handler = SpellCasting;
             if (handler != null)
-                handler(this, spell, target, critical);
+                handler(this, spell, target, critical, silentCast);
         }
 
         public event SpellCastingHandler SpellCasted;
 
-        private void NotifySpellCasted(Spell spell, Cell target, FightSpellCastCriticalEnum critical)
+        private void NotifySpellCasted(Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
             SpellCastingHandler handler = SpellCasted;
             if (handler != null)
-                handler(this, spell, target, critical);
+                handler(this, spell, target, critical, silentCast);
         }
 
         public event Action<FightActor, Buff> BuffAdded;
@@ -225,6 +229,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         protected FightActor(FightTeam team)
         {
             Team = team;
+            OpposedTeam = Fight.BlueTeam == Team ? Fight.RedTeam : Fight.BlueTeam;
+            Loot = new FightLoot();
         }
 
         #endregion
@@ -241,6 +247,12 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         }
 
         public FightTeam Team
+        {
+            get;
+            private set;
+        }
+
+        public FightTeam OpposedTeam
         {
             get;
             private set;
@@ -278,6 +290,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         }
 
         #region Stats
+
+        public abstract byte Level
+        {
+            get;
+        }
 
         public int LifePoints
         {
@@ -338,6 +355,12 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         public abstract StatsFields Stats
         {
             get;
+        }
+
+        public FightLoot Loot
+        {
+            get;
+            private set;
         }
 
         #endregion
@@ -495,12 +518,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             var random = new AsyncRandom();
             var critical = RollCriticalDice(spellLevel);
 
-            NotifySpellCasting(spell, cell, critical);
-
-            UseAP((short)spellLevel.ApCost);
-
             if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
             {
+                NotifySpellCasting(spell, cell, critical, false);
+                UseAP((short)spellLevel.ApCost);
+
                 if (spellLevel.CriticalFailureEndsTurn)
                     PassTurn();
 
@@ -508,7 +530,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             }
 
             var effects = critical == FightSpellCastCriticalEnum.CRITICAL_HIT ? spellLevel.CritialEffects : spellLevel.Effects;
-
+            var handlers = new List<SpellEffectHandler>();
             foreach (var effect in effects)
             {
                 if (effect.Random > 0)
@@ -521,11 +543,18 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                 }
 
                 var handler = EffectManager.Instance.GetSpellEffectHandler(effect, this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
-
-                handler.Apply();
+                handlers.Add(handler);
             }
 
-            NotifySpellCasted(spell, cell, critical);
+            var silentCast = handlers.Any(entry => entry.RequireSilentCast());
+
+            NotifySpellCasting(spell, cell, critical, silentCast);
+            UseAP((short)spellLevel.ApCost);
+
+            foreach (var handler in handlers)
+                handler.Apply();
+
+            NotifySpellCasted(spell, cell, critical, silentCast);
         }
 
         public FightSpellCastCriticalEnum RollCriticalDice(SpellLevelTemplate spell)
@@ -609,7 +638,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
             damage -= reduction;
 
-            if (damage == 0)
+            if (damage <= 0)
                 return 0;
 
             return InflictDirectDamage(damage);
@@ -627,7 +656,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
             damage -= reduction;
 
-            if (damage == 0)
+            if (damage <= 0)
                 return 0;
 
             return InflictDirectDamage(damage, from);
@@ -905,6 +934,42 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             {
                 fighter.DecrementBuffsDuration(this);
             }
+        }
+
+        #endregion
+
+        #region End Fight
+
+        public virtual IEnumerable<DroppedItem> RollLoot(FightActor fighter)
+        {
+            return new DroppedItem[0];
+        }
+
+        public virtual uint GetDroppedKamas()
+        {
+            return 0;
+        }
+
+        public virtual IFightResult GetFightResult()
+        {
+            if (Fight.State != FightState.Ended)
+                throw new Exception("Fight not ended, cannot generate the fight result");
+
+            return new FightResult(this, GetFighterOutcome(), Loot);
+        }
+
+        protected FightOutcomeEnum GetFighterOutcome()
+        {
+            var teamDead = Team.AreAllDead();
+            var opposedTeamDead = OpposedTeam.AreAllDead();
+
+            if (!teamDead && opposedTeamDead)
+                return FightOutcomeEnum.RESULT_VICTORY;
+
+            if (teamDead && !opposedTeamDead)
+                return FightOutcomeEnum.RESULT_LOST;
+
+            return FightOutcomeEnum.RESULT_DRAW;
         }
 
         #endregion

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Stump.Core.Pool;
+using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -127,6 +128,8 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
             InitializeValidators();
             InitializeMapArrounds();
+            InitializeCells();
+            InitializeFightPlacements();
         }
 
         private void InitializeMapArrounds()
@@ -135,6 +138,27 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             m_mapsAround.Add(BottomNeighbourId, MapNeighbour.Bottom);
             m_mapsAround.Add(LeftNeighbourId, MapNeighbour.Left);
             m_mapsAround.Add(RightNeighbourId, MapNeighbour.Right);
+        }
+
+        private void InitializeFightPlacements()
+        {
+            // todo : search for default placements
+            if (Record.FightPositions == null)
+            {
+                m_bluePlacement = new[] { Cells[328], Cells[356], Cells[357] };
+                m_redPlacement = new[] { Cells[370], Cells[355], Cells[354] };
+            }
+            else
+            {
+                m_bluePlacement = Record.FightPositions.BlueCells.Select(entry => Cells[entry]).ToArray();
+                m_redPlacement = Record.FightPositions.RedCells.Select(entry => Cells[entry]).ToArray();
+            }
+        }
+
+        private void InitializeCells()
+        {
+            CellsInfoProvider = new MapCellsInformationProvider(this);
+            m_freeCells = Cells.Where(entry => CellsInfoProvider.IsCellWalkable(entry.Id)).ToArray();
         }
 
         #endregion
@@ -152,12 +176,21 @@ namespace Stump.Server.WorldServer.Worlds.Maps
         private readonly Dictionary<int, InteractiveObject> m_interactives = new Dictionary<int, InteractiveObject>();
         private readonly Dictionary<int, MapNeighbour> m_mapsAround = new Dictionary<int, MapNeighbour>();
         private readonly Dictionary<Cell, List<CellTrigger>> m_cellsTriggers = new Dictionary<Cell, List<CellTrigger>>();
+        private readonly List<MonsterSpawn> m_monsterSpawns = new List<MonsterSpawn>();
 
-        protected internal MapRecord Record;
         private Map m_bottomNeighbour;
         private Map m_leftNeighbour;
         private Map m_rightNeighbour;
         private Map m_topNeighbour;
+        private Cell[] m_redPlacement;
+        private Cell[] m_bluePlacement;
+        private Cell[] m_freeCells;
+
+        public MapRecord Record
+        {
+            get;
+            private set;
+        }
 
         public int Id
         {
@@ -167,6 +200,12 @@ namespace Stump.Server.WorldServer.Worlds.Maps
         public Cell[] Cells
         {
             get { return Record.Cells; }
+        }
+
+        public MapCellsInformationProvider CellsInfoProvider
+        {
+            get;
+            private set;
         }
 
         public SubArea SubArea
@@ -183,6 +222,18 @@ namespace Stump.Server.WorldServer.Worlds.Maps
         public SuperArea SuperArea
         {
             get { return Area.SuperArea; }
+        }
+
+        public SpawningPool SpawningPool
+        {
+            get;
+            private set;
+        }
+
+        public bool SpawnEnabled
+        {
+            get;
+            private set;
         }
 
         public uint RelativeId
@@ -362,6 +413,104 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         #region Monsters
 
+        public void EnableMonsterSpawns()
+        {
+            if (SpawnEnabled)
+                return;
+
+            if (GetMonsterSpawns().Count() <= 0)
+                return;
+
+            if (SpawningPool == null)
+                SpawningPool = new SpawningPool(SubArea.GetMonsterSpawnInterval(), this);
+
+            // spawn a first monster
+            var group = GenerateRandomMonsterGroup();
+            if (group != null)
+                Enter(group);
+
+            SpawningPool.Enable();
+            SpawnEnabled = true;
+        }
+
+        public void DisableMonsterSpawns()
+        {
+            if (!SpawnEnabled)
+                return;
+
+            SpawningPool.Disable();
+
+            foreach (var actor in GetActors<MonsterGroup>())
+            {
+                Leave(actor);
+            }
+
+            SpawnEnabled = false;
+        }
+
+        public void AddMonsterSpawn(MonsterSpawn spawn)
+        {
+            m_monsterSpawns.Add(spawn);
+        }
+
+        public void RemoveMonsterSpawn(MonsterSpawn spawn)
+        {
+            m_monsterSpawns.Remove(spawn);
+        }
+
+        public IEnumerable<MonsterSpawn> GetMonsterSpawns()
+        {
+            return m_monsterSpawns.Concat(SubArea.GetMonsterSpawns());
+        }
+
+        public MonsterGroup GenerateRandomMonsterGroup()
+        {
+            var rand = new AsyncRandom();
+            var spawns = GetMonsterSpawns();
+
+            if (spawns.Count() <= 0)
+                return null;
+
+            var freqSum = spawns.Sum(entry => entry.Frequency);
+            var length = SubArea.RollMonsterLengthLimit();
+
+            var group = new MonsterGroup(GetNextContextualId(), new ObjectPosition(this,  GetRandomFreeCell(), GetRandomDirection()));
+
+            for (int i = 0; i < length; i++)
+            {
+                var roll = rand.NextDouble(0, freqSum);
+                var l = 0d;
+                MonsterGrade monster = null;
+
+                foreach (var spawn in spawns)
+                {
+                    l += spawn.Frequency;
+
+                    if (roll <= l)
+                    {
+                        monster = MonsterManager.Instance.GetMonsterGrade(spawn.MonsterId, SubArea.RollMonsterGrade(spawn.MinGrade, spawn.MaxGrade));
+                        break;
+                    }
+
+                }
+
+                if (monster == null)
+                    continue;
+
+                group.AddMonster(new Monster(monster, group));
+            }
+
+            return group;
+        }
+
+        private static DirectionsEnum GetRandomDirection()
+        {
+            var array = Enum.GetValues(typeof(DirectionsEnum));
+            var rand = new AsyncRandom();
+
+            return (DirectionsEnum)array.GetValue(rand.Next(0, array.Length));
+        }
+
         public MonsterGroup SpawnMonsterGroup(MonsterGrade monster, ObjectPosition position)
         {
             if (position.Map != this)
@@ -403,6 +552,16 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             Leave(group);
 
             return true;
+        }
+
+        public int GetMonsterSpawnsCount()
+        {
+            return GetActors<MonsterGroup>().Count();
+        }
+
+        public int GetMonsterSpawnsLimit()
+        {
+            return SubArea.SpawnsLimit;
         }
 
         #endregion
@@ -485,6 +644,16 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             NotifyFightRemoved(fight);
         }
 
+        public Cell[] GetBlueFightPlacement()
+        {
+            return m_bluePlacement;
+        }
+
+        public Cell[] GetRedFightPlacement()
+        {
+            return m_redPlacement;
+        }
+
         #endregion
 
         #region Enter/Leave
@@ -527,6 +696,9 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             if (character == null)
                 return;
 
+            if (!SpawnEnabled)
+                EnableMonsterSpawns();
+
             ContextRoleplayHandler.SendCurrentMapMessage(character.Client, Id);
 
             if (m_fights.Count > 0)
@@ -560,6 +732,9 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
             if (actor is MonsterGroup || actor is Npc)
                 FreeContextualId((sbyte) actor.Id);
+
+            if (actor is MonsterGroup && SpawnEnabled && !SpawningPool.IsEnabled && GetMonsterSpawnsCount() < GetMonsterSpawnsLimit())
+                SpawningPool.Enable();
         }
 
         #endregion
@@ -643,7 +818,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
         public T GetActor<T>(Predicate<T> predicate)
             where T : RolePlayActor
         {
-            return m_actors.Values.OfType<T>().Where(entry => predicate(entry)).SingleOrDefault();
+            return m_actors.Values.OfType<T>().Where(entry => predicate(entry)).FirstOrDefault();
         }
 
         public IEnumerable<T> GetActors<T>()
@@ -659,6 +834,21 @@ namespace Stump.Server.WorldServer.Worlds.Maps
         public InteractiveObject GetInteractiveObject(int id)
         {
             return m_interactives[id];
+        }
+
+        public Cell GetRandomFreeCell(bool actorFree = false)
+        {
+            var rand = new AsyncRandom();
+
+            if (actorFree)
+            {
+                var excludedCells = GetActors<RolePlayActor>().Select(entry => entry.Cell.Id);
+                var cells = m_freeCells.Where(entry => !excludedCells.Contains(entry.Id)).ToArray();
+
+                return cells[rand.Next(0, cells.Length)];
+            }
+
+            return m_freeCells[rand.Next(0, m_freeCells.Length)];
         }
 
         #region Neighbors

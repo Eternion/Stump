@@ -23,6 +23,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             m_highestLevel = m_records.OrderByDescending(entry => entry.Key).FirstOrDefault();
         }
 
+        public byte HighestLevel
+        {
+            get { return m_highestLevel.Key; }
+        }
+
         #region Character
 
         /// <summary>

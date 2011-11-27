@@ -9,6 +9,7 @@ using Stump.Server.WorldServer.Worlds.Dialogs.Npcs;
 
 namespace Stump.Server.WorldServer.Database.Npcs.Actions
 {
+    [ActiveRecord(DiscriminatorValue = "Shop")]
     public class NpcBuySellAction : NpcAction
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();

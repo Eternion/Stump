@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             var pathfinder = new Pathfinder(new AIFightCellsInformationProvider(Fighter.Fight, Fighter));
             var path = pathfinder.FindPath(Fighter.Position.Cell.Id, DestinationId, false, Fighter.MP);
 
-            if (path == null)
+            if (path == null || path.IsEmpty())
                 return RunStatus.Failure;
 
 #if DEBUG            

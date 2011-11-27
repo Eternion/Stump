@@ -16,8 +16,14 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         #region Events
         public event Action<FightTeam, FightActor> FighterAdded;
 
+        private void OnFightAdded(FightActor fighter)
+        {
+        }
+
         private void NotifyFighterAdded(FightActor fighter)
         {
+            OnFightAdded(fighter);
+
             Action<FightTeam, FightActor> handler = FighterAdded;
             if (handler != null)
                 handler(this, fighter);
@@ -34,8 +40,14 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         public event Action<FightTeam, FightActor> FighterRemoved;
 
+        private void OnFightRemoved(FightActor fighter)
+        {
+        }
+
         private void NotifyFighterRemoved(FightActor fighter)
         {
+            OnFightRemoved(fighter);
+
             Action<FightTeam, FightActor> handler = FighterRemoved;
             if (handler != null)
                 handler(this, fighter);
@@ -94,25 +106,25 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         public bool IsSecret
         {
             get;
-            set;
+            private set;
         }
 
         public bool IsRestrictedToParty
         {
             get;
-            set;
+            private set;
         }
 
         public bool IsClosed
         {
             get;
-            set;
+            private set;
         }
 
         public bool IsAskingForHelp
         {
             get;
-            set;
+            private set;
         }
 
         public void ToggleOption(FightOptionsEnum option)
@@ -183,6 +195,9 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         public FighterRefusedReasonEnum CanJoin(Character character)
         {
+            if (Leader is MonsterFighter)
+                return FighterRefusedReasonEnum.WRONG_ALIGNMENT;
+
             if (Fight.State != FightState.Placement)
                 return FighterRefusedReasonEnum.TOO_LATE;
 

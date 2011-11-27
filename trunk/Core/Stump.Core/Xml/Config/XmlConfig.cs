@@ -408,7 +408,8 @@ namespace Stump.Core.Xml.Config
             var groupsByNamespace = from entry in m_nodes
                                     group entry by entry.Value.Namespace
                                     into grp
-                                    orderby grp.Key
+                                    let priority = grp.Max(subentry => subentry.Value.Attribute.Priority)
+                                    orderby priority descending, grp.Key
                                     select grp;
 
             var lastNamespace = new List<string>();
@@ -464,7 +465,8 @@ namespace Stump.Core.Xml.Config
                 var groupsByClass = from entry in namespaceNodeGroup
                                     group entry by entry.Value.ClassName
                                     into grp
-                                    orderby grp.Key
+                                    let priority = grp.Max(subentry => subentry.Value.Attribute.Priority)
+                                    orderby priority descending, grp.Key
                                     select grp;
 
                 foreach (var classNodeGroup in groupsByClass)

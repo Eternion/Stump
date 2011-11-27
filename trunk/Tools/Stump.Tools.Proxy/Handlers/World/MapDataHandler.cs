@@ -21,10 +21,16 @@ namespace Stump.Tools.Proxy.Handlers.World
 
             client.MapNpcs.Clear();
             client.MapIOs.Clear();
+            client.Actors.Clear();
             client.CurrentMap = ServerWorld.Instance.GetMap(message.mapId);
 
             foreach(var actor in message.actors)
             {
+                if (client.Actors.ContainsKey(actor.contextualId))
+                    client.Actors[actor.contextualId] = actor;
+                else
+                    client.Actors.Add(actor.contextualId, actor);
+
                 DataFactory.HandleActorInformations(client, actor);
 
                 if (actor is GameRolePlayNpcInformations)
@@ -46,6 +52,24 @@ namespace Stump.Tools.Proxy.Handlers.World
             client.GuessNpcFirstAction = null;
             client.GuessNpcReply = null;
             client.GuessSkillAction = null;
+        }
+
+        [WorldHandler(GameRolePlayShowActorMessage.Id)]
+        public static void HandleGameRolePlayShowActorMessage(WorldClient client, GameRolePlayShowActorMessage message)
+        {
+            client.Send(message);
+            if (client.Actors.ContainsKey(message.informations.contextualId))
+                client.Actors[message.informations.contextualId] = message.informations;
+            else
+                client.Actors.Add(message.informations.contextualId, message.informations);
+            DataFactory.HandleActorInformations(client, message.informations);
+        }
+
+        [WorldHandler(GameContextRemoveElementMessage.Id)]
+        public static void HandleGameContextRemoveElementMessage(WorldClient client, GameContextRemoveElementMessage message)
+        {
+            client.Send(message);
+            client.Actors.Remove(message.id);
         }
 
         [WorldHandler(GameMapMovementMessage.Id)]

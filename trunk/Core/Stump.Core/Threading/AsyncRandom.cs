@@ -26,5 +26,10 @@ namespace Stump.Core.Threading
         {
             
         }
+
+        public double NextDouble(double min, double max)
+        {
+            return NextDouble() * ( max - min ) + min;
+        }
     }
 }

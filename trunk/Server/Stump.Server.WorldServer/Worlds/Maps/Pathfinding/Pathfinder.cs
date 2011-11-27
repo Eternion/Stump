@@ -112,6 +112,10 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Pathfinding
                 for (int i = 0; i < (diagonal ? 8 : 4); i++)
                 {
                     var newLocationPoint = locationPoint.GetNearestCellInDirection(Directions[i]);
+
+                    if (newLocationPoint == null)
+                        continue;
+
                     var newLocation = newLocationPoint.CellId;
 
                     if (newLocation < 0 || newLocation >= MapPoint.MapSize)

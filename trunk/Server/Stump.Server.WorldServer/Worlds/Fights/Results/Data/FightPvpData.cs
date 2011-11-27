@@ -1,0 +1,67 @@
+using System;
+using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
+
+namespace Stump.Server.WorldServer.Worlds.Fights.Results.Data
+{
+    public class FightPvpData : FightResultAdditionalData
+    {
+        public FightPvpData(Character character)
+            : base(character)
+        {
+        }
+
+        public byte Grade
+        {
+            get;
+            set;
+        }
+
+        public ushort MinHonorForGrade
+        {
+            get;
+            set;
+        }
+
+        public ushort MaxHonorForGrade
+        {
+            get;
+            set;
+        }
+
+        public ushort Honor
+        {
+            get;
+            set;
+        }
+
+        public short HonorDelta
+        {
+            get;
+            set;
+        }
+
+        public ushort Dishonor
+        {
+            get;
+            set;
+        }
+
+        public short DishonorDelta
+        {
+            get;
+            set;
+        }
+
+
+        public override DofusProtocol.Types.FightResultAdditionalData GetFightResultAdditionalData()
+        {
+            return new FightResultPvpData(Grade, MinHonorForGrade, MaxHonorForGrade, Honor, HonorDelta, Dishonor, DishonorDelta);
+        }
+
+        public override void Apply()
+        {
+            // todo
+        }
+    }
+}

@@ -26,6 +26,14 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
+        [D2OField("gradeXp")]
+        [Property]
+        public int GradeXp
+        {
+            get;
+            set;
+        }
+
         [D2OField("monsterId")]
         [BelongsTo("MonsterId")]
         public MonsterTemplate Template

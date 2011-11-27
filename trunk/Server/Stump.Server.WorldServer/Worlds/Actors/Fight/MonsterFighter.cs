@@ -1,11 +1,17 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Threading;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
+using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Worlds.Actors.Stats;
 using Stump.Server.WorldServer.Worlds.Fights;
+using Stump.Server.WorldServer.Worlds.Items;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 using Stump.Server.WorldServer.Worlds.Spells;
 
@@ -13,6 +19,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 {
     public sealed class MonsterFighter : AIFighter
     {
+        private Dictionary<DroppableItem, int> m_dropsCount = new Dictionary<DroppableItem, int>();
+
         public MonsterFighter(FightTeam team, Monster monster)
             : base(team, monster.Spells)
         {
@@ -34,6 +42,14 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         public override ObjectPosition MapPosition
         {
             get { return Monster.Group.Position; }
+        }
+
+        public override byte Level
+        {
+            get
+            {
+                return (byte) Monster.Grade.Level;
+            }
         }
 
         public override StatsFields Stats
@@ -63,6 +79,53 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             // todo : check cooldown
             // todo : check states
             return true;
+        }
+
+        public override uint GetDroppedKamas()
+        {
+            var random = new AsyncRandom();
+
+            return (uint) random.Next(Monster.Template.MinDroppedKamas, Monster.Template.MaxDroppedKamas + 1);
+        }
+
+        public override IEnumerable<DroppedItem> RollLoot(FightActor fighter)
+        {
+            // have to be dead before
+            if (!IsDead())
+                return new DroppedItem[0];
+
+            var random = new AsyncRandom();
+            var items = new List<DroppedItem>();
+
+            var prospectingSum = OpposedTeam.GetAllFighters<CharacterFighter>().Sum(entry => entry.Stats[CaracteristicsEnum.Prospecting].Total);
+
+            foreach (var droppableItem in Monster.Template.DroppableItems)
+            {
+                if (prospectingSum < droppableItem.ProspectingLock)
+                    continue;
+
+                for (int i = 0; i < droppableItem.RollsCounter; i++)
+                {
+                    if (droppableItem.DropLimit > 0 && m_dropsCount.ContainsKey(droppableItem) && m_dropsCount[droppableItem] >= droppableItem.DropLimit)
+                        break;
+
+                    var chance = ( random.Next(0, 100) + random.NextDouble() );
+                    var dropRate = droppableItem.DropRate * ( fighter.Stats[CaracteristicsEnum.Prospecting] / 100 );
+
+                    if (dropRate >= chance)
+                    {
+                        items.Add(new DroppedItem(droppableItem.ItemId, 1));
+
+                        if (!m_dropsCount.ContainsKey(droppableItem))
+                            m_dropsCount.Add(droppableItem, 1);
+                        else
+                            m_dropsCount[droppableItem]++;
+                    }
+                }
+            }
+
+
+            return items;
         }
 
         public override GameContextActorInformations GetGameContextActorInformations()

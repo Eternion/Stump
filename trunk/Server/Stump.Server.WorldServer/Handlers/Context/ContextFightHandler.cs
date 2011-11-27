@@ -197,7 +197,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightEndMessage(WorldClient client, Fight fight)
         {
-            client.Send(new GameFightEndMessage(fight.GetFightDuration(), fight.AgeBonus, new List<FightResultListEntry>()));
+            client.Send(new GameFightEndMessage(fight.GetFightDuration(), fight.AgeBonus, new FightResultListEntry[0]));
+        }
+
+        public static void SendGameFightEndMessage(WorldClient client, Fight fight, IEnumerable<FightResultListEntry> results)
+        {
+            client.Send(new GameFightEndMessage(fight.GetFightDuration(), fight.AgeBonus, results));
         }
 
         public static void SendGameFightJoinMessage(WorldClient client, bool canBeCancelled, bool canSayReady,
@@ -307,7 +312,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void SendGameActionFightMarkCellsMessage(WorldClient client, MarkTrigger trigger, bool visible = true)
         {
             var action = trigger.Type == GameActionMarkTypeEnum.GLYPH ? ActionsEnum.ACTION_FIGHT_ADD_GLYPH_CASTING_SPELL : ActionsEnum.ACTION_FIGHT_ADD_TRAP_CASTING_SPELL;
-            client.Send(new GameActionFightMarkCellsMessage((short)action, trigger.Caster.Id, visible ? trigger.GetHiddenGameActionMark() : trigger.GetGameActionMark()));
+            client.Send(new GameActionFightMarkCellsMessage((short)action, trigger.Caster.Id, visible ? trigger.GetGameActionMark() : trigger.GetHiddenGameActionMark()));
         }
 
         public static void SendGameActionFightUnmarkCellsMessage(WorldClient client, MarkTrigger trigger)

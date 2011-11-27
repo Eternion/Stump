@@ -13,6 +13,11 @@ namespace Stump.Server.WorldServer.Database.Monsters
     [D2OClass("Monster", "com.ankamagames.dofus.datacenter.monsters")]
     public sealed class MonsterTemplate : WorldBaseRecord<MonsterTemplate>
     {
+        private IList<DroppableItem> m_droppableItems;
+        private EntityLook m_entityLook;
+        private IList<MonsterGrade> m_grades;
+        private string m_lookAsString;
+        private string m_name;
 
         [D2OField("id")]
         [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
@@ -30,14 +35,9 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
-        private string m_name;
-
         public string Name
         {
-            get
-            {
-                return m_name ?? ( m_name = TextManager.Instance.GetText(NameId) );
-            }
+            get { return m_name ?? (m_name = TextManager.Instance.GetText(NameId)); }
         }
 
         [D2OField("gfxId")]
@@ -56,9 +56,26 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
-        private IList<MonsterGrade> m_grades;
-        private string m_lookAsString;
-        private EntityLook m_entityLook;
+        [Property]
+        public int MinDroppedKamas
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public int MaxDroppedKamas
+        {
+            get;
+            set;
+        }
+
+        [HasMany]
+        public IList<DroppableItem> DroppableItems
+        {
+            get { return m_droppableItems ?? (m_droppableItems = new List<DroppableItem>()); }
+            set { m_droppableItems = value; }
+        }
 
         [HasMany]
         public IList<MonsterGrade> Grades
@@ -94,10 +111,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
 
         public EntityLook EntityLook
         {
-            get
-            {
-                return m_entityLook;
-            }
+            get { return m_entityLook; }
             set
             {
                 m_entityLook = value;

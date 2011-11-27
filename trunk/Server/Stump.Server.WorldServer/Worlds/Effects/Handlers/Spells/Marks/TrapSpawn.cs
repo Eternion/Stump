@@ -37,5 +37,10 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells.Marks
 
             Fight.AddTriger(trap);
         }
+
+        public override bool RequireSilentCast()
+        {
+            return true;
+        }
     }
 }

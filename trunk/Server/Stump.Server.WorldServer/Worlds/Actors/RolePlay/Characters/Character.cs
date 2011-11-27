@@ -124,25 +124,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 return Map;
             }
         }
-
-        public Map Map
-        {
-            get { return Position.Map; }
-            set { Position.Map = value; }
-        }
-
-        public Cell Cell
-        {
-            get { return Position.Cell; }
-            set { Position.Cell = value; }
-        }
-
-        public DirectionsEnum Direction
-        {
-            get { return Position.Direction; }
-            set { Position.Direction = value; }
-        }
-
         #endregion
 
         #region Dialog
@@ -348,6 +329,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         #endregion
 
+        #region Levels
+
         public byte Level
         {
             get;
@@ -357,7 +340,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         public long Experience
         {
             get { return m_record.Experience; }
-            set
+            private set
             {
                 m_record.Experience = value;
                 if (value >= UpperBoundExperience)
@@ -375,6 +358,35 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 }
             }
         }
+
+        public void LevelUp(byte levelAdded)
+        {
+            var level = (byte) (Level + levelAdded);
+
+            if (level > ExperienceManager.Instance.HighestLevel)
+                level = ExperienceManager.Instance.HighestLevel;
+
+            var experience = ExperienceManager.Instance.GetCharacterLevelExperience(level);
+            
+            Experience = experience;
+        }
+
+        public void AddExperience(int amount)
+        {
+            Experience += amount;
+        }
+
+        public void AddExperience(long amount)
+        {
+            Experience += amount;
+        }
+
+        public void AddExperience(double amount)
+        {
+            Experience += (long)amount;
+        }
+
+        #endregion
 
         public long LowerBoundExperience
         {
@@ -438,9 +450,32 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         public void NotifyLevelChanged(byte currentlevel, int difference)
         {
+            OnLevelChanged(currentlevel, difference);
+
             LevelChangedHandler handler = LevelChanged;
             if (handler != null)
                 handler(this, currentlevel, difference);
+        }
+
+        private void OnLevelChanged(byte currentLevel, int difference)
+        {
+            SpellsPoints += (ushort)difference;
+            StatsPoints += (ushort)(difference * 5);
+            Stats.Health.Base += (short)( difference * 5 );
+
+            for (int i = 0; i < Breed.LearnableSpells.Count; i++)
+            {
+                if (Breed.LearnableSpells[i].ObtainLevel > currentLevel)
+                    continue;
+
+                if (!Spells.HasSpell(Breed.LearnableSpells[i].SpellId))
+                {
+                    Spells.LearnSpell(Breed.LearnableSpells[i].SpellId);
+                }
+            }
+
+            CharacterHandler.SendCharacterLevelUpMessage(Client, currentLevel);
+            Map.ForEach(entry => CharacterHandler.SendCharacterLevelUpInformationMessage(entry.Client, this, currentLevel));
         }
 
         #endregion

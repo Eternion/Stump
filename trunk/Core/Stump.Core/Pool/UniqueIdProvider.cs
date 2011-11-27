@@ -38,11 +38,6 @@ namespace Stump.Core.Pool
                     id = m_nextId;
                     Interlocked.Increment(ref m_nextId);
                 }
-                else
-                {
-                    id = m_nextId;
-                    Interlocked.Increment(ref m_nextId);
-                }
             }
             else
             {
