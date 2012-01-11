@@ -47,16 +47,62 @@ namespace Stump.DofusProtocol.Types.Extensions
 
             result.Append("{");
 
-            result.Append(entityLook.bonesId + "|");
-            result.Append(string.Join(",", entityLook.skins) + "|");
-            result.Append(string.Join(",", from entry in entityLook.indexedColors
-                                           let tuple = ExtractIndexedColor(entry)
-                                           select tuple.Item1 + "=" + tuple.Item2) + "|");
-            result.Append(string.Join(",", entityLook.scales));
+            int missingBars = 0;
 
-            // todo : subentities
+            result.Append(entityLook.bonesId);
+
+            if (entityLook.skins == null || entityLook.skins.Count() <= 0)
+                missingBars++;
+            else
+            {
+                result.Append("|".ConcatCopy(missingBars + 1));
+                missingBars = 0;
+                result.Append(string.Join(",", entityLook.skins));
+            }
+
+            if (entityLook.indexedColors == null || entityLook.indexedColors.Count() <= 0)
+                missingBars++;
+            else
+            {
+                result.Append("|".ConcatCopy(missingBars + 1));
+                missingBars = 0;
+                result.Append(string.Join(",", from entry in entityLook.indexedColors
+                                               let tuple = ExtractIndexedColor(entry)
+                                               select tuple.Item1 + "=" + tuple.Item2));
+            }
+
+            if (entityLook.scales == null || entityLook.scales.Count() <= 0)
+                missingBars++;
+            else
+            {
+                result.Append("|".ConcatCopy(missingBars + 1));
+                missingBars = 0;
+                result.Append(string.Join(",", entityLook.scales));
+            }
+
+            if (entityLook.subentities == null || entityLook.subentities.Count() <= 0)
+                missingBars++;
+            else
+            {
+                result.Append("|".ConcatCopy(missingBars + 1));
+                missingBars = 0;
+                result.Append(string.Join(",", entityLook.subentities.Select(entry => entry.ConvertToString())));
+            }
 
             result.Append("}");
+
+            return result.ToString();
+        }
+
+        public static string ConvertToString(this SubEntity subEntity)
+        {
+            var result = new StringBuilder();
+
+            result.Append(subEntity.bindingPointCategory);
+            result.Append("@");
+            result.Append(subEntity.bindingPointIndex);
+            result.Append("=");
+            result.Append(subEntity.subEntityLook.ConvertToString());
 
             return result.ToString();
         }
@@ -82,76 +128,25 @@ namespace Stump.DofusProtocol.Types.Extensions
 
             var skins = new short[0];
             if ((separatorPos = str.IndexOf('|', cursorPos)) != -1 ||
-                (separatorPos = str.IndexOf('}', cursorPos)) != -1)
+                 (separatorPos = str.IndexOf('}', cursorPos)) != -1)
             {
-                int subseparatorPos = str.IndexOf(',', cursorPos, separatorPos - cursorPos);
-                skins = new short[str.CountOccurences(',', cursorPos, separatorPos - cursorPos) + 1];
-
-                // if there are comma
-                int index = 0;
-                while (subseparatorPos != -1)
-                {
-                    skins[index] = short.Parse(str.Substring(cursorPos, subseparatorPos - cursorPos));
-                    cursorPos = subseparatorPos + 1;
-
-                    subseparatorPos = str.IndexOf(',', cursorPos, separatorPos - cursorPos);
-                    index++;
-                }
-
-                // if not empty
-                if (separatorPos > cursorPos)
-                    skins[index] = short.Parse(str.Substring(cursorPos, separatorPos - cursorPos));
-
+                skins = ParseCollection(str.Substring(cursorPos, separatorPos - cursorPos), short.Parse);
                 cursorPos = separatorPos + 1;
             }
 
             var colors = new int[0];
             if ((separatorPos = str.IndexOf('|', cursorPos)) != -1 ||
-                (separatorPos = str.IndexOf('}', cursorPos)) != -1)
+                 (separatorPos = str.IndexOf('}', cursorPos)) != -1) // if false there are no informations between the two separators
             {
-                int subseparatorPos = str.IndexOf(',', cursorPos, separatorPos - cursorPos);
-                colors = new int[str.CountOccurences(',', cursorPos, separatorPos - cursorPos) + 1];
-
-                // if there are comma
-                int index = 0;
-                while (subseparatorPos != -1)
-                {
-                    colors[index] = ParseIndexedColor(str.Substring(cursorPos, subseparatorPos - cursorPos));
-                    cursorPos = subseparatorPos + 1;
-
-                    subseparatorPos = str.IndexOf(',', cursorPos, separatorPos - cursorPos);
-                    index++;
-                }
-
-                // if not empty
-                if (separatorPos > cursorPos)
-                    colors[index] = ParseIndexedColor(str.Substring(cursorPos, separatorPos - cursorPos));
-
+                colors = ParseCollection(str.Substring(cursorPos, separatorPos - cursorPos), ParseIndexedColor);
                 cursorPos = separatorPos + 1;
             }
 
             var scales = new short[0];
             if ((separatorPos = str.IndexOf('|', cursorPos)) != -1 ||
-                (separatorPos = str.IndexOf('}', cursorPos)) != -1)
+                 (separatorPos = str.IndexOf('}', cursorPos)) != -1) // if false there are no informations between the two separators
             {
-                int subseparatorPos = str.IndexOf(',', cursorPos, separatorPos - cursorPos);
-                scales = new short[str.CountOccurences(',', cursorPos, separatorPos - cursorPos) + 1];
-
-                // if there are comma
-                int index = 0;
-                while (subseparatorPos != -1)
-                {
-                    scales[index] = short.Parse(str.Substring(cursorPos, subseparatorPos - cursorPos));
-                    cursorPos = subseparatorPos + 1;
-
-                    subseparatorPos = str.IndexOf(',', cursorPos, separatorPos - cursorPos);
-                    index++;
-                }
-
-                // if not empty
-                if (separatorPos > cursorPos)
-                    scales[index] = short.Parse(str.Substring(cursorPos, separatorPos - cursorPos));
-
+                scales = ParseCollection(str.Substring(cursorPos, separatorPos - cursorPos), short.Parse);
                 cursorPos = separatorPos + 1;
             }
 
@@ -179,12 +174,44 @@ namespace Stump.DofusProtocol.Types.Extensions
                     i++;
                 } while (hookDepth > 0);
 
-                subEntities.Add(new SubEntity((sbyte)category, (sbyte)index, ToEntityLook(subEntity.ToString())));
+                subEntities.Add(new SubEntity((sbyte) category, (sbyte) index, ToEntityLook(subEntity.ToString())));
 
-                cursorPos = i + 1; // ignore the comma or the last '}' char
+                cursorPos = i + 1; // ignore the comma and the last '}' char
             }
 
             return new EntityLook(bonesId, skins, colors, scales, subEntities.ToArray());
+        }
+
+        private static T[] ParseCollection<T>(string str, Func<string, T> converter)
+        {
+            if (string.IsNullOrEmpty(str))
+                return new T[0];
+
+            int cursorPos = 0;
+            int subseparatorPos = str.IndexOf(',', cursorPos);
+
+            // if not empty
+            if (subseparatorPos == -1)
+                return new T[] {converter(str)};
+
+            var collection = new T[str.CountOccurences(',', cursorPos, str.Length - cursorPos) + 1];
+
+            // if there are commas
+            int index = 0;
+            while (subseparatorPos != -1)
+            {
+                collection[index] = converter(str.Substring(cursorPos, subseparatorPos - cursorPos));
+                cursorPos = subseparatorPos + 1;
+
+                subseparatorPos = str.IndexOf(',', cursorPos);
+                index++;
+            }
+
+            // last value is not read yet because subseparatorPos = -1
+            // 'cause the value is after the comma
+            collection[index] = converter(str.Substring(cursorPos, str.Length - cursorPos));
+
+            return collection;
         }
     }
 }

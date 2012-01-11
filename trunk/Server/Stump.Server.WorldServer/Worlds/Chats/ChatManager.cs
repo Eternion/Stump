@@ -98,7 +98,14 @@ namespace Stump.Server.WorldServer.Worlds.Chats
             if (!ChatHandlers.ContainsKey(channel))
                 return;
 
-            ChatHandlers[channel](client, message);
+            if (message.StartsWith(CommandPrefix))
+            {
+                message = message.Remove(0, CommandPrefix.Length); // remove our prefix
+                WorldServer.Instance.CommandManager.HandleCommand(new TriggerChat(new StringStream(message),
+                                                                                  client.ActiveCharacter));
+            }
+            else
+                ChatHandlers[channel](client, message);
         }
 
         public void SayGlobal(WorldClient client, string msg)
@@ -106,22 +113,13 @@ namespace Stump.Server.WorldServer.Worlds.Chats
             if (!CanUseChannel(client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_GLOBAL))
                 return;
 
-            if (msg.StartsWith(CommandPrefix))
-            {
-                msg = msg.Remove(0, 1); // remove our prefix
-                WorldServer.Instance.CommandManager.HandleCommand(new TriggerChat(new StringStream(msg),
-                                                                                  client.ActiveCharacter));
-            }
-            else
-            {
-                client.ActiveCharacter.Context.ForEach(entry =>
-                    ChatHandler.SendChatServerMessage(entry.Client, client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg));
-            }
+            client.ActiveCharacter.CharacterContainer.ForEach(entry =>
+                ChatHandler.SendChatServerMessage(entry.Client, client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg));
         }
 
         public void SayGlobal(NamedActor actor, string msg)
         {
-            actor.Context.ForEach(entry =>
+            actor.CharacterContainer.ForEach(entry =>
                 ChatHandler.SendChatServerMessage(entry.Client, actor, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg));
         }
 

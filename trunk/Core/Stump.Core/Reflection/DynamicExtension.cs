@@ -38,7 +38,7 @@ namespace Stump.Core.Reflection
             {
                 ilGenerator.Emit(OpCodes.Ldarg, i);
                 if (delegParams[i] != methodParams[i])
-                    if (methodParams[i].IsSubclassOf(delegParams[i]))
+                    if (methodParams[i].IsSubclassOf(delegParams[i]) || methodParams[i].HasInterface(delegParams[i]))
                         ilGenerator.Emit(methodParams[i].IsClass ? OpCodes.Castclass : OpCodes.Unbox, methodParams[i]);
                     else
                         throw new Exception(string.Format("Cannot cast {0} to {1}", methodParams[i].Name, delegParams[i].Name));

@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using NHibernate.Criterion;
 using NLog;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Math;
 using Org.BouncyCastle.OpenSsl;
 using Stump.Core.Attributes;
 using Stump.Core.Cryptography;
+using Stump.Core.Extensions;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.AuthServer.Database.Account;
@@ -50,6 +53,56 @@ namespace Stump.Server.AuthServer.Managers
         private readonly Dictionary<uint, Account> m_accountsCache = new Dictionary<uint, Account>();
         private readonly object m_locker = new object();
 
+        private readonly RSACryptoServiceProvider m_rsaProvider = new RSACryptoServiceProvider();
+
+        public readonly string Salt = new Random().RandomString(32);
+        public readonly sbyte[] RsaPublicKey;
+
+        private AccountManager()
+        {
+            RsaPublicKey = GenerateRSAPublicKey();
+        }
+
+        public sbyte[] GetRSAPublicKey()
+        {
+            return RsaPublicKey;
+        }
+
+        public string GetSalt()
+        {
+            return Salt;
+        }
+
+        private sbyte[] GenerateRSAPublicKey()
+        {
+            var exportParameters = m_rsaProvider.ExportParameters(false);
+            var keyParameters = new RsaKeyParameters(false, new BigInteger(1, exportParameters.Modulus), new BigInteger(1, exportParameters.Exponent));
+
+            var stringBuilder = new StringBuilder();
+            var writer = new PemWriter(new StringWriter(stringBuilder));
+            writer.WriteObject(keyParameters);
+
+            string key = stringBuilder.ToString();
+
+            string partial = key.Remove(key.IndexOf("-----END PUBLIC KEY-----")).Remove(0, "-----BEGIN PUBLIC KEY-----\n".Length);
+
+            return Convert.FromBase64String(partial).Select(entry => (sbyte)entry).ToArray();
+        }
+
+        public bool CompareAccountPassword(Account account, IEnumerable<sbyte> credentials)
+        {
+            try
+            {
+                var data = m_rsaProvider.Decrypt(credentials.Select(entry => (byte)entry).ToArray(), false);
+                var str = Encoding.ASCII.GetString(data);
+
+                return Salt + account.Password == str;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
         public Account FindAccount(string login)
         {
@@ -58,51 +111,20 @@ namespace Stump.Server.AuthServer.Managers
             if (account == null)
                 return null;
 
-            Account cachedAccount;
-            if (m_accountsCache.TryGetValue(account.Id, out cachedAccount))
+            lock (m_locker)
             {
-                m_accountsCache[account.Id] = account;
-            }
-            else
-            {
-                lock (m_locker)
+                Account cachedAccount;
+                if (m_accountsCache.TryGetValue(account.Id, out cachedAccount))
+                {
+                    m_accountsCache[account.Id] = account;
+                }
+                else
+                {
                     m_accountsCache.Add(account.Id, account);
+                }
             }
 
             return account;
-        }
-
-        public bool CompareAccountPassword(Account account, string encryptedPassword, string loginKey)
-        {
-            return encryptedPassword == account.Password;
-            /*var pemReader = new PemReader(new StringReader(LoginPrivateKey));
-            var privateKey = ( (AsymmetricCipherKeyPair)pemReader.ReadObject() ).Private as RsaPrivateCrtKeyParameters;
-
-            var parameters = new RSAParameters()
-            {
-                DP = privateKey.DP.ToByteArray(),
-                DQ = privateKey.DQ.ToByteArray(),
-                Q = privateKey.Q.ToByteArray(),
-                InverseQ = privateKey.QInv.ToByteArray(),
-                Modulus = privateKey.Modulus.ToByteArray(),
-                P = privateKey.P.ToByteArray(),
-                Exponent = privateKey.PublicExponent.ToByteArray(),
-                D = privateKey.Exponent.ToByteArray(),
-            };
-
-            var pemReader2 = new PemReader(new StringReader(LoginPublicKey));
-            var publicKey = ( (RsaKeyParameters)pemReader2.ReadObject() );
-
-
-            var parameters2 = new RSAParameters()
-            {
-                Exponent = publicKey.Exponent.ToByteArray(),
-                Modulus = publicKey.Modulus.ToByteArray(),
-            };
-
-            string realPassword = Cryptography.DecryptRSA(Convert.FromBase64String(encryptedPassword), parameters);
-
-            return string.Concat(loginKey, account.Password) == realPassword;*/
         }
 
         public Account FindRegisteredAccountByTicket(string ticket)
@@ -214,11 +236,16 @@ namespace Stump.Server.AuthServer.Managers
 
             if (account.LastConnection != null)
             {
-                WorldServer lastWorld = account.LastConnection.World;
-                IRemoteOperationsWorld client = IpcServer.Instance.GetIpcClient(lastWorld.Id);
+                bool disconnected = false;
+                foreach (var server in WorldServerManager.Instance.Realmlist)
+                {
+                    if (server.Value.Connected && server.Value.RemoteOperations != null)
+                        if (server.Value.RemoteOperations.DisconnectClient(account.Id))
+                            disconnected = true;
+                }
 
                 // diconnect clients from last game server
-                if (client != null && client.DisconnectConnectedAccount(account.Id))
+                if (disconnected)
                 {
                     return true;
                 }

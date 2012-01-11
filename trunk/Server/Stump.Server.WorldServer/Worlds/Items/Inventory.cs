@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Worlds.Items
 
         #endregion
 
-        internal readonly InventoryRecord Record;
+        private readonly Queue<ItemRecord> m_itemsToDelete = new Queue<ItemRecord>();
 
         private readonly Dictionary<CharacterInventoryPositionEnum, List<Item>> m_itemsByPosition
             = new Dictionary<CharacterInventoryPositionEnum, List<Item>>
@@ -73,14 +73,10 @@ namespace Stump.Server.WorldServer.Worlds.Items
                       {CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, new List<Item>()},
                   };
 
-        private readonly object m_locker = new object();
 
-        public Inventory(Character owner, InventoryRecord record)
+        public Inventory(Character owner)
         {
             Owner = owner;
-            Record = record;
-
-            LoadInventory();
         }
 
         public IEnumerable<Item> Items
@@ -140,8 +136,11 @@ namespace Stump.Server.WorldServer.Worlds.Items
         /// </summary>
         public override int Kamas
         {
-            get { return Record.Kamas; }
-            protected set { Record.Kamas = value; }
+            get { return Owner.Kamas; }
+            protected set
+            {
+                Owner.Kamas = value;
+            }
         }
 
         #region IDisposable Members
@@ -153,18 +152,22 @@ namespace Stump.Server.WorldServer.Worlds.Items
 
         #endregion
 
-        private void LoadInventory()
+        internal void LoadInventory()
         {
-            m_items = Record.Items.Select(i => ItemManager.Instance.LoadItem(i)).ToDictionary(entry => entry.Guid);
+            var records = ItemRecord.FindAllByOwner(Owner.Id);
+
+            m_items = records.Select(entry => new Item(entry)).ToDictionary(entry => entry.Guid);
             foreach (Item item in m_items.Values)
             {
                 m_itemsByPosition[item.Position].Add(item);
+
+                if (item.IsEquiped())
+                    ApplyItemEffects(item, false);
             }
         }
 
-        private void UnLoadInventory()
+        internal void UnLoadInventory()
         {
-            ItemManager.Instance.UnLoadItems(m_items.Keys.ToArray());
             m_items.Clear();
             foreach (var item in m_itemsByPosition)
             {
@@ -174,33 +177,22 @@ namespace Stump.Server.WorldServer.Worlds.Items
 
         public void Save()
         {
-            Record.Save();
-            foreach (var item in m_items)
+            lock (m_locker)
             {
-                item.Value.Save();
+                foreach (var item in m_items)
+                {
+                    item.Value.Record.Save();
+                }
+
+                while (m_itemsToDelete.Count > 0)
+                {
+                    var record = m_itemsToDelete.Dequeue();
+                    record.Delete();
+                }
             }
         }
 
-        /*public void ApplyItemsEffect()
-        {
-            lock (m_sync)
-            {
-                Owner.Stats.ClearAllEquipedEffect();
-
-                foreach (Item item in GetEquipedItems())
-                {
-                    for (int i = 0; i < item.Effects.Count; i++)
-                    {
-                        if (!Owner.Stats.TryAddEffect(item.Effects[i], EffectContext.Inventory))
-                        {
-                            // cannot apply effect, have we to log error ? 
-                        }
-                    }
-                }
-            }
-        }*/
-
-        private void ApplyItemEffects(Item item)
+        private void ApplyItemEffects(Item item, bool send = true)
         {
             foreach (var effect in item.Effects)
             {
@@ -208,17 +200,19 @@ namespace Stump.Server.WorldServer.Worlds.Items
 
                 handler.Apply();
             }
+
+            if (send)
+                CharacterHandler.SendCharacterStatsListMessage(Owner.Client);
         }
 
         protected override void OnItemAdded(Item item)
         {
-            lock (m_locker)
-                m_itemsByPosition[item.Position].Add(item);
+            m_itemsByPosition[item.Position].Add(item);
 
-            Record.Items.Add(item.Record);
-            item.Record.Inventory = Record;
+            item.Record.OwnerId = Owner.Id;
 
-            item.Record.Update();
+            if (item.IsEquiped())
+                ApplyItemEffects(item);
 
             InventoryHandler.SendObjectAddedMessage(Owner.Client, item);
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
@@ -228,13 +222,11 @@ namespace Stump.Server.WorldServer.Worlds.Items
 
         protected override void OnItemRemoved(Item item)
         {
-            lock (m_locker)
-                m_itemsByPosition[item.Position].Remove(item);
+            m_itemsByPosition[item.Position].Remove(item);
+            m_itemsToDelete.Enqueue(item.Record);
 
-            Record.Items.Remove(item.Record);
-            item.Record.Inventory = null;
-
-            item.Record.Update();
+            if (item.IsEquiped())
+                ApplyItemEffects(item);
 
             InventoryHandler.SendObjectDeletedMessage(Owner.Client, item.Guid);
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
@@ -254,7 +246,6 @@ namespace Stump.Server.WorldServer.Worlds.Items
 
             InventoryHandler.SendObjectMovementMessage(Owner.Client, item);
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
-            CharacterHandler.SendCharacterStatsListMessage(Owner.Client);
         }
 
         protected override void OnItemStackChanged(Item item, int difference)
@@ -287,7 +278,11 @@ namespace Stump.Server.WorldServer.Worlds.Items
                 MoveItem(equipedItem.Guid, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
             }
 
+            if (!m_items.ContainsKey(guid))
+                return;
+
             Item itemToMove = m_items[guid];
+
             if (itemToMove.Stack > 1) // if the item to move is stack we cut it
             {
                 CutItem(itemToMove, (uint) (itemToMove.Stack - 1));

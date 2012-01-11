@@ -9,6 +9,11 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
     {
         protected string m_value;
 
+        public EffectString()
+        {
+            
+        }
+
         public EffectString(short id, string value)
             : base(id)
         {
@@ -26,6 +31,14 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
             get { return 74; }
         }
 
+        public override byte SerializationIdenfitier
+        {
+            get
+            {
+                return 10;
+            }
+        }
+
         public override object[] GetValues()
         {
             return new object[] {m_value};
@@ -34,6 +47,20 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         public override ObjectEffect GetObjectEffect()
         {
             return new ObjectEffectString(Id, m_value);
+        }
+
+        protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
+        {
+            base.InternalSerialize(ref writer);
+
+            writer.Write(m_value);
+        }
+
+        protected override void InternalDeserialize(ref System.IO.BinaryReader reader)
+        {
+            base.InternalDeserialize(ref reader);
+
+            m_value = reader.ReadString();
         }
 
         public override bool Equals(object obj)

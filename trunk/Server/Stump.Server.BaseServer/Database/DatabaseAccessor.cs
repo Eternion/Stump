@@ -15,6 +15,7 @@ using NHibernate.Engine;
 using NLog;
 using Stump.Core.Threading;
 using Stump.Server.BaseServer.Database.Interfaces;
+using Stump.Server.BaseServer.Database.Patchs;
 
 namespace Stump.Server.BaseServer.Database
 {
@@ -35,6 +36,8 @@ namespace Stump.Server.BaseServer.Database
         private IVersionRecord m_version;
         private Func<IVersionRecord> m_lastVersionMethod;
 
+        private PatchFile[] m_patchs;
+
         public static bool IsInitialized
         {
             get { return ActiveRecordStarter.IsInitialized; }
@@ -45,70 +48,6 @@ namespace Stump.Server.BaseServer.Database
             get;
             private set;
         }
-
-        #region Update Methods
-
-        // example : 12_to_14.sql
-        private bool SelectSqlUpdateFile(string path)
-        {
-            if (m_version == null)
-                return false;
-
-            var fileName = Path.GetFileNameWithoutExtension(path);
-
-            Match match;
-            if (!(match = Regex.Match(fileName, "([0-9]+)_to_([0-9]+)")).Success)
-            {
-                return false;
-            }
-
-            var forVersion = int.Parse(match.Groups[1].Value);
-            var toVersion = int.Parse(match.Groups[2].Value);
-
-            return forVersion == m_version.Revision &&
-                   toVersion == m_databaseRevision &&
-                   forVersion < toVersion;
-        }
-
-        private bool SelectAllSqlUpdateFileOf(string path, uint revision)
-        {
-            if (m_version == null)
-                return false;
-
-            string fileName = Path.GetFileNameWithoutExtension(path);
-
-            Match match;
-            if (!(match = Regex.Match(fileName, "([0-9]+)_to_([0-9]+)")).Success)
-            {
-                return false;
-            }
-
-            int forVersion = int.Parse(match.Groups[1].Value);
-            int toVersion = int.Parse(match.Groups[2].Value);
-
-            return forVersion == m_version.Revision &&
-                   forVersion < toVersion;
-        }
-
-        private int SortSqlUpdateFile(string path)
-        {
-            if (m_version == null)
-                return -1;
-
-            var fileName = Path.GetFileNameWithoutExtension(path);
-
-            Match match;
-            if (!(match = Regex.Match(fileName, "([0-9]+)_to_([0-9]+)")).Success)
-            {
-                return -1;
-            }
-
-            var toVersion = int.Parse(match.Groups[2].Value);
-
-            return toVersion;
-        }
-
-        #endregion
 
         public DatabaseAccessor(DatabaseConfiguration config, uint databaseRevision, Type recordBaseType, Assembly assembly)
         {
@@ -131,7 +70,8 @@ namespace Stump.Server.BaseServer.Database
             //connectionInfos.Add("show_sql", "true");
 #endif
             m_globalConfig.Add(m_recordBaseType, connectionInfos);
-            
+            NHibernate.Cfg.Environment.UseReflectionOptimizer = true;
+
             var recordsType = ActiveRecordHelper.GetTables(m_assembly, m_recordBaseType);
 
             m_globalTypes.AddRange(recordsType);
@@ -210,6 +150,10 @@ namespace Stump.Server.BaseServer.Database
                             60))
                         {
                             CreateSchema();
+
+                            m_logger.Info("Database schema update to rev. {0}", m_databaseRevision);
+
+                            m_version = m_lastVersionMethod();
                         }
                         else
                             throw;
@@ -249,41 +193,27 @@ namespace Stump.Server.BaseServer.Database
             if (!Directory.Exists(m_config.UpdateFileDir))
                 throw new FileNotFoundException(string.Format("Directory {0} isn't found.", m_config.UpdateFileDir));
 
-            var files = Directory.GetFiles(m_config.UpdateFileDir, "*", SearchOption.AllDirectories).Where(SelectSqlUpdateFile);
+            m_patchs = Directory.GetFiles(m_config.UpdateFileDir, "*", SearchOption.AllDirectories).
+                Select(entry => new PatchFile(entry)).ToArray();
 
-            if (files.Count() <= 0)
+            var sequence = PatchFile.GeneratePatchSequenceExecution(m_patchs, m_version.Revision, m_databaseRevision);
+
+            if (sequence.Count() <= 0)
             {
-                var currentVersion = m_version.Revision;
-                var revisionfiles = Directory.GetFiles(m_config.UpdateFileDir, "*", SearchOption.AllDirectories).Where(
-                        entry => SelectAllSqlUpdateFileOf(entry, currentVersion)).OrderByDescending(SortSqlUpdateFile);
-
-                while (currentVersion != m_databaseRevision)
-                {
-                    if (revisionfiles.Count() <= 0)
-                        throw new FileNotFoundException("The update file isn't found");
-
-                    ActiveRecordStarter.CreateSchemaFromFile(revisionfiles.First());
-                    currentVersion = uint.Parse(revisionfiles.First().Split('_').Last());
-
-                    revisionfiles =
-                        Directory.GetFiles(m_config.UpdateFileDir, "*", SearchOption.AllDirectories).Where(
-                            entry => SelectAllSqlUpdateFileOf(entry, currentVersion)).OrderByDescending(
-                                SortSqlUpdateFile);
-                }
+                throw new FileNotFoundException(string.Format("Cannot found the patchs to process update {0} to {1}.", m_version.Revision, m_databaseRevision));
             }
-            else
-            {
-                files = files.OrderByDescending(SortSqlUpdateFile);
 
-                if (files.Count() == 0) // it's theoretically not possible
-                    throw new FileNotFoundException("The update file isn't found");
-                
-                // why does I have a null ref exception there ?????
-                ActiveRecordStarter.CreateSchemaFromFile(files.First());
+            var holder = ActiveRecordMediator.GetSessionFactoryHolder();
+            var session = (ISessionImplementor)holder.CreateSession(m_recordBaseType);
+
+            foreach (var patchFile in sequence)
+            {
+                m_logger.Info("Executing patch {0}.sql ...", patchFile.FileName);
+
+                ActiveRecordStarter.CreateSchemaFromFile(patchFile.Path, session.Connection);
             }
 
             ActiveRecordHelper.DeleteVersionRecord(m_versionType);
-
             ActiveRecordHelper.CreateVersionRecord(m_versionType, m_databaseRevision);
         }
 

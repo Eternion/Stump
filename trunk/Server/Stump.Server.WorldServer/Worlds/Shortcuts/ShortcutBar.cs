@@ -13,13 +13,13 @@ namespace Stump.Server.WorldServer.Worlds.Shortcuts
 {
     public class ShortcutBar
     {
-        private readonly IList<Shortcut> m_shortcuts;
+        private readonly object m_locker = new object();
+        private readonly Queue<Shortcut> m_shortcutsToDelete = new Queue<Shortcut>();
+        private List<Shortcut> m_shortcuts;
 
         public ShortcutBar(Character owner)
         {
             Owner = owner;
-
-            m_shortcuts = Owner.Record.Shortcuts;
         }
 
         public Character Owner
@@ -28,13 +28,19 @@ namespace Stump.Server.WorldServer.Worlds.Shortcuts
             private set;
         }
 
+        internal void Load()
+        {
+            m_shortcuts = new List<Shortcut>();
+            m_shortcuts.AddRange(Shortcut.FindByOwnerId(Owner.Id));
+        }
+
         public void AddShortcut(sbyte barType, DofusShortcut shortcut)
         {
             // do not ask me why i use a sbyte, they are fucking idiots
             if (shortcut is ShortcutSpell && barType == 2)
-                AddSpellShortcut(shortcut.slot, ( shortcut as ShortcutSpell ).spellId);
+                AddSpellShortcut(shortcut.slot, (shortcut as ShortcutSpell).spellId);
             else if (shortcut is ShortcutObjectItem && barType == 0)
-                AddItemShortcut(shortcut.slot, Owner.Inventory.GetItem(( shortcut as ShortcutObjectItem ).itemUID));
+                AddItemShortcut(shortcut.slot, Owner.Inventory.GetItem((shortcut as ShortcutObjectItem).itemUID));
             else
             {
                 ShortcutHandler.SendShortcutBarAddErrorMessage(Owner.Client);
@@ -47,9 +53,8 @@ namespace Stump.Server.WorldServer.Worlds.Shortcuts
                 RemoveShortcut(ShortcutBarEnum.SPELL, slot);
 
             var shortcut = new SpellShortcut(Owner.Record, slot, spellId);
-            shortcut.Save();
 
-            Owner.Record.Shortcuts.Add(shortcut);
+            m_shortcuts.Add(shortcut);
             ShortcutHandler.SendShortcutBarRefreshMessage(Owner.Client, ShortcutBarEnum.SPELL, shortcut);
         }
 
@@ -59,9 +64,8 @@ namespace Stump.Server.WorldServer.Worlds.Shortcuts
                 RemoveShortcut(ShortcutBarEnum.OBJECT, slot);
 
             var shortcut = new ItemShortcut(Owner.Record, slot, item.Template.Id, item.Guid);
-            shortcut.Save();
 
-            Owner.Record.Shortcuts.Add(shortcut);
+            m_shortcuts.Add(shortcut);
             ShortcutHandler.SendShortcutBarRefreshMessage(Owner.Client, ShortcutBarEnum.OBJECT, shortcut);
         }
 
@@ -70,8 +74,8 @@ namespace Stump.Server.WorldServer.Worlds.Shortcuts
             if (IsSlotFree(slot))
                 return;
 
-            var shortcutToSwitch = GetShortcut(barType, slot);
-            var shortcutDestination = GetShortcut(barType, newSlot);
+            Shortcut shortcutToSwitch = GetShortcut(barType, slot);
+            Shortcut shortcutDestination = GetShortcut(barType, newSlot);
 
             if (shortcutDestination != null)
             {
@@ -89,10 +93,14 @@ namespace Stump.Server.WorldServer.Worlds.Shortcuts
 
         public void RemoveShortcut(ShortcutBarEnum barType, int slot)
         {
-            if (IsSlotFree(slot))
+            Shortcut shortcut = GetShortcut(barType, slot);
+
+            if (shortcut == null)
                 return;
 
-            m_shortcuts.Remove(GetShortcut(barType, slot));
+            m_shortcuts.Remove(shortcut);
+            m_shortcutsToDelete.Enqueue(shortcut);
+
             ShortcutHandler.SendShortcutBarRemovedMessage(Owner.Client, barType, slot);
         }
 
@@ -135,6 +143,25 @@ namespace Stump.Server.WorldServer.Worlds.Shortcuts
         public ItemShortcut GetItemShortcut(int slot)
         {
             return m_shortcuts.Where(entry => entry is ItemShortcut && entry.Slot == slot).SingleOrDefault() as ItemShortcut;
+        }
+
+        public void Save()
+        {
+            lock (m_locker)
+            {
+                foreach (Shortcut shortcut in m_shortcuts)
+                {
+                    shortcut.Save();
+                }
+
+                while (m_shortcutsToDelete.Count > 0)
+                {
+                    Shortcut record = m_shortcutsToDelete.Dequeue();
+
+                    if (record != null)
+                        record.Delete();
+                }
+            }
         }
     }
 }

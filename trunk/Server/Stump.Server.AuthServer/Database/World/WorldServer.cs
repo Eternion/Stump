@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ServiceModel;
+using System.ServiceModel.Channels;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.AuthServer.Database.Account;
+using Stump.Server.BaseServer.IPC;
 
 namespace Stump.Server.AuthServer.Database.World
 {
@@ -11,9 +12,6 @@ namespace Stump.Server.AuthServer.Database.World
     [ActiveRecord("worlds")]
     public sealed class WorldServer : AuthBaseRecord<WorldServer>
     {
-        private IList<WorldCharacter> m_characters;
-        private IList<DeletedWorldCharacter> m_deletedCharacters;
-        private IList<ConnectionLog> m_connections;
         private int m_charsCount;
 
         public WorldServer()
@@ -30,27 +28,6 @@ namespace Stump.Server.AuthServer.Database.World
 
         [Property("Name", NotNull = true, Length = 25)]
         public string Name
-        {
-            get;
-            set;
-        }
-
-        [Property("Ip", NotNull = true, Length = 25)]
-        public string Ip
-        {
-            get;
-            set;
-        }
-
-        [Property("Port", NotNull = true)]
-        public ushort Port
-        {
-            get;
-            set;
-        }
-
-        [Property("Password", NotNull = true)]
-        public string Password
         {
             get;
             set;
@@ -91,28 +68,92 @@ namespace Stump.Server.AuthServer.Database.World
             set;
         }
 
-        [HasMany(typeof(WorldCharacter), Lazy = true)]
-        public IList<WorldCharacter> Characters
+        public string Address
         {
-            get { return m_characters ?? new List<WorldCharacter>(); }
-            set { m_characters = value; }
+            get;
+            set;
         }
 
-        [HasMany(typeof(DeletedWorldCharacter), Lazy = true)]
-        public IList<DeletedWorldCharacter> DeletedCharacters
+        public ushort Port
         {
-            get { return m_deletedCharacters ?? new List<DeletedWorldCharacter>(); }
-            set { m_deletedCharacters = value; }
+            get;
+            set;
         }
 
-        [HasMany(typeof(ConnectionLog), Lazy=true)]
-        public IList<ConnectionLog> Connections
+        #region Session
+
+        public string SessionId
         {
-            get { return m_connections ?? new List<ConnectionLog>(); }
-            set { m_connections = value; }
+            get;
+            set;
         }
+
+        public RemoteEndpointMessageProperty RemoteEndpoint
+        {
+            get;
+            set;
+        }
+
+        public IContextChannel Channel
+        {
+            get;
+            set;
+        }
+
+        public WorldClientAdapter RemoteOperations
+        {
+            get;
+            set;
+        }
+
+        public void SetSession(IContextChannel channel, string sessionId, RemoteEndpointMessageProperty remoteEndpoint)
+        {
+            Channel = channel;
+            SessionId = sessionId;
+            RemoteEndpoint = remoteEndpoint;
+        }
+
+        public void CloseSession()
+        {
+            try
+            {
+                if (Channel != null)
+                    Channel.Close();
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                if (RemoteOperations != null)
+                    RemoteOperations.Close();
+            }
+            catch
+            {
+            }
+
+            Channel = null;
+            SessionId = null;
+            RemoteEndpoint = null;
+        }
+
+        #endregion
+
+        #region Status
 
         public ServerStatusEnum Status
+        {
+            get;
+            set;
+        }
+
+        public bool Connected
+        {
+            get { return Status == ServerStatusEnum.ONLINE; }
+        }
+
+        public DateTime LastPing
         {
             get;
             set;
@@ -124,23 +165,26 @@ namespace Stump.Server.AuthServer.Database.World
             set { m_charsCount = value < 0 ? 0 : value; }
         }
 
-        public bool Connected
+        public void SetOnline()
         {
-            get;
-            set;
+            Status = ServerStatusEnum.ONLINE;
+            LastPing = DateTime.Now;
         }
 
-        public DateTime LastPing
+        public void SetOnline(string address, ushort port)
         {
-            get;
-            set;
+            Status = ServerStatusEnum.ONLINE;
+            LastPing = DateTime.Now;
+            Address = address;
+            Port = port;
         }
 
-        public DateTime LastUpdate
+        public void SetOffline()
         {
-            get;
-            set;
+            Status = ServerStatusEnum.OFFLINE;
         }
+
+        #endregion
 
         public static WorldServer FindWorldById(int id)
         {
@@ -151,6 +195,5 @@ namespace Stump.Server.AuthServer.Database.World
         {
             return Exists(Restrictions.Eq("Id", id));
         }
-
     }
 }

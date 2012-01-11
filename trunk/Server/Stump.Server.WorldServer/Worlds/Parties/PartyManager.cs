@@ -5,30 +5,29 @@ using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Worlds.Parties
 {
-    public class PartyManager : Singleton<PartyManager>
+    public class PartyManager : EntityManager<PartyManager, Party>
     {
         private readonly UniqueIdProvider m_idProvider = new UniqueIdProvider();
-        private readonly Dictionary<int, Party> m_parties = new Dictionary<int, Party>();
 
         public Party Create(Character leader)
         {
             var group = new Party(m_idProvider.Pop(), leader);
 
-            m_parties.Add(group.Id, group);
+            AddEntity(group.Id, group);
 
             return group;
         }
 
         public void Remove(Party party)
         {
-            m_parties.Remove(party.Id);
+            RemoveEntity(party.Id);
 
             m_idProvider.Push(party.Id);
         }
 
         public Party GetGroup(int id)
         {
-            return m_parties.ContainsKey(id) ? m_parties[id] : null;
+            return GetEntityOrDefault(id);
         }
     }
 }

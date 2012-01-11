@@ -12,15 +12,41 @@
     <AssemblyName>Stump.Server.WorldServer</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CONTRACTS_FULL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>True</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>True</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>True</CodeContractsRedundantAssumptions>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,6 +63,32 @@
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <WarningLevel>4</WarningLevel>
     <DebugType>full</DebugType>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>True</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>True</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>True</CodeContractsRedundantAssumptions>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>True</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <PlatformTarget>x86</PlatformTarget>
@@ -45,7 +97,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CONTRACTS_FULL</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <CodeAnalysisLogFile>bin\Debug\Stump.Server.WorldServer.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
@@ -90,6 +142,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -111,6 +164,7 @@
     <Compile Include="AI\Fights\Brain\Brain.cs" />
     <Compile Include="AI\Fights\Threat\ThreatCalculator.cs" />
     <Compile Include="AI\Fights\Threat\VisibleSpellInformation.cs" />
+    <Compile Include="Commands\Commands\AnnounceCommand.cs" />
     <Compile Include="Commands\Commands\BanCommand.cs" />
     <Compile Include="Commands\Commands\ItemCommand.cs" />
     <Compile Include="Commands\Commands\KickCommand.cs" />
@@ -124,10 +178,15 @@
     <Compile Include="Commands\Trigger\TriggerChat.cs" />
     <Compile Include="Commands\Trigger\TriggerConsole.cs" />
     <Compile Include="Commands\Trigger\WorldConsoleTrigger.cs" />
+    <Compile Include="Core\Network\WorldClientCollection.cs" />
+    <Compile Include="Core\Network\WorldPacketHandler.cs" />
+    <Compile Include="Database\AssignedWorldRecord.cs" />
+    <Compile Include="Database\IAssignedByD2o.cs" />
     <Compile Include="Database\Interactives\InteractiveSpawn.cs" />
     <Compile Include="Database\Interactives\InteractiveTemplate.cs" />
     <Compile Include="Database\Interactives\Skills\SkillTemplate.cs" />
     <Compile Include="Database\Interactives\Skills\SkillTeleportTemplate.cs" />
+    <Compile Include="Database\ISaveable.cs" />
     <Compile Include="Database\Items\Shops\ItemToSell.cs" />
     <Compile Include="Database\Items\Shops\NpcItem.cs" />
     <Compile Include="Database\Monsters\DroppableItem.cs" />
@@ -146,8 +205,10 @@
     <Compile Include="Database\Npcs\NpcTemplate.cs" />
     <Compile Include="Database\Npcs\Replies\ContinueDialogReply.cs" />
     <Compile Include="Database\Npcs\Replies\EndDialogReply.cs" />
+    <Compile Include="Database\Npcs\Replies\TeleportReply.cs" />
+    <Compile Include="Database\PrimaryKeyIdProvider.cs" />
     <Compile Include="Database\Spells\ISpellRecord.cs" />
-    <Compile Include="Database\World\MapFightPositionsRecord.cs" />
+    <Compile Include="Database\World\Maps\MapElement.cs" />
     <Compile Include="Database\World\Triggers\CellTriggerRecord.cs" />
     <Compile Include="Database\World\Triggers\TeleportTriggerRecord.cs" />
     <Compile Include="Handlers\Actions\ActionsFightHandler.cs" />
@@ -162,12 +223,10 @@
     <Compile Include="Database\Breeds\LearnableSpell.cs" />
     <Compile Include="Database\Characters\CharacterRecord.cs" />
     <Compile Include="Database\Characters\ExperienceRecord.cs" />
-    <Compile Include="Database\Characters\Restrictions.cs" />
     <Compile Include="Database\Effects\EffectTemplate.cs" />
     <Compile Include="Database\I18n\TextManager.cs" />
     <Compile Include="Database\I18n\TextRecord.cs" />
     <Compile Include="Database\I18n\TextUIRecord.cs" />
-    <Compile Include="Database\Items\InventoryRecord.cs" />
     <Compile Include="Database\Items\ItemRecord.cs" />
     <Compile Include="Database\Items\Templates\ItemTemplate.cs" />
     <Compile Include="Database\Items\Templates\ItemSetRecord.cs" />
@@ -189,10 +248,10 @@
     <Compile Include="Database\World\AreaRecord.cs" />
     <Compile Include="Database\World\Cell.cs" />
     <Compile Include="Database\World\HintRecord.cs" />
-    <Compile Include="Database\World\MapCoordinatesRecord.cs" />
-    <Compile Include="Database\World\MapPositionRecord.cs" />
-    <Compile Include="Database\World\MapRecord.cs" />
-    <Compile Include="Database\World\MapReferenceRecord.cs" />
+    <Compile Include="Database\World\Maps\MapCoordinatesRecord.cs" />
+    <Compile Include="Database\World\Maps\MapPositionRecord.cs" />
+    <Compile Include="Database\World\Maps\MapRecord.cs" />
+    <Compile Include="Database\World\Maps\MapReferenceRecord.cs" />
     <Compile Include="Database\World\SubAreaRecord.cs" />
     <Compile Include="Database\World\SuperAreaRecord.cs" />
     <Compile Include="Database\World\WorldMapRecord.cs" />
@@ -269,8 +328,10 @@
     <Compile Include="Worlds\Actors\RolePlay\Prism.cs" />
     <Compile Include="Worlds\Actors\RolePlay\RolePlayActor.cs" />
     <Compile Include="Worlds\Actors\RolePlay\TaxCollectorNpc.cs" />
+    <Compile Include="Worlds\Actors\Stats\StatsAP.cs" />
     <Compile Include="Worlds\Actors\Stats\StatsFields.cs" />
     <Compile Include="Worlds\Actors\Stats\StatsHealth.cs" />
+    <Compile Include="Worlds\Actors\Stats\StatsMP.cs" />
     <Compile Include="Worlds\Breeds\BreedManager.cs" />
     <Compile Include="Worlds\Chats\ChatManager.cs" />
     <Compile Include="Worlds\Dialogs\IDialog.cs" />
@@ -374,7 +435,10 @@
     <Compile Include="Worlds\Maps\Pathfinding\NodesComparer.cs" />
     <Compile Include="Worlds\Maps\Pathfinding\Path.cs" />
     <Compile Include="Worlds\Maps\Pathfinding\Pathfinder.cs" />
-    <Compile Include="Worlds\Maps\SpawningPool.cs" />
+    <Compile Include="Worlds\Maps\Spawns\ClassicalSpawningPool.cs" />
+    <Compile Include="Worlds\Maps\Spawns\SpawningPoolBase.cs" />
+    <Compile Include="Worlds\Maps\UpdatePriority.cs" />
+    <Compile Include="Worlds\Maps\WorldObject.cs" />
     <Compile Include="Worlds\Notifications\Notification.cs" />
     <Compile Include="Worlds\Parties\Party.cs" />
     <Compile Include="Worlds\Parties\PartyInvitation.cs" />
@@ -387,7 +451,7 @@
     <Compile Include="Worlds\Maps\Area.cs" />
     <Compile Include="Worlds\Maps\Cells\MapPoint.cs" />
     <Compile Include="Worlds\Maps\Cells\ObjectPosition.cs" />
-    <Compile Include="Worlds\Maps\IContext.cs" />
+    <Compile Include="Worlds\Maps\ICharacterContainer.cs" />
     <Compile Include="Worlds\Maps\Map.cs" />
     <Compile Include="Worlds\Maps\SubArea.cs" />
     <Compile Include="Worlds\Maps\SuperArea.cs" />

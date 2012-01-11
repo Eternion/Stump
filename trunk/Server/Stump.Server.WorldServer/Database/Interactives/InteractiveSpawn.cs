@@ -1,13 +1,18 @@
 using System.Collections.Generic;
 using Castle.ActiveRecord;
+using NLog;
 using Stump.Server.WorldServer.Database.Interactives.Skills;
+using Stump.Server.WorldServer.Worlds.Interactives;
 using Stump.Server.WorldServer.Worlds.Maps;
+using Stump.Server.WorldServer.Worlds.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Database.Interactives
 {
     [ActiveRecord("interactives_spawns")]
     public class InteractiveSpawn : WorldBaseRecord<InteractiveSpawn>
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private Map m_map;
         private IList<SkillTemplate> m_skills;
 
@@ -21,11 +26,28 @@ namespace Stump.Server.WorldServer.Database.Interactives
         /// <summary>
         /// Can be null
         /// </summary>
-        [BelongsTo(NotNull = false)]
-        public InteractiveTemplate Template
+        [Property(NotNull = false)]
+        public int TemplateId
         {
             get;
             set;
+        }
+
+        private InteractiveTemplate m_template;
+        public InteractiveTemplate Template
+        {
+            get
+            {
+                if (TemplateId < 0)
+                    return null;
+
+                return m_template ?? ( m_template = InteractiveManager.Instance.GetTemplate(TemplateId) );
+            }
+            set
+            {
+                m_template = value;
+                TemplateId = value.Id;
+            }
         }
 
         [Property(NotNull = true)]
@@ -55,6 +77,23 @@ namespace Stump.Server.WorldServer.Database.Interactives
         public IEnumerable<SkillTemplate> GetSkills()
         {
             return Template != null ? Template.Skills : Skills;
+        }
+
+        public ObjectPosition GetPosition()
+        {
+            var map = GetMap();
+
+            var elements = map.Record.FindMapElement(ElementId);
+
+            if (elements.Length <= 0)
+                return null;
+
+            if (elements.Length > 0)
+                logger.Debug("More than 1 elements found in interactive id = {0}", Id);
+
+            var cell = elements[0].CellId;
+
+            return new ObjectPosition(map, cell);
         }
 
         public Map GetMap()

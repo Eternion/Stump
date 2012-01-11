@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading;
 using NLog;
@@ -8,13 +10,19 @@ using Stump.Core.Reflection;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.Interactives;
+using Stump.Server.WorldServer.Database.Monsters;
+using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Database.World.Triggers;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Worlds.Interactives;
 using Stump.Server.WorldServer.Worlds.Maps;
+using Stump.Server.WorldServer.Worlds.Maps.Cells;
 using Stump.Server.WorldServer.Worlds.Maps.Cells.Triggers;
 
 namespace Stump.Server.WorldServer.Worlds
@@ -24,21 +32,30 @@ namespace Stump.Server.WorldServer.Worlds
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly ConcurrentDictionary<int, Character> m_charactersById =
-            new ConcurrentDictionary<int, Character>(WorkerManager.WorkerThreadNumber, ClientManager.MaxConcurrentConnections);
+            new ConcurrentDictionary<int, Character>(Environment.ProcessorCount, ClientManager.MaxConcurrentConnections);
 
         private readonly ConcurrentDictionary<string, Character> m_charactersByName =
-            new ConcurrentDictionary<string, Character>(WorkerManager.WorkerThreadNumber, ClientManager.MaxConcurrentConnections);
+            new ConcurrentDictionary<string, Character>(Environment.ProcessorCount, ClientManager.MaxConcurrentConnections);
+
+        private Dictionary<int, Area> m_areas = new Dictionary<int, Area>();
 
         private int m_characterCount;
 
         private Dictionary<int, Map> m_maps = new Dictionary<int, Map>();
         private Dictionary<int, SubArea> m_subAreas = new Dictionary<int, SubArea>();
-        private Dictionary<int, Area> m_areas = new Dictionary<int, Area>();
         private Dictionary<int, SuperArea> m_superAreas = new Dictionary<int, SuperArea>();
+
+        private readonly object m_saveLock = new object();
+        private readonly ConcurrentBag<ISaveable> m_saveablesInstances = new ConcurrentBag<ISaveable>(); 
 
         public int CharacterCount
         {
             get { return m_characterCount; }
+        }
+
+        public object SaveLock
+        {
+            get { return m_saveLock; }
         }
 
         #region Initialization
@@ -48,7 +65,6 @@ namespace Stump.Server.WorldServer.Worlds
         {
             // maps
             LoadSpaces();
-            SetLinks();
         }
 
         private void LoadSpaces()
@@ -65,6 +81,8 @@ namespace Stump.Server.WorldServer.Worlds
             logger.Info("Load super areas...");
             m_superAreas = SuperAreaRecord.FindAll().ToDictionary(entry => entry.Id, entry => new SuperArea(entry));
 
+            SetLinks();
+
             logger.Info("Spawn npcs ...");
             SpawnNpcs();
 
@@ -80,7 +98,7 @@ namespace Stump.Server.WorldServer.Worlds
 
         private void SetLinks()
         {
-            foreach (var map in m_maps.Values)
+            foreach (Map map in m_maps.Values)
             {
                 if (map.Record.Position == null)
                     continue;
@@ -92,7 +110,7 @@ namespace Stump.Server.WorldServer.Worlds
                 }
             }
 
-            foreach (var subArea in m_subAreas.Values)
+            foreach (SubArea subArea in m_subAreas.Values)
             {
                 Area area;
                 if (m_areas.TryGetValue(subArea.Record.AreaId, out area))
@@ -101,7 +119,7 @@ namespace Stump.Server.WorldServer.Worlds
                 }
             }
 
-            foreach (var area in m_areas.Values)
+            foreach (Area area in m_areas.Values)
             {
                 SuperArea superArea;
                 if (m_superAreas.TryGetValue(area.Record.SuperAreaId, out superArea))
@@ -113,9 +131,9 @@ namespace Stump.Server.WorldServer.Worlds
 
         private void SpawnNpcs()
         {
-            foreach (var npcSpawn in NpcManager.Instance.GetNpcSpawns())
+            foreach (NpcSpawn npcSpawn in NpcManager.Instance.GetNpcSpawns())
             {
-                var position = npcSpawn.GetPosition();
+                ObjectPosition position = npcSpawn.GetPosition();
 
                 position.Map.SpawnNpc(npcSpawn.Template, position, npcSpawn.Look);
             }
@@ -123,9 +141,9 @@ namespace Stump.Server.WorldServer.Worlds
 
         private void SpawnInteractives()
         {
-            foreach (var interactive in InteractiveManager.Instance.GetInteractiveSpawns())
+            foreach (InteractiveSpawn interactive in InteractiveManager.Instance.GetInteractiveSpawns())
             {
-                var map = interactive.GetMap();
+                Map map = interactive.GetMap();
 
                 if (map == null)
                 {
@@ -139,9 +157,9 @@ namespace Stump.Server.WorldServer.Worlds
 
         private void SpawnCellTriggers()
         {
-            foreach (var cellTrigger in CellTriggerManager.Instance.GetCellTriggers())
+            foreach (CellTriggerRecord cellTrigger in CellTriggerManager.Instance.GetCellTriggers())
             {
-                var trigger = cellTrigger.GenerateTrigger();
+                CellTrigger trigger = cellTrigger.GenerateTrigger();
 
                 trigger.Position.Map.AddTrigger(trigger);
             }
@@ -149,12 +167,24 @@ namespace Stump.Server.WorldServer.Worlds
 
         private void SpawnMonsters()
         {
-            foreach (var spawn in MonsterManager.Instance.GetMonsterSpawns())
+            foreach (MonsterSpawn spawn in MonsterManager.Instance.GetMonsterSpawns())
             {
                 if (spawn.Map != null)
-                    GetMap(spawn.Map.Id).AddMonsterSpawn(spawn);
+                {
+                    Map map = GetMap(spawn.Map.Id);
+                    map.AddMonsterSpawn(spawn);
+                }
                 else if (spawn.SubArea != null)
-                    GetSubArea(spawn.SubArea.Id).AddMonsterSpawn(spawn);
+                {
+                    SubArea area = GetSubArea(spawn.SubArea.Id);
+                    area.AddMonsterSpawn(spawn);
+                }
+            }
+
+            foreach (var map in m_maps)
+            {
+                if (map.Value.MonsterSpawnsCount > 0)
+                    map.Value.EnableMonsterSpawns();
             }
         }
 
@@ -207,21 +237,29 @@ namespace Stump.Server.WorldServer.Worlds
         #endregion
 
         #region Actors
+
         public void Enter(Character character)
         {
+            Contract.Requires(character != null);
+
+            if (m_charactersById.ContainsKey(character.Id))
+                Leave(character);
+
             if (m_charactersById.TryAdd(character.Id, character) && m_charactersByName.TryAdd(character.Name, character))
                 Interlocked.Increment(ref m_characterCount);
             else
-                throw new Exception(string.Format("Cannot add character {0} to the World", character));
+                logger.Error("Cannot add character {0} to the World", character);
         }
 
         public void Leave(Character character)
         {
+            Contract.Requires(character != null);
+
             Character dummy;
             if (m_charactersById.TryRemove(character.Id, out dummy) && m_charactersByName.TryRemove(character.Name, out dummy))
                 Interlocked.Decrement(ref m_characterCount);
             else
-                throw new Exception(string.Format("Cannot remove character {0} to the World", character));
+                logger.Error("Cannot remove character {0} to the World", character);
         }
 
         public bool IsConnected(int id)
@@ -248,11 +286,15 @@ namespace Stump.Server.WorldServer.Worlds
 
         public Character GetCharacter(Predicate<Character> predicate)
         {
+            Contract.Requires(predicate != null);
+
             return m_charactersById.FirstOrDefault(k => predicate(k.Value)).Value;
         }
 
         public IEnumerable<Character> GetCharacters(Predicate<Character> predicate)
         {
+            Contract.Requires(predicate != null);
+
             return m_charactersById.Values.Where(k => predicate(k));
         }
 
@@ -267,7 +309,6 @@ namespace Stump.Server.WorldServer.Worlds
                 string name = pattern.Remove(0, 1);
 
 
-
                 return ClientManager.Instance.FindAll<WorldClient>(entry => entry.Account.Login == name).
                     Select(entry => entry.ActiveCharacter).SingleOrDefault();
             }
@@ -276,7 +317,7 @@ namespace Stump.Server.WorldServer.Worlds
         }
 
         /// <summary>
-        /// Get a character by a search pattern. * = caller, *(account) = current character used by account, name = character by his name.
+        /// Get a character by a search pattern. * = caller, *account = current character used by account, name = character by his name.
         /// </summary>
         /// <returns></returns>
         public Character GetCharacterByPattern(Character caller, string pattern)
@@ -298,13 +339,52 @@ namespace Stump.Server.WorldServer.Worlds
             foreach (var key in m_charactersById.Where(k => predicate(k.Value)))
                 action(key.Value);
         }
+
         #endregion
+
+
+        public void RegisterSaveableInstance(ISaveable instance)
+        {
+            m_saveablesInstances.Add(instance);
+        }
 
         public void Save()
         {
-            foreach (var character in m_charactersById.Values)
+            lock (SaveLock)
             {
-                character.SaveNow();
+                logger.Info("Saving world ...");
+                var sw = Stopwatch.StartNew();
+
+                var clients = ClientManager.Instance.FindAll<WorldClient>();
+
+                foreach (var client in clients)
+                {
+                    try
+                    {
+                        if (client.ActiveCharacter != null)
+                        {
+                            client.ActiveCharacter.SaveNow();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error("Cannot save {0} : {1}", client, ex);
+                    }
+                }
+
+                foreach (var instance in m_saveablesInstances)
+                {
+                    try
+                    {
+                        instance.Save();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error("Cannot save {0} : {1}", instance, ex);
+                    }
+                }
+
+                logger.Info("World server saved ! ({0} ms)", sw.ElapsedMilliseconds);
             }
         }
     }

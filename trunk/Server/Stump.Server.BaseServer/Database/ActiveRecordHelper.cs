@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Castle.ActiveRecord;
 using Stump.Core.Extensions;
+using Stump.Core.Reflection;
 using Stump.Server.BaseServer.Database.Interfaces;
 
 namespace Stump.Server.BaseServer.Database
@@ -14,7 +15,7 @@ namespace Stump.Server.BaseServer.Database
         {
             var types = assembly.GetTypes();
 
-            return types.Where(t => t.IsSubclassOfGeneric(recordBaseType));
+            return types.Where(t => t.GetCustomAttribute<IgnoreTableAttribute>() == null && t.IsSubclassOfGeneric(recordBaseType));
         }
 
         public static Type GetVersionType(IEnumerable<Type> types)

@@ -1,5 +1,6 @@
 using System;
 using Castle.ActiveRecord;
+using NHibernate.Criterion;
 using Stump.Server.WorldServer.Database.Characters;
 using DofusShortcut = Stump.DofusProtocol.Types.Shortcut;
 
@@ -15,7 +16,7 @@ namespace Stump.Server.WorldServer.Database.Shortcuts
 
         protected Shortcut(CharacterRecord owner, int slot)
         {
-            Owner = owner;
+            OwnerId = owner.Id;
             Slot = slot;
         }
 
@@ -26,8 +27,8 @@ namespace Stump.Server.WorldServer.Database.Shortcuts
             set;
         }
 
-        [BelongsTo("CharacterId")]
-        public CharacterRecord Owner
+        [Property("OwnerId")]
+        public int OwnerId
         {
             get;
             set;
@@ -38,6 +39,11 @@ namespace Stump.Server.WorldServer.Database.Shortcuts
         {
             get;
             set;
+        }
+
+        public static Shortcut[] FindByOwnerId(int id)
+        {
+            return FindAll(Restrictions.Eq("OwnerId", id));
         }
 
         public abstract DofusShortcut GetNetworkShortcut();

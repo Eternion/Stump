@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
@@ -13,10 +14,11 @@ namespace Stump.Server.WorldServer.Database.Spells
     [Serializable]
     [ActiveRecord("spells_level")]
     [D2OClass("SpellLevel", "com.ankamagames.dofus.datacenter.spells")]
-    public sealed class SpellLevelTemplate : WorldBaseRecord<SpellLevelTemplate>
+    public sealed class SpellLevelTemplate : WorldBaseRecord<SpellLevelTemplate>, IAssignedByD2O
     {
         private List<EffectDice> m_criticalEffects;
         private List<EffectDice> m_effects;
+        private SpellTemplate m_spell;
 
         [D2OField("id")]
         [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
@@ -33,8 +35,6 @@ namespace Stump.Server.WorldServer.Database.Spells
             get;
             set;
         }
-
-        private SpellTemplate m_spell;
 
         public SpellTemplate Spell
         {
@@ -129,9 +129,25 @@ namespace Stump.Server.WorldServer.Database.Spells
             set;
         }
 
+        [D2OField("needTakenCell")]
+        [Property("NeedTakenCell")]
+        public Boolean NeedTakenCell
+        {
+            get;
+            set;
+        }
+
         [D2OField("rangeCanBeBoosted")]
         [Property("RangeCanBeBoosted")]
         public Boolean RangeCanBeBoosted
+        {
+            get;
+            set;
+        }
+
+        [D2OField("maxStack")]
+        [Property("MaxStack")]
+        public int MaxStack
         {
             get;
             set;
@@ -164,6 +180,14 @@ namespace Stump.Server.WorldServer.Database.Spells
         [D2OField("initialCooldown")]
         [Property("InitialCooldown")]
         public uint InitialCooldown
+        {
+            get;
+            set;
+        }
+
+        [D2OField("globalCooldown")]
+        [Property("GlobalCooldown")]
+        public int GlobalCooldown
         {
             get;
             set;
@@ -210,8 +234,8 @@ namespace Stump.Server.WorldServer.Database.Spells
         }
 
         [D2OField("effects")]
-        [Property("Effects", ColumnType = "Serializable")]
-        public List<EffectInstanceDice> RawEffects
+        [Property("Effects")]
+        public byte[] RawEffects
         {
             get;
             set;
@@ -219,13 +243,13 @@ namespace Stump.Server.WorldServer.Database.Spells
 
         public List<EffectDice> Effects
         {
-            get { return m_effects ?? (m_effects = new List<EffectDice>(RawEffects.Select(entry => EffectManager.Instance.ConvertExportedEffect(entry) as EffectDice))); }
+            get { return m_effects ?? (m_effects = EffectManager.Instance.DeserializeEffects(RawEffects).Cast<EffectDice>().ToList()); }
             set { m_effects = value; }
         }
 
         [D2OField("criticalEffect")]
-        [Property("CriticalEffect", ColumnType = "Serializable")]
-        public List<EffectInstanceDice> RawCriticalEffect
+        [Property("CriticalEffect")]
+        public byte[] RawCriticalEffects
         {
             get;
             set;
@@ -233,8 +257,33 @@ namespace Stump.Server.WorldServer.Database.Spells
 
         public List<EffectDice> CritialEffects
         {
-            get { return m_criticalEffects ?? (m_criticalEffects = new List<EffectDice>(RawCriticalEffect.Select(entry => EffectManager.Instance.ConvertExportedEffect(entry) as EffectDice))); }
+            get { return m_criticalEffects ?? (m_criticalEffects = EffectManager.Instance.DeserializeEffects(RawCriticalEffects).Cast<EffectDice>().ToList()); }
             set { m_criticalEffects = value; }
+        }
+
+        public object GenerateAssignedObject(string fieldName, object d2OObject)
+        {
+            if (fieldName == "RawEffects")
+            {
+                var list = d2OObject as List<EffectInstanceDice>;
+
+                if (list == null)
+                    return d2OObject;
+
+                return EffectManager.Instance.SerializeEffects(list);
+            }
+
+            if (fieldName == "RawCriticalEffects")
+            {
+                var list = d2OObject as List<EffectInstanceDice>;
+
+                if (list == null)
+                    return d2OObject;
+
+                return EffectManager.Instance.SerializeEffects(list);
+            }
+
+            return d2OObject;
         }
     }
 }

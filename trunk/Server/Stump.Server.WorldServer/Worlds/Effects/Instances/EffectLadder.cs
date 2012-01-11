@@ -15,6 +15,11 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
             set { m_monsterCount = value; }
         }
 
+        public EffectLadder()
+        {
+            
+        }
+
         public EffectLadder(short id, short monsterfamily, short monstercount)
             : base(id, monsterfamily)
         {
@@ -32,6 +37,14 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
             get { return 81; }
         }
 
+        public override byte SerializationIdenfitier
+        {
+            get
+            {
+                return 7;
+            }
+        }
+
         public override object[] GetValues()
         {
             return new object[] {m_monsterCount};
@@ -40,6 +53,20 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         public override ObjectEffect GetObjectEffect()
         {
             return new ObjectEffectLadder(Id, MonsterFamily, MonsterCount);
+        }
+
+        protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
+        {
+            base.InternalSerialize(ref writer);
+
+            writer.Write(m_monsterCount);
+        }
+
+        protected override void InternalDeserialize(ref System.IO.BinaryReader reader)
+        {
+            base.InternalDeserialize(ref reader);
+
+            m_monsterCount = reader.ReadInt16();
         }
 
         public override bool Equals(object obj)

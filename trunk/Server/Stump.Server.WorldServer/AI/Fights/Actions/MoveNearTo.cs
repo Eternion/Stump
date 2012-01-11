@@ -23,8 +23,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
         {
             var cellInfoProvider = new AIFightCellsInformationProvider(Fighter.Fight, Fighter);
 
+            if (Fighter.Position.Point.IsAdjacentTo(Target.Position.Point))
+                return RunStatus.Success;
+
             // todo : avoid tackle
-            var cell = Target.Position.Point.GetAdjacentCells(cellInfoProvider.IsCellWalkable).OrderBy(entry => entry.DistanceTo(Fighter.Position.Point)).FirstOrDefault();
+            var cell = Target.Position.Point.GetAdjacentCells(cellInfoProvider.IsCellWalkable).OrderBy(entry => entry.DistanceToCell(Fighter.Position.Point)).FirstOrDefault();
 
             if (cell == null)
                 return RunStatus.Failure;

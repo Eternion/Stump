@@ -19,7 +19,7 @@ namespace Stump.DofusProtocol.D2oClasses
 		public uint descriptionId;
 		public int iconId;
 		public uint level;
-		public uint weight;
+		public uint realWeight;
 		public Boolean cursed;
 		public int useAnimationId;
 		public Boolean usable;
@@ -30,11 +30,13 @@ namespace Stump.DofusProtocol.D2oClasses
 		public int itemSetId;
 		public String criteria;
 		public Boolean hideEffects;
+		public Boolean enhanceable;
 		public uint appearanceId;
 		public List<uint> recipeIds;
 		public Boolean bonusIsSecret;
 		public List<EffectInstance> possibleEffects;
 		public List<uint> favoriteSubAreas;
 		public uint favoriteSubAreasBonus;
+        public int weight;
 	}
 }

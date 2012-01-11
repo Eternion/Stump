@@ -2,12 +2,19 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Castle.ActiveRecord.Framework.Config;
 using Stump.Core.Attributes;
+using Stump.Core.Extensions;
+using Stump.Core.Mathematics;
+using Stump.Core.Pool;
+using Stump.Core.Reflection;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
@@ -15,6 +22,7 @@ using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Database;
+using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.BaseServer.Plugins;
@@ -63,15 +71,32 @@ namespace Stump.Server.WorldServer
             UpdateFileDir = "./sql_update/",
         };
 
+        [Variable]
+        public static int AutoSaveInterval  = 3 * 60;
+
+        public WorldPacketHandler HandlerManager
+        {
+            get;
+            private set;
+        }
+
+        public bool IsInitialized
+        {
+            get;
+            private set;
+        }
+
+
         public WorldServer()
             : base(Definitions.ConfigFilePath, Definitions.SchemaFilePath)
         {
-           
+            
         }
 
         public override void Initialize()
         {
             base.Initialize();
+
             ConsoleInterface = new WorldConsole();
             ConsoleBase.SetTitle("#Stump World Server : " + ServerInformation.Name);
 
@@ -87,6 +112,7 @@ namespace Stump.Server.WorldServer
             ProtocolTypeManager.Initialize();
 
             logger.Info("Register Packet Handlers...");
+            HandlerManager = WorldPacketHandler.Instance;
             HandlerManager.RegisterAll(Assembly.GetExecutingAssembly());
 
             logger.Info("Register Commands...");
@@ -95,7 +121,10 @@ namespace Stump.Server.WorldServer
             logger.Info("Initializing IPC Client..");
             IpcAccessor.Instance.Initialize();
 
+            logger.Info("Register ISaveable Instances");
+
             InitializationManager.InitializeAll();
+            IsInitialized = true;
         }
 
         protected override void OnPluginAdded(PluginContext plugincontext)
@@ -109,11 +138,14 @@ namespace Stump.Server.WorldServer
         {
             base.Start();
 
+            logger.Info("Start Auto-Save Cyclic Task");
+            IOTaskPool.CallPeriodically(AutoSaveInterval * 1000, World.Instance.Save);
+
             logger.Info("Starting Console Handler Interface...");
             ConsoleInterface.Start();
 
-            logger.Info("Starting IPC Communication on " + IpcAccessor.IpcAuthPort + "/" +
-                        IpcAccessor.IpcWorldPort + "...");
+            logger.Info("Starting IPC Communication on " + IpcAccessor.IpcAuthAddress + "/" +
+                        IpcAccessor.IpcWorldAddress + "...");
             IpcAccessor.Instance.Start();
 
             logger.Info("Start listening on port : " + Port + "...");
@@ -127,15 +159,57 @@ namespace Stump.Server.WorldServer
             return new WorldClient(s);
         }
 
-        protected override void OnShutdown()
+        protected override void DisconnectAfkClient()
         {
-            World.Instance.Save();
+            // todo : this is not an afk check but a timeout check
+
+            var afkClients = FindClients(client =>
+                DateTime.Now.Subtract(client.LastActivity).TotalSeconds >= BaseServer.Settings.InactivityDisconnectionTime);
+
+            foreach (WorldClient client in afkClients)
+            {
+                client.DisconnectAfk();
+            }
         }
 
+        protected override void OnShutdown()
+        {
+            if (IsInitialized)
+                World.Instance.Save();
 
-        public IEnumerable<WorldClient> FindClients(Predicate<WorldClient> predicate)
+            ClientManager.Pause();
+
+            foreach (var client in ClientManager.Clients.ToArray())
+            {
+                client.Disconnect();
+            }
+
+            ClientManager.Close();
+        }
+
+        public WorldClient[] FindClients(Predicate<WorldClient> predicate)
         {
             return ClientManager.FindAll(predicate);
+        }
+
+        public void RegisterAllSaveableInstances(Assembly assembly)
+        {
+            foreach (var type in assembly.GetTypes())
+            {
+                if (type.HasInterface(typeof(ISaveable)))
+                {
+                    if (type.IsDerivedFromGenericType(typeof (Singleton<>)))
+                    {
+                        var instanceProp = type.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+                        var instance = instanceProp.GetValue(null, new object[0]) as ISaveable;
+
+                        if (instance != null)
+                        {
+                            World.Instance.RegisterSaveableInstance(instance);
+                        }
+                    }
+                }
+            }
         }
     }
 }

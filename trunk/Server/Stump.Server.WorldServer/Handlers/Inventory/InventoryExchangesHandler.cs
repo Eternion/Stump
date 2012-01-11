@@ -3,6 +3,7 @@ using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Worlds;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
@@ -87,19 +88,21 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
            client.ActiveCharacter.Trader.ToggleReady(message.ready);
         }
 
-        /*[WorldHandler(ExchangeBuyMessage.Id)]
+        [WorldHandler(ExchangeBuyMessage.Id)]
         public static void HandleExchangeBuyMessage(WorldClient client, ExchangeBuyMessage message)
         {
-            ((NpcShopDialog) client.ActiveCharacter.Dialog).BuyItem((int) message.objectToBuyId, message.quantity);
+            if (client.ActiveCharacter.NpcShopDialog != null)
+                client.ActiveCharacter.NpcShopDialog.BuyItem(message.objectToBuyId, (uint) message.quantity);
         }
 
         [WorldHandler(ExchangeSellMessage.Id)]
         public static void HandleExchangeSellMessage(WorldClient client, ExchangeSellMessage message)
         {
-            ((NpcShopDialog) client.ActiveCharacter.Dialog).SellItem((int) message.objectToSellId, message.quantity);
-        }*/
+            if (client.ActiveCharacter.NpcShopDialog != null)
+                client.ActiveCharacter.NpcShopDialog.SellItem(message.objectToSellId, (uint)message.quantity);
+        }
 
-        public static void SendExchangeRequestedTradeMessage(WorldClient client, ExchangeTypeEnum type, Character source,
+        public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,
                                                              Character target)
         {
             client.Send(new ExchangeRequestedTradeMessage(
@@ -108,7 +111,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                             target.Id));
         }
 
-        public static void SendExchangeStartedWithPodsMessage(WorldClient client, PlayerTrade playerTrade)
+        public static void SendExchangeStartedWithPodsMessage(IPacketReceiver client, PlayerTrade playerTrade)
         {
             client.Send(new ExchangeStartedWithPodsMessage(
                             (sbyte) ExchangeTypeEnum.PLAYER_TRADE,
@@ -121,37 +124,37 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                             ));
         }
 
-        public static void SendExchangeStartOkNpcShopMessage(WorldClient client, NpcShopDialog dialog)
+        public static void SendExchangeStartOkNpcShopMessage(IPacketReceiver client, NpcShopDialog dialog)
         {
             client.Send(new ExchangeStartOkNpcShopMessage(dialog.Npc.Id, 0 /* wtf?! */, dialog.Items.Select(entry => entry.GetNetworkItem() as ObjectItemToSellInNpcShop)));
         }
 
-        public static void SendExchangeLeaveMessage(WorldClient client, bool success)
+        public static void SendExchangeLeaveMessage(IPacketReceiver client, bool success)
         {
             client.Send(new ExchangeLeaveMessage(success));
         }
 
-        public static void SendExchangeObjectAddedMessage(WorldClient client, bool remote, Item item)
+        public static void SendExchangeObjectAddedMessage(IPacketReceiver client, bool remote, Item item)
         {
             client.Send(new ExchangeObjectAddedMessage(remote, item.GetObjectItem()));
         }
 
-        public static void SendExchangeObjectModifiedMessage(WorldClient client, bool remote, Item item)
+        public static void SendExchangeObjectModifiedMessage(IPacketReceiver client, bool remote, Item item)
         {
             client.Send(new ExchangeObjectModifiedMessage(remote, item.GetObjectItem()));
         }
 
-        public static void SendExchangeObjectRemovedMessage(WorldClient client, bool remote, int guid)
+        public static void SendExchangeObjectRemovedMessage(IPacketReceiver client, bool remote, int guid)
         {
             client.Send(new ExchangeObjectRemovedMessage(remote, guid));
         }
 
-        public static void SendExchangeIsReadyMessage(WorldClient client, ITrader trader, bool ready)
+        public static void SendExchangeIsReadyMessage(IPacketReceiver client, ITrader trader, bool ready)
         {
             client.Send(new ExchangeIsReadyMessage(trader.Actor.Id, ready));
         }
 
-        public static void SendExchangeErrorMessage(WorldClient client, ExchangeErrorEnum errorEnum)
+        public static void SendExchangeErrorMessage(IPacketReceiver client, ExchangeErrorEnum errorEnum)
         {
             client.Send(new ExchangeErrorMessage((sbyte) errorEnum));
         }

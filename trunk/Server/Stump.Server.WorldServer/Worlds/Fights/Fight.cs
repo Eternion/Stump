@@ -1,13 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.Core.Pool;
+using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Characters;
@@ -16,7 +21,9 @@ using Stump.Server.WorldServer.Worlds.Actors;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Fights.Buffs;
+using Stump.Server.WorldServer.Worlds.Fights.Results;
 using Stump.Server.WorldServer.Worlds.Fights.Triggers;
+using Stump.Server.WorldServer.Worlds.Items;
 using Stump.Server.WorldServer.Worlds.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 using Stump.Server.WorldServer.Worlds.Maps.Pathfinding;
@@ -25,7 +32,7 @@ using TriggerType = Stump.Server.WorldServer.Worlds.Fights.Triggers.TriggerType;
 
 namespace Stump.Server.WorldServer.Worlds.Fights
 {
-    public class Fight : IContext, IDisposable
+    public class Fight : ICharacterContainer, IDisposable
     {
         public static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -104,6 +111,10 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         private void NotifyRequestTurnReady()
         {
+            // if there is no player more there is nothing to check
+            if (GetAllCharacters().Count() == 0)
+                CheckTurnReady();
+
             Action<Fight> handler = RequestTurnReady;
             if (handler != null)
                 handler(this);
@@ -160,11 +171,11 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         #region Properties
 
         private readonly ReversedUniqueIdProvider m_contextualIdProvider = new ReversedUniqueIdProvider(0);
-        private readonly List<FightActor> m_fighters = new List<FightActor>();
+        private readonly ConcurrentList<FightActor> m_fighters = new ConcurrentList<FightActor>();
         private readonly FightTeam[] m_teams;
         private readonly UniqueIdProvider m_triggerIdProvider = new UniqueIdProvider();
-        private Timer m_endFightTimer;
-        private Timer m_placementTimer;
+        private TimerEntry m_endFightTimer;
+        private TimerEntry m_placementTimer;
 
         public int Id
         {
@@ -271,6 +282,16 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         #endregion
 
         #region Methods
+
+        private readonly WorldClientCollection m_clients = new WorldClientCollection();
+
+        /// <summary>
+        /// Do not modify, just read
+        /// </summary>
+        public WorldClientCollection Clients
+        {
+            get { return m_clients; }
+        }
 
         public IEnumerable<Character> GetAllCharacters()
         {
@@ -403,21 +424,40 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             Map.AddFight(this);
 
             if (FightType != FightTypeEnum.FIGHT_TYPE_CHALLENGE)
-                m_placementTimer = new Timer(EndPlacementPhase, null, PlacementPhaseTime, Timeout.Infinite);
+                m_placementTimer = Map.Area.CallDelayed(PlacementPhaseTime, EndPlacementPhase);
         }
 
-        private void EndPlacementPhase(object dummy)
+        private void EndPlacementPhase()
         {
-            try
-            {
-                m_placementTimer.Dispose();
+            m_placementTimer.Dispose();
 
-                StartFight();
-            }
-            catch (Exception ex)
+            StartFight();
+        }
+
+        private void FindBladesPlacement()
+        {
+            if (RedTeam.Leader.MapPosition.Cell.Id != BlueTeam.Leader.MapPosition.Cell.Id)
             {
-                logger.Error("Unhandled Thread Exception : {0}", ex);
-                Dispose();
+                RedTeam.BladePosition = RedTeam.Leader.MapPosition.Clone();
+                BlueTeam.BladePosition = BlueTeam.Leader.MapPosition.Clone();
+            }
+            else
+            {
+                var cell = Map.GetRandomAdjacentFreeCell(RedTeam.Leader.MapPosition.Point);
+
+                // if cell not found we superpose both blades
+                if (cell.Equals(Cell.Null))
+                {
+                    RedTeam.BladePosition = RedTeam.Leader.MapPosition.Clone();
+                }
+                else // else we take an adjacent cell
+                {
+                    var pos = RedTeam.Leader.MapPosition.Clone();
+                    pos.Cell = cell;
+                    RedTeam.BladePosition = pos;
+                }
+
+                BlueTeam.BladePosition = BlueTeam.Leader.MapPosition.Clone();
             }
         }
 
@@ -426,7 +466,11 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             if (BladesVisible)
                 return;
 
-            Map.ForEach(character => ContextHandler.SendGameRolePlayShowChallengeMessage(character.Client, this));
+            if (RedTeam.BladePosition == null ||
+                BlueTeam.BladePosition == null)
+                FindBladesPlacement();
+
+            ContextHandler.SendGameRolePlayShowChallengeMessage(Map.Clients, this);
 
             RedTeam.TeamOptionsChanged += OnTeamOptionsChanged;
             BlueTeam.TeamOptionsChanged += OnTeamOptionsChanged;
@@ -439,7 +483,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             if (!BladesVisible)
                 return;
 
-            Map.ForEach(character => ContextHandler.SendGameRolePlayRemoveChallengeMessage(character.Client, this));
+            ContextHandler.SendGameRolePlayRemoveChallengeMessage(Map.Clients, this);
 
             RedTeam.TeamOptionsChanged -= OnTeamOptionsChanged;
             BlueTeam.TeamOptionsChanged -= OnTeamOptionsChanged;
@@ -449,8 +493,8 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         private void OnTeamOptionsChanged(FightTeam team, FightOptionsEnum option)
         {
-            ForEach(entry => ContextHandler.SendGameFightOptionStateUpdateMessage(entry.Client, team, option, team.GetOptionState(option)));
-            Map.ForEach(entry => ContextHandler.SendGameFightOptionStateUpdateMessage(entry.Client, team, option, team.GetOptionState(option)));
+            ContextHandler.SendGameFightOptionStateUpdateMessage(Clients, team, option, team.GetOptionState(option));
+            ContextHandler.SendGameFightOptionStateUpdateMessage(Map.Clients, team, option, team.GetOptionState(option));
         }
 
         public bool FindRandomFreeCell(FightActor fighter, out Cell cell, bool placement = true)
@@ -518,12 +562,12 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
                 if (closerCell == null)
                     closerCell = Tuple.Create(cell,
-                                              fighter.Position.Point.DistanceTo(point));
+                                              fighter.Position.Point.DistanceToCell(point));
                 else
                 {
-                    if (fighter.Position.Point.DistanceTo(point) < closerCell.Item2)
+                    if (fighter.Position.Point.DistanceToCell(point) < closerCell.Item2)
                         closerCell = Tuple.Create(cell,
-                                                  fighter.Position.Point.DistanceTo(point));
+                                                  fighter.Position.Point.DistanceToCell(point));
                 }
             }
 
@@ -541,8 +585,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             if (State != FightState.Placement)
                 return;
 
-            ForEach(
-                charac => ContextHandler.SendGameFightHumanReadyStateMessage(charac.Client, fighter));
+            ContextHandler.SendGameFightHumanReadyStateMessage(Clients, fighter);
 
             if (RedTeam.AreAllReady() && BlueTeam.AreAllReady())
                 StartFight();
@@ -557,18 +600,18 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         /// <returns>If change is possible</returns>
         public bool CanChangePosition(FightActor fighter, Cell cell)
         {
+            FightActor figtherOnCell = GetOneFighter(cell);
+
             return State == FightState.Placement &&
                    fighter.Team.PlacementCells.Contains(cell) &&
-                   GetOneFighter(cell) == null;
+                   (figtherOnCell == fighter || figtherOnCell == null);
         }
 
         private void OnChangePreplacementPosition(FightActor fighter, ObjectPosition objectPosition)
         {
             UpdateFightersPlacementDirection();
 
-            ForEach(character =>
-                    ContextHandler.SendGameEntitiesDispositionMessage(character.Client,
-                                                                      GetAllFighters()));
+            ContextHandler.SendGameEntitiesDispositionMessage(Clients, GetAllFighters());
         }
 
         private void UpdateFightersPlacementDirection()
@@ -581,7 +624,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         private void OnCellShown(FightActor fighter, Cell cell)
         {
-            ForEach(entry => ContextHandler.SendShowCellMessage(entry.Client, fighter, cell));
+            ContextHandler.SendShowCellMessage(Clients, fighter, cell);
         }
 
         public void KickPlayer(CharacterFighter fighter)
@@ -591,11 +634,15 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         public void LeaveFight(FightActor fighter)
         {
+            Contract.Requires(fighter != null);
+            Contract.Assert(m_fighters.Contains(fighter));
+
             if (FightType != FightTypeEnum.FIGHT_TYPE_CHALLENGE)
                 fighter.Die();
 
-            ForEach(entry => ContextHandler.SendGameFightLeaveMessage(entry.Client, fighter));
+            ContextHandler.SendGameFightLeaveMessage(Clients, fighter);
 
+            Contract.Assert(fighter.Team != null);
             fighter.Team.RemoveFighter(fighter);
 
             if (fighter is CharacterFighter)
@@ -603,15 +650,17 @@ namespace Stump.Server.WorldServer.Worlds.Fights
                 Character character = (fighter as CharacterFighter).Character;
 
                 // can be logged out
-                if (character.InWorld)
+                if (character.IsInWorld)
                 {
                     ContextHandler.SendGameFightEndMessage(character.Client, this);
                     character.RejoinMap();
                 }
             }
 
-            if (!CheckFightEnd() && fighter.IsFighterTurn())
+            if (fighter.IsFighterTurn())
                 RequestTurnEnd();
+
+            CheckFightEnd();
         }
 
         #endregion
@@ -631,21 +680,25 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
             TimeLine.ReorganizeTimeLine();
 
-            ForEach(character =>
-                        {
-                            ContextHandler.SendGameEntitiesDispositionMessage(character.Client, GetAllFighters());
 
-                            ContextHandler.SendGameFightStartMessage(character.Client);
-                            ContextHandler.SendGameFightTurnListMessage(character.Client, this);
+            ContextHandler.SendGameEntitiesDispositionMessage(Clients, GetAllFighters());
 
-                            ContextHandler.SendGameFightSynchronizeMessage(character.Client, this);
-                            CharacterHandler.SendCharacterStatsListMessage(character.Client);
-                        });
+            ContextHandler.SendGameFightStartMessage(Clients);
+            ContextHandler.SendGameFightTurnListMessage(Clients, this);
+
+            ContextHandler.SendGameFightSynchronizeMessage(Clients, this);
+
+            ForEach(character => CharacterHandler.SendCharacterStatsListMessage(character.Client));
 
             TimeLine.Start();
         }
 
         private void OnSetTurnReady(FightActor fighter, bool isReady)
+        {
+            CheckTurnReady();
+        }
+
+        private void CheckTurnReady()
         {
             if (!RedTeam.AreAllTurnReady() || !BlueTeam.AreAllTurnReady())
                 return;
@@ -660,14 +713,14 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         {
             StartSequence(SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH);
 
-            ForEach(entry => ActionsHandler.SendGameActionFightDeathMessage(entry.Client, fighter));
+            ActionsHandler.SendGameActionFightDeathMessage(Clients, fighter);
 
             EndSequence(SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH);
         }
 
         private void OnDamageReducted(FightActor fighter, FightActor source, int reduction)
         {
-            ForEach(entry => ActionsHandler.SendGameActionFightReduceDamagesMessage(entry.Client, source, fighter, reduction));
+            ActionsHandler.SendGameActionFightReduceDamagesMessage(Clients, source, fighter, reduction);
         }
 
         private void OnStartMoving(ContextActor actor, Path path)
@@ -680,7 +733,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             IEnumerable<short> movementsKeys = path.GetServerPathKeys();
 
             StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-            ForEach(entry => ContextHandler.SendGameMapMovementMessage(entry.Client, movementsKeys, fighter));
+            ContextHandler.SendGameMapMovementMessage(Clients, movementsKeys, fighter);
             actor.StopMove();
             EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
         }
@@ -708,19 +761,22 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         private void OnFightPointsVariation(FightActor actor, ActionsEnum action, FightActor source, FightActor target, short delta)
         {
-            ForEach(entry => ActionsHandler.
-                                 SendGameActionFightPointsVariationMessage(entry.Client, action, source, target, delta));
+            ActionsHandler.SendGameActionFightPointsVariationMessage(Clients, action, source, target, delta);
         }
 
         private void OnLifePointsChanged(FightActor actor, int delta, FightActor from)
         {
-            ForEach(entry => ActionsHandler.SendGameActionFightLifePointsVariationMessage(entry.Client, from ?? actor, actor, (short) delta));
+            // todo : not managed
+            short permanentDamages = 0;
+            var loss = (short) (-delta);
+
+            ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, from ?? actor, actor, loss, permanentDamages);
         }
 
         private void OnSpellCasting(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
-            ForEach(entry => ContextHandler.SendGameActionFightSpellCastMessage(entry.Client, ActionsEnum.ACTION_FIGHT_CAST_SPELL,
-                                                                                caster, target, critical, silentCast, spell));
+            ContextHandler.SendGameActionFightSpellCastMessage(Clients, ActionsEnum.ACTION_FIGHT_CAST_SPELL,
+                                                               caster, target, critical, silentCast, spell);
 
             if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
                 EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
@@ -743,7 +799,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         }
 
 
-        // todo
+        // todo : who is damn lagging ?
         private void OnCheckerTimeout(AcknowledgmentChecker checker, FightSequenceAction action, CharacterFighter[] laggers)
         {
             // todo : define as lagger
@@ -781,6 +837,8 @@ namespace Stump.Server.WorldServer.Worlds.Fights
                 {
                     Character character = ((CharacterFighter) fighter).Character;
 
+                    Clients.Add(character.Client);
+
                     ContextHandler.SendGameFightJoinMessage(character.Client,
                                                             fighter.IsTeamLeader() && FightType == FightTypeEnum.FIGHT_TYPE_CHALLENGE,
                                                             true,
@@ -788,6 +846,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
                                                             false,
                                                             GetPlacementPhaseTimeLeft(),
                                                             team.Fight.FightType);
+
                     ContextHandler.SendGameFightPlacementPossiblePositionsMessage(character.Client, this, fighter.Team.Id);
 
                     foreach (FightActor fightMember in GetAllFighters())
@@ -800,7 +859,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
                 }
             }
 
-            ForEach(entry => ContextHandler.SendGameFightShowFighterMessage(entry.Client, fighter));
+            ContextHandler.SendGameFightShowFighterMessage(Clients, fighter);
 
             if (BladesVisible)
                 Map.ForEach(entry => ContextHandler.SendGameFightUpdateTeamMessage(entry.Client, this, team));
@@ -809,18 +868,22 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         private void OnFighterRemoved(FightTeam team, FightActor fighter)
         {
             m_fighters.Remove(fighter);
+
+            if (fighter is CharacterFighter)
+                Clients.Remove(((CharacterFighter) fighter).Character.Client);
+
             UnBindFighterEvents(fighter);
 
             if (State == FightState.Placement)
             {
-                ForEach(entry => ContextHandler.SendGameFightRemoveTeamMemberMessage(entry.Client, fighter));
+                ContextHandler.SendGameFightRemoveTeamMemberMessage(Clients, fighter);
 
                 if (BladesVisible)
-                    Map.ForEach(entry => ContextHandler.SendGameFightRemoveTeamMemberMessage(entry.Client, fighter));
+                    ContextHandler.SendGameFightRemoveTeamMemberMessage(Map.Clients, fighter);
             }
             else if (State == FightState.Fighting)
             {
-                ForEach(entry => ContextHandler.SendGameContextRemoveElementMessage(entry.Client, fighter));
+                ContextHandler.SendGameContextRemoveElementMessage(Clients, fighter);
             }
         }
 
@@ -868,12 +931,8 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         {
             NotifyRequestTurnReady();
 
-            ForEach(
-                entry =>
-                    {
-                        ContextHandler.SendGameFightTurnEndMessage(entry.Client, currentFighter);
-                        ContextHandler.SendGameFightTurnReadyRequestMessage(entry.Client, currentFighter);
-                    });
+            ContextHandler.SendGameFightTurnEndMessage(Clients, currentFighter);
+            ContextHandler.SendGameFightTurnReadyRequestMessage(Clients, currentFighter);
         }
 
         private void OnTurnEnded(TimeLine sender, FightActor currentFighter)
@@ -918,7 +977,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         public bool StartSequence(SequenceTypeEnum sequenceType)
         {
-            LastSequenceAction = FindSequenceEndAction(Sequence);
+            LastSequenceAction = FindSequenceEndAction(sequenceType);
             SequenceLevel++;
 
             if (IsSequencing)
@@ -927,7 +986,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             IsSequencing = true;
             Sequence = sequenceType;
 
-            ForEach(entry => ActionsHandler.SendSequenceStartMessage(entry.Client, TimeLine.Current, sequenceType));
+            ActionsHandler.SendSequenceStartMessage(Clients, TimeLine.Current, sequenceType);
 
             return true;
         }
@@ -942,7 +1001,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             IsSequencing = false;
             WaitAcknowledgment = true;
 
-            ForEach(entry => ActionsHandler.SendSequenceEndMessage(entry.Client, TimeLine.Current, LastSequenceAction, sequenceType));
+            ActionsHandler.SendSequenceEndMessage(Clients, TimeLine.Current, LastSequenceAction, sequenceType);
 
             return true;
         }
@@ -991,7 +1050,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             trigger.Triggered -= OnMarkTriggered;
             m_triggers.Remove(trigger);
 
-            ForEach(entry => ContextHandler.SendGameActionFightUnmarkCellsMessage(entry.Client, trigger));
+            ContextHandler.SendGameActionFightUnmarkCellsMessage(Clients, trigger);
         }
 
         public void TriggerMarks(Cell cell, FightActor trigger, TriggerType triggerType)
@@ -1056,7 +1115,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         private void OnMarkTriggered(MarkTrigger markTrigger, FightActor trigger, Spell triggerSpell)
         {
-            ForEach(entry => ContextHandler.SendGameActionFightTriggerGlyphTrapMessage(entry.Client, markTrigger, trigger, triggerSpell));
+            ContextHandler.SendGameActionFightTriggerGlyphTrapMessage(Clients, markTrigger, trigger, triggerSpell);
         }
 
         #endregion
@@ -1065,20 +1124,25 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
         #region End Fight phase
 
-        public static readonly double[] GroupCoefficients = new[]
-                                                                {
-                                                                    1,
-                                                                    1.1,
-                                                                    1.5,
-                                                                    2.3,
-                                                                    3.1,
-                                                                    3.6,
-                                                                    4.2,
-                                                                    4.7
-                                                                };
+        public static readonly double[] GroupCoefficients =
+            new[]
+                {
+                    1,
+                    1.1,
+                    1.5,
+                    2.3,
+                    3.1,
+                    3.6,
+                    4.2,
+                    4.7
+                };
+
+        private bool m_disposed;
 
         public void Dispose()
         {
+            m_disposed = true;
+
             UnBindFightersEvents();
 
             if (TimeLine != null)
@@ -1098,7 +1162,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             IEnumerable<MonsterFighter> monsters = fighter.OpposedTeam.GetAllFighters<MonsterFighter>(entry => entry.IsDead());
             IEnumerable<CharacterFighter> players = fighter.Team.GetAllFighters<CharacterFighter>();
 
-            if (monsters.Count() <= 0 || players.Count() <= 0)
+            if (!monsters.Any() || !players.Any())
                 return 0;
 
             int sumPlayersLevel = players.Sum(entry => entry.Level);
@@ -1107,13 +1171,13 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             byte maxMonsterLevel = monsters.Max(entry => entry.Level);
             int sumMonsterXp = monsters.Sum(entry => entry.Monster.Grade.GradeXp);
 
-            int levelCoeff = 1;
+            double levelCoeff = 1;
             if (sumPlayersLevel - 5 > sumMonstersLevel)
-                levelCoeff = sumMonstersLevel/sumPlayersLevel;
+                levelCoeff = (double) sumMonstersLevel/sumPlayersLevel;
             else if (sumPlayersLevel + 10 < sumMonstersLevel)
-                levelCoeff = (sumPlayersLevel + 10)/sumMonstersLevel;
+                levelCoeff = (sumPlayersLevel + 10)/(double) sumMonstersLevel;
 
-            double xpRatio = Math.Min(fighter.Level, Math.Truncate(2.5*maxMonsterLevel))/sumPlayersLevel*100;
+            double xpRatio = Math.Min(fighter.Level, Math.Truncate(2.5d*maxMonsterLevel))/sumPlayersLevel*100d;
 
             int regularGroupRatio = players.Where(entry => entry.Level >= maxPlayerLevel/3).Sum(entry => 1);
 
@@ -1121,8 +1185,8 @@ namespace Stump.Server.WorldServer.Worlds.Fights
                 regularGroupRatio = 1;
 
             double baseXp = Math.Truncate(xpRatio/100*Math.Truncate(sumMonsterXp*GroupCoefficients[regularGroupRatio - 1]*levelCoeff));
-            int multiplicator = AgeBonus <= 0 ? 1 : 1 + AgeBonus/100;
-            var xp = (int) Math.Truncate(Math.Truncate(baseXp*(100 + fighter.Stats[CaracteristicsEnum.Wisdom].Total)/100)*multiplicator*Rates.XpRate);
+            double multiplicator = AgeBonus <= 0 ? 1 : 1 + AgeBonus/100d;
+            var xp = (int) Math.Truncate(Math.Truncate(baseXp*(100 + fighter.Stats[CaracteristicsEnum.Wisdom].Total)/100d)*multiplicator*Rates.XpRate);
 
             return xp;
         }
@@ -1140,30 +1204,22 @@ namespace Stump.Server.WorldServer.Worlds.Fights
                 {
                     int looterPP = looter.Stats[CaracteristicsEnum.Prospecting].Total;
 
-                    looter.Loot.Kamas = (int) (kamas*(looterPP/teamPP));
+                    looter.Loot.Kamas = (int) (kamas*((double) looterPP/teamPP)*Rates.KamasRate);
 
                     foreach (FightActor dropper in droppers)
                     {
-                        foreach(var item in dropper.RollLoot(looter))
+                        foreach (DroppedItem item in dropper.RollLoot(looter))
                             looter.Loot.AddItem(item);
                     }
                 }
             }
         }
 
-        private void ForceEndFight(object state)
+        private void ForceEndFight()
         {
-            try
-            {
-                m_endFightTimer.Dispose();
+            m_endFightTimer.Dispose();
 
-                EndFight();
-            }
-            catch (Exception ex)
-            {
-                logger.Error("Unhandled Thread Exception : {0}", ex);
-                Dispose();
-            }
+            EndFight();
         }
 
         public void RequestEndFight()
@@ -1172,15 +1228,22 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
             TimeLine.Dispose();
 
-            NotifyRequestTurnReady();
-            ForEach(
-                entry => ContextHandler.SendGameFightTurnReadyRequestMessage(entry.Client, TimeLine.Current));
+            m_endFightTimer = Map.Area.CallDelayed(EndFightTimeOut, ForceEndFight);
 
-            m_endFightTimer = new Timer(ForceEndFight, null, EndFightTimeOut, Timeout.Infinite);
+            NotifyRequestTurnReady();
+
+            if (TimeLine.Current != null)
+                ContextHandler.SendGameFightTurnReadyRequestMessage(Clients, TimeLine.Current);
+            else
+                logger.Debug("TimeLine.Current = null, Index = " + TimeLine.Index + ", Count = " + TimeLine.Count);
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void CancelFight()
         {
+            if (m_disposed)
+                return;
+
             if (State != FightState.Placement)
                 return;
 
@@ -1196,8 +1259,12 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             Dispose();
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void EndFight()
         {
+            if (m_disposed)
+                return;
+
             TimeLine.Dispose();
 
             if (m_endFightTimer != null)
@@ -1207,17 +1274,18 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
             ShareLoots();
 
-            foreach (var fighter in GetAllFighters<CharacterFighter>())
+            foreach (CharacterFighter fighter in GetAllFighters<CharacterFighter>())
                 fighter.SetEarnedExperience(CalculateWinExp(fighter));
 
-            var results = GetAllFighters().Select(entry => entry.GetFightResult());
+            IEnumerable<IFightResult> results = GetAllFighters().Select(entry => entry.GetFightResult());
 
-            foreach (var fightResult in results)
-                fightResult.Apply();   
+            foreach (IFightResult fightResult in results)
+                fightResult.Apply();
+
+            ContextHandler.SendGameFightEndMessage(Clients, this, results.Select(entry => entry.GetFightResultListEntry()));
 
             ForEach(character =>
                         {
-                            ContextHandler.SendGameFightEndMessage(character.Client, this, results.Select(entry => entry.GetFightResultListEntry()));
                             character.RejoinMap();
                         });
 

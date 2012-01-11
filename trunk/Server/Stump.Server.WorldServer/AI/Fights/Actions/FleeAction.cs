@@ -20,6 +20,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             if (fleeCell.Equals(default(Cell)))
                 return RunStatus.Failure;
 
+            if (fleeCell.Id == Fighter.Cell.Id)
+                return RunStatus.Success;
+
             var moveaction = new MoveAction(Fighter, fleeCell);
             return moveaction.YieldExecute(context);
         }

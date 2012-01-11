@@ -11,7 +11,7 @@ namespace Stump.Core.IO
         public static byte[] ToBinary(this object obj)
         {
             Contract.Requires(obj != null);
-            Contract.Requires(Contract.Result<byte[]>() != null);
+            Contract.Ensures(Contract.Result<byte[]>() != null);
 
             var formatter = new BinaryFormatter
                 (null, new StreamingContext(StreamingContextStates.All));
@@ -26,7 +26,7 @@ namespace Stump.Core.IO
 
         public static T ToObject<T>(this byte[] bytes)
         {
-            Contract.Ensures(bytes != null);
+            Contract.Requires(bytes != null);
             Contract.Ensures(Contract.Result<T>() != null);
 
             var formatter = new BinaryFormatter
@@ -41,8 +41,7 @@ namespace Stump.Core.IO
 
         public static T ToObject<T>(this byte[] bytes, SerializationBinder binder)
         {
-            Contract.Ensures(bytes != null);
-            Contract.Ensures(Contract.Result<T>() != null);
+            Contract.Requires(bytes != null);
 
             var formatter = new BinaryFormatter
                 (null, new StreamingContext(StreamingContextStates.All));

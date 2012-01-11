@@ -1,4 +1,5 @@
 using Castle.ActiveRecord;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
 
 namespace Stump.Server.WorldServer.Database.Monsters
 {
@@ -12,11 +13,25 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
-        [BelongsTo(NotNull = true)]
-        public MonsterTemplate MonsterOwner
+        [Property(NotNull = true)]
+        public int MonsterOwnerId
         {
             get;
             set;
+        }
+
+        private MonsterTemplate m_template;
+        public MonsterTemplate MonsterOwner
+        {
+            get
+            {
+                return m_template ?? ( m_template = MonsterManager.Instance.GetTemplate(MonsterOwnerId) );
+            }
+            set
+            {
+                m_template = value;
+                MonsterOwnerId = value.Id;
+            }
         }
 
         /// <summary>

@@ -4,30 +4,29 @@ using Stump.Core.Reflection;
 
 namespace Stump.Server.WorldServer.Worlds.Exchanges
 {
-    public class TradeManager : Singleton<TradeManager>
+    public class TradeManager : EntityManager<TradeManager, PlayerTrade>
     {
         private readonly UniqueIdProvider m_idProvider = new UniqueIdProvider();
-        private readonly Dictionary<int, PlayerTrade> m_trades = new Dictionary<int, PlayerTrade>();
 
         public PlayerTrade Create()
         {
-            var group = new PlayerTrade(m_idProvider.Pop());
+            var trade = new PlayerTrade(m_idProvider.Pop());
 
-            m_trades.Add(group.Id, group);
+            AddEntity(trade.Id, trade);
 
-            return group;
+            return trade;
         }
 
-        public void Remove(PlayerTrade party)
+        public void Remove(PlayerTrade trade)
         {
-            m_trades.Remove(party.Id);
+            RemoveEntity(trade.Id);
 
-            m_idProvider.Push(party.Id);
+            m_idProvider.Push(trade.Id);
         }
 
         public PlayerTrade GetTrade(int id)
         {
-            return m_trades.ContainsKey(id) ? m_trades[id] : null;
+            return GetEntityOrDefault(id);
         }
     }
 }

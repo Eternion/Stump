@@ -1,12 +1,7 @@
 using System;
-using System.Linq;
 using NLog;
 using Stump.Server.WorldServer.AI.Fights.Brain;
-using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Worlds.Actors.Stats;
 using Stump.Server.WorldServer.Worlds.Fights;
-using Stump.Server.WorldServer.Worlds.Maps.Cells;
-using Stump.Server.WorldServer.Worlds.Maps.Pathfinding;
 using Stump.Server.WorldServer.Worlds.Spells;
 
 namespace Stump.Server.WorldServer.Worlds.Actors.Fight
@@ -22,8 +17,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             Brain = new Brain(this);
             Fight.TimeLine.TurnStarted += OnTurnStarted;
             Fight.RequestTurnReady += OnRequestTurnReady;
-
-            IsReady = true;
         }
 
         public Brain Brain
@@ -36,6 +29,18 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         {
             get;
             private set;
+        }
+
+        public override bool IsReady
+        {
+            get { return true; }
+            protected set { }
+        }
+
+        public override bool IsTurnReady
+        {
+            get { return true; }
+            internal set { }
         }
 
         private void OnRequestTurnReady(Fights.Fight obj)
@@ -59,7 +64,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             }
             catch (Exception ex)
             {
-                logger.Error("AI engine failed : {0}", ex);
+                logger.Error("Monster {0}, AI engine failed : {1}", this, ex);
             }
             finally
             {

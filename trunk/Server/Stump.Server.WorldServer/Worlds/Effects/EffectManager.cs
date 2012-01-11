@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Castle.ActiveRecord;
 using NLog;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses;
@@ -15,6 +16,8 @@ using Stump.Server.WorldServer.Worlds.Effects.Handlers;
 using Stump.Server.WorldServer.Worlds.Effects.Handlers.Items;
 using Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Worlds.Effects.Instances;
+using Item = Stump.Server.WorldServer.Worlds.Items.Item;
+using Spell = Stump.Server.WorldServer.Worlds.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Worlds.Effects
 {
@@ -22,8 +25,8 @@ namespace Stump.Server.WorldServer.Worlds.Effects
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private delegate ItemEffectHandler ItemEffectConstructor(Character target, Items.Item item, EffectBase effect);
-        private delegate SpellEffectHandler SpellEffectConstructor(EffectDice effect, FightActor caster, Spells.Spell spell, Cell targetedCell, bool critical);
+        private delegate ItemEffectHandler ItemEffectConstructor(Character target, Item item, EffectBase effect);
+        private delegate SpellEffectHandler SpellEffectConstructor(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical);
 
         private Dictionary<short, EffectTemplate> m_effects = new Dictionary<short, EffectTemplate>();
         private readonly Dictionary<EffectsEnum, ItemEffectConstructor> m_itemsEffectHandler = new Dictionary<EffectsEnum, ItemEffectConstructor>();
@@ -32,7 +35,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects
         [Initialization(InitializationPass.Third)]
         public void Initialize()
         {
-            m_effects = EffectTemplate.FindAll().ToDictionary(entry => (short) entry.Id);
+            m_effects = ActiveRecordBase<EffectTemplate>.FindAll().ToDictionary(entry => (short) entry.Id);
 
             InitializeHandlers();
         }
@@ -56,12 +59,12 @@ namespace Stump.Server.WorldServer.Worlds.Effects
                 {
                     if (type.IsSubclassOf(typeof(ItemEffectHandler)))
                     {
-                        var ctor = type.GetConstructor(new [] { typeof(Character), typeof(Items.Item), typeof(EffectBase)});
+                        var ctor = type.GetConstructor(new [] { typeof(Character), typeof(Item), typeof(EffectBase)});
                         m_itemsEffectHandler.Add(effect, ctor.CreateDelegate<ItemEffectConstructor>());
                     }
                     else if (type.IsSubclassOf(typeof(SpellEffectHandler)))
                     {
-                        var ctor = type.GetConstructor(new[] { typeof(EffectDice), typeof(FightActor), typeof(Spells.Spell), typeof(Cell), typeof(bool) });
+                        var ctor = type.GetConstructor(new[] { typeof(EffectDice), typeof(FightActor), typeof(Spell), typeof(Cell), typeof(bool) });
                         m_spellsEffectHandler.Add(effect, ctor.CreateDelegate<SpellEffectConstructor>());
                     }
                 }
@@ -107,7 +110,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects
             return !m_effects.ContainsKey(id) ? null : m_effects[id];
         }
 
-        public ItemEffectHandler GetItemEffectHandler(Character target, Items.Item item, EffectBase effect)
+        public ItemEffectHandler GetItemEffectHandler(Character target, Item item, EffectBase effect)
         {
             ItemEffectConstructor handler;
             if (m_itemsEffectHandler.TryGetValue(effect.EffectId, out handler))
@@ -118,7 +121,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects
             return new DefaultItemEffect(effect, target, item);
         }
 
-        public SpellEffectHandler GetSpellEffectHandler(EffectDice effect, FightActor caster, Spells.Spell spell, Cell targetedCell, bool critical)
+        public SpellEffectHandler GetSpellEffectHandler(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
         {
             SpellEffectConstructor handler;
             if (m_spellsEffectHandler.TryGetValue(effect.EffectId, out handler))
@@ -174,6 +177,104 @@ namespace Stump.Server.WorldServer.Worlds.Effects
                                zoneSize = effectDice.zoneSize
                            };
             }
+
+            return effect;
+        }
+
+        public byte[] SerializeEffect(EffectInstance effectInstance)
+        {
+            return ConvertExportedEffect(effectInstance).Serialize();
+        }
+
+        public byte[] SerializeEffect(EffectBase effect)
+        {
+            return effect.Serialize();
+        }
+
+        public byte[] SerializeEffects(IEnumerable<EffectBase> effects)
+        {
+            var buffer = new List<byte>();
+
+            foreach (var effect in effects)
+            {
+                buffer.AddRange(effect.Serialize());
+            }
+
+            return buffer.ToArray();
+        }
+
+        public byte[] SerializeEffects(IEnumerable<EffectInstance> effects)
+        {
+            var buffer = new List<byte>();
+
+            foreach (var effect in effects)
+            {
+                buffer.AddRange(SerializeEffect(effect));
+            }
+
+            return buffer.ToArray();
+        }
+
+
+        public List<EffectBase> DeserializeEffects(byte[] buffer, int index = 0)
+        {
+            var result = new List<EffectBase>();
+
+            int i = 0;
+            while (i + 1 < buffer.Length)
+            {
+                result.Add(DeserializeEffect(buffer, ref i));
+            }
+
+            return result;
+        }
+
+        public EffectBase DeserializeEffect(byte[] buffer, ref int index)
+        {
+            if (buffer.Length < index)
+                throw new Exception("buffer too small to contain an Effect");
+
+            var identifier = buffer[0 + index];
+            EffectBase effect;
+
+            switch (identifier)
+            {
+                case 1:
+                    effect = new EffectBase();
+                    break;
+                case 2:
+                    effect = new EffectCreature();
+                    break;
+                case 3:
+                    effect = new EffectDate();
+                    break;
+                case 4:
+                    effect = new EffectDice();
+                    break;
+                case 5:
+                    effect = new EffectDuration();
+                    break;
+                case 6:
+                    effect = new EffectInteger();
+                    break;
+                case 7:
+                    effect = new EffectLadder();
+                    break;
+                case 8:
+                    effect = new EffectMinMax();
+                    break;
+                case 9:
+                    effect = new EffectMount();
+                    break;
+                case 10:
+                    effect = new EffectString();
+                    break;
+                default:
+                    throw new Exception(string.Format("Incorrect identifier : {0}", identifier));
+            }
+
+            index++;
+            effect.DeSerialize(buffer, ref index);
 
             return effect;
         }

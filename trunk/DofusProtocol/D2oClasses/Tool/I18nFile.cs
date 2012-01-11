@@ -93,9 +93,14 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
             return m_textIndexes;
         }
 
-        public void Update()
+        public void Save()
         {
-            using (var writer = new BigEndianWriter(new StreamWriter(m_uri).BaseStream))
+            Save(m_uri);
+        }
+
+        public void Save(string uri)
+        {
+            using (var writer = new BigEndianWriter(new StreamWriter(uri).BaseStream))
             {
                 var indexTable = new BigEndianWriter();
                 writer.Seek(4, SeekOrigin.Begin);

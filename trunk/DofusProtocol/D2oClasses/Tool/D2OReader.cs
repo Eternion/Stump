@@ -532,17 +532,4 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
                 method.CreateDelegate(Expression.GetFuncType(new[] {typeof (object[]), typeof (object)}.ToArray()));
         }
     }
-
-    internal class UncheckedFormatProvider : IFormatProvider
-    {
-
-        #region IFormatProvider Members
-
-        public object GetFormat(Type formatType)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-    }
 }

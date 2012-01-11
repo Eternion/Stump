@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Worlds.Breeds;
@@ -47,7 +48,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             CharacterHandler.SendCharacterStatsListMessage(client);
         }
 
-        public static void SendStatsUpgradeResultMessage(WorldClient client, short usedpts)
+        public static void SendStatsUpgradeResultMessage(IPacketReceiver client, short usedpts)
         {
             client.Send(new StatsUpgradeResultMessage(usedpts));
         }

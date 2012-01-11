@@ -20,5 +20,6 @@ namespace Stump.DofusProtocol.D2oClasses
 		public Boolean isRepair;
 		public int cursor;
 		public Boolean availableInHouse;
+		public uint levelMin;
 	}
 }

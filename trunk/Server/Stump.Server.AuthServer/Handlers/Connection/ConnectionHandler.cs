@@ -35,7 +35,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             ConnectionLog lastConnection = client.Account.LastConnection;
             if (message.autoconnect && lastConnection != null && WorldServerManager.Instance.CanAccessToWorld(client, lastConnection.World.Id))
             {
-                SendSelectServerData(client, lastConnection.World);
+                SendSelectServerData(client, WorldServerManager.Instance.GetServerById(lastConnection.World.Id));
             }
             else
             {
@@ -43,22 +43,22 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             }
         }
 
-        [AuthHandler(IdentificationWithServerIdMessage.Id)]
+        /*[AuthHandler(IdentificationWithServerIdMessage.Id)]
         public static void HandleIdentificationMessageWithServerIdMessage(AuthClient client, IdentificationWithServerIdMessage message)
         {
-            /* Handle common identification */
+            // Handle common identification
             HandleIndentification(client, message);
 
-            /* If world exist and connected */
+            // If world exist and connected
             if (WorldServerManager.Instance.CanAccessToWorld(client, message.serverId))
             {
-                SendSelectServerData(client, WorldServerManager.Instance.GetWorldServer(message.serverId));
+                SendSelectServerData(client, WorldServerManager.Instance.GetServerById(message.serverId));
             }
             else
             {
                 SendServersListMessage(client);
             }
-        }
+        }*/
 
         private static bool HandleIndentification(AuthClient client, IdentificationMessage message)
         {
@@ -72,13 +72,12 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
             /* Bind Login and Pass to Client */
             client.Login = message.login.EscapeString();
-            client.Password = message.password.EscapeString();
 
             /* Get corresponding account */
             Account account = AccountManager.Instance.FindAccount(client.Login);
 
             /* Invalid password */
-            if (account == null || !AccountManager.Instance.CompareAccountPassword(account, client.Password, client.Key))
+            if (account == null || !AccountManager.Instance.CompareAccountPassword(account, message.credentials))
             {
                 SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.WRONG_CREDENTIALS);
                 client.DisconnectLater(1000);
@@ -121,6 +120,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             client.Send(new IdentificationSuccessMessage(
                             client.Account.Role >= RoleEnum.Moderator,
                             wasAlreadyConnected,
+                            client.Account.Login,
                             client.Account.Nickname,
                             (int) client.Account.Id,
                             0, // community ID ? ( se trouve dans le d2p, utilisé pour trouver les serveurs de la communauté )
@@ -151,7 +151,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         [AuthHandler(ServerSelectionMessage.Id)]
         public static void HandleServerSelectionMessage(AuthClient client, ServerSelectionMessage message)
         {
-            WorldServer world = WorldServerManager.Instance.GetWorldServer(message.serverId);
+            WorldServer world = WorldServerManager.Instance.GetServerById(message.serverId);
 
             /* World not exist */
             if (world == null)
@@ -210,7 +210,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             if (client.Account.Connections.Count > MaxConnectionLogs)
                 client.Account.RemoveOldestConnection();
 
-            AuthServer.Instance.IOTaskPool.EnqueueTask(delegate()
+            AuthServer.Instance.IOTaskPool.AddMessage(delegate()
                                                            {
                                                                using (new SessionScope())
                                                                {
@@ -225,7 +225,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
             client.Send(new SelectedServerDataMessage(
                             (short) world.Id,
-                            world.Ip,
+                            world.Address,
                             world.Port,
                             (client.Account.Role >= world.RequiredRole),
                             client.Key));

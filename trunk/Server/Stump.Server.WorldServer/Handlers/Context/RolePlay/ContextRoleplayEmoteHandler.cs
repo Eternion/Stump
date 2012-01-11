@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Worlds.Actors;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
@@ -17,7 +18,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             //client.ActiveCharacter.StartEmote((EmotesEnum) message.emoteId, 0);
         }
 
-        public static void SendEmotePlayMessage(WorldClient client, Character character, EmotesEnum emote, byte duration)
+        public static void SendEmotePlayMessage(IPacketReceiver client, Character character, EmotesEnum emote, byte duration)
         {
             client.Send(new EmotePlayMessage(
                             (sbyte) emote,
@@ -27,7 +28,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                             ));
         }
 
-        public static void SendEmotePlayMessage(WorldClient client, ContextActor actor, EmotesEnum emote, byte duration)
+        public static void SendEmotePlayMessage(IPacketReceiver client, ContextActor actor, EmotesEnum emote, byte duration)
         {
             client.Send(new EmotePlayMessage(
                             (sbyte) emote,
@@ -37,7 +38,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                             ));
         }
 
-        public static void SendEmoteListMessage(WorldClient client, IEnumerable<sbyte> emoteList)
+        public static void SendEmoteListMessage(IPacketReceiver client, IEnumerable<sbyte> emoteList)
         {
             client.Send(new EmoteListMessage(emoteList));
         }

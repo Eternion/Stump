@@ -57,7 +57,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         /// <returns></returns>
         public long GetCharacterNextLevelExperience(byte level)
         {
-            if (m_records.ContainsKey(level))
+            if (m_records.ContainsKey((byte) (level + 1)))
             {
                 var exp = m_records[(byte) (level + 1)].CharacterExp;
 

@@ -67,8 +67,14 @@ namespace Stump.Server.BaseServer.Network
         /// </summary>
         public bool Build(BigEndianReader reader)
         {
+            if (reader.BytesAvailable <= 0)
+                return false;
+
             if (IsValid)
                 return true;
+
+            if (!Header.HasValue && reader.BytesAvailable < 2)
+                return false;
 
             if (reader.BytesAvailable >= 2 && !Header.HasValue)
             {
@@ -100,11 +106,13 @@ namespace Stump.Server.BaseServer.Network
                 if (reader.BytesAvailable >= Length)
                 {
                     Data = reader.ReadBytes(Length.Value);
+                    return true;
                 }
                 // not enough bytes, so we read what we can
                 else if (Length > reader.BytesAvailable)
                 {
                     Data = reader.ReadBytes((int) reader.BytesAvailable);
+                    return false;
                 }
             }
             //second case : the message was split and it missed some bytes
@@ -113,31 +121,32 @@ namespace Stump.Server.BaseServer.Network
                 // still miss some bytes ...
                 if (Data.Length + reader.BytesAvailable < Length)
                 {
-                    Debug.WriteLine("Data.Length + reader.BytesAvailable < Length");
-                    Debug.WriteLine("BytesAvailable = " + reader.BytesAvailable + " ; Data.Length = " + Data.Length);
+                    //Debug.WriteLine("Data.Length + reader.BytesAvailable < Length");
+                    //Debug.WriteLine("BytesAvailable = " + reader.BytesAvailable + " ; Data.Length = " + Data.Length);
 
+                    int lastLength = m_data.Length;
                     Array.Resize(ref m_data, (int)( Data.Length + reader.BytesAvailable ));
                     var array = reader.ReadBytes((int)reader.BytesAvailable);
-                    Debug.WriteLine("array content : " + String.Join(" ", array.Select(entry => entry.ToString("X"))));
+                    //Debug.WriteLine("array content : " + String.Join(" ", array.Select(entry => entry.ToString("X"))));
 
-                    Array.Copy(array, 0, Data, Data.Length, reader.BytesAvailable);
+                    Array.Copy(array, 0, Data, lastLength, array.Length);
                 }
                 // there is enough bytes in the buffer to complete the message :)
                 if (Data.Length + reader.BytesAvailable >= Length)
                 {
-                    Debug.WriteLine("Data.Length + reader.BytesAvailable >= Length");
+                    //Debug.WriteLine("Data.Length + reader.BytesAvailable >= Length");
                     int bytesToRead = Length.Value - Data.Length;
 
-                    Debug.WriteLine("bytesToRead = " + bytesToRead + " ; Data.Length = " + Data.Length);
+                    //Debug.WriteLine("bytesToRead = " + bytesToRead + " ; Data.Length = " + Data.Length);
 
                     Array.Resize(ref m_data, Data.Length + bytesToRead);
                     var array = reader.ReadBytes(bytesToRead);
 
-                    Debug.WriteLine("array content : " + String.Join(" ", array.Select(entry => entry.ToString("X"))));
+                    //Debug.WriteLine("array content : " + String.Join(" ", array.Select(entry => entry.ToString("X"))));
 
                     Array.Copy(array, 0, Data, Data.Length - bytesToRead, bytesToRead);
 
-                    Debug.WriteLine("Data content : " + String.Join(" ", array.Select(entry => entry.ToString("X"))));
+                    //Debug.WriteLine("Data content : " + String.Join(" ", array.Select(entry => entry.ToString("X"))));
                 }
             }
 

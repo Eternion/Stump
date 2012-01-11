@@ -81,6 +81,8 @@ namespace Stump.Server.BaseServer.Network
         private SocketAsyncEventArgs m_acceptArgs = new SocketAsyncEventArgs(); // async arg used on client connection
         private SemaphoreSlim m_semaphore; // limit the number of threads accessing to a ressource
 
+        private AutoResetEvent m_resumeEvent = new AutoResetEvent(false);
+
         /// <summary>
         /// List of connected Clients
         /// </summary>
@@ -127,14 +129,6 @@ namespace Stump.Server.BaseServer.Network
             private set;
         }
 
-        /// <summary>
-        /// Represents a queue containing received messages to treat
-        /// </summary>
-        public MessageQueue MessageQueue
-        {
-            get;
-            private set;
-        }
 
         public void Initialize(CreateClientHandler createClientHandler)
         {
@@ -142,7 +136,6 @@ namespace Stump.Server.BaseServer.Network
                 throw new Exception("ClientManager already initialized");
 
             m_createClientDelegate = createClientHandler;
-            MessageQueue = new MessageQueue(Settings.EnableBenchmarking);
 
             // init semaphore
             m_semaphore = new SemaphoreSlim(MaxConcurrentConnections, MaxConcurrentConnections);
@@ -206,6 +199,7 @@ namespace Stump.Server.BaseServer.Network
         public void Pause()
         {
             Paused = true;
+
         }
 
         /// <summary>
@@ -214,6 +208,8 @@ namespace Stump.Server.BaseServer.Network
         public void Resume()
         {
             Paused = false;
+
+            m_resumeEvent.Set();
         }
 
         /// <summary>
@@ -233,6 +229,8 @@ namespace Stump.Server.BaseServer.Network
         private void StartAccept()
         {
             m_acceptArgs.AcceptSocket = null;
+
+            // thread block if the max connections limit is reached
             m_semaphore.Wait();
 
             // raise or not the event depending on AcceptAsync return
@@ -250,7 +248,10 @@ namespace Stump.Server.BaseServer.Network
         {
             // do not accept connections while pausing
             if (Paused)
-                return;
+            {
+                // if paused wait until Resume() is called
+                m_resumeEvent.WaitOne();
+            }
 
             if (MaxIPConnexions.HasValue &&
                 CountClientWithSameIp(( (IPEndPoint) e.AcceptSocket.RemoteEndPoint ).Address) > MaxIPConnexions.Value)
@@ -359,13 +360,13 @@ namespace Stump.Server.BaseServer.Network
                     m_clients.Remove(client);
 
                     NotifyClientDisconnected(client);
+
+                    m_semaphore.Release();
+
+                    // free the SocketAsyncEventArg so it can be reused by another client
+                    PushReadSocketAsyncArgs(e);
                 }
             }
-
-            m_semaphore.Release();
-
-            // free the SocketAsyncEventArg so it can be reused by another client
-            PushReadSocketAsyncArgs(e);
         }
 
         private void OnSendCompleted(object sender, SocketAsyncEventArgs e)
@@ -400,14 +401,19 @@ namespace Stump.Server.BaseServer.Network
             m_readAsyncEventArgsPool.Push(args);
         }
 
-        public IEnumerable<BaseClient> FindAll(Predicate<BaseClient> predicate)
+        public BaseClient[] FindAll(Predicate<BaseClient> predicate)
         {
-            return m_clients.Where(entry => predicate(entry));
+            return m_clients.Where(entry => predicate(entry)).ToArray();
         }
 
-        public IEnumerable<T> FindAll<T>(Predicate<T> predicate)
+        public T[] FindAll<T>(Predicate<T> predicate)
         {
-            return m_clients.OfType<T>().Where(entry => predicate(entry));
+            return m_clients.OfType<T>().Where(entry => predicate(entry)).ToArray();
+        }
+
+        public T[] FindAll<T>()
+        {
+            return m_clients.OfType<T>().ToArray();
         }
 
         public int CountClientWithSameIp(IPAddress ipAddress)

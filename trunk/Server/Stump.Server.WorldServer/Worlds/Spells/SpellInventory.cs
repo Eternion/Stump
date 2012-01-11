@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Characters;
@@ -10,13 +11,12 @@ namespace Stump.Server.WorldServer.Worlds.Spells
     public class SpellInventory
     {
         private readonly Dictionary<int, CharacterSpell> m_spells = new Dictionary<int, CharacterSpell>();
+        private readonly Queue<CharacterSpellRecord> m_spellsToDelete = new Queue<CharacterSpellRecord>();
         private readonly object m_locker = new object();
 
         public SpellInventory(Character owner)
         {
             Owner = owner;
-
-            LoadSpells();
         }
 
         public Character Owner
@@ -25,9 +25,11 @@ namespace Stump.Server.WorldServer.Worlds.Spells
             private set;
         }
 
-        private void LoadSpells()
+        internal void LoadSpells()
         {
-            foreach (var record in Owner.Record.Spells)
+            var records = CharacterSpellRecord.FindAllByOwner(Owner.Id);
+
+            foreach (var record in records)
             {
                 var spell = new CharacterSpell(record);
 
@@ -67,12 +69,15 @@ namespace Stump.Server.WorldServer.Worlds.Spells
                 return null;
 
             var record = SpellManager.Instance.CreateSpellRecord(Owner.Record, template);
-            Owner.Record.Spells.Add(record);
 
-            var spell = new CharacterSpell(record);
-
+            CharacterSpell spell;
             lock (m_locker)
+            {
+                spell = new CharacterSpell(record);
                 m_spells.Add(spell.Id, spell);
+            }
+
+            InventoryHandler.SendSpellUpgradeSuccessMessage(Owner.Client, spell);
 
             return spell;
         }
@@ -85,9 +90,12 @@ namespace Stump.Server.WorldServer.Worlds.Spells
                 return;
 
             lock (m_locker)
+            {
                 m_spells.Remove(id);
+                m_spellsToDelete.Enqueue(spell.Record);
+            }
 
-            Owner.Record.Spells.Remove(spell.Record);
+            InventoryHandler.SendSpellUpgradeSuccessMessage(Owner.Client, id, 0);
         }
 
         public bool BoostSpell(int id)
@@ -122,6 +130,24 @@ namespace Stump.Server.WorldServer.Worlds.Spells
                 return;
 
             Owner.Shortcuts.AddSpellShortcut(position, (short) id);
+        }
+
+        public void Save()
+        {
+            lock (m_locker)
+            {
+                foreach (var characterSpell in m_spells)
+                {
+                    characterSpell.Value.Record.Save();
+                }
+
+                while (m_spellsToDelete.Count > 0)
+                {
+                    var record = m_spellsToDelete.Dequeue();
+
+                    record.Delete();
+                }
+            }
         }
     }
 }

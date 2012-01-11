@@ -187,7 +187,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             return 1;
         }
 
-        public uint GetMonsterSpawnInterval()
+        public int GetMonsterSpawnInterval()
         {
             Difficulty difficulty = Difficulty;
 
@@ -195,9 +195,9 @@ namespace Stump.Server.WorldServer.Worlds.Maps
                 difficulty = Difficulty.Normal;
 
             if (Record.CustomSpawnInterval.HasValue)
-                return Record.CustomSpawnInterval.Value;
+                return (int) Record.CustomSpawnInterval.Value;
 
-            return MonsterSpawnInterval[difficulty];
+            return (int) MonsterSpawnInterval[difficulty];
         }
 
         private void RefreshMapsSpawnInterval()

@@ -10,6 +10,7 @@ namespace Stump.DofusProtocol.D2oClasses
 		public uint level;
 		public int paDodge;
 		public int pmDodge;
+		public int wisdom;
 		public int earthResistance;
 		public int airResistance;
 		public int fireResistance;

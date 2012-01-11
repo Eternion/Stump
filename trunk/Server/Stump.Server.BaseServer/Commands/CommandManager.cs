@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using NLog;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
@@ -79,6 +80,9 @@ namespace Stump.Server.BaseServer.Commands
 
         public void RegisterCommand(Type commandType)
         {
+            if (IsCommandRegister(commandType))
+                return;
+
             if (commandType.IsSubclassOf(typeof(SubCommand)))
             {
                 RegisterSubCommand(commandType);
@@ -108,13 +112,14 @@ namespace Stump.Server.BaseServer.Commands
             }
 
             m_registeredCommands.Add(command);
+            m_registeredTypes.Add(commandType);
+
             foreach (string alias in command.Aliases)
             {
                 CommandBase value;
                 if (!m_commandsByAlias.TryGetValue(alias, out value))
                 {
                     m_commandsByAlias[CommandBase.IgnoreCommandCase ? alias.ToLower() : alias] = command;
-                    m_registeredTypes.Add(commandType);
                 }
                 else
                 {
@@ -138,6 +143,7 @@ namespace Stump.Server.BaseServer.Commands
             }
 
             m_registeredCommands.Add(command);
+            m_registeredTypes.Add(commandType);
             foreach (string alias in command.Aliases)
             {
                 CommandBase value;
@@ -145,7 +151,6 @@ namespace Stump.Server.BaseServer.Commands
                 {
                     m_commandsByAlias[CommandBase.IgnoreCommandCase ? alias.ToLower() : alias] = command as CommandBase;
 
-                    m_registeredTypes.Add(commandType);
                 }
                 else
                 {
@@ -207,6 +212,7 @@ namespace Stump.Server.BaseServer.Commands
             }
 
             m_registeredTypes.Remove(commandType);
+            m_registeredCommands.RemoveAll(entry => entry.GetType() == commandType);
         }
 
         private void SortCommands()

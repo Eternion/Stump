@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
@@ -97,9 +98,38 @@ namespace Stump.Core.Extensions
 
         public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> enumerable)
         {
+            Contract.Requires(enumerable != null);
+
             var rand = new Random();
 
-            return enumerable.OrderBy(entry => rand.Next());
+            T[] elements = enumerable.ToArray();
+            // Note i > 0 to avoid final pointless iteration
+            for (int i = elements.Length - 1; i > 0; i--)
+            {
+                // Swap element "i" with a random earlier element it (or itself)
+                int swapIndex = rand.Next(i + 1);
+                T tmp = elements[i];
+                elements[i] = elements[swapIndex];
+                elements[swapIndex] = tmp;
+            }
+            // Lazily yield (avoiding aliasing issues etc)
+            foreach (T element in elements)
+            {
+                yield return element;
+            }
+        }
+
+        public static T RandomElementOrDefault<T>(this IEnumerable<T> enumerable)
+        {
+            Contract.Requires(enumerable != null);
+
+            var rand = new Random();
+            var count = enumerable.Count();
+
+            if (count <= 0)
+                return default(T);
+
+            return enumerable.ElementAt(rand.Next(count));
         }
 
         /// <summary>

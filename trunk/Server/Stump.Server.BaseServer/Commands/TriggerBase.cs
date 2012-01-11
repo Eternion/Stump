@@ -141,7 +141,6 @@ namespace Stump.Server.BaseServer.Commands
         /// <returns></returns>
         public virtual bool IsArgumentDefined(string name)
         {
-            IParameter parameter;
             if (CommandsParametersByName.ContainsKey(name))
             {
                 return CommandsParametersByName[name].IsDefined;
@@ -168,6 +167,17 @@ namespace Stump.Server.BaseServer.Commands
 
             var definedParam = new List<IParameter>();
             var paramToDefine = new List<IParameterDefinition>(BindedCommand.Parameters);
+
+            // command has only a string parameter -> then we can assign the entire string to this parameter
+            if (paramToDefine.Count == 1 && paramToDefine[0].ValueType == typeof(string))
+            {
+                var param = paramToDefine[0].CreateParameter();
+
+                param.SetValue(Args.NextWords(), this);
+
+                definedParam.Add(param);
+                paramToDefine.Remove(paramToDefine[0]);
+            }
 
             string word = Args.NextWord();
             while (!string.IsNullOrEmpty(word) && definedParam.Count < BindedCommand.Parameters.Count)

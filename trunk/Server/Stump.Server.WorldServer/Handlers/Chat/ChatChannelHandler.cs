@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 
 namespace Stump.Server.WorldServer.Handlers.Chat
@@ -11,7 +12,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
         {
         }
 
-        public static void SendEnabledChannelsMessage(WorldClient client, sbyte[] allows, sbyte[] disallows)
+        public static void SendEnabledChannelsMessage(IPacketReceiver client, sbyte[] allows, sbyte[] disallows)
         {
             client.Send(new EnabledChannelsMessage(allows, disallows));
         }

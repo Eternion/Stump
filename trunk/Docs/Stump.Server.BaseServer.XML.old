@@ -1,0 +1,363 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Stump.Server.BaseServer</name>
+    </assembly>
+    <members>
+        <!-- Badly formed XML comment ignored for member "M:Stump.Server.BaseServer.IPC.IRemoteAuthOperations.ModifyAccountByNickname(System.String,Stump.Server.BaseServer.IPC.Objects.AccountData)" -->
+        <member name="T:Stump.Server.BaseServer.Commands.SubCommandContainer">
+            <summary>
+            Represents a command that contains only SubCommands
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Commands.CommandBase.IgnoreCommandCase">
+            <summary>
+            Enable/Disable case check for server's commands
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Commands.SubCommandContainer.TryGetSubCommand(System.String,Stump.Server.BaseServer.Commands.SubCommand@)">
+            <summary>
+              Try to get a SubCommand with its name.
+            </summary>
+            <param name = "subcmd">Requested subcommand name</param>
+            <param name = "result">Out the requested subcommand</param>
+            <returns>Returns true if the requested subcommand exists.</returns>
+        </member>
+        <member name="P:Stump.Server.BaseServer.Commands.SubCommandContainer.Item(System.String)">
+            <summary>
+            Gets the subcommand by his name or returns null if not found
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.BaseServer.ServerBase.PreLoadReferences(System.Reflection.Assembly)">
+            <summary>
+            Load before the runtime all referenced assemblies
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.ServerBase.IgnoreNextConfigReload">
+            <summary>
+            Allow the server to ignore the next modification of the config file.
+            Use it when you save the config
+            </summary>
+        </member>
+        <member name="P:Stump.Server.BaseServer.ServerBase.CommandManager">
+            <summary>
+              Manage commands
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.ServerBase`1.Instance">
+            <summary>
+              Class singleton
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Network.MessagePart.Build(Stump.Core.IO.BigEndianReader)">
+            <summary>
+            Build or continue building the message. Returns true if the resulted message is valid and ready to be parsed
+            </summary>
+        </member>
+        <member name="P:Stump.Server.BaseServer.Network.MessagePart.IsValid">
+            <summary>
+            Set to true when the message is whole
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Handler.HandlerManager`4.m_handlers">
+            <summary>
+              Key : Typeof handled message
+              Value : Target method
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Handler.HandlerManager`4.RegisterAll(System.Reflection.Assembly)">
+            <summary>
+              Automatically detects and registers all PacketHandlers within the given Assembly
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Handler.HandlerManager`4.Register(System.Type)">
+            <summary>
+              Registers all packet handlers defined in the given type.
+            </summary>
+            <param name = "type">the type to search through for packet handlers</param>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Commands.IParameterDefinition.ConvertString(System.String,Stump.Server.BaseServer.Commands.TriggerBase)">
+            <summary>
+            Parse the string value and convert it to the right type.
+            If value equals null or an empty string, it returns the default value
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Commands.ParameterDefinition`1.CreateParameter">
+            <summary>
+            Create a Parameter instance with the right generic type
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Stump.Server.BaseServer.Commands.ParameterDefinition`1.IsOptional">
+            <summary>
+            A parameter is optional whenever the DefaultValue has been set
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.VersionCheckingSeverity.None">
+            <summary>
+            Do not check version
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.VersionCheckingSeverity.Light">
+            <summary>
+            Check major minor and release values
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.VersionCheckingSeverity.Medium">
+            <summary>
+            Check revision value too
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.VersionCheckingSeverity.Heavy">
+            <summary>
+            Check all values
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.VersionExtension.Severity">
+            <summary>
+              Define the severity of the client version checking. Set to Light/NoCheck if you have any bugs with it.
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.VersionExtension.ExpectedVersion">
+            <summary>
+            Version for the client. 
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.VersionExtension.ActualProtocol">
+            <summary>
+            Actual version
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.VersionExtension.ProtocolRequired">
+            <summary>
+            Required version
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Network.VersionExtension.IsUpToDate(Stump.DofusProtocol.Types.Version)">
+            <summary>
+            Compare the given version and the required version
+            </summary>
+            <param name="versionToCompare"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Stump.Server.BaseServer.Initialization.InitializationAttribute">
+            <summary>
+            Define a initialization method, called on server start.
+            The method is called when the initialization pass is executed or
+            when the type, whose method is dependant, is initialized
+            </summary>
+        </member>
+        <member name="T:Stump.Server.BaseServer.Definitions">
+            <summary>
+              Contains hard-coded data
+            </summary>
+        </member>
+        <member name="P:Stump.Server.BaseServer.Commands.CommandManager.CommandsByAlias">
+            <summary>
+            Regroup all CommandBase and SubCommandContainer by alias
+            </summary>
+        </member>
+        <member name="P:Stump.Server.BaseServer.Commands.CommandManager.AvailableCommands">
+            <summary>
+            Regroup all CommandBases, SubCommandContainers and SubCommands
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Initialization.InitializationPass.First">
+            <summary>
+            TextManager, ChatManager
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Initialization.InitializationPass.Third">
+            <summary>
+            BreedManager, EffectManager
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Initialization.InitializationPass.Fourth">
+            <summary>
+            ExperienceManager, InteractiveManager, ItemManager, CellTriggerManager
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Initialization.InitializationPass.Fifth">
+            <summary>
+            NpcManager
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Initialization.InitializationPass.Sixth">
+            <summary>
+            MonsterManager
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Initialization.InitializationPass.Seventh">
+            <summary>
+            World
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Initialization.InitializationPass.Eighth">
+            <summary>
+            IdProvider Synchronisation
+            </summary>
+        </member>
+        <member name="T:Stump.Server.BaseServer.IPC.Objects.AccountData">
+            <summary>
+            Represents a serialized Account
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.ConsoleBase.AskWaiterInterval">
+            <summary>
+            Define the interval between two condition checks
+            when server is asking something to the user by the console
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Commands.TriggerBase.Reply(System.String)">
+            <summary>
+              Replies accordingly with the given text.
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Commands.TriggerBase.IsArgumentDefined(System.String)">
+            <summary>
+            Returns true only if the argument as been set by the user
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Commands.TriggerBase.BindToCommand(Stump.Server.BaseServer.Commands.CommandBase)">
+            <summary>
+            Bind the trigger to a command instance and initialize his parameters. Returns false whenever an error occurs during the initialization
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.ClientManager.MaxConcurrentConnections">
+            <summary>
+            Max number of clients connected
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.ClientManager.MaxPendingConnections">
+            <summary>
+            Max number of clients waiting for a connection
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.ClientManager.MaxIPConnexions">
+            <summary>
+            Max number of clients connected on the same IP or NULL for unlimited
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.ClientManager.MinMessageInterval">
+            <summary>
+            Min interval between two received message or NULL for unlimited ( in ms )
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Network.ClientManager.BufferSize">
+            <summary>
+            Buffer size /!\ Advanced users only /!\
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Network.ClientManager.Start(System.String,System.Int32)">
+            <summary>
+            Start to listen client connections
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Network.ClientManager.Pause">
+            <summary>
+            Pause the listener and reject all new connections
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Network.ClientManager.Resume">
+            <summary>
+            Resume the actual pause
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Network.ClientManager.Close">
+            <summary>
+            Close the listener and dispose ressources
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Network.ClientManager.ProcessAccept(System.Net.Sockets.SocketAsyncEventArgs)">
+            <summary>
+            Called when a new client is connecting
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="P:Stump.Server.BaseServer.Network.ClientManager.Clients">
+            <summary>
+            List of connected Clients
+            </summary>
+        </member>
+        <member name="P:Stump.Server.BaseServer.Database.DatabaseConfiguration.UpdateFileDir">
+            <summary>
+            Folder which contains all of sql file to update db
+            </summary>
+        </member>
+        <member name="P:Stump.Server.BaseServer.Database.DatabaseConfiguration.User">
+            <summary>
+            Database user
+            </summary>
+        </member>
+        <member name="P:Stump.Server.BaseServer.Database.DatabaseConfiguration.Password">
+            <summary>
+            Database password
+            </summary>
+        </member>
+        <member name="P:Stump.Server.BaseServer.Database.DatabaseConfiguration.Host">
+            <summary>
+            Database host
+            </summary>
+        </member>
+        <member name="P:Stump.Server.BaseServer.Database.DatabaseConfiguration.Name">
+            <summary>
+            Database name to connect to
+            </summary>
+        </member>
+        <member name="T:Stump.Server.BaseServer.IPC.Objects.WorldServerData">
+            <summary>
+            Reprensents a serialized WorldServer
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.IPC.Objects.WorldServerData.Id">
+            <summary>
+              Internally assigned unique Id of this World.
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.IPC.Objects.WorldServerData.Address">
+            <summary>
+              World address.
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.IPC.Objects.WorldServerData.Name">
+            <summary>
+              World name.
+            </summary>
+        </member>
+        <member name="T:Stump.Server.BaseServer.Settings">
+            <summary>
+              Global settings defined by the config file
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Settings.EnableBenchmarking">
+            <summary>
+            Enable/Disable perfomances tracing
+            </summary>
+        </member>
+        <member name="F:Stump.Server.BaseServer.Settings.InactivityDisconnectionTime">
+            <summary>
+              Disconnect Client after specified time(in s) or NULL for desactivate
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Network.BaseClient.Disconnect">
+            <summary>
+              Disconnect the Client. Cannot reuse the socket.
+            </summary>
+        </member>
+        <member name="M:Stump.Server.BaseServer.Network.BaseClient.DisconnectLater(System.Int32)">
+            <summary>
+              Disconnect the Client after a time
+            </summary>
+            <param name = "timeToWait"></param>
+        </member>
+        <member name="P:Stump.Server.BaseServer.Network.BaseClient.LastActivity">
+            <summary>
+            Last activity as a socket client (last received packet or sent packet)
+            </summary>
+        </member>
+    </members>
+</doc>

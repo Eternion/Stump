@@ -38,11 +38,10 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         public void GiveLoot(Character character)
         {
             character.Inventory.AddKamas(Kamas);
-            Kamas = 0;
 
             foreach (var item in m_items.Values)
             {
-                character.Inventory.AddItem(item.GenerateItem());
+                character.Inventory.AddItem(item.ItemId, item.Amount);
             }
         }
 

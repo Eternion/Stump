@@ -9,18 +9,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay
 {
     public abstract class RolePlayActor : ContextActor
     {
-        #region Events
-        public event Action<RolePlayActor, Map> MapChanged;
-
-        public void NotifyMapChanged(Map map)
-        {
-            Action<RolePlayActor, Map> handler = MapChanged;
-            if (handler != null)
-                handler(this, map);
-        }
-
-        #endregion
-
         #region Network
 
         public override GameContextActorInformations GetGameContextActorInformations()
@@ -36,14 +24,13 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay
 
         public bool Teleport(MapNeighbour mapNeighbour)
         {
-            if (IsMoving())
-                StopMove();
+            var neighbour = Position.Map.GetNeighbouringMap(mapNeighbour);
 
-            var destination = new ObjectPosition(Position.Map.GetNeighbouringMap(mapNeighbour),
-                Position.Map.GetCellAfterChangeMap(Position.Cell.Id, mapNeighbour), Position.Direction);
-
-            if (destination.Map == null)
+            if (neighbour == null)
                 return false;
+
+            var destination = new ObjectPosition(neighbour,
+                Position.Map.GetCellAfterChangeMap(Position.Cell.Id, mapNeighbour), Position.Direction);
 
             return Teleport(destination);
         }
@@ -58,16 +45,30 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay
             if (IsMoving())
                 StopMove();
 
+            if (!CanChangeMap())
+                return false;
+
             if (Position.Map == destination.Map)
                 return MoveInstant(destination);
+
+            NextMap = destination.Map;
+            LastMap = Map;
 
             Position.Map.Leave(this);
             Position = destination.Clone();
             Position.Map.Enter(this);
 
-            NotifyMapChanged(Position.Map);
+            NextMap = null;
+            LastMap = null;
+
+            OnTeleported(Position);
 
             return true;
+        }
+
+        public virtual bool CanChangeMap()
+        {
+            return Map != null && Map.IsActor(this);
         }
 
         #endregion

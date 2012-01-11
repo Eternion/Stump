@@ -18,11 +18,25 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
             }
         }
 
-        [BelongsTo("MessageId")]
-        public NpcMessage Message
+        [Property("MessageId")]
+        public int MessageId
         {
             get;
             set;
+        }
+
+        private NpcMessage m_message;
+        public NpcMessage Message
+        {
+            get
+            {
+                return m_message ?? ( m_message = NpcManager.Instance.GetNpcMessage(MessageId) );
+            }
+            set
+            {
+                m_message = value;
+                MessageId = value.Id;
+            }
         }
 
         public override void Execute(Npc npc, Character character)

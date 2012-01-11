@@ -11,6 +11,11 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         protected short m_diceface;
         protected short m_dicenum;
 
+        public EffectDice()
+        {
+            
+        }
+
         public EffectDice(short id, short value, short dicenum, short diceface)
             : base(id, value)
         {
@@ -28,6 +33,14 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         public override int ProtocoleId
         {
             get { return 73; }
+        }
+
+        public override byte SerializationIdenfitier
+        {
+            get
+            {
+                return 4;
+            }
         }
 
         public short DiceNum
@@ -52,18 +65,6 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
 
         public override EffectBase GenerateEffect(EffectGenerationContext context)
         {
-            /*if (context == EffectGenerationContext.Spell || EffectManager.Instance.IsEffectRandomable(EffectId))
-            {
-                var random = new AsyncRandom();
-                short result = 0;
-
-                for (int i = 0; i < m_dicenum; i++)
-                {
-                    result += (short)random.Next(1, m_diceface + 2);
-                }
-
-                return new EffectInteger(Id, result);
-            }*/
             if (context == EffectGenerationContext.Spell || EffectManager.Instance.IsEffectRandomable(EffectId))
             {
                 var rand = new AsyncRandom();
@@ -78,6 +79,22 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
             }
 
             return this;
+        }
+
+        protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
+        {
+            base.InternalSerialize(ref writer);
+
+            writer.Write(DiceNum);
+            writer.Write(DiceFace);
+        }
+
+        protected override void InternalDeserialize(ref System.IO.BinaryReader reader)
+        {
+            base.InternalDeserialize(ref reader);
+
+            m_dicenum = reader.ReadInt16();
+            m_diceface = reader.ReadInt16();
         }
 
         public override bool Equals(object obj)

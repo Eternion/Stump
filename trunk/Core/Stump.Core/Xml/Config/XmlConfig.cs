@@ -401,7 +401,7 @@ namespace Stump.Core.Xml.Config
         private void BuildConfig()
         {
             var writer = new XmlTextWriter(m_configPath, Encoding.UTF8)
-                             {Formatting = Formatting.Indented, IndentChar = '\t', Indentation = 1};
+                             {Formatting = Formatting.Indented, IndentChar = ' ', Indentation = 2};
 
             writer.WriteStartElement("Configuration");
 

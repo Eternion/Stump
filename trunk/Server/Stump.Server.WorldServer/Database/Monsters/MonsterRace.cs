@@ -2,6 +2,7 @@ using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Server.WorldServer.Database.I18n;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
 
 namespace Stump.Server.WorldServer.Database.Monsters
 {
@@ -18,11 +19,25 @@ namespace Stump.Server.WorldServer.Database.Monsters
         }
 
         [D2OField("superRaceId")]
-        [BelongsTo("SuperRaceId")]
-        public MonsterSuperRace SuperRace
+        [Property("SuperRaceId")]
+        public int SuperRaceId
         {
             get;
             set;
+        }
+
+        private MonsterSuperRace m_superRace;
+        public MonsterSuperRace SuperRace
+        {
+            get
+            {
+                return m_superRace ?? ( m_superRace = MonsterManager.Instance.GetSuperRace(SuperRaceId) );
+            }
+            set
+            {
+                m_superRace = value;
+                SuperRaceId = value.Id;
+            }
         }
 
         [D2OField("nameId")]

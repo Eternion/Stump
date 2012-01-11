@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Text;
 
@@ -44,6 +45,8 @@ namespace Stump.Core.IO
         /// <param name = "stream">The stream.</param>
         public BigEndianReader(Stream stream)
         {
+            Contract.Requires(stream != null);
+
             m_reader = new BinaryReader(stream, Encoding.UTF8);
         }
 
@@ -53,6 +56,8 @@ namespace Stump.Core.IO
         /// <param name = "tab">Memory buffer.</param>
         public BigEndianReader(byte[] tab)
         {
+            Contract.Requires(tab != null);
+
             m_reader = new BinaryReader(new MemoryStream(tab), Encoding.UTF8);
         }
 
@@ -67,6 +72,8 @@ namespace Stump.Core.IO
         /// <returns></returns>
         private byte[] ReadBigEndianBytes(int count)
         {
+            Contract.Requires(count >= 0);
+
             var bytes = new byte[count];
             int i;
             for (i = count - 1; i >= 0; i--)
@@ -181,7 +188,7 @@ namespace Stump.Core.IO
         /// <returns></returns>
         public Boolean ReadBoolean()
         {
-            return m_reader.ReadByte() == 1 ? true : false;
+            return m_reader.ReadByte() == 1;
         }
 
         /// <summary>
@@ -220,6 +227,8 @@ namespace Stump.Core.IO
             ushort length = ReadUShort();
 
             byte[] bytes = ReadBytes(length);
+
+            Contract.Assume(bytes != null);
 
             return Encoding.UTF8.GetString(bytes);
         }
@@ -260,10 +269,9 @@ namespace Stump.Core.IO
         public void Add(byte[] data, int offset, int count)
         {
             long pos = m_reader.BaseStream.Position;
+
             m_reader.BaseStream.Position = m_reader.BaseStream.Length;
-
             m_reader.BaseStream.Write(data, offset, count);
-
             m_reader.BaseStream.Position = pos;
         }
 

@@ -46,43 +46,19 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
 
         protected override RunStatus Run(object context)
         {
+            if (DestinationId == Fighter.Cell.Id)
+                return RunStatus.Success;
+
             var pathfinder = new Pathfinder(new AIFightCellsInformationProvider(Fighter.Fight, Fighter));
             var path = pathfinder.FindPath(Fighter.Position.Cell.Id, DestinationId, false, Fighter.MP);
 
             if (path == null || path.IsEmpty())
                 return RunStatus.Failure;
 
-#if DEBUG            
-            var completepath = pathfinder.FindPath(Fighter.Position.Cell.Id, DestinationId, false);
+            if (path.MPCost > Fighter.MP)
+                return RunStatus.Failure;
 
-            Fighter.Fight.ForEach(entry =>
-                                      {
-                                          if (entry.Client.Account.Role >= RoleEnum.Moderator)
-                                          {
-                                              ClearDisplayedCells(entry.Client);
-                                              DisplayPath(entry.Client, completepath);
-                                          }
-                                      });
-#endif
-
-            Fighter.StartMove(path);
-            return RunStatus.Success;
+            return Fighter.StartMove(path) ? RunStatus.Success : RunStatus.Failure;
         }
-
-        private static void ClearDisplayedCells(WorldClient client)
-        {
-            client.Send(new DebugClearHighlightCellsMessage());
-        }
-
-        public static void DisplayPath(WorldClient client, Path path)
-        {
-            var random = new Random();
-            var buffer = new byte[3];
-            random.NextBytes(buffer);
-            var color = buffer[2] << 16 | buffer[1] << 8 | buffer[0];
-
-            client.Send(new DebugHighlightCellsMessage(color, path.GetServerPathKeys()));
-        }
-
     }
 }

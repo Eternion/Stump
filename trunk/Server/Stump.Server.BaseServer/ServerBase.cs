@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
@@ -8,6 +9,7 @@ using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
+using Stump.Core.Attributes;
 using Stump.Core.IO;
 using Stump.Core.IO.Watchers;
 using Stump.Core.Pool.Task;
@@ -27,6 +29,9 @@ namespace Stump.Server.BaseServer
     public abstract class ServerBase
     {
         internal static ServerBase InstanceAsBase;
+
+        [Variable]
+        public static int IOTaskInterval = 50;
 
         protected Dictionary<string, Assembly> LoadedAssemblies;
         protected Logger logger;
@@ -77,34 +82,13 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
-        public HandlerManager HandlerManager
-        {
-            get;
-            protected set;
-        }
-
-        /// <summary>
-        ///   Manage tasks, that handle packets
-        /// </summary>
-        public WorkerManager WorkerManager
-        {
-            get;
-            protected set;
-        }
-
         public ClientManager ClientManager
         {
             get;
             protected set;
         }
 
-        public TaskPool IOTaskPool
-        {
-            get;
-            protected set;
-        }
-
-        public CyclicTaskPool CyclicTaskPool
+        public SelfRunningTaskQueue IOTaskPool
         {
             get;
             protected set;
@@ -155,6 +139,7 @@ namespace Stump.Server.BaseServer
 
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
             TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+            Contract.ContractFailed += OnContractFailed;
 
             PreLoadReferences(Assembly.GetCallingAssembly());
             LoadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToDictionary(entry => entry.GetName().Name);
@@ -198,23 +183,17 @@ namespace Stump.Server.BaseServer
                  });
 
             logger.Info("Initialize Task Pool");
-            IOTaskPool = new TaskPool();
-
-            CyclicTaskPool = new CyclicTaskPool();
-            CyclicTaskPool.Initialize(LoadedAssemblies.Values.ToArray());
+            IOTaskPool = new SelfRunningTaskQueue(IOTaskInterval, "IO Task Pool");
 
             CommandManager = CommandManager.Instance;
             CommandManager.RegisterAll(Assembly.GetExecutingAssembly());
 
             logger.Info("Initializing Network Interfaces...");
-            HandlerManager = HandlerManager.Instance;
             ClientManager = ClientManager.Instance;
             ClientManager.Initialize(CreateClient);
-            WorkerManager = WorkerManager.Instance;
-            WorkerManager.Initialize();
 
             if (Settings.InactivityDisconnectionTime.HasValue)
-                CyclicTaskPool.RegisterCyclicTask(DisconnectAfkClient, Settings.InactivityDisconnectionTime.Value / 4);
+                IOTaskPool.CallPeriodically(Settings.InactivityDisconnectionTime.Value / 4 * 1000, DisconnectAfkClient);
 
             ClientManager.ClientConnected += OnClientConnected;
             ClientManager.ClientDisconnected += OnClientDisconnected;
@@ -288,6 +267,14 @@ namespace Stump.Server.BaseServer
                 Shutdown();
         }
 
+        private void OnContractFailed(object sender, ContractFailedEventArgs e)
+        {
+            logger.Fatal("Contract failed : {0}", e.Condition);
+            HandleCrashException(e.OriginalException);
+
+            e.SetHandled();
+        }
+
         public void HandleCrashException(Exception e)
         {
             logger.Fatal(
@@ -311,7 +298,6 @@ namespace Stump.Server.BaseServer
 
         public virtual void Update()
         {
-            IOTaskPool.ProcessUpdate();
         }
 
         /// <summary>
@@ -323,23 +309,24 @@ namespace Stump.Server.BaseServer
             m_ignoreReload = true;
         }
 
-        private void DisconnectAfkClient()
+        protected virtual void DisconnectAfkClient()
         {
             // todo : this is not an afk check but a timeout check
 
-            IEnumerable<BaseClient> afkClients = ClientManager.FindAll(client =>
+            var afkClients = ClientManager.FindAll(client =>
                 DateTime.Now.Subtract(client.LastActivity).TotalSeconds >= Settings.InactivityDisconnectionTime);
 
             foreach (BaseClient client in afkClients)
+            {
                 client.Disconnect();
+            }
         }
 
         protected abstract BaseClient CreateClient(Socket s);
 
         protected virtual void OnShutdown()
         {
-            CyclicTaskPool.Clear();
-            IOTaskPool.Clear();
+            IOTaskPool.Stop();
         }
 
         public void Shutdown()

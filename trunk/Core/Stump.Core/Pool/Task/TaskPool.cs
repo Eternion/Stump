@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using NLog;
 using Stump.Core.Collections;
 
@@ -23,31 +22,25 @@ namespace Stump.Core.Pool.Task
 
         public void ProcessUpdate()
         {
-            /* Execute Tasks */
+            // Execute Tasks
             do
             {
                 Action action = m_tasks.Dequeue();
 
-                var executerThread = new Thread(
-                    delegate()
-                        {
-                            try
-                            {
-                                action();
-                            }
-                            catch(Exception ex)
-                            {
-                                logger.Error("Exception occurs in the task Pool : {0}", ex);
-                            }
-                        });
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("Exception occurs in the task Pool for action {0} : {1}", action, ex);
+                }
 
-                executerThread.Start();
-
-                while (executerThread.ThreadState == ThreadState.Running)
+                /*while (executerThread.ThreadState == ThreadState.Running)
                     // wait until thread end execution, or until thread enter a sleep state
                 {
                     Thread.Yield(); // give priority to another thread
-                }
+                }*/
             } while (m_tasks.Count > 0);
         }
     }

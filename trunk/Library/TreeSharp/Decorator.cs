@@ -46,7 +46,7 @@ namespace TreeSharp
 
         protected virtual bool CanRun(object context)
         {
-            return true;
+            return Runner == null || Runner(context);
         }
 
         public override void Start(object context)
@@ -60,15 +60,7 @@ namespace TreeSharp
 
         public override IEnumerable<RunStatus> Execute(object context)
         {
-            if (Runner != null)
-            {
-                if (!Runner(context))
-                {
-                    yield return RunStatus.Failure;
-                    yield break;
-                }
-            }
-            else if (!CanRun(context))
+            if (!CanRun(context))
             {
                 yield return RunStatus.Failure;
                 yield break;

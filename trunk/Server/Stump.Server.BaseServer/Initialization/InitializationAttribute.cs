@@ -10,34 +10,50 @@ namespace Stump.Server.BaseServer.Initialization
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class InitializationAttribute : Attribute
     {
-        public InitializationAttribute(InitializationPass pass, string name = "")
+        public InitializationAttribute(Type dependance)
         {
-            Name = name;
+            Dependance = dependance;
+        }
+
+        public InitializationAttribute(InitializationPass pass)
+        {
             Pass = pass;
         }
 
-        public InitializationAttribute(Type dependantOf, string name = "")
+        public InitializationAttribute(InitializationPass pass, string desciption = "")
         {
-            Name = name;
+            Description = desciption;
+            Pass = pass;
+        }
+
+        public InitializationAttribute(Type dependantOf, string desciption = "")
+        {
+            Description = desciption;
             Dependance = dependantOf;
         }
 
         public Type Dependance
         {
             get;
-            private set;
+            set;
         }
 
-        public string Name
+        public string Description
         {
             get;
-            private set;
+            set;
+        }
+
+        public bool Silent
+        {
+            get;
+            set;
         }
 
         public InitializationPass Pass
         {
             get;
-            private set;
+            set;
         }
     }
 }

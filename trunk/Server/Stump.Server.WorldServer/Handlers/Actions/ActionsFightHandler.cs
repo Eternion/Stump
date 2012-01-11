@@ -1,5 +1,6 @@
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
@@ -8,7 +9,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
 {
     public partial class ActionsHandler : WorldHandlerContainer
     {
-        public static void SendGameActionFightDeathMessage(WorldClient client, FightActor fighter)
+        public static void SendGameActionFightDeathMessage(IPacketReceiver client, FightActor fighter)
         {
             client.Send(new GameActionFightDeathMessage(
                             (short) ActionsEnum.ACTION_CHARACTER_DEATH,
@@ -16,7 +17,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
                             ));
         }
 
-        public static void SendGameActionFightPointsVariationMessage(WorldClient client, ActionsEnum action,
+        public static void SendGameActionFightPointsVariationMessage(IPacketReceiver client, ActionsEnum action,
                                                                      FightActor source,
                                                                      FightActor target, short delta)
         {
@@ -26,7 +27,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
                             ));
         }
 
-        public static void SendGameActionFightLifePointsVariationMessage(WorldClient client, FightActor source,
+        public static void SendGameActionFightLifePointsVariationMessage(IPacketReceiver client, FightActor source,
                                                                          FightActor target, short delta)
         {
             client.Send(new GameActionFightLifePointsVariationMessage(
@@ -35,22 +36,28 @@ namespace Stump.Server.WorldServer.Handlers.Actions
                             ));
         }
 
-        public static void SendGameActionFightReduceDamagesMessage(WorldClient client, FightActor source, FightActor target, int amount)
+        public static void SendGameActionFightLifePointsLostMessage(IPacketReceiver client, FightActor source,
+                                                                         FightActor target, short loss, short permanentDamages)
+        {
+            client.Send(new GameActionFightLifePointsLostMessage((short)ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_LOST, source.Id, target.Id, loss, permanentDamages));
+        }
+
+        public static void SendGameActionFightReduceDamagesMessage(IPacketReceiver client, FightActor source, FightActor target, int amount)
         {
             client.Send(new GameActionFightReduceDamagesMessage(105, source.Id, target.Id, amount));
         }
 
-        public static void SendGameActionFightReflectSpellMessage(WorldClient client, FightActor source, FightActor target)
+        public static void SendGameActionFightReflectSpellMessage(IPacketReceiver client, FightActor source, FightActor target)
         {
             client.Send(new GameActionFightReflectSpellMessage((short)ActionsEnum.ACTION_CHARACTER_SPELL_REFLECTOR, source.Id, target.Id));
         }
 
-        public static void SendGameActionFightTeleportOnSameMapMessage(WorldClient client, FightActor source, FightActor target, Cell destination)
+        public static void SendGameActionFightTeleportOnSameMapMessage(IPacketReceiver client, FightActor source, FightActor target, Cell destination)
         {
             client.Send(new GameActionFightTeleportOnSameMapMessage((short)ActionsEnum.ACTION_CHARACTER_TELEPORT_ON_SAME_MAP, source.Id, target.Id, destination.Id));
         }
 
-        public static void SendGameActionFightSlideMessage(WorldClient client, FightActor source, FightActor target, short startCellId, short endCellId)
+        public static void SendGameActionFightSlideMessage(IPacketReceiver client, FightActor source, FightActor target, short startCellId, short endCellId)
         {
             client.Send(new GameActionFightSlideMessage((short)ActionsEnum.ACTION_CHARACTER_PUSH, source.Id, target.Id, startCellId, endCellId));
         }

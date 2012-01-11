@@ -37,6 +37,14 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set;
         }
 
+        [D2OField("realWeight")]
+        [Property("RealWeight")]
+        public uint RealWeight
+        {
+            get;
+            set;
+        }
+
         [D2OField("nameId")]
         [Property("NameId")]
         public uint NameId
@@ -185,7 +193,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set;
         }
 
-        [D2OField("recipeIds")]
+        /*[D2OField("recipeIds")]
         [Property("RecipeIds", ColumnType = "Serializable")]
         public List<uint> RecipeIds
         {
@@ -199,7 +207,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
         {
             get;
             set;
-        }
+        }*/
 
         [D2OField("bonusIsSecret")]
         [Property("BonusIsSecret")]

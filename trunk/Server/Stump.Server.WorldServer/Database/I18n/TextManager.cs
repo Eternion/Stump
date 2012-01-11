@@ -10,6 +10,7 @@ namespace Stump.Server.WorldServer.Database.I18n
     {
         private Dictionary<uint, TextRecord> m_texts = new Dictionary<uint, TextRecord>();
         private Dictionary<string, TextUIRecord> m_textsUi = new Dictionary<string, TextUIRecord>();
+        private Languages? m_defaultLanguages;
 
         [Initialization(InitializationPass.First)]
         public void Intialize()
@@ -18,9 +19,22 @@ namespace Stump.Server.WorldServer.Database.I18n
             m_textsUi = TextUIRecord.FindAll().ToDictionary(entry => entry.Name);
         }
 
+        public void SetDefaultLanguage(Languages languages)
+        {
+            m_defaultLanguages = languages;
+        }
+
+        public Languages GetDefaultLanguage()
+        {
+            if (m_defaultLanguages.HasValue)
+                return m_defaultLanguages.Value;
+
+            return BaseServer.Settings.Language;
+        }
+
         public string GetText(int id)
         {
-            return GetText(id, BaseServer.Settings.Language);
+            return GetText(id, GetDefaultLanguage());
         }
 
         public string GetText(int id, Languages lang)
@@ -30,7 +44,7 @@ namespace Stump.Server.WorldServer.Database.I18n
 
         public string GetText(uint id)
         {
-            return GetText(id, BaseServer.Settings.Language);
+            return GetText(id, GetDefaultLanguage());
         }
 
         public string GetText(uint id, Languages lang)
@@ -66,7 +80,7 @@ namespace Stump.Server.WorldServer.Database.I18n
 
         public string GetUiText(string id)
         {
-            return GetUiText(id, BaseServer.Settings.Language);
+            return GetUiText(id, GetDefaultLanguage());
         }
 
         public string GetUiText(string id, Languages lang)

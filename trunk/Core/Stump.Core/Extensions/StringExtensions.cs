@@ -19,6 +19,18 @@ namespace Stump.Core.Extensions
             return new string(letters);
         }
 
+        public static string ConcatCopy(this string str, int times)
+        {
+            var builder = new StringBuilder(str.Length * times);
+
+            for (int i = 0; i < times; i++)
+            {
+                builder.Append(str);
+            }
+
+            return builder.ToString();
+        }
+
         public static string RandomString(this Random random, int size)
         {
             var builder = new StringBuilder();

@@ -2,6 +2,7 @@ using System.Linq;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Core.Network;
 
@@ -52,12 +53,12 @@ namespace Stump.Server.WorldServer.Handlers.Authorized
                                                                                  client.ActiveCharacter));
         }
 
-        public static void SendConsoleMessage(WorldClient client, string text)
+        public static void SendConsoleMessage(IPacketReceiver client, string text)
         {
             SendConsoleMessage(client, ConsoleMessageTypeEnum.CONSOLE_TEXT_MESSAGE, text);
         }
 
-        public static void SendConsoleMessage(WorldClient client, ConsoleMessageTypeEnum type, string text)
+        public static void SendConsoleMessage(IPacketReceiver client, ConsoleMessageTypeEnum type, string text)
         {
             client.Send(new ConsoleMessage((sbyte) type, text));
         }

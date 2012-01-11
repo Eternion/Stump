@@ -49,7 +49,10 @@ namespace Stump.Tools.CacheManager.SQL
             {
                 if (value.Value is byte[])
                 {
-                    builder.Append("0x" + ((byte[])value.Value).ByteArrayToString());
+                    if (( value.Value as byte[] ).Length > 0)
+                        builder.Append("0x" + ( (byte[])value.Value ).ByteArrayToString());
+                    else
+                        builder.Append("''");
                 }
                 else
                 {

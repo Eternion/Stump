@@ -45,9 +45,6 @@ namespace Stump.Server.BaseServer.Initialization
                     if (type.IsGenericType)
                         throw new Exception("Initialization method is within a generic type.");
 
-                    if (!method.IsPublic)
-                        throw new Exception("Initialization method must be public.");
-
                     if (method.IsGenericMethod)
                         throw new Exception("Initialization method must not be generic.");
 
@@ -98,9 +95,9 @@ namespace Stump.Server.BaseServer.Initialization
             }
             else
             {
-                if (!string.IsNullOrEmpty (method.Attribute.Name))
-                    logger.Info(string.Format("Initialize '{0}'", method.Attribute.Name));
-                else
+                if (!method.Attribute.Silent && !string.IsNullOrEmpty (method.Attribute.Description))
+                    logger.Info(method.Attribute.Description);
+                else if (!method.Attribute.Silent)
                 {
                     logger.Info(string.Format("Initialize '{0}'", method.Method.DeclaringType.Name));
                 }

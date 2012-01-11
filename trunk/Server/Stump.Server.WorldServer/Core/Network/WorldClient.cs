@@ -6,6 +6,7 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Core.Network
@@ -49,6 +50,20 @@ namespace Stump.Server.WorldServer.Core.Network
         {
             get;
             set;
+        }
+
+        protected override void OnMessageReceived(Message message)
+        {
+            WorldPacketHandler.Instance.Dispatch(this, message);
+
+            base.OnMessageReceived(message);
+        }
+
+        public void DisconnectAfk()
+        {
+            BasicHandler.SendSystemMessageDisplayMessage(this, true, 1);
+
+            Disconnect();
         }
 
         protected override void OnDisconnect()

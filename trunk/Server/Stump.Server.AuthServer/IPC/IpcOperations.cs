@@ -1,92 +1,186 @@
-
 using System;
+using System.ServiceModel;
+using System.ServiceModel.Channels;
+using NLog;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.AuthServer.Database.Account;
+using Stump.Server.AuthServer.Database.World;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Objects;
 
 namespace Stump.Server.AuthServer.IPC
 {
-    public class IpcOperations : MarshalByRefObject, IRemoteOperationsAuth
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession, IncludeExceptionDetailInFaults = true)]
+    public class IpcOperations : IRemoteAuthOperations
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public WorldServerManager Manager = WorldServerManager.Instance;
 
-        #region IRemoteOperationsAuth Members
-
-        public bool RegisterWorld(ref WorldServerData wsi, int channelPort)
+        public IpcOperations()
         {
-            return Manager.AddWorld(ref wsi, channelPort);
+            IContextChannel channel = OperationContext.Current.Channel;
+
+            channel.Closed += OnDisconnected;
+            channel.Faulted += OnDisconnected;
         }
 
-        public void UnRegisterWorld(WorldServerData wsi)
+        private void OnDisconnected(object sender, EventArgs args)
         {
-            if (!Manager.CheckWorldAccess(wsi))
-                return;
+            WorldServer world = GetServerByChannel((IContextChannel) sender);
 
-            Manager.RemoveWorld(wsi);
+            Manager.RemoveWorld(world);
         }
 
-        public void ChangeState(WorldServerData wsi, DofusProtocol.Enums.ServerStatusEnum state)
+        private WorldServer GetServerByChannel(IContextChannel channel)
         {
-            if (!Manager.CheckWorldAccess(wsi))
-                return;
-
-            Manager.ChangeWorldState(wsi.Id, state);
-        }
-
-        public void UpdateConnectedChars(WorldServerData wsi, int value)
-        {
-            if (!Manager.CheckWorldAccess(wsi))
-                return;
-
-            if (!Manager.Realmlist.ContainsKey(wsi.Id))
-                return;
-
-            var realm = Manager.Realmlist[wsi.Id];
-
-            realm.CharsCount = value;
-
-            if (realm.CharsCount >= realm.CharCapacity &&
-                realm.Status == DofusProtocol.Enums.ServerStatusEnum.ONLINE)
+            foreach (var server in Manager.Realmlist)
             {
-                Manager.ChangeWorldState(wsi.Id, DofusProtocol.Enums.ServerStatusEnum.FULL);
+                if (server.Value.Channel == channel)
+                    return server.Value;
             }
 
-            if (realm.CharsCount < realm.CharCapacity &&
-                realm.Status == DofusProtocol.Enums.ServerStatusEnum.FULL)
-            {
-                Manager.ChangeWorldState(wsi.Id, DofusProtocol.Enums.ServerStatusEnum.ONLINE);
-            }
+            return null;
         }
 
-        public bool PingConnection(WorldServerData wsi)
+        /// <summary>
+        /// Returns the Id of the RealmServer that called the current method.
+        /// Can only be used from remote IPC Channels.
+        /// </summary>
+        /// <returns></returns>
+        public string GetCurrentSessionId()
+        {
+            OperationContext context = OperationContext.Current;
+            if (context == null)
+            {
+                return "";
+            }
+            IContextChannel channel = context.Channel;
+            if (channel == null)
+            {
+                return "";
+            }
+            return channel.InputSession.Id;
+        }
+
+        /// <summary>
+        /// Returns the RealmEntry that belongs to the Channel
+        /// that is performing the current communication.
+        /// Can only be used from remote IPC Channels.
+        /// </summary>
+        public WorldServer GetCurrentServer()
+        {
+            return Manager.GetServerBySessionId(GetCurrentSessionId());
+        }
+
+        public RemoteEndpointMessageProperty GetCurrentEndPoint()
+        {
+            return (RemoteEndpointMessageProperty) OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name];
+        }
+
+        public RegisterResultEnum RegisterWorld(WorldServerData serverData, string remoteIpcAddress)
+        {
+            OperationContext context = OperationContext.Current;
+            if (context == null)
+            {
+                return RegisterResultEnum.ContextNotFound;
+            }
+
+            IContextChannel channel = context.Channel;
+            if (channel == null)
+            {
+                return RegisterResultEnum.ChannelNotFound;
+            }
+
+            string id = GetCurrentSessionId();
+            RemoteEndpointMessageProperty endPoint = GetCurrentEndPoint();
+            WorldServer server;
+
+            RegisterResultEnum result;
+            if (((result = Manager.RequestConnection(serverData, channel, endPoint, id)) != RegisterResultEnum.OK) || (server = GetCurrentServer()) == null)
+            {
+                try
+                {
+                    channel.Close();
+                }
+                catch (Exception)
+                {
+                }
+
+                return result != RegisterResultEnum.OK ? result : RegisterResultEnum.UnknownError;
+            }
+
+            try
+            {
+                var binding = new NetTcpBinding {Security = {Mode = SecurityMode.None}};
+                var remoteClient = new WorldClientAdapter(binding, new EndpointAddress(remoteIpcAddress));
+                remoteClient.Open();
+                server.RemoteOperations = remoteClient;
+            }
+            catch (Exception)
+            {
+                logger.Error("Cannot retrieve remote object from server {0} localized at {1}", serverData.Name, remoteIpcAddress);
+                Manager.RemoveWorld(server);
+
+                return RegisterResultEnum.IpcConnectionFailed;
+            }
+
+            return RegisterResultEnum.OK;
+        }
+
+        public void UnRegisterWorld()
+        {
+            Manager.RemoveWorld(GetCurrentServer());
+        }
+
+        public bool PingConnection()
         {
             // Do nothing. The framework will throw an exception on the remote end if we didn't pong.
+            WorldServer server = GetCurrentServer();
 
-            if (!Manager.CheckWorldAccess(wsi))
+            if (!Manager.CheckWorldAccess(server))
                 return false;
 
-            return Manager.DoPing(wsi.Id);
+            return Manager.DoPing(server);
         }
 
-        public AccountData GetAccountByTicket(WorldServerData wsi, string ticket)
+        public void ChangeState(ServerStatusEnum state)
         {
-            if (!Manager.CheckWorldAccess(wsi))
-                return null;
+            Manager.ChangeWorldState(GetCurrentServer(), state);
+        }
 
-            var account = AccountManager.Instance.FindRegisteredAccountByTicket(ticket);
-            
+        public void UpdateConnectedChars(int value)
+        {
+            WorldServer server = GetCurrentServer();
+
+            server.CharsCount = value;
+
+            if (server.CharsCount >= server.CharCapacity &&
+                server.Status == ServerStatusEnum.ONLINE)
+            {
+                Manager.ChangeWorldState(server, ServerStatusEnum.FULL);
+            }
+
+            if (server.CharsCount < server.CharCapacity &&
+                server.Status == ServerStatusEnum.FULL)
+            {
+                Manager.ChangeWorldState(server, ServerStatusEnum.ONLINE);
+            }
+        }
+
+        public AccountData GetAccountByTicket(string ticket)
+        {
+            Account account = AccountManager.Instance.FindRegisteredAccountByTicket(ticket);
+
             if (account == null)
                 return null;
 
             return account.Serialize();
         }
 
-        public AccountData GetAccountByNickname(WorldServerData wsi, string nickname)
+        public AccountData GetAccountByNickname(string nickname)
         {
-            if (!Manager.CheckWorldAccess(wsi))
-                return null;
-
             return Account.FindAccountByNickname(nickname.ToLower()).Serialize();
         }
 
@@ -98,11 +192,8 @@ namespace Stump.Server.AuthServer.IPC
         /// <param name="modifiedRecord"></param>
         /// <returns></returns>
         /// <remarks>It only considers password, secret question & answer and role</remarks>
-        public bool ModifyAccountByNickname(WorldServerData wsi, string name, AccountData modifiedRecord)
+        public bool ModifyAccountByNickname(string name, AccountData modifiedRecord)
         {
-            if (!Manager.CheckWorldAccess(wsi))
-                return false;
-
             // todo
             Account account = Account.FindAccountByNickname(name.ToLower());
 
@@ -119,11 +210,8 @@ namespace Stump.Server.AuthServer.IPC
             return true;
         }
 
-        public bool CreateAccount(WorldServerData wsi, AccountData accountData)
+        public bool CreateAccount(AccountData accountData)
         {
-            if (!Manager.CheckWorldAccess(wsi))
-                return false;
-
             var account = new Account
                               {
                                   Id = accountData.Id,
@@ -142,11 +230,8 @@ namespace Stump.Server.AuthServer.IPC
             return AccountManager.Instance.CreateAccount(account);
         }
 
-        public bool DeleteAccount(WorldServerData wsi, string accountname)
+        public bool DeleteAccount(string accountname)
         {
-            if (!Manager.CheckWorldAccess(wsi))
-                return false;
-
             Account account = Account.FindAccountByLogin(accountname);
 
             if (account == null)
@@ -157,13 +242,10 @@ namespace Stump.Server.AuthServer.IPC
             return AccountManager.Instance.DeleteAccount(account);
         }
 
-        public bool AddAccountCharacter(WorldServerData wsi, uint accountId, uint characterId)
+        public bool AddAccountCharacter(uint accountId, uint characterId)
         {
-            if (!Manager.CheckWorldAccess(wsi))
-                return false;
-
-            var account = Account.FindAccountById(accountId);
-            var world = Manager.GetWorldServer(wsi.Id);
+            Account account = Account.FindAccountById(accountId);
+            WorldServer world = GetCurrentServer();
 
             if (account == null || world == null)
                 return false;
@@ -171,13 +253,10 @@ namespace Stump.Server.AuthServer.IPC
             return AccountManager.Instance.AddAccountCharacter(account, world, characterId);
         }
 
-        public bool DeleteAccountCharacter(WorldServerData wsi, uint accountId, uint characterId)
+        public bool DeleteAccountCharacter(uint accountId, uint characterId)
         {
-            if (!Manager.CheckWorldAccess(wsi))
-                return false;
-
-            var account = Account.FindAccountById(accountId);
-            var world = Manager.GetWorldServer(wsi.Id);
+            Account account = Account.FindAccountById(accountId);
+            WorldServer world = GetCurrentServer();
 
             if (account == null || world == null)
                 return false;
@@ -185,24 +264,21 @@ namespace Stump.Server.AuthServer.IPC
             return AccountManager.Instance.DeleteAccountCharacter(account, world, characterId);
         }
 
-        public bool BlamAccount(WorldServerData wsi, uint victimAccountId, uint bannerAccountId, TimeSpan duration, string reason)
+        public bool BlamAccountFrom(uint victimAccountId, uint bannerAccountId, TimeSpan duration, string reason)
         {
-            if (!Manager.CheckWorldAccess(wsi))
-                return false;
-
-            var victimAccount = Account.FindAccountById(victimAccountId);
-            var bannerAccount = Account.FindAccountById(bannerAccountId);
+            Account victimAccount = Account.FindAccountById(victimAccountId);
+            Account bannerAccount = Account.FindAccountById(bannerAccountId);
 
             if (victimAccount == null || bannerAccount == null)
                 return false;
 
             var record = new Sanction
-            {
-                Account = victimAccount,
-                BannedBy = bannerAccount,
-                BanReason = reason,
-                Duration = duration
-            };
+                             {
+                                 Account = victimAccount,
+                                 BannedBy = bannerAccount,
+                                 BanReason = reason,
+                                 Duration = duration
+                             };
             record.Create();
 
             // todo : check if it is necessary
@@ -213,22 +289,19 @@ namespace Stump.Server.AuthServer.IPC
         }
 
 
-        public bool BlamAccount(WorldServerData wsi, uint victimAccountId, TimeSpan duration, string reason)
+        public bool BlamAccount(uint victimAccountId, TimeSpan duration, string reason)
         {
-            if (!Manager.CheckWorldAccess(wsi))
-                return false;
-
-            var victimAccount = Account.FindAccountById(victimAccountId);
+            Account victimAccount = Account.FindAccountById(victimAccountId);
 
             if (victimAccount == null)
                 return false;
 
             var record = new Sanction
-            {
-                Account = victimAccount,
-                BanReason = reason,
-                Duration = duration
-            };
+                             {
+                                 Account = victimAccount,
+                                 BanReason = reason,
+                                 Duration = duration
+                             };
             record.Create();
 
             // todo : check if it is necessary
@@ -238,34 +311,23 @@ namespace Stump.Server.AuthServer.IPC
             return true;
         }
 
-        public bool BanIp(WorldServerData wsi, string ipToBan, uint bannerAccountId, TimeSpan duration, string reason)
+        public bool BanIp(string ipToBan, uint bannerAccountId, TimeSpan duration, string reason)
         {
-            if (!Manager.CheckWorldAccess(wsi))
-                return false;
+            Account bannerAccount = Account.FindAccountById(bannerAccountId);
 
-            var bannerAccount = Account.FindAccountById(bannerAccountId);
-
-            if ( bannerAccount == null)
+            if (bannerAccount == null)
                 return false;
 
             var record = new IpBan
-            {
-                Ip = ipToBan,
-                BannedBy = bannerAccount,
-                BanReason = reason,
-                Duration = duration
-            };
+                             {
+                                 Ip = ipToBan,
+                                 BannedBy = bannerAccount,
+                                 BanReason = reason,
+                                 Duration = duration
+                             };
             record.Create();
 
             return true;
-        }
-
-        #endregion
-
-        public override object InitializeLifetimeService()
-        {
-            // Mean it's illimited.
-            return null;
         }
     }
 }

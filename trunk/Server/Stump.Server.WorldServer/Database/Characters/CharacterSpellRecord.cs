@@ -1,4 +1,5 @@
 ﻿using Castle.ActiveRecord;
+using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Spells;
 
@@ -17,8 +18,8 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        [BelongsTo("CharacterId")]
-        public CharacterRecord Character
+        [Property("OwnerId")]
+        public int OwnerId
         {
             get;
             set;
@@ -43,6 +44,11 @@ namespace Stump.Server.WorldServer.Database.Characters
         {
             get;
             set;
+        }
+
+        public static CharacterSpellRecord[] FindAllByOwner(int ownerId)
+        {
+            return FindAll(Restrictions.Eq("OwnerId", ownerId));
         }
 
         public override string ToString()

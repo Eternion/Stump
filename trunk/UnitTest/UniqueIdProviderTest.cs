@@ -1,42 +1,31 @@
-﻿using System.Threading;
-using Stump.Core.Pool;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Stump.Core.Pool;
 
 namespace UnitTest
 {
-    
-    
     /// <summary>
     ///This is a test class for UniqueIdProviderTest and is intended
     ///to contain all UniqueIdProviderTest Unit Tests
     ///</summary>
-    [TestClass()]
+    [TestClass]
     public class UniqueIdProviderTest
     {
-
-
-        private TestContext testContextInstance;
-
         /// <summary>
         ///Gets or sets the test context which provides
         ///information about and functionality for the current test run.
         ///</summary>
         public TestContext TestContext
         {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
+            get;
+            set;
         }
 
         #region Additional test attributes
+
         // 
         //You can use the following additional attributes as you write your tests:
         //
@@ -64,36 +53,47 @@ namespace UnitTest
         //{
         //}
         //
-        #endregion
 
+        #endregion
 
         /// <summary>
         ///A test for UniqueIdProvider Constructor
         ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void InterCrossIdProvider()
         {
             var provider = new UniqueIdProvider();
             var providedIds = new List<int>();
 
-            ThreadStart getId = () => providedIds.Add(provider.Pop());
-            for (int m = 0; m < 100; m++)
-            {
+            ParameterizedThreadStart removeId = id =>
+                                                    {
+                                                        providedIds.Remove((int) id);
 
-                for (int i = 0; i < 1000; i++)
-                {
-                    var thread = new Thread(getId);
-                    thread.Start();
-                }
+                                                        provider.Push((int) id);
+                                                        Debug.WriteLine("Pushed : " + id);
+                                                    };
 
-                Thread.Sleep(100);
+            ThreadStart getId = () =>
+                                    {
+                                        var thread2 = new Thread(removeId);
 
-                Assert.IsTrue(providedIds.Distinct().Count() == providedIds.Count());
+                                        for (int i = 0; i < 100; i++)
+                                        {
+                                            int id = provider.Pop();
+                                            Debug.WriteLine("Popped : " + id);
 
-                providedIds.Clear();
-            }
+                                            providedIds.Add(id);
 
+                                            if (i > 1)
+                                                thread2.Start(providedIds.Last());
+                                        }
+                                    };
+
+            var thread = new Thread(getId);
+            thread.Start();
+            thread.Join();
+
+            Assert.IsTrue(providedIds.Distinct().Count() == providedIds.Count());
         }
-
     }
 }

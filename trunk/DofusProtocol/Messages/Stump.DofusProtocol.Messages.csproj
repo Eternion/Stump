@@ -12,6 +12,7 @@
     <AssemblyName>Stump.DofusProtocol.Messages</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -82,6 +83,31 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>False</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>False</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>DoNotBuild</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -121,18 +147,15 @@
     <Compile Include="Messages\common\basic\BasicPingMessage.cs" />
     <Compile Include="Messages\common\basic\BasicPongMessage.cs" />
     <Compile Include="Messages\common\NetworkDataContainerMessage.cs" />
+    <Compile Include="Messages\connection\CredentialsAcknowledgementMessage.cs" />
     <Compile Include="Messages\connection\HelloConnectMessage.cs" />
     <Compile Include="Messages\connection\IdentificationAccountForceMessage.cs" />
-    <Compile Include="Messages\connection\IdentificationAccountForceWithServerIdMessage.cs" />
     <Compile Include="Messages\connection\IdentificationFailedBannedMessage.cs" />
     <Compile Include="Messages\connection\IdentificationFailedForBadVersionMessage.cs" />
     <Compile Include="Messages\connection\IdentificationFailedMessage.cs" />
     <Compile Include="Messages\connection\IdentificationMessage.cs" />
     <Compile Include="Messages\connection\IdentificationSuccessMessage.cs" />
     <Compile Include="Messages\connection\IdentificationSuccessWithLoginTokenMessage.cs" />
-    <Compile Include="Messages\connection\IdentificationWithLoginTokenAndServerIdMessage.cs" />
-    <Compile Include="Messages\connection\IdentificationWithLoginTokenMessage.cs" />
-    <Compile Include="Messages\connection\IdentificationWithServerIdMessage.cs" />
     <Compile Include="Messages\connection\register\NicknameAcceptedMessage.cs" />
     <Compile Include="Messages\connection\register\NicknameChoiceRequestMessage.cs" />
     <Compile Include="Messages\connection\register\NicknameRefusedMessage.cs" />
@@ -170,6 +193,9 @@
     <Compile Include="Messages\game\actions\fight\GameActionFightInvisibleObstacleMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightInvisibleTacklerMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightKillMessage.cs" />
+    <Compile Include="Messages\game\actions\fight\GameActionFightLifeAndShieldPointsLostMessage.cs" />
+    <Compile Include="Messages\game\actions\fight\GameActionFightLifePointsGainMessage.cs" />
+    <Compile Include="Messages\game\actions\fight\GameActionFightLifePointsLostMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightLifePointsVariationMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightMarkCellsMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightModifyEffectsDurationMessage.cs" />
@@ -285,6 +311,7 @@
     <Compile Include="Messages\game\context\fight\challenge\ChallengeTargetsListMessage.cs" />
     <Compile Include="Messages\game\context\fight\challenge\ChallengeTargetsListRequestMessage.cs" />
     <Compile Include="Messages\game\context\fight\challenge\ChallengeTargetUpdateMessage.cs" />
+    <Compile Include="Messages\game\context\fight\character\GameFightRefreshFighterMessage.cs" />
     <Compile Include="Messages\game\context\fight\character\GameFightShowFighterMessage.cs" />
     <Compile Include="Messages\game\context\fight\character\GameFightShowFighterRandomStaticPoseMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightEndMessage.cs" />
@@ -310,6 +337,7 @@
     <Compile Include="Messages\game\context\fight\GameFightTurnListMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightTurnReadyMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightTurnReadyRequestMessage.cs" />
+    <Compile Include="Messages\game\context\fight\GameFightTurnResumeMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightTurnStartMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightTurnStartSlaveMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightUpdateTeamMessage.cs" />
@@ -346,6 +374,7 @@
     <Compile Include="Messages\game\context\mount\MountFeedRequestMessage.cs" />
     <Compile Include="Messages\game\context\mount\MountInformationInPaddockRequestMessage.cs" />
     <Compile Include="Messages\game\context\mount\MountInformationRequestMessage.cs" />
+    <Compile Include="Messages\game\context\mount\MountReleasedMessage.cs" />
     <Compile Include="Messages\game\context\mount\MountReleaseRequestMessage.cs" />
     <Compile Include="Messages\game\context\mount\MountRenamedMessage.cs" />
     <Compile Include="Messages\game\context\mount\MountRenameRequestMessage.cs" />
@@ -509,6 +538,7 @@
     <Compile Include="Messages\game\context\roleplay\party\PartyMemberRemoveMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyModifiableStatusMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyNewGuestMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\party\PartyNewMemberMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyPledgeLoyaltyRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyRefuseInvitationMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyRefuseInvitationNotificationMessage.cs" />

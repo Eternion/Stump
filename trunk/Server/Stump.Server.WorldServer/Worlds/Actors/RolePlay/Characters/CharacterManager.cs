@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Castle.ActiveRecord;
+using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
@@ -13,6 +14,7 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Items;
+using Stump.Server.WorldServer.Database.Shortcuts;
 using Stump.Server.WorldServer.Worlds.Breeds;
 using Stump.Server.WorldServer.Worlds.Spells;
 
@@ -20,6 +22,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 {
     public class CharacterManager : Singleton<CharacterManager>
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         ///   Maximum number of characters you can create/store in your account
         /// </summary>
@@ -42,9 +46,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                                                            catch (NotFoundException)
                                                            {
                                                                // character do not exist, then we remove it from the auth database
-                                                               WorldServer.Instance.IOTaskPool.EnqueueTask(() =>
+                                                               WorldServer.Instance.IOTaskPool.AddMessage(() =>
                                                                                                            IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(
-                                                                                                               WorldServer.ServerInformation,
                                                                                                                client.Account.Id,
                                                                                                                id));
                                                                return null;
@@ -90,7 +93,10 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             EntityLook look = !sex ? breed.MaleLook.Copy() : breed.FemaleLook.Copy();
             look.indexedColors = indexedColors;
 
-            var record = new CharacterRecord(breed)
+            CharacterRecord record;
+            using (var session = new SessionScope(FlushAction.Never))
+            {
+                record = new CharacterRecord(breed)
                              {
                                  Experience = ExperienceManager.Instance.GetCharacterLevelExperience(breed.StartLevel),
                                  Name = name,
@@ -98,32 +104,39 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                                  EntityLook = look,
                              };
 
-            record.Save(); // is it a good way ?
+                record.Save();
 
-            var inventory = new InventoryRecord(record);
-            record.Inventory = inventory;
-            inventory.Save();
-            // add items here
+                // add items here
 
-            var spells = new List<CharacterSpellRecord>();
-            foreach (LearnableSpell learnableSpell in breed.LearnableSpells.Where(entry => entry.ObtainLevel <= breed.StartLevel))
-            {
-                CharacterSpellRecord spellRecord = SpellManager.Instance.CreateSpellRecord(record, SpellManager.Instance.GetSpellTemplate(learnableSpell.SpellId));
-                spellRecord.Save();
-                spells.Add(spellRecord);
+                IOrderedEnumerable<LearnableSpell> spellsToLearn = from spell in breed.LearnableSpells
+                                                                   where spell.ObtainLevel <= breed.StartLevel
+                                                                   orderby spell.ObtainLevel , spell.SpellId ascending
+                                                                   select spell;
+
+                int slot = 0;
+                foreach (LearnableSpell learnableSpell in spellsToLearn)
+                {
+                    CharacterSpellRecord spellRecord = SpellManager.Instance.CreateSpellRecord(record, SpellManager.Instance.GetSpellTemplate(learnableSpell.SpellId));
+                    spellRecord.Save();
+
+                    var shortcut = new SpellShortcut(record, slot, (short) spellRecord.SpellId);
+                    shortcut.Save();
+                    slot++;
+                }
+
+                session.Flush();
             }
-
-            record.Spells = spells;
 
             if (client.Characters == null)
                 client.Characters = new List<CharacterRecord>();
 
-
             client.Characters.Insert(0, record);
 
-            WorldServer.Instance.IOTaskPool.EnqueueTask(() => IpcAccessor.Instance.ProxyObject.AddAccountCharacter(WorldServer.ServerInformation,
-                                                                                                                   client.Account.Id,
-                                                                                                                   (uint) record.Id));
+            IpcAccessor.Instance.ProxyObject.AddAccountCharacter(client.Account.Id,
+                                                                 (uint) record.Id);
+
+            logger.Debug("Character {0} created", record.Name);
+            
 
             return CharacterCreationResultEnum.OK;
         }
@@ -133,8 +146,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             character.Delete();
             client.Characters.Remove(character);
 
-            WorldServer.Instance.IOTaskPool.EnqueueTask(
-                () => IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(WorldServer.ServerInformation, client.Account.Id, (uint) character.Id));
+            WorldServer.Instance.IOTaskPool.AddMessage(
+                () => IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(client.Account.Id, (uint) character.Id));
         }
 
         #region Character Name Random Generation

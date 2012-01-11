@@ -6,6 +6,7 @@ using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Database.I18n;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
 
 namespace Stump.Server.WorldServer.Database.Monsters
 {
@@ -13,9 +14,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
     [D2OClass("Monster", "com.ankamagames.dofus.datacenter.monsters")]
     public sealed class MonsterTemplate : WorldBaseRecord<MonsterTemplate>
     {
-        private IList<DroppableItem> m_droppableItems;
         private EntityLook m_entityLook;
-        private IList<MonsterGrade> m_grades;
         private string m_lookAsString;
         private string m_name;
 
@@ -70,18 +69,22 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
-        [HasMany]
-        public IList<DroppableItem> DroppableItems
+        private List<DroppableItem> m_droppableItems;
+        public List<DroppableItem> DroppableItems
         {
-            get { return m_droppableItems ?? (m_droppableItems = new List<DroppableItem>()); }
-            set { m_droppableItems = value; }
+            get
+            {
+                return m_droppableItems ?? ( m_droppableItems = MonsterManager.Instance.GetMonsterDroppableItems(Id) );
+            }
         }
 
-        [HasMany]
-        public IList<MonsterGrade> Grades
+        private List<MonsterGrade> m_grades;
+        public List<MonsterGrade> Grades
         {
-            get { return m_grades ?? (m_grades = new List<MonsterGrade>()); }
-            set { m_grades = value; }
+            get
+            {
+                return m_grades ?? ( m_grades = MonsterManager.Instance.GetMonsterGrades(Id) );
+            }
         }
 
         [D2OField("look")]

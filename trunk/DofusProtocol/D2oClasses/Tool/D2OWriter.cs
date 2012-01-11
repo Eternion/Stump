@@ -123,7 +123,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
         }
 
         /// <summary>
-        /// End editing of the d2o file, flush the file and dispose ressources
+        /// Stop editing the d2o file, flush the file and dispose ressources
         /// </summary>
         public void EndWriting()
         {

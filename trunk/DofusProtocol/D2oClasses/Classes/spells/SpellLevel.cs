@@ -20,12 +20,15 @@ namespace Stump.DofusProtocol.D2oClasses
 		public uint criticalHitProbability;
 		public uint criticalFailureProbability;
 		public Boolean needFreeCell;
+		public Boolean needTakenCell;
 		public Boolean needFreeTrapCell;
 		public Boolean rangeCanBeBoosted;
+		public int maxStack;
 		public uint maxCastPerTurn;
 		public uint maxCastPerTarget;
 		public uint minCastInterval;
 		public uint initialCooldown;
+		public int globalCooldown;
 		public uint minPlayerLevel;
 		public Boolean criticalFailureEndsTurn;
 		public Boolean hideEffects;

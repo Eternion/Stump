@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Effects.Instances;
@@ -10,6 +11,8 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Items
     [DefaultEffectHandler]
     public class DefaultItemEffect : ItemEffectHandler
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         #region Delegates
 
         public delegate void EffectComputeHandler(Character target, EffectInteger effect);
@@ -308,19 +311,32 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Items
             if (!(Effect is EffectInteger))
                 return;
 
-            EffectComputeHandler handler = null;
+            EffectComputeHandler handler;
 
+            CaracteristicsEnum caracteritic;
             if (m_addEffectsBinds.ContainsKey(Effect.EffectId))
             {
-                var caracteritic = m_addEffectsBinds[Effect.EffectId];
+                caracteritic = m_addEffectsBinds[Effect.EffectId];
+
+                if (!m_addMethods.ContainsKey(caracteritic) ||
+                    !m_subMethods.ContainsKey(caracteritic))
+                    return;
 
                 handler = Equiped ? m_addMethods[caracteritic] : m_subMethods[caracteritic];
             }
             else if (m_subEffectsBinds.ContainsKey(Effect.EffectId))
             {
-                var caracteritic = m_addEffectsBinds[Effect.EffectId];
+                caracteritic = m_subEffectsBinds[Effect.EffectId];
+
+                if (!m_addMethods.ContainsKey(caracteritic) ||
+                    !m_subMethods.ContainsKey(caracteritic))
+                    return;
 
                 handler = Equiped ? m_subMethods[caracteritic] : m_addMethods[caracteritic];
+            }
+            else
+            {
+                return;
             }
 
             if (handler != null)

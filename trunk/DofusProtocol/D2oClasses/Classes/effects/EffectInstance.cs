@@ -8,7 +8,9 @@ namespace Stump.DofusProtocol.D2oClasses
 		public uint effectId;
 		public int targetId;
 		public int duration;
+		public int delay;
 		public int random;
+		public int group;
 		public int modificator;
 		public Boolean trigger;
 		public Boolean hidden;

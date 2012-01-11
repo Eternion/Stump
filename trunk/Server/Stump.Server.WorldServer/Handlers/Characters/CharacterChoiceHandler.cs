@@ -6,6 +6,7 @@ using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Characters;
@@ -24,14 +25,14 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 {
     public partial class CharacterHandler
     {
-        [WorldHandler(CharacterFirstSelectionMessage.Id)]
+        [WorldHandler(CharacterFirstSelectionMessage.Id, RequiresLogin = false, IsGamePacket = false)]
         public static void HandleCharacterFirstSelectionMessage(WorldClient client, CharacterFirstSelectionMessage message)
         {
             // TODO ADD TUTORIAL EFFECTS
             HandleCharacterSelectionMessage(client, message);
         }
 
-        [WorldHandler(CharacterSelectionMessage.Id)]
+        [WorldHandler(CharacterSelectionMessage.Id, RequiresLogin = false, IsGamePacket = false)]
         public static void HandleCharacterSelectionMessage(WorldClient client, CharacterSelectionMessage message)
         {
             CharacterRecord character = client.Characters.First(entry => entry.Id == message.id);
@@ -47,7 +48,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             CommonCharacterSelection(client, character);
         }
 
-        [WorldHandler(CharacterSelectionWithRecolorMessage.Id)]
+        [WorldHandler(CharacterSelectionWithRecolorMessage.Id, RequiresLogin = false, IsGamePacket = false)]
         public static void HandleCharacterSelectionWithRecolorMessage(WorldClient client, CharacterSelectionWithRecolorMessage message)
         {
             CharacterRecord character = client.Characters.First(entry => entry.Id == message.id);
@@ -67,7 +68,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             CommonCharacterSelection(client, character);
         }
 
-        [WorldHandler(CharacterSelectionWithRenameMessage.Id)]
+        [WorldHandler(CharacterSelectionWithRenameMessage.Id, RequiresLogin = false, IsGamePacket = false)]
         public static void HandleCharacterSelectionWithRenameMessage(WorldClient client, CharacterSelectionWithRenameMessage message)
         {
             CharacterRecord character = client.Characters.First(entry => entry.Id == message.id);
@@ -136,13 +137,12 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             BasicHandler.SendTextInformationMessage(client, 1, 89);
             if (client.Account.LastConnection != default(DateTime))
-                BasicHandler.SendTextInformationMessage(client, 0, 152,
+                BasicHandler.SendTextInformationMessage(client, 0, 193,
                                                         client.Account.LastConnection.Year,
                                                         client.Account.LastConnection.Month,
                                                         client.Account.LastConnection.Day,
                                                         client.Account.LastConnection.Hour,
-                                                        client.Account.LastConnection.Minute,
-                                                        client.Account.LastConnectionIp ?? "(null)");
+                                                        client.Account.LastConnection.Minute.ToString("00"));
 
             //InitializationHandler.SendOnConnectionEventMessage(client, 2);
 
@@ -154,7 +154,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             client.WorldAccount.Update();
         }
 
-        [WorldHandler(CharactersListRequestMessage.Id)]
+        [WorldHandler(CharactersListRequestMessage.Id, RequiresLogin = false, IsGamePacket = false)]
         public static void HandleCharacterListRequest(WorldClient client, CharactersListRequestMessage message)
         {
             if (client.Account != null && client.Account.Login != "")
@@ -181,7 +181,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     characterRecord.Sex != SexTypeEnum.SEX_MALE)).ToList();
 
             client.Send(new CharactersListMessage(
-                            client.WorldAccount != null && client.WorldAccount.StartupActions.Count != 0,
+                            false,
                             characters
                             ));
         }
@@ -215,7 +215,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     unusableCharacters.Add(characterRecord.Id);
                 }
             }
-            client.Send(new CharactersListWithModificationsMessage(client.WorldAccount.StartupActions.Count != 0,
+            client.Send(new CharactersListWithModificationsMessage(false,
                                                                    characterBaseInformations,
                                                                    charactersToRecolor,
                                                                    charactersToRename,

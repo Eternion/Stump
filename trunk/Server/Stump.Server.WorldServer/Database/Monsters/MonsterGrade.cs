@@ -2,15 +2,14 @@ using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
 
 namespace Stump.Server.WorldServer.Database.Monsters
 {
     [ActiveRecord("monsters_grades")]
-    [D2OClass("MonsterGrade", "com.ankamagames.dofus.datacenter.monsters", AutoBuild = false)]
+    [D2OClass("MonsterGrade", "com.ankamagames.dofus.datacenter.monsters")]
     public class MonsterGrade : WorldBaseRecord<MonsterGrade>
     {
-        private IList<MonsterSpell> m_spells;
-
         [PrimaryKey(PrimaryKeyType.Native)]
         public int Id
         {
@@ -35,11 +34,25 @@ namespace Stump.Server.WorldServer.Database.Monsters
         }
 
         [D2OField("monsterId")]
-        [BelongsTo("MonsterId")]
-        public MonsterTemplate Template
+        [Property("MonsterId")]
+        public int MonsterId
         {
             get;
             set;
+        }
+
+        private MonsterTemplate m_template;
+        public MonsterTemplate Template
+        {
+            get
+            {
+                return m_template ?? ( m_template = MonsterManager.Instance.GetTemplate(MonsterId) );
+            }
+            set
+            {
+                m_template = value;
+                MonsterId = value.Id;
+            }
         }
 
         [D2OField("level")]
@@ -151,11 +164,14 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
-        [Property("Wisdom")]
+        [D2OField("wisdom")]
+        [Field("Wisdom")]
+        private int m_wisdom;
+
         public short Wisdom
         {
-            get;
-            set;
+            get { return (short) m_wisdom; }
+            set { m_wisdom = value; }
         }
 
         [Property("Intelligence")]
@@ -172,11 +188,13 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
-        [HasMany(typeof (MonsterSpell), Cascade = ManyRelationCascadeEnum.Delete)]
-        public IList<MonsterSpell> Spells
+        private List<MonsterSpell> m_spells;
+        public List<MonsterSpell> Spells
         {
-            get { return m_spells ?? new List<MonsterSpell>(); }
-            set { m_spells = value; }
+            get
+            {
+                return m_spells ?? ( m_spells = MonsterManager.Instance.GetMonsterGradeSpells(Id) );
+            }
         }
     }
 }

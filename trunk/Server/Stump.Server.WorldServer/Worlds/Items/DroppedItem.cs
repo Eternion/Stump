@@ -19,10 +19,5 @@ namespace Stump.Server.WorldServer.Worlds.Items
             get;
             set;
         }
-
-        public Item GenerateItem()
-        {
-            return ItemManager.Instance.Create(ItemId, Amount);
-        }
     }
 }

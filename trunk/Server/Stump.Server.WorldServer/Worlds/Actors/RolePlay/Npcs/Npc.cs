@@ -1,8 +1,11 @@
+using System;
+using Stump.Core.Cache;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
 {
@@ -14,6 +17,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
             Template = template;
             Position = position;
             Look = look;
+
+            m_gameContextActorInformations = new ObjectValidator<GameContextActorInformations>(BuildGameContextActorInformations);
         }
 
         public NpcTemplate Template
@@ -39,6 +44,14 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
             protected set;
         }
 
+        public void Refresh()
+        {
+            m_gameContextActorInformations.Invalidate();
+
+            if (Map != null)
+                Map.Refresh(this);
+        }
+
         public void InteractWith(NpcActionTypeEnum actionType, Character dialoguer)
         {
             if (!CanInteractWith(actionType, dialoguer))
@@ -51,7 +64,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
 
         public bool CanInteractWith(NpcActionTypeEnum action, Character dialoguer)
         {
-            return Template.ActionsIds.Contains((uint)action) && dialoguer.Map == Position.Map && Template.GetNpcAction(action) != null;
+            return dialoguer.Map == Position.Map && Template.GetNpcAction(action) != null;
         }
 
         public void SpeakWith(Character dialoguer)
@@ -59,10 +72,14 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
             if (!CanInteractWith(NpcActionTypeEnum.ACTION_TALK, dialoguer))
                 return;
 
-
+            InteractWith(NpcActionTypeEnum.ACTION_TALK, dialoguer);
         }
 
-        public override GameContextActorInformations GetGameContextActorInformations()
+        #region GameContextActorInformations
+
+        private readonly ObjectValidator<GameContextActorInformations> m_gameContextActorInformations;
+
+        private GameContextActorInformations BuildGameContextActorInformations()
         {
             return new GameRolePlayNpcInformations(Id,
                                                    Look,
@@ -70,6 +87,18 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
                                                    (short)Template.Id,
                                                    Template.Gender != 0,
                                                    Template.SpecialArtworkId);
+        }
+
+        public override GameContextActorInformations GetGameContextActorInformations()
+        {
+            return m_gameContextActorInformations;
+        }
+
+        #endregion
+
+        public override string ToString()
+        {
+            return string.Format("{0} ({1})", Template.Name, Template.Id);
         }
     }
 }

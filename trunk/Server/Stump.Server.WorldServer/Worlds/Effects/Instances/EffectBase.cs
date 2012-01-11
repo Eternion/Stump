@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
@@ -24,17 +25,29 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
             get { return 76; }
         }
 
+        public virtual byte SerializationIdenfitier
+        {
+            get { return 1; }
+        }
+
+        public EffectBase()
+        {
+            
+        }
+
         public EffectBase(short id)
         {
             Id = id;
             m_template = EffectManager.Instance.GetTemplate(id);
         }
 
-        public EffectBase(short id, int targetId, int duration, int random, int modificator, bool trigger, bool hidden, uint zoneSize, uint zoneShape)
+        public EffectBase(short id, int targetId, int duration, int delay, int random, int group, int modificator, bool trigger, bool hidden, uint zoneSize, uint zoneShape)
         {
             Id = id;
             Targets = (SpellTargetType) targetId;
+            Delay = delay;
             Duration = duration;
+            Group = group;
             Random = random;
             Modificator = modificator;
             Trigger = trigger;
@@ -49,7 +62,9 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
             m_template = EffectManager.Instance.GetTemplate(Id);
 
             Targets = (SpellTargetType) effect.targetId;
+            Delay = effect.delay;
             Duration = effect.duration;
+            Group = effect.group;
             Random = effect.random;
             Modificator = effect.modificator;
             Trigger = effect.trigger;
@@ -90,7 +105,19 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
             set;
         }
 
+        public int Delay
+        {
+            get;
+            set;
+        }
+
         public int Random
+        {
+            get;
+            set;
+        }
+
+        public int Group
         {
             get;
             set;
@@ -141,14 +168,83 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
             return new ObjectEffect(Id);
         }
 
-        public static byte[] Serialize(EffectBase effect)
+        public byte[] Serialize()
         {
-            return effect.ToBinary();
+            var writer = new BinaryWriter(new MemoryStream());
+
+            writer.Write(SerializationIdenfitier);
+
+            InternalSerialize(ref writer);
+
+            return ( (MemoryStream) writer.BaseStream ).ToArray();
         }
 
-        public static EffectBase DeSerialize(byte[] buffer)
+        protected virtual void InternalSerialize(ref BinaryWriter writer)
         {
-            return buffer.ToObject<EffectBase>();
+            if ((int)Targets == 0 &&
+                Duration == 0 &&
+                Delay == 0 &&
+                Random == 0 &&
+                Group == 0 &&
+                Modificator == 0 &&
+                Trigger == false &&
+                Hidden == false &&
+                ZoneSize == 0 &&
+                ZoneShape == 0)
+            {
+                writer.Write('C'); // cutted object
+
+                writer.Write(Id);
+            }
+            else
+            {
+                writer.Write((int)Targets);
+                writer.Write(Id); // writer id second 'cause targets can't equals to 'C' but id can
+                writer.Write(Duration);
+                writer.Write(Delay);
+                writer.Write(Random);
+                writer.Write(Group);
+                writer.Write(Modificator);
+                writer.Write(Trigger);
+                writer.Write(Hidden);
+                writer.Write(ZoneSize);
+                writer.Write(ZoneShape);
+            }
+        }
+
+        /// <summary>
+        /// Use EffectManager.Deserialize
+        /// </summary>
+        internal void DeSerialize(byte[] buffer, ref int index)
+        {
+            var reader = new BinaryReader(new MemoryStream(buffer, index, buffer.Length - index));
+
+            InternalDeserialize(ref reader);
+
+            index += (int)reader.BaseStream.Position;
+        }
+
+        protected virtual void InternalDeserialize(ref BinaryReader reader)
+        {
+            if (reader.PeekChar() == 'C')
+            {
+                reader.ReadChar();
+                Id = reader.ReadInt16();
+            }
+            else
+            {
+                Targets = (SpellTargetType)reader.ReadInt32();
+                Id = reader.ReadInt16();
+                Duration = reader.ReadInt32();
+                Delay = reader.ReadInt32();
+                Random = reader.ReadInt32();
+                Group = reader.ReadInt32();
+                Modificator = reader.ReadInt32();
+                Trigger = reader.ReadBoolean();
+                Hidden = reader.ReadBoolean();
+                ZoneSize = reader.ReadUInt32();
+                ZoneShape = reader.ReadUInt32();
+            }
         }
 
         public override bool Equals(object obj)

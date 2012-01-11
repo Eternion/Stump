@@ -60,7 +60,7 @@ namespace Stump.Server.BaseServer.Commands
             SubCommand command;
             if (!TryGetSubCommand(IgnoreCommandCase ? str.ToLower() : str, out command))
             {
-                trigger.ReplyError("Cannot found subcommand {0}", str);
+                HelpCommand.DisplayFullCommandDescription(trigger, this);
                 return;
             }
 

@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Worlds.Dialogs.Npcs;
+using Stump.Server.WorldServer.Worlds.Items;
 
 namespace Stump.Server.WorldServer.Database.Npcs.Actions
 {
@@ -14,13 +15,13 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private IList<NpcItem> m_items;
-
-        [HasMany(typeof (NpcItem))]
-        public IList<NpcItem> Items
+        private List<NpcItem> m_items;
+        public List<NpcItem> Items
         {
-            get { return m_items ?? (m_items = new List<NpcItem>()); }
-            set { m_items = value; }
+            get
+            {
+                return m_items ?? ( m_items = ItemManager.Instance.GetNpcShopItems(Id) );
+            }
         }
 
         public override NpcActionTypeEnum ActionType

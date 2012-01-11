@@ -10,8 +10,8 @@ namespace Stump.Core.Pool
         }
 
         public ReversedUniqueIdProvider(int lastId)
+            : base(lastId)
         {
-            m_nextId = lastId - 1;
         }
 
         public ReversedUniqueIdProvider(IEnumerable<int> freeIds)
@@ -19,26 +19,9 @@ namespace Stump.Core.Pool
         {
         }
 
-        public override int Pop()
+        protected override int Next()
         {
-            int id;
-
-            if (!m_freeIds.IsEmpty)
-            {
-                if (!m_freeIds.TryDequeue(out id))
-                {
-                    id = m_nextId;
-                    Interlocked.Decrement(ref m_nextId);
-                }
-            }
-            else
-            {
-                id = m_nextId;
-                Interlocked.Decrement(ref m_nextId);
-            }
-
-            return id;
+            return Interlocked.Decrement(ref m_highestId);
         }
-
     }
 }

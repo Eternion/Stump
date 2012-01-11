@@ -30,6 +30,8 @@ using Stump.Server.WorldServer.Worlds.Interactives;
 using Stump.Server.WorldServer.Worlds.Items;
 using Stump.Server.WorldServer.Worlds.Maps.Cells.Triggers;
 using Stump.Tools.Proxy.Data;
+using Stump.Tools.Proxy.Handlers.Auth;
+using Stump.Tools.Proxy.Handlers.World;
 using Stump.Tools.Proxy.Network;
 using Definitions = Stump.Server.BaseServer.Definitions;
 
@@ -57,6 +59,9 @@ namespace Stump.Tools.Proxy
         [Variable]
         public static int RealServerPort = 5555;
 
+        [Variable]
+        public static int IOTaskPoolInterval = 90;
+
 
         private Dictionary<string, Assembly> m_loadedAssemblies;
 
@@ -78,25 +83,13 @@ namespace Stump.Tools.Proxy
             private set;
         }
 
-        public MessageQueue MessageQueue
-        {
-            get;
-            private set;
-        }
-
-        public HandlerManager HandlerManager
-        {
-            get;
-            private set;
-        }
-
         public DatabaseAccessor DatabaseAccessor
         {
             get;
             private set;
         }
 
-        public TaskPool IOTaskPool
+        public SelfRunningTaskQueue IOTaskPool
         {
             get;
             private set;
@@ -106,6 +99,18 @@ namespace Stump.Tools.Proxy
         {
             get;
             set;
+        }
+
+        public AuthPacketHandler AuthHandler
+        {
+            get;
+            private set;
+        }
+
+        public WorldPacketHandler WorldHandler
+        {
+            get;
+            private set;
         }
 
         public void Initialize()
@@ -132,10 +137,11 @@ namespace Stump.Tools.Proxy
                 Config.Load();
 
             logger.Info("Initializing Network Interfaces...");
-            MessageQueue = new MessageQueue(false);
-            HandlerManager = new HandlerManager();
-            HandlerManager.RegisterAll(Assembly.GetExecutingAssembly());
-            IOTaskPool = new TaskPool();
+            AuthHandler = AuthPacketHandler.Instance;
+            AuthHandler.RegisterAll(Assembly.GetExecutingAssembly());
+            WorldHandler = WorldPacketHandler.Instance;
+            WorldHandler.RegisterAll(Assembly.GetExecutingAssembly());
+            IOTaskPool = new SelfRunningTaskQueue(IOTaskPoolInterval, "IO Task Pool");
 
             logger.Info("Initializing Network Messages...");
             MessageReceiver.Initialize();
@@ -195,12 +201,14 @@ namespace Stump.Tools.Proxy
             logger.Info("Start listening on port : " + WorldPort + "...");
             WorldClientManager.Start(WorldAddress, WorldPort);
 
+            WorldClientManager.ClientConnected += client => logger.Info("Client connected : " + client.ToString());
+            WorldClientManager.ClientDisconnected += client => logger.Info("Client disconnected : " + client.ToString());
+
             Running = true;
         }
 
         public void Update()
         {
-            IOTaskPool.ProcessUpdate();
         }
 
         public BaseClient CreateClientAuth(Socket s)

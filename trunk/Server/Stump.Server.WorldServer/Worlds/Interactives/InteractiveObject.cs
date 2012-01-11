@@ -5,16 +5,19 @@ using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Database.Interactives.Skills;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Interactives.Skills;
+using Stump.Server.WorldServer.Worlds.Maps;
+using Stump.Server.WorldServer.Worlds.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Worlds.Interactives
 {
-    public class InteractiveObject
+    public class InteractiveObject : WorldObject
     {
         private readonly Dictionary<int, Skill> m_skills = new Dictionary<int, Skill>();
 
         public InteractiveObject(InteractiveSpawn spawn)
         {
             Spawn = spawn;
+            Position = spawn.GetPosition();
 
             GenerateSkills();
         }
@@ -30,9 +33,10 @@ namespace Stump.Server.WorldServer.Worlds.Interactives
             get { return Template != null; }
         }
 
-        public int Id
+        public override int Id
         {
             get { return Spawn.ElementId; }
+            protected set { Spawn.ElementId = value; }
         }
 
         /// <summary>

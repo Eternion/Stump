@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Worlds.Spells
         {
             return new CharacterSpellRecord
             {
-                Character = owner,
+                OwnerId = owner.Id,
                 Level = 1,
                 Position = 63, // always 63
                 SpellId = template.Id
@@ -47,6 +47,11 @@ namespace Stump.Server.WorldServer.Worlds.Spells
                 return template;
 
             return null;
+        }
+
+        public SpellTemplate GetFirstSpellTemplate(Predicate<SpellTemplate> predicate)
+        {
+            return m_spells.Values.FirstOrDefault(entry => predicate(entry));
         }
 
         public IEnumerable<SpellTemplate> GetSpellTemplates()

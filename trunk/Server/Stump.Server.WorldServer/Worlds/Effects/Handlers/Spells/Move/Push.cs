@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Handlers.Spells.Move
                 {
                     var nextCell = lastCell.GetNearestCellInDirection(pushDirection);
 
-                    if (!Fight.IsCellFree(Map.Cells[nextCell.CellId]))
+                    if (nextCell == null || !Fight.IsCellFree(Map.Cells[nextCell.CellId]))
                     {
                         actor.InflictDamage((short) new AsyncRandom().Next(1, 5), EffectSchoolEnum.Unknown, Caster);
                         break;

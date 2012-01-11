@@ -29,7 +29,6 @@ namespace Stump.Tools.DataLoader
         public FormMain()
         {
             InitializeComponent();
-
             m_firstMenuItem = menuStrip1.Items[0];
         }
 

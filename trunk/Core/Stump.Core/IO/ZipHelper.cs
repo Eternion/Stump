@@ -1,3 +1,4 @@
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.IO.Compression;
 using zlib;
@@ -8,6 +9,7 @@ namespace Stump.Core.IO
     {
         public static byte[] Compress(byte[] data)
         {
+            Contract.Requires(data != null);
             var input = new MemoryStream(data);
             var output = new MemoryStream();
 
@@ -18,6 +20,9 @@ namespace Stump.Core.IO
 
         public static void Compress(Stream input, Stream output)
         {
+            Contract.Requires(input != null);
+            Contract.Requires(output != null);
+
             using (var compressStream = new GZipStream(output, CompressionMode.Compress))
             {
                 input.CopyTo(compressStream);
@@ -26,6 +31,7 @@ namespace Stump.Core.IO
 
         public static byte[] Uncompress(byte[] data)
         {
+            Contract.Requires(data != null);
             var input = new MemoryStream(data);
             var output = new MemoryStream();
 
@@ -36,6 +42,8 @@ namespace Stump.Core.IO
 
         public static void Uncompress(Stream input, Stream output)
         {
+            Contract.Requires(input != null);
+            Contract.Requires(output != null);
             using (var zinput = new GZipStream(input, CompressionMode.Decompress, true))
             {
                 zinput.CopyTo(output);
@@ -44,6 +52,8 @@ namespace Stump.Core.IO
 
         public static void Deflate(Stream input, Stream output)
         {
+            Contract.Requires(input != null);
+            Contract.Requires(output != null);
             var zoutput = new ZOutputStream(output);
             var inputReader = new BinaryReader(input);
 

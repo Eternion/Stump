@@ -10,7 +10,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
     public partial class ConnectionHandler
     {
 
-        [AuthHandler(AcquaintanceSearchMessage.Id, true)]
+        [AuthHandler(AcquaintanceSearchMessage.Id)]
         public static void HandleAcquaintanceSearchMessage(AuthClient client, AcquaintanceSearchMessage message)
         {
             var account = Account.FindAccountByNickname(message.nickname);

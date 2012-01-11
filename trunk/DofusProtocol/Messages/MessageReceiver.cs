@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Stump.Core.IO;
 using Stump.Core.Reflection;
+using System.Runtime.Serialization;
 
 namespace Stump.DofusProtocol.Messages
 {
@@ -55,12 +56,12 @@ namespace Stump.DofusProtocol.Messages
         public static Message BuildMessage(uint id, BigEndianReader reader)
         {
             if (!Messages.ContainsKey(id))
-               throw new KeyNotFoundException(string.Format("Message <id:{0}> doesn't exist", id));
+                throw new MessageNotFoundException(string.Format("Message <id:{0}> doesn't exist", id));
 
             Message message = Constructors[id]();
 
             if (message == null)
-                throw new KeyNotFoundException(string.Format("Constructors[{0}] (delegate {1}) does not exist", id, Messages[id]));
+                throw new MessageNotFoundException(string.Format("Constructors[{0}] (delegate {1}) does not exist", id, Messages[id]));
 
             message.Unpack(reader);
 
@@ -70,9 +71,34 @@ namespace Stump.DofusProtocol.Messages
         public static Type GetMessageType(uint id)
         {
             if (!Messages.ContainsKey(id))
-                throw new KeyNotFoundException(string.Format("Message <id:{0}> doesn't exist", id));
+                throw new MessageNotFoundException(string.Format("Message <id:{0}> doesn't exist", id));
 
             return Messages[id];
+        }
+
+        [Serializable]
+        public class MessageNotFoundException : Exception
+        {
+            public MessageNotFoundException()
+            {
+            }
+
+            public MessageNotFoundException(string message)
+                : base(message)
+            {
+            }
+
+            public MessageNotFoundException(string message, Exception inner)
+                : base(message, inner)
+            {
+            }
+
+            protected MessageNotFoundException(
+                SerializationInfo info,
+                StreamingContext context)
+                : base(info, context)
+            {
+            }
         }
     }
 }

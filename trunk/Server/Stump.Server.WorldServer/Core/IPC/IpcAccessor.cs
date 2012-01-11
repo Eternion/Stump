@@ -1,15 +1,12 @@
 using System;
 using System.Net.Sockets;
-using System.Runtime.Remoting;
-using System.Runtime.Remoting.Channels;
-using System.Runtime.Remoting.Channels.Tcp;
-using System.Threading;
-using System.Threading.Tasks;
+using System.ServiceModel;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Reflection;
-using Stump.Core.Threading;
+using Stump.Core.Timers;
 using Stump.Server.BaseServer.IPC;
+using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.WorldServer.Worlds;
 
 namespace Stump.Server.WorldServer.Core.IPC
@@ -17,83 +14,103 @@ namespace Stump.Server.WorldServer.Core.IPC
     public class IpcAccessor : Singleton<IpcAccessor>, IDisposable
     {
         /// <summary>
-        ///   Delay in seconds where we should retry connecting to remote server.
+        ///   Delay in seconds where we should retry connecting to remote server. (in seconds)
         /// </summary>
         [Variable(DefinableRunning = true)]
         public static int ReconnectDelay = 10;
 
         /// <summary>
-        /// Delay for a ping check
+        /// Delay between two server update (in seconds)
         /// </summary>
         [Variable(DefinableRunning = true)]
-        public static int PingDelay = 200;
-
-        /// <summary>
-        /// Deflay between two characters count update (in seconds)
-        /// </summary>
-        [Variable(DefinableRunning = true)]
-        public static int CharactersCountUpdateDelay = 300;
+        public static int UpdateInterval = 5;
 
         /// <summary>
         /// IPC server adress
         /// </summary>
         [Variable]
-        public static string IpcAuthAdress = "localhost";
-
-        /// <summary>
-        /// IPC authentification port
-        /// </summary>
-        [Variable]
-        public static short IpcAuthPort = 9100;
+        public static string IpcAuthAddress = "net.tcp://localhost:9100";
 
         /// <summary>
         /// IPC world port
         /// </summary>
         [Variable]
-        public static short IpcWorldPort = 9101;
+        public static string IpcWorldAddress = "net.tcp://localhost:9101";
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        /// <summary>
-        ///   Object to sync up when needed.
-        /// </summary>
-        private readonly object m_synclock = new object();
+        #region Properties
 
-        /// <summary>
-        ///   Indicate if we are disposing or not.
-        /// </summary>
-        private bool m_disposing;
+        private TimerEntry m_maintainConnectionTimer;
+        private AuthClientAdapter m_proxyObject;
+        private bool m_running;
 
-        public bool IsRegister
+        public bool IsConnected
         {
             get;
             private set;
         }
 
+        public AuthClientAdapter ProxyObject
+        {
+            get
+            {
+                if (!IsConnected)
+                    throw new Exception("Attempt to call the authentification server by ipc whithout beeing registered");
+
+                return m_proxyObject;
+            }
+            private set { m_proxyObject = value; }
+        }
+
+        public IpcServer IpcServer
+        {
+            get;
+            private set;
+        }
+
+        #endregion
+
         #region IDisposable Members
 
         public void Dispose()
         {
-            Dispose(true);
+            IpcServer.Stop();
+            IsConnected = false;
+            ProxyObject = null;
             GC.SuppressFinalize(this);
         }
 
         #endregion
 
+        public event Action<IpcAccessor> Connected;
+
+        protected virtual void OnConnected()
+        {
+            IsConnected = true;
+
+            Action<IpcAccessor> handler = Connected;
+            if (handler != null)
+                handler(this);
+        }
+
+        public event Action<IpcAccessor> Disconnected;
+
+        protected virtual void OnDisconnected()
+        {
+            IsConnected = false;
+            ProxyObject = null;
+
+            Action<IpcAccessor> handler = Disconnected;
+            if (handler != null)
+                handler(this);
+        }
+
         public void Initialize()
         {
-            // data to connect to the auth ipc server
-            IpcAddress = string.Format("tcp://{0}:{1}/", IpcAuthAdress, IpcAuthPort);
-            Connected = false;
-
-            // register world ipc server
-            var channel = new TcpChannel(IpcWorldPort); // the used port 
-
-            ChannelServices.RegisterChannel(channel, false);
-            RemotingConfiguration.RegisterWellKnownServiceType(
-                typeof (IpcOperations),
-                "Remoting",
-                WellKnownObjectMode.Singleton);
+            IsConnected = false;
+            IpcServer = new IpcServer(typeof(IpcOperations), typeof(IRemoteWorldOperations), IpcWorldAddress);
+            IpcServer.Open();
         }
 
         /// <summary>
@@ -102,17 +119,44 @@ namespace Stump.Server.WorldServer.Core.IPC
         /// </summary>
         private bool Connect()
         {
-            var proxyobject =
-                (IRemoteOperationsAuth) Activator.GetObject(typeof (IRemoteOperationsAuth), IpcAddress + "Remoting");
+            var binding = new NetTcpBinding {Security = {Mode = SecurityMode.None}};
+            var proxyobject = new AuthClientAdapter(binding, new EndpointAddress(IpcAuthAddress));
+            proxyobject.Error += OnOperationError;
+
             try
             {
-                proxyobject.PingConnection(WorldServer.ServerInformation);
-                ProxyObject = proxyobject;
+                proxyobject.Open();
+
+                var result = proxyobject.RegisterWorld(WorldServer.ServerInformation, IpcWorldAddress);
+
+                if (result == RegisterResultEnum.IpNotAllowed ||
+                    result == RegisterResultEnum.PropertiesMismatch)
+                {
+                    logger.Error("[IPC] The authentication server has denied the access of this server.");
+                    WorldServer.Instance.Shutdown();
+                }
+                else if (result == RegisterResultEnum.OK)
+                {
+                    ProxyObject = proxyobject;
+
+                    logger.Info("[IPC] Server connected to the authentification server");
+                    OnConnected();
+                }
+                else if (result == RegisterResultEnum.AuthServerUnreachable)
+                {
+                    // do not notify anything
+                }
+                else
+                {
+                    logger.Warn("Cannot connect IPC service, error = {0}", result);
+                }
 
                 return true;
             }
-            catch (SocketException)
+            catch (EndpointNotFoundException)
             {
+                logger.Warn("{0} not found", IpcAuthAddress);
+
                 return false;
             }
                 // actually this is not an communication problem but we don't
@@ -123,30 +167,49 @@ namespace Stump.Server.WorldServer.Core.IPC
             }
         }
 
-        public void RegisterWorld()
+        private bool Disconnect()
         {
-            string lastPassword = WorldServer.ServerInformation.Password;
-
-            if (m_proxyObject.RegisterWorld(ref WorldServer.ServerInformation, IpcWorldPort))
+            // check whenever the connection is not already closed or closing
+            if (m_proxyObject != null &&
+                m_proxyObject.State != CommunicationState.Closed &&
+                m_proxyObject.State != CommunicationState.Closing)
             {
-                IsRegister = true;
-                logger.Info("[IPC] Connection from the authentification server granted");
-
-                if (string.IsNullOrEmpty(lastPassword) || lastPassword != WorldServer.ServerInformation.Password)
+                try
                 {
-                    logger.Info("[IPC] Save the new configuration file");
+                    if (m_proxyObject.State == CommunicationState.Opened)
+                        m_proxyObject.UnRegisterWorld();
 
-                    WorldServer.Instance.IgnoreNextConfigReload();
-                    WorldServer.Instance.Config.Save();
+                    m_proxyObject.Close();
+                }
+                catch (Exception)
+                {
+
+                }
+                finally
+                {
+                    m_proxyObject = null;
                 }
 
-                Task.Factory.StartNew(MaintainConnection);
+                OnDisconnected();
+                return true;
+            }
+
+            return false;
+        }
+
+        private void OnOperationError(Exception ex)
+        {
+            if (ex is CommunicationException)
+            {
+                // Connection got interrupted
+                logger.Warn("[IPC] Lost connection to AuthServer. Scheduling reconnection attempt...");
             }
             else
             {
-                logger.Error("[IPC] The authentication server has denied the access of this server.");
-                WorldServer.Instance.Shutdown();
-            }
+                logger.Error("[IPC] Exception occurs on IPC method access : {0}", ex);
+            } 
+            
+            Disconnect();
         }
 
         /// <summary>
@@ -154,130 +217,46 @@ namespace Stump.Server.WorldServer.Core.IPC
         /// </summary>
         public void Start()
         {
-            lock (m_synclock)
+            m_running = true;
+
+            if (m_maintainConnectionTimer == null || !m_maintainConnectionTimer.IsRunning)
             {
-                if (!m_disposing)
-                {
-                    if (Connect())
-                    {
-                        Connected = true;
-                        logger.Info("[IPC] Found Authenfication Server {0}. Wait to be register...", IpcAddress);
-                        RegisterWorld();
-                    }
-
-                    else if (!WorldServer.Instance.Running)
-                    {
-                        Connected = false;
-                        return;
-                    }
-                    else
-                    {
-                        Connected = false;
-
-                        logger.Warn("[IPC] Couldn't connect to : {0} Retrying in : {1} seconds...", IpcAddress,
-                                    ReconnectDelay);
-                        Task.Factory.StartNewDelayed(ReconnectDelay*1000, Start);
-                        WorldServer.Instance.CyclicTaskPool.RegisterCyclicTask(() => ProxyObject.UpdateConnectedChars(WorldServer.ServerInformation, World.Instance.CharacterCount),
-                                                                               CharactersCountUpdateDelay*1000);
-                    }
-                }
+                m_maintainConnectionTimer = new TimerEntry(0, UpdateInterval * 1000, MaintainConnection);
+                WorldServer.Instance.IOTaskPool.AddTimer(m_maintainConnectionTimer);
+                m_maintainConnectionTimer.Start();
             }
+        }
+
+        public void Stop()
+        {
+            m_running = false;
         }
 
         /// <summary>
         ///   Running on his own context, we ping regularly here remote server.
         /// </summary>
-        private void MaintainConnection()
+        private void MaintainConnection(int dt)
         {
-            while (Connected && WorldServer.Instance.Running)
+            if (!m_running)
             {
-                try
+                if (IsConnected)
                 {
-                    if (!ProxyObject.PingConnection(WorldServer.ServerInformation) && IsRegister)
-                    {
-                        // No pong. Connection closed (time out)
-                        Connected = false;
-                        logger.Warn("Lost connection to : {0}.\nReconnecting in {1} seconds...", IpcAddress,
-                                    ReconnectDelay);
-                        
-                        NotifyConnectionLost();
-                        Task.Factory.StartNewDelayed(ReconnectDelay * 1000, Start);
-                    }
+                    Disconnect();
+                    logger.Info("[IPC] Server disconnected from the authentification server");
                 }
-                catch (SocketException)
+            }
+            else if (!IsConnected)
+            {
+                if (WorldServer.Instance.Running)
                 {
-                    Connected = false;
-                    logger.Warn("Lost connection to : {0}.\nReconnecting in {1} seconds...", IpcAddress, ReconnectDelay);
-                    
-                    NotifyConnectionLost();
-                    Task.Factory.StartNewDelayed(ReconnectDelay * 1000, Start);
+                    Connect();
                 }
-                catch(Exception e)
-                {
-                    logger.Error("Exception raised when pinging the auth serveur : " + e);
-                }
-
-                Thread.Sleep(PingDelay);
             }
-        }
 
-        /// <summary>
-        ///   Disconnect this client from remote server.
-        /// </summary>
-        public void Disconnect()
-        {
-            Dispose();
-        }
-
-        /// <summary>
-        ///   Notify to WorldServer instance that we lost connection to remote server.
-        /// </summary>
-        private void NotifyConnectionLost()
-        {
-            lock (m_synclock)
+            else
             {
-                IsRegister = false;
-                ProxyObject = null;
+                m_proxyObject.UpdateConnectedChars(World.Instance.CharacterCount);
             }
         }
-
-        private void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                m_disposing = true;
-                ProxyObject = null;
-            }
-        }
-
-        #region Properties
-
-        private IRemoteOperationsAuth m_proxyObject;
-
-        public string IpcAddress
-        {
-            get;
-            set;
-        }
-
-        public bool Connected
-        {
-            get;
-            private set;
-        }
-
-        public IRemoteOperationsAuth ProxyObject
-        {
-            get
-            {
-                if (!IsRegister)
-                    throw new Exception("Attempt to call the authentification server by ipc whithout beeing register");
-
-                return m_proxyObject;
-            }
-            private set { m_proxyObject = value; }
-        }
-
-        #endregion
     }
 }

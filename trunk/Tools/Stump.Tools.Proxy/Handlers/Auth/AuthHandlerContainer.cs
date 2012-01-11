@@ -13,11 +13,11 @@ namespace Stump.Tools.Proxy.Handlers.Auth
 
         public bool CanHandleMessage(BaseClient client, uint messageId)
         {
-            if (!Predicates.ContainsKey(messageId))
-                return true;
-
             if (!( client is AuthClient ))
                 return false;
+
+            if (!Predicates.ContainsKey(messageId))
+                return true;
 
             return Predicates[messageId](client as AuthClient);
         }

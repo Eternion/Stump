@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -12,6 +13,7 @@ using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Database.Npcs.Replies;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Database.World.Triggers;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
@@ -35,23 +37,32 @@ namespace Stump.Tools.Proxy.Data
 
         public static void BuildActionTeleport(WorldClient client, CurrentMapMessage message)
         {
-            /*if (client.GuessNpcReply != null)
+            if (client.GuessNpcReply != null)
             {
                 int replyId = client.GuessNpcReply.replyId;
                 client.GuessNpcReply = null; // clear it as fast as possible
 
-                var npcReply = new NpcDialogReply(replyId,
-                                                  new ActionTeleport(message.mapId, (ushort) client.Disposition.cellId,
-                                                                     (OrdinalDirectionsEnum) client.Disposition.direction));
-
-                if (!Directory.Exists(Output + NpcRepliesDir))
+                var npcReply = new TeleportReply
                 {
-                    Directory.CreateDirectory(Output + NpcRepliesDir);
-                }
+                    ReplyId = replyId,
+                    Message = client.LastNpcMessage,
+                    MapId = client.CurrentMap.Id,
+                    CellId = client.Disposition.cellId,
+                    Direction = (DirectionsEnum)client.Disposition.direction,
+                };
 
-                SerializeToXml(Output + NpcRepliesDir + replyId + ".xml",
-                               npcReply);
-            }*/
+                ExecuteIOTask(() =>
+                {
+                    if (client.LastNpcMessage.Replies.Count(entry => entry is TeleportReply &&
+                                                                     ( entry as TeleportReply ).ReplyId == npcReply.ReplyId) > 0)
+                        return;
+
+                    npcReply.Save();
+                    client.LastNpcMessage.Replies.Add(npcReply);
+
+                    client.SendChatMessage("Npc reply added");
+                });
+            }
             if (client.GuessSkillAction != null)
             {
                 Map map = client.GuessSkillAction.Item1;
@@ -59,6 +70,9 @@ namespace Stump.Tools.Proxy.Data
                 int elementId = client.GuessSkillAction.Item2.elemId;
                 int duration = client.GuessSkillAction.Item3.duration;
                 client.GuessSkillAction = null;
+
+                if (!client.IsSkillActionValid())
+                    return;
 
                 var skill = new SkillTeleportTemplate
                                 {
@@ -106,17 +120,23 @@ namespace Stump.Tools.Proxy.Data
                 if (client.LastMap.Cells[client.GuessCellTrigger.Value].MapChangeData > 0)
                     return;
 
+                var cell = (short) client.GuessCellTrigger.Value;
+                client.GuessCellTrigger = null;
+
+                if (!client.IsCellTriggerValid())
+                    return;
+
                 var trigger = new TeleportTriggerRecord
                                   {
                                       MapId = client.LastMap.Id,
-                                      CellId = (short) client.GuessCellTrigger.Value,
+                                      CellId = cell,
                                       TriggerType = CellTriggerType.END_MOVE_ON,
                                       Condition = string.Empty,
                                       DestinationCellId = client.Disposition.cellId,
                                       DestinationMapId = client.CurrentMap.Id,
                                   };
 
-                client.GuessCellTrigger = null;
+
 
                 ExecuteIOTask(() =>
                                   {
@@ -161,7 +181,6 @@ namespace Stump.Tools.Proxy.Data
 
                                       npcReply.Save();
                                       client.LastNpcMessage.Replies.Add(npcReply);
-                                      client.LastNpcMessage.Save();
 
                                       client.SendChatMessage("Npc reply added");
                                   });
@@ -174,20 +193,20 @@ namespace Stump.Tools.Proxy.Data
 
                 var action = new NpcTalkAction
                                  {
-                                     Npc = NpcManager.Instance.GetNpcTemplate(npcId),
+                                     NpcId = npcId,
                                      Message = currentMessage
                                  };
 
 
                 ExecuteIOTask(() =>
                                   {
-                                      if (action.Npc.Actions.Count(entry => entry is NpcTalkAction) > 0)
+                                      var npc = NpcManager.Instance.GetNpcTemplate(npcId);
+
+                                      if (npc.Actions.Count(entry => entry is NpcTalkAction) > 0)
                                           return;
 
-                                      action.Npc.Actions.Add(action);
-
                                       action.Save();
-                                      action.Npc.Save();
+                                      npc.Actions.Add(action);
 
                                       client.SendChatMessage("Npc action added");
                                   });
@@ -216,8 +235,7 @@ namespace Stump.Tools.Proxy.Data
 
                                   npcReply.Save();
                                   client.LastNpcMessage.Replies.Add(npcReply);
-                                  client.LastNpcMessage.Save();
-
+                                  
                                   client.SendChatMessage("Npc reply added");
                               });
         }
@@ -237,32 +255,37 @@ namespace Stump.Tools.Proxy.Data
 
             ExecuteIOTask(() =>
                               {
+                                  var npc = NpcManager.Instance.GetNpcTemplate(npcId);
+
                                   var action = new NpcBuySellAction
                                                    {
-                                                       Npc = NpcManager.Instance.GetNpcTemplate(npcId),
-                                                       Items = new List<NpcItem>()
+                                                       NpcId = npcId,
                                                    };
 
-                                  if (action.Npc.Actions.Count(entry => entry is NpcBuySellAction) > 0)
+                                  if (npc.Actions.Count(entry => entry is NpcBuySellAction) > 0)
                                       return;
 
-                                  action.Save();
-
-                                  foreach (ObjectItemToSellInNpcShop objInfo in npcShopMessage.objectsInfos)
+                                  using (var session = new SessionScope(FlushAction.Never))
                                   {
-                                      var item = new NpcItem
-                                                     {
-                                                         Item = ItemManager.Instance.GetTemplate(objInfo.objectGID),
-                                                         NpcShop = action,
-                                                         BuyCriterion = string.Empty,
-                                                         CustomPrice = objInfo.objectPrice
-                                                     };
-                                      action.Items.Add(item);
-                                      item.Save();
-                                  }
+                                      action.Save();
 
-                                  action.Npc.Actions.Add(action);
-                                  //action.Npc.Save();
+                                      foreach (ObjectItemToSellInNpcShop objInfo in npcShopMessage.objectsInfos)
+                                      {
+                                          var item = new NpcItem
+                                                         {
+                                                             Item = ItemManager.Instance.GetTemplate(objInfo.objectGID),
+                                                             NpcShopId = (int) action.Id,
+                                                             BuyCriterion = string.Empty,
+                                                             CustomPrice = objInfo.objectPrice
+                                                         };
+
+                                          item.Save();
+                                          action.Items.Add(item);
+                                      }
+
+                                      npc.Actions.Add(action);
+                                      session.Flush();
+                                  }
 
                                   client.SendChatMessage("Npc shop added");
                               });
@@ -276,6 +299,7 @@ namespace Stump.Tools.Proxy.Data
                                   MonsterGrade grade = MonsterManager.Instance.GetMonsterGrade(monster.creatureGenericId, monster.creatureGrade);
 
                                   if (MonsterManager.Instance.GetOneMonsterSpell(entry =>
+                                                                                 entry.MonsterGrade != null &&
                                                                                  entry.MonsterGrade.Id == grade.Id &&
                                                                                  entry.SpellId == spell.spellId) != null)
                                       return;
@@ -291,19 +315,14 @@ namespace Stump.Tools.Proxy.Data
 
         public static void BuildMapFightPlacement(WorldClient client, Map map, IEnumerable<short> blueCells, IEnumerable<short> redCells)
         {
-            if (map.Record.FightPositions != null)
+            if (map.Record.BlueCells.Length > 0 && map.Record.RedCells.Length > 0)
                 return;
 
             ExecuteIOTask(() =>
                               {
-                                  map.Record.FightPositions = new MapFightPositionsRecord
-                                                                  {
-                                                                      BlueCells = blueCells.ToArray(),
-                                                                      RedCells = redCells.ToArray(),
-                                                                      Map = map.Record
-                                                                  };
+                                  map.Record.BlueCells = blueCells.ToArray();
+                                  map.Record.RedCells = redCells.ToArray();
 
-                                  map.Record.FightPositions.Save();
                                   map.Record.Save();
 
                                   client.SendChatMessage("Fights placements added");
@@ -367,7 +386,7 @@ namespace Stump.Tools.Proxy.Data
                                                       MinGrade = 1,
                                                       MaxGrade = 5,
                                                       Frequency = 1.0,
-                                                      SubArea = client.CurrentMap.SubArea.Record
+                                                      SubAreaId = client.CurrentMap.SubArea.Id
                                                   };
 
                                   MonsterManager.Instance.AddMonsterSpawn(spawn);
@@ -379,7 +398,7 @@ namespace Stump.Tools.Proxy.Data
         {
             var ioSpawn = new InteractiveSpawn
                               {
-                                  Template = InteractiveManager.Instance.GetTemplate(interactiveElement.elementTypeId),
+                                  TemplateId = interactiveElement.elementTypeId,
                                   ElementId = interactiveElement.elementId,
                                   MapId = client.CurrentMap.Id,
                               };
@@ -398,7 +417,7 @@ namespace Stump.Tools.Proxy.Data
 
         public static void ExecuteIOTask(Action action)
         {
-            Proxy.Instance.IOTaskPool.EnqueueTask(action);
+            Proxy.Instance.IOTaskPool.AddMessage(action);
         }
     }
 }

@@ -7,42 +7,43 @@ namespace Stump.Core.Collections
 {
     public class ConcurrentList<T> : IList<T>, IList
     {
-        private readonly List<T> underlyingList = new List<T>();
-        private readonly object syncRoot = new object();
-        private readonly ConcurrentQueue<T> underlyingQueue;
-        private bool requiresSync;
-        private bool isDirty;
+        private readonly List<T> m_underlyingList = new List<T>();
+        private readonly object m_syncRoot = new object();
+        private readonly ConcurrentQueue<T> m_underlyingQueue;
+        private bool m_requiresSync;
+        private bool m_isDirty;
 
         public ConcurrentList()
         {
-            underlyingQueue = new ConcurrentQueue<T>();
+            m_underlyingQueue = new ConcurrentQueue<T>();
         }
 
         public ConcurrentList(IEnumerable<T> items)
         {
-            underlyingQueue = new ConcurrentQueue<T>(items);
+            m_underlyingQueue = new ConcurrentQueue<T>(items);
         }
 
         private void UpdateLists()
         {
-            if (!isDirty)
+            if (!m_isDirty)
                 return;
-            lock (syncRoot)
+
+            lock (m_syncRoot)
             {
-                requiresSync = true;
+                m_requiresSync = true;
                 T temp;
-                while (underlyingQueue.TryDequeue(out temp))
-                    underlyingList.Add(temp);
-                requiresSync = false;
+                while (m_underlyingQueue.TryDequeue(out temp))
+                    m_underlyingList.Add(temp);
+                m_requiresSync = false;
             }
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            lock (syncRoot)
+            lock (m_syncRoot)
             {
                 UpdateLists();
-                return underlyingList.GetEnumerator();
+                return m_underlyingList.GetEnumerator();
             }
         }
 
@@ -53,90 +54,105 @@ namespace Stump.Core.Collections
 
         public void Add(T item)
         {
-            if (requiresSync)
-                lock (syncRoot)
-                    underlyingQueue.Enqueue(item);
+            if (m_requiresSync)
+                lock (m_syncRoot)
+                    m_underlyingQueue.Enqueue(item);
             else
-                underlyingQueue.Enqueue(item);
-            isDirty = true;
+                m_underlyingQueue.Enqueue(item);
+            m_isDirty = true;
         }
 
         public int Add(object value)
         {
-            if (requiresSync)
-                lock (syncRoot)
-                    underlyingQueue.Enqueue((T)value);
+            if (m_requiresSync)
+                lock (m_syncRoot)
+                    m_underlyingQueue.Enqueue((T)value);
             else
-                underlyingQueue.Enqueue((T)value);
-            isDirty = true;
-            lock (syncRoot)
+                m_underlyingQueue.Enqueue((T)value);
+            m_isDirty = true;
+            lock (m_syncRoot)
             {
                 UpdateLists();
-                return underlyingList.IndexOf((T)value);
+                return m_underlyingList.IndexOf((T)value);
             }
+        }
+
+        public void AddRange(IEnumerable<T> items)
+        {
+            if (m_requiresSync)
+                lock (m_syncRoot)
+                    foreach(var item in items)
+                        m_underlyingQueue.Enqueue(item);
+            else
+                foreach (var item in items)
+                    m_underlyingQueue.Enqueue(item);
+
+            m_isDirty = true;
         }
 
         public bool Contains(object value)
         {
-            lock (syncRoot)
+            lock (m_syncRoot)
             {
                 UpdateLists();
-                return underlyingList.Contains((T)value);
+                return m_underlyingList.Contains((T)value);
             }
         }
 
         public int IndexOf(object value)
         {
-            lock (syncRoot)
+            lock (m_syncRoot)
             {
                 UpdateLists();
-                return underlyingList.IndexOf((T)value);
+                return m_underlyingList.IndexOf((T)value);
             }
         }
 
         public void Insert(int index, object value)
         {
-            lock (syncRoot)
+            lock (m_syncRoot)
             {
                 UpdateLists();
-                underlyingList.Insert(index, (T)value);
+                m_underlyingList.Insert(index, (T)value);
             }
         }
 
         public void Remove(object value)
         {
-            lock (syncRoot)
+            lock (m_syncRoot)
             {
                 UpdateLists();
-                underlyingList.Remove((T)value);
+                m_underlyingList.Remove((T)value);
             }
         }
 
         public void RemoveAt(int index)
         {
-            lock (syncRoot)
+            lock (m_syncRoot)
             {
                 UpdateLists();
-                underlyingList.RemoveAt(index);
+                m_underlyingList.RemoveAt(index);
             }
         }
 
-        T IList<T>.this[int index]
+
+
+        public T this[int index]
         {
             get
             {
-                lock (syncRoot)
+                lock (m_syncRoot)
                 {
                     UpdateLists();
-                    return underlyingList[index];
+                    return m_underlyingList[index];
                 }
             }
             set
             {
-                lock (syncRoot)
+                lock (m_syncRoot)
                 {
                     UpdateLists();
-                    underlyingList[index] = value;
+                    m_underlyingList[index] = value;
                 }
             }
         }
@@ -159,46 +175,46 @@ namespace Stump.Core.Collections
 
         public void Clear()
         {
-            lock (syncRoot)
+            lock (m_syncRoot)
             {
                 UpdateLists();
-                underlyingList.Clear();
+                m_underlyingList.Clear();
             }
         }
 
         public bool Contains(T item)
         {
-            lock (syncRoot)
+            lock (m_syncRoot)
             {
                 UpdateLists();
-                return underlyingList.Contains(item);
+                return m_underlyingList.Contains(item);
             }
         }
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            lock (syncRoot)
+            lock (m_syncRoot)
             {
                 UpdateLists();
-                underlyingList.CopyTo(array, arrayIndex);
+                m_underlyingList.CopyTo(array, arrayIndex);
             }
         }
 
         public bool Remove(T item)
         {
-            lock (syncRoot)
+            lock (m_syncRoot)
             {
                 UpdateLists();
-                return underlyingList.Remove(item);
+                return m_underlyingList.Remove(item);
             }
         }
 
         public void CopyTo(Array array, int index)
         {
-            lock (syncRoot)
+            lock (m_syncRoot)
             {
                 UpdateLists();
-                underlyingList.CopyTo((T[])array, index);
+                m_underlyingList.CopyTo((T[])array, index);
             }
         }
 
@@ -206,17 +222,17 @@ namespace Stump.Core.Collections
         {
             get
             {
-                lock (syncRoot)
+                lock (m_syncRoot)
                 {
                     UpdateLists();
-                    return underlyingList.Count;
+                    return m_underlyingList.Count;
                 }
             }
         }
 
         public object SyncRoot
         {
-            get { return syncRoot; }
+            get { return m_syncRoot; }
         }
 
         public bool IsSynchronized
@@ -226,19 +242,19 @@ namespace Stump.Core.Collections
 
         public int IndexOf(T item)
         {
-            lock (syncRoot)
+            lock (m_syncRoot)
             {
                 UpdateLists();
-                return underlyingList.IndexOf(item);
+                return m_underlyingList.IndexOf(item);
             }
         }
 
         public void Insert(int index, T item)
         {
-            lock (syncRoot)
+            lock (m_syncRoot)
             {
                 UpdateLists();
-                underlyingList.Insert(index, item);
+                m_underlyingList.Insert(index, item);
             }
         }
     }

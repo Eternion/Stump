@@ -80,6 +80,11 @@ namespace Stump.Tools.Proxy.Network
             set;
         }
 
+        public bool IsSkillActionValid()
+        {
+            return HasReceive(InteractiveUsedMessage.Id, 3);
+        }
+
         public Dictionary<int, GameRolePlayNpcInformations> MapNpcs
         {
             get;
@@ -131,6 +136,11 @@ namespace Stump.Tools.Proxy.Network
         {
             get;
             set;
+        }
+
+        public bool IsCellTriggerValid()
+        {
+            return HasReceive(GameMapMovementConfirmMessage.Id, 3);
         }
 
         public EntityDispositionInformations Disposition
@@ -189,6 +199,16 @@ namespace Stump.Tools.Proxy.Network
         protected override void PushReadSocketAsyncArgs(SocketAsyncEventArgs args)
         {
             Proxy.Instance.WorldClientManager.PushReadSocketAsyncArgs(args);
+        }
+
+        protected override bool Dispatch(Message message)
+        {
+            if (!Proxy.Instance.WorldHandler.IsRegister(message.MessageId))
+                return false;
+
+            Proxy.Instance.WorldHandler.Dispatch(this, message);
+
+            return true;
         }
 
         public void CallWhenTeleported(Action action)

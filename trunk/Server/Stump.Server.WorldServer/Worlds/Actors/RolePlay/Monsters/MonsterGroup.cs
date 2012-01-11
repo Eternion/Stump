@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters
     {
         public event Action<MonsterGroup, Character> EnterFight;
 
-        private void NotifyEnterFight(Character character)
+        private void OnEnterFight(Character character)
         {
             var handler = EnterFight;
             if (handler != null)
@@ -103,6 +103,14 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters
             if (character.Map != Map)
                 return;
 
+            Map.Leave(this);
+
+            if (Map.GetBlueFightPlacement().Length <= m_monsters.Count)
+            {
+                character.SendServerMessage("Cannot start fight : Not enough fight placements");
+                return;
+            }
+
             Fights.Fight fight = FightManager.Instance.Create(Map, FightTypeEnum.FIGHT_TYPE_PvM);
 
             fight.RedTeam.AddFighter(character.CreateFighter(fight.RedTeam));
@@ -112,13 +120,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters
 
             fight.StartPlacementPhase();
 
-            NotifyEnterFight(character);
+            OnEnterFight(character);
         }
 
         public IEnumerable<MonsterFighter> CreateFighters(FightTeam team)
         {
-            Map.Leave(this);
-
             return m_monsters.Select(monster => monster.CreateFighter(team));
         }
 
@@ -160,6 +166,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters
         public IEnumerable<Monster> GetMonstersWithoutLeader()
         {
             return m_monsters.Where(entry => entry != Leader);
+        }
+
+        public int Count()
+        {
+            return m_monsters.Count;
         }
 
         public override GameContextActorInformations GetGameContextActorInformations()

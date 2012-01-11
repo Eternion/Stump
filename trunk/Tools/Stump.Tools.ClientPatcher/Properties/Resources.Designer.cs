@@ -60,20 +60,6 @@ namespace Stump.Tools.ClientPatcher.Properties {
             }
         }
         
-        internal static byte[] DofusInvokerModified {
-            get {
-                object obj = ResourceManager.GetObject("DofusInvokerModified", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        internal static byte[] DofusInvokerOriginal {
-            get {
-                object obj = ResourceManager.GetObject("DofusInvokerOriginal", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
         internal static byte[] Empty {
             get {
                 object obj = ResourceManager.GetObject("Empty", resourceCulture);

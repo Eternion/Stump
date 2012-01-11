@@ -1,5 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using System.Drawing;
+using System.Runtime.CompilerServices;
+using Castle.ActiveRecord;
 using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -10,6 +14,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
+using Stump.Server.WorldServer.Handlers.Inventory;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
 using Stump.Server.WorldServer.Worlds.Actors.Interfaces;
 using Stump.Server.WorldServer.Worlds.Actors.Stats;
@@ -35,11 +40,13 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly CharacterRecord m_record;
+        private bool m_recordLoaded;
 
         public Character(CharacterRecord record, WorldClient client)
         {
             m_record = record;
             Client = client;
+            SaveSync = new object();
 
             LoadRecord();
         }
@@ -48,7 +55,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         public event Action<Character> LoggedIn;
 
-        private void NotifyLoggedIn()
+        private void OnLoggedIn()
         {
             Action<Character> handler = LoggedIn;
             if (handler != null) handler(this);
@@ -56,10 +63,18 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         public event Action<Character> LoggedOut;
 
-        private void NotifyLoggedOut()
+        private void OnLoggedOut()
         {
             Action<Character> handler = LoggedOut;
             if (handler != null) handler(this);
+        }
+
+        public event Action<Character, int> LifeRegened;
+
+        private void OnLifeRegened(int regenedLife)
+        {
+            Action<Character, int> handler = LifeRegened;
+            if (handler != null) handler(this, regenedLife);
         }
 
         #endregion
@@ -72,10 +87,19 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             private set;
         }
 
-        public bool InWorld
+        public object SaveSync
         {
             get;
             private set;
+        }
+
+        private bool m_inWorld;
+        public override bool IsInWorld
+        {
+            get
+            {
+                return m_inWorld;
+            }
         }
 
         #region Identifier
@@ -110,11 +134,17 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             private set;
         }
 
+        public int Kamas
+        {
+            get { return Record.Kamas; }
+            set { Record.Kamas = value; }
+        }
+
         #endregion
 
         #region Position
 
-        public override IContext Context
+        public override ICharacterContainer CharacterContainer
         {
             get
             {
@@ -151,6 +181,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 if (m_dialog == null)
                     m_dialoger = null;
             }
+        }
+
+        public NpcShopDialog NpcShopDialog
+        {
+            get { return Dialog as NpcShopDialog; }
         }
 
         public IRequestBox RequestBox
@@ -220,6 +255,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         private readonly Dictionary<int, PartyInvitation> m_partyInvitations
             = new Dictionary<int, PartyInvitation>();
+
 
         public Party Party
         {
@@ -354,7 +390,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
                     int difference = Level - lastLevel;
 
-                    NotifyLevelChanged(Level, difference);
+                    OnLevelChanged(Level, difference);
                 }
             }
         }
@@ -448,20 +484,12 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
         public event LevelChangedHandler LevelChanged;
 
-        public void NotifyLevelChanged(byte currentlevel, int difference)
-        {
-            OnLevelChanged(currentlevel, difference);
-
-            LevelChangedHandler handler = LevelChanged;
-            if (handler != null)
-                handler(this, currentlevel, difference);
-        }
-
         private void OnLevelChanged(byte currentLevel, int difference)
         {
             SpellsPoints += (ushort)difference;
             StatsPoints += (ushort)(difference * 5);
             Stats.Health.Base += (short)( difference * 5 );
+            Stats.Health.DamageTaken = 0;
 
             for (int i = 0; i < Breed.LearnableSpells.Count; i++)
             {
@@ -474,8 +502,14 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 }
             }
 
+            CharacterHandler.SendCharacterStatsListMessage(Client);
             CharacterHandler.SendCharacterLevelUpMessage(Client, currentLevel);
             Map.ForEach(entry => CharacterHandler.SendCharacterLevelUpInformationMessage(entry.Client, this, currentLevel));
+
+            LevelChangedHandler handler = LevelChanged;
+
+            if (handler != null)
+                handler(this, currentLevel, difference);
         }
 
         #endregion
@@ -574,6 +608,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             ChatHandler.SendChatServerMessage(Client, message);
         }
 
+        public void SendServerMessage(string message, Color color)
+        {
+            SendServerMessage(string.Format("<font color=\"#{0}\">{1}</font>", color.ToArgb().ToString("X"), message));
+        }
+
         #endregion
 
         #region Move
@@ -609,6 +648,19 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
 
             return base.StopMove(currentObjectPosition);
         }
+
+        protected override void OnTeleported(ObjectPosition position)
+        {
+            base.OnTeleported(position); 
+
+            UpdateRegenedLife();
+        }
+
+        public override bool CanChangeMap()
+        {
+            return base.CanChangeMap() && !IsFighting();
+        }
+
         #endregion
 
         #region Dialog
@@ -658,6 +710,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             if (!IsInRequest())
                 return;
 
+            Contract.Assume(RequestBox != null);
+
             if (IsRequestSource())
                 RequestBox.Cancel();
             else if (IsRequestTarget())
@@ -704,6 +758,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         {
             foreach (var partyInvitation in m_partyInvitations)
             {
+                Contract.Assume(partyInvitation.Value != null);
                 partyInvitation.Value.Deny();
             }
         }
@@ -717,6 +772,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                 m_partyInvitations.Remove(party.Id);
 
             DenyAllInvitations();
+            UpdateRegenedLife();
 
             Party = party;
             Party.MemberRemoved += OnPartyMemberRemoved;
@@ -737,6 +793,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         {
             if (!IsInParty())
                 return;
+
+            Contract.Assume(Party != null);
 
             Party.MemberRemoved -= OnPartyMemberRemoved;
             Party.PartyDeleted -= OnPartyDeleted;
@@ -843,7 +901,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             RegenStartTime = null;
             RegenSpeed = 0;
 
-            CharacterHandler.SendLifePointsRegenEndMessage(Client, regainedLife);
+            CharacterHandler.SendLifePointsRegenEndMessage(Client, regainedLife); 
+            OnLifeRegened(regainedLife);
         }
 
         public void UpdateRegenedLife()
@@ -861,6 +920,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             CharacterHandler.SendUpdateLifePointsMessage(Client);
 
             RegenStartTime = DateTime.Now;
+
+            OnLifeRegened(regainedLife);
         }
 
         #endregion
@@ -874,27 +935,26 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         /// </summary>
         public void LogIn()
         {
-            if (InWorld)
+            if (IsInWorld)
                 return;
 
             Map.Enter(this);
             World.Instance.Enter(this);
+            m_inWorld = true;
 
             SendServerMessage(Settings.MOTD);
 
-            InWorld = true;
-
-            NotifyLoggedIn();
+            OnLoggedIn();
         }
 
         public void LogOut()
         {
             try
             {
-                if (InWorld)
+                if (IsInWorld)
                 {
                     DenyAllInvitations();
-
+                    
                     if (IsInRequest())
                         CancelRequest();
 
@@ -908,12 +968,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
                         Map.Leave(this);
 
                     World.Instance.Leave(this);
-                    InWorld = false;
+
+                    m_inWorld = false;
                 }
 
-                UnLoadRecord();
-
-                NotifyLoggedOut();
+                OnLoggedOut();
             }
             catch(Exception ex)
             {
@@ -921,40 +980,73 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             }
             finally
             {
-                SaveLater();
+                WorldServer.Instance.IOTaskPool.AddMessage(
+                    () =>
+                        {
+                            SaveNow();
+                            UnLoadRecord();
+                        });
             }
         }
 
         public void SaveLater()
         {
-            WorldServer.Instance.IOTaskPool.EnqueueTask(SaveNow);
+            WorldServer.Instance.IOTaskPool.AddMessage(SaveNow);
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         internal void SaveNow()
         {
-            m_record.MapId = Map.Id;
-            m_record.CellId = Cell.Id;
-            m_record.Direction = Direction;
+            if (!m_recordLoaded)
+                return;
 
-            m_record.AP = (ushort) Stats[CaracteristicsEnum.AP].Base;
-            m_record.MP = (ushort) Stats[CaracteristicsEnum.MP].Base;
-            m_record.Strength = Stats[CaracteristicsEnum.Strength].Base;
-            m_record.Agility = Stats[CaracteristicsEnum.Agility].Base;
-            m_record.Chance = Stats[CaracteristicsEnum.Chance].Base;
-            m_record.Intelligence = Stats[CaracteristicsEnum.Intelligence].Base;
-            m_record.Wisdom = Stats[CaracteristicsEnum.Wisdom].Base;
-            m_record.BaseHealth = (ushort) Stats.Health.Base;
-            m_record.DamageTaken = (ushort) Stats.Health.DamageTaken;
+            lock (SaveSync)
+            {
+                using (var session = new SessionScope(FlushAction.Never))
+                {
+                    Inventory.Save();
+                    Spells.Save();
+                    Shortcuts.Save();
 
+                    m_record.MapId = Map.Id;
+                    m_record.CellId = Cell.Id;
+                    m_record.Direction = Direction;
 
-            m_record.Save();
+                    m_record.AP = (ushort) Stats[CaracteristicsEnum.AP].Base;
+                    m_record.MP = (ushort) Stats[CaracteristicsEnum.MP].Base;
+                    m_record.Strength = Stats[CaracteristicsEnum.Strength].Base;
+                    m_record.Agility = Stats[CaracteristicsEnum.Agility].Base;
+                    m_record.Chance = Stats[CaracteristicsEnum.Chance].Base;
+                    m_record.Intelligence = Stats[CaracteristicsEnum.Intelligence].Base;
+                    m_record.Wisdom = Stats[CaracteristicsEnum.Wisdom].Base;
+                    m_record.BaseHealth = (ushort) Stats.Health.Base;
+                    m_record.DamageTaken = (ushort) Stats.Health.DamageTaken;
+
+                    m_record.EntityLook = Look;
+
+                    m_record.Save();
+
+                    session.Flush();
+                }
+            }
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         private void LoadRecord()
         {
             Breed = BreedManager.Instance.GetBreed(BreedId);
 
-            Map map = World.Instance.GetMap(m_record.MapId);
+            Contract.Assume(Breed != null);
+
+            var map = World.Instance.GetMap(m_record.MapId);
+
+            if (map == null)
+            {
+                map = World.Instance.GetMap(Breed.StartMap);
+                m_record.CellId = Breed.StartCell;
+                m_record.Direction = Breed.StartDirection;
+            }
+
             Position = new ObjectPosition(
                 map,
                 map.Cells[m_record.CellId],
@@ -965,13 +1057,23 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
             LowerBoundExperience = ExperienceManager.Instance.GetCharacterLevelExperience(Level);
             UpperBoundExperience = ExperienceManager.Instance.GetCharacterNextLevelExperience(Level);
 
-            Inventory = new Inventory(this, m_record.Inventory);
+            Inventory = new Inventory(this);
+            Inventory.LoadInventory();
             Spells = new SpellInventory(this);
+            Spells.LoadSpells();
             Shortcuts = new ShortcutBar(this);
+            Shortcuts.Load();
+
+            m_recordLoaded = true;
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         private void UnLoadRecord()
         {
+            if (!m_recordLoaded)
+                return;
+
+            m_recordLoaded = false;
             Inventory.Dispose();
         }
 
@@ -1096,6 +1198,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters
         internal CharacterRecord Record
         {
             get { return m_record; }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} ({1})", Name, Id);
         }
     }
 }

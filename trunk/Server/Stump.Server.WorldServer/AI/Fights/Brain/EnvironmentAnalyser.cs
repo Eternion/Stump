@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Extensions;
+using Stump.Core.Threading;
 using Stump.Server.WorldServer.AI.Fights.Actions;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Worlds.Actors.Fight;
@@ -38,7 +40,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         public Cell GetCellToCastSpell(FightActor target, Spell spell)
         {
-            var cell = target.Position.Point.GetAdjacentCells(CellInformationProvider.IsCellWalkable).OrderBy(entry => entry.DistanceTo(Fighter.Position.Point)).FirstOrDefault();
+            var cell = target.Position.Point.GetAdjacentCells(CellInformationProvider.IsCellWalkable).OrderBy(entry => entry.DistanceToCell(Fighter.Position.Point)).FirstOrDefault();
 
             if (cell == null)
                 return default(Cell);
@@ -48,9 +50,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         public Cell GetCellToFlee()
         {
+            var rand = new AsyncRandom();
             var movementsCells = GetMovementCells();
             var fighters = Fight.GetAllFighters(entry => entry.IsEnnemyWith(Fighter));
 
+            var currentCellIndice = fighters.Sum(entry => entry.Position.Point.DistanceToCell(Fighter.Position.Point)); 
             var betterCell = default(Cell);
             long betterCellIndice = 0;
             for (int i = 0; i < movementsCells.Length; i++)
@@ -58,14 +62,23 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                 if (!CellInformationProvider.IsCellWalkable(movementsCells[i].Id))
                     continue;
 
-                long indice = fighters.Sum(entry => entry.Position.Point.DistanceTo(new MapPoint(movementsCells[i])));
+                long indice = fighters.Sum(entry => entry.Position.Point.DistanceToCell(new MapPoint(movementsCells[i])));
 
                 if (betterCellIndice < indice)
                 {
                     betterCellIndice = indice;
                     betterCell = movementsCells[i];
                 }
+                else if (betterCellIndice == indice && rand.Next(2) == 0)
+                    // random factory
+                {
+                    betterCellIndice = indice;
+                    betterCell = movementsCells[i];
+                }
             }
+
+            if (currentCellIndice == betterCellIndice)
+                return Fighter.Cell;
 
             return betterCell;
         }
@@ -99,7 +112,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         public FightActor GetNearestFighter(Predicate<FightActor> predicate)
         {
-            return Fight.GetAllFighters(predicate).OrderBy(entry => entry.Position.Point.DistanceTo(Fighter.Position.Point)).FirstOrDefault();
+            return Fight.GetAllFighters(predicate).
+                OrderBy(entry => entry.Position.Point.DistanceToCell(Fighter.Position.Point)).
+                RandomElementOrDefault();
         }
     }
 }

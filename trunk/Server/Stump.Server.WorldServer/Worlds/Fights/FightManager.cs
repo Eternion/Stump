@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Stump.Core.Pool;
 using Stump.Core.Reflection;
@@ -8,10 +10,9 @@ using Stump.Server.WorldServer.Worlds.Parties;
 
 namespace Stump.Server.WorldServer.Worlds.Fights
 {
-    public class FightManager : Singleton<FightManager>
+    public class FightManager : EntityManager<FightManager, Fight>
     {
         private readonly UniqueIdProvider m_idProvider = new UniqueIdProvider();
-        private readonly Dictionary<int, Fight> m_fights = new Dictionary<int, Fight>();
 
         public Fight Create(Map map, FightTypeEnum type)
         {
@@ -20,21 +21,21 @@ namespace Stump.Server.WorldServer.Worlds.Fights
 
             var fight = new Fight(m_idProvider.Pop(), type, map, blueTeam, redTeam);
 
-            m_fights.Add(fight.Id, fight);
+            AddEntity(fight.Id, fight);
 
             return fight;
         }
 
         public void Remove(Fight fight)
         {
-            m_fights.Remove(fight.Id);
+            RemoveEntity(fight.Id);
 
             m_idProvider.Push(fight.Id);
         }
 
         public Fight GetFight(int id)
         {
-            return m_fights.ContainsKey(id) ? m_fights[id] : null;
+            return GetEntityOrDefault(id);
         }
     }
 }

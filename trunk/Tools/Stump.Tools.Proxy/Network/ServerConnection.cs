@@ -61,6 +61,9 @@ namespace Stump.Tools.Proxy.Network
 
         private void ReceiveCallBack(IAsyncResult ar)
         {
+            if (!m_socket.Connected)
+                return;
+
             try
             {
                 int availableBytes = m_socket.EndReceive(ar);
@@ -74,7 +77,8 @@ namespace Stump.Tools.Proxy.Network
 
                     BuildMessage();
 
-                    AsyncReceive();
+                    if (m_socket.Connected)
+                        AsyncReceive();
                 }
                 else
                 {
@@ -83,7 +87,7 @@ namespace Stump.Tools.Proxy.Network
             }
             catch (Exception ex)
             {
-                logger.Error(string.Format("Error on receive : {0}", ex.Message));
+                logger.Error(string.Format("Error on receive : {0}", ex));
                 Disconnect();
             }
         }

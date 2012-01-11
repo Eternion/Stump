@@ -1,6 +1,8 @@
+using System;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Worlds;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay;
@@ -19,7 +21,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             if (chr != null)
             {
                 // send a copy to sender
-                SendChatServerCopyMessage(client, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content);
+                SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content);
 
                 // Send to receiver
                 SendChatServerMessage(chr.Client, client.ActiveCharacter, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content);
@@ -36,17 +38,17 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             ChatManager.Instance.HandleChat(client, (ChatActivableChannelsEnum) message.channel, message.content);
         }
 
-        public static void SendChatServerMessage(WorldClient client, string message)
+        public static void SendChatServerMessage(IPacketReceiver client, string message)
         {
-            SendChatServerMessage(client, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, message, 0, "", 0, "", 0);
+            SendChatServerMessage(client, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, message, DateTime.Now.GetUnixTimeStamp(), "", 0, "", 0);
         }
 
-        public static void SendChatServerMessage(WorldClient client, NamedActor sender, ChatActivableChannelsEnum channel, string message)
+        public static void SendChatServerMessage(IPacketReceiver client, NamedActor sender, ChatActivableChannelsEnum channel, string message)
         {
-            SendChatServerMessage(client, sender, channel, message, 0, "");
+            SendChatServerMessage(client, sender, channel, message, DateTime.Now.GetUnixTimeStamp(), "");
         }
 
-        public static void SendChatServerMessage(WorldClient client, NamedActor sender, ChatActivableChannelsEnum channel, string message,
+        public static void SendChatServerMessage(IPacketReceiver client, NamedActor sender, ChatActivableChannelsEnum channel, string message,
                                                  int timestamp, string fingerprint)
         {
             client.Send(new ChatServerMessage(
@@ -59,12 +61,12 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                             0));
         }
 
-        public static void SendChatServerMessage(WorldClient client, Character sender, ChatActivableChannelsEnum channel, string message)
+        public static void SendChatServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message)
         {
-            SendChatServerMessage(client, sender, channel, message, 0, "");
+            SendChatServerMessage(client, sender, channel, message, DateTime.Now.GetUnixTimeStamp(), "");
         }
 
-        public static void SendChatServerMessage(WorldClient client, Character sender, ChatActivableChannelsEnum channel, string message,
+        public static void SendChatServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message,
                                                  int timestamp, string fingerprint)
         {
             if (sender.Client.Account.Role <= RoleEnum.Moderator)
@@ -80,7 +82,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                             (int) sender.Client.Account.Id));
         }
 
-        public static void SendChatServerMessage(WorldClient client, ChatActivableChannelsEnum channel, string message,
+        public static void SendChatServerMessage(IPacketReceiver client, ChatActivableChannelsEnum channel, string message,
                                                  int timestamp, string fingerprint, int senderId, string senderName,
                                                  int accountId)
         {
@@ -94,18 +96,18 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                             accountId));
         }
 
-        public static void SendChatServerCopyMessage(WorldClient client, Character receiver, ChatActivableChannelsEnum channel,
+        public static void SendChatServerCopyMessage(IPacketReceiver client, Character sender, Character receiver, ChatActivableChannelsEnum channel,
                                                      string message)
         {
-            SendChatServerCopyMessage(client, receiver, channel, message, 0, "");
+            SendChatServerCopyMessage(client, sender, receiver, channel, message, DateTime.Now.GetUnixTimeStamp(), "");
         }
 
-        public static void SendChatServerCopyMessage(WorldClient client, Character receiver, ChatActivableChannelsEnum channel,
+        public static void SendChatServerCopyMessage(IPacketReceiver client, Character sender, Character receiver, ChatActivableChannelsEnum channel,
                                                      string message,
                                                      int timestamp, string fingerprint)
         {
-            {
-                if (client.Account.Role <= RoleEnum.Moderator)
+            
+                if (sender.Client.Account.Role <= RoleEnum.Moderator)
                     message = message.HtmlEntities();
 
                 client.Send(new ChatServerCopyMessage(
@@ -115,7 +117,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                                 fingerprint,
                                 receiver.Id,
                                 receiver.Name));
-            }
+            
         }
     }
 }

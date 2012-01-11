@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             Direction = breed.StartDirection;
         }
 
-        [PrimaryKey(PrimaryKeyType.Native, "Id")]
+        [PrimaryKey(PrimaryKeyType.Native)]
         public int Id
         {
             get;
@@ -133,12 +133,154 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        [Nested]
-        public Restrictions Restrictions
+        #region Restrictions
+        [Property]
+        public bool CantBeAggressed
         {
             get;
             set;
         }
+
+        [Property]
+        public bool CantBeChallenged
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool CantTrade
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool CantBeAttackedByMutant
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool CantRun
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool ForceSlowWalk
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool CantMinimize
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool CantMove
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool CantAggress
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool CantChallenge
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool CantExchange
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool CantAttack
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool CantChat
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool CantBeMerchant
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool CantUseObject
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool CantUseTaxCollector
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool CantUseInteractive
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool CantSpeakToNpc
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool CantChangeZone
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool CantAttackMonster
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool CantWalk8Directions
+        {
+            get;
+            set;
+        }
+        #endregion
 
         #region Position
 
@@ -166,9 +308,6 @@ namespace Stump.Server.WorldServer.Database.Characters
         #endregion
 
         #region Stats
-
-        private IList<CharacterSpellRecord> m_spells;
-        private IList<Shortcut> m_shortcuts;
 
         [Property("BaseHealth", NotNull = true)]
         public ushort BaseHealth
@@ -247,13 +386,12 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        [HasMany(typeof (CharacterSpellRecord), Cascade = ManyRelationCascadeEnum.Delete)]
-        public IList<CharacterSpellRecord> Spells
+        [Property("Kamas", NotNull = true, Default = "0")]
+        public int Kamas
         {
-            get { return m_spells ?? new List<CharacterSpellRecord>(); }
-            set { m_spells = value; }
+            get;
+            set;
         }
-
         #endregion
 
         #region Points
@@ -293,30 +431,17 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        [OneToOne]
-        public InventoryRecord Inventory
-        {
-            get;
-            set;
-        }
-
         #endregion
 
-        #region Shortcuts
-        [HasMany(typeof(Shortcut), Table = "shortcuts", ColumnKey = "CharacterId",
-            Cascade = ManyRelationCascadeEnum.Delete)]
-        public IList<Shortcut> Shortcuts
+        protected override void OnDelete()
         {
-            get
-            {
-                return m_shortcuts ?? new List<Shortcut>();
-            }
-            set
-            {
-                m_shortcuts = value;
-            }
+            ItemRecord.DeleteAll("OwnerId = " + Id);
+            CharacterSpellRecord.DeleteAll("OwnerId = " + Id);
+            Shortcut.DeleteAll("OwnerId = " + Id);
+
+
+            base.OnDelete();
         }
-        #endregion
 
         public static CharacterRecord FindById(int characterId)
         {

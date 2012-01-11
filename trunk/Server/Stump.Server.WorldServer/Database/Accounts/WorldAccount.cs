@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Database.Accounts
             get;
             set;
         }
-
+/*
         [HasAndBelongsToMany(typeof (StartupActionRecord), Table = "accounts_startup_actions", ColumnKey = "AccountId",
             ColumnRef = "StartupActionId", Cascade = ManyRelationCascadeEnum.Delete)]
         public IList<StartupActionRecord> StartupActions
@@ -71,12 +71,12 @@ namespace Stump.Server.WorldServer.Database.Accounts
             get { return m_enemies ?? new List<WorldAccount>(); }
             set { m_enemies = value; }
         }
-
+        
         public bool IsRevertFriend(WorldAccount account)
         {
             return Friends.Contains(account) && account.Friends.Contains(this);
         }
-
+        */
         public static WorldAccount FindById(uint id)
         {
             return FindByPrimaryKey(id);

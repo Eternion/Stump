@@ -11,7 +11,6 @@ namespace Stump.Server.WorldServer.Database.World.Triggers
     public class TeleportTriggerRecord : CellTriggerRecord
     {
         private short m_destinationCellId;
-        private DirectionsEnum m_destinationDirection;
 
         private int m_destinationMapId;
         private ObjectPosition m_destinationPosition;

@@ -2,6 +2,7 @@ using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Shortcut = Stump.Server.WorldServer.Database.Shortcuts.Shortcut;
 
@@ -33,27 +34,27 @@ namespace Stump.Server.WorldServer.Handlers.Shortcuts
                 client.ActiveCharacter.Shortcuts.GetShortcuts(barType).Select(entry => entry.GetNetworkShortcut())));
         }
 
-        public static void SendShortcutBarRefreshMessage(WorldClient client, ShortcutBarEnum barType, Shortcut shortcut)
+        public static void SendShortcutBarRefreshMessage(IPacketReceiver client, ShortcutBarEnum barType, Shortcut shortcut)
         {
             client.Send(new ShortcutBarRefreshMessage((sbyte)barType, shortcut.GetNetworkShortcut()));
         }
 
-        public static void SendShortcutBarRemovedMessage(WorldClient client, ShortcutBarEnum barType, int slot)
+        public static void SendShortcutBarRemovedMessage(IPacketReceiver client, ShortcutBarEnum barType, int slot)
         {
             client.Send(new ShortcutBarRemovedMessage((sbyte)barType, slot));
         }
 
-        public static void SendShortcutBarRemoveErrorMessage(WorldClient client)
+        public static void SendShortcutBarRemoveErrorMessage(IPacketReceiver client)
         {
             client.Send(new ShortcutBarRemoveErrorMessage());
         }
 
-        public static void SendShortcutBarSwapErrorMessage(WorldClient client)
+        public static void SendShortcutBarSwapErrorMessage(IPacketReceiver client)
         {
             client.Send(new ShortcutBarSwapErrorMessage());
         }
 
-        public static void SendShortcutBarAddErrorMessage(WorldClient client)
+        public static void SendShortcutBarAddErrorMessage(IPacketReceiver client)
         {
             client.Send(new ShortcutBarAddErrorMessage());
         }

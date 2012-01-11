@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
+using Stump.Core.Collections;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
@@ -8,6 +10,7 @@ using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Worlds.Parties
 {
+    // todo : update members when their stats change
     public class Party 
     {
         /// <summary>
@@ -22,110 +25,84 @@ namespace Stump.Server.WorldServer.Worlds.Parties
 
         public event Action<Party, Character> LeaderChanged;
 
-        protected void NotifyLeaderChanged(Character leader)
+        protected virtual void OnLeaderChanged(Character leader)
         {
-            OnLeaderChanged(leader);
+            ForEach(entry => PartyHandler.SendPartyLeaderUpdateMessage(entry.Client, this, leader));
 
             Action<Party, Character> handler = LeaderChanged;
             if (handler != null)
                 handler(this, leader);
         }
 
-        protected virtual void OnLeaderChanged(Character leader)
-        {
-            ForEach(entry => PartyHandler.SendPartyLeaderUpdateMessage(entry.Client, this, leader));
-        }
-
         public event MemberAddedHandler GuestAdded;
 
-        protected void NotifyGuestAdded(Character groupGuest)
+        protected virtual void OnGuestAdded(Character groupGuest)
         {
-            OnGuestAdded(groupGuest);
+            ForEach(entry => PartyHandler.SendPartyNewGuestMessage(entry.Client, this, groupGuest));
 
             var handler = GuestAdded;
             if (handler != null)
                 handler(this, groupGuest);
         }
 
-        protected virtual void OnGuestAdded(Character guest)
-        {
-            ForEach(entry => PartyHandler.SendPartyNewGuestMessage(entry.Client, this, guest));
-        }
-
         public event MemberRemovedHandler GuestRemoved;
 
-        protected void NotifyGuestRemoved(Character groupGuest, bool kicked)
+        protected virtual void OnGuestRemoved(Character groupGuest, bool kicked)
         {
-            OnGuestRemoved(groupGuest, kicked);
-
             var handler = GuestRemoved;
             if (handler != null)
                 handler(this, groupGuest, kicked);
         }
 
-        protected virtual void OnGuestRemoved(Character member, bool kicked)
-        {
-        }
-
         public event Action<Party, Character> GuestPromoted;
 
-        protected void NotifyGuestPromoted(Character groupMember)
+        protected virtual void OnGuestPromoted(Character groupMember)
         {
-            OnGuestPromoted(groupMember);
+            PartyHandler.SendPartyJoinMessage(groupMember.Client, this);
+
+            UpdateMember(groupMember);
+            BindEvents(groupMember);
 
             var handler = GuestPromoted;
             if (handler != null)
                 handler(this, groupMember);
         }
 
-        protected virtual void OnGuestPromoted(Character member)
-        {
-            PartyHandler.SendPartyJoinMessage(member.Client, this);
-
-            UpdateMember(member);
-        }
-
         public event MemberRemovedHandler MemberRemoved;
 
-        protected void NotifyMemberRemoved(Character groupMember, bool kicked)
+        protected virtual void OnMemberRemoved(Character groupMember, bool kicked)
         {
-            OnMemberRemoved(groupMember, kicked);
+            if (kicked)
+                PartyHandler.SendPartyKickedByMessage(groupMember.Client, this, Leader);
+            else
+                groupMember.Client.Send(new PartyLeaveMessage(Id));
 
+            ForEach(entry => PartyHandler.SendPartyMemberRemoveMessage(entry.Client, this, groupMember));
             MemberRemovedHandler handler = MemberRemoved;
+
+            UnBindEvents(groupMember);
+
             if (handler != null)
                 handler(this, groupMember, kicked);
         }
 
-        protected virtual void OnMemberRemoved(Character member, bool kicked)
-        {
-            if (kicked)
-                PartyHandler.SendPartyKickedByMessage(member.Client, this, Leader);
-            else
-                member.Client.Send(new PartyLeaveMessage());
-
-            ForEach(entry => PartyHandler.SendPartyMemberRemoveMessage(entry.Client, this, member));
-        }
-
         public event Action<Party> PartyDeleted;
 
-        protected void NotifyGroupDisbanded()
+        protected virtual void OnGroupDisbanded()
         {
-            OnGroupDisbanded();
+            ForEach(entry => PartyHandler.SendPartyDeletedMessage(entry.Client, this));
+
+            UnBindEvents();
 
             Action<Party> handler = PartyDeleted;
             if (handler != null)
                 handler(this);
         }
 
-        protected virtual void OnGroupDisbanded()
-        {
-            ForEach(entry => PartyHandler.SendPartyDeletedMessage(entry.Client, this));
-        }
-
         #endregion
 
-        private readonly List<Character> m_members = new List<Character>();
-        private readonly List<Character> m_guests = new List<Character>();
+        private readonly ConcurrentList<Character> m_members = new ConcurrentList<Character>();
+        private readonly ConcurrentList<Character> m_guests = new ConcurrentList<Character>();
 
         private readonly object m_guestLocker = new object();
         private readonly object m_memberLocker = new object();
@@ -136,6 +113,7 @@ namespace Stump.Server.WorldServer.Worlds.Parties
             Restricted = true;
 
             m_members.Add(leader);
+            BindEvents(leader);
             Leader = leader;
             PartyHandler.SendPartyJoinMessage(leader.Client, this);
         }
@@ -150,7 +128,7 @@ namespace Stump.Server.WorldServer.Worlds.Parties
         {
             get
             {
-                return PartyTypeEnum.PARTY_TYPE_UNDEFINED;
+                return PartyTypeEnum.PARTY_TYPE_CLASSICAL;
             }
         }
 
@@ -215,7 +193,7 @@ namespace Stump.Server.WorldServer.Worlds.Parties
             lock (m_guestLocker)
                 m_guests.Add(character);
 
-            NotifyGuestAdded(character);
+            OnGuestAdded(character);
 
             return true;
         }
@@ -227,7 +205,7 @@ namespace Stump.Server.WorldServer.Worlds.Parties
                 if (!m_guests.Remove(character))
                     return;
 
-                NotifyGuestRemoved(character, false);
+                OnGuestRemoved(character, false);
 
                 if (MembersCount <= 1)
                     Disband();
@@ -253,9 +231,14 @@ namespace Stump.Server.WorldServer.Worlds.Parties
             lock (m_memberLocker)
                 m_members.Add(guest);
 
-            NotifyGuestPromoted(guest);
+            OnGuestPromoted(guest);
 
             return true;
+        }
+
+        public bool AddMember(Character member)
+        {
+            return PromoteGuestToMember(member);
         }
 
         public void RemoveMember(Character character)
@@ -265,10 +248,11 @@ namespace Stump.Server.WorldServer.Worlds.Parties
                 if (!m_members.Remove(character)) 
                     return;
 
-                NotifyMemberRemoved(character, false);
+                OnMemberRemoved(character, false);
 
                 if (MembersCount <= 1)
                     Disband();
+
                 else if (Leader == character)
                 {
                     ChangeLeader(m_members.First());
@@ -283,10 +267,11 @@ namespace Stump.Server.WorldServer.Worlds.Parties
                 if (!m_members.Remove(member))
                     return;
 
-                NotifyMemberRemoved(member, true);
+                OnMemberRemoved(member, true);
 
                 if (MembersCount <= 1)
                     Disband();
+
                 else if (Leader == member)
                 {
                     ChangeLeader(m_members.First());
@@ -304,7 +289,7 @@ namespace Stump.Server.WorldServer.Worlds.Parties
 
             Leader = leader;
 
-            NotifyLeaderChanged(Leader);
+            OnLeaderChanged(Leader);
         }
 
         public bool IsInGroup(Character character)
@@ -326,17 +311,17 @@ namespace Stump.Server.WorldServer.Worlds.Parties
         {
             PartyManager.Instance.Remove(this);
 
-            NotifyGroupDisbanded();
+            OnGroupDisbanded();
         }
 
         public Character GetMember(int id)
         {
-            return m_members.Find(entry => entry.Id == id);
+            return m_members.SingleOrDefault(entry => entry.Id == id);
         }
 
         public Character GetGuest(int id)
         {
-            return m_guests.Find(entry => entry.Id == id);
+            return m_guests.SingleOrDefault(entry => entry.Id == id);
         }
 
         public void UpdateMember(Character character)
@@ -344,7 +329,7 @@ namespace Stump.Server.WorldServer.Worlds.Parties
             if (!IsInGroup(character))
                 return;
 
-            ForEach(entry => PartyHandler.SendPartyUpdateMessage(entry.Client, this, character), character);
+            ForEach(entry => PartyHandler.SendPartyUpdateMessage(entry.Client, this, character));
         }
 
         public void ForEach(Action<Character> action)
@@ -368,7 +353,43 @@ namespace Stump.Server.WorldServer.Worlds.Parties
         {
             foreach (var character in m_members)
             {
+                Contract.Assert(character.Client != null);
+
                 character.Client.Send(message);
+            }
+        }
+
+        private void OnLifeUpdated(Character character, int regainedLife)
+        {
+            UpdateMember(character);
+        }
+
+        private void OnLevelChanged(Character character, byte currentLevel, int difference)
+        {
+            UpdateMember(character);
+        }
+
+        private void BindEvents(Character member)
+        {
+            Contract.Requires(member != null);
+
+            member.LifeRegened += OnLifeUpdated;
+            member.LevelChanged += OnLevelChanged;
+        }
+
+        private void UnBindEvents(Character member)
+        {
+            Contract.Requires(member != null);
+
+            member.LifeRegened -= OnLifeUpdated;
+            member.LevelChanged -= OnLevelChanged;
+        }
+
+        private void UnBindEvents()
+        {
+            foreach (var member in Members)
+            {
+                UnBindEvents(member);
             }
         }
     }

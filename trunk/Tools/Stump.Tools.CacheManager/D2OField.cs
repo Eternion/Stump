@@ -14,19 +14,34 @@ namespace Stump.Tools.CacheManager
         public D2OField(FieldInfo field)
         {
             m_field = field;
+            Name = field.Name;
             D2OAttr = field.GetCustomAttribute<D2OFieldAttribute>();
+            DbFieldAttr = field.GetCustomAttribute<FieldAttribute>();
             DbBelongsAttr = field.GetCustomAttribute<BelongsToAttribute>();
         }
 
         public D2OField(PropertyInfo property)
         {
             m_property = property;
+            Name = property.Name;
             D2OAttr = property.GetCustomAttribute<D2OFieldAttribute>();
             DbPropAttr = property.GetCustomAttribute<PropertyAttribute>();
             DbBelongsAttr = property.GetCustomAttribute<BelongsToAttribute>();
         }
 
+        public string Name
+        {
+            get;
+            set;
+        }
+
         public D2OFieldAttribute D2OAttr
+        {
+            get;
+            set;
+        }
+
+        public FieldAttribute DbFieldAttr
         {
             get;
             set;
@@ -51,6 +66,9 @@ namespace Stump.Tools.CacheManager
 
             if (DbBelongsAttr != null && DbBelongsAttr.Column != null)
                 return DbBelongsAttr.Column;
+
+            if (DbFieldAttr != null && DbFieldAttr.Column != null)
+                return DbFieldAttr.Column;
 
             if (m_field != null)
                 return m_field.Name;

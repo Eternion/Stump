@@ -11,6 +11,11 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         protected short m_maxvalue;
         protected short m_minvalue;
 
+        public EffectMinMax()
+        {
+            
+        }
+
         public EffectMinMax(short id, short valuemin, short valuemax)
             : base(id)
         {
@@ -28,6 +33,14 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         public override int ProtocoleId
         {
             get { return 82; }
+        }
+
+        public override byte SerializationIdenfitier
+        {
+            get
+            {
+                return 8;
+            }
         }
 
         public short ValueMin
@@ -50,6 +63,22 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         public override ObjectEffect GetObjectEffect()
         {
             return new ObjectEffectMinMax(Id, ValueMin, ValueMax);
+        }
+
+        protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
+        {
+            base.InternalSerialize(ref writer);
+
+            writer.Write(m_maxvalue);
+            writer.Write(m_minvalue);
+        }
+
+        protected override void InternalDeserialize(ref System.IO.BinaryReader reader)
+        {
+            base.InternalDeserialize(ref reader);
+
+            m_maxvalue = reader.ReadInt16();
+            m_minvalue = reader.ReadInt16();
         }
 
         public override EffectBase GenerateEffect(EffectGenerationContext context)

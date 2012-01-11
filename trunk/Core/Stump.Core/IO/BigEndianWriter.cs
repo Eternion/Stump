@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Text;
 
@@ -26,16 +27,26 @@ namespace Stump.Core.IO
         public long Position
         {
             get { return m_writer.BaseStream.Position; }
-            set { m_writer.BaseStream.Position = value; }
+            set
+            {
+                Contract.Requires(value >= 0L);
+                
+                m_writer.BaseStream.Position = value;
+            }
         }
 
         public byte[] Data
         {
             get
             {
+                var pos = m_writer.BaseStream.Position;
+
                 var data = new byte[m_writer.BaseStream.Length];
                 m_writer.BaseStream.Position = 0;
                 m_writer.BaseStream.Read(data, 0, (int)m_writer.BaseStream.Length);
+
+                m_writer.BaseStream.Position = pos;
+
                 return data;
             }
         }

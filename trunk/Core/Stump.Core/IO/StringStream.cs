@@ -176,6 +176,20 @@ namespace Stump.Core.IO
             }
         }
 
+        public string PeekNextWord()
+        {
+            return PeekNextWord(" ");
+        }
+
+        public string PeekNextWord(string seperator)
+        {
+            var pos = m_pos;
+            var word = NextWord(seperator);
+            m_pos = pos;
+
+            return word;
+        }
+
         /// <summary>
         /// Calls <code>NextWord(" ")</code>.
         /// </summary>

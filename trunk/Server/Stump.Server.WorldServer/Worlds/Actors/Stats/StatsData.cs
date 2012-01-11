@@ -98,14 +98,9 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
         {
             get
             {
-                if (m_formulas != null)
-                {
-                    int result = m_formulas(Owner, Base, Equiped, Given, Context);
+                var total = Total;
 
-                    return result < 0 ? 0 : result;
-                }
-
-                return 0;
+                return total > 0 ? total : 0;
             }
         }
 

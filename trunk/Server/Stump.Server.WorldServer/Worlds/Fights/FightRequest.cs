@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.Contracts;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
@@ -11,6 +12,9 @@ namespace Stump.Server.WorldServer.Worlds.Fights
     {
         public FightRequest(Character source, Character target)
         {
+            Contract.Requires(source != null);
+            Contract.Requires(target != null);
+
             Source = source;
             Target = target;
         }

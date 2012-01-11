@@ -9,6 +9,11 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
     {
         protected short m_monsterfamily;
 
+        public EffectCreature()
+        {
+            
+        }
+
         public EffectCreature(short id, short monsterfamily)
             : base(id)
         {
@@ -26,6 +31,14 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
             get { return 71; }
         }
 
+        public override byte SerializationIdenfitier
+        {
+            get
+            {
+                return 2;
+            }
+        }
+
         public short MonsterFamily
         {
             get { return m_monsterfamily; }
@@ -39,6 +52,20 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         public override ObjectEffect GetObjectEffect()
         {
             return new ObjectEffectCreature(Id, MonsterFamily);
+        }
+
+        protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
+        {
+            base.InternalSerialize(ref writer);
+
+            writer.Write(MonsterFamily);
+        }
+
+        protected override void InternalDeserialize(ref System.IO.BinaryReader reader)
+        {
+            base.InternalDeserialize(ref reader);
+
+            m_monsterfamily = reader.ReadInt16();
         }
 
         public override bool Equals(object obj)

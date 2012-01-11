@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Extensions;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Worlds;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
@@ -56,31 +58,40 @@ namespace Stump.Server.WorldServer.Handlers.Basic
         /// <remarks>
         ///   Message id = <paramref name = "msgType" /> * 10000 + <paramref name = "msgId" />
         /// </remarks>
-        public static void SendTextInformationMessage(WorldClient client, sbyte msgType, short msgId,
+        public static void SendTextInformationMessage(IPacketReceiver client, sbyte msgType, short msgId,
                                                       params string[] arguments)
         {
             client.Send(new TextInformationMessage(msgType, msgId, arguments));
         }
 
-        public static void SendTextInformationMessage(WorldClient client, sbyte msgType, short msgId,
+        public static void SendTextInformationMessage(IPacketReceiver client, sbyte msgType, short msgId,
                                                       params object[] arguments)
         {
             client.Send(new TextInformationMessage(msgType, msgId, arguments.Select(entry => entry.ToString())));
         }
 
-        public static void SendTextInformationMessage(WorldClient client, sbyte msgType, short msgId)
+        public static void SendTextInformationMessage(IPacketReceiver client, sbyte msgType, short msgId)
         {
             client.Send(new TextInformationMessage(msgType, msgId, new string[0]));
         }
 
-        public static void SendBasicTimeMessage(WorldClient client)
+        public static void SendSystemMessageDisplayMessage(IPacketReceiver client, bool hangUp, short msgId, IEnumerable<string> arguments)
         {
-            var unixTimeStamp = (int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds;
-            var offset = (short) TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now).TotalSeconds;
-            client.Send(new BasicTimeMessage(unixTimeStamp, offset));
+            client.Send(new SystemMessageDisplayMessage(hangUp, msgId, arguments));
         }
 
-        public static void SendBasicNoOperationMessage(WorldClient client)
+        public static void SendSystemMessageDisplayMessage(IPacketReceiver client, bool hangUp, short msgId, params object[] arguments)
+        {
+            client.Send(new SystemMessageDisplayMessage(hangUp, msgId, arguments.Select(entry => entry.ToString())));
+        }
+
+        public static void SendBasicTimeMessage(IPacketReceiver client)
+        {
+            var offset = (short) TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now).TotalSeconds;
+            client.Send(new BasicTimeMessage(DateTime.Now.GetUnixTimeStamp(), offset));
+        }
+
+        public static void SendBasicNoOperationMessage(IPacketReceiver client)
         {
             client.Send(new BasicNoOperationMessage());
         }

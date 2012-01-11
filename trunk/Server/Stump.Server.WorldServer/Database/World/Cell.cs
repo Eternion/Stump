@@ -6,6 +6,10 @@ namespace Stump.Server.WorldServer.Database.World
     [Serializable]
     public struct Cell
     {
+        public static Cell Null = new Cell
+        {
+            Id = -1
+        };
         public const int StructSize = 2 + 2 + 1 + 1 + 1;
 
         public short Floor;
@@ -56,28 +60,30 @@ namespace Stump.Server.WorldServer.Database.World
 
         public byte[] Serialize()
         {
-            var stream = new MemoryStream();
-            var writer = new BinaryWriter(stream);
+            var bytes = new byte[StructSize];
 
-            writer.Write(Id);
-            writer.Write(Floor);
-            writer.Write(LosMov);
-            writer.Write(MapChangeData);
-            writer.Write(Speed);
+            bytes[0] = (byte)( Id >> 8 );
+            bytes[1] = (byte)( Id & 0xFF );
 
-            return stream.ToArray();
+            bytes[2] = (byte)( Floor >> 8 );
+            bytes[3] = (byte)( Floor & 0xFF );
+
+            bytes[4] = LosMov;
+            bytes[5] = MapChangeData;
+            bytes[6] = Speed;
+
+            return bytes;
         }
 
-        public void Deserialize(byte[] data, int index = 0, int count = StructSize)
+        public void Deserialize(byte[] data, int index = 0)
         {
-            var stream = new MemoryStream(data, index, count);
-            var reader = new BinaryReader(stream);
+            Id = (short) (( data[index + 0] << 8 ) | data[index + 1]);
 
-            Id = reader.ReadInt16();
-            Floor = reader.ReadInt16();
-            LosMov = reader.ReadByte();
-            MapChangeData = reader.ReadByte();
-            Speed = reader.ReadByte();
+            Floor = (short)( ( data[index + 2] << 8 ) | data[index + 3] );
+
+            LosMov = data[index + 4];
+            MapChangeData = data[index + 5];
+            Speed = data[index + 6];
         }
     }
 }

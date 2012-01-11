@@ -36,7 +36,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
 
         public NpcSpawn GetOneNpcSpawn(Predicate<NpcSpawn> predicate)
         {
-            return m_npcsSpawns.Values.Where(entry => predicate(entry)).FirstOrDefault();
+            return m_npcsSpawns.Values.SingleOrDefault(entry => predicate(entry));
         }
 
         public IEnumerable<NpcSpawn> GetNpcSpawns()
@@ -73,10 +73,19 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs
             return message;
         }
 
+        public List<NpcAction> GetNpcActions(int id)
+        {
+            return m_npcsActions.Where(entry => entry.Value.NpcId == id).Select(entry => entry.Value).ToList();
+        }
+
+        public List<NpcReply> GetMessageReplies(uint id)
+        {
+            return m_npcsReplies.Where(entry => entry.Value.MessageId == id).Select(entry => entry.Value).ToList();
+        }
+
         public void AddNpcSpawn(NpcSpawn spawn)
         {
             spawn.Save();
-
             m_npcsSpawns.Add(spawn.Id, spawn);
         }
     }

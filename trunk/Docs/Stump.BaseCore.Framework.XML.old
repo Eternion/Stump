@@ -1,0 +1,2267 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Stump.Core</name>
+    </assembly>
+    <members>
+        <member name="F:Stump.Core.IO.NLogHelper.LogFilePath">
+            <summary>
+              Directory where logs are stored
+            </summary>
+            <remarks>
+              Don't put a dot (.) at the begin
+            </remarks>
+        </member>
+        <member name="M:Stump.Core.IO.NLogHelper.DefineLogProfile(System.Boolean,System.Boolean)">
+            <summary>
+              Defines the log profile.
+            </summary>
+            <param name = "activefileLog">if set to <c>true</c> logs by file are actived.</param>
+            <param name = "activeconsoleLog">if set to <c>true</c> logs on the console are actived.</param>
+        </member>
+        <member name="M:Stump.Core.IO.NLogHelper.EnableLogging">
+            <summary>
+              Enable the logging.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.IO.NLogHelper.DisableLogging">
+            <summary>
+              Disable the logging.
+            </summary>
+        </member>
+        <member name="T:Stump.Core.Threading.TaskExtensions">
+            <summary>
+              Extensions methods for Task.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskExtensions.ContinueWith(System.Threading.Tasks.Task,System.Action{System.Threading.Tasks.Task},System.Threading.Tasks.TaskFactory)">
+            <summary>
+              Creates a continuation task using the specified TaskFactory.
+            </summary>
+            <param name = "task">The antecedent Task.</param>
+            <param name = "continuationAction">The continuation action.</param>
+            <param name = "factory">The TaskFactory.</param>
+            <returns>A continuation task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskExtensions.ContinueWith``1(System.Threading.Tasks.Task,System.Func{System.Threading.Tasks.Task,``0},System.Threading.Tasks.TaskFactory)">
+            <summary>
+              Creates a continuation task using the specified TaskFactory.
+            </summary>
+            <param name = "task">The antecedent Task.</param>
+            <param name = "continuationFunction">The continuation function.</param>
+            <param name = "factory">The TaskFactory.</param>
+            <returns>A continuation task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskExtensions.ContinueWith``1(System.Threading.Tasks.Task{``0},System.Action{System.Threading.Tasks.Task{``0}},System.Threading.Tasks.TaskFactory{``0})">
+            <summary>
+              Creates a continuation task using the specified TaskFactory.
+            </summary>
+            <param name = "task">The antecedent Task.</param>
+            <param name = "continuationAction">The continuation action.</param>
+            <param name = "factory">The TaskFactory.</param>
+            <returns>A continuation task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskExtensions.ContinueWith``2(System.Threading.Tasks.Task{``0},System.Func{System.Threading.Tasks.Task{``0},``1},System.Threading.Tasks.TaskFactory{``0})">
+            <summary>
+              Creates a continuation task using the specified TaskFactory.
+            </summary>
+            <param name = "task">The antecedent Task.</param>
+            <param name = "continuationFunction">The continuation function.</param>
+            <param name = "factory">The TaskFactory.</param>
+            <returns>A continuation task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskExtensions.ToAsync(System.Threading.Tasks.Task,System.AsyncCallback,System.Object)">
+            <summary>
+              Creates a Task that represents the completion of another Task, and 
+              that schedules an AsyncCallback to run upon completion.
+            </summary>
+            <param name = "task">The antecedent Task.</param>
+            <param name = "callback">The AsyncCallback to run.</param>
+            <param name = "state">The object state to use with the AsyncCallback.</param>
+            <returns>The new task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskExtensions.ToAsync``1(System.Threading.Tasks.Task{``0},System.AsyncCallback,System.Object)">
+            <summary>
+              Creates a Task that represents the completion of another Task, and 
+              that schedules an AsyncCallback to run upon completion.
+            </summary>
+            <param name = "task">The antecedent Task.</param>
+            <param name = "callback">The AsyncCallback to run.</param>
+            <param name = "state">The object state to use with the AsyncCallback.</param>
+            <returns>The new task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskExtensions.IgnoreExceptions(System.Threading.Tasks.Task)">
+            <summary>
+              Suppresses default exception handling of a Task that would otherwise reraise the exception on the finalizer thread.
+            </summary>
+            <param name = "task">The Task to be monitored.</param>
+            <returns>The original Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskExtensions.IgnoreExceptions``1(System.Threading.Tasks.Task{``0})">
+            <summary>
+              Suppresses default exception handling of a Task that would otherwise reraise the exception on the finalizer thread.
+            </summary>
+            <param name = "task">The Task to be monitored.</param>
+            <returns>The original Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskExtensions.FailFastOnException(System.Threading.Tasks.Task)">
+            <summary>
+              Fails immediately when an exception is encountered.
+            </summary>
+            <param name = "task">The Task to be monitored.</param>
+            <returns>The original Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskExtensions.FailFastOnException``1(System.Threading.Tasks.Task{``0})">
+            <summary>
+              Fails immediately when an exception is encountered.
+            </summary>
+            <param name = "task">The Task to be monitored.</param>
+            <returns>The original Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskExtensions.PropagateExceptions(System.Threading.Tasks.Task)">
+            <summary>
+              Propagates any exceptions that occurred on the specified task.
+            </summary>
+            <param name = "task">The Task whose exceptions are to be propagated.</param>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskExtensions.PropagateExceptions(System.Threading.Tasks.Task[])">
+            <summary>
+              Propagates any exceptions that occurred on the specified tasks.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskExtensions.AttachToParent(System.Threading.Tasks.Task)">
+            <summary>
+              Ensures that a parent task can't transition into a completed state
+              until the specified task has also completed, even if it's not
+              already a child task.
+            </summary>
+            <param name = "task">The task to attach to the current task as a child.</param>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskExtensions.WithTimeout(System.Threading.Tasks.Task,System.TimeSpan)">
+            <summary>
+              Creates a new Task that mirrors the supplied task but that will be canceled after the specified timeout.
+            </summary>
+            <param name = "task">The task.</param>
+            <param name = "timeout">The timeout.</param>
+            <returns>The new Task that may time out.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskExtensions.WithTimeout``1(System.Threading.Tasks.Task{``0},System.TimeSpan)">
+            <summary>
+              Creates a new Task that mirrors the supplied task but that will be canceled after the specified timeout.
+            </summary>
+            <typeparam name = "TResult">Specifies the type of data contained in the task.</typeparam>
+            <param name = "task">The task.</param>
+            <param name = "timeout">The timeout.</param>
+            <returns>The new Task that may time out.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskExtensions.ToObservable``1(System.Threading.Tasks.Task{``0})">
+            <summary>
+              Creates an IObservable that represents the completion of a Task.
+            </summary>
+            <typeparam name = "TResult">Specifies the type of data returned by the Task.</typeparam>
+            <param name = "task">The Task to be represented as an IObservable.</param>
+            <returns>An IObservable that represents the completion of the Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskExtensions.WaitForCompletionStatus(System.Threading.Tasks.Task)">
+            <summary>
+              Waits for the task to complete execution, returning the task's final status.
+            </summary>
+            <param name = "task">The task for which to wait.</param>
+            <returns>The completion status of the task.</returns>
+            <remarks>
+              Unlike Wait, this method will not throw an exception if the task ends in the Faulted or Canceled state.
+            </remarks>
+        </member>
+        <member name="T:Stump.Core.Threading.TaskExtensions.CancelOnDispose">
+            <summary>
+              Translate a call to IDisposable.Dispose to a CancellationTokenSource.Cancel.
+            </summary>
+        </member>
+        <member name="T:Stump.Core.Threading.TaskExtensions.TaskObservable`1">
+            <summary>
+              An implementation of IObservable that wraps a Task.
+            </summary>
+            <typeparam name = "TResult">The type of data returned by the task.</typeparam>
+        </member>
+        <member name="M:Stump.Core.Pool.UniqueIdProvider.Push(System.Int32)">
+            <summary>
+            Indicate that the given id is free
+            </summary>
+            <param name="freeId"></param>
+        </member>
+        <member name="M:Stump.Core.IO.IDataWriter.WriteShort(System.Int16)">
+            <summary>
+              Write a Short into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataWriter.WriteInt(System.Int32)">
+            <summary>
+              Write a int into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataWriter.WriteLong(System.Int64)">
+            <summary>
+              Write a long into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataWriter.WriteUShort(System.UInt16)">
+            <summary>
+              Write a UShort into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataWriter.WriteUInt(System.UInt32)">
+            <summary>
+              Write a int into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataWriter.WriteULong(System.UInt64)">
+            <summary>
+              Write a long into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataWriter.WriteByte(System.Byte)">
+            <summary>
+              Write a byte into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataWriter.WriteFloat(System.Single)">
+            <summary>
+              Write a Float into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataWriter.WriteBoolean(System.Boolean)">
+            <summary>
+              Write a Boolean into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataWriter.WriteChar(System.Char)">
+            <summary>
+              Write a Char into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataWriter.WriteDouble(System.Double)">
+            <summary>
+              Write a Double into the buffer
+            </summary>
+        </member>
+        <member name="M:Stump.Core.IO.IDataWriter.WriteSingle(System.Single)">
+            <summary>
+              Write a Single into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataWriter.WriteUTF(System.String)">
+            <summary>
+              Write a string into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataWriter.WriteUTFBytes(System.String)">
+            <summary>
+              Write a string into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataWriter.WriteBytes(System.Byte[])">
+            <summary>
+              Write a bytes array into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataReader.ReadShort">
+            <summary>
+              Read a Short from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataReader.ReadInt">
+            <summary>
+              Read a int from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataReader.ReadLong">
+            <summary>
+              Read a long from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataReader.ReadFloat">
+            <summary>
+              Read a Float from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataReader.ReadUShort">
+            <summary>
+              Read a UShort from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataReader.ReadUInt">
+            <summary>
+              Read a int from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataReader.ReadULong">
+            <summary>
+              Read a long from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataReader.ReadByte">
+            <summary>
+              Read a byte from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataReader.ReadBytes(System.Int32)">
+            <summary>
+              Returns N bytes from the buffer
+            </summary>
+            <param name = "n">Number of read bytes.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataReader.ReadBoolean">
+            <summary>
+              Read a Boolean from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataReader.ReadChar">
+            <summary>
+              Read a Char from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataReader.ReadDouble">
+            <summary>
+              Read a Double from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataReader.ReadSingle">
+            <summary>
+              Read a Single from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataReader.ReadUTF">
+            <summary>
+              Read a string from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.IDataReader.ReadUTFBytes(System.UInt16)">
+            <summary>
+              Read a string from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Stump.Core.Pool.SocketAsyncEventArgsPool">
+            <summary>
+              Collection de SocketAsynEventArgs réutilisable
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Pool.SocketAsyncEventArgsPool.#ctor(System.Int32)">
+            <summary>
+              On initialise le Pool de SocketEventArgs à sa taille Maximum
+            </summary>
+            <param name = "capacity">Nombre Maximum de SocketAsyncEventArgs que pourra contenir notre pool</param>
+        </member>
+        <member name="M:Stump.Core.Pool.SocketAsyncEventArgsPool.Push(System.Net.Sockets.SocketAsyncEventArgs)">
+            <summary>
+              Met un SocketAsyncEventArgs dans le pool
+            </summary>
+            <param name = "item">Le SocketAsyncEventArgs à mettre dans le pool</param>
+        </member>
+        <member name="M:Stump.Core.Pool.SocketAsyncEventArgsPool.Pop">
+            <summary>
+              Récupère un SocketAsyncEventArgs à partir du pool
+            </summary>
+            <returns>le SocketAsyncEventArgs provenant du pool</returns>
+        </member>
+        <member name="P:Stump.Core.Pool.SocketAsyncEventArgsPool.Count">
+            <summary>
+              Gets the number of SocketAsyncEventArgs instances in the pool
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Cryptography.Cryptography.GetMD5Hash(System.String)">
+            <summary>
+              Get the md5 from a string
+            </summary>
+            <param name = "input">String input</param>
+            <returns>MD5 Hash</returns>
+        </member>
+        <member name="M:Stump.Core.Cryptography.Cryptography.VerifyMD5Hash(System.String,System.String)">
+            <summary>
+              Check if the given hash equals to the hash of the given string
+            </summary>
+            <param name = "chaine">String</param>
+            <param name = "hash">MD5 hash to check</param>
+            <returns></returns>
+        </member>
+        <member name="T:Stump.Core.Threading.IMessage">
+            <summary>
+            Defines the interface of a message.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.IMessage.Execute">
+            <summary>
+            Executes the message.
+            </summary>
+        </member>
+        <member name="T:Stump.Core.Threading.Message">
+            <summary>
+            Defines a message with no input parameters.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.Message.Obtain(System.Action)">
+            <summary>
+            Returns a recycled or new Message object with the given callback.
+            TODO: Object recycling
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.Message.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.Message.#ctor(System.Action)">
+            <summary>
+            Constructs a message with the specific callback.
+            </summary>
+            <param name="callback">the callback to invoke when the message is executed</param>
+        </member>
+        <member name="M:Stump.Core.Threading.Message.Execute">
+            <summary>
+            Executes the message, calling any callbacks that are bound.
+            </summary>
+        </member>
+        <member name="P:Stump.Core.Threading.Message.Callback">
+            <summary>
+            The callback that is called when the message is executed.
+            </summary>
+        </member>
+        <member name="T:Stump.Core.Threading.WaitMessage">
+            <summary>
+            Rather performance-hungry message to ensure that a task
+            executed before continuing
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.WaitMessage.Wait">
+            <summary>
+            Waits until this Message executed.
+            </summary>
+        </member>
+        <member name="T:Stump.Core.Threading.Message1`1">
+            <summary>
+            Defines a message with one input parameter.
+            </summary>
+            <typeparam name="T1">the type of the first input parameter</typeparam>
+        </member>
+        <member name="M:Stump.Core.Threading.Message1`1.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.Message1`1.#ctor(System.Action{`0})">
+            <summary>
+            Constructs a message with the specific callback.
+            </summary>
+            <param name="callback">the callback to invoke when the message is executed</param>
+        </member>
+        <member name="M:Stump.Core.Threading.Message1`1.#ctor(`0,System.Action{`0})">
+            <summary>
+            Constructs a message with the specific callback and input parameter.
+            </summary>
+            <param name="callback">the callback to invoke when the message is executed</param>
+            <param name="param1">the first input parameter</param>
+        </member>
+        <member name="M:Stump.Core.Threading.Message1`1.Execute">
+            <summary>
+            Executes the message, calling any callbacks that are bound, passing the given input parameters.
+            </summary>
+        </member>
+        <member name="P:Stump.Core.Threading.Message1`1.Callback">
+            <summary>
+            The callback that is called when the message is executed.
+            </summary>
+        </member>
+        <member name="P:Stump.Core.Threading.Message1`1.Parameter1">
+            <summary>
+            The first input parameter.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.Message2`2.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.Message2`2.#ctor(System.Action{`0,`1})">
+            <summary>
+            Constructs a message with the specific callback.
+            </summary>
+            <param name="callback">the callback to invoke when the message is executed</param>
+        </member>
+        <member name="M:Stump.Core.Threading.Message2`2.#ctor(`0,`1,System.Action{`0,`1})">
+            <summary>
+            Constructs a message with the specific callback and input parameters.
+            </summary>
+            <param name="callback">the callback to invoke when the message is executed</param>
+            <param name="param1">the first input parameter</param>
+            <param name="param2">the second input parameter</param>
+        </member>
+        <member name="M:Stump.Core.Threading.Message2`2.#ctor(`0,`1)">
+            <summary>
+            Constructs a message with the specific callback and input parameters.
+            </summary>
+            <param name="param1">the first input parameter</param>
+            <param name="param2">the second input parameter</param>
+        </member>
+        <member name="M:Stump.Core.Threading.Message2`2.Execute">
+            <summary>
+            Executes the message, calling any callbacks that are bound, passing the given input parameters.
+            </summary>
+        </member>
+        <member name="P:Stump.Core.Threading.Message2`2.Callback">
+            <summary>
+            The callback that is called when the message is executed.
+            </summary>
+        </member>
+        <member name="P:Stump.Core.Threading.Message2`2.Parameter1">
+            <summary>
+            The first input parameter.
+            </summary>
+        </member>
+        <member name="P:Stump.Core.Threading.Message2`2.Parameter2">
+            <summary>
+            The second input parameter.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.Message3`3.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.Message3`3.#ctor(System.Action{`0,`1,`2})">
+            <summary>
+            Constructs a message with the specific callback.
+            </summary>
+            <param name="callback">the callback to invoke when the message is executed</param>
+        </member>
+        <member name="M:Stump.Core.Threading.Message3`3.#ctor(`0,`1,`2,System.Action{`0,`1,`2})">
+            <summary>
+            Constructs a message with the specific callback and input parameters.
+            </summary>
+            <param name="callback">the callback to invoke when the message is executed</param>
+            <param name="param1">the first input parameter</param>
+            <param name="param2">the second input parameter</param>
+            <param name="param3">the third input parameter</param>
+        </member>
+        <member name="M:Stump.Core.Threading.Message3`3.Execute">
+            <summary>
+            Executes the message, calling any callbacks that are bound, passing the given input parameters.
+            </summary>
+        </member>
+        <member name="P:Stump.Core.Threading.Message3`3.Callback">
+            <summary>
+            The callback that is called when the message is executed.
+            </summary>
+        </member>
+        <member name="P:Stump.Core.Threading.Message3`3.Parameter1">
+            <summary>
+            The first input parameter.
+            </summary>
+        </member>
+        <member name="P:Stump.Core.Threading.Message3`3.Parameter2">
+            <summary>
+            The second input parameter.
+            </summary>
+        </member>
+        <member name="P:Stump.Core.Threading.Message3`3.Parameter3">
+            <summary>
+            The third input parameter.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.Message4`4.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.Message4`4.#ctor(System.Action{`0,`1,`2,`3})">
+            <summary>
+            Constructs a message with the specific callback.
+            </summary>
+            <param name="callback">the callback to invoke when the message is executed</param>
+        </member>
+        <member name="M:Stump.Core.Threading.Message4`4.#ctor(System.Action{`0,`1,`2,`3},`0,`1,`2,`3)">
+            <summary>
+            Constructs a message with the specific callback and input parameters.
+            </summary>
+            <param name="callback">the callback to invoke when the message is executed</param>
+            <param name="param1">the first input parameter</param>
+            <param name="param2">the second input parameter</param>
+            <param name="param3">the third input parameter</param>
+            <param name="param4">the fourth input parameter</param>
+        </member>
+        <member name="M:Stump.Core.Threading.Message4`4.Execute">
+            <summary>
+            Executes the message, calling any callbacks that are bound, passing the given input parameters.
+            </summary>
+        </member>
+        <member name="P:Stump.Core.Threading.Message4`4.Callback">
+            <summary>
+            The callback that is called when the message is executed.
+            </summary>
+        </member>
+        <member name="P:Stump.Core.Threading.Message4`4.Parameter1">
+            <summary>
+            The first input parameter.
+            </summary>
+        </member>
+        <member name="P:Stump.Core.Threading.Message4`4.Parameter2">
+            <summary>
+            The second input parameter.
+            </summary>
+        </member>
+        <member name="P:Stump.Core.Threading.Message4`4.Parameter3">
+            <summary>
+            The third input parameter.
+            </summary>
+        </member>
+        <member name="P:Stump.Core.Threading.Message4`4.Parameter4">
+            <summary>
+            The fourth input parameter.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskSchedulerExtensions.ToSynchronizationContext(System.Threading.Tasks.TaskScheduler)">
+            <summary>
+              Gets a SynchronizationContext that targets this TaskScheduler.
+            </summary>
+            <param name = "scheduler">The target scheduler.</param>
+            <returns>A SynchronizationContext that targets this scheduler.</returns>
+        </member>
+        <member name="T:Stump.Core.Threading.TaskSchedulerExtensions.TaskSchedulerSynchronizationContext">
+            <summary>
+              Provides a SynchronizationContext wrapper for a TaskScheduler.
+            </summary>
+        </member>
+        <member name="F:Stump.Core.Threading.TaskSchedulerExtensions.TaskSchedulerSynchronizationContext.m_scheduler">
+            <summary>
+              The scheduler.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskSchedulerExtensions.TaskSchedulerSynchronizationContext.#ctor(System.Threading.Tasks.TaskScheduler)">
+            <summary>
+              Initializes the context with the specified scheduler.
+            </summary>
+            <param name = "scheduler">The scheduler to target.</param>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskSchedulerExtensions.TaskSchedulerSynchronizationContext.Post(System.Threading.SendOrPostCallback,System.Object)">
+            <summary>
+              Dispatches an asynchronous message to the synchronization context.
+            </summary>
+            <param name = "d">The System.Threading.SendOrPostCallback delegate to call.</param>
+            <param name = "state">The object passed to the delegate.</param>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskSchedulerExtensions.TaskSchedulerSynchronizationContext.Send(System.Threading.SendOrPostCallback,System.Object)">
+            <summary>
+              Dispatches a synchronous message to the synchronization context.
+            </summary>
+            <param name = "d">The System.Threading.SendOrPostCallback delegate to call.</param>
+            <param name = "state">The object passed to the delegate.</param>
+        </member>
+        <member name="T:Stump.Core.Collections.TimedDictionary`2">
+            <summary>
+              Dictionary that contains timed data using a lifecycle
+            </summary>
+            <typeparam name = "TKey">The type of the key.</typeparam>
+            <typeparam name = "TData">The type of the data.</typeparam>
+        </member>
+        <member name="M:Stump.Core.Collections.TimedDictionary`2.#ctor(System.Int32)">
+            <summary>
+              Initializes a new instance of the <see cref="T:Stump.Core.Collections.TimedDictionary`2"/> class.
+            </summary>
+            <param name="time">The living time.</param>
+        </member>
+        <member name="M:Stump.Core.Collections.TimedDictionary`2.Add(`0,`1)">
+            <summary>
+              Adds the specified key.
+            </summary>
+            <param name = "key">The key.</param>
+            <param name = "element">The element.</param>
+        </member>
+        <member name="M:Stump.Core.Collections.TimedDictionary`2.TryGet(`0)">
+            <summary>
+              Try to get a key from the dictionary
+            </summary>
+            <param name = "key">Element's key</param>
+            <returns>
+              Return null if key is not present
+            </returns>
+        </member>
+        <member name="M:Stump.Core.Xml.Config.XmlConfigNode.GetValue">
+            <summary>
+            Read the element as it should appears in the xml file
+            </summary>
+            <returns></returns>
+            <remarks>The return value can be differant from the field value</remarks>
+        </member>
+        <member name="P:Stump.Core.Xml.Config.XmlConfigNode.Namespace">
+            <summary>
+            Field namespace
+            </summary>
+        </member>
+        <member name="P:Stump.Core.Xml.Config.XmlConfigNode.Name">
+            <summary>
+            Field name
+            </summary>
+        </member>
+        <member name="T:Stump.Core.Threading.TaskFactoryExtensions">
+            <summary>
+              Extensions for TaskFactory.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.ToGeneric``1(System.Threading.Tasks.TaskFactory)">
+            <summary>
+              Creates a generic TaskFactory from a non-generic one.
+            </summary>
+            <typeparam name = "TResult">Specifies the type of Task results for the Tasks created by the new TaskFactory.</typeparam>
+            <param name = "factory">The TaskFactory to serve as a template.</param>
+            <returns>The created TaskFactory.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.ToNonGeneric``1(System.Threading.Tasks.TaskFactory{``0})">
+            <summary>
+              Creates a generic TaskFactory from a non-generic one.
+            </summary>
+            <typeparam name = "TResult">Specifies the type of Task results for the Tasks created by the new TaskFactory.</typeparam>
+            <param name = "factory">The TaskFactory to serve as a template.</param>
+            <returns>The created TaskFactory.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.GetTargetScheduler(System.Threading.Tasks.TaskFactory)">
+            <summary>
+              Gets the TaskScheduler instance that should be used to schedule tasks.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.GetTargetScheduler``1(System.Threading.Tasks.TaskFactory{``0})">
+            <summary>
+              Gets the TaskScheduler instance that should be used to schedule tasks.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.ContinuationOptionsFromCreationOptions(System.Threading.Tasks.TaskCreationOptions)">
+            <summary>
+              Converts TaskCreationOptions into TaskContinuationOptions.
+            </summary>
+            <param name = "creationOptions"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.TrackedSequence(System.Threading.Tasks.TaskFactory,System.Func{System.Threading.Tasks.Task}[])">
+            <summary>
+              Asynchronously executes a sequence of tasks, maintaining a list of all tasks processed.
+            </summary>
+            <param name = "factory">The TaskFactory to use to create the task.</param>
+            <param name = "functions">
+              The functions that generate the tasks through which to iterate sequentially.
+              Iteration will cease if a task faults.
+            </param>
+            <returns>A Task that will return the list of tracked tasks iterated.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.TrackedSequenceInternal(System.Collections.Generic.IEnumerable{System.Func{System.Threading.Tasks.Task}},System.Threading.Tasks.TaskCompletionSource{System.Collections.Generic.IList{System.Threading.Tasks.Task}})">
+            <summary>
+              Creates the enumerable to iterate through with Iterate.
+            </summary>
+            <param name = "functions">
+              The functions that generate the tasks through which to iterate sequentially.
+              Iteration will cease if a task faults.
+            </param>
+            <param name = "tcs">The TaskCompletionSource to resolve with the asynchronous results.</param>
+            <returns>The enumerable through which to iterate.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Iterate(System.Threading.Tasks.TaskFactory,System.Collections.Generic.IEnumerable{System.Object},System.Object)">
+            <summary>
+              Asynchronously iterates through an enumerable of tasks.
+            </summary>
+            <param name = "factory">The target factory.</param>
+            <param name = "source">The enumerable containing the tasks to be iterated through.</param>
+            <param name = "state">The asynchronous state for the returned Task.</param>
+            <returns>A Task that represents the complete asynchronous operation.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Iterate(System.Threading.Tasks.TaskFactory,System.Collections.Generic.IEnumerable{System.Object},System.Object,System.Threading.CancellationToken)">
+            <summary>
+              Asynchronously iterates through an enumerable of tasks.
+            </summary>
+            <param name = "factory">The target factory.</param>
+            <param name = "source">The enumerable containing the tasks to be iterated through.</param>
+            <param name = "state">The asynchronous state for the returned Task.</param>
+            <param name = "cancellationToken">The cancellation token used to cancel the iteration.</param>
+            <returns>A Task that represents the complete asynchronous operation.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Iterate(System.Threading.Tasks.TaskFactory,System.Collections.Generic.IEnumerable{System.Object},System.Object,System.Threading.Tasks.TaskCreationOptions)">
+            <summary>
+              Asynchronously iterates through an enumerable of tasks.
+            </summary>
+            <param name = "factory">The target factory.</param>
+            <param name = "source">The enumerable containing the tasks to be iterated through.</param>
+            <param name = "state">The asynchronous state for the returned Task.</param>
+            <param name = "creationOptions">Options that control the task's behavior.</param>
+            <returns>A Task that represents the complete asynchronous operation.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Iterate(System.Threading.Tasks.TaskFactory,System.Collections.Generic.IEnumerable{System.Object},System.Object,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+              Asynchronously iterates through an enumerable of tasks.
+            </summary>
+            <param name = "factory">The target factory.</param>
+            <param name = "source">The enumerable containing the tasks to be iterated through.</param>
+            <param name = "state">The asynchronous state for the returned Task.</param>
+            <param name = "scheduler">The scheduler to which tasks will be scheduled.</param>
+            <returns>A Task that represents the complete asynchronous operation.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Iterate(System.Threading.Tasks.TaskFactory,System.Collections.Generic.IEnumerable{System.Object},System.Object,System.Threading.CancellationToken,System.Threading.Tasks.TaskCreationOptions,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+              Asynchronously iterates through an enumerable of tasks.
+            </summary>
+            <param name = "factory">The target factory.</param>
+            <param name = "source">The enumerable containing the tasks to be iterated through.</param>
+            <param name = "state">The asynchronous state for the returned Task.</param>
+            <param name = "cancellationToken">The cancellation token used to cancel the iteration.</param>
+            <param name = "creationOptions">Options that control the task's behavior.</param>
+            <param name = "scheduler">The scheduler to which tasks will be scheduled.</param>
+            <returns>A Task that represents the complete asynchronous operation.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Iterate(System.Threading.Tasks.TaskFactory,System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+              Asynchronously iterates through an enumerable of tasks.
+            </summary>
+            <param name = "factory">The target factory.</param>
+            <param name = "source">The enumerable containing the tasks to be iterated through.</param>
+            <returns>A Task that represents the complete asynchronous operation.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Iterate(System.Threading.Tasks.TaskFactory,System.Collections.Generic.IEnumerable{System.Object},System.Threading.CancellationToken)">
+            <summary>
+              Asynchronously iterates through an enumerable of tasks.
+            </summary>
+            <param name = "factory">The target factory.</param>
+            <param name = "source">The enumerable containing the tasks to be iterated through.</param>
+            <param name = "cancellationToken">The cancellation token used to cancel the iteration.</param>
+            <returns>A Task that represents the complete asynchronous operation.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Iterate(System.Threading.Tasks.TaskFactory,System.Collections.Generic.IEnumerable{System.Object},System.Threading.Tasks.TaskCreationOptions)">
+            <summary>
+              Asynchronously iterates through an enumerable of tasks.
+            </summary>
+            <param name = "factory">The target factory.</param>
+            <param name = "source">The enumerable containing the tasks to be iterated through.</param>
+            <param name = "creationOptions">Options that control the task's behavior.</param>
+            <returns>A Task that represents the complete asynchronous operation.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Iterate(System.Threading.Tasks.TaskFactory,System.Collections.Generic.IEnumerable{System.Object},System.Threading.Tasks.TaskScheduler)">
+            <summary>
+              Asynchronously iterates through an enumerable of tasks.
+            </summary>
+            <param name = "factory">The target factory.</param>
+            <param name = "source">The enumerable containing the tasks to be iterated through.</param>
+            <param name = "scheduler">The scheduler to which tasks will be scheduled.</param>
+            <returns>A Task that represents the complete asynchronous operation.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Iterate(System.Threading.Tasks.TaskFactory,System.Collections.Generic.IEnumerable{System.Object},System.Threading.CancellationToken,System.Threading.Tasks.TaskCreationOptions,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+              Asynchronously iterates through an enumerable of tasks.
+            </summary>
+            <param name = "factory">The target factory.</param>
+            <param name = "source">The enumerable containing the tasks to be iterated through.</param>
+            <param name = "cancellationToken">The cancellation token used to cancel the iteration.</param>
+            <param name = "creationOptions">Options that control the task's behavior.</param>
+            <param name = "scheduler">The scheduler to which tasks will be scheduled.</param>
+            <returns>A Task that represents the complete asynchronous operation.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.FromAsync(System.Threading.WaitHandle)">
+            <summary>
+              Creates a Task that will be completed when the specified WaitHandle is signaled.
+            </summary>
+            <param name = "waitHandle">The WaitHandle.</param>
+            <returns>The created Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.FromException(System.Threading.Tasks.TaskFactory,System.Exception)">
+            <summary>
+              Creates a Task that has completed in the Faulted state with the specified exception.
+            </summary>
+            <param name = "factory">The target TaskFactory.</param>
+            <param name = "exception">The exception with which the Task should fault.</param>
+            <returns>The completed Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.FromException``1(System.Threading.Tasks.TaskFactory,System.Exception)">
+            <summary>
+              Creates a Task that has completed in the Faulted state with the specified exception.
+            </summary>
+            <typeparam name = "TResult">Specifies the type of payload for the new Task.</typeparam>
+            <param name = "factory">The target TaskFactory.</param>
+            <param name = "exception">The exception with which the Task should fault.</param>
+            <returns>The completed Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.FromResult``1(System.Threading.Tasks.TaskFactory,``0)">
+            <summary>
+              Creates a Task that has completed in the RanToCompletion state with the specified result.
+            </summary>
+            <typeparam name = "TResult">Specifies the type of payload for the new Task.</typeparam>
+            <param name = "factory">The target TaskFactory.</param>
+            <param name = "result">The result with which the Task should complete.</param>
+            <returns>The completed Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.FromException``1(System.Threading.Tasks.TaskFactory{``0},System.Exception)">
+            <summary>
+              Creates a Task that has completed in the Faulted state with the specified exception.
+            </summary>
+            <param name = "factory">The target TaskFactory.</param>
+            <param name = "exception">The exception with which the Task should fault.</param>
+            <returns>The completed Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.FromResult``1(System.Threading.Tasks.TaskFactory{``0},``0)">
+            <summary>
+              Creates a Task that has completed in the RanToCompletion state with the specified result.
+            </summary>
+            <typeparam name = "TResult">Specifies the type of payload for the new Task.</typeparam>
+            <param name = "factory">The target TaskFactory.</param>
+            <param name = "result">The result with which the Task should complete.</param>
+            <returns>The completed Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.StartNewDelayed(System.Threading.Tasks.TaskFactory,System.Int32)">
+            <summary>
+              Creates a Task that will complete after the specified delay.
+            </summary>
+            <param name = "factory">The TaskFactory.</param>
+            <param name = "millisecondsDelay">The delay after which the Task should transition to RanToCompletion.</param>
+            <returns>A Task that will be completed after the specified duration.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.StartNewDelayed(System.Threading.Tasks.TaskFactory,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+              Creates a Task that will complete after the specified delay.
+            </summary>
+            <param name = "factory">The TaskFactory.</param>
+            <param name = "millisecondsDelay">The delay after which the Task should transition to RanToCompletion.</param>
+            <param name = "cancellationToken">The cancellation token that can be used to cancel the timed task.</param>
+            <returns>A Task that will be completed after the specified duration and that's cancelable with the specified token.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.StartNewDelayed(System.Threading.Tasks.TaskFactory,System.Int32,System.Action)">
+            <summary>
+              Creates and schedules a task for execution after the specified time delay.
+            </summary>
+            <param name = "factory">The factory to use to create the task.</param>
+            <param name = "millisecondsDelay">The delay after which the task will be scheduled.</param>
+            <param name = "action">The delegate executed by the task.</param>
+            <returns>The created Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.StartNewDelayed(System.Threading.Tasks.TaskFactory,System.Int32,System.Action,System.Threading.Tasks.TaskCreationOptions)">
+            <summary>
+              Creates and schedules a task for execution after the specified time delay.
+            </summary>
+            <param name = "factory">The factory to use to create the task.</param>
+            <param name = "millisecondsDelay">The delay after which the task will be scheduled.</param>
+            <param name = "action">The delegate executed by the task.</param>
+            <param name = "creationOptions">Options that control the task's behavior.</param>
+            <returns>The created Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.StartNewDelayed(System.Threading.Tasks.TaskFactory,System.Int32,System.Action,System.Threading.CancellationToken)">
+            <summary>
+              Creates and schedules a task for execution after the specified time delay.
+            </summary>
+            <param name = "factory">The factory to use to create the task.</param>
+            <param name = "millisecondsDelay">The delay after which the task will be scheduled.</param>
+            <param name = "action">The delegate executed by the task.</param>
+            <param name = "cancellationToken">The cancellation token to assign to the created Task.</param>
+            <returns>The created Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.StartNewDelayed(System.Threading.Tasks.TaskFactory,System.Int32,System.Action,System.Threading.CancellationToken,System.Threading.Tasks.TaskCreationOptions,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+              Creates and schedules a task for execution after the specified time delay.
+            </summary>
+            <param name = "factory">The factory to use to create the task.</param>
+            <param name = "millisecondsDelay">The delay after which the task will be scheduled.</param>
+            <param name = "action">The delegate executed by the task.</param>
+            <param name = "cancellationToken">The cancellation token to assign to the created Task.</param>
+            <param name = "creationOptions">Options that control the task's behavior.</param>
+            <param name = "scheduler">The scheduler to which the Task will be scheduled.</param>
+            <returns>The created Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.StartNewDelayed(System.Threading.Tasks.TaskFactory,System.Int32,System.Action{System.Object},System.Object)">
+            <summary>
+              Creates and schedules a task for execution after the specified time delay.
+            </summary>
+            <param name = "factory">The factory to use to create the task.</param>
+            <param name = "millisecondsDelay">The delay after which the task will be scheduled.</param>
+            <param name = "action">The delegate executed by the task.</param>
+            <param name = "state">An object provided to the delegate.</param>
+            <returns>The created Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.StartNewDelayed(System.Threading.Tasks.TaskFactory,System.Int32,System.Action{System.Object},System.Object,System.Threading.Tasks.TaskCreationOptions)">
+            <summary>
+              Creates and schedules a task for execution after the specified time delay.
+            </summary>
+            <param name = "factory">The factory to use to create the task.</param>
+            <param name = "millisecondsDelay">The delay after which the task will be scheduled.</param>
+            <param name = "action">The delegate executed by the task.</param>
+            <param name = "state">An object provided to the delegate.</param>
+            <param name = "creationOptions">Options that control the task's behavior.</param>
+            <returns>The created Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.StartNewDelayed(System.Threading.Tasks.TaskFactory,System.Int32,System.Action{System.Object},System.Object,System.Threading.CancellationToken)">
+            <summary>
+              Creates and schedules a task for execution after the specified time delay.
+            </summary>
+            <param name = "factory">The factory to use to create the task.</param>
+            <param name = "millisecondsDelay">The delay after which the task will be scheduled.</param>
+            <param name = "action">The delegate executed by the task.</param>
+            <param name = "state">An object provided to the delegate.</param>
+            <param name = "cancellationToken">The cancellation token to assign to the created Task.</param>
+            <returns>The created Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.StartNewDelayed(System.Threading.Tasks.TaskFactory,System.Int32,System.Action{System.Object},System.Object,System.Threading.CancellationToken,System.Threading.Tasks.TaskCreationOptions,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+              Creates and schedules a task for execution after the specified time delay.
+            </summary>
+            <param name = "factory">The factory to use to create the task.</param>
+            <param name = "millisecondsDelay">The delay after which the task will be scheduled.</param>
+            <param name = "action">The delegate executed by the task.</param>
+            <param name = "state">An object provided to the delegate.</param>
+            <param name = "cancellationToken">The cancellation token to assign to the created Task.</param>
+            <param name = "creationOptions">Options that control the task's behavior.</param>
+            <param name = "scheduler">The scheduler to which the Task will be scheduled.</param>
+            <returns>The created Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.StartNewDelayed``1(System.Threading.Tasks.TaskFactory{``0},System.Int32,System.Func{``0})">
+            <summary>
+              Creates and schedules a task for execution after the specified time delay.
+            </summary>
+            <param name = "factory">The factory to use to create the task.</param>
+            <param name = "millisecondsDelay">The delay after which the task will be scheduled.</param>
+            <param name = "function">The delegate executed by the task.</param>
+            <returns>The created Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.StartNewDelayed``1(System.Threading.Tasks.TaskFactory{``0},System.Int32,System.Func{``0},System.Threading.Tasks.TaskCreationOptions)">
+            <summary>
+              Creates and schedules a task for execution after the specified time delay.
+            </summary>
+            <param name = "factory">The factory to use to create the task.</param>
+            <param name = "millisecondsDelay">The delay after which the task will be scheduled.</param>
+            <param name = "function">The delegate executed by the task.</param>
+            <param name = "creationOptions">Options that control the task's behavior.</param>
+            <returns>The created Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.StartNewDelayed``1(System.Threading.Tasks.TaskFactory{``0},System.Int32,System.Func{``0},System.Threading.CancellationToken)">
+            <summary>
+              Creates and schedules a task for execution after the specified time delay.
+            </summary>
+            <param name = "factory">The factory to use to create the task.</param>
+            <param name = "millisecondsDelay">The delay after which the task will be scheduled.</param>
+            <param name = "function">The delegate executed by the task.</param>
+            <param name = "cancellationToken">The CancellationToken to assign to the Task.</param>
+            <returns>The created Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.StartNewDelayed``1(System.Threading.Tasks.TaskFactory{``0},System.Int32,System.Func{``0},System.Threading.CancellationToken,System.Threading.Tasks.TaskCreationOptions,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+              Creates and schedules a task for execution after the specified time delay.
+            </summary>
+            <param name = "factory">The factory to use to create the task.</param>
+            <param name = "millisecondsDelay">The delay after which the task will be scheduled.</param>
+            <param name = "function">The delegate executed by the task.</param>
+            <param name = "cancellationToken">The CancellationToken to assign to the Task.</param>
+            <param name = "creationOptions">Options that control the task's behavior.</param>
+            <param name = "scheduler">The scheduler to which the Task will be scheduled.</param>
+            <returns>The created Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.StartNewDelayed``1(System.Threading.Tasks.TaskFactory{``0},System.Int32,System.Func{System.Object,``0},System.Object)">
+            <summary>
+              Creates and schedules a task for execution after the specified time delay.
+            </summary>
+            <param name = "factory">The factory to use to create the task.</param>
+            <param name = "millisecondsDelay">The delay after which the task will be scheduled.</param>
+            <param name = "function">The delegate executed by the task.</param>
+            <param name = "state">An object provided to the delegate.</param>
+            <returns>The created Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.StartNewDelayed``1(System.Threading.Tasks.TaskFactory{``0},System.Int32,System.Func{System.Object,``0},System.Object,System.Threading.CancellationToken)">
+            <summary>
+              Creates and schedules a task for execution after the specified time delay.
+            </summary>
+            <param name = "factory">The factory to use to create the task.</param>
+            <param name = "millisecondsDelay">The delay after which the task will be scheduled.</param>
+            <param name = "function">The delegate executed by the task.</param>
+            <param name = "state">An object provided to the delegate.</param>
+            <param name = "cancellationToken">The CancellationToken to assign to the Task.</param>
+            <returns>The created Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.StartNewDelayed``1(System.Threading.Tasks.TaskFactory{``0},System.Int32,System.Func{System.Object,``0},System.Object,System.Threading.Tasks.TaskCreationOptions)">
+            <summary>
+              Creates and schedules a task for execution after the specified time delay.
+            </summary>
+            <param name = "factory">The factory to use to create the task.</param>
+            <param name = "millisecondsDelay">The delay after which the task will be scheduled.</param>
+            <param name = "function">The delegate executed by the task.</param>
+            <param name = "state">An object provided to the delegate.</param>
+            <param name = "creationOptions">Options that control the task's behavior.</param>
+            <returns>The created Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.StartNewDelayed``1(System.Threading.Tasks.TaskFactory{``0},System.Int32,System.Func{System.Object,``0},System.Object,System.Threading.CancellationToken,System.Threading.Tasks.TaskCreationOptions,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+              Creates and schedules a task for execution after the specified time delay.
+            </summary>
+            <param name = "factory">The factory to use to create the task.</param>
+            <param name = "millisecondsDelay">The delay after which the task will be scheduled.</param>
+            <param name = "function">The delegate executed by the task.</param>
+            <param name = "state">An object provided to the delegate.</param>
+            <param name = "cancellationToken">The CancellationToken to assign to the Task.</param>
+            <param name = "creationOptions">Options that control the task's behavior.</param>
+            <param name = "scheduler">The scheduler to which the Task will be scheduled.</param>
+            <returns>The created Task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Create(System.Threading.Tasks.TaskFactory,System.Action)">
+            <summary>
+              Creates a Task using the TaskFactory.
+            </summary>
+            <param name = "factory">The factory to use.</param>
+            <param name = "action">The delegate for the task.</param>
+            <returns>The created task.  The task has not been scheduled.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Create(System.Threading.Tasks.TaskFactory,System.Action,System.Threading.Tasks.TaskCreationOptions)">
+            <summary>
+              Creates a Task using the TaskFactory.
+            </summary>
+            <param name = "factory">The factory to use.</param>
+            <param name = "action">The delegate for the task.</param>
+            <param name = "creationOptions">Options that control the task's behavior.</param>
+            <returns>The created task.  The task has not been scheduled.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Create(System.Threading.Tasks.TaskFactory,System.Action{System.Object},System.Object)">
+            <summary>
+              Creates a Task using the TaskFactory.
+            </summary>
+            <param name = "factory">The factory to use.</param>
+            <param name = "action">The delegate for the task.</param>
+            <param name = "state">An object provided to the delegate.</param>
+            <returns>The created task.  The task has not been scheduled.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Create(System.Threading.Tasks.TaskFactory,System.Action{System.Object},System.Object,System.Threading.Tasks.TaskCreationOptions)">
+            <summary>
+              Creates a Task using the TaskFactory.
+            </summary>
+            <param name = "factory">The factory to use.</param>
+            <param name = "action">The delegate for the task.</param>
+            <param name = "state">An object provided to the delegate.</param>
+            <param name = "creationOptions">Options that control the task's behavior.</param>
+            <returns>The created task.  The task has not been scheduled.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Create``1(System.Threading.Tasks.TaskFactory,System.Func{``0})">
+            <summary>
+              Creates a Task using the TaskFactory.
+            </summary>
+            <param name = "factory">The factory to use.</param>
+            <param name = "function">The delegate for the task.</param>
+            <returns>The created task.  The task has not been scheduled.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Create``1(System.Threading.Tasks.TaskFactory,System.Func{``0},System.Threading.Tasks.TaskCreationOptions)">
+            <summary>
+              Creates a Task using the TaskFactory.
+            </summary>
+            <param name = "factory">The factory to use.</param>
+            <param name = "function">The delegate for the task.</param>
+            <param name = "creationOptions">Options that control the task's behavior.</param>
+            <returns>The created task.  The task has not been scheduled.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Create``1(System.Threading.Tasks.TaskFactory,System.Func{System.Object,``0},System.Object)">
+            <summary>
+              Creates a Task using the TaskFactory.
+            </summary>
+            <param name = "factory">The factory to use.</param>
+            <param name = "function">The delegate for the task.</param>
+            <param name = "state">An object provided to the delegate.</param>
+            <returns>The created task.  The task has not been scheduled.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Create``1(System.Threading.Tasks.TaskFactory,System.Func{System.Object,``0},System.Object,System.Threading.Tasks.TaskCreationOptions)">
+            <summary>
+              Creates a Task using the TaskFactory.
+            </summary>
+            <param name = "factory">The factory to use.</param>
+            <param name = "function">The delegate for the task.</param>
+            <param name = "state">An object provided to the delegate.</param>
+            <param name = "creationOptions">Options that control the task's behavior.</param>
+            <returns>The created task.  The task has not been scheduled.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Create``1(System.Threading.Tasks.TaskFactory{``0},System.Func{``0})">
+            <summary>
+              Creates a Task using the TaskFactory.
+            </summary>
+            <param name = "factory">The factory to use.</param>
+            <param name = "function">The delegate for the task.</param>
+            <returns>The created task.  The task has not been scheduled.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Create``1(System.Threading.Tasks.TaskFactory{``0},System.Func{``0},System.Threading.Tasks.TaskCreationOptions)">
+            <summary>
+              Creates a Task using the TaskFactory.
+            </summary>
+            <param name = "factory">The factory to use.</param>
+            <param name = "function">The delegate for the task.</param>
+            <param name = "creationOptions">Options that control the task's behavior.</param>
+            <returns>The created task.  The task has not been scheduled.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Create``1(System.Threading.Tasks.TaskFactory{``0},System.Func{System.Object,``0},System.Object)">
+            <summary>
+              Creates a Task using the TaskFactory.
+            </summary>
+            <param name = "factory">The factory to use.</param>
+            <param name = "function">The delegate for the task.</param>
+            <param name = "state">An object provided to the delegate.</param>
+            <returns>The created task.  The task has not been scheduled.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.Create``1(System.Threading.Tasks.TaskFactory{``0},System.Func{System.Object,``0},System.Object,System.Threading.Tasks.TaskCreationOptions)">
+            <summary>
+              Creates a Task using the TaskFactory.
+            </summary>
+            <param name = "factory">The factory to use.</param>
+            <param name = "function">The delegate for the task.</param>
+            <param name = "state">An object provided to the delegate.</param>
+            <param name = "creationOptions">Options that control the task's behavior.</param>
+            <returns>The created task.  The task has not been scheduled.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.WhenAll(System.Threading.Tasks.TaskFactory,System.Threading.Tasks.Task[])">
+            <summary>
+              Creates a continuation Task that will compplete upon
+              the completion of a set of provided Tasks.
+            </summary>
+            <param name = "factory">The TaskFactory to use to create the continuation task.</param>
+            <param name = "tasks">The array of tasks from which to continue.</param>
+            <returns>A task that, when completed, will return the array of completed tasks.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.WhenAll``1(System.Threading.Tasks.TaskFactory,System.Threading.Tasks.Task{``0}[])">
+            <summary>
+              Creates a continuation Task that will compplete upon
+              the completion of a set of provided Tasks.
+            </summary>
+            <param name = "factory">The TaskFactory to use to create the continuation task.</param>
+            <param name = "tasks">The array of tasks from which to continue.</param>
+            <returns>A task that, when completed, will return the array of completed tasks.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.WhenAny(System.Threading.Tasks.TaskFactory,System.Threading.Tasks.Task[])">
+            <summary>
+              Creates a continuation Task that will complete upon
+              the completion of any one of a set of provided Tasks.
+            </summary>
+            <param name = "factory">The TaskFactory to use to create the continuation task.</param>
+            <param name = "tasks">The array of tasks from which to continue.</param>
+            <returns>A task that, when completed, will return the completed task.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskFactoryExtensions.WhenAny``1(System.Threading.Tasks.TaskFactory,System.Threading.Tasks.Task{``0}[])">
+            <summary>
+              Creates a continuation Task that will complete upon
+              the completion of any one of a set of provided Tasks.
+            </summary>
+            <param name = "factory">The TaskFactory to use to create the continuation task.</param>
+            <param name = "tasks">The array of tasks from which to continue.</param>
+            <returns>A task that, when completed, will return the completed task.</returns>
+        </member>
+        <member name="T:Stump.Core.Threading.TaskCompletionSourceExtensions">
+            <summary>
+              Extension methods for TaskCompletionSource.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskCompletionSourceExtensions.SetFromTask``1(System.Threading.Tasks.TaskCompletionSource{``0},System.Threading.Tasks.Task)">
+            <summary>
+              Transfers the result of a Task to the TaskCompletionSource.
+            </summary>
+            <typeparam name = "TResult">Specifies the type of the result.</typeparam>
+            <param name = "resultSetter">The TaskCompletionSource.</param>
+            <param name = "task">The task whose completion results should be transfered.</param>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskCompletionSourceExtensions.SetFromTask``1(System.Threading.Tasks.TaskCompletionSource{``0},System.Threading.Tasks.Task{``0})">
+            <summary>
+              Transfers the result of a Task to the TaskCompletionSource.
+            </summary>
+            <typeparam name = "TResult">Specifies the type of the result.</typeparam>
+            <param name = "resultSetter">The TaskCompletionSource.</param>
+            <param name = "task">The task whose completion results should be transfered.</param>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskCompletionSourceExtensions.TrySetFromTask``1(System.Threading.Tasks.TaskCompletionSource{``0},System.Threading.Tasks.Task)">
+            <summary>
+              Attempts to transfer the result of a Task to the TaskCompletionSource.
+            </summary>
+            <typeparam name = "TResult">Specifies the type of the result.</typeparam>
+            <param name = "resultSetter">The TaskCompletionSource.</param>
+            <param name = "task">The task whose completion results should be transfered.</param>
+            <returns>Whether the transfer could be completed.</returns>
+        </member>
+        <member name="M:Stump.Core.Threading.TaskCompletionSourceExtensions.TrySetFromTask``1(System.Threading.Tasks.TaskCompletionSource{``0},System.Threading.Tasks.Task{``0})">
+            <summary>
+              Attempts to transfer the result of a Task to the TaskCompletionSource.
+            </summary>
+            <typeparam name = "TResult">Specifies the type of the result.</typeparam>
+            <param name = "resultSetter">The TaskCompletionSource.</param>
+            <param name = "task">The task whose completion results should be transfered.</param>
+            <returns>Whether the transfer could be completed.</returns>
+        </member>
+        <member name="M:Stump.Core.Extensions.StringExtensions.HtmlEntities(System.String)">
+            <summary>
+              Convert html chars to HTML entities
+            </summary>
+            <param name = "str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.Reflection.DynamicExtension.CreateDelegate(System.Reflection.MethodInfo,System.Type[])">
+            <summary>
+            Create a delegate for an action
+            </summary>
+            <param name="method"></param>
+            <param name="delegParams"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.Mathematics.Node`1.#ctor">
+            <summary>
+              Initializes a new instance of the <see cref="T:Stump.Core.Mathematics.Node`1"/> class.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Mathematics.Node`1.#ctor(`0)">
+            <summary>
+              Initializes a new instance of the <see cref="T:Stump.Core.Mathematics.Node`1"/> class.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:Stump.Core.Mathematics.Node`1.Add(Stump.Core.Mathematics.Node{`0})">
+            <summary>
+              Adds the specified child.
+            </summary>
+            <param name = "child">The child.</param>
+        </member>
+        <member name="M:Stump.Core.Mathematics.Node`1.Add(Stump.Core.Mathematics.Node{`0}[])">
+            <summary>
+              Adds the specifieds nodes.
+            </summary>
+            <param name = "values">The nodes.</param>
+        </member>
+        <member name="M:Stump.Core.Mathematics.Node`1.Add(`0)">
+            <summary>
+              Adds the specified value.
+            </summary>
+            <param name = "value">The value.</param>
+        </member>
+        <member name="M:Stump.Core.Mathematics.Node`1.Add(`0[])">
+            <summary>
+              Adds the specifieds values.
+            </summary>
+            <param name = "values">The values.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.Mathematics.Node`1.Remove(Stump.Core.Mathematics.Node{`0})">
+            <summary>
+              Removes the specified child.
+            </summary>
+            <param name = "child">The child.</param>
+        </member>
+        <member name="M:Stump.Core.Mathematics.Node`1.RemoveAt(System.Int32)">
+            <summary>
+              Removes at.
+            </summary>
+            <param name = "index">The index.</param>
+        </member>
+        <member name="M:Stump.Core.Mathematics.Node`1.RemoveAll(System.Int32)">
+            <summary>
+              Removes all.
+            </summary>
+            <param name = "index">The index.</param>
+        </member>
+        <member name="M:Stump.Core.Mathematics.Node`1.SetParent(Stump.Core.Mathematics.Node{`0})">
+            <summary>
+              Sets the parent.
+            </summary>
+            <param name = "parent">The parent.</param>
+        </member>
+        <member name="M:Stump.Core.Mathematics.Node`1.GetNodeCount(System.Boolean)">
+            <summary>
+              Gets the node count.
+            </summary>
+            <param name = "includeSubNodes">if set to <c>true</c> [include sub nodes].</param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.Mathematics.Node`1.GetLeafNodes">
+            <summary>
+              Gets the leaf nodes.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.Mathematics.Node`1.GetLeafRoads(System.Boolean,System.Boolean)">
+            <summary>
+              Gets the leaf roads.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.Mathematics.Node`1.GetCastedBestRoad``1(System.Func{Stump.Core.Mathematics.Node{`0},System.Nullable{System.Decimal}},System.Converter{Stump.Core.Mathematics.Node{`0},``0})">
+            <summary>
+            Get the best road with the select and cast it thanks to converter
+            </summary>
+            <typeparam name="U">Type</typeparam>
+            <param name="selector">Selector</param>
+            <param name="converter">Convertor</param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.Mathematics.Node`1.GetBestRoad(System.Func{Stump.Core.Mathematics.Node{`0},System.Nullable{System.Decimal}})">
+            <summary>
+            Get the best road corresponding with the sum of the selector
+            </summary>
+            <param name="selector">The selector.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.Mathematics.Node`1.GetBestChild(System.Func{Stump.Core.Mathematics.Node{`0},System.Nullable{System.Decimal}})">
+            <summary>
+            Get the best child with the selector
+            </summary>
+            <param name="selector">The selector.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.Mathematics.Node`1.GetRootRoad(System.Boolean,System.Boolean)">
+            <summary>
+              Gets the root road.
+            </summary>
+            <param name = "includeThis">if set to <c>true</c> [include this].</param>
+            <param name = "includeRoot">if set to <c>true</c> [include root].</param>
+            <returns></returns>
+        </member>
+        <member name="P:Stump.Core.Mathematics.Node`1.Parent">
+            <summary>
+              Gets the parent.
+            </summary>
+            <value>The parent.</value>
+        </member>
+        <member name="P:Stump.Core.Mathematics.Node`1.Nodes">
+            <summary>
+              Gets the children.
+            </summary>
+            <value>The children.</value>
+        </member>
+        <member name="P:Stump.Core.Mathematics.Node`1.FirstNode">
+            <summary>
+              Gets the first.
+            </summary>
+            <value>The first.</value>
+        </member>
+        <member name="P:Stump.Core.Mathematics.Node`1.LastNode">
+            <summary>
+              Gets the last.
+            </summary>
+            <value>The last.</value>
+        </member>
+        <member name="P:Stump.Core.Mathematics.Node`1.PrevNode">
+            <summary>
+              Gets the prev node.
+            </summary>
+            <value>The prev node.</value>
+        </member>
+        <member name="P:Stump.Core.Mathematics.Node`1.NextNode">
+            <summary>
+              Gets the next node.
+            </summary>
+            <value>The next node.</value>
+        </member>
+        <member name="P:Stump.Core.Mathematics.Node`1.Depth">
+            <summary>
+              Gets the depth.
+            </summary>
+            <value>The depth.</value>
+        </member>
+        <member name="P:Stump.Core.Mathematics.Node`1.Branches">
+            <summary>
+              Gets the branch.
+            </summary>
+            <value>The branch.</value>
+        </member>
+        <member name="P:Stump.Core.Mathematics.Node`1.Value">
+            <summary>
+              Gets or sets the value.
+            </summary>
+            <value>The value.</value>
+        </member>
+        <member name="T:Stump.Core.Threading.AsyncRandom">
+            <summary>
+              Represent a Random class that generate a thread unique seed
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Xml.Config.XmlConfig.#ctor(System.String)">
+            <summary>
+              Initializes a new instance of the <see cref="T:Stump.Core.Xml.Config.XmlConfig"/> class.
+            </summary>
+            <param name="uriConfig">The URI config.</param>
+        </member>
+        <member name="M:Stump.Core.Xml.Config.XmlConfig.#ctor(System.String,System.String)">
+            <summary>
+              Initializes a new instance of the <see cref="T:Stump.Core.Xml.Config.XmlConfig"/> class.
+            </summary>
+            <param name="uriConfig">The URI config.</param>
+            <param name="uriSchema">The URI schema.</param>
+        </member>
+        <member name="M:Stump.Core.Xml.Config.XmlConfig.ValidationEventHandler(System.Object,System.Xml.Schema.ValidationEventArgs)">
+            <summary>
+              Validation event handler.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:System.Xml.Schema.ValidationEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:Stump.Core.Xml.Config.XmlConfig.Create(System.Boolean)">
+            <summary>
+            Create a new config file based on the loaded assemblies
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Xml.Config.XmlConfig.Reload">
+            <summary>
+            Reloading only change variables that have DefineableRunning to true
+            The others values are stored to prevent any change in the config file when saving
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Xml.Config.XmlConfig.Reset">
+            <summary>
+            Reload the config completely
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Xml.Config.XmlConfig.AddAssembly(System.Reflection.Assembly)">
+            <summary>
+            Add an assembly where the XmlConfig will search variables to define
+            </summary>
+            <param name="assembly"></param>
+        </member>
+        <member name="M:Stump.Core.Xml.Config.XmlConfig.AddAssembly(System.Reflection.Assembly,System.String)">
+            <summary>
+            Add an assembly where the XmlConfig will search variables to define
+            </summary>
+            <param name="assembly"></param>
+            <param name="docFile">Xml documentation file used to create a new config file</param>
+        </member>
+        <member name="M:Stump.Core.Xml.Config.XmlConfig.AddAssemblies(System.Reflection.Assembly[])">
+            <summary>
+            Add assemblies where the XmlConfig will search variables to define
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Xml.Config.XmlConfig.SearchType(System.String,System.Reflection.Assembly[])">
+            <summary>
+            Search a type by his name in the given assemblies
+            </summary>
+            <param name="typeName"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Stump.Core.Attributes.VariableAttribute.DefinableRunning">
+            <summary>
+              Sets a value indicating whether this variable can be set when server is running
+            </summary>
+            <value><c>true</c> if this variable can be set when server is running; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianWriter.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Stump.Core.IO.BigEndianWriter"/> class.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianWriter.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Stump.Core.IO.BigEndianWriter"/> class.
+            </summary>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianWriter.WriteBigEndianBytes(System.Byte[])">
+            <summary>
+              Reverse bytes and write them into the buffer
+            </summary>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianWriter.WriteShort(System.Int16)">
+            <summary>
+              Write a Short into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianWriter.WriteInt(System.Int32)">
+            <summary>
+              Write a int into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianWriter.WriteLong(System.Int64)">
+            <summary>
+              Write a long into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianWriter.WriteUShort(System.UInt16)">
+            <summary>
+              Write a UShort into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianWriter.WriteUInt(System.UInt32)">
+            <summary>
+              Write a int into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianWriter.WriteULong(System.UInt64)">
+            <summary>
+              Write a long into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianWriter.WriteByte(System.Byte)">
+            <summary>
+              Write a byte into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianWriter.WriteFloat(System.Single)">
+            <summary>
+              Write a Float into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianWriter.WriteBoolean(System.Boolean)">
+            <summary>
+              Write a Boolean into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianWriter.WriteChar(System.Char)">
+            <summary>
+              Write a Char into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianWriter.WriteDouble(System.Double)">
+            <summary>
+              Write a Double into the buffer
+            </summary>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianWriter.WriteSingle(System.Single)">
+            <summary>
+              Write a Single into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianWriter.WriteUTF(System.String)">
+            <summary>
+              Write a string into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianWriter.WriteUTFBytes(System.String)">
+            <summary>
+              Write a string into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianWriter.WriteBytes(System.Byte[])">
+            <summary>
+              Write a bytes array into the buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Stump.Core.IO.BigEndianWriter.BytesAvailable">
+            <summary>
+              Gets available bytes number in the buffer
+            </summary>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.#ctor">
+            <summary>
+              Initializes a new instance of the <see cref="T:Stump.Core.IO.BigEndianReader"/> class.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.#ctor(System.IO.Stream)">
+            <summary>
+              Initializes a new instance of the <see cref="T:Stump.Core.IO.BigEndianReader"/> class.
+            </summary>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.#ctor(System.Byte[])">
+            <summary>
+              Initializes a new instance of the <see cref="T:Stump.Core.IO.BigEndianReader"/> class.
+            </summary>
+            <param name="tab">Memory buffer.</param>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.ReadBigEndianBytes(System.Int32)">
+            <summary>
+              Read bytes in big endian format
+            </summary>
+            <param name = "count"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.ReadShort">
+            <summary>
+              Read a Short from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.ReadInt">
+            <summary>
+              Read a int from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.ReadLong">
+            <summary>
+              Read a long from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.ReadFloat">
+            <summary>
+              Read a Float from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.ReadUShort">
+            <summary>
+              Read a UShort from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.ReadUInt">
+            <summary>
+              Read a int from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.ReadULong">
+            <summary>
+              Read a long from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.ReadByte">
+            <summary>
+              Read a byte from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.ReadBytes(System.Int32)">
+            <summary>
+              Returns N bytes from the buffer
+            </summary>
+            <param name = "n">Number of read bytes.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.ReadBytesInNewBigEndianReader(System.Int32)">
+            <summary>
+            Returns N bytes from the buffer
+            </summary>
+            <param name = "n">Number of read bytes.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.ReadBoolean">
+            <summary>
+              Read a Boolean from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.ReadChar">
+            <summary>
+              Read a Char from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.ReadDouble">
+            <summary>
+              Read a Double from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.ReadSingle">
+            <summary>
+              Read a Single from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.ReadUTF">
+            <summary>
+              Read a string from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.ReadUTFBytes(System.UInt16)">
+            <summary>
+              Read a string from the Buffer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.SkipBytes(System.Int32)">
+            <summary>
+              Skip bytes
+            </summary>
+            <param name = "n"></param>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.Add(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+              Add a bytes array to the end of the buffer
+            </summary>
+        </member>
+        <member name="M:Stump.Core.IO.BigEndianReader.Dispose">
+            <summary>
+              Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="P:Stump.Core.IO.BigEndianReader.BytesAvailable">
+            <summary>
+              Gets availiable bytes number in the buffer
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Collections.PriorityQueueB`1.Push(`0)">
+            <summary>
+            Push an object onto the PQ
+            </summary>
+            <param name="item">The new object</param>
+            <returns>The index in the list where the object is _now_. This will change when objects are taken from or put onto the PQ.</returns>
+        </member>
+        <member name="M:Stump.Core.Collections.PriorityQueueB`1.Pop">
+            <summary>
+            Get the smallest object and remove it.
+            </summary>
+            <returns>The smallest object</returns>
+        </member>
+        <member name="M:Stump.Core.Collections.PriorityQueueB`1.Update(System.Int32)">
+            <summary>
+            Notify the PQ that the object at position i has changed
+            and the PQ needs to restore order.
+            Since you dont have access to any indexes (except by using the
+            explicit IList.this) you should not call this function without knowing exactly
+            what you do.
+            </summary>
+            <param name="i">The index of the changed object.</param>
+        </member>
+        <member name="M:Stump.Core.Collections.PriorityQueueB`1.Peek">
+            <summary>
+            Get the smallest object without removing it.
+            </summary>
+            <returns>The smallest object</returns>
+        </member>
+        <member name="M:Stump.Core.Pool.BufferManager.Dispose">
+            <summary>
+              Libère les ressources utilisé par la class
+            </summary>
+        </member>
+        <member name="P:Stump.Core.Reflection.Singleton`1.Instance">
+            <summary>
+              Returns the singleton instance.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.Reset">
+            <summary>
+            Resets the position to the beginning.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.Ignore(System.Int32)">
+            <summary>
+            Increases the position by the given count.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.NextLong">
+            <returns><code>NextLong(-1, \" \")</code></returns>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.NextLong(System.Int64)">
+            <returns><code>NextLong(defaultVal, \" \")</code></returns>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.NextLong(System.Int64,System.String)">
+            <returns>The next word as long.</returns>
+            <param name="defaultVal">What should be returned if the next word cannot be converted into a long.</param>
+            <param name="seperator">What the next word should be seperated by.</param>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.NextInt">
+            <returns><code>NextInt(-1, \" \")</code></returns>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.NextInt(System.Int32)">
+            <returns><code>NextInt(defaultVal, \" \")</code></returns>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.NextInt(System.Int32,System.String)">
+            <returns>The next word as int.</returns>
+            <param name="defaultVal">What should be returned if the next word cannot be converted into an int.</param>
+            <param name="seperator">What the next word should be seperated by.</param>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.NextWord">
+            <summary>
+            Calls <code>NextWord(" ")</code>.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.NextWord(System.String)">
+            <summary>
+            Moves the position behind the next word in the string, separated by <code>seperator</code> and returns the word.
+            </summary>
+            <remarks>Words into quote (" ") are counted as one word.</remarks>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.NextWords(System.Int32)">
+            <returns><code>NextWords(count, \" \")</code></returns>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.NextWords(System.Int32,System.String)">
+            <returns>The next <code>count</code> word seperated by <code>seperator</code> as a string.</returns>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.NextWordsArray(System.Int32)">
+            <returns><code>NextWordsArray(count, " ")</code></returns>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.NextWordsArray(System.Int32,System.String)">
+            <returns>The next <code>count</code> word seperated by <code>seperator</code> as an array of strings.</returns>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.RemainingWords">
+            <summary>
+            Calls <code>RemainingWords(" ")</code>
+            </summary>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.ConsumeSpace">
+            <returns><code>Consume(' ')</code></returns>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.SkipWord">
+            <summary>
+            Calls <code>SkipWord(" ")</code>.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.SkipWord(System.String)">
+            <summary>
+            Skips the next word, seperated by the given seperator.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.SkipWords(System.Int32)">
+            <summary>
+            Calls <code>SkipWords(count, " ")</code>.
+            </summary>
+            <param name="count">The amount of words to be skipped.</param>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.SkipWords(System.Int32,System.String)">
+            <summary>
+            Skips <code>count</code> words, seperated by the given seperator.
+            </summary>
+            <param name="count">The amount of words to be skipped.</param>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.Consume(System.String)">
+            <summary>
+            Consume a whole string, as often as it occurs.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.Consume(System.Char)">
+            <summary>
+            Ignores all directly following characters that are equal to <code>c</code>.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.Consume(System.Char,System.Int32)">
+            <summary>
+            Ignores a maximum of <code>amount</code> characters that are equal to <code>c</code>.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.ConsumeNext(System.Char)">
+            <summary>
+            Consumes the next character, if it equals <code>c</code>.
+            </summary>
+            <returns>Wether the character was equal to <code>c</code> (and thus has been deleted)</returns>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.ConsumeNext(System.String)">
+            <summary>
+            Consumes the next character, if it equals <code>c</code>.
+            </summary>
+            <returns>Wether the character was equal to <code>c</code> (and thus has been deleted)</returns>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.Contains(System.String)">
+            <returns>Wether or not the remainder contains the given string.</returns>
+        </member>
+        <member name="M:Stump.Core.IO.StringStream.Contains(System.Char)">
+            <returns>Wether or not the remainder contains the given char.</returns>
+        </member>
+        <member name="P:Stump.Core.IO.StringStream.HasNext">
+            <summary>
+            Indicates wether we did not reach the end yet.
+            </summary>
+        </member>
+        <member name="P:Stump.Core.IO.StringStream.Position">
+            <summary>
+            The position within the initial string.
+            </summary>
+        </member>
+        <member name="P:Stump.Core.IO.StringStream.Length">
+            <summary>
+            The remaining length (from the current position until the end).
+            </summary>
+        </member>
+        <member name="P:Stump.Core.IO.StringStream.Remainder">
+            <summary>
+            The remaining string (from the current position until the end).
+            </summary>
+        </member>
+        <member name="P:Stump.Core.IO.StringStream.String">
+            <summary>
+            The wrapped string.
+            </summary>
+        </member>
+        <member name="P:Stump.Core.IO.StringStream.Item(System.Int32)">
+            <summary>
+            [Not implemented]
+            </summary>
+        </member>
+        <member name="T:Stump.Core.Mathematics.FastRandom">
+            <summary>
+            A fast random number generator.
+            
+            This class is by magnitude faster than System.Random and is preferred.
+            </summary>
+        </member>
+        <member name="F:Stump.Core.Mathematics.FastRandom.Current">
+            <summary>
+            Gets a FastRandom instance for the current thread.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Mathematics.FastRandom.#ctor">
+            <summary>
+            Initialises a new instance using a time-dependent seed.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Mathematics.FastRandom.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance using an int value as seed.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Mathematics.FastRandom.Initialize(System.Int32)">
+            <summary>
+            Reinitializes using an int value as a seed.
+            </summary>
+            <param name="seed">Seed to initialize with.</param>
+        </member>
+        <member name="M:Stump.Core.Mathematics.FastRandom.Next">
+            <summary>
+            Generates a random int over the range 0 to int.MaxValue - 1.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Mathematics.FastRandom.Next(System.Int32)">
+            <summary>
+            Generates a random int over the range 0 to maxValue - 1, and not including maxValue.
+            </summary>
+            <param name="maxValue">The upper bound.</param>
+        </member>
+        <member name="M:Stump.Core.Mathematics.FastRandom.Next(System.Int32,System.Int32)">
+            <summary>
+            Generates a random int over the range minValue to maxValue - 1, and not including maxValue.
+            
+            Note that maxValue must be >= minValue and minValue may be negative.
+            </summary>
+            <param name="minValue">The lower bound.</param>
+            <param name="maxValue">The upper bound.</param>
+        </member>
+        <member name="M:Stump.Core.Mathematics.FastRandom.NextDouble">
+            <summary>
+            Generates a random double. Values returned are from 0.0 up to, but not including, 1.0.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Mathematics.FastRandom.NextBytes(System.Byte[])">
+            <summary>
+            Fills the provided byte array with random bytes.
+            
+            This method is functionally equivalent to System.Random.NextBytes. 
+            </summary>
+            <param name="buffer">Buffer to fill.</param>
+        </member>
+        <member name="M:Stump.Core.Mathematics.FastRandom.NextUInt32">
+            <summary>
+            Generates a uint. Values returned are over the full range of a uint, 
+            uint.MinValue to uint.MaxValue, inclusive.
+            
+            This is the fastest method for generating a single random number because the underlying
+            random number generator algorithm generates 32 random bits that can be cast directly to 
+            a uint.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Mathematics.FastRandom.NextInt32">
+            <summary>
+            Generates a random int over the range 0 to int.MaxValue, inclusive. 
+            
+            This method differs from Next only in that the range is 0 to int.MaxValue
+            and not 0 to int.MaxValue - 1.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Mathematics.FastRandom.NextBoolean">
+            <summary>
+            Generates a single random bit.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Xml.XmlUtils.Serialize``1(System.String,``0)">
+            <summary>
+              Serializes the specified file name.
+            </summary>
+            <typeparam name = "T"></typeparam>
+            <param name = "fileName">Name of the file.</param>
+            <param name = "item">The item.</param>
+        </member>
+        <member name="M:Stump.Core.Xml.XmlUtils.Serialize``1(System.IO.Stream,``0)">
+            <summary>
+              Serializes the specified stream.
+            </summary>
+            <typeparam name = "T"></typeparam>
+            <param name = "stream">The stream.</param>
+            <param name = "item">The item.</param>
+        </member>
+        <member name="M:Stump.Core.Xml.XmlUtils.Serialize(System.String,System.Object,System.Type)">
+            <summary>
+              Serializes the specified file name.
+            </summary>
+            <param name = "fileName">Name of the file.</param>
+            <param name = "item">The item.</param>
+        </member>
+        <member name="M:Stump.Core.Xml.XmlUtils.Serialize(System.IO.Stream,System.Object,System.Type)">
+            <summary>
+              Serializes the specified stream.
+            </summary>
+            <param name = "stream">The stream.</param>
+            <param name = "item">The item.</param>
+        </member>
+        <member name="M:Stump.Core.Xml.XmlUtils.Deserialize``1(System.String)">
+            <summary>
+              Deserializes the specified file name.
+            </summary>
+            <typeparam name = "T"></typeparam>
+            <param name = "fileName">Name of the file.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.Xml.XmlUtils.Deserialize``1(System.IO.Stream)">
+            <summary>
+              Deserializes the specified stream.
+            </summary>
+            <typeparam name = "T"></typeparam>
+            <param name = "stream">The stream.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.Xml.XmlUtils.Deserialize(System.String,System.Type)">
+            <summary>
+              Deserializes the specified file name.
+            </summary>
+            <param name = "fileName">Name of the file.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Core.Xml.XmlUtils.Deserialize(System.IO.Stream,System.Type)">
+            <summary>
+              Deserializes the specified stream.
+            </summary>
+            <param name = "stream">The stream.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Stump.Core.Reflection.AccessorBuilder">
+            <summary>
+            Generates field accessor methods
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Reflection.AccessorBuilder.CreateGetter(System.Type,System.Type,System.String)">
+            <summary>
+            Creates unbound delegate that allows object field read operation.
+            </summary>
+            <param name="fieldName">Name of the field</param>
+            <returns>Delegate allowing field value reading</returns>
+        </member>
+        <member name="M:Stump.Core.Reflection.AccessorBuilder.CreateGetter(System.Object,System.Type,System.String)">
+            <summary>
+            Creates bound delegate that allows object field read operation.
+            </summary>
+            <param name="instance">Instance of the object that delegate will be bound to</param>
+            <param name="fieldName">Name of the field</param>
+            <returns>Delegate allowing field value reading</returns>
+        </member>
+        <member name="M:Stump.Core.Reflection.AccessorBuilder.CreateSetter(System.Type,System.Type,System.String)">
+            <summary>
+            Creates unbound delegate that allows object field write operation.
+            </summary>
+            <param name="fieldName">Name of the field</param>
+            <returns>Delegate allowing field value writing</returns>
+        </member>
+        <member name="M:Stump.Core.Reflection.AccessorBuilder.CreateSetter(System.Object,System.Type,System.String)">
+            <summary>
+            Creates bound delegate that allows object field write operation.
+            </summary>
+            <param name="instance">Instance of the object that delegate will be bound to</param>
+            <param name="fieldName">Name of the field</param>
+            <returns>Delegate allowing field value writing</returns>
+        </member>
+        <member name="T:Stump.Core.Reflection.AccessorBuilder.GetFieldValueBoundDelegate">
+            <summary>
+            Returns field value.
+            Delegate is bound to specific instance.
+            </summary>
+            <returns>Field value</returns>
+        </member>
+        <member name="T:Stump.Core.Reflection.AccessorBuilder.GetFieldValueUnboundDelegate">
+            <summary>
+            Returns field value.
+            Delegate is not bound to any specific instance.
+            </summary>
+            <returns>Field value</returns>
+        </member>
+        <member name="T:Stump.Core.Reflection.AccessorBuilder.SetFieldValueBoundDelegate">
+            <summary>
+            Modifies field value
+            Delegate is bound to specific instance.
+            </summary>
+        </member>
+        <member name="T:Stump.Core.Reflection.AccessorBuilder.SetFieldValueUnboundDelegate">
+            <summary>
+            Modifies field value
+            Delegate is not bound to any specific instance.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Extensions.CollectionExtensions.ToStringCol(System.Collections.ICollection,System.String)">
+            <summary>
+            Returns the string representation of an IEnumerable (all elements, joined by comma)
+            </summary>
+            <param name="conj">The conjunction to be used between each elements of the collection</param>
+        </member>
+        <member name="M:Stump.Core.Collections.LockFreeQueue`1.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:Stump.Core.Collections.LockFreeQueue`1.Enqueue(`0)">
+            <summary>
+            Adds an object to the end of the queue.
+            </summary>
+            <param name="item">the object to add to the queue</param>
+        </member>
+        <member name="M:Stump.Core.Collections.LockFreeQueue`1.TryDequeue(`0@)">
+            <summary>
+            Removes and returns the object at the beginning of the queue.
+            </summary>
+            <param name="item">
+            when the method returns, contains the object removed from the beginning of the queue, 
+            if the queue is not empty; otherwise it is the default value for the element type
+            </param>
+            <returns>
+            true if an object from removed from the beginning of the queue; 
+            false if the queue is empty
+            </returns>
+        </member>
+        <member name="M:Stump.Core.Collections.LockFreeQueue`1.Dequeue">
+            <summary>
+            Removes and returns the object at the beginning of the queue.
+            </summary>
+            <returns>the object that is removed from the beginning of the queue</returns>
+        </member>
+        <member name="M:Stump.Core.Collections.LockFreeQueue`1.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the queue.
+            </summary>
+            <returns>an enumerator for the queue</returns>
+        </member>
+        <member name="M:Stump.Core.Collections.LockFreeQueue`1.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the queue.
+            </summary>
+            <returns>an enumerator for the queue</returns>
+        </member>
+        <member name="M:Stump.Core.Collections.LockFreeQueue`1.Clear">
+            <summary>
+            Clears the queue.
+            </summary>
+            <remarks>This method is not thread-safe.</remarks>
+        </member>
+        <member name="P:Stump.Core.Collections.LockFreeQueue`1.Count">
+            <summary>
+            Gets the number of elements contained in the queue.
+            </summary>
+        </member>
+    </members>
+</doc>

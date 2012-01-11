@@ -1,5 +1,6 @@
 
 using System;
+using System.AddIn.Hosting;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -69,7 +70,9 @@ namespace Stump.Server.BaseServer.Plugins
             if (!File.Exists(libPath))
                 throw new FileNotFoundException("File doesn't exist", libPath);
 
-            Assembly pluginAssembly = Assembly.LoadFrom(libPath);
+            var asmData = File.ReadAllBytes(libPath);
+
+            Assembly pluginAssembly = Assembly.Load(asmData);
             var pluginContext = new PluginContext(libPath, pluginAssembly);
             bool initialized = false;
 

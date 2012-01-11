@@ -9,11 +9,11 @@ using Stump.Server.WorldServer.Worlds.Maps.Pathfinding;
 
 namespace Stump.Server.WorldServer.Worlds.Actors
 {
-    public abstract class ContextActor
+    public abstract class ContextActor : WorldObject
     {
         private ObjectPosition m_position;
 
-        public virtual int Id
+        public override int Id
         {
             get;
             protected set;
@@ -25,40 +25,22 @@ namespace Stump.Server.WorldServer.Worlds.Actors
             protected set;
         }
 
-        public virtual IContext Context
+        public virtual ICharacterContainer CharacterContainer
         {
             get { return Position.Map; }
         }
 
-        public ObjectPosition Position
+        public override ObjectPosition Position
         {
             get { return m_position; }
             protected set
             {
                 if (m_position != null)
-                    m_position.PositionChanged -= NotifyPositionChanged;
+                    m_position.PositionChanged -= OnPositionChanged;
 
                 m_position = value;
-                m_position.PositionChanged += NotifyPositionChanged;
+                m_position.PositionChanged += OnPositionChanged;
             }
-        }
-
-        public Map Map
-        {
-            get { return Position.Map; }
-            set { Position.Map = value; }
-        }
-
-        public Cell Cell
-        {
-            get { return Position.Cell; }
-            set { Position.Cell = value; }
-        }
-
-        public DirectionsEnum Direction
-        {
-            get { return Position.Direction; }
-            set { Position.Direction = value; }
         }
 
         #region Network
@@ -67,7 +49,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
 
         public virtual EntityDispositionInformations GetEntityDispositionInformations()
         {
-            return new EntityDispositionInformations(Position.Cell.Id, (sbyte) Position.Direction);
+            return new EntityDispositionInformations(Cell.Id, (sbyte) Direction);
         }
 
         #endregion
@@ -84,7 +66,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
 
         public virtual IdentifiedEntityDispositionInformations GetIdentifiedEntityDispositionInformations()
         {
-            return new IdentifiedEntityDispositionInformations(Position.Cell.Id, (sbyte) Position.Direction, Id);
+            return new IdentifiedEntityDispositionInformations(Cell.Id, (sbyte) Direction, Id);
         }
 
         #endregion
@@ -97,7 +79,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
 
         public void DisplaySmiley(sbyte smileyId)
         {
-            Context.ForEach(entry => ChatHandler.SendChatSmileyMessage(entry.Client, this, smileyId));
+            CharacterContainer.ForEach(entry => ChatHandler.SendChatSmileyMessage(entry.Client, this, smileyId));
         }
 
         #endregion
@@ -115,7 +97,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
 
         public event Action<ContextActor, Path> StartMoving;
 
-        protected void NotifyStartMoving(Path path)
+        protected virtual void OnStartMoving(Path path)
         {
             Action<ContextActor, Path> handler = StartMoving;
             if (handler != null) handler(this, path);
@@ -123,10 +105,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors
 
         public event Action<ContextActor, Path, bool> StopMoving;
 
-        protected void NotifyStopMoving(Path path, bool canceled)
+        protected virtual void OnStopMoving(Path path, bool canceled)
         {
-            NotifyPositionChanged(Position);
-
             Action<ContextActor, Path, bool> handler = StopMoving;
             if (handler != null)
                 handler(this, path, canceled);
@@ -134,15 +114,15 @@ namespace Stump.Server.WorldServer.Worlds.Actors
 
         public event Action<ContextActor, ObjectPosition> InstantMoved;
 
-        protected void NotifyTeleported(ObjectPosition path)
+        protected virtual void OnTeleported(ObjectPosition position)
         {
             Action<ContextActor, ObjectPosition> handler = InstantMoved;
-            if (handler != null) handler(this, path);
+            if (handler != null) handler(this, position);
         }
 
         public event Action<ContextActor, ObjectPosition> PositionChanged;
 
-        protected void NotifyPositionChanged(ObjectPosition position)
+        protected virtual void OnPositionChanged(ObjectPosition position)
         {
             Action<ContextActor, ObjectPosition> handler = PositionChanged;
             if (handler != null) handler(this, position);
@@ -174,7 +154,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
             m_isMoving = true;
             MovementPath = movementPath;
 
-            NotifyStartMoving(movementPath);
+            OnStartMoving(movementPath);
 
             return true;
         }
@@ -187,7 +167,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
             m_lastPosition = Position;
             Position = destination;
 
-            NotifyTeleported(destination);
+            OnTeleported(destination);
 
             return true;
         }
@@ -201,7 +181,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
             Position = MovementPath.EndPathPosition;
             m_isMoving = false;
 
-            NotifyStopMoving(MovementPath, false);
+            OnStopMoving(MovementPath, false);
             MovementPath = null;
 
             return true;
@@ -216,7 +196,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors
             Position = currentObjectPosition;
             m_isMoving = false;
 
-            NotifyStopMoving(MovementPath, true);
+            OnStopMoving(MovementPath, true);
             MovementPath = null;
 
             return true;

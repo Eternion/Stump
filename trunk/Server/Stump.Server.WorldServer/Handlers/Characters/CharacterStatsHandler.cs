@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Worlds.Actors.Stats;
@@ -11,7 +12,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
     public partial class CharacterHandler : WorldHandlerContainer
     {
         
-        public static void SendLifePointsRegenBeginMessage(WorldClient client, byte regenRate)
+        public static void SendLifePointsRegenBeginMessage(IPacketReceiver client, byte regenRate)
         {
             client.Send(new LifePointsRegenBeginMessage(regenRate));
         }
@@ -120,12 +121,12 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                         )));
         }
 
-        public static void SendCharacterLevelUpMessage(WorldClient client, byte level)
+        public static void SendCharacterLevelUpMessage(IPacketReceiver client, byte level)
         {
             client.Send(new CharacterLevelUpMessage(level));
         }
 
-        public static void SendCharacterLevelUpInformationMessage(WorldClient client, Character character, byte level)
+        public static void SendCharacterLevelUpInformationMessage(IPacketReceiver client, Character character, byte level)
         {
             client.Send(new CharacterLevelUpInformationMessage(level, character.Name, character.Id, 0));
         }

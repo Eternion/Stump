@@ -32,6 +32,13 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells
             m_direction = DirectionsEnum.DIRECTION_EAST;
         }
 
+        public ObjectPosition(Map map, short cellId)
+        {
+            m_map = map;
+            m_cell = map.Cells[cellId];
+            m_direction = DirectionsEnum.DIRECTION_EAST;
+        }
+
         public ObjectPosition(Map map, Cell cell, DirectionsEnum direction)
         {
             m_map = map;
@@ -44,6 +51,16 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells
             m_map = map;
             m_cell = map.Cells[cellId];
             m_direction = direction;
+        }
+
+        public bool IsValid
+        {
+            get
+            {
+                return (m_cell.Id > 0 && m_cell.Id < MapPoint.MapSize) &&
+                    (m_direction > DirectionsEnum.DIRECTION_EAST && m_direction < DirectionsEnum.DIRECTION_NORTH_EAST) &&
+                    m_map != null;
+            }
         }
 
         private DirectionsEnum m_direction;

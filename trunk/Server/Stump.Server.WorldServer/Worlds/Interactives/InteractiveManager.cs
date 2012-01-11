@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Worlds.Interactives
 
         public InteractiveSpawn GetOneSpawn(Predicate<InteractiveSpawn> predicate)
         {
-            return m_interactivesSpawns.Values.Where(entry => predicate(entry)).FirstOrDefault();
+            return m_interactivesSpawns.Values.SingleOrDefault(entry => predicate(entry));
         }
 
         public InteractiveTemplate GetTemplate(int id)
@@ -53,7 +53,6 @@ namespace Stump.Server.WorldServer.Worlds.Interactives
         public void AddInteractiveSpawn(InteractiveSpawn spawn)
         {
             spawn.Save();
-
             m_interactivesSpawns.Add(spawn.Id, spawn);
         }
     }

@@ -74,7 +74,7 @@ namespace Stump.Server.WorldServer.Worlds.Fights
         public ObjectPosition BladePosition
         {
             get;
-            private set;
+            set;
         }
 
         public Cell[] PlacementCells
@@ -226,14 +226,9 @@ namespace Stump.Server.WorldServer.Worlds.Fights
             if (IsFull())
                 return false;
 
-            bool firstFighter = Leader == null;
-
             lock (m_locker)
             {
                 m_fighters.Add(actor);
-
-                if (firstFighter)
-                    BladePosition = actor.GetLeaderBladePosition();
 
                 NotifyFighterAdded(actor);
                 return true;

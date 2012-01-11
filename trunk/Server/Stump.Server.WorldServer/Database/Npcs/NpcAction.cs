@@ -15,11 +15,25 @@ namespace Stump.Server.WorldServer.Database.Npcs
             set;
         }
 
-        [BelongsTo("NpcId")]
-        public NpcTemplate Npc
+        [Property("Npc")]
+        public int NpcId
         {
             get;
             set;
+        }
+
+        private NpcTemplate m_template;
+        public NpcTemplate Template
+        {
+            get
+            {
+                return m_template ?? ( m_template = NpcManager.Instance.GetNpcTemplate(NpcId) );
+            }
+            set
+            {
+                m_template = value;
+                NpcId = value.Id;
+            }
         }
 
         public abstract NpcActionTypeEnum ActionType

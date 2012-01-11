@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Extensions;
@@ -15,13 +14,15 @@ namespace Stump.Server.WorldServer.Worlds.Items
         #region Delegates
 
         public delegate void ItemAddedEventHandler(ItemsCollection sender, Item item);
+
         public delegate void ItemRemovedEventHandler(ItemsCollection sender, Item item);
+
         public delegate void ItemStackChangedEventHandler(ItemsCollection sender, Item item, int difference);
 
         #endregion
 
+        protected readonly object m_locker = new object();
         protected Dictionary<int, Item> m_items = new Dictionary<int, Item>();
-        private readonly object m_locker = new object();
 
         public event ItemAddedEventHandler ItemAdded;
 
@@ -79,9 +80,24 @@ namespace Stump.Server.WorldServer.Worlds.Items
 
         public virtual Item AddItem(ItemTemplate template, uint amount)
         {
-            Item item = ItemManager.Instance.Create(template, amount);
+            List<EffectBase> effects = ItemManager.Instance.GenerateItemEffects(template);
 
-            return AddItem(item);
+            Item stackableWith;
+            if (IsStackable(template.Id, effects, out stackableWith))
+            {
+                StackItem(stackableWith, amount);
+
+                return stackableWith;
+            }
+
+            Item item = ItemManager.Instance.Create(template, amount, effects);
+
+            lock (m_locker)
+                m_items.Add(item.Guid, item);
+
+            NotifyItemAdded(item);
+
+            return item;
         }
 
         public virtual Item AddItem(Item item)
@@ -91,20 +107,13 @@ namespace Stump.Server.WorldServer.Worlds.Items
             {
                 StackItem(stackableWith, (uint) item.Stack);
 
-                if (ItemManager.Instance.IsLoaded(item.Guid))
-                    ItemManager.Instance.RemoveItem(item.Guid);
+                if (HasItem(item.Guid))
+                    RemoveItem(item);
 
                 return stackableWith;
             }
 
-            if (!ItemManager.Instance.IsLoaded(item.Guid))
-                ItemManager.Instance.AddItem(item); // theorically it's impossible, but nvm
-
-            if (!item.CanBeSave)
-                throw new Exception("Item cannot be stored because his guid equals -1");
-
-            lock (m_locker)
-                m_items.Add(item.Guid, item);
+            m_items.Add(item.Guid, item);
 
             NotifyItemAdded(item);
 
@@ -123,15 +132,13 @@ namespace Stump.Server.WorldServer.Worlds.Items
 
             Item newitem = ItemManager.Instance.RegisterAnItemCopy(item, amount);
 
-
             if (m_items.ContainsKey(newitem.Guid))
             {
                 RemoveItem(newitem.Guid);
                 return null;
             }
 
-            lock (m_locker)
-                m_items.Add(newitem.Guid, newitem);
+            m_items.Add(newitem.Guid, newitem);
 
 
             NotifyItemAdded(newitem);
@@ -162,14 +169,8 @@ namespace Stump.Server.WorldServer.Worlds.Items
             if (!m_items.ContainsKey(guid))
                 return;
 
-            Item removedItem;
-            lock (m_locker)
-            {
-                removedItem = m_items[guid];
-                m_items.Remove(guid);
-
-                ItemManager.Instance.RemoveItem(guid);
-            }
+            Item removedItem = m_items[guid];
+            m_items.Remove(guid);
 
             NotifyItemRemoved(removedItem);
         }
@@ -197,8 +198,7 @@ namespace Stump.Server.WorldServer.Worlds.Items
 
             Item newitem = ItemManager.Instance.RegisterAnItemCopy(item, amount);
 
-            lock (m_locker)
-                m_items.Add(newitem.Guid, newitem);
+            m_items.Add(newitem.Guid, newitem);
 
             NotifyItemAdded(newitem);
 
@@ -232,35 +232,28 @@ namespace Stump.Server.WorldServer.Worlds.Items
 
         public virtual Item GetItem(int itemId, List<EffectBase> effects, CharacterInventoryPositionEnum position)
         {
-            IEnumerable<Item> entries;
-            lock (m_locker)
-            {
-                entries = from entry in m_items.Values
-                          where entry.ItemId == itemId && entry.Position == position && effects.CompareEnumerable(entry.Effects)
-                          select entry;
-            }
+            IEnumerable<Item> entries = from entry in m_items.Values
+                                        where entry.ItemId == itemId && entry.Position == position && effects.CompareEnumerable(entry.Effects)
+                                        select entry;
 
             return entries.FirstOrDefault();
         }
 
         public virtual Item GetItem(CharacterInventoryPositionEnum position)
         {
-            lock (m_locker)
-                return m_items.Values.Where(entry => entry.Position == position).FirstOrDefault();
+            return m_items.Values.Where(entry => entry.Position == position).FirstOrDefault();
         }
 
         public virtual IEnumerable<Item> GetItems(CharacterInventoryPositionEnum position)
         {
-            lock (m_locker)
-                return m_items.Values.Where(entry => entry.Position == position);
+            return m_items.Values.Where(entry => entry.Position == position);
         }
 
         public IEnumerable<Item> GetEquipedItems()
         {
-            lock (m_locker)
-                return from entry in m_items
-                       where entry.Value.IsEquiped()
-                       select entry.Value;
+            return from entry in m_items
+                   where entry.Value.IsEquiped()
+                   select entry.Value;
         }
     }
 }

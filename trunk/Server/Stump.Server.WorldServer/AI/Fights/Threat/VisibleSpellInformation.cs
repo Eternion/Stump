@@ -7,7 +7,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Threat
 {
     public class VisibleSpellInformation
     {
-        private FightActor m_spellTarget;
         public AIFighter Sighter
         {
             get;

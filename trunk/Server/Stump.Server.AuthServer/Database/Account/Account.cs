@@ -52,7 +52,7 @@ namespace Stump.Server.AuthServer.Database.Account
                            LastConnection = LastConnection.Date,
                            LastConnectionIp = LastConnection.Ip,
                            CharactersId = Characters.Select(entry => entry.CharacterId).ToList(),
-                           DeletedCharactersCount = DeletedCharacters.Count,
+                           DeletedCharactersCount = DeletedCharacters.Count(entry => DateTime.Now - entry.DeletionDate <= TimeSpan.FromDays(1)),
                        };
         }
 

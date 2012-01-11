@@ -72,7 +72,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
             }
         }
 
-        private static void DisplayCommandDescription(TriggerBase trigger, CommandBase command)
+        public static void DisplayCommandDescription(TriggerBase trigger, CommandBase command)
         {
             trigger.Reply(trigger.Bold("{0}") + "{1} - {2}",
                           string.Join("/", command.Aliases),
@@ -82,7 +82,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
                           command.Description);
         }
 
-        private static void DisplaySubCommandDescription(TriggerBase trigger, CommandBase command, SubCommand subcommand)
+        public static void DisplaySubCommandDescription(TriggerBase trigger, CommandBase command, SubCommand subcommand)
         {
             trigger.Reply(trigger.Bold("{0}") + " {1} - {2}",
                           command.Aliases.First(),
@@ -91,7 +91,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
         }
 
 
-        private static void DisplayFullCommandDescription(TriggerBase trigger, CommandBase command)
+        public static void DisplayFullCommandDescription(TriggerBase trigger, CommandBase command)
         {
             trigger.Reply(trigger.Bold("{0}") + "{1} - {2}",
                           string.Join("/", command.Aliases),
@@ -116,7 +116,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
                 }
         }
 
-        private static void DisplayFullSubCommandDescription(TriggerBase trigger, CommandBase command,
+        public static void DisplayFullSubCommandDescription(TriggerBase trigger, CommandBase command,
                                                              SubCommand subcommand)
         {
             trigger.Reply(trigger.Bold("{0} {1}") + " - {2}",
@@ -131,7 +131,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
             }
         }
 
-        private static void DisplayCommandParameter(TriggerBase trigger, IParameterDefinition parameter)
+        public static void DisplayCommandParameter(TriggerBase trigger, IParameterDefinition parameter)
         {
             trigger.Reply("\t(" + trigger.Bold("{0}") + " : {1})",
                           parameter.GetUsage(),

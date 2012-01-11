@@ -3,6 +3,7 @@ using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Handlers.Basic;
@@ -28,8 +29,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void HandleGameContextCreateRequestMessage(WorldClient client,
                                                                  GameContextCreateRequestMessage message)
         {
-            if (client.ActiveCharacter.InWorld)
+            if (client.ActiveCharacter.IsInWorld)
+            {
+                client.ActiveCharacter.SendServerMessage("You are already Logged !");
                 return;
+            }
 
             SendGameContextDestroyMessage(client);
             SendGameContextCreateMessage(client, 1);
@@ -45,8 +49,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                                         GameMapChangeOrientationRequestMessage message)
         {
             client.ActiveCharacter.Direction = (DirectionsEnum) message.direction;
-            client.ActiveCharacter.Map.ForEach(
-                charac => SendGameMapChangeOrientationMessage(charac.Client, client.ActiveCharacter));
+            SendGameMapChangeOrientationMessage(client.ActiveCharacter.CharacterContainer.Clients, client.ActiveCharacter);
         }
 
         // todo : get and check whole path
@@ -83,44 +86,44 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.ActiveCharacter.Fighter.ShowCell(client.ActiveCharacter.Map.Cells[message.cellId]);
         }
 
-        public static void SendGameContextCreateMessage(WorldClient client, sbyte context)
+        public static void SendGameContextCreateMessage(IPacketReceiver client, sbyte context)
         {
             client.Send(new GameContextCreateMessage(context));
         }
 
-        public static void SendGameContextDestroyMessage(WorldClient client)
+        public static void SendGameContextDestroyMessage(IPacketReceiver client)
         {
             client.Send(new GameContextDestroyMessage());
         }
 
-        public static void SendGameMapChangeOrientationMessage(WorldClient client, ContextActor actor)
+        public static void SendGameMapChangeOrientationMessage(IPacketReceiver client, ContextActor actor)
         {
             client.Send(
                 new GameMapChangeOrientationMessage(new ActorOrientation(actor.Id,
                                                                          (sbyte) actor.Position.Direction)));
         }
 
-        public static void SendGameContextRemoveElementMessage(WorldClient client, ContextActor actor)
+        public static void SendGameContextRemoveElementMessage(IPacketReceiver client, ContextActor actor)
         {
             client.Send(new GameContextRemoveElementMessage(actor.Id));
         }
 
-        public static void SendShowCellMessage(WorldClient client, ContextActor source, Cell cell)
+        public static void SendShowCellMessage(IPacketReceiver client, ContextActor source, Cell cell)
         {
             client.Send(new ShowCellMessage(source.Id, cell.Id));
         }
 
-        public static void SendGameContextRefreshEntityLookMessage(WorldClient client, ContextActor actor)
+        public static void SendGameContextRefreshEntityLookMessage(IPacketReceiver client, ContextActor actor)
         {
             client.Send(new GameContextRefreshEntityLookMessage(actor.Id, actor.Look));
         }
 
-        public static void SendGameMapMovementMessage(WorldClient client, IEnumerable<short> movementsKey, ContextActor actor)
+        public static void SendGameMapMovementMessage(IPacketReceiver client, IEnumerable<short> movementsKey, ContextActor actor)
         {
             client.Send(new GameMapMovementMessage(movementsKey, actor.Id));
         }
 
-        public static void SendGameEntitiesDispositionMessage(WorldClient client,
+        public static void SendGameEntitiesDispositionMessage(IPacketReceiver client,
                                                               IEnumerable<ContextActor> actors)
         {
             client.Send(

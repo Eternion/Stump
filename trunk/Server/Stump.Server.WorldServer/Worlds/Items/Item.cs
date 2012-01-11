@@ -15,33 +15,33 @@ namespace Stump.Server.WorldServer.Worlds.Items
     {
         #region Fields
 
-        internal readonly ItemRecord Record;
+        public readonly ItemRecord Record;
 
         #endregion
 
         #region Constructors
 
-        internal Item(Item item, int stack)
+        public Item(Item item, int stack)
             : this(item.Template, item.Guid, item.Position, stack, item.Effects)
         {
         }
 
-        internal Item(ItemTemplate template, int guid)
+        public Item(ItemTemplate template, int guid)
             : this(template, guid, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
         {
         }
 
-        internal Item(ItemTemplate template, int guid, CharacterInventoryPositionEnum position)
+        public Item(ItemTemplate template, int guid, CharacterInventoryPositionEnum position)
             : this(template, guid, position, 1)
         {
         }
 
-        internal Item(ItemTemplate template, int guid, CharacterInventoryPositionEnum position, int stack)
+        public Item(ItemTemplate template, int guid, CharacterInventoryPositionEnum position, int stack)
             : this(template, guid, position, stack, new List<EffectBase>())
         {
         }
 
-        internal Item(ItemTemplate template, int guid, CharacterInventoryPositionEnum position, int stack,
+        public Item(ItemTemplate template, int guid, CharacterInventoryPositionEnum position, int stack,
                       List<EffectBase> effects)
         {
             m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);
@@ -49,15 +49,16 @@ namespace Stump.Server.WorldServer.Worlds.Items
 
             Record = new ItemRecord // create the associated record
                          {
-                             Guid = guid,
+                             Id = guid,
                              ItemId = template.Id,
                              Stack = stack,
                              Position = position,
-                             Effects = effects
+                             Effects = effects,
+                             New = true
                          };
         }
 
-        internal Item(ItemRecord record)
+        public Item(ItemRecord record)
         {
             m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);
 
@@ -70,7 +71,7 @@ namespace Stump.Server.WorldServer.Worlds.Items
 
         }
 
-        internal Item(ItemTemplate template, CharacterInventoryPositionEnum position, int stack,
+        public Item(ItemTemplate template, CharacterInventoryPositionEnum position, int stack,
                       List<EffectBase> effects)
         {
             m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);
@@ -78,13 +79,13 @@ namespace Stump.Server.WorldServer.Worlds.Items
 
             Record = new ItemRecord // create the associated record
                          {
-                             Guid = -1,
-                             // unassigned guid. ITEM CANNOT BE USED !
                              ItemId = template.Id,
                              Stack = stack,
                              Position = position,
-                             Effects = effects
+                             Effects = effects,
+                             New = true
                          };
+            Record.AssignRecordId();
         }
 
         #endregion
@@ -183,10 +184,10 @@ namespace Stump.Server.WorldServer.Worlds.Items
 
         public int Guid
         {
-            get { return Record.Guid; }
+            get { return Record.Id; }
             internal set
             {
-                Record.Guid = value;
+                Record.Id = value;
                 m_objectItemValidator.Invalidate();
             }
         }
@@ -226,37 +227,29 @@ namespace Stump.Server.WorldServer.Worlds.Items
             }
         }
 
-        internal bool CanBeSave
-        {
-            get { return Guid != -1; }
-        }
-
         #endregion
 
         #region Database Features
 
         public void Save()
         {
-            WorldServer.Instance.IOTaskPool.EnqueueTask(SaveNow);
+            if (Guid == 0)
+                Record.AssignRecordId();
+
+            Record.SaveLater();
         }
 
-        public void SaveNow()
+        public void Create()
         {
-            if (!CanBeSave)
-                return;
+            if (Guid == 0)
+                Record.AssignRecordId();
 
-            Record.ItemId = ItemId;
-            Record.Save();
-        }
-
-        internal void Create()
-        {
-            Record.Create();
+            Record.CreateLater();
         }
 
         public void Delete()
         {
-            WorldServer.Instance.IOTaskPool.EnqueueTask(Record.Delete);
+            Record.DeleteLater();
         }
 
         #endregion

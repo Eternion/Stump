@@ -1,17 +1,22 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Linq;
+using NLog;
+using Stump.Core.Extensions;
 using Stump.Core.Pool;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
@@ -27,16 +32,19 @@ using Stump.Server.WorldServer.Worlds.Interactives.Skills;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 using Stump.Server.WorldServer.Worlds.Maps.Cells.Triggers;
 using Stump.Server.WorldServer.Worlds.Maps.Pathfinding;
+using Stump.Server.WorldServer.Worlds.Maps.Spawns;
 
 namespace Stump.Server.WorldServer.Worlds.Maps
 {
-    public class Map : IContext
+    public class Map : ICharacterContainer
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         #region Events
 
         public event Action<Map, RolePlayActor> ActorEnter;
 
-        private void NotifyActorEnter(RolePlayActor actor)
+        protected virtual void OnActorEnter(RolePlayActor actor)
         {
             OnEnter(actor);
 
@@ -47,7 +55,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         public event Action<Map, RolePlayActor> ActorLeave;
 
-        private void NotifyActorLeave(RolePlayActor actor)
+        protected virtual void OnActorLeave(RolePlayActor actor)
         {
             OnLeave(actor);
 
@@ -58,7 +66,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         public event Action<Map, Fight> FightCreated;
 
-        private void NotifyFightCreated(Fight fight)
+        protected virtual void OnFightCreated(Fight fight)
         {
             Action<Map, Fight> handler = FightCreated;
             if (handler != null)
@@ -67,7 +75,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         public event Action<Map, Fight> FightRemoved;
 
-        private void NotifyFightRemoved(Fight fight)
+        protected virtual void OnFightRemoved(Fight fight)
         {
             Action<Map, Fight> handler = FightRemoved;
             if (handler != null)
@@ -76,31 +84,20 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         public event Action<Map, InteractiveObject> InteractiveSpawned;
 
-        private void NotifyInteractiveSpawned(InteractiveObject interactive)
-        {
-            OnInteractiveSpawned(interactive);
-
-            Action<Map, InteractiveObject> handler = InteractiveSpawned;
-            if (handler != null)
-                handler(this, interactive);
-        }
 
         public event Action<Map, InteractiveObject> InteractiveUnSpawned;
 
-        private void NotifyInteractiveUnSpawned(InteractiveObject interactive)
-        {
-            OnInteractiveUnSpawned(interactive);
 
-            Action<Map, InteractiveObject> handler = InteractiveUnSpawned;
-            if (handler != null)
-                handler(this, interactive);
-        }
 
         public event Action<Map, Character, InteractiveObject, Skill> InteractiveUsed;
 
-        private void NotifyInteractiveUsed(Character user, InteractiveObject interactive, Skill skill)
+        protected virtual void OnInteractiveUsed(Character user, InteractiveObject interactive, Skill skill)
         {
-            OnInteractiveUsed(user, interactive, skill);
+            Contract.Requires(user != null);
+            Contract.Requires(interactive != null);
+            Contract.Requires(skill != null);
+
+            ForEach(character => InteractiveHandler.SendInteractiveUsedMessage(character.Client, user, interactive, skill));
 
             Action<Map, Character, InteractiveObject, Skill> handler = InteractiveUsed;
             if (handler != null)
@@ -143,15 +140,15 @@ namespace Stump.Server.WorldServer.Worlds.Maps
         private void InitializeFightPlacements()
         {
             // todo : search for default placements
-            if (Record.FightPositions == null)
+            if (Record.BlueCells.Length == 0 || Record.RedCells.Length == 0)
             {
                 m_bluePlacement = new[] { Cells[328], Cells[356], Cells[357] };
                 m_redPlacement = new[] { Cells[370], Cells[355], Cells[354] };
             }
             else
             {
-                m_bluePlacement = Record.FightPositions.BlueCells.Select(entry => Cells[entry]).ToArray();
-                m_redPlacement = Record.FightPositions.RedCells.Select(entry => Cells[entry]).ToArray();
+                m_bluePlacement = Record.BlueCells.Select(entry => Cells[entry]).ToArray();
+                m_redPlacement = Record.RedCells.Select(entry => Cells[entry]).ToArray();
             }
         }
 
@@ -224,7 +221,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             get { return Area.SuperArea; }
         }
 
-        public SpawningPool SpawningPool
+        public SpawningPoolBase SpawningPool
         {
             get;
             private set;
@@ -367,32 +364,50 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         public InteractiveObject SpawnInteractive(InteractiveSpawn spawn)
         {
+            Contract.Requires(spawn != null);
+
             var interactiveObject = new InteractiveObject(spawn);
 
             m_interactives.Add(interactiveObject.Id, interactiveObject);
+            Area.Enter(interactiveObject);
 
-            NotifyInteractiveSpawned(interactiveObject);
+            OnInteractiveSpawned(interactiveObject);
 
             return interactiveObject;
         }
 
-        private void OnInteractiveSpawned(InteractiveObject interactive)
+        protected virtual void OnInteractiveSpawned(InteractiveObject interactive)
         {
+            Contract.Requires(interactive != null);
+
+            Action<Map, InteractiveObject> handler = InteractiveSpawned;
+            if (handler != null)
+                handler(this, interactive);
         }
 
         public void UnSpawnInteractive(InteractiveObject interactive)
         {
-            m_interactives.Remove(interactive.Id);
+            Contract.Requires(interactive != null);
 
-            NotifyInteractiveUnSpawned(interactive);
+            m_interactives.Remove(interactive.Id);
+            Area.Leave(interactive);
+
+            OnInteractiveUnSpawned(interactive);
         }
 
-        private void OnInteractiveUnSpawned(InteractiveObject interactive)
+        protected virtual void OnInteractiveUnSpawned(InteractiveObject interactive)
         {
+            Contract.Requires(interactive != null);
+
+            Action<Map, InteractiveObject> handler = InteractiveUnSpawned;
+            if (handler != null)
+                handler(this, interactive);
         }
 
         public void UseInteractiveObject(Character character, int interactiveId, int skillId)
         {
+            Contract.Requires(character != null);
+
             InteractiveObject interactiveObject = GetInteractiveObject(interactiveId);
             Skill skill = interactiveObject.GetSkill(skillId);
 
@@ -400,18 +415,18 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             {
                 skill.Execute(character);
 
-                NotifyInteractiveUsed(character, interactiveObject, skill);
+                OnInteractiveUsed(character, interactiveObject, skill);
             }
-        }
-
-        private void OnInteractiveUsed(Character user, InteractiveObject interactiveObject, Skill skill)
-        {
-            ForEach(character => InteractiveHandler.SendInteractiveUsedMessage(character.Client, user, interactiveObject, skill));
         }
 
         #endregion
 
         #region Monsters
+
+        public int MonsterSpawnsCount
+        {
+            get { return m_monsterSpawns.Count; }
+        }
 
         public void EnableMonsterSpawns()
         {
@@ -422,14 +437,28 @@ namespace Stump.Server.WorldServer.Worlds.Maps
                 return;
 
             if (SpawningPool == null)
-                SpawningPool = new SpawningPool(SubArea.GetMonsterSpawnInterval(), this);
+                SpawningPool = new ClassicalSpawningPool(this, SubArea.GetMonsterSpawnInterval());
 
-            // spawn a first monster
-            var group = GenerateRandomMonsterGroup();
-            if (group != null)
-                Enter(group);
+            // spawn a first group
+            SpawningPool.SpawnNextGroup();
+            SpawningPool.StartAutoSpawn();
+            SpawnEnabled = true;
+        }
 
-            SpawningPool.Enable();
+        public void EnableMonsterSpawns(SpawningPoolBase spawningPool)
+        {
+            if (SpawnEnabled)
+                return;
+
+            if (GetMonsterSpawns().Count() <= 0)
+                return;
+
+            if (SpawningPool == null)
+                SpawningPool = spawningPool;
+
+            // spawn a first group
+            SpawningPool.SpawnNextGroup();
+            SpawningPool.StartAutoSpawn();
             SpawnEnabled = true;
         }
 
@@ -438,7 +467,7 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             if (!SpawnEnabled)
                 return;
 
-            SpawningPool.Disable();
+            SpawningPool.StopAutoSpawn();
 
             foreach (var actor in GetActors<MonsterGroup>())
             {
@@ -446,15 +475,20 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             }
 
             SpawnEnabled = false;
+            SpawningPool = null;
         }
 
         public void AddMonsterSpawn(MonsterSpawn spawn)
         {
+            Contract.Requires(spawn != null);
+
             m_monsterSpawns.Add(spawn);
         }
 
         public void RemoveMonsterSpawn(MonsterSpawn spawn)
         {
+            Contract.Requires(spawn != null);
+            
             m_monsterSpawns.Remove(spawn);
         }
 
@@ -465,6 +499,24 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         public MonsterGroup GenerateRandomMonsterGroup()
         {
+            return GenerateRandomMonsterGroup(SubArea.RollMonsterLengthLimit());
+        }
+
+        public MonsterGroup GenerateRandomMonsterGroup(int minLength, int maxLength)
+        {
+            Contract.Requires(minLength > 0);
+            Contract.Requires(minLength <= maxLength);
+
+            if (minLength == maxLength)
+                GenerateRandomMonsterGroup(minLength);
+
+            return GenerateRandomMonsterGroup(new AsyncRandom().Next(minLength, maxLength + 1));
+        }
+
+        public MonsterGroup GenerateRandomMonsterGroup(int length)
+        {
+            Contract.Requires(length > 0);
+
             var rand = new AsyncRandom();
             var spawns = GetMonsterSpawns();
 
@@ -472,9 +524,8 @@ namespace Stump.Server.WorldServer.Worlds.Maps
                 return null;
 
             var freqSum = spawns.Sum(entry => entry.Frequency);
-            var length = SubArea.RollMonsterLengthLimit();
 
-            var group = new MonsterGroup(GetNextContextualId(), new ObjectPosition(this,  GetRandomFreeCell(), GetRandomDirection()));
+            var group = new MonsterGroup(GetNextContextualId(), new ObjectPosition(this, GetRandomFreeCell(), GetRandomDirection()));
 
             for (int i = 0; i < length; i++)
             {
@@ -500,21 +551,27 @@ namespace Stump.Server.WorldServer.Worlds.Maps
                 group.AddMonster(new Monster(monster, group));
             }
 
+            if (group.Count() <= 0)
+            {
+#if DEBUG
+                throw new Exception("An empty monster group has been generated !");
+#else
+                return null;
+#endif
+            }
+
             return group;
-        }
-
-        private static DirectionsEnum GetRandomDirection()
-        {
-            var array = Enum.GetValues(typeof(DirectionsEnum));
-            var rand = new AsyncRandom();
-
-            return (DirectionsEnum)array.GetValue(rand.Next(0, array.Length));
         }
 
         public MonsterGroup SpawnMonsterGroup(MonsterGrade monster, ObjectPosition position)
         {
+            Contract.Requires(monster != null);
+            Contract.Requires(position != null);
+            Contract.Ensures(Contract.Result<MonsterGroup>() != null);
+
             if (position.Map != this)
                 throw new Exception("Try to spawn a monster group on the wrong map");
+
             sbyte id = GetNextContextualId();
 
             var group = new MonsterGroup(id, position);
@@ -528,8 +585,13 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         public MonsterGroup SpawnMonsterGroup(IEnumerable<MonsterGrade> monsters, ObjectPosition position)
         {
+            Contract.Requires(monsters != null);
+            Contract.Requires(position != null);
+            Contract.Ensures(Contract.Result<MonsterGroup>() != null);
+
             if (position.Map != this)
                 throw new Exception("Try to spawn a monster group on the wrong map");
+
             sbyte id = GetNextContextualId();
 
             var group = new MonsterGroup(id, position);
@@ -570,6 +632,8 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         public void AddTrigger(CellTrigger trigger)
         {
+            Contract.Requires(trigger != null);
+
             if (!m_cellsTriggers.ContainsKey(trigger.Position.Cell))
                 m_cellsTriggers.Add(trigger.Position.Cell, new List<CellTrigger>());
 
@@ -578,6 +642,8 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         public void RemoveTrigger(CellTrigger trigger)
         {
+            Contract.Requires(trigger != null);
+
            if (!m_cellsTriggers.ContainsKey(trigger.Position.Cell))
                 return;
 
@@ -603,6 +669,8 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         public bool ExecuteTrigger(CellTriggerType triggerType, Cell cell, Character character)
         {
+            Contract.Requires(character != null);
+
             bool applied = false;
 
             foreach (var trigger in GetTriggers(cell))
@@ -623,34 +691,40 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         public void AddFight(Fight fight)
         {
+            Contract.Requires(fight != null);
+
             if (fight.Map != this)
                 return;
 
             m_fights.Add(fight);
 
-            ForEach(character => ContextRoleplayHandler.SendMapFightCountMessage(character.Client,
-                                                                                 (short) m_fights.Count));
+            ContextRoleplayHandler.SendMapFightCountMessage(Clients, (short) m_fights.Count);
 
-            NotifyFightCreated(fight);
+            OnFightCreated(fight);
         }
 
         public void RemoveFight(Fight fight)
         {
+            Contract.Requires(fight != null);
+
             m_fights.Remove(fight);
 
-            ForEach(character => ContextRoleplayHandler.SendMapFightCountMessage(character.Client,
-                                                                                 (short) m_fights.Count));
+            ContextRoleplayHandler.SendMapFightCountMessage(Clients, (short) m_fights.Count);
 
-            NotifyFightRemoved(fight);
+            OnFightRemoved(fight);
         }
 
         public Cell[] GetBlueFightPlacement()
         {
+            Contract.Ensures(Contract.Result<Cell[]>() != null);
+
             return m_bluePlacement;
         }
 
         public Cell[] GetRedFightPlacement()
         {
+            Contract.Ensures(Contract.Result<Cell[]>() != null);
+
             return m_redPlacement;
         }
 
@@ -660,38 +734,56 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         public void Enter(RolePlayActor actor)
         {
+            Contract.Requires(actor != null);
+
+            if (m_actors.ContainsKey(actor.Id))
+                Leave(actor);
+
             if (m_actors.TryAdd(actor.Id, actor))
             {
-                NotifyActorEnter(actor);
+                OnActorEnter(actor);
             }
             else
-                throw new Exception(string.Format("Could not add actor '{0}' to the map", actor));
+                logger.Error("Could not add actor '{0}' to the map", actor);
         }
 
         public void Leave(RolePlayActor actor)
         {
+            Contract.Requires(actor != null);
+
             if (m_actors.TryRemove(actor.Id, out actor))
             {
-                NotifyActorLeave(actor);
+                OnActorLeave(actor);
             }
             else
-                throw new Exception(string.Format("Could not remove actor '{0}' of the map", actor));
+                logger.Error(string.Format("Could not remove actor '{0}' of the map", actor));
         }
 
         public void Refresh(RolePlayActor actor)
         {
+            Contract.Requires(actor != null);
+
             if (IsActor(actor))
-                ForEach(entry => ContextRoleplayHandler.SendGameRolePlayShowActorMessage(entry.Client, actor));
+                ContextRoleplayHandler.SendGameRolePlayShowActorMessage(Clients, actor);
         }
 
         private void OnEnter(RolePlayActor actor)
         {
+            Contract.Requires(actor != null);
+
+            // if the actor change from area we notify it
+            if (actor.HasChangedZone())
+                Area.Enter(actor);
+
             actor.StartMoving += OnActorStartMoving;
             actor.StopMoving += OnActorStopMoving;
 
-            ForEach(entry => ContextRoleplayHandler.SendGameRolePlayShowActorMessage(entry.Client, actor));
-
             var character = actor as Character;
+
+            if (character != null)
+                Clients.Add(character.Client);
+
+            ContextRoleplayHandler.SendGameRolePlayShowActorMessage(Clients, actor);
 
             if (character == null)
                 return;
@@ -710,6 +802,8 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         private void SendActorsActions(Character character)
         {
+            Contract.Requires(character != null);
+
             foreach (RolePlayActor actor in m_actors.Values)
             {
                 if (actor.IsMoving())
@@ -725,16 +819,23 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         private void OnLeave(RolePlayActor actor)
         {
+            Contract.Requires(actor != null);
+
+            // if the actor will change of area we notify it
+            if (actor.IsGonnaChangeZone())
+                Area.Leave(actor);
+
             actor.StartMoving -= OnActorStartMoving;
             actor.StopMoving -= OnActorStopMoving;
 
-            ForEach(entry => ContextHandler.SendGameContextRemoveElementMessage(entry.Client, actor));
+            if (actor is Character)
+                Clients.Remove(( (Character)actor ).Client);
+
+            ContextHandler.SendGameContextRemoveElementMessage(Clients, actor);
 
             if (actor is MonsterGroup || actor is Npc)
                 FreeContextualId((sbyte) actor.Id);
 
-            if (actor is MonsterGroup && SpawnEnabled && !SpawningPool.IsEnabled && GetMonsterSpawnsCount() < GetMonsterSpawnsLimit())
-                SpawningPool.Enable();
         }
 
         #endregion
@@ -743,19 +844,20 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         private void OnActorStartMoving(ContextActor actor, Path path)
         {
+            Contract.Requires(actor != null);
+            Contract.Requires(path != null);
+
             var movementsKey = path.GetServerPathKeys();
 
-            ForEach(delegate(Character entry)
-                        {
-                            ContextHandler.SendGameMapMovementMessage(entry.Client, movementsKey, actor);
-                            BasicHandler.SendBasicNoOperationMessage(entry.Client);
-                        });
+             ContextHandler.SendGameMapMovementMessage(Clients, movementsKey, actor);
+             BasicHandler.SendBasicNoOperationMessage(Clients);
         }
 
         private void OnActorStopMoving(ContextActor actor, Path path, bool canceled)
         {
-            if (!(actor is Character))
-                return;
+            Contract.Requires(actor != null);
+            Contract.Requires(actor is Character);
+            Contract.Requires(path != null);
 
             var character = actor as Character;
 
@@ -771,6 +873,16 @@ namespace Stump.Server.WorldServer.Worlds.Maps
         #endregion
 
         #region Gets
+
+        private readonly WorldClientCollection m_clients = new WorldClientCollection();
+
+        /// <summary>
+        /// Do not modify, just read
+        /// </summary>
+        public WorldClientCollection Clients
+        {
+            get { return m_clients; }
+        }
 
         public IEnumerable<Character> GetAllCharacters()
         {
@@ -828,12 +940,25 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         public IEnumerable<T> GetActors<T>(Predicate<T> predicate)
         {
-            return m_actors.Values.OfType<T>();
+            return m_actors.Values.OfType<T>().Where(entry => predicate(entry));
         }
 
         public InteractiveObject GetInteractiveObject(int id)
         {
             return m_interactives[id];
+        }
+
+        public ObjectPosition GetRanomFreePosition(bool actorFree = false)
+        {
+            return new ObjectPosition(this, GetRandomFreeCell(actorFree), GetRandomDirection());
+        }
+
+        public DirectionsEnum GetRandomDirection()
+        {
+            var array = Enum.GetValues(typeof(DirectionsEnum));
+            var rand = new AsyncRandom();
+
+            return (DirectionsEnum)array.GetValue(rand.Next(0, array.Length));
         }
 
         public Cell GetRandomFreeCell(bool actorFree = false)
@@ -849,6 +974,27 @@ namespace Stump.Server.WorldServer.Worlds.Maps
             }
 
             return m_freeCells[rand.Next(0, m_freeCells.Length)];
+        }
+
+        public Cell GetRandomAdjacentFreeCell(MapPoint cell, bool actorFree = false)
+        {
+            if (actorFree)
+            {
+                var excludedCells = GetActors<RolePlayActor>().Select(entry => entry.Cell.Id);
+                var cells = cell.GetAdjacentCells(entry => CellsInfoProvider.IsCellWalkable(entry) && !excludedCells.Contains(entry));
+
+                var pt = cells.RandomElementOrDefault();
+
+                return pt != null ? Cells[pt.CellId] : Cell.Null;
+            }
+            else
+            {
+                var cells = cell.GetAdjacentCells(CellsInfoProvider.IsCellWalkable);
+
+                var pt = cells.RandomElementOrDefault();
+
+                return pt != null ? Cells[pt.CellId] : Cell.Null;
+            }
         }
 
         #region Neighbors
@@ -940,6 +1086,8 @@ namespace Stump.Server.WorldServer.Worlds.Maps
 
         public MapComplementaryInformationsDataMessage GetMapComplementaryInformationsDataMessage(Character character)
         {
+            Contract.Requires(character != null);
+
             return new MapComplementaryInformationsDataMessage(
                 (short) SubArea.Id,
                 Id,

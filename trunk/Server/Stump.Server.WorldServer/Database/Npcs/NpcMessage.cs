@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
 
 namespace Stump.Server.WorldServer.Database.Npcs
 {
@@ -11,7 +12,6 @@ namespace Stump.Server.WorldServer.Database.Npcs
     {
         private IList<string> m_parameters;
         private string m_parametersAsString;
-        private IList<NpcReply> m_replies;
 
         [D2OField("id")]
         [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
@@ -51,11 +51,13 @@ namespace Stump.Server.WorldServer.Database.Npcs
             }
         }
 
-        [HasMany(typeof (NpcReply), "MessageId", "npcs_replies", Cascade = ManyRelationCascadeEnum.Delete)]
-        public IList<NpcReply> Replies
+        private List<NpcReply> m_replies;
+        public List<NpcReply> Replies
         {
-            get { return m_replies ?? (m_replies = new List<NpcReply>()); }
-            set { m_replies = value; }
+            get
+            {
+                return m_replies ?? ( m_replies = NpcManager.Instance.GetMessageReplies(MessageId) );
+            }
         }
     }
 }

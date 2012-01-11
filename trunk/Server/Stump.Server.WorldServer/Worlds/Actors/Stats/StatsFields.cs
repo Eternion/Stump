@@ -63,14 +63,17 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
             get { return this[CaracteristicsEnum.Health] as StatsHealth; }
         }
 
-        public StatsData AP
+        public StatsAP AP
         {
-            get { return this[CaracteristicsEnum.AP]; }
+            get { return this[CaracteristicsEnum.AP] as StatsAP; }
         }
 
-        public StatsData MP
+        public StatsMP MP
         {
-            get { return this[CaracteristicsEnum.MP]; }
+            get
+            {
+                return this[CaracteristicsEnum.MP] as StatsMP;
+            }
         }
 
         public StatsData this[CaracteristicsEnum name]
@@ -89,8 +92,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
                              {CaracteristicsEnum.Health, new StatsHealth(Owner, (short) record.BaseHealth, (short) record.DamageTaken)},
                              {CaracteristicsEnum.Initiative, new StatsData(Owner, CaracteristicsEnum.Initiative, 0, FormuleInitiative)},
                              {CaracteristicsEnum.Prospecting, new StatsData(Owner, CaracteristicsEnum.Prospecting, (short) record.Prospection, FormuleProspecting)},
-                             {CaracteristicsEnum.AP, new StatsData(Owner, CaracteristicsEnum.AP, (short) record.AP)},
-                             {CaracteristicsEnum.MP, new StatsData(Owner, CaracteristicsEnum.MP, (short) record.MP)},
+                             {CaracteristicsEnum.AP, new StatsAP(Owner, (short) record.AP)},
+                             {CaracteristicsEnum.MP, new StatsMP(Owner, (short) record.MP)},
                              {CaracteristicsEnum.Strength, new StatsData(Owner, CaracteristicsEnum.Strength, record.Strength)},
                              {CaracteristicsEnum.Vitality, new StatsData(Owner, CaracteristicsEnum.Vitality, record.Vitality)},
                              {CaracteristicsEnum.Wisdom, new StatsData(Owner, CaracteristicsEnum.Wisdom, record.Wisdom)},
@@ -167,8 +170,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Stats
                              {CaracteristicsEnum.Health, new StatsHealth(Owner, (short) record.LifePoints, 0)},
                              {CaracteristicsEnum.Initiative, new StatsData(Owner, CaracteristicsEnum.Initiative, 0, FormuleInitiative)},
                              {CaracteristicsEnum.Prospecting, new StatsData(Owner, CaracteristicsEnum.Prospecting, 100, FormuleProspecting)},
-                             {CaracteristicsEnum.AP, new StatsData(Owner, CaracteristicsEnum.AP, (short) record.ActionPoints)},
-                             {CaracteristicsEnum.MP, new StatsData(Owner, CaracteristicsEnum.MP, (short) record.MovementPoints)},
+                             {CaracteristicsEnum.AP, new StatsAP(Owner, (short) record.ActionPoints)},
+                             {CaracteristicsEnum.MP, new StatsMP(Owner, (short) record.MovementPoints)},
                              {CaracteristicsEnum.Strength, new StatsData(Owner, CaracteristicsEnum.Strength, record.Strength)},
                              {CaracteristicsEnum.Vitality, new StatsData(Owner, CaracteristicsEnum.Vitality, record.Vitality)},
                              {CaracteristicsEnum.Wisdom, new StatsData(Owner, CaracteristicsEnum.Wisdom, record.Wisdom)},

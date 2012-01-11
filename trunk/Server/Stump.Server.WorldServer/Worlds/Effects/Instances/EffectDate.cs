@@ -13,6 +13,11 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         protected short m_month;
         protected short m_year;
 
+        public EffectDate()
+        {
+            
+        }
+
         public EffectDate(short id, short year, short month, short day, short hour, short minute)
             : base(id)
         {
@@ -39,6 +44,14 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
             get { return 72; }
         }
 
+        public override byte SerializationIdenfitier
+        {
+            get
+            {
+                return 3;
+            }
+        }
+
         public override object[] GetValues()
         {
             return new object[]
@@ -56,6 +69,28 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         public override ObjectEffect GetObjectEffect()
         {
             return new ObjectEffectDate(Id, m_year, m_month, m_day, m_hour, m_minute);
+        }
+
+        protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
+        {
+            base.InternalSerialize(ref writer);
+
+            writer.Write(m_year);
+            writer.Write(m_month);
+            writer.Write(m_day);
+            writer.Write(m_hour);
+            writer.Write(m_minute);
+        }
+
+        protected override void InternalDeserialize(ref System.IO.BinaryReader reader)
+        {
+            base.InternalDeserialize(ref reader);
+
+            m_year = reader.ReadInt16();
+            m_month = reader.ReadInt16();
+            m_day = reader.ReadInt16();
+            m_hour = reader.ReadInt16();
+            m_minute = reader.ReadInt16();
         }
 
         public override bool Equals(object obj)

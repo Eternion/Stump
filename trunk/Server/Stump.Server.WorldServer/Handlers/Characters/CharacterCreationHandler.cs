@@ -6,6 +6,7 @@ using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types.Extensions;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
@@ -21,7 +22,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         [Variable]
         public static bool EnableNameSuggestion = true;
 
-        [WorldHandler(CharacterCreationRequestMessage.Id)]
+        [WorldHandler(CharacterCreationRequestMessage.Id, RequiresLogin = false, IsGamePacket = false)]
         public static void HandleCharacterCreationRequestMessage(WorldClient client, CharacterCreationRequestMessage message)
         {
             var result = CharacterManager.Instance.CreateCharacter(client, message.name, message.breed, message.sex, message.colors);
@@ -35,7 +36,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             }
         }
 
-        [WorldHandler(CharacterNameSuggestionRequestMessage.Id)]
+        [WorldHandler(CharacterNameSuggestionRequestMessage.Id, RequiresLogin = false, IsGamePacket = false)]
         public static void HandleCharacterNameSuggestionRequestMessage(WorldClient client, CharacterNameSuggestionRequestMessage message)
         {
             if (!EnableNameSuggestion)
@@ -49,7 +50,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             client.Send(new CharacterNameSuggestionSuccessMessage(generatedName));
         }
 
-        public static void SendCharacterCreationResultMessage(WorldClient client, CharacterCreationResultEnum result)
+        public static void SendCharacterCreationResultMessage(IPacketReceiver client, CharacterCreationResultEnum result)
         {
             client.Send(new CharacterCreationResultMessage((sbyte) result));
         }

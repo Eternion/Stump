@@ -1,6 +1,7 @@
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Worlds.Spells;
@@ -16,12 +17,17 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             CharacterHandler.SendCharacterStatsListMessage(client);
         }
 
-        public static void SendSpellUpgradeSuccessMessage(WorldClient client, Spell spell)
+        public static void SendSpellUpgradeSuccessMessage(IPacketReceiver client, Spell spell)
         {
             client.Send(new SpellUpgradeSuccessMessage(spell.Id, spell.CurrentLevel));
         }
 
-        public static void SendSpellUpgradeFailureMessage(WorldClient client)
+        public static void SendSpellUpgradeSuccessMessage(IPacketReceiver client, int spellId, sbyte level)
+        {
+            client.Send(new SpellUpgradeSuccessMessage(spellId, level));
+        }
+
+        public static void SendSpellUpgradeFailureMessage(IPacketReceiver client)
         {
             client.Send(new SpellUpgradeFailureMessage());
         }

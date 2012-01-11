@@ -30,8 +30,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
             var point = new Point(trigger.Get<int>("x"), trigger.Get<int>("y"));
             var target = trigger.Get<Character>("target");
 
-            var superArea = trigger.IsArgumentDefined("continent")
-                                      ? World.Instance.GetSuperArea(trigger.Get<int>("continent"))
+            var superArea = trigger.IsArgumentDefined("superArea")
+                                      ? World.Instance.GetSuperArea(trigger.Get<int>("superArea"))
                                       : target.Map.SubArea.Area.SuperArea;
 
             if (!superArea.MapsByPosition.ContainsKey(point))

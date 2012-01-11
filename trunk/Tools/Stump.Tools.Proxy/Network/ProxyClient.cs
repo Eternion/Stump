@@ -65,24 +65,24 @@ namespace Stump.Tools.Proxy.Network
             m_serverConnection.Connect();
         }
 
-        public bool HasSent(Type message)
+        public bool HasSent(uint messageId)
         {
-            return HasSent(message, 1);
+            return HasSent(messageId, 1);
         }
 
-        public bool HasSent(Type message, int range)
+        public bool HasSent(uint messageId, int range)
         {
-            return m_sendedMessagesStack.FindIndex(0, range, entry => entry.GetType() == message) != -1;
+            return m_sendedMessagesStack.FindIndex(0, range, entry => entry.MessageId == messageId) != -1;
         }
 
-        public bool HasReceive(Type message)
+        public bool HasReceive(uint messageId)
         {
-            return HasReceive(message, 1);
+            return HasReceive(messageId, 1);
         }
 
-        public bool HasReceive(Type message, int range)
+        public bool HasReceive(uint messageId, int range)
         {
-            return m_receivedMessagesStack.FindIndex(0, range, entry => entry.GetType() == message) != -1;
+            return m_receivedMessagesStack.FindIndex(0, range, entry => entry.MessageId == messageId) != -1;
         }
 
         private void OnServerConnected(ServerConnection connection)
@@ -115,10 +115,8 @@ namespace Stump.Tools.Proxy.Network
                     m_receivedMessagesStack.Insert(0, message);
                 }
 
-                if (Proxy.Instance.HandlerManager.IsRegister(message.MessageId))
-                    Proxy.Instance.HandlerManager.Dispatch(this, message);
-                else
-                    Send(message);
+                if (!Dispatch(message))
+                    Proxy.Instance.IOTaskPool.AddMessage(() => Send(message));
             }
             catch (Exception e)
             {
@@ -137,6 +135,11 @@ namespace Stump.Tools.Proxy.Network
             }
         }
 
+        protected virtual bool Dispatch(Message message)
+        {
+            return false;
+        }
+
         protected override void OnMessageReceived(Message message)
         {
             try
@@ -147,14 +150,12 @@ namespace Stump.Tools.Proxy.Network
                     m_sendedMessagesStack.Insert(0, message);
                 }
 
-                if (Proxy.Instance.HandlerManager.IsRegister(message.MessageId))
-                    Proxy.Instance.HandlerManager.Dispatch(this, message);
-                else
+                if (!Dispatch(message))
                 {
                     if (!IsBinded)
                         throw new Exception("Attempt to send a packet to the server but the client is not bind to him");
 
-                    m_serverConnection.Send(message);
+                    Proxy.Instance.IOTaskPool.AddMessage(() =>m_serverConnection.Send(message));
                 }
             }
             catch (Exception e)
@@ -171,7 +172,7 @@ namespace Stump.Tools.Proxy.Network
 
         protected override void OnDisconnect()
         {
-            if (m_serverConnection.Socket != null && m_serverConnection.Socket.Connected)
+            if (m_serverConnection != null && m_serverConnection.Socket != null && m_serverConnection.Socket.Connected)
                 m_serverConnection.Disconnect();
 
             base.OnDisconnect();

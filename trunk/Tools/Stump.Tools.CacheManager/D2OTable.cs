@@ -42,6 +42,9 @@ namespace Stump.Tools.CacheManager
 
             Fields = FindD2OFields(tableType);
             m_relations = DatabaseBuilder.GetNamesRelations(TableType);
+
+            if (tableType.HasInterface(typeof(IAssignedByD2O)))
+                AssignableTable = Activator.CreateInstance(tableType) as IAssignedByD2O;
         }
 
         public ActiveRecordAttribute RecordAttribute
@@ -69,6 +72,12 @@ namespace Stump.Tools.CacheManager
         }
 
         public Type TableType
+        {
+            get;
+            set;
+        }
+
+        public IAssignedByD2O AssignableTable
         {
             get;
             set;
@@ -119,6 +128,9 @@ namespace Stump.Tools.CacheManager
                     value = ( (double)fieldValue ).ToString(CultureInfo.InvariantCulture);
                 else
                     value = fieldValue;
+
+                if (AssignableTable != null)
+                    value = AssignableTable.GenerateAssignedObject(field.Name, value);
 
                 row.Add(columnName, value);
             }

@@ -83,5 +83,10 @@ namespace Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters
         {
             return new MonsterInGroupInformations(Template.Id, (sbyte)Grade.GradeId, Look);
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0} ({1})", Template.Name, Template.Id);
+        }
     }
 }

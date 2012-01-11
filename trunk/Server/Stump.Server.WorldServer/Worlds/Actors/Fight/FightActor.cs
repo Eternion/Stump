@@ -258,7 +258,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             private set;
         }
 
-        public override IContext Context
+        public override ICharacterContainer CharacterContainer
         {
             get
             {
@@ -277,13 +277,13 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             protected set;
         }
 
-        public bool IsReady
+        public virtual bool IsReady
         {
             get;
             protected set;
         }
 
-        public bool IsTurnReady
+        public virtual bool IsTurnReady
         {
             get;
             internal set;
@@ -328,28 +328,26 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         {
             get
             {
-                return Stats[CaracteristicsEnum.AP].Total;
+                return Stats.AP.Total;
             }
         }
 
         public short UsedAP
         {
-            get;
-            private set;
+            get { return Stats.AP.Used; }
         }
 
         public int MP
         {
             get
             {
-                return Stats[CaracteristicsEnum.MP].Total;
+                return Stats.MP.Total;
             }
         }
 
         public short UsedMP
         {
-            get;
-            private set;
+            get { return Stats.MP.Used; }
         }
 
         public abstract StatsFields Stats
@@ -415,6 +413,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         #region Fighting
 
+        public override bool StartMove(Maps.Pathfinding.Path movementPath)
+        {
+            return base.StartMove(movementPath);
+        }
+
         public void ShowCell(Cell cell)
         {
             NotifyCellShown(cell);
@@ -425,8 +428,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             if (Stats[CaracteristicsEnum.AP].Total - amount < 0)
                 return false;
 
-            Stats[CaracteristicsEnum.AP].Context -= amount;
-            UsedAP += amount;
+            Stats.AP.Used += amount;
 
             NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_USE, this, this, (short)( -amount ));
 
@@ -438,8 +440,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             if (Stats[CaracteristicsEnum.MP].Total - amount < 0)
                 return false;
 
-            Stats[CaracteristicsEnum.MP].Context -= amount;
-            UsedMP += amount;
+            Stats.MP.Used += amount;
 
             NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_USE, this, this, (short)( -amount ));
 
@@ -451,8 +452,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             if (Stats[CaracteristicsEnum.AP].Total - amount < 0)
                 return false;
 
-            Stats[CaracteristicsEnum.AP].Context -= amount;
-            UsedAP += amount;
+            Stats.AP.Used += amount;
 
             NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_LOST, this, this, (short)( -amount ));
 
@@ -464,8 +464,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             if (Stats[CaracteristicsEnum.MP].Total - amount < 0)
                 return false;
 
-            Stats[CaracteristicsEnum.MP].Context -= amount;
-            UsedMP += amount;
+            Stats.MP.Used += amount;
 
             NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_LOST, this, this, (short)( -amount ));
 
@@ -474,8 +473,10 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         public bool RegainAP(short amount)
         {
-            Stats[CaracteristicsEnum.AP].Context += amount;
-            UsedAP -= amount;
+            /*if (amount > Stats.AP.Used)
+                amount = Stats.AP.Used;*/
+
+            Stats.AP.Used -= amount;
 
             NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_WIN, this, this, (short)( amount ));
 
@@ -484,8 +485,10 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         public bool RegainMP(short amount)
         {
-            Stats[CaracteristicsEnum.MP].Context += amount;
-            UsedMP -= amount;
+            /*if (amount > Stats.MP.Used)
+                amount = Stats.MP.Used;*/
+
+            Stats.MP.Used -= amount;
 
             NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_WIN, this, this, (short)( amount ));
 
@@ -494,11 +497,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         public void ResetPoints()
         {
-            Stats[CaracteristicsEnum.AP].Context += UsedAP;
-            UsedAP = 0;
-
-            Stats[CaracteristicsEnum.MP].Context += UsedMP;
-            UsedMP = 0;
+            Stats.AP.Used = 0;
+            Stats.MP.Used = 0;
         }
 
         public abstract bool CanCastSpell(Spell spell, Cell cell);
@@ -566,7 +566,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             if (spell.CriticalHitProbability != 0 && random.Next((int)spell.CriticalFailureProbability) == 0)
                 critical = FightSpellCastCriticalEnum.CRITICAL_FAIL;
 
-            else if (spell.CriticalHitProbability != 0 && random.Next((int)spell.CriticalHitProbability) == 0)
+            else if (spell.CriticalHitProbability != 0 && random.Next((int)CalculateCriticRate(spell.CriticalHitProbability)) == 0)
                 critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
 
             return critical;
@@ -584,7 +584,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         {
             DamageTaken += (short)LifePoints;
 
-            NotifyDead(null);
+            NotifyDead(this);
         }
 
         public short InflictDirectDamage(short damage, FightActor from)
@@ -618,7 +618,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             NotifyLifePointsChanged(-damage, null);
 
             if (IsDead())
-                NotifyDead(null);
+                NotifyDead(this);
 
             TriggerBuffs(TriggerType.AFTER_ATTACKED);
 
@@ -628,7 +628,6 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         public short InflictDamage(short damage, EffectSchoolEnum school, bool pvp = false)
         {
-            damage = CalculateDamage(damage, school);
             damage = CalculateDamageResistance(damage, school, pvp);
 
             short reduction = CalculateArmorReduction(school);
@@ -646,7 +645,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         public short InflictDamage(short damage, EffectSchoolEnum school, FightActor from, bool pvp = false)
         {
-            damage = CalculateDamage(damage, school);
+            damage = from.CalculateDamage(damage, school);
             damage = CalculateDamageResistance(damage, school, pvp);
 
             short reduction = CalculateArmorReduction(school);
@@ -674,9 +673,9 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             return healPoints;
         }
 
-        public short Heal(short healPoints)
+        public short Heal(FightActor from, short healPoints)
         {
-            return HealDirect(CalculateHeal(healPoints));
+            return HealDirect(from.CalculateHeal(healPoints));
         }
 
         #region Formulas
@@ -817,7 +816,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         {
             const double multipleOfE = Math.E * 1.1;
 
-            return Math.Floor(baseRate * multipleOfE / Math.Log(Stats[CaracteristicsEnum.Agility].Total + 12, Math.E));
+            return Math.Floor(baseRate * multipleOfE / Math.Log(Stats[CaracteristicsEnum.Agility].TotalSafe + 12, Math.E));
         }
 
         public short CalculateReflectedDamageBonus(short spellBonus)
@@ -892,7 +891,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         public void TriggerBuffs(TriggerType trigger)
         {
-            foreach (var buff in m_buffList)
+            var copy = m_buffList.ToArray();
+            foreach (var buff in copy)
             {
                 var triggerBuff = buff as TriggerBuff;
 
@@ -1038,8 +1038,10 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                 Stats.Health.Base,
                 Stats[CaracteristicsEnum.PermanentDamagePercent].Total,
                 0, // shieldsPoints = ?
-                (short)Stats[CaracteristicsEnum.AP].Total,
-                (short)Stats[CaracteristicsEnum.MP].Total,
+                (short)Stats.AP.Total,
+                (short)Stats.AP.TotalMax,
+                (short)Stats.MP.Total,
+                (short)Stats.MP.TotalMax,
                 0,
                 false,
                 (short)Stats[CaracteristicsEnum.NeutralResistPercent].Total,

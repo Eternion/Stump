@@ -27,7 +27,6 @@ namespace Stump.Core.Threading
 
         /// <summary>
         /// Returns a recycled or new Message object with the given callback.
-        /// TODO: Object recycling
         /// </summary>
         public static Message Obtain(Action callback)
         {
@@ -228,7 +227,6 @@ namespace Stump.Core.Threading
         /// <summary>
         /// Constructs a message with the specific callback and input parameters.
         /// </summary>
-        /// <param name="callback">the callback to invoke when the message is executed</param>
         /// <param name="param1">the first input parameter</param>
         /// <param name="param2">the second input parameter</param>
         public Message2(T1 param1, T2 param2)

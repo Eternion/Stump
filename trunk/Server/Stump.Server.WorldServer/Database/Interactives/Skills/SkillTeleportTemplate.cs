@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Database.Interactives.Skills
         private int m_mapId;
         private ObjectPosition m_position;
 
-        [Property(NotNull = true)]
+        [Property]
         public int MapId
         {
             get { return m_mapId; }
@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Database.Interactives.Skills
             }
         }
 
-        [Property(NotNull = true)]
+        [Property]
         public int CellId
         {
             get { return m_cellId; }
@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Database.Interactives.Skills
             }
         }
 
-        [Property(NotNull = true)]
+        [Property]
         public DirectionsEnum Direction
         {
             get { return m_direction; }

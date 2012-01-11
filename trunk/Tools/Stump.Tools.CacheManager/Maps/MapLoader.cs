@@ -6,6 +6,7 @@ using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 using Stump.Tools.CacheManager.SQL;
 
@@ -131,6 +132,7 @@ namespace Stump.Tools.CacheManager.Maps
 
             // layers
             count = reader.ReadByte();
+            var elements = new List<MapElement>();
             for (int i = 0; i < count; i++)
             {
                 // new layer
@@ -138,24 +140,37 @@ namespace Stump.Tools.CacheManager.Maps
                 short cellscount = reader.ReadShort(); // count
                 for (int l = 0; l < cellscount; l++)
                 {
-                    reader.ReadShort(); // cellid
+                    var cell = reader.ReadShort(); // cellid
                     short elemcount = reader.ReadShort(); // count
                     for (int k = 0; k < elemcount; k++)
                     {
                         switch (reader.ReadByte())
                         {
                             case 2: // GRAPICAL
+                                var id = reader.ReadUInt();
+
+                                reader.ReadByte();
+                                reader.ReadByte();
+                                reader.ReadByte();
+
+                                reader.ReadByte();
+                                reader.ReadByte();
+                                reader.ReadByte();
+
+                                if (version <= 4)
+                                {
+                                    reader.ReadByte();
+                                    reader.ReadByte();
+                                }
+                                else
+                                {
+                                    reader.ReadShort();
+                                    reader.ReadShort();
+                                }
+
+                                reader.ReadByte();
                                 reader.ReadUInt();
-                                reader.ReadByte();
-                                reader.ReadByte();
-                                reader.ReadByte();
-                                reader.ReadByte();
-                                reader.ReadByte();
-                                reader.ReadByte();
-                                reader.ReadByte();
-                                reader.ReadByte();
-                                reader.ReadByte();
-                                reader.ReadUInt();
+                                elements.Add(new MapElement((int)id, cell));
                                 break;
                             case 33: // SOUND
                                 reader.ReadInt();
@@ -199,6 +214,15 @@ namespace Stump.Tools.CacheManager.Maps
             compressedCells = ZipHelper.Compress(compressedCells);
 
             values.Add("CompressedCells",  compressedCells);
+
+            var rawElements = new byte[elements.Count * MapElement.Size];
+
+            for (int i = 0; i < elements.Count; i++)
+            {
+                Array.Copy(elements[i].Serialize(), 0, rawElements, i * MapElement.Size, MapElement.Size);
+            }
+
+            values.Add("CompressedElements", ZipHelper.Compress(rawElements));
 
             return values;
         }

@@ -11,6 +11,11 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         protected short m_hours;
         protected short m_minutes;
 
+        public EffectDuration()
+        {
+            
+        }
+
         public EffectDuration(short id, short days, short hours, short minutes)
             : base(id)
         {
@@ -27,10 +32,17 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
             m_minutes = (short) effect.minutes;
         }
 
-
         public override int ProtocoleId
         {
             get { return 75; }
+        }
+
+        public override byte SerializationIdenfitier
+        {
+            get
+            {
+                return 5;
+            }
         }
 
         public override object[] GetValues()
@@ -41,6 +53,24 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         public override ObjectEffect GetObjectEffect()
         {
             return new ObjectEffectDuration(Id, m_days, m_hours, m_minutes);
+        }
+
+        protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
+        {
+            base.InternalSerialize(ref writer);
+
+            writer.Write(m_days);
+            writer.Write(m_hours);
+            writer.Write(m_minutes);
+        }
+
+        protected override void InternalDeserialize(ref System.IO.BinaryReader reader)
+        {
+            base.InternalDeserialize(ref reader);
+
+            m_days = reader.ReadInt16();
+            m_hours = reader.ReadInt16();
+            m_minutes = reader.ReadInt16();
         }
 
         public TimeSpan GetTimeSpan()

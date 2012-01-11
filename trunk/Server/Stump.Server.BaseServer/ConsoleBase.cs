@@ -95,28 +95,31 @@ namespace Stump.Server.BaseServer
 
         public bool AskAndWait(string request, int delay)
         {
-            try
+            lock (m_conditionWaiter)
             {
-                AskingSomething = true;
-
-                logger.Warn(request + Environment.NewLine + "[CANCEL IN " + delay + " SECONDS] (y/n)");
-
-                // Wait that user enter any characters ;)
-                if (ConditionWaiter.WaitFor(() => !EnteringCommand && Console.KeyAvailable, delay * 1000, AskWaiterInterval))
+                try
                 {
-                    // wait 'enter'
-                    var response = Console.ReadLine();
+                    AskingSomething = true;
+
+                    logger.Warn(request + Environment.NewLine + "[CANCEL IN " + delay + " SECONDS] (y/n)");
+
+                    // Wait that user enter any characters
+                    if (ConditionWaiter.WaitFor(() => !EnteringCommand && Console.KeyAvailable, delay*1000, AskWaiterInterval))
+                    {
+                        // wait 'enter'
+                        var response = Console.ReadLine().ToLower();
+
+                        AskingSomething = false;
+                        return response == "y" || response == "yes";
+                    }
 
                     AskingSomething = false;
-                    return response == "y" || response == "yes";
+                    return false;
                 }
-
-                AskingSomething = false;
-                return false;
-            }
-            finally
-            {
-                AskingSomething = false;
+                finally
+                {
+                    AskingSomething = false;
+                }
             }
         }
     }

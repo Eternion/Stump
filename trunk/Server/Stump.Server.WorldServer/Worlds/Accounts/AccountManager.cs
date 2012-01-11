@@ -24,24 +24,24 @@ namespace Stump.Server.WorldServer.Worlds.Accounts
 
         public void BanLater(AccountData banned, AccountData banner, TimeSpan duration, string reason)
         {
-            WorldServer.Instance.IOTaskPool.EnqueueTask(() =>
-                IpcAccessor.Instance.ProxyObject.BlamAccount(WorldServer.ServerInformation, banned.Id, banner.Id, duration, reason));
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+                IpcAccessor.Instance.ProxyObject.BlamAccountFrom(banned.Id, banner.Id, duration, reason));
         }
 
         public void BanLater(AccountData banned, TimeSpan duration, string reason)
         {
-            WorldServer.Instance.IOTaskPool.EnqueueTask(() =>
-                IpcAccessor.Instance.ProxyObject.BlamAccount(WorldServer.ServerInformation, banned.Id, duration, reason));
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+                IpcAccessor.Instance.ProxyObject.BlamAccount(banned.Id, duration, reason));
         }
 
         public AccountData GetAccountByTicket(string ticket)
         {
-            return IpcAccessor.Instance.ProxyObject.GetAccountByTicket(WorldServer.ServerInformation, ticket);
+            return IpcAccessor.Instance.ProxyObject.GetAccountByTicket(ticket);
         }
 
         public AccountData GetAccountByNickname(string nickName)
         {
-            return IpcAccessor.Instance.ProxyObject.GetAccountByNickname(WorldServer.ServerInformation, nickName);
+            return IpcAccessor.Instance.ProxyObject.GetAccountByNickname(nickName);
         }
     }
 }

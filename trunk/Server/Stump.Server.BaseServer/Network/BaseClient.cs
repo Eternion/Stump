@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using NLog;
+using Stump.Core.Attributes;
+using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.Core.Pool.Task;
 using Stump.DofusProtocol.Messages;
@@ -11,11 +14,15 @@ namespace Stump.Server.BaseServer.Network
 {
     public abstract class BaseClient : IPacketReceiver
     {
+        [Variable(DefinableRunning = true)]
+        public static bool LogPackets = false;
+
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly BigEndianReader m_buffer = new BigEndianReader();
         private readonly object m_lock = new object();
         private MessagePart m_currentMessage;
+        private bool m_disconnecting;
 
 
         protected BaseClient(Socket socket)
@@ -38,7 +45,7 @@ namespace Stump.Server.BaseServer.Network
 
         public bool Connected
         {
-            get { return Socket != null && Socket.Connected; }
+            get { return Socket != null && Socket.Connected && !m_disconnecting; }
         }
 
         public string IP
@@ -62,7 +69,7 @@ namespace Stump.Server.BaseServer.Network
         {
             if (Socket == null || !Connected)
             {
-               logger.Debug("Attempt to send a packet when client isn't connected");
+                return;
             }
 
             var args = PopWriteSocketAsyncArgs();
@@ -81,12 +88,11 @@ namespace Stump.Server.BaseServer.Network
                 ClientManager.Instance.PushWriteSocketAsyncArgs(args);
             }
 
-#if DEBUG
-            Console.WriteLine(string.Format("{0} >> {1}", this, message.GetType().Name));
-#endif
+            if (LogPackets)
+                Console.WriteLine(string.Format("(SEND) {0} : {1}", this, message));
 
             LastActivity = DateTime.Now;
-            NotifyMessageSended(message);
+            OnMessageSended(message);
         }
 
         protected virtual SocketAsyncEventArgs PopWriteSocketAsyncArgs()
@@ -114,32 +120,13 @@ namespace Stump.Server.BaseServer.Network
         public event Action<BaseClient, Message> MessageReceived;
         public event Action<BaseClient, Message> MessageSended;
 
-        private void NotifyMessageReceived(Message message)
+        protected virtual void OnMessageReceived(Message message)
         {
-            OnMessageReceived(message);
-
-            /* A BOUGER/SUPPRIMER (useless ?)
-             * Un anti flood se mesure en message/min pas avec l'interval entre deux */
-
-            /* if (MessageListener.MinMessageInterval.HasValue && DateTime.Now.Subtract(LastActivity).TotalMilliseconds < MessageListener.MinMessageInterval)
-            {
-                Close();
-                return;
-            }
-            if (Settings.InactivityDisconnectionTime.HasValue || MessageListener.MinMessageInterval.HasValue)
-                LastActivity = DateTime.Now;
-            */
-
             if (MessageReceived != null)
                 MessageReceived(this, message);
         }
 
-        protected virtual void OnMessageReceived(Message message)
-        {
-            ClientManager.Instance.MessageQueue.Enqueue(this, message);
-        }
-
-        private void NotifyMessageSended(Message message)
+        protected virtual void OnMessageSended(Message message)
         {
             if (MessageSended != null)
                 MessageSended(this, message);
@@ -179,10 +166,23 @@ namespace Stump.Server.BaseServer.Network
             if (m_currentMessage.Build(m_buffer))
             {
                 var messageDataReader = new BigEndianReader(m_currentMessage.Data);
-                Message message = MessageReceiver.BuildMessage((uint) m_currentMessage.MessageId.Value, messageDataReader);
+                Message message;
+                try
+                {
+                    message = MessageReceiver.BuildMessage((uint) m_currentMessage.MessageId.Value, messageDataReader);
+                }
+                catch (Exception)
+                {
+                    logger.Debug("Message = {0}", m_currentMessage.Data.ToString(" "));
+                    throw;
+                }
 
                 LastActivity = DateTime.Now;
-                NotifyMessageReceived(message);
+
+                if (LogPackets)
+                    Console.WriteLine(string.Format("(RECV) {0} : {1}", this, message));
+
+                OnMessageReceived(message);
 
                 m_currentMessage = null;
 
@@ -197,6 +197,8 @@ namespace Stump.Server.BaseServer.Network
         {
             if (!Connected)
                 return;
+
+            m_disconnecting = true;
 
             try
             {
@@ -219,9 +221,9 @@ namespace Stump.Server.BaseServer.Network
         public void DisconnectLater(int timeToWait = 0)
         {
             if (timeToWait == 0)
-                ServerBase.InstanceAsBase.IOTaskPool.EnqueueTask(Disconnect);
+                ServerBase.InstanceAsBase.IOTaskPool.AddMessage(Disconnect);
             else
-                ServerBase.InstanceAsBase.CyclicTaskPool.RegisterCyclicTask(Disconnect, timeToWait, callsLimit:1);
+                ServerBase.InstanceAsBase.IOTaskPool.CallDelayed(timeToWait, Disconnect);
         }
 
         protected virtual void OnDisconnect()

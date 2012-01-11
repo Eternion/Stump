@@ -1,6 +1,7 @@
 
 using System.Net;
 using System.Net.Sockets;
+using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 
 namespace Stump.Tools.Proxy.Network
@@ -36,5 +37,14 @@ namespace Stump.Tools.Proxy.Network
             Proxy.Instance.AuthClientManager.PushReadSocketAsyncArgs(args);
         }
 
+        protected override bool Dispatch(Message message)
+        {
+            if (!Proxy.Instance.AuthHandler.IsRegister(message.MessageId))
+                return false;
+
+            Proxy.Instance.AuthHandler.Dispatch(this, message);
+
+            return true;
+        }
     }
 }

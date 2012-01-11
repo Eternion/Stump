@@ -11,43 +11,47 @@ using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.BaseServer.Handler
 {
-    public sealed class HandlerManager : Singleton<HandlerManager>
+    public class HandlerManager<THandler, TAttribute, TContainer, TClient> : Singleton<THandler>
+        where THandler : HandlerManager<THandler, TAttribute, TContainer, TClient> 
+        where TContainer : IHandlerContainer
+        where TAttribute : HandlerAttribute
+        where TClient : BaseClient
     {
-        class MessageHandler
+        protected class MessageHandler
         {
-            public MessageHandler(IHandlerContainer container, HandlerAttribute handlerAttribute, Action<BaseClient, Message> action)
+            public MessageHandler(TContainer container, TAttribute handlerAttribute, Action<TClient, Message> action)
             {
                 Container = container;
                 Attribute = handlerAttribute;
                 Action = action;
             }
 
-            public IHandlerContainer Container
+            public TContainer Container
             {
                 get;
                 private set;
             }
 
-            public HandlerAttribute Attribute
+            public TAttribute Attribute
             {
                 get;
                 private set;
             }
 
-            public Action<BaseClient, Message> Action
+            public Action<TClient, Message> Action
             {
                 get;
                 private set;
             }
         }
 
-        private readonly Logger m_logger = LogManager.GetCurrentClassLogger();
+        protected readonly Logger m_logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         ///   Key : Typeof handled message
         ///   Value : Target method
         /// </summary>
-        private readonly Dictionary<uint, MessageHandler> m_handlers = new Dictionary<uint, MessageHandler>();
+        protected readonly Dictionary<uint, MessageHandler> m_handlers = new Dictionary<uint, MessageHandler>();
 
         /// <summary>
         ///   Automatically detects and registers all PacketHandlers within the given Assembly
@@ -67,16 +71,16 @@ namespace Stump.Server.BaseServer.Handler
         /// <param name = "type">the type to search through for packet handlers</param>
         private void Register(Type type)
         {
-            if(type.IsAbstract || !type.GetInterfaces().Contains(typeof(IHandlerContainer)))
+            if (type.IsAbstract || !(type.GetInterfaces().Contains(typeof(TContainer)) || type.IsSubclassOf(typeof(TContainer))))
                 return;
             
             MethodInfo[] methods = type.GetMethods(BindingFlags.Static | BindingFlags.Public);
 
-            IHandlerContainer handlerContainer;
+            TContainer handlerContainer;
 
             try
             {
-                handlerContainer = (IHandlerContainer)Activator.CreateInstance(type, true);
+                handlerContainer = (TContainer)Activator.CreateInstance(type, true);
             }
             catch (Exception e)
             {
@@ -86,7 +90,7 @@ namespace Stump.Server.BaseServer.Handler
 
             foreach (MethodInfo method in methods)
             {
-                var attributes = method.GetCustomAttributes(typeof (HandlerAttribute), false) as HandlerAttribute[];
+                var attributes = method.GetCustomAttributes(typeof(TAttribute), false) as TAttribute[];
 
                 if (attributes == null || attributes.Length == 0)
                     continue;
@@ -97,10 +101,10 @@ namespace Stump.Server.BaseServer.Handler
                         method.GetParameters().Count(
                             entry =>
                             (entry.ParameterType.IsSubclassOf(typeof(Message)) ||
-                             entry.ParameterType.IsSubclassOf(typeof(BaseClient)))) != 2)
+                             (entry.ParameterType == typeof(TClient) || entry.ParameterType.IsSubclassOf(typeof(TClient))) )) != 2)
                         throw new ArgumentException("Incorrect delegate parameters");
 
-                    var handlerDelegate = method.CreateDelegate(typeof(BaseClient),typeof(Message))  as Action<BaseClient,Message>;
+                    var handlerDelegate = method.CreateDelegate(typeof(TClient), typeof(Message)) as Action<TClient, Message>;
                     
                     foreach (var attribute in attributes)
                     {
@@ -111,14 +115,14 @@ namespace Stump.Server.BaseServer.Handler
                 {
                     string handlerStr = type.FullName + "." + method.Name;
                     throw new Exception("Unable to register PacketHandler " + handlerStr +
-                                        ".\n Make sure its arguments are: " + typeof (BaseClient).FullName + ", " +
+                                        ".\n Make sure its arguments are: " + typeof(TClient).FullName + ", " +
                                         typeof (Message).FullName +
                                         ".\n" + e.Message);
                 }
             }
         }
 
-        private void RegisterHandler(uint messageId, IHandlerContainer handlerContainer, HandlerAttribute handlerAttribute, Action<BaseClient,Message> target)
+        private void RegisterHandler(uint messageId, TContainer handlerContainer, TAttribute handlerAttribute, Action<TClient, Message> target)
         {
             if (m_handlers.ContainsKey(messageId))
             {
@@ -136,7 +140,7 @@ namespace Stump.Server.BaseServer.Handler
             return m_handlers.ContainsKey(messageId);
         }
 
-        public void Dispatch(BaseClient client, Message message)
+        public virtual void Dispatch(TClient client, Message message)
         {
             MessageHandler handler;
             if (m_handlers.TryGetValue(message.MessageId, out handler))
@@ -149,14 +153,7 @@ namespace Stump.Server.BaseServer.Handler
                         return;
                     }
 
-#if DEBUG
-                    Console.WriteLine(string.Format("{0} << {1}", client, message));
-#endif
-
-                    if (handler.Attribute.HandledByIOTask)
-                        ServerBase.InstanceAsBase.IOTaskPool.EnqueueTask(() => handler.Action(client, message));
-                    else
-                        handler.Action(client, message);
+                    ServerBase.InstanceAsBase.IOTaskPool.AddMessage(() => handler.Action(client, message));
                 }
                 catch (Exception ex)
                 {

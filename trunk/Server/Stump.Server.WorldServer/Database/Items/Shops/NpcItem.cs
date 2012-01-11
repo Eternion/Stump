@@ -16,8 +16,8 @@ namespace Stump.Server.WorldServer.Database.Items.Shops
             m_objectItemToSellInNpcShop = new ObjectValidator<ObjectItemToSellInNpcShop>(BuildObjectItemToSellInNpcShop);
         }
 
-        [BelongsTo("NpcShop")]
-        public NpcBuySellAction NpcShop
+        [Property("NpcShopId")]
+        public int NpcShopId
         {
             get;
             set;

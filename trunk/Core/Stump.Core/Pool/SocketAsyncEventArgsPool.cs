@@ -10,6 +10,7 @@ namespace Stump.Core.Pool
     public sealed class SocketAsyncEventArgsPool : IDisposable
     {
         private Stack<SocketAsyncEventArgs> m_pool;
+        private bool m_disposed;
 
         /// <summary>
         ///   On initialise le Pool de SocketEventArgs à sa taille Maximum
@@ -33,7 +34,7 @@ namespace Stump.Core.Pool
         public void Dispose()
         {
             m_pool.Clear();
-            m_pool = null;
+            m_disposed = true;
         }
 
         #endregion
@@ -60,6 +61,9 @@ namespace Stump.Core.Pool
         /// <returns>le SocketAsyncEventArgs provenant du pool</returns>
         public SocketAsyncEventArgs Pop()
         {
+            if (m_disposed)
+                throw new ObjectDisposedException("SocketAsyncEventArgsPool");
+
             lock (m_pool)
             {
                 return m_pool.Pop();

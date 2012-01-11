@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using Castle.ActiveRecord.Framework.Config;
@@ -17,6 +18,8 @@ using Stump.Server.AuthServer.Managers;
 using Stump.Server.AuthServer.Network;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Database;
+using Stump.Server.BaseServer.Handler;
+using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.BaseServer.Plugins;
 
@@ -24,17 +27,25 @@ namespace Stump.Server.AuthServer
 {
     public class AuthServer : ServerBase<AuthServer>
     {
+        [Variable]
+        public static readonly bool HostAutoDefined = true;
+
         /// <summary>
-        /// Current server adress
+        /// Current server adress. Used if HostAutoDefined = false
         /// </summary>
         [Variable]
-        public static string Host = "127.0.0.1";
+        public static readonly string CustomHost = "127.0.0.1";
 
         /// <summary>
         /// Server port
         /// </summary>
         [Variable]
-        public static int Port = 443;
+        public static readonly int Port = 443;
+
+        [Variable]
+        public static string IpcAddress = "net.tcp://localhost:9100";
+
+        public static string Host;
 
         [Variable(Priority = 10)]
         public static DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
@@ -46,6 +57,18 @@ namespace Stump.Server.AuthServer
             Password = "",
             UpdateFileDir = "./sql_update/",
         };
+
+        public IpcServer IpcServer
+        {
+            get;
+            private set;
+        }
+
+        public AuthPacketHandler HandlerManager
+        {
+            get;
+            private set;
+        }
 
         public AuthServer() :
             base(Definitions.ConfigFilePath, Definitions.SchemaFilePath)
@@ -72,6 +95,7 @@ namespace Stump.Server.AuthServer
                 ProtocolTypeManager.Initialize();
 
                 logger.Info("Register Packets Handlers...");
+                HandlerManager = AuthPacketHandler.Instance;
                 HandlerManager.RegisterAll(Assembly.GetExecutingAssembly());
 
                 logger.Info("Register Commands...");
@@ -82,7 +106,7 @@ namespace Stump.Server.AuthServer
                 WorldServerManager.Instance.Start();
 
                 logger.Info("Initialize IPC Server..");
-                IpcServer.Instance.Initialize();
+                IpcServer = new IpcServer(typeof(IpcOperations), typeof(IRemoteAuthOperations), IpcAddress);
 
                 InitializationManager.InitializeAll();
             }
@@ -104,10 +128,14 @@ namespace Stump.Server.AuthServer
         {
             base.Start();
 
+            logger.Info("Start Ipc Server");
+            IpcServer.Open();
+
             logger.Info("Starting Console Handler Interface...");
             ConsoleInterface.Start();
 
             logger.Info("Start listening on port : " + Port + "...");
+            Host = HostAutoDefined ? IPAddress.Loopback.ToString() : CustomHost;
             ClientManager.Start(Host, Port);
 
             StartTime = DateTime.Now;

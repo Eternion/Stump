@@ -3,6 +3,7 @@ using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Worlds.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Database.Npcs
@@ -17,11 +18,25 @@ namespace Stump.Server.WorldServer.Database.Npcs
             set;
         }
 
-        [BelongsTo("TemplateId", Cascade = CascadeEnum.Delete)]
-        public NpcTemplate Template
+        [Property("Npc")]
+        public int NpcId
         {
             get;
             set;
+        }
+
+        private NpcTemplate m_template;
+        public NpcTemplate Template
+        {
+            get
+            {
+                return m_template ?? ( m_template = NpcManager.Instance.GetNpcTemplate(NpcId) );
+            }
+            set
+            {
+                m_template = value;
+                NpcId = value.Id;
+            }
         }
 
         [Property(NotNull = true)]

@@ -40,59 +40,52 @@ namespace Stump.Tools.DataLoader.D2P
         /// <returns>Returns a hash table which contains the file extension as keys, the icon file and param as values.</returns>
         public static Hashtable GetFileTypeAndIcon()
         {
-            try
+            // Create a registry key object to represent the HKEY_CLASSES_ROOT registry section
+            RegistryKey rkRoot = Registry.ClassesRoot;
+
+            //Gets all sub keys' names.
+            string[] keyNames = rkRoot.GetSubKeyNames();
+            var iconsInfo = new Hashtable();
+
+            //Find the file icon.
+            foreach (string keyName in keyNames)
             {
-                // Create a registry key object to represent the HKEY_CLASSES_ROOT registry section
-                RegistryKey rkRoot = Registry.ClassesRoot;
+                if (String.IsNullOrEmpty(keyName))
+                    continue;
+                int indexOfPoint = keyName.IndexOf(".");
 
-                //Gets all sub keys' names.
-                string[] keyNames = rkRoot.GetSubKeyNames();
-                var iconsInfo = new Hashtable();
+                //If this key is not a file exttension(eg, .zip), skip it.
+                if (indexOfPoint != 0)
+                    continue;
 
-                //Find the file icon.
-                foreach (string keyName in keyNames)
+                RegistryKey rkFileType = rkRoot.OpenSubKey(keyName);
+                if (rkFileType == null)
+                    continue;
+
+                //Gets the default value of this key that contains the information of file type.
+                object defaultValue = rkFileType.GetValue("");
+                if (defaultValue == null)
+                    continue;
+
+                //Go to the key that specifies the default icon associates with this file type.
+                string defaultIcon = defaultValue + "\\DefaultIcon";
+                RegistryKey rkFileIcon = rkRoot.OpenSubKey(defaultIcon);
+                if (rkFileIcon != null)
                 {
-                    if (String.IsNullOrEmpty(keyName))
-                        continue;
-                    int indexOfPoint = keyName.IndexOf(".");
-
-                    //If this key is not a file exttension(eg, .zip), skip it.
-                    if (indexOfPoint != 0)
-                        continue;
-
-                    RegistryKey rkFileType = rkRoot.OpenSubKey(keyName);
-                    if (rkFileType == null)
-                        continue;
-
-                    //Gets the default value of this key that contains the information of file type.
-                    object defaultValue = rkFileType.GetValue("");
-                    if (defaultValue == null)
-                        continue;
-
-                    //Go to the key that specifies the default icon associates with this file type.
-                    string defaultIcon = defaultValue + "\\DefaultIcon";
-                    RegistryKey rkFileIcon = rkRoot.OpenSubKey(defaultIcon);
-                    if (rkFileIcon != null)
+                    //Get the file contains the icon and the index of the icon in that file.
+                    object value = rkFileIcon.GetValue("");
+                    if (value != null)
                     {
-                        //Get the file contains the icon and the index of the icon in that file.
-                        object value = rkFileIcon.GetValue("");
-                        if (value != null)
-                        {
-                            //Clear all unecessary " sign in the string to avoid error.
-                            string fileParam = value.ToString().Replace("\"", "");
-                            iconsInfo.Add(keyName, fileParam);
-                        }
-                        rkFileIcon.Close();
+                        //Clear all unecessary " sign in the string to avoid error.
+                        string fileParam = value.ToString().Replace("\"", "");
+                        iconsInfo.Add(keyName, fileParam);
                     }
-                    rkFileType.Close();
+                    rkFileIcon.Close();
                 }
-                rkRoot.Close();
-                return iconsInfo;
+                rkFileType.Close();
             }
-            catch (Exception exc)
-            {
-                throw;
-            }
+            rkRoot.Close();
+            return iconsInfo;
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
@@ -27,12 +28,12 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             client.ActiveCharacter.ReplyToNpc(message.replyId);
         }
 
-        public static void SendNpcDialogCreationMessage(WorldClient client, Npc npc)
+        public static void SendNpcDialogCreationMessage(IPacketReceiver client, Npc npc)
         {
             client.Send(new NpcDialogCreationMessage(npc.Position.Map.Id, npc.Id));
         }
 
-        public static void SendNpcDialogQuestionMessage(WorldClient client, NpcMessage message)
+        public static void SendNpcDialogQuestionMessage(IPacketReceiver client, NpcMessage message)
         {
             client.Send(new NpcDialogQuestionMessage((short) message.Id, message.Parameters,
                                                      message.Replies.Select(entry => (short) entry.ReplyId)));

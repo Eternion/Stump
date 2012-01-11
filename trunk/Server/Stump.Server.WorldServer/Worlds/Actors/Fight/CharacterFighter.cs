@@ -102,8 +102,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             var spellLevel = spell.CurrentSpellLevel;
             var point = new MapPoint(cell);
 
-            if (point.DistanceTo(Position.Point) > spellLevel.Range ||
-                point.DistanceTo(Position.Point) < spellLevel.MinRange)
+            if (point.DistanceToCell(Position.Point) > spellLevel.Range ||
+                point.DistanceToCell(Position.Point) < spellLevel.MinRange)
                 return false;
 
             if (AP < spellLevel.ApCost)
@@ -175,6 +175,10 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                 Name, 
                 Character.Level, 
                 Character.GetActorAlignmentInformations());
+        }
+        public override string ToString()
+        {
+            return Character.ToString();
         }
     }
 }

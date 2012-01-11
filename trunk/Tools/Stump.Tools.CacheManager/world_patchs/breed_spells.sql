@@ -1,5 +1,6 @@
 DELETE FROM `breed_spells`;
 
+
 INSERT INTO `breed_spells` VALUES ('1', '1', '9', '1');
 INSERT INTO `breed_spells` VALUES ('2', '2', '6', '1');
 INSERT INTO `breed_spells` VALUES ('3', '3', '1', '1');
@@ -240,3 +241,15 @@ INSERT INTO `breed_spells` VALUES ('237', '702', '70', '12');
 INSERT INTO `breed_spells` VALUES ('238', '703', '80', '12');
 INSERT INTO `breed_spells` VALUES ('239', '704', '90', '12');
 INSERT INTO `breed_spells` VALUES ('240', '705', '100', '12');
+INSERT INTO `breed_spells` (SpellId, ObtainLevel, BreedId) VALUES ('0', '1', '1');
+INSERT INTO `breed_spells` (SpellId, ObtainLevel, BreedId) VALUES ('0', '1', '2');
+INSERT INTO `breed_spells` (SpellId, ObtainLevel, BreedId) VALUES ('0', '1', '3');
+INSERT INTO `breed_spells` (SpellId, ObtainLevel, BreedId) VALUES ('0', '1', '4');
+INSERT INTO `breed_spells` (SpellId, ObtainLevel, BreedId) VALUES ('0', '1', '5');
+INSERT INTO `breed_spells` (SpellId, ObtainLevel, BreedId) VALUES ('0', '1', '6');
+INSERT INTO `breed_spells` (SpellId, ObtainLevel, BreedId) VALUES ('0', '1', '7');
+INSERT INTO `breed_spells` (SpellId, ObtainLevel, BreedId) VALUES ('0', '1', '8');
+INSERT INTO `breed_spells` (SpellId, ObtainLevel, BreedId) VALUES ('0', '1', '9');
+INSERT INTO `breed_spells` (SpellId, ObtainLevel, BreedId) VALUES ('0', '1', '10');
+INSERT INTO `breed_spells` (SpellId, ObtainLevel, BreedId) VALUES ('0', '1', '11');
+INSERT INTO `breed_spells` (SpellId, ObtainLevel, BreedId) VALUES ('0', '1', '12');

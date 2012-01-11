@@ -13,7 +13,7 @@ namespace Stump.Tools.Proxy.Handlers.World
         {
             client.Send(message);
 
-            if (client.HasReceive(typeof(LeaveDialogMessage), 2))
+            if (client.HasReceive(LeaveDialogMessage.Id, 2))
                 client.GuessNpcReply = client.LastNpcReply;
 
             if(client.GuessAction)

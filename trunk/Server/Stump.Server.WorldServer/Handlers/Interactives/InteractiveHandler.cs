@@ -1,4 +1,5 @@
 using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Worlds.Actors;
 using Stump.Server.WorldServer.Worlds.Interactives;
@@ -20,7 +21,7 @@ namespace Stump.Server.WorldServer.Handlers.Interactives
 
         }
 
-        public static void SendInteractiveUsedMessage(WorldClient client, ContextActor user, InteractiveObject interactiveObject, Skill skill)
+        public static void SendInteractiveUsedMessage(IPacketReceiver client, ContextActor user, InteractiveObject interactiveObject, Skill skill)
         {
             client.Send(new InteractiveUsedMessage(user.Id, interactiveObject.Id, (short) skill.Id, (short) skill.Template.Duration));
         }

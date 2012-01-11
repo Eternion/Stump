@@ -133,7 +133,7 @@ namespace Stump.Core.Mathematics
         /// <summary>
         ///   Adds the specifieds nodes.
         /// </summary>
-        /// <param name = "value">The nodes.</param>
+        /// <param name = "values">The nodes.</param>
         public void Add(params Node<T>[] nodes)
         {
             foreach (var node in nodes)
@@ -158,7 +158,7 @@ namespace Stump.Core.Mathematics
         /// <summary>
         ///   Adds the specifieds values.
         /// </summary>
-        /// <param name = "value">The values.</param>
+        /// <param name = "values">The values.</param>
         /// <returns></returns>
         public List<Node<T>> Add(params T[] values)
         {

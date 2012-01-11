@@ -8,6 +8,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Database.I18n;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
 
 namespace Stump.Server.WorldServer.Database.Npcs
 {
@@ -42,7 +43,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
             }
         }
 
-        [D2OField("dialogMessages")]
+        /*[D2OField("dialogMessages")]
         [Property("DialogMessages", ColumnType = "Serializable")]
         public List<List<int>> DialogMessages
         {
@@ -64,18 +65,15 @@ namespace Stump.Server.WorldServer.Database.Npcs
         {
             get;
             set;
-        }
+        }*/
 
-        private IList<NpcAction> m_actions;
-
-        [HasMany(typeof(NpcAction))]
-        public IList<NpcAction> Actions
+        private List<NpcAction> m_actions;
+        public List<NpcAction> Actions
         {
             get
             {
-                return m_actions ?? ( m_actions = new List<NpcAction>() );
+                return m_actions ?? ( m_actions = NpcManager.Instance.GetNpcActions(Id) );
             }
-            set { m_actions = value; }
         }
 
         public NpcAction GetNpcAction(NpcActionTypeEnum actionType)

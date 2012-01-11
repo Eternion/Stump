@@ -4,6 +4,7 @@ using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.IPC.Objects;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Handlers.Basic;
@@ -15,7 +16,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
 {
     public class ApproachHandler : WorldHandlerContainer
     {
-        [WorldHandler(AuthenticationTicketMessage.Id)]
+        [WorldHandler(AuthenticationTicketMessage.Id, RequiresLogin = false, IsGamePacket = false)]
         public static void HandleAuthenticationTicketMessage(WorldClient client, AuthenticationTicketMessage message)
         {
             /* Get Ticket */
@@ -50,7 +51,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                 SendConsoleCommandsListMessage(client);
         }
 
-        public static void SendServerOptionalFeaturesMessage(WorldClient client, IEnumerable<short> features)
+        public static void SendServerOptionalFeaturesMessage(IPacketReceiver client, IEnumerable<short> features)
         {
             client.Send(new ServerOptionalFeaturesMessage(features));
         }
@@ -64,7 +65,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                             (short)BreedManager.Instance.AvailableBreedsFlags));
         }
 
-        public static void SendConsoleCommandsListMessage(WorldClient client)
+        public static void SendConsoleCommandsListMessage(IPacketReceiver client)
         {
             client.Send(
                 new ConsoleCommandsListMessage(

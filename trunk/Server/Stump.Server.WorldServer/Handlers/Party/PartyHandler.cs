@@ -1,7 +1,9 @@
+using System.Diagnostics.Contracts;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Worlds;
 using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
@@ -110,42 +112,42 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
             client.ActiveCharacter.Party.Kick(member);
         }
 
-        public static void SendPartyKickedByMessage(WorldClient client, Worlds.Parties.Party party, Character kicker)
+        public static void SendPartyKickedByMessage(IPacketReceiver client, Worlds.Parties.Party party, Character kicker)
         {
             client.Send(new PartyKickedByMessage(party.Id, kicker.Id));
         }
 
-        public static void SendPartyLeaderUpdateMessage(WorldClient client, Worlds.Parties.Party party, Character leader)
+        public static void SendPartyLeaderUpdateMessage(IPacketReceiver client, Worlds.Parties.Party party, Character leader)
         {
             client.Send(new PartyLeaderUpdateMessage(party.Id, leader.Id));
         }
 
-        public static void SendPartyRestrictedMessage(WorldClient client, Worlds.Parties.Party party, bool restricted)
+        public static void SendPartyRestrictedMessage(IPacketReceiver client, Worlds.Parties.Party party, bool restricted)
         {
             client.Send(new PartyRestrictedMessage(party.Id, restricted));
         }
 
-        public static void SendPartyUpdateMessage(WorldClient client, Worlds.Parties.Party party, Character member)
+        public static void SendPartyUpdateMessage(IPacketReceiver client, Worlds.Parties.Party party, Character member)
         {
             client.Send(new PartyUpdateMessage(party.Id, member.GetPartyMemberInformations()));
         }
 
-        public static void SendPartyNewGuestMessage(WorldClient client, Worlds.Parties.Party party, Character guest)
+        public static void SendPartyNewGuestMessage(IPacketReceiver client, Worlds.Parties.Party party, Character guest)
         {
             client.Send(new PartyNewGuestMessage(party.Id, guest.GetPartyGuestInformations(party)));
         }
 
-        public static void SendPartyMemberRemoveMessage(WorldClient client, Worlds.Parties.Party party, Character leaver)
+        public static void SendPartyMemberRemoveMessage(IPacketReceiver client, Worlds.Parties.Party party, Character leaver)
         {
             client.Send(new PartyMemberRemoveMessage(party.Id, leaver.Id));
         }
 
-        public static void SendPartyInvitationCancelledForGuestMessage(WorldClient client, Character canceller, PartyInvitation invitation)
+        public static void SendPartyInvitationCancelledForGuestMessage(IPacketReceiver client, Character canceller, PartyInvitation invitation)
         {
             client.Send(new PartyInvitationCancelledForGuestMessage(invitation.Party.Id, canceller.Id));
         }
 
-        public static void SendPartyCancelInvitationNotificationMessage(WorldClient client, PartyInvitation invitation)
+        public static void SendPartyCancelInvitationNotificationMessage(IPacketReceiver client, PartyInvitation invitation)
         {
             client.Send(new PartyCancelInvitationNotificationMessage(
                 invitation.Party.Id,
@@ -153,17 +155,25 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
                 invitation.Target.Id));
         }
 
-        public static void SendPartyRefuseInvitationNotificationMessage(WorldClient client, PartyInvitation invitation)
+        public static void SendPartyRefuseInvitationNotificationMessage(IPacketReceiver client, PartyInvitation invitation)
         {
+            Contract.Requires(client != null);
+            Contract.Requires(invitation != null);
+            Contract.Requires(invitation.Party != null);
+            Contract.Requires(invitation.Target != null);
+
             client.Send(new PartyRefuseInvitationNotificationMessage(invitation.Party.Id, invitation.Target.Id));
         }
 
-        public static void SendPartyDeletedMessage(WorldClient client, Worlds.Parties.Party party)
+        public static void SendPartyDeletedMessage(IPacketReceiver client, Worlds.Parties.Party party)
         {
+            Contract.Requires(client != null);
+            Contract.Requires(party != null);
+
             client.Send(new PartyDeletedMessage(party.Id));
         }
 
-        public static void SendPartyJoinMessage(WorldClient client, Worlds.Parties.Party party)
+        public static void SendPartyJoinMessage(IPacketReceiver client, Worlds.Parties.Party party)
         {
             client.Send(new PartyJoinMessage(party.Id,
                 (sbyte)party.Type,
@@ -185,7 +195,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
                 ));
         }
 
-        public static void SendPartyInvitationDetailsMessage(WorldClient client, PartyInvitation invitation)
+        public static void SendPartyInvitationDetailsMessage(IPacketReceiver client, PartyInvitation invitation)
         {
             client.Send(new PartyInvitationDetailsMessage(
                 invitation.Party.Id,
@@ -197,12 +207,12 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
                 ));
         }    
 
-        public static void SendPartyCannotJoinErrorMessage(WorldClient client, Worlds.Parties.Party party, PartyJoinErrorEnum reason)
+        public static void SendPartyCannotJoinErrorMessage(IPacketReceiver client, Worlds.Parties.Party party, PartyJoinErrorEnum reason)
         {
             client.Send(new PartyCannotJoinErrorMessage(party.Id, (sbyte)reason));
         }
 
-        public static void SendPartyCannotJoinErrorMessage(WorldClient client, PartyJoinErrorEnum reason)
+        public static void SendPartyCannotJoinErrorMessage(IPacketReceiver client, PartyJoinErrorEnum reason)
         {
             client.Send(new PartyCannotJoinErrorMessage(0, (sbyte)reason));
         }

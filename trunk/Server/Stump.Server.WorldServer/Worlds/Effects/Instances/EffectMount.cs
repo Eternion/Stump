@@ -11,6 +11,11 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         protected short m_modelId;
         protected int m_mountId;
 
+        public EffectMount()
+        {
+            
+        }
+
         public EffectMount(short id, int mountid, double date, int modelid)
             : base(id)
         {
@@ -32,6 +37,14 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
             get { return 179; }
         }
 
+        public override byte SerializationIdenfitier
+        {
+            get
+            {
+                return 9;
+            }
+        }
+
         public override object[] GetValues()
         {
             return new object[] {m_mountId, m_date, m_modelId};
@@ -40,6 +53,24 @@ namespace Stump.Server.WorldServer.Worlds.Effects.Instances
         public override ObjectEffect GetObjectEffect()
         {
             return new ObjectEffectMount(Id, m_mountId, m_date, m_modelId);
+        }
+
+        protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
+        {
+            base.InternalSerialize(ref writer);
+
+            writer.Write(m_mountId);
+            writer.Write(m_date);
+            writer.Write(m_modelId);
+        }
+
+        protected override void InternalDeserialize(ref System.IO.BinaryReader reader)
+        {
+            base.InternalDeserialize(ref reader);
+
+            m_mountId = reader.ReadInt16();
+            m_date = reader.ReadInt32();
+            m_modelId = reader.ReadInt16();
         }
 
         public override bool Equals(object obj)

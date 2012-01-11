@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
@@ -59,8 +60,16 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
 
         public override bool CanCastSpell(Spell spell, Cell cell)
         {
+            Contract.Ensures(spell != null);
+            Contract.Ensures(!cell.Equals(Cell.Null));
+
             if (!IsFighterTurn())
                 return false;
+
+            if (Monster.Spells.Any(entry => entry == null))
+            {
+                logger.Debug("Why the hell is a spell null ???");
+            }
 
             if (Monster.Spells.Count(entry => entry.Id == spell.Id) <= 0)
                 return false;
@@ -68,8 +77,8 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
             SpellLevelTemplate spellLevel = spell.CurrentSpellLevel;
             var point = new MapPoint(cell);
 
-            if (point.DistanceTo(Position.Point) > spellLevel.Range ||
-                point.DistanceTo(Position.Point) < spellLevel.MinRange)
+            if (point.DistanceToCell(Position.Point) > spellLevel.Range ||
+                point.DistanceToCell(Position.Point) < spellLevel.MinRange)
                 return false;
 
             if (AP < spellLevel.ApCost)
@@ -109,7 +118,7 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
                     if (droppableItem.DropLimit > 0 && m_dropsCount.ContainsKey(droppableItem) && m_dropsCount[droppableItem] >= droppableItem.DropLimit)
                         break;
 
-                    var chance = ( random.Next(0, 100) + random.NextDouble() );
+                    var chance = ( random.Next(0, 100) + random.NextDouble() ) * Rates.DropsRate;
                     var dropRate = droppableItem.DropRate * ( fighter.Stats[CaracteristicsEnum.Prospecting] / 100 );
 
                     if (dropRate >= chance)
@@ -149,6 +158,11 @@ namespace Stump.Server.WorldServer.Worlds.Actors.Fight
         public override FightTeamMemberInformations GetFightTeamMemberInformations()
         {
             return new FightTeamMemberMonsterInformations(Id, Monster.Template.Id, (sbyte) Monster.Grade.GradeId);
+        }
+
+        public override string ToString()
+        {
+            return Monster.ToString();
         }
     }
 }

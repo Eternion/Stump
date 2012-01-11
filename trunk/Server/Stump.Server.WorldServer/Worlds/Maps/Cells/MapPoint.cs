@@ -120,9 +120,14 @@ namespace Stump.Server.WorldServer.Worlds.Maps.Cells
             return (uint)Math.Sqrt(( point.X - m_x ) * ( point.X - m_x ) + ( point.Y - m_y ) * ( point.Y - m_y ));
         }
 
-        public int DistanceToCell(MapPoint point)
+        public uint DistanceToCell(MapPoint point)
         {
-            return Math.Abs(m_x - point.X) + Math.Abs(m_y - point.Y);
+            return (uint) (Math.Abs(m_x - point.X) + Math.Abs(m_y - point.Y));
+        }
+
+        public bool IsAdjacentTo(MapPoint point)
+        {
+            return DistanceToCell(point) == 1;
         }
 
         public DirectionsEnum OrientationToAdjacent(MapPoint point)

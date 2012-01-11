@@ -55,13 +55,13 @@ namespace Stump.Core.Reflection
             return Expression.Lambda<Func<T, T1, object>>(func, switchedValue, value).Compile();
         }
 
-        private class SwitchCase<T>
+        private class SwitchCase<TC>
         {
-            public T Value { get; private set; }
+            public TC Value { get; private set; }
             public object Object { get; private set; }
             public MethodInfo Method { get; private set; }
 
-            public SwitchCase(T value, object objet, MethodInfo method)
+            public SwitchCase(TC value, object objet, MethodInfo method)
             {
                 Value = value;
                 Object = objet;

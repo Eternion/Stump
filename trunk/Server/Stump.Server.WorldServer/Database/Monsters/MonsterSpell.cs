@@ -2,6 +2,7 @@ using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Spells;
+using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
 
 namespace Stump.Server.WorldServer.Database.Monsters
 {
@@ -15,11 +16,25 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
-        [BelongsTo("MonsterGradeId")]
-        public MonsterGrade MonsterGrade
+        [Property("MonsterGradeId")]
+        public int MonsterGradeId
         {
             get;
             set;
+        }
+
+        private MonsterGrade m_monsterGrade;
+        public MonsterGrade MonsterGrade
+        {
+            get
+            {
+                return m_monsterGrade ?? ( m_monsterGrade = MonsterManager.Instance.GetMonsterGrade(MonsterGradeId) );
+            }
+            set
+            {
+                m_monsterGrade = value;
+                MonsterGradeId = value.Id;
+            }
         }
 
         [Property("SpellId", NotNull = true)]
@@ -41,4 +56,4 @@ namespace Stump.Server.WorldServer.Database.Monsters
             return (SpellIdEnum)SpellId + " (" + SpellId + ")";
         }
     }
-}
+}   
