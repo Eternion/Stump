@@ -1,7 +1,6 @@
 using Castle.ActiveRecord;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Worlds.Interactives;
-using Stump.Server.WorldServer.Worlds.Interactives.Skills;
+using Stump.Server.WorldServer.Game.Interactives;
+using Stump.Server.WorldServer.Game.Interactives.Skills;
 
 namespace Stump.Server.WorldServer.Database.Interactives.Skills
 {

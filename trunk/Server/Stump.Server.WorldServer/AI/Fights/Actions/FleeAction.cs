@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Worlds.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.Fight;
 using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Actions

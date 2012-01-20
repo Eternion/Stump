@@ -2,7 +2,7 @@ using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Spells;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 
 namespace Stump.Server.WorldServer.Database.Monsters
 {

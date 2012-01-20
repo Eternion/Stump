@@ -6,15 +6,11 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Actors;
+using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Characters;
-using Stump.Server.WorldServer.Worlds;
-using Stump.Server.WorldServer.Worlds.Actors;
-using Stump.Server.WorldServer.Worlds.Actors.Fight;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Worlds.Maps.Cells;
-using Stump.Server.WorldServer.Worlds.Maps.Pathfinding;
 
 namespace Stump.Server.WorldServer.Handlers.Context
 {

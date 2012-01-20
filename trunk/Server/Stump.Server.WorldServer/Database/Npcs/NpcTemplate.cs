@@ -8,7 +8,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Database.I18n;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 
 namespace Stump.Server.WorldServer.Database.Npcs
 {

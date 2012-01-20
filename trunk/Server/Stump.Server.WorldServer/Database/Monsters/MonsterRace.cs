@@ -2,7 +2,7 @@ using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Server.WorldServer.Database.I18n;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 
 namespace Stump.Server.WorldServer.Database.Monsters
 {

@@ -4,7 +4,6 @@ using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Server.WorldServer.Database.I18n;
-using Stump.Server.WorldServer.Worlds.Spells;
 
 namespace Stump.Server.WorldServer.Database.Spells
 {

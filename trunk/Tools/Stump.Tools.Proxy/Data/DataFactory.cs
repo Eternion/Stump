@@ -15,12 +15,12 @@ using Stump.Server.WorldServer.Database.Npcs.Replies;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Database.World.Triggers;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
-using Stump.Server.WorldServer.Worlds.Interactives;
-using Stump.Server.WorldServer.Worlds.Items;
-using Stump.Server.WorldServer.Worlds.Maps;
-using Stump.Server.WorldServer.Worlds.Maps.Cells.Triggers;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Interactives;
+using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
 using Stump.Tools.Proxy.Network;
 
 namespace Stump.Tools.Proxy.Data

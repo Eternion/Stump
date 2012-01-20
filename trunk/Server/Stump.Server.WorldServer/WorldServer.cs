@@ -31,8 +31,7 @@ using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Worlds;
-using Stump.Server.WorldServer.Worlds.Maps.Cells;
+using Stump.Server.WorldServer.Game;
 using TreeSharp;
 
 namespace Stump.Server.WorldServer

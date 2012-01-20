@@ -1,5 +1,5 @@
-using Stump.Server.WorldServer.Worlds.Actors.Fight;
-using Stump.Server.WorldServer.Worlds.Fights;
+using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights;
 
 namespace Stump.Server.WorldServer.AI.Fights.Threat
 {

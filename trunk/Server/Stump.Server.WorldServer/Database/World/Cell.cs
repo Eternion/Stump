@@ -6,10 +6,14 @@ namespace Stump.Server.WorldServer.Database.World
     [Serializable]
     public struct Cell
     {
+        /// <summary>
+        /// Give a cell with Id = -1. This avoid using a class that take more memory space
+        /// </summary>
         public static Cell Null = new Cell
         {
             Id = -1
         };
+
         public const int StructSize = 2 + 2 + 1 + 1 + 1;
 
         public short Floor;

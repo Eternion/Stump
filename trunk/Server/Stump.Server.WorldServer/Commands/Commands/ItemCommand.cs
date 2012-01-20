@@ -4,8 +4,8 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Database.Items.Templates;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Worlds.Items;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {

@@ -6,12 +6,12 @@ using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Npcs;
-using Stump.Server.WorldServer.Worlds;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
-using Stump.Server.WorldServer.Worlds.Items;
-using Stump.Server.WorldServer.Worlds.Maps;
+using Stump.Server.WorldServer.Game;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Maps;
 
 namespace Stump.Server.WorldServer.Commands
 {

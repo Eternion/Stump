@@ -1,6 +1,6 @@
 using Castle.ActiveRecord;
 using Stump.Server.WorldServer.Database.Items.Templates;
-using Stump.Server.WorldServer.Worlds.Items;
+using Stump.Server.WorldServer.Game.Items;
 using Item = Stump.DofusProtocol.Types.Item;
 
 namespace Stump.Server.WorldServer.Database.Items.Shops

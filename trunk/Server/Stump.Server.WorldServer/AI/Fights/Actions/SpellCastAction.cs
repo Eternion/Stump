@@ -1,7 +1,7 @@
 using System;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Worlds.Actors.Fight;
-using Stump.Server.WorldServer.Worlds.Spells;
+using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Spells;
 using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Actions

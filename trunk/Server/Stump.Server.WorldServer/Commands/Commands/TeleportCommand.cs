@@ -3,9 +3,9 @@ using System.Drawing;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Worlds;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Worlds.Maps.Cells;
+using Stump.Server.WorldServer.Game;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {

@@ -7,10 +7,10 @@ using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
+using Stump.Server.WorldServer.Game.Accounts;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Handlers.Basic;
-using Stump.Server.WorldServer.Worlds.Accounts;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Worlds.Breeds;
 
 namespace Stump.Server.WorldServer.Handlers.Approach
 {

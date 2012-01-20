@@ -7,9 +7,9 @@ using Stump.Server.BaseServer.I18n;
 using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.I18n;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
-using Stump.Server.WorldServer.Worlds.Effects;
-using Stump.Server.WorldServer.Worlds.Spells;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
+using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Spells;
 using Definitions = Stump.Server.WorldServer.Definitions;
 
 namespace Stump.Tools.MonsterDataFinder

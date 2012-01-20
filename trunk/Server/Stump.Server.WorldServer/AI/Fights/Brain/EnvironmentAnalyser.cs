@@ -5,11 +5,11 @@ using Stump.Core.Extensions;
 using Stump.Core.Threading;
 using Stump.Server.WorldServer.AI.Fights.Actions;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Worlds.Actors.Fight;
-using Stump.Server.WorldServer.Worlds.Fights;
-using Stump.Server.WorldServer.Worlds.Maps.Cells;
-using Stump.Server.WorldServer.Worlds.Maps.Cells.Shapes;
-using Stump.Server.WorldServer.Worlds.Spells;
+using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
+using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain
 {
@@ -112,7 +112,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         public FightActor GetNearestFighter(Predicate<FightActor> predicate)
         {
-            return Fight.GetAllFighters(predicate).
+            return Fight.GetAllFighters(entry => predicate(entry) && entry.IsAlive()).
                 OrderBy(entry => entry.Position.Point.DistanceToCell(Fighter.Position.Point)).
                 RandomElementOrDefault();
         }

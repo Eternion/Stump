@@ -2,10 +2,10 @@
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
-using Stump.Server.WorldServer.Worlds.Maps;
-using Stump.Server.WorldServer.Worlds.Maps.Cells;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Database.Npcs.Replies
 {
@@ -63,7 +63,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
 
         private void RefreshPosition()
         {
-            Map map = Worlds.World.Instance.GetMap(MapId);
+            Map map = Game.World.Instance.GetMap(MapId);
 
             if (map == null)
                 throw new Exception(string.Format("Cannot load SkillTeleport id={0}, map {1} isn't found", Id, MapId));

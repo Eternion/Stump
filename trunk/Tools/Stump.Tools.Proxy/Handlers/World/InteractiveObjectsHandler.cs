@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.WorldServer.Worlds.Maps;
+using Stump.Server.WorldServer.Game.Maps;
 using Stump.Tools.Proxy.Network;
 
 namespace Stump.Tools.Proxy.Handlers.World

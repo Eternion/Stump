@@ -1,9 +1,9 @@
 using System;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Worlds.Maps;
-using Stump.Server.WorldServer.Worlds.Maps.Cells;
-using Stump.Server.WorldServer.Worlds.Maps.Cells.Triggers;
+using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
 
 namespace Stump.Server.WorldServer.Database.World.Triggers
 {
@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Database.World.Triggers
 
         private void RefreshPosition()
         {
-            Map map = Worlds.World.Instance.GetMap(MapId);
+            Map map = Game.World.Instance.GetMap(MapId);
 
             if (map == null)
                 throw new Exception(string.Format("Cannot load CellTrigger id={0}, map {1} isn't found", Id, MapId));

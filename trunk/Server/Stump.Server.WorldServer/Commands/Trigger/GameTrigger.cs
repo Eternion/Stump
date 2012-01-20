@@ -2,7 +2,7 @@ using System;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Commands.Trigger
 {

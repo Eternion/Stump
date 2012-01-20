@@ -2,7 +2,7 @@ using System;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
-using Stump.Server.WorldServer.Worlds;
+using Stump.Server.WorldServer.Game;
 
 namespace Stump.Plugins.DebugPlugin.Commands
 {

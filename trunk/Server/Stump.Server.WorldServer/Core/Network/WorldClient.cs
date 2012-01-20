@@ -6,8 +6,8 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Basic;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Core.Network
 {

@@ -3,8 +3,8 @@ using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
-using Stump.Server.WorldServer.Worlds.Effects;
-using Stump.Server.WorldServer.Worlds.Effects.Instances;
+using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Database.Items
 {

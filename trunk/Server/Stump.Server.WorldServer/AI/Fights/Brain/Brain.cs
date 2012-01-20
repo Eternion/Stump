@@ -2,14 +2,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using NLog;
+using Stump.Core.Attributes;
 using Stump.Server.WorldServer.AI.Fights.Actions;
-using Stump.Server.WorldServer.Worlds.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.Fight;
 using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain
 {
     public class Brain
     {
+        [Variable(true)]
+        public static bool DebugMode = true;
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public Brain(AIFighter fighter)
@@ -44,67 +48,35 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
             if (target == null)
             {
-                Log("Target null !");
+                Log("No target :(");
             }
 
             var tree = new PrioritySelector(
                 new Decorator(ctx => spell == null, new FleeAction(Fighter)),
                 new PrioritySelector(
                     new Decorator(ctx => Fighter.CanCastSpell(spell, target.Cell),
-                        new Sequence(
-                            new SpellCastAction(Fighter, spell, target.Cell),
-                            new DecoratorContinue(ctx => target.LifePoints > Fighter.LifePoints, new FleeAction(Fighter)))),
-                     new Sequence(
-                         new MoveNearTo(Fighter, target),
-                            new Decorator(ctx => Fighter.CanCastSpell(spell, target.Cell),
-                                new Sequence(
-                                    new SpellCastAction(Fighter, spell, target.Cell),
-                                    new Decorator(ctx => target.LifePoints > Fighter.LifePoints, new FleeAction(Fighter)))))));
+                                  new Sequence(
+                                      new SpellCastAction(Fighter, spell, target.Cell),
+                                      new DecoratorContinue(ctx => target.LifePoints > Fighter.LifePoints, new FleeAction(Fighter)))),
+                    new Sequence(
+                        new MoveNearTo(Fighter, target),
+                        new Decorator(ctx => Fighter.CanCastSpell(spell, target.Cell),
+                                      new Sequence(
+                                          new SpellCastAction(Fighter, spell, target.Cell),
+                                          new Decorator(ctx => target.LifePoints > Fighter.LifePoints, new FleeAction(Fighter)))))));
 
             foreach (var action in tree.Execute(this))
             {
-                // tick
+                // tick the tree
             }
-
-            /*if (spell == null)
-            {
-                actions.Add(new FleeAction(Fighter));
-            }
-            else
-            {
-                
-
-                if (!Fighter.CanCastSpell(spell, target.Cell))
-                {
-                    actions.Add(new MoveNearTo(Fighter, target));
-
-                    if (Fighter.CanCastSpell(spell, target.Cell))
-                    {
-                        actions.Add(new SpellCastAction(Fighter, spell, target.Cell));
-                        actions.Add(new FleeAction(Fighter));
-                    }
-                }
-                else     
-                {
-                    actions.Add(new SpellCastAction(Fighter, spell, target.Cell));
-                    actions.Add(new FleeAction(Fighter));
-                }
-            }
-
-            ExecuteActions(actions);*/
         }
-
-        /*public void ExecuteActions(IEnumerable<AIAction> actions)
-        {
-            foreach (var action in actions)
-            {
-                action.Execute();
-            }
-        }*/
 
         public void Log(string log, params object[] args)
         {
             logger.Debug("Brain " + Fighter + " : " + log, args);
+
+            if (DebugMode)
+                Fighter.Say(string.Format(log, args));
         }
     }
 }

@@ -3,8 +3,8 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Database.Npcs;
-using Stump.Server.WorldServer.Worlds.Maps;
-using Stump.Server.WorldServer.Worlds.Maps.Cells;
+using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {

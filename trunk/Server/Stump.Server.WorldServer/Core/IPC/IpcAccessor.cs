@@ -7,7 +7,7 @@ using Stump.Core.Reflection;
 using Stump.Core.Timers;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Objects;
-using Stump.Server.WorldServer.Worlds;
+using Stump.Server.WorldServer.Game;
 
 namespace Stump.Server.WorldServer.Core.IPC
 {

@@ -3,8 +3,8 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Characters;
-using Stump.Server.WorldServer.Worlds.Spells;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {

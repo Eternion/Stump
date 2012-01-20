@@ -1,5 +1,5 @@
 using Castle.ActiveRecord;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 
 namespace Stump.Server.WorldServer.Database.Monsters
 {

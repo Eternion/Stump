@@ -9,7 +9,7 @@ using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
-using Stump.Server.WorldServer.Worlds.Breeds;
+using Stump.Server.WorldServer.Game.Breeds;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
 {

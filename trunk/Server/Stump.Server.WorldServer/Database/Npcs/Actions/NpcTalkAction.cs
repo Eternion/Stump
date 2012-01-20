@@ -1,9 +1,9 @@
 using System;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
-using Stump.Server.WorldServer.Worlds.Dialogs.Npcs;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 
 namespace Stump.Server.WorldServer.Database.Npcs.Actions
 {

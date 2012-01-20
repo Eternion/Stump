@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using Castle.ActiveRecord;
 using NLog;
 using Stump.Server.WorldServer.Database.Interactives.Skills;
-using Stump.Server.WorldServer.Worlds.Interactives;
-using Stump.Server.WorldServer.Worlds.Maps;
-using Stump.Server.WorldServer.Worlds.Maps.Cells;
+using Stump.Server.WorldServer.Game.Interactives;
+using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Database.Interactives
 {
@@ -98,7 +98,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
 
         public Map GetMap()
         {
-            return m_map ?? (m_map = Worlds.World.Instance.GetMap(MapId));
+            return m_map ?? (m_map = Game.World.Instance.GetMap(MapId));
         }
     }
 }

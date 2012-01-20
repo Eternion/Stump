@@ -7,8 +7,8 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Spells;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Monsters;
-using Stump.Server.WorldServer.Worlds.Spells;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
+using Stump.Server.WorldServer.Game.Spells;
 using Stump.Tools.MonsterDataFinder.Readers;
 using Monster = Stump.Tools.MonsterDataFinder.Data.Monster;
 

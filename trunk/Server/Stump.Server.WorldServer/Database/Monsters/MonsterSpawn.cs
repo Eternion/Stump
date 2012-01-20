@@ -1,7 +1,7 @@
 using Castle.ActiveRecord;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Database.World.Maps;
-using Stump.Server.WorldServer.Worlds.Maps;
+using Stump.Server.WorldServer.Game.Maps;
 
 namespace Stump.Server.WorldServer.Database.Monsters
 {
@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
                 if (!MapId.HasValue)
                     return null;
 
-                return m_map ?? ( m_map = Worlds.World.Instance.GetMap(MapId.Value) );
+                return m_map ?? ( m_map = Game.World.Instance.GetMap(MapId.Value) );
             }
             set
             {
@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
                 if (!SubAreaId.HasValue)
                     return null;
 
-                return m_subArea ?? ( m_subArea = Worlds.World.Instance.GetSubArea(SubAreaId.Value) );
+                return m_subArea ?? ( m_subArea = Game.World.Instance.GetSubArea(SubAreaId.Value) );
             }
             set
             {

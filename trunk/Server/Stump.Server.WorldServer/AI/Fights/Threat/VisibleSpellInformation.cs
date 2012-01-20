@@ -1,7 +1,7 @@
 using System;
 using Stump.Server.WorldServer.Database.Spells;
-using Stump.Server.WorldServer.Worlds.Actors.Fight;
-using Stump.Server.WorldServer.Worlds.Spells;
+using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Threat
 {

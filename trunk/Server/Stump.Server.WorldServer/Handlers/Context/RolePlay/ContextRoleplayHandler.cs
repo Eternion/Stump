@@ -4,9 +4,7 @@ using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Worlds;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay;
-using Stump.Server.WorldServer.Worlds.Maps;
+using Stump.Server.WorldServer.Game.Actors.RolePlay;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {

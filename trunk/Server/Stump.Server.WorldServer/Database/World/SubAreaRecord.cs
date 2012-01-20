@@ -4,7 +4,7 @@ using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Server.WorldServer.Database.I18n;
-using Stump.Server.WorldServer.Worlds.Maps;
+using Stump.Server.WorldServer.Game.Maps;
 
 namespace Stump.Server.WorldServer.Database.World
 {

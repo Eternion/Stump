@@ -1,9 +1,9 @@
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Worlds.Actors;
-using Stump.Server.WorldServer.Worlds.Interactives;
-using Stump.Server.WorldServer.Worlds.Interactives.Skills;
+using Stump.Server.WorldServer.Game.Actors;
+using Stump.Server.WorldServer.Game.Interactives;
+using Stump.Server.WorldServer.Game.Interactives.Skills;
 
 namespace Stump.Server.WorldServer.Handlers.Interactives
 {

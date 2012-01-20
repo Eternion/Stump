@@ -5,11 +5,11 @@ using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Worlds;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Worlds.Dialogs.Npcs;
-using Stump.Server.WorldServer.Worlds.Exchanges;
-using Item = Stump.Server.WorldServer.Worlds.Items.Item;
+using Stump.Server.WorldServer.Game;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Dialogs.Npcs;
+using Stump.Server.WorldServer.Game.Exchanges;
+using Item = Stump.Server.WorldServer.Game.Items.Item;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {

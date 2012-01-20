@@ -5,8 +5,8 @@ using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Server.WorldServer.Database.I18n;
-using Stump.Server.WorldServer.Worlds.Effects;
-using Stump.Server.WorldServer.Worlds.Effects.Instances;
+using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Database.Items.Templates
 {

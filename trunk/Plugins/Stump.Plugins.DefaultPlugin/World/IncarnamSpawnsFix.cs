@@ -9,12 +9,12 @@ namespace Stump.Plugins.DefaultPlugin.World
 
         private const int INCARNAM_SUPERAREA_ID = 3;
 
-        [Initialization(typeof(Server.WorldServer.Worlds.World), Silent = true)]
+        [Initialization(typeof(Server.WorldServer.Game.World), Silent = true)]
         public static void ApplyFix()
         {
             logger.Debug("Apply incarnam spawns fix");
 
-            var area = Server.WorldServer.Worlds.World.Instance.GetSuperArea(INCARNAM_SUPERAREA_ID);
+            var area = Server.WorldServer.Game.World.Instance.GetSuperArea(INCARNAM_SUPERAREA_ID);
 
             if (area == null)
             {

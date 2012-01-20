@@ -3,8 +3,8 @@ using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
-using Stump.Server.WorldServer.Worlds.Maps.Cells;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Database.Npcs
 {
@@ -103,7 +103,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
 
         public ObjectPosition GetPosition()
         {
-            var map = Worlds.World.Instance.GetMap(MapId);
+            var map = Game.World.Instance.GetMap(MapId);
 
             if (map == null)
                 throw new Exception(string.Format("Cannot load NpcSpawn id={0}, map {1} isn't found", Id, MapId));

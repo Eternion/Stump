@@ -5,9 +5,9 @@ using System.Reflection;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
-using Stump.Server.WorldServer.Worlds.Effects;
-using Stump.Server.WorldServer.Worlds.Effects.Instances;
-using Stump.Server.WorldServer.Worlds.Spells;
+using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Database.Spells
 {

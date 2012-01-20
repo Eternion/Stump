@@ -3,9 +3,9 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Worlds.Actors.Fight;
-using Stump.Server.WorldServer.Worlds.Maps.Cells;
-using Stump.Server.WorldServer.Worlds.Maps.Pathfinding;
+using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Actions
@@ -46,6 +46,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
 
         protected override RunStatus Run(object context)
         {
+            if (!Fighter.CanMove())
+                return RunStatus.Failure;
+
             if (DestinationId == Fighter.Cell.Id)
                 return RunStatus.Success;
 
@@ -58,7 +61,30 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             if (path.MPCost > Fighter.MP)
                 return RunStatus.Failure;
 
-            return Fighter.StartMove(path) ? RunStatus.Success : RunStatus.Failure;
+            bool success = Fighter.StartMove(path);
+            var lastPos = Fighter.Cell.Id;
+
+            // re-attempt to move if we didn't reach the cell i.e as we trigger a trap
+            while (success && Fighter.Cell.Id != DestinationId && Fighter.CanMove())
+            {
+                path = pathfinder.FindPath(Fighter.Position.Cell.Id, DestinationId, false, Fighter.MP);
+
+                if (path == null || path.IsEmpty())
+                    return RunStatus.Failure;
+
+                if (path.MPCost > Fighter.MP)
+                    return RunStatus.Failure;
+
+                success = Fighter.StartMove(path);
+
+                // the mob didn't move so we give up
+                if (Fighter.Cell.Id == lastPos)
+                    return RunStatus.Failure;
+
+                lastPos = Fighter.Cell.Id;
+            }
+
+            return success ? RunStatus.Success : RunStatus.Failure;
         }
     }
 }

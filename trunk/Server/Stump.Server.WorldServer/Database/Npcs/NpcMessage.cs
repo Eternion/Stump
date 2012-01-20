@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 
 namespace Stump.Server.WorldServer.Database.Npcs
 {

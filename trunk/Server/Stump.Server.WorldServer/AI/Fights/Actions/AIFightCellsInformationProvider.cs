@@ -1,7 +1,6 @@
-using Stump.Server.WorldServer.Worlds.Actors.Fight;
-using Stump.Server.WorldServer.Worlds.Fights;
-using Stump.Server.WorldServer.Worlds.Maps;
-using Stump.Server.WorldServer.Worlds.Maps.Pathfinding;
+using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 
 namespace Stump.Server.WorldServer.AI.Fights.Actions
 {

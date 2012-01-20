@@ -10,6 +10,8 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Game.Accounts;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
@@ -18,8 +20,6 @@ using Stump.Server.WorldServer.Handlers.Friends;
 using Stump.Server.WorldServer.Handlers.Initialization;
 using Stump.Server.WorldServer.Handlers.Inventory;
 using Stump.Server.WorldServer.Handlers.Shortcuts;
-using Stump.Server.WorldServer.Worlds.Accounts;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
 {

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.Worlds.Maps.Cells;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Tools.Proxy.Data;
 using Stump.Tools.Proxy.Network;
-using ServerWorld = Stump.Server.WorldServer.Worlds.World;
+using ServerWorld = Stump.Server.WorldServer.Game.World;
 
 namespace Stump.Tools.Proxy.Handlers.World
 {

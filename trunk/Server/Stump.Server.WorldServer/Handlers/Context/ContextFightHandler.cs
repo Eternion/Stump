@@ -7,11 +7,12 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Worlds.Actors.Fight;
-using Stump.Server.WorldServer.Worlds.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Worlds.Fights;
-using Stump.Server.WorldServer.Worlds.Fights.Buffs;
-using Stump.Server.WorldServer.Worlds.Fights.Triggers;
+using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
+using Stump.Server.WorldServer.Game.Fights.Triggers;
+using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Handlers.Context
 {
@@ -38,7 +39,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (!client.ActiveCharacter.IsFighting())
                 return;
 
-            client.ActiveCharacter.Fight.RequestTurnEnd(client.ActiveCharacter.Fighter);
+            client.ActiveCharacter.Fighter.PassTurn();
         }
 
         [WorldHandler(GameFightTurnReadyMessage.Id)]
@@ -59,7 +60,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (!client.ActiveCharacter.IsFighting())
                 return;
 
-            client.ActiveCharacter.Fight.LeaveFight(client.ActiveCharacter.Fighter);
+            client.ActiveCharacter.Fighter.LeaveFight();
         }
 
         [WorldHandler(GameFightPlacementPositionRequestMessage.Id)]
@@ -173,7 +174,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (target == null)
                 return;
 
-            client.ActiveCharacter.Fight.KickPlayer(target);
+            client.ActiveCharacter.Fight.KickFighter(target);
         }
 
         public static void SendGameFightStartMessage(IPacketReceiver client)
@@ -299,7 +300,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameActionFightSpellCastMessage(IPacketReceiver client, ActionsEnum actionId, FightActor caster,
                                                                Cell cell, FightSpellCastCriticalEnum critical, bool silentCast,
-                                                               Worlds.Spells.Spell spell)
+                                                               Spell spell)
         {
             client.Send(new GameActionFightSpellCastMessage((short) actionId, caster.Id, cell.Id, (sbyte) (critical),
                                                             silentCast, (short) spell.Id, spell.CurrentLevel));
@@ -321,7 +322,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameActionFightUnmarkCellsMessage(310, trigger.Caster.Id, trigger.Id));
         }
 
-        public static void SendGameActionFightTriggerGlyphTrapMessage(IPacketReceiver client, MarkTrigger trigger, FightActor target, Worlds.Spells.Spell triggeredSpell)
+        public static void SendGameActionFightTriggerGlyphTrapMessage(IPacketReceiver client, MarkTrigger trigger, FightActor target, Spell triggeredSpell)
         {
             var action = trigger.Type == GameActionMarkTypeEnum.GLYPH ? ActionsEnum.ACTION_FIGHT_TRIGGER_GLYPH : ActionsEnum.ACTION_FIGHT_TRIGGER_TRAP;
             client.Send(new GameActionFightTriggerGlyphTrapMessage((short)action, trigger.Caster.Id, trigger.Id, target.Id, (short) triggeredSpell.Id));

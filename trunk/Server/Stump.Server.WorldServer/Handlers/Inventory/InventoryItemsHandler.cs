@@ -5,7 +5,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Worlds.Items;
+using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
