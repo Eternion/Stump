@@ -213,11 +213,6 @@ namespace Stump.Server.BaseServer.Commands
 
                         if (definition != null)
                         {
-                            /*{
-                                ReplyError("Unknown parameter : {0}", word);
-                                return false;
-                            }*/
-
                             IParameter parameter = definition.CreateParameter();
 
                             try
