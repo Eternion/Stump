@@ -3,6 +3,7 @@ using System.IO;
 using NLog;
 using Stump.Core.IO;
 using Stump.Core.Xml.Config;
+using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Server.AuthServer;
 using Stump.Server.WorldServer;
 using Stump.Tools.CacheManager.SQL;
@@ -44,6 +45,8 @@ namespace Stump.Tools.CacheManager
 
             SpecificLanguage = args.Length > 3 ? args[3] : SpecificLanguage;
 
+            D2OReader reader = new D2OReader(d2OFolder + "\\WorldMaps.d2o");
+            var obj = reader.ReadObjects();
             
             XmlConfig config;
             if (!string.IsNullOrEmpty(Path.GetFullPath(AuthConfigPath)))

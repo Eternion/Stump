@@ -39,12 +39,12 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             var itemTemplate = trigger.Get<ItemTemplate>("template");
             Character target;
-
+    
             if (!trigger.IsArgumentDefined("target") && trigger is GameTrigger)
                 target = (trigger as GameTrigger).Character;
             else
                 target = trigger.Get<Character>("target");
-
+            
             Item addedItem =
                 target.Inventory.AddItem(
                     itemTemplate,
