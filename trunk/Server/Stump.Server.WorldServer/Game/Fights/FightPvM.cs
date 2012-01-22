@@ -50,12 +50,12 @@ namespace Stump.Server.WorldServer.Game.Fights
             foreach (CharacterFighter fighter in GetAllFighters<CharacterFighter>())
                 fighter.SetEarnedExperience(CalculateWinExp(fighter));
 
-            return Fighters.Select(entry => entry.GetFightResult());
+            return GetAllFightersAndLeavers().Select(entry => entry.GetFightResult());
         }
 
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
         {
-            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, false, State == FightState.Placement, false, State == FightState.Fighting, GetPlacementTimeLeft(), FightType);
+            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, false, !IsStarted, false, IsStarted, GetPlacementTimeLeft(), FightType);
         }
 
         protected override bool CanCancelFight()
@@ -90,6 +90,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         private int CalculateWinExp(CharacterFighter fighter)
         {
+            if (fighter.HasLeft())
+                return 0;
+
             IEnumerable<MonsterFighter> monsters = fighter.OpposedTeam.GetAllFighters<MonsterFighter>(entry => entry.IsDead()).ToList();
             IEnumerable<CharacterFighter> players = fighter.Team.GetAllFighters<CharacterFighter>().ToList();
 

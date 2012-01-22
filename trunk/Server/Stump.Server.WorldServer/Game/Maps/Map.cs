@@ -18,6 +18,7 @@ using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Game.Actors;
+using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;

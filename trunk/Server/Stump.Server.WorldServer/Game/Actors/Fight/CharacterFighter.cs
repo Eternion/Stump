@@ -44,6 +44,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             private set;
         }
 
+        public ReadyChecker PersonalReadyChecker
+        {
+            get;
+            set;
+        }
+
         public override int Id
         {
             get { return Character.Id; }
@@ -88,7 +94,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void ToggleTurnReady(bool ready)
         {
-            if (Fight.ReadyChecker != null)
+            if (PersonalReadyChecker != null)
+                PersonalReadyChecker.ToggleReady(this, ready);
+
+            else if (Fight.ReadyChecker != null)
                 Fight.ReadyChecker.ToggleReady(this, ready);
         }
 
