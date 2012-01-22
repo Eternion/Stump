@@ -59,7 +59,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             Fighters.Remove(fighter);
 
-            if (index < Index)
+            if (index <= Index)
             {
                 Index--;
             }

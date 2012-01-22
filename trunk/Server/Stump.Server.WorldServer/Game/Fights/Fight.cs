@@ -74,6 +74,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             m_teams = new[] {RedTeam, BlueTeam};
 
             TimeLine = new TimeLine(this);
+            Leavers = new List<FightActor>();
 
             BlueTeam.FighterAdded += OnFighterAdded;
             BlueTeam.FighterRemoved += OnFighterRemoved;
@@ -91,7 +92,9 @@ namespace Stump.Server.WorldServer.Game.Fights
         private readonly UniqueIdProvider m_triggerIdProvider = new UniqueIdProvider();
         private TimerEntry m_endFightTimer;
         private bool m_isInitialized;
+        private bool m_disposed;
         private TimerEntry m_placementTimer;
+        private TimerEntry m_turnTimer;
         protected FightTeam[] m_teams;
 
         public int Id
@@ -167,12 +170,18 @@ namespace Stump.Server.WorldServer.Game.Fights
         public ReadyChecker ReadyChecker
         {
             get;
-            private set;
+            protected set;
         }
 
         internal List<FightActor> Fighters
         {
             get { return TimeLine.Fighters; }
+        }
+
+        internal List<FightActor> Leavers
+        {
+            get;
+            private set;
         }
 
         public bool BladesVisible
@@ -227,11 +236,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             HideBlades();
 
+            TimeLine.OrderLine();
+
             ContextHandler.SendGameEntitiesDispositionMessage(Clients, GetAllFighters());
             ContextHandler.SendGameFightStartMessage(Clients);
             ContextHandler.SendGameFightTurnListMessage(Clients, this);
-
-            TimeLine.OrderLine();
+            ContextHandler.SendGameFightSynchronizeMessage(Clients, this);
 
             StartTurn();
         }
@@ -273,18 +283,28 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void EndFight()
         {
+            if (State == FightState.Placement)
+                CancelFight();
+
+            if (State == FightState.Ended)
+                return;
+
             SetFightState(FightState.Ended);
+
+            if (m_turnTimer != null)
+                m_turnTimer.Stop();
 
             if (ReadyChecker != null)
             {
-                logger.Error("Last ReadyChecker was not disposed.");
+                ReadyChecker.Cancel();
             }
 
-            ReadyChecker = ReadyChecker.RequestCheck(this, OnFightEnded, actors => OnFightEnded());
+            ReadyChecker = ReadyChecker.RequestCheck(this, () => OnFightEnded(), actors => OnFightEnded());
         }
 
         protected virtual void OnFightEnded()
         {
+            ReadyChecker = null;
             ResetFightersProperties();
 
             List<IFightResult> results = GenerateResults().ToList();
@@ -324,6 +344,11 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected void Dispose()
         {
+            if (m_disposed)
+                return;
+
+            m_disposed = true;
+
             OnDisposed();
 
             UnBindFightersEvents();
@@ -337,6 +362,12 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             if (ReadyChecker != null)
                 ReadyChecker.Cancel();
+
+            if (m_placementTimer != null)
+                m_placementTimer.Stop();
+
+            if (m_turnTimer != null)
+                m_turnTimer.Stop();
         }
 
         #endregion
@@ -542,6 +573,8 @@ namespace Stump.Server.WorldServer.Game.Fights
                 ( (CharacterFighter)fighter ).Character.RejoinMap();
             }
 
+            CheckFightEnd();
+
             return true;
         }
 
@@ -594,20 +627,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region Kick
 
-        /// <summary>
-        /// If you kick a player he don't die
-        /// </summary>
-        public void KickPlayer(CharacterFighter fighter)
-        {
-            if (State == FightState.Placement)
-            {
-                fighter.Team.RemoveFighter(fighter);
 
-                fighter.Character.RejoinMap();
-
-                CheckFightEnd();
-            }
-        }
 
         #endregion
 
@@ -722,6 +742,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id,
                                                          TurnTime);
 
+            m_turnTimer = Map.Area.CallDelayed(TurnTime, StopTurn);
+
             Action<Fight, FightActor> evnt = TurnStarted;
             if (evnt != null)
                 evnt(this, FighterPlaying);
@@ -729,10 +751,14 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void StopTurn()
         {
+            if (m_turnTimer != null)
+                m_turnTimer.Stop();
+
             if (ReadyChecker != null)
             {
                 logger.Error("Last ReadyChecker was not disposed.");
                 ReadyChecker.Cancel();
+                ReadyChecker = null;
             }
 
             if (CheckFightEnd())
@@ -1104,23 +1130,33 @@ namespace Stump.Server.WorldServer.Game.Fights
                 {
                     Character character = ( (CharacterFighter)fighter ).Character;
 
+                    // wait the character to be ready
                     var readyChecker = new ReadyChecker(this, new[] { ( (CharacterFighter)fighter ) });
                     Action<ReadyChecker> sendResults =
                         (obj) =>
                         {
+                            ( (CharacterFighter)fighter ).PersonalReadyChecker = null;
+                            bool isfighterTurn = fighter.IsFighterTurn();
+
                             ContextHandler.SendGameFightLeaveMessage(Clients, fighter);
-                            ContextHandler.SendGameFightEndMessage(character.Client, this, Fighters.Select(entry => entry.GetFightResult().GetFightResultListEntry()));
+
+                            fighter.Team.RemoveFighter(fighter);
+                            Leavers.Add(fighter);
+
+                            ContextHandler.SendGameFightEndMessage(character.Client, this, GetAllFightersAndLeavers().Select(entry => entry.GetFightResult().GetFightResultListEntry()));
 
                             character.RejoinMap();
 
-                            if (fighter.IsFighterTurn())
-                                PassTurn(); // we don't need to ask if all players are ready 
-
                             if (CheckFightEnd())
                                 return;
+
+                            if (isfighterTurn)
+                                StopTurn();
                         };
                     readyChecker.Success += sendResults;
                     readyChecker.Timeout += (obj, laggers) => sendResults(obj);
+
+                    ( (CharacterFighter)fighter ).PersonalReadyChecker = readyChecker;
                     readyChecker.Start();
 
                     Clients.Remove(character.Client);
@@ -1367,6 +1403,16 @@ namespace Stump.Server.WorldServer.Game.Fights
             return Fighters;
         }
 
+        public IEnumerable<FightActor> GetLeavers()
+        {
+            return Leavers;
+        }
+
+        public IEnumerable<FightActor> GetAllFightersAndLeavers()
+        {
+            return Fighters.Concat(Leavers);
+        }
+
         public IEnumerable<FightActor> GetAllFighters(Cell[] cells)
         {
             return GetAllFighters<FightActor>(entry => cells.Contains(entry.Position.Cell));
@@ -1394,7 +1440,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public IEnumerable<int> GetDeadFightersIds()
         {
-            return GetAllFighters<FightActor>(entry => entry.IsDead()).Select(entry => entry.Id);
+            return GetAllFightersAndLeavers().Where(entry => entry.IsDead()).Select(entry => entry.Id);
         }
 
         public IEnumerable<int> GetAliveFightersIds()

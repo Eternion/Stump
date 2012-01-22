@@ -131,7 +131,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF))
                 return new [] { Caster };
 
-            return Fight.GetAllFighters(AffectedCells).Where(IsValidTarget);
+            return Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && IsValidTarget(entry));
         }
 
         public IEnumerable<FightActor> GetAffectedActors(Predicate<FightActor> predicate)
