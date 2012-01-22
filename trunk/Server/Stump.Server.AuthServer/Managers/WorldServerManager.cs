@@ -16,6 +16,7 @@ using Stump.Server.AuthServer.IPC;
 using Stump.Server.AuthServer.Network;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
+using System.Net;
 
 namespace Stump.Server.AuthServer.Managers
 {
@@ -162,7 +163,9 @@ namespace Stump.Server.AuthServer.Managers
             if (!m_realmlist.ContainsKey(world.Id))
             {
                 //if (AskAddWorldRecord(world))
-                if (AllowedServerIps.Contains(world.Address))
+                IPAddress[] addresses = Dns.GetHostAddresses(world.Address);
+
+                if (AllowedServerIps.Contains(addresses.Last().ToString()))
                 {
                     server = CreateWorld(world);
                 }

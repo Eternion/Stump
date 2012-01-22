@@ -18,7 +18,7 @@ namespace Stump.GUI.WorldConsole
 
                 while (server.Running)
                 {
-                    server.Update();
+                    Thread.Sleep(5000);
                 }
             }
             catch (Exception e)
