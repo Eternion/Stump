@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
 
@@ -25,7 +26,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
             foreach (FightActor actor in GetAffectedActors())
             {
-                var pushDirection = actor.Position.Point.OrientationTo(Caster.Position.Point, false);
+                if (CastPosition.Id == actor.Cell.Id)
+                    continue; // in case of traps it is possible
+
+                var castPoint = new MapPoint(CastPosition);
+                var pushDirection = actor.Position.Point.OrientationTo(castPoint, false);
                 var startCell = actor.Position.Point;
                 var lastCell = startCell;
 

@@ -73,5 +73,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
         #endregion
 
         #endregion
+
+        protected override void OnDisposed()
+        {
+            base.OnDisposed();
+
+            if (Map != null && Map.IsActor(this))
+                Map.Leave(this);
+        }
     }
 }

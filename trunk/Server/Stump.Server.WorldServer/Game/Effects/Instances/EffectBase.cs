@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             Trigger = trigger;
             Hidden = hidden;
             ZoneSize = zoneSize;
-            ZoneShape = zoneShape;
+            ZoneShape = (SpellShapeEnum) zoneShape;
         }
 
         public EffectBase(EffectInstance effect)
@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             Trigger = effect.trigger;
             Hidden = effect.hidden;
             ZoneSize = effect.zoneSize;
-            ZoneShape = effect.zoneShape;
+            ZoneShape = (SpellShapeEnum) effect.zoneShape;
         }
 
         public short Id
@@ -146,7 +146,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             set;
         }
 
-        public uint ZoneShape
+        public SpellShapeEnum ZoneShape
         {
             get;
             set;
@@ -207,7 +207,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 writer.Write(Trigger);
                 writer.Write(Hidden);
                 writer.Write(ZoneSize);
-                writer.Write(ZoneShape);
+                writer.Write((uint) ZoneShape);
             }
         }
 
@@ -242,7 +242,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 Trigger = reader.ReadBoolean();
                 Hidden = reader.ReadBoolean();
                 ZoneSize = reader.ReadUInt32();
-                ZoneShape = reader.ReadUInt32();
+                ZoneShape = (SpellShapeEnum) reader.ReadUInt32();
             }
         }
 

@@ -119,7 +119,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.SPELL);
             //ContextHandler.SendSpellForgottenMessage(client);
 
-            //ContextHandler.SendEmoteListMessage(client, new List<uint>());
+            ContextHandler.SendEmoteListMessage(client, new List<uint>());
             ChatHandler.SendEnabledChannelsMessage(client, new sbyte[] { 0, 1, 2, 3, 4, 5, 6, 7, 12, 13, 9, 10 }, new sbyte[] {8, 7});
 
             //PvpHandler.SendAlignmentRankUpdateMessage(client);

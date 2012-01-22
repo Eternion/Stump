@@ -118,6 +118,8 @@ namespace Stump.Tools.CacheManager
                 object value;
                 object fieldValue = objField.GetValue(obj);
 
+                if (fieldValue == null)
+                    value = null;
                 if (field.DbPropAttr != null && field.DbPropAttr.ColumnType == "Serializable")
                     value = fieldValue.ToBinary();
                 else if (fieldValue is bool)

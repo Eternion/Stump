@@ -70,7 +70,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
                 foreach (var effect in TrapSpell.CurrentSpellLevel.Effects)
                 {
                     var handler = EffectManager.Instance.GetSpellEffectHandler(effect, Caster, TrapSpell, shape.Cell, false);
-                    handler.EffectZone = new Zone(shape.Shape == GameActionMarkCellsTypeEnum.CELLS_CROSS ? SpellShapeEnum.Q : SpellShapeEnum.C, (uint)shape.Size);
+                    handler.EffectZone = new Zone(shape.Shape == GameActionMarkCellsTypeEnum.CELLS_CROSS ? SpellShapeEnum.Q : effect.ZoneShape, (uint)shape.Size);
 
                     handler.Apply();
                 }

@@ -15,7 +15,8 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         public static void HandleEmotePlayRequestMessage(WorldClient client, EmotePlayRequestMessage message)
         {
             // todo : found the duration of each emote
-            //client.ActiveCharacter.StartEmote((EmotesEnum) message.emoteId, 0);
+            //client.ActiveCharacter.((EmotesEnum) message.emoteId, 0);
+            SendEmotePlayMessage(client.ActiveCharacter.Map.Clients, client.ActiveCharacter, (EmotesEnum)message.emoteId, 0);
         }
 
         public static void SendEmotePlayMessage(IPacketReceiver client, Character character, EmotesEnum emote, byte duration)

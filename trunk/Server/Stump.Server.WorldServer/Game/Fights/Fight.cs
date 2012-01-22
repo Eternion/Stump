@@ -349,6 +349,11 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             m_disposed = true;
 
+            foreach (var fighter in Fighters)
+            {
+                fighter.Delete();
+            }
+
             OnDisposed();
 
             UnBindFightersEvents();

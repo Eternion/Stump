@@ -168,5 +168,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             return Monster.ToString();
         }
+
+        protected override void OnDisposed()
+        {
+            base.OnDisposed();
+
+            if (!Monster.Group.IsDisposed)
+                Monster.Group.Delete();
+        }
     }
 }

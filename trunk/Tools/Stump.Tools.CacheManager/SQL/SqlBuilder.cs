@@ -47,7 +47,12 @@ namespace Stump.Tools.CacheManager.SQL
 
             foreach (var value in values)
             {
-                if (value.Value is byte[])
+                if (value.Value == null)
+                {
+                    builder.Append("NULL");
+                }
+
+                else if (value.Value is byte[])
                 {
                     if (( value.Value as byte[] ).Length > 0)
                         builder.Append("0x" + ( (byte[])value.Value ).ByteArrayToString());

@@ -212,6 +212,8 @@
     <Compile Include="Database\World\Triggers\CellTriggerRecord.cs" />
     <Compile Include="Database\World\Triggers\TeleportTriggerRecord.cs" />
     <Compile Include="Game\Actors\Interfaces\INamedActor.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Heal\Heal.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Steals\HPSteal.cs" />
     <Compile Include="Game\Fights\Fight.cs" />
     <Compile Include="Game\Fights\FightCellsInformationProvider.cs" />
     <Compile Include="Game\Fights\FightDuel.cs" />

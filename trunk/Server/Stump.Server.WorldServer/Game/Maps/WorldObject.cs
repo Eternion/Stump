@@ -183,12 +183,25 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public virtual void Dispose()
         {
-            Position = null;
+            if (IsDisposed)
+                return;
 
             IsDisposed = true;
+
+            OnDisposed();
+        }
+
+        protected virtual void OnDisposed()
+        {
+            Position = null;
         }
 
         #endregion
+
+        public void Delete()
+        {
+            Dispose();
+        }
 
         public bool IsGonnaChangeZone()
         {

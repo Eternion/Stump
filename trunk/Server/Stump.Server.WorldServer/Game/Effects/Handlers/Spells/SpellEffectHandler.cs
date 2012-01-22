@@ -7,9 +7,12 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
+using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Spells;
+using TriggerType = Stump.Server.WorldServer.Game.Fights.Buffs.TriggerType;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 {
@@ -57,9 +60,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             private set;
         }
 
+        public MarkTrigger MarkTrigger
+        {
+            get;
+            set;
+        }
+
+        public Cell CastPosition
+        {
+            get { return MarkTrigger != null && MarkTrigger.Shapes.Length > 0 ? MarkTrigger.Shapes[0].Cell : Caster.Cell; }
+        }
+
         public Zone EffectZone
         {
-            get { return m_effectZone ?? (m_effectZone = new Zone((SpellShapeEnum) Effect.ZoneShape, Effect.ZoneSize)); }
+            get { return m_effectZone ?? (m_effectZone = new Zone(Effect.ZoneShape, Effect.ZoneSize)); }
             set
             {
                 m_effectZone = value;
@@ -88,7 +102,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public bool IsValidTarget(FightActor actor)
         {
-            if (Effect.Targets == SpellTargetType.NONE || Effect.Targets == SpellTargetType.ALL)
+            if (Effect.Targets == SpellTargetType.NONE && !(Caster is AIFighter))
+                return false;
+
+            if (Effect.Targets == SpellTargetType.ALL)
                 return true;
 
             if (Caster == actor &&

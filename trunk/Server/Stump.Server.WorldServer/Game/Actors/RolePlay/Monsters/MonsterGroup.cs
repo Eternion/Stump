@@ -16,19 +16,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
     {
         public event Action<MonsterGroup, Character> EnterFight;
 
-        private void OnEnterFight(Character character)
-        {
-            var handler = EnterFight;
-            if (handler != null)
-                EnterFight(this, character);
-        }
-
         private readonly List<Monster> m_monsters = new List<Monster>();
 
         public MonsterGroup(int id, ObjectPosition position)
         {
             ContextualId = id;
             Position = position;
+        }
+
+        public Fights.Fight Fight
+        {
+            get;
+            private set;
         }
 
         public override int Id
@@ -118,9 +117,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             foreach (MonsterFighter monster in CreateFighters(fight.BlueTeam))
                 fight.BlueTeam.AddFighter(monster);
 
+            Fight = fight;
+
             fight.StartPlacement();
 
             OnEnterFight(character);
+        }
+
+        private void OnEnterFight(Character character)
+        {
+            var handler = EnterFight;
+            if (handler != null)
+                EnterFight(this, character);
         }
 
         public IEnumerable<MonsterFighter> CreateFighters(FightTeam team)
@@ -184,6 +192,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
                                                             AgeBonus,
                                                             -1,
                                                             false);
+        }
+
+        protected override void OnDisposed()
+        {
+            base.OnDisposed();
         }
     }
 }

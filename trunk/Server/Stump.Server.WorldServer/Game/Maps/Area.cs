@@ -141,6 +141,12 @@ namespace Stump.Server.WorldServer.Game.Maps
             get { return m_isUpdating; }
         }
 
+        public bool IsDisposed
+        {
+            get;
+            private set;
+        }
+
         #region IContextHandler Members
 
         public bool IsInContext
@@ -291,6 +297,9 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             if (Interlocked.CompareExchange(ref m_currentThreadId, Thread.CurrentThread.ManagedThreadId, 0) == 0)
             {
+                if (IsDisposed || !IsRunning)
+                    return;
+
                 DateTime updateStart = DateTime.Now;
                 var updateDelta = (int) ((updateStart - m_lastUpdateTime).TotalMilliseconds);
 
@@ -325,6 +334,12 @@ namespace Stump.Server.WorldServer.Game.Maps
                 // we copy to allow manipulations on the list
                 foreach (WorldObject obj in m_objects.GetRange(0, m_objects.Count))
                 {
+                    if (obj.IsDisposed) // disposed items should not be in the list
+                    {
+                        m_objects.Remove(obj);
+                        continue;
+                    }
+
                     if (obj.IsTeleporting)
                         continue;
 
@@ -352,7 +367,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                         }
                         else
                         {
-                            //obj.Delete();
+                            obj.Delete();
                         }
                     }
                 }
@@ -383,15 +398,15 @@ namespace Stump.Server.WorldServer.Game.Maps
 
                     Task.Factory.StartNewDelayed(callbackTimeout, UpdateCallback, this);
                 }
-                else
-                {
-                    /*if (IsDisposed)
-                    {
-                        // the Map was marked as disposed and can now be trashed
-                        Dispose();
-                    }*/
-                }
             }
+        }
+
+        public void Dispose()
+        {
+            IsDisposed = true;
+
+            if (IsRunning)
+                Stop();
         }
 
         public void Enter(WorldObject obj)

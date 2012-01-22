@@ -390,6 +390,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             Contract.Requires(interactive != null);
 
+            interactive.Delete();
             m_interactives.Remove(interactive.Id);
             Area.Leave(interactive);
 
@@ -613,6 +614,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 return false;
 
             Leave(group);
+            group.Delete();
 
             return true;
         }
