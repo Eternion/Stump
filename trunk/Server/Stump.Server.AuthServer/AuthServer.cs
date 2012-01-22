@@ -31,7 +31,7 @@ namespace Stump.Server.AuthServer
         public static readonly bool HostAutoDefined = true;
 
         /// <summary>
-        /// Current server adress. Used if HostAutoDefined = false
+        /// Current server address. Used if HostAutoDefined = false
         /// </summary>
         [Variable]
         public static readonly string CustomHost = "127.0.0.1";

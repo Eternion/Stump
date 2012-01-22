@@ -15,8 +15,8 @@ namespace Stump.Tools.CacheManager
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static string AuthConfigPath = "../../../../Run/Debug/AuthServer/auth_config.xml";
-        public static string WorldConfigPath = "../../../../Run/Debug/WorldServer/world_config.xml";
+        public static string AuthConfigPath = "../../../Run/Debug/AuthServer/auth_config.xml";
+        public static string WorldConfigPath = "../../../Run/Debug/WorldServer/world_config.xml";
 
         /// <summary>
         /// Store only the text of given languages separated by a comma. Or leave blank to store all texts
