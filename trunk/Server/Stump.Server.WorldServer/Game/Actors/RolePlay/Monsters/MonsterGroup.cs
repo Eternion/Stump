@@ -198,5 +198,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         {
             base.OnDisposed();
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0} monsters, id:{1}", m_monsters.Count, Id);
+        }
     }
 }

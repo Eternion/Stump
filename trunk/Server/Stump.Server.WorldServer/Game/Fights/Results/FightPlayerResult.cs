@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights.Results.Data;
+using Stump.Server.WorldServer.Handlers.Characters;
 using FightResultAdditionalData = Stump.Server.WorldServer.Game.Fights.Results.Data.FightResultAdditionalData;
 
 namespace Stump.Server.WorldServer.Game.Fights.Results
@@ -56,6 +57,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             Loot.GiveLoot(Character);
             if (AdditionalData != null)
                 AdditionalData.Apply();
+
+            CharacterHandler.SendCharacterStatsListMessage(Character.Client);
         }
     }
 }

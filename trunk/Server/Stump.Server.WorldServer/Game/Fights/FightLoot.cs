@@ -33,7 +33,6 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
 
         // todo : give look to a inventory owner
-        [MethodImpl(MethodImplOptions.Synchronized)]
         public void GiveLoot(Character character)
         {
             character.Inventory.AddKamas(Kamas);

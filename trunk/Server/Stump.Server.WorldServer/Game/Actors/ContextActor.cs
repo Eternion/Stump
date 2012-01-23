@@ -35,9 +35,11 @@ namespace Stump.Server.WorldServer.Game.Actors
             {
                 if (m_position != null)
                     m_position.PositionChanged -= OnPositionChanged;
-
+                
                 m_position = value;
-                m_position.PositionChanged += OnPositionChanged;
+
+                if (m_position != null)
+                    m_position.PositionChanged += OnPositionChanged;
             }
         }
 

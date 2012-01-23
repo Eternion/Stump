@@ -66,8 +66,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                 return exp.Value;
             }
-
-            throw new Exception("Level " + level + " not found");
+            else
+            {
+                return long.MaxValue;
+            }
         }
 
         public byte GetCharacterLevel(long experience)

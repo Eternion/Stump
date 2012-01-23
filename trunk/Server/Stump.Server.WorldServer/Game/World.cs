@@ -226,6 +226,12 @@ namespace Stump.Server.WorldServer.Game
             return area;
         }
 
+
+        public Area GetArea(string name)
+        {
+            return m_areas.Values.Where(entry => entry.Name == name).FirstOrDefault();
+        }
+
         public SuperArea GetSuperArea(int id)
         {
             SuperArea superArea;

@@ -167,6 +167,7 @@
     <Compile Include="Commands\Commands\AnnounceCommand.cs" />
     <Compile Include="Commands\Commands\BanCommand.cs" />
     <Compile Include="Commands\Commands\GodCommand.cs" />
+    <Compile Include="Commands\Commands\InfoCommand.cs" />
     <Compile Include="Commands\Commands\ItemCommand.cs" />
     <Compile Include="Commands\Commands\KickCommand.cs" />
     <Compile Include="Commands\Commands\LookCommand.cs" />

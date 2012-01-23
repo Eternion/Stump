@@ -377,7 +377,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set
             {
                 m_record.Experience = value;
-                if (value >= UpperBoundExperience)
+                if (value >= UpperBoundExperience && Level < ExperienceManager.Instance.HighestLevel)
                 {
                     byte lastLevel = Level;
 
@@ -828,6 +828,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public CharacterFighter CreateFighter(FightTeam team)
         {
+            NextMap = Map; // we do not leave the map
             Map.Leave(this);
             StopRegen();
 

@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public LevelUpCommand()
         {
-            Aliases = new[] { "level_up" };
+            Aliases = new[] { "levelup" };
             RequiredRole = RoleEnum.Administrator;
  
             AddParameter("amount", "amount", "Amount of levels to add", (byte)1);

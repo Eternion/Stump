@@ -141,6 +141,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             get { return m_isUpdating; }
         }
 
+        public float AverageUpdateTime
+        {
+            get { return m_avgUpdateTime; }
+        }
+
         public bool IsDisposed
         {
             get;
@@ -295,14 +300,15 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void UpdateCallback(object state)
         {
-            if (Interlocked.CompareExchange(ref m_currentThreadId, Thread.CurrentThread.ManagedThreadId, 0) == 0)
+            if ((IsDisposed || !IsRunning) || (Interlocked.CompareExchange(ref m_currentThreadId, Thread.CurrentThread.ManagedThreadId, 0) != 0))
+                return;
+
+
+            DateTime updateStart = DateTime.Now;
+            var updateDelta = (int) ((updateStart - m_lastUpdateTime).TotalMilliseconds);
+
+            try
             {
-                if (IsDisposed || !IsRunning)
-                    return;
-
-                DateTime updateStart = DateTime.Now;
-                var updateDelta = (int) ((updateStart - m_lastUpdateTime).TotalMilliseconds);
-
                 IMessage msg;
                 while (m_messageQueue.TryDequeue(out msg))
                 {
@@ -371,7 +377,9 @@ namespace Stump.Server.WorldServer.Game.Maps
                         }
                     }
                 }
-
+            }
+            finally
+            {
                 // we updated the map, so set our last update time to now
                 m_lastUpdateTime = updateStart;
                 m_tickCount++;
@@ -384,20 +392,18 @@ namespace Stump.Server.WorldServer.Game.Maps
                 // weigh old update-time 9 times and new update-time once
                 m_avgUpdateTime = ((m_avgUpdateTime*9) + (float) (newUpdateDelta).TotalMilliseconds)/10;
 
+
                 // make sure to unset the ID *before* enqueuing the task in the ThreadPool again
                 Interlocked.Exchange(ref m_currentThreadId, 0);
-                if (m_running)
+                var callbackTimeout = (int) (m_updateDelay - newUpdateDelta.TotalMilliseconds);
+                if (callbackTimeout < 0)
                 {
-                    var callbackTimeout = (int) (m_updateDelay - newUpdateDelta.TotalMilliseconds);
-                    if (callbackTimeout < 0)
-                    {
-                        // even if we are in a hurry: For the sake of load-balance we have to give control back to the ThreadPool
-                        callbackTimeout = 0;
-                        logger.Debug("Area '{0}' update lagged ({1}ms)", this, (int)newUpdateDelta.TotalMilliseconds);
-                    }
-
-                    Task.Factory.StartNewDelayed(callbackTimeout, UpdateCallback, this);
+                    // even if we are in a hurry: For the sake of load-balance we have to give control back to the ThreadPool
+                    callbackTimeout = 0;
+                    logger.Debug("Area '{0}' update lagged ({1}ms)", this, (int) newUpdateDelta.TotalMilliseconds);
                 }
+
+                Task.Factory.StartNewDelayed(callbackTimeout, UpdateCallback, this);
             }
         }
 

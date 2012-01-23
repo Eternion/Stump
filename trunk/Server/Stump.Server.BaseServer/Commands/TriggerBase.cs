@@ -92,12 +92,22 @@ namespace Stump.Server.BaseServer.Commands
             ReplyError(string.Format(format, args));
         }
 
+        public string Bold(object obj)
+        {
+            return Bold(obj.ToString());
+        }
+
         public string Bold(string message)
         {
             if (!CanFormat)
                 return message; 
 
             return "<b>" + message + "</b>";
+        }
+
+        public string Underline(object obj)
+        {
+            return Underline(obj.ToString());
         }
 
         public string Underline(string message)
@@ -108,12 +118,22 @@ namespace Stump.Server.BaseServer.Commands
             return "<u>" + message + "</u>";
         }
 
+        public string Italic(object obj)
+        {
+            return Italic(obj.ToString());
+        }
+
         public string Italic(string message)
         {
             if (!CanFormat)
                 return message;
 
             return "<i>" + message + "</i>";
+        }
+
+        public string Color(object obj, Color color)
+        {
+            return Color(obj.ToString(), color);
         }
 
         public string Color(string message, Color color)

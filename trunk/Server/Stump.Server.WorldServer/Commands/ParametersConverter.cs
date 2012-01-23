@@ -115,6 +115,27 @@ namespace Stump.Server.WorldServer.Commands
             return templateByName;
         };
 
+        public static ConverterHandler<Area> AreaConverter = (entry, trigger) =>
+        {
+            int outvalue;
+            if (int.TryParse(entry, out outvalue))
+            {
+                var area = World.Instance.GetArea(outvalue);
+
+                if (area == null)
+                    throw new ConverterException(string.Format("'{0}' is not a valid area id", entry));
+
+                return area;
+            }
+
+            var areaByName = World.Instance.GetArea(entry);
+
+            if (areaByName == null)
+                throw new ConverterException(string.Format("'{0}' is not a area name", entry));
+
+            return areaByName;
+        };
+
         public static ConverterHandler<Map> MapConverter = (entry, trigger) =>
         {
             if (entry.Contains(","))

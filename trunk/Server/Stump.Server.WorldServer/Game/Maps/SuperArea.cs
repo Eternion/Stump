@@ -22,6 +22,16 @@ namespace Stump.Server.WorldServer.Game.Maps
             m_record = record;
         }
 
+        public int Id
+        {
+            get { return m_record.Id; }
+        }
+
+        public string Name
+        {
+            get { return m_record.Name; }
+        }
+
         public IEnumerable<Area> Areas
         {
             get { return m_areas; }
