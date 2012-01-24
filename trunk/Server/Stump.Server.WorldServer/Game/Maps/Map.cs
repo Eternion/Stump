@@ -692,6 +692,16 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         #region Fights
 
+        public IEnumerable<Fight> GetFights()
+        {
+            return m_fights;
+        }
+
+        public short GetFightCount()
+        {
+            return (short) m_fights.Count;
+        }
+
         public void AddFight(Fight fight)
         {
             Contract.Requires(fight != null);

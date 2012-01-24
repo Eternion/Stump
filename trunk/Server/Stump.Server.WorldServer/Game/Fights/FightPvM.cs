@@ -19,6 +19,20 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
         }
 
+        public override void StartPlacement()
+        {
+            base.StartPlacement();
+
+            m_placementTimer = Map.Area.CallDelayed(PlacementPhaseTime, StartFighting);
+        }
+
+        public override void StartFighting()
+        {
+            m_placementTimer.Stop();
+
+            base.StartFighting();
+        }
+
         protected override void OnFighterAdded(FightTeam team, FightActor actor)
         {
             base.OnFighterAdded(team, actor);
@@ -50,12 +64,17 @@ namespace Stump.Server.WorldServer.Game.Fights
             foreach (CharacterFighter fighter in GetAllFighters<CharacterFighter>())
                 fighter.SetEarnedExperience(CalculateWinExp(fighter));
 
-            return GetAllFightersAndLeavers().Select(entry => entry.GetFightResult());
+            return GetFightersAndLeavers().Select(entry => entry.GetFightResult());
         }
 
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
         {
             ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, false, !IsStarted, false, IsStarted, GetPlacementTimeLeft(), FightType);
+        }
+
+        protected override void SendGameFightJoinMessage(FightSpectator spectator)
+        {
+            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, !IsStarted, true, IsStarted, GetPlacementTimeLeft(), FightType);
         }
 
         protected override bool CanCancelFight()

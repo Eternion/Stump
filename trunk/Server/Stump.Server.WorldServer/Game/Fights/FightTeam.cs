@@ -323,5 +323,11 @@ namespace Stump.Server.WorldServer.Game.Fights
                 IsClosed,
                 IsAskingForHelp);
         }
+
+        public FightTeamLightInformations GetFightTeamLightInformations()
+        {
+            return new FightTeamLightInformations(Id, Leader.Id, (sbyte) AlignmentSideEnum.ALIGNMENT_WITHOUT,
+                (sbyte)TeamType, (sbyte) m_fighters.Count);
+        }
     }
 }

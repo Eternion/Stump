@@ -21,5 +21,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             ChatHandler.SendChatServerMessage(Fight.Clients, this, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg);
         }
+
+        public override string GetMapRunningFighterName()
+        {
+            return Name;
+        }
     }
 }

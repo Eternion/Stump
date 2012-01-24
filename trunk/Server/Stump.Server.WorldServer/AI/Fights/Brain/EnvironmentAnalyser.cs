@@ -112,7 +112,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         public FightActor GetNearestFighter(Predicate<FightActor> predicate)
         {
-            return Fight.GetAllFighters(entry => predicate(entry) && entry.IsAlive()).
+            return Fight.GetAllFighters(entry => predicate(entry) && Fighter.CanSee(entry)).
                 OrderBy(entry => entry.Position.Point.DistanceToCell(Fighter.Position.Point)).
                 RandomElementOrDefault();
         }

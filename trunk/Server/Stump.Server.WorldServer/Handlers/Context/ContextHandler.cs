@@ -7,6 +7,7 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Handlers.Basic;
@@ -76,10 +77,10 @@ namespace Stump.Server.WorldServer.Handlers.Context
         [WorldHandler(ShowCellRequestMessage.Id)]
         public static void HandleShowCellRequestMessage(WorldClient client, ShowCellRequestMessage message)
         {
-            if (!client.ActiveCharacter.IsFighting())
-                return;
-
-            client.ActiveCharacter.Fighter.ShowCell(client.ActiveCharacter.Map.Cells[message.cellId]);
+            if (client.ActiveCharacter.IsFighting())
+                client.ActiveCharacter.Fighter.ShowCell(client.ActiveCharacter.Map.Cells[message.cellId]);
+            else if (client.ActiveCharacter.IsSpectator())
+                client.ActiveCharacter.Spectator.ShowCell(client.ActiveCharacter.Map.Cells[message.cellId]);
         }
 
         public static void SendGameContextCreateMessage(IPacketReceiver client, sbyte context)
@@ -102,6 +103,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void SendGameContextRemoveElementMessage(IPacketReceiver client, ContextActor actor)
         {
             client.Send(new GameContextRemoveElementMessage(actor.Id));
+        }
+
+        public static void SendShowCellSpectatorMessage(IPacketReceiver client, FightSpectator spectator, Cell cell)
+        {
+            client.Send(new ShowCellSpectatorMessage(spectator.Character.Id, cell.Id, spectator.Character.Name));
         }
 
         public static void SendShowCellMessage(IPacketReceiver client, ContextActor source, Cell cell)

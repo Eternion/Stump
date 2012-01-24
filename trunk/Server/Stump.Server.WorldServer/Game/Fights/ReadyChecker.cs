@@ -58,7 +58,10 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
             }
 
-            ContextHandler.SendGameFightTurnReadyRequestMessage(m_fight.Clients, m_fight.TimeLine.Current);
+            foreach (var fighter in m_fighters)
+            {
+                ContextHandler.SendGameFightTurnReadyRequestMessage(fighter.Character.Client, m_fight.TimeLine.Current);
+            }
 
             m_timer = m_fight.Map.Area.CallDelayed(CheckTimeout, TimedOut);
         }

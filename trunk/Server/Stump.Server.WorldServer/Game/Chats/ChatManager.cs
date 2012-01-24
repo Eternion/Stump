@@ -126,7 +126,12 @@ namespace Stump.Server.WorldServer.Game.Chats
             if (!CanUseChannel(client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_GLOBAL))
                 return;
 
-            SendChatServerMessage(client.ActiveCharacter.CharacterContainer.Clients, client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg);
+            if (client.ActiveCharacter.IsFighting())
+                SendChatServerMessage(client.ActiveCharacter.Fight.Clients, client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg);
+            else if (client.ActiveCharacter.IsSpectator())
+                SendChatServerMessage(client.ActiveCharacter.Fight.SpectatorClients, client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg);
+            else
+                SendChatServerMessage(client.ActiveCharacter.Map.Clients, client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg);
         }
 
         public void SayGlobal(NamedActor actor, string msg)

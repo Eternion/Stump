@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             get { return Fighters.Count; }
         }
 
-        public int RoundNumber
+        public short RoundNumber
         {
             get;
             private set;

@@ -201,7 +201,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
         public override string ToString()
         {
-            return string.Format("{0} monsters, id:{1}", m_monsters.Count, Id);
+            return string.Format("{0} monsters ({1})", m_monsters.Count, Id);
         }
     }
 }

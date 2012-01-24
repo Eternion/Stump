@@ -57,10 +57,10 @@ namespace Stump.Server.WorldServer.Handlers.Context
         [WorldHandler(GameContextQuitMessage.Id)]
         public static void HandleGameContextQuitMessage(WorldClient client, GameContextQuitMessage message)
         {
-            if (!client.ActiveCharacter.IsFighting())
-                return;
-
-            client.ActiveCharacter.Fighter.LeaveFight();
+            if (client.ActiveCharacter.IsFighting())
+                client.ActiveCharacter.Fighter.LeaveFight();
+            else if (client.ActiveCharacter.IsSpectator())
+                client.ActiveCharacter.Spectator.Leave();
         }
 
         [WorldHandler(GameFightPlacementPositionRequestMessage.Id)]
@@ -122,7 +122,10 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (!client.ActiveCharacter.Fighter.IsTeamLeader())
                 return;
 
-            client.ActiveCharacter.Team.ToggleOption((FightOptionsEnum) message.option);
+            if (!client.ActiveCharacter.Fight.IsStarted)
+                client.ActiveCharacter.Team.ToggleOption((FightOptionsEnum) message.option);
+            else if (message.option == 0)
+                client.ActiveCharacter.Fight.ToggleSpectatorClosed(!client.ActiveCharacter.Fight.SpectatorClosed);
         }
 
         [WorldHandler(GameFightJoinRequestMessage.Id)]
@@ -136,6 +139,16 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (fight.Map != client.ActiveCharacter.Map)
             {
                 SendChallengeFightJoinRefusedMessage(client, client.ActiveCharacter, FighterRefusedReasonEnum.WRONG_MAP);
+                return;
+            }
+
+            if (fight.IsStarted)
+            {
+                if (message.fighterId == 0 && fight.CanSpectatorJoin(client.ActiveCharacter))
+                {
+                    fight.AddSpectator(client.ActiveCharacter.CreateSpectator(fight));
+                }
+                
                 return;
             }
 
@@ -213,6 +226,19 @@ namespace Stump.Server.WorldServer.Handlers.Context
         {
             client.Send(new GameFightJoinMessage(canBeCancelled, canSayReady, isSpectator, isFightStarted,
                                                  timeMaxBeforeFightStart, (sbyte) fightTypeEnum));
+        }
+
+        public static void SendGameFightSpectateMessage(IPacketReceiver client, Fight fight)
+        {
+            client.Send(new GameFightSpectateMessage(
+                fight.GetBuffs().Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
+                fight.GetTriggers().Select(entry => entry.GetHiddenGameActionMark()),
+                fight.TimeLine.RoundNumber));    
+        }
+
+        public static void SendGameFightTurnResumeMessage(IPacketReceiver client, FightActor playingTurn, int waitTime)
+        {
+            client.Send(new GameFightTurnResumeMessage(playingTurn.Id, waitTime));
         }
 
         public static void SendChallengeFightJoinRefusedMessage(IPacketReceiver client, Character character,

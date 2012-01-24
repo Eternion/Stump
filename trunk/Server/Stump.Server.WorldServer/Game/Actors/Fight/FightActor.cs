@@ -389,7 +389,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void ShowCell(Cell cell)
         {
-            ContextHandler.SendShowCellMessage(CharacterContainer.Clients, this, cell);
+            foreach (var fighter in Team.GetAllFighters<CharacterFighter>())
+            {
+                ContextHandler.SendShowCellMessage(fighter.Character.Client, this, cell);
+            }
 
             NotifyCellShown(cell);
         }
@@ -985,6 +988,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return IsAlive() && !HasLeft();
         }
 
+        public override bool CanSee(WorldObject obj)
+        {
+            var fighter = obj as FightActor;
+            if (fighter == null || fighter.Fight != Fight) 
+                return base.CanSee(obj);
+
+            // todo : visible state
+            return fighter.IsAlive();
+        }
+
         #endregion
 
         #endregion
@@ -1046,6 +1059,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             return GetGameFightFighterInformations();
         }
+
+        public abstract string GetMapRunningFighterName();
 
         #endregion
     }

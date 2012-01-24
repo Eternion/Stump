@@ -75,6 +75,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             TimeLine = new TimeLine(this);
             Leavers = new List<FightActor>();
+            Spectators = new List<FightSpectator>();
 
             BlueTeam.FighterAdded += OnFighterAdded;
             BlueTeam.FighterRemoved += OnFighterRemoved;
@@ -88,13 +89,17 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region Properties
 
-        private readonly ReversedUniqueIdProvider m_contextualIdProvider = new ReversedUniqueIdProvider(0);
-        private readonly UniqueIdProvider m_triggerIdProvider = new UniqueIdProvider();
-        private TimerEntry m_endFightTimer;
+        protected readonly ReversedUniqueIdProvider m_contextualIdProvider = new ReversedUniqueIdProvider(0);
+        protected readonly UniqueIdProvider m_triggerIdProvider = new UniqueIdProvider();
+
+        protected readonly List<Buff> m_buffs = new List<Buff>();
+
+        protected TimerEntry m_placementTimer;
+        protected TimerEntry m_turnTimer;
+
         private bool m_isInitialized;
         private bool m_disposed;
-        private TimerEntry m_placementTimer;
-        private TimerEntry m_turnTimer;
+
         protected FightTeam[] m_teams;
 
         public int Id
@@ -167,6 +172,12 @@ namespace Stump.Server.WorldServer.Game.Fights
             get { return TimeLine.Current; }
         }
 
+        public DateTime TurnStartTime
+        {
+            get;
+            protected set;
+        }
+
         public ReadyChecker ReadyChecker
         {
             get;
@@ -179,6 +190,18 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
 
         internal List<FightActor> Leavers
+        {
+            get;
+            private set;
+        }
+
+        internal List<FightSpectator> Spectators
+        {
+            get;
+            private set;
+        }
+
+        public bool SpectatorClosed
         {
             get;
             private set;
@@ -272,11 +295,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             SetFightState(FightState.Ended);
 
-            ForEach(character =>
-                        {
-                            ContextHandler.SendGameFightEndMessage(character.Client, this);
-                            character.RejoinMap();
-                        });
+            ContextHandler.SendGameFightEndMessage(Clients, this);
+
+            foreach (var character in GetCharactersAndSpectators())
+            {
+                character.RejoinMap();
+            }
 
             Dispose();
         }
@@ -313,7 +337,11 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             ContextHandler.SendGameFightEndMessage(Clients, this, results.Select(entry => entry.GetFightResultListEntry()));
 
-            ForEach(entry => entry.RejoinMap());
+            foreach (var character in GetCharactersAndSpectators())
+            {
+                character.RejoinMap();
+            }
+
             Dispose();
         }
 
@@ -717,6 +745,98 @@ namespace Stump.Server.WorldServer.Game.Fights
             Clients.Remove(fighter.Character.Client);
         }
 
+
+        #endregion
+
+        #region Spectators
+
+        public void ToggleSpectatorClosed(bool state)
+        {
+            SpectatorClosed = state;
+
+            // Spectator mode Activated/Disabled
+            BasicHandler.SendTextInformationMessage(Clients, 0, (short)( SpectatorClosed ? 40 : 39 ));
+
+            if (state)
+                RemoveAllSpectators();
+
+            ContextHandler.SendGameFightOptionStateUpdateMessage(Clients, RedTeam, 0, SpectatorClosed);
+            ContextHandler.SendGameFightOptionStateUpdateMessage(Clients, BlueTeam, 0, SpectatorClosed);
+        }
+
+        public virtual bool CanSpectatorJoin(Character spectator)
+        {
+            return !SpectatorClosed && State == FightState.Fighting;
+        }
+
+        public bool AddSpectator(FightSpectator spectator)
+        {
+            if (!CanSpectatorJoin(spectator.Character))
+                return false;
+
+            Spectators.Add(spectator);
+            spectator.JoinTime = DateTime.Now;
+            spectator.Left += OnSpectectorLeft;
+
+            Clients.Add(spectator.Client);
+            SpectatorClients.Add(spectator.Client);
+
+            OnSpectatorAdded(spectator);
+
+            return true;
+        }
+
+        protected virtual void OnSpectatorAdded(FightSpectator spectator)
+        {
+            SendGameFightJoinMessage(spectator);
+
+            foreach (var fighter in GetAllFighters())
+            {
+                ContextHandler.SendGameFightShowFighterMessage(spectator.Client, fighter);
+            }
+
+            ContextHandler.SendGameFightTurnListMessage(spectator.Client, this);
+            ContextHandler.SendGameFightSpectateMessage(spectator.Client, this);
+
+            CharacterHandler.SendCharacterStatsListMessage(spectator.Client);
+
+            // Spectator 'X' joined
+            BasicHandler.SendTextInformationMessage(Clients, 0, 36, spectator.Character.Name);
+
+            if (TimeLine.Current != null)
+            {
+                ContextHandler.SendGameFightTurnResumeMessage(spectator.Client, FighterPlaying, GetTurnTimeLeft());
+            }
+        }
+
+        protected virtual void OnSpectectorLeft(FightSpectator spectator)
+        {
+            RemoveSpectator(spectator);
+        }
+
+        public void RemoveSpectator(FightSpectator spectator)
+        {
+            Spectators.Remove(spectator);
+
+            Clients.Remove(spectator.Character.Client);
+            SpectatorClients.Remove(spectator.Client);
+
+            OnSpectatorRemoved(spectator);
+        }
+
+        protected virtual void OnSpectatorRemoved(FightSpectator spectator)
+        {
+            spectator.Character.RejoinMap();
+        }
+
+        public void RemoveAllSpectators()
+        {
+            foreach (var spectator in Spectators.GetRange(0, Spectators.Count))
+            {
+                RemoveSpectator(spectator);
+            }
+        }
+
         #endregion
 
         #region Turn Management
@@ -747,6 +867,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id,
                                                          TurnTime);
 
+            TurnStartTime = DateTime.Now;
             m_turnTimer = Map.Area.CallDelayed(TurnTime, StopTurn);
 
             Action<Fight, FightActor> evnt = TurnStarted;
@@ -1023,13 +1144,20 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region Buffs
 
-        protected virtual void OnBuffRemoved(FightActor target, Buff buff)
+        public IEnumerable<Buff> GetBuffs()
         {
+            return m_buffs;
         }
 
         protected virtual void OnBuffAdded(FightActor target, Buff buff)
         {
+            m_buffs.Add(buff);
             ContextHandler.SendGameActionFightDispellableEffectMessage(Clients, buff);
+        }
+
+        protected virtual void OnBuffRemoved(FightActor target, Buff buff)
+        {
+            m_buffs.Remove(buff);
         }
 
         #endregion
@@ -1148,7 +1276,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                             fighter.Team.RemoveFighter(fighter);
                             Leavers.Add(fighter);
 
-                            ContextHandler.SendGameFightEndMessage(character.Client, this, GetAllFightersAndLeavers().Select(entry => entry.GetFightResult().GetFightResultListEntry()));
+                            ContextHandler.SendGameFightEndMessage(character.Client, this, GetFightersAndLeavers().Select(entry => entry.GetFightResult().GetFightResultListEntry()));
 
                             character.RejoinMap();
 
@@ -1186,6 +1314,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         #region Triggers
 
         private readonly List<MarkTrigger> m_triggers = new List<MarkTrigger>();
+
+        public IEnumerable<MarkTrigger> GetTriggers()
+        {
+            return m_triggers;
+        }
 
         public void AddTriger(MarkTrigger trigger)
         {
@@ -1292,12 +1425,14 @@ namespace Stump.Server.WorldServer.Game.Fights
         #region Send Methods
 
         protected abstract void SendGameFightJoinMessage(CharacterFighter fighter);
+        protected abstract void SendGameFightJoinMessage(FightSpectator spectator);
 
         #endregion
 
         #region Get Methods
 
         private readonly WorldClientCollection m_clients = new WorldClientCollection();
+        private readonly WorldClientCollection m_spectatorClients = new WorldClientCollection();
 
         /// <summary>
         /// Do not modify, just read
@@ -1305,6 +1440,17 @@ namespace Stump.Server.WorldServer.Game.Fights
         public WorldClientCollection Clients
         {
             get { return m_clients; }
+        }
+
+        /// <summary>
+        /// Do not modify, just read
+        /// </summary>
+        public WorldClientCollection SpectatorClients
+        {
+            get
+            {
+                return m_spectatorClients;
+            }
         }
 
         public IEnumerable<Character> GetAllCharacters()
@@ -1341,6 +1487,16 @@ namespace Stump.Server.WorldServer.Game.Fights
         public int GetFightDuration()
         {
             return !IsStarted ? 0 : (int) (DateTime.Now - StartTime).TotalMilliseconds;
+        }
+
+        public int GetTurnTimeLeft()
+        {
+            if (TimeLine.Current == null)
+                return 0;
+
+            var time = ( DateTime.Now - TurnStartTime ).TotalMilliseconds;
+
+            return time > 0 ? (TurnTime - (int)time) : 0;
         }
 
         public sbyte GetNextContextualId()
@@ -1413,7 +1569,17 @@ namespace Stump.Server.WorldServer.Game.Fights
             return Leavers;
         }
 
-        public IEnumerable<FightActor> GetAllFightersAndLeavers()
+        public IEnumerable<FightSpectator> GetSpectators()
+        {
+            return Spectators;
+        }
+
+        public IEnumerable<Character> GetCharactersAndSpectators()
+        {
+            return GetAllCharacters().Concat(GetSpectators().Select(entry => entry.Character));
+        }
+
+        public IEnumerable<FightActor> GetFightersAndLeavers()
         {
             return Fighters.Concat(Leavers);
         }
@@ -1445,7 +1611,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public IEnumerable<int> GetDeadFightersIds()
         {
-            return GetAllFightersAndLeavers().Where(entry => entry.IsDead()).Select(entry => entry.Id);
+            return GetFightersAndLeavers().Where(entry => entry.IsDead()).Select(entry => entry.Id);
         }
 
         public IEnumerable<int> GetAliveFightersIds()
@@ -1461,6 +1627,12 @@ namespace Stump.Server.WorldServer.Game.Fights
                                                m_teams.Select(entry => entry.BladePosition.Cell.Id),
                                                m_teams.Select(entry => entry.GetFightOptionsInformations()));
         }
+
+        public FightExternalInformations GetFightExternalInformations()
+        {
+            return new FightExternalInformations(Id, StartTime.GetUnixTimeStamp(), SpectatorClosed || State != FightState.Fighting, m_teams.Select(entry => entry.GetFightTeamLightInformations()), m_teams.Select(entry => entry.GetFightOptionsInformations()));
+        }
+
 
         #endregion
     }

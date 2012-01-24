@@ -164,6 +164,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return new FightTeamMemberMonsterInformations(Id, Monster.Template.Id, (sbyte) Monster.Grade.GradeId);
         }
 
+        public override string GetMapRunningFighterName()
+        {
+            return Monster.Template.Id.ToString();
+        }
+
         public override string ToString()
         {
             return Monster.ToString();

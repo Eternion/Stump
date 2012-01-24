@@ -553,14 +553,36 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
+        public FightSpectator Spectator
+        {
+            get;
+            private set;
+        }
+
         public Fights.Fight Fight
         {
-            get { return Fighter.Fight; }
+            get
+            {
+                return Fighter == null ? (Spectator != null ? Spectator.Fight : null ) : Fighter.Fight;
+            }
         }
 
         public FightTeam Team
         {
-            get { return Fighter.Team; }
+            get
+            {
+                return Fighter != null ? Fighter.Team : null;
+            }
+        }
+
+        public bool IsSpectator()
+        {
+            return Spectator != null;
+        }
+
+        public bool IsInFight()
+        {
+            return IsSpectator() || IsFighting();
         }
 
         public bool IsFighting()
@@ -828,6 +850,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public CharacterFighter CreateFighter(FightTeam team)
         {
+            if (IsFighting() || IsSpectator() || !IsInWorld)
+                return null;
+
             NextMap = Map; // we do not leave the map
             Map.Leave(this);
             StopRegen();
@@ -840,16 +865,41 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return Fighter = new CharacterFighter(this, team);
         }
 
+        public FightSpectator CreateSpectator(Fights.Fight fight)
+        {
+            if (IsFighting() || IsSpectator() || !IsInWorld)
+                return null;
+
+            if (!fight.CanSpectatorJoin(this))
+                return null;
+
+            NextMap = Map; // we do not leave the map
+            Map.Leave(this);
+            StopRegen();
+
+            ContextHandler.SendGameContextDestroyMessage(Client);
+            ContextHandler.SendGameContextCreateMessage(Client, 2);
+
+            ContextHandler.SendGameFightStartingMessage(Client, fight.FightType);
+
+            return Spectator = new FightSpectator(this, fight);
+        }
+
         /// <summary>
         /// Rejoin the map after a fight
         /// </summary>
         public void RejoinMap()
         {
-            if (!IsFighting())
+            if (!IsFighting() && !IsSpectator())
                 return;
 
-            Fighter.OnRejoinMap();
+            if (Fighter != null)
+            {
+                Fighter.OnRejoinMap();
+            }
+            
             Fighter = null;
+            Spectator = null;
 
             ContextHandler.SendGameContextDestroyMessage(Client);
             ContextHandler.SendGameContextCreateMessage(Client, 1);

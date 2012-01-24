@@ -96,7 +96,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
 
         public override string ToString()
         {
-            return string.Format("{0} ({1})", Template.Name, Template.Id);
+            return string.Format("{0} ({1}) [{2}]", Template.Name, Id, TemplateId);
         }
     }
 }

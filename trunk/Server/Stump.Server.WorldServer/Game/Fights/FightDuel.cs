@@ -22,12 +22,17 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override IEnumerable<IFightResult> GenerateResults()
         {
-            return GetAllFightersAndLeavers().Select(fighter => fighter.GetFightResult());
+            return GetFightersAndLeavers().Select(fighter => fighter.GetFightResult());
         }
 
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
         {
-            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, !IsStarted, !IsStarted, false, IsStarted, 0, FightType);
+            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), !IsStarted, false, IsStarted, 0, FightType);
+        }
+
+        protected override void SendGameFightJoinMessage(FightSpectator spectator)
+        {
+            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, false, true, IsStarted, 0, FightType);
         }
 
         protected override bool CanCancelFight()

@@ -220,6 +220,7 @@
     <Compile Include="Game\Fights\FightCellsInformationProvider.cs" />
     <Compile Include="Game\Fights\FightDuel.cs" />
     <Compile Include="Game\Fights\FightPvM.cs" />
+    <Compile Include="Game\Fights\FightSpectator.cs" />
     <Compile Include="Game\Fights\ReadyChecker.cs" />
     <Compile Include="Game\Fights\TimeLine.cs" />
     <Compile Include="Handlers\Actions\ActionsFightHandler.cs" />

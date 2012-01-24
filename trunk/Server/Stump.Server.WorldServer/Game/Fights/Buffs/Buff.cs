@@ -128,6 +128,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             return (short) Effect.EffectId;
         }
 
+        public FightDispellableEffectExtendedInformations GetFightDispellableEffectExtendedInformations()
+        {
+            return new FightDispellableEffectExtendedInformations(GetActionId(), Caster.Id, GetAbstractFightDispellableEffect());
+        }
+
         public abstract AbstractFightDispellableEffect GetAbstractFightDispellableEffect();
     }
 }
