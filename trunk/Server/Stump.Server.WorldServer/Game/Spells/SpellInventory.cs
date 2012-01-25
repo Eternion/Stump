@@ -67,12 +67,8 @@ namespace Stump.Server.WorldServer.Game.Spells
 
             var record = SpellManager.Instance.CreateSpellRecord(Owner.Record, template);
 
-            CharacterSpell spell;
-            lock (m_locker)
-            {
-                spell = new CharacterSpell(record);
-                m_spells.Add(spell.Id, spell);
-            }
+            var spell = new CharacterSpell(record);
+            m_spells.Add(spell.Id, spell);
 
             InventoryHandler.SendSpellUpgradeSuccessMessage(Owner.Client, spell);
 
@@ -86,11 +82,11 @@ namespace Stump.Server.WorldServer.Game.Spells
             if (spell == null)
                 return;
 
-            lock (m_locker)
-            {
-                m_spells.Remove(id);
-                m_spellsToDelete.Enqueue(spell.Record);
-            }
+            m_spells.Remove(id);
+            m_spellsToDelete.Enqueue(spell.Record);
+
+            if (spell.CurrentLevel > 1)
+                Owner.SpellsPoints += (ushort)(spell.CurrentLevel - 1);
 
             InventoryHandler.SendSpellUpgradeSuccessMessage(Owner.Client, id, 0);
         }

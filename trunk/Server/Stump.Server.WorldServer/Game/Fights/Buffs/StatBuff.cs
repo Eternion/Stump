@@ -8,14 +8,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 {
     public class StatBuff : Buff
     {
-        public StatBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, short value, CaracteristicsEnum caracteristic, bool critical, bool dispelable)
+        public StatBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, short value, PlayerFields caracteristic, bool critical, bool dispelable)
             : base(id, target, caster, effect, spell, critical, dispelable)
         {
             Value = value;
             Caracteristic = caracteristic;
         }
 
-        public StatBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, short value, CaracteristicsEnum caracteristic, bool critical, bool dispelable, short customActionId)
+        public StatBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, short value, PlayerFields caracteristic, bool critical, bool dispelable, short customActionId)
             : base(id, target, caster, effect, spell, critical, dispelable, customActionId)
         {
             Value = value;
@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             private set;
         }
 
-        public CaracteristicsEnum Caracteristic
+        public PlayerFields Caracteristic
         {
             get;
             set;

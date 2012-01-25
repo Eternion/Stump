@@ -61,6 +61,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             if (path.MPCost > Fighter.MP)
                 return RunStatus.Failure;
 
+            Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
             bool success = Fighter.StartMove(path);
             var lastPos = Fighter.Cell.Id;
 
@@ -70,19 +71,30 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
                 path = pathfinder.FindPath(Fighter.Position.Cell.Id, DestinationId, false, Fighter.MP);
 
                 if (path == null || path.IsEmpty())
+                {
+                    Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
                     return RunStatus.Failure;
+                }
 
                 if (path.MPCost > Fighter.MP)
+                {
+                    Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
                     return RunStatus.Failure;
+                }
 
                 success = Fighter.StartMove(path);
 
                 // the mob didn't move so we give up
                 if (Fighter.Cell.Id == lastPos)
+                {
+                    Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
                     return RunStatus.Failure;
+                }
 
                 lastPos = Fighter.Cell.Id;
             }
+
+            Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
 
             return success ? RunStatus.Success : RunStatus.Failure;
         }

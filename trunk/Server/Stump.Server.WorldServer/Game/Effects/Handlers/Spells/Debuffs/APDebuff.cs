@@ -3,6 +3,8 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Handlers.Actions;
+using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
@@ -18,20 +20,47 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
         public override void Apply()
         {
-            var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
-
-            if (integerEffect == null)
-                return;
-
             foreach (FightActor actor in GetAffectedActors())
             {
+                var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
+
+                if (integerEffect == null)
+                    return;
+
+                var value = integerEffect.Value;
+
+                // Effect_RemoveAP ignore resistance
+                // if (Effect.EffectId != EffectsEnum.Effect_RemoveAP) // note : was i wrong ?
+                {
+                    value = 0;
+
+                    for (int i = 0; i < integerEffect.Value && value < actor.AP; i++)
+                    {
+                        if (actor.RollAPLose(Caster))
+                        {
+                            value++;
+                        }
+                    }
+
+                    var dodged = (short) (integerEffect.Value - value);
+
+                    if (dodged > 0)
+                    {
+                        ActionsHandler.SendGameActionFightDodgePointLossMessage(Fight.Clients, 
+                            ActionsEnum.ACTION_FIGHT_SPELL_DODGED_PA, Caster, actor, dodged);
+                    }
+                }
+
+                if (value <= 0)
+                    return;
+
                 if (Effect.Duration > 1)
                 {
-                    AddStatBuff(actor, (short)( -integerEffect.Value ), CaracteristicsEnum.AP, true);
+                    AddStatBuff(actor, (short)( -value ), PlayerFields.AP, true);
                 }
                 else
                 {
-                    actor.LostAP(integerEffect.Value);
+                    actor.LostAP(value);
                 }
             }
         }

@@ -76,25 +76,25 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
         }
 
 
-        public static IEnumerable<CaracteristicsEnum> GetAssociatedCaracteristics(int spellId)
+        public static IEnumerable<PlayerFields> GetAssociatedCaracteristics(int spellId)
         {
             switch (spellId)
             {
                 case 18:
-                    yield return CaracteristicsEnum.WaterDamageArmor;
+                    yield return PlayerFields.WaterDamageArmor;
                     break;
                 case 6:
-                    yield return CaracteristicsEnum.EarthDamageArmor;
-                    yield return CaracteristicsEnum.NeutralDamageArmor;
+                    yield return PlayerFields.EarthDamageArmor;
+                    yield return PlayerFields.NeutralDamageArmor;
                     break;
                 case 14:
-                    yield return CaracteristicsEnum.AirDamageArmor;
+                    yield return PlayerFields.AirDamageArmor;
                     break;
                 case 1:
-                    yield return CaracteristicsEnum.FireDamageArmor;
+                    yield return PlayerFields.FireDamageArmor;
                     break;
                 default:
-                    yield return CaracteristicsEnum.GlobalDamageReduction;
+                    yield return PlayerFields.GlobalDamageReduction;
                     break;
             }
         }

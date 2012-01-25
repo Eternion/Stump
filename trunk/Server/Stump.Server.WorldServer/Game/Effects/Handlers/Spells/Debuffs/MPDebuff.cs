@@ -3,6 +3,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Handlers.Actions;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
@@ -24,14 +25,41 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
                 if (integerEffect == null)
                     return;
-                
+
+                var value = integerEffect.Value;
+
+                // Effect_LosingMP ignore resistance
+                if (Effect.EffectId != EffectsEnum.Effect_LosingMP)
+                {
+                    value = 0;
+
+                    for (int i = 0; i < integerEffect.Value && value < actor.MP; i++)
+                    {
+                        if (actor.RollMPLose(Caster))
+                        {
+                            value++;
+                        }
+                    }
+
+                    var dodged = (short)( integerEffect.Value - value );
+
+                    if (dodged > 0)
+                    {
+                        ActionsHandler.SendGameActionFightDodgePointLossMessage(Fight.Clients,
+                            ActionsEnum.ACTION_FIGHT_SPELL_DODGED_PM, Caster, actor, dodged);
+                    }
+                }
+
+                if (value <= 0)
+                    return;
+
                 if (Effect.Duration > 1)
                 {
-                    AddStatBuff(actor, (short)( -integerEffect.Value ), CaracteristicsEnum.MP, true);
+                    AddStatBuff(actor, (short)( -value ), PlayerFields.MP, true);
                 }
                 else
                 {
-                    actor.LostMP(integerEffect.Value);
+                    actor.LostMP(value);
                 }
             }
         }

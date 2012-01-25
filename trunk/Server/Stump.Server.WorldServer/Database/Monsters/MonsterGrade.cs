@@ -143,6 +143,20 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
+        [Property("TackleEvade")]
+        public short TackleEvade
+        {
+            get;
+            set;
+        }
+
+        [Property("TackleBlock")]
+        public short TackleBlock
+        {
+            get;
+            set;
+        }
+
         [Property("Strength")]
         public short Strength
         {

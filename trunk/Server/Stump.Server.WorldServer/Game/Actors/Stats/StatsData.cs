@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         protected short m_valueEquiped;
         protected short m_valueGiven;
 
-        public StatsData(IStatsOwner owner, CaracteristicsEnum name, short valueBase)
+        public StatsData(IStatsOwner owner, PlayerFields name, short valueBase)
             : this(
                 owner, name, valueBase,
                 delegate(IStatsOwner _owner, int valuebase, int valueequiped, int valuegiven, int valuecontext)
@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
         }
 
-        public StatsData(IStatsOwner owner, CaracteristicsEnum name, short valueBase, StatsFormulasHandler formulas)
+        public StatsData(IStatsOwner owner, PlayerFields name, short valueBase, StatsFormulasHandler formulas)
         {
             m_valueBase = valueBase;
             m_formulas = formulas;
@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             protected set;
         }
 
-        public CaracteristicsEnum Name
+        public PlayerFields Name
         {
             get;
             protected set;

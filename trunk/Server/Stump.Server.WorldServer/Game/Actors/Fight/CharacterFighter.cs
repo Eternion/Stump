@@ -135,7 +135,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             foreach (var field in Stats.Fields.Values)
             {
-                if (field.Name == CaracteristicsEnum.Health)
+                if (field.Name == PlayerFields.Health)
                 {
                     if (Fight.FightType == FightTypeEnum.FIGHT_TYPE_CHALLENGE)
                         field.Context = m_damageTakenBeforeFight;

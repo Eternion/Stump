@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
                 if (Effect.Duration > 0)
                 {
-                    AddStatBuff(actor, integerEffect.Value, CaracteristicsEnum.MP, true);
+                    AddStatBuff(actor, integerEffect.Value, PlayerFields.MP, true);
                 }
                 else
                 {

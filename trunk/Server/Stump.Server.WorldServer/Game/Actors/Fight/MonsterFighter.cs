@@ -94,6 +94,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
+        // monster ignore tackles ...
+        public override int GetTackledAP()
+        {
+            return 0;
+        }
+
+        public override int GetTackledMP()
+        {
+            return 0;
+        }
+
         public override uint GetDroppedKamas()
         {
             var random = new AsyncRandom();
@@ -110,7 +121,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var random = new AsyncRandom();
             var items = new List<DroppedItem>();
 
-            var prospectingSum = OpposedTeam.GetAllFighters<CharacterFighter>().Sum(entry => entry.Stats[CaracteristicsEnum.Prospecting].Total);
+            var prospectingSum = OpposedTeam.GetAllFighters<CharacterFighter>().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
 
             foreach (var droppableItem in Monster.Template.DroppableItems)
             {
@@ -123,7 +134,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                         break;
 
                     var chance = ( random.Next(0, 100) + random.NextDouble() ) * Rates.DropsRate;
-                    var dropRate = droppableItem.DropRate * ( fighter.Stats[CaracteristicsEnum.Prospecting] / 100 );
+                    var dropRate = droppableItem.DropRate * ( fighter.Stats[PlayerFields.Prospecting] / 100 );
 
                     if (dropRate >= chance)
                     {

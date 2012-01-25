@@ -37,24 +37,24 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
             }
         }
 
-        private static CaracteristicsEnum GetEffectCaracteristic(EffectsEnum effect)
+        private static PlayerFields GetEffectCaracteristic(EffectsEnum effect)
         {
             switch (effect)
             {
                 case EffectsEnum.Effect_StealChance:
-                    return CaracteristicsEnum.Chance;
+                    return PlayerFields.Chance;
                 case EffectsEnum.Effect_StealVitality:
-                    return CaracteristicsEnum.Vitality;
+                    return PlayerFields.Vitality;
                 case EffectsEnum.Effect_StealWisdom:
-                    return CaracteristicsEnum.Wisdom;
+                    return PlayerFields.Wisdom;
                 case EffectsEnum.Effect_StealIntelligence:
-                    return CaracteristicsEnum.Intelligence;
+                    return PlayerFields.Intelligence;
                 case EffectsEnum.Effect_StealAgility:
-                    return CaracteristicsEnum.Agility;
+                    return PlayerFields.Agility;
                 case EffectsEnum.Effect_StealStrength:
-                    return CaracteristicsEnum.Strength;
+                    return PlayerFields.Strength;
                 case EffectsEnum.Effect_StealRange:
-                    return CaracteristicsEnum.Range;
+                    return PlayerFields.Range;
                 default:
                     throw new Exception("No associated caracteristic to effect '" + effect + "'");
             }

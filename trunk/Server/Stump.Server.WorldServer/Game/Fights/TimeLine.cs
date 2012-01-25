@@ -116,12 +116,12 @@ namespace Stump.Server.WorldServer.Game.Fights
         public void OrderLine()
         {
             IOrderedEnumerable<FightActor> redFighters = Fight.RedTeam.GetAllFighters().
-                OrderByDescending(entry => entry.Stats[CaracteristicsEnum.Initiative].Total);
+                OrderByDescending(entry => entry.Stats[PlayerFields.Initiative].Total);
             IOrderedEnumerable<FightActor> blueFighters = Fight.BlueTeam.GetAllFighters().
-                OrderByDescending(entry => entry.Stats[CaracteristicsEnum.Initiative].Total);
+                OrderByDescending(entry => entry.Stats[PlayerFields.Initiative].Total);
 
-            bool redFighterFirst = redFighters.First().Stats[CaracteristicsEnum.Initiative].Total >
-                                   blueFighters.First().Stats[CaracteristicsEnum.Initiative].Total;
+            bool redFighterFirst = redFighters.First().Stats[PlayerFields.Initiative].Total >
+                                   blueFighters.First().Stats[PlayerFields.Initiative].Total;
 
             IEnumerator<FightActor> redEnumerator = redFighters.GetEnumerator();
             IEnumerator<FightActor> blueEnumerator = blueFighters.GetEnumerator();

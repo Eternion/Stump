@@ -484,25 +484,37 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnLevelChanged(byte currentLevel, int difference)
         {
-            SpellsPoints += (ushort)difference;
-            StatsPoints += (ushort)(difference * 5);
+            if (difference > 0)
+            {
+                SpellsPoints += (ushort) difference;
+                StatsPoints += (ushort) (difference*5);
+            }
+
             Stats.Health.Base += (short)( difference * 5 );
             Stats.Health.DamageTaken = 0;
 
-            for (int i = 0; i < Breed.LearnableSpells.Count; i++)
+            if (currentLevel >= 100 && currentLevel - difference < 100)
             {
-                if (Breed.LearnableSpells[i].ObtainLevel > currentLevel)
-                    continue;
+                Stats.AP.Base++;
+            }
+            else if (currentLevel < 100 && currentLevel - difference >= 100)
+            {
+                Stats.AP.Base--;
+            }
 
-                if (!Spells.HasSpell(Breed.LearnableSpells[i].SpellId))
+            foreach (LearnableSpell spell in Breed.LearnableSpells)
+            {
+                if (spell.ObtainLevel > currentLevel && Spells.HasSpell(spell.SpellId))
+                    Spells.UnLearnSpell(spell.SpellId);
+                else if (spell.ObtainLevel <= currentLevel && !Spells.HasSpell(spell.SpellId))
                 {
-                    Spells.LearnSpell(Breed.LearnableSpells[i].SpellId);
+                    Spells.LearnSpell(spell.SpellId);
                 }
             }
 
             CharacterHandler.SendCharacterStatsListMessage(Client);
             CharacterHandler.SendCharacterLevelUpMessage(Client, currentLevel);
-            Map.ForEach(entry => CharacterHandler.SendCharacterLevelUpInformationMessage(entry.Client, this, currentLevel));
+            CharacterHandler.SendCharacterLevelUpInformationMessage(Map.Clients, this, currentLevel);
 
             LevelChangedHandler handler = LevelChanged;
 
@@ -1060,13 +1072,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     m_record.CellId = Cell.Id;
                     m_record.Direction = Direction;
 
-                    m_record.AP = (ushort) Stats[CaracteristicsEnum.AP].Base;
-                    m_record.MP = (ushort) Stats[CaracteristicsEnum.MP].Base;
-                    m_record.Strength = Stats[CaracteristicsEnum.Strength].Base;
-                    m_record.Agility = Stats[CaracteristicsEnum.Agility].Base;
-                    m_record.Chance = Stats[CaracteristicsEnum.Chance].Base;
-                    m_record.Intelligence = Stats[CaracteristicsEnum.Intelligence].Base;
-                    m_record.Wisdom = Stats[CaracteristicsEnum.Wisdom].Base;
+                    m_record.AP = (ushort) Stats[PlayerFields.AP].Base;
+                    m_record.MP = (ushort) Stats[PlayerFields.MP].Base;
+                    m_record.Strength = Stats[PlayerFields.Strength].Base;
+                    m_record.Agility = Stats[PlayerFields.Agility].Base;
+                    m_record.Chance = Stats[PlayerFields.Chance].Base;
+                    m_record.Intelligence = Stats[PlayerFields.Intelligence].Base;
+                    m_record.Wisdom = Stats[PlayerFields.Wisdom].Base;
                     m_record.BaseHealth = (ushort) Stats.Health.Base;
                     m_record.DamageTaken = (ushort) Stats.Health.DamageTaken;
 
@@ -1216,9 +1228,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Look,
                 LifePoints,
                 MaxLifePoints,
-                (short) Stats[CaracteristicsEnum.Prospecting].Total,
+                (short) Stats[PlayerFields.Prospecting].Total,
                 0,
-                (short) Stats[CaracteristicsEnum.Initiative].Total,
+                (short) Stats[PlayerFields.Initiative].Total,
                 false,
                 0);
         }

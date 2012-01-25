@@ -153,7 +153,7 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         public int GroupProspecting
         {
-            get { return m_members.Sum(entry => entry.Stats[CaracteristicsEnum.Prospecting].Total); }
+            get { return m_members.Sum(entry => entry.Stats[PlayerFields.Prospecting].Total); }
         }
 
         public int MembersCount

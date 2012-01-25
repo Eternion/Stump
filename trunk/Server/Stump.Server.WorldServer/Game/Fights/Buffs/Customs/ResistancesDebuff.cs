@@ -22,20 +22,20 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
         public override void Apply()
         {
-            Target.Stats[CaracteristicsEnum.AirResistPercent].Context -= Value;
-            Target.Stats[CaracteristicsEnum.FireResistPercent].Context -= Value;
-            Target.Stats[CaracteristicsEnum.EarthResistPercent].Context -= Value;
-            Target.Stats[CaracteristicsEnum.NeutralResistPercent].Context -= Value;
-            Target.Stats[CaracteristicsEnum.WaterResistPercent].Context -= Value;
+            Target.Stats[PlayerFields.AirResistPercent].Context -= Value;
+            Target.Stats[PlayerFields.FireResistPercent].Context -= Value;
+            Target.Stats[PlayerFields.EarthResistPercent].Context -= Value;
+            Target.Stats[PlayerFields.NeutralResistPercent].Context -= Value;
+            Target.Stats[PlayerFields.WaterResistPercent].Context -= Value;
         }
 
         public override void Dispell()
         {
-            Target.Stats[CaracteristicsEnum.AirResistPercent].Context += Value;
-            Target.Stats[CaracteristicsEnum.FireResistPercent].Context += Value;
-            Target.Stats[CaracteristicsEnum.EarthResistPercent].Context += Value;
-            Target.Stats[CaracteristicsEnum.NeutralResistPercent].Context += Value;
-            Target.Stats[CaracteristicsEnum.WaterResistPercent].Context += Value;
+            Target.Stats[PlayerFields.AirResistPercent].Context += Value;
+            Target.Stats[PlayerFields.FireResistPercent].Context += Value;
+            Target.Stats[PlayerFields.EarthResistPercent].Context += Value;
+            Target.Stats[PlayerFields.NeutralResistPercent].Context += Value;
+            Target.Stats[PlayerFields.WaterResistPercent].Context += Value;
         }
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()

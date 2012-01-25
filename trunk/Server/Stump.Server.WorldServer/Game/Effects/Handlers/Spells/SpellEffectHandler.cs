@@ -102,8 +102,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public bool IsValidTarget(FightActor actor)
         {
-            if (Effect.Targets == SpellTargetType.NONE && !(Caster is AIFighter))
-                return false;
+            if (Effect.Targets == SpellTargetType.NONE)
+                // return false; note : wtf, why is there spells with Targets = NONE ?
+                return true;
 
             if (Effect.Targets == SpellTargetType.ALL)
                 return true;
@@ -163,7 +164,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return GetAffectedActors().Where(entry => predicate(entry));
         }
 
-        public StatBuff AddStatBuff(FightActor target, short value, CaracteristicsEnum caracteritic, bool dispelable)
+        public StatBuff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, bool dispelable)
         {
             int id = target.PopNextBuffId();
             var buff = new StatBuff(id, target, Caster, Effect, Spell, value, caracteritic, Critical, dispelable);
@@ -173,7 +174,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return buff;
         }
 
-        public StatBuff AddStatBuff(FightActor target, short value, CaracteristicsEnum caracteritic, bool dispelable, short customActionId)
+        public StatBuff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, bool dispelable, short customActionId)
         {
             int id = target.PopNextBuffId();
             var buff = new StatBuff(id, target, Caster, Effect, Spell, value, caracteritic, Critical, dispelable, customActionId);

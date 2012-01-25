@@ -10,14 +10,14 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
     public partial class ContextRoleplayHandler : WorldHandlerContainer
     {
-        private readonly static Dictionary<StatsBoostTypeEnum, CaracteristicsEnum> m_statsEnumRelations = new Dictionary<StatsBoostTypeEnum, CaracteristicsEnum>
+        private readonly static Dictionary<StatsBoostTypeEnum, PlayerFields> m_statsEnumRelations = new Dictionary<StatsBoostTypeEnum, PlayerFields>
             {
-                {StatsBoostTypeEnum.Strength, CaracteristicsEnum.Strength},
-                {StatsBoostTypeEnum.Agility, CaracteristicsEnum.Agility},
-                {StatsBoostTypeEnum.Chance, CaracteristicsEnum.Chance},
-                {StatsBoostTypeEnum.Wisdom, CaracteristicsEnum.Wisdom},
-                {StatsBoostTypeEnum.Intelligence, CaracteristicsEnum.Intelligence},
-                {StatsBoostTypeEnum.Vitality, CaracteristicsEnum.Vitality},
+                {StatsBoostTypeEnum.Strength, PlayerFields.Strength},
+                {StatsBoostTypeEnum.Agility, PlayerFields.Agility},
+                {StatsBoostTypeEnum.Chance, PlayerFields.Chance},
+                {StatsBoostTypeEnum.Wisdom, PlayerFields.Wisdom},
+                {StatsBoostTypeEnum.Intelligence, PlayerFields.Intelligence},
+                {StatsBoostTypeEnum.Vitality, PlayerFields.Vitality},
             };
             
         [WorldHandler(StatsUpgradeRequestMessage.Id)]

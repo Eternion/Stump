@@ -354,7 +354,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                 foreach (var field in fighter.Stats.Fields)
                 {
-                    if (field.Key != CaracteristicsEnum.Health)
+                    if (field.Key != PlayerFields.Health)
                         field.Value.Context = 0;
                 }
             }
@@ -858,14 +858,18 @@ namespace Stump.Server.WorldServer.Game.Fights
             FighterPlaying.TriggerBuffs(Buffs.TriggerType.TURN_BEGIN);
             TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.TURN_BEGIN);
 
-            ContextHandler.SendGameFightSynchronizeMessage(Clients, this);
-            ForEach(entry => CharacterHandler.SendCharacterStatsListMessage(entry.Client));
+            // can die with triggers
+            if (CheckFightEnd())
+                return;
 
             if (TimeLine.Index == 0)
                 ContextHandler.SendGameFightNewRoundMessage(Clients, TimeLine.RoundNumber);
 
             ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id,
                                                          TurnTime);
+
+            ContextHandler.SendGameFightSynchronizeMessage(Clients, this);
+            ForEach(entry => CharacterHandler.SendCharacterStatsListMessage(entry.Client));
 
             TurnStartTime = DateTime.Now;
             m_turnTimer = Map.Area.CallDelayed(TurnTime, StopTurn);
@@ -882,7 +886,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (ReadyChecker != null)
             {
-                logger.Error("Last ReadyChecker was not disposed.");
+                logger.Debug("Last ReadyChecker was not disposed. (Stop Turn)");
                 ReadyChecker.Cancel();
                 ReadyChecker = null;
             }
@@ -1060,20 +1064,65 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (path.IsEmpty() || path.MPCost == 0)
                 return;
 
-            IEnumerable<short> movementsKeys = path.GetServerPathKeys();
-            Cell[] cells = path.GetPath();
+            StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
+            if (fighter.GetTackledMP() > 0 || fighter.GetTackledAP() > 0)
+            {
+                // tackle
+                OnTackled(fighter, path);
 
-            for (int i = 1; i < cells.Length; i++)
+                if (path.IsEmpty() || path.MPCost == 0)
+                {
+                    EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
+                    return;
+                }
+            }
+            Cell[] cells = path.GetPath();
+            var fighterCells = fighter.OpposedTeam.GetAllFighters(entry => entry.IsAlive() /*&& entry.IsVisible*/).Select(entry => entry.Cell.Id).ToList();
+
+            for (int i = 1; i < cells.Length - 1; i++)
             {
                 // if there is a trap on the way we trigger it
+                // or if there is a fighter on a adjacent cell
                 if (m_triggers.Any(entry => entry.TriggerType == TriggerType.MOVE && entry.ContainsCell(cells[i])))
-                    path.CutPath(i);
+                {
+                    path.CutPath(i + 1);
+                    break;
+                }
+
+                // fighter adjacent to this cell, ignore first cell
+                // characters only can be tackled
+                if (fighter is CharacterFighter && new MapPoint(cells[i]).GetAdjacentCells(entry => true).Any(entry => fighterCells.Contains(entry.CellId)))
+                {
+                    path.CutPath(i + 1);
+                    break;
+                }
             }
 
-            StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
+            IEnumerable<short> movementsKeys = path.GetServerPathKeys();
+
             ContextHandler.SendGameMapMovementMessage(Clients, movementsKeys, fighter);
             actor.StopMove();
             EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
+        }
+
+        protected virtual void OnTackled(FightActor actor, Path path)
+        {
+            var tacklers = actor.GetTacklers();
+            var mpTackled = actor.GetTackledMP();
+            var apTackled = actor.GetTackledAP();
+
+            if (actor.MP - mpTackled < 0)
+            {
+                logger.Error("Cannot apply tackle : mp tackled ({0}) > available mp ({1})", mpTackled, actor.MP);
+                return;
+            }
+
+            ActionsHandler.SendGameActionFightTackledMessage(Clients, actor, tacklers);
+            actor.LostAP((short)apTackled);
+            actor.LostMP((short)mpTackled);
+
+            if (path.MPCost > actor.MP)
+                path.CutPath(actor.MP + 1);
         }
 
         protected virtual void OnStopMoving(ContextActor actor, Path path, bool canceled)

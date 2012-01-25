@@ -28,6 +28,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             m_monsterSuperRaces = MonsterSuperRace.FindAll().ToDictionary(entry => entry.Id);
         }
 
+        public IEnumerable<MonsterGrade> GetMonsterGrades()
+        {
+            return m_monsterGrades.Values;
+        }
+
         public MonsterGrade GetMonsterGrade(int id)
         {
             MonsterGrade result;

@@ -93,6 +93,9 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
 
         public void CutPath(int index)
         {
+            if (index > m_cellsPath.Length - 1)
+                return;
+
             m_cellsPath = m_cellsPath.Take(index).ToArray();
             m_path = m_cellsPath.Select(entry => new MapPoint(entry)).ToArray();
             m_endPathPosition = new ObjectPosition(Map, EndCell, GetEndCellDirection());

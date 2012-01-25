@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
@@ -36,11 +38,23 @@ namespace Stump.Server.WorldServer.Handlers.Actions
                             ));
         }
 
+        public static void SendGameActionFightTackledMessage(IPacketReceiver client, FightActor source, IEnumerable<FightActor> tacklers)
+        {
+            client.Send(new GameActionFightTackledMessage((short)ActionsEnum.ACTION_CHARACTER_ACTION_TACKLED, source.Id, tacklers.Select(entry => entry.Id)));
+        }
+
         public static void SendGameActionFightLifePointsLostMessage(IPacketReceiver client, FightActor source,
                                                                          FightActor target, short loss, short permanentDamages)
         {
             client.Send(new GameActionFightLifePointsLostMessage((short)ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_LOST, source.Id, target.Id, loss, permanentDamages));
         }
+
+
+        public static void SendGameActionFightDodgePointLossMessage(IPacketReceiver client, ActionsEnum action, FightActor source, FightActor target, short amount)
+        {
+            client.Send(new GameActionFightDodgePointLossMessage((short)action, source.Id, target.Id, amount));
+        }
+
 
         public static void SendGameActionFightReduceDamagesMessage(IPacketReceiver client, FightActor source, FightActor target, int amount)
         {

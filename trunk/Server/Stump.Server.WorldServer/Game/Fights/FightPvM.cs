@@ -139,7 +139,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             double baseXp = Math.Truncate(xpRatio / 100 * Math.Truncate(sumMonsterXp * GroupCoefficients[regularGroupRatio - 1] * levelCoeff));
             double multiplicator = AgeBonus <= 0 ? 1 : 1 + AgeBonus / 100d;
-            var xp = (int)Math.Truncate(Math.Truncate(baseXp * ( 100 + fighter.Stats[CaracteristicsEnum.Wisdom].Total ) / 100d) * multiplicator * Rates.XpRate);
+            var xp = (int)Math.Truncate(Math.Truncate(baseXp * ( 100 + fighter.Stats[PlayerFields.Wisdom].Total ) / 100d) * multiplicator * Rates.XpRate);
 
             return xp;
         }
@@ -149,13 +149,13 @@ namespace Stump.Server.WorldServer.Game.Fights
             foreach (FightTeam team in m_teams)
             {
                 IEnumerable<FightActor> droppers = ( team == RedTeam ? BlueTeam : RedTeam ).GetAllFighters(entry => entry.IsDead()).ToList();
-                IOrderedEnumerable<CharacterFighter> looters = team.GetAllFighters<CharacterFighter>().OrderByDescending(entry => entry.Stats[CaracteristicsEnum.Prospecting].Total);
-                int teamPP = team.GetAllFighters().Sum(entry => entry.Stats[CaracteristicsEnum.Prospecting].Total);
+                IOrderedEnumerable<CharacterFighter> looters = team.GetAllFighters<CharacterFighter>().OrderByDescending(entry => entry.Stats[PlayerFields.Prospecting].Total);
+                int teamPP = team.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
                 long kamas = droppers.Sum(entry => entry.GetDroppedKamas());
 
                 foreach (CharacterFighter looter in looters)
                 {
-                    int looterPP = looter.Stats[CaracteristicsEnum.Prospecting].Total;
+                    int looterPP = looter.Stats[PlayerFields.Prospecting].Total;
 
                     looter.Loot.Kamas = (int)( kamas * ( (double)looterPP / teamPP ) * Rates.KamasRate );
 

@@ -136,6 +136,9 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                 case SpellShapeEnum.A:
                     m_shape = new Lozenge(0, 63);
                     break;
+                case SpellShapeEnum.P:
+                    m_shape = new Single();
+                    break;
                 default:
                     m_shape = new Cross(0, 0);
                     break;

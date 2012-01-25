@@ -6,7 +6,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
     public class StatsMP : StatsData
     {
         public StatsMP(IStatsOwner owner, short valueBase)
-            : base(owner, CaracteristicsEnum.MP, valueBase)
+            : base(owner, PlayerFields.MP, valueBase)
         {
         }
 

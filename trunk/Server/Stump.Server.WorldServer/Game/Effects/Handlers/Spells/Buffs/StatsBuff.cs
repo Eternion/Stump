@@ -44,33 +44,33 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             }
         }
 
-        public static CaracteristicsEnum GetEffectCaracteristic(EffectsEnum effect)
+        public static PlayerFields GetEffectCaracteristic(EffectsEnum effect)
         {
             switch (effect)
             {
                 case EffectsEnum.Effect_AddAgility:
-                    return CaracteristicsEnum.Agility;
+                    return PlayerFields.Agility;
                 case EffectsEnum.Effect_AddChance:
-                    return CaracteristicsEnum.Chance;
+                    return PlayerFields.Chance;
                 case EffectsEnum.Effect_AddIntelligence:
-                    return CaracteristicsEnum.Intelligence;
+                    return PlayerFields.Intelligence;
                 case EffectsEnum.Effect_AddStrength:
-                    return CaracteristicsEnum.Strength;
+                    return PlayerFields.Strength;
                 case EffectsEnum.Effect_AddWisdom:
-                    return CaracteristicsEnum.Wisdom;
+                    return PlayerFields.Wisdom;
                 case EffectsEnum.Effect_AddRange:
                 case EffectsEnum.Effect_AddRange_136:
-                    return CaracteristicsEnum.Range;
+                    return PlayerFields.Range;
                 case EffectsEnum.Effect_AddCriticalHit:
-                    return CaracteristicsEnum.CriticalHit;
+                    return PlayerFields.CriticalHit;
                 case EffectsEnum.Effect_AddSummonLimit:
-                    return CaracteristicsEnum.SummonLimit;
+                    return PlayerFields.SummonLimit;
                 case EffectsEnum.Effect_AddDamageBonus:
                 case EffectsEnum.Effect_AddDamageBonus_121:
-                    return CaracteristicsEnum.DamageBonus;
+                    return PlayerFields.DamageBonus;
                 case EffectsEnum.Effect_IncreaseDamage_138:
                 case EffectsEnum.Effect_AddDamageBonusPercent:
-                    return CaracteristicsEnum.DamageBonusPercent;
+                    return PlayerFields.DamageBonusPercent;
 
                 default:
                     throw new Exception(string.Format("'{0}' has no binded caracteristic", effect));

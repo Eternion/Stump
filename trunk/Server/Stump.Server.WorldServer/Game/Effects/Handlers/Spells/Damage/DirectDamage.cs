@@ -37,10 +37,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 else
                 {
                     // spell reflected
-                    if (actor.GetReflectedSpellLevel() >= Spell.CurrentLevel)
+                    var buff = actor.GetBestReflectionBuff();
+                    if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel)
                     {
                         NotifySpellReflected(actor);
                         Caster.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), Caster, Caster is CharacterFighter);
+
+                        actor.RemoveAndDispellBuff(buff);
                     }
                     else
                     {

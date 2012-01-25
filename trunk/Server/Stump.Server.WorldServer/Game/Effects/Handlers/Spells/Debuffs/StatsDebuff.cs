@@ -41,29 +41,29 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
             }
         }
 
-        public static CaracteristicsEnum GetEffectCaracteristic(EffectsEnum effect)
+        public static PlayerFields GetEffectCaracteristic(EffectsEnum effect)
         {
             switch (effect)
             {
                 case EffectsEnum.Effect_SubAgility:
-                    return CaracteristicsEnum.Agility;
+                    return PlayerFields.Agility;
                 case EffectsEnum.Effect_SubChance:
-                    return CaracteristicsEnum.Chance;
+                    return PlayerFields.Chance;
                 case EffectsEnum.Effect_SubIntelligence:
-                    return CaracteristicsEnum.Intelligence;
+                    return PlayerFields.Intelligence;
                 case EffectsEnum.Effect_SubStrength:
-                    return CaracteristicsEnum.Strength;
+                    return PlayerFields.Strength;
                 case EffectsEnum.Effect_SubWisdom:
-                    return CaracteristicsEnum.Wisdom;
+                    return PlayerFields.Wisdom;
                 case EffectsEnum.Effect_SubRange:
-                    return CaracteristicsEnum.Range;
+                    return PlayerFields.Range;
                 case EffectsEnum.Effect_SubCriticalHit:
-                    return CaracteristicsEnum.CriticalHit;
+                    return PlayerFields.CriticalHit;
                 case EffectsEnum.Effect_SubDamageBonus:
-                    return CaracteristicsEnum.DamageBonus;
+                    return PlayerFields.DamageBonus;
                 case EffectsEnum.Effect_IncreaseDamage_138:
                 case EffectsEnum.Effect_SubDamageBonusPercent:
-                    return CaracteristicsEnum.DamageBonusPercent;
+                    return PlayerFields.DamageBonusPercent;
 
                 default:
                     throw new Exception(string.Format("'{0}' has no binded caracteristic", effect));
