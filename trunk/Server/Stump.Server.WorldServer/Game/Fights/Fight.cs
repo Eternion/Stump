@@ -672,7 +672,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnFighterAdded(FightTeam team, FightActor actor)
         {
-            // todo : summons
+            if (actor is SummonedFighter)
+            {
+                OnSummonAdded(actor as SummonedFighter);
+                return;
+            }
+
             if (State == FightState.Fighting ||
                 State == FightState.Ended)
             {
@@ -694,6 +699,14 @@ namespace Stump.Server.WorldServer.Game.Fights
             // update blades if shown
             if (BladesVisible)
                 UpdateBlades(team);
+        }
+
+        protected virtual void OnSummonAdded(SummonedFighter fighter)
+        {
+            TimeLine.InsertFighter(fighter, TimeLine.Fighters.IndexOf(fighter.Summoner) + 1);
+            BindFighterEvents(fighter);
+
+            ContextHandler.SendGameFightTurnListMessage(Clients, this);
         }
 
         protected virtual void OnCharacterAdded(CharacterFighter fighter)
@@ -721,6 +734,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnFighterRemoved(FightTeam team, FightActor actor)
         {
+            if (actor is SummonedFighter)
+            {
+                OnSummonRemoved(actor as SummonedFighter);
+                return;
+            }
+
             TimeLine.RemoveFighter(actor);
             UnBindFighterEvents(actor);
 
@@ -738,6 +757,14 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (BladesVisible)
                 UpdateBlades(team);
+        }
+
+        protected virtual void OnSummonRemoved(SummonedFighter fighter)
+        {
+            TimeLine.RemoveFighter(fighter);
+            UnBindFighterEvents(fighter);
+
+            ContextHandler.SendGameFightTurnListMessage(Clients, this);
         }
 
         protected virtual void OnCharacterRemoved(CharacterFighter fighter)
@@ -777,6 +804,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             Spectators.Add(spectator);
             spectator.JoinTime = DateTime.Now;
             spectator.Left += OnSpectectorLeft;
+            spectator.Character.LoggedOut += OnSpectatorLoggedOut;
 
             Clients.Add(spectator.Client);
             SpectatorClients.Add(spectator.Client);
@@ -809,6 +837,14 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
         }
 
+        protected virtual void OnSpectatorLoggedOut(Character character)
+        {
+            if (!character.IsSpectator())
+                return;
+
+            OnSpectectorLeft(character.Spectator);
+        }
+
         protected virtual void OnSpectectorLeft(FightSpectator spectator)
         {
             RemoveSpectator(spectator);
@@ -820,6 +856,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             Clients.Remove(spectator.Character.Client);
             SpectatorClients.Remove(spectator.Client);
+
+            spectator.Left -= OnSpectectorLeft;
+            spectator.Character.LoggedOut -= OnSpectatorLoggedOut;
 
             OnSpectatorRemoved(spectator);
         }
@@ -1047,7 +1086,15 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             ActionsHandler.SendGameActionFightDeathMessage(Clients, fighter);
 
+            fighter.KillAllSummons();
+
             EndSequence(SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH);
+
+            foreach (var trigger in m_triggers.ToArray())
+            {
+                if (trigger.Caster == fighter)
+                    RemoveTrigger(trigger);
+            }
         }
 
         #endregion

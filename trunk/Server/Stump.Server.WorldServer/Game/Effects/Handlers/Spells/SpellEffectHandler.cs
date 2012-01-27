@@ -149,7 +149,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF))
                 return new [] { Caster };
 
-            return Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && IsValidTarget(entry));
+            return Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && IsValidTarget(entry)).ToArray();
         }
 
         public IEnumerable<FightActor> GetAffectedActors(Predicate<FightActor> predicate)
@@ -161,7 +161,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                 return new FightActor[0];
 
 
-            return GetAffectedActors().Where(entry => predicate(entry));
+            return GetAffectedActors().Where(entry => predicate(entry)).ToArray();
         }
 
         public StatBuff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, bool dispelable)

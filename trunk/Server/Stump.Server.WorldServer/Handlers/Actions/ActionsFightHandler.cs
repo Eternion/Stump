@@ -19,6 +19,11 @@ namespace Stump.Server.WorldServer.Handlers.Actions
                             ));
         }
 
+        public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedMonster summonedMonster)
+        {
+            client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_CREATURE, summonedMonster.Summoner.Id, summonedMonster.GetGameFightFighterInformations()));
+        }
+
         public static void SendGameActionFightPointsVariationMessage(IPacketReceiver client, ActionsEnum action,
                                                                      FightActor source,
                                                                      FightActor target, short delta)
