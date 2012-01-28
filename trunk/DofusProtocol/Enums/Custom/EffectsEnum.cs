@@ -1341,7 +1341,7 @@
         /// <summary>
         /// #3 state
         /// </summary>
-        Effect_950 = 950,
+        Effect_AddState = 950,
         /// <summary>
         /// Removes #3 state
         /// </summary>

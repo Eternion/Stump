@@ -47,9 +47,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override bool CanCastSpell(Spell spell, Cell cell)
         {
-            if (!IsFighterTurn())
+            if (!base.CanCastSpell(spell, cell))
                 return false;
-
+            
             if (Monster.Spells.Any(entry => entry == null))
             {
                 logger.Debug("Why the hell is a spell null ???");
@@ -58,19 +58,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (Monster.Spells.Count(entry => entry.Id == spell.Id) <= 0)
                 return false;
 
-            SpellLevelTemplate spellLevel = spell.CurrentSpellLevel;
-            var point = new MapPoint(cell);
-
-            if (point.DistanceToCell(Position.Point) > spellLevel.Range ||
-                point.DistanceToCell(Position.Point) < spellLevel.MinRange)
-                return false;
-
-            if (AP < spellLevel.ApCost)
-                return false;
-
-            // todo : check casts per turn
-            // todo : check cooldown
-            // todo : check states
             return true;
         }
 

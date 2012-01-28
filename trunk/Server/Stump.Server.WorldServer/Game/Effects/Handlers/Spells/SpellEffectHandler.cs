@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -197,6 +198,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         {
             int id = target.PopNextBuffId();
             var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Critical, dispelable, trigger, applyTrigger, removeTrigger);
+
+            target.AddAndApplyBuff(buff);
+
+            return buff;
+        }
+
+        public StateBuff AddStateBuff(FightActor target, bool dispelable, SpellState state)
+        {
+            int id = target.PopNextBuffId();
+            var buff = new StateBuff(id, target, Caster, Dice, Spell, dispelable, state);
 
             target.AddAndApplyBuff(buff);
 

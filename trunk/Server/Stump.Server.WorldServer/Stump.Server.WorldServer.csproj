@@ -216,8 +216,12 @@
     <Compile Include="Game\Actors\Fight\SummonedFighter.cs" />
     <Compile Include="Game\Actors\Fight\SummonedMonster.cs" />
     <Compile Include="Game\Actors\Interfaces\INamedActor.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Damage\Kill.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Heal\Heal.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\States\AddState.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Steals\APSteal.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Steals\HPSteal.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Steals\MPSteal.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Summon.cs" />
     <Compile Include="Game\Fights\Fight.cs" />
     <Compile Include="Game\Fights\FightCellsInformationProvider.cs" />

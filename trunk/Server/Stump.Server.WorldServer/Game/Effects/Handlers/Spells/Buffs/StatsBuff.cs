@@ -21,6 +21,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
     [EffectHandler(EffectsEnum.Effect_AddDamageBonus_121)]
     [EffectHandler(EffectsEnum.Effect_IncreaseDamage_138)]
     [EffectHandler(EffectsEnum.Effect_AddDamageBonusPercent)]
+    [EffectHandler(EffectsEnum.Effect_AddDamageReflection)]
+    [EffectHandler(EffectsEnum.Effect_AddPhysicalDamage_137)]
+    [EffectHandler(EffectsEnum.Effect_AddPhysicalDamage_142)]
     public class StatsBuff : SpellEffectHandler
     {
         public StatsBuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -71,7 +74,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 case EffectsEnum.Effect_IncreaseDamage_138:
                 case EffectsEnum.Effect_AddDamageBonusPercent:
                     return PlayerFields.DamageBonusPercent;
-
+                case EffectsEnum.Effect_AddDamageReflection:
+                    return PlayerFields.DamageReflection;
+                case EffectsEnum.Effect_AddPhysicalDamage_137:
+                case EffectsEnum.Effect_AddPhysicalDamage_142:
+                    return PlayerFields.PhysicalDamage;
                 default:
                     throw new Exception(string.Format("'{0}' has no binded caracteristic", effect));
             }

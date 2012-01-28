@@ -19,6 +19,7 @@ using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Context;
 using FightLoot = Stump.Server.WorldServer.Game.Fights.FightLoot;
 
@@ -30,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public event Action<FightActor, bool> ReadyStateChanged;
 
-        private void NotifyReadyStateChanged(bool isReady)
+        protected virtual void OnReadyStateChanged(bool isReady)
         {
             Action<FightActor, bool> handler = ReadyStateChanged;
             if (handler != null)
@@ -39,7 +40,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public event Action<FightActor, Cell> CellShown;
 
-        private void NotifyCellShown(Cell cell)
+        protected virtual void OnCellShown(Cell cell)
         {
             Action<FightActor, Cell> handler = CellShown;
             if (handler != null)
@@ -48,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public event Action<FightActor, int, FightActor> LifePointsChanged;
 
-        private void NotifyLifePointsChanged(int delta, FightActor from)
+        protected virtual void OnLifePointsChanged(int delta, FightActor from)
         {
             Action<FightActor, int, FightActor> handler = LifePointsChanged;
 
@@ -58,18 +59,29 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public event Action<FightActor, FightActor, int> DamageReducted;
 
-        private void NotifyDamageReducted(FightActor source, int reduction)
+        protected virtual void OnDamageReducted(FightActor source, int reduction)
         {
             Action<FightActor, FightActor, int> handler = DamageReducted;
             if (handler != null)
                 handler(this, source, reduction);
         }
 
+        public event Action<FightActor, FightActor, int> DamageReflected;
+
+        protected virtual void OnDamageReflected(FightActor target, int reflected)
+        {
+            ActionsHandler.SendGameActionFightReflectDamagesMessage(Fight.Clients, this, target, reflected);
+
+            Action<FightActor, FightActor, int> handler = DamageReflected;
+            if (handler != null)
+                handler(this, target, reflected);
+        }
+
         public event Action<FightActor> FighterLeft;
 
         public event Action<FightActor, ObjectPosition> PrePlacementChanged;
 
-        private void NotifyPrePlacementChanged(ObjectPosition position)
+        protected virtual void OnPrePlacementChanged(ObjectPosition position)
         {
             Action<FightActor, ObjectPosition> handler = PrePlacementChanged;
             if (handler != null)
@@ -78,7 +90,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public event Action<FightActor> TurnPassed;
 
-        private void NotifyTurnPassed()
+        protected virtual void OnTurnPassed()
         {
             Action<FightActor> handler = TurnPassed;
             if (handler != null)
@@ -89,7 +101,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public event SpellCastingHandler SpellCasting;
 
-        private void NotifySpellCasting(Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
+        protected virtual void OnSpellCasting(Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
             SpellCastingHandler handler = SpellCasting;
             if (handler != null)
@@ -98,7 +110,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public event SpellCastingHandler SpellCasted;
 
-        private void NotifySpellCasted(Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
+        protected virtual void OnSpellCasted(Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
             SpellCastingHandler handler = SpellCasted;
             if (handler != null)
@@ -107,7 +119,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public event Action<FightActor, Buff> BuffAdded;
 
-        private void NotifyBuffAdded(Buff buff)
+        protected virtual void OnBuffAdded(Buff buff)
         {
             Action<FightActor, Buff> handler = BuffAdded;
             if (handler != null) handler(this, buff);
@@ -115,7 +127,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public event Action<FightActor, Buff> BuffRemoved;
 
-        private void NotifyBuffRemoved(Buff buff)
+        protected virtual void OnBuffRemoved(Buff buff)
         {
             Action<FightActor, Buff> handler = BuffRemoved;
             if (handler != null) handler(this, buff);
@@ -123,49 +135,40 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public event Action<FightActor, FightActor> Dead;
 
-        private void NotifyDead(FightActor killedBy)
+        protected virtual void OnDead(FightActor killedBy)
         {
-            OnDead(killedBy);
+            RemoveAndDispellAllBuffs();
 
             Action<FightActor, FightActor> handler = Dead;
             if (handler != null)
                 handler(this, killedBy);
         }
 
-        protected virtual void OnDead(FightActor killedBy)
-        {
-            RemoveAndDispellAllBuffs();
-        }
-
         public delegate void FightPointsVariationHandler(FightActor actor, ActionsEnum action, FightActor source, FightActor target, short delta);
 
         public event FightPointsVariationHandler FightPointsVariation;
-
-        private void NotifyFightPointsVariation(ActionsEnum action, FightActor source, FightActor target, short delta)
-        {
-            OnFightPointsVariation(action, source, target, delta);
-
-            FightPointsVariationHandler handler = FightPointsVariation;
-            if (handler != null)
-                handler(this, action, source, target, delta);
-        }
 
         protected virtual void OnFightPointsVariation(ActionsEnum action, FightActor source, FightActor target, short delta)
         {
             switch (action)
             {
                 case ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_USE:
-                    NotifyApUsed((short) (-delta));
+                    OnApUsed((short)( -delta ));
                     break;
                 case ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_USE:
-                    NotifyMpUsed((short) (-delta));
+                    OnMpUsed((short)( -delta ));
                     break;
             }
+
+            FightPointsVariationHandler handler = FightPointsVariation;
+            if (handler != null)
+                handler(this, action, source, target, delta);
         }
+
 
         public event Action<FightActor, short> ApUsed;
 
-        private void NotifyApUsed(short amount)
+        protected virtual void OnApUsed(short amount)
         {
             Action<FightActor, short> handler = ApUsed;
             if (handler != null)
@@ -174,7 +177,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public event Action<FightActor, short> MpUsed;
 
-        private void NotifyMpUsed(short amount)
+        protected virtual void OnMpUsed(short amount)
         {
             Action<FightActor, short> handler = MpUsed;
             if (handler != null)
@@ -307,7 +310,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             IsReady = ready;
 
-            NotifyReadyStateChanged(ready);
+            OnReadyStateChanged(ready);
         }
 
         public void ChangePrePlacement(Cell cell)
@@ -317,7 +320,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             Position.Cell = cell;
 
-            NotifyPrePlacementChanged(Position);
+            OnPrePlacementChanged(Position);
         }
 
         public virtual ObjectPosition GetLeaderBladePosition()
@@ -333,7 +336,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             Fight.StopTurn();
 
-            NotifyTurnPassed();
+            OnTurnPassed();
         }
 
         #endregion
@@ -373,7 +376,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 ContextHandler.SendShowCellMessage(fighter.Character.Client, this, cell);
             }
 
-            NotifyCellShown(cell);
+            OnCellShown(cell);
         }
 
         public bool UseAP(short amount)
@@ -383,7 +386,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             Stats.AP.Used += amount;
 
-            NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_USE, this, this, (short) (-amount));
+            OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_USE, this, this, (short)( -amount ));
 
             return true;
         }
@@ -395,7 +398,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             Stats.MP.Used += amount;
 
-            NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_USE, this, this, (short) (-amount));
+            OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_USE, this, this, (short) (-amount));
 
             return true;
         }
@@ -407,7 +410,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             Stats.AP.Used += amount;
 
-            NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_LOST, this, this, (short) (-amount));
+            OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_LOST, this, this, (short)( -amount ));
 
             return true;
         }
@@ -419,7 +422,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             Stats.MP.Used += amount;
 
-            NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_LOST, this, this, (short) (-amount));
+            OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_LOST, this, this, (short)( -amount ));
 
             return true;
         }
@@ -431,7 +434,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             Stats.AP.Used -= amount;
 
-            NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_WIN, this, this, (short) (amount));
+            OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_WIN, this, this, (short)( amount ));
 
             return true;
         }
@@ -443,7 +446,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             Stats.MP.Used -= amount;
 
-            NotifyFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_WIN, this, this, (short) (amount));
+            OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_WIN, this, this, (short)( amount ));
 
             return true;
         }
@@ -454,7 +457,37 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Stats.MP.Used = 0;
         }
 
-        public abstract bool CanCastSpell(Spell spell, Cell cell);
+        public virtual bool CanCastSpell(Spell spell, Cell cell)
+        {
+            if (!IsFighterTurn())
+                return false;
+
+            var spellLevel = spell.CurrentSpellLevel;
+            var point = new MapPoint(cell);
+
+            if (point.DistanceToCell(Position.Point) > spellLevel.Range ||
+                point.DistanceToCell(Position.Point) < spellLevel.MinRange)
+                return false;
+
+            if (AP < spellLevel.ApCost)
+                return false;
+
+            var cellfree = Fight.IsCellFree(cell);
+            if (( spellLevel.NeedFreeCell && !cellfree ) ||
+                ( spellLevel.NeedTakenCell && cellfree ))
+                return false;
+
+            if (spellLevel.StatesForbidden.Any(HasState))
+                return false;
+
+            if (spellLevel.StatesRequired.Any(state => !HasState(state)))
+                return false;
+
+            // todo : check casts per turn
+            // todo : check cooldown
+
+            return true;
+        }
 
         public virtual void CastSpell(Spell spell, Cell cell)
         {
@@ -473,7 +506,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
             {
-                NotifySpellCasting(spell, cell, critical, false);
+                OnSpellCasting(spell, cell, critical, false);
                 UseAP((short) spellLevel.ApCost);
 
                 if (spellLevel.CriticalFailureEndsTurn)
@@ -501,13 +534,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var silentCast = handlers.Any(entry => entry.RequireSilentCast());
 
-            NotifySpellCasting(spell, cell, critical, silentCast);
+            OnSpellCasting(spell, cell, critical, silentCast);
             UseAP((short) spellLevel.ApCost);
 
             foreach (var handler in handlers)
                 handler.Apply();
 
-            NotifySpellCasted(spell, cell, critical, silentCast);
+            OnSpellCasted(spell, cell, critical, silentCast);
         }
 
         public SpellReflectionBuff GetBestReflectionBuff()
@@ -521,7 +554,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             DamageTaken += (short) LifePoints;
 
-            NotifyDead(this);
+            OnDead(this);
         }
 
         public short InflictDirectDamage(short damage, FightActor from)
@@ -533,10 +566,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             TriggerBuffs(TriggerType.BEFORE_ATTACKED);
 
-            NotifyLifePointsChanged(-damage, from);
+            OnLifePointsChanged(-damage, from);
 
             if (IsDead())
-                NotifyDead(from);
+                OnDead(from);
 
             TriggerBuffs(TriggerType.AFTER_ATTACKED);
 
@@ -552,10 +585,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             TriggerBuffs(TriggerType.BEFORE_ATTACKED);
 
-            NotifyLifePointsChanged(-damage, null);
+            OnLifePointsChanged(-damage, null);
 
             if (IsDead())
-                NotifyDead(this);
+                OnDead(this);
 
             TriggerBuffs(TriggerType.AFTER_ATTACKED);
 
@@ -570,7 +603,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             short reduction = CalculateArmorReduction(school);
 
             if (reduction > 0)
-                NotifyDamageReducted(this, reduction);
+                OnDamageReducted(this, reduction);
 
             damage -= reduction;
 
@@ -588,7 +621,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             short reduction = CalculateArmorReduction(school);
 
             if (reduction > 0)
-                NotifyDamageReducted(from, reduction);
+                OnDamageReducted(from, reduction);
+
+            short reflected = CalculateDamageReflection(damage);
+            damage -= reflected;
+
+            if (reflected > 0)
+            {
+                from.InflictDamage(damage, school, this, pvp);
+                OnDamageReflected(from, reflected);
+            }
 
             damage -= reduction;
 
@@ -605,7 +647,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             DamageTaken -= healPoints;
 
-            NotifyLifePointsChanged(healPoints, null);
+            OnLifePointsChanged(healPoints, null);
 
             return healPoints;
         }
@@ -678,6 +720,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
 
             return (short) ((1 - percentResistance/100d)*(damage - fixResistance));
+        }
+
+        public short CalculateDamageReflection(short damage)
+        {
+            // only spell damage reflection are mutlplied by wisdom
+            var reflectDamages = Stats[PlayerFields.DamageReflection].Context * ( 1 + ( Stats[PlayerFields.Wisdom].Total / 100 ) ) +
+                ( Stats[PlayerFields.DamageReflection].Total - Stats[PlayerFields.DamageReflection].Context );
+
+            if (reflectDamages > damage / 2d)
+                return (short) (damage / 2d);
+
+            return (short) reflectDamages;
         }
 
         public short CalculateHeal(int heal)
@@ -921,7 +975,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             m_buffList.Add(buff);
 
-            NotifyBuffAdded(buff);
+            OnBuffAdded(buff);
         }
 
         public void RemoveAndDispellBuff(Buff buff)
@@ -935,7 +989,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             m_buffList.Remove(buff);
 
-            NotifyBuffRemoved(buff);
+            OnBuffRemoved(buff);
 
             FreeBuffId(buff.Id);
         }
@@ -1010,7 +1064,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool CanSummon()
         {
-            return m_summons.Count < (Stats[PlayerFields.SummonLimit].Total + 1);
+            return m_summons.Count < Stats[PlayerFields.SummonLimit].Total;
         }
 
         public void AddSummon(SummonedFighter summon)
@@ -1034,6 +1088,41 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 summon.Die();
             }
+        }
+
+        #endregion
+
+        #region States
+        private readonly List<SpellState> m_states = new List<SpellState>();
+
+        public void AddState(SpellState state)
+        {
+            m_states.Add(state);
+        }
+
+        public void RemoveState(SpellState state)
+        {
+            m_states.Remove(state);
+        }
+
+        public bool HasState(int stateId)
+        {
+            return m_states.Any(entry => entry.Id == stateId);
+        }
+
+        public bool HasState(SpellState state)
+        {
+            return HasState(state.Id);
+        }
+
+        public bool HasSpellBlockerState()
+        {
+            return m_states.Any(entry => entry.PreventsSpellCast);
+        }
+
+        public bool HasFightBlockerState()
+        {
+            return m_states.Any(entry => entry.PreventsFight);
         }
 
         #endregion

@@ -14,8 +14,9 @@ namespace Stump.Server.WorldServer.Game.Spells
         private Dictionary<uint, SpellLevelTemplate> m_spellsLevels;
         private Dictionary<int, SpellTemplate> m_spells;
         private Dictionary<int, SpellType> m_spellsTypes;
+        private Dictionary<int, SpellState> m_spellsState;
 
-        #region Fields
+            #region Fields
 
         #endregion
 
@@ -25,6 +26,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             m_spellsLevels = SpellLevelTemplate.FindAll().ToDictionary(entry => entry.Id);
             m_spells = SpellTemplate.FindAll().ToDictionary(entry => entry.Id);
             m_spellsTypes = SpellType.FindAll().ToDictionary(entry => entry.Id);
+            m_spellsState = SpellState.FindAll().ToDictionary(entry => entry.Id);
         }
 
         public CharacterSpellRecord CreateSpellRecord(CharacterRecord owner, SpellTemplate template)
@@ -76,6 +78,15 @@ namespace Stump.Server.WorldServer.Game.Spells
             SpellType template;
             if (m_spellsTypes.TryGetValue((int) id, out template))
                 return template;
+
+            return null;
+        }
+
+        public SpellState GetSpellState(uint id)
+        {
+            SpellState state;
+            if (m_spellsState.TryGetValue((int)id, out state))
+                return state;
 
             return null;
         }

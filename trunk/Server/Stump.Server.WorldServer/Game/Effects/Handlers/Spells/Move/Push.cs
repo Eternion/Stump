@@ -40,7 +40,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
                     if (nextCell == null || !Fight.IsCellFree(Map.Cells[nextCell.CellId]))
                     {
-                        actor.InflictDamage((short) new AsyncRandom().Next(1, 5), EffectSchoolEnum.Unknown, Caster);
+                        var pushbackDamages = (8 + new AsyncRandom().Next(1, 8) * (Caster.Level / 50)) * (integerEffect.Value - i);
+
+                        actor.InflictDamage((short) pushbackDamages, EffectSchoolEnum.Unknown, Caster);
                         break;
                     }
 

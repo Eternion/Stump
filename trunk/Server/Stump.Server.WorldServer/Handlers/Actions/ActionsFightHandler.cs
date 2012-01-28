@@ -24,6 +24,16 @@ namespace Stump.Server.WorldServer.Handlers.Actions
             client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_CREATURE, summonedMonster.Summoner.Id, summonedMonster.GetGameFightFighterInformations()));
         }
 
+        public static void SendGameActionFightInvisibilityMessage(IPacketReceiver client, FightActor source, FightActor target, GameActionFightInvisibilityStateEnum state)
+        {
+            client.Send(new GameActionFightInvisibilityMessage((short)ActionsEnum.ACTION_CHARACTER_MAKE_INVISIBLE, source.Id, target.Id, (sbyte)state));
+        }
+
+        public static void SendGameActionFightReflectDamagesMessage(IPacketReceiver client, FightActor source, FightActor target, int amount)
+        {
+            client.Send(new GameActionFightReflectDamagesMessage((short)ActionsEnum.ACTION_CHARACTER_LIFE_LOST_REFLECTOR, source.Id, target.Id, amount));
+        }
+
         public static void SendGameActionFightPointsVariationMessage(IPacketReceiver client, ActionsEnum action,
                                                                      FightActor source,
                                                                      FightActor target, short delta)
