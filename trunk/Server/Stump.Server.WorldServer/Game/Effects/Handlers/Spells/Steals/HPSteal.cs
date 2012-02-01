@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
 
                 if (Effect.Duration > 0)
                 {
-                    AddTriggerBuff(actor, true, TriggerType.TURN_BEGIN, StealHpBuffTrigger);
+                    AddTriggerBuff(actor, true, BuffTriggerType.TURN_BEGIN, StealHpBuffTrigger);
                 }
                 else
                 {
@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
         }
 
 
-        private static void StealHpBuffTrigger(TriggerBuff buff, TriggerType trigger)
+        private static void StealHpBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
             var integerEffect = buff.Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
 

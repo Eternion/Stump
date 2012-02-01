@@ -585,14 +585,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             DamageTaken += damage;
 
-            TriggerBuffs(TriggerType.BEFORE_ATTACKED);
+            TriggerBuffs(BuffTriggerType.BEFORE_ATTACKED, damage);
 
             OnLifePointsChanged(-damage, from);
 
             if (IsDead())
                 OnDead(from);
 
-            TriggerBuffs(TriggerType.AFTER_ATTACKED);
+            TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
 
             return damage;
         }
@@ -604,14 +604,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             DamageTaken += damage;
 
-            TriggerBuffs(TriggerType.BEFORE_ATTACKED);
+            TriggerBuffs(BuffTriggerType.BEFORE_ATTACKED, damage);
 
             OnLifePointsChanged(-damage, null);
 
             if (IsDead())
                 OnDead(this);
 
-            TriggerBuffs(TriggerType.AFTER_ATTACKED);
+            TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
 
 
             return damage;
@@ -1004,7 +1004,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             AddBuff(buff);
 
             if (!(buff is TriggerBuff) ||
-                ((buff as TriggerBuff).Trigger & TriggerType.BUFF_ADDED) == TriggerType.BUFF_ADDED)
+                ((buff as TriggerBuff).Trigger & BuffTriggerType.BUFF_ADDED) == BuffTriggerType.BUFF_ADDED)
                 buff.Apply();
         }
 
@@ -1041,7 +1041,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
         }
 
-        public void TriggerBuffs(TriggerType trigger)
+        public void TriggerBuffs(BuffTriggerType trigger, object token = null)
         {
             var copy = m_buffList.ToArray();
             foreach (var buff in copy)
@@ -1054,7 +1054,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 if ((triggerBuff.Trigger & trigger) == trigger)
                 {
                     Fight.StartSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
-                    triggerBuff.Apply(trigger);
+                    triggerBuff.Apply(trigger, token);
                     Fight.EndSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
                 }
             }

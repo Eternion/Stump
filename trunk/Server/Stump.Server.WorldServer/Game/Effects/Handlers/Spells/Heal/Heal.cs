@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
 
                 if (Effect.Duration > 0)
                 {
-                    AddTriggerBuff(actor, true, TriggerType.TURN_BEGIN, HealBuffTrigger);
+                    AddTriggerBuff(actor, true, BuffTriggerType.TURN_BEGIN, HealBuffTrigger);
                 }
                 else
                 {
@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             }
         }
 
-        private static void HealBuffTrigger(TriggerBuff buff, TriggerType trigger)
+        private static void HealBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
             var integerEffect = buff.Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
 

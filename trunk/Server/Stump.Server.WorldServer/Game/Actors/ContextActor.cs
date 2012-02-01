@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Actors
         public virtual EntityLook Look
         {
             get;
-            protected set;
+            set;
         }
 
         public virtual ICharacterContainer CharacterContainer

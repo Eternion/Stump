@@ -216,14 +216,17 @@
     <Compile Include="Game\Actors\Fight\SummonedFighter.cs" />
     <Compile Include="Game\Actors\Fight\SummonedMonster.cs" />
     <Compile Include="Game\Actors\Interfaces\INamedActor.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\Punishment.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\Kill.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Heal\Heal.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\States\AddState.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\States\ChangeSkin.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Steals\APSteal.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Steals\HPSteal.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Steals\MPSteal.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Summon.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\InvisibilityBuff.cs" />
+    <Compile Include="Game\Fights\Buffs\Customs\SkinBuff.cs" />
     <Compile Include="Game\Fights\Fight.cs" />
     <Compile Include="Game\Fights\FightCellsInformationProvider.cs" />
     <Compile Include="Game\Fights\FightDuel.cs" />
@@ -385,7 +388,7 @@
     <Compile Include="Game\Fights\Buffs\SpellBuff.cs" />
     <Compile Include="Game\Fights\Buffs\StateBuff.cs" />
     <Compile Include="Game\Fights\Buffs\StatBuff.cs" />
-    <Compile Include="Game\Fights\Buffs\TriggerType.cs" />
+    <Compile Include="Game\Fights\Buffs\BuffTriggerType.cs" />
     <Compile Include="Game\Fights\Buffs\WeaponBuff.cs" />
     <Compile Include="Game\Effects\EffectManager.cs" />
     <Compile Include="Game\Effects\EffectSchoolEnum.cs" />

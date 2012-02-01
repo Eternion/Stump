@@ -28,11 +28,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
                 if (Effect.Duration <= 0)
                     return;
 
-                AddTriggerBuff(actor, true, TriggerType.BUFF_ADDED, ApplyArmorBuff, RemoveArmorBuff);
+                AddTriggerBuff(actor, true, BuffTriggerType.BUFF_ADDED, ApplyArmorBuff, RemoveArmorBuff);
             }
         }
 
-        public static void ApplyArmorBuff(TriggerBuff buff, TriggerType trigger)
+        public static void ApplyArmorBuff(TriggerBuff buff, BuffTriggerType trigger)
         {
             var integerEffect = buff.Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
 

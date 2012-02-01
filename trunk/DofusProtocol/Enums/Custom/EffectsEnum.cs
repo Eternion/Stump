@@ -1211,7 +1211,7 @@
         /// <summary>
         /// Punishment of #2 for #3 turn(s)
         /// </summary>
-        Effect_788 = 788,
+        Effect_Punishment = 788,
         Effect_789 = 789,
         /*  */
         Effect_790 = 790,

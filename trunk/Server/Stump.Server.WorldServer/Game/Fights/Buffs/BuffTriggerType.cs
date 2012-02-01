@@ -3,7 +3,7 @@ using System;
 namespace Stump.Server.WorldServer.Game.Fights.Buffs
 {
     [Flags]
-    public enum TriggerType
+    public enum BuffTriggerType
     {
         BUFF_ADDED = 0x0000001,
         TURN_BEGIN = 0x00000002,

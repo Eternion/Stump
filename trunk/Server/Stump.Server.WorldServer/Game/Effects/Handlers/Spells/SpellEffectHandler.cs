@@ -13,7 +13,6 @@ using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Spells;
-using TriggerType = Stump.Server.WorldServer.Game.Fights.Buffs.TriggerType;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 {
@@ -185,7 +184,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return buff;
         }
 
-        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, TriggerType trigger, TriggerBuffApplyHandler applyTrigger)
+        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, BuffTriggerType trigger, TriggerBuffApplyHandler applyTrigger)
         {
             int id = target.PopNextBuffId();
             var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Critical, dispelable, trigger, applyTrigger);
@@ -194,7 +193,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
             return buff;
         }
-        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, TriggerType trigger, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
+        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, BuffTriggerType trigger, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
         {
             int id = target.PopNextBuffId();
             var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Critical, dispelable, trigger, applyTrigger, removeTrigger);

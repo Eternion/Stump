@@ -5,12 +5,12 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs
 {
-    public delegate void TriggerBuffApplyHandler(TriggerBuff buff, TriggerType trigger);
+    public delegate void TriggerBuffApplyHandler(TriggerBuff buff, BuffTriggerType trigger, object token);
     public delegate void TriggerBuffRemoveHandler(TriggerBuff buff);
 
     public class TriggerBuff : Buff
     {
-        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, bool critical, bool dispelable, TriggerType trigger, TriggerBuffApplyHandler applyTrigger)
+        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, bool critical, bool dispelable, BuffTriggerType trigger, TriggerBuffApplyHandler applyTrigger)
             : base(id, target, caster, effect, spell, critical, dispelable)
         {
             Trigger = trigger;
@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             ApplyTrigger = applyTrigger;
         }
 
-        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, bool critical, bool dispelable, TriggerType trigger, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
+        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, bool critical, bool dispelable, BuffTriggerType trigger, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
             : base(id, target, caster, effect, spell, critical, dispelable)
         {
             Trigger = trigger;
@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             RemoveTrigger = removeTrigger;
         }
 
-        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, bool critical, bool dispelable, TriggerType trigger, TriggerBuffApplyHandler applyTrigger, short customActionId)
+        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, bool critical, bool dispelable, BuffTriggerType trigger, TriggerBuffApplyHandler applyTrigger, short customActionId)
             : base(id, target, caster, effect, spell, critical, dispelable, customActionId)
         {
             Trigger = trigger;
@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             ApplyTrigger = applyTrigger;
         }
 
-        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, bool critical, bool dispelable, TriggerType trigger, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger, short customActionId)
+        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, bool critical, bool dispelable, BuffTriggerType trigger, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger, short customActionId)
             : base(id, target, caster, effect, spell, critical, dispelable, customActionId)
         {
             Trigger = trigger;
@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             RemoveTrigger = removeTrigger;
         }
 
-        public TriggerType Trigger
+        public BuffTriggerType Trigger
         {
             get;
             private set;
@@ -71,13 +71,19 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         public override void Apply()
         {
             if (ApplyTrigger != null)
-                ApplyTrigger(this, TriggerType.UNKNOWN);
+                ApplyTrigger(this, BuffTriggerType.UNKNOWN, null);
         }
 
-        public void Apply(TriggerType trigger)
+        public void Apply(BuffTriggerType trigger)
         {
             if (ApplyTrigger != null)
-                ApplyTrigger(this, trigger);
+                ApplyTrigger(this, trigger, null);
+        }
+
+        public void Apply(BuffTriggerType trigger, object token)
+        {
+            if (ApplyTrigger != null)
+                ApplyTrigger(this, trigger, token);
         }
 
         public override void Dispell()

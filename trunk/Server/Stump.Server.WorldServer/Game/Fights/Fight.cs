@@ -895,7 +895,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
             DecrementGlyphDuration(FighterPlaying);
             FighterPlaying.DecrementAllCastedBuffsDuration();
-            FighterPlaying.TriggerBuffs(Buffs.TriggerType.TURN_BEGIN);
+            FighterPlaying.TriggerBuffs(Buffs.BuffTriggerType.TURN_BEGIN);
             TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.TURN_BEGIN);
             EndSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
 
@@ -943,7 +943,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected virtual void OnTurnStopped()
         {
             StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
-            FighterPlaying.TriggerBuffs(Buffs.TriggerType.TURN_END);
+            FighterPlaying.TriggerBuffs(Buffs.BuffTriggerType.TURN_END);
             FighterPlaying.ResetUsedPoints();
             EndSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
 
@@ -1194,7 +1194,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return; // error, mouvement shouldn't be canceled in a fight.
 
             fighter.UseMP((short) path.MPCost);
-            fighter.TriggerBuffs(Buffs.TriggerType.MOVE);
+            fighter.TriggerBuffs(Buffs.BuffTriggerType.MOVE, path);
         }
 
         protected virtual void OnPositionChanged(ContextActor actor, ObjectPosition objectPosition)

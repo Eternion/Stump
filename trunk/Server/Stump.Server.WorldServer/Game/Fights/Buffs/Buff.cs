@@ -70,7 +70,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         public short Duration
         {
             get;
-            private set;
+            set;
         }
 
         public bool Critical

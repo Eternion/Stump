@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
                 if (Effect.Duration > 0)
                 {
-                    AddTriggerBuff(actor, true, TriggerType.TURN_BEGIN, DamageBuffTrigger);
+                    AddTriggerBuff(actor, true, BuffTriggerType.TURN_BEGIN, DamageBuffTrigger);
                 }
                 else
                 {
@@ -60,7 +60,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             Fight.ForEach(entry => ActionsHandler.SendGameActionFightReflectSpellMessage(entry.Client, source, Caster));
         }
 
-        private static void DamageBuffTrigger(TriggerBuff buff, TriggerType trigger)
+        private static void DamageBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
             var integerEffect = buff.Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
 
