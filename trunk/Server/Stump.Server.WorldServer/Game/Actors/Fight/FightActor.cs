@@ -5,9 +5,11 @@ using Stump.Core.Pool;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
@@ -22,6 +24,7 @@ using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Context;
 using FightLoot = Stump.Server.WorldServer.Game.Fights.FightLoot;
+using VisibleStateEnum = Stump.DofusProtocol.Enums.GameActionFightInvisibilityStateEnum;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -38,13 +41,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 handler(this, isReady);
         }
 
-        public event Action<FightActor, Cell> CellShown;
+        public event Action<FightActor, Cell, bool> CellShown;
 
-        protected virtual void OnCellShown(Cell cell)
+        protected virtual void OnCellShown(Cell cell, bool team)
         {
-            Action<FightActor, Cell> handler = CellShown;
+            Action<FightActor, Cell, bool> handler = CellShown;
             if (handler != null)
-                CellShown(this, cell);
+                CellShown(this, cell, team);
         }
 
         public event Action<FightActor, int, FightActor> LifePointsChanged;
@@ -112,6 +115,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnSpellCasted(Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
+            if (!spell.CurrentSpellLevel.Effects.Any(effect => effect.EffectId == EffectsEnum.Effect_Invisibility) &&
+                VisibleState == GameActionFightInvisibilityStateEnum.INVISIBLE)
+            {
+                ShowCell(Cell, false);
+
+                if (!IsInvisibleSpellCast(spell))
+                    if (!DispellInvisibilityBuff())
+                        SetInvisibilityState(VisibleStateEnum.VISIBLE);
+            }
+
             SpellCastingHandler handler = SpellCasted;
             if (handler != null)
                 handler(this, spell, target, critical, silentCast);
@@ -192,6 +205,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             Team = team;
             OpposedTeam = Fight.BlueTeam == Team ? Fight.RedTeam : Fight.BlueTeam;
+            VisibleState = VisibleStateEnum.VISIBLE;
             Loot = new FightLoot();
         }
 
@@ -369,14 +383,21 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return base.StartMove(movementPath);
         }
 
-        public void ShowCell(Cell cell)
+        public void ShowCell(Cell cell, bool team = true)
         {
-            foreach (var fighter in Team.GetAllFighters<CharacterFighter>())
+            if (team)
             {
-                ContextHandler.SendShowCellMessage(fighter.Character.Client, this, cell);
+                foreach (var fighter in Team.GetAllFighters<CharacterFighter>())
+                {
+                    ContextHandler.SendShowCellMessage(fighter.Character.Client, this, cell);
+                }
+            }
+            else
+            {
+                ContextHandler.SendShowCellMessage(Fight.Clients, this, cell);
             }
 
-            OnCellShown(cell);
+            OnCellShown(cell, team);
         }
 
         public bool UseAP(short amount)
@@ -875,6 +896,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual int GetTackledMP()
         {
+            if (VisibleState != GameActionFightInvisibilityStateEnum.VISIBLE)
+                return 0;
+
             var tacklers = GetTacklers();
 
             // no tacklers, then no tackle possible
@@ -906,6 +930,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual int GetTackledAP()
         {
+            if (VisibleState != GameActionFightInvisibilityStateEnum.VISIBLE)
+                return 0;
+
             var tacklers = GetTacklers();
 
             // no tacklers, then no tackle possible
@@ -960,6 +987,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public void FreeBuffId(int id)
         {
             m_buffIdProvider.Push(id);
+        }
+
+        public IEnumerable<Buff> GetBuffs()
+        {
+            return m_buffList;
+        }
+
+        public IEnumerable<Buff> GetBuffs(Predicate<Buff> predicate)
+        {
+            return m_buffList.Where(entry => predicate(entry));
         }
 
         public void AddAndApplyBuff(Buff buff)
@@ -1125,6 +1162,95 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return m_states.Any(entry => entry.PreventsFight);
         }
 
+
+        #region Invisibility
+
+        public GameActionFightInvisibilityStateEnum VisibleState
+        {
+            get;
+            private set;
+        }
+
+        public void SetInvisibilityState(GameActionFightInvisibilityStateEnum state)
+        {
+            var lastState = VisibleState;
+            VisibleState = state;
+
+            OnVisibleStateChanged(this, lastState);
+        }
+
+        public void SetInvisibilityState(GameActionFightInvisibilityStateEnum state, FightActor source)
+        {
+            var lastState = VisibleState; 
+            VisibleState = state;
+
+            OnVisibleStateChanged(source, lastState);
+        }
+
+        public bool IsInvisibleSpellCast(Spell spell)
+        {
+            var spellLevel = spell.CurrentSpellLevel;
+
+            if (!(this is CharacterFighter))
+                return true;
+
+            if (spellLevel.Effects.Any(entry => entry.EffectId == EffectsEnum.Effect_Trap) || // traps
+                spellLevel.Effects.Any(entry => entry.EffectId == EffectsEnum.Effect_Summon) || // summons
+                spell.Template.Id == 74 || // double
+                spell.Template.Id == 62 || // chakra pulsion
+                spell.Template.Id == 66 || // insidious poison
+                spell.Template.Id == 67) // fear
+                // todo : masteries
+                return true;
+
+            return false;
+        }
+
+        public bool DispellInvisibilityBuff()
+        {
+            var buffs = GetBuffs(entry => entry is InvisibilityBuff).ToArray();
+
+            foreach (Buff buff in buffs)
+            {
+                RemoveAndDispellBuff(buff);
+            }
+
+            return buffs.Any();
+        }
+
+        public VisibleStateEnum GetVisibleStateFor(FightActor fighter)
+        {
+            return fighter.IsFriendlyWith(this) && VisibleState != VisibleStateEnum.VISIBLE ? VisibleStateEnum.DETECTED : VisibleState;
+        }
+
+        public VisibleStateEnum GetVisibleStateFor(Character character)
+        {
+            if (!character.IsFighting() || character.Fight != Fight)
+                return VisibleState;
+
+            return character.Fighter.IsFriendlyWith(this) && VisibleState != VisibleStateEnum.VISIBLE ? VisibleStateEnum.DETECTED : VisibleState;
+        }
+
+        public bool IsVisibleFor(FightActor fighter)
+        {
+            return GetVisibleStateFor(fighter) != GameActionFightInvisibilityStateEnum.INVISIBLE;
+        }
+
+        public bool IsVisibleFor(Character character)
+        {
+            return GetVisibleStateFor(character) != GameActionFightInvisibilityStateEnum.INVISIBLE;
+        }
+
+        protected virtual void OnVisibleStateChanged(FightActor source, VisibleStateEnum lastState)
+        {
+            Fight.ForEach(entry => ActionsHandler.SendGameActionFightInvisibilityMessage(entry.Client, source, this, GetVisibleStateFor(entry)), true);
+        
+            if (lastState == GameActionFightInvisibilityStateEnum.INVISIBLE)
+                Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, this));
+        }
+
+        #endregion
+
         #endregion
 
         #region End Fight
@@ -1208,14 +1334,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return IsAlive() && !HasLeft();
         }
 
-        public override bool CanSee(WorldObject obj)
+        public override bool CanBeSee(WorldObject obj)
         {
             var fighter = obj as FightActor;
-            if (fighter == null || fighter.Fight != Fight) 
-                return base.CanSee(obj);
+            var character = obj as Character;
 
-            // todo : visible state
-            return fighter.IsAlive();
+            if (character != null && character.IsFighting())
+                fighter = character.Fighter;
+
+            if (fighter == null || fighter.Fight != Fight)
+                return base.CanBeSee(obj) && VisibleState != GameActionFightInvisibilityStateEnum.INVISIBLE;
+
+            return GetVisibleStateFor(fighter) != GameActionFightInvisibilityStateEnum.INVISIBLE && IsAlive();
         }
 
         #endregion
@@ -1226,10 +1356,20 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override EntityDispositionInformations GetEntityDispositionInformations()
         {
-            return new FightEntityDispositionInformations(Cell.Id, (sbyte)Direction, CarriedActor != null ? CarriedActor.Id : 0);
+            return GetEntityDispositionInformations(null);
+        }
+
+        public virtual EntityDispositionInformations GetEntityDispositionInformations(WorldClient client = null)
+        {
+            return new FightEntityDispositionInformations(client != null ? ( IsVisibleFor(client.ActiveCharacter) ? Cell.Id : Cell.Null.Id ) : Cell.Id, (sbyte)Direction, CarriedActor != null ? CarriedActor.Id : 0);
         }
 
         public virtual GameFightMinimalStats GetGameFightMinimalStats()
+        {
+            return GetGameFightMinimalStats(null);
+        }
+
+        public virtual GameFightMinimalStats GetGameFightMinimalStats(WorldClient client = null)
         {
             return new GameFightMinimalStats(
                 Stats.Health.Total,
@@ -1252,7 +1392,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 (short)Stats[PlayerFields.DodgeMPProbability].Total,
                 (short)Stats[PlayerFields.TackleBlock].Total,
                 (short)Stats[PlayerFields.TackleEvade].Total,
-                (int)GameActionFightInvisibilityStateEnum.VISIBLE // invisibility state
+                (sbyte)( client == null ? VisibleState : GetVisibleStateFor(client.ActiveCharacter) ) // invisibility state
                 );
         }
 
@@ -1263,13 +1403,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual GameFightFighterInformations GetGameFightFighterInformations()
         {
+            return GetGameFightFighterInformations(null);
+        }
+
+        public virtual GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
+        {
             return new GameFightFighterInformations(
                 Id,
                 Look,
-                GetEntityDispositionInformations(),
+                GetEntityDispositionInformations(client),
                 Team.Id,
                 IsAlive(),
-                GetGameFightMinimalStats());
+                GetGameFightMinimalStats(client));
         }
 
         public override GameContextActorInformations GetGameContextActorInformations()

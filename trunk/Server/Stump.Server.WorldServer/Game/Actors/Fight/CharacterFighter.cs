@@ -1,6 +1,7 @@
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
+using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
@@ -160,14 +161,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return new FightTeamMemberCharacterInformations(Id, Name, Character.Level);
         }
 
-        public override GameFightFighterInformations GetGameFightFighterInformations()
+        public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
         {
             return new GameFightCharacterInformations(Id,
-                Look, 
-                GetEntityDispositionInformations(), 
+                Look,
+                GetEntityDispositionInformations(client), 
                 Team.Id, 
-                IsAlive(), 
-                GetGameFightMinimalStats(),
+                IsAlive(),
+                GetGameFightMinimalStats(client),
                 Name, 
                 Character.Level, 
                 Character.GetActorAlignmentInformations());

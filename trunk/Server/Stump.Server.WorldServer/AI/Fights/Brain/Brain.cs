@@ -49,6 +49,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             if (target == null)
             {
                 Log("No target :(");
+                return;
             }
 
             var tree = new PrioritySelector(

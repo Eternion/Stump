@@ -5,6 +5,7 @@ using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
+using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
@@ -138,20 +139,20 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override GameContextActorInformations GetGameContextActorInformations()
         {
+            return GetGameFightFighterInformations();
+        }
+
+        public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
+        {
             return new GameFightMonsterInformations(
                 Id,
                 Look,
-                GetEntityDispositionInformations(),
+                GetEntityDispositionInformations(client),
                 Team.Id,
                 IsAlive(),
-                GetGameFightMinimalStats(),
-                (short) Monster.Template.Id,
-                (sbyte) Monster.Grade.GradeId);
-        }
-
-        public override GameFightFighterInformations GetGameFightFighterInformations()
-        {
-            return GetGameContextActorInformations() as GameFightFighterInformations;
+                GetGameFightMinimalStats(client),
+                (short)Monster.Template.Id,
+                (sbyte)Monster.Grade.GradeId);
         }
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations()

@@ -51,7 +51,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                                                                                                                id));
                                                                return null;
                                                            }
-                                                       }).Where(character => character != null));
+                                                       }).Where(character => character != null).OrderByDescending(entry => entry.LastUsage));
 
             return characters;
         }
@@ -101,6 +101,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                                  Name = name,
                                  Sex = sex ? SexTypeEnum.SEX_MALE : SexTypeEnum.SEX_FEMALE,
                                  EntityLook = look,
+                                 CreationDate = DateTime.Now,
+                                 LastUsage = DateTime.Now,
                              };
 
                 record.Save();

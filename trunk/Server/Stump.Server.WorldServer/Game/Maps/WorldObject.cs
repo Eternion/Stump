@@ -213,9 +213,17 @@ namespace Stump.Server.WorldServer.Game.Maps
             return LastMap == null || LastMap.Area.Id != Area.Id;
         }
 
-        public virtual bool CanSee(WorldObject obj)
+        public virtual bool CanBeSee(WorldObject byObj)
         {
-            return obj != null && obj.Map != null && obj.Map == Map;
+            return byObj != null && byObj.Map != null && byObj.Map == Map;
+        }
+
+        public bool CanSee(WorldObject obj)
+        {
+            if (obj == null || obj.IsDeleted || obj.IsDisposed)
+                return false;
+
+            return obj.CanBeSee(this);
         }
 
         public void Update(int objUpdateDelta)

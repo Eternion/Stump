@@ -223,6 +223,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Steals\HPSteal.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Steals\MPSteal.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Summon.cs" />
+    <Compile Include="Game\Fights\Buffs\Customs\InvisibilityBuff.cs" />
     <Compile Include="Game\Fights\Fight.cs" />
     <Compile Include="Game\Fights\FightCellsInformationProvider.cs" />
     <Compile Include="Game\Fights\FightDuel.cs" />

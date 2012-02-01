@@ -151,7 +151,10 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             // Update LastConnection and Last Ip
             client.WorldAccount.LastConnection = DateTime.Now;
             client.WorldAccount.LastIp = client.IP;
-            client.WorldAccount.Update();
+            client.WorldAccount.SaveLater();
+
+            character.LastUsage = DateTime.Now;
+            character.SaveLater();
         }
 
         [WorldHandler(CharactersListRequestMessage.Id, RequiresLogin = false, IsGamePacket = false)]

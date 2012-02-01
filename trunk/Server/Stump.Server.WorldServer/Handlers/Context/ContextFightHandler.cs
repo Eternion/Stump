@@ -257,11 +257,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameFightTurnReadyRequestMessage(entity.Id));
         }
 
-        public static void SendGameFightSynchronizeMessage(IPacketReceiver client, Fight fight)
+        public static void SendGameFightSynchronizeMessage(WorldClient client, Fight fight)
         {
             client.Send(
                 new GameFightSynchronizeMessage(
-                    fight.GetAllFighters().Select(entry => entry.GetGameFightFighterInformations())));
+                    fight.GetAllFighters().Select(entry => entry.GetGameFightFighterInformations(client))));
         }
 
         public static void SendGameFightNewRoundMessage(IPacketReceiver client, int roundNumber)
@@ -296,9 +296,14 @@ namespace Stump.Server.WorldServer.Handlers.Context
                             team.GetFightTeamInformations()));
         }
 
-        public static void SendGameFightShowFighterMessage(IPacketReceiver client, FightActor fighter)
+        public static void SendGameFightShowFighterMessage(WorldClient client, FightActor fighter)
+        {   
+            client.Send(new GameFightShowFighterMessage(fighter.GetGameFightFighterInformations(client)));
+        }
+
+        public static void SendGameFightRefreshFighterMessage(WorldClient client, FightActor fighter)
         {
-            client.Send(new GameFightShowFighterMessage(fighter.GetGameFightFighterInformations()));
+            client.Send(new GameFightRefreshFighterMessage(fighter.GetGameFightFighterInformations(client)));
         }
 
         public static void SendGameFightRemoveTeamMemberMessage(IPacketReceiver client, FightActor fighter)

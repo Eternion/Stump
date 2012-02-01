@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
@@ -45,6 +46,20 @@ namespace Stump.Server.WorldServer.Database.Characters
 
         [PrimaryKey(PrimaryKeyType.Native)]
         public int Id
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public DateTime CreationDate
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public DateTime LastUsage
         {
             get;
             set;

@@ -264,7 +264,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             ContextHandler.SendGameEntitiesDispositionMessage(Clients, GetAllFighters());
             ContextHandler.SendGameFightStartMessage(Clients);
             ContextHandler.SendGameFightTurnListMessage(Clients, this);
-            ContextHandler.SendGameFightSynchronizeMessage(Clients, this);
+            ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
 
             StartTurn();
         }
@@ -694,7 +694,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (actor is CharacterFighter)
                 OnCharacterAdded(actor as CharacterFighter);
 
-            ContextHandler.SendGameFightShowFighterMessage(Clients, actor);
+            ForEach(entry => ContextHandler.SendGameFightShowFighterMessage(entry.Client, actor), true);
 
             // update blades if shown
             if (BladesVisible)
@@ -892,10 +892,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnTurnStarted()
         {
+            StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
             DecrementGlyphDuration(FighterPlaying);
             FighterPlaying.DecrementAllCastedBuffsDuration();
             FighterPlaying.TriggerBuffs(Buffs.TriggerType.TURN_BEGIN);
             TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.TURN_BEGIN);
+            EndSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
 
             // can die with triggers
             if (CheckFightEnd())
@@ -907,7 +909,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id,
                                                          TurnTime);
 
-            ContextHandler.SendGameFightSynchronizeMessage(Clients, this);
+            ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
             ForEach(entry => CharacterHandler.SendCharacterStatsListMessage(entry.Client));
 
             TurnStartTime = DateTime.Now;
@@ -940,8 +942,10 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnTurnStopped()
         {
+            StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
             FighterPlaying.TriggerBuffs(Buffs.TriggerType.TURN_END);
             FighterPlaying.ResetUsedPoints();
+            EndSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
 
             if (IsSequencing)
                 EndSequence(Sequence, true);
@@ -1138,7 +1142,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                 // fighter adjacent to this cell, ignore first cell
                 // characters only can be tackled
-                if (fighter is CharacterFighter && new MapPoint(cells[i]).GetAdjacentCells(entry => true).Any(entry => fighterCells.Contains(entry.CellId)))
+                if (fighter is CharacterFighter && 
+                    fighter.VisibleState == GameActionFightInvisibilityStateEnum.VISIBLE &&
+                    new MapPoint(cells[i]).GetAdjacentCells(entry => true).Any(entry => fighterCells.Contains(entry.CellId)))
                 {
                     path.CutPath(i + 1);
                     break;
@@ -1147,7 +1153,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             IEnumerable<short> movementsKeys = path.GetServerPathKeys();
 
-            ContextHandler.SendGameMapMovementMessage(Clients, movementsKeys, fighter);
+            ForEach(entry =>
+                        {
+                            if (entry.CanSee(fighter))
+                                ContextHandler.SendGameMapMovementMessage(entry.Client, movementsKeys, fighter);
+                        }, true);
+
             actor.StopMove();
             EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
         }
@@ -1222,8 +1233,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnSpellCasting(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
-            ContextHandler.SendGameActionFightSpellCastMessage(Clients, ActionsEnum.ACTION_FIGHT_CAST_SPELL,
-                                                               caster, target, critical, silentCast, spell);
+            ForEach(entry => ContextHandler.SendGameActionFightSpellCastMessage(entry.Client, ActionsEnum.ACTION_FIGHT_CAST_SPELL,
+                                                                                caster, target, critical, !caster.IsVisibleFor(entry) || silentCast, spell), true);
 
             if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
                 EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
@@ -1254,6 +1265,9 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected virtual void OnBuffRemoved(FightActor target, Buff buff)
         {
             m_buffs.Remove(buff);
+
+            if (buff.Duration > 0)
+                ActionsHandler.SendGameActionFightDispellEffectMessage(Clients, target, target, buff);
         }
 
         #endregion
@@ -1551,6 +1565,14 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public IEnumerable<Character> GetAllCharacters()
         {
+            return GetAllCharacters(false);
+        }
+
+        public IEnumerable<Character> GetAllCharacters(bool withSpectators = false)
+        {
+            if (withSpectators)
+                return Fighters.OfType<CharacterFighter>().Select(entry => entry.Character).Concat(Spectators.Select(entry => entry.Character));
+
             return Fighters.OfType<CharacterFighter>().Select(entry => entry.Character);
         }
 
@@ -1562,9 +1584,17 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
         }
 
-        public void ForEach(Action<Character> action, Character except)
+        public void ForEach(Action<Character> action, bool withSpectators = false)
         {
-            foreach (Character character in GetAllCharacters())
+            foreach (Character character in GetAllCharacters(withSpectators))
+            {
+                action(character);
+            }
+        }
+
+        public void ForEach(Action<Character> action, Character except, bool withSpectators = false)
+        {
+            foreach (Character character in GetAllCharacters(withSpectators))
             {
                 if (character == except)
                     continue;

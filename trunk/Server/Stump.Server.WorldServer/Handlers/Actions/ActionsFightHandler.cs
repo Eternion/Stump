@@ -6,6 +6,7 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Handlers.Actions
 {
@@ -28,6 +29,12 @@ namespace Stump.Server.WorldServer.Handlers.Actions
         {
             client.Send(new GameActionFightInvisibilityMessage((short)ActionsEnum.ACTION_CHARACTER_MAKE_INVISIBLE, source.Id, target.Id, (sbyte)state));
         }
+        
+        public static void SendGameActionFightDispellEffectMessage(IPacketReceiver client, FightActor source, FightActor target, Buff buff)
+        {
+            client.Send(new GameActionFightDispellEffectMessage(514, source.Id, target.Id, buff.Id));
+        }
+
 
         public static void SendGameActionFightReflectDamagesMessage(IPacketReceiver client, FightActor source, FightActor target, int amount)
         {

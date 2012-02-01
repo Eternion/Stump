@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
@@ -76,20 +77,20 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return new FightTeamMemberMonsterInformations(Id, Monster.Template.Id, (sbyte)Monster.GradeId);
         }
 
-        public override GameFightFighterInformations GetGameFightFighterInformations()
+        public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
         {
             return new GameFightMonsterInformations(
                 Id,
                 Look,
-                GetEntityDispositionInformations(),
+                GetEntityDispositionInformations(client),
                 Team.Id,
                 IsAlive(),
-                GetGameFightMinimalStats(),
+                GetGameFightMinimalStats(client),
                 (short)Monster.Template.Id,
                 (sbyte)Monster.GradeId);
         }
 
-        public override GameFightMinimalStats GetGameFightMinimalStats()
+        public override GameFightMinimalStats GetGameFightMinimalStats(WorldClient client = null)
         {
             return new GameFightMinimalStats(
                 Stats.Health.Total,
@@ -112,7 +113,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 (short)Stats[PlayerFields.DodgeMPProbability].Total,
                 (short)Stats[PlayerFields.TackleBlock].Total,
                 (short)Stats[PlayerFields.TackleEvade].Total,
-                (int)GameActionFightInvisibilityStateEnum.VISIBLE // invisibility state
+                (sbyte)( client == null ? VisibleState : GetVisibleStateFor(client.ActiveCharacter) ) // invisibility state
                 );
         }
     }
