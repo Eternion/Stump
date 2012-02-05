@@ -12,7 +12,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
     public class InteractiveTemplate : WorldBaseRecord<InteractiveTemplate>
     {
         private string m_name;
-        private IList<SkillTemplate> m_skills;
+        private IList<SkillRecord> m_skills;
 
         [D2OField("id")]
         [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
@@ -45,9 +45,9 @@ namespace Stump.Server.WorldServer.Database.Interactives
         }
 
         [HasAndBelongsToMany(Table = "interactives_templates_skills", ColumnKey = "InteractiveId", ColumnRef = "SkillId")]
-        public IList<SkillTemplate> Skills
+        public IList<SkillRecord> Skills
         {
-            get { return m_skills ?? (m_skills = new List<SkillTemplate>()); }
+            get { return m_skills ?? (m_skills = new List<SkillRecord>()); }
             set { m_skills = value; }
         }
     }

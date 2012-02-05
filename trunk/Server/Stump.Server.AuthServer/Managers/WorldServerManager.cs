@@ -165,6 +165,10 @@ namespace Stump.Server.AuthServer.Managers
             {
                 //if (AskAddWorldRecord(world))
                 IPAddress[] addresses = Dns.GetHostAddresses(world.Address);
+                foreach (IPAddress ipAddress in addresses)
+                {
+                    logger.Debug(ipAddress.ToString());
+                }
 
                 if (AllowedServerIps.Contains(addresses.Last().ToString()))
                 {

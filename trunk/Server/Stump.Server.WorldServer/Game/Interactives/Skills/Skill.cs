@@ -6,10 +6,10 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
     public abstract class Skill
     {
-        protected Skill(int id, SkillTemplate template, InteractiveObject interactiveObject)
+        protected Skill(int id, SkillRecord record, InteractiveObject interactiveObject)
         {
             Id = id;
-            Template = template;
+            Record = record;
             InteractiveObject = interactiveObject;
         }
 
@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             private set;
         }
 
-        public SkillTemplate Template
+        public SkillRecord Record
         {
             get;
             private set;
@@ -36,7 +36,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
         public InteractiveElementSkill GetInteractiveElementSkill()
         {
-            return new InteractiveElementSkill(Template.SkillId, Id);
+            return new InteractiveElementSkill(Record.SkillId, Id);
         }
     }
 }

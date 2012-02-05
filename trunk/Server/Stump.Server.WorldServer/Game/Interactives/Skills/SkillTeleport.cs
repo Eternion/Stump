@@ -5,13 +5,13 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
     public class SkillTeleport : Skill
     {
-        public SkillTeleport(int id, SkillTeleportTemplate template, InteractiveObject interactiveObject)
-            : base (id, template, interactiveObject)
+        public SkillTeleport(int id, SkillTeleportRecord record, InteractiveObject interactiveObject)
+            : base (id, record, interactiveObject)
         {
-            TeleportTemplate = template;
+            TeleportRecord = record;
         }
 
-        public SkillTeleportTemplate TeleportTemplate
+        public SkillTeleportRecord TeleportRecord
         {
             get;
             private set;
@@ -19,12 +19,12 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
         public override bool IsEnabled(Character character)
         {
-            return TeleportTemplate.IsConditionFilled(character);
+            return TeleportRecord.IsConditionFilled(character);
         }
 
         public override void Execute(Character character)
         {
-            character.Teleport(TeleportTemplate.GetPosition());
+            character.Teleport(TeleportRecord.GetPosition());
         }
     }
 }

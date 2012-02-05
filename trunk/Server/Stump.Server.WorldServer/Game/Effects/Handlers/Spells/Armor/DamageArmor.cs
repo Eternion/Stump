@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
             }
         }
 
-        public static void ApplyArmorBuff(TriggerBuff buff, BuffTriggerType trigger)
+        public static void ApplyArmorBuff(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
             var integerEffect = buff.Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
 

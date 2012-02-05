@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Handlers.Interactives
 
         public static void SendInteractiveUsedMessage(IPacketReceiver client, ContextActor user, InteractiveObject interactiveObject, Skill skill)
         {
-            client.Send(new InteractiveUsedMessage(user.Id, interactiveObject.Id, (short) skill.Id, (short) skill.Template.Duration));
+            client.Send(new InteractiveUsedMessage(user.Id, interactiveObject.Id, (short) skill.Id, (short) skill.Record.Duration));
         }
     }
 }

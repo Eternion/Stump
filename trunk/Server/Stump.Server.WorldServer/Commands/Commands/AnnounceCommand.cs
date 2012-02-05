@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             var color = Color.FromArgb(int.Parse(AnnounceColor));
 
-            string msg = trigger.Args.String;
+            string msg = trigger.Args.NextWords();
 
             WorldServer.Instance.IOTaskPool.AddMessage(
                 () =>

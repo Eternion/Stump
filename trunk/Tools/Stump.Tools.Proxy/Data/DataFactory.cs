@@ -74,7 +74,7 @@ namespace Stump.Tools.Proxy.Data
                 if (!client.IsSkillActionValid())
                     return;
 
-                var skill = new SkillTeleportTemplate
+                var skill = new SkillTeleportRecord
                                 {
                                     MapId = client.CurrentMap.Id,
                                     CellId = client.Disposition.cellId,
@@ -94,10 +94,10 @@ namespace Stump.Tools.Proxy.Data
                                       if (io.Template == null && io.Skills.Count > 0)
                                           return;
 
-                                      if (io.Template != null && io.Template.Skills.Count(entry => entry is SkillTeleportTemplate &&
-                                                                                                   (entry as SkillTeleportTemplate).CellId == skill.CellId &&
-                                                                                                   (entry as SkillTeleportTemplate).MapId == skill.MapId &&
-                                                                                                   (entry as SkillTeleportTemplate).Direction == skill.Direction) > 0)
+                                      if (io.Template != null && io.Template.Skills.Count(entry => entry is SkillTeleportRecord &&
+                                                                                                   (entry as SkillTeleportRecord).CellId == skill.CellId &&
+                                                                                                   (entry as SkillTeleportRecord).MapId == skill.MapId &&
+                                                                                                   (entry as SkillTeleportRecord).Direction == skill.Direction) > 0)
                                           return;
 
                                       skill.Save();

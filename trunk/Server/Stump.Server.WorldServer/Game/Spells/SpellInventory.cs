@@ -101,6 +101,12 @@ namespace Stump.Server.WorldServer.Game.Spells
                 return false;
             }
 
+            if (spell.CurrentLevel >= 6)
+            {
+                InventoryHandler.SendSpellUpgradeFailureMessage(Owner.Client);
+                return false;
+            }
+
             if (Owner.SpellsPoints < spell.CurrentLevel)
             {
                 InventoryHandler.SendSpellUpgradeFailureMessage(Owner.Client);

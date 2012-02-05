@@ -64,7 +64,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override EntityLook Look
         {
             get;
-            protected set;
+            set;
         }
 
         public override ObjectPosition MapPosition

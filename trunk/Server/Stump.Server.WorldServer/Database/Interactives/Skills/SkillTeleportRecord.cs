@@ -11,7 +11,7 @@ using Stump.Server.WorldServer.Game.Maps.Cells;
 namespace Stump.Server.WorldServer.Database.Interactives.Skills
 {
     [ActiveRecord(DiscriminatorValue = "Teleport")]
-    public class SkillTeleportTemplate : SkillTemplate
+    public class SkillTeleportRecord : SkillRecord
     {
         private bool m_mustRefreshPosition;
 

@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Game.Interactives
 
         private void GenerateSkills()
         {
-            foreach (SkillTemplate skillTemplate in Spawn.GetSkills())
+            foreach (SkillRecord skillTemplate in Spawn.GetSkills())
             {
                 int id = InteractiveManager.Instance.PopSkillId();
 

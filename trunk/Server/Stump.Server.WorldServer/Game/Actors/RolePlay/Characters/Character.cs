@@ -522,6 +522,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 handler(this, currentLevel, difference);
         }
 
+        public void RefreshStats()
+        {
+            if (IsRegenActive())
+                UpdateRegenedLife();
+
+            CharacterHandler.SendCharacterStatsListMessage(Client);
+        }
+
         #endregion
 
         #region Alignment
@@ -953,16 +961,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!IsRegenActive())
                 return;
 
-            var regainedLife = (int) Math.Floor((DateTime.Now - RegenStartTime).Value.TotalSeconds / (RegenSpeed / 10));
+            var regainedLife = (int) Math.Floor((DateTime.Now - RegenStartTime).Value.TotalSeconds / (RegenSpeed / 10f));
 
             if (LifePoints + regainedLife > MaxLifePoints)
                 regainedLife = MaxLifePoints - LifePoints;
 
-            Stats.Health.DamageTaken -= (short) regainedLife;
+            if (regainedLife > 0)
+            {
+                Stats.Health.DamageTaken -= (short) regainedLife;
+                CharacterHandler.SendLifePointsRegenEndMessage(Client, regainedLife);
+            }
+
             RegenStartTime = null;
             RegenSpeed = 0;
-
-            CharacterHandler.SendLifePointsRegenEndMessage(Client, regainedLife); 
             OnLifeRegened(regainedLife);
         }
 
@@ -971,14 +982,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!IsRegenActive())
                 return;
 
-            var regainedLife = (int)Math.Floor(( DateTime.Now - RegenStartTime ).Value.TotalSeconds / (RegenSpeed / 10));
+            var regainedLife = (int)Math.Floor(( DateTime.Now - RegenStartTime ).Value.TotalSeconds / (RegenSpeed / 10f));
 
             if (LifePoints + regainedLife > MaxLifePoints)
                 regainedLife = MaxLifePoints - LifePoints;
 
-            Stats.Health.DamageTaken -= (short) regainedLife;
-
-            CharacterHandler.SendUpdateLifePointsMessage(Client);
+            if (regainedLife > 0)
+            {
+                Stats.Health.DamageTaken -= (short) regainedLife;
+                CharacterHandler.SendUpdateLifePointsMessage(Client);
+            }
 
             RegenStartTime = DateTime.Now;
 

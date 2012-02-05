@@ -186,11 +186,13 @@
     <Compile Include="Database\IAssignedByD2o.cs" />
     <Compile Include="Database\Interactives\InteractiveSpawn.cs" />
     <Compile Include="Database\Interactives\InteractiveTemplate.cs" />
-    <Compile Include="Database\Interactives\Skills\SkillTemplate.cs" />
-    <Compile Include="Database\Interactives\Skills\SkillTeleportTemplate.cs" />
+    <Compile Include="Database\Interactives\Skills\SkillRecord.cs" />
+    <Compile Include="Database\Interactives\Skills\SkillTeleportRecord.cs" />
     <Compile Include="Database\ISaveable.cs" />
     <Compile Include="Database\Items\Shops\ItemToSell.cs" />
     <Compile Include="Database\Items\Shops\NpcItem.cs" />
+    <Compile Include="Database\Jobs\JobRecord.cs" />
+    <Compile Include="Database\Jobs\JobTemplate.cs" />
     <Compile Include="Database\Monsters\DroppableItem.cs" />
     <Compile Include="Database\Monsters\MonsterGrade.cs" />
     <Compile Include="Database\Monsters\MonsterRace.cs" />
@@ -234,6 +236,8 @@
     <Compile Include="Game\Fights\FightSpectator.cs" />
     <Compile Include="Game\Fights\ReadyChecker.cs" />
     <Compile Include="Game\Fights\TimeLine.cs" />
+    <Compile Include="Game\Jobs\Job.cs" />
+    <Compile Include="Game\Jobs\JobsCollection.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Single.cs" />
     <Compile Include="Handlers\Actions\ActionsFightHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsHandler.cs" />

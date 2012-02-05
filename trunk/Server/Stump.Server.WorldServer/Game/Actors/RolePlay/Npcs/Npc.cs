@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
         public override EntityLook Look
         {
             get;
-            protected set;
+            set;
         }
 
         public void Refresh()

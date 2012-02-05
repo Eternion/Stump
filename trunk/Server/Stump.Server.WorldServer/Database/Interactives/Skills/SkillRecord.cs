@@ -5,7 +5,7 @@ using Stump.Server.WorldServer.Game.Interactives.Skills;
 namespace Stump.Server.WorldServer.Database.Interactives.Skills
 {
     [ActiveRecord("interactives_skills", DiscriminatorColumn = "RecognizerType", DiscriminatorType = "String", DiscriminatorValue = "Base")]
-    public abstract class SkillTemplate : WorldBaseRecord<SkillTemplate>
+    public abstract class SkillRecord : WorldBaseRecord<SkillRecord>
     {
         [PrimaryKey(PrimaryKeyType.Native)]
         public int Id

@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private Map m_map;
-        private IList<SkillTemplate> m_skills;
+        private IList<SkillRecord> m_skills;
 
         [PrimaryKey(PrimaryKeyType.Native)]
         public int Id
@@ -68,13 +68,13 @@ namespace Stump.Server.WorldServer.Database.Interactives
         /// Custom skills in case of Template is null
         /// </summary>
         [HasAndBelongsToMany(Table = "interactives_custom_skills", ColumnKey = "InteractiveId", ColumnRef = "SkillId")]
-        public IList<SkillTemplate> Skills
+        public IList<SkillRecord> Skills
         {
-            get { return m_skills ?? (m_skills = new List<SkillTemplate>()); }
+            get { return m_skills ?? (m_skills = new List<SkillRecord>()); }
             set { m_skills = value; }
         }
 
-        public IEnumerable<SkillTemplate> GetSkills()
+        public IEnumerable<SkillRecord> GetSkills()
         {
             return Template != null ? Template.Skills : Skills;
         }
