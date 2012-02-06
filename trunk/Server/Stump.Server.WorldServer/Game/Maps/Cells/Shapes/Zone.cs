@@ -9,7 +9,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 
         private SpellShapeEnum m_shapeType;
 
-        public Zone(SpellShapeEnum shape, uint radius)
+        public Zone(SpellShapeEnum shape, byte radius)
         {
             ShapeType = shape;
             Radius = radius;
@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             get { return m_shape.Surface; }
         }
 
-        public uint MinRadius
+        public byte MinRadius
         {
             get { return m_shape.MinRadius; }
             set { m_shape.MinRadius = value; }
@@ -49,9 +49,9 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             set { m_shape.Direction = value; }
         }
 
-        private uint m_radius;
+        private byte m_radius;
 
-        public uint Radius
+        public byte Radius
         {
             get { return m_radius; }
             set

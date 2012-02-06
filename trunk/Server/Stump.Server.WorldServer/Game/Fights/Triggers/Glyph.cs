@@ -13,14 +13,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 {
     public class Glyph : MarkTrigger
     {
-        public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell, Cell centerCell, sbyte size, Color color)
+        public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell, Cell centerCell, byte size, Color color)
             : base(id, caster, castedSpell, originEffect, new MarkShape(caster.Fight, centerCell, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, size, color))
         {
             GlyphSpell = glyphSpell;
             Duration = originEffect.Duration;
         }
 
-        public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell, Cell centerCell, GameActionMarkCellsTypeEnum type, sbyte size, Color color)
+        public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell, Cell centerCell, GameActionMarkCellsTypeEnum type, byte size, Color color)
             : base(id, caster, castedSpell, originEffect, new MarkShape(caster.Fight, centerCell, type, size, color))
         {
             GlyphSpell = glyphSpell;

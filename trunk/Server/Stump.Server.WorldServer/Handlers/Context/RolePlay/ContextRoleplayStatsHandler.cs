@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             client.ActiveCharacter.StatsPoints -= (ushort)message.boostPoint;
 
             SendStatsUpgradeResultMessage(client, message.boostPoint);
-            CharacterHandler.SendCharacterStatsListMessage(client);
+            client.ActiveCharacter.RefreshStats();
         }
 
         public static void SendStatsUpgradeResultMessage(IPacketReceiver client, short usedpts)

@@ -6,7 +6,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 {
     public class Cone : IShape
     {
-        public Cone(uint minRadius, uint radius)
+        public Cone(byte minRadius, byte radius)
         {
             MinRadius = minRadius;
             Radius = radius;
@@ -20,11 +20,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
         {
             get
             {
-                return ( Radius + 1 ) * ( Radius + 1 );
+                return ( (uint)Radius + 1 ) * ( (uint)Radius + 1 );
             }
         }
 
-        public uint MinRadius
+        public byte MinRadius
         {
             get;
             set;
@@ -36,7 +36,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             set;
         }
 
-        public uint Radius
+        public byte Radius
         {
             get;
             set;

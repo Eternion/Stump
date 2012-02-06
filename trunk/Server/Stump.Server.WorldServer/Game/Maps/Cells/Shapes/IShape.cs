@@ -9,7 +9,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             get;
         }
 
-        uint MinRadius
+        byte MinRadius
         {
             get;
             set;
@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             set;
         }
 
-        uint Radius
+        byte Radius
         {
             get;
             set;

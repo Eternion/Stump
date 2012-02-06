@@ -5,7 +5,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 {
     public class Line : IShape
     {
-        public Line(uint radius)
+        public Line(byte radius)
         {
             Radius = radius;
             Direction = DirectionsEnum.DOWN_RIGHT;
@@ -17,11 +17,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
         {
             get
             {
-                return Radius + 1;
+                return (uint)Radius + 1;
             }
         }
 
-        public uint MinRadius
+        public byte MinRadius
         {
             get;
             set;
@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             set;
         }
 
-        public uint Radius
+        public byte Radius
         {
             get;
             set;

@@ -5,7 +5,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 {
     public class HalfLozenge : IShape
     {
-        public HalfLozenge(uint minRadius, uint radius)
+        public HalfLozenge(byte minRadius, byte radius)
         {
             MinRadius = minRadius;
             Radius = radius;
@@ -15,10 +15,13 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 
         public uint Surface
         {
-            get { return Radius*2 + 1; }
+            get
+            {
+                return (uint)Radius * 2 + 1;
+            }
         }
 
-        public uint MinRadius
+        public byte MinRadius
         {
             get;
             set;
@@ -30,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             set;
         }
 
-        public uint Radius
+        public byte Radius
         {
             get;
             set;

@@ -512,7 +512,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 }
             }
 
-            CharacterHandler.SendCharacterStatsListMessage(Client);
+            RefreshStats();
             CharacterHandler.SendCharacterLevelUpMessage(Client, currentLevel);
             CharacterHandler.SendCharacterLevelUpInformationMessage(Map.Clients, this, currentLevel);
 
@@ -920,13 +920,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             
             Fighter = null;
             Spectator = null;
+            NextMap = null;
 
             ContextHandler.SendGameContextDestroyMessage(Client);
             ContextHandler.SendGameContextCreateMessage(Client, 1);
 
-            CharacterHandler.SendCharacterStatsListMessage(Client);
+            RefreshStats();
 
+            LastMap = Map;
             Map.Enter(this);
+            LastMap = null;
 
             StartRegen();
         }
@@ -1057,8 +1060,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 WorldServer.Instance.IOTaskPool.AddMessage(
                     () =>
                         {
-                            SaveNow();
-                            UnLoadRecord();
+                            try
+                            {
+                                SaveNow();
+                                UnLoadRecord();
+                            }
+                            finally
+                            {
+                                Delete();
+                            }
                         });
             }
         }

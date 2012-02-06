@@ -51,7 +51,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             Modificator = modificator;
             Trigger = trigger;
             Hidden = hidden;
-            ZoneSize = zoneSize;
+            m_zoneSize = zoneSize;
             ZoneShape = (SpellShapeEnum) zoneShape;
         }
 
@@ -68,7 +68,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             Modificator = effect.modificator;
             Trigger = effect.trigger;
             Hidden = effect.hidden;
-            ZoneSize = effect.zoneSize;
+            m_zoneSize = effect.zoneSize;
             ZoneShape = (SpellShapeEnum) effect.zoneShape;
         }
 
@@ -140,10 +140,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             set;
         }
 
-        public uint ZoneSize
+        private uint m_zoneSize;
+
+        public byte ZoneSize
         {
-            get;
-            set;
+            get { return m_zoneSize >= 63 ? (byte)63 : (byte)m_zoneSize; }
+            set { m_zoneSize = value; }
         }
 
         public SpellShapeEnum ZoneShape
@@ -241,7 +243,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 Modificator = reader.ReadInt32();
                 Trigger = reader.ReadBoolean();
                 Hidden = reader.ReadBoolean();
-                ZoneSize = reader.ReadUInt32();
+                m_zoneSize = reader.ReadUInt32();
                 ZoneShape = (SpellShapeEnum) reader.ReadUInt32();
             }
         }

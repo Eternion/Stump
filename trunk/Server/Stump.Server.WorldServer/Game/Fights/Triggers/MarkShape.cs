@@ -11,7 +11,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         private readonly Zone m_zone;
         private readonly Cell[] m_cells;
 
-        public MarkShape(Fight fight, Cell cell, GameActionMarkCellsTypeEnum shape, sbyte size, Color color)
+        public MarkShape(Fight fight, Cell cell, GameActionMarkCellsTypeEnum shape, byte size, Color color)
         {
             Fight = fight;
             Cell = cell;
@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             Color = color;
 
             m_zone = Shape == GameActionMarkCellsTypeEnum.CELLS_CROSS ?
-                new Zone(SpellShapeEnum.Q, (uint)size) : new Zone(SpellShapeEnum.C, (uint)size);
+                new Zone(SpellShapeEnum.Q, (byte)size) : new Zone(SpellShapeEnum.C, size);
             m_cells = m_zone.GetCells(Cell, fight.Map);
         }
 
@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             private set;
         }
 
-        public sbyte Size
+        public byte Size
         {
             get;
             private set;
@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public GameActionMarkedCell GetGameActionMarkedCell()
         {
-            return new GameActionMarkedCell(Cell.Id, Size, Color.ToArgb() & 0xFFFFFF, (sbyte)Shape);
+            return new GameActionMarkedCell(Cell.Id, (sbyte) Size, Color.ToArgb() & 0xFFFFFF, (sbyte)Shape);
         }
     }
 }

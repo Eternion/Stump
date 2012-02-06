@@ -90,7 +90,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         public Cell[] GetMovementCells(int mp)
         {
-            var circle = new Lozenge(0, (uint) mp);
+            if (mp <= 0)
+                return new Cell[0];
+
+            if (mp > 63)
+                return Fight.Map.Cells;
+
+            var circle = new Lozenge(0, (byte) mp);
 
             return circle.GetCells(Fighter.Cell, Fight.Map);
         }

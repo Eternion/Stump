@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void HandleSpellUpgradeRequestMessage(WorldClient client, SpellUpgradeRequestMessage message)
         {
             client.ActiveCharacter.Spells.BoostSpell(message.spellId);
-            CharacterHandler.SendCharacterStatsListMessage(client);
+            client.ActiveCharacter.RefreshStats();
         }
 
         public static void SendSpellUpgradeSuccessMessage(IPacketReceiver client, Spell spell)

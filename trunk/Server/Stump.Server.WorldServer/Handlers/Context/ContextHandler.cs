@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             SendGameContextDestroyMessage(client);
             SendGameContextCreateMessage(client, 1);
 
-            CharacterHandler.SendCharacterStatsListMessage(client);
+            client.ActiveCharacter.RefreshStats();
 
             client.ActiveCharacter.LogIn();
             client.ActiveCharacter.StartRegen();

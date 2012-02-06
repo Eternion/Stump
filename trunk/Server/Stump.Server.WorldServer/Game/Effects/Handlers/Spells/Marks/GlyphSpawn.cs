@@ -32,8 +32,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
             
             // todo : find usage of Dice.Value
             Glyph glyph = EffectZone.ShapeType == SpellShapeEnum.Q ?
-                new Glyph((short)Fight.PopNextTriggerId(), Caster, Spell, Dice, glyphSpell, TargetedCell, GameActionMarkCellsTypeEnum.CELLS_CROSS, (sbyte)Effect.ZoneSize, GetGlyphColorBySpell(Spell)) :
-                new Glyph((short)Fight.PopNextTriggerId(), Caster, Spell, Dice, glyphSpell, TargetedCell, (sbyte)Effect.ZoneSize, GetGlyphColorBySpell(Spell));
+                new Glyph((short)Fight.PopNextTriggerId(), Caster, Spell, Dice, glyphSpell, TargetedCell, GameActionMarkCellsTypeEnum.CELLS_CROSS, Effect.ZoneSize, GetGlyphColorBySpell(Spell)) :
+                new Glyph((short)Fight.PopNextTriggerId(), Caster, Spell, Dice, glyphSpell, TargetedCell, Effect.ZoneSize, GetGlyphColorBySpell(Spell));
 
             Fight.AddTriger(glyph);
         }

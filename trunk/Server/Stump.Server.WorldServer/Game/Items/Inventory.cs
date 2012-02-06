@@ -199,7 +199,7 @@ namespace Stump.Server.WorldServer.Game.Items
             }
 
             if (send)
-                CharacterHandler.SendCharacterStatsListMessage(Owner.Client);
+                Owner.RefreshStats();
         }
 
         protected override void OnItemAdded(Item item)

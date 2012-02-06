@@ -6,7 +6,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 {
     public class Cross : IShape
     {
-        public Cross(uint minRadius, uint radius)
+        public Cross(byte minRadius, byte radius)
         {
             MinRadius = minRadius;
             Radius = radius;
@@ -42,10 +42,13 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 
         public uint Surface
         {
-            get { return Radius*4 + 1; }
+            get
+            {
+                return (uint)Radius * 4 + 1;
+            }
         }
 
-        public uint MinRadius
+        public byte MinRadius
         {
             get;
             set;
@@ -57,7 +60,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             set;
         }
 
-        public uint Radius
+        public byte Radius
         {
             get;
             set;
