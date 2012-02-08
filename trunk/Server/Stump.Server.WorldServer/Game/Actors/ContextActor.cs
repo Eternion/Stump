@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.Contracts;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;

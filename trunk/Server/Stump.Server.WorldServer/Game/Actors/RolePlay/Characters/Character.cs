@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Castle.ActiveRecord;
 using NLog;
@@ -796,7 +797,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void DenyAllInvitations()
         {
-            foreach (var partyInvitation in m_partyInvitations)
+            foreach (var partyInvitation in m_partyInvitations.ToArray())
             {
                 Contract.Assume(partyInvitation.Value != null);
                 partyInvitation.Value.Deny();

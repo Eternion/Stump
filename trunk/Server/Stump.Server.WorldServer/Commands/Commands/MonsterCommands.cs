@@ -49,6 +49,12 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             MonsterGrade grade = template.Grades[trigger.Get<sbyte>("grade")];
 
+            if (grade.Template.EntityLook == null)
+            {
+                trigger.ReplyError("Cannot display this monster");
+                return;
+            }
+
             if (trigger.IsArgumentDefined("map") && trigger.IsArgumentDefined("cell") && trigger.IsArgumentDefined("direction"))
             {
                 var map = trigger.Get<Map>("map");
