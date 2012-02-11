@@ -71,6 +71,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
                 {
                     var handler = EffectManager.Instance.GetSpellEffectHandler(effect, Caster, TrapSpell, shape.Cell, false);
                     handler.EffectZone = new Zone(shape.Shape == GameActionMarkCellsTypeEnum.CELLS_CROSS ? SpellShapeEnum.Q : effect.ZoneShape, shape.Size);
+                    handler.MarkTrigger = this;
 
                     handler.Apply();
                 }

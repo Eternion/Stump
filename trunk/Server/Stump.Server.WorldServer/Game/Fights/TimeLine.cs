@@ -59,7 +59,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             Fighters.Remove(fighter);
 
-            if (index <= Index)
+            if (index <= Index && index > 0)
             {
                 Index--;
             }
@@ -149,8 +149,6 @@ namespace Stump.Server.WorldServer.Game.Fights
                 }
             }
 
-            // a bit ugly :/
-            // update the list from Fight instance
             Fighters = timeLine;
 
             Index = 0;

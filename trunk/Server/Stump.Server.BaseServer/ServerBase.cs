@@ -270,7 +270,13 @@ namespace Stump.Server.BaseServer
         private void OnContractFailed(object sender, ContractFailedEventArgs e)
         {
             logger.Fatal("Contract failed : {0}", e.Condition);
-            HandleCrashException(e.OriginalException);
+
+            if (e.OriginalException != null)
+                HandleCrashException(e.OriginalException);
+            else
+            {
+                logger.Fatal(string.Format(" Stack Trace:\r\n{0}", Environment.StackTrace));
+            }
 
             e.SetHandled();
         }

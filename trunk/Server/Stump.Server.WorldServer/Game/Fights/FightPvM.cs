@@ -47,11 +47,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
         }
 
-        protected override void ResetFightersProperties()
-        {
-            base.ResetFightersProperties();
-        }
-
         public override FightTypeEnum FightType
         {
             get { return FightTypeEnum.FIGHT_TYPE_PvM; }

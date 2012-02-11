@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
+using System.Threading;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
@@ -16,6 +18,8 @@ namespace Stump.Server.WorldServer.Core.Network
         public WorldClient(Socket socket)
             : base(socket)
         {
+            DebugLag = true;
+
             Send(new ProtocolRequired(VersionExtension.ProtocolRequired, VersionExtension.ActualProtocol));
             Send(new HelloGameMessage());
 
@@ -52,8 +56,30 @@ namespace Stump.Server.WorldServer.Core.Network
             set;
         }
 
+        public bool DebugLag
+        {
+            get;
+            set;
+        }
+
+        public void ToggleDebugLag(bool state)
+        {
+            DebugLag = state;
+        }
+
+        public override void Send(Message message)
+        {
+            if (DebugLag)
+                Thread.Sleep(new Random().Next(50, 250));
+
+            base.Send(message);
+        }
+
         protected override void OnMessageReceived(Message message)
         {
+            if (DebugLag)
+                Thread.Sleep(new Random().Next(50, 250));
+
             WorldPacketHandler.Instance.Dispatch(this, message);
 
             base.OnMessageReceived(message);

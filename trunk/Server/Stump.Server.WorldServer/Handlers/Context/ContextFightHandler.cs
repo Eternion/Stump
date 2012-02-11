@@ -45,12 +45,18 @@ namespace Stump.Server.WorldServer.Handlers.Context
         [WorldHandler(GameFightTurnReadyMessage.Id)]
         public static void HandleGameFightTurnReadyMessage(WorldClient client, GameFightTurnReadyMessage message)
         {
+            if (!client.ActiveCharacter.IsFighting())
+                return;
+
             client.ActiveCharacter.Fighter.ToggleTurnReady(message.isReady);
         }
 
         [WorldHandler(GameFightReadyMessage.Id)]
         public static void HandleGameFightReadyMessage(WorldClient client, GameFightReadyMessage message)
         {
+            if (!client.ActiveCharacter.IsFighting())
+                return;
+
             client.ActiveCharacter.Fighter.ToggleReady(message.isReady);
         }
 

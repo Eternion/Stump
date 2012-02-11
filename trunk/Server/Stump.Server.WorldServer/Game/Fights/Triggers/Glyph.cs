@@ -69,6 +69,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             foreach (EffectDice effect in GlyphSpell.CurrentSpellLevel.Effects)
             {
                 SpellEffectHandler handler = EffectManager.Instance.GetSpellEffectHandler(effect, Caster, GlyphSpell, trigger.Cell, false);
+                handler.MarkTrigger = this;
 
                 handler.Apply();
             }

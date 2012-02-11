@@ -33,8 +33,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             if (buffs.Sum(entry => entry.Value) >= Dice.DiceFace)
                 return;
 
-            var statBuff = new StatBuff(buff.Target.PopNextBuffId(), buff.Target, Caster, Dice, 
-                Spell, (short) token, GetPunishmentBoostType(Dice.DiceNum), false, true) 
+            var caracteristic = GetPunishmentBoostType(Dice.DiceNum);
+            var statBuff = new StatBuff(buff.Target.PopNextBuffId(), buff.Target, Caster, Dice,
+                Spell, (short)token, caracteristic, false, true, (short) GetBuffEffectId(caracteristic)) 
                 {Duration = Dice.Value};
 
             buff.Target.AddAndApplyBuff(statBuff);
@@ -58,6 +59,27 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     return PlayerFields.Vitality;
                 default:
                     throw new Exception(string.Format("PunishmentBoostType not found for action {0}", punishementAction));
+            }
+        }
+
+        private static EffectsEnum GetBuffEffectId(PlayerFields caracteristic)
+        {
+            switch (caracteristic)
+            {
+                case PlayerFields.Agility:
+                    return EffectsEnum.Effect_AddAgility;
+                case PlayerFields.Chance:
+                    return EffectsEnum.Effect_AddChance;
+                case PlayerFields.Strength:
+                    return EffectsEnum.Effect_AddStrength;
+                case PlayerFields.Intelligence:
+                    return EffectsEnum.Effect_AddIntelligence;
+                case PlayerFields.Vitality:
+                    return EffectsEnum.Effect_AddVitality;
+                case PlayerFields.Wisdom:
+                    return EffectsEnum.Effect_AddWisdom;
+                default:
+                    throw new Exception(string.Format("Buff Effect not found for caracteristic {0}", caracteristic));
             }
         }
     }

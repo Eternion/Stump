@@ -118,23 +118,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_earnedExp = experience;
         }
 
-        internal void OnRejoinMap()
+        public override void ResetFightProperties()
         {
-            foreach (var field in Stats.Fields.Values)
-            {
-                if (field.Name == PlayerFields.Health)
-                {
-                    if (Fight.FightType == FightTypeEnum.FIGHT_TYPE_CHALLENGE)
-                        field.Context = m_damageTakenBeforeFight;
-                    else if (field.Total <= 0)
-                        field.Context = (short)( ( (StatsHealth) field ).TotalMax - 1 );
-                }
+            base.ResetFightProperties();
 
-                else
-                {
-                    field.Context = 0;
-                }
-            }
+            if (Fight is FightDuel)
+                Stats.Health.DamageTaken = m_damageTakenBeforeFight;
+            else if (Stats.Health.Total <= 0)
+                Stats.Health.DamageTaken = (short) (Stats.Health.TotalMax - 1);
         }
 
         public override IFightResult GetFightResult()

@@ -45,6 +45,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                         actor.InflictDamage((short) pullDamages, EffectSchoolEnum.Unknown, Caster);
                         break;
                     }
+
+                    lastCell = nextCell;
                 }
 
                 var endCell = lastCell;
@@ -52,7 +54,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 actor.Position.Cell = Map.Cells[endCell.CellId];
 
                 var actorCopy = actor;
-                Fight.ForEach(entry => ActionsHandler.SendGameActionFightSlideMessage(entry.Client, Caster, actorCopy, startCell.CellId, endCell.CellId));
+                ActionsHandler.SendGameActionFightSlideMessage(Fight.Clients, Caster, actorCopy, startCell.CellId, endCell.CellId);
             }
         }
     }

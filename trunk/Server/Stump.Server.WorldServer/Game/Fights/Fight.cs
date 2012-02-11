@@ -345,18 +345,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             Dispose();
         }
 
-        protected virtual void ResetFightersProperties()
+        protected void ResetFightersProperties()
         {
             foreach (FightActor fighter in Fighters)
             {
-                fighter.ResetUsedPoints();
-                fighter.RemoveAndDispellAllBuffs();
-
-                foreach (var field in fighter.Stats.Fields)
-                {
-                    if (field.Key != PlayerFields.Health)
-                        field.Value.Context = 0;
-                }
+                fighter.ResetFightProperties();
             }
         }
 
@@ -943,7 +936,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected virtual void OnTurnStopped()
         {
             StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
-            FighterPlaying.TriggerBuffs(Buffs.BuffTriggerType.TURN_END);
+            FighterPlaying.TriggerBuffs(BuffTriggerType.TURN_END);
             FighterPlaying.ResetUsedPoints();
             EndSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
 
@@ -1348,8 +1341,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             if (State == FightState.Placement)
             {
-                // we don't send the packet that say that the actor is dead
-                fighter.Stats.Health.DamageTaken = (short) (fighter.Stats.Health.TotalMax - 1);
+                fighter.Stats.Health.DamageTaken = (short)( fighter.Stats.Health.DamageTaken - 1 );
 
                 if (CheckFightEnd())
                     return;
@@ -1369,7 +1361,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             {
                 fighter.Die();
 
-                if (fighter is CharacterFighter)
+                if (fighter is CharacterFighter && (fighter as CharacterFighter).Character.IsLoggedIn)
                 {
                     Character character = ( (CharacterFighter)fighter ).Character;
 
@@ -1383,18 +1375,16 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                             ContextHandler.SendGameFightLeaveMessage(Clients, fighter);
 
-                            fighter.Team.RemoveFighter(fighter);
-                            Leavers.Add(fighter);
+                            if (!CheckFightEnd() && isfighterTurn)
+                                StopTurn();
 
                             ContextHandler.SendGameFightEndMessage(character.Client, this, GetFightersAndLeavers().Select(entry => entry.GetFightResult().GetFightResultListEntry()));
+                            fighter.ResetFightProperties();
 
                             character.RejoinMap();
 
-                            if (CheckFightEnd())
-                                return;
-
-                            if (isfighterTurn)
-                                StopTurn();
+                            fighter.Team.RemoveFighter(fighter);
+                            Leavers.Add(fighter);
                         };
                     readyChecker.Success += sendResults;
                     readyChecker.Timeout += (obj, laggers) => sendResults(obj);
@@ -1406,7 +1396,17 @@ namespace Stump.Server.WorldServer.Game.Fights
                 }
                 else
                 {
+                    bool isfighterTurn = fighter.IsFighterTurn();
+
                     ContextHandler.SendGameFightLeaveMessage(Clients, fighter);
+
+                    if (!CheckFightEnd() && isfighterTurn)
+                        StopTurn();
+
+                    fighter.ResetFightProperties();
+
+                    fighter.Team.RemoveFighter(fighter);
+                    Leavers.Add(fighter);
                 }
             }
         }
@@ -1642,7 +1642,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightActor GetOneFighter(Cell cell)
         {
-            return Fighters.Where(entry => Equals(entry.Position.Cell, cell)).SingleOrDefault();
+            return Fighters.Where(entry => entry.IsAlive() && Equals(entry.Position.Cell, cell)).SingleOrDefault();
         }
 
         public FightActor GetOneFighter(Predicate<FightActor> predicate)
@@ -1662,7 +1662,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public T GetOneFighter<T>(Cell cell) where T : FightActor
         {
-            return Fighters.OfType<T>().Where(entry => Equals(entry.Position.Cell, cell)).SingleOrDefault();
+            return Fighters.OfType<T>().Where(entry => entry.IsAlive() && Equals(entry.Position.Cell, cell)).SingleOrDefault();
         }
 
         public T GetOneFighter<T>(Predicate<T> predicate) where T : FightActor
@@ -1677,7 +1677,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public T GetFirstFighter<T>(Cell cell) where T : FightActor
         {
-            return Fighters.OfType<T>().Where(entry => Equals(entry.Position.Cell, cell)).FirstOrDefault();
+            return Fighters.OfType<T>().Where(entry => entry.IsAlive() && Equals(entry.Position.Cell, cell)).FirstOrDefault();
         }
 
         public T GetFirstFighter<T>(Predicate<T> predicate) where T : FightActor
@@ -1712,7 +1712,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public IEnumerable<FightActor> GetAllFighters(Cell[] cells)
         {
-            return GetAllFighters<FightActor>(entry => cells.Contains(entry.Position.Cell));
+            return GetAllFighters<FightActor>(entry => entry.IsAlive() && cells.Contains(entry.Position.Cell));
         }
 
         public IEnumerable<FightActor> GetAllFighters(IEnumerable<Cell> cells)

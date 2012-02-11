@@ -1255,6 +1255,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region End Fight
 
+        public virtual void ResetFightProperties()
+        {
+            ResetUsedPoints();
+            RemoveAndDispellAllBuffs();
+
+            foreach (var field in Stats.Fields)
+            {
+                if (field.Key != PlayerFields.Health)
+                    field.Value.Context = 0;
+            }
+        }
+
         public virtual IEnumerable<DroppedItem> RollLoot(FightActor fighter)
         {
             return new DroppedItem[0];

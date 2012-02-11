@@ -208,7 +208,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 writer.Write(Modificator);
                 writer.Write(Trigger);
                 writer.Write(Hidden);
-                writer.Write(ZoneSize);
+                writer.Write((uint) ZoneSize);
                 writer.Write((uint) ZoneShape);
             }
         }

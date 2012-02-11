@@ -914,11 +914,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!IsFighting() && !IsSpectator())
                 return;
 
-            if (Fighter != null)
-            {
-                Fighter.OnRejoinMap();
-            }
-            
             Fighter = null;
             Spectator = null;
             NextMap = null;
@@ -1008,6 +1003,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Save & Load
 
+        public bool IsLoggedIn
+        {
+            get;
+            private set;
+        }
+
         /// <summary>
         ///   Spawn the character on the map. It can be called once.
         /// </summary>
@@ -1022,11 +1023,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             SendServerMessage(Settings.MOTD);
 
+            IsLoggedIn = true;
             OnLoggedIn();
         }
 
         public void LogOut()
         {
+            IsLoggedIn = false;
+
             try
             {
                 OnLoggedOut();
