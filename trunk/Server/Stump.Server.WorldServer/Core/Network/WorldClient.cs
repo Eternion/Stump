@@ -18,8 +18,6 @@ namespace Stump.Server.WorldServer.Core.Network
         public WorldClient(Socket socket)
             : base(socket)
         {
-            DebugLag = true;
-
             Send(new ProtocolRequired(VersionExtension.ProtocolRequired, VersionExtension.ActualProtocol));
             Send(new HelloGameMessage());
 
