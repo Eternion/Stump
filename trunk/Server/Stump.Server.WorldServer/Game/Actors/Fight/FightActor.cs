@@ -6,6 +6,7 @@ using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
@@ -128,6 +129,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             SpellCastingHandler handler = SpellCasted;
             if (handler != null)
                 handler(this, spell, target, critical, silentCast);
+        }
+
+        public event Action<FightActor, WeaponTemplate, Cell, FightSpellCastCriticalEnum, bool > WeaponUsed;
+
+        protected virtual void OnWeaponUsed(WeaponTemplate weapon, Cell cell, FightSpellCastCriticalEnum critical, bool silentCast)
+        {
+            Action<FightActor, WeaponTemplate, Cell, FightSpellCastCriticalEnum, bool> handler = WeaponUsed;
+            if (handler != null) handler(this, weapon, cell, critical, silentCast);
         }
 
         public event Action<FightActor, Buff> BuffAdded;
@@ -486,7 +495,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var spellLevel = spell.CurrentSpellLevel;
             var point = new MapPoint(cell);
 
-            if (point.DistanceToCell(Position.Point) > spellLevel.Range ||
+            if (point.DistanceToCell(Position.Point) > GetSpellRange(spellLevel) ||
                 point.DistanceToCell(Position.Point) < spellLevel.MinRange)
                 return false;
 
@@ -510,6 +519,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
+        public int GetSpellRange(SpellLevelTemplate spell)
+        {
+            return (int) (spell.Range + ( spell.RangeCanBeBoosted ? Stats[PlayerFields.Range].Total : 0 ));
+        }
+
         public virtual void CastSpell(Spell spell, Cell cell)
         {
             if (!IsFighterTurn() || IsDead())
@@ -529,6 +543,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 OnSpellCasting(spell, cell, critical, false);
                 UseAP((short) spellLevel.ApCost);
+                Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
                 if (spellLevel.CriticalFailureEndsTurn)
                     PassTurn();
@@ -680,7 +695,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Formulas
 
-        public short CalculateDamage(short damage, EffectSchoolEnum type)
+        public virtual short CalculateDamage(short damage, EffectSchoolEnum type)
         {
             switch (type)
             {
@@ -709,7 +724,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
         }
 
-        public short CalculateDamageResistance(short damage, EffectSchoolEnum type, bool pvp)
+        public virtual short CalculateDamageResistance(short damage, EffectSchoolEnum type, bool pvp)
         {
             double percentResistance = 0;
             double fixResistance = 0;
@@ -743,7 +758,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (short) ((1 - percentResistance/100d)*(damage - fixResistance));
         }
 
-        public short CalculateDamageReflection(short damage)
+        public virtual short CalculateDamageReflection(short damage)
         {
             // only spell damage reflection are mutlplied by wisdom
             var reflectDamages = Stats[PlayerFields.DamageReflection].Context * ( 1 + ( Stats[PlayerFields.Wisdom].Total / 100 ) ) +
@@ -755,12 +770,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (short) reflectDamages;
         }
 
-        public short CalculateHeal(int heal)
+        public virtual short CalculateHeal(int heal)
         {
             return (short) (heal*(100 + Stats[PlayerFields.Intelligence].Total)/100d + Stats[PlayerFields.HealBonus].Total);
         }
 
-        public short CalculateArmorValue(int reduction, EffectSchoolEnum type)
+        public virtual short CalculateArmorValue(int reduction, EffectSchoolEnum type)
         {
             PlayerFields schoolCaracteristic;
             switch (type)
@@ -789,7 +804,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                                      1 + (Stats[PlayerFields.Intelligence].Total/200d) + (Stats[schoolCaracteristic].Total/200d)));
         }
 
-        public short CalculateArmorReduction(EffectSchoolEnum damageType)
+        public virtual short CalculateArmorReduction(EffectSchoolEnum damageType)
         {
             int specificArmor = 0;
             switch (damageType)
@@ -816,24 +831,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (short) (specificArmor + Stats[PlayerFields.GlobalDamageReduction].Total);
         }
 
-        public short CalculateWeaponDamage(short damage, EffectSchoolEnum school)
-        {
-            return damage;
-        }
-
-        public short CalculateWeaponHeal(short heal)
-        {
-            return heal;
-        }
-
-        public double CalculateCriticRate(double baseRate)
+        public virtual double CalculateCriticRate(double baseRate)
         {
             const double multipleOfE = Math.E*1.1;
 
             return Math.Floor(baseRate*multipleOfE/Math.Log(Stats[PlayerFields.Agility].TotalSafe + 12, Math.E));
         }
 
-        public FightSpellCastCriticalEnum RollCriticalDice(SpellLevelTemplate spell)
+        public virtual FightSpellCastCriticalEnum RollCriticalDice(SpellLevelTemplate spell)
         {
             var random = new AsyncRandom();
 
@@ -848,12 +853,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return critical;
         }
 
-        public short CalculateReflectedDamageBonus(short spellBonus)
+        public virtual short CalculateReflectedDamageBonus(short spellBonus)
         {
             return (short) (spellBonus*(1 + (Stats[PlayerFields.Wisdom].Total/100d)) + Stats[PlayerFields.DamageReflection].Total);
         }
 
-        public bool RollAPLose(FightActor from)
+        public virtual bool RollAPLose(FightActor from)
         {
             var apAttack = from.Stats[PlayerFields.APAttack].Total > 1 ? from.Stats[PlayerFields.APAttack].TotalSafe : 1;
             var apDodge = Stats[PlayerFields.DodgeAPProbability].Total > 1 ? from.Stats[PlayerFields.DodgeAPProbability].TotalSafe : 1;
@@ -871,7 +876,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return rnd < prob;
         }
 
-        public bool RollMPLose(FightActor from)
+        public virtual bool RollMPLose(FightActor from)
         {
             var mpAttack = from.Stats[PlayerFields.MPAttack].Total > 1 ? from.Stats[PlayerFields.MPAttack].TotalSafe : 1;
             var mpDodge = Stats[PlayerFields.DodgeMPProbability].Total > 1 ? from.Stats[PlayerFields.DodgeMPProbability].TotalSafe : 1;

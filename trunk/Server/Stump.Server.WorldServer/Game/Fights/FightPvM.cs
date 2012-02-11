@@ -59,7 +59,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             foreach (CharacterFighter fighter in GetAllFighters<CharacterFighter>())
                 fighter.SetEarnedExperience(CalculateWinExp(fighter));
 
-            return GetFightersAndLeavers().Select(entry => entry.GetFightResult());
+            return GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter)).Select(entry => entry.GetFightResult());
         }
 
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)

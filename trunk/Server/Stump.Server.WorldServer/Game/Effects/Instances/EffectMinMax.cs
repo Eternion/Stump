@@ -81,11 +81,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             m_minvalue = reader.ReadInt16();
         }
 
-        public override EffectBase GenerateEffect(EffectGenerationContext context)
+        public override EffectBase GenerateEffect(EffectGenerationContext context, EffectGenerationType type = EffectGenerationType.Normal)
         {
-            if (context == EffectGenerationContext.Spell || EffectManager.Instance.IsEffectRandomable(EffectId))
+            if (context == EffectGenerationContext.Spell || EffectManager.Instance.IsRandomableItemEffect(EffectId))
             {
                 var rand = new AsyncRandom();
+
+                if (type == EffectGenerationType.MaxEffects)
+                    return new EffectInteger(Id, Template.Operator != "-" ? ValueMax : ValueMin);
+                if (type == EffectGenerationType.MinEffects)
+                    return new EffectInteger(Id, Template.Operator != "-" ? ValueMin : ValueMax);
 
                 return new EffectInteger(Id, (short) rand.Next(ValueMin,  ValueMax + 1));
             }

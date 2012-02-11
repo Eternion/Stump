@@ -80,9 +80,9 @@ namespace Stump.Server.WorldServer.Game.Items
             return newitem;
         }
 
-        public List<EffectBase> GenerateItemEffects(ItemTemplate template)
+        public List<EffectBase> GenerateItemEffects(ItemTemplate template, bool max = false)
         {
-            return template.Effects.Select(effect => effect.GenerateEffect(EffectGenerationContext.Item)).ToList();
+            return template.Effects.Select(effect => effect.GenerateEffect(EffectGenerationContext.Item, max ? EffectGenerationType.MaxEffects : EffectGenerationType.Normal)).ToList();
         }
 
         #endregion

@@ -199,6 +199,9 @@ namespace Stump.Server.BaseServer.Commands
                 paramToDefine.Remove(paramToDefine[0]);
             }
 
+            if (BindedCommand.Parameters.Count == 0)
+                return true;
+
             string word = Args.NextWord();
             while (!string.IsNullOrEmpty(word) && definedParam.Count < BindedCommand.Parameters.Count)
             {

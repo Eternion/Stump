@@ -353,7 +353,7 @@ namespace Stump.Server.BaseServer.Network
             {
                 try
                 {
-                    client.Disconnect();
+                    client.Disconnect(true);
                 }
                 finally
                 {

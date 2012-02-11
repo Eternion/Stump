@@ -98,7 +98,8 @@ namespace Stump.Server.WorldServer.Game.Chats
             if (!ChatHandlers.ContainsKey(channel))
                 return;
 
-            if (message.StartsWith(CommandPrefix))
+            if (message.StartsWith(CommandPrefix) &&
+                (message.Length < CommandPrefix.Length * 2 || message.Substring(CommandPrefix.Length, CommandPrefix.Length) != CommandPrefix)) // ignore processing command whenever there is the preffix twice
             {
                 message = message.Remove(0, CommandPrefix.Length); // remove our prefix
                 WorldServer.Instance.CommandManager.HandleCommand(new TriggerChat(new StringStream(message),

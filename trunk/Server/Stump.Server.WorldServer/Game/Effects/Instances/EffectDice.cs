@@ -63,14 +63,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             return new ObjectEffectDice(Id, DiceNum, DiceFace, Value);
         }
 
-        public override EffectBase GenerateEffect(EffectGenerationContext context)
+        public override EffectBase GenerateEffect(EffectGenerationContext context, EffectGenerationType type = EffectGenerationType.Normal)
         {
-            if (context == EffectGenerationContext.Spell || EffectManager.Instance.IsEffectRandomable(EffectId))
+            if (context == EffectGenerationContext.Spell || EffectManager.Instance.IsRandomableItemEffect(EffectId))
             {
                 var rand = new AsyncRandom();
 
                 var max = m_dicenum >= m_diceface ? m_dicenum : m_diceface;
                 var min = m_dicenum <= m_diceface ? m_dicenum : m_diceface;
+
+                if (type == EffectGenerationType.MaxEffects)
+                    return new EffectInteger(Id, Template.Operator != "-" ? max : min);
+                if (type == EffectGenerationType.MinEffects)
+                    return new EffectInteger(Id, Template.Operator != "-" ? min : max);
 
                 if (min == 0)
                     return new EffectInteger(Id, max);

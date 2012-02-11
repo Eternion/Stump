@@ -13,6 +13,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         Spell,
     }
 
+    public enum EffectGenerationType
+    {
+        Normal,
+        MaxEffects,
+        MinEffects,
+    }
+
     [Serializable]
     public class EffectBase
     {
@@ -159,7 +166,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             return new object[0];
         }
 
-        public virtual EffectBase GenerateEffect(EffectGenerationContext context)
+        public virtual EffectBase GenerateEffect(EffectGenerationContext context, EffectGenerationType type = EffectGenerationType.Normal)
         {
             return this;
         }

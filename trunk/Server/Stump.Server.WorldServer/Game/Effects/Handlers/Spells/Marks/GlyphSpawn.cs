@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
             switch (spell.Id)
             {
                 default:
-                    return Color.White;
+                    return Color.Red;
             }
         }
     }

@@ -31,6 +31,7 @@ namespace Stump.Server.WorldServer.Game.Effects
         private Dictionary<short, EffectTemplate> m_effects = new Dictionary<short, EffectTemplate>();
         private readonly Dictionary<EffectsEnum, ItemEffectConstructor> m_itemsEffectHandler = new Dictionary<EffectsEnum, ItemEffectConstructor>();
         private readonly Dictionary<EffectsEnum, SpellEffectConstructor> m_spellsEffectHandler = new Dictionary<EffectsEnum, SpellEffectConstructor>();
+        private readonly Dictionary<EffectsEnum, List<Type>> m_effectsHandlers = new Dictionary<EffectsEnum, List<Type>>();
 
         [Initialization(InitializationPass.Third)]
         public void Initialize()
@@ -67,6 +68,11 @@ namespace Stump.Server.WorldServer.Game.Effects
                         var ctor = type.GetConstructor(new[] { typeof(EffectDice), typeof(FightActor), typeof(Spell), typeof(Cell), typeof(bool) });
                         m_spellsEffectHandler.Add(effect, ctor.CreateDelegate<SpellEffectConstructor>());
                     }
+
+                    if (!m_effectsHandlers.ContainsKey(effect))
+                        m_effectsHandlers.Add(effect, new List<Type>());
+
+                    m_effectsHandlers[effect].Add(type);
                 }
             } 
         }
@@ -132,7 +138,12 @@ namespace Stump.Server.WorldServer.Game.Effects
             return new DefaultSpellEffect(effect, caster, spell, targetedCell, critical);
         }
 
-        public bool IsEffectRandomable(EffectsEnum effect)
+        public bool IsEffectHandledBy(EffectsEnum effect, Type handlerType)
+        {
+            return m_effectsHandlers.ContainsKey(effect) && m_effectsHandlers[effect].Contains(handlerType);
+        }
+
+        public bool IsRandomableItemEffect(EffectsEnum effect)
         {
             return m_randomablesEffects.Contains(effect);
         }

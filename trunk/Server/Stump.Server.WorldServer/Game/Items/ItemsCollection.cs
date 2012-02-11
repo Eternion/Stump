@@ -78,9 +78,9 @@ namespace Stump.Server.WorldServer.Game.Items
             return itemTemplate != null ? AddItem(itemTemplate, amount) : null;
         }
 
-        public virtual Item AddItem(ItemTemplate template, uint amount)
+        public virtual Item AddItem(ItemTemplate template, uint amount, bool maxEffect = false)
         {
-            List<EffectBase> effects = ItemManager.Instance.GenerateItemEffects(template);
+            List<EffectBase> effects = ItemManager.Instance.GenerateItemEffects(template, maxEffect);
 
             Item stackableWith;
             if (IsStackable(template.Id, effects, out stackableWith))

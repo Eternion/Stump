@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         /// <summary>
         ///   Maximum number of characters you can create/store in your account
         /// </summary>
-        [Variable]
+        [Variable(true)]
         public static uint MaxCharacterSlot = 5;
 
         private static readonly Regex m_nameCheckerRegex = new Regex("^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled);

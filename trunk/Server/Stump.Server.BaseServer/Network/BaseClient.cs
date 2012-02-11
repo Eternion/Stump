@@ -190,12 +190,17 @@ namespace Stump.Server.BaseServer.Network
             }
         }
 
+        public void Disconnect()
+        {
+            Disconnect(false);
+        }
+
         /// <summary>
         ///   Disconnect the Client. Cannot reuse the socket.
         /// </summary>
-        public void Disconnect()
+        public void Disconnect(bool force)
         {
-            if (!Connected)
+            if (!Connected && !force)
                 return;
 
             m_disconnecting = true;

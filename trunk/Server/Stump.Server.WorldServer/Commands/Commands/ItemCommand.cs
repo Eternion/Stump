@@ -48,7 +48,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Item addedItem =
                 target.Inventory.AddItem(
                     itemTemplate,
-                    trigger.Get<uint>("amount"));
+                    trigger.Get<uint>("amount"),
+                    trigger.IsArgumentDefined("max"));
 
             if (addedItem == null)
                 trigger.Reply("Item '{0}'({1}) can't be add for an unknown reason", itemTemplate.Name, itemTemplate.Id);

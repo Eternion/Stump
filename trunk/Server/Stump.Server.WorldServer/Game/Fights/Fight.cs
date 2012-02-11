@@ -9,6 +9,7 @@ using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -818,6 +819,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             ContextHandler.SendGameFightTurnListMessage(spectator.Client, this);
             ContextHandler.SendGameFightSpectateMessage(spectator.Client, this);
+            ContextHandler.SendGameFightNewRoundMessage(spectator.Client, TimeLine.RoundNumber);
 
             CharacterHandler.SendCharacterStatsListMessage(spectator.Client);
 
@@ -1014,6 +1016,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             actor.DamageReducted -= OnDamageReducted;
             actor.SpellCasting -= OnSpellCasting;
             actor.SpellCasted -= OnSpellCasted;
+            actor.WeaponUsed -= OnCloseCombat;
             actor.BuffAdded -= OnBuffAdded;
             actor.BuffRemoved -= OnBuffRemoved;
             actor.Dead -= OnDead;
@@ -1056,6 +1059,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                 actor.SpellCasting += OnSpellCasting;
                 actor.SpellCasted += OnSpellCasted;
+                actor.WeaponUsed += OnCloseCombat;
 
                 actor.BuffAdded += OnBuffAdded;
                 actor.BuffRemoved += OnBuffRemoved;
@@ -1224,13 +1228,17 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region Spells
 
+        protected virtual void OnCloseCombat(FightActor caster, WeaponTemplate weapon, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
+        {
+            ForEach(entry => ActionsHandler.SendGameActionFightCloseCombatMessage(entry.Client, caster, target, critical,
+                !caster.IsVisibleFor(entry) || silentCast, weapon), true);
+        }
+
+
         protected virtual void OnSpellCasting(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
             ForEach(entry => ContextHandler.SendGameActionFightSpellCastMessage(entry.Client, ActionsEnum.ACTION_FIGHT_CAST_SPELL,
                                                                                 caster, target, critical, !caster.IsVisibleFor(entry) || silentCast, spell), true);
-
-            if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
-                EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
         }
 
         protected virtual void OnSpellCasted(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
