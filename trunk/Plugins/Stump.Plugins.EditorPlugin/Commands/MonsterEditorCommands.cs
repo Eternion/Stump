@@ -118,7 +118,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             AddParameter("item", "item", converter: ParametersConverter.ItemTemplateConverter);
             AddParameter<double>("rate", "rate");
             AddParameter("lock", "lock", "Prospecting lock", defaultValue: 100);
-            AddParameter("limit", "limit", defaultValue: 1);
+            AddParameter("limit", "limit", defaultValue: 0);
             AddParameter("rolls", "max", defaultValue: 1);
         }
 
