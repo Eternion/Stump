@@ -228,7 +228,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
     {
         public MonsterKamasCommand()
         {
-            Aliases = new[] { "spell" };
+            Aliases = new[] { "kamas" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Set dropped kamas";
             ParentCommand = typeof(MonsterEditorCommands);
