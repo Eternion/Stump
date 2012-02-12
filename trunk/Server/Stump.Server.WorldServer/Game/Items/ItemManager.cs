@@ -101,6 +101,11 @@ namespace Stump.Server.WorldServer.Game.Items
 
         #region Getters
 
+        public IEnumerable<ItemTemplate> GetTemplates()
+        {
+            return m_itemTemplates.Values;
+        }
+
         public ItemTemplate GetTemplate(int id)
         {
             return !m_itemTemplates.ContainsKey(id) ? null : m_itemTemplates[id];

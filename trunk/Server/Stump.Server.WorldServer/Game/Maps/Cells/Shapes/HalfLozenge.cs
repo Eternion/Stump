@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
@@ -10,7 +11,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             MinRadius = minRadius;
             Radius = radius;
 
-            Direction = DirectionsEnum.UP;
+            Direction = DirectionsEnum.DIRECTION_NORTH;
         }
 
         public uint Surface
@@ -51,22 +52,22 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             {
                 switch (Direction)
                 {
-                    case DirectionsEnum.UP_LEFT:
+                    case DirectionsEnum.DIRECTION_NORTH_WEST:
                         AddCellIfValid(centerPoint.X + i, centerPoint.Y + i, map, result);
                         AddCellIfValid(centerPoint.X + i, centerPoint.Y - i, map, result);
                         break;
 
-                    case DirectionsEnum.UP_RIGHT:
+                    case DirectionsEnum.DIRECTION_NORTH_EAST:
                         AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         AddCellIfValid(centerPoint.X + i, centerPoint.Y - i, map, result);
                         break;
 
-                    case DirectionsEnum.DOWN_RIGHT:
+                    case DirectionsEnum.DIRECTION_SOUTH_EAST:
                         AddCellIfValid(centerPoint.X - i, centerPoint.Y + i, map, result);
                         AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         break;
 
-                    case DirectionsEnum.DOWN_LEFT:
+                    case DirectionsEnum.DIRECTION_SOUTH_WEST:
                         AddCellIfValid(centerPoint.X - i, centerPoint.Y + i, map, result);
                         AddCellIfValid(centerPoint.X + i, centerPoint.Y + i, map, result);
                         break;

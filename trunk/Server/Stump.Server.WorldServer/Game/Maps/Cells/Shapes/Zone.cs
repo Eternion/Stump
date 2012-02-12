@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 
@@ -11,8 +12,15 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 
         public Zone(SpellShapeEnum shape, byte radius)
         {
-            ShapeType = shape;
             Radius = radius;
+            ShapeType = shape;
+        }
+
+        public Zone(SpellShapeEnum shape, byte radius, DirectionsEnum direction)
+        {
+            Radius = radius;
+            Direction = direction;
+            ShapeType = shape;
         }
 
         public SpellShapeEnum ShapeType
@@ -45,11 +53,20 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 
         public DirectionsEnum Direction
         {
-            get { return m_shape.Direction; }
-            set { m_shape.Direction = value; }
+            get
+            {
+                return m_direction;
+            }
+            set
+            {
+                m_direction = value;
+                if (m_shape != null)
+                    m_shape.Direction = value;
+            }
         }
 
         private byte m_radius;
+        private DirectionsEnum m_direction;
 
         public byte Radius
         {
@@ -138,6 +155,15 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                     break;
                 case SpellShapeEnum.P:
                     m_shape = new Single();
+                    break;
+                case SpellShapeEnum.Hammer:
+                    m_shape = new Cross(0, Radius)
+                    {
+                        DisabledDirections = new List<DirectionsEnum>
+                        {
+                            (DirectionsEnum) ((int)Direction - 4 > 0 ? (int)Direction - 4 : (int)Direction + 4)
+                        }
+                    };
                     break;
                 default:
                     m_shape = new Cross(0, 0);

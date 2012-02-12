@@ -51,6 +51,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         {
             switch (effect)
             {
+                case EffectsEnum.Effect_AddVitality:
+                    return PlayerFields.Vitality;
                 case EffectsEnum.Effect_AddAgility:
                     return PlayerFields.Agility;
                 case EffectsEnum.Effect_AddChance:

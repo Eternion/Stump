@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
@@ -78,32 +79,32 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             {
                 switch (Direction)
                 {
-                    case DirectionsEnum.DOWN_RIGHT:
-                    case DirectionsEnum.UP_LEFT:
+                    case DirectionsEnum.DIRECTION_SOUTH_EAST:
+                    case DirectionsEnum.DIRECTION_NORTH_WEST:
                         {
-                            disabledDirections.Add(DirectionsEnum.DOWN_RIGHT);
-                            disabledDirections.Add(DirectionsEnum.UP_LEFT);
+                            disabledDirections.Add(DirectionsEnum.DIRECTION_SOUTH_EAST);
+                            disabledDirections.Add(DirectionsEnum.DIRECTION_NORTH_WEST);
                             break;
                         }
-                    case DirectionsEnum.UP_RIGHT:
-                    case DirectionsEnum.DOWN_LEFT:
+                    case DirectionsEnum.DIRECTION_NORTH_EAST:
+                    case DirectionsEnum.DIRECTION_SOUTH_WEST:
                         {
-                            disabledDirections.Add(DirectionsEnum.UP_RIGHT);
-                            disabledDirections.Add(DirectionsEnum.DOWN_LEFT);
+                            disabledDirections.Add(DirectionsEnum.DIRECTION_NORTH_EAST);
+                            disabledDirections.Add(DirectionsEnum.DIRECTION_SOUTH_WEST);
                             break;
                         }
-                    case DirectionsEnum.DOWN:
-                    case DirectionsEnum.UP:
+                    case DirectionsEnum.DIRECTION_SOUTH:
+                    case DirectionsEnum.DIRECTION_NORTH:
                         {
-                            disabledDirections.Add(DirectionsEnum.DOWN);
-                            disabledDirections.Add(DirectionsEnum.UP);
+                            disabledDirections.Add(DirectionsEnum.DIRECTION_SOUTH);
+                            disabledDirections.Add(DirectionsEnum.DIRECTION_NORTH);
                             break;
                         }
-                    case DirectionsEnum.RIGHT:
-                    case DirectionsEnum.LEFT:
+                    case DirectionsEnum.DIRECTION_EAST:
+                    case DirectionsEnum.DIRECTION_WEST:
                         {
-                            disabledDirections.Add(DirectionsEnum.RIGHT);
-                            disabledDirections.Add(DirectionsEnum.LEFT);
+                            disabledDirections.Add(DirectionsEnum.DIRECTION_EAST);
+                            disabledDirections.Add(DirectionsEnum.DIRECTION_WEST);
                             break;
                         }
                 }
@@ -118,25 +119,25 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 
                 if (!Diagonal)
                 {
-                    if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y) && !disabledDirections.Contains(DirectionsEnum.DOWN_RIGHT))
+                    if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y) && !disabledDirections.Contains(DirectionsEnum.DIRECTION_SOUTH_EAST))
                         AddCellIfValid(centerPoint.X + i, centerPoint.Y, map, result);
-                    if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y) && !disabledDirections.Contains(DirectionsEnum.UP_LEFT))
+                    if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y) && !disabledDirections.Contains(DirectionsEnum.DIRECTION_NORTH_WEST))
                         AddCellIfValid(centerPoint.X - i, centerPoint.Y, map, result);
-                    if (MapPoint.IsInMap(centerPoint.X, centerPoint.Y + i) && !disabledDirections.Contains(DirectionsEnum.UP_RIGHT))
+                    if (MapPoint.IsInMap(centerPoint.X, centerPoint.Y + i) && !disabledDirections.Contains(DirectionsEnum.DIRECTION_NORTH_EAST))
                         AddCellIfValid(centerPoint.X, centerPoint.Y + i, map, result);
-                    if (MapPoint.IsInMap(centerPoint.X, centerPoint.Y - i) && !disabledDirections.Contains(DirectionsEnum.DOWN_LEFT))
+                    if (MapPoint.IsInMap(centerPoint.X, centerPoint.Y - i) && !disabledDirections.Contains(DirectionsEnum.DIRECTION_SOUTH_WEST))
                         AddCellIfValid(centerPoint.X, centerPoint.Y - i, map, result);
                 }
 
                 if (Diagonal || AllDirections)
                 {
-                    if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y - i) && !disabledDirections.Contains(DirectionsEnum.DOWN))
+                    if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y - i) && !disabledDirections.Contains(DirectionsEnum.DIRECTION_SOUTH))
                         AddCellIfValid(centerPoint.X + i, centerPoint.Y - i, map, result);
-                    if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y + i) && !disabledDirections.Contains(DirectionsEnum.UP))
+                    if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y + i) && !disabledDirections.Contains(DirectionsEnum.DIRECTION_NORTH))
                         AddCellIfValid(centerPoint.X - i, centerPoint.Y + i, map, result);
-                    if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y + i) && !disabledDirections.Contains(DirectionsEnum.RIGHT))
+                    if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y + i) && !disabledDirections.Contains(DirectionsEnum.DIRECTION_EAST))
                         AddCellIfValid(centerPoint.X + i, centerPoint.Y + i, map, result);
-                    if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y - i) && !disabledDirections.Contains(DirectionsEnum.LEFT))
+                    if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y - i) && !disabledDirections.Contains(DirectionsEnum.DIRECTION_WEST))
                         AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                 }
             }

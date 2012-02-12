@@ -81,6 +81,11 @@ namespace Stump.Server.WorldServer.Game.Items
             get { return m_items.Values; }
         }
 
+        public int Count
+        {
+            get { return m_items.Count; }
+        }
+
         public Item this[int guid]
         {
             get

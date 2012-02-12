@@ -10,20 +10,21 @@ namespace Stump.Server.WorldServer.Commands.Commands
     public class AnnounceCommand : CommandBase
     {
         [Variable]
-        public static string AnnounceColor = Color.Red.ToArgb().ToString();
+        public static string AnnounceColor = Color.Red.ToArgb().ToString("X");
 
         public AnnounceCommand()
         {
             Aliases = new[] {"announce", "a"};
             Description = "Display an announce to all players";
             RequiredRole = RoleEnum.GameMaster;
+            AddParameter<string>("message", "msg", "The announce");
         }
 
         public override void Execute(TriggerBase trigger)
         {
             var color = Color.FromArgb(int.Parse(AnnounceColor));
 
-            string msg = trigger.Args.NextWords();
+            var msg = trigger.Get<string>("msg");
 
             WorldServer.Instance.IOTaskPool.AddMessage(
                 () =>

@@ -6,7 +6,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
     public class StatsHealth : StatsData
     {
         private static readonly StatsFormulasHandler FormuleLife =
-            (owner, valueBase, valueEquiped, valueGiven, damageTaken) => valueBase + valueEquiped  + owner.Stats[PlayerFields.Vitality] - damageTaken;
+            (owner, valueBase, valueEquiped, valueGiven, damageTaken) => valueBase + valueEquiped + valueGiven + owner.Stats[PlayerFields.Vitality] - damageTaken;
 
         private readonly StatsFormulasHandler m_formule;
 

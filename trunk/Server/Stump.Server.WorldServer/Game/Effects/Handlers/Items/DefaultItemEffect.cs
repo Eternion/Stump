@@ -182,6 +182,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
                     {EffectsEnum.Effect_AddCriticalMiss, PlayerFields.CriticalMiss},
                     {EffectsEnum.Effect_AddHealBonus, PlayerFields.HealBonus},
                     {EffectsEnum.Effect_AddDamageBonus, PlayerFields.DamageBonus},
+                    {EffectsEnum.Effect_IncreaseDamage_138, PlayerFields.DamageBonusPercent},
                     {EffectsEnum.Effect_AddDamageBonusPercent, PlayerFields.DamageBonusPercent},
                     {EffectsEnum.Effect_AddTrapBonus, PlayerFields.TrapBonus},
                     {EffectsEnum.Effect_AddTrapBonusPercent, PlayerFields.TrapBonusPercent},

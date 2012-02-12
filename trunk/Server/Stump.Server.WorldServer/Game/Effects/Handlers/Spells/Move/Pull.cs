@@ -26,10 +26,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
             foreach (FightActor actor in GetAffectedActors())
             {
-                if (CastPosition.Id == actor.Cell.Id)
+                if (CastCell.Id == actor.Cell.Id)
                     continue; // in case of traps it is possible
 
-                var castPoint = new MapPoint(CastPosition);
+                var castPoint = new MapPoint(CastCell);
                 var pushDirection = actor.Position.Point.OrientationTo(castPoint, false);
                 var startCell = actor.Position.Point;
                 var lastCell = startCell;

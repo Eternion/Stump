@@ -173,6 +173,7 @@
     <Compile Include="Commands\Commands\LookCommand.cs" />
     <Compile Include="Commands\Commands\MonsterCommands.cs" />
     <Compile Include="Commands\Commands\NpcsCommands.cs" />
+    <Compile Include="Commands\Commands\SaveCommand.cs" />
     <Compile Include="Commands\Commands\TeleportCommand.cs" />
     <Compile Include="Commands\Commands\WhoCommand.cs" />
     <Compile Include="Commands\ParametersConverter.cs" />
@@ -443,7 +444,6 @@
     <Compile Include="Game\Maps\Cells\Triggers\CellTrigger.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Cone.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Cross.cs" />
-    <Compile Include="Game\Maps\Cells\Shapes\DirectionsEnum.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\HalfLozenge.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\IShape.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Line.cs" />

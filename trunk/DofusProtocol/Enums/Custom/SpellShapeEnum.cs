@@ -21,5 +21,7 @@ namespace Stump.DofusProtocol.Enums
         I = 73,
         U = 85,
         A = 65,
+        //custom
+        Hammer = 99,
     }
 }

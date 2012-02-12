@@ -1,4 +1,5 @@
-﻿using Stump.Server.WorldServer.Database.World;
+﻿using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.World;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 {
@@ -25,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
         {
             get
             {
-                return DirectionsEnum.UP; 
+                return DirectionsEnum.DIRECTION_NORTH; 
             }
             set { }
         }

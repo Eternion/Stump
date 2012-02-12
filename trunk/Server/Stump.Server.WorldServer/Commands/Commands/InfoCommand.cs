@@ -4,6 +4,7 @@ using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Commands.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps;
 
 namespace Stump.Server.WorldServer.Commands.Commands
@@ -85,6 +86,43 @@ namespace Stump.Server.WorldServer.Commands.Commands
             trigger.Reply("Update interval : {0}ms", trigger.Bold(area.UpdateDelay));
             trigger.Reply("AvgUpdateTime : {0}ms", trigger.Bold((int)area.AverageUpdateTime));
             trigger.Reply("LastUpdate : {0}", trigger.Bold(area.LastUpdateTime));
+        }
+    }
+
+    public class InfoCharacterCommand : SubCommand
+    {
+        public InfoCharacterCommand()
+        {
+            Aliases = new[] { "character", "char", "player" };
+            RequiredRole = RoleEnum.Moderator;
+            Description = "Give informations about a player";
+            ParentCommand = typeof(InfoCommand);
+            AddParameter("target", "t", "Targeted player", isOptional: true, converter: ParametersConverter.CharacterConverter);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            Character character = null;
+            if (trigger.IsArgumentDefined("taget"))
+            {
+                character = trigger.Get<Character>("target");
+            }
+            else if (trigger is GameTrigger)
+            {
+                character = ( trigger as GameTrigger ).Character;
+            }
+
+            if (character == null)
+            {
+                trigger.ReplyError("Target not defined");
+                return;
+            }
+
+            trigger.Reply("{0} ({1})", trigger.Bold(character.Name), trigger.Bold(character.Id));
+            trigger.Reply("Account : {0} ({1}) - {2}", trigger.Bold(character.Client.Account.Login), trigger.Bold(character.Client.Account.Id), trigger.Bold(character.Client.Account.Role));
+            trigger.Reply("Level : {0}", trigger.Bold(character.Level));
+            trigger.Reply("Map : {0}, Cell : {1}, Direction : {2}", trigger.Bold(character.Map.Id), trigger.Bold(character.Cell.Id), trigger.Bold(character.Direction));
+            trigger.Reply("Items : {0}", character.Inventory.Count);
         }
     }
 }

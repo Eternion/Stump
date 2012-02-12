@@ -4,6 +4,7 @@ using System.Linq;
 using Stump.Core.Reflection;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Effects;
 
@@ -48,6 +49,18 @@ namespace Stump.Server.WorldServer.Game.Spells
 
             return null;
         }
+
+        public SpellTemplate GetSpellTemplate(string name, bool ignorecase)
+        {
+            return
+                m_spells.Values.Where(
+                    entry =>
+                    entry.Name.Equals(name,
+                                      ignorecase
+                                          ? StringComparison.InvariantCultureIgnoreCase
+                                          : StringComparison.InvariantCulture)).FirstOrDefault();
+        }
+
 
         public SpellTemplate GetFirstSpellTemplate(Predicate<SpellTemplate> predicate)
         {

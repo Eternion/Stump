@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
@@ -8,7 +9,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
         public Line(byte radius)
         {
             Radius = radius;
-            Direction = DirectionsEnum.DOWN_RIGHT;
+            Direction = DirectionsEnum.DIRECTION_SOUTH_EAST;
         }
 
         #region IShape Members
@@ -48,35 +49,35 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             {
                 switch (Direction)
                 {
-                    case DirectionsEnum.LEFT:
+                    case DirectionsEnum.DIRECTION_WEST:
                         if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y - i))
                             AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         break;
-                    case DirectionsEnum.UP:
+                    case DirectionsEnum.DIRECTION_NORTH:
                         if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y + i))
                             AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         break;
-                    case DirectionsEnum.RIGHT:
+                    case DirectionsEnum.DIRECTION_EAST:
                         if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y + i))
                             AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         break;
-                    case DirectionsEnum.DOWN:
+                    case DirectionsEnum.DIRECTION_SOUTH:
                         if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y - i))
                             AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         break;
-                    case DirectionsEnum.UP_LEFT:
+                    case DirectionsEnum.DIRECTION_NORTH_WEST:
                         if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y))
                             AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         break;
-                    case DirectionsEnum.DOWN_LEFT:
+                    case DirectionsEnum.DIRECTION_SOUTH_WEST:
                         if (MapPoint.IsInMap(centerPoint.X, centerPoint.Y - i))
                             AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         break;
-                    case DirectionsEnum.DOWN_RIGHT:
+                    case DirectionsEnum.DIRECTION_SOUTH_EAST:
                         if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y))
                             AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         break;
-                    case DirectionsEnum.UP_RIGHT:
+                    case DirectionsEnum.DIRECTION_NORTH_EAST:
                         if (MapPoint.IsInMap(centerPoint.X, centerPoint.Y + i))
                             AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         break;

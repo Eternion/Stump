@@ -115,6 +115,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             m_monsterSpells.Add(spell.Id, spell);
         }
 
+        public void RemoveMonsterSpell(MonsterSpell spell)
+        {
+            spell.Delete();
+            m_monsterSpells.Remove(spell.Id);
+        }
+
         public IEnumerable<MonsterSpawn> GetMonsterSpawns()
         {
             return m_monsterSpawns.Values;
@@ -129,6 +135,24 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         {
             spawn.Save();
             m_monsterSpawns.Add(spawn.Id, spawn);
+        }
+
+        public void RemoveMonsterSpawn(MonsterSpawn spawn)
+        {
+            spawn.Delete();
+            m_monsterSpawns.Remove(spawn.Id);
+        }
+
+        public void AddMonsterDrop(DroppableItem drop)
+        {
+            drop.Save();
+            m_droppableItems.Add(drop.Id, drop);
+        }
+
+        public void RemoveMonsterDrop(DroppableItem drop)
+        {
+            drop.Delete();
+            m_droppableItems.Remove(drop.Id);
         }
     }
 }

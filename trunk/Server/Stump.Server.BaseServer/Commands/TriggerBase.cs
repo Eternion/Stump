@@ -12,7 +12,7 @@ namespace Stump.Server.BaseServer.Commands
 {
     public abstract class TriggerBase
     {
-        private readonly Regex m_regexIsNamed = new Regex(@"^(?!\"")(?:-|--)?([\w\d]+)=([^\""\s]*)(?!\"")$", RegexOptions.Compiled);
+        private readonly Regex m_regexIsNamed = new Regex(@"^(?!\"")(?:-|--)?([\w\d]+)=(.*)$", RegexOptions.Compiled);
         private readonly Regex m_regexVar = new Regex(@"^(?!\"")(?:-|--)([\w\d]+)(?!\"")$", RegexOptions.Compiled);
 
         private TriggerBase()
@@ -178,7 +178,7 @@ namespace Stump.Server.BaseServer.Commands
         /// <summary>
         /// Bind the trigger to a command instance and initialize his parameters. Returns false whenever an error occurs during the initialization
         /// </summary>
-        internal bool BindToCommand(CommandBase command)
+        public bool BindToCommand(CommandBase command)
         {
             BindedCommand = command;
 
@@ -218,6 +218,9 @@ namespace Stump.Server.BaseServer.Commands
                     {
                         name = matchIsNamed.Groups[1].Value;
                         value = matchIsNamed.Groups[2].Value;
+
+                        if (value.StartsWith("\"") && value.EndsWith("\""))
+                            value = value.Remove(value.Length - 1, 1).Remove(0, 1);
                     }
                     else
                     {

@@ -15,15 +15,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         private static readonly StatsFormulasHandler FormulasInitiative =
             (owner, valueBase, valueEquiped, valueGiven, valueContext) =>
                 {
-                    return owner.Stats.Health.Total <= 0
-                               ? 0
-                               : (valueBase + valueEquiped + valueContext +
-                                  owner.Stats[PlayerFields.Chance] +
-                                  owner.Stats[PlayerFields.Intelligence] +
-                                  owner.Stats[PlayerFields.Agility] +
-                                  owner.Stats[PlayerFields.Strength])*
-                                 (owner.Stats.Health.Total/
-                                  owner.Stats.Health.TotalMax);
+                    return (int) (owner.Stats.Health.Total <= 0
+                                      ? 0
+                                      : (valueBase + valueEquiped + valueContext +
+                                         owner.Stats[PlayerFields.Chance] +
+                                         owner.Stats[PlayerFields.Intelligence] +
+                                         owner.Stats[PlayerFields.Agility] +
+                                         owner.Stats[PlayerFields.Strength])*
+                                        (owner.Stats.Health.Total/
+                                         (double)owner.Stats.Health.TotalMax ));
                 };
 
         private static readonly StatsFormulasHandler FormulasChanceDependant =

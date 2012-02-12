@@ -330,7 +330,6 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected virtual void OnFightEnded()
         {
             ReadyChecker = null;
-            ResetFightersProperties();
 
             List<IFightResult> results = GenerateResults().ToList();
 
@@ -338,6 +337,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             ContextHandler.SendGameFightEndMessage(Clients, this, results.Select(entry => entry.GetFightResultListEntry()));
 
+            ResetFightersProperties();
             foreach (var character in GetCharactersAndSpectators())
             {
                 character.RejoinMap();
@@ -877,6 +877,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void StartTurn()
         {
+            if (State != FightState.Fighting)
+                return;
+
             if (!CheckFightEnd())
             {
                 OnTurnStarted();
@@ -917,6 +920,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void StopTurn()
         {
+            if (State != FightState.Fighting)
+                return;
+
             if (m_turnTimer != null)
                 m_turnTimer.Stop();
 
@@ -961,6 +967,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected void PassTurn()
         {
+            if (State != FightState.Fighting)
+                return;
+
             ReadyChecker = null;
 
             if (CheckFightEnd())

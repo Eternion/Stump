@@ -135,7 +135,7 @@ namespace Stump.Server.WorldServer.Game
             {
                 ObjectPosition position = npcSpawn.GetPosition();
 
-                position.Map.SpawnNpc(npcSpawn.Template, position, npcSpawn.Look);
+                position.Map.SpawnNpc(npcSpawn);
             }
         }
 
@@ -216,6 +216,11 @@ namespace Stump.Server.WorldServer.Game
             m_subAreas.TryGetValue(id, out subArea);
 
             return subArea;
+        }
+
+        public SubArea GetSubArea(string name)
+        {
+            return m_subAreas.Values.Where(entry => entry.Record.Name == name).FirstOrDefault();
         }
 
         public Area GetArea(int id)

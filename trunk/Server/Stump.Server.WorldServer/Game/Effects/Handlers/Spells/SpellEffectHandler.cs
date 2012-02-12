@@ -27,6 +27,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             Caster = caster;
             Spell = spell;
             TargetedCell = targetedCell;
+            TargetedPoint = new MapPoint(TargetedCell);
             Critical = critical;
         }
 
@@ -54,6 +55,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             private set;
         }
 
+        public MapPoint TargetedPoint
+        {
+            get;
+            private set;
+        }
+
         public bool Critical
         {
             get;
@@ -66,14 +73,22 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             set;
         }
 
-        public Cell CastPosition
+        public Cell CastCell
         {
             get { return MarkTrigger != null && MarkTrigger.Shapes.Length > 0 ? MarkTrigger.Shapes[0].Cell : Caster.Cell; }
         }
 
+        private MapPoint m_castPoint;
+
+        public MapPoint CastPoint
+        {
+            get { return m_castPoint ?? (m_castPoint = new MapPoint(CastCell)); }
+            set { m_castPoint = value; }
+        }
+
         public Zone EffectZone
         {
-            get { return m_effectZone ?? (m_effectZone = new Zone(Effect.ZoneShape, Effect.ZoneSize)); }
+            get { return m_effectZone ?? (m_effectZone = new Zone(Effect.ZoneShape, Effect.ZoneSize, CastPoint.OrientationTo(TargetedPoint))); }
             set
             {
                 m_effectZone = value;

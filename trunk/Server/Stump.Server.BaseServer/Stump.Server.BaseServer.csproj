@@ -192,6 +192,7 @@
     <Compile Include="Commands\ParameterDefinition.cs" />
     <Compile Include="Commands\CommandManager.cs" />
     <Compile Include="Commands\IParameterDefinition.cs" />
+    <Compile Include="Commands\Patterns\AddRemoveCommand.cs" />
     <Compile Include="Commands\SubCommandContainer.cs" />
     <Compile Include="Commands\SubCommand.cs" />
     <Compile Include="Commands\TriggerBase.cs" />

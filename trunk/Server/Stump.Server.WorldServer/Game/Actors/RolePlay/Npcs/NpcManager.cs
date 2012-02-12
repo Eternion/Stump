@@ -88,5 +88,23 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             spawn.Save();
             m_npcsSpawns.Add(spawn.Id, spawn);
         }
+
+        public void RemoveNpcSpawn(NpcSpawn spawn)
+        {
+            spawn.Delete();
+            m_npcsSpawns.Remove(spawn.Id);
+        }
+
+        public void AddNpcAction(NpcAction action)
+        {
+            action.Save();
+            m_npcsActions.Add(action.Id, action);
+        }
+
+        public void RemoveNpcAction(NpcAction action)
+        {
+            action.Delete();
+            m_npcsActions.Remove(action.Id);
+        }
     }
 }

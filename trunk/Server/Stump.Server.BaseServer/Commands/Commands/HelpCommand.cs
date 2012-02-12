@@ -77,7 +77,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
             trigger.Reply(trigger.Bold("{0}") + "{1} - {2}",
                           string.Join("/", command.Aliases),
                           command is SubCommandContainer
-                              ? string.Format(" ({0} subcmds)", (command as SubCommandContainer).Count)
+                              ? string.Format(" ({0} subcmds)", ( command as SubCommandContainer ).Count(entry => entry.RequiredRole <= trigger.UserRole))
                               : "",
                           command.Description);
         }
@@ -96,7 +96,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
             trigger.Reply(trigger.Bold("{0}") + "{1} - {2}",
                           string.Join("/", command.Aliases),
                           command is SubCommandContainer
-                              ? string.Format(" ({0} subcmds)", (command as SubCommandContainer).Count)
+                              ? string.Format(" ({0} subcmds)", (command as SubCommandContainer).Count(entry => entry.RequiredRole <= trigger.UserRole))
                               : "",
                           command.Description);
 

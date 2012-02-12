@@ -35,10 +35,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
                 }
                 else
                 {
-                    actor.InflictDamage(integerEffect.Value, GetEffectSchool(Effect.EffectId), Caster, actor is CharacterFighter);
+                    var damage = actor.InflictDamage(integerEffect.Value, GetEffectSchool(Effect.EffectId), Caster, actor is CharacterFighter);
                     
                     if (integerEffect.Value / 2 > 0)
-                        Caster.Heal(actor, (short) (integerEffect.Value / 2d));
+                        Caster.Heal(actor, (short)( damage / 2d ));
                 }
             }
         }

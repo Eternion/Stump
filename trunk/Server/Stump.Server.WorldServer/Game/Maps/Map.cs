@@ -339,6 +339,22 @@ namespace Stump.Server.WorldServer.Game.Maps
             return npc;
         }
 
+        public Npc SpawnNpc(NpcSpawn spawn)
+        {
+            var position = spawn.GetPosition();
+
+            if (position.Map != this)
+                throw new Exception("Try to spawn a npc on the wrong map");
+
+            sbyte id = GetNextContextualId();
+
+            var npc = new Npc(id, spawn);
+
+            Enter(npc);
+
+            return npc;
+        }
+
         public bool UnSpawnNpc(sbyte id)
         {
             var npc = GetActor<Npc>(id);

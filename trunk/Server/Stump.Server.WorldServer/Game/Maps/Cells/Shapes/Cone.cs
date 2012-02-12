@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
@@ -11,7 +12,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             MinRadius = minRadius;
             Radius = radius;
 
-            Direction = DirectionsEnum.DOWN_RIGHT;
+            Direction = DirectionsEnum.DIRECTION_SOUTH_EAST;
         }
 
         #region IShape Members
@@ -61,7 +62,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             int x = 0;
             switch (Direction)
             {
-                case DirectionsEnum.UP_LEFT:
+                case DirectionsEnum.DIRECTION_NORTH_WEST:
                     x = centerPoint.X;
                     while (x >= centerPoint.X - Radius)
                     {
@@ -78,7 +79,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                         x--;
                     }
                     break;
-                case DirectionsEnum.DOWN_LEFT:
+                case DirectionsEnum.DIRECTION_SOUTH_WEST:
                     y = centerPoint.Y;
                     while (y >= centerPoint.Y - Radius)
                     {
@@ -95,7 +96,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                         y--;
                     }
                     break;
-                case DirectionsEnum.DOWN_RIGHT:
+                case DirectionsEnum.DIRECTION_SOUTH_EAST:
                     x = centerPoint.X;
                     while (x <= centerPoint.X + Radius)
                     {
@@ -112,7 +113,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                         x++;
                     }
                     break;
-                case DirectionsEnum.UP_RIGHT:
+                case DirectionsEnum.DIRECTION_NORTH_EAST:
                     y = centerPoint.Y;
                     while (y <= centerPoint.Y - Radius)
                     {

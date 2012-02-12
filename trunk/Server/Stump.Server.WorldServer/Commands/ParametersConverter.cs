@@ -6,12 +6,14 @@ using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Npcs;
+using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Commands
 {
@@ -72,6 +74,26 @@ namespace Stump.Server.WorldServer.Commands
             return itemByName;
         };
 
+        public static ConverterHandler<SpellTemplate> SpellTemplateConverter = (entry, trigger) =>
+        {
+            int outvalue;
+            if (int.TryParse(entry, out outvalue))
+            {
+                SpellTemplate spellById = SpellManager.Instance.GetSpellTemplate(outvalue);
+
+                if (spellById == null)
+                    throw new ConverterException(string.Format("'{0}' is not a valid spell", entry));
+
+                return spellById;
+            }
+
+            SpellTemplate spellByName = SpellManager.Instance.GetSpellTemplate(entry, CommandBase.IgnoreCommandCase);
+
+            if (spellByName == null)
+                throw new ConverterException(string.Format("'{0}' is not a valid spell", entry));
+
+            return spellByName;
+        };
 
         public static ConverterHandler<NpcTemplate> NpcTemplateConverter = (entry, trigger) =>
         {
@@ -132,6 +154,27 @@ namespace Stump.Server.WorldServer.Commands
 
             if (areaByName == null)
                 throw new ConverterException(string.Format("'{0}' is not a area name", entry));
+
+            return areaByName;
+        };
+
+        public static ConverterHandler<SubArea> SubAreaConverter = (entry, trigger) =>
+        {
+            int outvalue;
+            if (int.TryParse(entry, out outvalue))
+            {
+                var area = World.Instance.GetSubArea(outvalue);
+
+                if (area == null)
+                    throw new ConverterException(string.Format("'{0}' is not a valid sub area id", entry));
+
+                return area;
+            }
+
+            var areaByName = World.Instance.GetSubArea(entry);
+
+            if (areaByName == null)
+                throw new ConverterException(string.Format("'{0}' is not a sub area name", entry));
 
             return areaByName;
         };

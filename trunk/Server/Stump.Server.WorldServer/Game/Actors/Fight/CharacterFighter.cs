@@ -186,7 +186,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override short CalculateDamage(short damage, EffectSchoolEnum type)
         {
-            return (short) (base.CalculateDamage(damage, type) + (m_isUsingWeapon ? m_criticalWeaponBonus + Stats[PlayerFields.WeaponDamageBonus] : 0));
+            return base.CalculateDamage((short) ((m_isUsingWeapon ? m_criticalWeaponBonus + Stats[PlayerFields.WeaponDamageBonus] : 0) + damage), type);
         }
 
         public bool CanUseWeapon(Cell cell, WeaponTemplate weapon)

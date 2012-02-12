@@ -35,11 +35,15 @@ namespace Stump.Server.WorldServer.Commands.Commands
             {
                 Character target = (trigger as GameTrigger).Character;
                 target.Stats.Health.Given += 5000;
-                target.Stats.Fields[PlayerFields.Intelligence].Given += 5000;
-                target.Stats.Fields[PlayerFields.Strength].Given += 5000;
-                target.Stats.Fields[PlayerFields.Chance].Given += 5000;
+                target.Stats.Intelligence.Given += 5000;
+                target.Stats.Strength.Given += 5000;
+                target.Stats.Chance.Given += 5000;
+                target.Stats.Agility.Given += 5000;
                 target.Stats.AP.Given += 90;
                 target.Stats.MP.Given += 90;
+
+                target.RefreshStats();
+
                 trigger.Reply("You're now a cheat. Make the good, love everyone etc.");
             }
         }

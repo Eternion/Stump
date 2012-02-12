@@ -835,7 +835,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             const double multipleOfE = Math.E*1.1;
 
-            return Math.Floor(baseRate*multipleOfE/Math.Log(Stats[PlayerFields.Agility].TotalSafe + 12, Math.E));
+            var prob = Math.Floor((baseRate - Stats[PlayerFields.CriticalHit].Total) * multipleOfE / Math.Log(Stats[PlayerFields.Agility].TotalSafe + 12, Math.E));
+
+            return prob > 2 ? prob : 2;
         }
 
         public virtual FightSpellCastCriticalEnum RollCriticalDice(SpellLevelTemplate spell)

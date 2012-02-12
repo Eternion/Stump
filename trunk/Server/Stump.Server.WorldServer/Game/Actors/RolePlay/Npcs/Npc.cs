@@ -19,7 +19,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             m_gameContextActorInformations = new ObjectValidator<GameContextActorInformations>(BuildGameContextActorInformations);
         }
 
+        public Npc(int id, NpcSpawn spawn)
+            : this (id, spawn.Template, spawn.GetPosition(), spawn.Look)
+        {
+            Spawn = spawn;
+        }
+
         public NpcTemplate Template
+        {
+            get;
+            private set;
+        }
+
+        public NpcSpawn Spawn
         {
             get;
             private set;

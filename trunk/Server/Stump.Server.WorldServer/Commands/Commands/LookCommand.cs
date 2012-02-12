@@ -15,17 +15,23 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Description = "Change the look of the target";
             AddParameter("target", "t", "Target who will have another look",
                          converter: ParametersConverter.CharacterConverter);
-            AddParameter<string>("look", "l", "The new look for the target");
-            AddParameter("demorph", "demorph", "Regive the base skin to the target", false, true);
+            AddParameter<string>("look", "l", "The new look for the target", isOptional:true);
+            AddParameter<bool>("demorph", "demorph", "Regive the base skin to the target", isOptional: true);
         }
 
         public override void Execute(TriggerBase trigger)
         {
             var target = trigger.Get<Character>("target");
 
-            if (trigger.Get<bool>("demorph"))
+            if (trigger.IsArgumentDefined("demorph"))
             {
                 target.CustomLookActivated = false;
+                return;
+            }
+
+            if (!trigger.IsArgumentDefined("look"))
+            {
+                trigger.ReplyError("Look not defined");
                 return;
             }
 
