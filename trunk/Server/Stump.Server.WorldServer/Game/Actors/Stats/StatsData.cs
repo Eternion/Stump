@@ -49,30 +49,40 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         public virtual short Base
         {
             get { return m_valueBase; }
-            set { m_valueBase = value; }
+            set
+            {
+                m_valueBase = value;
+                OnModified();
+            }
         }
 
         public virtual short Equiped
         {
             get { return m_valueEquiped; }
-            set { m_valueEquiped = value; }
+            set
+            {
+                m_valueEquiped = value;
+                OnModified();
+            }
         }
 
         public virtual short Given
         {
             get { return m_valueGiven; }
-            set { m_valueGiven = value; }
+            set
+            {
+                m_valueGiven = value;
+                OnModified();
+            }
         }
 
         public virtual short Context
         {
-            get
-            {
-                return m_valueContext;
-            }
+            get { return m_valueContext; }
             set
             {
                 m_valueContext = value;
+                OnModified();
             }
         }
 
@@ -98,10 +108,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get
             {
-                var total = Total;
+                int total = Total;
 
                 return total > 0 ? total : 0;
             }
+        }
+
+        public event Action<StatsData, int> Modified;
+
+        protected virtual void OnModified()
+        {
+            Action<StatsData, int> handler = Modified;
+            if (handler != null) handler(this, Total);
         }
 
         public static int operator +(int i1, StatsData s1)

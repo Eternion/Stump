@@ -41,18 +41,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         #endregion
 
-        public StatsFields(IStatsOwner owner, CharacterRecord record)
+        public StatsFields(IStatsOwner owner)
         {
             Owner = owner;
-
-            Initialize(record);
-        }
-
-        public StatsFields(IStatsOwner owner, MonsterGrade record)
-        {
-            Owner = owner;
-
-            Initialize(record);
         }
 
         public Dictionary<PlayerFields, StatsData> Fields
@@ -118,158 +109,162 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         public void Initialize(CharacterRecord record)
         {
-            Fields = new Dictionary<PlayerFields, StatsData>
-                         {
-                             {PlayerFields.Health, new StatsHealth(Owner, (short) record.BaseHealth, (short) record.DamageTaken)},
-                             {PlayerFields.Initiative, new StatsData(Owner, PlayerFields.Initiative, 0, FormulasInitiative)},
-                             {PlayerFields.Prospecting, new StatsData(Owner, PlayerFields.Prospecting, (short) record.Prospection, FormulasChanceDependant)},
-                             {PlayerFields.AP, new StatsAP(Owner, (short) record.AP)},
-                             {PlayerFields.MP, new StatsMP(Owner, (short) record.MP)},
-                             {PlayerFields.Strength, new StatsData(Owner, PlayerFields.Strength, record.Strength)},
-                             {PlayerFields.Vitality, new StatsData(Owner, PlayerFields.Vitality, record.Vitality)},
-                             {PlayerFields.Wisdom, new StatsData(Owner, PlayerFields.Wisdom, record.Wisdom)},
-                             {PlayerFields.Chance, new StatsData(Owner, PlayerFields.Chance, record.Chance)},
-                             {PlayerFields.Agility, new StatsData(Owner, PlayerFields.Agility, record.Agility)},
-                             {PlayerFields.Intelligence, new StatsData(Owner, PlayerFields.Intelligence, record.Intelligence)},
-                             {PlayerFields.Range, new StatsData(Owner, PlayerFields.Range, 0)},
-                             {PlayerFields.SummonLimit, new StatsData(Owner, PlayerFields.SummonLimit, 1)},
-                             {PlayerFields.DamageReflection, new StatsData(Owner, PlayerFields.DamageReflection, 0)},
-                             {PlayerFields.CriticalHit, new StatsData(Owner, PlayerFields.CriticalHit, 0)},
-                             {PlayerFields.CriticalMiss, new StatsData(Owner, PlayerFields.CriticalMiss, 0)},
-                             {PlayerFields.HealBonus, new StatsData(Owner, PlayerFields.HealBonus, 0)},
-                             {PlayerFields.DamageBonus, new StatsData(Owner, PlayerFields.DamageBonus, 0)},
-                             {PlayerFields.WeaponDamageBonus, new StatsData(Owner, PlayerFields.WeaponDamageBonus, 0)},
-                             {PlayerFields.DamageBonusPercent, new StatsData(Owner, PlayerFields.DamageBonusPercent, 0)},
-                             {PlayerFields.TrapBonus, new StatsData(Owner, PlayerFields.TrapBonus, 0)},
-                             {PlayerFields.TrapBonusPercent, new StatsData(Owner, PlayerFields.TrapBonusPercent, 0)},
-                             {PlayerFields.PermanentDamagePercent, new StatsData(Owner, PlayerFields.PermanentDamagePercent, 0)},
-                             {PlayerFields.TackleBlock, new StatsData(Owner, PlayerFields.TackleBlock, 0, FormulasAgilityDependant)},
-                             {PlayerFields.TackleEvade, new StatsData(Owner, PlayerFields.TackleEvade, 0, FormulasAgilityDependant)},
-                             {PlayerFields.APAttack, new StatsData(Owner, PlayerFields.APAttack, 0, FormulasWisdomDependant)},
-                             {PlayerFields.MPAttack, new StatsData(Owner, PlayerFields.MPAttack, 0, FormulasWisdomDependant)},
-                             {PlayerFields.PushDamageBonus, new StatsData(Owner, PlayerFields.PushDamageBonus, 0)},
-                             {PlayerFields.CriticalDamageBonus, new StatsData(Owner, PlayerFields.CriticalDamageBonus, 0)},
-                             {PlayerFields.NeutralDamageBonus, new StatsData(Owner, PlayerFields.NeutralDamageBonus, 0)},
-                             {PlayerFields.EarthDamageBonus, new StatsData(Owner, PlayerFields.EarthDamageBonus, 0)},
-                             {PlayerFields.WaterDamageBonus, new StatsData(Owner, PlayerFields.WaterDamageBonus, 0)},
-                             {PlayerFields.AirDamageBonus, new StatsData(Owner, PlayerFields.AirDamageBonus, 0)},
-                             {PlayerFields.FireDamageBonus, new StatsData(Owner, PlayerFields.FireDamageBonus, 0)},
-                             {PlayerFields.DodgeAPProbability, new StatsData(Owner, PlayerFields.DodgeAPProbability, 0, FormulasWisdomDependant)},
-                             {PlayerFields.DodgeMPProbability, new StatsData(Owner, PlayerFields.DodgeMPProbability, 0, FormulasWisdomDependant)},
-                             {PlayerFields.NeutralResistPercent, new StatsData(Owner, PlayerFields.NeutralResistPercent, 0)},
-                             {PlayerFields.EarthResistPercent, new StatsData(Owner, PlayerFields.EarthResistPercent, 0)},
-                             {PlayerFields.WaterResistPercent, new StatsData(Owner, PlayerFields.WaterResistPercent, 0)},
-                             {PlayerFields.AirResistPercent, new StatsData(Owner, PlayerFields.AirResistPercent, 0)},
-                             {PlayerFields.FireResistPercent, new StatsData(Owner, PlayerFields.FireResistPercent, 0)},
-                             {PlayerFields.NeutralElementReduction, new StatsData(Owner, PlayerFields.NeutralElementReduction, 0)},
-                             {PlayerFields.EarthElementReduction, new StatsData(Owner, PlayerFields.EarthElementReduction, 0)},
-                             {PlayerFields.WaterElementReduction, new StatsData(Owner, PlayerFields.WaterElementReduction, 0)},
-                             {PlayerFields.AirElementReduction, new StatsData(Owner, PlayerFields.AirElementReduction, 0)},
-                             {PlayerFields.FireElementReduction, new StatsData(Owner, PlayerFields.FireElementReduction, 0)},
-                             {PlayerFields.PushDamageReduction, new StatsData(Owner, PlayerFields.PushDamageReduction, 0)},
-                             {PlayerFields.CriticalDamageReduction, new StatsData(Owner, PlayerFields.CriticalDamageReduction, 0)},
-                             {PlayerFields.PvpNeutralResistPercent, new StatsData(Owner, PlayerFields.PvpNeutralResistPercent, 0)},
-                             {PlayerFields.PvpEarthResistPercent, new StatsData(Owner, PlayerFields.PvpEarthResistPercent, 0)},
-                             {PlayerFields.PvpWaterResistPercent, new StatsData(Owner, PlayerFields.PvpWaterResistPercent, 0)},
-                             {PlayerFields.PvpAirResistPercent, new StatsData(Owner, PlayerFields.PvpAirResistPercent, 0)},
-                             {PlayerFields.PvpFireResistPercent, new StatsData(Owner, PlayerFields.PvpFireResistPercent, 0)},
-                             {PlayerFields.PvpNeutralElementReduction, new StatsData(Owner, PlayerFields.PvpNeutralElementReduction, 0)},
-                             {PlayerFields.PvpEarthElementReduction, new StatsData(Owner, PlayerFields.PvpEarthElementReduction, 0)},
-                             {PlayerFields.PvpWaterElementReduction, new StatsData(Owner, PlayerFields.PvpWaterElementReduction, 0)},
-                             {PlayerFields.PvpAirElementReduction, new StatsData(Owner, PlayerFields.PvpAirElementReduction, 0)},
-                             {PlayerFields.PvpFireElementReduction, new StatsData(Owner, PlayerFields.PvpFireElementReduction, 0)},
-                             {PlayerFields.GlobalDamageReduction, new StatsData(Owner, PlayerFields.GlobalDamageReduction, 0)},
-                             {PlayerFields.DamageMultiplicator, new StatsData(Owner, PlayerFields.DamageMultiplicator, 0)},
-                             {PlayerFields.PhysicalDamage, new StatsData(Owner, PlayerFields.PhysicalDamage, 0)},
-                             {PlayerFields.MagicDamage, new StatsData(Owner, PlayerFields.MagicDamage, 0)},
-                             {PlayerFields.PhysicalDamageReduction, new StatsData(Owner, PlayerFields.PhysicalDamageReduction, 0)},
-                             {PlayerFields.MagicDamageReduction, new StatsData(Owner, PlayerFields.MagicDamageReduction, 0)},
-                             // custom fields
+            // note : keep this order !
 
-                             {PlayerFields.WaterDamageArmor, new StatsData(Owner, PlayerFields.WaterDamageArmor, 0)},
-                             {PlayerFields.EarthDamageArmor, new StatsData(Owner, PlayerFields.EarthDamageArmor, 0)},
-                             {PlayerFields.NeutralDamageArmor, new StatsData(Owner, PlayerFields.NeutralDamageArmor, 0)},
-                             {PlayerFields.AirDamageArmor, new StatsData(Owner, PlayerFields.AirDamageArmor, 0)},
-                             {PlayerFields.FireDamageArmor, new StatsData(Owner, PlayerFields.FireDamageArmor, 0)},
-                         };
+            Fields = new Dictionary<PlayerFields, StatsData>();
+                         
+            Fields.Add(PlayerFields.Initiative, new StatsData(Owner, PlayerFields.Initiative, 0, FormulasInitiative));
+            Fields.Add(PlayerFields.Prospecting, new StatsData(Owner, PlayerFields.Prospecting, (short) record.Prospection, FormulasChanceDependant));
+            Fields.Add(PlayerFields.AP, new StatsAP(Owner, (short) record.AP));
+            Fields.Add(PlayerFields.MP, new StatsMP(Owner, (short) record.MP));
+            Fields.Add(PlayerFields.Strength, new StatsData(Owner, PlayerFields.Strength, record.Strength));
+            Fields.Add(PlayerFields.Vitality, new StatsData(Owner, PlayerFields.Vitality, record.Vitality));                             
+            Fields.Add(PlayerFields.Health, new StatsHealth(Owner, (short) record.BaseHealth, (short) record.DamageTaken));
+            Fields.Add(PlayerFields.Wisdom, new StatsData(Owner, PlayerFields.Wisdom, record.Wisdom));
+            Fields.Add(PlayerFields.Chance, new StatsData(Owner, PlayerFields.Chance, record.Chance));
+            Fields.Add(PlayerFields.Agility, new StatsData(Owner, PlayerFields.Agility, record.Agility));
+            Fields.Add(PlayerFields.Intelligence, new StatsData(Owner, PlayerFields.Intelligence, record.Intelligence));
+            Fields.Add(PlayerFields.Range, new StatsData(Owner, PlayerFields.Range, 0));
+            Fields.Add(PlayerFields.SummonLimit, new StatsData(Owner, PlayerFields.SummonLimit, 1));
+            Fields.Add(PlayerFields.DamageReflection, new StatsData(Owner, PlayerFields.DamageReflection, 0));
+            Fields.Add(PlayerFields.CriticalHit, new StatsData(Owner, PlayerFields.CriticalHit, 0));
+            Fields.Add(PlayerFields.CriticalMiss, new StatsData(Owner, PlayerFields.CriticalMiss, 0));
+            Fields.Add(PlayerFields.HealBonus, new StatsData(Owner, PlayerFields.HealBonus, 0));
+            Fields.Add(PlayerFields.DamageBonus, new StatsData(Owner, PlayerFields.DamageBonus, 0));
+            Fields.Add(PlayerFields.WeaponDamageBonus, new StatsData(Owner, PlayerFields.WeaponDamageBonus, 0));
+            Fields.Add(PlayerFields.DamageBonusPercent, new StatsData(Owner, PlayerFields.DamageBonusPercent, 0));
+            Fields.Add(PlayerFields.TrapBonus, new StatsData(Owner, PlayerFields.TrapBonus, 0));
+            Fields.Add(PlayerFields.TrapBonusPercent, new StatsData(Owner, PlayerFields.TrapBonusPercent, 0));
+            Fields.Add(PlayerFields.PermanentDamagePercent, new StatsData(Owner, PlayerFields.PermanentDamagePercent, 0));
+            Fields.Add(PlayerFields.TackleBlock, new StatsData(Owner, PlayerFields.TackleBlock, 0, FormulasAgilityDependant));
+            Fields.Add(PlayerFields.TackleEvade, new StatsData(Owner, PlayerFields.TackleEvade, 0, FormulasAgilityDependant));
+            Fields.Add(PlayerFields.APAttack, new StatsData(Owner, PlayerFields.APAttack, 0, FormulasWisdomDependant));
+            Fields.Add(PlayerFields.MPAttack, new StatsData(Owner, PlayerFields.MPAttack, 0, FormulasWisdomDependant));
+            Fields.Add(PlayerFields.PushDamageBonus, new StatsData(Owner, PlayerFields.PushDamageBonus, 0));
+            Fields.Add(PlayerFields.CriticalDamageBonus, new StatsData(Owner, PlayerFields.CriticalDamageBonus, 0));
+            Fields.Add(PlayerFields.NeutralDamageBonus, new StatsData(Owner, PlayerFields.NeutralDamageBonus, 0));
+            Fields.Add(PlayerFields.EarthDamageBonus, new StatsData(Owner, PlayerFields.EarthDamageBonus, 0));
+            Fields.Add(PlayerFields.WaterDamageBonus, new StatsData(Owner, PlayerFields.WaterDamageBonus, 0));
+            Fields.Add(PlayerFields.AirDamageBonus, new StatsData(Owner, PlayerFields.AirDamageBonus, 0));
+            Fields.Add(PlayerFields.FireDamageBonus, new StatsData(Owner, PlayerFields.FireDamageBonus, 0));
+            Fields.Add(PlayerFields.DodgeAPProbability, new StatsData(Owner, PlayerFields.DodgeAPProbability, 0, FormulasWisdomDependant));
+            Fields.Add(PlayerFields.DodgeMPProbability, new StatsData(Owner, PlayerFields.DodgeMPProbability, 0, FormulasWisdomDependant));
+            Fields.Add(PlayerFields.NeutralResistPercent, new StatsData(Owner, PlayerFields.NeutralResistPercent, 0));
+            Fields.Add(PlayerFields.EarthResistPercent, new StatsData(Owner, PlayerFields.EarthResistPercent, 0));
+            Fields.Add(PlayerFields.WaterResistPercent, new StatsData(Owner, PlayerFields.WaterResistPercent, 0));
+            Fields.Add(PlayerFields.AirResistPercent, new StatsData(Owner, PlayerFields.AirResistPercent, 0));
+            Fields.Add(PlayerFields.FireResistPercent, new StatsData(Owner, PlayerFields.FireResistPercent, 0));
+            Fields.Add(PlayerFields.NeutralElementReduction, new StatsData(Owner, PlayerFields.NeutralElementReduction, 0));
+            Fields.Add(PlayerFields.EarthElementReduction, new StatsData(Owner, PlayerFields.EarthElementReduction, 0));
+            Fields.Add(PlayerFields.WaterElementReduction, new StatsData(Owner, PlayerFields.WaterElementReduction, 0));
+            Fields.Add(PlayerFields.AirElementReduction, new StatsData(Owner, PlayerFields.AirElementReduction, 0));
+            Fields.Add(PlayerFields.FireElementReduction, new StatsData(Owner, PlayerFields.FireElementReduction, 0));
+            Fields.Add(PlayerFields.PushDamageReduction, new StatsData(Owner, PlayerFields.PushDamageReduction, 0));
+            Fields.Add(PlayerFields.CriticalDamageReduction, new StatsData(Owner, PlayerFields.CriticalDamageReduction, 0));
+            Fields.Add(PlayerFields.PvpNeutralResistPercent, new StatsData(Owner, PlayerFields.PvpNeutralResistPercent, 0));
+            Fields.Add(PlayerFields.PvpEarthResistPercent, new StatsData(Owner, PlayerFields.PvpEarthResistPercent, 0));
+            Fields.Add(PlayerFields.PvpWaterResistPercent, new StatsData(Owner, PlayerFields.PvpWaterResistPercent, 0));
+            Fields.Add(PlayerFields.PvpAirResistPercent, new StatsData(Owner, PlayerFields.PvpAirResistPercent, 0));
+            Fields.Add(PlayerFields.PvpFireResistPercent, new StatsData(Owner, PlayerFields.PvpFireResistPercent, 0));
+            Fields.Add(PlayerFields.PvpNeutralElementReduction, new StatsData(Owner, PlayerFields.PvpNeutralElementReduction, 0));
+            Fields.Add(PlayerFields.PvpEarthElementReduction, new StatsData(Owner, PlayerFields.PvpEarthElementReduction, 0));
+            Fields.Add(PlayerFields.PvpWaterElementReduction, new StatsData(Owner, PlayerFields.PvpWaterElementReduction, 0));
+            Fields.Add(PlayerFields.PvpAirElementReduction, new StatsData(Owner, PlayerFields.PvpAirElementReduction, 0));
+            Fields.Add(PlayerFields.PvpFireElementReduction, new StatsData(Owner, PlayerFields.PvpFireElementReduction, 0));
+            Fields.Add(PlayerFields.GlobalDamageReduction, new StatsData(Owner, PlayerFields.GlobalDamageReduction, 0));
+            Fields.Add(PlayerFields.DamageMultiplicator, new StatsData(Owner, PlayerFields.DamageMultiplicator, 0));
+            Fields.Add(PlayerFields.PhysicalDamage, new StatsData(Owner, PlayerFields.PhysicalDamage, 0));
+            Fields.Add(PlayerFields.MagicDamage, new StatsData(Owner, PlayerFields.MagicDamage, 0));
+            Fields.Add(PlayerFields.PhysicalDamageReduction, new StatsData(Owner, PlayerFields.PhysicalDamageReduction, 0));
+            Fields.Add(PlayerFields.MagicDamageReduction, new StatsData(Owner, PlayerFields.MagicDamageReduction, 0));
+            // custom fields
+
+            Fields.Add(PlayerFields.WaterDamageArmor, new StatsData(Owner, PlayerFields.WaterDamageArmor, 0));
+            Fields.Add(PlayerFields.EarthDamageArmor, new StatsData(Owner, PlayerFields.EarthDamageArmor, 0));
+            Fields.Add(PlayerFields.NeutralDamageArmor, new StatsData(Owner, PlayerFields.NeutralDamageArmor, 0));
+            Fields.Add(PlayerFields.AirDamageArmor, new StatsData(Owner, PlayerFields.AirDamageArmor, 0));
+            Fields.Add(PlayerFields.FireDamageArmor, new StatsData(Owner, PlayerFields.FireDamageArmor, 0));
+                         
         }
 
         public void Initialize(MonsterGrade record)
         {
-            Fields = new Dictionary<PlayerFields, StatsData>
-                         {
-                             {PlayerFields.Health, new StatsHealth(Owner, (short) record.LifePoints, 0)},
-                             {PlayerFields.Initiative, new StatsData(Owner, PlayerFields.Initiative, 0, FormulasInitiative)},
-                             {PlayerFields.Prospecting, new StatsData(Owner, PlayerFields.Prospecting, 100, FormulasChanceDependant)},
-                             {PlayerFields.AP, new StatsAP(Owner, (short) record.ActionPoints)},
-                             {PlayerFields.MP, new StatsMP(Owner, (short) record.MovementPoints)},
-                             {PlayerFields.Strength, new StatsData(Owner, PlayerFields.Strength, record.Strength)},
-                             {PlayerFields.Vitality, new StatsData(Owner, PlayerFields.Vitality, record.Vitality)},
-                             {PlayerFields.Wisdom, new StatsData(Owner, PlayerFields.Wisdom, record.Wisdom)},
-                             {PlayerFields.Chance, new StatsData(Owner, PlayerFields.Chance, record.Chance)},
-                             {PlayerFields.Agility, new StatsData(Owner, PlayerFields.Agility, record.Agility)},
-                             {PlayerFields.Intelligence, new StatsData(Owner, PlayerFields.Intelligence, record.Intelligence)},
-                             {PlayerFields.Range, new StatsData(Owner, PlayerFields.Range, 0)},
-                             {PlayerFields.SummonLimit, new StatsData(Owner, PlayerFields.SummonLimit, 1)},
-                             {PlayerFields.DamageReflection, new StatsData(Owner, PlayerFields.DamageReflection, 0)},
-                             {PlayerFields.CriticalHit, new StatsData(Owner, PlayerFields.CriticalHit, 0)},
-                             {PlayerFields.CriticalMiss, new StatsData(Owner, PlayerFields.CriticalMiss, 0)},
-                             {PlayerFields.HealBonus, new StatsData(Owner, PlayerFields.HealBonus, 0)},
-                             {PlayerFields.DamageBonus, new StatsData(Owner, PlayerFields.DamageBonus, 0)},
-                             {PlayerFields.WeaponDamageBonus, new StatsData(Owner, PlayerFields.WeaponDamageBonus, 0)},
-                             {PlayerFields.DamageBonusPercent, new StatsData(Owner, PlayerFields.DamageBonusPercent, 0)},
-                             {PlayerFields.TrapBonus, new StatsData(Owner, PlayerFields.TrapBonus, 0)},
-                             {PlayerFields.TrapBonusPercent, new StatsData(Owner, PlayerFields.TrapBonusPercent, 0)},
-                             {PlayerFields.PermanentDamagePercent, new StatsData(Owner, PlayerFields.PermanentDamagePercent, 0)},
-                             {PlayerFields.TackleBlock, new StatsData(Owner, PlayerFields.TackleBlock, record.TackleBlock, FormulasAgilityDependant)},
-                             {PlayerFields.TackleEvade, new StatsData(Owner, PlayerFields.TackleEvade, record.TackleEvade, FormulasAgilityDependant)},
-                             {PlayerFields.APAttack, new StatsData(Owner, PlayerFields.APAttack, 0)},
-                             {PlayerFields.MPAttack, new StatsData(Owner, PlayerFields.MPAttack, 0)},
-                             {PlayerFields.PushDamageBonus, new StatsData(Owner, PlayerFields.PushDamageBonus, 0)},
-                             {PlayerFields.CriticalDamageBonus, new StatsData(Owner, PlayerFields.CriticalDamageBonus, 0)},
-                             {PlayerFields.NeutralDamageBonus, new StatsData(Owner, PlayerFields.NeutralDamageBonus, 0)},
-                             {PlayerFields.EarthDamageBonus, new StatsData(Owner, PlayerFields.EarthDamageBonus, 0)},
-                             {PlayerFields.WaterDamageBonus, new StatsData(Owner, PlayerFields.WaterDamageBonus, 0)},
-                             {PlayerFields.AirDamageBonus, new StatsData(Owner, PlayerFields.AirDamageBonus, 0)},
-                             {PlayerFields.FireDamageBonus, new StatsData(Owner, PlayerFields.FireDamageBonus, 0)},
-                             {PlayerFields.DodgeAPProbability, new StatsData(Owner, PlayerFields.DodgeAPProbability, (short) record.PaDodge, FormulasWisdomDependant)},
-                             {PlayerFields.DodgeMPProbability, new StatsData(Owner, PlayerFields.DodgeMPProbability, (short) record.PmDodge, FormulasWisdomDependant)},
-                             {PlayerFields.NeutralResistPercent, new StatsData(Owner, PlayerFields.NeutralResistPercent, (short) record.NeutralResistance)},
-                             {PlayerFields.EarthResistPercent, new StatsData(Owner, PlayerFields.EarthResistPercent, (short) record.EarthResistance)},
-                             {PlayerFields.WaterResistPercent, new StatsData(Owner, PlayerFields.WaterResistPercent, (short) record.WaterResistance)},
-                             {PlayerFields.AirResistPercent, new StatsData(Owner, PlayerFields.AirResistPercent, (short) record.AirResistance)},
-                             {PlayerFields.FireResistPercent, new StatsData(Owner, PlayerFields.FireResistPercent, (short) record.FireResistance)},
-                             {PlayerFields.NeutralElementReduction, new StatsData(Owner, PlayerFields.NeutralElementReduction, 0)},
-                             {PlayerFields.EarthElementReduction, new StatsData(Owner, PlayerFields.EarthElementReduction, 0)},
-                             {PlayerFields.WaterElementReduction, new StatsData(Owner, PlayerFields.WaterElementReduction, 0)},
-                             {PlayerFields.AirElementReduction, new StatsData(Owner, PlayerFields.AirElementReduction, 0)},
-                             {PlayerFields.FireElementReduction, new StatsData(Owner, PlayerFields.FireElementReduction, 0)},
-                             {PlayerFields.PushDamageReduction, new StatsData(Owner, PlayerFields.PushDamageReduction, 0)},
-                             {PlayerFields.CriticalDamageReduction, new StatsData(Owner, PlayerFields.CriticalDamageReduction, 0)},
-                             {PlayerFields.PvpNeutralResistPercent, new StatsData(Owner, PlayerFields.PvpNeutralResistPercent, 0)},
-                             {PlayerFields.PvpEarthResistPercent, new StatsData(Owner, PlayerFields.PvpEarthResistPercent, 0)},
-                             {PlayerFields.PvpWaterResistPercent, new StatsData(Owner, PlayerFields.PvpWaterResistPercent, 0)},
-                             {PlayerFields.PvpAirResistPercent, new StatsData(Owner, PlayerFields.PvpAirResistPercent, 0)},
-                             {PlayerFields.PvpFireResistPercent, new StatsData(Owner, PlayerFields.PvpFireResistPercent, 0)},
-                             {PlayerFields.PvpNeutralElementReduction, new StatsData(Owner, PlayerFields.PvpNeutralElementReduction, 0)},
-                             {PlayerFields.PvpEarthElementReduction, new StatsData(Owner, PlayerFields.PvpEarthElementReduction, 0)},
-                             {PlayerFields.PvpWaterElementReduction, new StatsData(Owner, PlayerFields.PvpWaterElementReduction, 0)},
-                             {PlayerFields.PvpAirElementReduction, new StatsData(Owner, PlayerFields.PvpAirElementReduction, 0)},
-                             {PlayerFields.PvpFireElementReduction, new StatsData(Owner, PlayerFields.PvpFireElementReduction, 0)},
-                             {PlayerFields.GlobalDamageReduction, new StatsData(Owner, PlayerFields.GlobalDamageReduction, 0)},
-                             {PlayerFields.DamageMultiplicator, new StatsData(Owner, PlayerFields.DamageMultiplicator, 0)},
-                             {PlayerFields.PhysicalDamage, new StatsData(Owner, PlayerFields.PhysicalDamage, 0)},
-                             {PlayerFields.MagicDamage, new StatsData(Owner, PlayerFields.MagicDamage, 0)},
-                             {PlayerFields.PhysicalDamageReduction, new StatsData(Owner, PlayerFields.PhysicalDamageReduction, 0)},
-                             {PlayerFields.MagicDamageReduction, new StatsData(Owner, PlayerFields.MagicDamageReduction, 0)},
-                             // custom fields
+            // note : keep this order !
 
-                             {PlayerFields.WaterDamageArmor, new StatsData(Owner, PlayerFields.WaterDamageArmor, 0)},
-                             {PlayerFields.EarthDamageArmor, new StatsData(Owner, PlayerFields.EarthDamageArmor, 0)},
-                             {PlayerFields.NeutralDamageArmor, new StatsData(Owner, PlayerFields.NeutralDamageArmor, 0)},
-                             {PlayerFields.AirDamageArmor, new StatsData(Owner, PlayerFields.AirDamageArmor, 0)},
-                             {PlayerFields.FireDamageArmor, new StatsData(Owner, PlayerFields.FireDamageArmor, 0)},
-                         };
+            Fields = new Dictionary<PlayerFields, StatsData>();
+                         
+            Fields.Add(PlayerFields.Initiative, new StatsData(Owner, PlayerFields.Initiative, 0, FormulasInitiative));
+            Fields.Add(PlayerFields.Prospecting, new StatsData(Owner, PlayerFields.Prospecting, 100, FormulasChanceDependant));
+            Fields.Add(PlayerFields.AP, new StatsAP(Owner, (short) record.ActionPoints));
+            Fields.Add(PlayerFields.MP, new StatsMP(Owner, (short) record.MovementPoints));
+            Fields.Add(PlayerFields.Strength, new StatsData(Owner, PlayerFields.Strength, record.Strength));
+            Fields.Add(PlayerFields.Vitality, new StatsData(Owner, PlayerFields.Vitality, record.Vitality));                             
+            Fields.Add(PlayerFields.Health, new StatsHealth(Owner, (short) record.LifePoints, 0));
+            Fields.Add(PlayerFields.Wisdom, new StatsData(Owner, PlayerFields.Wisdom, record.Wisdom));
+            Fields.Add(PlayerFields.Chance, new StatsData(Owner, PlayerFields.Chance, record.Chance));
+            Fields.Add(PlayerFields.Agility, new StatsData(Owner, PlayerFields.Agility, record.Agility));
+            Fields.Add(PlayerFields.Intelligence, new StatsData(Owner, PlayerFields.Intelligence, record.Intelligence));
+            Fields.Add(PlayerFields.Range, new StatsData(Owner, PlayerFields.Range, 0));
+            Fields.Add(PlayerFields.SummonLimit, new StatsData(Owner, PlayerFields.SummonLimit, 1));
+            Fields.Add(PlayerFields.DamageReflection, new StatsData(Owner, PlayerFields.DamageReflection, 0));
+            Fields.Add(PlayerFields.CriticalHit, new StatsData(Owner, PlayerFields.CriticalHit, 0));
+            Fields.Add(PlayerFields.CriticalMiss, new StatsData(Owner, PlayerFields.CriticalMiss, 0));
+            Fields.Add(PlayerFields.HealBonus, new StatsData(Owner, PlayerFields.HealBonus, 0));
+            Fields.Add(PlayerFields.DamageBonus, new StatsData(Owner, PlayerFields.DamageBonus, 0));
+            Fields.Add(PlayerFields.WeaponDamageBonus, new StatsData(Owner, PlayerFields.WeaponDamageBonus, 0));
+            Fields.Add(PlayerFields.DamageBonusPercent, new StatsData(Owner, PlayerFields.DamageBonusPercent, 0));
+            Fields.Add(PlayerFields.TrapBonus, new StatsData(Owner, PlayerFields.TrapBonus, 0));
+            Fields.Add(PlayerFields.TrapBonusPercent, new StatsData(Owner, PlayerFields.TrapBonusPercent, 0));
+            Fields.Add(PlayerFields.PermanentDamagePercent, new StatsData(Owner, PlayerFields.PermanentDamagePercent, 0));
+            Fields.Add(PlayerFields.TackleBlock, new StatsData(Owner, PlayerFields.TackleBlock, record.TackleBlock, FormulasAgilityDependant));
+            Fields.Add(PlayerFields.TackleEvade, new StatsData(Owner, PlayerFields.TackleEvade, record.TackleEvade, FormulasAgilityDependant));
+            Fields.Add(PlayerFields.APAttack, new StatsData(Owner, PlayerFields.APAttack, 0));
+            Fields.Add(PlayerFields.MPAttack, new StatsData(Owner, PlayerFields.MPAttack, 0));
+            Fields.Add(PlayerFields.PushDamageBonus, new StatsData(Owner, PlayerFields.PushDamageBonus, 0));
+            Fields.Add(PlayerFields.CriticalDamageBonus, new StatsData(Owner, PlayerFields.CriticalDamageBonus, 0));
+            Fields.Add(PlayerFields.NeutralDamageBonus, new StatsData(Owner, PlayerFields.NeutralDamageBonus, 0));
+            Fields.Add(PlayerFields.EarthDamageBonus, new StatsData(Owner, PlayerFields.EarthDamageBonus, 0));
+            Fields.Add(PlayerFields.WaterDamageBonus, new StatsData(Owner, PlayerFields.WaterDamageBonus, 0));
+            Fields.Add(PlayerFields.AirDamageBonus, new StatsData(Owner, PlayerFields.AirDamageBonus, 0));
+            Fields.Add(PlayerFields.FireDamageBonus, new StatsData(Owner, PlayerFields.FireDamageBonus, 0));
+            Fields.Add(PlayerFields.DodgeAPProbability, new StatsData(Owner, PlayerFields.DodgeAPProbability, (short) record.PaDodge, FormulasWisdomDependant));
+            Fields.Add(PlayerFields.DodgeMPProbability, new StatsData(Owner, PlayerFields.DodgeMPProbability, (short) record.PmDodge, FormulasWisdomDependant));
+            Fields.Add(PlayerFields.NeutralResistPercent, new StatsData(Owner, PlayerFields.NeutralResistPercent, (short) record.NeutralResistance));
+            Fields.Add(PlayerFields.EarthResistPercent, new StatsData(Owner, PlayerFields.EarthResistPercent, (short) record.EarthResistance));
+            Fields.Add(PlayerFields.WaterResistPercent, new StatsData(Owner, PlayerFields.WaterResistPercent, (short) record.WaterResistance));
+            Fields.Add(PlayerFields.AirResistPercent, new StatsData(Owner, PlayerFields.AirResistPercent, (short) record.AirResistance));
+            Fields.Add(PlayerFields.FireResistPercent, new StatsData(Owner, PlayerFields.FireResistPercent, (short) record.FireResistance));
+            Fields.Add(PlayerFields.NeutralElementReduction, new StatsData(Owner, PlayerFields.NeutralElementReduction, 0));
+            Fields.Add(PlayerFields.EarthElementReduction, new StatsData(Owner, PlayerFields.EarthElementReduction, 0));
+            Fields.Add(PlayerFields.WaterElementReduction, new StatsData(Owner, PlayerFields.WaterElementReduction, 0));
+            Fields.Add(PlayerFields.AirElementReduction, new StatsData(Owner, PlayerFields.AirElementReduction, 0));
+            Fields.Add(PlayerFields.FireElementReduction, new StatsData(Owner, PlayerFields.FireElementReduction, 0));
+            Fields.Add(PlayerFields.PushDamageReduction, new StatsData(Owner, PlayerFields.PushDamageReduction, 0));
+            Fields.Add(PlayerFields.CriticalDamageReduction, new StatsData(Owner, PlayerFields.CriticalDamageReduction, 0));
+            Fields.Add(PlayerFields.PvpNeutralResistPercent, new StatsData(Owner, PlayerFields.PvpNeutralResistPercent, 0));
+            Fields.Add(PlayerFields.PvpEarthResistPercent, new StatsData(Owner, PlayerFields.PvpEarthResistPercent, 0));
+            Fields.Add(PlayerFields.PvpWaterResistPercent, new StatsData(Owner, PlayerFields.PvpWaterResistPercent, 0));
+            Fields.Add(PlayerFields.PvpAirResistPercent, new StatsData(Owner, PlayerFields.PvpAirResistPercent, 0));
+            Fields.Add(PlayerFields.PvpFireResistPercent, new StatsData(Owner, PlayerFields.PvpFireResistPercent, 0));
+            Fields.Add(PlayerFields.PvpNeutralElementReduction, new StatsData(Owner, PlayerFields.PvpNeutralElementReduction, 0));
+            Fields.Add(PlayerFields.PvpEarthElementReduction, new StatsData(Owner, PlayerFields.PvpEarthElementReduction, 0));
+            Fields.Add(PlayerFields.PvpWaterElementReduction, new StatsData(Owner, PlayerFields.PvpWaterElementReduction, 0));
+            Fields.Add(PlayerFields.PvpAirElementReduction, new StatsData(Owner, PlayerFields.PvpAirElementReduction, 0));
+            Fields.Add(PlayerFields.PvpFireElementReduction, new StatsData(Owner, PlayerFields.PvpFireElementReduction, 0));
+            Fields.Add(PlayerFields.GlobalDamageReduction, new StatsData(Owner, PlayerFields.GlobalDamageReduction, 0));
+            Fields.Add(PlayerFields.DamageMultiplicator, new StatsData(Owner, PlayerFields.DamageMultiplicator, 0));
+            Fields.Add(PlayerFields.PhysicalDamage, new StatsData(Owner, PlayerFields.PhysicalDamage, 0));
+            Fields.Add(PlayerFields.MagicDamage, new StatsData(Owner, PlayerFields.MagicDamage, 0));
+            Fields.Add(PlayerFields.PhysicalDamageReduction, new StatsData(Owner, PlayerFields.PhysicalDamageReduction, 0));
+            Fields.Add(PlayerFields.MagicDamageReduction, new StatsData(Owner, PlayerFields.MagicDamageReduction, 0));
+            // custom fields
+
+            Fields.Add(PlayerFields.WaterDamageArmor, new StatsData(Owner, PlayerFields.WaterDamageArmor, 0));
+            Fields.Add(PlayerFields.EarthDamageArmor, new StatsData(Owner, PlayerFields.EarthDamageArmor, 0));
+            Fields.Add(PlayerFields.NeutralDamageArmor, new StatsData(Owner, PlayerFields.NeutralDamageArmor, 0));
+            Fields.Add(PlayerFields.AirDamageArmor, new StatsData(Owner, PlayerFields.AirDamageArmor, 0));
+            Fields.Add(PlayerFields.FireDamageArmor, new StatsData(Owner, PlayerFields.FireDamageArmor, 0));
+                         
         }
     }
 }

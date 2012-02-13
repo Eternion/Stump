@@ -286,8 +286,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public short DamageTaken
         {
-            get { return Stats.Health.Context; }
-            set { Stats.Health.Context = value; }
+            get { return Stats.Health.DamageTaken; }
+            set { Stats.Health.DamageTaken = value; }
         }
 
         public int AP
@@ -1269,8 +1269,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             foreach (var field in Stats.Fields)
             {
-                if (field.Key != PlayerFields.Health)
-                    field.Value.Context = 0;
+                field.Value.Context = 0;
             }
         }
 

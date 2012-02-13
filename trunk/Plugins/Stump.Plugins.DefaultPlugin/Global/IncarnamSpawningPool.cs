@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Spawns;
 
-namespace Stump.Plugins.DefaultPlugin.World
+namespace Stump.Plugins.DefaultPlugin.Global
 {
     public class IncarnamSpawningPool : ClassicalSpawningPool
     {

@@ -45,10 +45,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         private void InitializeCharacterFighter()
         {
-            m_damageTakenBeforeFight = Stats.Health.Context;
+            m_damageTakenBeforeFight = Stats.Health.DamageTaken;
 
             if (Fight.FightType == FightTypeEnum.FIGHT_TYPE_CHALLENGE)
-                Stats.Health.Context = 0;
+                Stats.Health.DamageTaken = 0;
         }
 
         public Character Character

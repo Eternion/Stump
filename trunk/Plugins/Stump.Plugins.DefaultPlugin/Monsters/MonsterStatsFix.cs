@@ -1,5 +1,4 @@
 ﻿using NLog;
-using Stump.Plugins.DefaultPlugin.World;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 

@@ -5,7 +5,7 @@ namespace Stump.Core.IO
 {
     public class ConsoleProcent
     {
-        private int m_lastValue;
+        private object m_lastValue;
 
         public ConsoleProcent()
         {
@@ -33,7 +33,7 @@ namespace Stump.Core.IO
 
         public void Update(int value)
         {
-            if (m_lastValue == value)
+            if (value.Equals(m_lastValue))
                 return;
 
             m_lastValue = value;
@@ -43,6 +43,19 @@ namespace Stump.Core.IO
 
             Console.SetCursorPosition(PositionX, PositionY);
             Console.Write(value + "%");
+            Console.SetCursorPosition(oldX, oldY);
+        }
+
+        public void Update(string value)
+        {
+            if (value.Equals(m_lastValue))
+                return;
+
+            int oldX = Console.CursorLeft;
+            int oldY = Console.CursorTop;
+
+            Console.SetCursorPosition(PositionX, PositionY);
+            Console.Write(value);
             Console.SetCursorPosition(oldX, oldY);
         }
 

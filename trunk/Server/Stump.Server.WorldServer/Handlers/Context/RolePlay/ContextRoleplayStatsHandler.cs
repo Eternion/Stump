@@ -33,15 +33,37 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                 throw new Exception("Client given 0 as boostpoint. Forbidden value.");
 
             var breed = client.ActiveCharacter.Breed;
-            uint neededpts = breed.GetNeededPointForStats(client.ActiveCharacter.Stats[m_statsEnumRelations[statsid]].Base, statsid);
+            var actualPoints = client.ActiveCharacter.Stats[m_statsEnumRelations[statsid]].Base;
 
-            var boost = (short) (message.boostPoint/ (double)neededpts);
+            var pts = message.boostPoint;
 
-            if (boost < 1 || message.boostPoint > client.ActiveCharacter.StatsPoints)
-                throw new Exception("Client is attempt to use more points that he has.");
+            if (pts < 1 || message.boostPoint > client.ActiveCharacter.StatsPoints)
+                return;
 
-            client.ActiveCharacter.Stats[m_statsEnumRelations[statsid]].Base += boost;
-            client.ActiveCharacter.StatsPoints -= (ushort)message.boostPoint;
+            var thresholds = breed.GetThresholds(statsid);
+            var index = breed.GetThresholdIndex(actualPoints, thresholds);
+
+            while (pts > thresholds[index][1])
+            {
+                // if not last threshold and enough pts to reach the next threshold we fill this first
+                if (index < thresholds.Count - 1 && (pts / (double)thresholds[index][1]) > (thresholds[index + 1][0] - actualPoints))
+                {
+                    var boost = thresholds[index + 1][0] - actualPoints;
+                    actualPoints += (short)boost;
+                    pts -= (short)( boost * thresholds[index][1] );
+                }
+                else
+                {
+                    var boost = (short)Math.Floor( pts / (double)thresholds[index][1] );
+                    actualPoints += boost;
+                    pts -= (short)(boost * thresholds[index][1]);
+                }
+
+                index = breed.GetThresholdIndex(actualPoints, thresholds);
+            }
+
+            client.ActiveCharacter.Stats[m_statsEnumRelations[statsid]].Base = actualPoints;
+            client.ActiveCharacter.StatsPoints -= (ushort)(message.boostPoint - pts);
 
             SendStatsUpgradeResultMessage(client, message.boostPoint);
             client.ActiveCharacter.RefreshStats();

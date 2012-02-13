@@ -205,9 +205,19 @@ namespace Stump.Server.WorldServer.Game
             return m_maps.Values.Where(entry => entry.Position.X == x && entry.Position.Y == y && entry.Outdoor == outdoor).FirstOrDefault();
         }
 
+        public IEnumerable<Map> GetMaps()
+        {
+            return m_maps.Values;
+        }
+
         public IEnumerable<Map> GetMaps(int x, int y)
         {
             return m_maps.Values.Where(entry => entry.Position.X == x && entry.Position.Y == y);
+        }
+
+        public IEnumerable<Map> GetMaps(int x, int y, bool outdoor)
+        {
+            return m_maps.Values.Where(entry => entry.Position.X == x && entry.Position.Y == y && entry.Outdoor == outdoor);
         }
 
         public SubArea GetSubArea(int id)

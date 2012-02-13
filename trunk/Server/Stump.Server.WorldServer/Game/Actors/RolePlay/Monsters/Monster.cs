@@ -21,7 +21,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
         private void Initialize()
         {
-            Stats = new StatsFields(this, Grade);
+            Stats = new StatsFields(this);
+            Stats.Initialize(Grade);
             Spells = Grade.Spells.Select(entry => new Spell(entry)).ToArray();
             DroppableItems = Template.DroppableItems.ToArray();
         }

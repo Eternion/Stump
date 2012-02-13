@@ -1139,7 +1139,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 map.Cells[m_record.CellId],
                 m_record.Direction);
 
-            Stats = new StatsFields(this, m_record);
+            Stats = new StatsFields(this);
+            Stats.Initialize(m_record);
             Level = ExperienceManager.Instance.GetCharacterLevel(m_record.Experience);
             LowerBoundExperience = ExperienceManager.Instance.GetCharacterLevelExperience(Level);
             UpperBoundExperience = ExperienceManager.Instance.GetCharacterNextLevelExperience(Level);

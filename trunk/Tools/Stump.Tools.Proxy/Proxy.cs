@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
+using Castle.ActiveRecord.Framework.Config;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
@@ -61,6 +62,17 @@ namespace Stump.Tools.Proxy
 
         [Variable]
         public static int IOTaskPoolInterval = 90;
+
+        [Variable(Priority = 10)]
+        public static DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
+        {
+            DatabaseType = DatabaseType.MySql,
+            Host = "localhost",
+            Name = "stump_world",
+            User = "root",
+            Password = "",
+            UpdateFileDir = "./sql_update/",
+        };
 
 
         private Dictionary<string, Assembly> m_loadedAssemblies;
@@ -129,7 +141,7 @@ namespace Stump.Tools.Proxy
 
             logger.Info("Initializing Configuration...");
             Config = new XmlConfig("proxy_config.xml");
-            Config.AddAssemblies(m_loadedAssemblies.Values.ToArray());
+            Config.AddAssemblies(typeof(Proxy).Assembly);
 
             if (!File.Exists("proxy_config.xml"))
                 Config.Create();
@@ -153,7 +165,7 @@ namespace Stump.Tools.Proxy
 
             logger.Info("Loading Database...");
             DatabaseAccessor = new DatabaseAccessor(
-                WorldServer.DatabaseConfiguration,
+                DatabaseConfiguration,
                 Server.WorldServer.Definitions.DatabaseRevision,
                 typeof(WorldBaseRecord<>),
                 typeof(WorldBaseRecord<>).Assembly);

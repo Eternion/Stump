@@ -5,33 +5,74 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 {
     public class StatsHealth : StatsData
     {
-        private static readonly StatsFormulasHandler FormuleLife =
-            (owner, valueBase, valueEquiped, valueGiven, damageTaken) => valueBase + valueEquiped + valueGiven + owner.Stats[PlayerFields.Vitality] - damageTaken;
-
-        private readonly StatsFormulasHandler m_formule;
+        private short m_damageTaken;
+        private short m_realDamageTaken;
 
         public StatsHealth(IStatsOwner owner, short valueBase, short damageTaken)
             : base(owner, PlayerFields.Health, valueBase)
         {
-            m_formule = FormuleLife;
             DamageTaken = damageTaken;
+
+            Owner.Stats[PlayerFields.Vitality].Modified += OnVitalityModified;
         }
 
-        public short DamageTaken
+        private void OnVitalityModified(StatsData vitality, int value)
         {
-            get;
-            set;
+            AdjustTakenDamage();
+        }
+
+        public override short Base
+        {
+            get { return m_valueBase; }
+            set
+            {
+                m_valueBase = value;
+                AdjustTakenDamage();
+                OnModified();
+            }
+        }
+
+        public override short Equiped
+        {
+            get { return m_valueEquiped; }
+            set
+            {
+                m_valueEquiped = value;
+                AdjustTakenDamage();
+                OnModified();
+            }
+        }
+
+        public override short Given
+        {
+            get { return m_valueGiven; }
+            set
+            {
+                m_valueGiven = value;
+                AdjustTakenDamage();
+                OnModified();
+            }
         }
 
         public override short Context
         {
-            get
-            {
-                return DamageTaken;
-            }
+            get { return m_valueContext; }
             set
             {
-                DamageTaken = value;
+                m_valueContext = value;
+                AdjustTakenDamage();
+                OnModified();
+            }
+        }
+
+        public short DamageTaken
+        {
+            get { return m_damageTaken; }
+            set
+            {
+                m_realDamageTaken = value;
+                m_damageTaken = (short) (value > TotalMax ? TotalMax : value);
+                OnModified();
             }
         }
 
@@ -40,17 +81,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         /// </summary>
         public override int Total
         {
-            get
-            {
-                if (m_formule != null)
-                {
-                    int result = m_formule(Owner, m_valueBase, m_valueEquiped, m_valueGiven, DamageTaken);
-
-                    return result;
-                }
-
-                return 0;
-            }
+            get { return TotalSafe; }
         }
 
         /// <summary>
@@ -63,14 +94,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get
             {
-                if (m_formule != null)
-                {
-                    int result = m_formule(Owner, Base, Equiped, Given, DamageTaken);
+                int result = Base + Equiped + Given + Owner.Stats[PlayerFields.Vitality] - DamageTaken;
 
-                    return result < 0 ? 0 : result;
-                }
-
-                return 0;
+                return result < 0 ? 0 : result;
             }
         }
 
@@ -81,14 +107,22 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get
             {
-                if (m_formule != null)
-                {
-                    int result = m_formule(Owner, Base, Equiped, Given, 0);
+                int result = Base + Equiped + Given + (Owner.Stats != null ? Owner.Stats[PlayerFields.Vitality].Total : 0);
 
-                    return result;
-                }
+                return result < 0 ? 0 : result;
+            }
+        }
 
-                return 0;
+        private void AdjustTakenDamage()
+        {
+            if (m_damageTaken > TotalMax)
+            {
+                m_realDamageTaken = m_damageTaken;
+                m_damageTaken = (short) TotalMax; // hp cannot be lesser than 0
+            }
+            else if (m_realDamageTaken > m_damageTaken)
+            {
+                m_damageTaken = m_realDamageTaken;
             }
         }
     }

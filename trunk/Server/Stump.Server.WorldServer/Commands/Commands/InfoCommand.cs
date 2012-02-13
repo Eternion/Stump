@@ -103,7 +103,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public override void Execute(TriggerBase trigger)
         {
             Character character = null;
-            if (trigger.IsArgumentDefined("taget"))
+            if (trigger.IsArgumentDefined("target"))
             {
                 character = trigger.Get<Character>("target");
             }

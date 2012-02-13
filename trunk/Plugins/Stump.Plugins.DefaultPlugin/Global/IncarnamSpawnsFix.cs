@@ -1,7 +1,7 @@
 ﻿using NLog;
 using Stump.Server.BaseServer.Initialization;
 
-namespace Stump.Plugins.DefaultPlugin.World
+namespace Stump.Plugins.DefaultPlugin.Global
 {
     public static class IncarnamSpawnsFix
     {

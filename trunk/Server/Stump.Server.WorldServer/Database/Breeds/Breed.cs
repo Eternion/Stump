@@ -364,37 +364,44 @@ namespace Stump.Server.WorldServer.Database.Breeds
             set;
         }
 
-        public uint GetNeededPointForStats(short actualpoints, StatsBoostTypeEnum statsid)
-        {
+        public List<List<uint>> GetThresholds(StatsBoostTypeEnum statsid)
+        {        
             switch (statsid)
             {
                 case StatsBoostTypeEnum.Agility:
-                    return GetPoints(actualpoints, StatsPointsForAgility);
+                    return StatsPointsForAgility;
                 case StatsBoostTypeEnum.Chance:
-                    return GetPoints(actualpoints, StatsPointsForChance);
+                    return StatsPointsForChance;
                 case StatsBoostTypeEnum.Intelligence:
-                    return GetPoints(actualpoints, StatsPointsForIntelligence);
+                    return StatsPointsForIntelligence;
                 case StatsBoostTypeEnum.Strength:
-                    return GetPoints(actualpoints, StatsPointsForStrength);
+                    return StatsPointsForStrength;
                 case StatsBoostTypeEnum.Wisdom:
-                    return GetPoints(actualpoints, StatsPointsForWisdom);
+                    return StatsPointsForWisdom;
                 case StatsBoostTypeEnum.Vitality:
-                    return GetPoints(actualpoints, StatsPointsForVitality);
+                    return StatsPointsForVitality;
                 default:
                     throw new ArgumentException("statsid");
             }
+
         }
 
-        private static uint GetPoints(int actualpoints, List<List<uint>> thresholds)
+        public List<uint> GetThreshold(short actualpoints, StatsBoostTypeEnum statsid)
+        {
+            var thresholds = GetThresholds(statsid);
+            return thresholds[GetThresholdIndex(actualpoints, thresholds)];
+        }
+
+        public int GetThresholdIndex(int actualpoints, List<List<uint>> thresholds)
         {
             for (int i = 0; i < thresholds.Count - 1; i++)
             {
                 if (thresholds[i][0] <= actualpoints &&
                     thresholds[i + 1][0] > actualpoints)
-                    return thresholds[i][1];
+                    return i;
             }
 
-            return thresholds.Last()[1];
+            return thresholds.Count - 1;
         }
     }
 

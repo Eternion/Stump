@@ -21,7 +21,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             Monster = template;
             Look = Monster.Template.EntityLook;
-            m_stats = new StatsFields(this, template);
+            m_stats = new StatsFields(this);
+            m_stats.Initialize(template);
         }
 
         public MonsterGrade Monster

@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
 
         public bool Outdoor
         {
-            get { return Position != null ? Position.Outdoor : false; }
+            get { return Position != null && Position.Outdoor; }
             set { if (Position != null) Position.Outdoor = value; }
         }
 
