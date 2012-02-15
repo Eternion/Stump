@@ -165,7 +165,9 @@
     <Content Include="world_patchs\breed_spells.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="world_patchs\maps_bindings_fix.sql" />
+    <Content Include="world_patchs\maps_bindings_fix.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="world_patchs\monsters.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

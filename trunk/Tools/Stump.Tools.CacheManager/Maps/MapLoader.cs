@@ -63,10 +63,10 @@ namespace Stump.Tools.CacheManager.Maps
             values.Add("RelativeId",  reader.ReadUInt());
             values.Add("MapType",  reader.ReadByte());
             values.Add("SubAreaId",  reader.ReadInt());
-            values.Add("TopNeighbourId",  reader.ReadInt());
-            values.Add("BottomNeighbourId",  reader.ReadInt());
-            values.Add("LeftNeighbourId",  reader.ReadInt());
-            values.Add("RightNeighbourId",  reader.ReadInt());
+            values.Add("ClientTopNeighbourId",  reader.ReadInt());
+            values.Add("ClientBottomNeighbourId", reader.ReadInt());
+            values.Add("ClientLeftNeighbourId", reader.ReadInt());
+            values.Add("ClientRightNeighbourId", reader.ReadInt());
             values.Add("ShadowBonusOnEntities",  reader.ReadInt());
 
             if (version >= 3)

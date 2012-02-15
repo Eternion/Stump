@@ -202,6 +202,9 @@ namespace Stump.Server.BaseServer
             PluginManager.PluginAdded += OnPluginAdded;
             PluginManager.PluginRemoved += OnPluginRemoved;
 
+            logger.Info("Loading Plugins...");
+            PluginManager.Instance.LoadAllPlugins();
+
             InitializationManager = InitializationManager.Instance;
             InitializationManager.AddAssemblies(AppDomain.CurrentDomain.GetAssemblies());
         }
@@ -295,9 +298,6 @@ namespace Stump.Server.BaseServer
 
         public virtual void Start()
         {
-            logger.Info("Loading Plugins...");
-            PluginManager.Instance.LoadAllPlugins();
-
             Running = true;
             Initializing = false;
         }

@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         [WorldHandler(ChangeMapMessage.Id)]
         public static void HandleChangeMapMessage(WorldClient client, ChangeMapMessage message)
         {
-            var neighbourState = client.ActiveCharacter.Map.GetMapRelativePosition(message.mapId);
+            var neighbourState = client.ActiveCharacter.Map.GetClientMapRelativePosition(message.mapId);
 
             // todo : check with MapChangeData the neighbour validity
             if (neighbourState != MapNeighbour.None && client.ActiveCharacter.Position.Cell.MapChangeData != 0)

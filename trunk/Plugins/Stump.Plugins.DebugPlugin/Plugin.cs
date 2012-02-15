@@ -28,12 +28,10 @@ namespace Stump.Plugins.DebugPlugin
 
         public override void Initialize()
         {
-            CommandManager.Instance.RegisterAll(typeof(Plugin).Assembly);
         }
 
         public override void Shutdown()
         {
-            CommandManager.Instance.UnRegisterAll(typeof(Plugin).Assembly);
         }
 
         public override void Dispose()

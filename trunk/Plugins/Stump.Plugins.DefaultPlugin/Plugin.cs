@@ -28,8 +28,6 @@ namespace Stump.Plugins.DefaultPlugin
 
         public override void Initialize()
         {
-            InitializationManager.Instance.AddAssembly(typeof(Plugin).Assembly);
-            InitializationManager.Instance.InitializeAll();
         }
 
         public override void Shutdown()

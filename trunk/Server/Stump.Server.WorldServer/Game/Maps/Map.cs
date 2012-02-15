@@ -132,10 +132,10 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void InitializeMapArrounds()
         {
-            m_mapsAround.Add(TopNeighbourId, MapNeighbour.Top);
-            m_mapsAround.Add(BottomNeighbourId, MapNeighbour.Bottom);
-            m_mapsAround.Add(LeftNeighbourId, MapNeighbour.Left);
-            m_mapsAround.Add(RightNeighbourId, MapNeighbour.Right);
+            m_clientMapsAround.Add(Record.ClientTopNeighbourId, MapNeighbour.Top);
+            m_clientMapsAround.Add(Record.ClientBottomNeighbourId, MapNeighbour.Bottom);
+            m_clientMapsAround.Add(Record.ClientLeftNeighbourId, MapNeighbour.Left);
+            m_clientMapsAround.Add(Record.ClientRightNeighbourId, MapNeighbour.Right);
         }
 
         private void InitializeFightPlacements()
@@ -172,7 +172,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         private readonly ReversedUniqueIdProvider m_contextualIds = new ReversedUniqueIdProvider(0);
         private readonly List<Fight> m_fights = new List<Fight>();
         private readonly Dictionary<int, InteractiveObject> m_interactives = new Dictionary<int, InteractiveObject>();
-        private readonly Dictionary<int, MapNeighbour> m_mapsAround = new Dictionary<int, MapNeighbour>();
+        private readonly Dictionary<int, MapNeighbour> m_clientMapsAround = new Dictionary<int, MapNeighbour>();
         private readonly Dictionary<Cell, List<CellTrigger>> m_cellsTriggers = new Dictionary<Cell, List<CellTrigger>>();
         private readonly List<MonsterSpawn> m_monsterSpawns = new List<MonsterSpawn>();
 
@@ -1045,9 +1045,9 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
-        public MapNeighbour GetMapRelativePosition(int mapid)
+        public MapNeighbour GetClientMapRelativePosition(int mapid)
         {
-            return !m_mapsAround.ContainsKey(mapid) ? MapNeighbour.None : m_mapsAround[mapid];
+            return !m_clientMapsAround.ContainsKey(mapid) ? MapNeighbour.None : m_clientMapsAround[mapid];
         }
 
         /// <summary>

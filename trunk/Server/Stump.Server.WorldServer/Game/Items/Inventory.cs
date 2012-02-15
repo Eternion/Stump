@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
@@ -246,8 +247,17 @@ namespace Stump.Server.WorldServer.Game.Items
                 lastPosition == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED && item.Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
                 ApplyItemEffects(item);
 
+            if (lastPosition == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED && !item.AreConditionFilled(Owner))
+            {
+                BasicHandler.SendTextInformationMessage(Owner.Client, 1, 19);
+                MoveItem(item.Guid, lastPosition);
+            }
+
             InventoryHandler.SendObjectMovementMessage(Owner.Client, item);
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
+
+            if (lastPosition != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
+                CheckItemsCriterias();
         }
 
         protected override void OnItemStackChanged(Item item, int difference)
@@ -267,6 +277,9 @@ namespace Stump.Server.WorldServer.Game.Items
         public void MoveItem(int guid, CharacterInventoryPositionEnum position)
         {
             if (!m_items.ContainsKey(guid))
+                return;
+
+            if (position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED && !CanEquip(m_items[guid]))
                 return;
 
             CharacterInventoryPositionEnum oldPosition = m_items[guid].Position;
@@ -308,6 +321,17 @@ namespace Stump.Server.WorldServer.Game.Items
             }
         }
 
+        public bool CanEquip(Item item)
+        {
+            if (item.Template.Level > Owner.Level)
+            {
+                BasicHandler.SendTextInformationMessage(Owner.Client, 1, 3);
+                return false;
+            }
+
+            return true;
+        }
+
         public void ChangeItemOwner(Character newOwner, int guid, uint amount)
         {
             if (!m_items.ContainsKey(guid))
@@ -328,6 +352,15 @@ namespace Stump.Server.WorldServer.Game.Items
             else
             {
                 UnStackItem(itemToMove, amount);
+            }
+        }
+
+        public void CheckItemsCriterias()
+        {
+            foreach (var equipedItem in GetEquipedItems().ToArray())
+            {
+                if (!equipedItem.AreConditionFilled(Owner))
+                    MoveItem(equipedItem.Guid, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
             }
         }
     }

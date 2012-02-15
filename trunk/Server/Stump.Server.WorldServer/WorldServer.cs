@@ -32,6 +32,7 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game;
+using Stump.Server.WorldServer.Game.Conditions;
 using TreeSharp;
 
 namespace Stump.Server.WorldServer
@@ -119,8 +120,6 @@ namespace Stump.Server.WorldServer
 
             logger.Info("Initializing IPC Client..");
             IpcAccessor.Instance.Initialize();
-
-            logger.Info("Register ISaveable Instances");
 
             InitializationManager.InitializeAll();
             IsInitialized = true;

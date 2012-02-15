@@ -27,12 +27,10 @@ namespace Stump.Plugins.EditorPlugin
 
         public override void Initialize()
         {
-            CommandManager.Instance.RegisterAll(typeof(Plugin).Assembly);
         }
 
         public override void Shutdown()
         {
-            CommandManager.Instance.UnRegisterAll(typeof(Plugin).Assembly);
         }
 
         public override void Dispose()

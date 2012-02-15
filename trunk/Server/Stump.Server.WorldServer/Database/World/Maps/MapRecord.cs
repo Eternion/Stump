@@ -102,6 +102,34 @@ namespace Stump.Server.WorldServer.Database.World.Maps
         }
 
         [Property]
+        public int ClientTopNeighbourId
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public int ClientBottomNeighbourId
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public int ClientLeftNeighbourId
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public int ClientRightNeighbourId
+        {
+            get;
+            set;
+        }
+
+        [Property]
         public int ShadowBonusOnEntities
         {
             get;

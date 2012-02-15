@@ -15,21 +15,16 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void HandleObjectSetPositionMessage(WorldClient client, ObjectSetPositionMessage message)
         {
             if (!Enum.IsDefined(typeof(CharacterInventoryPositionEnum), (int) message.position))
-            {
                 return;
-            }
 
             client.ActiveCharacter.Inventory.MoveItem(message.objectUID,
                                                       (CharacterInventoryPositionEnum) message.position);
-            SendInventoryWeightMessage(client);
         }
 
         [WorldHandler(ObjectDeleteMessage.Id)]
         public static void HandleObjectDeleteMessage(WorldClient client, ObjectDeleteMessage message)
         {
             client.ActiveCharacter.Inventory.RemoveItem(message.objectUID, (uint) message.quantity);
-
-            SendInventoryWeightMessage(client);
         }
 
         public static void SendInventoryContentMessage(WorldClient client)

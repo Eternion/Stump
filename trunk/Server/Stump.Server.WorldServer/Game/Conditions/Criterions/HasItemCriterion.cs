@@ -1,0 +1,43 @@
+﻿using System;
+using System.Linq;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+
+namespace Stump.Server.WorldServer.Game.Conditions.Criterions
+{
+    public class HasItemCriterion : Criterion
+    {
+        public const string Identifier = "PO";
+
+        public int Item
+        {
+            get;
+            set;
+        }
+
+        public override bool Eval(Character character)
+        {
+            if (Operator == ComparaisonOperatorEnum.EQUALS)
+                return character.Inventory.Items.Any(entry => entry.ItemId == Item);
+
+             if (Operator == ComparaisonOperatorEnum.INEQUALS)
+                return !character.Inventory.Items.Any(entry => entry.ItemId == Item);
+
+            return true;
+        }
+
+        public override void Build()
+        {
+            int itemId;
+
+            if (!int.TryParse(Literal, out itemId))
+                throw new Exception(string.Format("Cannot build HasItemCriterion, {0} is not a valid item id", Literal));
+
+            Item = itemId;
+        }
+
+        public override string ToString()
+        {
+            return FormatToString(Identifier);
+        }
+    }
+}

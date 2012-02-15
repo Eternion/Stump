@@ -5,6 +5,7 @@ using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Server.WorldServer.Database.I18n;
+using Stump.Server.WorldServer.Game.Conditions;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 
@@ -175,6 +176,24 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
         {
             get;
             set;
+        }
+
+        private ConditionExpression m_criteriaExpression;
+
+        public ConditionExpression CriteriaExpression
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Criteria) || Criteria == "null")
+                    return null;
+
+                return m_criteriaExpression ?? ( m_criteriaExpression = ConditionExpression.Parse(Criteria) );
+            }
+            set
+            {
+                m_criteriaExpression = value;
+                Criteria = value.ToString();
+            }
         }
 
         [D2OField("hideEffects")]

@@ -12,7 +12,7 @@ namespace Stump.Plugins.DefaultPlugin.Global
 {
     public class MapsBindingsFix
     {
-        public const bool ActiveFix = true;
+        public const bool ActiveFix = false;
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -44,7 +44,7 @@ namespace Stump.Plugins.DefaultPlugin.Global
 
                 counter++;
 
-                console.Update(string.Format("{0:P}% " + "({1} patches)", (counter / (double)maps.Length) * 100, patches));
+                console.Update(string.Format("{0:0.0}% " + "({1} patches)", ( counter / (double)maps.Length ) * 100, patches));
             }
         }
 

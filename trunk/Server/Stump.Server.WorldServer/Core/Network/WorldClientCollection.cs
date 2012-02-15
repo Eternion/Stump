@@ -26,6 +26,11 @@ namespace Stump.Server.WorldServer.Core.Network
             m_singleClient = client;
         }
 
+        public int Count
+        {
+            get { return m_singleClient != null ? 1 : m_underlyingList.Count; }
+        }
+
         public void Send(Message message)
         {
             if (m_singleClient != null)

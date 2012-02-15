@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             var thresholds = breed.GetThresholds(statsid);
             var index = breed.GetThresholdIndex(actualPoints, thresholds);
 
-            while (pts > thresholds[index][1])
+            while (pts >= thresholds[index][1])
             {
                 // if not last threshold and enough pts to reach the next threshold we fill this first
                 if (index < thresholds.Count - 1 && (pts / (double)thresholds[index][1]) > (thresholds[index + 1][0] - actualPoints))
