@@ -97,7 +97,7 @@ namespace Stump.Tools.CacheManager
             if (string.IsNullOrEmpty(programFiles))
                 programFiles = Environment.GetEnvironmentVariable("programfiles");
 
-            string dofusDataPath;
+            string dofusDataPath = string.Empty;
 
             if (string.IsNullOrEmpty(programFiles))
                 dofusDataPath =  Path.Combine(AskDofusPath(), "app");
@@ -112,7 +112,7 @@ namespace Stump.Tools.CacheManager
             if (!Directory.Exists(dofusDataPath))
                 Exit("Dofus data path not found");
 
-            return string.Empty;
+            return dofusDataPath;
         }
 
         private static string AskDofusPath()
