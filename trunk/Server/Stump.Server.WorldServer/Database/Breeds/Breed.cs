@@ -403,6 +403,11 @@ namespace Stump.Server.WorldServer.Database.Breeds
 
             return thresholds.Count - 1;
         }
+
+        public EntityLook GetLook(SexTypeEnum sex)
+        {
+            return sex == SexTypeEnum.SEX_FEMALE ? FemaleLook : MaleLook;
+        }
     }
 
 }

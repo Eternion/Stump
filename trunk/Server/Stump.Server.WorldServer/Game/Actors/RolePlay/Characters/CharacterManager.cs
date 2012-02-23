@@ -99,7 +99,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                              {
                                  Experience = ExperienceManager.Instance.GetCharacterLevelExperience(breed.StartLevel),
                                  Name = name,
-                                 Sex = sex ? SexTypeEnum.SEX_MALE : SexTypeEnum.SEX_FEMALE,
+                                 Sex = sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE,
                                  EntityLook = look,
                                  CreationDate = DateTime.Now,
                                  LastUsage = DateTime.Now,

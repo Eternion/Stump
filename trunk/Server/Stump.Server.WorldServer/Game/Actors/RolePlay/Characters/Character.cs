@@ -354,6 +354,22 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
+        public void UpdateLook(bool send = true)
+        {
+            var skins = new List<short>(Breed.GetLook(Sex).skins);
+            skins.AddRange(Inventory.GetItemsSkins());
+
+            RealLook.skins = skins;
+
+            var pets = Inventory.GetPetsSkins();
+            var subentities = pets.Select((t, i) => new SubEntity(1, (sbyte) i, new EntityLook(t, new short[0], new int[0], new short[] {75}, new SubEntity[0]))).ToList();
+
+            RealLook.subentities = subentities;
+
+            if (send)
+                Map.Refresh(this);
+        }
+
         #endregion
 
         #region Stats
@@ -1226,7 +1242,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Name,
                 Look,
                 (sbyte) BreedId,
-                Sex == SexTypeEnum.SEX_MALE);
+                Sex == SexTypeEnum.SEX_FEMALE);
         }
 
         #endregion

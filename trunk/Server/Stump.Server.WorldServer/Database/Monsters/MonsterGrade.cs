@@ -7,7 +7,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 namespace Stump.Server.WorldServer.Database.Monsters
 {
     [ActiveRecord("monsters_grades")]
-    [D2OClass("MonsterGrade", "com.ankamagames.dofus.datacenter.monsters")]
+    [D2OClass("MonsterGrade", "com.ankamagames.dofus.datacenter.monsters", AutoBuild = false)]
     public class MonsterGrade : WorldBaseRecord<MonsterGrade>
     {
         [PrimaryKey(PrimaryKeyType.Native)]

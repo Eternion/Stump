@@ -208,6 +208,16 @@ namespace Stump.Server.WorldServer.Game.Items
                 Owner.RefreshStats();
         }
 
+        public short[] GetItemsSkins()
+        {
+            return GetEquipedItems().Where(entry => entry.Position != CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS && entry.Template.AppearanceId != 0).Select(entry => (short)entry.Template.AppearanceId).ToArray();
+        }
+
+        public short[] GetPetsSkins()
+        {
+            return GetItems(CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS).Where(entry => entry.Template.AppearanceId != 0).Select(entry => (short)entry.Template.AppearanceId).ToArray();
+        }
+
         protected override void OnItemAdded(Item item)
         {
             m_itemsByPosition[item.Position].Add(item);
@@ -258,6 +268,9 @@ namespace Stump.Server.WorldServer.Game.Items
 
             if (lastPosition != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
                 CheckItemsCriterias();
+
+            if (item.Template.AppearanceId != 0)
+                Owner.UpdateLook();
         }
 
         protected override void OnItemStackChanged(Item item, int difference)
