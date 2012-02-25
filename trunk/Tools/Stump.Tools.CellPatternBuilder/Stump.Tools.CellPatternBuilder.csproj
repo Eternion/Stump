@@ -78,7 +78,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Stump.Tools.MapControl\Stump.Tools.MapControl.csproj">
+    <ProjectReference Include="..\Stump.Tools.MapControl\Stump.Tools.MapControl.csproj">
       <Project>{380D57C1-2AB3-497A-A47A-3DBBA034EF37}</Project>
       <Name>Stump.Tools.MapControl</Name>
     </ProjectReference>

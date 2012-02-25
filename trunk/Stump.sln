@@ -77,7 +77,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stump.Tools.CellPatternBuil
 		{380D57C1-2AB3-497A-A47A-3DBBA034EF37} = {380D57C1-2AB3-497A-A47A-3DBBA034EF37}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stump.Tools.MapControl", "Stump.Tools.MapControl\Stump.Tools.MapControl.csproj", "{380D57C1-2AB3-497A-A47A-3DBBA034EF37}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stump.Tools.MapControl", "Tools\Stump.Tools.MapControl\Stump.Tools.MapControl.csproj", "{380D57C1-2AB3-497A-A47A-3DBBA034EF37}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
