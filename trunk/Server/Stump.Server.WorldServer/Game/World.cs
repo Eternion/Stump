@@ -210,14 +210,32 @@ namespace Stump.Server.WorldServer.Game
             return m_maps.Values;
         }
 
-        public IEnumerable<Map> GetMaps(int x, int y)
+        public Map[] GetMaps(int x, int y)
         {
-            return m_maps.Values.Where(entry => entry.Position.X == x && entry.Position.Y == y);
+            return m_maps.Values.Where(entry => entry.Position.X == x && entry.Position.Y == y).ToArray();
         }
 
-        public IEnumerable<Map> GetMaps(int x, int y, bool outdoor)
+        public Map[] GetMaps(int x, int y, bool outdoor)
         {
-            return m_maps.Values.Where(entry => entry.Position.X == x && entry.Position.Y == y && entry.Outdoor == outdoor);
+            return m_maps.Values.Where(entry => entry.Position.X == x && entry.Position.Y == y && entry.Outdoor == outdoor).ToArray();
+        }
+
+
+        public Map[] GetMaps(Map adjacent, int x, int y, bool outdoor)
+        {
+            var maps = adjacent.SubArea.GetMaps(x, y, outdoor);
+            if (maps.Length > 0)
+                return maps;
+
+            maps = adjacent.Area.GetMaps(x, y, outdoor);
+            if (maps.Length > 0)
+                return maps;
+
+            maps = adjacent.SuperArea.GetMaps(x, y, outdoor);
+            if (maps.Length > 0)
+                return maps;
+
+            return new Map[0];
         }
 
         public SubArea GetSubArea(int id)
@@ -263,6 +281,7 @@ namespace Stump.Server.WorldServer.Game
         {
             Contract.Requires(character != null);
 
+            // note : to delete
             if (m_charactersById.ContainsKey(character.Id))
                 Leave(character);
 

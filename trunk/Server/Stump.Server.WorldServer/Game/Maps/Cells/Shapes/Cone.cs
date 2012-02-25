@@ -70,8 +70,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                         while (y <= i)
                         {
                             if (MinRadius == 0 || Math.Abs(centerPoint.X - x) + Math.Abs(y) >= MinRadius)
-                                if (MapPoint.IsInMap(x, centerPoint.Y + y))
-                                    AddCellIfValid(x, y + centerPoint.Y, map, result);
+                                AddCellIfValid(x, y + centerPoint.Y, map, result);
 
                             y++;
                         }
@@ -87,8 +86,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                         while (x <= i)
                         {
                             if (MinRadius == 0 || Math.Abs(x) + Math.Abs(centerPoint.Y - y) >= MinRadius)
-                                if (MapPoint.IsInMap(x + centerPoint.X, y))
-                                    AddCellIfValid(x + centerPoint.X, y, map, result);
+                                AddCellIfValid(x + centerPoint.X, y, map, result);
 
                             x++;
                         }
@@ -104,8 +102,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                         while (y <= i)
                         {
                             if (MinRadius == 0 || Math.Abs(centerPoint.X - x) + Math.Abs(y) >= MinRadius)
-                                if (MapPoint.IsInMap(x, centerPoint.Y + y))
-                                    AddCellIfValid(x, y + centerPoint.Y, map, result);
+                                AddCellIfValid(x, y + centerPoint.Y, map, result);
 
                             y++;
                         }
@@ -121,8 +118,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                         while (x <= i)
                         {
                             if (MinRadius == 0 || Math.Abs(x) + Math.Abs(centerPoint.Y - y) >= MinRadius)
-                                if (MapPoint.IsInMap(x + centerPoint.X, y))
-                                    AddCellIfValid(x + centerPoint.X, y, map, result);
+                                AddCellIfValid(x + centerPoint.X, y, map, result);
 
                             x++;
                         }

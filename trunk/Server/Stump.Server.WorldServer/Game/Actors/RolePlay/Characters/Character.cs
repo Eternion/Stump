@@ -92,6 +92,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
+        public object LoggoutSync
+        {
+            get;
+            private set;
+        }
+
         private bool m_inWorld;
         public override bool IsInWorld
         {
@@ -1045,52 +1051,55 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void LogOut()
         {
-            IsLoggedIn = false;
-
-            try
+            lock (LoggoutSync)
             {
-                OnLoggedOut();
+                IsLoggedIn = false;
 
-                if (IsInWorld)
+                try
                 {
-                    DenyAllInvitations();
-                    
-                    if (IsInRequest())
-                        CancelRequest();
+                    OnLoggedOut();
 
-                    if (IsDialoging())
-                        Dialog.Close();
+                    if (IsInWorld)
+                    {
+                        DenyAllInvitations();
 
-                    if (IsInParty())
-                        LeaveParty();
+                        if (IsInRequest())
+                            CancelRequest();
 
-                    if (Map != null && !IsFighting())
-                        Map.Leave(this);
+                        if (IsDialoging())
+                            Dialog.Close();
 
-                    World.Instance.Leave(this);
+                        if (IsInParty())
+                            LeaveParty();
 
-                    m_inWorld = false;
+                        if (Map != null && !IsFighting())
+                            Map.Leave(this);
+
+                        World.Instance.Leave(this);
+
+                        m_inWorld = false;
+                    }
                 }
-            }
-            catch(Exception ex)
-            {
-                logger.Error("Cannot perfom OnLoggout actions, but trying to Save character : {0}", ex);
-            }
-            finally
-            {
-                WorldServer.Instance.IOTaskPool.AddMessage(
-                    () =>
-                        {
-                            try
+                catch (Exception ex)
+                {
+                    logger.Error("Cannot perfom OnLoggout actions, but trying to Save character : {0}", ex);
+                }
+                finally
+                {
+                    WorldServer.Instance.IOTaskPool.AddMessage(
+                        () =>
                             {
-                                SaveNow();
-                                UnLoadRecord();
-                            }
-                            finally
-                            {
-                                Delete();
-                            }
-                        });
+                                try
+                                {
+                                    SaveNow();
+                                    UnLoadRecord();
+                                }
+                                finally
+                                {
+                                    Delete();
+                                }
+                            });
+                }
             }
         }
 

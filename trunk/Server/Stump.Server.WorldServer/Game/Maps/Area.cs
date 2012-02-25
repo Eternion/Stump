@@ -8,9 +8,11 @@ using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.Core.Threading;
 using Stump.Core.Timers;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Point = System.Drawing.Point;
 
 namespace Stump.Server.WorldServer.Game.Maps
 {
@@ -41,6 +43,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private readonly List<WorldObject> m_objects = new List<WorldObject>();
         private readonly List<SubArea> m_subAreas = new List<SubArea>();
+        private readonly Dictionary<Point, List<Map>> m_mapsByPoint = new Dictionary<Point, List<Map>>();
         private readonly List<TimerEntry> m_timers = new List<TimerEntry>();
         protected internal AreaRecord Record;
         private float m_avgUpdateTime;
@@ -75,6 +78,15 @@ namespace Stump.Server.WorldServer.Game.Maps
         public IEnumerable<Map> Maps
         {
             get { return m_maps; }
+        }
+
+
+        public Dictionary<System.Drawing.Point, List<Map>> MapsByPosition
+        {
+            get
+            {
+                return m_mapsByPoint;
+            }
         }
 
         public SuperArea SuperArea
@@ -467,16 +479,55 @@ namespace Stump.Server.WorldServer.Game.Maps
             m_subAreas.Add(subArea);
             m_maps.AddRange(subArea.Maps);
 
+            foreach (Map map in subArea.Maps)
+            {
+                if (!m_mapsByPoint.ContainsKey(map.Position))
+                    m_mapsByPoint.Add(map.Position, new List<Map>());
+
+                m_mapsByPoint[map.Position].Add(map);
+            }
+
             subArea.Area = this;
         }
 
         internal void RemoveSubArea(SubArea subArea)
         {
             m_subAreas.Remove(subArea);
-            m_maps.RemoveAll(entry => subArea.Maps.Contains(entry));
+            m_maps.RemoveAll(delegate(Map entry)
+            {
+                if (subArea.Maps.Contains(entry))
+                {
+                    if (m_mapsByPoint.ContainsKey(entry.Position))
+                    {
+                        var list = m_mapsByPoint[entry.Position];
+                        list.Remove(entry);
+
+                        if (list.Count <= 0)
+                            m_mapsByPoint.Remove(entry.Position);
+                    }
+
+                    return true;
+                }
+
+                return false;
+            });
 
             subArea.Area = null;
         }
+
+        public Map[] GetMaps(int x, int y, bool outdoor = true)
+        {
+            return GetMaps(new Point(x, y), outdoor);
+        }
+
+        public Map[] GetMaps(Point position, bool outdoor = true)
+        {
+            if (!m_mapsByPoint.ContainsKey(position))
+                return new Map[0];
+
+            return m_mapsByPoint[position].Where(entry => entry.Outdoor == outdoor).ToArray();
+        }
+
 
         public void AddMonsterSpawn(MonsterSpawn spawn)
         {

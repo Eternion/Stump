@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Stump.Core.Threading;
 using Stump.Server.WorldServer.Database.Monsters;
@@ -43,6 +44,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private readonly List<Map> m_maps = new List<Map>();
         private readonly List<MonsterSpawn> m_monsterSpawns = new List<MonsterSpawn>();
+        private readonly Dictionary<Point, List<Map>> m_mapsByPoint = new Dictionary<Point, List<Map>>();
 
         public SubArea(SubAreaRecord record)
         {
@@ -63,6 +65,14 @@ namespace Stump.Server.WorldServer.Game.Maps
         public IEnumerable<Map> Maps
         {
             get { return m_maps; }
+        }
+
+        public Dictionary<Point, List<Map>> MapsByPosition
+        {
+            get
+            {
+                return m_mapsByPoint;
+            }
         }
 
         public Area Area
@@ -102,6 +112,11 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             m_maps.Add(map);
 
+            if (!m_mapsByPoint.ContainsKey(map.Position))
+                m_mapsByPoint.Add(map.Position, new List<Map>());
+
+            m_mapsByPoint[map.Position].Add(map);
+
             map.SubArea = this;
         }
 
@@ -109,7 +124,29 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             m_maps.Remove(map);
 
+            if (m_mapsByPoint.ContainsKey(map.Position))
+            {
+                var list = m_mapsByPoint[map.Position];
+                list.Remove(map);
+
+                if (list.Count <= 0)
+                    m_mapsByPoint.Remove(map.Position);
+            }
+
             map.SubArea = null;
+        }
+
+        public Map[] GetMaps(int x, int y, bool outdoor = true)
+        {
+            return GetMaps(new Point(x, y), outdoor);
+        }
+
+        public Map[] GetMaps(Point position, bool outdoor = true)
+        {
+            if (!m_mapsByPoint.ContainsKey(position))
+                return new Map[0];
+
+            return m_mapsByPoint[position].Where(entry => entry.Outdoor == outdoor).ToArray();
         }
 
         public void AddMonsterSpawn(MonsterSpawn spawn)

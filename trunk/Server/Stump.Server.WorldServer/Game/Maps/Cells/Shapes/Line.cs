@@ -50,36 +50,28 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                 switch (Direction)
                 {
                     case DirectionsEnum.DIRECTION_WEST:
-                        if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y - i))
-                            AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
+                        AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
                         break;
                     case DirectionsEnum.DIRECTION_NORTH:
-                        if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y + i))
-                            AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
+                        AddCellIfValid(centerPoint.X - i, centerPoint.Y + i, map, result);
                         break;
                     case DirectionsEnum.DIRECTION_EAST:
-                        if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y + i))
-                            AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
+                        AddCellIfValid(centerPoint.X + i, centerPoint.Y + i, map, result);
                         break;
                     case DirectionsEnum.DIRECTION_SOUTH:
-                        if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y - i))
-                            AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
+                        AddCellIfValid(centerPoint.X + i, centerPoint.Y - i, map, result);
                         break;
                     case DirectionsEnum.DIRECTION_NORTH_WEST:
-                        if (MapPoint.IsInMap(centerPoint.X - i, centerPoint.Y))
-                            AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
+                        AddCellIfValid(centerPoint.X - i, centerPoint.Y, map, result);
                         break;
                     case DirectionsEnum.DIRECTION_SOUTH_WEST:
-                        if (MapPoint.IsInMap(centerPoint.X, centerPoint.Y - i))
-                            AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
+                        AddCellIfValid(centerPoint.X, centerPoint.Y - i, map, result);
                         break;
                     case DirectionsEnum.DIRECTION_SOUTH_EAST:
-                        if (MapPoint.IsInMap(centerPoint.X + i, centerPoint.Y))
-                            AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
+                        AddCellIfValid(centerPoint.X + i, centerPoint.Y, map, result);
                         break;
                     case DirectionsEnum.DIRECTION_NORTH_EAST:
-                        if (MapPoint.IsInMap(centerPoint.X, centerPoint.Y + i))
-                            AddCellIfValid(centerPoint.X - i, centerPoint.Y - i, map, result);
+                        AddCellIfValid(centerPoint.X, centerPoint.Y + i, map, result);
                         break;
                 }
             }

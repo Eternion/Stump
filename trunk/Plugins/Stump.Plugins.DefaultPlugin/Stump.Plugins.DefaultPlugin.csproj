@@ -109,6 +109,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Global\Placements\PlacementPattern.cs" />
     <Compile Include="Items\WeaponEffectsFix.cs" />
     <Compile Include="Monsters\MonsterStatsFix.cs" />
     <Compile Include="Plugin.cs" />
@@ -151,6 +152,7 @@
       <Name>Stump.Server.WorldServer</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF NOT EXIST "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\" mkdir "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\"

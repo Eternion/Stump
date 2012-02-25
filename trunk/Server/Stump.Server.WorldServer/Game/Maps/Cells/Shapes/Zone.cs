@@ -169,6 +169,8 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                     m_shape = new Cross(0, 0);
                     break;
             }
+
+            m_shape.Direction = Direction;
         }
     }
 }

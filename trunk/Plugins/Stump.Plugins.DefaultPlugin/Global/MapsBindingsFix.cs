@@ -22,8 +22,6 @@ namespace Stump.Plugins.DefaultPlugin.Global
             if (!ActiveFix)
                 return;
 
-            var bugs = World.Instance.GetMaps().Where(entry => entry.Record.Position == null).ToArray();
-
             logger.Debug("Apply maps bindings fix");
 
             if (File.Exists("./maps_bindings_fix.sql"))
@@ -57,28 +55,28 @@ namespace Stump.Plugins.DefaultPlugin.Global
             builder.Append("UPDATE `maps` SET ");
             var pos = map.Position;
 
-            var top = map.SuperArea.Maps.Where(entry => entry.Record.Position != null && entry.Position.X == pos.X && entry.Position.Y == pos.Y - 1 && entry.Outdoor == map.Outdoor).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();
+            var top = FindMaps(map, pos.X, pos.Y + 1, map.Outdoor).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();
             if (top != null)
             {
                 map.TopNeighbourId = top.Id;
                 builder.AppendFormat("TopNeighbourId='{0}', ", map.TopNeighbourId);
             }
 
-            var bottom = map.SuperArea.Maps.Where(entry => entry.Record.Position != null &&  entry.Position.X == pos.X && entry.Position.Y == pos.Y + 1 && entry.Outdoor == map.Outdoor).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();
+            var bottom = FindMaps(map, pos.X, pos.Y - 1, map.Outdoor).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();
             if (bottom != null)
             {
                 map.BottomNeighbourId = bottom.Id;
                 builder.AppendFormat("BottomNeighbourId='{0}', ", map.BottomNeighbourId);
             }
 
-            var right = map.SuperArea.Maps.Where(entry => entry.Record.Position != null &&  entry.Position.X == pos.X + 1 && entry.Position.Y == pos.Y && entry.Outdoor == map.Outdoor).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();
+            var right = FindMaps(map, pos.X + 1, pos.Y, map.Outdoor).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();
             if (right != null)
             {
                 map.RightNeighbourId = right.Id;
                 builder.AppendFormat("RightNeighbourId='{0}', ", map.RightNeighbourId);
             }
 
-            var left = map.SuperArea.Maps.Where(entry => entry.Record.Position != null &&  entry.Position.X == pos.X - 1 && entry.Position.Y == pos.Y - 1 && entry.Outdoor == map.Outdoor).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();
+            var left = FindMaps(map, pos.X - 1, pos.Y, map.Outdoor).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();
             if (left != null)
             {
                 map.LeftNeighbourId = left.Id;
@@ -96,6 +94,23 @@ namespace Stump.Plugins.DefaultPlugin.Global
             {
                 return string.Empty;
             }
+        }
+
+        private static Map[] FindMaps(Map adjacent, int x, int y, bool outdoor)
+        {
+            var maps = adjacent.SubArea.GetMaps(x, y, outdoor);
+            if (maps.Length > 0)
+                return maps;
+
+            maps = adjacent.Area.GetMaps(x, y, outdoor);
+            if (maps.Length > 0)
+                return maps; 
+            
+            maps = adjacent.SuperArea.GetMaps(x, y, outdoor);
+            if (maps.Length > 0)
+                return maps; 
+            
+            return new Map[0];
         }
     }
 }

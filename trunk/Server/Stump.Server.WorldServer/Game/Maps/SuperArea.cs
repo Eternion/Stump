@@ -10,7 +10,7 @@ namespace Stump.Server.WorldServer.Game.Maps
     {
         private readonly List<Area> m_areas = new List<Area>();
         private readonly List<Map> m_maps = new List<Map>();
-        private readonly Dictionary<Point, Map> m_mapsByPoint = new Dictionary<Point, Map>();
+        private readonly Dictionary<Point, List<Map>> m_mapsByPoint = new Dictionary<Point, List<Map>>();
         private readonly List<SubArea> m_subAreas = new List<SubArea>();
         private readonly List<MonsterSpawn> m_monsterSpawns = new List<MonsterSpawn>();
 
@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             get { return m_maps; }
         }
 
-        public Dictionary<Point, Map> MapsByPosition
+        public Dictionary<Point, List<Map>> MapsByPosition
         {
             get { return m_mapsByPoint; }
         }
@@ -60,8 +60,10 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             foreach (Map map in area.Maps)
             {
-                if (map.Outdoor && !m_mapsByPoint.ContainsKey(map.Position))
-                    m_mapsByPoint.Add(map.Position, map);
+                if (!m_mapsByPoint.ContainsKey(map.Position))
+                    m_mapsByPoint.Add(map.Position, new List<Map>());
+
+                m_mapsByPoint[map.Position].Add(map);
             }
 
             area.SuperArea = this;
@@ -75,8 +77,14 @@ namespace Stump.Server.WorldServer.Game.Maps
                                  {
                                      if (area.Maps.Contains(entry))
                                      {
-                                         if (entry.Outdoor)
-                                             m_mapsByPoint.Remove(entry.Position);
+                                         if (m_mapsByPoint.ContainsKey(entry.Position))
+                                         {
+                                             var list = m_mapsByPoint[entry.Position];
+                                             list.Remove(entry);
+
+                                             if (list.Count <= 0)
+                                                 m_mapsByPoint.Remove(entry.Position);
+                                         }
 
                                          return true;
                                      }
@@ -85,6 +93,19 @@ namespace Stump.Server.WorldServer.Game.Maps
                                  });
 
             area.SuperArea = null;
+        }
+
+        public Map[] GetMaps(int x, int y, bool outdoor = true)
+        {
+            return GetMaps(new Point(x, y), outdoor);
+        }
+
+        public Map[] GetMaps(Point position, bool outdoor = true)
+        {
+            if (!m_mapsByPoint.ContainsKey(position))
+                return new Map[0];
+
+            return m_mapsByPoint[position].Where(entry => entry.Outdoor == outdoor).ToArray();
         }
 
         public void AddMonsterSpawn(MonsterSpawn spawn)

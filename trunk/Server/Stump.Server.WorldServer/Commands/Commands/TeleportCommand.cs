@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
             else
             {
-                var map = superArea.MapsByPosition[point];
+                var map = superArea.GetMaps(point)[0];
                 var cell = trigger.IsArgumentDefined("cell") ? map.Cells[trigger.Get<short>("cell")] : target.Cell;
 
                 target.Teleport(new ObjectPosition(map, cell, target.Direction));
