@@ -336,14 +336,14 @@ namespace Stump.Tools.MapControl
 
                 if (CellOver != null && CellOver != cell)
                 {
-                    CellOver.CustomBorderPen = null;
+                    CellOver.MouseOverPen = null;
 
                     rect = CellOver.Rectangle;
                 }
 
                 if (cell != null)
                 {
-                    cell.CustomBorderPen = new Pen(BorderColorOnOver, 1);
+                    cell.MouseOverPen = new Pen(BorderColorOnOver, 1);
 
                     rect = rect != Rectangle.Empty ? Rectangle.Union(rect, cell.Rectangle) : cell.Rectangle;
 
@@ -457,6 +457,8 @@ namespace Stump.Tools.MapControl
 
     public class MapCell
     {
+        public static CellState HighestState = Enum.GetValues(typeof(CellState)).Cast<CellState>().Max();
+
         public int Id;
 
         private Point[] m_points;
@@ -497,6 +499,12 @@ namespace Stump.Tools.MapControl
         }
 
         public Pen CustomBorderPen
+        {
+            get;
+            set;
+        }
+
+        public Pen MouseOverPen
         {
             get;
             set;
@@ -574,7 +582,7 @@ namespace Stump.Tools.MapControl
         {
             if (Points != null)
             {
-                g.DrawPolygon(CustomBorderPen ?? pen, Points);
+                g.DrawPolygon(MouseOverPen ?? (CustomBorderPen ?? pen), Points);
             }
         }
 
@@ -593,7 +601,7 @@ namespace Stump.Tools.MapControl
             else
             {
                 // draw the less important states first
-                for (CellState state = CellState.Road; state > CellState.None; state = (CellState)( (int)state >> 1 ))
+                for (CellState state = HighestState; state > CellState.None; state = (CellState)( (int)state >> 1 ))
                 {
                     if (State.HasFlag(state) && IsStateValid(state, mode) && parent.StatesColors.ContainsKey(state))
                         brush = new SolidBrush(parent.StatesColors[state]);

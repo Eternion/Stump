@@ -17,6 +17,12 @@ namespace Stump.Tools.CellPatternBuilder
         {
             InitializeComponent();
             mapControl.CellClicked += MapControlCellClicked;
+
+            foreach (var cell in mapControl.Cells)
+            {
+                cell.Text = cell.Id.ToString();
+                cell.TextBrush = Brushes.Brown;
+            }
         }
 
         private void MapControlCellClicked(MapControl.MapControl control, MapCell cell, MouseButtons buttons, bool hold)
