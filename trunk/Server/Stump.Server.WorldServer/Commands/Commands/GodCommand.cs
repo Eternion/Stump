@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public GodCommand()
         {
             Aliases = new[] { "god" };
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Just to be all powerfull.";
         }
     }

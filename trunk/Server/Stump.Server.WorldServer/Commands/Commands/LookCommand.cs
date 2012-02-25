@@ -26,6 +26,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
             if (trigger.IsArgumentDefined("demorph"))
             {
                 target.CustomLookActivated = false;
+                target.CustomLook = null;
+                target.Map.Refresh(target);
                 return;
             }
 
@@ -38,9 +40,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             target.CustomLook = trigger.Get<string>("look").ToEntityLook();
             target.CustomLookActivated = true;
 
-            target.Map.ForEach(character =>
-                                ContextHandler.SendGameContextRefreshEntityLookMessage(
-                                    character.Client, target));
+            target.Map.Refresh(target);
         }
     }
 }

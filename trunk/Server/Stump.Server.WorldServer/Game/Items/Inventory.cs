@@ -238,11 +238,21 @@ namespace Stump.Server.WorldServer.Game.Items
             m_itemsByPosition[item.Position].Remove(item);
             m_itemsToDelete.Enqueue(item.Record);
 
-            if (item.IsEquiped())
+            // not equiped
+            bool wasEquiped = item.IsEquiped();
+            item.Position = CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED;
+
+            if (wasEquiped)
                 ApplyItemEffects(item);
 
             InventoryHandler.SendObjectDeletedMessage(Owner.Client, item.Guid);
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
+
+            if (wasEquiped)
+                CheckItemsCriterias();
+
+            if (item.Template.AppearanceId != 0)
+                Owner.UpdateLook();
 
             base.OnItemRemoved(item);
         }
@@ -329,9 +339,9 @@ namespace Stump.Server.WorldServer.Game.Items
             else // else we just move the item
             {
                 itemToMove.Position = position;
-
                 NotifyItemMoved(itemToMove, oldPosition);
             }
+
         }
 
         public bool CanEquip(Item item)
