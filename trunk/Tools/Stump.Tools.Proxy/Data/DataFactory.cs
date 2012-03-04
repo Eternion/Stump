@@ -315,13 +315,13 @@ namespace Stump.Tools.Proxy.Data
 
         public static void BuildMapFightPlacement(WorldClient client, Map map, IEnumerable<short> blueCells, IEnumerable<short> redCells)
         {
-            if (map.Record.BlueCells.Length > 0 && map.Record.RedCells.Length > 0)
+            if (map.Record.BlueFightCells.Length > 0 && map.Record.RedFightCells.Length > 0)
                 return;
 
             ExecuteIOTask(() =>
                               {
-                                  map.Record.BlueCells = blueCells.ToArray();
-                                  map.Record.RedCells = redCells.ToArray();
+                                  map.Record.BlueFightCells = blueCells.ToArray();
+                                  map.Record.RedFightCells = redCells.ToArray();
 
                                   map.Record.Save();
 

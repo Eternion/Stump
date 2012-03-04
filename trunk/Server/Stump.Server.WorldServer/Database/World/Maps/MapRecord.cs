@@ -166,7 +166,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
         [Field("RedCells")]
         private byte[] m_rawRedCells;
 
-        public short[] BlueCells
+        public short[] BlueFightCells
         {
             get
             {
@@ -180,7 +180,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             }
         }
 
-        public short[] RedCells
+        public short[] RedFightCells
         {
             get
             {
@@ -193,7 +193,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             }
         }
 
-        private static byte[] SerializeFightCells(short[] cells)
+        public static byte[] SerializeFightCells(short[] cells)
         {
             var bytes = new byte[cells.Length * 2];
 
@@ -206,7 +206,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             return bytes;
         }
 
-        private static short[] DeserializeFightCells(byte[] bytes)
+        public static short[] DeserializeFightCells(byte[] bytes)
         {
             if (( bytes.Length % 2 ) != 0)
                 throw new ArgumentException("bytes.Length % 2 != 0");

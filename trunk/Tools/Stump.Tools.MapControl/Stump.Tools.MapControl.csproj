@@ -74,6 +74,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CellIdConverter.cs" />
     <Compile Include="MapControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

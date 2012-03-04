@@ -3,17 +3,17 @@ using System;
 
 namespace Stump.Core.IO
 {
-    public class ConsoleProcent
+    public class ConsoleProgress
     {
         private object m_lastValue;
 
-        public ConsoleProcent()
+        public ConsoleProgress()
         {
             PositionX = Console.CursorLeft;
             PositionY = Console.CursorTop;
         }
 
-        public ConsoleProcent(int positionX, int positionY)
+        public ConsoleProgress(int positionX, int positionY)
         {
             PositionX = positionX;
             PositionY = positionY;

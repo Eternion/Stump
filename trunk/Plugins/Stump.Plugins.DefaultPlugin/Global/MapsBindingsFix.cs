@@ -26,7 +26,7 @@ namespace Stump.Plugins.DefaultPlugin.Global
 
             if (File.Exists("./maps_bindings_fix.sql"))
                 File.Delete("./maps_bindings_fix.sql");
-            var console = new ConsoleProcent();
+            var console = new ConsoleProgress();
             var maps = World.Instance.GetMaps().ToArray();
             int counter = 0;
             int patches = 0;

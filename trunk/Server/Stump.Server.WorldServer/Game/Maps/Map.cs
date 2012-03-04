@@ -141,15 +141,15 @@ namespace Stump.Server.WorldServer.Game.Maps
         private void InitializeFightPlacements()
         {
             // todo : search for default placements
-            if (Record.BlueCells.Length == 0 || Record.RedCells.Length == 0)
+            if (Record.BlueFightCells.Length == 0 || Record.RedFightCells.Length == 0)
             {
                 m_bluePlacement = new[] { Cells[328], Cells[356], Cells[357] };
                 m_redPlacement = new[] { Cells[370], Cells[355], Cells[354] };
             }
             else
             {
-                m_bluePlacement = Record.BlueCells.Select(entry => Cells[entry]).ToArray();
-                m_redPlacement = Record.RedCells.Select(entry => Cells[entry]).ToArray();
+                m_bluePlacement = Record.BlueFightCells.Select(entry => Cells[entry]).ToArray();
+                m_redPlacement = Record.RedFightCells.Select(entry => Cells[entry]).ToArray();
             }
         }
 
@@ -972,12 +972,27 @@ namespace Stump.Server.WorldServer.Game.Maps
             return m_actors.Values.OfType<T>().Where(entry => predicate(entry));
         }
 
+        public Cell GetCell(int id)
+        {
+            return Cells[id];
+        }
+
+        public Cell GetCell(int x, int y)
+        {
+            return Cells[MapPoint.CoordToCellId(x, y)];
+        }
+
+        public Cell GetCell(Point pos)
+        {
+            return GetCell(pos.X, pos.Y);
+        }
+
         public InteractiveObject GetInteractiveObject(int id)
         {
             return m_interactives[id];
         }
 
-        public ObjectPosition GetRanomFreePosition(bool actorFree = false)
+        public ObjectPosition GetRandomFreePosition(bool actorFree = false)
         {
             return new ObjectPosition(this, GetRandomFreeCell(actorFree), GetRandomDirection());
         }

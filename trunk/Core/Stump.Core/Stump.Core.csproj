@@ -210,7 +210,7 @@
     <Compile Include="Collections\CollectionExtensions.cs" />
     <Compile Include="Extensions\TimeExtensions.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
-    <Compile Include="IO\ConsoleProcent.cs" />
+    <Compile Include="IO\ConsoleProgress.cs" />
     <Compile Include="IO\Watchers\FileWatcher.cs">
       <SubType>Component</SubType>
     </Compile>

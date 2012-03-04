@@ -78,7 +78,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\BugCommand.cs" />
     <Compile Include="Commands\DebugCommands.cs" />
     <Compile Include="Commands\StartCommand.cs" />
     <Compile Include="Plugin.cs" />

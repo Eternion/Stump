@@ -11,7 +11,8 @@
     <RootNamespace>Stump.Tools.CellPatternBuilder</RootNamespace>
     <AssemblyName>Stump.Tools.CellPatternBuilder</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -67,6 +68,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -78,6 +80,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">
+      <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
+      <Name>Stump.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Plugins\Stump.Plugins.DefaultPlugin\Stump.Plugins.DefaultPlugin.csproj">
+      <Project>{32609B25-5E15-4B60-887F-0A4B95455F2A}</Project>
+      <Name>Stump.Plugins.DefaultPlugin</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Stump.Tools.MapControl\Stump.Tools.MapControl.csproj">
       <Project>{380D57C1-2AB3-497A-A47A-3DBBA034EF37}</Project>
       <Name>Stump.Tools.MapControl</Name>

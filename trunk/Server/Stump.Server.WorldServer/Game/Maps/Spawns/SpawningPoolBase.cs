@@ -187,7 +187,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
         {
             Contract.Requires(monsters.Any());
 
-            NextGroup = new MonsterGroup(Map.GetNextContextualId(), Map.GetRanomFreePosition());
+            NextGroup = new MonsterGroup(Map.GetNextContextualId(), Map.GetRandomFreePosition());
 
             foreach (Monster monster in monsters)
             {

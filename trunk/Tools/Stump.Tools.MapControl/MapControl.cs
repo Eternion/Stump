@@ -45,6 +45,14 @@ namespace Stump.Tools.MapControl
             if (handler != null) handler(this, cell, buttons, hold);
         }
 
+        public event Action<MapControl, MapCell, MapCell> CellOver;
+
+        protected void OnCellOver(MapCell cell, MapCell last)
+        {
+            var handler = CellOver;
+            if (handler != null) handler(this, cell, last);
+        }
+
         private bool m_lesserQuality;
         private bool m_mouseDown;
         private MapCell m_holdedCell;
@@ -160,7 +168,7 @@ namespace Stump.Tools.MapControl
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Browsable(false)]
-        public MapCell CellOver
+        public MapCell CurrentCellOver
         {
             get;
             set;
@@ -333,12 +341,14 @@ namespace Stump.Tools.MapControl
             {
                 var cell = GetCell(e.Location);
                 Rectangle rect = Rectangle.Empty;
+                MapCell last = null;
 
-                if (CellOver != null && CellOver != cell)
+                if (CurrentCellOver != null && CurrentCellOver != cell)
                 {
-                    CellOver.MouseOverPen = null;
+                    CurrentCellOver.MouseOverPen = null;
 
-                    rect = CellOver.Rectangle;
+                    rect = CurrentCellOver.Rectangle;
+                    last = CurrentCellOver;
                 }
 
                 if (cell != null)
@@ -347,8 +357,10 @@ namespace Stump.Tools.MapControl
 
                     rect = rect != Rectangle.Empty ? Rectangle.Union(rect, cell.Rectangle) : cell.Rectangle;
 
-                    CellOver = cell;
+                    CurrentCellOver = cell;
                 }
+
+                OnCellOver(cell, last);
 
                 if (rect != Rectangle.Empty)
                 {
@@ -403,6 +415,14 @@ namespace Stump.Tools.MapControl
         public void Invalidate(MapCell cell)
         {
             Invalidate(cell.Rectangle);
+        }
+
+        public void Invalidate(params MapCell[] cells)
+        {
+            if (cells.Length == 0)
+                base.Invalidate();
+            else
+                Invalidate(cells as IEnumerable<MapCell>);
         }
 
         public void Invalidate(IEnumerable<MapCell> cells)
