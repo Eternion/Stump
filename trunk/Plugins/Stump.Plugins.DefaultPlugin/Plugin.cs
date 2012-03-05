@@ -6,6 +6,13 @@ namespace Stump.Plugins.DefaultPlugin
 {
     public class Plugin : PluginBase
     {
+        public Plugin(PluginContext context)
+            : base(context)
+        {
+            CurrentPlugin = this;
+        }
+
+
         public override string Name
         {
             get { return "Default Plugin"; }
@@ -38,6 +45,22 @@ namespace Stump.Plugins.DefaultPlugin
         public override void Dispose()
         {
 
+        }
+
+        public override bool UseConfig
+        {
+            get { return true; }
+        }
+
+        public override string ConfigFileName
+        {
+            get { return "default_plugin_config.xml"; }
+        }
+
+        public static Plugin CurrentPlugin
+        {
+            get;
+            private set;
         }
     }
 }

@@ -9,6 +9,17 @@ namespace Stump.Server.BaseServer.Plugins
 {
     public abstract class PluginBase : IPlugin
     {
+        protected PluginBase(PluginContext context)
+        {
+            Context = context;
+        }
+
+        public PluginContext Context
+        {
+            get;
+            protected set;
+        }
+
         public virtual bool UseConfig
         {
             get { return false; }
@@ -53,18 +64,19 @@ namespace Stump.Server.BaseServer.Plugins
 
         #endregion
 
-        public virtual void LoadConfig(PluginContext context)
+        public virtual void LoadConfig()
         {
             if (!UseConfig)
                 return;
 
-            Config =
-                new XmlConfig(Path.Combine(Path.GetDirectoryName(context.AssemblyPath),
-                                           !string.IsNullOrEmpty(ConfigFileName)
-                                               ? ConfigFileName
-                                               : Name + ".xml"));
+            var configPath = Path.Combine(Path.GetDirectoryName(Context.AssemblyPath), !string.IsNullOrEmpty(ConfigFileName) ? ConfigFileName : Name + ".xml");
+            Config = new XmlConfig(configPath);
             Config.AddAssembly(GetType().Assembly);
-            Config.Load();
+
+            if (File.Exists(configPath))
+                Config.Load();
+            else
+                Config.Create();
         }
     }
 }

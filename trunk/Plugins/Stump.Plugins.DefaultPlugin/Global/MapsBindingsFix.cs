@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using NLog;
+using Stump.Core.Attributes;
 using Stump.Core.IO;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Initialization;
@@ -12,7 +13,8 @@ namespace Stump.Plugins.DefaultPlugin.Global
 {
     public class MapsBindingsFix
     {
-        public const bool ActiveFix = false;
+        [Variable]
+        public static bool ActiveFix = false;
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 

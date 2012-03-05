@@ -6,6 +6,12 @@ namespace Stump.Plugins.DebugPlugin
 {
     public class Plugin : PluginBase
     {
+        public Plugin(PluginContext context)
+            : base(context)
+        {
+            CurrentPlugin = this;
+        }
+
         public override string Name
         {
             get { return "Debug Plugin"; }
@@ -37,6 +43,12 @@ namespace Stump.Plugins.DebugPlugin
         public override void Dispose()
         {
 
+        }
+
+        public static Plugin CurrentPlugin
+        {
+            get;
+            private set;
         }
     }
 }

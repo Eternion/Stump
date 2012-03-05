@@ -46,6 +46,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             m_record = record;
             Client = client;
             SaveSync = new object();
+            LoggoutSync = new object();
 
             LoadRecord();
         }

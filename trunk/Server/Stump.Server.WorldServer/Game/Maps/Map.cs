@@ -125,20 +125,22 @@ namespace Stump.Server.WorldServer.Game.Maps
             Record = record;
 
             InitializeValidators();
-            InitializeMapArrounds();
-            InitializeCells();
-            InitializeFightPlacements();
+            UpdateMapArrounds();
+            UpdateCells();
+            UpdateFightPlacements();
         }
 
-        private void InitializeMapArrounds()
+        public void UpdateMapArrounds()
         {
+            m_clientMapsAround.Clear();
+
             m_clientMapsAround.Add(Record.ClientTopNeighbourId, MapNeighbour.Top);
             m_clientMapsAround.Add(Record.ClientBottomNeighbourId, MapNeighbour.Bottom);
             m_clientMapsAround.Add(Record.ClientLeftNeighbourId, MapNeighbour.Left);
             m_clientMapsAround.Add(Record.ClientRightNeighbourId, MapNeighbour.Right);
         }
 
-        private void InitializeFightPlacements()
+        public void UpdateFightPlacements()
         {
             // todo : search for default placements
             if (Record.BlueFightCells.Length == 0 || Record.RedFightCells.Length == 0)
@@ -153,7 +155,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
-        private void InitializeCells()
+        public void UpdateCells()
         {
             CellsInfoProvider = new MapCellsInformationProvider(this);
             m_freeCells = Cells.Where(entry => CellsInfoProvider.IsCellWalkable(entry.Id)).ToArray();

@@ -5,6 +5,12 @@ namespace Stump.Plugins.EditorPlugin
 {
     public class Plugin : PluginBase
     {
+        public Plugin(PluginContext context)
+            : base(context)
+        {
+            CurrentPlugin = this;
+        }
+
         public override string Name
         {
             get { return "Editor Plugin"; }
@@ -36,6 +42,12 @@ namespace Stump.Plugins.EditorPlugin
         public override void Dispose()
         {
 
+        }
+
+        public static Plugin CurrentPlugin
+        {
+            get;
+            private set;
         }
     }
 }

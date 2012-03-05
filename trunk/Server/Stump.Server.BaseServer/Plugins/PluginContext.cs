@@ -15,11 +15,11 @@ namespace Stump.Server.BaseServer.Plugins
 
         internal void Initialize(Type pluginType)
         {
-            Plugin = (IPlugin)Activator.CreateInstance(pluginType);
+            Plugin = (IPlugin)Activator.CreateInstance(pluginType, this);
 
             if (Plugin != null)
             {
-                Plugin.LoadConfig(this);
+                Plugin.LoadConfig();
                 Plugin.Initialize();
             }
         }

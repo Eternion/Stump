@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using NLog;
+using Stump.Core.Attributes;
 using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.Core.Xml;
@@ -20,11 +21,17 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public const bool ActiveFix = true;
+        [Variable]
+        public static bool ActiveFix = false;
 
-        public const string SqlPatchPath = "./maps_placements_fix.sql";
-        public const string PatternsDir = "/patterns";
-        public const int SearchDeep = 5;
+        [Variable]
+        public static string SqlPatchName = "maps_placements_fix.sql";
+
+        [Variable]
+        public static string PatternsDir = "patterns";
+
+        [Variable]
+        public static byte SearchDeep = 5;
 
         [Initialization(typeof(Server.WorldServer.Game.World), Silent = true)]
         public static void ApplyFix()
@@ -32,9 +39,9 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
             if (!ActiveFix)
                 return;
 
-            var dir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), PatternsDir);
+            var dir = Path.Combine(Path.GetDirectoryName(Plugin.CurrentPlugin.Context.AssemblyPath), PatternsDir);
             var patterns = new List<PlacementPattern>();
-
+            var patternsNames = new Dictionary<PlacementPattern, string>();
             foreach (var file in Directory.EnumerateFiles(dir, "*.xml", SearchOption.AllDirectories))
             {
                 try
@@ -42,6 +49,7 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
                     var pattern = XmlUtils.Deserialize<PlacementPattern>(file);
 
                     patterns.Add(pattern);
+                    patternsNames.Add(pattern, Path.GetFileNameWithoutExtension(file));
                 }
                 catch (Exception)
                 {
@@ -50,6 +58,12 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
 
             }
 
+            var patchPath = Path.Combine(Path.GetDirectoryName(Plugin.CurrentPlugin.Context.AssemblyPath), SqlPatchName);
+
+            if (File.Exists(patchPath))
+                File.Delete(patchPath);
+
+            var successCounter = new Dictionary<PlacementPattern, int>();
             var console = new ConsoleProgress();
             var maps = World.Instance.GetMaps().ToArray();
             int patches = 0;
@@ -100,21 +114,33 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
                     // save it
                     if (success != null)
                     {
-                        map.Record.Save();
+                        map.Record.Update();
+                        map.UpdateFightPlacements();
 
                         var builder = new StringBuilder();
                         builder.Append("UPDATE `maps` SET BlueCells=0x");
-                        builder.Append(string.Join("", MapRecord.SerializeFightCells(map.Record.BlueFightCells).Select(entry => entry.ToString("X"))));
+                        builder.Append(string.Join("", MapRecord.SerializeFightCells(map.Record.BlueFightCells).Select(entry => entry.ToString("X2"))));
                         builder.Append(", RedCells=0x");
-                        builder.Append(string.Join("", MapRecord.SerializeFightCells(map.Record.RedFightCells).Select(entry => entry.ToString("X"))));
-                        builder.Append(";");
-                        File.AppendAllText(SqlPatchPath, builder + "/r/n");
+                        builder.Append(string.Join("", MapRecord.SerializeFightCells(map.Record.RedFightCells).Select(entry => entry.ToString("X2"))));
+                        builder.Append(" WHERE Id='");
+                        builder.Append(map.Id);
+                        builder.Append("';");
+                        File.AppendAllText(patchPath, builder + "\r\n");
 
                         patches++;
+                        if (!successCounter.ContainsKey(success))
+                            successCounter.Add(success, 1);
+                        else successCounter[success]++;
                     }
                 }
 
-                console.Update(string.Format("{0:0.0} ({1} patchs)", i / (double)maps.Length * 100, patches));
+
+                console.Update(string.Format("{0:0.0}% ({1} patchs)", i / (double)maps.Length * 100, patches));
+            }
+
+            foreach (var counter in successCounter)
+            {
+                Console.WriteLine(patternsNames[counter.Key] + " : " + counter.Value);
             }
 
             logger.Debug("Maps placements fix applied");

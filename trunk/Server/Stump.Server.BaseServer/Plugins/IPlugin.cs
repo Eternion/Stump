@@ -10,6 +10,11 @@ namespace Stump.Server.BaseServer.Plugins
 
     public interface IPlugin
     {
+        PluginContext Context
+        {
+            get;
+        }
+
         string Name
         {
             get;
@@ -30,7 +35,7 @@ namespace Stump.Server.BaseServer.Plugins
             get;
         }
 
-        void LoadConfig(PluginContext context);
+        void LoadConfig();
 
         void Initialize();
         void Shutdown();
