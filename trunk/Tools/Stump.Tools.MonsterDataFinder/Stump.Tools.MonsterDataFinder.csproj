@@ -88,6 +88,7 @@
     <Compile Include="Readers\Drop.cs" />
     <Compile Include="Readers\DropParser.cs" />
     <Compile Include="Readers\MonsterDataReader.cs" />
+    <Compile Include="Sql\RawData.cs" />
     <Compile Include="Sql\SqlBuilder.cs" />
   </ItemGroup>
   <ItemGroup>

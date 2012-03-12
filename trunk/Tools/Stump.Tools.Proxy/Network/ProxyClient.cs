@@ -111,7 +111,6 @@ namespace Stump.Tools.Proxy.Network
             {
                 if (!(message is BasicNoOperationMessage))
                 {
-                    m_receivedMessagesStack.TrimExcess();
                     m_receivedMessagesStack.Insert(0, message);
                 }
 
@@ -146,7 +145,6 @@ namespace Stump.Tools.Proxy.Network
             {
                 if (!( message is BasicNoOperationMessage ))
                 {
-                    m_sendedMessagesStack.TrimExcess();
                     m_sendedMessagesStack.Insert(0, message);
                 }
 

@@ -41,15 +41,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel)
                     {
                         NotifySpellReflected(actor);
-                        Caster.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), Caster, Caster is CharacterFighter);
+                        Caster.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), Caster, Caster is CharacterFighter, Spell);
 
                         actor.RemoveAndDispellBuff(buff);
                     }
                     else
                     {
-                        short inflictedDamage = actor.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), Caster, actor is CharacterFighter);
-
-                        // todo : reflected damage ?
+                        short inflictedDamage = actor.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), Caster, actor is CharacterFighter, Spell);
                     }
                 }
             }
@@ -67,7 +65,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             if (integerEffect == null)
                 return;
 
-            buff.Target.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), buff.Caster, buff.Target is CharacterFighter);
+            buff.Target.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), buff.Caster, buff.Target is CharacterFighter, buff.Spell);
         }
 
         private static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)

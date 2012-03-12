@@ -19,6 +19,7 @@ using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Results.Data;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
+using FightResultAdditionalData = Stump.Server.WorldServer.Game.Fights.Results.Data.FightResultAdditionalData;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -28,6 +29,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         private int m_earnedExp;
         private int m_criticalWeaponBonus;
         private bool m_isUsingWeapon;
+        private short m_earnedHonor;
+        private short m_earnedDishonor;
 
 
         public CharacterFighter(Character character, FightTeam team)
@@ -208,15 +211,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
-        public override bool CanCastSpell(Spell spell, Cell cell)
+        public override Spell GetSpell(int id)
         {
-            if (!base.CanCastSpell(spell, cell))
-                return false;
+            return Character.Spells.GetSpell(id);
+        }
 
-            if (!Character.Spells.HasSpell(spell.Id))
-                return false;
-
-            return true;
+        public override bool HasSpell(int id)
+        {
+            return Character.Spells.HasSpell(id);
         }
 
         public FightSpellCastCriticalEnum RollCriticalDice(WeaponTemplate weapon)
@@ -239,6 +241,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_earnedExp = experience;
         }
 
+        public void SetEarnedHonor(short honor)
+        {
+            m_earnedHonor = honor;
+        }
+
+        public void SetEarnedDishonor(short dishonor)
+        {
+            m_earnedDishonor = dishonor;
+        }
+
         public override void ResetFightProperties()
         {
             base.ResetFightProperties();
@@ -251,21 +263,35 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override IFightResult GetFightResult()
         {
-            if (m_earnedExp > 0)
+            var additionalDatas = new List<FightResultAdditionalData>();
+
+            if (m_earnedExp != 0)
             {
-                var expData = new FightExperienceData(Character)
+                additionalDatas.Add(new FightExperienceData(Character)
                                   {
                                       ExperienceFightDelta = m_earnedExp,
                                       ShowExperience = true,
                                       ShowExperienceFightDelta = true,
                                       ShowExperienceLevelFloor = true,
-                                      ShowExperienceNextLevelFloor = true
-                                  };
-
-                return new FightPlayerResult(this, GetFighterOutcome(), Loot, expData);
+                                      ShowExperienceNextLevelFloor = true,
+                                  });
             }
 
-            return new FightPlayerResult(this, GetFighterOutcome(), Loot);
+            if (m_earnedHonor != 0 || m_earnedDishonor != 0)
+            {
+                additionalDatas.Add(new FightPvpData(Character)
+                                    {
+                                        HonorDelta = m_earnedHonor,
+                                        DishonorDelta = m_earnedDishonor,
+                                        Honor = Character.Honor,
+                                        Dishonor = Character.Dishonor,
+                                        Grade = (byte) Character.AlignmentGrade,
+                                        MinHonorForGrade = Character.LowerBoundHonor,
+                                        MaxHonorForGrade = Character.UpperBoundHonor,
+                                    });
+            }
+
+            return new FightPlayerResult(this, GetFighterOutcome(), Loot, additionalDatas.ToArray());
         }
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations()

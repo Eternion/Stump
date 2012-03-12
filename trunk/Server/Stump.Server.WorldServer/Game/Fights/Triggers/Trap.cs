@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public GameActionFightInvisibilityStateEnum VisibleState
         {
             get;
-            private set;
+            set;
         }
 
         public override GameActionMarkTypeEnum Type

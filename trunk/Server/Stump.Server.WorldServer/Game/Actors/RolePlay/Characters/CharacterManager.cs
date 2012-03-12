@@ -103,6 +103,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                                  EntityLook = look,
                                  CreationDate = DateTime.Now,
                                  LastUsage = DateTime.Now,
+                                 AlignmentSide = AlignmentSideEnum.ALIGNMENT_NEUTRAL,
                              };
 
                 record.Save();

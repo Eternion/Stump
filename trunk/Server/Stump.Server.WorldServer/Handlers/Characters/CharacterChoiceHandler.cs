@@ -19,6 +19,7 @@ using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Handlers.Friends;
 using Stump.Server.WorldServer.Handlers.Initialization;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using Stump.Server.WorldServer.Handlers.PvP;
 using Stump.Server.WorldServer.Handlers.Shortcuts;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
@@ -122,8 +123,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             ContextRoleplayHandler.SendEmoteListMessage(client, Enumerable.Range(0, 25).Select(entry => (sbyte)entry).ToList());
             ChatHandler.SendEnabledChannelsMessage(client, new sbyte[] { 0, 1, 2, 3, 4, 5, 6, 7, 12, 13, 9, 10 }, new sbyte[] {8, 7});
 
-            //PvpHandler.SendAlignmentRankUpdateMessage(client);
-            //PvpHandler.SendAlignmentSubAreasListMessage(client);
+            PvPHandler.SendAlignmentRankUpdateMessage(client);
+            PvPHandler.SendAlignmentSubAreasListMessage(client);
 
             InventoryHandler.SendSpellListMessage(client, true);
             

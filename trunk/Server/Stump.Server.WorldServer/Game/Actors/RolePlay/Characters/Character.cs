@@ -384,6 +384,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         #region Delegates
 
         public delegate void LevelChangedHandler(Character character, byte currentLevel, int difference);
+        public delegate void GradeChangedHandler(Character character, sbyte currentGrade, int difference);
 
         #endregion
 
@@ -401,7 +402,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set
             {
                 m_record.Experience = value;
-                if (value >= UpperBoundExperience && Level < ExperienceManager.Instance.HighestLevel)
+                if (value >= UpperBoundExperience && Level < ExperienceManager.Instance.HighestCharacterLevel)
                 {
                     byte lastLevel = Level;
 
@@ -421,8 +422,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             var level = (byte) (Level + levelAdded);
 
-            if (level > ExperienceManager.Instance.HighestLevel)
-                level = ExperienceManager.Instance.HighestLevel;
+            if (level > ExperienceManager.Instance.HighestCharacterLevel)
+                level = ExperienceManager.Instance.HighestCharacterLevel;
 
             var experience = ExperienceManager.Instance.GetCharacterLevelExperience(level);
             
@@ -560,17 +561,53 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public AlignmentSideEnum AlignmentSide
         {
-            get;
-            private set;
+            get { return m_record.AlignmentSide; }
+            private set { m_record.AlignmentSide = value; }
+        }
+
+        private sbyte m_alignmentGrade;
+
+        public sbyte AlignmentGrade
+        {
+            get { return m_alignmentGrade; }
+            private set { m_alignmentGrade = value; }
         }
 
         public sbyte AlignmentValue
+        {
+            get { return m_record.AlignmentValue; }
+            private set { m_record.AlignmentValue = value; }
+        }
+
+        public ushort Honor
+        {
+            get { return m_record.Honor; }
+            private set
+            {
+                m_record.Honor = value; 
+                if (value >= UpperBoundHonor && AlignmentGrade < ExperienceManager.Instance.HighestGrade)
+                {
+                    sbyte lastGrade = AlignmentGrade;
+
+                    AlignmentGrade = (sbyte) ExperienceManager.Instance.GetAlignementGrade(m_record.Honor);
+
+                    LowerBoundHonor = ExperienceManager.Instance.GetAlignementGradeHonor((byte) AlignmentGrade);
+                    UpperBoundHonor = ExperienceManager.Instance.GetAlignementNextGradeHonor((byte) AlignmentGrade);
+
+                    int difference = AlignmentGrade - lastGrade;
+
+                    OnGradeChanged(AlignmentGrade, difference);
+                }
+            }
+        }
+
+        public ushort LowerBoundHonor
         {
             get;
             private set;
         }
 
-        public sbyte AlignmentGrade
+        public ushort UpperBoundHonor
         {
             get;
             private set;
@@ -578,13 +615,103 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public ushort Dishonor
         {
-            get;
-            private set;
+            get { return m_record.Dishonor; }
+            private set { m_record.Dishonor = value; }
         }
 
         public int CharacterPower
         {
             get { return Id + Level; }
+        }
+
+        public bool PvPEnabled
+        {
+            get { return m_record.PvPEnabled; }
+            private set
+            {
+                m_record.PvPEnabled = value; 
+                OnPvPToggled();
+            }
+        }
+
+        public void ChangeAlignementSide(AlignmentSideEnum side)
+        {
+            AlignmentSide = side;
+
+            OnAligmenentSideChanged();
+        }
+
+        public void AddHonor(ushort amount)
+        {
+            if (amount < 0)
+                SubHonor((ushort) (-amount));
+            else
+                Honor += amount;
+        }
+
+        public void SubHonor(ushort amount)
+        {
+            if (Honor - amount < 0)
+                Honor = 0;
+
+            Honor -= amount;
+        }
+
+        public void AddDishonor(ushort amount)
+        {
+            Dishonor += amount;
+        }
+
+        public void SubDishonor(ushort amount)
+        {
+            if (Dishonor - amount < 0)
+                Dishonor = 0;
+
+            Dishonor -= amount;
+        }
+
+        public void TogglePvPMode(bool state)
+        {
+            PvPEnabled = state;
+        }
+
+        public event GradeChangedHandler GradeChanged;
+
+        private void OnGradeChanged(sbyte currentLevel, int difference)
+        {
+            Map.Refresh(this);
+            RefreshStats();
+
+            var handler = GradeChanged;
+
+            if (handler != null)
+                handler(this, currentLevel, difference);
+        }
+
+        public event Action<Character, bool> PvPToggled;
+
+        private void OnPvPToggled()
+        {
+            Map.Refresh(this);
+            RefreshStats();
+
+            var handler = PvPToggled;
+
+            if (handler != null)
+                handler(this, PvPEnabled);
+        }
+
+        public event Action<Character, AlignmentSideEnum> AligmenentSideChanged;
+
+        private void OnAligmenentSideChanged()
+        {
+            Map.Refresh(this);
+            RefreshStats();
+
+            var handler = AligmenentSideChanged;
+
+            if (handler != null)
+                handler(this, AlignmentSide);
         }
 
         #endregion
@@ -889,6 +1016,45 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public FighterRefusedReasonEnum CanRequestFight(Character target)
         {
+            if (!target.IsInWorld || target.IsFighting() || target.IsSpectator() || target.IsBusy())
+                return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
+
+            if (!IsInWorld || IsFighting() || IsSpectator() || IsBusy())
+                return FighterRefusedReasonEnum.IM_OCCUPIED;
+
+            if (target == this)
+                return FighterRefusedReasonEnum.FIGHT_MYSELF;
+
+            if (target.Map != Map)
+                return FighterRefusedReasonEnum.WRONG_MAP;
+
+            return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
+        }
+
+
+        public FighterRefusedReasonEnum CanAgress(Character target)
+        {
+            if (target == this)
+                return FighterRefusedReasonEnum.FIGHT_MYSELF;
+
+            if (!PvPEnabled)
+                return FighterRefusedReasonEnum.WRONG_ALIGNMENT;
+
+            if (!target.IsInWorld || target.IsFighting() || target.IsSpectator() || target.IsBusy())
+                return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
+
+            if (!IsInWorld || IsFighting() || IsSpectator() || IsBusy())
+                return FighterRefusedReasonEnum.IM_OCCUPIED;
+
+            if (AlignmentSide <= AlignmentSideEnum.ALIGNMENT_NEUTRAL)
+                return FighterRefusedReasonEnum.WRONG_ALIGNMENT;
+
+            if (target.AlignmentSide == AlignmentSide)
+                return FighterRefusedReasonEnum.WRONG_ALIGNMENT;
+
+            if (target.Map != Map)
+                return FighterRefusedReasonEnum.WRONG_MAP;
+
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }
 
@@ -1171,6 +1337,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             LowerBoundExperience = ExperienceManager.Instance.GetCharacterLevelExperience(Level);
             UpperBoundExperience = ExperienceManager.Instance.GetCharacterNextLevelExperience(Level);
 
+            AlignmentGrade = (sbyte)ExperienceManager.Instance.GetAlignementGrade(m_record.Honor);
+            LowerBoundHonor = (ushort) ExperienceManager.Instance.GetAlignementGradeHonor((byte) AlignmentGrade);
+            UpperBoundHonor = (ushort) ExperienceManager.Instance.GetAlignementNextGradeHonor((byte) AlignmentGrade);
+
             Inventory = new Inventory(this);
             Inventory.LoadInventory();
             Spells = new SpellInventory(this);
@@ -1214,9 +1384,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public ActorAlignmentInformations GetActorAlignmentInformations()
         {
             return new ActorAlignmentInformations(
-                (sbyte) AlignmentSide,
-                AlignmentValue,
-                AlignmentGrade,
+                (sbyte) (PvPEnabled ? AlignmentSide : 0),
+                (sbyte) (PvPEnabled ? AlignmentValue : 0),
+                (sbyte) (PvPEnabled ? AlignmentGrade : 0),
                 Dishonor,
                 CharacterPower);
         }
@@ -1233,10 +1403,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 AlignmentGrade,
                 Dishonor,
                 CharacterPower,
-                0,
-                0,
-                0,
-                false
+                Honor,
+                LowerBoundHonor,
+                UpperBoundHonor,
+                PvPEnabled
                 );
         }
 

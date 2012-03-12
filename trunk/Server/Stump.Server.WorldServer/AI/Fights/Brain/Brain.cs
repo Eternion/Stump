@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             }
 
             var tree = new PrioritySelector(
-                new Decorator(ctx => spell == null, new FleeAction(Fighter)),
+                new Decorator(ctx => spell == null, new DecoratorContinue(new FleeAction(Fighter))),
                 new PrioritySelector(
                     new Decorator(ctx => Fighter.CanCastSpell(spell, target.Cell),
                                   new Sequence(

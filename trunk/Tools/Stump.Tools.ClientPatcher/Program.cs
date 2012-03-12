@@ -30,9 +30,13 @@ namespace Stump.Tools.ClientPatcher
         [Variable]
         public static readonly PatchPatterns[] Patchs = new[]
         {
-            new PatchPatterns("/xD0/x30/xD0/xD1/x46/xFD/x23/x01/x48",
+            /*new PatchPatterns("/xD0/x30/xD0/xD1/x46/xFD/x23/x01/x48",
                 "/xD0/x30/xD0/xD1/x02/x02/x02/x02/x48",
-                "xxxxxxxxx")
+                "xxxxxxxxx"),*/
+                new PatchPatterns(
+                    "/x60/x92/x01/x46/xD7/x80/x01/x00/x60/x9A/x1A/x66/x9D/x84/x01/x4F/x93/x1A/x01",
+                    "/x02/x02/x02/x02/x02/x02/x02/x02/x02/x02/x02/x02/x02/x02/x02/x02/x02/x02/x02",
+                    "xxxxxxxxxxxxxxxxxxx")
         };
 
         [Variable]

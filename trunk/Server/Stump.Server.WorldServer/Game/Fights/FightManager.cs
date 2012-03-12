@@ -10,8 +10,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public Fight CreateDuel(Map map)
         {
-            var redTeam = new FightTeam(0, map.GetRedFightPlacement(), TeamEnum.TEAM_CHALLENGER);
-            var blueTeam = new FightTeam(1, map.GetBlueFightPlacement(), TeamEnum.TEAM_CHALLENGER);
+            var redTeam = new FightTeam(0, map.GetRedFightPlacement());
+            var blueTeam = new FightTeam(1, map.GetBlueFightPlacement());
 
             var fight = new FightDuel(m_idProvider.Pop(), map, blueTeam, redTeam);
 
@@ -22,10 +22,22 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public Fight CreatePvMFight(Map map)
         {
-            var redTeam = new FightTeam(0, map.GetRedFightPlacement(), TeamEnum.TEAM_CHALLENGER);
-            var blueTeam = new FightTeam(1, map.GetBlueFightPlacement(), TeamEnum.TEAM_CHALLENGER);
+            var redTeam = new FightTeam(0, map.GetRedFightPlacement());
+            var blueTeam = new FightTeam(1, map.GetBlueFightPlacement());
 
             var fight = new FightPvM(m_idProvider.Pop(), map, blueTeam, redTeam);
+
+            AddEntity(fight.Id, fight);
+
+            return fight;
+        }
+
+        public Fight CreateAgressionFight(Map map)
+        {
+            var redTeam = new FightTeam(0, map.GetRedFightPlacement());
+            var blueTeam = new FightTeam(1, map.GetBlueFightPlacement());
+
+            var fight = new FightAgression(m_idProvider.Pop(), map, blueTeam, redTeam);
 
             AddEntity(fight.Id, fight);
 

@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                         client.ActiveCharacter.LowerBoundExperience, // EXPERIENCE level floor 
                         client.ActiveCharacter.UpperBoundExperience, // EXPERIENCE nextlevel floor 
 
-                        0, // Amount of kamas.
+                        client.ActiveCharacter.Kamas, // Amount of kamas.
 
                         client.ActiveCharacter.StatsPoints, // Stats points
                         client.ActiveCharacter.SpellsPoints, // Spell points
@@ -72,7 +72,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                         client.ActiveCharacter.Stats[PlayerFields.SummonLimit],
                         client.ActiveCharacter.Stats[PlayerFields.DamageReflection],
                         client.ActiveCharacter.Stats[PlayerFields.CriticalHit],
-                        0, //client.ActiveCharacter.Inventory.WeaponCriticalHit,
+                        (short) client.ActiveCharacter.Inventory.WeaponCriticalHit,
                         client.ActiveCharacter.Stats[PlayerFields.CriticalMiss],
                         client.ActiveCharacter.Stats[PlayerFields.HealBonus],
                         client.ActiveCharacter.Stats[PlayerFields.DamageBonus],
@@ -124,6 +124,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         {
             client.Send(new CharacterLevelUpMessage(level));
         }
+
 
         public static void SendCharacterLevelUpInformationMessage(IPacketReceiver client, Character character, byte level)
         {

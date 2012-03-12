@@ -209,7 +209,10 @@ namespace Stump.Tools.CacheManager
 
                 // delete all existing rows. BE CAREFUL !!
                 if (table.Inheritance == null)
+                {
                     Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildDelete(table.TableName));
+                    Program.DBAccessor.ExecuteNonQuery("ALTER TABLE " + table.TableName + " AUTO_INCREMENT=1");
+                }
 
                 object[] objects = reader.ReadObjects().Values.ToArray();
                 int cursorLeft = Console.CursorLeft;

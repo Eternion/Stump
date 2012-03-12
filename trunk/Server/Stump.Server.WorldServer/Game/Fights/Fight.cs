@@ -162,6 +162,24 @@ namespace Stump.Server.WorldServer.Game.Fights
             private set;
         }
 
+        public FightTeam Winners
+        {
+            get;
+            private set;
+        }
+
+        public FightTeam Losers
+        {
+            get;
+            private set;
+        }
+
+        public bool Draw
+        {
+            get;
+            private set;
+        }
+
         public TimeLine TimeLine
         {
             get;
@@ -330,6 +348,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected virtual void OnFightEnded()
         {
             ReadyChecker = null;
+            DeterminsWinners();
 
             List<IFightResult> results = GenerateResults().ToList();
 
@@ -344,6 +363,25 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
 
             Dispose();
+        }
+
+        protected virtual void DeterminsWinners()
+        {
+            if (BlueTeam.AreAllDead() && !RedTeam.AreAllDead())
+            {
+                Winners = RedTeam;
+                Losers = BlueTeam;
+                Draw = false;
+            }
+
+            else if (!BlueTeam.AreAllDead() && RedTeam.AreAllDead())
+            {
+                Winners = BlueTeam;
+                Losers = RedTeam;
+                Draw = false;
+            }
+
+            else Draw = true;
         }
 
         protected void ResetFightersProperties()
@@ -1401,6 +1439,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                             character.RejoinMap();
 
                             fighter.Team.RemoveFighter(fighter);
+                            fighter.Team.AddLeaver(fighter);
                             Leavers.Add(fighter);
                         };
                     readyChecker.Success += sendResults;
@@ -1423,6 +1462,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                     fighter.ResetFightProperties();
 
                     fighter.Team.RemoveFighter(fighter);
+                    fighter.Team.AddLeaver(fighter);
                     Leavers.Add(fighter);
                 }
             }

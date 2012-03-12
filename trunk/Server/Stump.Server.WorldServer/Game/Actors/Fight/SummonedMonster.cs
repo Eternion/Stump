@@ -46,23 +46,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return m_stats; }
         }
 
-
-        public override bool CanCastSpell(Spell spell, Cell cell)
-        {
-            if (!base.CanCastSpell(spell, cell))
-                return false;
-            
-            if (Monster.Spells.Any(entry => entry == null))
-            {
-                logger.Debug("Why the hell is a spell null ???");
-            }
-
-            if (Monster.Spells.Count(entry => entry.Id == spell.Id) <= 0)
-                return false;
-
-            return true;
-        }
-
         public override string GetMapRunningFighterName()
         {
             return Monster.Id.ToString();

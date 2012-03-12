@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Stats;
@@ -31,6 +32,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get;
             protected set;
         }
+
 
         public override int GetTackledAP()
         {

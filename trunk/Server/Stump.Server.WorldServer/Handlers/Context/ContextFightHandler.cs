@@ -86,19 +86,39 @@ namespace Stump.Server.WorldServer.Handlers.Context
         {
             var target = client.ActiveCharacter.Map.GetActor<Character>(message.targetId);
 
-            FighterRefusedReasonEnum reason = client.ActiveCharacter.CanRequestFight(target);
-            if (reason != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)
+            if (message.friendly)
             {
-                SendChallengeFightJoinRefusedMessage(client, client.ActiveCharacter, reason);
+                FighterRefusedReasonEnum reason = client.ActiveCharacter.CanRequestFight(target);
+                if (reason != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)
+                {
+                    SendChallengeFightJoinRefusedMessage(client, client.ActiveCharacter, reason);
+                }
+                else
+                {
+                    var fightRequest = new FightRequest(client.ActiveCharacter, target);
+
+                    client.ActiveCharacter.OpenRequestBox(fightRequest);
+                    target.OpenRequestBox(fightRequest);
+
+                    fightRequest.Open();
+                }
             }
-            else if (message.friendly)
+            else // agression
             {
-                var fightRequest = new FightRequest(client.ActiveCharacter, target);
+                FighterRefusedReasonEnum reason = client.ActiveCharacter.CanAgress(target);
+                if (reason != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)
+                {
+                    SendChallengeFightJoinRefusedMessage(client, client.ActiveCharacter, reason);
+                }
+                else
+                {
+                    var fight = FightManager.Instance.CreateAgressionFight(target.Map);
 
-                client.ActiveCharacter.OpenRequestBox(fightRequest);
-                target.OpenRequestBox(fightRequest);
+                    fight.RedTeam.AddFighter(client.ActiveCharacter.CreateFighter(fight.RedTeam));
+                    fight.BlueTeam.AddFighter(target.CreateFighter(fight.BlueTeam));
 
-                fightRequest.Open();
+                    fight.StartPlacement();
+                }
             }
         }
 

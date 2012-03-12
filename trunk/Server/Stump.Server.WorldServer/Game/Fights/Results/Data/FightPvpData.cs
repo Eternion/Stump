@@ -52,7 +52,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Results.Data
             set;
         }
 
-
         public override DofusProtocol.Types.FightResultAdditionalData GetFightResultAdditionalData()
         {
             return new FightResultPvpData(Grade, MinHonorForGrade, MaxHonorForGrade, Honor, HonorDelta, Dishonor, DishonorDelta);
@@ -60,7 +59,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Results.Data
 
         public override void Apply()
         {
-            // todo
+            if (HonorDelta > 0)
+                Character.AddHonor((ushort)HonorDelta);
+            else if (HonorDelta < 0)
+                Character.SubHonor((ushort)-HonorDelta);
+
+            if (HonorDelta > 0)
+                Character.AddDishonor((ushort)DishonorDelta);
+            else if (HonorDelta < 0)
+                Character.SubDishonor((ushort)-DishonorDelta);
         }
     }
 }

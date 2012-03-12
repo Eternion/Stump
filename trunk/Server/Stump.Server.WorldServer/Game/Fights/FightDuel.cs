@@ -15,6 +15,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
         }
 
+
         public override FightTypeEnum FightType
         {
             get { return FightTypeEnum.FIGHT_TYPE_CHALLENGE; }

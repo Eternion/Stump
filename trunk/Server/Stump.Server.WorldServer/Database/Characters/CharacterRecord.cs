@@ -448,6 +448,45 @@ namespace Stump.Server.WorldServer.Database.Characters
 
         #endregion
 
+        #region Alignement
+
+        [Property]
+        public AlignmentSideEnum AlignmentSide
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public sbyte AlignmentValue
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public ushort Honor
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public ushort Dishonor
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool PvPEnabled
+        {
+            get;
+            set;
+        }
+
+        #endregion
+
         protected override void OnDelete()
         {
             ItemRecord.DeleteAll("OwnerId = " + Id);

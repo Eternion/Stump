@@ -201,6 +201,7 @@
     <Compile Include="Cache\ObjectValidator.cs" />
     <Compile Include="Collections\BlockingQueue.cs" />
     <Compile Include="Collections\ConcurrentList.cs" />
+    <Compile Include="Collections\LimitedStack.cs" />
     <Compile Include="Collections\LockFreeQueue.cs" />
     <Compile Include="Collections\PriorityQueueB.cs" />
     <Compile Include="Collections\TimedDictionary.cs" />

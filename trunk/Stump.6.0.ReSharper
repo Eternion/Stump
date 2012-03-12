@@ -392,6 +392,7 @@ if($bool$) $x$ = false;]]></SearchPattern>
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateStaticReadonly" />
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="EnumMember" />
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Other" />
+      <Abbreviation Text="PVP" />
     </Naming2>
   </CodeStyleSettings>
 </Configuration>

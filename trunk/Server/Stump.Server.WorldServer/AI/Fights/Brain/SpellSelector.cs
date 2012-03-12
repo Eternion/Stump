@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
         {
             Spell bestSpell = null;
             double bestSpellDamages = 0;
-            foreach (Spell spell in Fighter.Spells)
+            foreach (Spell spell in Fighter.Spells.Values)
             {
                 double spellDamage = GetSpellDamages(spell);
                 if (spellDamage > bestSpellDamages)

@@ -19,16 +19,22 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        [Property("CharacterExp", NotNull = false)]
+        [Property("GuildExp", NotNull = false)]
         public long? GuildExp
         {
             get;
             set;
         }
 
-
-        [Property("CharacterExp", NotNull = false)]
+        [Property("MountExp", NotNull = false)]
         public long? MountExp
+        {
+            get;
+            set;
+        }
+
+        [Property("AlignmentHonor", NotNull = false)]
+        public ushort? AlignmentHonor
         {
             get;
             set;

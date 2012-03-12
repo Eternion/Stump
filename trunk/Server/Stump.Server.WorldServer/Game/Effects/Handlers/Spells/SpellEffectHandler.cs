@@ -18,6 +18,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 {
     public abstract class SpellEffectHandler : EffectHandler
     {
+        private Cell[] m_affectedCells;
+        private MapPoint m_castPoint;
         private Zone m_effectZone;
 
         protected SpellEffectHandler(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -78,8 +80,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             get { return MarkTrigger != null && MarkTrigger.Shapes.Length > 0 ? MarkTrigger.Shapes[0].Cell : Caster.Cell; }
         }
 
-        private MapPoint m_castPoint;
-
         public MapPoint CastPoint
         {
             get { return m_castPoint ?? (m_castPoint = new MapPoint(CastCell)); }
@@ -88,7 +88,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public Zone EffectZone
         {
-            get { return m_effectZone ?? (m_effectZone = new Zone(Effect.ZoneShape, Effect.ZoneSize, CastPoint.OrientationTo(TargetedPoint))); }
+            get
+            {
+                return m_effectZone ??
+                       (m_effectZone =
+                        new Zone(Effect.ZoneShape, Effect.ZoneSize, CastPoint.OrientationTo(TargetedPoint)));
+            }
             set
             {
                 m_effectZone = value;
@@ -96,8 +101,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                 RefreshZone();
             }
         }
-
-        private Cell[] m_affectedCells;
 
         public Cell[] AffectedCells
         {
@@ -129,27 +132,33 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                 !Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF))
                 return false;
 
-            // todo : summons
+            if (Caster.IsFriendlyWith(actor))
+            {
+                if ((Effect.Targets.HasFlag(SpellTargetType.ALLY_1) ||
+                    Effect.Targets.HasFlag(SpellTargetType.ALLY_2) ||
+                    Effect.Targets.HasFlag(SpellTargetType.ALLY_3) ||
+                    Effect.Targets.HasFlag(SpellTargetType.ALLY_4) ||
+                    Effect.Targets.HasFlag(SpellTargetType.ALLY_5)) && !(actor is SummonedFighter))
+                    return true;
 
-            if (Caster.IsFriendlyWith(actor) && 
-                Effect.Targets.HasFlag(SpellTargetType.ALLY_1) ||
-                Effect.Targets.HasFlag(SpellTargetType.ALLY_2) ||
-                Effect.Targets.HasFlag(SpellTargetType.ALLY_3) ||
-                Effect.Targets.HasFlag(SpellTargetType.ALLY_4) ||
-                Effect.Targets.HasFlag(SpellTargetType.ALLY_5) ||
-                Effect.Targets.HasFlag(SpellTargetType.ALLY_SUMMONS) ||
-                Effect.Targets.HasFlag(SpellTargetType.ALLY_STATIC_SUMMONS))
-                return true;
+                if ((Effect.Targets.HasFlag(SpellTargetType.ALLY_SUMMONS) ||
+                    Effect.Targets.HasFlag(SpellTargetType.ALLY_STATIC_SUMMONS)) && actor is SummonedFighter)
+                    return true;
+            }
 
-            if (Caster.IsEnnemyWith(actor) &&
-                Effect.Targets.HasFlag(SpellTargetType.ENNEMY_1) ||
-                Effect.Targets.HasFlag(SpellTargetType.ENNEMY_2) ||
-                Effect.Targets.HasFlag(SpellTargetType.ENNEMY_3) ||
-                Effect.Targets.HasFlag(SpellTargetType.ENNEMY_4) ||
-                Effect.Targets.HasFlag(SpellTargetType.ENNEMY_5) ||
-                Effect.Targets.HasFlag(SpellTargetType.ENNEMY_SUMMONS) ||
-                Effect.Targets.HasFlag(SpellTargetType.ENNEMY_STATIC_SUMMONS))
-                return true;
+            if (Caster.IsEnnemyWith(actor))
+            {
+                if ((Effect.Targets.HasFlag(SpellTargetType.ENNEMY_1) ||
+                    Effect.Targets.HasFlag(SpellTargetType.ENNEMY_2) ||
+                    Effect.Targets.HasFlag(SpellTargetType.ENNEMY_3) ||
+                    Effect.Targets.HasFlag(SpellTargetType.ENNEMY_4) ||
+                    Effect.Targets.HasFlag(SpellTargetType.ENNEMY_5)) && !(actor is SummonedFighter))
+                    return true;
+
+                if ((Effect.Targets.HasFlag(SpellTargetType.ENNEMY_SUMMONS) ||
+                    Effect.Targets.HasFlag(SpellTargetType.ENNEMY_STATIC_SUMMONS)) && actor is SummonedFighter)
+                    return true;
+            }
 
             return false;
         }
@@ -162,7 +171,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public IEnumerable<FightActor> GetAffectedActors()
         {
             if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF))
-                return new [] { Caster };
+                return new[] {Caster};
 
             return Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && IsValidTarget(entry)).ToArray();
         }
@@ -170,8 +179,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public IEnumerable<FightActor> GetAffectedActors(Predicate<FightActor> predicate)
         {
             if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) && predicate(Caster))
-                return new[] { Caster };
-            
+                return new[] {Caster};
+
             if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF))
                 return new FightActor[0];
 
@@ -189,17 +198,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return buff;
         }
 
-        public StatBuff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, bool dispelable, short customActionId)
+        public StatBuff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, bool dispelable,
+                                    short customActionId)
         {
             int id = target.PopNextBuffId();
-            var buff = new StatBuff(id, target, Caster, Effect, Spell, value, caracteritic, Critical, dispelable, customActionId);
+            var buff = new StatBuff(id, target, Caster, Effect, Spell, value, caracteritic, Critical, dispelable,
+                                    customActionId);
 
             target.AddAndApplyBuff(buff);
 
             return buff;
         }
 
-        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, BuffTriggerType trigger, TriggerBuffApplyHandler applyTrigger)
+        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, BuffTriggerType trigger,
+                                          TriggerBuffApplyHandler applyTrigger)
         {
             int id = target.PopNextBuffId();
             var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Critical, dispelable, trigger, applyTrigger);
@@ -208,10 +220,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
             return buff;
         }
-        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, BuffTriggerType trigger, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
+
+        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, BuffTriggerType trigger,
+                                          TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
         {
             int id = target.PopNextBuffId();
-            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Critical, dispelable, trigger, applyTrigger, removeTrigger);
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Critical, dispelable, trigger, applyTrigger,
+                                       removeTrigger);
 
             target.AddAndApplyBuff(buff);
 

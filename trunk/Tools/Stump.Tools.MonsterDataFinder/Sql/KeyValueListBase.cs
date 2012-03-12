@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Stump.Tools.MonsterDataFinder
+namespace Stump.Tools.MonsterDataFinder.Sql
 {
     public class KeyValueListBase
     {
@@ -18,7 +18,6 @@ namespace Stump.Tools.MonsterDataFinder
         {
             Pairs = pairs;
         }
-
 
         public void AddPair(string key, object value)
         {

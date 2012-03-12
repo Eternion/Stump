@@ -164,6 +164,7 @@
     <Compile Include="AI\Fights\Brain\Brain.cs" />
     <Compile Include="AI\Fights\Threat\ThreatCalculator.cs" />
     <Compile Include="AI\Fights\Threat\VisibleSpellInformation.cs" />
+    <Compile Include="Commands\Commands\AlignmentCommands.cs" />
     <Compile Include="Commands\Commands\AnnounceCommand.cs" />
     <Compile Include="Commands\Commands\BanCommand.cs" />
     <Compile Include="Commands\Commands\GodCommand.cs" />
@@ -261,8 +262,11 @@
     <Compile Include="Game\Conditions\ConditionParser.cs" />
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\Punishment.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\SpellBoost.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\Kill.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Heal\Heal.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Move\RepelsTo.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Others\RevealsInvisible.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\States\AddState.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\States\ChangeSkin.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Steals\APSteal.cs" />
@@ -272,10 +276,13 @@
     <Compile Include="Game\Fights\Buffs\Customs\InvisibilityBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkinBuff.cs" />
     <Compile Include="Game\Fights\Fight.cs" />
+    <Compile Include="Game\Fights\FightAgression.cs" />
     <Compile Include="Game\Fights\FightCellsInformationProvider.cs" />
     <Compile Include="Game\Fights\FightDuel.cs" />
     <Compile Include="Game\Fights\FightPvM.cs" />
     <Compile Include="Game\Fights\FightSpectator.cs" />
+    <Compile Include="Game\Fights\History\SpellHistoryEntry.cs" />
+    <Compile Include="Game\Fights\History\SpellHistory.cs" />
     <Compile Include="Game\Fights\ReadyChecker.cs" />
     <Compile Include="Game\Fights\TimeLine.cs" />
     <Compile Include="Game\Jobs\Job.cs" />
@@ -287,6 +294,8 @@
     <Compile Include="Handlers\Dialogs\DialogHandler.cs" />
     <Compile Include="Handlers\Friends\FriendHandler.cs" />
     <Compile Include="Handlers\Interactives\InteractiveHandler.cs" />
+    <Compile Include="Handlers\Prism\PrismHandler.cs" />
+    <Compile Include="Handlers\PvP\PvPHandler.cs" />
     <Compile Include="Rates.cs" />
     <Compile Include="Database\Accounts\WorldAccount.cs" />
     <Compile Include="Database\Breeds\Breed.cs" />

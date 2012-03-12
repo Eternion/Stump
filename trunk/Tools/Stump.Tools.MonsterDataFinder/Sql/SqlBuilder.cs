@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
+using Stump.Tools.MonsterDataFinder.Sql;
 
 namespace Stump.Tools.MonsterDataFinder
 {
@@ -127,7 +128,10 @@ namespace Stump.Tools.MonsterDataFinder
 
         public static string GetValueString(object obj)
         {
-                return "'" + obj + "'";
+            if (obj is RawData)
+                return ( (RawData)obj ).Data.ToString();
+
+            return "'" + obj + "'";
         }
 
         private static string QuoteForTableName(string table)

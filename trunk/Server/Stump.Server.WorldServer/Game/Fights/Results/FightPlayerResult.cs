@@ -1,8 +1,8 @@
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Fights.Results.Data;
 using Stump.Server.WorldServer.Handlers.Characters;
 using FightResultAdditionalData = Stump.Server.WorldServer.Game.Fights.Results.Data.FightResultAdditionalData;
 
@@ -10,16 +10,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 {
     public class FightPlayerResult : FightResult<CharacterFighter>
     {
-        public FightPlayerResult(CharacterFighter fighter, FightOutcomeEnum outcome, FightLoot loot, FightExperienceData additionalData)
+        public FightPlayerResult(CharacterFighter fighter, FightOutcomeEnum outcome, FightLoot loot,
+                                 params FightResultAdditionalData[] additionalDatas)
             : base(fighter, outcome, loot)
         {
-            AdditionalData = additionalData;
-        }
-
-        public FightPlayerResult(CharacterFighter fighter, FightOutcomeEnum outcome, FightLoot loot, FightPvpData additionalData)
-            : base(fighter, outcome, loot)
-        {
-            AdditionalData = additionalData;
+            AdditionalDatas = additionalDatas;
         }
 
         public FightPlayerResult(CharacterFighter fighter, FightOutcomeEnum outcome, FightLoot loot)
@@ -37,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             get { return Character.Level; }
         }
 
-        public FightResultAdditionalData AdditionalData
+        public FightResultAdditionalData[] AdditionalDatas
         {
             get;
             private set;
@@ -45,18 +40,22 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
         public override FightResultListEntry GetFightResultListEntry()
         {
-            DofusProtocol.Types.FightResultAdditionalData[] additionalData = AdditionalData != null
-                                                                                 ? new[] {AdditionalData.GetFightResultAdditionalData()}
-                                                                                 : new DofusProtocol.Types.FightResultAdditionalData[0];
+            var additionalDatas = AdditionalDatas != null ? 
+                AdditionalDatas.Select(entry => entry.GetFightResultAdditionalData())
+                : new DofusProtocol.Types.FightResultAdditionalData[0];
 
-            return new FightResultPlayerListEntry((short) Outcome, Loot.GetFightLoot(), Id, Alive, Level, additionalData);
+            return new FightResultPlayerListEntry((short) Outcome, Loot.GetFightLoot(), Id, Alive, Level,
+                                                  additionalDatas);
         }
 
         public override void Apply()
         {
             Loot.GiveLoot(Character);
-            if (AdditionalData != null)
-                AdditionalData.Apply();
+            if (AdditionalDatas != null)
+                foreach (FightResultAdditionalData additionalData in AdditionalDatas)
+                {
+                    additionalData.Apply();
+                }
 
             CharacterHandler.SendCharacterStatsListMessage(Character.Client);
         }

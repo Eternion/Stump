@@ -17,6 +17,7 @@ using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
+using Stump.Server.WorldServer.Game.Fights.History;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps;
@@ -126,6 +127,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                         SetInvisibilityState(VisibleStateEnum.VISIBLE);
             }
 
+            SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, target);
+
             SpellCastingHandler handler = SpellCasted;
             if (handler != null)
                 handler(this, spell, target, critical, silentCast);
@@ -135,6 +138,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnWeaponUsed(WeaponTemplate weapon, Cell cell, FightSpellCastCriticalEnum critical, bool silentCast)
         {
+            if (VisibleState == GameActionFightInvisibilityStateEnum.INVISIBLE)
+            {
+                ShowCell(Cell, false);
+
+                if (!DispellInvisibilityBuff())
+                     SetInvisibilityState(VisibleStateEnum.VISIBLE);
+            }
+
             Action<FightActor, WeaponTemplate, Cell, FightSpellCastCriticalEnum, bool> handler = WeaponUsed;
             if (handler != null) handler(this, weapon, cell, critical, silentCast);
         }
@@ -216,6 +227,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             OpposedTeam = Fight.BlueTeam == Team ? Fight.RedTeam : Fight.BlueTeam;
             VisibleState = VisibleStateEnum.VISIBLE;
             Loot = new FightLoot();
+            SpellHistory = new SpellHistory(this);
         }
 
         #endregion
@@ -265,6 +277,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             get;
             internal set;
+        }
+
+        public SpellHistory SpellHistory
+        {
+            get;
+            private set;
         }
 
         #region Stats
@@ -320,6 +338,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get;
             private set;
         }
+
+        public abstract Spell GetSpell(int id);
+        public abstract bool HasSpell(int id);
 
         #endregion
 
@@ -492,8 +513,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (!IsFighterTurn())
                 return false;
 
+            if (!HasSpell(spell.Id))
+                return false;
+
             var spellLevel = spell.CurrentSpellLevel;
             var point = new MapPoint(cell);
+
+            if (!cell.Walkable || cell.NonWalkableDuringFight)
+                return false;
 
             if (point.DistanceToCell(Position.Point) > GetSpellRange(spellLevel) ||
                 point.DistanceToCell(Position.Point) < spellLevel.MinRange)
@@ -513,8 +540,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (spellLevel.StatesRequired.Any(state => !HasState(state)))
                 return false;
 
-            // todo : check casts per turn
-            // todo : check cooldown
+            if (!SpellHistory.CanCastSpell(spellLevel, cell))
+                return false;
 
             return true;
         }
@@ -553,18 +580,29 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var effects = critical == FightSpellCastCriticalEnum.CRITICAL_HIT ? spellLevel.CritialEffects : spellLevel.Effects;
             var handlers = new List<SpellEffectHandler>();
+
+            var rand = random.NextDouble();
+            double randSum = effects.Sum(entry => entry.Random);
+            bool stopRand = false;
             foreach (var effect in effects)
             {
                 if (effect.Random > 0)
                 {
-                    if (random.NextDouble() > effect.Random/100d)
+                    if (stopRand)
+                        continue;
+
+                    if (rand > effect.Random / randSum)
                     {
                         // effect ignored
+                        rand -= effect.Random / randSum;
                         continue;
                     }
+
+                    // random effect found, there can be only one
+                    stopRand = true;
                 }
 
-                var handler = EffectManager.Instance.GetSpellEffectHandler(effect, this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
+                SpellEffectHandler handler = EffectManager.Instance.GetSpellEffectHandler(effect, this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
                 handlers.Add(handler);
             }
 
@@ -644,13 +682,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             damage -= reduction;
 
             if (damage <= 0)
-                return 0;
+                damage = 0;
 
             return InflictDirectDamage(damage);
         }
 
-        public short InflictDamage(short damage, EffectSchoolEnum school, FightActor from, bool pvp = false)
+        public short InflictDamage(short damage, EffectSchoolEnum school, FightActor from, bool pvp = false, Spell spell = null)
         {
+            if (spell != null)
+                damage += from.GetSpellBoost(spell);
+
             damage = from.CalculateDamage(damage, school);
             damage = CalculateDamageResistance(damage, school, pvp);
 
@@ -664,14 +705,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (reflected > 0)
             {
-                from.InflictDamage(damage, school, this, pvp);
+                from.InflictDamage(reflected, school, this, pvp);
                 OnDamageReflected(from, reflected);
             }
 
             damage -= reduction;
 
             if (damage <= 0)
-                return 0;
+                damage = 0;
 
             return InflictDirectDamage(damage, from);
         }
@@ -866,7 +907,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var apDodge = Stats[PlayerFields.DodgeAPProbability].Total > 1 ? from.Stats[PlayerFields.DodgeAPProbability].TotalSafe : 1;
 
             var prob = (apAttack/(double) apDodge)*
-                       ((Stats.AP.Total/(double) (Stats.AP.Total - Stats.AP.Used))/2d);
+                       ( ( Stats.AP.TotalMax / (double)( Stats.AP.TotalMax - Stats.AP.Used ) ) / 2d );
 
             if (prob < 0.10)
                 prob = 0.10;
@@ -884,7 +925,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var mpDodge = Stats[PlayerFields.DodgeMPProbability].Total > 1 ? from.Stats[PlayerFields.DodgeMPProbability].TotalSafe : 1;
 
             var prob = (mpAttack/(double) mpDodge)*
-                       ((Stats.AP.Total/(double) (Stats.AP.Total - Stats.AP.Used))/2d);
+                       ( ( Stats.AP.TotalMax / (double)( Stats.AP.TotalMax - Stats.AP.Used ) ) / 2d );
 
             if (prob < 0.10)
                 prob = 0.10;
@@ -983,6 +1024,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Buffs
 
+        private readonly Dictionary<Spell, short> m_buffedSpells = new Dictionary<Spell, short>(); 
         private readonly UniqueIdProvider m_buffIdProvider = new UniqueIdProvider();
         private readonly List<Buff> m_buffList = new List<Buff>();
 
@@ -1093,6 +1135,33 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 fighter.DecrementBuffsDuration(this);
             }
+        }
+
+        public void BuffSpell(Spell spell, short boost)
+        {
+            if (!m_buffedSpells.ContainsKey(spell))
+                m_buffedSpells.Add(spell, boost);
+            else
+                m_buffedSpells[spell] += boost;
+        }
+
+        public void UnBuffSpell(Spell spell, short boost)
+        {
+            if (!m_buffedSpells.ContainsKey(spell))
+                return;
+
+            m_buffedSpells[spell] -= boost;
+
+            if (m_buffedSpells[spell] == 0)
+                m_buffedSpells.Remove(spell);
+        }
+
+        public short GetSpellBoost(Spell spell)
+        {
+            if (!m_buffedSpells.ContainsKey(spell))
+                return 0;
+
+            return m_buffedSpells[spell];
         }
 
         #endregion

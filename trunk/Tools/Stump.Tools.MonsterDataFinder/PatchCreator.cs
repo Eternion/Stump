@@ -4,23 +4,44 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Tools.MonsterDataFinder.Readers;
+using Stump.Tools.MonsterDataFinder.Sql;
 using Monster = Stump.Tools.MonsterDataFinder.Data.Monster;
 
 namespace Stump.Tools.MonsterDataFinder
 {
     public class PatchCreator
     {
+        public event Action<PatchCreator, MonsterTemplate, Monster> MonsterAnalysed;
+
+        private long m_counter;
         private readonly string m_destination;
 
         private TextWriter m_monstersPatchWriter;
         private TextWriter m_monstersSpellsPatchWriter;
-        private TextWriter m_monstersDropsPatchWriter; 
+        private TextWriter m_monstersDropsPatchWriter;
+
+        public long Counter
+        {
+            get { return Interlocked.Read(ref m_counter); }
+        }
+
+        public int Total
+        {
+            get;
+            private set;
+        }
+
+        public double Percent
+        {
+            get { return Counter/(double)Total*100d; }
+        }
 
         public PatchCreator(string destination)
         {
@@ -34,7 +55,9 @@ namespace Stump.Tools.MonsterDataFinder
             m_monstersSpellsPatchWriter = CreateSyncPatch(Path.Combine(m_destination, "monsters_spells.sql"));
             m_monstersDropsPatchWriter = CreateSyncPatch(Path.Combine(m_destination, "monsters_drops.sql"));
 
-            IEnumerable<int> monstersId = MonsterManager.Instance.GetTemplates().Select(entry => entry.Id);
+            var monstersId = MonsterManager.Instance.GetTemplates().Select(entry => entry.Id).ToArray();
+            Total = monstersId.Length;
+            m_counter = 0;
 
             Parallel.ForEach(monstersId, ComputeMonster);
 
@@ -48,7 +71,19 @@ namespace Stump.Tools.MonsterDataFinder
             var reader = new MonsterDataReader();
             var dropParser = new DropParser();
 
-            Monster monsterData = reader.Request(id);
+            Monster monsterData;
+            try
+            {
+                monsterData = reader.Request(id);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+            finally
+            {
+                Interlocked.Increment(ref m_counter);
+            }
 
             if (monsterData == null)
                 return;
@@ -85,7 +120,14 @@ namespace Stump.Tools.MonsterDataFinder
 
                         list.AddPair("SpellId", spellId);
                         list.AddPair("Level", grade.GradeId);
-                        list.AddPair("MonsterGradeId", grade.Id);
+
+                        var subQueryId = 
+                            SqlBuilder.BuildSelect(new [] { "Id" }, "monsters_grades",
+                            "WHERE " + SqlBuilder.BuildWhere(new List<KeyValuePair<string, object>> {
+                                new KeyValuePair<string, object>("MonsterId", monster.Id),
+                                new KeyValuePair<string, object>("Grade", grade.GradeId)}));
+
+                        list.AddPair("MonsterGradeId", RawData.Raw("(" + subQueryId + ")"));
 
                         string spellQuery = SqlBuilder.BuildInsert(list);
 
@@ -117,6 +159,11 @@ namespace Stump.Tools.MonsterDataFinder
 
             string query = SqlBuilder.BuildUpdate(updateList);
             AppendQueryToPatch(m_monstersPatchWriter, query);
+
+            var evnt = MonsterAnalysed;
+
+            if (evnt != null)
+                evnt(this, monster, monsterData);
         }
 
         private TextWriter CreateSyncPatch(string path)

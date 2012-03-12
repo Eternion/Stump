@@ -20,8 +20,8 @@ namespace Stump.Tools.ClientPatcher.Patchs
 
         public PatchPatterns(string findPatternString, string replacePatternString, string mask)
         {
-            m_findPatternString = findPatternString;
-            m_replacePatternString = replacePatternString;
+            FindPatternString = findPatternString;
+            ReplacePatternString = replacePatternString;
             Mask = mask;
         }
 

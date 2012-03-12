@@ -50,6 +50,12 @@ namespace Stump.Tools.MonsterDataFinder
             MonsterManager.Instance.Initialize();
 
             var patchCreator = new PatchCreator("./");
+            patchCreator.MonsterAnalysed += (sender, template, data) =>
+                                                {
+                                                    if (sender.Counter % 10 == 0)
+                                                        Console.WriteLine("{0}/{1} ({2:0.0}%)", sender.Counter,
+                                                                          sender.Total, sender.Percent);
+                                                };
             try
             {
                 patchCreator.CreatePatchs();

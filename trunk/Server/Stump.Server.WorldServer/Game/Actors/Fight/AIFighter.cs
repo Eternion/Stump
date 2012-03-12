@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.AI.Fights.Brain;
@@ -13,10 +15,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
     {
         protected static Logger logger = LogManager.GetCurrentClassLogger();
 
-        protected AIFighter(FightTeam team, Spell[] spells)
+        protected AIFighter(FightTeam team, IEnumerable<Spell> spells)
             : base(team)
         {
-            Spells = spells;
+            Spells = spells.ToDictionary(entry => entry.Id);
             Brain = new Brain(this);
             Fight.TurnStarted += OnTurnStarted;
         }
@@ -27,10 +29,20 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             private set;
         }
 
-        public Spell[] Spells
+        public Dictionary<int, Spell> Spells
         {
             get;
             private set;
+        }
+
+        public override Spell GetSpell(int id)
+        {
+            return Spells.ContainsKey(id) ? Spells[id] : null;
+        }
+
+        public override bool HasSpell(int id)
+        {
+            return Spells.ContainsKey(id);
         }
 
         public abstract string Name

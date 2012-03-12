@@ -469,10 +469,10 @@
         /// <summary>
         /// Reveals all invisible items
         /// </summary>
-        Effect_202 = 202,
+        Effect_RevealsInvisible = 202,
         /// <summary>
         /// Revive the target
-        /// </summary>
+        /// </summary>  
         Effect_206 = 206,
         /// <summary>
         /// #1{~1~2 to }#2 % earth resistance
@@ -743,7 +743,7 @@
         /// <summary>
         /// Increases #1's basic damage by #3
         /// </summary>
-        Effect_293 = 293,
+        Effect_SpellBoost = 293,
         /// <summary>
         /// Reduces #1's range by #3
         /// </summary>
@@ -1193,7 +1193,7 @@
         /// <summary>
         /// Repels to the targeted cell
         /// </summary>
-        Effect_783 = 783,
+        Effect_RepelsTo = 783,
         /// <summary>
         /// Return to original position
         /// </summary>

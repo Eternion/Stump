@@ -55,13 +55,21 @@ namespace Stump.Server.WorldServer.Game.Fights
         #endregion
 
         private readonly List<FightActor> m_fighters = new List<FightActor>();
+        private readonly List<FightActor> m_leavers = new List<FightActor>();
         private readonly object m_locker = new object();
 
-        public FightTeam(sbyte id, Cell[] placementCells, TeamEnum teamType)
+        public FightTeam(sbyte id, Cell[] placementCells)
         {
             Id = id;
             PlacementCells = placementCells;
-            TeamType = teamType;
+            AlignmentSide = AlignmentSideEnum.ALIGNMENT_WITHOUT;
+        }
+
+        public FightTeam(sbyte id, Cell[] placementCells, AlignmentSideEnum alignmentSide)
+        {
+            Id = id;
+            PlacementCells = placementCells;
+            AlignmentSide = alignmentSide;
         }
 
         public sbyte Id
@@ -82,10 +90,23 @@ namespace Stump.Server.WorldServer.Game.Fights
             private set;
         }
 
-        public TeamEnum TeamType
+        public AlignmentSideEnum AlignmentSide
         {
             get;
             private set;
+        }
+
+        public TeamTypeEnum TeamType
+        {
+            get
+            {
+                if (IsPlayerTeam())
+                    return TeamTypeEnum.TEAM_TYPE_PLAYER;
+                if (IsMonsterTeam())
+                    return TeamTypeEnum.TEAM_TYPE_MONSTER;
+
+                return TeamTypeEnum.TEAM_TYPE_MONSTER;
+            }
         }
 
         public Fight Fight
@@ -224,6 +245,10 @@ namespace Stump.Server.WorldServer.Game.Fights
                     return FighterRefusedReasonEnum.TEAM_LIMITED_BY_MAINCHARACTER;
             }
 
+            if (AlignmentSide != AlignmentSideEnum.ALIGNMENT_WITHOUT &&
+                character.AlignmentSide != AlignmentSide)
+                return FighterRefusedReasonEnum.WRONG_ALIGNMENT;
+
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }
 
@@ -248,11 +273,22 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             lock (m_locker)
             {
-                m_fighters.Remove(actor);
+                if (!m_fighters.Remove(actor))
+                    return false;
 
                 NotifyFighterRemoved(actor);
                 return true;
             }
+        }
+
+        public void AddLeaver(FightActor leaver)
+        {
+            m_leavers.Add(leaver);
+        }
+
+        public bool RemoveLeaver(FightActor leaver)
+        {
+            return m_leavers.Remove(leaver);
         }
 
         public FightActor GetOneFighter(int id)
@@ -285,6 +321,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             return m_fighters;
         }
 
+        public IEnumerable<FightActor> GetAllFightersWithLeavers()
+        {
+            return m_fighters.Concat(m_leavers);
+        }
+
         public IEnumerable<FightActor> GetAllFighters(Cell[] cells)
         {
             return GetAllFighters<FightActor>(entry => cells.Contains(entry.Position.Cell));
@@ -292,7 +333,11 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public IEnumerable<FightActor> GetAllFighters(Predicate<FightActor> predicate)
         {
-            return m_fighters.Where(entry => predicate(entry));
+            return GetAllFighters().Where(entry => predicate(entry));
+        }
+        public IEnumerable<FightActor> GetAllFightersWithLeavers(Predicate<FightActor> predicate)
+        {
+            return GetAllFightersWithLeavers().Where(entry => predicate(entry));
         }
 
         public IEnumerable<T> GetAllFighters<T>() where T : FightActor
@@ -309,7 +354,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             return new FightTeamInformations(Id,
                 Leader != null ? Leader.Id : 0,
-                (sbyte) AlignmentSideEnum.ALIGNMENT_WITHOUT,
+                (sbyte) AlignmentSide,
                 (sbyte) TeamType,
                 m_fighters.Select(entry => entry.GetFightTeamMemberInformations())
                 );
@@ -326,7 +371,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightTeamLightInformations GetFightTeamLightInformations()
         {
-            return new FightTeamLightInformations(Id, Leader.Id, (sbyte) AlignmentSideEnum.ALIGNMENT_WITHOUT,
+            return new FightTeamLightInformations(Id, Leader.Id, (sbyte) AlignmentSide,
                 (sbyte)TeamType, (sbyte) m_fighters.Count);
         }
     }

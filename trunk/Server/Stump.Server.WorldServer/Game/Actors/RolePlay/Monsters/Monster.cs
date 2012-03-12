@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Monsters;
 using System.Linq;
