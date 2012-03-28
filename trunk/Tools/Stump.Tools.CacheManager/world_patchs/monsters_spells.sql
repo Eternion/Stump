@@ -1,3 +1,6 @@
+DELETE FROM monsters_spells;
+ALTER TABLE `monsters_spells` AUTO_INCREMENT=1;
+
 INSERT INTO `monsters_spells` (`SpellId`,`Level`,`MonsterGradeId`) VALUES ('204','1','29');
 INSERT INTO `monsters_spells` (`SpellId`,`Level`,`MonsterGradeId`) VALUES ('204','2','30');
 INSERT INTO `monsters_spells` (`SpellId`,`Level`,`MonsterGradeId`) VALUES ('204','3','31');

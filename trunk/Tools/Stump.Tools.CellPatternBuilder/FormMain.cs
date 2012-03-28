@@ -85,6 +85,13 @@ namespace Stump.Tools.CellPatternBuilder
             mapControl.Invalidate();
         }
 
+        private void UpdateComplexity()
+        {
+            var calc = new PlacementComplexityCalculator(mapControl.Cells.Where(entry => entry.State != CellState.None).Select(entry => entry.GetPlanLocation(mapControl)).ToArray());
+
+            labelComplexity.Text = calc.Compute().ToString();
+        }
+
         private void MapControlCellClicked(MapControl.MapControl control, MapCell cell, MouseButtons buttons, bool hold)
         {
             if (buttons == MouseButtons.Left)
@@ -95,6 +102,8 @@ namespace Stump.Tools.CellPatternBuilder
             {
                 cell.State = CellState.None;
             }
+
+            UpdateComplexity();
             control.Invalidate(cell);
         }
 
@@ -118,6 +127,8 @@ namespace Stump.Tools.CellPatternBuilder
                 {
                     SetPattern(XmlUtils.Deserialize<PlacementPattern>(dialog.FileName));
                     Text = Path.GetFileName(dialog.FileName);
+
+                    UpdateComplexity();
                 }
                 catch (Exception ex)
                 {

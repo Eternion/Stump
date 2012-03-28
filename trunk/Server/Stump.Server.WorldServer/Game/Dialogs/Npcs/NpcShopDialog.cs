@@ -80,7 +80,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
         public void SellItem(int guid, uint amount)
         {
-           var item = Character.Inventory.GetItem(guid);
+           var item = Character.Inventory.TryGetItem(guid);
 
            if (item == null)
            {
@@ -103,7 +103,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             BasicHandler.SendTextInformationMessage(Character.Client, 0, 45, price);
             BasicHandler.SendTextInformationMessage(Character.Client, 0, 22, amount, item.ItemId);
 
-            Character.Inventory.RemoveItem(guid, amount);
+            Character.Inventory.RemoveItem(item, amount);
             Character.Inventory.AddKamas(price);
 
             Character.Client.Send(new ExchangeSellOkMessage());

@@ -1,4 +1,6 @@
 using Castle.ActiveRecord;
+using Stump.Server.WorldServer.Game.Actors;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
 
@@ -7,6 +9,8 @@ namespace Stump.Server.WorldServer.Database.Interactives.Skills
     [ActiveRecord("interactives_skills", DiscriminatorColumn = "RecognizerType", DiscriminatorType = "String", DiscriminatorValue = "Base")]
     public abstract class SkillRecord : WorldBaseRecord<SkillRecord>
     {
+        public const int DEFAULT_TEMPLATE = 184;
+
         [PrimaryKey(PrimaryKeyType.Native)]
         public int Id
         {
@@ -21,7 +25,7 @@ namespace Stump.Server.WorldServer.Database.Interactives.Skills
             set;
         }
 
-        public abstract int SkillId // determin the name
+        public abstract SkillTemplate Template // determin the name
         {
             get;
         }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Castle.ActiveRecord;
 using NLog;
 using Stump.Server.WorldServer.Database.Interactives.Skills;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -86,7 +87,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
             var elements = map.Record.FindMapElement(ElementId);
 
             if (elements.Length <= 0)
-                return null;
+                return new ObjectPosition(map, Cell.Null);
 
             if (elements.Length > 0)
                 logger.Debug("More than 1 elements found in interactive id = {0}", Id);

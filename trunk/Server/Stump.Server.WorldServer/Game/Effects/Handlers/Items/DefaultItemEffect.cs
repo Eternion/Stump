@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using NLog;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
@@ -306,6 +307,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
         {
         }
 
+        public DefaultItemEffect(EffectBase effect, Character target, ItemSetTemplate itemSet, bool apply) 
+            : base(effect, target, itemSet, apply)
+        {
+        }
+
         public override void Apply()
         {
             if (!(Effect is EffectInteger))
@@ -322,7 +328,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
                     !m_subMethods.ContainsKey(caracteritic))
                     return;
 
-                handler = Equiped ? m_addMethods[caracteritic] : m_subMethods[caracteritic];
+                handler = Operation == HandlerOperation.APPLY ? m_addMethods[caracteritic] : m_subMethods[caracteritic];
             }
             else if (m_subEffectsBinds.ContainsKey(Effect.EffectId))
             {
@@ -332,7 +338,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
                     !m_subMethods.ContainsKey(caracteritic))
                     return;
 
-                handler = Equiped ? m_subMethods[caracteritic] : m_addMethods[caracteritic];
+                handler = Operation == HandlerOperation.APPLY ? m_subMethods[caracteritic] : m_addMethods[caracteritic];
             }
             else
             {

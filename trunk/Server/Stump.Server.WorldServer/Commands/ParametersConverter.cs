@@ -74,6 +74,27 @@ namespace Stump.Server.WorldServer.Commands
             return itemByName;
         };
 
+        public static ConverterHandler<ItemSetTemplate> ItemSetTemplateConverter = (entry, trigger) =>
+        {
+            uint outvalue;
+            if (uint.TryParse(entry, out outvalue))
+            {
+                ItemSetTemplate itemById = ItemManager.Instance.GetItemSetTemplate(outvalue);
+
+                if (itemById == null)
+                    throw new ConverterException(string.Format("'{0}' is not a valid item set", entry));
+
+                return itemById;
+            }
+
+            ItemSetTemplate itemByName = ItemManager.Instance.GetItemSetTemplate(entry, CommandBase.IgnoreCommandCase);
+
+            if (itemByName == null)
+                throw new ConverterException(string.Format("'{0}' is not a valid item set", entry));
+
+            return itemByName;
+        };
+
         public static ConverterHandler<SpellTemplate> SpellTemplateConverter = (entry, trigger) =>
         {
             int outvalue;

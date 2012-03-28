@@ -6,6 +6,7 @@ using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Items;
+using Stump.Server.WorldServer.Game.Maps;
 using Shortcut = Stump.Server.WorldServer.Database.Shortcuts.Shortcut;
 
 namespace Stump.Server.WorldServer.Database.Characters
@@ -487,14 +488,83 @@ namespace Stump.Server.WorldServer.Database.Characters
 
         #endregion
 
+        #region Zaaps
+        private byte[] m_serializedZaaps = new byte[0];
+
+        [Property("KnownZaaps", NotNull = true)]
+        private byte[] SerializedZaaps
+        {
+            get
+            {
+                return m_serializedZaaps;
+            }
+            set
+            {
+                m_serializedZaaps = value;
+                m_knownZaaps = UnSerializeZaaps(m_serializedZaaps);
+            }
+        }
+
+        private List<Map> m_knownZaaps = new List<Map>();
+
+        public List<Map> KnownZaaps
+        {
+            get { return m_knownZaaps; }
+            set { m_knownZaaps = value;
+                m_serializedZaaps = SerializeZaaps(m_knownZaaps);
+            }
+        }
+
+        private byte[] SerializeZaaps(List<Map> knownZaaps)
+        {
+            var result = new byte[knownZaaps.Count * 4];
+
+            for (int i = 0; i < knownZaaps.Count; i++)
+            {
+                result[i*4] = (byte) (knownZaaps[i].Id >> 24);
+                result[i*4 + 1] = (byte) ((knownZaaps[i].Id >> 16) & 0xFF);
+                result[i*4 + 2] = (byte) ((knownZaaps[i].Id >> 8) & 0xFF);
+                result[i*4 + 3] = (byte) (knownZaaps[i].Id & 0xFF);
+            }
+
+            return result;
+        }
+
+        private List<Map> UnSerializeZaaps(byte[] serialized)
+        {
+            var result = new List<Map>();
+
+            for (int i = 0; i < serialized.Length; i+=4)
+            {
+                int id = serialized[i] << 24 | serialized[i + 1] << 16 | serialized[i + 2] << 8 | serialized[i + 3];
+
+                var map = Game.World.Instance.GetMap(id);
+
+                if (map == null)
+                    throw new Exception("Map " + id + " not found");
+
+                result.Add(map);
+            }
+
+            return result;
+        }
+
+        #endregion
+
         protected override void OnDelete()
         {
             ItemRecord.DeleteAll("OwnerId = " + Id);
             CharacterSpellRecord.DeleteAll("OwnerId = " + Id);
             Shortcut.DeleteAll("OwnerId = " + Id);
 
-
             base.OnDelete();
+        }
+
+        protected override bool BeforeSave(System.Collections.IDictionary state)
+        {
+            m_serializedZaaps = SerializeZaaps(m_knownZaaps);
+
+            return base.BeforeSave(state);
         }
 
         public static CharacterRecord FindById(int characterId)

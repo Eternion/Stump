@@ -5,6 +5,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
@@ -17,14 +18,39 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (!Enum.IsDefined(typeof(CharacterInventoryPositionEnum), (int) message.position))
                 return;
 
-            client.ActiveCharacter.Inventory.MoveItem(message.objectUID,
-                                                      (CharacterInventoryPositionEnum) message.position);
+            var item = client.ActiveCharacter.Inventory.TryGetItem(message.objectUID);
+
+            if (item == null)
+                return;
+
+            client.ActiveCharacter.Inventory.MoveItem(item, (CharacterInventoryPositionEnum) message.position);
         }
 
         [WorldHandler(ObjectDeleteMessage.Id)]
         public static void HandleObjectDeleteMessage(WorldClient client, ObjectDeleteMessage message)
         {
-            client.ActiveCharacter.Inventory.RemoveItem(message.objectUID, (uint) message.quantity);
+            var item = client.ActiveCharacter.Inventory.TryGetItem(message.objectUID);
+
+            if (item == null)
+                return;
+
+            client.ActiveCharacter.Inventory.RemoveItem(item, (uint) message.quantity);
+        }
+
+        [WorldHandler(ObjectUseMessage.Id)]
+        public static void HandleObjectUseMessage(WorldClient client, ObjectUseMessage message)
+        {
+            var item = client.ActiveCharacter.Inventory.TryGetItem(message.objectUID);
+
+            if (item == null)
+                return;
+
+            client.ActiveCharacter.Inventory.UseItem(item);
+        }
+
+        public static void SendGameRolePlayPlayerLifeStatusMessage(IPacketReceiver client)
+        {
+            client.Send(new GameRolePlayPlayerLifeStatusMessage());
         }
 
         public static void SendInventoryContentMessage(WorldClient client)
@@ -84,6 +110,13 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendObjectErrorMessage(IPacketReceiver client, ObjectErrorEnum error)
         {
             client.Send(new ObjectErrorMessage((sbyte) error));
+        }
+
+        public static void SendSetUpdateMessage(WorldClient client, ItemSetTemplate itemSet)
+        {
+            client.Send(new SetUpdateMessage((short) itemSet.Id,
+                client.ActiveCharacter.Inventory.GetItemSetEquipped(itemSet).Select(entry => entry.ItemId),
+                client.ActiveCharacter.Inventory.GetItemSetEffects(itemSet).Select(entry => entry.GetObjectEffect())));
         }
     }
 }

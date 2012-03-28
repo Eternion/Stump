@@ -36,7 +36,7 @@ namespace Stump.Server.AuthServer.Database.Account
                        {
                            Id = Id,
                            Login = Login,
-                           Password = Password,
+                           PasswordHash = PasswordHash,
                            Nickname = Nickname,
                            Role = Role,
                            AvailableBreeds = AvailableBreeds,
@@ -53,6 +53,8 @@ namespace Stump.Server.AuthServer.Database.Account
                            LastConnectionIp = LastConnection.Ip,
                            CharactersId = Characters.Select(entry => entry.CharacterId).ToList(),
                            DeletedCharactersCount = DeletedCharacters.Count(entry => DateTime.Now - entry.DeletionDate <= TimeSpan.FromDays(1)),
+                           Points = Points,
+                           LastVote = LastVote,
                        };
         }
 
@@ -70,8 +72,8 @@ namespace Stump.Server.AuthServer.Database.Account
             set { m_login = value.ToLower(); }
         }
 
-        [Property("Password", NotNull = true, Length = 49)]
-        public string Password
+        [Property("PasswordHash", NotNull = true, Length = 32)]
+        public string PasswordHash
         {
             get;
             set;
@@ -141,6 +143,20 @@ namespace Stump.Server.AuthServer.Database.Account
 
         [Property("CreationDate", NotNull = true)]
         public DateTime CreationDate
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public int Points
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public DateTime? LastVote
         {
             get;
             set;

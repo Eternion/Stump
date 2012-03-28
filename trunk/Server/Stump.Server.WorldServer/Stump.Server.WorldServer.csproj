@@ -190,6 +190,10 @@
     <Compile Include="Database\Interactives\InteractiveTemplate.cs" />
     <Compile Include="Database\Interactives\Skills\SkillRecord.cs" />
     <Compile Include="Database\Interactives\Skills\SkillTeleportRecord.cs" />
+    <Compile Include="Database\Interactives\Skills\SkillTemplate.cs" />
+    <Compile Include="Database\Interactives\Skills\SkillZaapTeleportRecord.cs" />
+    <Compile Include="Database\Interactives\Skills\TemplateDependantSkill.cs" />
+    <Compile Include="Database\Interactives\Skills\TemplateIndependantSkill.cs" />
     <Compile Include="Database\ISaveable.cs" />
     <Compile Include="Database\Items\Shops\ItemToSell.cs" />
     <Compile Include="Database\Items\Shops\NpcItem.cs" />
@@ -261,6 +265,8 @@
     <Compile Include="Game\Conditions\ComparaisonOperatorEnum.cs" />
     <Compile Include="Game\Conditions\ConditionParser.cs" />
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
+    <Compile Include="Game\Dialogs\Interactives\ZaapDialog.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\RestoreHp.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\Punishment.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\SpellBoost.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\Kill.cs" />
@@ -273,6 +279,8 @@
     <Compile Include="Game\Effects\Handlers\Spells\Steals\HPSteal.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Steals\MPSteal.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Summon.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\DefaultUsableEffectHandler.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\UsableEffectHandler.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\InvisibilityBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkinBuff.cs" />
     <Compile Include="Game\Fights\Fight.cs" />
@@ -284,6 +292,9 @@
     <Compile Include="Game\Fights\History\SpellHistoryEntry.cs" />
     <Compile Include="Game\Fights\History\SpellHistory.cs" />
     <Compile Include="Game\Fights\ReadyChecker.cs" />
+    <Compile Include="Game\Interactives\Skills\SkillZaapTeleport.cs" />
+    <Compile Include="Game\Spells\Casts\DefaultSpellCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\SpellCastHandler.cs" />
     <Compile Include="Game\Fights\TimeLine.cs" />
     <Compile Include="Game\Jobs\Job.cs" />
     <Compile Include="Game\Jobs\JobsCollection.cs" />
@@ -308,7 +319,7 @@
     <Compile Include="Database\I18n\TextUIRecord.cs" />
     <Compile Include="Database\Items\ItemRecord.cs" />
     <Compile Include="Database\Items\Templates\ItemTemplate.cs" />
-    <Compile Include="Database\Items\Templates\ItemSetRecord.cs" />
+    <Compile Include="Database\Items\Templates\ItemSetTemplate.cs" />
     <Compile Include="Database\Items\Templates\ItemTypeRecord.cs" />
     <Compile Include="Database\Items\Templates\WeaponTemplate.cs" />
     <Compile Include="Database\Characters\CharacterSpellRecord.cs" />
@@ -567,9 +578,7 @@
       <Name>Stump.Server.BaseServer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Game\Effects\Handlers\Useables\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

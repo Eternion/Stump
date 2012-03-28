@@ -21,3 +21,6 @@ obj/
 
 #TestUnit
 TestResults/
+
+#TaskList
+/trunk/backup

@@ -2,11 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Reflection;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Spells;
+using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
+using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Spells.Casts;
 
 namespace Stump.Server.WorldServer.Game.Spells
 {
@@ -16,6 +22,10 @@ namespace Stump.Server.WorldServer.Game.Spells
         private Dictionary<int, SpellTemplate> m_spells;
         private Dictionary<int, SpellType> m_spellsTypes;
         private Dictionary<int, SpellState> m_spellsState;
+
+        private delegate SpellCastHandler SpellCastConstructor(FightActor caster, Spell spell, Cell targetedCell, bool critical);
+
+        private readonly Dictionary<int, SpellCastConstructor> m_spellsCastHandler = new Dictionary<int, SpellCastConstructor>();
 
             #region Fields
 
@@ -102,6 +112,28 @@ namespace Stump.Server.WorldServer.Game.Spells
                 return state;
 
             return null;
+        }
+
+        public void AddSpellCastHandler(SpellEffectHandler handler, SpellTemplate spell)
+        {
+            var type = handler.GetType();
+            var ctor = type.GetConstructor(new[] { typeof(FightActor), typeof(Spell), typeof(Cell), typeof(bool) });
+
+            if (ctor == null)
+                throw new Exception("No valid constructors found ! ");
+
+            m_spellsCastHandler.Add(spell.Id, ctor.CreateDelegate<SpellCastConstructor>());
+        }
+
+        public SpellCastHandler GetSpellCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
+        {
+            SpellCastConstructor ctor;
+            if (m_spellsCastHandler.TryGetValue(spell.Template.Id, out ctor))
+            {
+                return ctor(caster, spell, targetedCell, critical);
+            }
+
+            return new DefaultSpellCastHandler(caster, spell, targetedCell, critical);
         }
     }
 }

@@ -31,12 +31,21 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             private set;
         }
 
+        public virtual uint GetDuration(Character character)
+        {
+            return Record.Duration;
+        }
+
         public abstract bool IsEnabled(Character character);
         public abstract void Execute(Character character);
 
+        public virtual void PostExecute(Character character)
+        {
+        }
+
         public InteractiveElementSkill GetInteractiveElementSkill()
         {
-            return new InteractiveElementSkill(Record.SkillId, Id);
+            return new InteractiveElementSkill(Record.Template.Id, Id);
         }
     }
 }

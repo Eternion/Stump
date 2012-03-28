@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
@@ -336,6 +337,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (m_turnTimer != null)
                 m_turnTimer.Stop();
+
+            EndAllSequences();
 
             if (ReadyChecker != null)
             {
@@ -946,7 +949,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                                                          TurnTime);
 
             ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
-            ForEach(entry => CharacterHandler.SendCharacterStatsListMessage(entry.Client));
+            ForEach(entry => entry.RefreshStats());
 
             TurnStartTime = DateTime.Now;
             m_turnTimer = Map.Area.CallDelayed(TurnTime, StopTurn);
@@ -966,7 +969,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (ReadyChecker != null)
             {
-                logger.Debug("Last ReadyChecker was not disposed. (Stop Turn)");
+                logger.Debug("Last ReadyChecker was not disposed. (Stop Turn) : {0}", new StackTrace(true));
                 ReadyChecker.Cancel();
                 ReadyChecker = null;
             }
@@ -1017,7 +1020,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             {
                 if (!CheckFightEnd())
                 {
-                    logger.Error("Someting goes wrong : no more actors area available to play but the fight is not ended");
+                    logger.Error("Something goes wrong : no more actors area available to play but the fight is not ended");
                 }
 
                 return;
@@ -1324,6 +1327,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         private SequenceTypeEnum m_lastSequenceAction;
         private int m_sequenceLevel;
+        private Stack<SequenceTypeEnum> m_sequences = new Stack<SequenceTypeEnum>(); 
 
         public SequenceTypeEnum Sequence
         {
@@ -1354,6 +1358,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             IsSequencing = true;
             Sequence = sequenceType;
+            m_sequences.Push(sequenceType);
 
             ActionsHandler.SendSequenceStartMessage(Clients, TimeLine.Current, sequenceType);
 
@@ -1374,9 +1379,30 @@ namespace Stump.Server.WorldServer.Game.Fights
             IsSequencing = false;
             WaitAcknowledgment = true;
 
+            var poppedSequence = m_sequences.Pop();
+
+            if (poppedSequence != sequenceType)
+            {
+                logger.Debug("Popped Sequence different ({0} != {1})", poppedSequence, sequenceType);
+            }
+
             ActionsHandler.SendSequenceEndMessage(Clients, TimeLine.Current, sequenceType, m_lastSequenceAction);
 
             return true;
+        }
+
+        public void EndAllSequences()
+        {
+            m_sequenceLevel = 0;
+            IsSequencing = false;
+            WaitAcknowledgment = false;
+
+            while (m_sequences.Count > 0)
+            {
+                var poppedSequence = m_sequences.Pop();
+
+                ActionsHandler.SendSequenceEndMessage(Clients, TimeLine.Current, poppedSequence, m_lastSequenceAction);
+            }
         }
 
         public virtual void AcknowledgeAction()
@@ -1518,7 +1544,6 @@ namespace Stump.Server.WorldServer.Game.Fights
                     markTrigger.Trigger(trigger);
 
                     if (markTrigger is Trap)
-
                         triggersToRemove.Add(markTrigger);
 
                     EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
@@ -1529,8 +1554,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             {
                 RemoveTrigger(markTrigger);
             }
-
-            CheckFightEnd();
         }
 
         public void DecrementGlyphDuration(FightActor caster)

@@ -19,6 +19,7 @@ namespace Stump.Server.WorldServer.Game.Items
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private Dictionary<int, ItemTemplate> m_itemTemplates = new Dictionary<int, ItemTemplate>();
+        private Dictionary<uint, ItemSetTemplate> m_itemsSets = new Dictionary<uint, ItemSetTemplate>();
         private Dictionary<int, ItemTypeRecord> m_itemTypes = new Dictionary<int, ItemTypeRecord>();
         private Dictionary<int, ItemToSell> m_itemsToSell = new Dictionary<int, ItemToSell>();
 
@@ -94,6 +95,7 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             m_itemTypes = ItemTypeRecord.FindAll().ToDictionary(entry => entry.Id);
             m_itemTemplates = ItemTemplate.FindAll().ToDictionary(entry => entry.Id);
+            m_itemsSets = ItemSetTemplate.FindAll().ToDictionary(entry => entry.Id);
             m_itemsToSell = ItemToSell.FindAll().ToDictionary(entry => entry.Id);
         }
 
@@ -115,6 +117,22 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             return
                 m_itemTemplates.Values.Where(
+                    entry =>
+                    entry.Name.Equals(name,
+                                      ignorecase
+                                          ? StringComparison.InvariantCultureIgnoreCase
+                                          : StringComparison.InvariantCulture)).FirstOrDefault();
+        }
+
+        public ItemSetTemplate GetItemSetTemplate(uint id)
+        {
+            return !m_itemsSets.ContainsKey(id) ? null : m_itemsSets[id];
+        }
+
+        public ItemSetTemplate GetItemSetTemplate(string name, bool ignorecase)
+        {
+            return
+                m_itemsSets.Values.Where(
                     entry =>
                     entry.Name.Equals(name,
                                       ignorecase

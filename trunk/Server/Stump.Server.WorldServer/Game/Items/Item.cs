@@ -8,6 +8,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Game.Items
@@ -140,6 +141,12 @@ namespace Stump.Server.WorldServer.Game.Items
                 return;
 
             Stack -= (int) amount;
+        }
+
+
+        public bool IsUsable()
+        {
+            return Template.Usable;
         }
 
         public bool IsEquiped()

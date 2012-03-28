@@ -235,7 +235,7 @@ namespace Stump.Server.WorldServer.Database.Spells
 
         [D2OField("effects")]
         [Property("Effects")]
-        public byte[] RawEffects
+        private byte[] RawEffects
         {
             get;
             set;
@@ -249,7 +249,7 @@ namespace Stump.Server.WorldServer.Database.Spells
 
         [D2OField("criticalEffect")]
         [Property("CriticalEffect")]
-        public byte[] RawCriticalEffects
+        private byte[] RawCriticalEffects
         {
             get;
             set;

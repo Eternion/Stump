@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
             if (shortcut is ShortcutSpell && barType == 2)
                 AddSpellShortcut(shortcut.slot, (shortcut as ShortcutSpell).spellId);
             else if (shortcut is ShortcutObjectItem && barType == 0)
-                AddItemShortcut(shortcut.slot, Owner.Inventory.GetItem((shortcut as ShortcutObjectItem).itemUID));
+                AddItemShortcut(shortcut.slot, Owner.Inventory.TryGetItem((shortcut as ShortcutObjectItem).itemUID));
             else
             {
                 ShortcutHandler.SendShortcutBarAddErrorMessage(Owner.Client);

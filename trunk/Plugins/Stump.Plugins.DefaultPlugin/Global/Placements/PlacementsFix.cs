@@ -22,7 +22,10 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         [Variable]
-        public static bool ActiveFix = false;
+        public static bool ActiveFix = true;
+
+        [Variable]
+        public static bool Override = true;
 
         [Variable]
         public static string SqlPatchName = "maps_placements_fix.sql";
@@ -32,6 +35,9 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
 
         [Variable]
         public static byte SearchDeep = 5;
+
+        [Variable]
+        public static bool SortByComplexity = true;
 
         [Initialization(typeof(Server.WorldServer.Game.World), Silent = true)]
         public static void ApplyFix()
@@ -48,6 +54,12 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
                 {
                     var pattern = XmlUtils.Deserialize<PlacementPattern>(file);
 
+                    if (SortByComplexity)
+                    {
+                        var calc = new PlacementComplexityCalculator(pattern.Blues.Concat(pattern.Reds).ToArray());
+                        pattern.Complexity = calc.Compute();
+                    }
+
                     patterns.Add(pattern);
                     patternsNames.Add(pattern, Path.GetFileNameWithoutExtension(file));
                 }
@@ -63,6 +75,9 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
             if (File.Exists(patchPath))
                 File.Delete(patchPath);
 
+            var rand = new Random();
+
+
             var successCounter = new Dictionary<PlacementPattern, int>();
             var console = new ConsoleProgress();
             var maps = World.Instance.GetMaps().ToArray();
@@ -70,10 +85,12 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
             for (int i = 0; i < maps.Length; i++)
             {
                 var map = maps[i];
-                if (map.Record.BlueFightCells.Length == 0 ||
-                    map.Record.RedFightCells.Length == 0)
+                if (Override || (map.Record.BlueFightCells.Length == 0 ||
+                    map.Record.RedFightCells.Length == 0))
                 {
-                    var fixPatterns = patterns.Where(entry => !entry.Relativ).Shuffle().ToArray();
+
+                    var fixPatternsComplx = patterns.Where(entry => !entry.Relativ).Select(entry => entry.Complexity).ToArray();
+                    var fixPatterns = patterns.Where(entry => !entry.Relativ).ShuffleWithProbabilities(fixPatternsComplx).ToArray();
                     PlacementPattern success = fixPatterns.FirstOrDefault(entry => entry.TestPattern(map));
 
                     if (success != null)
@@ -85,7 +102,8 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
                     }
                     else
                     {
-                        var relativPatterns = patterns.Where(entry => entry.Relativ).Shuffle().ToArray();
+                        var relativePatternsComplx = patterns.Where(entry => entry.Relativ).Select(entry => entry.Complexity).ToArray();
+                        var relativPatterns = patterns.Where(entry => entry.Relativ).ShuffleWithProbabilities(relativePatternsComplx).ToArray();
                         var searchZone = new Lozenge(0, SearchDeep);
 
                         // 300 is approx. the middle of the map
@@ -138,10 +156,13 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
                 console.Update(string.Format("{0:0.0}% ({1} patchs)", i / (double)maps.Length * 100, patches));
             }
 
+            Console.WriteLine("{0}/{1} ({2:0.0}%) patterns used :", successCounter.Count, patterns.Count, successCounter.Count / (double)patterns.Count * 100);
             foreach (var counter in successCounter)
             {
-                Console.WriteLine(patternsNames[counter.Key] + " : " + counter.Value);
+                Console.WriteLine("{0} :\t{1,8:0.0}%", patternsNames[counter.Key], counter.Value / (double)patches * 100);
             }
+
+            Console.WriteLine("{0} on {1} maps fixed ({2:0.0}%)", patches, World.Instance.GetMaps().Count(), patches / (double)World.Instance.GetMaps().Count() * 100);
 
             logger.Debug("Maps placements fix applied");
         }

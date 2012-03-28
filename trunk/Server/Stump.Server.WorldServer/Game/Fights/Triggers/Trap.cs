@@ -67,14 +67,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
             foreach (var shape in Shapes)
             {
-                foreach (var effect in TrapSpell.CurrentSpellLevel.Effects)
-                {
-                    var handler = EffectManager.Instance.GetSpellEffectHandler(effect, Caster, TrapSpell, shape.Cell, false);
-                    handler.EffectZone = new Zone(shape.Shape == GameActionMarkCellsTypeEnum.CELLS_CROSS ? SpellShapeEnum.Q : effect.ZoneShape, shape.Size);
-                    handler.MarkTrigger = this;
+                var handler = SpellManager.Instance.GetSpellCastHandler(Caster, TrapSpell, shape.Cell, false);
+                handler.MarkTrigger = this;
+                handler.Initialize();
 
-                    handler.Apply();
+                foreach (var effectHandler in handler.GetEffectHandlers())
+                {
+                    effectHandler.EffectZone = new Zone(shape.Shape == GameActionMarkCellsTypeEnum.CELLS_CROSS ? SpellShapeEnum.Q : effectHandler.Effect.ZoneShape, shape.Size);
                 }
+
+                handler.Execute();
             }
         }
 

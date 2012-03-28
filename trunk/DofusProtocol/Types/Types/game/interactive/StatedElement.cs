@@ -5,7 +5,7 @@ using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
-	public class StatedElement
+	public class  StatedElement
 	{
 		public const uint Id = 108;
 		public virtual short TypeId

@@ -167,6 +167,8 @@ namespace Stump.Server.AuthServer.IPC
             {
                 Manager.ChangeWorldState(server, ServerStatusEnum.ONLINE);
             }
+
+            server.Save();
         }
 
         public AccountData GetAccountByTicket(string ticket)
@@ -200,7 +202,7 @@ namespace Stump.Server.AuthServer.IPC
             if (account == null)
                 return false;
 
-            account.Password = modifiedRecord.Password;
+            account.PasswordHash = modifiedRecord.PasswordHash;
             account.SecretQuestion = modifiedRecord.SecretQuestion;
             account.SecretAnswer = modifiedRecord.SecretAnswer;
             account.Role = modifiedRecord.Role;
@@ -216,7 +218,7 @@ namespace Stump.Server.AuthServer.IPC
                               {
                                   Id = accountData.Id,
                                   Login = accountData.Login,
-                                  Password = accountData.Password,
+                                  PasswordHash = accountData.PasswordHash,
                                   Nickname = accountData.Nickname,
                                   Role = accountData.Role,
                                   AvailableBreeds = accountData.AvailableBreeds,

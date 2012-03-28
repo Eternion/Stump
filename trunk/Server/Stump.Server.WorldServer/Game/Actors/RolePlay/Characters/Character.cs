@@ -27,9 +27,11 @@ using Stump.Server.WorldServer.Game.Notifications;
 using Stump.Server.WorldServer.Game.Parties;
 using Stump.Server.WorldServer.Game.Shortcuts;
 using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
+using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
@@ -553,6 +555,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 UpdateRegenedLife();
 
             CharacterHandler.SendCharacterStatsListMessage(Client);
+        }
+
+        public void RefreshHealth()
+        {
+            if (IsRegenActive())
+                UpdateRegenedLife();
+            else
+            {
+                CharacterHandler.SendUpdateLifePointsMessage(Client);
+            }
         }
 
         #endregion
@@ -1184,6 +1196,31 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             RegenStartTime = DateTime.Now;
 
             OnLifeRegened(regainedLife);
+        }
+
+        #endregion
+
+        #region Zaaps
+
+        public List<Map> KnownZaaps
+        {
+            get { return Record.KnownZaaps; }
+        }
+
+        public void DiscoverZaap(Map map)
+        {
+            if (!KnownZaaps.Contains(map))
+                KnownZaaps.Add(map);
+
+            BasicHandler.SendTextInformationMessage(Client, 0, 24); // new zaap
+        }
+
+        #endregion
+
+        #region Emotes
+        public void PlayEmote(EmotesEnum emote)
+        {
+            ContextRoleplayHandler.SendEmotePlayMessage(Map.Clients, this, emote);
         }
 
         #endregion

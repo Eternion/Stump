@@ -104,28 +104,23 @@ namespace Stump.Tools.DataLoader
             m_d2OReader = new D2OReader(FileName);
 
             Dictionary<int, D2OClassDefinition> classes = m_d2OReader.GetClasses();
-            string[] columns = classes.Values.First().Fields.Select(entry => entry.Key).ToArray();
+            string[] columns = classes.Values.SelectMany(entry => entry.Fields).Select(entry => entry.Key).Distinct().ToArray();
             m_form.DefineColumns(columns);
 
             Dictionary<int, object> objects = m_d2OReader.ReadObjects(true);
 
             m_form.AddRows(from entry in objects.Values
-                           select entry != null ? GetObjectFieldsValue(entry, columns) : new object[] { "(null or error)" });
+                           select entry != null ? GetObjectFieldsValue(entry, columns) : columns.ToDictionary(key => key, value => "(null or error)" as object));
         }
 
-        private static object[] GetObjectFieldsValue(object obj, string[] columns)
+        private static Dictionary<string, object> GetObjectFieldsValue(object obj, string[] columns)
         {
             Dictionary<string, object> fields =
                 obj.GetType().GetFields(BindingFlags.Public | BindingFlags.GetField | BindingFlags.Instance).
+                Where(entry => columns.Contains(entry.Name)).
                 ToDictionary(entry => entry.Name, entry => entry.GetValue(obj));
 
-            var values = new object[columns.Length];
-            for (int i = 0; i < columns.Length; i++)
-            {
-                values[i] = fields[columns[i]];
-            }
-
-            return values;
+            return fields;
         }
 
         private void AttachToI18N(object sender, EventArgs eventArgs)

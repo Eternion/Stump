@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             /* Level < 20 or > 20 and Good secret Answer */
             if (ExperienceManager.Instance.GetCharacterLevel(character.Experience) <= 20 || (client.Account.SecretAnswer != null
-                    && secretAnswerHash == (message.characterId + "~" + client.Account.SecretAnswer).GetMd5()))
+                    && secretAnswerHash == (message.characterId + "~" + client.Account.SecretAnswer).GetMD5()))
             {
                 /* Too many character deletion */
                 if (client.Account.DeletedCharactersCount > MaxDayCharacterDeletion)

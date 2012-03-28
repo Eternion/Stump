@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Xml.Serialization;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Maps;
 
@@ -28,6 +30,13 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
         }
 
         public Point Center
+        {
+            get;
+            set;
+        }
+
+        [XmlIgnore]
+        public int Complexity
         {
             get;
             set;

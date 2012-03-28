@@ -3,6 +3,7 @@ using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Conditions;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Game.Maps;
@@ -11,7 +12,7 @@ using Stump.Server.WorldServer.Game.Maps.Cells;
 namespace Stump.Server.WorldServer.Database.Interactives.Skills
 {
     [ActiveRecord(DiscriminatorValue = "Teleport")]
-    public class SkillTeleportRecord : SkillRecord
+    public class SkillTeleportRecord : TemplateDependantSkill
     {
         private bool m_mustRefreshPosition;
 
@@ -20,7 +21,7 @@ namespace Stump.Server.WorldServer.Database.Interactives.Skills
         private int m_mapId;
         private ObjectPosition m_position;
 
-        [Property]
+        [Property("Teleport_MapId")]
         public int MapId
         {
             get { return m_mapId; }
@@ -31,7 +32,7 @@ namespace Stump.Server.WorldServer.Database.Interactives.Skills
             }
         }
 
-        [Property]
+        [Property("Teleport_CellId")]
         public int CellId
         {
             get { return m_cellId; }
@@ -42,7 +43,7 @@ namespace Stump.Server.WorldServer.Database.Interactives.Skills
             }
         }
 
-        [Property]
+        [Property("Teleport_Direction")]
         public DirectionsEnum Direction
         {
             get { return m_direction; }
@@ -53,16 +54,38 @@ namespace Stump.Server.WorldServer.Database.Interactives.Skills
             }
         }
 
-        [Property("`Condition`")]
+        [Property("Teleport_Condition")]
         public string Condition
         {
             get;
             set;
         }
 
-        public override int SkillId
+        private ConditionExpression m_conditionExpression;
+
+        public ConditionExpression ConditionExpression
         {
-            get { return 184; }
+            get
+            {
+                if (string.IsNullOrEmpty(Condition) || Condition == "null")
+                    return null;
+
+                return m_conditionExpression ?? ( m_conditionExpression = ConditionExpression.Parse(Condition) );
+            }
+            set
+            {
+                m_conditionExpression = value;
+                Condition = value.ToString();
+            }
+        }
+
+
+        public override int TemplateId
+        {
+            get
+            {
+                return DEFAULT_TEMPLATE;
+            }
         }
 
         public override Skill GenerateSkill(int id, InteractiveObject interactiveObject)
@@ -72,7 +95,7 @@ namespace Stump.Server.WorldServer.Database.Interactives.Skills
 
         public bool IsConditionFilled(Character character)
         {
-            return true;
+            return m_conditionExpression == null || m_conditionExpression.Eval(character);
         }
 
         private void RefreshPosition()

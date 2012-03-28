@@ -563,7 +563,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
-            var random = new AsyncRandom();
             var critical = RollCriticalDice(spellLevel);
 
             if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
@@ -578,43 +577,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return;
             }
 
-            var effects = critical == FightSpellCastCriticalEnum.CRITICAL_HIT ? spellLevel.CritialEffects : spellLevel.Effects;
-            var handlers = new List<SpellEffectHandler>();
+            var handler = SpellManager.Instance.GetSpellCastHandler(this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
+            handler.Initialize();
 
-            var rand = random.NextDouble();
-            double randSum = effects.Sum(entry => entry.Random);
-            bool stopRand = false;
-            foreach (var effect in effects)
-            {
-                if (effect.Random > 0)
-                {
-                    if (stopRand)
-                        continue;
+            OnSpellCasting(spell, cell, critical, handler.SilentCast);
+            UseAP((short)spellLevel.ApCost);
 
-                    if (rand > effect.Random / randSum)
-                    {
-                        // effect ignored
-                        rand -= effect.Random / randSum;
-                        continue;
-                    }
+            handler.Execute();
 
-                    // random effect found, there can be only one
-                    stopRand = true;
-                }
-
-                SpellEffectHandler handler = EffectManager.Instance.GetSpellEffectHandler(effect, this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
-                handlers.Add(handler);
-            }
-
-            var silentCast = handlers.Any(entry => entry.RequireSilentCast());
-
-            OnSpellCasting(spell, cell, critical, silentCast);
-            UseAP((short) spellLevel.ApCost);
-
-            foreach (var handler in handlers)
-                handler.Apply();
-
-            OnSpellCasted(spell, cell, critical, silentCast);
+            OnSpellCasted(spell, cell, critical, handler.SilentCast);
         }
 
         public SpellReflectionBuff GetBestReflectionBuff()
@@ -1048,20 +1019,45 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return m_buffList.Where(entry => predicate(entry));
         }
 
-        public void AddAndApplyBuff(Buff buff)
+        public bool BuffMaxStackReached(Buff buff)
         {
+            return buff.Spell.CurrentSpellLevel.MaxStack > 0 && buff.Spell.CurrentSpellLevel.MaxStack <= m_buffList.Count(entry => entry.Spell == buff.Spell);
+        }
+
+        public bool AddAndApplyBuff(Buff buff, bool freeIdIfFail = true)
+        {
+            if (BuffMaxStackReached(buff))
+            {
+                if (freeIdIfFail)
+                    FreeBuffId(buff.Id);
+
+                return false;
+            }
+
             AddBuff(buff);
 
             if (!(buff is TriggerBuff) ||
                 ((buff as TriggerBuff).Trigger & BuffTriggerType.BUFF_ADDED) == BuffTriggerType.BUFF_ADDED)
                 buff.Apply();
+
+            return true;
         }
 
-        public void AddBuff(Buff buff)
+        public bool AddBuff(Buff buff, bool freeIdIfFail = true)
         {
+            if (BuffMaxStackReached(buff))
+            {
+                if (freeIdIfFail)
+                    FreeBuffId(buff.Id);
+
+                return false;
+            }
+
             m_buffList.Add(buff);
 
             OnBuffAdded(buff);
+
+            return true;
         }
 
         public void RemoveAndDispellBuff(Buff buff)

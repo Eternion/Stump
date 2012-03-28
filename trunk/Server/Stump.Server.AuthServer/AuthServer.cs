@@ -2,11 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using Castle.ActiveRecord.Framework.Config;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Utilities.IO.Pem;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -77,6 +83,9 @@ namespace Stump.Server.AuthServer
 
         public override void Initialize()
         {
+            var key = AccountManager.Instance.GetRSAPublicKey();
+            var str = Convert.ToBase64String(key.Select(entry => (byte)entry).ToArray());
+
             try
             {
                 base.Initialize();

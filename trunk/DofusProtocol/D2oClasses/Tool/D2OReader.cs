@@ -305,16 +305,10 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
                 {
                     try
                     {
-                        values.Add(Convert.ChangeType(fieldValue, field.FieldType));
-                    }
-                    catch (OverflowException)
-                    {
-                        if (fieldValue is int && field.FieldType == typeof(uint))
-                            values.Add(unchecked((uint)(int)fieldValue));
-
+                        if (fieldValue is int && ((int)fieldValue) < 0 && field.FieldType == typeof(uint))
+                            values.Add(unchecked ((uint)((int)fieldValue)));
                         else
-                            throw new Exception(string.Format("Field '{0}.{1}' with value {2} is not of type '{3}'", classDefinition.Name,
-                                                              field.Name, fieldValue, fieldValue.GetType()));
+                            values.Add(Convert.ChangeType(fieldValue, field.FieldType));
                     }
                     catch
                     {

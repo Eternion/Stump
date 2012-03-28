@@ -1,4 +1,5 @@
 ﻿using System;
+using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.AuthServer.Database.Account;
 using Stump.Server.AuthServer.Managers;
@@ -40,7 +41,7 @@ namespace Stump.Server.AuthServer.Commands
             var acc = new Account
                 {
                     Login = accname,
-                    Password = trigger.Get<string>("password"),
+                    PasswordHash = trigger.Get<string>("password").GetMD5(),
                     Nickname = trigger.Get<string>("accountname"),
                     SecretQuestion = trigger.Get<string>("question"),
                     SecretAnswer = trigger.Get<string>("answer"),

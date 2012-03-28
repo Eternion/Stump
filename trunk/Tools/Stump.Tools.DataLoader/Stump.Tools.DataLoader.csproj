@@ -101,6 +101,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="sliver.Windows.Forms.StateBrowser">
+      <HintPath>.\sliver.Windows.Forms.StateBrowser.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web.Extensions" />
@@ -115,6 +118,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="D2O\D2OAdapater.cs" />
+    <Compile Include="D2O\FormObjectViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="D2O\FormObjectViewer.Designer.cs">
+      <DependentUpon>FormObjectViewer.cs</DependentUpon>
+    </Compile>
     <Compile Include="D2P\D2PAdapter.cs" />
     <Compile Include="D2O\FormD2O.cs">
       <SubType>Form</SubType>
@@ -147,6 +156,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="D2O\FormD2O.resx">
       <DependentUpon>FormD2O.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="D2O\FormObjectViewer.resx">
+      <DependentUpon>FormObjectViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="D2P\FormD2P.resx">
       <DependentUpon>FormD2P.cs</DependentUpon>

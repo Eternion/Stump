@@ -121,9 +121,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             // weapon attack
             if (spell.Id == 0 &&
-                Character.Inventory.GetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) != null)
+                Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) != null)
             {
-                var weapon = Character.Inventory.GetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON).Template as WeaponTemplate;
+                var weapon = Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON).Template as WeaponTemplate;
 
                 if (weapon == null || !CanUseWeapon(cell, weapon))
                     return;

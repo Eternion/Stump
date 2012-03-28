@@ -77,7 +77,7 @@ namespace Stump.Server.AuthServer.Managers
         {
             var exportParameters = m_rsaProvider.ExportParameters(false);
             var keyParameters = new RsaKeyParameters(false, new BigInteger(1, exportParameters.Modulus), new BigInteger(1, exportParameters.Exponent));
-
+            
             var stringBuilder = new StringBuilder();
             var writer = new PemWriter(new StringWriter(stringBuilder));
             writer.WriteObject(keyParameters);
@@ -96,7 +96,12 @@ namespace Stump.Server.AuthServer.Managers
                 var data = m_rsaProvider.Decrypt(credentials.Select(entry => (byte)entry).ToArray(), false);
                 var str = Encoding.ASCII.GetString(data);
 
-                return Salt + account.Password == str;
+                if (!str.StartsWith(Salt))
+                    return false;
+
+                var givenPass = str.Remove(0, Salt.Length);
+
+                return account.PasswordHash == givenPass.GetMD5();
             }
             catch (Exception)
             {

@@ -1,5 +1,5 @@
 DELETE FROM `breed_spells`;
-
+ALTER TABLE `breed_spells` AUTO_INCREMENT=1;
 
 INSERT INTO `breed_spells` VALUES ('1', '1', '9', '1');
 INSERT INTO `breed_spells` VALUES ('2', '2', '6', '1');

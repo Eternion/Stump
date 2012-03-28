@@ -142,6 +142,7 @@ namespace Stump.Server.AuthServer.Database.World
 
         #region Status
 
+        [Property]
         public ServerStatusEnum Status
         {
             get;
@@ -159,6 +160,7 @@ namespace Stump.Server.AuthServer.Database.World
             set;
         }
 
+        [Property]
         public int CharsCount
         {
             get { return m_charsCount; }
@@ -169,6 +171,8 @@ namespace Stump.Server.AuthServer.Database.World
         {
             Status = ServerStatusEnum.ONLINE;
             LastPing = DateTime.Now;
+
+            Save();
         }
 
         public void SetOnline(string address, ushort port)
@@ -177,11 +181,16 @@ namespace Stump.Server.AuthServer.Database.World
             LastPing = DateTime.Now;
             Address = address;
             Port = port;
+
+            Save();
         }
 
         public void SetOffline()
         {
             Status = ServerStatusEnum.OFFLINE;
+            CharsCount = 0;
+
+            Save();
         }
 
         #endregion

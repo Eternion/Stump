@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.Interactives.Skills;
 
@@ -20,6 +21,11 @@ namespace Stump.Server.WorldServer.Database.Interactives
         {
             get;
             set;
+        }
+
+        public InteractiveTypeEnum Type
+        {
+            get { return (InteractiveTypeEnum) Id; }
         }
 
         [D2OField("nameId")]

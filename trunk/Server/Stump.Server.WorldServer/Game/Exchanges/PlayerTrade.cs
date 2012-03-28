@@ -71,13 +71,13 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             foreach (Item item in FirstTrader.Items)
             {
                 FirstTrader.Character.Inventory.ChangeItemOwner(
-                    SecondTrader.Character, item.Guid, (uint) item.Stack);
+                    SecondTrader.Character, item, (uint) item.Stack);
             }
 
             foreach (Item item in SecondTrader.Items)
             {
                 SecondTrader.Character.Inventory.ChangeItemOwner(
-                    FirstTrader.Character, item.Guid, (uint) item.Stack);
+                    FirstTrader.Character, item, (uint) item.Stack);
             }
 
             InventoryHandler.SendInventoryWeightMessage(FirstTrader.Character.Client);

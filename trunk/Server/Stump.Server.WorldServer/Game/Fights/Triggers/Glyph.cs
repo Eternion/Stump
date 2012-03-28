@@ -4,23 +4,27 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Effects;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Game.Spells.Casts;
 
 namespace Stump.Server.WorldServer.Game.Fights.Triggers
 {
     public class Glyph : MarkTrigger
     {
-        public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell, Cell centerCell, byte size, Color color)
-            : base(id, caster, castedSpell, originEffect, new MarkShape(caster.Fight, centerCell, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, size, color))
+        public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell,
+                     Cell centerCell, byte size, Color color)
+            : base(
+                id, caster, castedSpell, originEffect,
+                new MarkShape(caster.Fight, centerCell, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, size, color))
         {
             GlyphSpell = glyphSpell;
             Duration = originEffect.Duration;
         }
 
-        public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell, Cell centerCell, GameActionMarkCellsTypeEnum type, byte size, Color color)
+        public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell,
+                     Cell centerCell, GameActionMarkCellsTypeEnum type, byte size, Color color)
             : base(id, caster, castedSpell, originEffect, new MarkShape(caster.Fight, centerCell, type, size, color))
         {
             GlyphSpell = glyphSpell;
@@ -28,7 +32,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         }
 
 
-        public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell, params MarkShape[] shapes)
+        public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell,
+                     params MarkShape[] shapes)
             : base(id, caster, castedSpell, originEffect, shapes)
         {
             GlyphSpell = glyphSpell;
@@ -47,11 +52,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             private set;
         }
 
-        public bool DecrementDuration()
-        {
-            return (Duration--) <= 0;
-        }
-
         public override GameActionMarkTypeEnum Type
         {
             get { return GameActionMarkTypeEnum.GLYPH; }
@@ -62,22 +62,33 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             get { return TriggerType.TURN_BEGIN; }
         }
 
+        public bool DecrementDuration()
+        {
+            return (Duration--) <= 0;
+        }
+
         public override void Trigger(FightActor trigger)
         {
             NotifyTriggered(trigger, GlyphSpell);
-
-            foreach (EffectDice effect in GlyphSpell.CurrentSpellLevel.Effects)
+            foreach (var shape in Shapes)
             {
-                SpellEffectHandler handler = EffectManager.Instance.GetSpellEffectHandler(effect, Caster, GlyphSpell, trigger.Cell, false);
+                var handler = SpellManager.Instance.GetSpellCastHandler(Caster, GlyphSpell, shape.Cell, false);
                 handler.MarkTrigger = this;
+                handler.Initialize();
 
-                handler.Apply();
+                foreach (var effectHandler in handler.GetEffectHandlers())
+                {
+                    effectHandler.EffectZone = new Zone(shape.Shape == GameActionMarkCellsTypeEnum.CELLS_CROSS ? SpellShapeEnum.Q : SpellShapeEnum.C, shape.Size);
+                }
+
+                handler.Execute();
             }
         }
 
         public override GameActionMark GetGameActionMark()
         {
-            return new GameActionMark(Caster.Id, CastedSpell.Id, Id, (sbyte) Type, Shapes.Select(entry => entry.GetGameActionMarkedCell()));
+            return new GameActionMark(Caster.Id, CastedSpell.Id, Id, (sbyte) Type,
+                                      Shapes.Select(entry => entry.GetGameActionMarkedCell()));
         }
 
         public override GameActionMark GetHiddenGameActionMark()

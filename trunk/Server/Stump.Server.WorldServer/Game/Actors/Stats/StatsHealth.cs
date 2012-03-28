@@ -70,6 +70,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             get { return m_damageTaken; }
             set
             {
+                if (value > m_damageTaken)
+                    value = m_damageTaken;
+
                 m_realDamageTaken = value;
                 m_damageTaken = (short) (value > TotalMax ? TotalMax : value);
                 OnModified();

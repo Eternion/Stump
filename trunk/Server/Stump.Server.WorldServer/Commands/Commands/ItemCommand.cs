@@ -110,4 +110,45 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
         }
     }
+
+    public class ItemAddSetCommand : SubCommand
+    {
+        public ItemAddSetCommand()
+        {
+            Aliases = new[] {"addset"};
+            RequiredRole = RoleEnum.Moderator;
+            Description = "Add the entire itemset to the targeted character";
+            ParentCommand = typeof (ItemCommand);
+
+            AddParameter("template", "itemset", "Itemset to add", converter: ParametersConverter.ItemSetTemplateConverter);
+            AddParameter("target", "t", "Character who will receive the item", isOptional:true, converter:ParametersConverter.CharacterConverter);
+            AddParameter<bool>("max", "max", "Set item's effect to maximal values", isOptional:true);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var itemSet = trigger.Get<ItemSetTemplate>("template");
+            Character target;
+
+            if (!trigger.IsArgumentDefined("target") && trigger is GameTrigger)
+                target = (trigger as GameTrigger).Character;
+            else
+                target = trigger.Get<Character>("target");
+
+            foreach (ItemTemplate item in itemSet.Items)
+            {
+                Item addedItem = target.Inventory.AddItem(
+                    item,
+                    1,
+                    trigger.IsArgumentDefined("max"));
+
+                if (addedItem == null)
+                    trigger.Reply("Item '{0}'({1}) can't be add for an unknown reason", item.Name, item.Id);
+                else if (trigger is GameTrigger && (trigger as GameTrigger).Character.Id == target.Id)
+                    trigger.Reply("Added '{0}'({1}) to your inventory.", item.Name, item.Id);
+                else
+                    trigger.Reply("Added '{0}'({1}) to '{2}' inventory.", item.Name, item.Id, target.Name);
+            }
+        }
+    }
 }

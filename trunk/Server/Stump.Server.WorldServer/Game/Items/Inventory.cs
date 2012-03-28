@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Inventory;
@@ -71,6 +72,21 @@ namespace Stump.Server.WorldServer.Game.Items
                       {CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, new List<Item>()},
                   };
 
+        private readonly Dictionary<ItemSuperTypeEnum, CharacterInventoryPositionEnum[]> m_itemsPositioningRules
+            = new Dictionary<ItemSuperTypeEnum, CharacterInventoryPositionEnum[]>
+          {
+              {ItemSuperTypeEnum.SUPERTYPE_AMULET, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_AMULET}},
+              {ItemSuperTypeEnum.SUPERTYPE_WEAPON, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON}},
+              {ItemSuperTypeEnum.SUPERTYPE_WEAPON_7, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON}},
+              {ItemSuperTypeEnum.SUPERTYPE_CAPE, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_CAPE}},
+              {ItemSuperTypeEnum.SUPERTYPE_HAT, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_HAT}},
+              {ItemSuperTypeEnum.SUPERTYPE_RING, new [] {CharacterInventoryPositionEnum.INVENTORY_POSITION_RING_LEFT, CharacterInventoryPositionEnum.INVENTORY_POSITION_RING_RIGHT}},
+              {ItemSuperTypeEnum.SUPERTYPE_BOOTS, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_BOOTS}},
+              {ItemSuperTypeEnum.SUPERTYPE_BELT, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_BELT}},
+              {ItemSuperTypeEnum.SUPERTYPE_DOFUS, new [] {CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_1, CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_2, CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_3, CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_4, CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_5, CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_6}},
+              {ItemSuperTypeEnum.SUPERTYPE_SHIELD, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD}},
+
+          };
 
         public Inventory(Character owner)
         {
@@ -117,7 +133,7 @@ namespace Stump.Server.WorldServer.Game.Items
             get
             {
                 Item weapon;
-                if ((weapon = GetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON)) != null)
+                if ((weapon = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON)) != null)
                 {
                     return weapon.Template is WeaponTemplate
                                ? (uint) (weapon.Template as WeaponTemplate).CriticalHitBonus
@@ -199,13 +215,43 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             foreach (var effect in item.Effects)
             {
-                var handler = EffectManager.Instance.GetItemEffectHandler(Owner, item, effect);
+                var handler = EffectManager.Instance.GetItemEffectHandler(effect, Owner, item);
 
                 handler.Apply();
             }
 
             if (send)
                 Owner.RefreshStats();
+        }
+
+        private void ApplyItemSetEffects(ItemSetTemplate itemSet, int count, bool apply, bool send = true)
+        {
+            var effects = itemSet.GetEffects(count);
+
+            foreach (var effect in effects)
+            {
+                var handler = EffectManager.Instance.GetItemEffectHandler(effect, Owner, itemSet, apply);
+
+                handler.Apply();
+            }
+
+            if (send)
+                Owner.RefreshStats();
+        }
+
+        public int CountItemSetEquiped(ItemSetTemplate itemSet)
+        {
+            return GetEquipedItems().Count(entry => itemSet.Items.Contains(entry.Template));
+        }
+
+        public Item[] GetItemSetEquipped(ItemSetTemplate itemSet)
+        {
+            return GetEquipedItems().Where(entry => itemSet.Items.Contains(entry.Template)).ToArray();
+        }
+
+        public EffectBase[] GetItemSetEffects(ItemSetTemplate itemSet)
+        {
+            return itemSet.GetEffects(CountItemSetEquiped(itemSet));
         }
 
         public short[] GetItemsSkins()
@@ -243,7 +289,19 @@ namespace Stump.Server.WorldServer.Game.Items
             item.Position = CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED;
 
             if (wasEquiped)
-                ApplyItemEffects(item);
+                ApplyItemEffects(item, item.Template.ItemSet == null);
+
+            if (wasEquiped && item.Template.ItemSet != null)
+            {
+                var count = CountItemSetEquiped(item.Template.ItemSet);
+
+                if (count >= 0)
+                    ApplyItemSetEffects(item.Template.ItemSet, count + 1, false);
+                if (count > 0)
+                    ApplyItemSetEffects(item.Template.ItemSet, count, true);
+
+                InventoryHandler.SendSetUpdateMessage(Owner.Client, item.Template.ItemSet);
+            }
 
             InventoryHandler.SendObjectDeletedMessage(Owner.Client, item.Guid);
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
@@ -251,7 +309,7 @@ namespace Stump.Server.WorldServer.Game.Items
             if (wasEquiped)
                 CheckItemsCriterias();
 
-            if (item.Template.AppearanceId != 0)
+            if (wasEquiped && item.Template.AppearanceId != 0)
                 Owner.UpdateLook();
 
             base.OnItemRemoved(item);
@@ -262,15 +320,29 @@ namespace Stump.Server.WorldServer.Game.Items
             m_itemsByPosition[lastPosition].Remove(item);
             m_itemsByPosition[item.Position].Add(item);
 
-            // Update entity skin
-            if (lastPosition != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED && item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED ||
-                lastPosition == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED && item.Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
-                ApplyItemEffects(item);
+            bool wasEquiped = lastPosition != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED;
+            bool isEquiped = item.IsEquiped();
+
+            if (wasEquiped && !isEquiped ||
+                !wasEquiped && isEquiped)
+                ApplyItemEffects(item, false);
+
+            if (item.Template.ItemSet != null && !(wasEquiped && isEquiped))
+            {
+                var count = CountItemSetEquiped(item.Template.ItemSet);
+
+                if (count >= 0)
+                    ApplyItemSetEffects(item.Template.ItemSet, count + (wasEquiped ? 1 : -1), false);
+                if (count > 0)
+                    ApplyItemSetEffects(item.Template.ItemSet, count, true, false);
+
+                InventoryHandler.SendSetUpdateMessage(Owner.Client, item.Template.ItemSet);
+            }
 
             if (lastPosition == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED && !item.AreConditionFilled(Owner))
             {
                 BasicHandler.SendTextInformationMessage(Owner.Client, 1, 19);
-                MoveItem(item.Guid, lastPosition);
+                MoveItem(item, lastPosition);
             }
 
             InventoryHandler.SendObjectMovementMessage(Owner.Client, item);
@@ -279,8 +351,10 @@ namespace Stump.Server.WorldServer.Game.Items
             if (lastPosition != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
                 CheckItemsCriterias();
 
-            if (item.Template.AppearanceId != 0)
+            if ((isEquiped || wasEquiped) && item.Template.AppearanceId != 0)
                 Owner.UpdateLook();
+
+            Owner.RefreshStats();
         }
 
         protected override void OnItemStackChanged(Item item, int difference)
@@ -297,84 +371,148 @@ namespace Stump.Server.WorldServer.Game.Items
             base.OnKamasAmountChanged(amount);
         }
 
-        public void MoveItem(int guid, CharacterInventoryPositionEnum position)
+        public void MoveItem(Item item, CharacterInventoryPositionEnum position)
         {
-            if (!m_items.ContainsKey(guid))
+            if (!HasItem(item))
                 return;
 
-            if (position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED && !CanEquip(m_items[guid]))
+            if (!CanEquip(item, position))
                 return;
 
-            CharacterInventoryPositionEnum oldPosition = m_items[guid].Position;
+            CharacterInventoryPositionEnum oldPosition = item.Position;
 
             Item equipedItem;
             if (position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED &&
                 // check if an item is already on the desired position
-                ((equipedItem = GetItem(position)) != null))
+                ((equipedItem = TryGetItem(position)) != null))
             {
                 // if there is one we move it to the inventory
-                MoveItem(equipedItem.Guid, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+                MoveItem(equipedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
             }
 
-            if (!m_items.ContainsKey(guid))
+            // second check
+            if (!HasItem(item))
                 return;
 
-            Item itemToMove = m_items[guid];
+            UnEquipedDouble(item);
 
-            if (itemToMove.Stack > 1) // if the item to move is stack we cut it
+            if (item.Stack > 1) // if the item to move is stack we cut it
             {
-                CutItem(itemToMove, (uint) (itemToMove.Stack - 1));
+                CutItem(item, (uint)( item.Stack - 1 ));
                 // now we have 2 stack : itemToMove, stack = 1
                 //						 newitem, stack = itemToMove.Stack - 1
             }
 
             Item stacktoitem;
             if (position == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED &&
-                IsStackable(itemToMove.Template.Id, itemToMove.Effects, out stacktoitem) && stacktoitem != null)
+                IsStackable(item.Template, item.Effects, out stacktoitem) && stacktoitem != null)
                 // check if we must stack the moved item
             {
-                StackItem(stacktoitem, (uint) itemToMove.Stack); // in all cases Stack = 1 else there is an error
-                RemoveItem(itemToMove.Guid);
+
+                NotifyItemMoved(item, oldPosition);
+                StackItem(stacktoitem, (uint)item.Stack); // in all cases Stack = 1 else there is an error
+                RemoveItem(item);
             }
             else // else we just move the item
             {
-                itemToMove.Position = position;
-                NotifyItemMoved(itemToMove, oldPosition);
+                item.Position = position;
+                NotifyItemMoved(item, oldPosition);
             }
-
         }
 
-        public bool CanEquip(Item item)
+        private bool UnEquipedDouble(Item itemToEquip)
         {
+            if (itemToEquip.Template.Type.ItemType == ItemTypeEnum.DOFUS)
+            {
+                var dofus = GetEquipedItems().FirstOrDefault(entry => entry.Guid != itemToEquip.Guid && entry.ItemId == itemToEquip.ItemId);
+
+                if (dofus != null)
+                {
+                    MoveItem(dofus, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+
+                    return true;
+                }
+            }
+
+            if (itemToEquip.Template.Type.ItemType == ItemTypeEnum.RING)
+            {
+                // we can equip the same ring if it doesn't own to an item set
+                var ring = GetEquipedItems().FirstOrDefault(entry => entry.Guid != itemToEquip.Guid && entry.ItemId == itemToEquip.ItemId && entry.Template.ItemSetId > 0);
+
+                if (ring != null)
+                {
+                    MoveItem(ring, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool CanEquip(Item item, CharacterInventoryPositionEnum position, bool send = true)
+        {
+            if (position == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
+                return true;
+
+            if (!GetItemPossiblePositions(item).Contains(position))
+                return false;
+
             if (item.Template.Level > Owner.Level)
             {
-                BasicHandler.SendTextInformationMessage(Owner.Client, 1, 3);
+                if (send)
+                    BasicHandler.SendTextInformationMessage(Owner.Client, 1, 3);
+
                 return false;
             }
 
+            var weapon = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
+            if (item.Template.Type.ItemType == ItemTypeEnum.SHIELD && weapon != null && weapon.Template.TwoHanded)
+            {
+                if (send)
+                    BasicHandler.SendTextInformationMessage(Owner.Client, 0, 78);
+
+                return false;
+            }
+
+            var shield = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD);
+            if (item.Template is WeaponTemplate && item.Template.TwoHanded && shield != null)
+            {
+                if (send)
+                    BasicHandler.SendTextInformationMessage(Owner.Client, 0, 79);
+
+                return false;
+            }            
+            
             return true;
         }
 
-        public void ChangeItemOwner(Character newOwner, int guid, uint amount)
+        public CharacterInventoryPositionEnum[] GetItemPossiblePositions(Item item)
         {
-            if (!m_items.ContainsKey(guid))
+            if (!m_itemsPositioningRules.ContainsKey(item.Template.Type.SuperType))
+                return new[] { CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED };
+
+            return m_itemsPositioningRules[item.Template.Type.SuperType];
+        }
+
+        public void ChangeItemOwner(Character newOwner, Item item, uint amount)
+        {
+            if (!HasItem(item.Guid))
                 return;
 
-            Item itemToMove = m_items[guid];
+            if (amount > item.Stack)
+                amount = (uint)item.Stack;
 
-            if (amount > itemToMove.Stack)
-                amount = (uint) itemToMove.Stack;
-
-            newOwner.Inventory.AddItemCopy(itemToMove, amount);
+            newOwner.Inventory.AddItemCopy(item, amount);
 
             // delete the item if there is no more stack else we unstack it
-            if (amount >= itemToMove.Stack)
+            if (amount >= item.Stack)
             {
-                RemoveItem(guid);
+                RemoveItem(item);
             }
             else
             {
-                UnStackItem(itemToMove, amount);
+                UnStackItem(item, amount);
             }
         }
 
@@ -383,8 +521,28 @@ namespace Stump.Server.WorldServer.Game.Items
             foreach (var equipedItem in GetEquipedItems().ToArray())
             {
                 if (!equipedItem.AreConditionFilled(Owner))
-                    MoveItem(equipedItem.Guid, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+                    MoveItem(equipedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
             }
+        }
+
+        public void UseItem(Item item)
+        {
+            if (!HasItem(item.Guid) || !item.IsUsable())
+                return;
+
+            if (!item.AreConditionFilled(Owner))
+            {
+                return;
+            }
+
+            foreach (var effect in item.Effects)
+            {
+                var handler = EffectManager.Instance.GetUsableEffectHandler(effect, Owner, item);
+
+                handler.Apply();
+            }
+
+            RemoveItem(item, 1);
         }
     }
 }

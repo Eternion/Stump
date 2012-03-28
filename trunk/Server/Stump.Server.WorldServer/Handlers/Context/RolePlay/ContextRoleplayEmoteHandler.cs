@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
@@ -14,26 +16,24 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         [WorldHandler(EmotePlayRequestMessage.Id)]
         public static void HandleEmotePlayRequestMessage(WorldClient client, EmotePlayRequestMessage message)
         {
-            // todo : found the duration of each emote
-            //client.ActiveCharacter.((EmotesEnum) message.emoteId, 0);
-            SendEmotePlayMessage(client.ActiveCharacter.Map.Clients, client.ActiveCharacter, (EmotesEnum)message.emoteId, 0);
+            client.ActiveCharacter.PlayEmote((EmotesEnum) message.emoteId);
         }
 
-        public static void SendEmotePlayMessage(IPacketReceiver client, Character character, EmotesEnum emote, byte duration)
+        public static void SendEmotePlayMessage(IPacketReceiver client, Character character, EmotesEnum emote)
         {
             client.Send(new EmotePlayMessage(
                             (sbyte) emote,
-                            duration,
+                            DateTime.Now.GetUnixTimeStamp(),
                             character.Id,
                             (int) character.Client.Account.Id
                             ));
         }
 
-        public static void SendEmotePlayMessage(IPacketReceiver client, ContextActor actor, EmotesEnum emote, byte duration)
+        public static void SendEmotePlayMessage(IPacketReceiver client, ContextActor actor, EmotesEnum emote)
         {
             client.Send(new EmotePlayMessage(
                             (sbyte) emote,
-                            duration,
+                            DateTime.Now.GetUnixTimeStamp(),
                             actor.Id,
                             0
                             ));

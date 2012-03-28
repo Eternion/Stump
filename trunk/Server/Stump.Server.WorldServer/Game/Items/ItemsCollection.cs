@@ -83,7 +83,7 @@ namespace Stump.Server.WorldServer.Game.Items
             List<EffectBase> effects = ItemManager.Instance.GenerateItemEffects(template, maxEffect);
 
             Item stackableWith;
-            if (IsStackable(template.Id, effects, out stackableWith))
+            if (IsStackable(template, effects, out stackableWith))
             {
                 StackItem(stackableWith, amount);
 
@@ -103,7 +103,7 @@ namespace Stump.Server.WorldServer.Game.Items
         public virtual Item AddItem(Item item)
         {
             Item stackableWith;
-            if (IsStackable(item.ItemId, item.Effects, out stackableWith))
+            if (IsStackable(item.Template, item.Effects, out stackableWith))
             {
                 StackItem(stackableWith, (uint) item.Stack);
 
@@ -123,7 +123,7 @@ namespace Stump.Server.WorldServer.Game.Items
         public virtual Item AddItemCopy(Item item, uint amount)
         {
             Item stack;
-            if (IsStackable(item.ItemId, item.Effects, out stack) && stack != null)
+            if (IsStackable(item.Template, item.Effects, out stack) && stack != null)
                 // if there is same item in inventory we stack it
             {
                 StackItem(stack, amount);
@@ -134,7 +134,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
             if (m_items.ContainsKey(newitem.Guid))
             {
-                RemoveItem(newitem.Guid);
+                RemoveItem(newitem);
                 return null;
             }
 
@@ -146,33 +146,27 @@ namespace Stump.Server.WorldServer.Game.Items
             return newitem;
         }
 
-        public virtual void RemoveItem(Item item)
+        public virtual void RemoveItem(Item item, uint amount)
         {
-            RemoveItem(item.Guid);
-        }
-
-        public virtual void RemoveItem(int guid, uint amount)
-        {
-            if (!m_items.ContainsKey(guid))
+            if (!HasItem(item))
                 return;
 
-            if (m_items[guid].Stack <= amount)
-                RemoveItem(guid);
+            if (item.Stack <= amount)
+                RemoveItem(item);
             else
             {
-                UnStackItem(m_items[guid], amount);
+                UnStackItem(item, amount);
             }
         }
 
-        public virtual void RemoveItem(int guid)
+        public virtual void RemoveItem(Item item)
         {
-            if (!m_items.ContainsKey(guid))
+            if (!HasItem(item))
                 return;
 
-            Item removedItem = m_items[guid];
-            m_items.Remove(guid);
+            m_items.Remove(item.Guid);
 
-            NotifyItemRemoved(removedItem);
+            NotifyItemRemoved(item);
         }
 
         public virtual void StackItem(Item item, uint amount)
@@ -205,10 +199,10 @@ namespace Stump.Server.WorldServer.Game.Items
             return newitem;
         }
 
-        public virtual bool IsStackable(int itemId, List<EffectBase> effects, out Item stackableWith)
+        public virtual bool IsStackable(ItemTemplate template, List<EffectBase> effects, out Item stackableWith)
         {
             Item stack;
-            if ((stack = GetItem(itemId, effects, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)) !=
+            if (( stack = TryGetItem(template, effects, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED) ) !=
                 null)
             {
                 stackableWith = stack;
@@ -219,27 +213,40 @@ namespace Stump.Server.WorldServer.Game.Items
             return false;
         }
 
-
         public virtual bool HasItem(int guid)
         {
-            return GetItem(guid) != null;
+            return m_items.ContainsKey(guid);
         }
 
-        public virtual Item GetItem(int guid)
+        public virtual bool HasItem(Item item)
+        {
+            return HasItem(item.Guid);
+        }
+
+        public virtual Item TryGetItem(int guid)
         {
             return !m_items.ContainsKey(guid) ? null : m_items[guid];
         }
 
-        public virtual Item GetItem(int itemId, List<EffectBase> effects, CharacterInventoryPositionEnum position)
+        public virtual Item TryGetItem(int templateId, List<EffectBase> effects, CharacterInventoryPositionEnum position)
         {
             IEnumerable<Item> entries = from entry in m_items.Values
-                                        where entry.ItemId == itemId && entry.Position == position && effects.CompareEnumerable(entry.Effects)
+                                        where entry.ItemId == templateId && entry.Position == position && effects.CompareEnumerable(entry.Effects)
                                         select entry;
 
             return entries.FirstOrDefault();
         }
 
-        public virtual Item GetItem(CharacterInventoryPositionEnum position)
+        public virtual Item TryGetItem(ItemTemplate template, List<EffectBase> effects, CharacterInventoryPositionEnum position)
+        {
+            IEnumerable<Item> entries = from entry in m_items.Values
+                                        where entry.ItemId == template.Id && entry.Position == position && effects.CompareEnumerable(entry.Effects)
+                                        select entry;
+
+            return entries.FirstOrDefault();
+        }
+
+        public virtual Item TryGetItem(CharacterInventoryPositionEnum position)
         {
             return m_items.Values.Where(entry => entry.Position == position).FirstOrDefault();
         }

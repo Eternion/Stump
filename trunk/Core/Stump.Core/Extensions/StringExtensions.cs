@@ -119,7 +119,7 @@ namespace Stump.Core.Extensions
             return occurences;
         }
 
-        public static string GetMd5(this string encryptString)
+        public static string GetMD5(this string encryptString)
         {
             byte[] passByteCrypt = new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(encryptString));
 

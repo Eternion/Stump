@@ -5,6 +5,7 @@ using Stump.Core.Pool;
 using Stump.Core.Reflection;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Interactives;
+using Stump.Server.WorldServer.Database.Interactives.Skills;
 
 namespace Stump.Server.WorldServer.Game.Interactives
 {
@@ -13,12 +14,14 @@ namespace Stump.Server.WorldServer.Game.Interactives
         private readonly UniqueIdProvider m_idProvider = new UniqueIdProvider();
         private Dictionary<int, InteractiveSpawn> m_interactivesSpawns;
         private Dictionary<int, InteractiveTemplate> m_interactivesTemplates;
+        private Dictionary<int, SkillTemplate> m_skillsTemplates;
 
         [Initialization(InitializationPass.Fourth)]
         public void Initialize()
         {
             m_interactivesTemplates = InteractiveTemplate.FindAll().ToDictionary(entry => entry.Id);
             m_interactivesSpawns = InteractiveSpawn.FindAll().ToDictionary(entry => entry.Id);
+            m_skillsTemplates = SkillTemplate.FindAll().ToDictionary(entry => entry.Id);
         }
 
         public int PopSkillId()
@@ -45,6 +48,15 @@ namespace Stump.Server.WorldServer.Game.Interactives
         {
             InteractiveTemplate template;
             if (m_interactivesTemplates.TryGetValue(id, out template))
+                return template;
+
+            return template;
+        }
+
+        public SkillTemplate GetSkillTemplate(int id)
+        {
+            SkillTemplate template;
+            if (m_skillsTemplates.TryGetValue(id, out template))
                 return template;
 
             return template;

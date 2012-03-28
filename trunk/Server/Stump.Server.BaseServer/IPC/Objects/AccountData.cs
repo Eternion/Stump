@@ -30,7 +30,7 @@ namespace Stump.Server.BaseServer.IPC.Objects
         }
 
         [DataMember]
-        public string Password
+        public string PasswordHash
         {
             get;
             set;
@@ -176,6 +176,20 @@ namespace Stump.Server.BaseServer.IPC.Objects
 
         [DataMember]
         public string BanReason
+        {
+            get;
+            set;
+        }
+
+        [DataMember]
+        public int Points
+        {
+            get;
+            set;
+        }
+
+        [DataMember]
+        public DateTime? LastVote
         {
             get;
             set;

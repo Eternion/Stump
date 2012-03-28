@@ -98,9 +98,22 @@ namespace Stump.Server.WorldServer.Game.Maps
             Contract.Requires(interactive != null);
             Contract.Requires(skill != null);
 
-            ForEach(character => InteractiveHandler.SendInteractiveUsedMessage(character.Client, user, interactive, skill));
+            InteractiveHandler.SendInteractiveUsedMessage(Clients, user, interactive, skill);
 
             Action<Map, Character, InteractiveObject, Skill> handler = InteractiveUsed;
+            if (handler != null)
+                handler(this, user, interactive, skill);
+        }
+
+        public event Action<Map, Character, InteractiveObject, Skill> InteractiveUseEnded;
+
+        protected virtual void OnInteractiveUseEnded(Character user, InteractiveObject interactive, Skill skill)
+        {
+            Contract.Requires(user != null);
+            Contract.Requires(interactive != null);
+            Contract.Requires(skill != null);
+
+            Action<Map, Character, InteractiveObject, Skill> handler = InteractiveUseEnded;
             if (handler != null)
                 handler(this, user, interactive, skill);
         }
@@ -323,6 +336,12 @@ namespace Stump.Server.WorldServer.Game.Maps
             get { return Record.PresetId; }
         }
 
+        public InteractiveObject Zaap
+        {
+            get;
+            private set;
+        }
+
         #endregion
 
         #region Npcs
@@ -387,6 +406,14 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             var interactiveObject = new InteractiveObject(spawn);
 
+            if (interactiveObject.Template != null && interactiveObject.Template.Type == InteractiveTypeEnum.TYPE_ZAAP)
+            {
+                if (Zaap != null)
+                    throw new Exception("Cannot add a second zaap on the map");
+
+                Zaap = interactiveObject;
+            }
+
             m_interactives.Add(interactiveObject.Id, interactiveObject);
             Area.Enter(interactiveObject);
 
@@ -408,6 +435,9 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             Contract.Requires(interactive != null);
 
+            if (interactive.Template != null && interactive.Template.Type == InteractiveTypeEnum.TYPE_ZAAP && Zaap != null)
+                Zaap = null;
+
             interactive.Delete();
             m_interactives.Remove(interactive.Id);
             Area.Leave(interactive);
@@ -424,19 +454,52 @@ namespace Stump.Server.WorldServer.Game.Maps
                 handler(this, interactive);
         }
 
-        public void UseInteractiveObject(Character character, int interactiveId, int skillId)
+        public bool UseInteractiveObject(Character character, int interactiveId, int skillId)
         {
             Contract.Requires(character != null);
 
             InteractiveObject interactiveObject = GetInteractiveObject(interactiveId);
+
+            if (interactiveObject == null)
+                return false;
+
             Skill skill = interactiveObject.GetSkill(skillId);
+
+            if (skill == null)
+                return false;
+
 
             if (skill.IsEnabled(character))
             {
                 skill.Execute(character);
 
                 OnInteractiveUsed(character, interactiveObject, skill);
+
+                return true;
             }
+
+            return false;
+        }
+
+        public bool NotifyInteractiveObjectUseEnded(Character character, int interactiveId, int skillId)
+        {
+            Contract.Requires(character != null);
+
+            InteractiveObject interactiveObject = GetInteractiveObject(interactiveId);
+
+            if (interactiveObject == null)
+                return false; 
+            
+            Skill skill = interactiveObject.GetSkill(skillId);
+
+            if (skill == null)
+                return false;
+
+            skill.PostExecute(character);
+
+            OnInteractiveUseEnded(character, interactiveObject, skill);
+
+            return true;
         }
 
         #endregion
@@ -829,6 +892,9 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             SendActorsActions(character);
             BasicHandler.SendBasicTimeMessage(character.Client);
+
+            if (Zaap != null && !character.KnownZaaps.Contains(this))
+                character.DiscoverZaap(this);
         }
 
         private void SendActorsActions(Character character)

@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Conditions;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Database.Items.Templates
 {
@@ -70,6 +72,13 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
         {
             get;
             set;
+        }
+
+        private ItemTypeRecord m_type;
+
+        public ItemTypeRecord Type
+        {
+            get { return m_type ?? (m_type = ItemManager.Instance.GetItemType((int) TypeId)); }
         }
 
         [D2OField("descriptionId")]
@@ -170,6 +179,16 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set;
         }
 
+        private ItemSetTemplate m_itemSet;
+
+        public ItemSetTemplate ItemSet
+        {
+            get
+            {
+                return ItemSetId < 0 ? null : m_itemSet ?? ( m_itemSet = ItemManager.Instance.GetItemSetTemplate((uint)ItemSetId) );
+            }
+        }
+
         [D2OField("criteria")]
         [Property("Criteria")]
         public String Criteria
@@ -263,5 +282,9 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set;
         }
 
+        public bool IsWeapon()
+        {
+            return this is WeaponTemplate;
+        }
     }
 }
