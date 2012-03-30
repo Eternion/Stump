@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.Contracts;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
@@ -113,13 +114,13 @@ namespace Stump.Server.WorldServer.Game.Actors
             if (handler != null)
                 handler(this, path, canceled);
         }
+        
+        public event Action<ContextActor, Cell> InstantMoved;
 
-        public event Action<ContextActor, ObjectPosition> InstantMoved;
-
-        protected virtual void OnTeleported(ObjectPosition position)
-        {
-            Action<ContextActor, ObjectPosition> handler = InstantMoved;
-            if (handler != null) handler(this, position);
+        protected virtual void OnInstantMoved(Cell cell)
+        {   
+            Action<ContextActor, Cell> handler = InstantMoved;
+            if (handler != null) handler(this, cell);
         }
 
         public event Action<ContextActor, ObjectPosition> PositionChanged;
@@ -169,7 +170,7 @@ namespace Stump.Server.WorldServer.Game.Actors
             m_lastPosition = Position;
             Position = destination;
 
-            OnTeleported(destination);
+            OnInstantMoved(destination.Cell);
 
             return true;
         }

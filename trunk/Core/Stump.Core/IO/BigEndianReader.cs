@@ -237,6 +237,21 @@ namespace Stump.Core.IO
         ///   Read a string from the Buffer
         /// </summary>
         /// <returns></returns>
+        public string ReadUTF7BitLength()
+        {
+            int length = ReadInt();
+
+            byte[] bytes = ReadBytes(length);
+
+            Contract.Assume(bytes != null);
+
+            return Encoding.UTF8.GetString(bytes);
+        }
+
+        /// <summary>
+        ///   Read a string from the Buffer
+        /// </summary>
+        /// <returns></returns>
         public string ReadUTFBytes(ushort len)
         {
             byte[] bytes = ReadBytes(len);

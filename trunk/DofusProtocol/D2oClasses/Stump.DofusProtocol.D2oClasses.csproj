@@ -292,6 +292,26 @@
     <Compile Include="Tool\D2OIgnore.cs" />
     <Compile Include="Tool\D2OReader.cs" />
     <Compile Include="Tool\D2OWriter.cs" />
+    <Compile Include="Tool\Dlm\ColorMultiplicator.cs" />
+    <Compile Include="Tool\Dlm\DlmBasicElement.cs" />
+    <Compile Include="Tool\Dlm\DlmCell.cs" />
+    <Compile Include="Tool\Dlm\DlmCellData.cs" />
+    <Compile Include="Tool\Dlm\DlmFixture.cs" />
+    <Compile Include="Tool\Dlm\DlmGraphicalElement.cs" />
+    <Compile Include="Tool\Dlm\DlmLayer.cs" />
+    <Compile Include="Tool\Dlm\DlmMap.cs" />
+    <Compile Include="Tool\Dlm\DlmReader.cs" />
+    <Compile Include="Tool\Dlm\DlmSoundElement.cs" />
+    <Compile Include="Tool\Ele\Datas\BlendedGraphicalElementData.cs" />
+    <Compile Include="Tool\Ele\Datas\AnimatedGraphicalElementData.cs" />
+    <Compile Include="Tool\Ele\Datas\BoundingBoxGraphicalElementData.cs" />
+    <Compile Include="Tool\Ele\EleGraphicalData.cs" />
+    <Compile Include="Tool\Ele\EleGraphicalElementTypes.cs" />
+    <Compile Include="Tool\Ele\EleInstance.cs" />
+    <Compile Include="Tool\Ele\Datas\NormalGraphicalElementData.cs" />
+    <Compile Include="Tool\Ele\EleReader.cs" />
+    <Compile Include="Tool\Ele\Datas\EntityGraphicalElementData.cs" />
+    <Compile Include="Tool\Ele\Datas\ParticlesGraphicalElementData.cs" />
     <Compile Include="Tool\I18nFile.cs" />
     <Compile Include="Tool\PakFile.cs" />
   </ItemGroup>

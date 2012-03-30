@@ -1,8 +1,10 @@
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Dialogs.Interactives;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
 
@@ -20,6 +22,20 @@ namespace Stump.Server.WorldServer.Handlers.Interactives
         public static void HandleInteractiveUseEndedMessage(WorldClient client, InteractiveUseEndedMessage message)
         {
 
+        }
+
+        [WorldHandler(TeleportRequestMessage.Id)]
+        public static void HandleTeleportRequestMessage(WorldClient client, TeleportRequestMessage message)
+        {
+            if (!client.ActiveCharacter.IsInZaapDialog())
+                return;
+
+            var map = World.Instance.GetMap(message.mapId);
+
+            if (map == null)
+                return;
+
+            client.ActiveCharacter.ZaapDialog.Teleport(map);
         }
 
         public static void SendInteractiveUsedMessage(IPacketReceiver client, Character user, InteractiveObject interactiveObject, Skill skill)

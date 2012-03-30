@@ -1,4 +1,6 @@
+using System;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Maps;
@@ -20,6 +22,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
         #region Actions
 
         #region Teleport
+
+        public event Action<ContextActor, ObjectPosition> Teleported;
+
+        protected virtual void OnTeleported(ObjectPosition position)
+        {
+            Action<ContextActor, ObjectPosition> handler = Teleported;
+            if (handler != null) handler(this, position);
+        }
+
+        protected override void OnInstantMoved(Cell cell)
+        {
+            Map.Clients.Send(new TeleportOnSameMapMessage(Id, cell.Id));
+
+            base.OnInstantMoved(cell);
+        }
 
         public bool Teleport(MapNeighbour mapNeighbour)
         {

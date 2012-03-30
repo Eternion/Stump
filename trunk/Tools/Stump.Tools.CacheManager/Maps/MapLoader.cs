@@ -147,7 +147,7 @@ namespace Stump.Tools.CacheManager.Maps
                         switch (reader.ReadByte())
                         {
                             case 2: // GRAPICAL
-                                var id = reader.ReadUInt();
+                                reader.ReadUInt();
 
                                 reader.ReadByte();
                                 reader.ReadByte();
@@ -169,8 +169,8 @@ namespace Stump.Tools.CacheManager.Maps
                                 }
 
                                 reader.ReadByte();
-                                reader.ReadUInt();
-                                elements.Add(new MapElement((int)id, cell));
+                                var id = reader.ReadUInt();
+                                elements.Add(new MapElement(id, cell));
                                 break;
                             case 33: // SOUND
                                 reader.ReadInt();

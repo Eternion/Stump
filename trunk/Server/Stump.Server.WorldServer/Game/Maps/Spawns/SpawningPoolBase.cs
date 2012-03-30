@@ -83,10 +83,15 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
                 if (AutoSpawnEnabled)
                     return;
 
-
                 ResetTimer();
                 State = SpawningPoolState.Running;
+                OnAutoSpawnEnabled();
             }
+        }
+
+        protected virtual void OnAutoSpawnEnabled()
+        {
+            SpawnNextGroup();
         }
 
         public void StopAutoSpawn()
@@ -101,7 +106,13 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
                     SpawnTimer.Dispose();
 
                 State = SpawningPoolState.Stoped;
+                OnAutoSpawnDisabled();
             }
+        }
+
+        protected virtual void OnAutoSpawnDisabled()
+        {
+
         }
 
         protected void PauseAutoSpawn()
@@ -127,6 +138,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
                 ResetTimer();
                 State = SpawningPoolState.Running;
+                OnAutoSpawnEnabled();
             }
         }
 
@@ -148,7 +160,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             SpawnTimer = Map.Area.CallDelayed(GetNextSpawnInterval(), TimerCallBack);
         }
 
-        public void SpawnNextGroup()
+        public void  SpawnNextGroup()
         {
             MonsterGroup group = DequeueNextGroupToSpawn();
 

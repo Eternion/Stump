@@ -7,9 +7,9 @@ namespace Stump.Server.WorldServer.Database.World.Maps
         public const int Size = 2 + 4;
 
         public short CellId;
-        public int ElementId;
+        public uint ElementId;
 
-        public MapElement(int elementId, short cellId)
+        public MapElement(uint elementId, short cellId)
         {
             ElementId = elementId;
             CellId = cellId;
@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
         public void Deserialize(byte[] data, int index)
         {
             CellId = (short)( data[index + 0] << 8 | data[index + 1] );
-            ElementId = data[index + 2] << 24 | data[index + 3] << 16 | data[index + 4] << 8 | data[index + 5];
+            ElementId = unchecked((uint)( data[index + 2] << 24 | data[index + 3] << 16 | data[index + 4] << 8 | data[index + 5] ));
         }
     
     }

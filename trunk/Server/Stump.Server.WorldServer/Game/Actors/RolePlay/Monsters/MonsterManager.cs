@@ -13,6 +13,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         private Dictionary<int, MonsterTemplate> m_monsterTemplates;
         private Dictionary<int, MonsterSpell> m_monsterSpells;
         private Dictionary<int, MonsterSpawn> m_monsterSpawns;
+        private Dictionary<int, MonsterDungeonSpawn> m_monsterDungeonsSpawns;
         private Dictionary<int, DroppableItem> m_droppableItems;
         private Dictionary<int, MonsterGrade> m_monsterGrades;
         private Dictionary<int, MonsterSuperRace> m_monsterSuperRaces;
@@ -24,13 +25,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             m_monsterGrades = MonsterGrade.FindAll().ToDictionary(entry => entry.Id);
             m_monsterSpells = MonsterSpell.FindAll().ToDictionary(entry => entry.Id);
             m_monsterSpawns = MonsterSpawn.FindAll().ToDictionary(entry => entry.Id);
+            m_monsterDungeonsSpawns = MonsterDungeonSpawn.FindAll().ToDictionary(entry => entry.Id);
             m_droppableItems = DroppableItem.FindAll().ToDictionary(entry => entry.Id);
             m_monsterSuperRaces = MonsterSuperRace.FindAll().ToDictionary(entry => entry.Id);
         }
 
-        public IEnumerable<MonsterGrade> GetMonsterGrades()
+        public MonsterGrade[] GetMonsterGrades()
         {
-            return m_monsterGrades.Values;
+            return m_monsterGrades.Values.ToArray();
         }
 
         public MonsterGrade GetMonsterGrade(int id)
@@ -87,11 +89,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             return result;
         }
 
-        public IEnumerable<MonsterTemplate> GetTemplates()
+        public MonsterTemplate[] GetTemplates()
         {
-            return m_monsterTemplates.Values;
+            return m_monsterTemplates.Values.ToArray();
         }
-
 
         public MonsterTemplate GetTemplate(string name, bool ignoreCommandCase)
         {
@@ -121,9 +122,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             m_monsterSpells.Remove(spell.Id);
         }
 
-        public IEnumerable<MonsterSpawn> GetMonsterSpawns()
+        public MonsterSpawn[] GetMonsterSpawns()
         {
-            return m_monsterSpawns.Values;
+            return m_monsterSpawns.Values.ToArray();
+        }
+
+        public MonsterDungeonSpawn[] GetMonsterDungeonsSpawns()
+        {
+            return m_monsterDungeonsSpawns.Values.ToArray();
         }
 
         public MonsterSpawn GetOneMonsterSpawn(Predicate<MonsterSpawn> predicate)

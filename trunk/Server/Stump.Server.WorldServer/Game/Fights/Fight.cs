@@ -368,6 +368,15 @@ namespace Stump.Server.WorldServer.Game.Fights
             Dispose();
         }
 
+        public delegate void FightWinnersDelegate(Fight fight, FightTeam winners, FightTeam losers, bool draw);
+        public event FightWinnersDelegate WinnersDetermined;
+
+        protected virtual void OnWinnersDetermined(FightTeam winners, FightTeam losers, bool draw)
+        {
+            FightWinnersDelegate handler = WinnersDetermined;
+            if (handler != null) handler(this, winners, losers, draw);
+        }
+
         protected virtual void DeterminsWinners()
         {
             if (BlueTeam.AreAllDead() && !RedTeam.AreAllDead())
@@ -385,6 +394,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
 
             else Draw = true;
+
+            OnWinnersDetermined(Winners, Losers, Draw);
         }
 
         protected void ResetFightersProperties()

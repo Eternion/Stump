@@ -62,12 +62,27 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
             if (!m_destinations.Contains(map))
                 return;
 
-            var cell = map.Cells[280];
+            var cell = map.GetCell(280);
 
             if (map.Zaap != null)
-                cell = map.Zaap.Position.Cell;
+            {
+                cell =
+                    map.GetCell(
+                        map.Zaap.Position.Point.GetCellInDirection(DirectionsEnum.DIRECTION_SOUTH_WEST, 1).CellId);
+
+                if (!cell.Walkable)
+                {
+                    var adjacents = map.Zaap.Position.Point.GetAdjacentCells(entry => map.GetCell(entry).Walkable).ToArray();
+
+                    if (adjacents.Length == 0)
+                        throw new Exception(string.Format("Cannot find a free adjacent cell near the zaap (id:{0}) on map {1}", map.Zaap.Id, map.Id));
+
+                    cell = map.GetCell(adjacents[0].CellId);
+                }
+            }
 
             Character.Teleport(map, cell);
+            Close();
         }
 
         public void SendZaapListMessage(IPacketReceiver client)

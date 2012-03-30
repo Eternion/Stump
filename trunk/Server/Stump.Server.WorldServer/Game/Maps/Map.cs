@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Linq;
@@ -237,10 +238,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             get { return Area.SuperArea; }
         }
 
-        public SpawningPoolBase SpawningPool
+        private List<SpawningPoolBase> m_spawningPools = new List<SpawningPoolBase>();
+
+        public ReadOnlyCollection<SpawningPoolBase> SpawningPools
         {
-            get;
-            private set;
+            get { return m_spawningPools.AsReadOnly(); }
         }
 
         public bool SpawnEnabled
@@ -511,37 +513,37 @@ namespace Stump.Server.WorldServer.Game.Maps
             get { return m_monsterSpawns.Count; }
         }
 
+        public void AddSpawningPool(SpawningPoolBase spawningPool, bool enable = true)
+        {
+            m_spawningPools.Add(spawningPool);
+
+            if (enable)
+            {
+                spawningPool.StartAutoSpawn();
+            }
+        }
+
+        public bool RemoveSpawningPool(SpawningPoolBase spawningPool)
+        {
+            spawningPool.StopAutoSpawn();
+
+            return m_spawningPools.Remove(spawningPool);
+        }
+
         public void EnableMonsterSpawns()
         {
             if (SpawnEnabled)
                 return;
 
-            if (GetMonsterSpawns().Count() <= 0)
-                return;
+            if (SpawningPools.Count == 0)
+                AddSpawningPool(new ClassicalSpawningPool(this, SubArea.GetMonsterSpawnInterval()));
 
-            if (SpawningPool == null)
-                SpawningPool = new ClassicalSpawningPool(this, SubArea.GetMonsterSpawnInterval());
+            foreach (var spawningPool in SpawningPools)
+            {
+                if (!spawningPool.AutoSpawnEnabled)
+                    spawningPool.StartAutoSpawn();
+            }
 
-            // spawn a first group
-            SpawningPool.SpawnNextGroup();
-            SpawningPool.StartAutoSpawn();
-            SpawnEnabled = true;
-        }
-
-        public void EnableMonsterSpawns(SpawningPoolBase spawningPool)
-        {
-            if (SpawnEnabled)
-                return;
-
-            if (GetMonsterSpawns().Count() <= 0)
-                return;
-
-            if (SpawningPool == null)
-                SpawningPool = spawningPool;
-
-            // spawn a first group
-            SpawningPool.SpawnNextGroup();
-            SpawningPool.StartAutoSpawn();
             SpawnEnabled = true;
         }
 
@@ -550,7 +552,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (!SpawnEnabled)
                 return;
 
-            SpawningPool.StopAutoSpawn();
+            foreach (var spawningPool in SpawningPools)
+            {
+                if (spawningPool.AutoSpawnEnabled)
+                    spawningPool.StopAutoSpawn();
+            }
 
             foreach (var actor in GetActors<MonsterGroup>())
             {
@@ -558,7 +564,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
 
             SpawnEnabled = false;
-            SpawningPool = null;
         }
 
         public void AddMonsterSpawn(MonsterSpawn spawn)
@@ -573,6 +578,30 @@ namespace Stump.Server.WorldServer.Game.Maps
             Contract.Requires(spawn != null);
             
             m_monsterSpawns.Remove(spawn);
+        }
+
+        public void AddMonsterDungeonSpawn(MonsterDungeonSpawn spawn)
+        {
+            Contract.Requires(spawn != null);
+
+            var pool = m_spawningPools.FirstOrDefault(entry => entry is DungeonSpawningPool) as DungeonSpawningPool;
+
+            if (pool == null)
+                AddSpawningPool(pool = new DungeonSpawningPool(this));
+
+            pool.AddSpawn(spawn);
+        }
+
+        public void RemoveMonsterDungeonSpawn(MonsterDungeonSpawn spawn)
+        {
+            Contract.Requires(spawn != null);
+
+            var pool = m_spawningPools.FirstOrDefault(entry => entry is DungeonSpawningPool) as DungeonSpawningPool;
+
+            if (pool == null)
+                return;
+
+            pool.RemoveSpawn(spawn);
         }
 
         public IEnumerable<MonsterSpawn> GetMonsterSpawns()

@@ -16,6 +16,7 @@ using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Dialogs;
+using Stump.Server.WorldServer.Game.Dialogs.Interactives;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Fights;
@@ -196,6 +197,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get { return Dialog as NpcShopDialog; }
         }
 
+        public ZaapDialog ZaapDialog
+        {
+            get { return Dialog as ZaapDialog; }
+        }
+
         public IRequestBox RequestBox
         {
             get;
@@ -255,6 +261,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public bool IsTalkingWithNpc()
         {
             return Dialog is NpcDialog;
+        }
+
+        public bool IsInZaapDialog()
+        {
+            return Dialog is ZaapDialog;
         }
 
         #endregion
@@ -852,6 +863,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return base.StopMove(currentObjectPosition);
         }
 
+        public override bool Teleport(ObjectPosition destination)
+        {
+            LeaveDialog();
+
+            return base.Teleport(destination);
+        }
+
         protected override void OnTeleported(ObjectPosition position)
         {
             base.OnTeleported(position); 
@@ -861,7 +879,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override bool CanChangeMap()
         {
-            return base.CanChangeMap() && !IsFighting();
+            return base.CanChangeMap() && !IsDialoging() && !IsFighting();
         }
 
         #endregion
@@ -878,7 +896,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (IsInRequest())
                 CancelRequest();
 
-            else if (IsDialoging())
+            if (IsDialoging())
                 Dialog.Close();
         }
 
@@ -1117,7 +1135,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             Fighter = null;
             Spectator = null;
-            NextMap = null;
 
             ContextHandler.SendGameContextDestroyMessage(Client);
             ContextHandler.SendGameContextCreateMessage(Client, 1);
@@ -1125,8 +1142,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             RefreshStats();
 
             LastMap = Map;
-            Map.Enter(this);
+            Map = NextMap;
+            NextMap.Enter(this);
             LastMap = null;
+            NextMap = null;
 
             StartRegen();
         }

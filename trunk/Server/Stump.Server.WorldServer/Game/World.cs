@@ -171,13 +171,19 @@ namespace Stump.Server.WorldServer.Game
             {
                 if (spawn.Map != null)
                 {
-                    Map map = GetMap(spawn.Map.Id);
-                    map.AddMonsterSpawn(spawn);
+                    spawn.Map.AddMonsterSpawn(spawn);
                 }
                 else if (spawn.SubArea != null)
                 {
-                    SubArea area = GetSubArea(spawn.SubArea.Id);
-                    area.AddMonsterSpawn(spawn);
+                    spawn.SubArea.AddMonsterSpawn(spawn);
+                }
+            }
+
+            foreach (var spawn in MonsterManager.Instance.GetMonsterDungeonsSpawns())
+            {
+                if (spawn.Map != null)
+                {
+                    spawn.Map.AddMonsterDungeonSpawn(spawn);
                 }
             }
 
