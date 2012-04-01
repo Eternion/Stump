@@ -23,8 +23,7 @@ namespace Stump.Plugins.DebugPlugin.Commands
             var character = ( trigger as GameTrigger ).Character;
 
             var map = World.Instance.GetMap(character.Breed.StartMap);
-            character.Teleport(map, map.Cells[character.Breed.StartCell]);
-            character.Direction = character.Breed.StartDirection;
+            character.Teleport(character.Breed.GetStartPosition());
 
             trigger.Reply("Teleported to the start map");
         }

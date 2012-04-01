@@ -13,14 +13,14 @@ namespace Stump.Server.WorldServer.Database.Breeds
             set;
         }
 
-        [BelongsTo("BreedId")]
+        [BelongsTo("Breed")]
         public Breed Breed
         {
             get;
             set;
         }
 
-        [Property("SpellId")]
+        [Property("Spell")]
         public int SpellId
         {
             get;

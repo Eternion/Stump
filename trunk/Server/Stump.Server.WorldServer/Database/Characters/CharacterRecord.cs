@@ -11,7 +11,7 @@ using Shortcut = Stump.Server.WorldServer.Database.Shortcuts.Shortcut;
 
 namespace Stump.Server.WorldServer.Database.Characters
 {
-    [ActiveRecord("characters", Access=PropertyAccess.Property)]
+    [ActiveRecord("characters", Access = PropertyAccess.Property)]
     public class CharacterRecord : WorldBaseRecord<CharacterRecord>
     {
         private EntityLook m_entityLook;
@@ -150,6 +150,7 @@ namespace Stump.Server.WorldServer.Database.Characters
         }
 
         #region Restrictions
+
         [Property]
         public bool CantBeAggressed
         {
@@ -296,6 +297,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             get;
             set;
         }
+
         #endregion
 
         #region Position
@@ -408,6 +410,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             get;
             set;
         }
+
         #endregion
 
         #region Points
@@ -489,15 +492,13 @@ namespace Stump.Server.WorldServer.Database.Characters
         #endregion
 
         #region Zaaps
+
         private byte[] m_serializedZaaps = new byte[0];
 
         [Property("KnownZaaps", NotNull = true)]
         private byte[] SerializedZaaps
         {
-            get
-            {
-                return m_serializedZaaps;
-            }
+            get { return m_serializedZaaps; }
             set
             {
                 m_serializedZaaps = value;
@@ -510,14 +511,16 @@ namespace Stump.Server.WorldServer.Database.Characters
         public List<Map> KnownZaaps
         {
             get { return m_knownZaaps; }
-            set { m_knownZaaps = value;
+            set
+            {
+                m_knownZaaps = value;
                 m_serializedZaaps = SerializeZaaps(m_knownZaaps);
             }
         }
 
         private byte[] SerializeZaaps(List<Map> knownZaaps)
         {
-            var result = new byte[knownZaaps.Count * 4];
+            var result = new byte[knownZaaps.Count*4];
 
             for (int i = 0; i < knownZaaps.Count; i++)
             {
@@ -534,7 +537,7 @@ namespace Stump.Server.WorldServer.Database.Characters
         {
             var result = new List<Map>();
 
-            for (int i = 0; i < serialized.Length; i+=4)
+            for (int i = 0; i < serialized.Length; i += 4)
             {
                 int id = serialized[i] << 24 | serialized[i + 1] << 16 | serialized[i + 2] << 8 | serialized[i + 3];
 
@@ -547,6 +550,59 @@ namespace Stump.Server.WorldServer.Database.Characters
             }
 
             return result;
+        }
+
+        private int? m_spawnMapId;
+
+        [Property("SpawnMap")]
+        public int? SpawnMapId
+        {
+            get { return m_spawnMapId; }
+            set
+            {
+                m_spawnMapId = value;
+                m_spawnMap = null;
+            }
+        }
+
+        private Map m_spawnMap;
+
+        public Map SpawnMap
+        {
+            get
+            {
+                if (!SpawnMapId.HasValue)
+                    return null;
+
+                return m_spawnMap ?? (m_spawnMap = Game.World.Instance.GetMap(SpawnMapId.Value));
+            }
+            set
+            {
+                m_spawnMap = value;
+
+                if (value == null)
+                    SpawnMapId = null;
+                else
+                    SpawnMapId = value.Id;
+            }
+        }
+
+        #endregion
+
+        #region Friends
+
+        [Property]
+        public bool WarnOnConnection
+        {
+            get;
+            set;
+        }
+
+        [Property]
+        public bool WarnOnLevel
+        {
+            get;
+            set;
         }
 
         #endregion

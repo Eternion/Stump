@@ -1444,7 +1444,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual EntityDispositionInformations GetEntityDispositionInformations(WorldClient client = null)
         {
-            return new FightEntityDispositionInformations(client != null ? ( IsVisibleFor(client.ActiveCharacter) ? Cell.Id : Cell.Null.Id ) : Cell.Id, (sbyte)Direction, CarriedActor != null ? CarriedActor.Id : 0);
+            return new FightEntityDispositionInformations(client != null ? ( IsVisibleFor(client.Character) ? Cell.Id : Cell.Null.Id ) : Cell.Id, (sbyte)Direction, CarriedActor != null ? CarriedActor.Id : 0);
         }
 
         public virtual GameFightMinimalStats GetGameFightMinimalStats()
@@ -1475,7 +1475,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 (short)Stats[PlayerFields.DodgeMPProbability].Total,
                 (short)Stats[PlayerFields.TackleBlock].Total,
                 (short)Stats[PlayerFields.TackleEvade].Total,
-                (sbyte)( client == null ? VisibleState : GetVisibleStateFor(client.ActiveCharacter) ) // invisibility state
+                (sbyte)( client == null ? VisibleState : GetVisibleStateFor(client.Character) ) // invisibility state
                 );
         }
 

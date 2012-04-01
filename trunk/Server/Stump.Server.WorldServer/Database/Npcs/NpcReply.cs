@@ -14,14 +14,14 @@ namespace Stump.Server.WorldServer.Database.Npcs
             set;
         }
 
-        [Property]
+        [Property("Reply")]
         public int ReplyId
         {
             get;
             set;
         }
 
-        [Property("MessageId")]
+        [Property("Message")]
         public int MessageId
         {
             get;

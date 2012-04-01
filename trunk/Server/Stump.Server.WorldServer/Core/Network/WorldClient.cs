@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Core.Network
             set;
         }
 
-        public Character ActiveCharacter
+        public Character Character
         {
             get;
             set;
@@ -92,10 +92,17 @@ namespace Stump.Server.WorldServer.Core.Network
 
         protected override void OnDisconnect()
         {
-            if (ActiveCharacter != null)
+            if (Character != null)
             {
-                ActiveCharacter.LogOut();
+                Character.LogOut();
             }
+
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            {
+                WorldAccount.ConnectedCharacterId = null;
+                WorldAccount.Save();
+            });
+
             base.OnDisconnect();
         }
 

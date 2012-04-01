@@ -12,7 +12,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Chat;
 
-namespace Stump.Server.WorldServer.Game.Chats
+namespace Stump.Server.WorldServer.Game.Social
 {
     public class ChatManager : Singleton<ChatManager>
     {
@@ -92,7 +92,7 @@ namespace Stump.Server.WorldServer.Game.Chats
 
         public void HandleChat(WorldClient client, ChatActivableChannelsEnum channel, string message)
         {
-            if (!CanUseChannel(client.ActiveCharacter, channel))
+            if (!CanUseChannel(client.Character, channel))
                 return;
 
             if (!ChatHandlers.ContainsKey(channel))
@@ -103,7 +103,7 @@ namespace Stump.Server.WorldServer.Game.Chats
             {
                 message = message.Remove(0, CommandPrefix.Length); // remove our prefix
                 WorldServer.Instance.CommandManager.HandleCommand(new TriggerChat(new StringStream(message),
-                                                                                  client.ActiveCharacter));
+                                                                                  client.Character));
             }
             else
                 ChatHandlers[channel](client, message);
@@ -124,15 +124,15 @@ namespace Stump.Server.WorldServer.Game.Chats
 
         public void SayGlobal(WorldClient client, string msg)
         {
-            if (!CanUseChannel(client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_GLOBAL))
+            if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_GLOBAL))
                 return;
 
-            if (client.ActiveCharacter.IsFighting())
-                SendChatServerMessage(client.ActiveCharacter.Fight.Clients, client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg);
-            else if (client.ActiveCharacter.IsSpectator())
-                SendChatServerMessage(client.ActiveCharacter.Fight.SpectatorClients, client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg);
+            if (client.Character.IsFighting())
+                SendChatServerMessage(client.Character.Fight.Clients, client.Character, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg);
+            else if (client.Character.IsSpectator())
+                SendChatServerMessage(client.Character.Fight.SpectatorClients, client.Character, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg);
             else
-                SendChatServerMessage(client.ActiveCharacter.Map.Clients, client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg);
+                SendChatServerMessage(client.Character.Map.Clients, client.Character, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg);
         }
 
         public void SayGlobal(NamedActor actor, string msg)
@@ -148,45 +148,45 @@ namespace Stump.Server.WorldServer.Game.Chats
             World.Instance.ForEachCharacter(entry =>
             {
                 if (CanUseChannel(entry, ChatActivableChannelsEnum.CHANNEL_ADMIN))
-                    ChatHandler.SendChatAdminServerMessage(entry.Client, client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_ADMIN, msg);
+                    ChatHandler.SendChatAdminServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_ADMIN, msg);
             });
         }
 
         public void SayParty(WorldClient client, string msg)
         {
-            if (!CanUseChannel(client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_PARTY))
+            if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_PARTY))
                 return;
 
-            client.ActiveCharacter.Party.ForEach(entry => SendChatServerMessage(entry.Client, client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_PARTY, msg));
+            client.Character.Party.ForEach(entry => SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_PARTY, msg));
         }
 
         public void SayTeam(WorldClient client, string msg)
         {
-            if (!CanUseChannel(client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_TEAM))
+            if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_TEAM))
                 return;
 
-            foreach (var fighter in client.ActiveCharacter.Fighter.Team.GetAllFighters<CharacterFighter>())
+            foreach (var fighter in client.Character.Fighter.Team.GetAllFighters<CharacterFighter>())
             {
-                SendChatServerMessage(fighter.Character.Client, client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_TEAM, msg);
+                SendChatServerMessage(fighter.Character.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_TEAM, msg);
             }
         }
 
         public void SaySeek(WorldClient client, string msg)
         {
-            if (!CanUseChannel(client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_SEEK))
+            if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_SEEK))
                 return;
 
             World.Instance.ForEachCharacter(entry =>
-                SendChatServerMessage(entry.Client, client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_SEEK, msg));
+                SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_SEEK, msg));
         }
 
         public void SaySales(WorldClient client, string msg)
         {
-            if (!CanUseChannel(client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_SALES))
+            if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_SALES))
                 return;
 
             World.Instance.ForEachCharacter(entry =>
-                SendChatServerMessage(entry.Client, client.ActiveCharacter, ChatActivableChannelsEnum.CHANNEL_SALES, msg));
+                SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_SALES, msg));
         }
 
         #endregion

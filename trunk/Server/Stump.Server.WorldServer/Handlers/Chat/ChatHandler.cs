@@ -8,7 +8,7 @@ using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Chats;
+using Stump.Server.WorldServer.Game.Social;
 
 namespace Stump.Server.WorldServer.Handlers.Chat
 {
@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                 SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content);
 
                 // Send to receiver
-                SendChatServerMessage(chr.Client, client.ActiveCharacter, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content);
+                SendChatServerMessage(chr.Client, client.Character, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content);
             }
             else
             {

@@ -32,12 +32,12 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             if (message.boostPoint <= 0)
                 throw new Exception("Client given 0 as boostpoint. Forbidden value.");
 
-            var breed = client.ActiveCharacter.Breed;
-            var actualPoints = client.ActiveCharacter.Stats[m_statsEnumRelations[statsid]].Base;
+            var breed = client.Character.Breed;
+            var actualPoints = client.Character.Stats[m_statsEnumRelations[statsid]].Base;
 
             var pts = message.boostPoint;
 
-            if (pts < 1 || message.boostPoint > client.ActiveCharacter.StatsPoints)
+            if (pts < 1 || message.boostPoint > client.Character.StatsPoints)
                 return;
 
             var thresholds = breed.GetThresholds(statsid);
@@ -62,11 +62,11 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                 index = breed.GetThresholdIndex(actualPoints, thresholds);
             }
 
-            client.ActiveCharacter.Stats[m_statsEnumRelations[statsid]].Base = actualPoints;
-            client.ActiveCharacter.StatsPoints -= (ushort)(message.boostPoint - pts);
+            client.Character.Stats[m_statsEnumRelations[statsid]].Base = actualPoints;
+            client.Character.StatsPoints -= (ushort)(message.boostPoint - pts);
 
             SendStatsUpgradeResultMessage(client, message.boostPoint);
-            client.ActiveCharacter.RefreshStats();
+            client.Character.RefreshStats();
         }
 
         public static void SendStatsUpgradeResultMessage(IPacketReceiver client, short usedpts)

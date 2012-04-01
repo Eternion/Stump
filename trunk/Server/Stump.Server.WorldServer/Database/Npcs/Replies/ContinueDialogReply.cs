@@ -9,7 +9,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
     [ActiveRecord(DiscriminatorValue = "Dialog")]
     public class ContinueDialogReply : NpcReply
     {
-        [Property("NextMessageId")]
+        [Property("Dialog_NextMessageId", NotNull = false)]
         public int NextMessageId
         {
             get;

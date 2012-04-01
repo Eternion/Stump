@@ -9,7 +9,7 @@ namespace Stump.Server.WorldServer.Handlers.PvP
         [WorldHandler(SetEnablePVPRequestMessage.Id)]
         public static void HandleSetEnablePVPRequestMessage(WorldClient client, SetEnablePVPRequestMessage message)
         {
-            client.ActiveCharacter.TogglePvPMode(message.enable);
+            client.Character.TogglePvPMode(message.enable);
         }
 
         public static void SendAlignmentRankUpdateMessage(IPacketReceiver client)

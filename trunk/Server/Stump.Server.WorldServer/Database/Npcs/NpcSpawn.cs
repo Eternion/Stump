@@ -39,21 +39,21 @@ namespace Stump.Server.WorldServer.Database.Npcs
             }
         }
 
-        [Property(NotNull = true)]
+        [Property("Map", NotNull = true)]
         public int MapId
         {
             get;
             set;
         }
 
-        [Property(NotNull = true)]
+        [Property("Cell", NotNull = true)]
         public int CellId
         {
             get;
             set;
         }
 
-        [Property(NotNull = true)]
+        [Property("Direction", NotNull = true)]
         public DirectionsEnum Direction
         {
             get;

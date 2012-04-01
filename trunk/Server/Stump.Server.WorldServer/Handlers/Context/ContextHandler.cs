@@ -26,61 +26,61 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void HandleGameContextCreateRequestMessage(WorldClient client,
                                                                  GameContextCreateRequestMessage message)
         {
-            if (client.ActiveCharacter.IsInWorld)
+            if (client.Character.IsInWorld)
             {
-                client.ActiveCharacter.SendServerMessage("You are already Logged !");
+                client.Character.SendServerMessage("You are already Logged !");
                 return;
             }
 
             SendGameContextDestroyMessage(client);
             SendGameContextCreateMessage(client, 1);
 
-            client.ActiveCharacter.RefreshStats();
+            client.Character.RefreshStats();
 
-            client.ActiveCharacter.LogIn();
-            client.ActiveCharacter.StartRegen();
+            client.Character.LogIn();
+            client.Character.StartRegen();
         }
 
         [WorldHandler(GameMapChangeOrientationRequestMessage.Id)]
         public static void HandleGameMapChangeOrientationRequestMessage(WorldClient client,
                                                                         GameMapChangeOrientationRequestMessage message)
         {
-            client.ActiveCharacter.Direction = (DirectionsEnum) message.direction;
-            SendGameMapChangeOrientationMessage(client.ActiveCharacter.CharacterContainer.Clients, client.ActiveCharacter);
+            client.Character.Direction = (DirectionsEnum) message.direction;
+            SendGameMapChangeOrientationMessage(client.Character.CharacterContainer.Clients, client.Character);
         }
 
         // todo : get and check whole path
         [WorldHandler(GameMapMovementRequestMessage.Id)]
         public static void HandleGameMapMovementRequestMessage(WorldClient client, GameMapMovementRequestMessage message)
         {
-            if (!client.ActiveCharacter.CanMove())
+            if (!client.Character.CanMove())
                 return;
 
-            var movementPath = Path.BuildFromCompressedPath(client.ActiveCharacter.Map, message.keyMovements);
+            var movementPath = Path.BuildFromCompressedPath(client.Character.Map, message.keyMovements);
 
-            client.ActiveCharacter.StartMove(movementPath);
+            client.Character.StartMove(movementPath);
         }
 
         [WorldHandler(GameMapMovementConfirmMessage.Id)]
         public static void HandleGameMapMovementConfirmMessage(WorldClient client, GameMapMovementConfirmMessage message)
         {
-            client.ActiveCharacter.StopMove();
+            client.Character.StopMove();
         }
 
         [WorldHandler(GameMapMovementCancelMessage.Id)]
         public static void HandleGameMapMovementCancelMessage(WorldClient client, GameMapMovementCancelMessage message)
         {
-            client.ActiveCharacter.StopMove(new ObjectPosition(client.ActiveCharacter.Map, message.cellId,
-                                                               client.ActiveCharacter.Position.Direction));
+            client.Character.StopMove(new ObjectPosition(client.Character.Map, message.cellId,
+                                                               client.Character.Position.Direction));
         }
 
         [WorldHandler(ShowCellRequestMessage.Id)]
         public static void HandleShowCellRequestMessage(WorldClient client, ShowCellRequestMessage message)
         {
-            if (client.ActiveCharacter.IsFighting())
-                client.ActiveCharacter.Fighter.ShowCell(client.ActiveCharacter.Map.Cells[message.cellId]);
-            else if (client.ActiveCharacter.IsSpectator())
-                client.ActiveCharacter.Spectator.ShowCell(client.ActiveCharacter.Map.Cells[message.cellId]);
+            if (client.Character.IsFighting())
+                client.Character.Fighter.ShowCell(client.Character.Map.Cells[message.cellId]);
+            else if (client.Character.IsSpectator())
+                client.Character.Spectator.ShowCell(client.Character.Map.Cells[message.cellId]);
         }
 
         public static void SendGameContextCreateMessage(IPacketReceiver client, sbyte context)

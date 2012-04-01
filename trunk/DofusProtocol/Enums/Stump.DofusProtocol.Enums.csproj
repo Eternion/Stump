@@ -229,6 +229,7 @@
     <Compile Include="Export\TeleporterTypeEnum.cs" />
     <Compile Include="Export\TextInformationTypeEnum.cs" />
     <Compile Include="Export\UpdatableMountBoostEnum.cs" />
+    <Compile Include="Extensions\DirectionsEnumExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

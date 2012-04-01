@@ -14,18 +14,18 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         public static void HandleNpcGenericActionRequestMessage(WorldClient client,
                                                                 NpcGenericActionRequestMessage message)
         {
-            var npc = client.ActiveCharacter.Map.GetActor<Npc>(message.npcId);
+            var npc = client.Character.Map.GetActor<Npc>(message.npcId);
 
             if (npc == null)
                 return;
 
-            npc.InteractWith((NpcActionTypeEnum) message.npcActionId, client.ActiveCharacter);
+            npc.InteractWith((NpcActionTypeEnum) message.npcActionId, client.Character);
         }
 
         [WorldHandler(NpcDialogReplyMessage.Id)]
         public static void HandleNpcDialogReplyMessage(WorldClient client, NpcDialogReplyMessage message)
         {
-            client.ActiveCharacter.ReplyToNpc(message.replyId);
+            client.Character.ReplyToNpc(message.replyId);
         }
 
         public static void SendNpcDialogCreationMessage(IPacketReceiver client, Npc npc)

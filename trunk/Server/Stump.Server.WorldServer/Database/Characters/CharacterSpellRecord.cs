@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        [Property("OwnerId")]
+        [Property("Owner")]
         public int OwnerId
         {
             get;

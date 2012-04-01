@@ -19,15 +19,15 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         public static void SendUpdateLifePointsMessage(WorldClient client)
         {
             client.Send(new UpdateLifePointsMessage(
-                client.ActiveCharacter.Stats.Health.Total,
-                client.ActiveCharacter.Stats.Health.TotalMax));
+                client.Character.Stats.Health.Total,
+                client.Character.Stats.Health.TotalMax));
         }
 
         public static void SendLifePointsRegenEndMessage(WorldClient client, int recoveredLife)
         {
             client.Send(new LifePointsRegenEndMessage(
-                client.ActiveCharacter.Stats.Health.Total,
-                client.ActiveCharacter.Stats.Health.TotalMax,
+                client.Character.Stats.Health.Total,
+                client.Character.Stats.Health.TotalMax,
                 recoveredLife));
         }
 
@@ -36,86 +36,86 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             client.Send(
                 new CharacterStatsListMessage(
                     new CharacterCharacteristicsInformations(
-                        client.ActiveCharacter.Experience, // EXPERIENCE
-                        client.ActiveCharacter.LowerBoundExperience, // EXPERIENCE level floor 
-                        client.ActiveCharacter.UpperBoundExperience, // EXPERIENCE nextlevel floor 
+                        client.Character.Experience, // EXPERIENCE
+                        client.Character.LowerBoundExperience, // EXPERIENCE level floor 
+                        client.Character.UpperBoundExperience, // EXPERIENCE nextlevel floor 
 
-                        client.ActiveCharacter.Kamas, // Amount of kamas.
+                        client.Character.Kamas, // Amount of kamas.
 
-                        client.ActiveCharacter.StatsPoints, // Stats points
-                        client.ActiveCharacter.SpellsPoints, // Spell points
+                        client.Character.StatsPoints, // Stats points
+                        client.Character.SpellsPoints, // Spell points
 
                         // Alignment
-                        client.ActiveCharacter.GetActorAlignmentExtendInformations(),
-                        client.ActiveCharacter.Stats.Health.Total, // Life points
-                        client.ActiveCharacter.Stats.Health.TotalMax, // Max Life points
+                        client.Character.GetActorAlignmentExtendInformations(),
+                        client.Character.Stats.Health.Total, // Life points
+                        client.Character.Stats.Health.TotalMax, // Max Life points
 
-                        client.ActiveCharacter.Energy, // Energy points
-                        client.ActiveCharacter.EnergyMax, // maxEnergyPoints
+                        client.Character.Energy, // Energy points
+                        client.Character.EnergyMax, // maxEnergyPoints
 
-                        (short)client.ActiveCharacter.Stats[PlayerFields.AP]
+                        (short)client.Character.Stats[PlayerFields.AP]
                                     .Total, // actionPointsCurrent
-                        (short)client.ActiveCharacter.Stats[PlayerFields.MP]
+                        (short)client.Character.Stats[PlayerFields.MP]
                                     .Total, // movementPointsCurrent
 
-                        client.ActiveCharacter.Stats[PlayerFields.Initiative],
-                        client.ActiveCharacter.Stats[PlayerFields.Prospecting],
-                        client.ActiveCharacter.Stats[PlayerFields.AP],
-                        client.ActiveCharacter.Stats[PlayerFields.MP],
-                        client.ActiveCharacter.Stats[PlayerFields.Strength],
-                        client.ActiveCharacter.Stats[PlayerFields.Vitality],
-                        client.ActiveCharacter.Stats[PlayerFields.Wisdom],
-                        client.ActiveCharacter.Stats[PlayerFields.Chance],
-                        client.ActiveCharacter.Stats[PlayerFields.Agility],
-                        client.ActiveCharacter.Stats[PlayerFields.Intelligence],
-                        client.ActiveCharacter.Stats[PlayerFields.Range],
-                        client.ActiveCharacter.Stats[PlayerFields.SummonLimit],
-                        client.ActiveCharacter.Stats[PlayerFields.DamageReflection],
-                        client.ActiveCharacter.Stats[PlayerFields.CriticalHit],
-                        (short) client.ActiveCharacter.Inventory.WeaponCriticalHit,
-                        client.ActiveCharacter.Stats[PlayerFields.CriticalMiss],
-                        client.ActiveCharacter.Stats[PlayerFields.HealBonus],
-                        client.ActiveCharacter.Stats[PlayerFields.DamageBonus],
-                        client.ActiveCharacter.Stats[PlayerFields.WeaponDamageBonus],
-                        client.ActiveCharacter.Stats[PlayerFields.DamageBonusPercent],
-                        client.ActiveCharacter.Stats[PlayerFields.TrapBonus],
-                        client.ActiveCharacter.Stats[PlayerFields.TrapBonusPercent],
-                        client.ActiveCharacter.Stats[PlayerFields.PermanentDamagePercent],
-                        client.ActiveCharacter.Stats[PlayerFields.TackleBlock],
-                        client.ActiveCharacter.Stats[PlayerFields.TackleEvade],
-                        client.ActiveCharacter.Stats[PlayerFields.APAttack],
-                        client.ActiveCharacter.Stats[PlayerFields.MPAttack],
-                        client.ActiveCharacter.Stats[PlayerFields.PushDamageBonus],
-                        client.ActiveCharacter.Stats[PlayerFields.CriticalDamageBonus],
-                        client.ActiveCharacter.Stats[PlayerFields.NeutralDamageBonus],
-                        client.ActiveCharacter.Stats[PlayerFields.EarthDamageBonus],
-                        client.ActiveCharacter.Stats[PlayerFields.WaterDamageBonus],
-                        client.ActiveCharacter.Stats[PlayerFields.AirDamageBonus],
-                        client.ActiveCharacter.Stats[PlayerFields.FireDamageBonus],
-                        client.ActiveCharacter.Stats[PlayerFields.DodgeAPProbability],
-                        client.ActiveCharacter.Stats[PlayerFields.DodgeMPProbability],
-                        client.ActiveCharacter.Stats[PlayerFields.NeutralResistPercent],
-                        client.ActiveCharacter.Stats[PlayerFields.EarthResistPercent],
-                        client.ActiveCharacter.Stats[PlayerFields.WaterResistPercent],
-                        client.ActiveCharacter.Stats[PlayerFields.AirResistPercent],
-                        client.ActiveCharacter.Stats[PlayerFields.FireResistPercent],
-                        client.ActiveCharacter.Stats[PlayerFields.NeutralElementReduction],
-                        client.ActiveCharacter.Stats[PlayerFields.EarthElementReduction],
-                        client.ActiveCharacter.Stats[PlayerFields.WaterElementReduction],
-                        client.ActiveCharacter.Stats[PlayerFields.AirElementReduction],
-                        client.ActiveCharacter.Stats[PlayerFields.FireElementReduction],
-                        client.ActiveCharacter.Stats[PlayerFields.PushDamageReduction],
-                        client.ActiveCharacter.Stats[PlayerFields.CriticalDamageReduction],
-                        client.ActiveCharacter.Stats[PlayerFields.PvpNeutralResistPercent],
-                        client.ActiveCharacter.Stats[PlayerFields.PvpEarthResistPercent],
-                        client.ActiveCharacter.Stats[PlayerFields.PvpWaterResistPercent],
-                        client.ActiveCharacter.Stats[PlayerFields.PvpAirResistPercent],
-                        client.ActiveCharacter.Stats[PlayerFields.PvpFireResistPercent],
-                        client.ActiveCharacter.Stats[PlayerFields.PvpNeutralElementReduction],
-                        client.ActiveCharacter.Stats[PlayerFields.PvpEarthElementReduction],
-                        client.ActiveCharacter.Stats[PlayerFields.PvpWaterElementReduction],
-                        client.ActiveCharacter.Stats[PlayerFields.PvpAirElementReduction],
-                        client.ActiveCharacter.Stats[PlayerFields.PvpFireElementReduction],
+                        client.Character.Stats[PlayerFields.Initiative],
+                        client.Character.Stats[PlayerFields.Prospecting],
+                        client.Character.Stats[PlayerFields.AP],
+                        client.Character.Stats[PlayerFields.MP],
+                        client.Character.Stats[PlayerFields.Strength],
+                        client.Character.Stats[PlayerFields.Vitality],
+                        client.Character.Stats[PlayerFields.Wisdom],
+                        client.Character.Stats[PlayerFields.Chance],
+                        client.Character.Stats[PlayerFields.Agility],
+                        client.Character.Stats[PlayerFields.Intelligence],
+                        client.Character.Stats[PlayerFields.Range],
+                        client.Character.Stats[PlayerFields.SummonLimit],
+                        client.Character.Stats[PlayerFields.DamageReflection],
+                        client.Character.Stats[PlayerFields.CriticalHit],
+                        (short) client.Character.Inventory.WeaponCriticalHit,
+                        client.Character.Stats[PlayerFields.CriticalMiss],
+                        client.Character.Stats[PlayerFields.HealBonus],
+                        client.Character.Stats[PlayerFields.DamageBonus],
+                        client.Character.Stats[PlayerFields.WeaponDamageBonus],
+                        client.Character.Stats[PlayerFields.DamageBonusPercent],
+                        client.Character.Stats[PlayerFields.TrapBonus],
+                        client.Character.Stats[PlayerFields.TrapBonusPercent],
+                        client.Character.Stats[PlayerFields.PermanentDamagePercent],
+                        client.Character.Stats[PlayerFields.TackleBlock],
+                        client.Character.Stats[PlayerFields.TackleEvade],
+                        client.Character.Stats[PlayerFields.APAttack],
+                        client.Character.Stats[PlayerFields.MPAttack],
+                        client.Character.Stats[PlayerFields.PushDamageBonus],
+                        client.Character.Stats[PlayerFields.CriticalDamageBonus],
+                        client.Character.Stats[PlayerFields.NeutralDamageBonus],
+                        client.Character.Stats[PlayerFields.EarthDamageBonus],
+                        client.Character.Stats[PlayerFields.WaterDamageBonus],
+                        client.Character.Stats[PlayerFields.AirDamageBonus],
+                        client.Character.Stats[PlayerFields.FireDamageBonus],
+                        client.Character.Stats[PlayerFields.DodgeAPProbability],
+                        client.Character.Stats[PlayerFields.DodgeMPProbability],
+                        client.Character.Stats[PlayerFields.NeutralResistPercent],
+                        client.Character.Stats[PlayerFields.EarthResistPercent],
+                        client.Character.Stats[PlayerFields.WaterResistPercent],
+                        client.Character.Stats[PlayerFields.AirResistPercent],
+                        client.Character.Stats[PlayerFields.FireResistPercent],
+                        client.Character.Stats[PlayerFields.NeutralElementReduction],
+                        client.Character.Stats[PlayerFields.EarthElementReduction],
+                        client.Character.Stats[PlayerFields.WaterElementReduction],
+                        client.Character.Stats[PlayerFields.AirElementReduction],
+                        client.Character.Stats[PlayerFields.FireElementReduction],
+                        client.Character.Stats[PlayerFields.PushDamageReduction],
+                        client.Character.Stats[PlayerFields.CriticalDamageReduction],
+                        client.Character.Stats[PlayerFields.PvpNeutralResistPercent],
+                        client.Character.Stats[PlayerFields.PvpEarthResistPercent],
+                        client.Character.Stats[PlayerFields.PvpWaterResistPercent],
+                        client.Character.Stats[PlayerFields.PvpAirResistPercent],
+                        client.Character.Stats[PlayerFields.PvpFireResistPercent],
+                        client.Character.Stats[PlayerFields.PvpNeutralElementReduction],
+                        client.Character.Stats[PlayerFields.PvpEarthElementReduction],
+                        client.Character.Stats[PlayerFields.PvpWaterElementReduction],
+                        client.Character.Stats[PlayerFields.PvpAirElementReduction],
+                        client.Character.Stats[PlayerFields.PvpFireElementReduction],
                         new List<CharacterSpellModification>()
                         )));
         }

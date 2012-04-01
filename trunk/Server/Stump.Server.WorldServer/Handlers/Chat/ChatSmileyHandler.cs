@@ -11,7 +11,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
         [WorldHandler(ChatSmileyRequestMessage.Id)]
         public static void HandleChatSmileyRequestMessage(WorldClient client, ChatSmileyRequestMessage message)
         {
-            client.ActiveCharacter.DisplaySmiley(message.smileyId);
+            client.Character.DisplaySmiley(message.smileyId);
         }
 
         public static void SendChatSmileyMessage(IPacketReceiver client, Character character, sbyte smileyId)

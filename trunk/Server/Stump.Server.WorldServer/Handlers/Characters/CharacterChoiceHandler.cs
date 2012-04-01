@@ -98,9 +98,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         }
 
         public static void CommonCharacterSelection(WorldClient client, CharacterRecord character)
-        {
-            client.ActiveCharacter = new Character(character, client);
-
+        {            
+            
             // Check if we also have a world account
             if (client.WorldAccount == null)
             {
@@ -108,6 +107,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                                           ? AccountManager.CreateWorldAccount(client)
                                           : WorldAccount.FindById(client.Account.Id);
             }
+
+            client.Character = new Character(character, client);
 
             ContextRoleplayHandler.SendGameRolePlayArenaUpdatePlayerInfosMessage(client);
             ContextHandler.SendNotificationListMessage(client, new[] { 0x7FFFFFFF });
@@ -132,13 +133,13 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             InventoryHandler.SendInventoryWeightMessage(client);
 
-            FriendHandler.SendFriendWarnOnConnectionStateMessage(client, false);
-            FriendHandler.SendFriendWarnOnLevelGainStateMessage(client, false);
+            FriendHandler.SendFriendWarnOnConnectionStateMessage(client, client.Character.FriendsBook.WarnOnConnection);
+            FriendHandler.SendFriendWarnOnLevelGainStateMessage(client, client.Character.FriendsBook.WarnOnLevel);
             FriendHandler.SendGuildMemberWarnOnConnectionStateMessage(client, false);
 
-            BasicHandler.SendTextInformationMessage(client, 1, 89);
+            BasicHandler.SendTextInformationMessage(client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 89);
             if (client.Account.LastConnection != default(DateTime))
-                BasicHandler.SendTextInformationMessage(client, 0, 193,
+                BasicHandler.SendTextInformationMessage(client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 193,
                                                         client.Account.LastConnection.Year,
                                                         client.Account.LastConnection.Month,
                                                         client.Account.LastConnection.Day,
@@ -152,6 +153,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             // Update LastConnection and Last Ip
             client.WorldAccount.LastConnection = DateTime.Now;
             client.WorldAccount.LastIp = client.IP;
+            client.WorldAccount.ConnectedCharacterId = character.Id;
             client.WorldAccount.SaveLater();
 
             character.LastUsage = DateTime.Now;
@@ -228,7 +230,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
         public static void SendCharacterSelectedSuccessMessage(WorldClient client)
         {
-            client.Send(new CharacterSelectedSuccessMessage(client.ActiveCharacter.GetCharacterBaseInformations()));
+            client.Send(new CharacterSelectedSuccessMessage(client.Character.GetCharacterBaseInformations()));
         }
     }
 }

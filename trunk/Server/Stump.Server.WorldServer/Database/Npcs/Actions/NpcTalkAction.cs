@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
             }
         }
 
-        [Property("MessageId")]
+        [Property("Talk_MessageId")]
         public int MessageId
         {
             get;

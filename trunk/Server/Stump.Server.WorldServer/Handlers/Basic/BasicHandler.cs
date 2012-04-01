@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Extensions;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
@@ -21,7 +22,7 @@ namespace Stump.Server.WorldServer.Handlers.Basic
         public static void HandleBasicWhoAmIRequestMessage(WorldClient client, BasicWhoAmIRequestMessage message)
         {
             /* Get Current character */
-            Character character = client.ActiveCharacter;
+            Character character = client.Character;
 
             /* Send informations about it */
             client.Send(new BasicWhoIsMessage(true, (sbyte) character.Client.Account.Role,
@@ -42,37 +43,28 @@ namespace Stump.Server.WorldServer.Handlers.Basic
                 /* Send info about it */
             else
             {
-                client.Send(new BasicWhoIsMessage(message.search == client.ActiveCharacter.Name,
+                client.Send(new BasicWhoIsMessage(message.search == client.Character.Name,
                                                   (sbyte) character.Client.Account.Role,
                                                   character.Client.WorldAccount.Nickname, character.Name,
                                                   (short) character.Map.SubArea.Id));
             }
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name = "client"></param>
-        /// <param name = "msgType"></param>
-        /// <param name = "msgId"></param>
-        /// <param name = "arguments"></param>
-        /// <remarks>
-        ///   Message id = <paramref name = "msgType" /> * 10000 + <paramref name = "msgId" />
-        /// </remarks>
-        public static void SendTextInformationMessage(IPacketReceiver client, sbyte msgType, short msgId,
+        public static void SendTextInformationMessage(IPacketReceiver client, TextInformationTypeEnum msgType, short msgId,
                                                       params string[] arguments)
         {
-            client.Send(new TextInformationMessage(msgType, msgId, arguments));
+            client.Send(new TextInformationMessage((sbyte) msgType, msgId, arguments));
         }
 
-        public static void SendTextInformationMessage(IPacketReceiver client, sbyte msgType, short msgId,
+        public static void SendTextInformationMessage(IPacketReceiver client, TextInformationTypeEnum msgType, short msgId,
                                                       params object[] arguments)
         {
-            client.Send(new TextInformationMessage(msgType, msgId, arguments.Select(entry => entry.ToString())));
+            client.Send(new TextInformationMessage((sbyte) msgType, msgId, arguments.Select(entry => entry.ToString())));
         }
 
-        public static void SendTextInformationMessage(IPacketReceiver client, sbyte msgType, short msgId)
+        public static void SendTextInformationMessage(IPacketReceiver client, TextInformationTypeEnum msgType, short msgId)
         {
-            client.Send(new TextInformationMessage(msgType, msgId, new string[0]));
+            client.Send(new TextInformationMessage((sbyte) msgType, msgId, new string[0]));
         }
 
         public static void SendSystemMessageDisplayMessage(IPacketReceiver client, bool hangUp, short msgId, IEnumerable<string> arguments)

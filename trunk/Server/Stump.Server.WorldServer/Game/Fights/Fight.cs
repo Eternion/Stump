@@ -828,7 +828,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             SpectatorClosed = state;
 
             // Spectator mode Activated/Disabled
-            BasicHandler.SendTextInformationMessage(Clients, 0, (short)( SpectatorClosed ? 40 : 39 ));
+            BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, (short)( SpectatorClosed ? 40 : 39 ));
 
             if (state)
                 RemoveAllSpectators();
@@ -876,7 +876,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             CharacterHandler.SendCharacterStatsListMessage(spectator.Client);
 
             // Spectator 'X' joined
-            BasicHandler.SendTextInformationMessage(Clients, 0, 36, spectator.Character.Name);
+            BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 36, spectator.Character.Name);
 
             if (TimeLine.Current != null)
             {
@@ -1613,11 +1613,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             if (laggers.Length == 1)
             {
-                BasicHandler.SendTextInformationMessage(Clients, 1, 28, laggers[0].Name);
+                BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 28, laggers[0].Name);
             }
             else if (laggers.Length > 1)
             {
-                BasicHandler.SendTextInformationMessage(Clients, 1, 29, string.Join(",", laggers.Select(entry => entry.Name)));
+                BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 29, string.Join(",", laggers.Select(entry => entry.Name)));
             }
         }
 

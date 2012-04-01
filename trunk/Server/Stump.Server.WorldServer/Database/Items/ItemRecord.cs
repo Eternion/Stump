@@ -16,14 +16,14 @@ namespace Stump.Server.WorldServer.Database.Items
             m_serializedEffects = new byte[0];
         }
 
-        [Property("ItemId", NotNull = true)]
+        [Property("Item", NotNull = true)]
         public int ItemId
         {
             get;
             set;
         }
 
-        [Property("OwnerId")]
+        [Property("Owner")]
         public int OwnerId
         {
             get;

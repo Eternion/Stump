@@ -22,51 +22,51 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void HandleGameActionFightCastRequestMessage(WorldClient client,
                                                                    GameActionFightCastRequestMessage message)
         {
-            if (!client.ActiveCharacter.IsFighting())
+            if (!client.Character.IsFighting())
                 return;
 
-            var spell = client.ActiveCharacter.Spells.GetSpell(message.spellId);
+            var spell = client.Character.Spells.GetSpell(message.spellId);
 
             if (spell == null)
                 return;
 
-            client.ActiveCharacter.Fighter.CastSpell(spell, client.ActiveCharacter.Map.Cells[message.cellId]);
+            client.Character.Fighter.CastSpell(spell, client.Character.Map.Cells[message.cellId]);
         }
 
         [WorldHandler(GameFightTurnFinishMessage.Id)]
         public static void HandleGameFightTurnFinishMessage(WorldClient client, GameFightTurnFinishMessage message)
         {
-            if (!client.ActiveCharacter.IsFighting())
+            if (!client.Character.IsFighting())
                 return;
 
-            client.ActiveCharacter.Fighter.PassTurn();
+            client.Character.Fighter.PassTurn();
         }
 
         [WorldHandler(GameFightTurnReadyMessage.Id)]
         public static void HandleGameFightTurnReadyMessage(WorldClient client, GameFightTurnReadyMessage message)
         {
-            if (!client.ActiveCharacter.IsFighting())
+            if (!client.Character.IsFighting())
                 return;
 
-            client.ActiveCharacter.Fighter.ToggleTurnReady(message.isReady);
+            client.Character.Fighter.ToggleTurnReady(message.isReady);
         }
 
         [WorldHandler(GameFightReadyMessage.Id)]
         public static void HandleGameFightReadyMessage(WorldClient client, GameFightReadyMessage message)
         {
-            if (!client.ActiveCharacter.IsFighting())
+            if (!client.Character.IsFighting())
                 return;
 
-            client.ActiveCharacter.Fighter.ToggleReady(message.isReady);
+            client.Character.Fighter.ToggleReady(message.isReady);
         }
 
         [WorldHandler(GameContextQuitMessage.Id)]
         public static void HandleGameContextQuitMessage(WorldClient client, GameContextQuitMessage message)
         {
-            if (client.ActiveCharacter.IsFighting())
-                client.ActiveCharacter.Fighter.LeaveFight();
-            else if (client.ActiveCharacter.IsSpectator())
-                client.ActiveCharacter.Spectator.Leave();
+            if (client.Character.IsFighting())
+                client.Character.Fighter.LeaveFight();
+            else if (client.Character.IsSpectator())
+                client.Character.Spectator.Leave();
         }
 
         [WorldHandler(GameFightPlacementPositionRequestMessage.Id)]
@@ -74,9 +74,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                                           GameFightPlacementPositionRequestMessage
                                                                               message)
         {
-            if (client.ActiveCharacter.Fighter.Position.Cell.Id != message.cellId)
+            if (client.Character.Fighter.Position.Cell.Id != message.cellId)
             {
-                client.ActiveCharacter.Fighter.ChangePrePlacement(client.ActiveCharacter.Map.Cells[message.cellId]);
+                client.Character.Fighter.ChangePrePlacement(client.Character.Map.Cells[message.cellId]);
             }
         }
 
@@ -84,20 +84,20 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void HandleGameRolePlayPlayerFightRequestMessage(WorldClient client,
                                                                        GameRolePlayPlayerFightRequestMessage message)
         {
-            var target = client.ActiveCharacter.Map.GetActor<Character>(message.targetId);
+            var target = client.Character.Map.GetActor<Character>(message.targetId);
 
             if (message.friendly)
             {
-                FighterRefusedReasonEnum reason = client.ActiveCharacter.CanRequestFight(target);
+                FighterRefusedReasonEnum reason = client.Character.CanRequestFight(target);
                 if (reason != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)
                 {
-                    SendChallengeFightJoinRefusedMessage(client, client.ActiveCharacter, reason);
+                    SendChallengeFightJoinRefusedMessage(client, client.Character, reason);
                 }
                 else
                 {
-                    var fightRequest = new FightRequest(client.ActiveCharacter, target);
+                    var fightRequest = new FightRequest(client.Character, target);
 
-                    client.ActiveCharacter.OpenRequestBox(fightRequest);
+                    client.Character.OpenRequestBox(fightRequest);
                     target.OpenRequestBox(fightRequest);
 
                     fightRequest.Open();
@@ -105,16 +105,16 @@ namespace Stump.Server.WorldServer.Handlers.Context
             }
             else // agression
             {
-                FighterRefusedReasonEnum reason = client.ActiveCharacter.CanAgress(target);
+                FighterRefusedReasonEnum reason = client.Character.CanAgress(target);
                 if (reason != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)
                 {
-                    SendChallengeFightJoinRefusedMessage(client, client.ActiveCharacter, reason);
+                    SendChallengeFightJoinRefusedMessage(client, client.Character, reason);
                 }
                 else
                 {
                     var fight = FightManager.Instance.CreateAgressionFight(target.Map);
 
-                    fight.RedTeam.AddFighter(client.ActiveCharacter.CreateFighter(fight.RedTeam));
+                    fight.RedTeam.AddFighter(client.Character.CreateFighter(fight.RedTeam));
                     fight.BlueTeam.AddFighter(target.CreateFighter(fight.BlueTeam));
 
                     fight.StartPlacement();
@@ -127,52 +127,52 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                                               GameRolePlayPlayerFightFriendlyAnswerMessage
                                                                                   message)
         {
-            if (!client.ActiveCharacter.IsInRequest() ||
-                !(client.ActiveCharacter.RequestBox is FightRequest))
+            if (!client.Character.IsInRequest() ||
+                !(client.Character.RequestBox is FightRequest))
                 return;
 
             if (message.accept)
-                client.ActiveCharacter.RequestBox.Accept();
-            else if (client.ActiveCharacter == client.ActiveCharacter.RequestBox.Target)
-                client.ActiveCharacter.RequestBox.Deny();
+                client.Character.RequestBox.Accept();
+            else if (client.Character == client.Character.RequestBox.Target)
+                client.Character.RequestBox.Deny();
             else
-                client.ActiveCharacter.RequestBox.Cancel();
+                client.Character.RequestBox.Cancel();
         }
 
         [WorldHandler(GameFightOptionToggleMessage.Id)]
         public static void HandleGameFightOptionToggleMessage(WorldClient client, GameFightOptionToggleMessage message)
         {
-            if (!client.ActiveCharacter.IsFighting())
+            if (!client.Character.IsFighting())
                 return;
 
-            if (!client.ActiveCharacter.Fighter.IsTeamLeader())
+            if (!client.Character.Fighter.IsTeamLeader())
                 return;
 
-            if (!client.ActiveCharacter.Fight.IsStarted)
-                client.ActiveCharacter.Team.ToggleOption((FightOptionsEnum) message.option);
+            if (!client.Character.Fight.IsStarted)
+                client.Character.Team.ToggleOption((FightOptionsEnum) message.option);
             else if (message.option == 0)
-                client.ActiveCharacter.Fight.ToggleSpectatorClosed(!client.ActiveCharacter.Fight.SpectatorClosed);
+                client.Character.Fight.ToggleSpectatorClosed(!client.Character.Fight.SpectatorClosed);
         }
 
         [WorldHandler(GameFightJoinRequestMessage.Id)]
         public static void HandleGameFightJoinRequestMessage(WorldClient client, GameFightJoinRequestMessage message)
         {
-            if (client.ActiveCharacter.IsFighting())
+            if (client.Character.IsFighting())
                 return;
 
             var fight = FightManager.Instance.GetFight(message.fightId);
 
-            if (fight.Map != client.ActiveCharacter.Map)
+            if (fight.Map != client.Character.Map)
             {
-                SendChallengeFightJoinRefusedMessage(client, client.ActiveCharacter, FighterRefusedReasonEnum.WRONG_MAP);
+                SendChallengeFightJoinRefusedMessage(client, client.Character, FighterRefusedReasonEnum.WRONG_MAP);
                 return;
             }
 
             if (fight.IsStarted)
             {
-                if (message.fighterId == 0 && fight.CanSpectatorJoin(client.ActiveCharacter))
+                if (message.fighterId == 0 && fight.CanSpectatorJoin(client.Character))
                 {
-                    fight.AddSpectator(client.ActiveCharacter.CreateSpectator(fight));
+                    fight.AddSpectator(client.Character.CreateSpectator(fight));
                 }
                 
                 return;
@@ -185,18 +185,18 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 team = fight.BlueTeam;
             else
             {
-                SendChallengeFightJoinRefusedMessage(client, client.ActiveCharacter, FighterRefusedReasonEnum.WRONG_MAP);
+                SendChallengeFightJoinRefusedMessage(client, client.Character, FighterRefusedReasonEnum.WRONG_MAP);
                 return;
             }
 
             FighterRefusedReasonEnum error;
-            if (( error = team.CanJoin(client.ActiveCharacter) ) != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)
+            if (( error = team.CanJoin(client.Character) ) != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)
             {
-                SendChallengeFightJoinRefusedMessage(client, client.ActiveCharacter, error);
+                SendChallengeFightJoinRefusedMessage(client, client.Character, error);
             }
             else
             {
-                team.AddFighter(client.ActiveCharacter.CreateFighter(team));
+                team.AddFighter(client.Character.CreateFighter(team));
             }
             
         }
@@ -204,16 +204,16 @@ namespace Stump.Server.WorldServer.Handlers.Context
         [WorldHandler(GameContextKickMessage.Id)]
         public static void HandleGameContextKickMessage(WorldClient client, GameContextKickMessage message)
         {
-            if (!client.ActiveCharacter.IsFighting() ||
-                !client.ActiveCharacter.Fighter.IsTeamLeader())
+            if (!client.Character.IsFighting() ||
+                !client.Character.Fighter.IsTeamLeader())
                 return;
 
-            var target = client.ActiveCharacter.Fight.GetOneFighter<CharacterFighter>(message.targetId);
+            var target = client.Character.Fight.GetOneFighter<CharacterFighter>(message.targetId);
 
             if (target == null)
                 return;
 
-            client.ActiveCharacter.Fight.KickFighter(target);
+            client.Character.Fight.KickFighter(target);
         }
 
         public static void SendGameFightStartMessage(IPacketReceiver client)

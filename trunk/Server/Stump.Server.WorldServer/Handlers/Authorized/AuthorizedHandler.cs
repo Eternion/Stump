@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Handlers.Authorized
                 case ("look"):
                 {
                     WorldServer.Instance.CommandManager.HandleCommand(
-                        new TriggerConsole(message.content, client.ActiveCharacter));
+                        new TriggerConsole(message.content, client.Character));
                     break;
                 }
                 case ("moveto"):
@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Handlers.Authorized
                     string id = args[0];
 
                     WorldServer.Instance.CommandManager.HandleCommand(
-                        new TriggerConsole(string.Format("go * {0}", id), client.ActiveCharacter));
+                        new TriggerConsole(string.Format("go * {0}", id), client.Character));
                     break;
                 }
             }
@@ -46,11 +46,11 @@ namespace Stump.Server.WorldServer.Handlers.Authorized
             if (client.Account.Role < RoleEnum.GameMaster_Padawan)
                 return;
 
-            if (client.ActiveCharacter == null)
+            if (client.Character == null)
                 return;
 
             WorldServer.Instance.CommandManager.HandleCommand(new TriggerConsole(new StringStream(message.content),
-                                                                                 client.ActiveCharacter));
+                                                                                 client.Character));
         }
 
         public static void SendConsoleMessage(IPacketReceiver client, string text)

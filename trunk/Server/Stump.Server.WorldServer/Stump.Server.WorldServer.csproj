@@ -191,6 +191,7 @@
     <Compile Include="Database\Interactives\Skills\SkillRecord.cs" />
     <Compile Include="Database\Interactives\Skills\SkillTeleportRecord.cs" />
     <Compile Include="Database\Interactives\Skills\SkillTemplate.cs" />
+    <Compile Include="Database\Interactives\Skills\SkillZaapSaveRecord.cs" />
     <Compile Include="Database\Interactives\Skills\SkillZaapTeleportRecord.cs" />
     <Compile Include="Database\Interactives\Skills\TemplateDependantSkill.cs" />
     <Compile Include="Database\Interactives\Skills\TemplateIndependantSkill.cs" />
@@ -293,8 +294,12 @@
     <Compile Include="Game\Fights\History\SpellHistoryEntry.cs" />
     <Compile Include="Game\Fights\History\SpellHistory.cs" />
     <Compile Include="Game\Fights\ReadyChecker.cs" />
+    <Compile Include="Game\Interactives\Skills\SkillZaapSave.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapTeleport.cs" />
     <Compile Include="Game\Maps\Spawns\DungeonSpawningPool.cs" />
+    <Compile Include="Game\Social\Friend.cs" />
+    <Compile Include="Game\Social\FriendsBook.cs" />
+    <Compile Include="Game\Social\Ignored.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\SpellCastHandler.cs" />
     <Compile Include="Game\Fights\TimeLine.cs" />
@@ -425,7 +430,7 @@
     <Compile Include="Game\Actors\Stats\StatsHealth.cs" />
     <Compile Include="Game\Actors\Stats\StatsMP.cs" />
     <Compile Include="Game\Breeds\BreedManager.cs" />
-    <Compile Include="Game\Chats\ChatManager.cs" />
+    <Compile Include="Game\Social\ChatManager.cs" />
     <Compile Include="Game\Dialogs\IDialog.cs" />
     <Compile Include="Game\Dialogs\IDialoger.cs" />
     <Compile Include="Game\Dialogs\IRequestBox.cs" />

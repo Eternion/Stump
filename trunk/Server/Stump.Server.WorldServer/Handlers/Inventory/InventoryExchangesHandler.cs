@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                         return;
                     }
 
-                    if (target.Map.Id != client.ActiveCharacter.Map.Id)
+                    if (target.Map.Id != client.Character.Map.Id)
                     {
                         SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_CHARACTER_TOOL_TOO_FAR);
                         return;
@@ -41,8 +41,8 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                         return;
                     }
 
-                    var request = new PlayerTradeRequest(client.ActiveCharacter, target);
-                    client.ActiveCharacter.OpenRequestBox(request);
+                    var request = new PlayerTradeRequest(client.Character, target);
+                    client.Character.OpenRequestBox(request);
                     target.OpenRequestBox(request);
 
                     request.Open();
@@ -57,49 +57,49 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ExchangeAcceptMessage.Id)]
         public static void HandleExchangeAcceptMessage(WorldClient client, ExchangeAcceptMessage message)
         {
-            if (client.ActiveCharacter.IsInRequest() &&
-                client.ActiveCharacter.RequestBox is PlayerTradeRequest)
+            if (client.Character.IsInRequest() &&
+                client.Character.RequestBox is PlayerTradeRequest)
             {
-                client.ActiveCharacter.AcceptRequest();
+                client.Character.AcceptRequest();
             }
         }
 
         [WorldHandler(ExchangeObjectMoveKamaMessage.Id)]
         public static void HandleExchangeObjectMoveKamaMessage(WorldClient client, ExchangeObjectMoveKamaMessage message)
         {
-            if (!client.ActiveCharacter.IsTrading())
+            if (!client.Character.IsTrading())
                 return;
             
-            client.ActiveCharacter.Trader.SetKamas((uint) message.quantity);
+            client.Character.Trader.SetKamas((uint) message.quantity);
         }
 
         [WorldHandler(ExchangeObjectMoveMessage.Id)]
         public static void HandleExchangeObjectMoveMessage(WorldClient client, ExchangeObjectMoveMessage message)
         {
-            if (!client.ActiveCharacter.IsTrading())
+            if (!client.Character.IsTrading())
                 return;
 
-            client.ActiveCharacter.Trader.MoveItem(message.objectUID, message.quantity);
+            client.Character.Trader.MoveItem(message.objectUID, message.quantity);
         }
 
         [WorldHandler(ExchangeReadyMessage.Id)]
         public static void HandleExchangeReadyMessage(WorldClient client, ExchangeReadyMessage message)
         {
-           client.ActiveCharacter.Trader.ToggleReady(message.ready);
+           client.Character.Trader.ToggleReady(message.ready);
         }
 
         [WorldHandler(ExchangeBuyMessage.Id)]
         public static void HandleExchangeBuyMessage(WorldClient client, ExchangeBuyMessage message)
         {
-            if (client.ActiveCharacter.NpcShopDialog != null)
-                client.ActiveCharacter.NpcShopDialog.BuyItem(message.objectToBuyId, (uint) message.quantity);
+            if (client.Character.NpcShopDialog != null)
+                client.Character.NpcShopDialog.BuyItem(message.objectToBuyId, (uint) message.quantity);
         }
 
         [WorldHandler(ExchangeSellMessage.Id)]
         public static void HandleExchangeSellMessage(WorldClient client, ExchangeSellMessage message)
         {
-            if (client.ActiveCharacter.NpcShopDialog != null)
-                client.ActiveCharacter.NpcShopDialog.SellItem(message.objectToSellId, (uint)message.quantity);
+            if (client.Character.NpcShopDialog != null)
+                client.Character.NpcShopDialog.SellItem(message.objectToSellId, (uint)message.quantity);
         }
 
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,

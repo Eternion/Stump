@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         [WorldHandler(EmotePlayRequestMessage.Id)]
         public static void HandleEmotePlayRequestMessage(WorldClient client, EmotePlayRequestMessage message)
         {
-            client.ActiveCharacter.PlayEmote((EmotesEnum) message.emoteId);
+            client.Character.PlayEmote((EmotesEnum) message.emoteId);
         }
 
         public static void SendEmotePlayMessage(IPacketReceiver client, Character character, EmotesEnum emote)

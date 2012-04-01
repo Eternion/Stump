@@ -34,14 +34,14 @@ namespace Stump.Server.WorldServer.Core.Network
 
         public IContextHandler GetContextHandler(WorldHandlerAttribute attr, WorldClient client, Message message)
         {
-            if (client.ActiveCharacter == null && attr.RequiresLogin)
+            if (client.Character == null && attr.RequiresLogin)
             {
                 m_logger.Warn("Handler id = {0} cannot handle this message because the client {1} is not logged and should be", message, client);
                 client.Disconnect();
                 return null;
             }
 
-            if (client.ActiveCharacter != null && !attr.RequiresLogin)
+            if (client.Character != null && !attr.RequiresLogin)
             {
                 m_logger.Warn("Handler id = {0} cannot handle this message because the client {1} is already logged and should be not", message, client);
                 client.Disconnect();
@@ -53,21 +53,21 @@ namespace Stump.Server.WorldServer.Core.Network
                 return WorldServer.Instance.IOTaskPool;
             }
 
-            if (client.ActiveCharacter == null || client.Account == null)
+            if (client.Character == null || client.Account == null)
             {
                 m_logger.Warn("Client {0} sent {1} before being logged", client, message);
                 client.Disconnect();
                 return null;
             }
 
-            if (client.ActiveCharacter.Area == null)
+            if (client.Character.Area == null)
             {
                 m_logger.Warn("Client {0} sent {1} while not in world", client, message);
                 client.Disconnect();
                 return null;
             }
 
-            return client.ActiveCharacter.Area;
+            return client.Character.Area;
         }
     }
 }

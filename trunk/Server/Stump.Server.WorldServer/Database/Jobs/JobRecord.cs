@@ -12,7 +12,7 @@ namespace Stump.Server.WorldServer.Database.Jobs
             set;
         }
 
-        [Property("OwnerId")]
+        [Property("Owner")]
         public int OwnerId
         {
             get;

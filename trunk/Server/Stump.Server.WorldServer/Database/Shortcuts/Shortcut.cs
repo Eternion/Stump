@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Database.Shortcuts
             set;
         }
 
-        [Property("OwnerId")]
+        [Property("Owner")]
         public int OwnerId
         {
             get;

@@ -13,8 +13,8 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(SpellUpgradeRequestMessage.Id)]
         public static void HandleSpellUpgradeRequestMessage(WorldClient client, SpellUpgradeRequestMessage message)
         {
-            client.ActiveCharacter.Spells.BoostSpell(message.spellId);
-            client.ActiveCharacter.RefreshStats();
+            client.Character.Spells.BoostSpell(message.spellId);
+            client.Character.RefreshStats();
         }
 
         public static void SendSpellUpgradeSuccessMessage(IPacketReceiver client, Spell spell)
@@ -36,7 +36,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
 
             client.Send(new SpellListMessage(previsualization,
-                                             client.ActiveCharacter.Spells.GetSpells().Select(
+                                             client.Character.Spells.GetSpells().Select(
                                                  entry => entry.GetSpellItem())));
         }
     }

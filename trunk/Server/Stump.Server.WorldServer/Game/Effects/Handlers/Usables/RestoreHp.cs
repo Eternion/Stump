@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             if (Target.Stats.Health.DamageTaken == 0)
             {
                 // health already to max
-                BasicHandler.SendTextInformationMessage(Target.Client, 0, 225);
+                BasicHandler.SendTextInformationMessage(Target.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 225);
                 return;
             }
 
@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
 
             // x hp restored
             Target.RefreshHealth();
-            BasicHandler.SendTextInformationMessage(Target.Client, 0, 1, integerEffect.Value);
+            BasicHandler.SendTextInformationMessage(Target.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 1, integerEffect.Value);
             Target.PlayEmote(EmotesEnum.EMOTE_EAT);
         }
     }

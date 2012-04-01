@@ -8,6 +8,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Database.I18n;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Database.Breeds
 {
@@ -244,7 +245,7 @@ namespace Stump.Server.WorldServer.Database.Breeds
             set;
         }
 
-        [HasMany(typeof(LearnableSpell), Table = "breeds_spells", ColumnKey = "BreedId", Cascade = ManyRelationCascadeEnum.All)]
+        [HasMany(typeof(LearnableSpell), Table = "breeds_spells", ColumnKey = "Breed", Cascade = ManyRelationCascadeEnum.All)]
         public IList<LearnableSpell> LearnableSpells
         {
             get;
@@ -272,6 +273,12 @@ namespace Stump.Server.WorldServer.Database.Breeds
             set;
         }
 
+        private ObjectPosition m_startPosition;
+
+        public ObjectPosition GetStartPosition()
+        {
+            return m_startPosition ?? ( m_startPosition = new ObjectPosition(Game.World.Instance.GetMap(StartMap), StartCell, StartDirection) );
+        }
 
         [Property("StartActionPoints")]
         public ushort StartActionPoints

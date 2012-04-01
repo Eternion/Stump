@@ -46,7 +46,23 @@ namespace Stump.Server.WorldServer.Game
         private Dictionary<int, SuperArea> m_superAreas = new Dictionary<int, SuperArea>();
 
         private readonly object m_saveLock = new object();
-        private readonly ConcurrentBag<ISaveable> m_saveablesInstances = new ConcurrentBag<ISaveable>(); 
+        private readonly ConcurrentBag<ISaveable> m_saveablesInstances = new ConcurrentBag<ISaveable>();
+
+        public event Action<Character> CharacterEntered;
+
+        private void OnCharacterEntered(Character character)
+        {
+            Action<Character> handler = CharacterEntered;
+            if (handler != null) handler(character);
+        }
+
+        public event Action<Character> CharacterLeft;
+
+        private void OnCharacterLeft(Character character)
+        {
+            Action<Character> handler = CharacterLeft;
+            if (handler != null) handler(character);
+        }
 
         public int CharacterCount
         {
@@ -292,7 +308,10 @@ namespace Stump.Server.WorldServer.Game
                 Leave(character);
 
             if (m_charactersById.TryAdd(character.Id, character) && m_charactersByName.TryAdd(character.Name, character))
+            {
                 Interlocked.Increment(ref m_characterCount);
+                OnCharacterEntered(character);
+            }
             else
                 logger.Error("Cannot add character {0} to the World", character);
         }
@@ -303,7 +322,10 @@ namespace Stump.Server.WorldServer.Game
 
             Character dummy;
             if (m_charactersById.TryRemove(character.Id, out dummy) && m_charactersByName.TryRemove(character.Name, out dummy))
+            {
                 Interlocked.Decrement(ref m_characterCount);
+                OnCharacterLeft(character);
+            }
             else
                 logger.Error("Cannot remove character {0} to the World", character);
         }
@@ -356,7 +378,7 @@ namespace Stump.Server.WorldServer.Game
 
 
                 return ClientManager.Instance.FindAll<WorldClient>(entry => entry.Account.Login == name).
-                    Select(entry => entry.ActiveCharacter).SingleOrDefault();
+                    Select(entry => entry.Character).SingleOrDefault();
             }
 
             return GetCharacter(pattern);
@@ -407,9 +429,9 @@ namespace Stump.Server.WorldServer.Game
                 {
                     try
                     {
-                        if (client.ActiveCharacter != null)
+                        if (client.Character != null)
                         {
-                            client.ActiveCharacter.SaveNow();
+                            client.Character.SaveNow();
                         }
                     }
                     catch (Exception ex)

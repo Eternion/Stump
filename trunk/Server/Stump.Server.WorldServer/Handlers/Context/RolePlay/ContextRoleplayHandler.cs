@@ -17,11 +17,11 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         [WorldHandler(ChangeMapMessage.Id)]
         public static void HandleChangeMapMessage(WorldClient client, ChangeMapMessage message)
         {
-            var neighbourState = client.ActiveCharacter.Map.GetClientMapRelativePosition(message.mapId);
+            var neighbourState = client.Character.Map.GetClientMapRelativePosition(message.mapId);
 
             // todo : check with MapChangeData the neighbour validity
-            if (neighbourState != MapNeighbour.None && client.ActiveCharacter.Position.Cell.MapChangeData != 0)
-                client.ActiveCharacter.Teleport(neighbourState);
+            if (neighbourState != MapNeighbour.None && client.Character.Position.Cell.MapChangeData != 0)
+                client.Character.Teleport(neighbourState);
         }
 
         [WorldHandler(MapInformationsRequestMessage.Id)]
@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         {
             SendMapComplementaryInformationsDataMessage(client);
 
-            var fightCount = client.ActiveCharacter.Map.GetFightCount();
+            var fightCount = client.Character.Map.GetFightCount();
 
             if (fightCount > 0)
                 SendMapFightCountMessage(client, fightCount);
@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         [WorldHandler(MapRunningFightListRequestMessage.Id)]
         public static void HandleMapRunningFightListRequestMessage(WorldClient client, MapRunningFightListRequestMessage message)
         {
-            SendMapRunningFightListMessage(client, client.ActiveCharacter.Map.GetFights());
+            SendMapRunningFightListMessage(client, client.Character.Map.GetFights());
         }
 
         [WorldHandler(MapRunningFightDetailsRequestMessage.Id)]
@@ -46,7 +46,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         {
             var fight = FightManager.Instance.GetFight(message.fightId);
 
-            if (fight == null || fight.Map != client.ActiveCharacter.Map)
+            if (fight == null || fight.Map != client.Character.Map)
                 return;
 
             SendMapRunningFightDetailsMessage(client, fight);
@@ -85,7 +85,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 
         public static void SendMapComplementaryInformationsDataMessage(WorldClient client)
         {
-            client.Send(client.ActiveCharacter.Map.GetMapComplementaryInformationsDataMessage(client.ActiveCharacter));
+            client.Send(client.Character.Map.GetMapComplementaryInformationsDataMessage(client.Character));
         }
 
         public static void SendGameRolePlayShowActorMessage(IPacketReceiver client, RolePlayActor actor)

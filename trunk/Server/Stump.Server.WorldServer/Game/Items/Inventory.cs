@@ -341,7 +341,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
             if (lastPosition == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED && !item.AreConditionFilled(Owner))
             {
-                BasicHandler.SendTextInformationMessage(Owner.Client, 1, 19);
+                BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 19);
                 MoveItem(item, lastPosition);
             }
 
@@ -461,7 +461,7 @@ namespace Stump.Server.WorldServer.Game.Items
             if (item.Template.Level > Owner.Level)
             {
                 if (send)
-                    BasicHandler.SendTextInformationMessage(Owner.Client, 1, 3);
+                    BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 3);
 
                 return false;
             }
@@ -470,7 +470,7 @@ namespace Stump.Server.WorldServer.Game.Items
             if (item.Template.Type.ItemType == ItemTypeEnum.SHIELD && weapon != null && weapon.Template.TwoHanded)
             {
                 if (send)
-                    BasicHandler.SendTextInformationMessage(Owner.Client, 0, 78);
+                    BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 78);
 
                 return false;
             }
@@ -479,7 +479,7 @@ namespace Stump.Server.WorldServer.Game.Items
             if (item.Template is WeaponTemplate && item.Template.TwoHanded && shield != null)
             {
                 if (send)
-                    BasicHandler.SendTextInformationMessage(Owner.Client, 0, 79);
+                    BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 79);
 
                 return false;
             }            

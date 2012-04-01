@@ -27,6 +27,7 @@ using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Notifications;
 using Stump.Server.WorldServer.Game.Parties;
 using Stump.Server.WorldServer.Game.Shortcuts;
+using Stump.Server.WorldServer.Game.Social;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Characters;
@@ -1044,6 +1045,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Fight
 
+        public delegate void CharacterContextChangedHandler(Character character, bool inFight);
+        public event CharacterContextChangedHandler ContextChanged;
+
+        private void OnCharacterContextChanged(bool inFight)
+        {
+            CharacterContextChangedHandler handler = ContextChanged;
+            if (handler != null) handler(this, inFight);
+        }
+
         public FighterRefusedReasonEnum CanRequestFight(Character target)
         {
             if (!target.IsInWorld || target.IsFighting() || target.IsSpectator() || target.IsBusy())
@@ -1102,7 +1112,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             ContextHandler.SendGameFightStartingMessage(Client, team.Fight.FightType);
 
-            return Fighter = new CharacterFighter(this, team);
+            Fighter = new CharacterFighter(this, team);
+
+            OnCharacterContextChanged(true);
+
+            return Fighter;
         }
 
         public FightSpectator CreateSpectator(Fights.Fight fight)
@@ -1122,7 +1136,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             ContextHandler.SendGameFightStartingMessage(Client, fight.FightType);
 
-            return Spectator = new FightSpectator(this, fight);
+            Spectator = new FightSpectator(this, fight);
+
+            OnCharacterContextChanged(true);
+
+            return Spectator;
         }
 
         /// <summary>
@@ -1147,6 +1165,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             LastMap = null;
             NextMap = null;
 
+            OnCharacterContextChanged(false);
             StartRegen();
         }
 
@@ -1221,6 +1240,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Zaaps
 
+        private ObjectPosition m_spawnPoint;
+
         public List<Map> KnownZaaps
         {
             get { return Record.KnownZaaps; }
@@ -1231,7 +1252,42 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!KnownZaaps.Contains(map))
                 KnownZaaps.Add(map);
 
-            BasicHandler.SendTextInformationMessage(Client, 0, 24); // new zaap
+            BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 24); // new zaap
+        }
+
+        public void SetSpawnPoint(Map map)
+        {
+            Record.SpawnMap = map;
+            m_spawnPoint = null;
+
+            BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 6); // pos saved
+        }
+
+        public ObjectPosition GetSpawnPoint()
+        {
+            if (Record.SpawnMap != null)
+            {
+                if (m_spawnPoint != null)
+                    return m_spawnPoint;
+
+                var map = Record.SpawnMap;
+
+                if (map.Zaap != null)
+                {
+                    var cell = map.GetRandomAdjacentFreeCell(map.Zaap.Position.Point);
+                    var direction = map.Zaap.Position.Point.OrientationTo(new MapPoint(cell));
+
+                    return new ObjectPosition(map, cell, direction);
+                }
+                else
+                {
+                    return new ObjectPosition(map, map.GetRandomFreeCell(), Direction);
+                }
+            }
+            else
+            {
+                return Breed.GetStartPosition();
+            }
         }
 
         #endregion
@@ -1240,6 +1296,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public void PlayEmote(EmotesEnum emote)
         {
             ContextRoleplayHandler.SendEmotePlayMessage(Map.Clients, this, emote);
+        }
+
+        #endregion
+
+        #region Friend & Ennemies
+
+        public FriendsBook FriendsBook
+        {
+            get;
+            private set;
         }
 
         #endregion
@@ -1343,6 +1409,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     Inventory.Save();
                     Spells.Save();
                     Shortcuts.Save();
+                    FriendsBook.Save();
 
                     m_record.MapId = Map.Id;
                     m_record.CellId = Cell.Id;
@@ -1403,6 +1470,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Spells.LoadSpells();
             Shortcuts = new ShortcutBar(this);
             Shortcuts.Load();
+            FriendsBook = new FriendsBook(this);
+            FriendsBook.Load();
 
             m_recordLoaded = true;
         }
@@ -1413,7 +1482,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return;
 
             m_recordLoaded = false;
-            Inventory.Dispose();
+            Dispose();
         }
 
         #endregion
@@ -1493,7 +1562,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Name,
                 Look,
                 (sbyte) BreedId,
-                Sex == SexTypeEnum.SEX_MALE,
+                Sex == SexTypeEnum.SEX_FEMALE,
                 (short) Map.Position.X,
                 (short) Map.Position.Y,
                 Map.Id,
@@ -1537,6 +1606,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         internal CharacterRecord Record
         {
             get { return m_record; }
+        }
+
+        public override void Dispose()
+        {
+            if (FriendsBook != null)
+                FriendsBook.Dispose();
+
+            if (Inventory != null)
+                Inventory.Dispose();
+
+            base.Dispose();
         }
 
         public override string ToString()

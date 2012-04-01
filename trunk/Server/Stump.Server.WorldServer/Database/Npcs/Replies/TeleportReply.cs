@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
         private int m_mapId;
         private ObjectPosition m_position;
 
-        [Property]
+        [Property("Teleport_Map")]
         public int MapId
         {
             get
@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             }
         }
 
-        [Property]
+        [Property("Teleport_Cell")]
         public int CellId
         {
             get
@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             }
         }
 
-        [Property]
+        [Property("Teleport_Direction")]
         public DirectionsEnum Direction
         {
             get

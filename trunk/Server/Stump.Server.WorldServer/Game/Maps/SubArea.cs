@@ -241,7 +241,10 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             foreach (Map map in Maps)
             {
-                map.SpawningPool.SetTimer(GetMonsterSpawnInterval());
+                foreach (var pool in map.SpawningPools)
+                {
+                    pool.SetTimer(GetMonsterSpawnInterval());
+                }
             }
         }
     }

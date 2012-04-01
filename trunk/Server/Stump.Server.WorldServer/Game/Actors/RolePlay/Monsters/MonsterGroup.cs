@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Attributes;
+using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -14,6 +16,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 {
     public sealed class MonsterGroup : RolePlayActor
     {
+        [Variable(true)]
+        public static int MinMoveInterval = 20;
+
+        [Variable(true)]
+        public static int MaxMoveInterval = 60;
+
+        [Variable(true)]
+        public static int StarsBonusInterval = 300;
+
+        [Variable(true)]
+        public static short StarsBonusIncrementation = 2;
+
         public event Action<MonsterGroup, Character> EnterFight;
 
         private readonly List<Monster> m_monsters = new List<Monster>();
@@ -54,6 +68,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             private set;
         }
 
+        internal TimerEntry MoveTimer
+        {
+            get;
+            set;
+        }
+
+        internal TimerEntry StarsTimer
+        {
+            get;
+            set;
+        }
+
         public override bool CanMove()
         {
             return true;
@@ -73,6 +99,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             var keys = movementPath.GetServerPathKeys();
 
             Map.ForEach(entry => ContextHandler.SendGameMapMovementMessage(entry.Client, keys, this));
+
+            // monsters movements are instants
+            StopMove();
 
             return true;
         }

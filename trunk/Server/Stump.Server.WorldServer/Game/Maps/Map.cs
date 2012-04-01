@@ -28,6 +28,7 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Maps.Spawns;
@@ -530,6 +531,14 @@ namespace Stump.Server.WorldServer.Game.Maps
             return m_spawningPools.Remove(spawningPool);
         }
 
+        public void RemoveAllSpawningPools()
+        {
+            foreach (var pool in SpawningPools.ToArray())
+            {
+                RemoveSpawningPool(pool);
+            }
+        }
+
         public void EnableMonsterSpawns()
         {
             if (SpawnEnabled)
@@ -739,6 +748,23 @@ namespace Stump.Server.WorldServer.Game.Maps
             return SubArea.SpawnsLimit;
         }
 
+        private void MoveRandomlyMonsterGroup(MonsterGroup group)
+        {
+            var circle = new Lozenge(1, 4);
+            var dest = circle.GetCells(group.Cell, this).Where(entry => entry.Walkable && !entry.NonWalkableDuringRP && entry.MapChangeData == 0).RandomElementOrDefault();
+
+
+            var pathfinder = new Pathfinder(CellsInfoProvider);
+            var path = pathfinder.FindPath(group.Cell.Id, dest.Id, true);
+
+            group.StartMove(path);
+        }
+
+        private void IncrementMonsterGroupBonus(MonsterGroup group)
+        {
+            group.IncrementBonus(MonsterGroup.StarsBonusIncrementation);
+        }
+
         #endregion
 
         #region Triggers
@@ -908,22 +934,31 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             ContextRoleplayHandler.SendGameRolePlayShowActorMessage(Clients, actor);
 
-            if (character == null)
-                return;
+            if (character != null)
+            {
+                if (!SpawnEnabled)
+                    EnableMonsterSpawns();
 
-            if (!SpawnEnabled)
-                EnableMonsterSpawns();
+                ContextRoleplayHandler.SendCurrentMapMessage(character.Client, Id);
 
-            ContextRoleplayHandler.SendCurrentMapMessage(character.Client, Id);
+                if (m_fights.Count > 0)
+                    ContextRoleplayHandler.SendMapFightCountMessage(character.Client, (short) m_fights.Count);
 
-            if (m_fights.Count > 0)
-                ContextRoleplayHandler.SendMapFightCountMessage(character.Client, (short) m_fights.Count);
+                SendActorsActions(character);
+                BasicHandler.SendBasicTimeMessage(character.Client);
 
-            SendActorsActions(character);
-            BasicHandler.SendBasicTimeMessage(character.Client);
+                if (Zaap != null && !character.KnownZaaps.Contains(this))
+                    character.DiscoverZaap(this);
+            }
 
-            if (Zaap != null && !character.KnownZaaps.Contains(this))
-                character.DiscoverZaap(this);
+            var monsterGroup = actor as MonsterGroup;
+            if (monsterGroup != null)
+            {
+                monsterGroup.MoveTimer = Area.CallDelayed(new Random().Next(MonsterGroup.MinMoveInterval, MonsterGroup.MaxMoveInterval + 1) * 1000,
+                    () => MoveRandomlyMonsterGroup(monsterGroup));
+                monsterGroup.StarsTimer = Area.CallDelayed(MonsterGroup.StarsBonusInterval,
+                    () => IncrementMonsterGroupBonus(monsterGroup));
+            }
         }
 
         private void SendActorsActions(Character character)
@@ -962,6 +997,15 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (actor is MonsterGroup || actor is Npc)
                 FreeContextualId((sbyte) actor.Id);
 
+
+            var monsterGroup = actor as MonsterGroup;
+            if (monsterGroup != null)
+            {
+                monsterGroup.MoveTimer.Stop();
+                monsterGroup.MoveTimer = null;
+                monsterGroup.StarsTimer.Stop();
+                monsterGroup.StarsTimer = null;
+            }
         }
 
         #endregion

@@ -11,9 +11,8 @@ namespace Stump.Server.WorldServer.Database.Accounts
     [ActiveRecord("accounts")]
     public class WorldAccount : WorldBaseRecord<WorldAccount>
     {
-        private IList<WorldAccount> m_enemies;
+        private IList<WorldAccount> m_ignoreds;
         private IList<WorldAccount> m_friends;
-        private IList<StartupActionRecord> m_startupActions;
 
         [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
         public uint Id
@@ -36,9 +35,9 @@ namespace Stump.Server.WorldServer.Database.Accounts
             set;
         }
 
-        public uint LastConnectionTimeStamp
+        public int LastConnectionTimeStamp
         {
-            get { return (uint) DateTime.Now.Subtract(LastConnection).TotalHours; }
+            get { return (int) (DateTime.Now - LastConnection).TotalHours; }
         }
 
         [Property("LastIp", NotNull = false, Length = 28)]
@@ -47,7 +46,15 @@ namespace Stump.Server.WorldServer.Database.Accounts
             get;
             set;
         }
-/*
+
+        [Property("ConnectedCharacter", NotNull = false)]
+        public int? ConnectedCharacterId
+        {
+            get;
+            set;
+        }
+
+        /*
         [HasAndBelongsToMany(typeof (StartupActionRecord), Table = "accounts_startup_actions", ColumnKey = "AccountId",
             ColumnRef = "StartupActionId", Cascade = ManyRelationCascadeEnum.Delete)]
         public IList<StartupActionRecord> StartupActions
@@ -55,7 +62,7 @@ namespace Stump.Server.WorldServer.Database.Accounts
             get { return m_startupActions ?? new List<StartupActionRecord>(); }
             set { m_startupActions = value; }
         }
-
+        */
         [HasAndBelongsToMany(typeof (WorldAccount), Table = "accounts_friends", ColumnKey = "AccountId",
             ColumnRef = "FriendAccountId")]
         public IList<WorldAccount> Friends
@@ -64,19 +71,19 @@ namespace Stump.Server.WorldServer.Database.Accounts
             set { m_friends = value; }
         }
 
-        [HasAndBelongsToMany(typeof (WorldAccount), Table = "accounts_enemies", ColumnKey = "AccountId",
-            ColumnRef = "EnemyAccountId")]
-        public IList<WorldAccount> Enemies
+        [HasAndBelongsToMany(typeof (WorldAccount), Table = "accounts_ignored", ColumnKey = "AccountId",
+            ColumnRef = "IgnoredAccountId")]
+        public IList<WorldAccount> Ignoreds
         {
-            get { return m_enemies ?? new List<WorldAccount>(); }
-            set { m_enemies = value; }
+            get { return m_ignoreds ?? new List<WorldAccount>(); }
+            set { m_ignoreds = value; }
         }
         
         public bool IsRevertFriend(WorldAccount account)
         {
             return Friends.Contains(account) && account.Friends.Contains(this);
         }
-        */
+        
         public static WorldAccount FindById(uint id)
         {
             return FindByPrimaryKey(id);

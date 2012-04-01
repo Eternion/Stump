@@ -13,25 +13,25 @@ namespace Stump.Server.WorldServer.Handlers.Shortcuts
         [WorldHandler(ShortcutBarAddRequestMessage.Id)]
         public static void HandleShortcutBarAddRequestMessage(WorldClient client, ShortcutBarAddRequestMessage message)
         {
-            client.ActiveCharacter.Shortcuts.AddShortcut(message.barType, message.shortcut);
+            client.Character.Shortcuts.AddShortcut(message.barType, message.shortcut);
         }
 
         [WorldHandler(ShortcutBarRemoveRequestMessage.Id)]
         public static void HandleShortcutBarRemoveRequestMessage(WorldClient client, ShortcutBarRemoveRequestMessage message)
         {
-            client.ActiveCharacter.Shortcuts.RemoveShortcut((ShortcutBarEnum)message.barType, message.slot);
+            client.Character.Shortcuts.RemoveShortcut((ShortcutBarEnum)message.barType, message.slot);
         }
 
         [WorldHandler(ShortcutBarSwapRequestMessage.Id)]
         public static void HandleShortcutBarSwapRequestMessage(WorldClient client, ShortcutBarSwapRequestMessage message)
         {
-            client.ActiveCharacter.Shortcuts.SwapShortcuts((ShortcutBarEnum)message.barType, message.firstSlot, message.secondSlot);
+            client.Character.Shortcuts.SwapShortcuts((ShortcutBarEnum)message.barType, message.firstSlot, message.secondSlot);
         }
 
         public static void SendShortcutBarContentMessage(WorldClient client, ShortcutBarEnum barType)
         {
             client.Send(new ShortcutBarContentMessage((sbyte)barType,
-                client.ActiveCharacter.Shortcuts.GetShortcuts(barType).Select(entry => entry.GetNetworkShortcut())));
+                client.Character.Shortcuts.GetShortcuts(barType).Select(entry => entry.GetNetworkShortcut())));
         }
 
         public static void SendShortcutBarRefreshMessage(IPacketReceiver client, ShortcutBarEnum barType, Shortcut shortcut)

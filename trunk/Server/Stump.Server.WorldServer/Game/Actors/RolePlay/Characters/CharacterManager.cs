@@ -104,6 +104,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                                  CreationDate = DateTime.Now,
                                  LastUsage = DateTime.Now,
                                  AlignmentSide = AlignmentSideEnum.ALIGNMENT_NEUTRAL,
+                                 WarnOnConnection = true,
+                                 WarnOnLevel = true,
                              };
 
                 record.Save();

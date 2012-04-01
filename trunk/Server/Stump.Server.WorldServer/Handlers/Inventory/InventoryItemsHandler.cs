@@ -18,34 +18,34 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (!Enum.IsDefined(typeof(CharacterInventoryPositionEnum), (int) message.position))
                 return;
 
-            var item = client.ActiveCharacter.Inventory.TryGetItem(message.objectUID);
+            var item = client.Character.Inventory.TryGetItem(message.objectUID);
 
             if (item == null)
                 return;
 
-            client.ActiveCharacter.Inventory.MoveItem(item, (CharacterInventoryPositionEnum) message.position);
+            client.Character.Inventory.MoveItem(item, (CharacterInventoryPositionEnum) message.position);
         }
 
         [WorldHandler(ObjectDeleteMessage.Id)]
         public static void HandleObjectDeleteMessage(WorldClient client, ObjectDeleteMessage message)
         {
-            var item = client.ActiveCharacter.Inventory.TryGetItem(message.objectUID);
+            var item = client.Character.Inventory.TryGetItem(message.objectUID);
 
             if (item == null)
                 return;
 
-            client.ActiveCharacter.Inventory.RemoveItem(item, (uint) message.quantity);
+            client.Character.Inventory.RemoveItem(item, (uint) message.quantity);
         }
 
         [WorldHandler(ObjectUseMessage.Id)]
         public static void HandleObjectUseMessage(WorldClient client, ObjectUseMessage message)
         {
-            var item = client.ActiveCharacter.Inventory.TryGetItem(message.objectUID);
+            var item = client.Character.Inventory.TryGetItem(message.objectUID);
 
             if (item == null)
                 return;
 
-            client.ActiveCharacter.Inventory.UseItem(item);
+            client.Character.Inventory.UseItem(item);
         }
 
         public static void SendGameRolePlayPlayerLifeStatusMessage(IPacketReceiver client)
@@ -57,14 +57,14 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             client.Send(
                 new InventoryContentMessage(
-                    client.ActiveCharacter.Inventory.Items.Select(entry => entry.GetObjectItem()),
-                    client.ActiveCharacter.Inventory.Kamas));
+                    client.Character.Inventory.Items.Select(entry => entry.GetObjectItem()),
+                    client.Character.Inventory.Kamas));
         }
 
         public static void SendInventoryWeightMessage(WorldClient client)
         {
-            client.Send(new InventoryWeightMessage((int) client.ActiveCharacter.Inventory.Weight,
-                                                   (int) client.ActiveCharacter.Inventory.WeightTotal));
+            client.Send(new InventoryWeightMessage((int) client.Character.Inventory.Weight,
+                                                   (int) client.Character.Inventory.WeightTotal));
         }
 
         public static void SendExchangeKamaModifiedMessage(IPacketReceiver client, bool remote, int kamasAmount)
@@ -115,8 +115,8 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendSetUpdateMessage(WorldClient client, ItemSetTemplate itemSet)
         {
             client.Send(new SetUpdateMessage((short) itemSet.Id,
-                client.ActiveCharacter.Inventory.GetItemSetEquipped(itemSet).Select(entry => entry.ItemId),
-                client.ActiveCharacter.Inventory.GetItemSetEffects(itemSet).Select(entry => entry.GetObjectEffect())));
+                client.Character.Inventory.GetItemSetEquipped(itemSet).Select(entry => entry.ItemId),
+                client.Character.Inventory.GetItemSetEffects(itemSet).Select(entry => entry.GetObjectEffect())));
         }
     }
 }

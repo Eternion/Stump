@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.Handlers.Interactives
         [WorldHandler(InteractiveUseRequestMessage.Id)]
         public static void HandleInteractiveUseRequestMessage(WorldClient client, InteractiveUseRequestMessage message)
         {
-            client.ActiveCharacter.Map.UseInteractiveObject(client.ActiveCharacter, message.elemId, message.skillInstanceUid);
+            client.Character.Map.UseInteractiveObject(client.Character, message.elemId, message.skillInstanceUid);
         }
 
         [WorldHandler(InteractiveUseEndedMessage.Id)]
@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Handlers.Interactives
         [WorldHandler(TeleportRequestMessage.Id)]
         public static void HandleTeleportRequestMessage(WorldClient client, TeleportRequestMessage message)
         {
-            if (!client.ActiveCharacter.IsInZaapDialog())
+            if (!client.Character.IsInZaapDialog())
                 return;
 
             var map = World.Instance.GetMap(message.mapId);
@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Handlers.Interactives
             if (map == null)
                 return;
 
-            client.ActiveCharacter.ZaapDialog.Teleport(map);
+            client.Character.ZaapDialog.Teleport(map);
         }
 
         public static void SendInteractiveUsedMessage(IPacketReceiver client, Character user, InteractiveObject interactiveObject, Skill skill)

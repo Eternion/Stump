@@ -24,13 +24,13 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
                 return;
             }
 
-            client.ActiveCharacter.Invite(target);
+            client.Character.Invite(target);
         }
 
         [WorldHandler(PartyInvitationDetailsRequestMessage.Id)]
         public static void HandlePartyInvitationDetailsRequestMessage(WorldClient client, PartyInvitationDetailsRequestMessage message)
         {
-            var invitation = client.ActiveCharacter.GetInvitation(message.partyId);
+            var invitation = client.Character.GetInvitation(message.partyId);
 
             if (invitation == null)
                 return;
@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
         [WorldHandler(PartyAcceptInvitationMessage.Id)]
         public static void HandlePartyAcceptInvitationMessage(WorldClient client, PartyAcceptInvitationMessage message)
         {
-            var invitation = client.ActiveCharacter.GetInvitation(message.partyId);
+            var invitation = client.Character.GetInvitation(message.partyId);
 
             if (invitation == null)
                 return;
@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
         [WorldHandler(PartyRefuseInvitationMessage.Id)]
         public static void HandlePartyRefuseInvitationMessage(WorldClient client, PartyRefuseInvitationMessage message)
         {
-            var invitation = client.ActiveCharacter.GetInvitation(message.partyId);
+            var invitation = client.Character.GetInvitation(message.partyId);
 
             if (invitation == null)
                 return;
@@ -63,15 +63,15 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
         [WorldHandler(PartyCancelInvitationMessage.Id)]
         public static void HandlePartyCancelInvitationMessage(WorldClient client, PartyCancelInvitationMessage message)
         {
-            if (!client.ActiveCharacter.IsInParty())
+            if (!client.Character.IsInParty())
                 return;
 
-            var guest = client.ActiveCharacter.Party.GetGuest(message.guestId);
+            var guest = client.Character.Party.GetGuest(message.guestId);
 
             if (guest == null)
                 return;
 
-            var invitation = guest.GetInvitation(client.ActiveCharacter.Party.Id);
+            var invitation = guest.GetInvitation(client.Character.Party.Id);
 
             if (invitation == null)
                 return;
@@ -82,34 +82,34 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
         [WorldHandler(PartyLeaveRequestMessage.Id)]
         public static void HandlePartyLeaveRequestMessage(WorldClient client, PartyLeaveRequestMessage message)
         {
-            if (!client.ActiveCharacter.IsInParty())
+            if (!client.Character.IsInParty())
                 return;
 
             // todo : check something ?
 
-            client.ActiveCharacter.LeaveParty();
+            client.Character.LeaveParty();
         }
 
         [WorldHandler(PartyAbdicateThroneMessage.Id)]
         public static void HandlePartyAbdicateThroneMessage(WorldClient client, PartyAbdicateThroneMessage message)
         {
-            if (!client.ActiveCharacter.IsPartyLeader())
+            if (!client.Character.IsPartyLeader())
                 return;
 
-            var member = client.ActiveCharacter.Party.GetMember(message.playerId);
+            var member = client.Character.Party.GetMember(message.playerId);
 
-            client.ActiveCharacter.Party.ChangeLeader(member);
+            client.Character.Party.ChangeLeader(member);
         }
 
         [WorldHandler(PartyKickRequestMessage.Id)]
         public static void HandlePartyKickRequestMessage(WorldClient client, PartyKickRequestMessage message)
         {
-            if (!client.ActiveCharacter.IsPartyLeader())
+            if (!client.Character.IsPartyLeader())
                 return;
 
-            var member = client.ActiveCharacter.Party.GetMember(message.playerId);
+            var member = client.Character.Party.GetMember(message.playerId);
 
-            client.ActiveCharacter.Party.Kick(member);
+            client.Character.Party.Kick(member);
         }
 
         public static void SendPartyKickedByMessage(IPacketReceiver client, Game.Parties.Party party, Character kicker)
@@ -191,7 +191,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
                 Game.Parties.Party.MaxMemberCount,
                 from.Id,
                 from.Name,
-                client.ActiveCharacter.Id // what is that ?
+                client.Character.Id // what is that ?
                 ));
         }
 

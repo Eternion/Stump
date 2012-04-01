@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using System.Linq;
+using NLog;
 using Stump.Server.BaseServer.Initialization;
 
 namespace Stump.Plugins.DefaultPlugin.Global
@@ -24,10 +25,9 @@ namespace Stump.Plugins.DefaultPlugin.Global
 
             foreach (var map in area.Maps)
             {
-                // disable it first to avoid conflicts
-                map.DisableMonsterSpawns();
+                map.RemoveAllSpawningPools();
 
-                map.EnableMonsterSpawns(new IncarnamSpawningPool(map, map.SubArea.GetMonsterSpawnInterval()));
+                map.AddSpawningPool(new IncarnamSpawningPool(map, map.SubArea.GetMonsterSpawnInterval()));
             }
         }
     }
