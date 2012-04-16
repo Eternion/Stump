@@ -20,33 +20,52 @@
       <Style.Triggers>
         <MultiDataTrigger>
           <MultiDataTrigger.Conditions>
-            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsFocused}"
-                       Value="false" />
+            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsFocused}" Value="false" />
             <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="" />
           </MultiDataTrigger.Conditions>
           <MultiDataTrigger.Setters>
             <Setter Property="Background" Value="{StaticResource SearchHint}" />
           </MultiDataTrigger.Setters>
         </MultiDataTrigger>
+        <MultiDataTrigger>
+          <MultiDataTrigger.Conditions>
+            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsFocused}" Value="true" />
+            <Condition Binding="{Binding Path=SearchValidity}" Value="true" />
+          </MultiDataTrigger.Conditions>
+          <MultiDataTrigger.Setters>
+            <Setter Property="BorderBrush" Value="Green" />
+            <Setter Property="BorderThickness" Value="3" />
+          </MultiDataTrigger.Setters>
+        </MultiDataTrigger>
+        <MultiDataTrigger>
+          <MultiDataTrigger.Conditions>
+            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsFocused}"
+                       Value="true" />
+            <Condition Binding="{Binding Path=SearchValidity}" Value="false" />
+          </MultiDataTrigger.Conditions>
+          <MultiDataTrigger.Setters>
+            <Setter Property="BorderBrush" Value="Red" />
+            <Setter Property="BorderThickness" Value="3" />
+          </MultiDataTrigger.Setters>
+        </MultiDataTrigger>
       </Style.Triggers>
     </Style>
-    <convert:ItemTemplateToModel x:Key="ItemTemplateToModel"/>
+    <convert:ItemTemplateToModel x:Key="ItemTemplateToModel" />
   </UserControl.Resources>
   <Grid Name="grid" Margin="6">
     <Grid.ColumnDefinitions>
-      <ColumnDefinition MinWidth="200"/>
+      <ColumnDefinition MinWidth="200" />
       <ColumnDefinition Width="Auto" />
     </Grid.ColumnDefinitions>
     <Grid Grid.Column="0">
       <Grid.RowDefinitions>
         <RowDefinition Height="24" />
-        <RowDefinition />
+        <RowDefinition MinHeight="200" />
       </Grid.RowDefinitions>
       <TextBox Style="{StaticResource ResourceKey=HintBox}" VerticalContentAlignment="Center" Grid.Row="0"
-               Name="searchTextBox" TextChanged="searchTextBox_TextChanged"></TextBox>
-            <ListBox Grid.Row="1" Height="300" Name="itemsList" VirtualizingStackPanel.IsVirtualizing="False"
-                 IsTextSearchEnabled="True" TextSearch.TextPath="searchTextBox.Text">
-            <ListBox.ItemTemplate>
+               Name="searchTextBox" TextChanged="OnSearchTextChanged" KeyDown="OnSearchBoxKeyDown"></TextBox>
+      <ListBox Grid.Row="1" Name="itemsList" VirtualizingStackPanel.IsVirtualizing="False">
+        <ListBox.ItemTemplate>
           <DataTemplate>
             <TextBlock>
               <TextBlock.Text>
@@ -104,7 +123,8 @@ Value="{x:Null}">
           <RowDefinition />
           <RowDefinition Height="32" />
         </Grid.RowDefinitions>
-                <QuickItemEditor:ItemViewer Item="{Binding Converter={StaticResource ItemTemplateToModel}, ElementName=itemsList, Path=SelectedItem}"></QuickItemEditor:ItemViewer>
+        <QuickItemEditor:ItemViewer
+Item="{Binding Converter={StaticResource ItemTemplateToModel}, ElementName=itemsList, Path=SelectedItem}"></QuickItemEditor:ItemViewer>
         <GridSplitter Grid.Column="1" Width="5" ResizeBehavior="PreviousAndCurrent" ResizeDirection="Columns" />
         <Button Grid.Row="1" Click="OnSaveButtonClicked" Margin="5">Save</Button>
       </Grid>
