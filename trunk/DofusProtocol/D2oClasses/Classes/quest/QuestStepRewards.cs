@@ -12,8 +12,6 @@ namespace Stump.DofusProtocol.D2oClasses
 		public uint stepId;
 		public int levelMin;
 		public int levelMax;
-		public uint experienceReward;
-		public uint kamasReward;
 		public List<List<uint>> itemsReward;
 		public List<uint> emotesReward;
 		public List<uint> jobsReward;

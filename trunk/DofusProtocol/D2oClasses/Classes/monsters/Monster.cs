@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.D2oClasses
 		public Boolean useBombSlot;
 		public Boolean canPlay;
 		public Boolean canTackle;
-		public List<MonsterAnimFunData> animFunList;
+		public List<AnimFunMonsterData> animFunList;
 		public Boolean isBoss;
 	}
 }

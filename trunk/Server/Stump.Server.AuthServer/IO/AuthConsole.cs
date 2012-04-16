@@ -1,12 +1,14 @@
 using System;
+using System.Collections.Generic;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
 using Stump.Server.AuthServer.Commands.Trigger;
 using Stump.Server.BaseServer;
+using Stump.Server.BaseServer.Commands;
 
 namespace Stump.Server.AuthServer.IO
 {
-    public class AuthConsole : ConsoleBase
+    public class AuthConsole : ConsoleBase, ICommandsUser
     {
         /// <summary>
         /// Prefix using for server's commands
@@ -67,6 +69,15 @@ namespace Stump.Server.AuthServer.IO
                 {
                     m_conditionWaiter.Start();
                 }
+            }
+        }
+
+        private List<KeyValuePair<string, Exception>> m_commandsError = new List<KeyValuePair<string, Exception>>();
+        public List<KeyValuePair<string, Exception>> CommandsErrors
+        {
+            get
+            {
+                return m_commandsError;
             }
         }
     }

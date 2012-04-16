@@ -273,7 +273,7 @@ namespace Stump.Tools.Proxy.Data
                                       {
                                           var item = new NpcItem
                                                          {
-                                                             Item = ItemManager.Instance.GetTemplate(objInfo.objectGID),
+                                                             Item = ItemManager.Instance.TryGetTemplate(objInfo.objectGID),
                                                              NpcShopId = (int) action.Id,
                                                              BuyCriterion = string.Empty,
                                                              CustomPrice = objInfo.objectPrice

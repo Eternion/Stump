@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
     }
 
     [Serializable]
-    public class EffectBase
+    public class EffectBase : ICloneable
     {
         [NonSerialized]
         protected EffectTemplate m_template;
@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             m_template = EffectManager.Instance.GetTemplate(id);
         }
 
-        public EffectBase(short id, int targetId, int duration, int delay, int random, int group, int modificator, bool trigger, bool hidden, uint zoneSize, uint zoneShape)
+        public EffectBase(short id, int targetId, int duration, int delay, int random, int group, int modificator, bool trigger, bool hidden, uint zoneSize, uint zoneShape, uint zoneMinSize)
         {
             Id = id;
             Targets = (SpellTargetType) targetId;
@@ -59,6 +59,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             Trigger = trigger;
             Hidden = hidden;
             m_zoneSize = zoneSize;
+            m_zoneMinSize = zoneMinSize;
             ZoneShape = (SpellShapeEnum) zoneShape;
         }
 
@@ -75,8 +76,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             Modificator = effect.modificator;
             Trigger = effect.trigger;
             Hidden = effect.hidden;
-            m_zoneSize = effect.zoneSize;
-            ZoneShape = (SpellShapeEnum) effect.zoneShape;
+            RawZone = effect.rawZone;
         }
 
         public short Id
@@ -159,6 +159,62 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             get;
             set;
+        }      
+        
+        private uint m_zoneMinSize;
+
+        public byte ZoneMinSize
+        {
+            get
+            {
+                return m_zoneMinSize >= 63 ? (byte)63 : (byte)m_zoneMinSize;
+            }
+            set
+            {
+                m_zoneMinSize = value;
+            }
+        }
+
+        private string m_rawZone;
+
+        public string RawZone
+        {
+            get { return m_rawZone; }
+            set
+            {
+                m_rawZone = value; ParseRawZone();
+            }
+        }
+
+        protected void ParseRawZone()
+        {
+            if (string.IsNullOrEmpty(RawZone))
+            {
+                ZoneShape = 0;
+                ZoneSize = 0;
+                ZoneMinSize = 0;
+                return;
+            }
+
+            var shape = (SpellShapeEnum) RawZone[0];
+            byte size = 0;
+            byte minSize = 0;
+
+            var commaIndex = RawZone.IndexOf(',');
+
+            if (commaIndex == -1 && RawZone.Length > 1)
+            {
+                size = byte.Parse(RawZone.Remove(0, 1));
+            }
+            else if (RawZone.Length > 1)
+            {
+                size = byte.Parse(RawZone.Substring(1, commaIndex - 1));
+                minSize = byte.Parse(RawZone.Remove(0, commaIndex + 1));
+            }
+
+            ZoneShape = shape;
+            ZoneSize = size;
+            ZoneMinSize = minSize;
         }
 
         public virtual object[] GetValues()
@@ -215,8 +271,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 writer.Write(Modificator);
                 writer.Write(Trigger);
                 writer.Write(Hidden);
-                writer.Write((uint) ZoneSize);
-                writer.Write((uint) ZoneShape);
+                writer.Write(RawZone);
             }
         }
 
@@ -250,8 +305,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 Modificator = reader.ReadInt32();
                 Trigger = reader.ReadBoolean();
                 Hidden = reader.ReadBoolean();
-                m_zoneSize = reader.ReadUInt32();
-                ZoneShape = (SpellShapeEnum) reader.ReadUInt32();
+                RawZone = reader.ReadString();
             }
         }
 
@@ -283,6 +337,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public override int GetHashCode()
         {
             return Id.GetHashCode();
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
     }
 }

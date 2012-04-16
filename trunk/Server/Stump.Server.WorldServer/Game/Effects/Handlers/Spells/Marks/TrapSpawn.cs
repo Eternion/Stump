@@ -18,14 +18,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             var trapSpell = new Spell(Dice.DiceNum, (sbyte)Dice.DiceFace);
 
             if (trapSpell.Template == null || !trapSpell.ByLevel.ContainsKey(Dice.DiceFace))
             {
                 logger.Error("Cannot find trap spell id = {0}, level = {1}. Casted Spell = {2}", Dice.DiceNum, Dice.DiceFace, Spell.Id);
-                return;
+                return false;
             }
 
             // todo : find usage of Dice.Value
@@ -34,6 +34,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
                 new Trap((short)Fight.PopNextTriggerId(), Caster, Spell, Dice, trapSpell, TargetedCell, Effect.ZoneSize);
 
             Fight.AddTriger(trap);
+            return true;
         }
 
         public override bool RequireSilentCast()

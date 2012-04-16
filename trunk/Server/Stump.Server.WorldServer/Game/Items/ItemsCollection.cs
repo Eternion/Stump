@@ -1,32 +1,63 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
-    public class ItemsCollection
+    public class ItemsCollection<T> : IEnumerable<T> where T : IItem
     {
         #region Events
 
         #region Delegates
 
-        public delegate void ItemAddedEventHandler(ItemsCollection sender, Item item);
+        public delegate void ItemAddedEventHandler(ItemsCollection<T> sender, T item);
 
-        public delegate void ItemRemovedEventHandler(ItemsCollection sender, Item item);
+        public delegate void ItemRemovedEventHandler(ItemsCollection<T> sender, T item);
 
-        public delegate void ItemStackChangedEventHandler(ItemsCollection sender, Item item, int difference);
+        public delegate void ItemStackChangedEventHandler(ItemsCollection<T> sender, T item, int difference);
 
         #endregion
 
-        protected readonly object m_locker = new object();
-        protected Dictionary<int, Item> m_items = new Dictionary<int, Item>();
+        protected ItemsCollection()
+        {
+            Locker = new object();
+            Items = new Dictionary<int, T>();
+            ItemsToDelete = new Queue<T>();
+        }
+
+        protected object Locker
+        {
+            get;
+            set;
+        }
+
+        protected Dictionary<int, T> Items
+        {
+            get;
+            set;
+        }
+
+        protected Queue<T> ItemsToDelete
+        {
+            get;
+            set;
+        }
+
+        public int Count
+        {
+            get { return Items.Count; }
+        }
 
         public event ItemAddedEventHandler ItemAdded;
 
-        public void NotifyItemAdded(Item item)
+        public void NotifyItemAdded(T item)
         {
             OnItemAdded(item);
 
@@ -35,13 +66,13 @@ namespace Stump.Server.WorldServer.Game.Items
                 handler(this, item);
         }
 
-        protected virtual void OnItemAdded(Item item)
+        protected virtual void OnItemAdded(T item)
         {
         }
 
         public event ItemRemovedEventHandler ItemRemoved;
 
-        public void NotifyItemRemoved(Item item)
+        public void NotifyItemRemoved(T item)
         {
             OnItemRemoved(item);
 
@@ -50,13 +81,13 @@ namespace Stump.Server.WorldServer.Game.Items
                 handler(this, item);
         }
 
-        protected virtual void OnItemRemoved(Item itemd)
+        protected virtual void OnItemRemoved(T item)
         {
         }
 
         public event ItemStackChangedEventHandler ItemStackChanged;
 
-        public void NotifyItemStackChanged(Item item, int difference)
+        public void NotifyItemStackChanged(T item, int difference)
         {
             OnItemStackChanged(item, difference);
 
@@ -65,24 +96,24 @@ namespace Stump.Server.WorldServer.Game.Items
                 handler(this, item, difference);
         }
 
-        protected virtual void OnItemStackChanged(Item item, int difference)
+        protected virtual void OnItemStackChanged(T item, int difference)
         {
         }
 
         #endregion
 
-        public virtual Item AddItem(int itemId, uint amount)
+        /*public virtual T AddItem(int itemId, uint amount)
         {
-            ItemTemplate itemTemplate = ItemManager.Instance.GetTemplate(itemId);
+            ItemTemplate itemTemplate = ItemManager.Instance.TryGetTemplate(itemId);
 
             return itemTemplate != null ? AddItem(itemTemplate, amount) : null;
         }
 
-        public virtual Item AddItem(ItemTemplate template, uint amount, bool maxEffect = false)
+        public virtual T AddItem(ItemTemplate template, uint amount, bool maxEffect = false)
         {
             List<EffectBase> effects = ItemManager.Instance.GenerateItemEffects(template, maxEffect);
 
-            Item stackableWith;
+            PlayerItem stackableWith;
             if (IsStackable(template, effects, out stackableWith))
             {
                 StackItem(stackableWith, amount);
@@ -90,7 +121,7 @@ namespace Stump.Server.WorldServer.Game.Items
                 return stackableWith;
             }
 
-            Item item = ItemManager.Instance.Create(template, amount, effects);
+            PlayerItem item = ItemManager.Instance.CreatePlayerItem(template, amount, effects);
 
             lock (m_locker)
                 m_items.Add(item.Guid, item);
@@ -98,169 +129,205 @@ namespace Stump.Server.WorldServer.Game.Items
             NotifyItemAdded(item);
 
             return item;
-        }
+        }*/
 
-        public virtual Item AddItem(Item item)
+        /// <summary>
+        /// Add an item to the collection
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public virtual T AddItem(T item)
         {
-            Item stackableWith;
-            if (IsStackable(item.Template, item.Effects, out stackableWith))
+            if (HasItem(item))
+                throw new Exception("Cannot add an item that is already in the collection");
+
+            lock (Locker)
             {
-                StackItem(stackableWith, (uint) item.Stack);
+                T stackableWith;
+                if (IsStackable(item, out stackableWith))
+                {
+                    StackItem(stackableWith, item.Stack);
+                    DeleteItem(item);
 
-                if (HasItem(item.Guid))
-                    RemoveItem(item);
+                    return stackableWith;
+                }
 
-                return stackableWith;
+                Items.Add(item.Guid, item);
+
+                NotifyItemAdded(item);
             }
-
-            m_items.Add(item.Guid, item);
-
-            NotifyItemAdded(item);
 
             return item;
         }
 
-        public virtual Item AddItemCopy(Item item, uint amount)
-        {
-            Item stack;
-            if (IsStackable(item.Template, item.Effects, out stack) && stack != null)
-                // if there is same item in inventory we stack it
-            {
-                StackItem(stack, amount);
-                return stack;
-            }
-
-            Item newitem = ItemManager.Instance.RegisterAnItemCopy(item, amount);
-
-            if (m_items.ContainsKey(newitem.Guid))
-            {
-                RemoveItem(newitem);
-                return null;
-            }
-
-            m_items.Add(newitem.Guid, newitem);
-
-
-            NotifyItemAdded(newitem);
-
-            return newitem;
-        }
-
-        public virtual void RemoveItem(Item item, uint amount)
+        /// <summary>
+        /// Remove an item from the collection
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="amount"></param>
+        /// <param name="delete"></param>
+        public virtual void RemoveItem(T item, uint amount, bool delete = true)
         {
             if (!HasItem(item))
-                return;
+                throw new Exception("Cannot remove an item that is not in the collection");
 
             if (item.Stack <= amount)
+                RemoveItem(item, delete);
+            else
+            {
+                UnStackItem(item, (int) amount);
+            }
+        }
+
+        /// <summary>
+        /// Remove an item from the collection
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="delete"></param>
+        public virtual void RemoveItem(T item, bool delete = true)
+        {
+            if (!HasItem(item))
+                throw new Exception("Cannot remove an item that is not in the collection");
+
+            lock (Locker)
+            {
+                Items.Remove(item.Guid);
+
+                if (delete)
+                    DeleteItem(item);
+
+                NotifyItemRemoved(item);
+            }
+        }
+
+
+        /// <summary>
+        /// Delete an item persistently.
+        /// </summary>
+        protected virtual void DeleteItem(T item)
+        {
+            ItemsToDelete.Enqueue(item);
+        }
+    
+        /// <summary>
+        /// Increase the stack of an item
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="amount"></param>
+        public virtual void StackItem(T item, int amount)
+        {
+            if (amount < 0)
+                UnStackItem(item, -amount);
+            else
+            {
+                item.Stack += amount;
+
+                NotifyItemStackChanged(item, amount);
+            }
+        }
+
+        /// <summary>
+        /// Decrease the stack of an item
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="amount"></param>
+        public virtual void UnStackItem(T item, int amount)
+        {
+            if (item.Stack - amount <= 0)
                 RemoveItem(item);
             else
             {
-                UnStackItem(item, amount);
+                item.Stack -= amount;
+
+                NotifyItemStackChanged(item, -amount);
             }
         }
-
-        public virtual void RemoveItem(Item item)
-        {
-            if (!HasItem(item))
-                return;
-
-            m_items.Remove(item.Guid);
-
-            NotifyItemRemoved(item);
-        }
-
-        public virtual void StackItem(Item item, uint amount)
-        {
-            item.StackItem(amount);
-
-            NotifyItemStackChanged(item, (int) (item.Stack - amount));
-        }
-
-        public virtual void UnStackItem(Item item, uint amount)
-        {
-            item.UnStackItem(amount);
-
-            NotifyItemStackChanged(item, (int) (item.Stack - amount));
-        }
-
-        public virtual Item CutItem(Item item, uint amount)
+        /*
+        /// <summary>
+        /// Cut an item into two parts
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="amount"></param>
+        /// <returns></returns>
+        public T CutItem(T item, uint amount)
         {
             if (amount >= item.Stack)
                 return item;
 
-            UnStackItem(item, amount);
+            UnStackItem(item, (int) amount);
 
-            Item newitem = ItemManager.Instance.RegisterAnItemCopy(item, amount);
+            var newitem = ItemManager.Instance.RegisterAnItemCopy(item, amount);
 
-            m_items.Add(newitem.Guid, newitem);
+            Items.Add(newitem.Guid, newitem);
 
             NotifyItemAdded(newitem);
 
             return newitem;
+        }*/
+
+        public virtual void Save()
+        {
+            lock (Locker)
+            {
+                foreach (var item in Items)
+                {
+                    item.Value.Record.Save();
+                }
+
+                while (ItemsToDelete.Count > 0)
+                {
+                    var item = ItemsToDelete.Dequeue();
+
+                    item.Record.Delete();
+                }
+            }
         }
 
-        public virtual bool IsStackable(ItemTemplate template, List<EffectBase> effects, out Item stackableWith)
+        public virtual bool IsStackable(T item, out T stackableWith)
         {
-            Item stack;
-            if (( stack = TryGetItem(template, effects, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED) ) !=
-                null)
+            T stack;
+            if (( stack = TryGetItem(item.Template, item.Effects) ) != null)
             {
                 stackableWith = stack;
                 return true;
             }
 
-            stackableWith = null;
+            stackableWith = default(T);
             return false;
         }
 
-        public virtual bool HasItem(int guid)
+        public bool HasItem(int guid)
         {
-            return m_items.ContainsKey(guid);
+            return Items.ContainsKey(guid);
         }
 
-        public virtual bool HasItem(Item item)
+        public bool HasItem(T item)
         {
             return HasItem(item.Guid);
         }
 
-        public virtual Item TryGetItem(int guid)
+        public T TryGetItem(int guid)
         {
-            return !m_items.ContainsKey(guid) ? null : m_items[guid];
+            return !Items.ContainsKey(guid) ? default(T) : Items[guid];
         }
 
-        public virtual Item TryGetItem(int templateId, List<EffectBase> effects, CharacterInventoryPositionEnum position)
-        {
-            IEnumerable<Item> entries = from entry in m_items.Values
-                                        where entry.ItemId == templateId && entry.Position == position && effects.CompareEnumerable(entry.Effects)
+        public T TryGetItem(ItemTemplate template, IEnumerable<EffectBase> effects)
+        {   
+            IEnumerable<T> entries = from entry in Items.Values
+                                        where entry.Template.Id == template.Id && effects.CompareEnumerable(entry.Effects)
                                         select entry;
 
             return entries.FirstOrDefault();
         }
 
-        public virtual Item TryGetItem(ItemTemplate template, List<EffectBase> effects, CharacterInventoryPositionEnum position)
+        public IEnumerator<T> GetEnumerator()
         {
-            IEnumerable<Item> entries = from entry in m_items.Values
-                                        where entry.ItemId == template.Id && entry.Position == position && effects.CompareEnumerable(entry.Effects)
-                                        select entry;
-
-            return entries.FirstOrDefault();
+            return Items.Values.GetEnumerator();
         }
 
-        public virtual Item TryGetItem(CharacterInventoryPositionEnum position)
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return m_items.Values.Where(entry => entry.Position == position).FirstOrDefault();
-        }
-
-        public virtual IEnumerable<Item> GetItems(CharacterInventoryPositionEnum position)
-        {
-            return m_items.Values.Where(entry => entry.Position == position);
-        }
-
-        public IEnumerable<Item> GetEquipedItems()
-        {
-            return from entry in m_items
-                   where entry.Value.IsEquiped()
-                   select entry.Value;
+            return GetEnumerator();
         }
     }
 }

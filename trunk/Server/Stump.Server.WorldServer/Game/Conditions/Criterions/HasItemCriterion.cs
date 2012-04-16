@@ -17,10 +17,10 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
         public override bool Eval(Character character)
         {
             if (Operator == ComparaisonOperatorEnum.EQUALS)
-                return character.Inventory.Items.Any(entry => entry.ItemId == Item);
+                return character.Inventory.Any(entry => entry.Template.Id == Item);
 
              if (Operator == ComparaisonOperatorEnum.INEQUALS)
-                return !character.Inventory.Items.Any(entry => entry.ItemId == Item);
+                return !character.Inventory.Any(entry => entry.Template.Id == Item);
 
             return true;
         }

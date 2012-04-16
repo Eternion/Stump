@@ -14,24 +14,26 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             foreach (var actor in GetAffectedActors())
             {
                 var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
 
                 if (integerEffect == null)
-                    return;
+                    return false;
 
                 var boostedSpell = actor.GetSpell(Dice.DiceNum);
 
                 if (boostedSpell == null)
-                    return;
+                    return false;
 
                 var buff = new SpellBuff(actor.PopNextBuffId(), actor, Caster, Dice, Spell, boostedSpell, Dice.Value, false, true);
 
                 actor.AddAndApplyBuff(buff);
             }
+
+            return true;
         }
     }
 }

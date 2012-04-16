@@ -57,7 +57,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             client.Send(
                 new InventoryContentMessage(
-                    client.Character.Inventory.Items.Select(entry => entry.GetObjectItem()),
+                    client.Character.Inventory.Select(entry => entry.GetObjectItem()),
                     client.Character.Inventory.Kamas));
         }
 
@@ -72,12 +72,12 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ExchangeKamaModifiedMessage(remote, kamasAmount));
         }
 
-        public static void SendObjectAddedMessage(IPacketReceiver client, Item addedItem)
+        public static void SendObjectAddedMessage(IPacketReceiver client, PlayerItem addedItem)
         {
             client.Send(new ObjectAddedMessage(addedItem.GetObjectItem()));
         }
 
-        public static void SendObjectsAddedMessage(IPacketReceiver client, IEnumerable<Item> addeditems)
+        public static void SendObjectsAddedMessage(IPacketReceiver client, IEnumerable<PlayerItem> addeditems)
         {
             client.Send(new ObjectsAddedMessage(addeditems.Select(entry => entry.GetObjectItem())));
         }
@@ -92,17 +92,17 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ObjectsDeletedMessage(guids.Select(entry => entry).ToList()));
         }
 
-        public static void SendObjectModifiedMessage(IPacketReceiver client, Item item)
+        public static void SendObjectModifiedMessage(IPacketReceiver client, PlayerItem item)
         {
             client.Send(new ObjectModifiedMessage(item.GetObjectItem()));
         }
 
-        public static void SendObjectMovementMessage(IPacketReceiver client, Item movedItem)
+        public static void SendObjectMovementMessage(IPacketReceiver client, PlayerItem movedItem)
         {
             client.Send(new ObjectMovementMessage(movedItem.Guid, (byte) movedItem.Position));
         }
 
-        public static void SendObjectQuantityMessage(IPacketReceiver client, Item modifieditem)
+        public static void SendObjectQuantityMessage(IPacketReceiver client, PlayerItem modifieditem)
         {
             client.Send(new ObjectQuantityMessage(modifieditem.Guid, modifieditem.Stack));
         }
@@ -115,7 +115,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendSetUpdateMessage(WorldClient client, ItemSetTemplate itemSet)
         {
             client.Send(new SetUpdateMessage((short) itemSet.Id,
-                client.Character.Inventory.GetItemSetEquipped(itemSet).Select(entry => entry.ItemId),
+                client.Character.Inventory.GetItemSetEquipped(itemSet).Select(entry => (short)entry.Template.Id),
                 client.Character.Inventory.GetItemSetEffects(itemSet).Select(entry => entry.GetObjectEffect())));
         }
     }

@@ -182,11 +182,13 @@
   <ItemGroup>
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\Commands\ConfigCommand.cs" />
+    <Compile Include="Commands\Commands\DebugCommand.cs" />
     <Compile Include="Commands\Commands\HelpCommand.cs" />
     <Compile Include="Commands\Commands\InfoCommand.cs" />
     <Compile Include="Commands\Commands\ListCommand.cs" />
     <Compile Include="Commands\Commands\PluginsCommand.cs" />
     <Compile Include="Commands\Commands\ShutdownCommand.cs" />
+    <Compile Include="Commands\ICommandsUser.cs" />
     <Compile Include="Commands\Parameter.cs" />
     <Compile Include="Commands\IParameter.cs" />
     <Compile Include="Commands\ParameterDefinition.cs" />
@@ -207,6 +209,7 @@
     <Compile Include="Database\Interfaces\IVersionRecord.cs" />
     <Compile Include="Database\Patchs\PatchFile.cs" />
     <Compile Include="Definitions.cs" />
+    <Compile Include="Exceptions\ExceptionManager.cs" />
     <Compile Include="Handler\IHandlerContainer.cs" />
     <Compile Include="I18n\Languages.cs" />
     <Compile Include="Initialization\InitializationAttribute.cs" />

@@ -55,8 +55,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
         public void Deny()
         {
-            InventoryHandler.SendExchangeLeaveMessage(Source.Client, false);
-            InventoryHandler.SendExchangeLeaveMessage(Target.Client, false);
+            InventoryHandler.SendExchangeLeaveMessage(Source.Client, ExchangeTypeEnum.PLAYER_TRADE, false);
+            InventoryHandler.SendExchangeLeaveMessage(Target.Client, ExchangeTypeEnum.PLAYER_TRADE, false);
 
             Close();
         }

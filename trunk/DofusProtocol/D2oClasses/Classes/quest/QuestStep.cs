@@ -14,6 +14,10 @@ namespace Stump.DofusProtocol.D2oClasses
 		public uint descriptionId;
 		public int dialogId;
 		public uint optimalLevel;
+		public float duration;
+		public Boolean kamasScaleWithPlayerLevel;
+		public float kamasRatio;
+		public float xpRatio;
 		public List<uint> objectiveIds;
 		public List<uint> rewardsIds;
 	}

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
+using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.Core.Threading;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
@@ -19,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             Big = 2
         }
 
-        protected static Dictionary<GroupSize, Tuple<int, int>> GroupSizes = new Dictionary<GroupSize, Tuple<int, int>>()
+        protected Dictionary<GroupSize, Tuple<int, int>> GroupSizes = new Dictionary<GroupSize, Tuple<int, int>>()
         {
             {GroupSize.Small, Tuple.Create(1, 2)},
             {GroupSize.Medium, Tuple.Create(3, 5)},
@@ -93,7 +94,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             {
                 if (m_groupsToSpawn.Count == 0)
                 {
-                    logger.Error("SpawningPool Map = {0} try to spawn a monser but m_groupsToSpawn is empty", Map.Id);
                     return null;
                 }
 

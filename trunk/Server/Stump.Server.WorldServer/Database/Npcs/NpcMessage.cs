@@ -37,7 +37,11 @@ namespace Stump.Server.WorldServer.Database.Npcs
             set
             {
                 m_parametersAsString = value;
-                m_parameters = value.Split('|');
+
+                if (!string.IsNullOrEmpty(m_parametersAsString))
+                    m_parameters = value.Split('|');
+                else
+                    m_parameters = new List<string>();
             }
         }
 
@@ -56,7 +60,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
         {
             get
             {
-                return m_replies ?? ( m_replies = NpcManager.Instance.GetMessageReplies(MessageId) );
+                return m_replies ?? ( m_replies = NpcManager.Instance.GetMessageReplies(Id) );
             }
         }
     }

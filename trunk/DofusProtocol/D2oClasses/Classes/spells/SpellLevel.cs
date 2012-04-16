@@ -32,6 +32,7 @@ namespace Stump.DofusProtocol.D2oClasses
 		public uint minPlayerLevel;
 		public Boolean criticalFailureEndsTurn;
 		public Boolean hideEffects;
+		public Boolean hidden;
 		public List<int> statesRequired;
 		public List<int> statesForbidden;
 		public List<EffectInstanceDice> effects;

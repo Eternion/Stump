@@ -4,8 +4,8 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Shortcuts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Shortcuts;
-using Item = Stump.Server.WorldServer.Game.Items.Item;
 using Shortcut = Stump.Server.WorldServer.Database.Shortcuts.Shortcut;
 
 namespace Stump.Server.WorldServer.Game.Shortcuts
@@ -33,12 +33,12 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
             m_shortcuts.AddRange(Shortcut.FindByOwnerId(Owner.Id));
         }
 
-        public void AddShortcut(sbyte barType, DofusProtocol.Types.Shortcut shortcut)
+        public void AddShortcut(ShortcutBarEnum barType, DofusProtocol.Types.Shortcut shortcut)
         {
             // do not ask me why i use a sbyte, they are fucking idiots
-            if (shortcut is ShortcutSpell && barType == 2)
+            if (shortcut is ShortcutSpell && barType == ShortcutBarEnum.SPELL_SHORTCUT_BAR)
                 AddSpellShortcut(shortcut.slot, (shortcut as ShortcutSpell).spellId);
-            else if (shortcut is ShortcutObjectItem && barType == 0)
+            else if (shortcut is ShortcutObjectItem && barType == ShortcutBarEnum.GENERAL_SHORTCUT_BAR)
                 AddItemShortcut(shortcut.slot, Owner.Inventory.TryGetItem((shortcut as ShortcutObjectItem).itemUID));
             else
             {
@@ -49,23 +49,23 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
         public void AddSpellShortcut(int slot, short spellId)
         {
             if (!IsSlotFree(slot))
-                RemoveShortcut(ShortcutBarEnum.SPELL, slot);
+                RemoveShortcut(ShortcutBarEnum.SPELL_SHORTCUT_BAR, slot);
 
             var shortcut = new SpellShortcut(Owner.Record, slot, spellId);
 
             m_shortcuts.Add(shortcut);
-            ShortcutHandler.SendShortcutBarRefreshMessage(Owner.Client, ShortcutBarEnum.SPELL, shortcut);
+            ShortcutHandler.SendShortcutBarRefreshMessage(Owner.Client, ShortcutBarEnum.SPELL_SHORTCUT_BAR, shortcut);
         }
 
-        public void AddItemShortcut(int slot, Item item)
+        public void AddItemShortcut(int slot, PlayerItem item)
         {
             if (!IsSlotFree(slot))
-                RemoveShortcut(ShortcutBarEnum.OBJECT, slot);
+                RemoveShortcut(ShortcutBarEnum.GENERAL_SHORTCUT_BAR, slot);
 
             var shortcut = new ItemShortcut(Owner.Record, slot, item.Template.Id, item.Guid);
 
             m_shortcuts.Add(shortcut);
-            ShortcutHandler.SendShortcutBarRefreshMessage(Owner.Client, ShortcutBarEnum.OBJECT, shortcut);
+            ShortcutHandler.SendShortcutBarRefreshMessage(Owner.Client, ShortcutBarEnum.GENERAL_SHORTCUT_BAR, shortcut);
         }
 
         public void SwapShortcuts(ShortcutBarEnum barType, int slot, int newSlot)
@@ -112,9 +112,9 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
         {
             switch (barType)
             {
-                case ShortcutBarEnum.SPELL:
+                case ShortcutBarEnum.SPELL_SHORTCUT_BAR:
                     return GetSpellShortcut(slot);
-                case ShortcutBarEnum.OBJECT:
+                case ShortcutBarEnum.GENERAL_SHORTCUT_BAR:
                     return GetItemShortcut(slot);
                 default:
                     return null;
@@ -125,9 +125,9 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
         {
             switch (barType)
             {
-                case ShortcutBarEnum.SPELL:
+                case ShortcutBarEnum.SPELL_SHORTCUT_BAR:
                     return m_shortcuts.Where(entry => entry is SpellShortcut);
-                case ShortcutBarEnum.OBJECT:
+                case ShortcutBarEnum.GENERAL_SHORTCUT_BAR:
                     return m_shortcuts.Where(entry => entry is ItemShortcut);
                 default:
                     return new Shortcut[0];

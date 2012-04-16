@@ -113,5 +113,13 @@ namespace Stump.Server.WorldServer.Database.Effects
             get;
             set;
         }
+
+        [Property]
+        [D2OField("useInFight")]
+        public bool UseInFight
+        {
+            get;
+            set;
+        }
     }
 }

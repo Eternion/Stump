@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using Stump.Core.Threading;
@@ -152,16 +153,26 @@ namespace Stump.Server.WorldServer.Game.Maps
         public void AddMonsterSpawn(MonsterSpawn spawn)
         {
             m_monsterSpawns.Add(spawn);
+
+            foreach (var map in Maps)
+            {
+                map.AddMonsterSpawn(spawn);
+            }
         }
 
         public void RemoveMonsterSpawn(MonsterSpawn spawn)
         {
             m_monsterSpawns.Remove(spawn);
+
+            foreach (var map in Maps)
+            {
+                map.RemoveMonsterSpawn(spawn);
+            }
         }
 
-        public IEnumerable<MonsterSpawn> GetMonsterSpawns()
+        public ReadOnlyCollection<MonsterSpawn> MonsterSpawns
         {
-            return m_monsterSpawns.Concat(Area.GetMonsterSpawns());
+            get { return m_monsterSpawns.AsReadOnly(); }
         }
 
         public int RollMonsterLengthLimit(int imposedLimit = 8)

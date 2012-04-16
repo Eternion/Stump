@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Stump.Core.Attributes;
 using Stump.Server.BaseServer;
@@ -7,7 +8,7 @@ using Stump.Server.WorldServer.Commands.Trigger;
 
 namespace Stump.Server.WorldServer.Core.IO
 {
-    public class WorldConsole : ConsoleBase
+    public class WorldConsole : ConsoleBase, ICommandsUser
     {
         /// <summary>
         /// Prefix used for server's commands
@@ -72,6 +73,15 @@ namespace Stump.Server.WorldServer.Core.IO
                 {
                     m_conditionWaiter.Start();
                 }
+            }
+        }
+
+        private List<KeyValuePair<string, Exception>> m_commandsError = new List<KeyValuePair<string, Exception>>();
+        public List<KeyValuePair<string, Exception>> CommandsErrors
+        {
+            get
+            {
+                return m_commandsError;
             }
         }
     }

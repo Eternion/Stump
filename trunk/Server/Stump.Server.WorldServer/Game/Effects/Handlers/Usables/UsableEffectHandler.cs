@@ -6,7 +6,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
 {
     public abstract class UsableEffectHandler : EffectHandler
     {
-        protected UsableEffectHandler(EffectBase effect, Character target, Item item)
+        protected UsableEffectHandler(EffectBase effect, Character target, PlayerItem item)
             : base (effect)
         {
             Target = target;
@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             protected set;
         }
 
-        public Item Item
+        public PlayerItem Item
         {
             get;
             protected set;

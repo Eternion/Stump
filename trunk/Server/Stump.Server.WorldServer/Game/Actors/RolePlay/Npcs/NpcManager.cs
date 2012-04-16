@@ -78,7 +78,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             return m_npcsActions.Where(entry => entry.Value.NpcId == id).Select(entry => entry.Value).ToList();
         }
 
-        public List<NpcReply> GetMessageReplies(uint id)
+        public List<NpcReply> GetMessageReplies(int id)
         {
             return m_npcsReplies.Where(entry => entry.Value.MessageId == id).Select(entry => entry.Value).ToList();
         }

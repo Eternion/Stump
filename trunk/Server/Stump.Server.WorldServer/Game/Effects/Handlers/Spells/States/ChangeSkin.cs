@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             foreach (FightActor actor in GetAffectedActors())
             {
@@ -27,6 +27,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                 var buff = new SkinBuff(actor.PopNextBuffId(), actor, Caster, Dice, look, Spell, true);
                 actor.AddAndApplyBuff(buff);
             }
+
+            return true;
         }
     }
 }

@@ -1,11 +1,12 @@
 using System;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
+using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
-    public class KickCommand : CommandBase
+    public class KickCommand : TargetCommand
     {
         public KickCommand()
         {
@@ -13,19 +14,12 @@ namespace Stump.Server.WorldServer.Commands.Commands
             RequiredRole = RoleEnum.Administrator;
             Description = "Kick a player";
 
-            AddParameter("target", "t", "Player to ban", converter: ParametersConverter.CharacterConverter);
+            AddTargetParameter();
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            var target = trigger.Get<Character>("target");
-
-            if (target == null)
-            {
-                trigger.ReplyError("Invalid target");
-                return;
-            }
-
+            var target = GetTarget(trigger);
             target.Client.Disconnect();
         }
     }

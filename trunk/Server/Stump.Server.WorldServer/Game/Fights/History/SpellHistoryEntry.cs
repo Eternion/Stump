@@ -7,12 +7,12 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 {
     public class SpellHistoryEntry
     {
-        public SpellHistoryEntry(SpellHistory history, SpellLevelTemplate spell, FightActor caster, Cell targetedCell, int castRound)
+        public SpellHistoryEntry(SpellHistory history, SpellLevelTemplate spell, FightActor caster, FightActor target, int castRound)
         {
             History = history;
             Spell = spell;
             Caster = caster;
-            TargetedCell = targetedCell;
+            Target = target;
             CastRound = castRound;
         }
 
@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
             private set;
         }
 
-        public Cell TargetedCell
+        public FightActor Target
         {
             get;
             private set;

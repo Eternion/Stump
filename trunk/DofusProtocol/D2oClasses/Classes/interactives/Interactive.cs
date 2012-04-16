@@ -10,5 +10,6 @@ namespace Stump.DofusProtocol.D2oClasses
 		public int id;
 		public uint nameId;
 		public int actionId;
+		public Boolean displayTooltip;
 	}
 }

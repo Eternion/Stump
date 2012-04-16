@@ -149,6 +149,7 @@
     <Compile Include="Classes\alignments\AlignmentSide.cs" />
     <Compile Include="Classes\alignments\AlignmentTitle.cs" />
     <Compile Include="Classes\ambientSounds\AmbientSound.cs" />
+    <Compile Include="Classes\AnimFunData.cs" />
     <Compile Include="Classes\breeds\Breed.cs" />
     <Compile Include="Classes\challenges\Challenge.cs" />
     <Compile Include="Classes\communication\CensoredWord.cs" />
@@ -230,9 +231,10 @@
     <Compile Include="Classes\misc\Pack.cs" />
     <Compile Include="Classes\misc\Tips.cs" />
     <Compile Include="Classes\misc\Title.cs" />
+    <Compile Include="Classes\misc\TypeAction.cs" />
     <Compile Include="Classes\misc\Url.cs" />
+    <Compile Include="Classes\monsters\AnimFunMonsterData.cs" />
     <Compile Include="Classes\monsters\Monster.cs" />
-    <Compile Include="Classes\monsters\MonsterAnimFunData.cs" />
     <Compile Include="Classes\monsters\MonsterGrade.cs" />
     <Compile Include="Classes\monsters\MonsterMiniBoss.cs" />
     <Compile Include="Classes\monsters\MonsterRace.cs" />
@@ -241,6 +243,7 @@
     <Compile Include="Classes\mounts\MountBehavior.cs" />
     <Compile Include="Classes\mounts\RideFood.cs" />
     <Compile Include="Classes\notifications\Notification.cs" />
+    <Compile Include="Classes\npcs\AnimFunNpcData.cs" />
     <Compile Include="Classes\npcs\Npc.cs" />
     <Compile Include="Classes\npcs\NpcAction.cs" />
     <Compile Include="Classes\npcs\NpcMessage.cs" />
@@ -275,6 +278,7 @@
     <Compile Include="Classes\world\Area.cs" />
     <Compile Include="Classes\world\Dungeon.cs" />
     <Compile Include="Classes\world\Hint.cs" />
+    <Compile Include="Classes\world\HintCategory.cs" />
     <Compile Include="Classes\world\MapCoordinates.cs" />
     <Compile Include="Classes\world\MapPosition.cs" />
     <Compile Include="Classes\world\MapReference.cs" />

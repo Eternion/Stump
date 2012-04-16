@@ -11,6 +11,7 @@ namespace Stump.DofusProtocol.D2oClasses
 		public uint id;
 		public uint nameId;
 		public uint shortcutId;
+		public uint order;
 		public String defaultAnim;
 		public Boolean persistancy;
 		public Boolean eight_directions;

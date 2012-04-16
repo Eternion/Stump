@@ -10,6 +10,7 @@ namespace Stump.DofusProtocol.D2oClasses
 		private const String MODULE = "ServerCommunities";
 		public int id;
 		public uint nameId;
+		public String shortId;
 		public List<String> defaultCountries;
 	}
 }

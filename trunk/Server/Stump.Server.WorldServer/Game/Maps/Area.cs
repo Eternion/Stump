@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -461,6 +462,12 @@ namespace Stump.Server.WorldServer.Game.Maps
         public void SpawnMaps()
         {
             EnsureContext();
+
+            foreach (var map in Maps)
+            {
+                if (!map.SpawnEnabled && map.MonsterSpawnsCount > 0)
+                    map.EnableClassicalMonsterSpawns();
+            }
         }
 
         public void CallOnAllCharacters(Action<Character> action)
@@ -532,16 +539,29 @@ namespace Stump.Server.WorldServer.Game.Maps
         public void AddMonsterSpawn(MonsterSpawn spawn)
         {
             m_monsterSpawns.Add(spawn);
+
+            foreach (var subArea in SubAreas)
+            {
+                subArea.AddMonsterSpawn(spawn);
+            }
         }
 
         public void RemoveMonsterSpawn(MonsterSpawn spawn)
         {
             m_monsterSpawns.Remove(spawn);
+
+            foreach (var subArea in SubAreas)
+            {
+                subArea.RemoveMonsterSpawn(spawn);
+            }
         }
 
-        public IEnumerable<MonsterSpawn> GetMonsterSpawns()
+        public ReadOnlyCollection<MonsterSpawn> MonsterSpawns
         {
-            return m_monsterSpawns.Concat(SuperArea.GetMonsterSpawns());
+            get
+            {
+                return m_monsterSpawns.AsReadOnly();
+            }
         }
 
         public void EnsureNoContext()

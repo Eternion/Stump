@@ -16,20 +16,22 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
 
             if (integerEffect == null)
-                return;
+                return false;
 
             foreach (FightActor actor in GetAffectedActors())
             {
                 if (Effect.Duration <= 0)
-                    return;
+                    return false;
 
                 AddTriggerBuff(actor, true, BuffTriggerType.BUFF_ADDED, ApplyArmorBuff, RemoveArmorBuff);
             }
+
+            return true;
         }
 
         public static void ApplyArmorBuff(TriggerBuff buff, BuffTriggerType trigger, object token)

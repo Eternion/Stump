@@ -25,7 +25,7 @@ namespace Stump.Plugins.DefaultPlugin.Global
 
             foreach (var map in area.Maps)
             {
-                map.RemoveAllSpawningPools();
+                map.ClearSpawningPools();
 
                 map.AddSpawningPool(new IncarnamSpawningPool(map, map.SubArea.GetMonsterSpawnInterval()));
             }

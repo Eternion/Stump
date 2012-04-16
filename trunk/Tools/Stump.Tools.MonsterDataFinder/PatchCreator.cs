@@ -95,7 +95,7 @@ namespace Stump.Tools.MonsterDataFinder
 
             Console.WriteLine("Parse ... {0}", id);
 
-            var spells = new List<int>();
+            var spells = new List<SpellTemplate>();
 
             foreach (string spellName in monsterData.spells.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries))
             {
@@ -107,19 +107,19 @@ namespace Stump.Tools.MonsterDataFinder
                     continue;
                 }
 
-                spells.Add(spell.Id);
+                spells.Add(spell);
             }
 
             if (monster.Grades != null)
             {
                 foreach (MonsterGrade grade in monster.Grades)
                 {
-                    foreach (int spellId in spells)
+                    foreach (var spell in spells)
                     {
                         var list = new KeyValueListBase("monsters_spells");
 
-                        list.AddPair("SpellId", spellId);
-                        list.AddPair("Level", grade.GradeId);
+                        list.AddPair("SpellId", spell.Id);
+                        list.AddPair("Level", grade.GradeId <= spell.SpellLevelsIds.Count ? (int) grade.GradeId : spell.SpellLevelsIds.Count);
 
                         var subQueryId = 
                             SqlBuilder.BuildSelect(new [] { "Id" }, "monsters_grades",

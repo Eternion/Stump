@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 
 namespace Stump.Server.WorldServer.Database.Monsters
@@ -202,6 +203,57 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
+        private byte[] m_serializedStats;
+
+        [Property("Stats", NotNull=false)]
+        private byte[] SerializedStats
+        {
+            get { return m_serializedStats; }
+            set { m_serializedStats = value;
+
+            if (value == null)
+                Stats = new Dictionary<PlayerFields, short>();
+            else
+                Stats = DeserializeStats(value);
+            }
+        }
+
+        public Dictionary<PlayerFields, short> Stats
+        {
+            get;
+            set;
+        }
+
+        private byte[] SerializeStats(Dictionary<PlayerFields, short> stats)
+        {
+            var serialized = new byte[stats.Count + stats.Count * 2];
+
+            var i = 0;
+            foreach (var pair in stats)
+            {
+                serialized[i] = (byte)pair.Key;
+
+                serialized[i + 1] = (byte) ((pair.Value >> 8) & 0xFF);
+                serialized[i + 2] = (byte)( pair.Value & 0xFF );
+
+                i++;
+            }
+
+            return serialized;
+        }
+
+        private Dictionary<PlayerFields, short> DeserializeStats(byte[] serialized)
+        {
+            var stats = new Dictionary<PlayerFields, short>();
+
+            for (int i = 0; i < serialized.Length; i += 3)
+            {
+                stats.Add((PlayerFields)serialized[i], (short)( serialized[i + 1] << 8 | serialized[i + 2] ));
+            }
+
+            return stats;
+        }
+
         private List<MonsterSpell> m_spells;
         public List<MonsterSpell> Spells
         {
@@ -209,6 +261,13 @@ namespace Stump.Server.WorldServer.Database.Monsters
             {
                 return m_spells ?? ( m_spells = MonsterManager.Instance.GetMonsterGradeSpells(Id) );
             }
+        }
+
+        protected override bool BeforeSave(System.Collections.IDictionary state)
+        {
+            SerializedStats = SerializeStats(Stats);
+
+            return base.BeforeSave(state);
         }
     }
 }

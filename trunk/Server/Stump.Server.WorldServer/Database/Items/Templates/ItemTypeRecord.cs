@@ -72,20 +72,49 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set;
         }
 
-        [D2OField("zoneSize")]
-        [Property("ZoneSize")]
+        private string m_rawZone;
+
+        [D2OField("rawZone")]
+        [Property]
+        public string RawZone
+        {
+            get { return m_rawZone; }
+            set
+            {
+                m_rawZone = value; 
+                ParseRawZone();
+            }
+        }
+
         public uint ZoneSize
         {
             get;
             set;
         }
 
-        [D2OField("zoneShape")]
-        [Property("ZoneShape")]
-        public uint ZoneShape
+        public SpellShapeEnum ZoneShape
         {
             get;
             set;
+        }
+
+        private void ParseRawZone()
+        {
+            if (string.IsNullOrEmpty(RawZone) || RawZone == "null")
+            {
+                ZoneSize = 0;
+                ZoneShape = 0;
+                return;
+            }
+
+            var type = (SpellShapeEnum)Enum.Parse(typeof(SpellShapeEnum), RawZone[0].ToString());
+            var size = 1u;
+
+            if (RawZone.Length > 1)
+                size = uint.Parse(RawZone[1].ToString());
+
+            ZoneSize = size;
+            ZoneShape = type;
         }
 
         [D2OField("needUseConfirm")]

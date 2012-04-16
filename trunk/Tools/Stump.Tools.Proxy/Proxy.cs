@@ -168,7 +168,7 @@ namespace Stump.Tools.Proxy
                 DatabaseConfiguration,
                 Server.WorldServer.Definitions.DatabaseRevision,
                 typeof(WorldBaseRecord<>),
-                typeof(WorldBaseRecord<>).Assembly);
+                typeof(WorldBaseRecord<>).Assembly, false);
             DatabaseAccessor.Initialize();
 
             logger.Info("Open Database...");
@@ -182,7 +182,7 @@ namespace Stump.Tools.Proxy
             NpcManager.Instance.Initialize();
             MonsterManager.Instance.Initialize();
             CellTriggerManager.Instance.Initialize();
-            World.Instance.Initialize();
+            World.Instance.LoadSpaces();
 
             Start();
         }

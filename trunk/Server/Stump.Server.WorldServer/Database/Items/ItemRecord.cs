@@ -3,13 +3,48 @@ using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
+using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Database.Items
 {
-    [ActiveRecord("items")]
-    public class ItemRecord : AssignedWorldRecord<ItemRecord>
+    public interface IItemRecord
+    {
+        ItemTemplate Template
+        {
+            get;
+            set;
+        }
+
+        int Stack
+        {
+            get;
+            set;
+        }
+
+        List<EffectBase> Effects
+        {
+            get;
+            set;
+        }
+
+        int Id
+        {
+            get;
+            set;
+        }
+
+        void AssignIdentifier();
+
+        void Save();
+        void Create();
+        void Delete();
+    }
+
+    [ActiveRecord("items", DiscriminatorColumn = "RecognizerType", DiscriminatorType = "String", DiscriminatorValue = "Base")]
+    public abstract class ItemRecord<T> : AssignedWorldRecord<T>, IItemRecord where T : ItemRecord<T>
     {
         public ItemRecord()
         {
@@ -17,28 +52,26 @@ namespace Stump.Server.WorldServer.Database.Items
         }
 
         [Property("Item", NotNull = true)]
-        public int ItemId
+        protected int ItemId
         {
             get;
             set;
         }
 
-        [Property("Owner")]
-        public int OwnerId
+        private ItemTemplate m_template;
+
+        public ItemTemplate Template
         {
-            get;
-            set;
+            get { return m_template ?? (m_template = ItemManager.Instance.TryGetTemplate(ItemId)); }
+            set
+            {
+                m_template = value;
+                ItemId = value.Id;
+            }
         }
 
         [Property("Stack", NotNull = true, Default = "0")]
         public int Stack
-        {
-            get;
-            set;
-        }
-
-        [Property("Position", NotNull = true, Default = "63")]
-        public CharacterInventoryPositionEnum Position
         {
             get;
             set;
@@ -68,11 +101,6 @@ namespace Stump.Server.WorldServer.Database.Items
             SerializedEffects = EffectManager.Instance.SerializeEffects(Effects);
 
             return base.BeforeSave(state);
-        }
-
-        public static ItemRecord[] FindAllByOwner(int ownerId)
-        {
-            return FindAll(Restrictions.Eq("OwnerId", ownerId));
         }
     }
 }

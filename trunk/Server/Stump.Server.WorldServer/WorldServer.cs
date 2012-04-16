@@ -101,7 +101,7 @@ namespace Stump.Server.WorldServer
             ConsoleBase.SetTitle("#Stump World Server : " + ServerInformation.Name);
 
             logger.Info("Initializing Database...");
-            DatabaseAccessor = new DatabaseAccessor(DatabaseConfiguration, Definitions.DatabaseRevision, typeof(WorldBaseRecord<>), Assembly.GetExecutingAssembly());
+            DatabaseAccessor = new DatabaseAccessor(DatabaseConfiguration, Definitions.DatabaseRevision, typeof(WorldBaseRecord<>), Assembly.GetExecutingAssembly(), true);
             DatabaseAccessor.Initialize();
 
             logger.Info("Opening Database...");

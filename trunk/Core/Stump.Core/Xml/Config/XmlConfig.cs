@@ -23,6 +23,7 @@ namespace Stump.Core.Xml.Config
         private readonly Dictionary<string, Assembly> m_assemblies = new Dictionary<string, Assembly>();
         private readonly Dictionary<Assembly, string> m_assembliesDocFile = new Dictionary<Assembly, string>();
         private readonly Dictionary<string, XmlConfigNode> m_nodes = new Dictionary<string, XmlConfigNode>();
+        private readonly Dictionary<Type, object> m_instances = new Dictionary<Type, object>();
 
         private readonly string m_configPath;
         private readonly string m_schemaPath;
@@ -107,14 +108,29 @@ namespace Stump.Core.Xml.Config
 
                 foreach(var type in assembly.GetTypes())
                 {
-                    var fields = from field in type.GetFields(BindingFlags.Static | BindingFlags.GetField | BindingFlags.Public | BindingFlags.NonPublic)
+                    var fields = from field in type.GetFields(BindingFlags.GetField | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
                                  where field.GetCustomAttribute<VariableAttribute>() != null
                                  select field;
+
+                    object instance = null;
+                    if (m_instances.ContainsKey(type))
+                        instance = m_instances[type];
 
                     foreach (var field in fields)
                     {
                         var node = new XmlConfigNode(field);
+                        var isStatic = field.IsStatic;
 
+                        if (!isStatic)
+                        {
+                            if (instance != null)
+                                node.Instance = instance;
+                            else 
+                                throw new Exception(
+                                    string.Format(
+                                        "{0} is not static. Declare it static or bind an instance to the type {1}",
+                                        field.Name, type.Name));
+                        }
                         DocEntry member = null;
                         if (documentation != null)
                             member = documentation.Members.Where(entry => entry.Name == type.FullName + "." + field.Name).FirstOrDefault();
@@ -125,13 +141,25 @@ namespace Stump.Core.Xml.Config
                         m_nodes.Add(node.Path, node);
                     }
 
-                    var properties = from property in type.GetProperties(BindingFlags.Static | BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.NonPublic)
+                    var properties = from property in type.GetProperties(BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
                                      where property.GetCustomAttribute<VariableAttribute>() != null
                                      select property;
 
                     foreach (var property in properties)
                     {
                         var node = new XmlConfigNode(property);
+                        var isStatic = property.GetGetMethod().IsStatic;
+
+                        if (!isStatic)
+                        {
+                            if (instance != null)
+                                node.Instance = instance;
+                            else
+                                throw new Exception(
+                                    string.Format(
+                                        "{0} is not static. Declare it static or bind an instance to the type {1}",
+                                        property.Name, type.Name));
+                        }
 
                         DocEntry member = null;
                         if (documentation != null)
@@ -280,6 +308,11 @@ namespace Stump.Core.Xml.Config
             m_assemblies.Remove(assembly.GetName().Name);
         }
 
+        public void AddInstance(Type type, object instance)
+        {
+            m_instances.Add(type, instance);
+        }
+
         private void CheckSchema()
         {
             if (!File.Exists(m_schemaPath))
@@ -335,6 +368,9 @@ namespace Stump.Core.Xml.Config
                         
                         continue;
                     }
+
+                    if (m_instances.ContainsKey(classType))
+                        xmlConfigNode.Instance = m_instances[classType];
 
                     Type elementType;
                     FieldInfo field = classType.GetField(xmlConfigNode.Name);
@@ -484,6 +520,8 @@ namespace Stump.Core.Xml.Config
 
                         if (!string.IsNullOrEmpty(node.Value.Documentation))
                             writer.WriteComment(node.Value.Documentation);
+
+                        writer.WriteComment("Editable as Running : " + node.Value.Attribute.DefinableRunning);
 
                         writer.WriteStartElement("Variable");
                         writer.WriteAttributeString("name", node.Value.Name);

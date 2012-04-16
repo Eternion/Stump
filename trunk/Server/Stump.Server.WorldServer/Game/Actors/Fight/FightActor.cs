@@ -127,7 +127,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                         SetInvisibilityState(VisibleStateEnum.VISIBLE);
             }
 
-            SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, target);
+            SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, Fight.GetOneFighter(target));
 
             SpellCastingHandler handler = SpellCasted;
             if (handler != null)
@@ -430,7 +430,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             OnCellShown(cell, team);
         }
 
-        public bool UseAP(short amount)
+        public virtual bool UseAP(short amount)
         {
             if (Stats[PlayerFields.AP].Total - amount < 0)
                 return false;
@@ -442,7 +442,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
-        public bool UseMP(short amount)
+        public virtual bool UseMP(short amount)
         {
             if (Stats[PlayerFields.MP].Total - amount < 0)
                 return false;
@@ -454,7 +454,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
-        public bool LostAP(short amount)
+        public virtual bool LostAP(short amount)
         {
             if (Stats[PlayerFields.AP].Total - amount < 0)
                 return false;
@@ -466,7 +466,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
-        public bool LostMP(short amount)
+        public virtual bool LostMP(short amount)
         {
             if (Stats[PlayerFields.MP].Total - amount < 0)
                 return false;
@@ -478,7 +478,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
-        public bool RegainAP(short amount)
+        public virtual bool RegainAP(short amount)
         {
             /*if (amount > Stats.AP.Used)
                 amount = Stats.AP.Used;*/
@@ -490,7 +490,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
-        public bool RegainMP(short amount)
+        public virtual bool RegainMP(short amount)
         {
             /*if (amount > Stats.MP.Used)
                 amount = Stats.MP.Used;*/
@@ -502,7 +502,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
-        public void ResetUsedPoints()
+        public virtual void ResetUsedPoints()
         {
             Stats.AP.Used = 0;
             Stats.MP.Used = 0;
@@ -602,7 +602,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             OnDead(this);
         }
 
-        public short InflictDirectDamage(short damage, FightActor from)
+        public virtual short InflictDirectDamage(short damage, FightActor from)
         {
             if (LifePoints - damage < 0)
                 damage = (short) LifePoints;
@@ -623,39 +623,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public short InflictDirectDamage(short damage)
         {
-            if (LifePoints - damage < 0)
-                damage = (short) LifePoints;
-
-            DamageTaken += damage;
-
-            TriggerBuffs(BuffTriggerType.BEFORE_ATTACKED, damage);
-
-            OnLifePointsChanged(-damage, null);
-
-            if (IsDead())
-                OnDead(this);
-
-            TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
-
-
-            return damage;
-        }
-
-        public short InflictDamage(short damage, EffectSchoolEnum school, bool pvp = false)
-        {
-            damage = CalculateDamageResistance(damage, school, pvp);
-
-            short reduction = CalculateArmorReduction(school);
-
-            if (reduction > 0)
-                OnDamageReducted(this, reduction);
-
-            damage -= reduction;
-
-            if (damage <= 0)
-                damage = 0;
-
-            return InflictDirectDamage(damage);
+            return InflictDirectDamage(damage, this);
         }
 
         public short InflictDamage(short damage, EffectSchoolEnum school, FightActor from, bool pvp = false, Spell spell = null)
@@ -667,6 +635,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             damage = CalculateDamageResistance(damage, school, pvp);
 
             short reduction = CalculateArmorReduction(school);
+
+            if (reduction > damage)
+                reduction = damage;
 
             if (reduction > 0)
                 OnDamageReducted(from, reduction);
@@ -688,21 +659,21 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return InflictDirectDamage(damage, from);
         }
 
-        public short HealDirect(short healPoints)
+        public virtual short HealDirect(short healPoints, FightActor from)
         {
             if (LifePoints + healPoints > MaxLifePoints)
                 healPoints = (short) (MaxLifePoints - LifePoints);
 
             DamageTaken -= healPoints;
 
-            OnLifePointsChanged(healPoints, null);
+            OnLifePointsChanged(healPoints, from);
 
             return healPoints;
         }
 
-        public short Heal(FightActor from, short healPoints)
+        public short Heal(short healPoints, FightActor from)
         {
-            return HealDirect(from.CalculateHeal(healPoints));
+            return HealDirect(from.CalculateHeal(healPoints), from);
         }
 
         #region Formulas
@@ -910,7 +881,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public FightActor[] GetTacklers()
         {
-            return OpposedTeam.GetAllFighters(entry => entry.Position.Point.IsAdjacentTo(Position.Point)).ToArray();
+            return OpposedTeam.GetAllFighters(entry => entry.IsAlive() && entry.Position.Point.IsAdjacentTo(Position.Point)).ToArray();
         }
 
         public virtual int GetTackledMP()
@@ -1471,6 +1442,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 (short)Stats[PlayerFields.WaterResistPercent].Total,
                 (short)Stats[PlayerFields.AirResistPercent].Total,
                 (short)Stats[PlayerFields.FireResistPercent].Total,
+                (short)Stats[PlayerFields.NeutralElementReduction].Total,
+                (short)Stats[PlayerFields.EarthElementReduction].Total,
+                (short)Stats[PlayerFields.WaterElementReduction].Total,
+                (short)Stats[PlayerFields.AirElementReduction].Total,
+                (short)Stats[PlayerFields.FireElementReduction].Total,
+                (short)Stats[PlayerFields.PushDamageReduction].Total,
+                (short)Stats[PlayerFields.CriticalDamageReduction].Total,
                 (short)Stats[PlayerFields.DodgeAPProbability].Total,
                 (short)Stats[PlayerFields.DodgeMPProbability].Total,
                 (short)Stats[PlayerFields.TackleBlock].Total,

@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         public static int MinMoveInterval = 20;
 
         [Variable(true)]
-        public static int MaxMoveInterval = 60;
+        public static int MaxMoveInterval = 40;
 
         [Variable(true)]
         public static int StarsBonusInterval = 300;
@@ -92,7 +92,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
         public override bool StartMove(Path movementPath)
         {
-            if (!CanMove())
+            if (!CanMove() || movementPath.IsEmpty())
                 return false;
 
             Position = movementPath.EndPathPosition;

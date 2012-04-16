@@ -20,14 +20,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             foreach (FightActor actor in GetAffectedActors())
             {
                 var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
 
                 if (integerEffect == null)
-                    return;
+                    return false;
 
                 if (Effect.Duration > 0)
                 {
@@ -38,9 +38,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
                     var damage = actor.InflictDamage(integerEffect.Value, GetEffectSchool(Effect.EffectId), Caster, actor is CharacterFighter);
                     
                     if (integerEffect.Value / 2 > 0)
-                        Caster.Heal(actor, (short)( damage / 2d ));
+                        Caster.Heal((short)( damage / 2d ), actor);
                 }
             }
+
+            return true;
         }
 
 
@@ -51,7 +53,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
             if (integerEffect == null)
                 return;
 
-            buff.Target.Heal(buff.Caster, integerEffect.Value);
+            buff.Target.Heal(integerEffect.Value, buff.Caster);
         }
 
         private static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)

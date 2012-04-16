@@ -89,7 +89,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
             if (elements.Length <= 0)
                 return new ObjectPosition(map, Cell.Null);
 
-            if (elements.Length > 0)
+            if (elements.Length > 1)
                 logger.Debug("More than 1 elements found in interactive id = {0}", Id);
 
             var cell = elements[0].CellId;

@@ -13,9 +13,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
-            
+            return true;
         }
     }
 }

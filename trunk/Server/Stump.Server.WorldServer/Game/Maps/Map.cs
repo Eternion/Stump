@@ -6,6 +6,7 @@ using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Linq;
 using NLog;
+using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.Core.Pool;
 using Stump.Core.Threading;
@@ -514,14 +515,17 @@ namespace Stump.Server.WorldServer.Game.Maps
             get { return m_monsterSpawns.Count; }
         }
 
-        public void AddSpawningPool(SpawningPoolBase spawningPool, bool enable = true)
+        public ReadOnlyCollection<MonsterSpawn> MonsterSpawns
+        {
+            get
+            {
+                return m_monsterSpawns.AsReadOnly();
+            }
+        }
+
+        public void AddSpawningPool(SpawningPoolBase spawningPool)
         {
             m_spawningPools.Add(spawningPool);
-
-            if (enable)
-            {
-                spawningPool.StartAutoSpawn();
-            }
         }
 
         public bool RemoveSpawningPool(SpawningPoolBase spawningPool)
@@ -531,7 +535,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             return m_spawningPools.Remove(spawningPool);
         }
 
-        public void RemoveAllSpawningPools()
+        public void ClearSpawningPools()
         {
             foreach (var pool in SpawningPools.ToArray())
             {
@@ -539,37 +543,44 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
-        public void EnableMonsterSpawns()
+        public void EnableClassicalMonsterSpawns()
         {
             if (SpawnEnabled)
                 return;
 
-            if (SpawningPools.Count == 0)
-                AddSpawningPool(new ClassicalSpawningPool(this, SubArea.GetMonsterSpawnInterval()));
+            var pools = SpawningPools.OfType<ClassicalSpawningPool>().ToArray();
 
-            foreach (var spawningPool in SpawningPools)
+            if (pools.Length == 0)
             {
-                if (!spawningPool.AutoSpawnEnabled)
-                    spawningPool.StartAutoSpawn();
+                var pool = new ClassicalSpawningPool(this, SubArea.GetMonsterSpawnInterval());
+
+                AddSpawningPool(pool);
+                pool.StartAutoSpawn();
+            }
+
+            foreach (var pool in pools)
+            {
+                pool.StartAutoSpawn();
             }
 
             SpawnEnabled = true;
         }
 
-        public void DisableMonsterSpawns()
+        public void DisableClassicalMonsterSpawns()
         {
             if (!SpawnEnabled)
                 return;
 
-            foreach (var spawningPool in SpawningPools)
+            foreach (var actor in GetActors<MonsterGroup>())
+            {
+                if (actor.GetMonsters().All(entry => MonsterSpawns.Any(spawn => spawn.MonsterId == entry.Template.Id)))
+                    Leave(actor);
+            }
+
+            foreach (var spawningPool in SpawningPools.OfType<ClassicalSpawningPool>())
             {
                 if (spawningPool.AutoSpawnEnabled)
                     spawningPool.StopAutoSpawn();
-            }
-
-            foreach (var actor in GetActors<MonsterGroup>())
-            {
-                Leave(actor);
             }
 
             SpawnEnabled = false;
@@ -580,13 +591,19 @@ namespace Stump.Server.WorldServer.Game.Maps
             Contract.Requires(spawn != null);
 
             m_monsterSpawns.Add(spawn);
+
+            if (m_monsterSpawns.Count == 1 && !SpawnEnabled)
+                EnableClassicalMonsterSpawns();
         }
 
         public void RemoveMonsterSpawn(MonsterSpawn spawn)
         {
             Contract.Requires(spawn != null);
-            
+
             m_monsterSpawns.Remove(spawn);
+
+            if (m_monsterSpawns.Count == 0 && SpawnEnabled)
+                DisableClassicalMonsterSpawns();
         }
 
         public void AddMonsterDungeonSpawn(MonsterDungeonSpawn spawn)
@@ -599,6 +616,9 @@ namespace Stump.Server.WorldServer.Game.Maps
                 AddSpawningPool(pool = new DungeonSpawningPool(this));
 
             pool.AddSpawn(spawn);
+
+            if (!pool.AutoSpawnEnabled)
+                pool.StartAutoSpawn();
         }
 
         public void RemoveMonsterDungeonSpawn(MonsterDungeonSpawn spawn)
@@ -611,11 +631,9 @@ namespace Stump.Server.WorldServer.Game.Maps
                 return;
 
             pool.RemoveSpawn(spawn);
-        }
 
-        public IEnumerable<MonsterSpawn> GetMonsterSpawns()
-        {
-            return m_monsterSpawns.Concat(SubArea.GetMonsterSpawns());
+            if (pool.SpawnsCount == 0)
+                pool.StopAutoSpawn();
         }
 
         public MonsterGroup GenerateRandomMonsterGroup()
@@ -639,12 +657,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             Contract.Requires(length > 0);
 
             var rand = new AsyncRandom();
-            var spawns = GetMonsterSpawns();
 
-            if (spawns.Count() <= 0)
+            if (MonsterSpawns.Count <= 0)
                 return null;
 
-            var freqSum = spawns.Sum(entry => entry.Frequency);
+            var freqSum = MonsterSpawns.Sum(entry => entry.Frequency);
 
             var group = new MonsterGroup(GetNextContextualId(), new ObjectPosition(this, GetRandomFreeCell(), GetRandomDirection()));
 
@@ -654,7 +671,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 var l = 0d;
                 MonsterGrade monster = null;
 
-                foreach (var spawn in spawns)
+                foreach (var spawn in MonsterSpawns)
                 {
                     l += spawn.Frequency;
 
@@ -755,14 +772,22 @@ namespace Stump.Server.WorldServer.Game.Maps
 
 
             var pathfinder = new Pathfinder(CellsInfoProvider);
-            var path = pathfinder.FindPath(group.Cell.Id, dest.Id, true);
+            var path = pathfinder.FindPath(group.Cell.Id, dest.Id, false);
 
-            group.StartMove(path);
+            if (!path.IsEmpty())
+                group.StartMove(path);
+
+            group.MoveTimer = Area.CallDelayed(new Random().Next(MonsterGroup.MinMoveInterval, MonsterGroup.MaxMoveInterval + 1) * 1000,
+                () => MoveRandomlyMonsterGroup(group));
         }
 
         private void IncrementMonsterGroupBonus(MonsterGroup group)
         {
             group.IncrementBonus(MonsterGroup.StarsBonusIncrementation);
+            Refresh(group);
+
+            group.StarsTimer = Area.CallDelayed(MonsterGroup.StarsBonusInterval * 1000,
+                () => IncrementMonsterGroupBonus(group));
         }
 
         #endregion
@@ -936,9 +961,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             if (character != null)
             {
-                if (!SpawnEnabled)
-                    EnableMonsterSpawns();
-
                 ContextRoleplayHandler.SendCurrentMapMessage(character.Client, Id);
 
                 if (m_fights.Count > 0)
@@ -956,7 +978,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             {
                 monsterGroup.MoveTimer = Area.CallDelayed(new Random().Next(MonsterGroup.MinMoveInterval, MonsterGroup.MaxMoveInterval + 1) * 1000,
                     () => MoveRandomlyMonsterGroup(monsterGroup));
-                monsterGroup.StarsTimer = Area.CallDelayed(MonsterGroup.StarsBonusInterval,
+                monsterGroup.StarsTimer = Area.CallDelayed(MonsterGroup.StarsBonusInterval * 1000,
                     () => IncrementMonsterGroupBonus(monsterGroup));
             }
         }

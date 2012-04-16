@@ -15,12 +15,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
 
             if (integerEffect == null)
-                return;
+                return false;
 
             foreach (FightActor actor in GetAffectedActors())
             {
@@ -30,6 +30,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 var buff = new ResistancesDebuff(actor.PopNextBuffId(), actor, Caster, integerEffect, Spell, integerEffect.Value, false, true);
                 actor.AddAndApplyBuff(buff);
             }
+
+            return true;
         }
     }
 }

@@ -47,6 +47,8 @@
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -55,6 +57,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <PlatformTarget>x86</PlatformTarget>
@@ -89,10 +93,14 @@
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -107,6 +115,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -121,6 +131,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.ActiveRecord">
@@ -174,6 +186,7 @@
     <Compile Include="Commands\Commands\LookCommand.cs" />
     <Compile Include="Commands\Commands\MonsterCommands.cs" />
     <Compile Include="Commands\Commands\NpcsCommands.cs" />
+    <Compile Include="Commands\Commands\Patterns\TargetCommand.cs" />
     <Compile Include="Commands\Commands\SaveCommand.cs" />
     <Compile Include="Commands\Commands\TeleportCommand.cs" />
     <Compile Include="Commands\Commands\WhoCommand.cs" />
@@ -196,6 +209,8 @@
     <Compile Include="Database\Interactives\Skills\TemplateDependantSkill.cs" />
     <Compile Include="Database\Interactives\Skills\TemplateIndependantSkill.cs" />
     <Compile Include="Database\ISaveable.cs" />
+    <Compile Include="Database\Items\Templates\PetTemplate.cs" />
+    <Compile Include="Database\Items\PlayerItemRecord.cs" />
     <Compile Include="Database\Items\Shops\ItemToSell.cs" />
     <Compile Include="Database\Items\Shops\NpcItem.cs" />
     <Compile Include="Database\Jobs\JobRecord.cs" />
@@ -226,6 +241,7 @@
     <Compile Include="Game\Actors\Fight\SummonedFighter.cs" />
     <Compile Include="Game\Actors\Fight\SummonedMonster.cs" />
     <Compile Include="Game\Actors\Interfaces\INamedActor.cs" />
+    <Compile Include="Game\Actors\Stats\StatsInitiative.cs" />
     <Compile Include="Game\Conditions\BoolOperator.cs" />
     <Compile Include="Game\Conditions\Criterions\AdminRightsCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\AlignementLevelCriterion.cs" />
@@ -296,6 +312,8 @@
     <Compile Include="Game\Fights\ReadyChecker.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapSave.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapTeleport.cs" />
+    <Compile Include="Game\Items\Item.cs" />
+    <Compile Include="Game\Items\Pet.cs" />
     <Compile Include="Game\Maps\Spawns\DungeonSpawningPool.cs" />
     <Compile Include="Game\Social\Friend.cs" />
     <Compile Include="Game\Social\FriendsBook.cs" />
@@ -536,7 +554,7 @@
     <Compile Include="Game\Parties\PartyInvitation.cs" />
     <Compile Include="Game\Parties\PartyManager.cs" />
     <Compile Include="Game\Items\Inventory.cs" />
-    <Compile Include="Game\Items\Item.cs" />
+    <Compile Include="Game\Items\PlayerItem.cs" />
     <Compile Include="Game\Items\ItemManager.cs" />
     <Compile Include="Game\Items\ItemsCollection.cs" />
     <Compile Include="Game\Items\ItemsStorage.cs" />

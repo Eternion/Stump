@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
             UNAPPLY,
         }
 
-        protected ItemEffectHandler(EffectBase effect, Character target, Item item)
+        protected ItemEffectHandler(EffectBase effect, Character target, PlayerItem item)
             : base (effect)
         {
             Target = target;
@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
             protected set;
         }
 
-        public Item Item
+        public PlayerItem Item
         {
             get;
             protected set;

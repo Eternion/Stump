@@ -1,0 +1,113 @@
+﻿<UserControl x:Class="Stump.Tools.QuickItemEditor.ItemEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:convert="clr-namespace:Stump.Tools.QuickItemEditor.Converters"
+             xmlns:QuickItemEditor="clr-namespace:Stump.Tools.QuickItemEditor" mc:Ignorable="d">
+  <UserControl.Resources>
+    <VisualBrush x:Key="SearchHint" TileMode="None" Stretch="None" AlignmentX="Left">
+      <VisualBrush.Transform>
+        <TranslateTransform X="5" Y="0" />
+      </VisualBrush.Transform>
+      <VisualBrush.Visual>
+        <Grid>
+          <TextBlock FontStyle="Italic" Foreground="Black" Opacity="0.5" Text="Filter text ..." />
+        </Grid>
+      </VisualBrush.Visual>
+    </VisualBrush>
+    <Style TargetType="TextBox" x:Key="HintBox">
+      <Style.Triggers>
+        <MultiDataTrigger>
+          <MultiDataTrigger.Conditions>
+            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsFocused}"
+                       Value="false" />
+            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="" />
+          </MultiDataTrigger.Conditions>
+          <MultiDataTrigger.Setters>
+            <Setter Property="Background" Value="{StaticResource SearchHint}" />
+          </MultiDataTrigger.Setters>
+        </MultiDataTrigger>
+      </Style.Triggers>
+    </Style>
+    <convert:ItemTemplateToModel x:Key="ItemTemplateToModel"/>
+  </UserControl.Resources>
+  <Grid Name="grid" Margin="6">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition MinWidth="200"/>
+      <ColumnDefinition Width="Auto" />
+    </Grid.ColumnDefinitions>
+    <Grid Grid.Column="0">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="24" />
+        <RowDefinition />
+      </Grid.RowDefinitions>
+      <TextBox Style="{StaticResource ResourceKey=HintBox}" VerticalContentAlignment="Center" Grid.Row="0"
+               Name="searchTextBox" TextChanged="searchTextBox_TextChanged"></TextBox>
+            <ListBox Grid.Row="1" Height="300" Name="itemsList" VirtualizingStackPanel.IsVirtualizing="False"
+                 IsTextSearchEnabled="True" TextSearch.TextPath="searchTextBox.Text">
+            <ListBox.ItemTemplate>
+          <DataTemplate>
+            <TextBlock>
+              <TextBlock.Text>
+                <MultiBinding StringFormat="{}{0} -> {1}">
+                  <Binding Path="Id" />
+                  <Binding Path="Name" />
+                </MultiBinding>
+              </TextBlock.Text>
+            </TextBlock>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Grid>
+    <Expander Grid.Column="1" ExpandDirection="Right" HorizontalAlignment="Left">
+      <Expander.Style>
+        <Style>
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding ElementName=itemsList, Path=SelectedIndex}" Value="-1">
+              <Setter Property="Expander.IsEnabled" Value="false" />
+            </DataTrigger>
+            <DataTrigger
+Binding="{convert:ComparaisonBinding ElementName=itemsList, Path=SelectedIndex, Operator=GT, Comparand=-1}"
+Value="{x:Null}">
+              <Setter Property="Expander.IsExpanded" Value="True" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Expander.Style>
+      <Expander.Header>
+        <TextBlock Text="Selected Item" RenderTransformOrigin="0.5,0.5" Margin="0,0,0,0" Width="Auto">
+          <TextBlock.LayoutTransform>
+            <TransformGroup>
+              <ScaleTransform ScaleX="1" ScaleY="1" />
+              <SkewTransform AngleX="0" AngleY="0" />
+              <RotateTransform Angle="-90" />
+              <TranslateTransform X="0" Y="0" />
+            </TransformGroup>
+          </TextBlock.LayoutTransform>
+          <TextBlock.RenderTransform>
+            <TransformGroup>
+              <ScaleTransform ScaleX="1" ScaleY="1" />
+              <SkewTransform AngleX="0" AngleY="0" />
+              <RotateTransform Angle="0" />
+              <TranslateTransform X="0" Y="0" />
+            </TransformGroup>
+          </TextBlock.RenderTransform>
+        </TextBlock>
+      </Expander.Header>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="5" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition />
+          <RowDefinition Height="32" />
+        </Grid.RowDefinitions>
+                <QuickItemEditor:ItemViewer Item="{Binding Converter={StaticResource ItemTemplateToModel}, ElementName=itemsList, Path=SelectedItem}"></QuickItemEditor:ItemViewer>
+        <GridSplitter Grid.Column="1" Width="5" ResizeBehavior="PreviousAndCurrent" ResizeDirection="Columns" />
+        <Button Grid.Row="1" Click="OnSaveButtonClicked" Margin="5">Save</Button>
+      </Grid>
+    </Expander>
+  </Grid>
+</UserControl>

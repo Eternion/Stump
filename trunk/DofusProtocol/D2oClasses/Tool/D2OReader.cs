@@ -154,6 +154,9 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
 
                     FieldInfo field = classType.GetField(fieldname);
 
+                    if (field == null)
+                        throw new Exception(string.Format("Missing field '{0}' in class '{1}'", fieldname, classType.Name));
+
                     fields.Add(new D2OFieldDefinition(fieldname, fieldtype, field, m_reader.BaseStream.Position,
                                                       vectorTypes.ToArray()));
                 }

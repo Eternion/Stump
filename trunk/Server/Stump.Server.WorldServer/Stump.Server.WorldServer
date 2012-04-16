@@ -1,0 +1,540 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Stump.Server.WorldServer</name>
+    </assembly>
+    <members>
+        <member name="M:Stump.Server.WorldServer.Game.Items.ItemManager.GetItemsByPattern(System.String,System.Collections.Generic.IEnumerable{Stump.Server.WorldServer.Database.Items.Templates.ItemTemplate})">
+            <summary>
+            Find an item template contains in a given list with a pattern
+            </summary>
+            <remarks>
+            When @ precede the pattern, then the case is ignored
+            * is a joker, it can be placed at the begin or at the end or both
+            it means that characters are ignored (include letters, numbers, spaces and underscores)
+            
+            Note : We use RegExp for the pattern. '*' are remplaced by '[\w\d_]*'
+            </remarks>
+            <example>
+            pattern :   @Ab*
+            list :  abc
+                    Abd
+                    ace
+            
+            returns : abc and Abd
+            </example>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Items.ItemManager.GetItemsByPattern(System.String)">
+            <summary>
+            Find an item template by a pattern
+            </summary>
+            <remarks>
+            When @ precede the pattern, then the case is ignored
+            * is a joker, it can be placed at the begin or at the end or both
+            it means that characters are ignored (include letters, numbers, spaces and underscores)
+            
+            Note : We use RegExp for the pattern. '*' are remplaced by '[\w\d_]*'
+            </remarks>
+            <example>
+            pattern :   @Ab*
+            list :  abc
+                    Abd
+                    ace
+            
+            returns : abc and Abd
+            </example>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Items.ItemManager.GetItemsByPattern(System.String,System.Collections.Generic.IEnumerable{Stump.Server.WorldServer.Game.Items.PlayerItem})">
+            <summary>
+            Find an item instancce contains in a given list with a pattern
+            </summary>
+            <remarks>
+            When @ precede the pattern, then the case is ignored
+            * is a joker, it can be placed at the begin or at the end or both
+            it means that characters are ignored (include letters, numbers, spaces and underscores)
+            
+            Note : We use RegExp for the pattern. '*' are remplaced by '[\w\d_]*'
+            </remarks>
+            <example>
+            pattern :   @Ab*
+            list :  abc
+                    Abd
+                    ace
+            
+            returns : abc and Abd
+            </example>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Effects.Instances.EffectBase.DeSerialize(System.Byte[],System.Int32@)">
+            <summary>
+            Use EffectManager.Deserialize
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Actors.RolePlay.Characters.ExperienceManager.GetCharacterLevelExperience(System.Byte)">
+            <summary>
+            Get the experience requiered to access the given character level
+            </summary>
+            <param name="level"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Actors.RolePlay.Characters.ExperienceManager.GetCharacterNextLevelExperience(System.Byte)">
+            <summary>
+            Get the experience to reach the next character level
+            </summary>
+            <param name="level"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Actors.RolePlay.Characters.ExperienceManager.GetAlignementGradeHonor(System.Byte)">
+            <summary>
+            Get the honor requiered to access the given grade
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Actors.RolePlay.Characters.ExperienceManager.GetAlignementNextGradeHonor(System.Byte)">
+            <summary>
+            Get the honor to reach the next grade
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Game.Fights.Fight.TurnTime">
+            <summary>
+              Delay for player's turn
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Game.Fights.Fight.TurnEndTimeOut">
+            <summary>
+              Delay before force turn to end
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Game.Fights.Fight.EndFightTimeOut">
+            <summary>
+              Delay before force turn to end
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Fights.Fight.OnSetReady(Stump.Server.WorldServer.Game.Actors.Fight.FightActor,System.Boolean)">
+            <summary>
+              Set the ready state of a character
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Fights.Fight.CanChangePosition(Stump.Server.WorldServer.Game.Actors.Fight.FightActor,Stump.Server.WorldServer.Database.World.Cell)">
+            <summary>
+              Check if a character can change position (before the fight is started).
+            </summary>
+            <param name = "fighter"></param>
+            <param name="cell"></param>
+            <returns>If change is possible</returns>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Game.Fights.Fight.Clients">
+            <summary>
+            Do not modify, just read
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Game.Fights.Fight.SpectatorClients">
+            <summary>
+            Do not modify, just read
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Game.Maps.Map.PointsGrid">
+            <summary>
+            Array that associate a cell to a map point
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Maps.Map.GetCellAfterChangeMap(System.Int16,Stump.DofusProtocol.Enums.MapNeighbour)">
+            <summary>
+              Calculate which cell our character will walk on once map changed. Returns 0 if not found
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Game.Maps.Map.Clients">
+            <summary>
+            Do not modify, just read
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Game.Maps.Area.Characters">
+            <summary>
+            Don't modify the List.
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Fights.Buffs.Buff.DecrementDuration">
+            <summary>
+            Decrement Duration and return true whenever the buff is over
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Core.IPC.IpcAccessor.ReconnectDelay">
+            <summary>
+              Delay in seconds where we should retry connecting to remote server. (in seconds)
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Core.IPC.IpcAccessor.UpdateInterval">
+            <summary>
+            Delay between two server update (in seconds)
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Core.IPC.IpcAccessor.IpcAuthAddress">
+            <summary>
+            IPC server adress
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Core.IPC.IpcAccessor.IpcWorldAddress">
+            <summary>
+            IPC world port
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Core.IPC.IpcAccessor.Connect">
+            <summary>
+              Actually attempt to connect to remote server and retrieve a
+              proxy object.
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Core.IPC.IpcAccessor.Start">
+            <summary>
+              Actually start to connect to remote server.
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Core.IPC.IpcAccessor.MaintainConnection(System.Int32)">
+            <summary>
+              Running on his own context, we ping regularly here remote server.
+            </summary>
+        </member>
+        <member name="T:Stump.Server.WorldServer.Game.Maps.Cells.MapPoint">
+            <summary>
+            Represents a point on a 2 dimensional plan from a map cell
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Maps.Cells.MapPoint.InitializeStaticGrid">
+            <summary>
+            Initialize a static 2D plan that is used as reference to convert a cell to a (X,Y) point
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.World.GetCharacterByPattern(System.String)">
+            <summary>
+            Get a character by a search pattern. *account = current character used by account, name = character by his name.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.World.GetCharacterByPattern(Stump.Server.WorldServer.Game.Actors.RolePlay.Characters.Character,System.String)">
+            <summary>
+            Get a character by a search pattern. * = caller, *account = current character used by account, name = character by his name.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Actors.Fight.FightActor.DecrementAllCastedBuffsDuration">
+            <summary>
+            Decrement the duration of all the buffs that the fighter casted.
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Core.IO.WorldConsole.CommandPreffix">
+            <summary>
+            Prefix used for server's commands
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Game.Actors.Stats.StatsData.TotalSafe">
+            <summary>
+              TotalSafe can't be lesser than 0
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Items.PlayerItem.IsStackableWith(Stump.Server.WorldServer.Game.Items.PlayerItem)">
+            <summary>
+              Check if the given item can be stacked with the actual item (without comparing his position)
+            </summary>
+            <param name = "compared"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Items.PlayerItem.MustStackWith(Stump.Server.WorldServer.Game.Items.PlayerItem)">
+            <summary>
+              Check if the given item must be stacked with the actual item
+            </summary>
+            <param name = "compared"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Items.PlayerItem.Invalidate">
+            <summary>
+            Call it each time you modify part of the item
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.WorldServer.Host">
+            <summary>
+            Current server adress
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.WorldServer.Port">
+            <summary>
+            Server port
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Effects.EffectManager.ConvertExportedEffect(Stump.DofusProtocol.D2oClasses.EffectInstance)">
+            <summary>
+              D2O Effect class to stump effect class
+            </summary>
+            <param name = "effect"></param>
+            <returns></returns>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Game.Effects.EffectManager.m_randomablesEffects">
+            <summary>
+              Effects that are random when a new item is generated
+            </summary>
+        </member>
+        <member name="T:Stump.Server.WorldServer.Database.Characters.CharacterSpellRecord">
+            <summary>
+            A Spell learned by a Character with a position and a level
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Game.Actors.RolePlay.Characters.CharacterManager.MaxCharacterSlot">
+            <summary>
+              Maximum number of characters you can create/store in your account
+            </summary>
+        </member>
+        <member name="T:Stump.Server.WorldServer.Settings">
+            <summary>
+              Global settings defined by the config file
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Items.ItemsCollection`1.AddItem(`0)">
+            <summary>
+            Add an item to the collection
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Items.ItemsCollection`1.RemoveItem(`0,System.UInt32,System.Boolean)">
+            <summary>
+            Remove an item from the collection
+            </summary>
+            <param name="item"></param>
+            <param name="amount"></param>
+            <param name="delete"></param>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Items.ItemsCollection`1.RemoveItem(`0,System.Boolean)">
+            <summary>
+            Remove an item from the collection
+            </summary>
+            <param name="item"></param>
+            <param name="delete"></param>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Items.ItemsCollection`1.DeleteItem(`0)">
+            <summary>
+            Delete an item persistently.
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Items.ItemsCollection`1.StackItem(`0,System.Int32)">
+            <summary>
+            Increase the stack of an item
+            </summary>
+            <param name="item"></param>
+            <param name="amount"></param>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Items.ItemsCollection`1.UnStackItem(`0,System.Int32)">
+            <summary>
+            Decrease the stack of an item
+            </summary>
+            <param name="item"></param>
+            <param name="amount"></param>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Game.Interactives.InteractiveObject.Template">
+            <summary>
+            Can be null
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Game.Breeds.BreedManager.AvailableBreeds">
+            <summary>
+            List of available breeds
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Breeds.BreedManager.GetBreed(System.Int32)">
+            <summary>
+            Get the breed associated to the given id
+            </summary>
+            <param name="id"></param>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Breeds.BreedManager.AddBreed(Stump.Server.WorldServer.Database.Breeds.Breed,System.Boolean)">
+            <summary>
+            Add a breed instance to the database
+            </summary>
+            <param name="breed">Breed instance to add</param>
+            <param name="defineId">When set to true the breed id will be auto generated</param>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Breeds.BreedManager.RemoveBreed(Stump.Server.WorldServer.Database.Breeds.Breed)">
+            <summary>
+            Remove a breed from the database
+            </summary>
+            <param name="breed"></param>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Breeds.BreedManager.RemoveBreed(System.Int32)">
+            <summary>
+            Remove a breed from the database by his id
+            </summary>
+            <param name="id"></param>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Game.Fights.ReadyChecker.CheckTimeout">
+            <summary>
+            Delay in ms before a fighter is declared as lagger.
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Database.Interactives.InteractiveSpawn.TemplateId">
+            <summary>
+            Can be null
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Database.Interactives.InteractiveSpawn.Skills">
+            <summary>
+            Custom skills in case of Template is null
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Game.Parties.Party.MaxMemberCount">
+            <summary>
+              Maximum number of characters that can be in a same group.
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Parties.Party.PromoteGuestToMember(Stump.Server.WorldServer.Game.Actors.RolePlay.Characters.Character)">
+            <summary>
+            The guest is promote to member in the party. Whenever the player is not a guest, he auto joined the party.
+            </summary>
+            <param name="guest"></param>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Game.Social.ChatManager.CommandPrefix">
+            <summary>
+            Prefix used for chat commands
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Game.Social.ChatManager.AdministratorChatMinAccess">
+            <summary>
+            Minimal role level to access the admin chat
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Game.Social.ChatManager.ChatHandlers">
+            <summary>
+              Chat handler for each channel Id.
+            </summary>
+        </member>
+        <member name="T:Stump.Server.WorldServer.Game.Social.ChatManager.ChatParserDelegate">
+            <summary>
+              Delegate for parsing incomming in game messages.
+            </summary>
+        </member>
+        <member name="T:Stump.Server.WorldServer.Definitions">
+            <summary>
+              Contains hard-coded data
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Database.World.Cell.Null">
+            <summary>
+            Give a cell with Id = -1. This avoid using a class that take more memory space
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Database.Monsters.DroppableItem.ItemId">
+            <summary>
+            The id of the item to drop
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Database.Monsters.DroppableItem.DropLimit">
+            <summary>
+            A monster cannot drop this item more times than the drop limit. 0 to disable this limit
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Database.Monsters.DroppableItem.DropRate">
+            <summary>
+            Define the probability that the item drop. Between 0.00% and 100.00%
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Database.Monsters.DroppableItem.RollsCounter">
+            <summary>
+            How many times the rolls are threw
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Database.Monsters.DroppableItem.ProspectingLock">
+            <summary>
+            Requiered team prospection to have a chance to drop the item
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Actors.RolePlay.Characters.Character.RejoinMap">
+            <summary>
+            Rejoin the map after a fight
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Actors.RolePlay.Characters.Character.LogIn">
+            <summary>
+              Spawn the character on the map. It can be called once.
+            </summary>
+        </member>
+        <member name="T:Stump.Server.WorldServer.Game.Items.Inventory">
+            <summary>
+              Represents the Inventory of a character
+            </summary>
+        </member>
+        <member name="M:Stump.Server.WorldServer.Game.Items.Inventory.CutItem(Stump.Server.WorldServer.Game.Items.PlayerItem,System.UInt32)">
+            <summary>
+            Cut an item into two parts
+            </summary>
+            <param name="item"></param>
+            <param name="amount"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Game.Items.Inventory.Kamas">
+            <summary>
+              Amount of kamas owned by this character.
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Game.Maps.Spawns.ClassicalSpawningPool.SmallGroup">
+            <summary>
+            1-2 Group
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Game.Maps.Spawns.ClassicalSpawningPool.MediumGroup">
+            <summary>
+            3 - 5 group
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Game.Maps.Spawns.ClassicalSpawningPool.BigGroup">
+            <summary>
+            6 - 8 group
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Database.World.Maps.MapRecord.Version">
+            <summary>
+              Map version of this map.
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Database.World.Maps.MapRecord.RelativeId">
+            <summary>
+              Relative id of this map.
+            </summary>.
+        </member>
+        <member name="P:Stump.Server.WorldServer.Database.World.Maps.MapRecord.MapType">
+            <summary>
+              Type of this map.
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Database.World.Maps.MapRecord.SubAreaId">
+            <summary>
+              Zone Id which owns this map.
+            </summary>
+        </member>
+        <member name="T:Stump.Server.WorldServer.Game.Maps.Cells.ObjectPosition">
+            <summary>
+            Represents the position of an object relative to the global world
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Game.Actors.Stats.StatsHealth.Total">
+            <summary>
+              Addition of values
+            </summary>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Game.Actors.Stats.StatsHealth.TotalSafe">
+            <summary>
+              Addition of values
+            </summary>
+            <remarks>
+              Value can't be lesser than 0
+            </remarks>
+        </member>
+        <member name="P:Stump.Server.WorldServer.Game.Actors.Stats.StatsHealth.TotalMax">
+            <summary>
+              Additions of values without using damages taken;
+            </summary>
+        </member>
+        <member name="F:Stump.Server.WorldServer.Rates.RegenRate">
+            <summary>
+            Life regen rate (default 1 => 1hp/2seconds. Max = 20)
+            </summary>
+        </member>
+    </members>
+</doc>

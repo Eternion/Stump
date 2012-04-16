@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Handlers.Shortcuts
         [WorldHandler(ShortcutBarAddRequestMessage.Id)]
         public static void HandleShortcutBarAddRequestMessage(WorldClient client, ShortcutBarAddRequestMessage message)
         {
-            client.Character.Shortcuts.AddShortcut(message.barType, message.shortcut);
+            client.Character.Shortcuts.AddShortcut((ShortcutBarEnum) message.barType, message.shortcut);
         }
 
         [WorldHandler(ShortcutBarRemoveRequestMessage.Id)]

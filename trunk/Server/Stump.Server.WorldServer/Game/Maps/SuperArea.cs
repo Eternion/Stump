@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using Stump.Server.WorldServer.Database.Monsters;
@@ -111,16 +112,29 @@ namespace Stump.Server.WorldServer.Game.Maps
         public void AddMonsterSpawn(MonsterSpawn spawn)
         {
             m_monsterSpawns.Add(spawn);
+
+            foreach (var area in Areas)
+            {
+                area.AddMonsterSpawn(spawn);
+            }
         }
 
         public void RemoveMonsterSpawn(MonsterSpawn spawn)
         {
             m_monsterSpawns.Remove(spawn);
+            
+            foreach (var area in Areas)
+            {
+                area.RemoveMonsterSpawn(spawn);
+            }
         }
 
-        public IEnumerable<MonsterSpawn> GetMonsterSpawns()
+        public ReadOnlyCollection<MonsterSpawn> MonsterSpawns
         {
-            return m_monsterSpawns;
+            get
+            {
+                return m_monsterSpawns.AsReadOnly();
+            }
         }
 
     }

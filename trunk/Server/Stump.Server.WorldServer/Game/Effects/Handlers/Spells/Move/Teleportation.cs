@@ -15,11 +15,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             Caster.Position.Cell = TargetedCell;
 
             Fight.ForEach(entry => ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(entry.Client, Caster, Caster, TargetedCell));
+
+            return true;
         }
     }
 }

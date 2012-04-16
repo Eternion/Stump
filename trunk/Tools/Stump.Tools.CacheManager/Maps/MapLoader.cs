@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NLog;
 using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.DofusProtocol.D2oClasses.Tool.Dlm;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -15,6 +17,8 @@ namespace Stump.Tools.CacheManager.Maps
     public static class MapLoader
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        public const string DecryptionKey = "649ae451ca33ec53bbcbcc33becf15f4";
 
         public static void LoadMaps(string mapFolder)
         {
@@ -32,11 +36,19 @@ namespace Stump.Tools.CacheManager.Maps
                 {
                     var data = d2pFile.ReadFile(file);
 
-                    var uncompressedMap = new MemoryStream();
-                    ZipHelper.Deflate(new MemoryStream(data), uncompressedMap);
-                    uncompressedMap.Seek(0, SeekOrigin.Begin);
+                    var reader = new DlmReader(new MemoryStream(data), DecryptionKey);
+                    DlmMap map;
+                    try
+                    {
+                        map = reader.ReadMap();
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Cannot evaluate map {0}", file);
+                        continue;
+                    }
+                    var values = BuildFromMap(map);
 
-                    var values = ReadMap(new BigEndianReader(uncompressedMap));
                     Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsertInto("maps", values));
 
                     counter++;
@@ -48,160 +60,54 @@ namespace Stump.Tools.CacheManager.Maps
             }
         }
 
-        private static Dictionary<string, object> ReadMap(this BigEndianReader reader)
+        private static Dictionary<string, object> BuildFromMap(DlmMap map)
         {
             var values = new Dictionary<string, object>();
 
-            int header = reader.ReadByte();
+            values.Add("Version", map.Version);
+            values.Add("Id",  map.Id);
+            values.Add("RelativeId",  map.RelativeId);
+            values.Add("MapType",  map.MapType);
+            values.Add("SubAreaId",  map.SubAreaId);
+            values.Add("ClientTopNeighbourId",  map.TopNeighbourId);
+            values.Add("ClientBottomNeighbourId", map.BottomNeighbourId);
+            values.Add("ClientLeftNeighbourId", map.LeftNeighbourId);
+            values.Add("ClientRightNeighbourId", map.RightNeighbourId);
+            values.Add("ShadowBonusOnEntities",  map.ShadowBonusOnEntities);
 
-            if (header != 77)
-                throw new FileLoadException("Wrong header file");
 
-            byte version = reader.ReadByte();
-            values.Add("Version", version);
-            values.Add("Id",  reader.ReadInt());
-            values.Add("RelativeId",  reader.ReadUInt());
-            values.Add("MapType",  reader.ReadByte());
-            values.Add("SubAreaId",  reader.ReadInt());
-            values.Add("ClientTopNeighbourId",  reader.ReadInt());
-            values.Add("ClientBottomNeighbourId", reader.ReadInt());
-            values.Add("ClientLeftNeighbourId", reader.ReadInt());
-            values.Add("ClientRightNeighbourId", reader.ReadInt());
-            values.Add("ShadowBonusOnEntities",  reader.ReadInt());
+            values.Add("UseLowpassFilter",  map.UseLowPassFilter ? 1 : 0);
+            values.Add("UseReverb", map.UseReverb ? 1 : -1);
 
-            if (version >= 3)
-            {
-                // background color
-                reader.ReadByte();
-                reader.ReadByte();
-                reader.ReadByte();
-            }
-            if (version >= 4)
-            {
-                /*this.ZOOM_SCALE = */
-                reader.ReadUShort(); // 100 
-                /*this.ZOOM_OFFSET_X = */
-                reader.ReadShort();
-                /*this.ZOOM_OFFSET_Y = */
-                reader.ReadShort();
-            }
+            values.Add("PresetId", map.PresetId);
 
-            values.Add("UseLowpassFilter",  reader.ReadByte());
-            byte usereverb = reader.ReadByte();
-            values.Add("UseReverb", usereverb);
-
-            values.Add("PresetId", usereverb == 1 ? reader.ReadInt() : -1);
-
-            // fixtures background
-            int count = reader.ReadByte();
-            for (int i = 0; i < count; i++)
-            {
-                // new fixture
-                reader.ReadInt();
-                reader.ReadShort();
-                reader.ReadShort();
-                reader.ReadShort();
-                reader.ReadShort();
-                reader.ReadShort();
-                reader.ReadByte();
-                reader.ReadByte();
-                reader.ReadByte();
-                reader.ReadByte();
-            }
-
-            // fixtures foreground
-            count = reader.ReadByte();
-            for (int i = 0; i < count; i++)
-            {
-                // new fixture
-                reader.ReadInt();
-                reader.ReadShort();
-                reader.ReadShort();
-                reader.ReadShort();
-                reader.ReadShort();
-                reader.ReadShort();
-                reader.ReadByte();
-                reader.ReadByte();
-                reader.ReadByte();
-                reader.ReadByte();
-            }
-
-            reader.ReadInt();
-
-            reader.ReadInt(); // ground
-
-            // layers
-            count = reader.ReadByte();
             var elements = new List<MapElement>();
-            for (int i = 0; i < count; i++)
+            foreach (var layer in map.Layers)
             {
-                // new layer
-                reader.ReadInt(); // id
-                short cellscount = reader.ReadShort(); // count
-                for (int l = 0; l < cellscount; l++)
+                foreach (var cell in layer.Cells)
                 {
-                    var cell = reader.ReadShort(); // cellid
-                    short elemcount = reader.ReadShort(); // count
-                    for (int k = 0; k < elemcount; k++)
+                    foreach (var element in cell.Elements.OfType<DlmGraphicalElement>())
                     {
-                        switch (reader.ReadByte())
-                        {
-                            case 2: // GRAPICAL
-                                reader.ReadUInt();
-
-                                reader.ReadByte();
-                                reader.ReadByte();
-                                reader.ReadByte();
-
-                                reader.ReadByte();
-                                reader.ReadByte();
-                                reader.ReadByte();
-
-                                if (version <= 4)
-                                {
-                                    reader.ReadByte();
-                                    reader.ReadByte();
-                                }
-                                else
-                                {
-                                    reader.ReadShort();
-                                    reader.ReadShort();
-                                }
-
-                                reader.ReadByte();
-                                var id = reader.ReadUInt();
-                                elements.Add(new MapElement(id, cell));
-                                break;
-                            case 33: // SOUND
-                                reader.ReadInt();
-                                reader.ReadShort();
-                                reader.ReadInt();
-                                reader.ReadInt();
-                                reader.ReadShort();
-                                reader.ReadShort();
-                                break;
-                        }
+                        elements.Add(new MapElement(element.Identifier, cell.Id));  
                     }
                 }
             }
 
             var cells = new Cell[MapPoint.MapSize];
-            for (short i = 0; i < MapPoint.MapSize; i++)
+            foreach (var cellData in map.Cells)
             {
                 var cell = new Cell
-                    {
-                        Id = i,
-                        Floor = (short) (reader.ReadByte()*10)
-                    };
+                {
+                    Id = cellData.Id,
+                    Floor = cellData.Floor,
+                    LosMov = cellData.LosMov,
+                    Speed = cellData.Speed,
+                    MapChangeData = cellData.MapChangeData,
+                    MoveZone = cellData.MoveZone
+                };
 
-                if (cell.Floor == -1280)
-                    continue;
-
-                cell.LosMov = reader.ReadByte();
-                cell.Speed = reader.ReadByte();
-                cell.MapChangeData = reader.ReadByte();
-
-                cells[i] = cell;
+                cells[cellData.Id] = cell;
+                
             }
 
             var compressedCells = new byte[cells.Length * Cell.StructSize];

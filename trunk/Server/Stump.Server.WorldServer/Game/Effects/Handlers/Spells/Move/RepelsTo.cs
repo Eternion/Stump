@@ -14,18 +14,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             var orientation = CastPoint.OrientationTo(TargetedPoint);
             var target = Fight.GetFirstFighter<FightActor>(entry => entry.Position.Cell.Id == CastPoint.GetCellInDirection(orientation, 1).CellId);
             
             if (target == null)
-                return;
+                return false;
 
             var startCell = target.Cell;
             target.Cell = TargetedCell;
 
             Fight.ForEach(entry => ActionsHandler.SendGameActionFightSlideMessage(entry.Client, Caster, target, startCell.Id, target.Cell.Id));
+
+            return true;
         }
     }
 }

@@ -8,6 +8,7 @@ using Castle.ActiveRecord;
 using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
@@ -38,7 +39,7 @@ using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
     public sealed class Character : Humanoid,
-                                    IStatsOwner, IInventoryOwner
+                                    IStatsOwner, IInventoryOwner, ICommandsUser
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -416,7 +417,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set
             {
                 m_record.Experience = value;
-                if (value >= UpperBoundExperience && Level < ExperienceManager.Instance.HighestCharacterLevel)
+                if (value >= UpperBoundExperience && Level < ExperienceManager.Instance.HighestCharacterLevel ||
+                    value < LowerBoundExperience)
                 {
                     byte lastLevel = Level;
 
@@ -434,13 +436,29 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void LevelUp(byte levelAdded)
         {
-            var level = (byte) (Level + levelAdded);
+            byte level;
 
-            if (level > ExperienceManager.Instance.HighestCharacterLevel)
+            if (levelAdded + Level > ExperienceManager.Instance.HighestCharacterLevel)
                 level = ExperienceManager.Instance.HighestCharacterLevel;
+            else
+                level = (byte) (levelAdded + Level);
 
             var experience = ExperienceManager.Instance.GetCharacterLevelExperience(level);
             
+            Experience = experience;
+        }
+
+        public void LevelDown(byte levelRemoved)
+        {
+            byte level;
+
+            if (Level - levelRemoved < 1)
+                level = 1;
+            else
+                level = (byte)( Level - levelRemoved );
+
+            var experience = ExperienceManager.Instance.GetCharacterLevelExperience(level);
+
             Experience = experience;
         }
 
@@ -519,6 +537,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
+        public bool GodMode
+        {
+            get;
+            private set;
+        }
+
         public event LevelChangedHandler LevelChanged;
 
         private void OnLevelChanged(byte currentLevel, int difference)
@@ -569,16 +593,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             CharacterHandler.SendCharacterStatsListMessage(Client);
         }
 
-        public void RefreshHealth()
+        public void ToggleGodMode(bool state)
         {
-            if (IsRegenActive())
-                UpdateRegenedLife();
-            else
-            {
-                CharacterHandler.SendUpdateLifePointsMessage(Client);
-            }
+            GodMode = state;
         }
-
         #endregion
 
         #region Alignment
@@ -677,8 +695,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             if (Honor - amount < 0)
                 Honor = 0;
-
-            Honor -= amount;
+            else
+                Honor -= amount;
         }
 
         public void AddDishonor(ushort amount)
@@ -690,8 +708,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             if (Dishonor - amount < 0)
                 Dishonor = 0;
-
-            Dishonor -= amount;
+            else
+                Dishonor -= amount;
         }
 
         public void TogglePvPMode(bool state)
@@ -1048,6 +1066,34 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public delegate void CharacterContextChangedHandler(Character character, bool inFight);
         public event CharacterContextChangedHandler ContextChanged;
 
+        public delegate void CharacterFightEndedHandler(Character character, CharacterFighter fighter);
+        public event CharacterFightEndedHandler FightEnded;
+
+        public delegate void CharacterDiedHandler(Character character);
+        public event CharacterDiedHandler Died;
+
+        private void OnDied()
+        {
+            var dest = GetSpawnPoint();
+
+            // use nextmap to update correctly the areas changements
+            NextMap = dest.Map;
+            Cell = dest.Cell;
+            Direction = dest.Direction;
+
+            // energy lost go here
+            Stats.Health.DamageTaken = (short) (Stats.Health.TotalMax - 1);
+
+            CharacterDiedHandler handler = Died;
+            if (handler != null) handler(this);
+        }
+
+        private void OnFightEnded(CharacterFighter fighter)
+        {
+            CharacterFightEndedHandler handler = FightEnded;
+            if (handler != null) handler(this, fighter);
+        }
+
         private void OnCharacterContextChanged(bool inFight)
         {
             CharacterContextChangedHandler handler = ContextChanged;
@@ -1150,6 +1196,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             if (!IsFighting() && !IsSpectator())
                 return;
+
+            OnFightEnded(Fighter);
+
+            if (GodMode)
+                Stats.Health.DamageTaken = 0;
+            else if (Fighter.HasLeft() || Fight.Losers == Fighter.Team)
+                OnDied();
 
             Fighter = null;
             Spectator = null;
@@ -1487,6 +1540,25 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion
 
+        #region Exceptions
+
+        private List<KeyValuePair<string, Exception>> m_commandsError = new List<KeyValuePair<string, Exception>>();
+        public List<KeyValuePair<string, Exception>> CommandsErrors
+        {
+            get
+            {
+                return m_commandsError;
+            }
+        }
+
+        private List<Exception> m_errors = new List<Exception>(); 
+        public List<Exception> Errors
+        {
+            get { return m_errors; }
+        }
+
+        #endregion
+
         #region Network
 
         #region GameRolePlayCharacterInformations
@@ -1600,6 +1672,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         #endregion
+
 
         #endregion
 

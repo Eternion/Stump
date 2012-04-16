@@ -2,6 +2,7 @@
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Commands.Commands;
+using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -46,7 +47,14 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             foreach (var actor in actors)
             {
-                trigger.Reply("{0} : {1}", trigger.Bold(actor.GetType().Name), actor);
+                trigger.Reply("- {0} : {1}", trigger.Bold(actor.GetType().Name), actor);
+            }
+
+            trigger.Reply("SpawningPools ({0}) :", trigger.Bold(map.SpawningPools.Count));
+
+            foreach (var pool in map.SpawningPools)
+            {
+                trigger.Reply("- {0} : State : {1}, Next : {2}s", trigger.Bold(pool.GetType().Name), trigger.Bold(pool.State), trigger.Bold(pool.RemainingTime / 1000));
             }
         }
     }
@@ -89,7 +97,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
     }
 
-    public class InfoCharacterCommand : SubCommand
+    public class InfoCharacterCommand : TargetSubCommand
     {
         public InfoCharacterCommand()
         {
@@ -97,26 +105,12 @@ namespace Stump.Server.WorldServer.Commands.Commands
             RequiredRole = RoleEnum.Moderator;
             Description = "Give informations about a player";
             ParentCommand = typeof(InfoCommand);
-            AddParameter("target", "t", "Targeted player", isOptional: true, converter: ParametersConverter.CharacterConverter);
+            AddTargetParameter();
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            Character character = null;
-            if (trigger.IsArgumentDefined("target"))
-            {
-                character = trigger.Get<Character>("target");
-            }
-            else if (trigger is GameTrigger)
-            {
-                character = ( trigger as GameTrigger ).Character;
-            }
-
-            if (character == null)
-            {
-                trigger.ReplyError("Target not defined");
-                return;
-            }
+            var character = GetTarget(trigger);
 
             trigger.Reply("{0} ({1})", trigger.Bold(character.Name), trigger.Bold(character.Id));
             trigger.Reply("Account : {0} ({1}) - {2}", trigger.Bold(character.Client.Account.Login), trigger.Bold(character.Client.Account.Id), trigger.Bold(character.Client.Account.Role));

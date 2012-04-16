@@ -117,8 +117,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             InventoryHandler.SendInventoryContentMessage(client);
 
-            ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.OBJECT);
-            ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.SPELL);
+            ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.GENERAL_SHORTCUT_BAR);
+            ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.SPELL_SHORTCUT_BAR);
             //ContextHandler.SendSpellForgottenMessage(client);
 
             ContextRoleplayHandler.SendEmoteListMessage(client, Enumerable.Range(0, 25).Select(entry => (sbyte)entry).ToList());

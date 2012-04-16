@@ -15,13 +15,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             foreach (var actor in GetAffectedActors())
             {
                 var buff = new InvisibilityBuff(actor.PopNextBuffId(), actor, Caster, Dice, Spell, false, true);
                 actor.AddAndApplyBuff(buff);
             }
+
+            return true;
         }
     }
 }

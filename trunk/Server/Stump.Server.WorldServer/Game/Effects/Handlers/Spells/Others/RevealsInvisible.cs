@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             var cells = AffectedCells;
 
@@ -38,6 +38,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
                     target.SetInvisibilityState(GameActionFightInvisibilityStateEnum.DETECTED);
                 }
             }
+
+            return true;
         }
     }
 }

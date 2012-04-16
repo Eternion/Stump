@@ -3,6 +3,7 @@ using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Network;
+using Stump.Server.WorldServer.Core.IO;
 
 namespace Stump.Server.WorldServer.Commands.Trigger
 {
@@ -34,6 +35,11 @@ namespace Stump.Server.WorldServer.Commands.Trigger
         public override BaseClient GetSource()
         {
             return null;
+        }
+
+        public override ICommandsUser User
+        {
+            get { return WorldServer.Instance.ConsoleInterface as WorldConsole; }
         }
     }
 }

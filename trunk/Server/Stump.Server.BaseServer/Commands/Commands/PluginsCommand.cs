@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Plugins;
 
@@ -36,6 +37,9 @@ namespace Stump.Server.BaseServer.Commands.Commands
                                                                                     ? SearchOption.AllDirectories
                                                                                     : SearchOption.TopDirectoryOnly))
                 {
+                    if (PluginManager.Instance.GetPlugins().Any(entry => Path.GetFullPath(entry.AssemblyPath) == Path.GetFullPath(file)))
+                        continue;
+
                     PluginContext plugin = PluginManager.Instance.LoadPlugin(file);
 
                     trigger.Reply("Plugin {0} loaded", plugin.Plugin.Name);
@@ -56,6 +60,9 @@ namespace Stump.Server.BaseServer.Commands.Commands
 
                     foreach (string plugin in Directory.EnumerateFiles(pluginPath, "*.dll", SearchOption.AllDirectories))
                     {
+                        if (PluginManager.Instance.GetPlugins().Any(entry => Path.GetFullPath(entry.AssemblyPath) == Path.GetFullPath(plugin)))
+                            continue;
+
                         if (Path.GetFileNameWithoutExtension(plugin).Equals(Path.GetFileNameWithoutExtension(path), StringComparison.InvariantCultureIgnoreCase)
                             || Path.GetFileName(plugin).Equals(Path.GetFileName(plugin), StringComparison.InvariantCultureIgnoreCase))
                         {

@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Drawing;
+using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
+using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game;
@@ -10,42 +12,53 @@ using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
+
     public class GodCommand : SubCommandContainer
     {
         public GodCommand()
         {
             Aliases = new[] { "god" };
-            RequiredRole = RoleEnum.Administrator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Just to be all powerfull.";
         }
     }
 
-    public class CheatCommand : SubCommand
+
+    public class GodOnCommand : TargetSubCommand
     {
-        public CheatCommand()
+        public GodOnCommand()
         {
-            Aliases = new[] {"cheat"};
-            RequiredRole = RoleEnum.Administrator;
-            ParentCommand = typeof (GodCommand);
+            Aliases = new[] { "on" };
+            RequiredRole = RoleEnum.GameMaster;
+            ParentCommand = typeof(GodCommand);
+            Description = "Activate god mode";
+            AddTargetParameter(true);
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            if (!trigger.IsArgumentDefined("target") && trigger is GameTrigger)
-            {
-                Character target = (trigger as GameTrigger).Character;
-                target.Stats.Health.Given += 5000;
-                target.Stats.Intelligence.Given += 5000;
-                target.Stats.Strength.Given += 5000;
-                target.Stats.Chance.Given += 5000;
-                target.Stats.Agility.Given += 5000;
-                target.Stats.AP.Given += 90;
-                target.Stats.MP.Given += 90;
+            var target = GetTarget(trigger);
 
-                target.RefreshStats();
+            target.ToggleGodMode(true);
+        }
+    }
+    public class GodOffCommand : TargetSubCommand
+    {
+        public GodOffCommand()
+        {
+            Aliases = new[] { "off" };
+            RequiredRole = RoleEnum.Administrator;
+            ParentCommand = typeof(GodCommand);
+            Description = "Disable god mode";
+            AddTargetParameter(true);
+        }
 
-                trigger.Reply("You're now a cheat. Make the good, love everyone etc.");
-            }
+        public override void Execute(TriggerBase trigger)
+        {
+
+            var target = GetTarget(trigger);
+
+            target.ToggleGodMode(true);
         }
     }
 
@@ -56,22 +69,39 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Aliases = new[] { "levelup" };
             RequiredRole = RoleEnum.Administrator;
  
-            AddParameter("amount", "amount", "Amount of levels to add", (byte)1);
+            AddParameter("amount", "amount", "Amount of levels to add", (short)1);
             AddParameter("target", "t", "Character who will level up", isOptional: true, converter: ParametersConverter.CharacterConverter);  
         }
 
         public override void Execute(TriggerBase trigger)
         {
             Character target;
+            byte delta;
 
             if (!trigger.IsArgumentDefined("target") && trigger is GameTrigger)
                 target = (trigger as GameTrigger).Character;
             else
                 target = trigger.Get<Character>("target");
 
-            target.LevelUp(trigger.Get<byte>("amount"));
+            var amount = trigger.Get<short>("amount");
+            if (amount > 0 && amount <= byte.MaxValue)
+            {
+                delta = (byte) (amount);
+                target.LevelUp(delta);
+                trigger.Reply("Added " + trigger.Bold("{0}") + " levels to '{1}'.", delta, target.Name);
 
-            trigger.Reply("Added " + trigger.Bold("{0}") + " levels to '{1}'.", trigger.Get<byte>("amount"), target.Name);
+            }
+            else if (amount < 0 && -amount <= byte.MaxValue)
+            {
+                delta = (byte)( -amount );
+                target.LevelDown(delta);
+                trigger.Reply("Removed " + trigger.Bold("{0}") + " levels from '{1}'.", delta, target.Name);
+
+            }
+            else
+            {
+                trigger.ReplyError("Invalid level given. Must be greater then -255 and lesser than 255");
+            }
         }
     }
 }

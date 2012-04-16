@@ -4,7 +4,7 @@ using Stump.DofusProtocol.Enums;
 
 namespace Stump.DofusProtocol.Enums
 {
-    public enum PlayerFields
+    public enum PlayerFields : byte
     {
         Health = 1,
         Initiative = 2,

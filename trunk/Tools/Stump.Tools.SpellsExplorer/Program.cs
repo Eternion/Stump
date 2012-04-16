@@ -25,7 +25,7 @@ namespace Stump.Tools.SpellsExplorer
             Console.WindowHeight = 45;
             
             Console.WriteLine("Initializing Database...");
-            m_databaseAccessor = new DatabaseAccessor(WorldServer.DatabaseConfiguration, Definitions.DatabaseRevision, typeof (WorldBaseRecord<>), typeof (WorldBaseRecord<>).Assembly);
+            m_databaseAccessor = new DatabaseAccessor(WorldServer.DatabaseConfiguration, Definitions.DatabaseRevision, typeof (WorldBaseRecord<>), typeof (WorldBaseRecord<>).Assembly, false);
             m_databaseAccessor.Initialize();
 
             Console.WriteLine("Opening Database...");

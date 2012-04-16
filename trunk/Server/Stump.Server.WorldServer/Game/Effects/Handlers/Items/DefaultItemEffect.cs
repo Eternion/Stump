@@ -302,7 +302,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
 
         #endregion
 
-        public DefaultItemEffect(EffectBase effect, Character target, Item item)
+        public DefaultItemEffect(EffectBase effect, Character target, PlayerItem item)
             : base(effect, target, item)
         {
         }
@@ -312,10 +312,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             if (!(Effect is EffectInteger))
-                return;
+                return false;
 
             EffectComputeHandler handler;
 
@@ -326,7 +326,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
 
                 if (!m_addMethods.ContainsKey(caracteritic) ||
                     !m_subMethods.ContainsKey(caracteritic))
-                    return;
+                    return false;
 
                 handler = Operation == HandlerOperation.APPLY ? m_addMethods[caracteritic] : m_subMethods[caracteritic];
             }
@@ -336,17 +336,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
 
                 if (!m_addMethods.ContainsKey(caracteritic) ||
                     !m_subMethods.ContainsKey(caracteritic))
-                    return;
+                    return false;
 
                 handler = Operation == HandlerOperation.APPLY ? m_subMethods[caracteritic] : m_addMethods[caracteritic];
             }
             else
             {
-                return;
+                return false;
             }
 
             if (handler != null)
                 handler(Target, Effect as EffectInteger);
+
+            return true;
         }
 
         #region Add Methods

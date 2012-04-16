@@ -12,8 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
 		public uint superTypeId;
 		public Boolean plural;
 		public uint gender;
-		public uint zoneSize;
-		public uint zoneShape;
+		public String rawZone;
 		public Boolean needUseConfirm;
 	}
 }

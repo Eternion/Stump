@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
+using System.Globalization;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
@@ -9,8 +11,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
 {
     public class AnnounceCommand : CommandBase
     {
-        [Variable]
-        public static string AnnounceColor = Color.Red.ToArgb().ToString("X");
+        [Variable(true)]
+        public static string AnnounceColor = "0x" + Color.Red.ToArgb().ToString("X");
 
         public AnnounceCommand()
         {
@@ -22,7 +24,12 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var color = Color.FromArgb(int.Parse(AnnounceColor));
+            Color color;
+
+            if (AnnounceColor.ToLower().StartsWith("0x"))
+                color = Color.FromArgb(int.Parse(AnnounceColor.Remove(0, 2), NumberStyles.HexNumber));
+            else
+                color = Color.FromArgb(int.Parse(AnnounceColor));
 
             var msg = trigger.Get<string>("msg");
 

@@ -20,6 +20,7 @@ namespace Stump.Core.Xml.Config
             Serialized = node.Attributes["serialized"] != null ? node.Attributes["serialized"].Value == "true" : false;
             ClassName = GetClassNameFromNode(node);
             Namespace = GetNamespaceFromNode(node);
+            Instance = null;
         }
 
         public XmlConfigNode(FieldInfo field)
@@ -30,6 +31,7 @@ namespace Stump.Core.Xml.Config
             Serialized = !field.FieldType.HasInterface(typeof (IConvertible)) || field.FieldType.IsEnum;
             ClassName = field.DeclaringType.Name;
             Namespace = field.DeclaringType.Namespace;
+            Instance = null;
         }
 
         public XmlConfigNode(PropertyInfo property)
@@ -40,6 +42,7 @@ namespace Stump.Core.Xml.Config
             Serialized = !property.PropertyType.HasInterface(typeof(IConvertible)) || property.PropertyType.IsEnum;
             ClassName = property.DeclaringType.Name;
             Namespace = property.DeclaringType.Namespace;
+            Instance = null;
         }
 
         public XmlNode Node
@@ -125,6 +128,12 @@ namespace Stump.Core.Xml.Config
             private set;
         }
 
+        public object Instance
+        {
+            get;
+            set;
+        }
+
         public void BindToField(FieldInfo fieldInfo)
         {
             if (BindedProperty != null)
@@ -170,7 +179,7 @@ namespace Stump.Core.Xml.Config
                     !Attribute.DefinableRunning)
                     return m_newValue;
 
-                return BindedField.GetValue(null);
+                return BindedField.GetValue(Instance);
             }
 
             else if (BindedProperty != null && BindedField == null)
@@ -179,7 +188,7 @@ namespace Stump.Core.Xml.Config
                     !Attribute.DefinableRunning)
                     return m_newValue;
 
-                return BindedProperty.GetValue(null, new object[0]);
+                return BindedProperty.GetValue(Instance, new object[0]);
             }
 
             throw new Exception(string.Format("Cannot read the config node '{0}' because no member has been binded to it", Path));
@@ -190,10 +199,10 @@ namespace Stump.Core.Xml.Config
             if (BindedField != null && BindedProperty == null)
             {
                 if (m_newValue == null && !alreadyRunning)
-                    BindedField.SetValue(null, value);
+                    BindedField.SetValue(Instance, value);
 
                 else if (Attribute.DefinableRunning)
-                    BindedField.SetValue(null, value);
+                    BindedField.SetValue(Instance, value);
 
                 m_newValue = value;
             }
@@ -201,10 +210,10 @@ namespace Stump.Core.Xml.Config
             else if (BindedProperty != null && BindedField == null)
             {
                 if (m_newValue == null && !alreadyRunning)
-                    BindedProperty.SetValue(null, value, new object[0]);
+                    BindedProperty.SetValue(Instance, value, new object[0]);
 
                 else if (Attribute.DefinableRunning)
-                    BindedProperty.SetValue(null, value, new object[0]);
+                    BindedProperty.SetValue(Instance, value, new object[0]);
 
                 m_newValue = value;
             }

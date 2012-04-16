@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Game.Social
             get { return m_friends.AsReadOnly(); }
         }
 
-        public ReadOnlyCollection<Ignored> Ignored
+        public ReadOnlyCollection<Ignored> Ignoreds
         {
             get { return m_ignoreds.AsReadOnly(); }
         }
@@ -105,6 +105,8 @@ namespace Stump.Server.WorldServer.Game.Social
             else
                 m_friends.Add(new Friend(friendAccount));
 
+            FriendHandler.SendFriendsListMessage(Owner.Client, Friends);
+
             return true;
         }
 
@@ -159,6 +161,9 @@ namespace Stump.Server.WorldServer.Game.Social
             }
             else
                 m_ignoreds.Add(new Ignored(ignoredAccount, session));
+
+
+            FriendHandler.SendIgnoredListMessage(Owner.Client, Ignoreds);
 
             return true;
         }

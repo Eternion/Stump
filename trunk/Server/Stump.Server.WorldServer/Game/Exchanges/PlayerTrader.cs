@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -11,7 +12,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
     {
         public event ItemMovedHandler ItemMoved;
 
-        private void NotifyItemMoved(Item item, bool modified, int difference)
+        private void NotifyItemMoved(PlayerItem item, bool modified, int difference)
         {
             ItemMovedHandler handler = ItemMoved;
             if (handler != null)
@@ -37,7 +38,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         }
 
 
-        private List<Item> m_items = new List<Item>();
+        private List<PlayerItem> m_items = new List<PlayerItem>();
 
         public PlayerTrader(Character character, PlayerTrade trade)
         {
@@ -72,9 +73,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             private set;
         }
 
-        public IEnumerable<Item> Items
+        public ReadOnlyCollection<PlayerItem> Items
         {
-            get { return m_items; }
+            get { return m_items.AsReadOnly(); }
         }
 
         public uint Kamas
@@ -133,7 +134,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             if (amount > playerItem.Stack || amount < 0)
                 return false;
 
-            tradeItem = new Item(playerItem, amount);
+            tradeItem = new PlayerItem(Character, playerItem.Record) {Stack = amount};
 
             m_items.Add(tradeItem);
 

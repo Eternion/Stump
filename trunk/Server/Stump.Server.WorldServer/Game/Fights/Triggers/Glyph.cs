@@ -70,19 +70,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public override void Trigger(FightActor trigger)
         {
             NotifyTriggered(trigger, GlyphSpell);
-            foreach (var shape in Shapes)
-            {
-                var handler = SpellManager.Instance.GetSpellCastHandler(Caster, GlyphSpell, shape.Cell, false);
-                handler.MarkTrigger = this;
-                handler.Initialize();
 
-                foreach (var effectHandler in handler.GetEffectHandlers())
-                {
-                    effectHandler.EffectZone = new Zone(shape.Shape == GameActionMarkCellsTypeEnum.CELLS_CROSS ? SpellShapeEnum.Q : SpellShapeEnum.C, shape.Size);
-                }
-
-                handler.Execute();
-            }
+            var handler = SpellManager.Instance.GetSpellCastHandler(Caster, GlyphSpell, trigger.Cell, false);
+            handler.MarkTrigger = this;
+            handler.Initialize();
+            handler.Execute();
         }
 
         public override GameActionMark GetGameActionMark()

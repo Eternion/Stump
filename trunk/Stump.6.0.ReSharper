@@ -397,6 +397,7 @@ if($bool$) $x$ = false;]]></SearchPattern>
       <Abbreviation Text="PVP" />
       <Abbreviation Text="RSA" />
       <Abbreviation Text="UTF" />
+      <Abbreviation Text="DB" />
     </Naming2>
   </CodeStyleSettings>
 </Configuration>

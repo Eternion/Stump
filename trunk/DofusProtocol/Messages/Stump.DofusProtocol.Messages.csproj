@@ -190,13 +190,12 @@
     <Compile Include="Messages\game\actions\fight\GameActionFightDropCharacterMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightExchangePositionsMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightInvisibilityMessage.cs" />
+    <Compile Include="Messages\game\actions\fight\GameActionFightInvisibleDetectedMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightInvisibleObstacleMessage.cs" />
-    <Compile Include="Messages\game\actions\fight\GameActionFightInvisibleTacklerMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightKillMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightLifeAndShieldPointsLostMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightLifePointsGainMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightLifePointsLostMessage.cs" />
-    <Compile Include="Messages\game\actions\fight\GameActionFightLifePointsVariationMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightMarkCellsMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightModifyEffectsDurationMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightNoSpellCastMessage.cs" />
@@ -204,7 +203,6 @@
     <Compile Include="Messages\game\actions\fight\GameActionFightReduceDamagesMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightReflectDamagesMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightReflectSpellMessage.cs" />
-    <Compile Include="Messages\game\actions\fight\GameActionFightShieldPointsVariationMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightSlideMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightSpellCastMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightSpellCooldownVariationMessage.cs" />
@@ -241,6 +239,7 @@
     <Compile Include="Messages\game\basic\BasicLatencyStatsMessage.cs" />
     <Compile Include="Messages\game\basic\BasicLatencyStatsRequestMessage.cs" />
     <Compile Include="Messages\game\basic\BasicNoOperationMessage.cs" />
+    <Compile Include="Messages\game\basic\BasicSetAwayModeRequestMessage.cs" />
     <Compile Include="Messages\game\basic\BasicSwitchModeRequestMessage.cs" />
     <Compile Include="Messages\game\basic\BasicTimeMessage.cs" />
     <Compile Include="Messages\game\basic\BasicWhoAmIRequestMessage.cs" />
@@ -249,6 +248,8 @@
     <Compile Include="Messages\game\basic\BasicWhoIsRequestMessage.cs" />
     <Compile Include="Messages\game\basic\NumericWhoIsMessage.cs" />
     <Compile Include="Messages\game\basic\NumericWhoIsRequestMessage.cs" />
+    <Compile Include="Messages\game\basic\SequenceNumberMessage.cs" />
+    <Compile Include="Messages\game\basic\SequenceNumberRequestMessage.cs" />
     <Compile Include="Messages\game\basic\TextInformationMessage.cs" />
     <Compile Include="Messages\game\character\choice\CharacterFirstSelectionMessage.cs" />
     <Compile Include="Messages\game\character\choice\CharacterSelectedErrorMessage.cs" />
@@ -273,6 +274,7 @@
     <Compile Include="Messages\game\character\replay\CharacterReplayRequestMessage.cs" />
     <Compile Include="Messages\game\character\replay\CharacterReplayWithRecolorRequestMessage.cs" />
     <Compile Include="Messages\game\character\replay\CharacterReplayWithRenameRequestMessage.cs" />
+    <Compile Include="Messages\game\character\stats\CharacterExperienceGainMessage.cs" />
     <Compile Include="Messages\game\character\stats\CharacterLevelUpInformationMessage.cs" />
     <Compile Include="Messages\game\character\stats\CharacterLevelUpMessage.cs" />
     <Compile Include="Messages\game\character\stats\CharacterStatsListMessage.cs" />
@@ -427,8 +429,8 @@
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayRemoveChallengeMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayShowChallengeMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\GameRolePlayShowActorMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\houses\AccountHouseMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\houses\guild\HouseGuildNoneMessage.cs" />
-    <Compile Include="Messages\game\context\roleplay\houses\guild\HouseGuildRightsChangeRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\houses\guild\HouseGuildRightsMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\houses\guild\HouseGuildRightsViewMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\houses\guild\HouseGuildShareRequestMessage.cs" />
@@ -860,6 +862,7 @@
     <Compile Include="Messages\game\pvp\AlignmentAreaUpdateMessage.cs" />
     <Compile Include="Messages\game\pvp\AlignmentRankUpdateMessage.cs" />
     <Compile Include="Messages\game\pvp\AlignmentSubAreasListMessage.cs" />
+    <Compile Include="Messages\game\pvp\AlignmentSubAreaUpdateExtendedMessage.cs" />
     <Compile Include="Messages\game\pvp\AlignmentSubAreaUpdateMessage.cs" />
     <Compile Include="Messages\game\pvp\SetEnablePVPRequestMessage.cs" />
     <Compile Include="Messages\game\report\CharacterReportMessage.cs" />

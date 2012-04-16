@@ -18,6 +18,7 @@ using Stump.Core.Xml;
 using Stump.Core.Xml.Config;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Database;
+using Stump.Server.BaseServer.Exceptions;
 using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
@@ -286,6 +287,8 @@ namespace Stump.Server.BaseServer
 
         public void HandleCrashException(Exception e)
         {
+            ExceptionManager.Instance.RegisterException(e);
+
             logger.Fatal(
                 string.Format(" Crash Exception : {0}\r\n", e.Message) +
                 string.Format(" Source: {0} -> {1}\r\n", e.Source,

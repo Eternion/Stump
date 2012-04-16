@@ -11,23 +11,23 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
     [EffectHandler(EffectsEnum.Effect_AddHealth)]
     public class RestoreHp : UsableEffectHandler
     {
-        public RestoreHp(EffectBase effect, Character target, Item item)
+        public RestoreHp(EffectBase effect, Character target, PlayerItem item)
             : base(effect, target, item)
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Item) as EffectInteger;
 
             if (integerEffect == null)
-                return;
+                return false;
 
             if (Target.Stats.Health.DamageTaken == 0)
             {
                 // health already to max
                 BasicHandler.SendTextInformationMessage(Target.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 225);
-                return;
+                return false;
             }
 
             if (Target.Stats.Health.DamageTaken < integerEffect.Value)
@@ -38,9 +38,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             Target.Stats.Health.DamageTaken -= integerEffect.Value;
 
             // x hp restored
-            Target.RefreshHealth();
+            Target.RefreshStats();
             BasicHandler.SendTextInformationMessage(Target.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 1, integerEffect.Value);
             Target.PlayEmote(EmotesEnum.EMOTE_EAT);
+
+            return true;
         }
     }
 }

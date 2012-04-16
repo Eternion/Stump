@@ -9,5 +9,6 @@ namespace Stump.DofusProtocol.D2oClasses
 		public uint id;
 		public uint nameId;
 		public String look;
+		private String MODULE = "Mounts";
 	}
 }

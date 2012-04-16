@@ -1,3 +1,4 @@
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
@@ -5,6 +6,7 @@ using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Game.Maps.Spawns;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -90,6 +92,74 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 group = position.Map.SpawnMonsterGroup(grade, position);
 
             trigger.Reply("Monster '{0}' added to the group '{1}'", template.Id, group.Id);
+        }
+    }
+
+
+    public class MonsterSpawnNextCommand : SubCommand
+    {
+        public MonsterSpawnNextCommand()
+        {
+            Aliases = new[] { "spawnnext" };
+            RequiredRole = RoleEnum.GameMaster;
+            Description = "Spawn the next monster of the spawning pool";
+            ParentCommand = typeof(MonsterCommands);
+            AddParameter("map", "m", "Map", isOptional: true, converter: ParametersConverter.MapConverter);
+            AddParameter("subarea", "subarea", "If defined spawn a monster on each map", isOptional: true, converter: ParametersConverter.SubAreaConverter);
+        }
+
+
+        public override void Execute(TriggerBase trigger)
+        {
+            Map map = null;
+            SubArea subarea = null;
+
+            if (!trigger.IsArgumentDefined("map") && !trigger.IsArgumentDefined("subarea"))
+            {
+                if (!( trigger is GameTrigger ))
+                {
+                    trigger.ReplyError("You have to define a map or a subarea if your are not ingame");
+                    return;
+                }
+
+                map = ( trigger as GameTrigger ).Character.Map;
+            }
+            else if (trigger.IsArgumentDefined("map"))
+                map = trigger.Get<Map>("map");
+            else if (trigger.IsArgumentDefined("subarea"))
+                subarea = trigger.Get<SubArea>("subarea");
+
+            if (map != null)
+            {
+                var pool = map.SpawningPools.OfType<ClassicalSpawningPool>().FirstOrDefault();
+
+                if (pool == null)
+                {
+                    trigger.ReplyError("No spawning pool on the map");
+                    return;
+                }
+
+                if (pool.SpawnNextGroup())
+                    trigger.Reply("Next group spawned");
+                else
+                    trigger.ReplyError("Spawns limit reached");
+            }
+
+            else if (subarea != null)
+            {
+                int i = 0;
+                foreach (var subMap in subarea.Maps)
+                {
+                    var pool = subMap.SpawningPools.OfType<ClassicalSpawningPool>().FirstOrDefault();
+
+                    if (pool != null)
+                        if (pool.SpawnNextGroup())
+                            i++;
+
+                }
+
+                trigger.Reply("{0} groups spawned", i);
+            }
         }
     }
 }

@@ -17,14 +17,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             foreach (FightActor actor in GetAffectedActors())
             {
                 var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
 
                 if (integerEffect == null)
-                    return;
+                    return false;
 
                 if (Effect.Duration > 0)
                 {
@@ -32,9 +32,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
                 }
                 else
                 {
-                    actor.Heal(Caster, integerEffect.Value);
+                    actor.Heal(integerEffect.Value, Caster);
                 }
             }
+
+            return true;
         }
 
         private static void HealBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
@@ -44,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             if (integerEffect == null)
                 return;
 
-            buff.Target.Heal(buff.Caster, integerEffect.Value);
+            buff.Target.Heal(integerEffect.Value, buff.Caster);
         }
     }
 }

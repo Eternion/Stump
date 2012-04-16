@@ -17,14 +17,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             foreach (FightActor actor in GetAffectedActors())
             {
                 var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
 
                 if (integerEffect == null)
-                    return;
+                    return false;
 
                 var value = integerEffect.Value;
 
@@ -51,7 +51,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 }
 
                 if (value <= 0)
-                    return;
+                    return false;
 
                 if (Effect.Duration > 1)
                 {
@@ -62,6 +62,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                     actor.LostMP(value);
                 }
             }
+
+            return true;
         }
     }
 }

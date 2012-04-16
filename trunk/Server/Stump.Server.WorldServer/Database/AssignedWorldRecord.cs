@@ -15,11 +15,11 @@ namespace Stump.Server.WorldServer.Database
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private static PrimaryKeyIdProvider m_idProvider;
+        private static readonly PrimaryKeyIdProvider IdProvider;
 
         static AssignedWorldRecord()
         {
-            if (m_idProvider != null)
+            if (IdProvider != null)
                 return;
 
             var type = typeof(T);
@@ -42,12 +42,17 @@ namespace Stump.Server.WorldServer.Database
                 return;
             }
 
-            m_idProvider = new PrimaryKeyIdProvider(typeof(T), primaryKeyField.Item1.Name);
+            IdProvider = new PrimaryKeyIdProvider(typeof(T), primaryKeyField.Item1.Name);
         }
 
-        public void AssignRecordId()
+        public static int PopNextId()
         {
-            Id = m_idProvider.Pop();
+            return IdProvider.Pop();
+        }
+
+        public void AssignIdentifier()
+        {
+            Id = PopNextId();
         }
 
         [PrimaryKey(PrimaryKeyType.Assigned)]
@@ -79,7 +84,7 @@ namespace Stump.Server.WorldServer.Database
         public override void Create()
         {
             if (!IdAssigned)
-                AssignRecordId();
+                AssignIdentifier();
 
             base.Create();
 
@@ -94,9 +99,19 @@ namespace Stump.Server.WorldServer.Database
         {
             foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
             {
-                if (type.IsSubclassOfGeneric(typeof(AssignedWorldRecord<>)))
+                if (!type.IsAbstract && type.IsSubclassOfGeneric(typeof(AssignedWorldRecord<>)) && type != typeof(AssignedWorldRecord<>))
                 {
-                    type.BaseType.TypeInitializer.Invoke(null, null);
+                    var baseType = type.BaseType;
+
+                    while (baseType != null && baseType.GetGenericTypeDefinition() != typeof(AssignedWorldRecord<>))
+                    {
+                        baseType = baseType.BaseType;
+                    }
+
+                    if (baseType == null)
+                        continue;
+
+                    baseType.TypeInitializer.Invoke(null, null);
                 }
             }
         }

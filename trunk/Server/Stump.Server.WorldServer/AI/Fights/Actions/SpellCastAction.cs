@@ -15,6 +15,14 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             Target = target;
         }
 
+        public SpellCastAction(AIFighter fighter, Spell spell, Cell target, bool multipleCast)
+            : base(fighter)
+        {
+            Spell = spell;
+            Target = target;
+            MultipleCast = multipleCast;
+        }
+
         public Spell Spell
         {
             get;
@@ -27,12 +35,20 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             private set;
         }
 
+        public bool MultipleCast
+        {
+            get;
+            set;
+        }
+
         protected override RunStatus Run(object context)
         {
             if (!Fighter.CanCastSpell(Spell, Target))
                 return RunStatus.Failure;
-
-            Fighter.CastSpell(Spell, Target);
+            do
+            {
+                Fighter.CastSpell(Spell, Target);
+            } while (MultipleCast && Fighter.CanCastSpell(Spell, Target));
 
             return RunStatus.Success;
         }

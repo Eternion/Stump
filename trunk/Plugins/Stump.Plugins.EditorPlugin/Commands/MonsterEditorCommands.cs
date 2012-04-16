@@ -20,7 +20,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public MonsterEditorCommands()
         {
             Aliases = new[] { "medit", "monsteredit" };
-            RequiredRole = RoleEnum.Administrator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Monster editor";
         }
     }
@@ -30,7 +30,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public MonsterSpawnCommand()
         {
             Aliases = new [] { "spawn" };
-            RequiredRole = RoleEnum.Administrator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Add/Remove a monster spawn";
             ParentCommand = typeof(MonsterEditorCommands);
             AddParameter("monster", "m", "Monster to spawn", converter: ParametersConverter.MonsterTemplateConverter);
@@ -111,7 +111,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public MonsterDropCommand()
         {
             Aliases = new[] { "drop" };
-            RequiredRole = RoleEnum.Administrator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Add/Remove a monster drop";
             ParentCommand = typeof(MonsterEditorCommands);
             AddParameter("monster", "m", "Targetted monster", converter: ParametersConverter.MonsterTemplateConverter);
@@ -168,7 +168,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public MonsterSpellCommand()
         {
             Aliases = new[] { "spell" };
-            RequiredRole = RoleEnum.Administrator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Add/Remove a monster spell";
             ParentCommand = typeof(MonsterEditorCommands);
             AddParameter("monster", "m", "Monster to spawn", converter: ParametersConverter.MonsterTemplateConverter);
@@ -229,7 +229,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public MonsterKamasCommand()
         {
             Aliases = new[] { "kamas" };
-            RequiredRole = RoleEnum.Administrator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Set dropped kamas";
             ParentCommand = typeof(MonsterEditorCommands);
             AddParameter("monster", "m", "Monster to spawn", converter: ParametersConverter.MonsterTemplateConverter);

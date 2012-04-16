@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Handlers.Friends
         [WorldHandler(IgnoredGetListMessage.Id)]
         public static void HandleIgnoredGetListMessage(WorldClient client, IgnoredGetListMessage message)
         {
-            SendIgnoredListMessage(client, client.Character.FriendsBook.Ignored);
+            SendIgnoredListMessage(client, client.Character.FriendsBook.Ignoreds);
         }
 
         [WorldHandler(FriendAddRequestMessage.Id)]
@@ -99,7 +99,7 @@ namespace Stump.Server.WorldServer.Handlers.Friends
         [WorldHandler(IgnoredDeleteRequestMessage.Id)]
         public static void HandleIgnoredDeleteRequestMessage(WorldClient client, IgnoredDeleteRequestMessage message)
         {
-            var ignored = client.Character.FriendsBook.Ignored.FirstOrDefault(entry => entry.Account.Nickname == message.name);
+            var ignored = client.Character.FriendsBook.Ignoreds.FirstOrDefault(entry => entry.Account.Nickname == message.name);
 
             if (ignored == null)
             {

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Stump.Core.Collections
 {
@@ -256,6 +257,11 @@ namespace Stump.Core.Collections
                 UpdateLists();
                 m_underlyingList.Insert(index, item);
             }
+        }
+
+        public ReadOnlyCollection<T> AsReadOnly()
+        {
+            return new ReadOnlyCollection<T>(m_underlyingList);
         }
     }
 }

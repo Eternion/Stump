@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.Core.Pool;
 using Stump.Core.Timers;
@@ -1433,7 +1434,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             if (State == FightState.Placement)
             {
-                fighter.Stats.Health.DamageTaken = (short)( fighter.Stats.Health.DamageTaken - 1 );
+                fighter.Stats.Health.DamageTaken += (short)(fighter.LifePoints - 1);
 
                 if (CheckFightEnd())
                     return;

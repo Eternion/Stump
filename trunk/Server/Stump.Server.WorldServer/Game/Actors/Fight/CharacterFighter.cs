@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Threading;
@@ -12,7 +11,6 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Results;
@@ -25,12 +23,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
     public sealed class CharacterFighter : NamedFighter
     {
-        private short m_damageTakenBeforeFight;
-        private int m_earnedExp;
         private int m_criticalWeaponBonus;
-        private bool m_isUsingWeapon;
-        private short m_earnedHonor;
+        private short m_damageTakenBeforeFight;
         private short m_earnedDishonor;
+        private int m_earnedExp;
+        private short m_earnedHonor;
+        private bool m_isUsingWeapon;
 
 
         public CharacterFighter(Character character, FightTeam team)
@@ -44,14 +42,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Position = new ObjectPosition(character.Map, cell, character.Direction);
 
             InitializeCharacterFighter();
-        }
-
-        private void InitializeCharacterFighter()
-        {
-            m_damageTakenBeforeFight = Stats.Health.DamageTaken;
-
-            if (Fight.FightType == FightTypeEnum.FIGHT_TYPE_CHALLENGE)
-                Stats.Health.DamageTaken = 0;
         }
 
         public Character Character
@@ -84,23 +74,25 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override ObjectPosition MapPosition
         {
-            get
-            {
-                return Character.Position; 
-            }
+            get { return Character.Position; }
         }
 
         public override byte Level
         {
-            get
-            {
-                return Character.Level;
-            }
+            get { return Character.Level; }
         }
 
         public override StatsFields Stats
         {
             get { return Character.Stats; }
+        }
+
+        private void InitializeCharacterFighter()
+        {
+            m_damageTakenBeforeFight = Stats.Health.DamageTaken;
+
+            if (Fight.FightType == FightTypeEnum.FIGHT_TYPE_CHALLENGE)
+                Stats.Health.DamageTaken = 0;
         }
 
         public override ObjectPosition GetLeaderBladePosition()
@@ -123,7 +115,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (spell.Id == 0 &&
                 Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) != null)
             {
-                var weapon = Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON).Template as WeaponTemplate;
+                var weapon =
+                    Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON).Template as
+                    WeaponTemplate;
 
                 if (weapon == null || !CanUseWeapon(cell, weapon))
                     return;
@@ -131,12 +125,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Fight.StartSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
 
                 var random = new AsyncRandom();
-                var critical = RollCriticalDice(weapon);
+                FightSpellCastCriticalEnum critical = RollCriticalDice(weapon);
 
                 if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
                 {
                     OnWeaponUsed(weapon, cell, critical, false);
-                    UseAP((short)weapon.ApCost);
+                    UseAP((short) weapon.ApCost);
                     Fight.EndSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
 
                     PassTurn();
@@ -147,29 +141,34 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     m_criticalWeaponBonus = weapon.CriticalHitBonus;
 
                 m_isUsingWeapon = true;
-                var effects = weapon.Effects.Where(entry => !EffectManager.Instance.IsRandomableItemEffect(entry.EffectId)).OfType<EffectDice>();
+                IEnumerable<EffectDice> effects =
+                    weapon.Effects.Where(entry => !EffectManager.Instance.IsRandomableItemEffect(entry.EffectId)).OfType
+                        <EffectDice>();
                 var handlers = new List<SpellEffectHandler>();
-                foreach (var effect in effects)
+                foreach (EffectDice effect in effects)
                 {
                     if (effect.Random > 0)
                     {
-                        if (random.NextDouble() > effect.Random / 100d)
+                        if (random.NextDouble() > effect.Random/100d)
                         {
                             // effect ignored
                             continue;
                         }
                     }
 
-                    var handler = EffectManager.Instance.GetSpellEffectHandler(effect, this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
+                    SpellEffectHandler handler = EffectManager.Instance.GetSpellEffectHandler(effect, this, spell, cell,
+                                                                                              critical ==
+                                                                                              FightSpellCastCriticalEnum
+                                                                                                  .CRITICAL_HIT);
                     handlers.Add(handler);
                 }
 
-                var silentCast = handlers.Any(entry => entry.RequireSilentCast());
+                bool silentCast = handlers.Any(entry => entry.RequireSilentCast());
 
                 OnWeaponUsed(weapon, cell, critical, silentCast);
-                UseAP((short)weapon.ApCost);
+                UseAP((short) weapon.ApCost);
 
-                foreach (var handler in handlers)
+                foreach (SpellEffectHandler handler in handlers)
                     handler.Apply();
 
                 Fight.EndSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
@@ -189,7 +188,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override short CalculateDamage(short damage, EffectSchoolEnum type)
         {
-            return base.CalculateDamage((short) ((m_isUsingWeapon ? m_criticalWeaponBonus + Stats[PlayerFields.WeaponDamageBonus] : 0) + damage), type);
+            if (Character.GodMode)
+                return short.MaxValue;
+
+            return
+                base.CalculateDamage(
+                    (short)
+                    ((m_isUsingWeapon ? m_criticalWeaponBonus + Stats[PlayerFields.WeaponDamageBonus] : 0) + damage),
+                    type);
         }
 
         public bool CanUseWeapon(Cell cell, WeaponTemplate weapon)
@@ -225,12 +231,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             var random = new AsyncRandom();
 
-            var critical = FightSpellCastCriticalEnum.NORMAL;
+            FightSpellCastCriticalEnum critical = FightSpellCastCriticalEnum.NORMAL;
 
             if (weapon.CriticalHitProbability != 0 && random.Next(weapon.CriticalFailureProbability) == 0)
                 critical = FightSpellCastCriticalEnum.CRITICAL_FAIL;
 
-            else if (weapon.CriticalHitProbability != 0 && random.Next((int)CalculateCriticRate(weapon.CriticalHitProbability)) == 0)
+            else if (weapon.CriticalHitProbability != 0 &&
+                     random.Next((int) CalculateCriticRate(weapon.CriticalHitProbability)) == 0)
                 critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
 
             return critical;
@@ -268,27 +275,27 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (m_earnedExp != 0)
             {
                 additionalDatas.Add(new FightExperienceData(Character)
-                                  {
-                                      ExperienceFightDelta = m_earnedExp,
-                                      ShowExperience = true,
-                                      ShowExperienceFightDelta = true,
-                                      ShowExperienceLevelFloor = true,
-                                      ShowExperienceNextLevelFloor = true,
-                                  });
+                                        {
+                                            ExperienceFightDelta = m_earnedExp,
+                                            ShowExperience = true,
+                                            ShowExperienceFightDelta = true,
+                                            ShowExperienceLevelFloor = true,
+                                            ShowExperienceNextLevelFloor = true,
+                                        });
             }
 
             if (m_earnedHonor != 0 || m_earnedDishonor != 0)
             {
                 additionalDatas.Add(new FightPvpData(Character)
-                                    {
-                                        HonorDelta = m_earnedHonor,
-                                        DishonorDelta = m_earnedDishonor,
-                                        Honor = Character.Honor,
-                                        Dishonor = Character.Dishonor,
-                                        Grade = (byte) Character.AlignmentGrade,
-                                        MinHonorForGrade = Character.LowerBoundHonor,
-                                        MaxHonorForGrade = Character.UpperBoundHonor,
-                                    });
+                                        {
+                                            HonorDelta = m_earnedHonor,
+                                            DishonorDelta = m_earnedDishonor,
+                                            Honor = Character.Honor,
+                                            Dishonor = Character.Dishonor,
+                                            Grade = (byte) Character.AlignmentGrade,
+                                            MinHonorForGrade = Character.LowerBoundHonor,
+                                            MaxHonorForGrade = Character.UpperBoundHonor,
+                                        });
             }
 
             return new FightPlayerResult(this, GetFighterOutcome(), Loot, additionalDatas.ToArray());
@@ -302,18 +309,62 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
         {
             return new GameFightCharacterInformations(Id,
-                Look,
-                GetEntityDispositionInformations(client), 
-                Team.Id, 
-                IsAlive(),
-                GetGameFightMinimalStats(client),
-                Name, 
-                Character.Level, 
-                Character.GetActorAlignmentInformations());
+                                                      Look,
+                                                      GetEntityDispositionInformations(client),
+                                                      Team.Id,
+                                                      IsAlive(),
+                                                      GetGameFightMinimalStats(client),
+                                                      Name,
+                                                      Character.Level,
+                                                      Character.GetActorAlignmentInformations(),
+                                                      (sbyte) Character.Breed.Id);
         }
+
         public override string ToString()
         {
             return Character.ToString();
         }
+
+        #region God state
+        public override bool UseAP(short amount)
+        {
+            if (Character.GodMode)
+                return true;
+
+            return base.UseAP(amount);
+        }
+
+        public override bool UseMP(short amount)
+        {
+            if (Character.GodMode)
+                return true;
+
+            return base.UseMP(amount);
+        }
+
+        public override bool LostAP(short amount)
+        {
+            if (Character.GodMode)
+                return true;
+
+            return base.LostAP(amount);
+        }
+
+        public override bool LostMP(short amount)
+        {
+            if (Character.GodMode)
+                return true;
+
+            return base.LostMP(amount);
+        }
+
+        public override short CalculateArmorValue(int reduction, EffectSchoolEnum type)
+        {
+            if (Character.GodMode)
+                return short.MaxValue;
+
+            return base.CalculateArmorValue(reduction, type);
+        }
+        #endregion
     }
 }

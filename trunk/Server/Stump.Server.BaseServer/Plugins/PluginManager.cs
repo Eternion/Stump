@@ -70,6 +70,9 @@ namespace Stump.Server.BaseServer.Plugins
             if (!File.Exists(libPath))
                 throw new FileNotFoundException("File doesn't exist", libPath);
 
+            if (PluginContexts.Any(entry => Path.GetFullPath(entry.AssemblyPath) == Path.GetFullPath(libPath)))
+                throw new Exception("Plugin already loaded");
+
             var asmData = File.ReadAllBytes(libPath);
 
             Assembly pluginAssembly = Assembly.Load(asmData);

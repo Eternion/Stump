@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using NLog;
+using Stump.Core.Extensions;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Game.Items
@@ -27,58 +30,45 @@ namespace Stump.Server.WorldServer.Game.Items
 
         #region Creators
 
-        public Item Create(int id, uint amount)
+        public PlayerItem CreatePlayerItem(Character owner, int id, uint amount, bool maxEffects = false)
         {
             if (!m_itemTemplates.ContainsKey(id))
-                throw new Exception(string.Format("Template id '{0}' doesn't exists", id));
+                throw new Exception(string.Format("Template id '{0}' doesn't exist", id));
+
+            return CreatePlayerItem(owner, m_itemTemplates[id], amount, maxEffects);
+        }
+
+        public PlayerItem CreatePlayerItem(Character owner, ItemTemplate template, uint amount, bool maxEffects = false)
+        {
+            var guid = PlayerItemRecord.PopNextId();
 
             var newitem =
-                new Item(m_itemTemplates[id],
+                new PlayerItem(owner, guid, template,
                          CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, (int) amount,
-                         GenerateItemEffects(m_itemTemplates[id]));
+                         GenerateItemEffects(template, maxEffects));
 
             return newitem;
         }
 
-        public Item Create(ItemTemplate template, uint amount)
+        public PlayerItem CreatePlayerItem(Character owner, ItemTemplate template, uint amount, List<EffectBase> effects)
         {
-            var newitem =
-                new Item(template,
-                         CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, (int) amount,
-                         GenerateItemEffects(template));
-
-            return newitem;
-        }
-
-        public Item Create(int id, uint amount, List<EffectBase> effects)
-        {
-            if (!m_itemTemplates.ContainsKey(id))
-                throw new Exception(string.Format("Template id '{0}' doesn't exists", id));
-
+            var guid = PlayerItemRecord.PopNextId();
 
             var newitem =
-                new Item(m_itemTemplates[id],
+                new PlayerItem(owner, guid, template,
                          CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, (int) amount, effects);
 
             return newitem;
         }
 
-        public Item Create(ItemTemplate template, uint amount, List<EffectBase> effects)
+        public PlayerItem CreatePlayerItem(Character owner, IItem item)
         {
-            var newitem =
-                new Item(template,
-                         CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, (int) amount, effects);
-
-            return newitem;
+            return CreatePlayerItem(owner, item.Template, (uint)item.Stack, item.Effects.Clone());
         }
 
-        public Item RegisterAnItemCopy(Item copy, uint amount)
+        public PlayerItem CreatePlayerItem(Character owner, IItem item, uint amount)
         {
-            var newitem =
-                new Item(copy.Template, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
-                         (int) amount, copy.Effects);
-
-            return newitem;
+            return CreatePlayerItem(owner, item.Template, amount, item.Effects.Clone());
         }
 
         public List<EffectBase> GenerateItemEffects(ItemTemplate template, bool max = false)
@@ -108,12 +98,12 @@ namespace Stump.Server.WorldServer.Game.Items
             return m_itemTemplates.Values;
         }
 
-        public ItemTemplate GetTemplate(int id)
+        public ItemTemplate TryGetTemplate(int id)
         {
             return !m_itemTemplates.ContainsKey(id) ? null : m_itemTemplates[id];
         }
 
-        public ItemTemplate GetTemplate(string name, bool ignorecase)
+        public ItemTemplate TryGetTemplate(string name, bool ignorecase)
         {
             return
                 m_itemTemplates.Values.Where(
@@ -124,12 +114,12 @@ namespace Stump.Server.WorldServer.Game.Items
                                           : StringComparison.InvariantCulture)).FirstOrDefault();
         }
 
-        public ItemSetTemplate GetItemSetTemplate(uint id)
+        public ItemSetTemplate TryGetItemSetTemplate(uint id)
         {
             return !m_itemsSets.ContainsKey(id) ? null : m_itemsSets[id];
         }
 
-        public ItemSetTemplate GetItemSetTemplate(string name, bool ignorecase)
+        public ItemSetTemplate TryGetItemSetTemplate(string name, bool ignorecase)
         {
             return
                 m_itemsSets.Values.Where(
@@ -145,7 +135,7 @@ namespace Stump.Server.WorldServer.Game.Items
             return m_itemsToSell.Values.OfType<NpcItem>().Where(entry => entry.NpcShopId == id).ToList();
         }
 
-        public ItemTypeRecord GetItemType(int id)
+        public ItemTypeRecord TryGetItemType(int id)
         {
             return !m_itemTypes.ContainsKey(id) ? null : m_itemTypes[id];
         }
@@ -231,7 +221,7 @@ namespace Stump.Server.WorldServer.Game.Items
         /// 
         /// returns : abc and Abd
         /// </example>
-        public IEnumerable<Item> GetItemsByPattern(string pattern, IEnumerable<Item> list)
+        public IEnumerable<PlayerItem> GetItemsByPattern(string pattern, IEnumerable<PlayerItem> list)
         {
             if (pattern == "*")
                 return list;

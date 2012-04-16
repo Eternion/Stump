@@ -1,6 +1,7 @@
 ﻿using System;
 using NLog;
 using Stump.Core.Threading;
+using Stump.Server.BaseServer.Exceptions;
 using Message = Stump.DofusProtocol.Messages.Message;
 
 namespace Stump.Server.BaseServer.Network
@@ -26,6 +27,7 @@ namespace Stump.Server.BaseServer.Network
             {
                 logger.Error("[Handler : {0}] Force disconnection of client {1} : {2}", Parameter2, Parameter1, ex);
                 Parameter1.Disconnect();
+                ExceptionManager.Instance.RegisterException(ex);
             }
         }
     }

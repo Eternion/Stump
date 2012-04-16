@@ -3,6 +3,7 @@ using NLog;
 using Stump.Core.Collections;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Exceptions;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
@@ -241,6 +242,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 catch (Exception ex)
                 {
                     logger.Error("Exception raised when processing Message for '{0}' : {1}", this, ex);
+                    ExceptionManager.Instance.RegisterException(ex);
                     //Delete();
                 }
             }

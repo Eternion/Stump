@@ -21,20 +21,22 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             foreach (FightActor actor in GetAffectedActors())
             {
                 var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
 
                 if (integerEffect == null)
-                    return;
+                    return false;
 
                 var displayedEffects = GetBuffDisplayedEffect(Effect.EffectId);
 
                 AddStatBuff(actor, (short) (-(integerEffect.Value)), GetEffectCaracteristic(Effect.EffectId), true, (short)displayedEffects[1]);
                 AddStatBuff(Caster, integerEffect.Value, GetEffectCaracteristic(Effect.EffectId), true, (short)displayedEffects[0]);
             }
+
+            return true;
         }
 
         private static PlayerFields GetEffectCaracteristic(EffectsEnum effect)

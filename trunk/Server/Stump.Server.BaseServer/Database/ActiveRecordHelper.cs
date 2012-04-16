@@ -11,11 +11,11 @@ namespace Stump.Server.BaseServer.Database
 {
     public static class ActiveRecordHelper
     {
-        public static IEnumerable<Type> GetTables(Assembly assembly, Type recordBaseType)
+        public static Type[] GetTables(Assembly assembly, Type recordBaseType)
         {
             var types = assembly.GetTypes();
 
-            return types.Where(t => t.GetCustomAttribute<IgnoreTableAttribute>() == null && t.IsSubclassOfGeneric(recordBaseType));
+            return types.Where(t => t.GetCustomAttribute<IgnoreTableAttribute>() == null && t.IsSubclassOfGeneric(recordBaseType)).ToArray();
         }
 
         public static Type GetVersionType(IEnumerable<Type> types)

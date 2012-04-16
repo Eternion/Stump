@@ -21,6 +21,14 @@ namespace Stump.Server.WorldServer.Commands.Trigger
         {
         }
 
+        public override ICommandsUser User
+        {
+            get
+            {
+                return Character;
+            }
+        }
+
         public override void Reply(string text)
         {
             AuthorizedHandler.SendConsoleMessage(Character.Client, text);

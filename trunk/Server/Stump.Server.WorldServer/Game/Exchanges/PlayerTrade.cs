@@ -1,3 +1,4 @@
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
@@ -30,6 +31,14 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             private set;
         }
 
+        public ExchangeTypeEnum Type
+        {
+            get
+            {
+                return ExchangeTypeEnum.PLAYER_TRADE;
+            }
+        }
+
         public void Open()
         {
             FirstTrader.ItemMoved += OnTraderItemMoved;
@@ -49,9 +58,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             if (FirstTrader.ReadyToApply && SecondTrader.ReadyToApply)
                 Apply();
 
-            InventoryHandler.SendExchangeLeaveMessage(FirstTrader.Character.Client,
+            InventoryHandler.SendExchangeLeaveMessage(FirstTrader.Character.Client, Type,
                                                       FirstTrader.ReadyToApply && SecondTrader.ReadyToApply);
-            InventoryHandler.SendExchangeLeaveMessage(SecondTrader.Character.Client,
+            InventoryHandler.SendExchangeLeaveMessage(SecondTrader.Character.Client, Type,
                                                       FirstTrader.ReadyToApply && SecondTrader.ReadyToApply);
 
             FirstTrader.Character.ResetDialog();
@@ -68,13 +77,13 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                 (int) (SecondTrader.Character.Inventory.Kamas + (FirstTrader.Kamas - SecondTrader.Kamas)));
 
             // trade items
-            foreach (Item item in FirstTrader.Items)
+            foreach (PlayerItem item in FirstTrader.Items)
             {
                 FirstTrader.Character.Inventory.ChangeItemOwner(
                     SecondTrader.Character, item, (uint) item.Stack);
             }
 
-            foreach (Item item in SecondTrader.Items)
+            foreach (PlayerItem item in SecondTrader.Items)
             {
                 SecondTrader.Character.Inventory.ChangeItemOwner(
                     FirstTrader.Character, item, (uint) item.Stack);
@@ -84,7 +93,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             InventoryHandler.SendInventoryWeightMessage(SecondTrader.Character.Client);
         }
 
-        private void OnTraderItemMoved(ITrader trader, Item item, bool modified, int difference)
+        private void OnTraderItemMoved(ITrader trader, PlayerItem item, bool modified, int difference)
         {
             if (item.Stack == 0)
             {

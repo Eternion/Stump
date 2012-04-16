@@ -6,38 +6,24 @@ using Stump.Server.WorldServer.Game.Actors.Interfaces;
 
 namespace Stump.Server.WorldServer.Game.Actors.Stats
 {
-    public delegate int StatsFormulasHandler(IStatsOwner target, int @base, int equiped, int given, int context);
+    public delegate short StatsFormulasHandler(IStatsOwner target);
 
     public class StatsFields
     {
         #region Formulas
 
-        private static readonly StatsFormulasHandler FormulasInitiative =
-            (owner, valueBase, valueEquiped, valueGiven, valueContext) =>
-                {
-                    return (int) (owner.Stats.Health.Total <= 0
-                                      ? 0
-                                      : (valueBase + valueEquiped + valueContext +
-                                         owner.Stats[PlayerFields.Chance] +
-                                         owner.Stats[PlayerFields.Intelligence] +
-                                         owner.Stats[PlayerFields.Agility] +
-                                         owner.Stats[PlayerFields.Strength])*
-                                        (owner.Stats.Health.Total/
-                                         (double)owner.Stats.Health.TotalMax ));
-                };
-
         private static readonly StatsFormulasHandler FormulasChanceDependant =
-            (owner, valueBase, valueEquiped, valueGiven, valueContext) =>
-            valueBase + valueEquiped + valueContext + (int) (owner.Stats[PlayerFields.Chance]/10d);
+            (owner) =>
+            (short) (owner.Stats[PlayerFields.Chance]/10d);
 
         private static readonly StatsFormulasHandler FormulasWisdomDependant =
-             (owner, valueBase, valueEquiped, valueGiven, valueContext) =>
-                 valueBase + valueEquiped + valueContext + (int)( owner.Stats[PlayerFields.Wisdom] / 10d );
+             (owner) =>
+                 (short) ( owner.Stats[PlayerFields.Wisdom] / 10d );
 
 
         private static readonly StatsFormulasHandler FormulasAgilityDependant =
-             (owner, valueBase, valueEquiped, valueGiven, valueContext) =>
-                 valueBase + valueEquiped + valueContext + (int)( owner.Stats[PlayerFields.Agility] / 10d );
+             (owner) =>
+                 (short) ( owner.Stats[PlayerFields.Agility] / 10d );
 
         #endregion
 
@@ -113,7 +99,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
             Fields = new Dictionary<PlayerFields, StatsData>();
                          
-            Fields.Add(PlayerFields.Initiative, new StatsData(Owner, PlayerFields.Initiative, 0, FormulasInitiative));
+            Fields.Add(PlayerFields.Initiative, new StatsInitiative(Owner, 0));
             Fields.Add(PlayerFields.Prospecting, new StatsData(Owner, PlayerFields.Prospecting, (short) record.Prospection, FormulasChanceDependant));
             Fields.Add(PlayerFields.AP, new StatsAP(Owner, (short) record.AP));
             Fields.Add(PlayerFields.MP, new StatsMP(Owner, (short) record.MP));
@@ -192,8 +178,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             // note : keep this order !
 
             Fields = new Dictionary<PlayerFields, StatsData>();
-                         
-            Fields.Add(PlayerFields.Initiative, new StatsData(Owner, PlayerFields.Initiative, 0, FormulasInitiative));
+
+            Fields.Add(PlayerFields.Initiative, new StatsInitiative(Owner, 0));
             Fields.Add(PlayerFields.Prospecting, new StatsData(Owner, PlayerFields.Prospecting, 100, FormulasChanceDependant));
             Fields.Add(PlayerFields.AP, new StatsAP(Owner, (short) record.ActionPoints));
             Fields.Add(PlayerFields.MP, new StatsMP(Owner, (short) record.MovementPoints));
@@ -264,7 +250,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.NeutralDamageArmor, new StatsData(Owner, PlayerFields.NeutralDamageArmor, 0));
             Fields.Add(PlayerFields.AirDamageArmor, new StatsData(Owner, PlayerFields.AirDamageArmor, 0));
             Fields.Add(PlayerFields.FireDamageArmor, new StatsData(Owner, PlayerFields.FireDamageArmor, 0));
-                         
+
+
+            foreach (var pair in record.Stats)
+            {
+                Fields[pair.Key].Base = pair.Value;
+            }
         }
     }
 }

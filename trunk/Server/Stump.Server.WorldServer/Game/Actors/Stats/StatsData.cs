@@ -8,27 +8,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
     public class StatsData
     {
         protected StatsFormulasHandler m_formulas;
-        protected short m_valueBase;
-        protected short m_valueContext;
-        protected short m_valueEquiped;
-        protected short m_valueGiven;
+        protected short ValueBase;
+        protected short ValueContext;
+        protected short ValueEquiped;
+        protected short ValueGiven;
 
-        public StatsData(IStatsOwner owner, PlayerFields name, short valueBase)
-            : this(
-                owner, name, valueBase,
-                delegate(IStatsOwner _owner, int valuebase, int valueequiped, int valuegiven, int valuecontext)
-                    {
-                        if (_owner == null)
-                            throw new ArgumentNullException("_owner");
-
-                        return valuebase + valueequiped + valuegiven + valuecontext;
-                    })
+        public StatsData(IStatsOwner owner, PlayerFields name, short valueBase, StatsFormulasHandler formulas = null)
         {
-        }
-
-        public StatsData(IStatsOwner owner, PlayerFields name, short valueBase, StatsFormulasHandler formulas)
-        {
-            m_valueBase = valueBase;
+            ValueBase = valueBase;
             m_formulas = formulas;
             Name = name;
             Owner = owner;
@@ -48,40 +35,43 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         public virtual short Base
         {
-            get { return m_valueBase; }
+            get
+            {
+                return (short) (m_formulas != null ? m_formulas(Owner) + ValueBase : ValueBase);
+            }
             set
             {
-                m_valueBase = value;
+                ValueBase = value;
                 OnModified();
             }
         }
 
         public virtual short Equiped
         {
-            get { return m_valueEquiped; }
+            get { return ValueEquiped; }
             set
             {
-                m_valueEquiped = value;
+                ValueEquiped = value;
                 OnModified();
             }
         }
 
         public virtual short Given
         {
-            get { return m_valueGiven; }
+            get { return ValueGiven; }
             set
             {
-                m_valueGiven = value;
+                ValueGiven = value;
                 OnModified();
             }
         }
 
         public virtual short Context
         {
-            get { return m_valueContext; }
+            get { return ValueContext; }
             set
             {
-                m_valueContext = value;
+                ValueContext = value;
                 OnModified();
             }
         }
@@ -90,14 +80,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get
             {
-                if (m_formulas != null)
-                {
-                    int result = m_formulas(Owner, Base, Equiped, Given, Context);
+                int result = Base + Equiped + Context + Given;
 
-                    return result;
-                }
-
-                return 0;
+                return result;
             }
         }
 

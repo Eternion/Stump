@@ -208,7 +208,7 @@
     <Compile Include="Collections\TimedList.cs" />
     <Compile Include="Cryptography\Cryptography.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
-    <Compile Include="Collections\CollectionExtensions.cs" />
+    <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\TimeExtensions.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="IO\ConsoleProgress.cs" />

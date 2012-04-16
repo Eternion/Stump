@@ -48,6 +48,11 @@ namespace Stump.Core.Timers
             }
         }
 
+        public int RemainingTime
+        {
+            get { return RemainingInitialDelayMillis; }
+        }
+
         /// <summary>
         /// Starts the timer.
         /// </summary>

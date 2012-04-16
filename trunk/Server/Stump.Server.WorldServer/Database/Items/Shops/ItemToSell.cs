@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Database.Items.Shops
         {
             get
             {
-                return m_item ?? ( m_item = ItemManager.Instance.GetTemplate(ItemId) );
+                return m_item ?? ( m_item = ItemManager.Instance.TryGetTemplate(ItemId) );
             }
             set
             {

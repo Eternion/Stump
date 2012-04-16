@@ -62,7 +62,8 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                             (int)client.Account.Id,
                             false,
                             (short)client.Account.BreedFlags,
-                            (short)BreedManager.Instance.AvailableBreedsFlags));
+                            (short)BreedManager.Instance.AvailableBreedsFlags,
+                            (sbyte) client.Account.Role));
         }
 
         public static void SendConsoleCommandsListMessage(IPacketReceiver client)

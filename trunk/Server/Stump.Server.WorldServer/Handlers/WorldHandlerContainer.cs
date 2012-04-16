@@ -18,6 +18,7 @@ namespace Stump.Server.WorldServer.Handlers
             Predicates.Add(messageId, predicate);
         }
 
+
         public bool CanHandleMessage(BaseClient client, uint messageId)
         {
             if (!Predicates.ContainsKey(messageId))

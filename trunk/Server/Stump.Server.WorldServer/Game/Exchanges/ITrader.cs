@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Game.Exchanges
 {
-    public delegate void ItemMovedHandler(ITrader trader, Item item, bool modified, int difference);
+    public delegate void ItemMovedHandler(ITrader trader, PlayerItem item, bool modified, int difference);
     public delegate void KamasChangedHandler(ITrader trader, uint kamasAmount);
     public delegate void ReadyStatusChangedHandler(ITrader trader, bool isReady);
 
@@ -16,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
         ITrade Trade { get; }
         RolePlayActor Actor { get; }
-        IEnumerable<Item> Items { get; }
+        ReadOnlyCollection<PlayerItem> Items { get; }
         uint Kamas { get; }
         bool ReadyToApply { get; }
 

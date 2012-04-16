@@ -3,6 +3,7 @@ using System.Collections;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using Stump.Core.Collections;
 
 namespace Stump.Core.Extensions
 {

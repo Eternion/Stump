@@ -78,7 +78,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
 
         public ItemTypeRecord Type
         {
-            get { return m_type ?? (m_type = ItemManager.Instance.GetItemType((int) TypeId)); }
+            get { return m_type ?? (m_type = ItemManager.Instance.TryGetItemType((int) TypeId)); }
         }
 
         [D2OField("descriptionId")]
@@ -185,7 +185,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
         {
             get
             {
-                return ItemSetId < 0 ? null : m_itemSet ?? ( m_itemSet = ItemManager.Instance.GetItemSetTemplate((uint)ItemSetId) );
+                return ItemSetId < 0 ? null : m_itemSet ?? ( m_itemSet = ItemManager.Instance.TryGetItemSetTemplate((uint)ItemSetId) );
             }
         }
 

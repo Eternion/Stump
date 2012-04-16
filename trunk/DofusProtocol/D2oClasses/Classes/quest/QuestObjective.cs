@@ -11,6 +11,7 @@ namespace Stump.DofusProtocol.D2oClasses
 		public uint id;
 		public uint stepId;
 		public uint typeId;
+		public int dialogId;
 		public List<uint> parameters;
 		public Point coords;
 	}

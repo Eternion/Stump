@@ -17,5 +17,6 @@ namespace Stump.DofusProtocol.D2oClasses
 		public List<AmbientSound> sounds;
 		public int subAreaId;
 		public int worldMap;
+		public Boolean hasPriorityOnWorldmap;
 	}
 }

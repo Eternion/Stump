@@ -156,7 +156,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             {
                 var id = reader.ReadInt32();
 
-                var template = ItemManager.Instance.GetTemplate(id);
+                var template = ItemManager.Instance.TryGetTemplate(id);
 
                 if (template == null)
                     throw new Exception("Item template " + id + " not found");

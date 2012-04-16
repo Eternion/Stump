@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.Core.Xml;
@@ -42,6 +43,8 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
         [Initialization(typeof(Server.WorldServer.Game.World), Silent = true)]
         public static void ApplyFix()
         {
+            logger.Debug("Apply placements fix ...");
+
             if (!ActiveFix)
                 return;
 
@@ -159,7 +162,7 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
             Console.WriteLine("{0}/{1} ({2:0.0}%) patterns used :", successCounter.Count, patterns.Count, successCounter.Count / (double)patterns.Count * 100);
             foreach (var counter in successCounter)
             {
-                Console.WriteLine("{0} :\t{1,8:0.0}%", patternsNames[counter.Key], counter.Value / (double)patches * 100);
+                Console.WriteLine("{0} :\t{1,12:0.0}%", patternsNames[counter.Key], counter.Value / (double)patches * 100);
             }
 
             Console.WriteLine("{0} on {1} maps fixed ({2:0.0}%)", patches, World.Instance.GetMaps().Count(), patches / (double)World.Instance.GetMaps().Count() * 100);

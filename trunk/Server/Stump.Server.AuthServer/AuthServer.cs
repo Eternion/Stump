@@ -14,6 +14,7 @@ using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities.IO.Pem;
 using Stump.Core.Attributes;
+using Stump.Core.IO;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
@@ -83,9 +84,6 @@ namespace Stump.Server.AuthServer
 
         public override void Initialize()
         {
-            var key = AccountManager.Instance.GetRSAPublicKey();
-            var str = Convert.ToBase64String(key.Select(entry => (byte)entry).ToArray());
-
             try
             {
                 base.Initialize();
@@ -93,7 +91,7 @@ namespace Stump.Server.AuthServer
                 ConsoleBase.SetTitle("#Stump Authentification Server");
 
                 logger.Info("Initializing Database...");
-                DatabaseAccessor = new DatabaseAccessor(DatabaseConfiguration, Definitions.DatabaseRevision, typeof(AuthBaseRecord<>), Assembly.GetExecutingAssembly());
+                DatabaseAccessor = new DatabaseAccessor(DatabaseConfiguration, Definitions.DatabaseRevision, typeof(AuthBaseRecord<>), Assembly.GetExecutingAssembly(), true);
                 DatabaseAccessor.Initialize();
 
                 logger.Info("Opening Database...");

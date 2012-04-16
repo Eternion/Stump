@@ -14,12 +14,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             foreach (var actor in GetAffectedActors())
             {
                 actor.InflictDamage((short) actor.LifePoints, EffectSchoolEnum.Unknown, Caster);
             }
+
+            return true;
         }
     }
 }

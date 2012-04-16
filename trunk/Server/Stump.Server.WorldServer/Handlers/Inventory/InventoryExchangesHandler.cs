@@ -9,7 +9,7 @@ using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges;
-using Item = Stump.Server.WorldServer.Game.Items.Item;
+using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
@@ -129,17 +129,17 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ExchangeStartOkNpcShopMessage(dialog.Npc.Id, 0 /* wtf?! */, dialog.Items.Select(entry => entry.GetNetworkItem() as ObjectItemToSellInNpcShop)));
         }
 
-        public static void SendExchangeLeaveMessage(IPacketReceiver client, bool success)
+        public static void SendExchangeLeaveMessage(IPacketReceiver client, ExchangeTypeEnum exchangeType, bool success)
         {
-            client.Send(new ExchangeLeaveMessage(success));
+            client.Send(new ExchangeLeaveMessage((sbyte)exchangeType, success));
         }
 
-        public static void SendExchangeObjectAddedMessage(IPacketReceiver client, bool remote, Item item)
+        public static void SendExchangeObjectAddedMessage(IPacketReceiver client, bool remote, PlayerItem item)
         {
             client.Send(new ExchangeObjectAddedMessage(remote, item.GetObjectItem()));
         }
 
-        public static void SendExchangeObjectModifiedMessage(IPacketReceiver client, bool remote, Item item)
+        public static void SendExchangeObjectModifiedMessage(IPacketReceiver client, bool remote, PlayerItem item)
         {
             client.Send(new ExchangeObjectModifiedMessage(remote, item.GetObjectItem()));
         }

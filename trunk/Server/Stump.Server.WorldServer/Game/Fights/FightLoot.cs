@@ -37,9 +37,10 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             character.Inventory.AddKamas(Kamas);
 
-            foreach (var item in m_items.Values)
+            foreach (var drop in m_items.Values)
             {
-                character.Inventory.AddItem(item.ItemId, item.Amount);
+                var item = ItemManager.Instance.CreatePlayerItem(character, drop.ItemId, drop.Amount);
+                character.Inventory.AddItem(item);
             }
         }
 

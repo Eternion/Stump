@@ -31,20 +31,22 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             foreach (FightActor actor in GetAffectedActors())
             {
                 var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
 
                 if (integerEffect == null)
-                    return;
+                    return false;
 
                 if (Effect.Duration > 0)
                 {
                     AddStatBuff(actor, integerEffect.Value, GetEffectCaracteristic(Effect.EffectId), true);
                 }
             }
+
+            return true;
         }
 
         public static PlayerFields GetEffectCaracteristic(EffectsEnum effect)

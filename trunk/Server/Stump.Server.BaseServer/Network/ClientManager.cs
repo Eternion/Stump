@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -86,9 +87,9 @@ namespace Stump.Server.BaseServer.Network
         /// <summary>
         /// List of connected Clients
         /// </summary>
-        public IEnumerable<BaseClient> Clients
+        public ReadOnlyCollection<BaseClient> Clients
         {
-            get { return m_clients; }
+            get { return m_clients.AsReadOnly(); }
         }
 
         public int Count
@@ -353,7 +354,7 @@ namespace Stump.Server.BaseServer.Network
             {
                 try
                 {
-                    client.Disconnect(true);
+                    client.Disconnect();
                 }
                 finally
                 {

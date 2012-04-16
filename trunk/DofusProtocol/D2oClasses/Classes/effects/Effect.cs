@@ -20,5 +20,6 @@ namespace Stump.DofusProtocol.D2oClasses
 		public Boolean active;
 		public Boolean showInSet;
 		public int bonusType;
+		public Boolean useInFight;
 	}
 }

@@ -34,6 +34,11 @@ namespace Stump.Server.BaseServer.Commands
 
         }
 
+        public abstract ICommandsUser User
+        {
+            get;
+        }
+
         public StringStream Args
         {
             get;
@@ -175,6 +180,13 @@ namespace Stump.Server.BaseServer.Commands
 
         public abstract BaseClient GetSource();
 
+        public int RegisterException(Exception ex)
+        {
+            User.CommandsErrors.Add(new KeyValuePair<string, Exception>(Args.String, ex));
+
+            return User.CommandsErrors.Count - 1;
+        }
+
         /// <summary>
         /// Bind the trigger to a command instance and initialize his parameters. Returns false whenever an error occurs during the initialization
         /// </summary>
@@ -250,9 +262,9 @@ namespace Stump.Server.BaseServer.Commands
                                 ReplyError(ex.Message);
                                 return false;
                             }
-                            catch
+                            catch (Exception ex)
                             {
-                                ReplyError("Cannot parse : {0}", word);
+                                ReplyError("Cannot parse : {0} as {1} (error-index:{2})", word, definition.ValueType, RegisterException(ex));
                                 return false;
                             }
 
@@ -279,9 +291,9 @@ namespace Stump.Server.BaseServer.Commands
                         ReplyError(ex.Message);
                         return false;
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        ReplyError("Cannot parse : {0}", word);
+                        ReplyError("Cannot parse : {0} as {1} (error-index:{2})", word, definition.ValueType, RegisterException(ex));
                         return false;
                     }
 

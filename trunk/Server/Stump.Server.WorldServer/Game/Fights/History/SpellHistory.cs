@@ -37,12 +37,12 @@ namespace Stump.Server.WorldServer.Game.Fights.History
             m_underlyingStack.Push(entry);
         }
 
-        public void RegisterCastedSpell(SpellLevelTemplate spell, Cell target)
+        public void RegisterCastedSpell(SpellLevelTemplate spell, FightActor target)
         {
             RegisterCastedSpell(new SpellHistoryEntry(this, spell, Owner, target, CurrentRound));
         }
 
-        public bool CanCastSpell(SpellLevelTemplate spell, Cell target)
+        public bool CanCastSpell(SpellLevelTemplate spell, Cell targetedCell)
         {
             var mostRecentEntry = m_underlyingStack.LastOrDefault(entry => entry.Spell.Id == spell.Id);
 
@@ -56,7 +56,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
             if (mostRecentEntry.IsGlobalCooldownActive(CurrentRound))
                 return false;
 
-            var castsThisRound = m_underlyingStack.Where(entry => entry.CastRound == CurrentRound).ToArray();
+            var castsThisRound = m_underlyingStack.Where(entry => entry.Spell.Id == spell.Id && entry.CastRound == CurrentRound).ToArray();
 
             if (castsThisRound.Length == 0)
                 return true;
@@ -64,7 +64,12 @@ namespace Stump.Server.WorldServer.Game.Fights.History
             if (spell.MaxCastPerTurn > 0 && castsThisRound.Length >= spell.MaxCastPerTurn)
                 return false;
 
-            var castsOnThisTarget = castsThisRound.Count(entry => entry.TargetedCell.Id == target.Id);
+            var target = Owner.Fight.GetOneFighter(targetedCell);
+
+            if (target == null)
+                return true;
+
+            var castsOnThisTarget = castsThisRound.Count(entry => entry.Target != null && entry.Target.Id == target.Id);
 
             if (spell.MaxCastPerTarget > 0 && castsOnThisTarget >= spell.MaxCastPerTarget)
                 return false;

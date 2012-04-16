@@ -17,12 +17,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             foreach (var actor in GetAffectedActors())
             {
                 AddTriggerBuff(actor, true, BuffTriggerType.AFTER_ATTACKED, OnActorAttacked);
             }
+
+            return true;
         }
 
         private void OnActorAttacked(TriggerBuff buff, BuffTriggerType trigger, object token)

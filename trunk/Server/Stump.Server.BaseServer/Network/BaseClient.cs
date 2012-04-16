@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.Core.Pool.Task;
@@ -24,6 +25,7 @@ namespace Stump.Server.BaseServer.Network
         private MessagePart m_currentMessage;
         private bool m_disconnecting;
 
+        private bool m_onDisconnectCalled = false;
 
         protected BaseClient(Socket socket)
         {
@@ -190,19 +192,15 @@ namespace Stump.Server.BaseServer.Network
             }
         }
 
-        public void Disconnect()
-        {
-            Disconnect(false);
-        }
-
         /// <summary>
         ///   Disconnect the Client. Cannot reuse the socket.
         /// </summary>
-        public void Disconnect(bool force)
+        public void Disconnect()
         {
-            if (!Connected && !force)
+            if (m_onDisconnectCalled)
                 return;
 
+            m_onDisconnectCalled = true;
             m_disconnecting = true;
 
             try

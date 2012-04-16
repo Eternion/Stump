@@ -56,5 +56,13 @@ namespace Stump.Server.WorldServer.Database.Interactives
             get { return m_skills ?? (m_skills = new List<SkillRecord>()); }
             set { m_skills = value; }
         }
+
+        [D2OField("displayTooltip")]
+        [Property]
+        public bool DisplayTooltip
+        {
+            get;
+            set;
+        }
     }
 }

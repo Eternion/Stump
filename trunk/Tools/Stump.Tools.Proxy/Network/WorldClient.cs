@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
+using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -226,7 +227,7 @@ namespace Stump.Tools.Proxy.Network
             Send(new ChatServerMessage(
                      (sbyte) ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,
                      "<font color=\"#" + color.ToArgb().ToString("X") + "\">" + "[PROXY] : " + message + "</font>",
-                     0,
+                     DateTime.Now.GetUnixTimeStamp(),
                      "",
                      0,
                      "",

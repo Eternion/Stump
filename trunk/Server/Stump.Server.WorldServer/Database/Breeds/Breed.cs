@@ -371,6 +371,13 @@ namespace Stump.Server.WorldServer.Database.Breeds
             set;
         }
 
+        [Property("StartKamas")]
+        public int StartKamas
+        {
+            get;
+            set;
+        }
+
         public List<List<uint>> GetThresholds(StatsBoostTypeEnum statsid)
         {        
             switch (statsid)

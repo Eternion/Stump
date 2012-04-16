@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.AuthServer.IO;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Network;
 
@@ -35,6 +36,11 @@ namespace Stump.Server.AuthServer.Commands.Trigger
         public override BaseClient GetSource()
         {
             return null;
+        }
+
+        public override ICommandsUser User
+        {
+            get { return AuthServer.Instance.ConsoleInterface as AuthConsole; }
         }
     }
 }

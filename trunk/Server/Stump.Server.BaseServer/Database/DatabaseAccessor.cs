@@ -21,8 +21,14 @@ namespace Stump.Server.BaseServer.Database
 {
     public class DatabaseAccessor
     {
-        private static readonly InPlaceConfigurationSource m_globalConfig = new InPlaceConfigurationSource();
-        private static readonly List<Type> m_globalTypes = new List<Type>();
+        public bool SupportAsks
+        {
+            get;
+            set;
+        }
+
+        private readonly InPlaceConfigurationSource m_globalConfig = new InPlaceConfigurationSource();
+        private readonly List<Type> m_globalTypes = new List<Type>();
 
         private readonly DatabaseConfiguration m_config;
 
@@ -49,8 +55,9 @@ namespace Stump.Server.BaseServer.Database
             private set;
         }
 
-        public DatabaseAccessor(DatabaseConfiguration config, uint databaseRevision, Type recordBaseType, Assembly assembly)
+        public DatabaseAccessor(DatabaseConfiguration config, uint databaseRevision, Type recordBaseType, Assembly assembly, bool supportAsks)
         {
+            SupportAsks = supportAsks;
             m_config = config;
             m_databaseRevision = databaseRevision;
             m_recordBaseType = recordBaseType;
@@ -126,7 +133,7 @@ namespace Stump.Server.BaseServer.Database
 
             if (m_version == null)
             {
-                if (ServerBase.InstanceAsBase.ConsoleInterface.AskAndWait(
+                if (SupportAsks && ServerBase.InstanceAsBase.ConsoleInterface.AskAndWait(
                     "Table 'version' is empty, do you want to re-create the schema ? IT WILL ERASE YOUR DATABASE",
                     60))
                 {
@@ -145,7 +152,7 @@ namespace Stump.Server.BaseServer.Database
                     }
                     catch (FileNotFoundException)
                     {
-                        if (ServerBase.InstanceAsBase.ConsoleInterface.AskAndWait(
+                        if (SupportAsks && ServerBase.InstanceAsBase.ConsoleInterface.AskAndWait(
                             "Update File doesn't exist, do you want to re-create the schema ? IT WILL ERASE YOUR DATABASE",
                             60))
                         {
@@ -167,7 +174,7 @@ namespace Stump.Server.BaseServer.Database
             IsOpen = true;
         }
 
-        public void CloseDatabase()
+        public void Reset()
         {
             ActiveRecordStarter.ResetInitializationFlag();
         }

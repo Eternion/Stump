@@ -36,7 +36,7 @@ namespace Stump.Tools.MonsterDataFinder
                 WorldServer.DatabaseConfiguration,
                 Definitions.DatabaseRevision,
                 typeof (WorldBaseRecord<>),
-                typeof (WorldBaseRecord<>).Assembly);
+                typeof (WorldBaseRecord<>).Assembly, false);
             databaseAccessor.Initialize();
 
             Console.WriteLine("Open database");

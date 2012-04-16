@@ -109,5 +109,13 @@ namespace Stump.Server.WorldServer.Database.World.Maps
                 return m_name ?? ( m_name = TextManager.Instance.GetText(NameId) );
             }
         }
+
+        [D2OField("hasPriorityOnWorldmap")]
+        [Property]
+        public bool HasPriorityOnWorldmap
+        {
+            get;
+            set;
+        }
     }
 }

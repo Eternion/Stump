@@ -14,13 +14,14 @@ namespace Stump.Server.WorldServer.Database.World
             Id = -1
         };
 
-        public const int StructSize = 2 + 2 + 1 + 1 + 1;
+        public const int StructSize = 2 + 2 + 1 + 1 + 1 + 4;
 
         public short Floor;
         public short Id;
         public byte LosMov;
         public byte MapChangeData;
         public byte Speed;
+        public uint MoveZone;
 
         public bool Walkable
         {
@@ -76,6 +77,11 @@ namespace Stump.Server.WorldServer.Database.World
             bytes[5] = MapChangeData;
             bytes[6] = Speed;
 
+            bytes[7] = (byte)( MoveZone >> 24 );
+            bytes[8] = (byte)( MoveZone >> 16 );
+            bytes[9] = (byte)( MoveZone >> 8 );
+            bytes[10] = (byte)( MoveZone & 0xFF );
+
             return bytes;
         }
 
@@ -88,6 +94,8 @@ namespace Stump.Server.WorldServer.Database.World
             LosMov = data[index + 4];
             MapChangeData = data[index + 5];
             Speed = data[index + 6];
+
+            MoveZone = (uint) ( ( data[index + 7] << 24 ) | ( data[index + 8] << 16 ) | ( data[index + 9] << 8 ) | ( data[index + 10] ) );
         }
     }
 }

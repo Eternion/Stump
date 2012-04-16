@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
+using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -19,7 +20,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
     }
 
-    public class ItemAddCommand : SubCommand
+    public class ItemAddCommand : TargetSubCommand
     {
         public ItemAddCommand()
         {
@@ -29,7 +30,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             ParentCommand = typeof (ItemCommand);
 
             AddParameter("template", "item", "Item to add", converter:ParametersConverter.ItemTemplateConverter);
-            AddParameter("target", "t", "Character who will receive the item", isOptional:true, converter:ParametersConverter.CharacterConverter);
+            AddTargetParameter(true, "Character who will receive the item");
             AddParameter("amount", "amount", "Amount of items to add", 1u);
             AddParameter<bool>("max", "max", "Set item's effect to maximal values", isOptional:true);
             
@@ -38,21 +39,14 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public override void Execute(TriggerBase trigger)
         {
             var itemTemplate = trigger.Get<ItemTemplate>("template");
-            Character target;
-    
-            if (!trigger.IsArgumentDefined("target") && trigger is GameTrigger)
-                target = (trigger as GameTrigger).Character;
-            else
-                target = trigger.Get<Character>("target");
-            
-            Item addedItem =
-                target.Inventory.AddItem(
-                    itemTemplate,
-                    trigger.Get<uint>("amount"),
-                    trigger.IsArgumentDefined("max"));
+            var target = GetTarget(trigger);
 
-            if (addedItem == null)
-                trigger.Reply("Item '{0}'({1}) can't be add for an unknown reason", itemTemplate.Name, itemTemplate.Id);
+            var item = ItemManager.Instance.CreatePlayerItem(target, itemTemplate, trigger.Get<uint>("amount"), trigger.IsArgumentDefined("max"));
+
+            target.Inventory.AddItem(item);
+
+            if (item == null)
+                trigger.ReplyError("Item '{0}'({1}) can't be add for an unknown reason", itemTemplate.Name, itemTemplate.Id);
             else if (trigger is GameTrigger && (trigger as GameTrigger).Character.Id == target.Id)
                 trigger.Reply("Added '{0}'({1}) to your inventory.", itemTemplate.Name, itemTemplate.Id);
             else
@@ -81,7 +75,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             {
                 var target = trigger.Get<Character>("target");
 
-                var items = ItemManager.Instance.GetItemsByPattern(trigger.Get<string>("pattern"), target.Inventory.Items);
+                var items = ItemManager.Instance.GetItemsByPattern(trigger.Get<string>("pattern"), target.Inventory);
 
                 foreach (var item in items)
                 {
@@ -111,7 +105,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
     }
 
-    public class ItemAddSetCommand : SubCommand
+    public class ItemAddSetCommand : TargetSubCommand
     {
         public ItemAddSetCommand()
         {
@@ -121,33 +115,28 @@ namespace Stump.Server.WorldServer.Commands.Commands
             ParentCommand = typeof (ItemCommand);
 
             AddParameter("template", "itemset", "Itemset to add", converter: ParametersConverter.ItemSetTemplateConverter);
-            AddParameter("target", "t", "Character who will receive the item", isOptional:true, converter:ParametersConverter.CharacterConverter);
+            AddTargetParameter(true, "Character who will receive the itemset");
             AddParameter<bool>("max", "max", "Set item's effect to maximal values", isOptional:true);
         }
 
         public override void Execute(TriggerBase trigger)
         {
             var itemSet = trigger.Get<ItemSetTemplate>("template");
-            Character target;
+            var target = GetTarget(trigger);
 
-            if (!trigger.IsArgumentDefined("target") && trigger is GameTrigger)
-                target = (trigger as GameTrigger).Character;
-            else
-                target = trigger.Get<Character>("target");
-
-            foreach (ItemTemplate item in itemSet.Items)
+            foreach (ItemTemplate template in itemSet.Items)
             {
-                Item addedItem = target.Inventory.AddItem(
-                    item,
-                    1,
-                    trigger.IsArgumentDefined("max"));
 
-                if (addedItem == null)
-                    trigger.Reply("Item '{0}'({1}) can't be add for an unknown reason", item.Name, item.Id);
+                var item = ItemManager.Instance.CreatePlayerItem(target, template, 1, trigger.IsArgumentDefined("max"));
+
+                target.Inventory.AddItem(item);
+
+                if (item == null)
+                    trigger.Reply("Item '{0}'({1}) can't be add for an unknown reason", template.Name, template.Id);
                 else if (trigger is GameTrigger && (trigger as GameTrigger).Character.Id == target.Id)
-                    trigger.Reply("Added '{0}'({1}) to your inventory.", item.Name, item.Id);
+                    trigger.Reply("Added '{0}'({1}) to your inventory.", template.Name, template.Id);
                 else
-                    trigger.Reply("Added '{0}'({1}) to '{2}' inventory.", item.Name, item.Id, target.Name);
+                    trigger.Reply("Added '{0}'({1}) to '{2}' inventory.", template.Name, template.Id, target.Name);
             }
         }
     }

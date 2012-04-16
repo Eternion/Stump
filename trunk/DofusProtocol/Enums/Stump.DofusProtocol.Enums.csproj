@@ -190,7 +190,6 @@
     <Compile Include="Export\GameActionMarkTypeEnum.cs" />
     <Compile Include="Export\GameContextEnum.cs" />
     <Compile Include="Export\GameHierarchyEnum.cs" />
-    <Compile Include="Export\GameRolePlayNpcQuestFlagEnum.cs" />
     <Compile Include="Export\GuildCreationResultEnum.cs" />
     <Compile Include="Export\GuildInformationsTypeEnum.cs" />
     <Compile Include="Export\GuildInvitationStateEnum.cs" />
@@ -221,6 +220,7 @@
     <Compile Include="Export\ServerStatusEnum.cs" />
     <Compile Include="Export\ShortcutBarEnum.cs" />
     <Compile Include="Export\SocialContactCategoryEnum.cs" />
+    <Compile Include="Export\SubareaUpdateEventEnum.cs" />
     <Compile Include="Export\SubEntityBindingPointCategoryEnum.cs" />
     <Compile Include="Export\SubscriptionRequiredEnum.cs" />
     <Compile Include="Export\TaxCollectorErrorReasonEnum.cs" />

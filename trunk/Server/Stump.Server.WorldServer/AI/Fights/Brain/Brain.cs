@@ -57,13 +57,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                 new PrioritySelector(
                     new Decorator(ctx => Fighter.CanCastSpell(spell, target.Cell),
                                   new Sequence(
-                                      new SpellCastAction(Fighter, spell, target.Cell),
+                                      new SpellCastAction(Fighter, spell, target.Cell, true),
                                       new DecoratorContinue(ctx => target.LifePoints > Fighter.LifePoints, new FleeAction(Fighter)))),
                     new Sequence(
                         new MoveNearTo(Fighter, target),
                         new Decorator(ctx => Fighter.CanCastSpell(spell, target.Cell),
                                       new Sequence(
-                                          new SpellCastAction(Fighter, spell, target.Cell),
+                                          new SpellCastAction(Fighter, spell, target.Cell, true),
                                           new Decorator(ctx => target.LifePoints > Fighter.LifePoints, new FleeAction(Fighter)))))));
 
             foreach (var action in tree.Execute(this))

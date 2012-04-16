@@ -1,4 +1,7 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
+using System.IO;
+using System.Text;
 using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.D2oClasses.Tool.Dlm
@@ -19,6 +22,18 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.Dlm
         }
 
         public int Id
+        {
+            get;
+            set;
+        }
+
+        public bool Encrypted
+        {
+            get;
+            set;
+        }
+
+        public byte EncryptionVersion
         {
             get;
             set;
@@ -144,12 +159,48 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.Dlm
             set;
         }
 
-        public static DlmMap ReadFromStream(BigEndianReader reader)
+        public static DlmMap ReadFromStream(BigEndianReader givenReader, DlmReader dlmReader)
         {
+            var reader = givenReader;
             var map = new DlmMap();
 
             map.Version = reader.ReadByte();
             map.Id = reader.ReadInt();
+
+            if (map.Version >= 7)
+            {
+                map.Encrypted = reader.ReadBoolean();
+                map.EncryptionVersion = reader.ReadByte();
+
+                var len = reader.ReadInt();
+
+                if (map.Encrypted)
+                {
+                    var key = dlmReader.DecryptionKey;
+
+                    if (key == null && dlmReader.DecryptionKeyProvider != null)
+                        key = dlmReader.DecryptionKeyProvider(map.Id);
+
+                    if (key == null)
+                    {
+                        throw new InvalidOperationException(string.Format("Cannot decrypt the map {0} without decryption key", map.Id));
+                    }
+
+                    var data = reader.ReadBytes(len);
+                    var encodedKey = Encoding.Default.GetBytes(key);
+
+                    if (key.Length > 0)
+                    {
+                        for (int i = 0; i < len; i++)
+                        {
+                            data[i] = (byte)( data[i] ^ encodedKey[i % key.Length] );
+                        }
+
+                        reader = new BigEndianReader(new MemoryStream(data));
+                    }
+                }
+            }
+
             map.RelativeId = reader.ReadUInt();
             map.MapType = reader.ReadByte();
             map.SubAreaId = reader.ReadInt();

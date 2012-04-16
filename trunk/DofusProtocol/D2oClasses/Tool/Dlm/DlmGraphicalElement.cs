@@ -4,12 +4,16 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.Dlm
 {
     public class DlmGraphicalElement : DlmBasicElement
     {
+        public const float CELL_HALF_WIDTH = 43;
+        public const float CELL_HALF_HEIGHT = 21.5f;
+
         public int Altitude;
         public uint ElementId;
         public ColorMultiplicator FinalTeint;
         public ColorMultiplicator Hue;
         public uint Identifier;
         public System.Drawing.Point Offset;
+        public System.Drawing.Point PixelOffset;
         public ColorMultiplicator Shadow;
 
         public DlmGraphicalElement(DlmCell cell)
@@ -35,8 +39,22 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.Dlm
             element.ElementId = reader.ReadUInt();
             element.Hue = new ColorMultiplicator(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), false);
             element.Shadow = new ColorMultiplicator(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), false);
-            element.Offset.X = reader.ReadByte();
-            element.Offset.Y = reader.ReadByte();
+
+            if (cell.Layer.Map.Version <= 4)
+            {
+                element.Offset.X = reader.ReadByte();
+                element.Offset.Y = reader.ReadByte();
+                element.PixelOffset.X = (int) (element.Offset.X * CELL_HALF_WIDTH);
+                element.PixelOffset.Y = (int) (element.Offset.Y * CELL_HALF_HEIGHT);
+            }
+            else
+            {
+                element.PixelOffset.X = reader.ReadShort();
+                element.PixelOffset.Y = reader.ReadShort();
+                element.Offset.X = (int)( element.PixelOffset.X / CELL_HALF_WIDTH );
+                element.Offset.Y = (int)( element.PixelOffset.Y / CELL_HALF_HEIGHT );
+            }
+
             element.Altitude = reader.ReadByte();
             element.Identifier = reader.ReadUInt();
 

@@ -84,6 +84,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             var delta = Math.Floor(Math.Sqrt(character.Level) * 10 * ( losersLevel / winnersLevel ));
 
+            if (Losers == character.Team)
+                delta = -delta;
+
             return (short) delta;
         }
 

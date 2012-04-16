@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Stump.Core.Attributes;
 using Stump.Core.Reflection;
@@ -50,6 +51,42 @@ namespace Stump.Server.WorldServer.Game.Breeds
             {
                 m_breeds.Add(breed.Id, breed);
             }
+            /*
+            var levels = new[]
+                             {
+                                 1,
+                                 1,
+                                 1,
+                                 3,
+                                 6,
+                                 9,
+                                 13,
+                                 17,
+                                 21,
+                                 26,
+                                 31,
+                                 36,
+                                 42,
+                                 48,
+                                 54,
+                                 60,
+                                 70,
+                                 80,
+                                 90,
+                                 100,
+                                 200
+                             };
+
+            foreach (var breed in m_breeds)
+            {
+                File.AppendAllText("patch", string.Format("INSERT INTO `breed_spells` (Spell, ObtainLevel, Breed) VALUES ('0', '1', '{0}');\r\n", breed.Value.Id));
+                int i = 0;
+                foreach (var spell in breed.Value.BreedSpellsId)
+                {
+                    File.AppendAllText("patch", string.Format("INSERT INTO `breed_spells` (Spell, ObtainLevel, Breed) VALUES ('{0}', '{1}', '{2}');\r\n", spell, levels[i], breed.Value.Id));
+                    i++;
+                }
+            }   */
         }
 
         public Breed GetBreed(PlayableBreedEnum breed)

@@ -15,18 +15,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             foreach (FightActor actor in GetAffectedActors())
             {
                 if (Effect.Duration <= 0)
-                    return;
+                    return false;
 
                 int buffId = actor.PopNextBuffId();
                 var buff = new SpellReflectionBuff(buffId, actor, Caster, Dice, Spell, Critical, true);
 
                 actor.AddAndApplyBuff(buff);
             }
+
+            return true;
         }
     }
 }

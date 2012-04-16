@@ -7,14 +7,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
     [DefaultEffectHandler]
     public class DefaultUsableEffectHandler : UsableEffectHandler
     {
-        public DefaultUsableEffectHandler(EffectBase effect, Character target, Item item)
+        public DefaultUsableEffectHandler(EffectBase effect, Character target, PlayerItem item)
             : base(effect, target, item)
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
-            
+            return true;
         }
     }
 }

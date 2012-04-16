@@ -95,7 +95,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
         {
             trigger.Reply(trigger.Bold("{0}") + "{1} - {2}",
                           string.Join("/", command.Aliases),
-                          command is SubCommandContainer
+                          command is SubCommandContainer && (command as SubCommandContainer).Count > 0
                               ? string.Format(" ({0} subcmds)", (command as SubCommandContainer).Count(entry => entry.RequiredRole <= trigger.UserRole))
                               : "",
                           command.Description);

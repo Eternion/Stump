@@ -15,6 +15,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers
             private set;
         }
 
-        public abstract void Apply();
+        public abstract bool Apply();
     }
 }

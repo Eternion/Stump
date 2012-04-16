@@ -76,15 +76,24 @@ namespace Stump.Server.WorldServer.Game
 
         #region Initialization
 
+        private bool m_spacesLoaded;
+        private bool m_spacesSpawned;
+
         [Initialization(InitializationPass.Seventh)]
         public void Initialize()
         {
             // maps
             LoadSpaces();
+            SpawnSpaces();
         }
 
-        private void LoadSpaces()
+        public void LoadSpaces()
         {
+            if (m_spacesLoaded)
+                return;
+
+            m_spacesLoaded = true;
+
             logger.Info("Load maps...");
             m_maps = MapRecord.FindAll().ToDictionary(entry => entry.Id, entry => new Map(entry));
 
@@ -98,6 +107,15 @@ namespace Stump.Server.WorldServer.Game
             m_superAreas = SuperAreaRecord.FindAll().ToDictionary(entry => entry.Id, entry => new SuperArea(entry));
 
             SetLinks();
+
+        }
+
+        public void SpawnSpaces()
+        {
+            if (m_spacesSpawned)
+                return;
+
+            m_spacesSpawned = true;
 
             logger.Info("Spawn npcs ...");
             SpawnNpcs();
@@ -206,7 +224,7 @@ namespace Stump.Server.WorldServer.Game
             foreach (var map in m_maps)
             {
                 if (map.Value.MonsterSpawnsCount > 0)
-                    map.Value.EnableMonsterSpawns();
+                    map.Value.EnableClassicalMonsterSpawns();
             }
         }
 

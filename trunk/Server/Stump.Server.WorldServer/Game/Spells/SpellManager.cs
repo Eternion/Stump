@@ -91,6 +91,19 @@ namespace Stump.Server.WorldServer.Game.Spells
             return null;
         }
 
+        public SpellLevelTemplate GetSpellLevel(int templateid, int level)
+        {
+            var template = GetSpellTemplate(templateid);
+
+            if (template == null)
+                return null;
+
+            if (template.SpellLevelsIds.Count <= level - 1)
+                return null;
+
+            return GetSpellLevel((int) template.SpellLevelsIds[level - 1]);
+        }
+
         public IEnumerable<SpellLevelTemplate> GetSpellLevels(int id)
         {
             return m_spellsLevels.Values.Where(entry => entry.Spell.Id == id).OrderBy(entry => entry.Id);

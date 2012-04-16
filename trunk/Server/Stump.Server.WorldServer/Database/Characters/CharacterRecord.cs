@@ -43,6 +43,10 @@ namespace Stump.Server.WorldServer.Database.Characters
             MapId = breed.StartMap;
             CellId = breed.StartCell;
             Direction = breed.StartDirection;
+
+            SpellsPoints = breed.StartLevel;
+            StatsPoints = (ushort) (breed.StartLevel * 5);
+            Kamas = breed.StartKamas;
         }
 
         [PrimaryKey(PrimaryKeyType.Native)]
@@ -609,7 +613,7 @@ namespace Stump.Server.WorldServer.Database.Characters
 
         protected override void OnDelete()
         {
-            ItemRecord.DeleteAll("OwnerId = " + Id);
+            PlayerItemRecord.DeleteAll("OwnerId = " + Id);
             CharacterSpellRecord.DeleteAll("OwnerId = " + Id);
             Shortcut.DeleteAll("OwnerId = " + Id);
 

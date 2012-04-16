@@ -74,7 +74,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results.Data
         public override DofusProtocol.Types.FightResultAdditionalData GetFightResultAdditionalData()
         {
             return new FightResultExperienceData(ShowExperience, ShowExperienceLevelFloor, ShowExperienceNextLevelFloor, ShowExperienceFightDelta, ShowExperienceForGuild, ShowExperienceForMount,
-                                                 IsIncarnationExperience, Character.Experience, Character.LowerBoundExperience, Character.UpperBoundExperience, ExperienceFightDelta, ExperienceForGuild, ExperienceForMount);
+                                                 IsIncarnationExperience, Character.Experience, Character.LowerBoundExperience, Character.UpperBoundExperience, ExperienceFightDelta, ExperienceForGuild, ExperienceForMount, 1);
         }
 
         public override void Apply()

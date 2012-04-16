@@ -21,7 +21,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public NpcEditorCommands()
         {
             Aliases = new[] { "nedit", "npcedit" };
-            RequiredRole = RoleEnum.Administrator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Npc editor";
         }
     }
@@ -31,7 +31,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public NpcSpawnCommand()
         {
             Aliases = new[] { "spawn" };
-            RequiredRole = RoleEnum.Administrator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Spawn a npc";
             ParentCommand = typeof(NpcEditorCommands);
             AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);
@@ -89,7 +89,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public NpcUnSpawnCommand()
         {
             Aliases = new[] { "unspawn" };
-            RequiredRole = RoleEnum.Administrator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Unspawn the npc by the given contextual id";
             ParentCommand = typeof(NpcEditorCommands);
             AddParameter<sbyte>("npcid", "npc", "Npc Contextual id");
@@ -136,7 +136,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public NpcShopCommand()
         {
             Aliases = new[] { "shop" };
-            RequiredRole = RoleEnum.Administrator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Manage npc shop";
             ParentCommand = typeof(NpcEditorCommands);
             AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);

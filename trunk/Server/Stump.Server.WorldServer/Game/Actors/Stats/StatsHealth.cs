@@ -23,10 +23,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         public override short Base
         {
-            get { return m_valueBase; }
+            get { return ValueBase; }
             set
             {
-                m_valueBase = value;
+                ValueBase = value;
                 AdjustTakenDamage();
                 OnModified();
             }
@@ -34,10 +34,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         public override short Equiped
         {
-            get { return m_valueEquiped; }
+            get { return ValueEquiped; }
             set
             {
-                m_valueEquiped = value;
+                ValueEquiped = value;
                 AdjustTakenDamage();
                 OnModified();
             }
@@ -45,10 +45,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         public override short Given
         {
-            get { return m_valueGiven; }
+            get { return ValueGiven; }
             set
             {
-                m_valueGiven = value;
+                ValueGiven = value;
                 AdjustTakenDamage();
                 OnModified();
             }
@@ -56,10 +56,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         public override short Context
         {
-            get { return m_valueContext; }
+            get { return ValueContext; }
             set
             {
-                m_valueContext = value;
+                ValueContext = value;
                 AdjustTakenDamage();
                 OnModified();
             }
@@ -70,9 +70,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             get { return m_damageTaken; }
             set
             {
-                if (value > m_damageTaken)
-                    value = m_damageTaken;
-
                 m_realDamageTaken = value;
                 m_damageTaken = (short) (value > TotalMax ? TotalMax : value);
                 OnModified();

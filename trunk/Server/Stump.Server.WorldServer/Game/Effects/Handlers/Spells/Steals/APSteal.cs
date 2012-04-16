@@ -15,14 +15,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             foreach (FightActor actor in GetAffectedActors())
             {
                 var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
 
                 if (integerEffect == null)
-                    return;
+                    return false;
 
                 AddStatBuff(actor, (short)( -( integerEffect.Value ) ), PlayerFields.AP, true, (short)EffectsEnum.Effect_SubAP);
                 if (Effect.Duration > 0)
@@ -34,6 +34,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
                     Caster.RegainAP(integerEffect.Value);
                 }
             }
+
+            return true;
         }
     }
 }

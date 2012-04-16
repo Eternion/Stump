@@ -18,7 +18,7 @@ using Stump.Server.WorldServer.Game.Effects.Handlers.Items;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Usables;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Item = Stump.Server.WorldServer.Game.Items.Item;
+using Stump.Server.WorldServer.Game.Items;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects
@@ -27,9 +27,9 @@ namespace Stump.Server.WorldServer.Game.Effects
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private delegate ItemEffectHandler ItemEffectConstructor(EffectBase effect, Character target, Item item);
+        private delegate ItemEffectHandler ItemEffectConstructor(EffectBase effect, Character target, PlayerItem item);
         private delegate ItemEffectHandler ItemSetEffectConstructor(EffectBase effect, Character target, ItemSetTemplate itemSet, bool apply);
-        private delegate UsableEffectHandler UsableEffectConstructor(EffectBase effect, Character target, Item item);
+        private delegate UsableEffectHandler UsableEffectConstructor(EffectBase effect, Character target, PlayerItem item);
         private delegate SpellEffectHandler SpellEffectConstructor(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical);
 
         private Dictionary<short, EffectTemplate> m_effects = new Dictionary<short, EffectTemplate>();
@@ -66,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Effects
                 {
                     if (type.IsSubclassOf(typeof(ItemEffectHandler)))
                     {
-                        var ctor = type.GetConstructor(new[] { typeof(EffectBase), typeof(Character), typeof(Item) });
+                        var ctor = type.GetConstructor(new[] { typeof(EffectBase), typeof(Character), typeof(PlayerItem) });
                         m_itemsEffectHandler.Add(effect, ctor.CreateDelegate<ItemEffectConstructor>());
                         
                         var ctorItemSet = type.GetConstructor(new[] { typeof(EffectBase), typeof(Character), typeof(ItemSetTemplate), typeof(bool) });
@@ -75,7 +75,7 @@ namespace Stump.Server.WorldServer.Game.Effects
                     }
                     else if (type.IsSubclassOf(typeof(UsableEffectHandler)))
                     {
-                        var ctor = type.GetConstructor(new[] { typeof(EffectBase), typeof(Character), typeof(Item) });
+                        var ctor = type.GetConstructor(new[] { typeof(EffectBase), typeof(Character), typeof(PlayerItem) });
                         m_usablesEffectHandler.Add(effect, ctor.CreateDelegate<UsableEffectConstructor>());
                     }
                     else if (type.IsSubclassOf(typeof(SpellEffectHandler)))
@@ -145,7 +145,7 @@ namespace Stump.Server.WorldServer.Game.Effects
                 throw new Exception(string.Format("EffectHandler '{0}' has no EffectHandlerAttribute", type.Name));
             }
 
-            var ctor = type.GetConstructor(new[] { typeof(EffectBase), typeof(Character), typeof(Item) });
+            var ctor = type.GetConstructor(new[] { typeof(EffectBase), typeof(Character), typeof(PlayerItem) });
 
             if (ctor == null)
                 throw new Exception("No valid constructors found !");
@@ -161,7 +161,7 @@ namespace Stump.Server.WorldServer.Game.Effects
             }
         }
 
-        public ItemEffectHandler GetItemEffectHandler(EffectBase effect, Character target, Item item)
+        public ItemEffectHandler GetItemEffectHandler(EffectBase effect, Character target, PlayerItem item)
         {
             ItemEffectConstructor handler;
             if (m_itemsEffectHandler.TryGetValue(effect.EffectId, out handler))
@@ -197,7 +197,7 @@ namespace Stump.Server.WorldServer.Game.Effects
                 throw new Exception(string.Format("EffectHandler '{0}' has no EffectHandlerAttribute", type.Name));
             }
 
-            var ctor = type.GetConstructor(new[] { typeof(EffectBase), typeof(Character), typeof(Item) });
+            var ctor = type.GetConstructor(new[] { typeof(EffectBase), typeof(Character), typeof(PlayerItem) });
 
             if (ctor == null)
                 throw new Exception("No valid constructors found !");
@@ -213,7 +213,7 @@ namespace Stump.Server.WorldServer.Game.Effects
             }
         }
 
-        public UsableEffectHandler GetUsableEffectHandler(EffectBase effect, Character target, Item item)
+        public UsableEffectHandler GetUsableEffectHandler(EffectBase effect, Character target, PlayerItem item)
         {
             UsableEffectConstructor handler;
             if (m_usablesEffectHandler.TryGetValue(effect.EffectId, out handler))

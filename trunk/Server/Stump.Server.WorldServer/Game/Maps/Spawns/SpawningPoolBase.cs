@@ -42,6 +42,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             protected set;
         }
 
+        public int RemainingTime
+        {
+            get { return State != SpawningPoolState.Running ? 0 : SpawnTimer.RemainingTime; }
+        }
+
         protected List<MonsterGroup> Spawns
         {
             get;
@@ -160,16 +165,18 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             SpawnTimer = Map.Area.CallDelayed(GetNextSpawnInterval(), TimerCallBack);
         }
 
-        public void  SpawnNextGroup()
+        public bool SpawnNextGroup()
         {
             MonsterGroup group = DequeueNextGroupToSpawn();
 
             if (group == null)
-                return;
+                return false;
 
             Map.Enter(group);
 
             OnGroupSpawned(group);
+
+            return true;
         }
 
         public void SetTimer(int time)

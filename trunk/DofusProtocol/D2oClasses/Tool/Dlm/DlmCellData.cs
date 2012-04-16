@@ -8,6 +8,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.Dlm
         {
             Map = map;
             Id = id;
+            LosMov = 3;
         }
 
         public DlmMap Map
@@ -41,6 +42,12 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.Dlm
         }
 
         public byte MapChangeData
+        {
+            get;
+            set;
+        }
+
+        public byte MoveZone
         {
             get;
             set;
@@ -95,6 +102,11 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.Dlm
             cell.LosMov = reader.ReadByte();
             cell.Speed = reader.ReadByte();
             cell.MapChangeData = reader.ReadByte();
+
+            if (map.Version > 5)
+            {
+                cell.MoveZone = reader.ReadByte();
+            }
 
             return cell;
         }

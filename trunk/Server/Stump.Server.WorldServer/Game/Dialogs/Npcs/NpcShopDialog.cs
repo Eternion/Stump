@@ -6,6 +6,7 @@ using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Dialogs;
 using Stump.Server.WorldServer.Handlers.Inventory;
@@ -71,8 +72,10 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
             BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 46, finalPrice);
             BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 21, amount, itemId);
+            
+            var item = ItemManager.Instance.CreatePlayerItem(Character, itemId, amount);
 
-            Character.Inventory.AddItem(itemId, amount);
+            Character.Inventory.AddItem(item);
             Character.Inventory.SubKamas(finalPrice);
 
             Character.Client.Send(new ExchangeBuyOkMessage());
@@ -88,7 +91,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                return;
            }
 
-            var saleItem = Items.Where(entry => entry.Item.Id == item.ItemId).FirstOrDefault();
+            var saleItem = Items.Where(entry => entry.Item.Id == item.Template.Id).FirstOrDefault();
     
             int price;
 
@@ -101,7 +104,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 price = 1;
 
             BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 45, price);
-            BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, amount, item.ItemId);
+            BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, amount, item.Template.Id);
 
             Character.Inventory.RemoveItem(item, amount);
             Character.Inventory.AddKamas(price);

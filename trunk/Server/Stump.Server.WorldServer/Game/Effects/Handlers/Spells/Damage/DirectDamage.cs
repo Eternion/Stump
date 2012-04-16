@@ -21,14 +21,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             foreach (FightActor actor in GetAffectedActors())
             {
                 var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
 
                 if (integerEffect == null)
-                    return;
+                    return false;
 
                 if (Effect.Duration > 0)
                 {
@@ -51,6 +51,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     }
                 }
             }
+
+            return true;
         }
 
         private void NotifySpellReflected(FightActor source)

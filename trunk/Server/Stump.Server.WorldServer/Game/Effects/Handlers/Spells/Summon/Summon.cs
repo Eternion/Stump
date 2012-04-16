@@ -19,18 +19,18 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             var monster = MonsterManager.Instance.GetMonsterGrade(Dice.DiceNum, Dice.DiceFace);
 
             if (monster == null)
             {
                 logger.Error("Cannot summon monster {0} grade {1} (not found)", Dice.DiceNum, Dice.DiceFace);
-                return;
+                return false;
             }
 
             if (!Caster.CanSummon())
-                return;
+                return false;
 
             var summon = new SummonedMonster(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell);
 
@@ -38,6 +38,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 
             Caster.AddSummon(summon);
             Caster.Team.AddFighter(summon);
+
+            return true;
         }
     }
 }

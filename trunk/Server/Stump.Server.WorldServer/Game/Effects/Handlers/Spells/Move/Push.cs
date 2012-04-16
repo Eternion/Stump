@@ -17,12 +17,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
 
             if (integerEffect == null)
-                return;
+                return false;
 
             foreach (FightActor actor in GetAffectedActors())
             {
@@ -55,6 +55,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
                 actor.Position.Cell = Map.Cells[endCell.CellId];
             }
+
+            return true;
         }
     }
 }

@@ -29,6 +29,9 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
         public int Compute()
         {
             var groups = GetPointsGroups();
+            if (groups.Length == 0)
+                return 0;
+
             var distanceSum = 0d;
 
             var exclusions = new List<PointsGroup>();

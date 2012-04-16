@@ -217,6 +217,14 @@ namespace Stump.Server.WorldServer.Database.Spells
             set;
         }
 
+        [D2OField("hidden")]
+        [Property]
+        public Boolean Hidden
+        {
+            get;
+            set;
+        }
+
         [D2OField("minRange")]
         [Property("MinRange")]
         public uint MinRange

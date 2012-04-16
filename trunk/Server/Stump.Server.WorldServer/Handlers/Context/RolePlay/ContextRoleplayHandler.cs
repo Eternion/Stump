@@ -75,7 +75,8 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 
         public static void SendCurrentMapMessage(IPacketReceiver client, int mapId)
         {
-            client.Send(new CurrentMapMessage(mapId));
+            // todo
+            client.Send(new CurrentMapMessage(mapId, "649ae451ca33ec53bbcbcc33becf15f4"));
         }
 
         public static void SendMapFightCountMessage(IPacketReceiver client, short fightsCount)

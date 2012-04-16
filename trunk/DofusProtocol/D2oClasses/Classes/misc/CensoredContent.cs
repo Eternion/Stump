@@ -7,5 +7,9 @@ namespace Stump.DofusProtocol.D2oClasses
 	public class CensoredContent
 	{
 		public const String MODULE = "CensoredContents";
+        public int type;
+        public int oldValue;
+        public int newValue;
+        public string lang;
 	}
 }

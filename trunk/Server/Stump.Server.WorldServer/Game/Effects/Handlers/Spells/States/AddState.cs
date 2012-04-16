@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
         {
         }
 
-        public override void Apply()
+        public override bool Apply()
         {
             foreach (var affectedActor in GetAffectedActors())
             {
@@ -26,11 +26,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                 if (state == null)
                 {
                     logger.Error("Spell state {0} not found", Dice.Value);
-                    return;
+                    return false;
                 }
 
                 AddStateBuff(affectedActor, true, state);
             }
+
+            return true;
         }
     }
 }

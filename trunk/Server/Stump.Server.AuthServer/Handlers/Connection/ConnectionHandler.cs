@@ -125,7 +125,8 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                             (int) client.Account.Id,
                             0, // community ID ? ( se trouve dans le d2p, utilisé pour trouver les serveurs de la communauté )
                             client.Account.SecretQuestion,
-                            client.Account.SubscriptionRemainingTime));
+                            client.Account.SubscriptionRemainingTime, 
+                            (DateTime.Now - client.Account.CreationDate).TotalMilliseconds));
             client.LookingOfServers = true;
         }
 
