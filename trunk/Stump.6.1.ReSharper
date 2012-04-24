@@ -1,0 +1,402 @@
+<Configuration>
+  <Daemon.SolutionSettings>
+    <SkipFilesAndFolders>
+      <Item>10884165-D492-4895-B3EF-32429F7A7F55</Item>
+      <Item>53092D2E-8F37-4889-B6B7-B359E093E3F4</Item>
+    </SkipFilesAndFolders>
+  </Daemon.SolutionSettings>
+  <SharedSolutionTemplateManager>
+    <LiveTemplates>
+      <Template uid="60a69f27-744e-4486-9309-5e383f281ae0" shortcut="hctor" description="Handler constructor" text="$CLASSNAME$()&#xD;&#xA;{&#xD;&#xA;	Predicates = new Dictionary&lt;Type, Predicate&lt;$SERVICE$Client&gt;&gt;&#xD;&#xA;    {&#xD;&#xA;		$END$&#xD;&#xA;    };&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
+        <Context>
+          <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+        </Context>
+        <Categories />
+        <Variables>
+          <Variable name="CLASSNAME" expression="typeName()" initialRange="0" />
+          <Variable name="SERVICE" expression="list(&quot;World, Auth&quot;)" initialRange="0" />
+        </Variables>
+        <CustomProperties />
+      </Template>
+      <Template uid="469daf04-b472-4aab-b057-4708d8561c48" shortcut="handle" description="Handle function" text="[$SERVER$Handler($NAME$.Id)]&#xD;&#xA;public static void Handle$NAME$($SERVER$Client client, $NAME$ message)&#xD;&#xA;{&#xD;&#xA;&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
+        <Context>
+          <CSharpContext context="Everywhere" minimumLanguageVersion="2.0" />
+        </Context>
+        <Categories />
+        <Variables>
+          <Variable name="NAME" expression="" initialRange="0" />
+          <Variable name="SERVER" expression="list(&quot;World, Auth&quot;)" initialRange="0" />
+        </Variables>
+        <CustomProperties />
+      </Template>
+      <Template uid="1cbe847c-b229-47ff-aaf5-d395e06d1b6c" shortcut="valid" description="Create and implents methods of a ObjectValidator" text="#region $NAME$&#xD;&#xA;private ObjectValidator&lt;$NAME$&gt; m_$LNAME$;&#xD;&#xA;&#xD;&#xA;private $NAME$ Build$NAME$()&#xD;&#xA;{&#xD;&#xA;	return new $NAME$(&#xD;&#xA;	$END$);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public $NAME$ Get$NAME$()&#xD;&#xA;{&#xD;&#xA;	return m_$LNAME$;&#xD;&#xA;}&#xD;&#xA;#endregion" reformat="True" shortenQualifiedReferences="True">
+        <Context>
+          <CSharpContext context="Everywhere" minimumLanguageVersion="3.0" />
+        </Context>
+        <Categories />
+        <Variables>
+          <Variable name="NAME" expression="" initialRange="1" />
+          <Variable name="LNAME" expression="decapitalize(NAME)" initialRange="-1" />
+        </Variables>
+        <CustomProperties />
+      </Template>
+      <Template uid="1ad94c49-30cc-47a8-8523-d1db1853615d" shortcut="send" description="Send function" text="public static void Send$NAME$(IPacketReceiver client)&#xD;&#xA;{&#xD;&#xA;	client.Send(new $NAME$($END$));&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
+        <Context>
+          <CSharpContext context="TypeMember" minimumLanguageVersion="2.0" />
+        </Context>
+        <Categories />
+        <Variables>
+          <Variable name="NAME" expression="" initialRange="1" />
+        </Variables>
+        <CustomProperties />
+      </Template>
+    </LiveTemplates>
+    <FileTemplates>
+      <Template uid="3c8e78ba-121f-435f-94b9-11b0ff4b84a9" shortcut="" description="Command Class" text="using System;&#xD;&#xA;using System.Collections.Generic;&#xD;&#xA;using Stump.DofusProtocol.Enums;&#xD;&#xA;using Stump.Server.BaseServer.Commands;&#xD;&#xA;&#xD;&#xA;namespace $NAMESPACE$&#xD;&#xA;{&#xD;&#xA;	public class $COMMAND$ : $TYPE$Command&#xD;&#xA;    {&#xD;&#xA;        public $COMMAND$()&#xD;&#xA;        {&#xD;&#xA;            Aliases = new[] {&quot;$ALIASES$&quot;};&#xD;&#xA;            RequiredRole = RoleEnum.$ROLE$;&#xD;&#xA;            Description = &quot;$DESCRIPTION$&quot;;&#xD;&#xA;            Parameters = new List&lt;ICommandParameter&gt;&#xD;&#xA;                {&#xD;&#xA;					&#xD;&#xA;                };&#xD;&#xA;        }&#xD;&#xA;&#xD;&#xA;        public override void Execute(TriggerBase trigger)&#xD;&#xA;        {&#xD;&#xA;            $END$&#xD;&#xA;		}&#xD;&#xA;	}&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
+        <Context>
+          <ProjectLanguageContext language="CSharp" />
+        </Context>
+        <Categories />
+        <Variables>
+          <Variable name="NAMESPACE" expression="fileDefaultNamespace()" initialRange="0" />
+          <Variable name="COMMAND" expression="getFileNameWithoutExtension()" initialRange="0" />
+          <Variable name="TYPE" expression="list(&quot;World, WorldSub, Auth, AuthSub&quot;)" initialRange="0" />
+          <Variable name="ALIASES" expression="" initialRange="0" />
+          <Variable name="ROLE" expression="completeSmart()" initialRange="0" />
+          <Variable name="DESCRIPTION" expression="" initialRange="0" />
+        </Variables>
+        <CustomProperties>
+          <Property key="FileName" value="Class" />
+          <Property key="Extension" value="cs" />
+          <Property key="ValidateFileName" value="False" />
+        </CustomProperties>
+      </Template>
+    </FileTemplates>
+  </SharedSolutionTemplateManager>
+  <CustomStructuralPatterns>
+    <Pattern Severity="SUGGESTION" FormatAfterReplace="True" ShortenReferences="True" Language="CSHARP">
+      <ReplacePattern>Assert.IsNotNull($param$);</ReplacePattern>
+      <SearchPattern><![CDATA[if ($param$ == null)
+ throw new ArgumentNullException($expr$);]]></SearchPattern>
+      <Params />
+      <Placeholders>
+        <IdentifierPlaceholder Name="param" Type="" ExactType="False" RegEx="" CaseSensitive="True" />
+        <ExpressionPlaceholder Name="expr" ExpressionType="System.String" ExactType="True" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION" FormatAfterReplace="True" ShortenReferences="True" Language="CSHARP">
+      <Comment>Method StringBuilder.Append can be converted to StringBuilder.AppendFormat</Comment>
+      <ReplaceComment>Convert to StringBuilder.AppendFormat</ReplaceComment>
+      <ReplacePattern>$sb$.AppendFormat($args$)</ReplacePattern>
+      <SearchPattern>$sb$.Append(string.Format($args$))</SearchPattern>
+      <Params />
+      <Placeholders>
+        <ExpressionPlaceholder Name="sb" ExpressionType="System.Text.StringBuilder" ExactType="True" />
+        <ArgumentPlaceholder Name="args" Minimal="-1" Maximal="-1" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="WARNING" FormatAfterReplace="True" ShortenReferences="True" Language="CSHARP">
+      <Comment>'try/finally' block can be converted to 'using' statement</Comment>
+      <ReplaceComment>Convert to 'using' statement</ReplaceComment>
+      <ReplacePattern><![CDATA[using($type$ $var$ = new $type$($args$))
+{
+  $stmt$
+}]]></ReplacePattern>
+      <SearchPattern><![CDATA[$type$ $var$ = new $type$($args$);
+try {
+  $stmt$
+} finally {
+  $var$.Dispose();
+}]]></SearchPattern>
+      <Params />
+      <Placeholders>
+        <IdentifierPlaceholder Name="var" Type="" ExactType="False" RegEx="" CaseSensitive="True" />
+        <TypePlaceholder Name="type" Type="System.IDisposable" ExactType="False" />
+        <ArgumentPlaceholder Name="args" Minimal="-1" Maximal="-1" />
+        <StatementPlaceholder Name="stmt" Minimal="-1" Maximal="-1" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION" FormatAfterReplace="True" ShortenReferences="True" Language="CSHARP">
+      <Comment>Comparison with true is redundant</Comment>
+      <ReplaceComment>Remove comparison with true</ReplaceComment>
+      <ReplacePattern>if($expr$) $stmt$</ReplacePattern>
+      <SearchPattern>if($expr$ == true) $stmt$</SearchPattern>
+      <Params />
+      <Placeholders>
+        <ExpressionPlaceholder Name="expr" ExpressionType="System.Boolean" ExactType="True" />
+        <StatementPlaceholder Name="stmt" Minimal="1" Maximal="1" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION" FormatAfterReplace="True" ShortenReferences="True" Language="CSHARP">
+      <Comment>Conditional statement is redundant</Comment>
+      <ReplaceComment>Remove conditional statement</ReplaceComment>
+      <ReplacePattern>$stmt$</ReplacePattern>
+      <SearchPattern>if(true) $stmt$</SearchPattern>
+      <Params />
+      <Placeholders>
+        <StatementPlaceholder Name="stmt" Minimal="1" Maximal="1" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION" FormatAfterReplace="True" ShortenReferences="True" Language="CSHARP">
+      <Comment>Code is unreachable</Comment>
+      <ReplaceComment>Remove unreachable code</ReplaceComment>
+      <SearchPattern>if(false) $stmt$</SearchPattern>
+      <Params />
+      <Placeholders>
+        <StatementPlaceholder Name="stmt" Minimal="1" Maximal="1" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION" FormatAfterReplace="True" ShortenReferences="True" Language="CSHARP">
+      <Comment>'if' block is never executed</Comment>
+      <ReplaceComment>Leave only statements from 'else' block</ReplaceComment>
+      <ReplacePattern>$else$</ReplacePattern>
+      <SearchPattern><![CDATA[if(false)
+  $stmt$
+else
+  $else$]]></SearchPattern>
+      <Params />
+      <Placeholders>
+        <StatementPlaceholder Name="stmt" Minimal="1" Maximal="1" />
+        <StatementPlaceholder Name="else" Minimal="1" Maximal="1" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION" FormatAfterReplace="True" ShortenReferences="True" Language="CSHARP">
+      <Comment>Identical branches in a conditional statement</Comment>
+      <ReplaceComment>Replace with a single branch</ReplaceComment>
+      <ReplacePattern>$stmt$</ReplacePattern>
+      <SearchPattern><![CDATA[if($expr$)
+  $stmt$
+else
+  $stmt$]]></SearchPattern>
+      <Params />
+      <Placeholders>
+        <ExpressionPlaceholder Name="expr" ExpressionType="System.Boolean" ExactType="True" />
+        <StatementPlaceholder Name="stmt" Minimal="1" Maximal="1" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION" FormatAfterReplace="True" ShortenReferences="True" Language="CSHARP">
+      <Comment>Redundant compound assignment with |= operator</Comment>
+      <ReplaceComment>Replace with simple assignment</ReplaceComment>
+      <ReplacePattern>$bool$ = true</ReplacePattern>
+      <SearchPattern>$bool$ |= true</SearchPattern>
+      <Params />
+      <Placeholders>
+        <ExpressionPlaceholder Name="bool" ExpressionType="System.Boolean" ExactType="True" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION" FormatAfterReplace="True" ShortenReferences="True" Language="CSHARP">
+      <Comment><![CDATA[Redundant compound assignment with &= operator]]></Comment>
+      <ReplaceComment>Replace with simple assignment</ReplaceComment>
+      <ReplacePattern>$bool$ = false</ReplacePattern>
+      <SearchPattern><![CDATA[$bool$ &= false]]></SearchPattern>
+      <Params />
+      <Placeholders>
+        <ExpressionPlaceholder Name="bool" ExpressionType="System.Boolean" ExactType="True" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION" FormatAfterReplace="True" ShortenReferences="True" Language="CSHARP">
+      <Comment>Redundant compound assignment with |= operator</Comment>
+      <ReplaceComment>Remove assignment</ReplaceComment>
+      <SearchPattern>$bool$ |= false;</SearchPattern>
+      <Params />
+      <Placeholders>
+        <ExpressionPlaceholder Name="bool" ExpressionType="System.Boolean" ExactType="True" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION" FormatAfterReplace="True" ShortenReferences="True" Language="CSHARP">
+      <Comment><![CDATA[Redundant compound assignment with &= operator]]></Comment>
+      <ReplaceComment>Remove assignment</ReplaceComment>
+      <SearchPattern><![CDATA[$bool$ &= true;]]></SearchPattern>
+      <Params />
+      <Placeholders>
+        <ExpressionPlaceholder Name="bool" ExpressionType="System.Boolean" ExactType="True" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION" FormatAfterReplace="True" ShortenReferences="True" Language="CSHARP">
+      <Comment>Redundant initialization to false and condition block</Comment>
+      <ReplaceComment>Initialize with conditional statement</ReplaceComment>
+      <ReplacePattern>$T$ $x$ = $bool$;</ReplacePattern>
+      <SearchPattern><![CDATA[$T$ $x$ = false;
+if($bool$) $x$ = true;]]></SearchPattern>
+      <Params />
+      <Placeholders>
+        <TypePlaceholder Name="T" Type="" ExactType="True" />
+        <IdentifierPlaceholder Name="x" Type="" ExactType="False" RegEx="" CaseSensitive="True" />
+        <ExpressionPlaceholder Name="bool" ExpressionType="System.Boolean" ExactType="True" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION" FormatAfterReplace="True" ShortenReferences="True" Language="CSHARP">
+      <Comment>Redundant initialization to true and condition block</Comment>
+      <ReplaceComment>Initialize with conditional statement</ReplaceComment>
+      <ReplacePattern>$T$ $x$ = !$bool$;</ReplacePattern>
+      <SearchPattern><![CDATA[$T$ $x$ = true;
+if($bool$) $x$ = false;]]></SearchPattern>
+      <Params />
+      <Placeholders>
+        <TypePlaceholder Name="T" Type="" ExactType="True" />
+        <IdentifierPlaceholder Name="x" Type="" ExactType="False" RegEx="" CaseSensitive="True" />
+        <ExpressionPlaceholder Name="bool" ExpressionType="System.Boolean" ExactType="True" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION" FormatAfterReplace="True" ShortenReferences="True" Language="CSHARP">
+      <Comment>Method Array.CreateInstance can be replaced with an array creation expression</Comment>
+      <ReplaceComment>Use array creation expression</ReplaceComment>
+      <ReplacePattern>new $T$[$long$]</ReplacePattern>
+      <SearchPattern>Array.CreateInstance(typeof($T$), $long$)</SearchPattern>
+      <Params />
+      <Placeholders>
+        <TypePlaceholder Name="T" Type="" ExactType="True" />
+        <ExpressionPlaceholder Name="long" ExpressionType="System.Int64" ExactType="False" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION" FormatAfterReplace="True" ShortenReferences="True" Language="CSHARP">
+      <Comment>Method Array.CreateInstance can be replaced with a two-dimensional array creation expression</Comment>
+      <ReplaceComment>Use two-dimensional array creation expression</ReplaceComment>
+      <ReplacePattern>new $T$[$long$, $long2$]</ReplacePattern>
+      <SearchPattern>Array.CreateInstance(typeof($T$), $long$, $long2$)</SearchPattern>
+      <Params />
+      <Placeholders>
+        <TypePlaceholder Name="T" Type="" ExactType="True" />
+        <ExpressionPlaceholder Name="long" ExpressionType="System.Int64" ExactType="False" />
+        <ExpressionPlaceholder Name="long2" ExpressionType="Int64" ExactType="False" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION" FormatAfterReplace="True" ShortenReferences="True" Language="CSHARP">
+      <Comment>Redundant usage of GetType() == typeof() with a value type</Comment>
+      <ReplaceComment>Replace with 'is' operator</ReplaceComment>
+      <ReplacePattern>$expr$ is $S$</ReplacePattern>
+      <SearchPattern>$expr$.GetType() == typeof($S$)</SearchPattern>
+      <Params />
+      <Placeholders>
+        <ExpressionPlaceholder Name="expr" ExpressionType="" ExactType="True" />
+        <TypePlaceholder Name="S" Type="System.ValueType" ExactType="False" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION" FormatAfterReplace="True" ShortenReferences="True" Language="CSHARP">
+      <Comment><![CDATA[Method OfType<TResult> can be used for type-based filtering]]></Comment>
+      <ReplaceComment><![CDATA[Replace with OfType<TResult>]]></ReplaceComment>
+      <ReplacePattern><![CDATA[$seq$.OfType<$T$>()]]></ReplacePattern>
+      <SearchPattern><![CDATA[$seq$.Where($x$ => $x$ is $T$).Select($y$ => ($T$)$y$)]]></SearchPattern>
+      <Params />
+      <Placeholders>
+        <TypePlaceholder Name="T" Type="" ExactType="True" />
+        <ExpressionPlaceholder Name="seq" ExpressionType="System.Collections.IEnumerable" ExactType="False" />
+        <IdentifierPlaceholder Name="x" Type="" ExactType="False" RegEx="" CaseSensitive="True" />
+        <IdentifierPlaceholder Name="y" Type="" ExactType="False" RegEx="" CaseSensitive="True" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION" FormatAfterReplace="True" ShortenReferences="True" Language="CSHARP">
+      <ReplacePattern>$ienu$.Any()</ReplacePattern>
+      <SearchPattern><![CDATA[$ienu$.Count() > 0]]></SearchPattern>
+      <Params />
+      <Placeholders>
+        <ExpressionPlaceholder Name="ienu" ExpressionType="System.Collections.IEnumerable" ExactType="False" />
+      </Placeholders>
+    </Pattern>
+  </CustomStructuralPatterns>
+  <CodeStyleSettings>
+    <ExternalPath IsNull="False" />
+    <Sharing>SOLUTION</Sharing>
+    <CSS>
+      <FormatSettings />
+      <Naming2 />
+    </CSS>
+    <CSharp>
+      <FormatSettings>
+        <MODIFIERS_ORDER IsNull="False">
+          <Item>public</Item>
+          <Item>protected</Item>
+          <Item>internal</Item>
+          <Item>private</Item>
+          <Item>new</Item>
+          <Item>abstract</Item>
+          <Item>virtual</Item>
+          <Item>override</Item>
+          <Item>sealed</Item>
+          <Item>static</Item>
+          <Item>readonly</Item>
+          <Item>extern</Item>
+          <Item>unsafe</Item>
+          <Item>volatile</Item>
+        </MODIFIERS_ORDER>
+        <PLACE_ABSTRACT_ACCESSORHOLDER_ON_SINGLE_LINE>False</PLACE_ABSTRACT_ACCESSORHOLDER_ON_SINGLE_LINE>
+      </FormatSettings>
+      <UsingsSettings />
+      <Naming2>
+        <EventHandlerPatternLong>$object$_$event$</EventHandlerPatternLong>
+        <EventHandlerPatternShort>$event$Handler</EventHandlerPatternShort>
+        <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="TypesAndNamespaces" />
+        <PredefinedRule Inspect="True" Prefix="I" Suffix="" Style="AaBb" ElementKind="Interfaces" />
+        <PredefinedRule Inspect="True" Prefix="T" Suffix="" Style="AaBb" ElementKind="TypeParameters" />
+        <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="MethodPropertyEvent" />
+        <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="Locals" />
+        <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="LocalConstants" />
+        <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="Parameters" />
+        <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PublicFields" />
+        <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="PrivateInstanceFields" />
+        <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="PrivateStaticFields" />
+        <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Constants" />
+        <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateConstants" />
+        <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="StaticReadonly" />
+        <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateStaticReadonly" />
+        <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="EnumMember" />
+        <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Other" />
+      </Naming2>
+    </CSharp>
+    <HTML>
+      <FormatSettings />
+    </HTML>
+    <JavaScript>
+      <FormatSettings />
+      <Naming2 />
+    </JavaScript>
+    <VB>
+      <FormatSettings />
+      <ImportsSettings />
+      <Naming2>
+        <EventHandlerPatternLong>$object$_$event$</EventHandlerPatternLong>
+        <EventHandlerPatternShort>$event$Handler</EventHandlerPatternShort>
+      </Naming2>
+    </VB>
+    <Web>
+      <Naming2 />
+    </Web>
+    <XML>
+      <FormatSettings />
+    </XML>
+    <Xaml>
+      <Naming2 />
+    </Xaml>
+    <GenerateMemberBody />
+    <Naming2>
+      <EventHandlerPatternLong>$object$_On$event$</EventHandlerPatternLong>
+      <EventHandlerPatternShort>$event$Handler</EventHandlerPatternShort>
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="TypesAndNamespaces" />
+      <PredefinedRule Inspect="True" Prefix="I" Suffix="" Style="AaBb" ElementKind="Interfaces" />
+      <PredefinedRule Inspect="True" Prefix="T" Suffix="" Style="AaBb" ElementKind="TypeParameters" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="MethodPropertyEvent" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="Locals" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="LocalConstants" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="Parameters" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PublicFields" />
+      <PredefinedRule Inspect="True" Prefix="m_" Suffix="" Style="aaBb" ElementKind="PrivateInstanceFields">
+        <ExtraRule Prefix="" Suffix="" Style="aaBb" />
+      </PredefinedRule>
+      <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="PrivateStaticFields" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Constants">
+        <ExtraRule Prefix="" Suffix="" Style="AA_BB" />
+      </PredefinedRule>
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateConstants" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="StaticReadonly" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateStaticReadonly" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="EnumMember">
+        <ExtraRule Prefix="" Suffix="" Style="AA_BB" />
+      </PredefinedRule>
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Other" />
+      <Abbreviation Text="PVP" />
+      <Abbreviation Text="RSA" />
+      <Abbreviation Text="UTF" />
+      <Abbreviation Text="DB" />
+    </Naming2>
+  </CodeStyleSettings>
+</Configuration>

@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Stump.Server.BaseServer.Initialization
 {
-    internal class InitializationMethod
+    public class InitializationMethod
     {
         public InitializationMethod(InitializationAttribute attribute, MethodInfo method)
         {

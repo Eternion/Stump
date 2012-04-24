@@ -32,7 +32,7 @@ namespace Stump.Tools.SpellsExplorer
             m_databaseAccessor.OpenDatabase();
 
             Console.WriteLine("Loading texts...");
-            TextManager.Instance.Intialize();
+            TextManager.Instance.Initialize();
 
             Console.WriteLine("Loading effects...");
             EffectManager.Instance.Initialize();

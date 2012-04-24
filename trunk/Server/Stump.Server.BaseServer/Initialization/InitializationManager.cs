@@ -10,6 +10,14 @@ namespace Stump.Server.BaseServer.Initialization
 {
     public class InitializationManager : Singleton<InitializationManager>
     {
+        public event Action< string> ProcessInitialization;
+
+        private void OnProcessInitialization(string text)
+        {
+            Action<string> handler = ProcessInitialization;
+            if (handler != null) handler(text);
+        }
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly List<Type> m_initializedTypes = new List<Type>();
@@ -95,11 +103,17 @@ namespace Stump.Server.BaseServer.Initialization
             }
             else
             {
-                if (!method.Attribute.Silent && !string.IsNullOrEmpty (method.Attribute.Description))
+                if (!method.Attribute.Silent && !string.IsNullOrEmpty(method.Attribute.Description))
+                {
                     logger.Info(method.Attribute.Description);
+                    OnProcessInitialization(method.Attribute.Description);
+                }
                 else if (!method.Attribute.Silent)
                 {
-                    logger.Info(string.Format("Initialize '{0}'", method.Method.DeclaringType.Name));
+                    var text = string.Format("Initialize '{0}'", method.Method.DeclaringType.Name);
+
+                    logger.Info(text);
+                    OnProcessInitialization(text);
                 }
 
                 method.Method.Invoke(method.Caller, new object[0]);
@@ -123,13 +137,18 @@ namespace Stump.Server.BaseServer.Initialization
         {
             foreach (InitializationPass pass in Enum.GetValues(typeof(InitializationPass)))
             {
-                foreach (var init in m_initializer[pass])
-                {
-                    ExecuteInitializationMethod(init);
-                }
-
-                m_initializer[pass].Clear();
+                Initialize(pass);
             }
+        }
+
+        public void Initialize(InitializationPass pass)
+        {
+            foreach (var init in m_initializer[pass])
+            {
+                ExecuteInitializationMethod(init);
+            }
+
+            m_initializer[pass].Clear();
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.D2oClasses.Tool.Ele
 {
-    public class EleInstance
+    public class EleInstance : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
         public EleInstance()
         {
             GraphicalDatas = new Dictionary<int, EleGraphicalData>();

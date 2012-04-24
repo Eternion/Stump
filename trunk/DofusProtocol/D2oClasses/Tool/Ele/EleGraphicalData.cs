@@ -1,11 +1,13 @@
 ﻿using System;
+using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses.Tool.Ele.Datas;
 
 namespace Stump.DofusProtocol.D2oClasses.Tool.Ele
 {
-    public abstract class EleGraphicalData
+    public abstract class EleGraphicalData : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
         public EleGraphicalData(EleInstance instance, int id)
         {
             Instance = instance;

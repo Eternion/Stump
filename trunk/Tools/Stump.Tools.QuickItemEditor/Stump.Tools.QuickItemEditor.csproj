@@ -64,7 +64,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\ComparaisonBinding.cs" />
+    <Compile Include="Converters\EnumerationExtension.cs" />
     <Compile Include="Converters\ItemTemplateToModel.cs" />
+    <Compile Include="EffectTemplateSelector.cs" />
     <Compile Include="Transition.cs" />
     <Compile Include="YesNoCombobox.xaml.cs">
       <DependentUpon>YesNoCombobox.xaml</DependentUpon>
@@ -81,6 +83,10 @@
     <Compile Include="DBConnector.xaml.cs">
       <DependentUpon>DBConnector.xaml</DependentUpon>
     </Compile>
+    <Page Include="EffectsTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ItemEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -141,6 +147,10 @@
     <ProjectReference Include="..\..\DofusProtocol\D2oClasses\Stump.DofusProtocol.D2oClasses.csproj">
       <Project>{33093793-C4BA-4B89-AC82-6E9D00437452}</Project>
       <Name>Stump.DofusProtocol.D2oClasses</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DofusProtocol\Enums\Stump.DofusProtocol.Enums.csproj">
+      <Project>{D7BFF8ED-065B-4A53-9805-595DFEA75A0A}</Project>
+      <Name>Stump.DofusProtocol.Enums</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Server\Stump.Server.BaseServer\Stump.Server.BaseServer.csproj">
       <Project>{011FBAFC-7720-4D36-9C59-71BAE6163C9E}</Project>

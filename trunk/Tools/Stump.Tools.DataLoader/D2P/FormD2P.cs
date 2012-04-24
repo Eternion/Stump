@@ -312,7 +312,7 @@ namespace Stump.Tools.DataLoader
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                Adapter.Pak.ExtractAll(dialog.SelectedPath);
+                Adapter.Package.ExtractAll(dialog.SelectedPath);
             }
         }
 

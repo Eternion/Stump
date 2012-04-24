@@ -26,10 +26,21 @@ namespace Stump.Tools.QuickItemEditor
             m_connector.Connected += OnConnectorConnected;
         }
 
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            if (contentControl.Content == m_connector)
+            {
+                m_connector.SaveConfigFile();
+            }
+
+            base.OnClosing(e);
+        }
+
         private void OnConnectorConnected(DBConnector connector, DatabaseAccessor dbAccessor)
         {
             connector.SaveConfigFile();
             m_databaseAccessor = dbAccessor;
+            var language = connector.DisplayLanguage;
             Task.Factory.StartNew(
                 () =>
                     {
@@ -43,7 +54,8 @@ namespace Stump.Tools.QuickItemEditor
                                                                  VerticalAlignment = VerticalAlignment.Center,
                                                              }));
 
-                        TextManager.Instance.Intialize();
+                        TextManager.Instance.SetDefaultLanguage(language);
+                        TextManager.Instance.Initialize();
 
                         Dispatcher.BeginInvoke((Action) (()
                                                          =>
@@ -57,6 +69,9 @@ namespace Stump.Tools.QuickItemEditor
 
                         Dispatcher.BeginInvoke((Action)( () =>
                         {
+                            SizeToContent = SizeToContent.Manual;
+                            Width = 700;
+                            Height = 550;
                             contentControl.Content = (m_itemEditor = new ItemEditor(m_databaseAccessor));
                         } ));
                     }

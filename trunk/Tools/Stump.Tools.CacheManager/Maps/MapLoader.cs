@@ -6,6 +6,7 @@ using NLog;
 using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.DofusProtocol.D2oClasses.Tool.D2p;
 using Stump.DofusProtocol.D2oClasses.Tool.Dlm;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Database.World.Maps;
@@ -26,15 +27,15 @@ namespace Stump.Tools.CacheManager.Maps
 
             Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildDelete("maps"));
 
-            using (var d2pFile = new PakFile(Path.Combine(mapFolder, "maps0.d2p")))
+            using (var d2pFile = new D2pFile(Path.Combine(mapFolder, "maps0.d2p")))
             {
-                string[] files = d2pFile.GetFilesName();
+                var files = d2pFile.ReadAllFiles();
                 int counter = 0;
                 int cursorLeft = Console.CursorLeft;
                 int cursorTop = Console.CursorTop;
                 foreach (var file in files)
                 {
-                    var data = d2pFile.ReadFile(file);
+                    var data = file.Value;
 
                     var reader = new DlmReader(new MemoryStream(data), DecryptionKey);
                     DlmMap map;
@@ -54,7 +55,7 @@ namespace Stump.Tools.CacheManager.Maps
                     counter++;
 
                     Console.SetCursorPosition(cursorLeft, cursorTop);
-                    Console.Write("{0}/{1} ({2}%)", counter, files.Length, (int)((counter / (double)files.Length) * 100d));
+                    Console.Write("{0}/{1} ({2}%)", counter, files.Count, (int)( ( counter / (double)files.Count ) * 100d ));
                 }
                 Console.SetCursorPosition(cursorLeft, cursorTop);
             }

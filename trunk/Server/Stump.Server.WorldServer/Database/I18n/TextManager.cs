@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Database.I18n
         private Languages? m_defaultLanguages;
 
         [Initialization(InitializationPass.First)]
-        public void Intialize()
+        public void Initialize()
         {
             m_texts = TextRecord.FindAll().ToDictionary(entry => entry.Id);
             m_textsUi = TextUIRecord.FindAll().ToDictionary(entry => entry.Name);

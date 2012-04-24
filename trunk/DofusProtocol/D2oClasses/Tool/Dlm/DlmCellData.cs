@@ -1,9 +1,11 @@
-﻿using Stump.Core.IO;
+﻿using System.ComponentModel;
+using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.D2oClasses.Tool.Dlm
 {
-    public class DlmCellData
+    public class DlmCellData : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
         public DlmCellData(DlmMap map, short id)
         {
             Map = map;

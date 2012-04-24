@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.DofusProtocol.D2oClasses.Tool.D2p;
 using Stump.Tools.DataLoader.Properties;
 
 namespace Stump.Tools.DataLoader
@@ -27,7 +28,7 @@ namespace Stump.Tools.DataLoader
 
             if (dialog.ShowDialog(m_form) == DialogResult.OK)
             {
-                Pak.ExtractAll(dialog.SelectedPath);
+                Package.ExtractAllFiles(dialog.SelectedPath, true);
             }
         }
 
@@ -43,7 +44,7 @@ namespace Stump.Tools.DataLoader
             private set;
         }
 
-        public PakFile Pak
+        public D2pFile Package
         {
             get;
             set;
@@ -73,9 +74,9 @@ namespace Stump.Tools.DataLoader
         {
             m_form.Text = Path.GetFileName(FileName);
 
-            Pak = new PakFile(FileName);
+            Package = new D2pFile(FileName);
 
-            m_form.OpenPakFile(Pak.GetFilesInfo());
+            m_form.OpenPakFile(Package.GetFilesInfo());
         }
 
         public void Save()
@@ -85,10 +86,10 @@ namespace Stump.Tools.DataLoader
 
         public void ExtractFile(string filePath, string destFile)
         {
-            if (!Pak.ExistsFile(filePath))
+            if (!Package.ExistsFile(filePath))
                 throw new FileNotFoundException(string.Format("{0} is not found", filePath));
 
-            Pak.ExtractFile(filePath, destFile);
+            Package.ExtractFile(filePath, destFile);
         }
 
         public void ExtractDirectory(string directoryName, string destDirectory)
@@ -102,7 +103,7 @@ namespace Stump.Tools.DataLoader
 
             foreach (var file in GetDirectoryFiles(directory))
             {
-                Pak.ExtractFile(file.Name, Path.Combine(destDirectory, file.Name));
+                Package.ExtractFile(file.Name, Path.Combine(destDirectory, file.Name));
             }
         }
 

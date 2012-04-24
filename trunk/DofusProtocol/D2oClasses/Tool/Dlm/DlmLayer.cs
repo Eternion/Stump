@@ -1,9 +1,11 @@
-﻿using Stump.Core.IO;
+﻿using System.ComponentModel;
+using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.D2oClasses.Tool.Dlm
 {
-    public class DlmLayer
+    public class DlmLayer : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
         public DlmLayer(DlmMap map)
         {
             Map = map;

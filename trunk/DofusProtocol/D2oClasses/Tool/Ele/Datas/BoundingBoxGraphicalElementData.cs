@@ -1,9 +1,11 @@
-﻿using Stump.Core.IO;
+﻿using System.ComponentModel;
+using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.D2oClasses.Tool.Ele.Datas
 {
-    public class BoundingBoxGraphicalElementData : NormalGraphicalElementData
+    public class BoundingBoxGraphicalElementData : NormalGraphicalElementData, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
         public BoundingBoxGraphicalElementData(EleInstance instance, int id) : base(instance, id)
         {
         }

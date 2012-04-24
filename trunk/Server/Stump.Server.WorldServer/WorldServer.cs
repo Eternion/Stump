@@ -17,6 +17,7 @@ using Stump.Core.Pool;
 using Stump.Core.Reflection;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tool.D2p;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -51,7 +52,7 @@ namespace Stump.Server.WorldServer
         [Variable]
         public readonly static int Port = 3467;
 
-        [Variable(DefinableRunning = true)]
+        [Variable(true)]
         public static WorldServerData ServerInformation = new WorldServerData
         {
             Id = 1,
@@ -71,7 +72,7 @@ namespace Stump.Server.WorldServer
             UpdateFileDir = "./sql_update/",
         };
 
-        [Variable]
+        [Variable(true)]
         public static int AutoSaveInterval  = 3 * 60;
 
         public WorldPacketHandler HandlerManager
@@ -95,6 +96,12 @@ namespace Stump.Server.WorldServer
 
         public override void Initialize()
         {
+            using (var file = new D2pFile(@"C:\Program Files (x86)\Dofus 2\app\content\maps\maps0.d2p"))
+            {
+                file.ExtractPercentProgress += (sender, percent) => Console.WriteLine(percent);
+                file.ExtractAllFiles("./maps", true, true);
+            }
+
             base.Initialize();
 
             ConsoleInterface = new WorldConsole();

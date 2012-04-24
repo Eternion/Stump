@@ -1,10 +1,10 @@
 ﻿<Window x:Class="Stump.Tools.QuickItemEditor.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="MainWindow" mc:Ignorable="d"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Quick Item Editor for Stump" mc:Ignorable="d"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:QuickItemEditor="clr-namespace:Stump.Tools.QuickItemEditor" d:DesignHeight="300" d:DesignWidth="300"
-        SizeToContent="WidthAndHeight">
+        SizeToContent="WidthAndHeight" WindowStyle="SingleBorderWindow">
   <Window.Resources>
     <DataTemplate x:Key="FadeTransition">
       <Grid>

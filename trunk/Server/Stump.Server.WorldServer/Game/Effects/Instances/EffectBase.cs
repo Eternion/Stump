@@ -82,12 +82,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public short Id
         {
             get;
-            protected set;
+            set;
         }
 
         public EffectsEnum EffectId
         {
             get { return (EffectsEnum) Id; }
+            set { Id = (short) value; }
         }
 
         public EffectTemplate Template

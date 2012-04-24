@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Tools.QuickItemEditor.Models;
 
 namespace Stump.Tools.QuickItemEditor
@@ -38,6 +39,18 @@ namespace Stump.Tools.QuickItemEditor
             {
                 SetValue(ItemProperty, value);
             }
+        }
+
+        private void OnAddClicked(object sender, RoutedEventArgs e)
+        {
+            Item.Effects.Add(new EffectDice());
+            effectsList.Items.Refresh();
+        }
+
+        private void OnRemoveClicked(object sender, RoutedEventArgs e)
+        {
+            Item.Effects.Remove(effectsList.SelectedItem as EffectBase);
+            effectsList.Items.Refresh();
         }
     }
 }

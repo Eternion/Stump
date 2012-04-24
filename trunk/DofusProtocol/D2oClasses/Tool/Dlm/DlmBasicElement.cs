@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.D2oClasses.Tool.Dlm

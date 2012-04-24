@@ -296,6 +296,11 @@
     <Compile Include="Tool\D2OIgnore.cs" />
     <Compile Include="Tool\D2OReader.cs" />
     <Compile Include="Tool\D2OWriter.cs" />
+    <Compile Include="Tool\D2p\D2pEntry.cs" />
+    <Compile Include="Tool\D2p\D2pEntryState.cs" />
+    <Compile Include="Tool\D2p\D2pFile.cs" />
+    <Compile Include="Tool\D2p\D2pIndexTable.cs" />
+    <Compile Include="Tool\D2p\D2pProperty.cs" />
     <Compile Include="Tool\Dlm\ColorMultiplicator.cs" />
     <Compile Include="Tool\Dlm\DlmBasicElement.cs" />
     <Compile Include="Tool\Dlm\DlmCell.cs" />
@@ -317,7 +322,6 @@
     <Compile Include="Tool\Ele\Datas\EntityGraphicalElementData.cs" />
     <Compile Include="Tool\Ele\Datas\ParticlesGraphicalElementData.cs" />
     <Compile Include="Tool\I18nFile.cs" />
-    <Compile Include="Tool\PakFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">
@@ -334,4 +338,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="AfterCompile">
+    <NotifyPropertyWeaverMsBuildTask.WeavingTask />
+  </Target>
+  <UsingTask TaskName="NotifyPropertyWeaverMsBuildTask.WeavingTask" AssemblyFile="$([MSBuild]::Unescape($(ProjectDir)))NotifyPropertyWeaverMsBuildTask.dll" />
 </Project>

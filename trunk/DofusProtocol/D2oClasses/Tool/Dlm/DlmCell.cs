@@ -1,18 +1,22 @@
-﻿using Stump.Core.IO;
+﻿using System.ComponentModel;
+using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.D2oClasses.Tool.Dlm
 {
-    public class DlmCell
+    public class DlmCell : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
         public DlmCell(DlmLayer layer)
         {
             Layer = layer;
         }
 
+        private DlmLayer m_layer;
+
         public DlmLayer Layer
         {
-            get;
-            set;
+            get { return m_layer; }
+            set { m_layer = value; }
         }
 
         public short Id

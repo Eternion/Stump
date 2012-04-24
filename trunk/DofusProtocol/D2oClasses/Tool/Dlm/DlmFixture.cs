@@ -1,10 +1,12 @@
 ﻿
+using System.ComponentModel;
 using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.D2oClasses.Tool.Dlm
 {
-    public class DlmFixture
+    public class DlmFixture : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
         public DlmFixture(DlmMap map)
         {
             Map = map;

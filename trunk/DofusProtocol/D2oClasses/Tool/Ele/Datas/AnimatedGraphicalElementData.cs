@@ -1,9 +1,11 @@
-﻿using Stump.Core.IO;
+﻿using System.ComponentModel;
+using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.D2oClasses.Tool.Ele.Datas
 {
-    public class AnimatedGraphicalElementData : NormalGraphicalElementData
+    public class AnimatedGraphicalElementData : NormalGraphicalElementData, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
         public AnimatedGraphicalElementData(EleInstance instance, int id) : base(instance, id)
         {
         }

@@ -1,0 +1,68 @@
+﻿<ResourceDictionary x:Class="Stump.Tools.QuickItemEditor.EffectEditor"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d"
+                    xmlns:l="clr-namespace:Stump.Tools.QuickItemEditor"
+                    xmlns:Instances="clr-namespace:Stump.Server.WorldServer.Game.Effects.Instances;assembly=Stump.Server.WorldServer"
+                    xmlns:convert="clr-namespace:Stump.Tools.QuickItemEditor.Converters"
+                    xmlns:Enums="clr-namespace:Stump.DofusProtocol.Enums;assembly=Stump.DofusProtocol.Enums">
+  <Style TargetType="TextBox">
+    <Setter Property="Margin" Value="3" />
+  </Style>
+  <DataTemplate x:Key="EffectBase">
+    <ComboBox FontWeight="Bold" ItemsSource="{Binding Source={convert:Enumeration {x:Type Enums:EffectsEnum}}}"
+              DisplayMemberPath="Description" SelectedValue="{Binding EffectId}" SelectedValuePath="Value" />
+  </DataTemplate>
+  <DataTemplate DataType="{x:Type Instances:EffectBase}">
+    <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource EffectBase}" />
+  </DataTemplate>
+  <DataTemplate DataType="{x:Type Instances:EffectInteger}" x:Key="EffectInteger">
+    <GroupBox>
+      <GroupBox.Header>
+        <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource EffectBase}" />
+      </GroupBox.Header>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition />
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Value" />
+        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=Value}" />
+      </Grid>
+    </GroupBox>
+  </DataTemplate>
+  <DataTemplate DataType="{x:Type Instances:EffectDice}" x:Key="EffectDice">
+    <GroupBox>
+      <GroupBox.Header>
+        <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource EffectBase}" />
+      </GroupBox.Header>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition />
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition />
+          <RowDefinition />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Value" />
+        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=Value}" />
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="DiceNum" />
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=DiceNum}" />
+
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="DiceFace" />
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=DiceFace}" />
+      </Grid>
+    </GroupBox>
+  </DataTemplate>
+
+  <l:EffectTemplateSelector x:Key="TemplateSelector" EffectBaseTemplate="{StaticResource ResourceKey=EffectBase}"
+                            EffectIntegerTemplate="{StaticResource ResourceKey=EffectInteger}"
+                            EffectDiceTemplate="{StaticResource ResourceKey=EffectDice}" />
+</ResourceDictionary>

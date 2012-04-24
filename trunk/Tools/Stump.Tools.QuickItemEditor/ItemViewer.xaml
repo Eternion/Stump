@@ -6,11 +6,16 @@
              MinWidth="350"
              MinHeight="250">
     <UserControl.Resources>
-        <Style TargetType="TextBlock">
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="Margin" Value="5"/>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="EffectsTemplate.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="TextBlock">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="Margin" Value="5"/>
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel>
         <Grid DockPanel.Dock="Top">
@@ -42,8 +47,23 @@
         <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding Item.Criteria}" Height="24" Margin="5"/>
         <xceed:DecimalUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Item.AppearanceId}" Minimum="0" Height="24" Margin="5"/>
     </Grid>
-        <ListBox DockPanel.Dock="Bottom" Name ="effectsList" ItemsSource="{Binding Item.Effects}">
-            
-        </ListBox>
+        <DockPanel LastChildFill="True">
+            <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" Orientation="Horizontal">
+                <Button Width="100" Margin="3" Click="OnAddClicked">Add</Button>
+                <Button Width="100" Margin="3" Click="OnRemoveClicked">
+                    <Button.Style>
+                        <Style>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=effectsList, Path=SelectedIndex}" Value="-1">
+                                    <Setter Property="Button.IsEnabled" Value="false" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    Remove</Button>
+            </StackPanel>
+            <ListBox Name ="effectsList" ItemsSource="{Binding Item.Effects}" ItemTemplateSelector="{StaticResource ResourceKey=TemplateSelector}"
+                     VerticalAlignment="Stretch"/>
+        </DockPanel>
     </DockPanel>
 </UserControl>

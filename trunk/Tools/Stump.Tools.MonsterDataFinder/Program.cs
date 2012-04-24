@@ -44,7 +44,7 @@ namespace Stump.Tools.MonsterDataFinder
 
             Console.WriteLine("Loads data");
             TextManager.Instance.SetDefaultLanguage(Languages.French);
-            TextManager.Instance.Intialize();
+            TextManager.Instance.Initialize();
             EffectManager.Instance.Initialize();
             SpellManager.Instance.Initialize();
             MonsterManager.Instance.Initialize();

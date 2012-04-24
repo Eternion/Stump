@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Text;
@@ -6,8 +7,9 @@ using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.D2oClasses.Tool.Dlm
 {
-    public class DlmMap
+    public class DlmMap : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
         public const int CellCount = 560;
 
         public DlmMap()

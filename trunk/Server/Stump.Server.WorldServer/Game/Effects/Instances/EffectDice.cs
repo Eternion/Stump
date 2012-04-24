@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Types;
@@ -13,7 +14,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public EffectDice()
         {
-            
         }
 
         public EffectDice(short id, short value, short dicenum, short diceface)
@@ -37,20 +37,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public override byte SerializationIdenfitier
         {
-            get
-            {
-                return 4;
-            }
+            get { return 4; }
         }
 
         public short DiceNum
         {
             get { return m_dicenum; }
+            set { m_dicenum = value; }
         }
 
         public short DiceFace
         {
             get { return m_diceface; }
+            set { m_diceface = value; }
         }
 
         public override object[] GetValues()
@@ -63,14 +62,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             return new ObjectEffectDice(Id, DiceNum, DiceFace, Value);
         }
 
-        public override EffectBase GenerateEffect(EffectGenerationContext context, EffectGenerationType type = EffectGenerationType.Normal)
+        public override EffectBase GenerateEffect(EffectGenerationContext context,
+                                                  EffectGenerationType type = EffectGenerationType.Normal)
         {
             if (context == EffectGenerationContext.Spell || EffectManager.Instance.IsRandomableItemEffect(EffectId))
             {
                 var rand = new AsyncRandom();
 
-                var max = m_dicenum >= m_diceface ? m_dicenum : m_diceface;
-                var min = m_dicenum <= m_diceface ? m_dicenum : m_diceface;
+                short max = m_dicenum >= m_diceface ? m_dicenum : m_diceface;
+                short min = m_dicenum <= m_diceface ? m_dicenum : m_diceface;
 
                 if (type == EffectGenerationType.MaxEffects)
                     return new EffectInteger(Id, Template.Operator != "-" ? max : min);
@@ -80,13 +80,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 if (min == 0)
                     return new EffectInteger(Id, max);
 
-                return new EffectInteger(Id, (short)rand.Next(min, max + 1));
+                return new EffectInteger(Id, (short) rand.Next(min, max + 1));
             }
 
             return this;
         }
 
-        protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
+        protected override void InternalSerialize(ref BinaryWriter writer)
         {
             base.InternalSerialize(ref writer);
 
@@ -94,7 +94,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             writer.Write(DiceFace);
         }
 
-        protected override void InternalDeserialize(ref System.IO.BinaryReader reader)
+        protected override void InternalDeserialize(ref BinaryReader reader)
         {
             base.InternalDeserialize(ref reader);
 

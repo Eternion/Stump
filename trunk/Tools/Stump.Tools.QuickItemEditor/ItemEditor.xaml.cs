@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Items;
@@ -45,7 +46,9 @@ namespace Stump.Tools.QuickItemEditor
 
         private void OnSaveButtonClicked(object sender, RoutedEventArgs e)
         {
+            saveButton.IsEnabled = false;
             SelectedItem.Save();
+            saveButton.IsEnabled = true;
         }
 
         public bool Search(string s)

@@ -175,7 +175,7 @@ namespace Stump.Tools.Proxy
             DatabaseAccessor.OpenDatabase();
 
             logger.Info("Loading some others stuff...");
-            TextManager.Instance.Intialize();
+            TextManager.Instance.Initialize();
             EffectManager.Instance.Initialize();
             ItemManager.Instance.Initialize();
             InteractiveManager.Instance.Initialize();

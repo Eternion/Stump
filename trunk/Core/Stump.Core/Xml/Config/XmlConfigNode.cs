@@ -10,7 +10,6 @@ namespace Stump.Core.Xml.Config
     public class XmlConfigNode
     {
         private object m_newValue;
-        private string m_documentation;
 
         public XmlConfigNode(XmlNode node)
         {
@@ -20,6 +19,7 @@ namespace Stump.Core.Xml.Config
             Serialized = node.Attributes["serialized"] != null ? node.Attributes["serialized"].Value == "true" : false;
             ClassName = GetClassNameFromNode(node);
             Namespace = GetNamespaceFromNode(node);
+            Documentation = FindDescription(node);
             Instance = null;
         }
 
@@ -94,20 +94,8 @@ namespace Stump.Core.Xml.Config
 
         public string Documentation
         {
-            get
-            {
-                if (!string.IsNullOrEmpty(m_documentation))
-                    return m_documentation;
-
-                if (Node != null && Node.PreviousSibling != null && Node.PreviousSibling.NodeType == XmlNodeType.Comment)
-                    return Node.PreviousSibling.Value;
-
-                return "";
-            }
-            set
-            {
-                m_documentation = value;
-            }
+            get;
+            set;
         }
 
         public VariableAttribute Attribute
@@ -237,6 +225,20 @@ namespace Stump.Core.Xml.Config
         private static string GetClassNameFromNode(XmlNode node)
         {
             return node.ParentNode.Name;
+        }
+
+        private static string FindDescription(XmlNode node)
+        {
+            var previous = node.PreviousSibling;
+            while (previous != null && previous.NodeType == XmlNodeType.Comment && previous is XmlComment)
+            {
+                if (!( previous as XmlComment ).Value.StartsWith("Editable as Running : "))
+                    return ( previous as XmlComment ).Value;
+
+                previous = previous.PreviousSibling;
+            }
+
+            return string.Empty;
         }
     }
 }

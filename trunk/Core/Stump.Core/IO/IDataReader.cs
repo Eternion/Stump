@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 
 namespace Stump.Core.IO
 {
@@ -95,5 +96,7 @@ namespace Stump.Core.IO
         /// </summary>
         /// <returns></returns>
         string ReadUTFBytes(ushort len);
+        void Seek(int offset, SeekOrigin seekOrigin);
+        void SkipBytes(int n);
     }
 }
