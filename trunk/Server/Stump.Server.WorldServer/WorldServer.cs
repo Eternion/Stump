@@ -96,12 +96,6 @@ namespace Stump.Server.WorldServer
 
         public override void Initialize()
         {
-            using (var file = new D2pFile(@"C:\Program Files (x86)\Dofus 2\app\content\maps\maps0.d2p"))
-            {
-                file.ExtractPercentProgress += (sender, percent) => Console.WriteLine(percent);
-                file.ExtractAllFiles("./maps", true, true);
-            }
-
             base.Initialize();
 
             ConsoleInterface = new WorldConsole();
