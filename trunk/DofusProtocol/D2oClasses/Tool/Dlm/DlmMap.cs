@@ -193,7 +193,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.Dlm
 
                     if (key.Length > 0)
                     {
-                        for (int i = 0; i < len; i++)
+                        for (int i = 0; i < data.Length; i++)
                         {
                             data[i] = (byte)( data[i] ^ encodedKey[i % key.Length] );
                         }

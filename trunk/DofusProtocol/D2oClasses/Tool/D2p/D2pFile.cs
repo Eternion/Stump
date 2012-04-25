@@ -84,6 +84,12 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
 
             if (m_reader != null)
                 m_reader.Dispose();
+
+            if (m_links != null)
+            foreach (var link in m_links)
+            {
+                link.Dispose();
+            }
         }
 
         #endregion
@@ -371,6 +377,9 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
 
         public byte[] ReadFile(D2pEntry entry)
         {
+            if (entry.Container != this)
+                return entry.Container.ReadFile(entry);
+
             if (entry.Index >= 0 && IndexTable.OffsetBase + entry.Index >= 0)
                 m_reader.Seek(IndexTable.OffsetBase + entry.Index, SeekOrigin.Begin);
 
