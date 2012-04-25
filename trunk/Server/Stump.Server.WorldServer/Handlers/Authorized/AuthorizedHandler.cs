@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Handlers.Authorized
                     string id = args[0];
 
                     WorldServer.Instance.CommandManager.HandleCommand(
-                        new TriggerConsole(string.Format("go * {0}", id), client.Character));
+                        new TriggerConsole(string.Format("go {0}", id), client.Character));
                     break;
                 }
             }
