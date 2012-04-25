@@ -154,6 +154,9 @@ namespace Stump.Server.AuthServer.IPC
         {
             WorldServer server = GetCurrentServer();
 
+            if (server.CharsCount == value)
+                return;
+
             server.CharsCount = value;
 
             if (server.CharsCount >= server.CharCapacity &&
@@ -168,7 +171,7 @@ namespace Stump.Server.AuthServer.IPC
                 Manager.ChangeWorldState(server, ServerStatusEnum.ONLINE);
             }
 
-            server.Save();
+            server.Update();
         }
 
         public AccountData GetAccountByTicket(string ticket)

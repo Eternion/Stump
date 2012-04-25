@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using NLog;
 using Org.BouncyCastle.Crypto;
@@ -186,13 +187,18 @@ namespace Stump.Server.AuthServer.Managers
 
         public bool AddAccountCharacter(Account account, WorldServer world, uint characterId)
         {
-            WorldCharacter character = CreateAccountCharacter(account, world, characterId);
+            using (var scope = new SessionScope(FlushAction.Never))
+            {
+                WorldCharacter character = CreateAccountCharacter(account, world, characterId);
 
-            if (account.Characters.Contains(character))
-                return false;
+                if (account.Characters.Contains(character))
+                    return false;
 
-            account.Characters.Add(character);
-            account.Update();
+                account.Characters.Add(character);
+                account.Update();
+
+                scope.Flush();
+            }
 
             return true;
         }
@@ -212,17 +218,22 @@ namespace Stump.Server.AuthServer.Managers
         }
 
         public bool DeleteAccountCharacter(Account account, WorldServer world, uint characterId)
-        {
-            WorldCharacter character = account.Characters.FirstOrDefault(c => c.CharacterId == characterId);
+        { 
+            using (var scope = new SessionScope(FlushAction.Never))
+            {
+                WorldCharacter character = account.Characters.FirstOrDefault(c => c.CharacterId == characterId);
 
-            if (character == null)
-                return false;
+                if (character == null)
+                    return false;
 
-            account.Characters.Remove(character);
-            character.Delete();
+                account.Characters.Remove(character);
+                character.Delete();
 
-            account.DeletedCharacters.Add(AddDeletedCharacter(account, world, characterId));
-            account.Save();
+                account.DeletedCharacters.Add(AddDeletedCharacter(account, world, characterId));
+                account.Save();
+
+                scope.Flush();
+            }
 
             return true;
         }
