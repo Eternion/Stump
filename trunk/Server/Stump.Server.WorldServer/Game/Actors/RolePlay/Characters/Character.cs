@@ -572,6 +572,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 else if (spell.ObtainLevel <= currentLevel && !Spells.HasSpell(spell.SpellId))
                 {
                     Spells.LearnSpell(spell.SpellId);
+                    Shortcuts.AddSpellShortcut(Shortcuts.GetNextFreeSlot(), (short) spell.SpellId);
                 }
             }
 

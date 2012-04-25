@@ -230,7 +230,7 @@ namespace Stump.Server.AuthServer.Managers
                 character.Delete();
 
                 account.DeletedCharacters.Add(AddDeletedCharacter(account, world, characterId));
-                account.Save();
+                account.Update();
 
                 scope.Flush();
             }

@@ -12,63 +12,63 @@ namespace Stump.Server.BaseServer.Database.Interfaces
         }
 
         [Property("French")]
-        string Fr
+        string French
         {
             get;
             set;
         }
 
         [Property("English")]
-        string En
+        string English
         {
             get;
             set;
         }
 
         [Property("German")]
-        string De
+        string German
         {
             get;
             set;
         }
 
         [Property("Spanish")]
-        string Es
+        string Spanish
         {
             get;
             set;
         }
 
         [Property("Italian")]
-        string It
+        string Italian
         {
             get;
             set;
         }
 
         [Property("Japanish")]
-        string Ja
+        string Japanish
         {
             get;
             set;
         }
 
         [Property("Dutsh")]
-        string Nl
+        string Dutsh
         {
             get;
             set;
         }
 
         [Property("Portugese")]
-        string Pt
+        string Portugese
         {
             get;
             set;
         }
 
         [Property("Russish")]
-        string Ru
+        string Russish
         {
             get;
             set;

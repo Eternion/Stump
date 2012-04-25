@@ -40,42 +40,11 @@ namespace Stump.Tools.QuickItemEditor
         {
             connector.SaveConfigFile();
             m_databaseAccessor = dbAccessor;
-            var language = connector.DisplayLanguage;
-            Task.Factory.StartNew(
-                () =>
-                    {
-                        Dispatcher.BeginInvoke((Action) (()
-                                                         =>
-                                                         contentControl.Content =
-                                                         new TextBlock
-                                                             {
-                                                                 Text = "Loading Texts ...",
-                                                                 HorizontalAlignment = HorizontalAlignment.Center,
-                                                                 VerticalAlignment = VerticalAlignment.Center,
-                                                             }));
 
-                        TextManager.Instance.SetDefaultLanguage(language);
-                        TextManager.Instance.Initialize();
-
-                        Dispatcher.BeginInvoke((Action) (()
-                                                         =>
-                                                             {
-                                                                 (contentControl.Content as TextBlock).Text
-                                                                     = "Loading Items ...";
-                                                             }));
-
-                        ItemManager.Instance.Initialize();
-
-
-                        Dispatcher.BeginInvoke((Action)( () =>
-                        {
-                            SizeToContent = SizeToContent.Manual;
-                            Width = 700;
-                            Height = 550;
-                            contentControl.Content = (m_itemEditor = new ItemEditor(m_databaseAccessor));
-                        } ));
-                    }
-                );
+            SizeToContent = SizeToContent.Manual;
+            Width = 700;
+            Height = 550;
+            contentControl.Content = ( m_itemEditor = new ItemEditor(m_databaseAccessor, connector.DisplayLanguage) );
         }
     }
 }

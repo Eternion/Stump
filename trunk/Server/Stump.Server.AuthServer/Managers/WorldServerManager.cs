@@ -126,7 +126,7 @@ namespace Stump.Server.AuthServer.Managers
         /// </summary>
         public void Start()
         {
-            AuthServer.Instance.IOTaskPool.CallPeriodically(PingCheckInterval, CheckPing);
+            //AuthServer.Instance.IOTaskPool.CallPeriodically(PingCheckInterval, CheckPing);
         }
 
         /// <summary>

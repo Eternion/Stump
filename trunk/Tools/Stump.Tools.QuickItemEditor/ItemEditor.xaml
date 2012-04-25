@@ -29,7 +29,6 @@
         </MultiDataTrigger>
       </Style.Triggers>
     </Style>
-    <convert:ItemTemplateToModel x:Key="ItemTemplateToModel" />
   </UserControl.Resources>
   <Grid Name="grid" Margin="6">
     <Grid.ColumnDefinitions>
@@ -38,11 +37,17 @@
     </Grid.ColumnDefinitions>
     <Grid Grid.Column="0">
       <Grid.RowDefinitions>
-        <RowDefinition Height="24" />
+        <RowDefinition Height="28" />
         <RowDefinition />
       </Grid.RowDefinitions>
-      <TextBox Style="{StaticResource ResourceKey=HintBox}" Grid.Row="0" Name="searchTextBox"
+            <DockPanel LastChildFill="True">
+                <Button DockPanel.Dock="Right" Margin="2" Click="OnSearchButtonClicked">
+                    <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="12" FontWeight="Normal">></TextBlock>
+                </Button>
+                <TextBox Style="{StaticResource ResourceKey=HintBox}" Grid.Row="0" Name="searchTextBox"
                TextChanged="OnSearchTextChanged" KeyDown="OnSearchBoxKeyDown"></TextBox>
+                
+            </DockPanel>
       <ListBox Grid.Row="1" Name="itemsList" ScrollViewer.VerticalScrollBarVisibility="Visible">
         <ListBox.ItemTemplate>
           <DataTemplate>
@@ -103,7 +108,7 @@ Value="{x:Null}">
           <RowDefinition Height="32" />
         </Grid.RowDefinitions>
         <QuickItemEditor:ItemViewer
-Item="{Binding Converter={StaticResource ItemTemplateToModel}, ElementName=itemsList, Path=SelectedItem}"></QuickItemEditor:ItemViewer>
+Item="{Binding ElementName=itemsList, Path=SelectedItem}"></QuickItemEditor:ItemViewer>
         <GridSplitter Grid.Column="1" Width="5" ResizeBehavior="PreviousAndCurrent" ResizeDirection="Columns" />
         <Button Name="saveButton" Grid.Row="1" Click="OnSaveButtonClicked" Margin="5">
           Save

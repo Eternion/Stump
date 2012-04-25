@@ -40,6 +40,7 @@
     <Reference Include="Castle.ActiveRecord">
       <HintPath>..\..\Run\Debug\Plugins\Castle.ActiveRecord.dll</HintPath>
     </Reference>
+    <Reference Include="NHibernate, Version=3.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -65,7 +66,6 @@
     </ApplicationDefinition>
     <Compile Include="Converters\ComparaisonBinding.cs" />
     <Compile Include="Converters\EnumerationExtension.cs" />
-    <Compile Include="Converters\ItemTemplateToModel.cs" />
     <Compile Include="EffectTemplateSelector.cs" />
     <Compile Include="Transition.cs" />
     <Compile Include="YesNoCombobox.xaml.cs">

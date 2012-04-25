@@ -14,63 +14,63 @@ namespace Stump.Server.WorldServer.Database.I18n
         }
 
         [Property("French", ColumnType = "StringClob", SqlType = "MediumText")]
-        public string Fr
+        public string French
         {
             get;
             set;
         }
 
         [Property("English", ColumnType = "StringClob", SqlType = "MediumText")]
-        public string En
+        public string English
         {
             get;
             set;
         }
 
         [Property("German", ColumnType = "StringClob", SqlType = "MediumText")]
-        public string De
+        public string German
         {
             get;
             set;
         }
 
         [Property("Spanish", ColumnType = "StringClob", SqlType = "MediumText")]
-        public string Es
+        public string Spanish
         {
             get;
             set;
         }
 
         [Property("Italian", ColumnType = "StringClob", SqlType = "MediumText")]
-        public string It
+        public string Italian
         {
             get;
             set;
         }
 
         [Property("Japanish", ColumnType = "StringClob", SqlType = "MediumText")]
-        public string Ja
+        public string Japanish
         {
             get;
             set;
         }
 
         [Property("Dutsh", ColumnType = "StringClob", SqlType = "MediumText")]
-        public string Nl
+        public string Dutsh
         {
             get;
             set;
         }
 
         [Property("Portugese", ColumnType = "StringClob", SqlType = "MediumText")]
-        public string Pt
+        public string Portugese
         {
             get;
             set;
         }
 
         [Property("Russish", ColumnType = "StringClob", SqlType = "MediumText")]
-        public string Ru
+        public string Russish
         {
             get;
             set;

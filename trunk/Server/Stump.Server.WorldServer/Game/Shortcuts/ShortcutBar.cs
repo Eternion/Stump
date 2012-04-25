@@ -12,6 +12,8 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
 {
     public class ShortcutBar
     {
+        public const int MaxSlot = 40;
+
         private readonly object m_locker = new object();
         private readonly Queue<Shortcut> m_shortcutsToDelete = new Queue<Shortcut>();
         private List<Shortcut> m_shortcuts;
@@ -101,6 +103,17 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
             m_shortcutsToDelete.Enqueue(shortcut);
 
             ShortcutHandler.SendShortcutBarRemovedMessage(Owner.Client, barType, slot);
+        }
+
+        public int GetNextFreeSlot()
+        {
+            for (int i = 0; i < MaxSlot; i++)
+            {
+                if (IsSlotFree(i))
+                    return i;
+            }
+
+            return MaxSlot;
         }
 
         public bool IsSlotFree(int slot)

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Castle.ActiveRecord;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -150,14 +151,19 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             ContextRoleplayHandler.SendGameRolePlayArenaUpdatePlayerInfosMessage(client);
 
-            // Update LastConnection and Last Ip
-            client.WorldAccount.LastConnection = DateTime.Now;
-            client.WorldAccount.LastIp = client.IP;
-            client.WorldAccount.ConnectedCharacterId = character.Id;
-            client.WorldAccount.SaveLater();
+            using (var session = new SessionScope(FlushAction.Never))
+            {
+                // Update LastConnection and Last Ip
+                client.WorldAccount.LastConnection = DateTime.Now;
+                client.WorldAccount.LastIp = client.IP;
+                client.WorldAccount.ConnectedCharacterId = character.Id;
+                client.WorldAccount.Save();
 
-            character.LastUsage = DateTime.Now;
-            character.SaveLater();
+                character.LastUsage = DateTime.Now;
+                character.Save();
+
+                session.Flush();
+            }
         }
 
         [WorldHandler(CharactersListRequestMessage.Id, RequiresLogin = false, IsGamePacket = false)]

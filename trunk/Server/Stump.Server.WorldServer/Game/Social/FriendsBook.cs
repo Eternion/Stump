@@ -307,7 +307,7 @@ namespace Stump.Server.WorldServer.Game.Social
             Owner.Client.WorldAccount.Ignoreds = m_ignoreds.Where(entry => !entry.Session).Select(entry => entry.Account).ToList();
 
             if (saveAccount)
-                Owner.Client.WorldAccount.Save();
+                Owner.Client.WorldAccount.Update();
         }
 
         public Friend TryGetFriend(Character character)

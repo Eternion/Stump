@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Database.Characters
         {
             Breed = (PlayableBreedEnum) breed.Id;
 
-            BaseHealth = breed.StartHealthPoint;
+            BaseHealth = (ushort) (breed.StartHealthPoint + breed.StartLevel * 5);
             AP = breed.StartActionPoints;
             MP = breed.StartMovementPoints;
             Prospection = breed.StartProspection;
@@ -47,6 +47,9 @@ namespace Stump.Server.WorldServer.Database.Characters
             SpellsPoints = breed.StartLevel;
             StatsPoints = (ushort) (breed.StartLevel * 5);
             Kamas = breed.StartKamas;
+
+            if (breed.StartLevel > 100)
+                AP++;
         }
 
         [PrimaryKey(PrimaryKeyType.Native)]

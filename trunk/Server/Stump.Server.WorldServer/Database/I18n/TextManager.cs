@@ -53,26 +53,36 @@ namespace Stump.Server.WorldServer.Database.I18n
             if (!m_texts.TryGetValue(id, out record))
                 return "(not found)";
 
+            return GetText(record, lang);
+        }
+
+        public string GetText(TextRecord record)
+        {
+            return GetText(record, GetDefaultLanguage());
+        }
+
+        public string GetText(TextRecord record, Languages lang)
+        {
             switch (lang)
             {
                 case Languages.English:
-                    return record.En ?? "(not found)";
+                    return record.English ?? "(not found)";
                 case Languages.French:
-                    return record.Fr ?? "(not found)";
+                    return record.French ?? "(not found)";
                 case Languages.German:
-                    return record.De ?? "(not found)";
+                    return record.German ?? "(not found)";
                 case Languages.Spanish:
-                    return record.Es ?? "(not found)";
+                    return record.Spanish ?? "(not found)";
                 case Languages.Italian:
-                    return record.It ?? "(not found)";
+                    return record.Italian ?? "(not found)";
                 case Languages.Japanish:
-                    return record.Ja ?? "(not found)";
+                    return record.Japanish ?? "(not found)";
                 case Languages.Dutsh:
-                    return record.Nl ?? "(not found)";
+                    return record.Dutsh ?? "(not found)";
                 case Languages.Portugese:
-                    return record.Pt ?? "(not found)";
+                    return record.Portugese ?? "(not found)";
                 case Languages.Russish:
-                    return record.Ru ?? "(not found)";
+                    return record.Russish ?? "(not found)";
                 default:
                     return "(not found)";
             }

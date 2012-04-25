@@ -17,10 +17,12 @@ namespace Stump.Tools.QuickItemEditor.Models
         }
 
         private readonly ItemTemplate m_template;
+        private readonly string m_name;
 
-        public ItemTemplateModel(ItemTemplate template)
+        public ItemTemplateModel(ItemTemplate template, string name)
         {
             m_template = template;
+            m_name = name;
         }
 
         public ItemTemplate Template
@@ -45,7 +47,7 @@ namespace Stump.Tools.QuickItemEditor.Models
 
         public string Name
         {
-            get { return Template.Name; }
+            get { return m_name; }
         }
 
         public uint Level

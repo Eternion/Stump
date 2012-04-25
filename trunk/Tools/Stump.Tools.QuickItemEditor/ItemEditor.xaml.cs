@@ -3,9 +3,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using NHibernate.Criterion;
 using Stump.Server.BaseServer.Database;
+using Stump.Server.BaseServer.I18n;
+using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Tools.QuickItemEditor.Models;
 
 namespace Stump.Tools.QuickItemEditor
 {
@@ -14,23 +18,31 @@ namespace Stump.Tools.QuickItemEditor
     /// </summary>
     public partial class ItemEditor : UserControl
     {
+        private readonly DatabaseAccessor m_dbAccessor;
+        private readonly Languages m_language;
+
         public static readonly DependencyProperty SearchValidityProperty =
             DependencyProperty.Register("SearchValidity", typeof (bool), typeof (ItemEditor),
                                         new UIPropertyMetadata(false));
 
-
-        private readonly ItemTemplate[] m_items;
 
         public ItemEditor()
         {
             InitializeComponent();
         }
 
-        public ItemEditor(DatabaseAccessor dbAccessor)
+        public ItemEditor(DatabaseAccessor dbAccessor, Languages language)
         {
+            m_dbAccessor = dbAccessor;
+            m_language = language;
             InitializeComponent();
-            m_items = ItemManager.Instance.GetTemplates().ToArray();
-            itemsList.ItemsSource = m_items;
+            itemsList.ItemsSource = Items;
+        }
+
+        public ItemTemplateModel[] Items
+        {
+            get;
+            set;
         }
 
         public bool SearchValidity
@@ -53,26 +65,30 @@ namespace Stump.Tools.QuickItemEditor
 
         public bool Search(string s)
         {
-            int skip = itemsList.SelectedItem != null ? itemsList.SelectedIndex + 1 : 0;
-            ItemTemplate item = m_items.Skip(skip).FirstOrDefault(entry => entry.Name.Contains(s));
-
-            if (item == null)
+            if (string.IsNullOrEmpty(s))
             {
-                item = m_items.FirstOrDefault(entry => entry.Name.Contains(s));
+                Items = new ItemTemplateModel[0];
+            }
+            else
+            {
+                var texts = TextRecord.FindAll(Restrictions.InsensitiveLike(m_language.ToString(),
+                                                                            string.Format("%{0}%", s)))
+                    .ToDictionary(entry => entry.Id);
 
-                if (item == null)
-                    return false;
+                Items = ItemTemplate.FindAll(Restrictions.In("NameId", texts.Keys))
+                    .Select(
+                        entry =>
+                        new ItemTemplateModel(entry, TextManager.Instance.GetText(texts[entry.NameId], m_language))).
+                    ToArray();
             }
 
-            itemsList.SelectedItem = item;
-            itemsList.ScrollIntoView(item);
+            itemsList.ItemsSource = Items;
 
-            return true;
+            return Items.Length > 0;
         }
 
         private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
         {
-            SearchValidity = Search(searchTextBox.Text);
         }
 
         private void OnSearchBoxKeyDown(object sender, KeyEventArgs e)
@@ -81,6 +97,11 @@ namespace Stump.Tools.QuickItemEditor
             {
                 SearchValidity = Search(searchTextBox.Text);
             }
+        }
+
+        private void OnSearchButtonClicked(object sender, RoutedEventArgs e)
+        {
+            SearchValidity = Search(searchTextBox.Text);
         }
     }
 }
