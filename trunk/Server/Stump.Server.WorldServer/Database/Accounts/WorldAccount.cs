@@ -64,7 +64,7 @@ namespace Stump.Server.WorldServer.Database.Accounts
         }
         */
         [HasAndBelongsToMany(typeof (WorldAccount), Table = "accounts_friends", ColumnKey = "AccountId",
-            ColumnRef = "FriendAccountId")]
+            ColumnRef = "FriendAccountId", Cascade = ManyRelationCascadeEnum.Delete)]
         public IList<WorldAccount> Friends
         {
             get { return m_friends ?? new List<WorldAccount>(); }
@@ -72,7 +72,7 @@ namespace Stump.Server.WorldServer.Database.Accounts
         }
 
         [HasAndBelongsToMany(typeof (WorldAccount), Table = "accounts_ignored", ColumnKey = "AccountId",
-            ColumnRef = "IgnoredAccountId")]
+            ColumnRef = "IgnoredAccountId", Cascade = ManyRelationCascadeEnum.Delete)]
         public IList<WorldAccount> Ignoreds
         {
             get { return m_ignoreds ?? new List<WorldAccount>(); }

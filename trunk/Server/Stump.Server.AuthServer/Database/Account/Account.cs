@@ -196,21 +196,21 @@ namespace Stump.Server.AuthServer.Database.Account
             set { m_deletedCharacters = value; }
         }
 
-        [HasMany(typeof(ConnectionLog))]
+        [HasMany(typeof(ConnectionLog), Cascade = ManyRelationCascadeEnum.Delete)]
         public IList<ConnectionLog> Connections
         {
             get { return m_connections ?? new List<ConnectionLog>(); }
             set { m_connections = value; }
         }
 
-        [HasMany(typeof (SubscriptionLog))]
+        [HasMany(typeof(SubscriptionLog), Cascade = ManyRelationCascadeEnum.Delete)]
         public IList<SubscriptionLog> Subscriptions
         {
             get { return m_subscriptions ?? new List<SubscriptionLog>(); }
             set { m_subscriptions = value; }
         }
 
-        [HasMany(typeof (Sanction))]
+        [HasMany(typeof(Sanction), Cascade = ManyRelationCascadeEnum.Delete)]
         public IList<Sanction> Sanctions
         {
             get { return m_sanctions ?? new List<Sanction>(); }

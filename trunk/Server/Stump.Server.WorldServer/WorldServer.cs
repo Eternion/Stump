@@ -7,6 +7,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Castle.ActiveRecord.Framework.Config;
@@ -75,6 +76,11 @@ namespace Stump.Server.WorldServer
         [Variable(true)]
         public static int AutoSaveInterval  = 3 * 60;
 
+#if DEBUG
+        [DllImport("user32.dll")]
+        static extern short GetKeyState(int nVirtKey);
+#endif
+
         public WorldPacketHandler HandlerManager
         {
             get;
@@ -122,7 +128,10 @@ namespace Stump.Server.WorldServer
             logger.Info("Initializing IPC Client..");
             IpcAccessor.Instance.Initialize();
 
-            InitializationManager.InitializeAll();
+#if DEBUG
+            if (( GetKeyState(0x41) & 0x8000 ) == 0)
+#endif
+                InitializationManager.InitializeAll();
             IsInitialized = true;
         }
 

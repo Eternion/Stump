@@ -172,7 +172,7 @@ namespace Stump.Server.AuthServer.Database.World
             Status = ServerStatusEnum.ONLINE;
             LastPing = DateTime.Now;
 
-            Save();
+            Update();
         }
 
         public void SetOnline(string address, ushort port)
@@ -182,7 +182,7 @@ namespace Stump.Server.AuthServer.Database.World
             Address = address;
             Port = port;
 
-            Save();
+            Update();
         }
 
         public void SetOffline()
@@ -190,7 +190,7 @@ namespace Stump.Server.AuthServer.Database.World
             Status = ServerStatusEnum.OFFLINE;
             CharsCount = 0;
 
-            Save();
+            Update();
         }
 
         #endregion

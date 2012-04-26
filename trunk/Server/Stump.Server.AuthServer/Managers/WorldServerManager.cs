@@ -148,7 +148,7 @@ namespace Stump.Server.AuthServer.Managers
             if (!m_realmlist.TryAdd(record.Id, record))
                 throw new Exception("Server already registered");
 
-            record.CreateLater();
+            record.Create();
 
             return record;
         }
@@ -170,7 +170,7 @@ namespace Stump.Server.AuthServer.Managers
                     logger.Debug(ipAddress.ToString());
                 }
 
-                if (AllowedServerIps.Contains(addresses.Last().ToString()))
+                if (AllowedServerIps.Any(entry => addresses.Any(subentry => entry == subentry.ToString())))
                 {
                     server = CreateWorld(world);
                 }
