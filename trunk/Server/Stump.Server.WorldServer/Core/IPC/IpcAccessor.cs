@@ -45,10 +45,12 @@ namespace Stump.Server.WorldServer.Core.IPC
         private AuthClientAdapter m_proxyObject;
         private bool m_running;
 
+        private bool m_isConnected;
+
         public bool IsConnected
         {
-            get;
-            private set;
+            get { return m_isConnected && m_proxyObject.State == CommunicationState.Opened; }
+            private set { m_isConnected = value; }
         }
 
         public AuthClientAdapter ProxyObject
@@ -63,7 +65,7 @@ namespace Stump.Server.WorldServer.Core.IPC
             private set { m_proxyObject = value; }
         }
 
-        public IpcServer IpcServer
+        public IpcHost IpcHost
         {
             get;
             private set;
@@ -75,7 +77,7 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         public void Dispose()
         {
-            IpcServer.Stop();
+            IpcHost.Stop();
             IsConnected = false;
             ProxyObject = null;
             GC.SuppressFinalize(this);
@@ -109,8 +111,8 @@ namespace Stump.Server.WorldServer.Core.IPC
         public void Initialize()
         {
             IsConnected = false;
-            IpcServer = new IpcServer(typeof(IpcOperations), typeof(IRemoteWorldOperations), IpcWorldAddress);
-            IpcServer.Open();
+            IpcHost = new IpcHost(typeof(IpcOperations), typeof(IRemoteWorldOperations), IpcWorldAddress);
+            IpcHost.Open();
         }
 
         /// <summary>
@@ -144,7 +146,7 @@ namespace Stump.Server.WorldServer.Core.IPC
                 }
                 else if (result == RegisterResultEnum.AuthServerUnreachable)
                 {
-                    // do not notify anything
+                    // do not notify anything because it calls OnOperationError
                 }
                 else
                 {
@@ -206,7 +208,7 @@ namespace Stump.Server.WorldServer.Core.IPC
             }
             else
             {
-                logger.Error("[IPC] Exception occurs on IPC method access : {0}", ex);
+                logger.Error("[IPC] Exception occurs on IPC method access : {0} \nScheduling reconnection attempt...", ex);
             } 
             
             Disconnect();

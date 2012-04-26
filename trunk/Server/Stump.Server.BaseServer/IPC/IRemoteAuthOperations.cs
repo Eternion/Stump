@@ -15,9 +15,6 @@ namespace Stump.Server.BaseServer.IPC
         void UnRegisterWorld();
 
         [OperationContract]
-        bool PingConnection();
-
-        [OperationContract]
         void ChangeState(ServerStatusEnum state);
 
         [OperationContract]

@@ -282,38 +282,6 @@ namespace Stump.Server.AuthServer.Managers
             return m_realmlist.ContainsKey(id);
         }
 
-        public bool CheckWorldAccess(WorldServerData server)
-        {
-            if (!m_realmlist.ContainsKey(server.Id))
-                return false;
-
-            if (!m_realmlist[server.Id].Connected)
-                return false;
-
-            return true;
-        }
-
-        public bool CheckWorldAccess(WorldServer server)
-        {
-            if (!m_realmlist.ContainsKey(server.Id))
-                return false;
-
-            if (!m_realmlist[server.Id].Connected)
-                return false;
-
-            return true;
-        }
-
-        public bool DoPing(WorldServer server)
-        {
-            if (!m_realmlist.ContainsKey(server.Id))
-                return false;
-
-            server.LastPing = DateTime.Now;
-
-            return true;
-        }
-
         /// <summary>
         ///   Remove a given world from our list
         ///   and set it off line.
@@ -329,9 +297,10 @@ namespace Stump.Server.AuthServer.Managers
                 server.CloseSession();
 
                 OnServerRemoved(m_realmlist[world.Id]);
+
+                logger.Info("Unregistered \"{0}\" <Id : {1}> <{2}>", world.Name, world.Id, world.Address);
             }
 
-            logger.Info("Unregistered \"{0}\" <Id : {1}> <{2}>", world.Name, world.Id, world.Address);
         }
 
         /// <summary>
@@ -349,9 +318,10 @@ namespace Stump.Server.AuthServer.Managers
                 server.CloseSession();
 
                 OnServerRemoved(m_realmlist[world.Id]);
+
+                logger.Info("Unregistered \"{0}\" <Id : {1}> <{2}>", world.Name, world.Id, world.Address);
             }
 
-            logger.Info("Unregistered \"{0}\" <Id : {1}> <{2}>", world.Name, world.Id, world.Address);
         }
 
         private static bool AskAddWorldRecord(WorldServerData worldServerData)
@@ -360,31 +330,6 @@ namespace Stump.Server.AuthServer.Managers
                 AuthServer.Instance.ConsoleInterface.AskAndWait(
                     string.Format("Server {0} request to be registered. Accept Request ?",
                                   worldServerData.Name), WorldServerTimeout);
-        }
-
-        /// <summary>
-        ///   Check each second if the world servers are alive
-        /// </summary>
-        private void CheckPing()
-        {
-            if (!AuthServer.Instance.Running && !AuthServer.Instance.Initializing)
-            {
-                return;
-            }
-
-            foreach (WorldServer worldServer in m_realmlist.Values)
-            {
-                if (!worldServer.Connected)
-                    continue;
-
-                // check if the world server has pinged recently
-                if ((DateTime.Now - worldServer.LastPing).TotalMilliseconds > WorldServerTimeout*1000)
-                {
-                    // the world server is disconnected
-                    logger.Warn("WorldServer \"{0}\" <id:{1}> has timed out.", worldServer.Name, worldServer.Id);
-                    RemoveWorld(worldServer);
-                }
-            }
         }
     }
 }

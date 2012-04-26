@@ -603,7 +603,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         #region Alignment
 
         public AlignmentSideEnum AlignmentSide
-        {
+        { 
             get { return m_record.AlignmentSide; }
             private set { m_record.AlignmentSide = value; }
         }

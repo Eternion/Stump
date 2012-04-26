@@ -358,12 +358,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return base.LostMP(amount);
         }
 
-        public override short CalculateArmorValue(int reduction, EffectSchoolEnum type)
+        public override short CalculateArmorReduction(EffectSchoolEnum damageType)
         {
             if (Character.GodMode)
                 return short.MaxValue;
 
-            return base.CalculateArmorValue(reduction, type);
+            return base.CalculateArmorReduction(damageType);
         }
         #endregion
     }

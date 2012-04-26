@@ -33,6 +33,23 @@ namespace Stump.Server.AuthServer.IPC
             Manager.RemoveWorld(world);
         }
 
+        private void OnOperationError(Exception ex)
+        {
+            WorldServer world = GetCurrentServer();
+
+            if (ex is CommunicationException)
+            {
+                // Connection got interrupted
+                logger.Warn("[IPC] Lost connection to WorldServer {0}. Scheduling reconnection attempt...", world);
+            }
+            else
+            {
+                logger.Error("[IPC] Exception occurs on IPC method access on WorldServer {0} : {1} \nScheduling reconnection attempt...", world, ex);
+            }
+
+            Manager.RemoveWorld(world);
+        }
+
         private WorldServer GetServerByChannel(IContextChannel channel)
         {
             foreach (var server in Manager.Realmlist)
@@ -98,7 +115,8 @@ namespace Stump.Server.AuthServer.IPC
             WorldServer server;
 
             RegisterResultEnum result;
-            if (((result = Manager.RequestConnection(serverData, channel, endPoint, id)) != RegisterResultEnum.OK) || (server = GetCurrentServer()) == null)
+            if (((result = Manager.RequestConnection(serverData, channel, endPoint, id)) != RegisterResultEnum.OK) ||
+                (server = GetCurrentServer()) == null)
             {
                 try
                 {
@@ -117,6 +135,7 @@ namespace Stump.Server.AuthServer.IPC
                 var remoteClient = new WorldClientAdapter(binding, new EndpointAddress(remoteIpcAddress));
                 remoteClient.Open();
                 server.RemoteOperations = remoteClient;
+                remoteClient.Error += OnOperationError;
             }
             catch (Exception)
             {
@@ -132,17 +151,6 @@ namespace Stump.Server.AuthServer.IPC
         public void UnRegisterWorld()
         {
             Manager.RemoveWorld(GetCurrentServer());
-        }
-
-        public bool PingConnection()
-        {
-            // Do nothing. The framework will throw an exception on the remote end if we didn't pong.
-            WorldServer server = GetCurrentServer();
-
-            if (!Manager.CheckWorldAccess(server))
-                return false;
-
-            return Manager.DoPing(server);
         }
 
         public void ChangeState(ServerStatusEnum state)
@@ -199,7 +207,6 @@ namespace Stump.Server.AuthServer.IPC
         /// <remarks>It only considers password, secret question & answer and role</remarks>
         public bool ModifyAccountByNickname(string name, AccountData modifiedRecord)
         {
-            // todo
             Account account = Account.FindAccountByNickname(name.ToLower());
 
             if (account == null)

@@ -72,19 +72,6 @@ namespace Stump.Server.BaseServer.IPC
             }
         }
 
-        public bool PingConnection()
-        {
-            try
-            {
-                return Channel.PingConnection();
-            }
-            catch (Exception ex)
-            {
-                OnError(ex);
-                return false;
-            }
-        }
-
         public void ChangeState(ServerStatusEnum state)
         {
             try

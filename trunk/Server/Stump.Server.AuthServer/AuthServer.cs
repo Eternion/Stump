@@ -65,7 +65,7 @@ namespace Stump.Server.AuthServer
             UpdateFileDir = "./sql_update/",
         };
 
-        public IpcServer IpcServer
+        public IpcHost IpcHost
         {
             get;
             private set;
@@ -113,7 +113,7 @@ namespace Stump.Server.AuthServer
                 WorldServerManager.Instance.Start();
 
                 logger.Info("Initialize IPC Server..");
-                IpcServer = new IpcServer(typeof(IpcOperations), typeof(IRemoteAuthOperations), IpcAddress);
+                IpcHost = new IpcHost(typeof(IpcOperations), typeof(IRemoteAuthOperations), IpcAddress);
 
                 InitializationManager.InitializeAll();
             }
@@ -136,7 +136,7 @@ namespace Stump.Server.AuthServer
             base.Start();
 
             logger.Info("Start Ipc Server");
-            IpcServer.Open();
+            IpcHost.Open();
 
             logger.Info("Starting Console Handler Interface...");
             ConsoleInterface.Start();

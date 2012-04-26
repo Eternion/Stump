@@ -217,7 +217,7 @@
     <Compile Include="Initialization\InitializationMethod.cs" />
     <Compile Include="Initialization\InitializationPass.cs" />
     <Compile Include="IPC\AuthClientAdapter.cs" />
-    <Compile Include="IPC\IpcServer.cs" />
+    <Compile Include="IPC\IpcHost.cs" />
     <Compile Include="IPC\IRemoteAuthOperations.cs" />
     <Compile Include="IPC\IRemoteWorldOperations.cs" />
     <Compile Include="IPC\Objects\AccountData.cs" />

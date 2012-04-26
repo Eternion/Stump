@@ -204,5 +204,10 @@ namespace Stump.Server.AuthServer.Database.World
         {
             return Exists(Restrictions.Eq("Id", id));
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}({1})", Name, Id);
+        }
     }
 }

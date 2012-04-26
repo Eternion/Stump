@@ -6,7 +6,7 @@ using NLog;
 
 namespace Stump.Server.BaseServer.IPC
 {
-    public class IpcServer
+    public class IpcHost
     {
         private readonly Type m_hostType;
         private readonly Type m_serviceType;
@@ -14,7 +14,7 @@ namespace Stump.Server.BaseServer.IPC
 
         private ServiceHost m_host;
 
-        public IpcServer(Type hostType, Type serviceType, string ipcAddress)
+        public IpcHost(Type hostType, Type serviceType, string ipcAddress)
         {
             m_hostType = hostType;
             m_serviceType = serviceType;
@@ -32,7 +32,6 @@ namespace Stump.Server.BaseServer.IPC
             set;
         }
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
         public void Open()
         {
             if (IsOpen)
@@ -60,7 +59,6 @@ namespace Stump.Server.BaseServer.IPC
             logger.Info("IPC Service Start listenning on {0}", addr);
         }
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
         public void Stop()
         {
             if (m_host != null && m_host.State != CommunicationState.Closed && m_host.State != CommunicationState.Faulted)
