@@ -211,18 +211,17 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             if (client.Account.Connections.Count > MaxConnectionLogs)
                 client.Account.RemoveOldestConnection();
 
-            AuthServer.Instance.IOTaskPool.AddMessage(delegate()
-                                                           {
-                                                               using (new SessionScope())
-                                                               {
-                                                                   connectionRecord.Save();
+            using (var session = new SessionScope(FlushAction.Never))
+            {
+                connectionRecord.Save();
 
-                                                                   if (connectionRecord.Id == 0)
-                                                                       throw new Exception("FUUUUUUUUUUUUUUUUU");
+                if (connectionRecord.Id == 0)
+                    throw new Exception("FUUUUUUUUUUUUUUUUU");
 
-                                                                   client.SaveNow();
-                                                               }
-                                                           });
+                client.SaveNow();
+
+                session.Flush();
+            }
 
             client.Send(new SelectedServerDataMessage(
                             (short) world.Id,

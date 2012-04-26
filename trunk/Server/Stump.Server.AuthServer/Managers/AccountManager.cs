@@ -253,12 +253,11 @@ namespace Stump.Server.AuthServer.Managers
             if (account.LastConnection != null)
             {
                 bool disconnected = false;
-                foreach (var server in WorldServerManager.Instance.Realmlist)
-                {
-                    if (server.Value.Connected && server.Value.RemoteOperations != null)
-                        if (server.Value.RemoteOperations.DisconnectClient(account.Id))
-                            disconnected = true;
-                }
+                var server = account.LastConnection.World;
+
+                if (server.Connected && server.RemoteOperations != null)
+                    if (server.RemoteOperations.DisconnectClient(account.Id))
+                        disconnected = true;
 
                 // diconnect clients from last game server
                 if (disconnected)

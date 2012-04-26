@@ -51,15 +51,18 @@ namespace Stump.Tools.QuickItemEditor
             set { SetValue(SearchValidityProperty, value); }
         }
 
-        public ItemTemplate SelectedItem
+        public ItemTemplateModel SelectedItem
         {
-            get { return itemsList.SelectedItem as ItemTemplate; }
+            get
+            {
+                return itemsList.SelectedItem as ItemTemplateModel;
+            }
         }
 
         private void OnSaveButtonClicked(object sender, RoutedEventArgs e)
         {
             saveButton.IsEnabled = false;
-            SelectedItem.Save();
+            SelectedItem.Template.Save();
             saveButton.IsEnabled = true;
         }
 
