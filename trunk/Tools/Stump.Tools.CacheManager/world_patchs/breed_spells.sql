@@ -1,3 +1,6 @@
+DELETE FROM breed_spells;
+ALTER TABLE `breed_spells` AUTO_INCREMENT=1;
+
 INSERT INTO `breed_spells` (Spell, ObtainLevel, Breed) VALUES ('0', '1', '1');
 INSERT INTO `breed_spells` (Spell, ObtainLevel, Breed) VALUES ('3', '1', '1');
 INSERT INTO `breed_spells` (Spell, ObtainLevel, Breed) VALUES ('17', '1', '1');

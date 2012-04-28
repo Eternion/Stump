@@ -263,11 +263,11 @@ namespace Stump.Server.WorldServer.Database.Monsters
             }
         }
 
-        protected override bool BeforeSave(System.Collections.IDictionary state)
+        protected override int[] FindDirty(object id, System.Collections.IDictionary previousState, System.Collections.IDictionary currentState, NHibernate.Type.IType[] types)
         {
             SerializedStats = SerializeStats(Stats);
 
-            return base.BeforeSave(state);
+            return base.FindDirty(id, previousState, currentState, types);
         }
     }
 }

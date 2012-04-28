@@ -86,14 +86,23 @@ namespace Stump.Server.WorldServer.Database.Items
             set
             {
                 m_serializedEffects = value;
-                Effects = EffectManager.Instance.DeserializeEffects(m_serializedEffects);
+                m_effects = EffectManager.Instance.DeserializeEffects(m_serializedEffects);
             }
         }
 
+        private List<EffectBase> m_effects;
+
         public List<EffectBase> Effects
         {
-            get;
-            set;
+            get { return m_effects; }
+            set { m_effects = value; }
+        }
+
+        protected override bool OnFlushDirty(object id, System.Collections.IDictionary previousState, System.Collections.IDictionary currentState, NHibernate.Type.IType[] types)
+        {
+            m_serializedEffects = EffectManager.Instance.SerializeEffects(Effects);
+
+            return base.OnFlushDirty(id, previousState, currentState, types);
         }
 
         protected override bool BeforeSave(System.Collections.IDictionary state)
@@ -101,6 +110,6 @@ namespace Stump.Server.WorldServer.Database.Items
             SerializedEffects = EffectManager.Instance.SerializeEffects(Effects);
 
             return base.BeforeSave(state);
-        }
+        }
     }
 }

@@ -62,6 +62,26 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             return new ObjectEffectDice(Id, DiceNum, DiceFace, Value);
         }
 
+        public override EffectInstance GetEffectInstance()
+        {
+            return new EffectInstanceDice()
+            {
+                effectId = (uint)Id,
+                targetId = (int)Targets,
+                delay = Delay,
+                duration = Duration,
+                group = Group,
+                random = Random,
+                modificator = Modificator,
+                trigger = Trigger,
+                hidden = Hidden,
+                rawZone = RawZone,
+                value = Value,
+                diceNum = (uint) DiceNum,
+                diceSide = (uint) DiceFace
+            };
+        }
+
         public override EffectBase GenerateEffect(EffectGenerationContext context,
                                                   EffectGenerationType type = EffectGenerationType.Normal)
         {

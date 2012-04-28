@@ -62,7 +62,7 @@ namespace Stump.Tools.QuickItemEditor
         private void OnSaveButtonClicked(object sender, RoutedEventArgs e)
         {
             saveButton.IsEnabled = false;
-            SelectedItem.Template.Save();
+            SelectedItem.Template.Update();
             saveButton.IsEnabled = true;
         }
 

@@ -1,4 +1,5 @@
 DELETE FROM monsters_drops;
+ALTER TABLE `monsters_drops` AUTO_INCREMENT=1;
 
 INSERT INTO `monsters_drops` (`MonsterOwnerId`,`ItemId`,`DropRate`,`ProspectingLock`) VALUES ('1077','8784','1','400');
 INSERT INTO `monsters_drops` (`MonsterOwnerId`,`ItemId`,`DropRate`,`ProspectingLock`) VALUES ('1077','8785','15','100');

@@ -145,6 +145,13 @@ namespace Stump.Server.WorldServer.Database.Monsters
             return result;
         }
 
+        protected override bool OnFlushDirty(object id, IDictionary previousState, IDictionary currentState, NHibernate.Type.IType[] types)
+        {
+            SerializedMonsterGroup = SerializeGroup(GroupMonsters);
+
+            return base.OnFlushDirty(id, previousState, currentState, types);
+        }
+
         protected override bool BeforeSave(IDictionary state)
         {
             SerializedMonsterGroup = SerializeGroup(GroupMonsters);

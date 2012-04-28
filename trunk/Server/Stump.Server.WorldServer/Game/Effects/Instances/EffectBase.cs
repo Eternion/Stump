@@ -233,6 +233,23 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             return new ObjectEffect(Id);
         }
 
+        public virtual EffectInstance GetEffectInstance()
+        {
+            return new EffectInstance()
+            {
+                effectId = (uint) Id,
+                targetId = (int) Targets,
+                delay = Delay,
+                duration = Duration,
+                group = Group,
+                random = Random,
+                modificator = Modificator,
+                trigger = Trigger,
+                hidden = Hidden,
+                rawZone = RawZone
+            };
+        }
+
         public byte[] Serialize()
         {
             var writer = new BinaryWriter(new MemoryStream());

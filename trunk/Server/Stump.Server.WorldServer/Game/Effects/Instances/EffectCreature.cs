@@ -54,6 +54,24 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             return new ObjectEffectCreature(Id, MonsterFamily);
         }
 
+        public override EffectInstance GetEffectInstance()
+        {
+            return new EffectInstanceCreature()
+            {
+                effectId = (uint)Id,
+                targetId = (int)Targets,
+                delay = Delay,
+                duration = Duration,
+                group = Group,
+                random = Random,
+                modificator = Modificator,
+                trigger = Trigger,
+                hidden = Hidden,
+                rawZone = RawZone,
+                monsterFamilyId = (uint) MonsterFamily,
+            };
+        }
+
         protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
         {
             base.InternalSerialize(ref writer);

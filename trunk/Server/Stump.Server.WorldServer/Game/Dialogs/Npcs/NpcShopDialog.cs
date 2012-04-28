@@ -96,8 +96,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             }
 
             BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
-                                                    46, finalPrice);
-            BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
                                                     21, amount, itemId);
 
             PlayerItem item = ItemManager.Instance.CreatePlayerItem(Character, itemId, amount);
@@ -110,6 +108,8 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             else
             {
                 Character.Inventory.SubKamas(finalPrice);
+                BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
+                                                        46, finalPrice);
             }
 
             Character.Client.Send(new ExchangeBuyOkMessage());
@@ -163,8 +163,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 price = 1;
 
             BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
-                                                    45, price);
-            BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
                                                     22, amount, item.Template.Id);
 
             Character.Inventory.RemoveItem(item, amount);
@@ -176,6 +174,8 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             else
             {
                 Character.Inventory.AddKamas(price);
+                BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
+                                                        45, price);
             }
 
             Character.Client.Send(new ExchangeSellOkMessage());

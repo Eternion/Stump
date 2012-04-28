@@ -623,6 +623,13 @@ namespace Stump.Server.WorldServer.Database.Characters
             base.OnDelete();
         }
 
+        protected override bool OnFlushDirty(object id, System.Collections.IDictionary previousState, System.Collections.IDictionary currentState, NHibernate.Type.IType[] types)
+        {
+            m_serializedZaaps = SerializeZaaps(m_knownZaaps);
+
+            return base.OnFlushDirty(id, previousState, currentState, types);
+        }
+
         protected override bool BeforeSave(System.Collections.IDictionary state)
         {
             m_serializedZaaps = SerializeZaaps(m_knownZaaps);

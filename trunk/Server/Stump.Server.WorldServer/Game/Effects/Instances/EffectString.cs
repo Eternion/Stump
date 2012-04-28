@@ -48,7 +48,23 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             return new ObjectEffectString(Id, m_value);
         }
-
+        public override EffectInstance GetEffectInstance()
+        {
+            return new EffectInstanceString()
+            {
+                effectId = (uint)Id,
+                targetId = (int)Targets,
+                delay = Delay,
+                duration = Duration,
+                group = Group,
+                random = Random,
+                modificator = Modificator,
+                trigger = Trigger,
+                hidden = Hidden,
+                rawZone = RawZone,
+                text = m_value
+            };
+        }
         protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
         {
             base.InternalSerialize(ref writer);

@@ -167,6 +167,14 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             return templates.ToArray();
         }
 
+        protected override bool OnFlushDirty(object id, System.Collections.IDictionary previousState, System.Collections.IDictionary currentState, NHibernate.Type.IType[] types)
+        {
+            SerializedEffects = SerializeEffects(BonusEffects);
+            SerializedItems = SerializeItems(Items.Select(entry => entry.Id));
+
+            return base.OnFlushDirty(id, previousState, currentState, types);
+        }
+
         protected override bool BeforeSave(System.Collections.IDictionary state)
         {
             SerializedEffects = SerializeEffects(BonusEffects);

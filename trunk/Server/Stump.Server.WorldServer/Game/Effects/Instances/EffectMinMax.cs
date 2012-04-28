@@ -64,7 +64,24 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             return new ObjectEffectMinMax(Id, ValueMin, ValueMax);
         }
-
+        public override EffectInstance GetEffectInstance()
+        {
+            return new EffectInstanceMinMax()
+            {
+                effectId = (uint)Id,
+                targetId = (int)Targets,
+                delay = Delay,
+                duration = Duration,
+                group = Group,
+                random = Random,
+                modificator = Modificator,
+                trigger = Trigger,
+                hidden = Hidden,
+                rawZone = RawZone,
+                max = (uint) ValueMax,
+                min = (uint) ValueMin
+            };
+        }
         protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
         {
             base.InternalSerialize(ref writer);

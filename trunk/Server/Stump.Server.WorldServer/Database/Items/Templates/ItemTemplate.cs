@@ -269,9 +269,14 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
         {
             get
             {
-                return m_effects ?? ( m_effects = new List<EffectBase>(PossibleEffects.Select(EffectManager.Instance.ConvertExportedEffect)) );
+                return m_effects ??
+                       (m_effects =
+                        new List<EffectBase>(PossibleEffects.Select(EffectManager.Instance.ConvertExportedEffect)));
             }
-            set { m_effects = value; }
+            set
+            {
+                m_effects = value;
+            }
         }
 
         [D2OField("favoriteSubAreasBonus")]
@@ -280,6 +285,24 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
         {
             get;
             set;
+        }
+
+        protected override bool OnFlushDirty(object id, System.Collections.IDictionary previousState, System.Collections.IDictionary currentState, NHibernate.Type.IType[] types)
+        {
+            PossibleEffects = m_effects == null
+                      ? null
+                      : m_effects.Select(entry => entry.GetEffectInstance()).ToList();
+
+            return base.OnFlushDirty(id, previousState, currentState, types);
+        }
+
+        protected override bool BeforeSave(System.Collections.IDictionary state)
+        {
+            PossibleEffects = m_effects == null
+                      ? null
+                      : m_effects.Select(entry => entry.GetEffectInstance()).ToList();
+
+            return base.BeforeSave(state);
         }
 
         public bool IsWeapon()

@@ -1,4 +1,5 @@
 DELETE FROM monsters_spells;
+ALTER TABLE `monsters_spells` AUTO_INCREMENT=1;
 
 INSERT INTO `monsters_spells` (`SpellId`,`Level`,`MonsterGradeId`) VALUES ('212','1',(SELECT `Id` FROM monsters_grades WHERE `MonsterId` = '34' AND `Grade` = '1'));
 INSERT INTO `monsters_spells` (`SpellId`,`Level`,`MonsterGradeId`) VALUES ('213','1',(SELECT `Id` FROM monsters_grades WHERE `MonsterId` = '34' AND `Grade` = '1'));

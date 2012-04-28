@@ -274,18 +274,40 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             set;
         }
 
-        protected override bool BeforeSave(IDictionary state)
+        protected override bool OnFlushDirty(object id, IDictionary previousState, IDictionary currentState, NHibernate.Type.IType[] types)
         {
-            m_compressedCells = new byte[Cells.Length*Cell.StructSize];
+            m_compressedCells = new byte[Cells.Length * Cell.StructSize];
 
             for (int i = 0; i < Cells.Length; i++)
             {
-                Array.Copy(Cells[i].Serialize(), 0, m_compressedCells, i*Cell.StructSize, Cell.StructSize);
+                Array.Copy(Cells[i].Serialize(), 0, m_compressedCells, i * Cell.StructSize, Cell.StructSize);
             }
 
             m_compressedCells = ZipHelper.Compress(m_compressedCells);
 
-            m_compressedElements = new byte[Elements.Length*MapElement.Size];
+            m_compressedElements = new byte[Elements.Length * MapElement.Size];
+            for (int i = 0; i < Cells.Length; i++)
+            {
+                Array.Copy(Elements[i].Serialize(), 0, m_compressedElements, i * MapElement.Size, MapElement.Size);
+            }
+
+            m_compressedElements = ZipHelper.Compress(m_compressedElements);
+
+            return base.OnFlushDirty(id, previousState, currentState, types);
+        }
+
+        protected override bool BeforeSave(System.Collections.IDictionary state)
+        {            
+            m_compressedCells = new byte[Cells.Length * Cell.StructSize];
+
+            for (int i = 0; i < Cells.Length; i++)
+            {
+                Array.Copy(Cells[i].Serialize(), 0, m_compressedCells, i * Cell.StructSize, Cell.StructSize);
+            }
+
+            m_compressedCells = ZipHelper.Compress(m_compressedCells);
+
+            m_compressedElements = new byte[Elements.Length * MapElement.Size];
             for (int i = 0; i < Cells.Length; i++)
             {
                 Array.Copy(Elements[i].Serialize(), 0, m_compressedElements, i * MapElement.Size, MapElement.Size);

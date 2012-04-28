@@ -47,14 +47,31 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public override object[] GetValues()
         {
-            return new object[] {m_monsterCount};
+            return new object[] { m_monsterCount, m_monsterfamily };
         }
 
         public override ObjectEffect GetObjectEffect()
         {
             return new ObjectEffectLadder(Id, MonsterFamily, MonsterCount);
         }
-
+        public override EffectInstance GetEffectInstance()
+        {
+            return new EffectInstanceLadder()
+            {
+                effectId = (uint)Id,
+                targetId = (int)Targets,
+                delay = Delay,
+                duration = Duration,
+                group = Group,
+                random = Random,
+                modificator = Modificator,
+                trigger = Trigger,
+                hidden = Hidden,
+                rawZone = RawZone,
+                monsterCount = (uint) m_monsterCount,
+                monsterFamilyId = (uint) m_monsterfamily,
+            };
+        }
         protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
         {
             base.InternalSerialize(ref writer);
