@@ -122,11 +122,11 @@ namespace Stump.Server.BaseServer.IPC
             }
         }
 
-        public bool ModifyAccountByNickname(string name, AccountData modifiedRecord)
+        public bool UpdateAccount(AccountData modifiedRecord)
         {
             try
             {
-                return Channel.ModifyAccountByNickname(name, modifiedRecord);
+                return Channel.UpdateAccount(modifiedRecord);
             }
             catch (Exception ex)
             {

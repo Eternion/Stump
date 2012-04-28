@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             client.Send(new ChatSmileyMessage(
                             character.Id,
                             smileyId,
-                            (int) character.Client.Account.Id));
+                            (int) character.Account.Id));
         }
 
         public static void SendChatSmileyMessage(IPacketReceiver client, ContextActor entity, sbyte smileyId)

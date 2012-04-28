@@ -204,4 +204,51 @@ namespace Stump.Plugins.EditorPlugin.Commands
         }
     }
 
+    public class NpcShopSetTokenCommand : SubCommand
+    {
+        public NpcShopSetTokenCommand()
+        {
+            Aliases = new[] { "shoptoken" };
+            RequiredRole = RoleEnum.GameMaster;
+            Description = "Define the token needed to trade with the npc";
+            ParentCommand = typeof(NpcEditorCommands);
+            AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);
+            AddParameter("token", "token", "Token item", isOptional: true, converter: ParametersConverter.ItemTemplateConverter);
+            AddParameter<bool>("notoken", "no", "Reset the shop as standard", isOptional: true);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var npc = trigger.Get<NpcTemplate>("npc");
+            var shop = npc.Actions.OfType<NpcBuySellAction>().FirstOrDefault();
+
+            if (shop == null)
+            {
+                trigger.ReplyError("Npc {0} has no shop", npc);
+                return;
+            }
+
+            WorldServer.Instance.IOTaskPool.AddMessage(
+               () =>
+               {
+                   if (trigger.IsArgumentDefined("notoken"))
+                   {
+                       shop.Token = null;
+                       trigger.Reply("Token removed");
+                   }
+                   else if (trigger.IsArgumentDefined("token"))
+                   {
+                       var token = trigger.Get<ItemTemplate>("token");
+                       shop.Token = token;
+                       trigger.Reply("Npc {0} now sells items for tokens {1}", npc, token);
+                   }
+                   else
+                   {
+                       trigger.ReplyError("Define token or -notoken");
+                   }
+
+                   shop.Save();
+               });
+        }
+    }
 }

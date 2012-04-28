@@ -12,7 +12,6 @@ namespace Stump.Tools.Toolkit.Handlers
     {
         private readonly Dictionary<string, Func<IFileHandler>> m_handlers = new Dictionary<string, Func<IFileHandler>>();
 
-        [Initialization(InitializationPass.First)]
         public void Initialize()
         {
             var handlers = ( from entry in Assembly.GetExecutingAssembly().GetTypes()

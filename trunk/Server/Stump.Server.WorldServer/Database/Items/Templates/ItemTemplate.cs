@@ -286,5 +286,10 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
         {
             return this is WeaponTemplate;
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0} ({1})", Name, Id);
+        }
     }
 }

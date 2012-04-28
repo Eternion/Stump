@@ -43,7 +43,7 @@ namespace Stump.Server.BaseServer.Initialization
         {
             foreach (var type in assembly.GetTypes())
             {
-                foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance))
+                foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
                 {
                     var attribute = method.GetCustomAttribute<InitializationAttribute>();
 
@@ -75,7 +75,7 @@ namespace Stump.Server.BaseServer.Initialization
                     // a bit ugly to get the instance in case of a singleton class
                     else if (type.IsDerivedFromGenericType(typeof(Singleton<>)))
                     {
-                        var instanceProp = type.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+                        var instanceProp = type.GetProperty("Instance", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy);
                         initializationMethod.Caller = instanceProp.GetValue(null, new object[0]);
                     }
                     else

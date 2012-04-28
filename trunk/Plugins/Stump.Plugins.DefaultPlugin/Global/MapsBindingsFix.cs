@@ -65,12 +65,22 @@ namespace Stump.Plugins.DefaultPlugin.Global
                 map.TopNeighbourId = top.Id;
                 builder.AppendFormat("TopNeighbourId='{0}', ", map.TopNeighbourId);
             }
+            else
+            {
+                map.TopNeighbourId = -1;
+                builder.AppendFormat("TopNeighbourId='{0}', ", -1);
+            }
 
             var bottom = FindMaps(map, pos.X, pos.Y + 1).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();
             if (bottom != null)
             {
                 map.BottomNeighbourId = bottom.Id;
                 builder.AppendFormat("BottomNeighbourId='{0}', ", map.BottomNeighbourId);
+            }
+            else
+            {
+                map.BottomNeighbourId = -1;
+                builder.AppendFormat("BottomNeighbourId='{0}', ", -1);
             }
 
             var right = FindMaps(map, pos.X + 1, pos.Y).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();
@@ -79,12 +89,22 @@ namespace Stump.Plugins.DefaultPlugin.Global
                 map.RightNeighbourId = right.Id;
                 builder.AppendFormat("RightNeighbourId='{0}', ", map.RightNeighbourId);
             }
+            else
+            {
+                map.RightNeighbourId = -1;
+                builder.AppendFormat("RightNeighbourId='{0}', ", -1);
+            }
 
             var left = FindMaps(map, pos.X - 1, pos.Y).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();
             if (left != null)
             {
                 map.LeftNeighbourId = left.Id;
                 builder.AppendFormat("LeftNeighbourId='{0}', ", map.LeftNeighbourId);
+            }
+            else
+            {
+                map.LeftNeighbourId = -1;
+                builder.AppendFormat("LeftNeighbourId='{0}', ", -1);
             }
 
             if (top != null || bottom != null || right != null || left != null)

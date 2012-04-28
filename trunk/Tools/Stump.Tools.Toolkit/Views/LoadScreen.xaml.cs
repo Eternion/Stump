@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Waf.Applications;
 using System.Windows;
 using System.Windows.Threading;
 using Stump.Server.BaseServer.Initialization;
@@ -46,7 +47,7 @@ namespace Stump.Tools.Toolkit.Views
                                           MessageBox.Show(continueTask.Exception.InnerException.ToString());
                                   });
 
-            Task.Factory.StartNew(() => Initialize());
+            //Task.Factory.StartNew(() => Initialize());
         }
     }
 }

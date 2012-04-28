@@ -296,6 +296,7 @@
     <Compile Include="Tool\D2OIgnore.cs" />
     <Compile Include="Tool\D2OReader.cs" />
     <Compile Include="Tool\D2OWriter.cs" />
+    <Compile Include="Tool\D2p\D2pDirectory.cs" />
     <Compile Include="Tool\D2p\D2pEntry.cs" />
     <Compile Include="Tool\D2p\D2pEntryState.cs" />
     <Compile Include="Tool\D2p\D2pFile.cs" />

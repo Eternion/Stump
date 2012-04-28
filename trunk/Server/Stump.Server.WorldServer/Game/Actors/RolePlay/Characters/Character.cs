@@ -9,6 +9,7 @@ using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Commands;
+using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
@@ -90,6 +91,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             get;
             private set;
+        }
+
+        public AccountData Account
+        {
+            get { return Client.Account; }
         }
 
         public object SaveSync
@@ -881,6 +887,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return Fighter.StopMove(currentObjectPosition);
 
             return base.StopMove(currentObjectPosition);
+        }
+
+        public override bool Teleport(MapNeighbour mapNeighbour)
+        {
+            bool success = base.Teleport(mapNeighbour);
+
+            if (!success)
+                SendServerMessage("Unknown map transition");
+
+            return success;
         }
 
         public override bool Teleport(ObjectPosition destination)

@@ -70,7 +70,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
         public static void SendChatServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message,
                                                  int timestamp, string fingerprint)
         {
-            if (sender.Client.Account.Role <= RoleEnum.Moderator)
+            if (sender.Account.Role <= RoleEnum.Moderator)
                 message = message.HtmlEntities();
 
             client.Send(new ChatServerMessage(
@@ -80,7 +80,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                             fingerprint,
                             sender.Id,
                             sender.Name,
-                            (int) sender.Client.Account.Id));
+                            (int) sender.Account.Id));
         }
 
         public static void SendChatServerMessage(IPacketReceiver client, ChatActivableChannelsEnum channel, string message,
@@ -111,7 +111,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                                        fingerprint,
                                        sender.Id,
                                        sender.Name,
-                                       (int) sender.Client.Account.Id);
+                                       (int) sender.Account.Id);
         }
 
         public static void SendChatAdminServerMessage(IPacketReceiver client, ChatActivableChannelsEnum channel, string message,
@@ -137,7 +137,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                                                      string message,
                                                      int timestamp, string fingerprint)
         {
-            if (sender.Client.Account.Role <= RoleEnum.Moderator)
+            if (sender.Account.Role <= RoleEnum.Moderator)
                 message = message.HtmlEntities();
 
             client.Send(new ChatServerCopyMessage(

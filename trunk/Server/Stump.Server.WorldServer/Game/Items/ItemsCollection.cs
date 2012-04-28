@@ -301,6 +301,11 @@ namespace Stump.Server.WorldServer.Game.Items
             return Items.ContainsKey(guid);
         }
 
+        public bool HasItem(ItemTemplate template)
+        {
+            return Items.Any(entry => entry.Value.Template.Id == template.Id);
+        }
+
         public bool HasItem(T item)
         {
             return HasItem(item.Guid);
@@ -309,6 +314,15 @@ namespace Stump.Server.WorldServer.Game.Items
         public T TryGetItem(int guid)
         {
             return !Items.ContainsKey(guid) ? default(T) : Items[guid];
+        }
+
+        public T TryGetItem(ItemTemplate template)
+        {
+            IEnumerable<T> entries = from entry in Items.Values
+                                     where entry.Template.Id == template.Id
+                                     select entry;
+
+            return entries.FirstOrDefault();
         }
 
         public T TryGetItem(ItemTemplate template, IEnumerable<EffectBase> effects)

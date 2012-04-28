@@ -18,6 +18,8 @@ namespace Stump.Core.Xml.Config
 {
     public class XmlConfig
     {
+        public static CultureInfo Culture = CultureInfo.InvariantCulture;
+
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly Dictionary<string, Assembly> m_assemblies = new Dictionary<string, Assembly>();
@@ -534,7 +536,12 @@ namespace Stump.Core.Xml.Config
                         if (!node.Value.Serialized)
                         {
                             writer.WriteAttributeString("serialized", "false");
-                            writer.WriteValue(node.Value.GetValue().ToString());
+                            var value = node.Value.GetValue();
+
+                            if (value is IFormattable)
+                                writer.WriteValue(( value as IFormattable ).ToString(null, Culture));
+                            else
+                                writer.WriteValue(node.Value.GetValue().ToString());
                         }
                         else
                         {
@@ -595,7 +602,7 @@ namespace Stump.Core.Xml.Config
                 else
                     return null;
 
-            return Convert.ChangeType(element, type, CultureInfo.InvariantCulture);
+            return Convert.ChangeType(element, type, Culture);
         }
 
         private static string UnEscapeXml(string xmlString)

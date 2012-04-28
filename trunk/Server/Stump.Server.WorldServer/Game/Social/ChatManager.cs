@@ -74,7 +74,7 @@ namespace Stump.Server.WorldServer.Game.Social
                 case ChatActivableChannelsEnum.CHANNEL_NOOB:
                     return true;
                 case ChatActivableChannelsEnum.CHANNEL_ADMIN:
-                    return character.Client.Account.Role >= AdministratorChatMinAccess;
+                    return character.Account.Role >= AdministratorChatMinAccess;
                 case ChatActivableChannelsEnum.CHANNEL_ADS:
                     return false;
                 case ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE:
@@ -111,7 +111,7 @@ namespace Stump.Server.WorldServer.Game.Social
 
         private void SendChatServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message)
         {
-            if (sender.Client.Account.Role >= AdministratorChatMinAccess)
+            if (sender.Account.Role >= AdministratorChatMinAccess)
                 ChatHandler.SendChatAdminServerMessage(client, sender, channel, message);
             else
                 ChatHandler.SendChatServerMessage(client, sender, channel, message);

@@ -1,25 +1,16 @@
 ﻿using System;
 using System.Reflection;
+using System.Waf.Applications;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Tools.Toolkit.Views;
 
 namespace Stump.Tools.Toolkit.ModelViews
 {
-    public class LoadScreenViewModel : ViewModelBase<LoadScreen>
+    public class LoadScreenViewModel : ViewModel<LoadScreen>
     {
         public LoadScreenViewModel(LoadScreen view) 
             : base(view)
         {
-        }
-
-        public void Show()
-        {
-            View.Show();
-        }
-
-        public void Close()
-        {
-            View.Close();
         }
 
         public void InitializeApp()

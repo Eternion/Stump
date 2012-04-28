@@ -24,6 +24,8 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
         private readonly Queue<D2pFile> m_linksToSave = new Queue<D2pFile>();
         private readonly List<D2pProperty> m_properties = new List<D2pProperty>();
 
+        private readonly List<D2pDirectory>  m_rootDirectories = new List<D2pDirectory>();
+
         private bool m_isDisposed;
         private BigEndianReader m_reader;
 
@@ -65,6 +67,11 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
         public ReadOnlyCollection<D2pFile> Links
         {
             get { return m_links.AsReadOnly(); }
+        }
+
+        public ReadOnlyCollection<D2pDirectory> RootDirectories
+        {
+            get { return m_rootDirectories.AsReadOnly(); }
         }
 
         public string FilePath
@@ -161,10 +168,9 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
             m_reader.Seek(IndexTable.EntriesDefinitionOffset, SeekOrigin.Begin);
             for (int i = 0; i < IndexTable.EntriesCount; i++)
             {
-                var entry = new D2pEntry(this);
-                entry.ReadEntryDefinition(m_reader);
+                var entry = D2pEntry.CreateEntryDefinition(this, m_reader);
 
-                m_entries.Add(entry.FileName, entry);
+                InternalAddEntry(entry);
             }
         }
 
@@ -230,7 +236,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
             var link = new D2pFile(path);
             foreach (D2pEntry entry in link.Entries)
             {
-                m_entries.Add(entry.FileName, entry);
+                InternalAddEntry(entry);
             }
 
             m_links.Add(link);
@@ -320,13 +326,58 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
         {
             entry.State = D2pEntryState.Added;
             InternalAddEntry(entry);
+            IndexTable.EntriesCount++;
+            OnPropertyChanged("Entries");
         }
 
         private void InternalAddEntry(D2pEntry entry)
         {
-            m_entries.Add(entry.FileName, entry);
-            IndexTable.EntriesCount++;
-            OnPropertyChanged("Entries");
+            m_entries.Add(entry.FullFileName, entry);
+            InternalAddDirectories(entry);
+        }
+
+        private void InternalAddDirectories(D2pEntry entry)
+        {
+            var directories = entry.GetDirectoriesName();
+
+            if (directories.Length == 0)
+                return;
+
+            D2pDirectory current = null;
+            if (!HasDirectory(directories[0]))
+            {
+                current = new D2pDirectory(directories[0]);
+
+                m_rootDirectories.Add(current);
+            }
+            else
+            {
+                current = TryGetDirectory(directories[0]);
+            }
+
+            current.Entries.Add(entry);
+
+            foreach (var directory in directories.Skip(1))
+            {
+                if (!current.HasDirectory(directory))
+                {
+                    var dir = new D2pDirectory(directory)
+                    {
+                        Parent = current
+                    };
+                    current.Directories.Add(dir);
+
+                    current = dir;
+                }
+                else
+                {
+                    current = current.TryGetDirectory(directory);
+                }
+
+                current.Entries.Add(entry);
+            }
+
+            entry.Directory = current;
         }
 
         public bool RemoveEntry(D2pEntry entry)
@@ -340,9 +391,10 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
                     m_linksToSave.Enqueue(entry.Container);
             }
 
-            if (m_entries.Remove(entry.FileName))
+            if (m_entries.Remove(entry.FullFileName))
             {
                 entry.State = D2pEntryState.Removed;
+                InternalRemoveDirectories(entry);
                 OnPropertyChanged("Entries");
 
                 if (entry.Container == this)
@@ -352,6 +404,22 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
             }
 
             return false;
+        }
+
+        private void InternalRemoveDirectories(D2pEntry entry)
+        {
+            D2pDirectory current = entry.Directory;
+            while (current != null)
+            {
+                current.Entries.Remove(entry);
+
+                if (current.Parent != null && current.Entries.Count == 0)
+                    current.Parent.Directories.Remove(current);
+                else if (current.IsRoot && current.Entries.Count == 0)
+                    m_rootDirectories.Remove(current);
+
+                current = current.Parent;
+            }
         }
 
         #endregion
@@ -405,7 +473,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
 
             D2pEntry entry = GetEntry(fileName);
 
-            var dest = Path.Combine("./", entry.FileName);
+            var dest = Path.Combine("./", entry.FullFileName);
                 
             if (!Directory.Exists(Path.GetDirectoryName(dest)))
                 Directory.CreateDirectory(dest);
@@ -416,6 +484,12 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
         public void ExtractFile(string fileName, string destination, bool overwrite = false)
         {
             byte[] bytes = ReadFile(fileName);
+            FileAttributes attr = File.GetAttributes(destination);
+
+            if (( attr & FileAttributes.Directory ) == FileAttributes.Directory)
+            {
+                destination = Path.Combine(destination, Path.GetFileName(fileName));
+            }
 
             if (File.Exists(destination) && !overwrite)
                 throw new InvalidOperationException(string.Format("Cannot overwrite {0}", destination));
@@ -426,13 +500,34 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
             File.WriteAllBytes(destination, bytes);
         }
 
+        public void ExtractDirectory(string directoryName, string destination)
+        {
+            if (!HasDirectory(directoryName))
+                throw new InvalidOperationException(string.Format("Directory {0} does not exist", directoryName));
+
+            var directory = TryGetDirectory(directoryName);
+
+            if (!Directory.Exists(Path.GetDirectoryName(Path.Combine(destination, directory.FullName))))
+                Directory.CreateDirectory(Path.GetDirectoryName(Path.Combine(destination, directory.FullName)));
+
+            foreach (var entry in directory.Entries)
+            {
+                ExtractFile(entry.FullFileName, Path.Combine(destination, entry.FullFileName));
+            }
+
+            foreach (D2pDirectory pDirectory in directory.Directories)
+            {
+                ExtractDirectory(pDirectory.FullName, destination);
+            }
+        }
+
         public void ExtractAllFiles(string destination, bool overwrite = false, bool progress = false)
         {
             if (!Directory.Exists(Path.GetDirectoryName(destination)))
                 Directory.CreateDirectory(destination);
 
             //create dirs
-            foreach (var dir in m_entries.Select(entry => entry.Value.Directories).Distinct())
+            foreach (var dir in m_entries.Select(entry => entry.Value.GetDirectoriesName()).Distinct())
             {
                 var dest = Path.Combine(Path.GetFullPath(destination), Path.Combine(dir));
 
@@ -447,7 +542,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
                 if (File.Exists(Path.GetFullPath(destination)) && !overwrite)
                     throw new InvalidOperationException(string.Format("Cannot overwrite {0}", destination));
 
-                var dest = Path.Combine(Path.GetFullPath(destination), entry.Value.FileName);
+                var dest = Path.Combine(Path.GetFullPath(destination), entry.Value.FullFileName);
 
                 File.WriteAllBytes(dest, ReadFile(entry.Value));
                 i++;
@@ -473,15 +568,12 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
             if (HasFilePath())
                 dest = GetRelativePath(file, Path.GetDirectoryName(FilePath));
 
-            return AddFile(bytes, dest);
+            return AddFile(dest, bytes);
         }
 
-        public D2pEntry AddFile(byte[] data, string fileName)
+        public D2pEntry AddFile(string fileName, byte[] data)
         {
-            var entry = new D2pEntry(this, data)
-                            {
-                                FileName = fileName
-                            };
+            var entry = new D2pEntry(this, fileName, data);
 
             AddEntry(entry);
 
@@ -592,6 +684,83 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
                 IndexTable.WriteTable(writer);
             }
         }
+
+        #endregion
+
+        #region Explore
+        public bool HasDirectory(string directory)
+        {
+            var directoriesName = directory.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (directoriesName.Length == 0)
+                return false;
+
+            var current = m_rootDirectories.SingleOrDefault(entry => entry.Name == directoriesName[0]);
+
+            if (current == null)
+                return false;
+
+            foreach (var dir in directoriesName.Skip(1))
+            {
+                if (!current.HasDirectory(dir))
+                    return false;
+
+                current = current.TryGetDirectory(dir);
+            }
+
+            return true;
+        }
+
+        public D2pDirectory TryGetDirectory(string directory)
+        {
+            var directoriesName = directory.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (directoriesName.Length == 0)
+                return null;
+
+            var current = m_rootDirectories.SingleOrDefault(entry => entry.Name == directoriesName[0]);
+
+            if (current == null)
+                return null;
+
+            foreach (var dir in directoriesName.Skip(1))
+            {
+                if (!current.HasDirectory(dir))
+                    return null;
+
+                current = current.TryGetDirectory(dir);
+            }
+
+            return current;
+        }
+
+        public D2pDirectory[] GetDirectoriesTree(string directory)
+        {
+            var result = new List<D2pDirectory>();
+            var directoriesName = directory.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (directoriesName.Length == 0)
+                return new D2pDirectory[0];
+
+            var current = m_rootDirectories.SingleOrDefault(entry => entry.Name == directoriesName[0]);
+
+            if (current == null)
+                return new D2pDirectory[0];
+
+            result.Add(current);
+
+            foreach (var dir in directoriesName.Skip(1))
+            {
+                if (!current.HasDirectory(dir))
+                    return result.ToArray();
+
+                current = current.TryGetDirectory(dir);
+                result.Add(current);
+            }
+
+            return result.ToArray();
+        }
+
 
         #endregion
     }

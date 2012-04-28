@@ -1358,6 +1358,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return m_left;
         }
 
+        public bool HasLost()
+        {
+            return Fight.Losers == Team;
+        }
+
+        public bool HasWin()
+        {
+            return Fight.Winners == Team;
+        }
+
         public bool IsTeamLeader()
         {
             return Team.Leader == this;

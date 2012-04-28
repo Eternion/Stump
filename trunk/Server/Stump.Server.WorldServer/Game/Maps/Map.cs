@@ -150,10 +150,17 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             m_clientMapsAround.Clear();
 
-            m_clientMapsAround.Add(Record.ClientTopNeighbourId, MapNeighbour.Top);
-            m_clientMapsAround.Add(Record.ClientBottomNeighbourId, MapNeighbour.Bottom);
-            m_clientMapsAround.Add(Record.ClientLeftNeighbourId, MapNeighbour.Left);
-            m_clientMapsAround.Add(Record.ClientRightNeighbourId, MapNeighbour.Right);
+            if (TopNeighbourId != -1 && !m_clientMapsAround.ContainsKey(TopNeighbourId))
+                m_clientMapsAround.Add(TopNeighbourId, MapNeighbour.Top);
+
+            if (BottomNeighbourId != -1 && !m_clientMapsAround.ContainsKey(BottomNeighbourId))
+                m_clientMapsAround.Add(BottomNeighbourId, MapNeighbour.Bottom);
+
+            if (LeftNeighbourId != -1 && !m_clientMapsAround.ContainsKey(LeftNeighbourId))
+                m_clientMapsAround.Add(LeftNeighbourId, MapNeighbour.Left);
+
+            if (RightNeighbourId != -1 && !m_clientMapsAround.ContainsKey(RightNeighbourId))
+                m_clientMapsAround.Add(RightNeighbourId, MapNeighbour.Right);
         }
 
         public void UpdateFightPlacements()
@@ -281,7 +288,10 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public Map TopNeighbour
         {
-            get { return m_topNeighbour ?? (m_topNeighbour = World.Instance.GetMap(TopNeighbourId)); }
+            get
+            {
+                return TopNeighbourId != -1 ? m_topNeighbour ?? ( m_topNeighbour = World.Instance.GetMap(TopNeighbourId) ) : null;
+            }
         }
 
         public int BottomNeighbourId
@@ -292,7 +302,10 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public Map BottomNeighbour
         {
-            get { return m_bottomNeighbour ?? (m_bottomNeighbour = World.Instance.GetMap(BottomNeighbourId)); }
+            get
+            {
+                return BottomNeighbourId != -1 ? m_bottomNeighbour ?? ( m_bottomNeighbour = World.Instance.GetMap(BottomNeighbourId) ) : null;
+            }
         }
 
         public int LeftNeighbourId
@@ -303,7 +316,10 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public Map LeftNeighbour
         {
-            get { return m_leftNeighbour ?? (m_leftNeighbour = World.Instance.GetMap(LeftNeighbourId)); }
+            get
+            {
+                return LeftNeighbourId != -1 ? m_leftNeighbour ?? ( m_leftNeighbour = World.Instance.GetMap(LeftNeighbourId) ) : null;
+            }
         }
 
         public int RightNeighbourId
@@ -314,7 +330,10 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public Map RightNeighbour
         {
-            get { return m_rightNeighbour ?? (m_rightNeighbour = World.Instance.GetMap(RightNeighbourId)); }
+            get
+            {
+                return RightNeighbourId != -1 ? m_rightNeighbour ?? ( m_rightNeighbour = World.Instance.GetMap(RightNeighbourId) ) : null;
+            }
         }
 
         public int ShadowBonusOnEntities

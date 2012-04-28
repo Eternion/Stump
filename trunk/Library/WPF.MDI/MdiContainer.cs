@@ -111,8 +111,12 @@ namespace WPF.MDI
         /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
         private void MdiContainer_Loaded(object sender, RoutedEventArgs e)
         {
-            Window.GetWindow(this).Activated += new EventHandler(MdiContainer_Activated);
-            Window.GetWindow(this).Deactivated += new EventHandler(MdiContainer_Deactivated);
+            var window = Window.GetWindow(this);
+            if (window != null)
+            {
+                window.Activated += MdiContainer_Activated;
+                window.Deactivated += MdiContainer_Deactivated;
+            }
 
             windowCanvas.Width = windowCanvas.ActualWidth;
             windowCanvas.Height = windowCanvas.ActualHeight;

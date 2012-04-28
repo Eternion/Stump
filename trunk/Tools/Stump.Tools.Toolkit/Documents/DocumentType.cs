@@ -1,41 +1,53 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Waf.Applications;
 
 namespace Stump.Tools.Toolkit.Documents
 {
-    public class DocumentType : INotifyPropertyChanged
+    public abstract class DocumentType : DataModel, INotifyPropertyChanged, IDocumentType
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        private readonly string description;
+        private readonly string fileExtension;
 
-        public DocumentType(string fileExt, string description)
+
+        protected DocumentType(string fileExtension, string description)
         {
-            if (fileExt[0] != '.')
+            if (string.IsNullOrEmpty(description))
+            {
+                throw new ArgumentException("description must not be null or empty.");
+            }
+            if (string.IsNullOrEmpty(fileExtension))
+            {
+                throw new ArgumentException("fileExtension must not be null or empty");
+            }
+            if (fileExtension[0] != '.')
             {
                 throw new ArgumentException("The argument fileExtension must start with the '.' character.");
             }
 
-            FileExt = fileExt;
-            Description = description;
+            this.description = description;
+            this.fileExtension = fileExtension;
         }
 
-        public string FileExt
-        {
-            get;
-            private set;
-        }
+        #region IDocumentType Members
 
         public string Description
         {
-            get;
-            private set;
+            get { return description; }
         }
+
+        public string FileExtension
+        {
+            get { return fileExtension; }
+        }
+
 
         public virtual bool CanNew()
         {
             return false;
         }
 
-        public Document New()
+        public IDocument New()
         {
             if (!CanNew())
             {
@@ -50,7 +62,7 @@ namespace Stump.Tools.Toolkit.Documents
             return false;
         }
 
-        public Document Open(string fileName)
+        public IDocument Open(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
             {
@@ -61,7 +73,7 @@ namespace Stump.Tools.Toolkit.Documents
                 throw new NotSupportedException("The Open operation is not supported. CanOpen returned false.");
             }
 
-            Document document = OpenCore(fileName);
+            IDocument document = OpenCore(fileName);
             if (document != null)
             {
                 document.FileName = fileName;
@@ -69,12 +81,12 @@ namespace Stump.Tools.Toolkit.Documents
             return document;
         }
 
-        public virtual bool CanSave(Document document)
+        public virtual bool CanSave(IDocument document)
         {
             return false;
         }
 
-        public void Save(Document document, string fileName)
+        public void Save(IDocument document, string fileName)
         {
             if (document == null)
             {
@@ -98,17 +110,25 @@ namespace Stump.Tools.Toolkit.Documents
             }
         }
 
-        protected virtual Document NewCore()
+        #endregion
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
+
+        protected virtual IDocument NewCore()
         {
             throw new NotSupportedException();
         }
 
-        protected virtual Document OpenCore(string fileName)
+        protected virtual IDocument OpenCore(string fileName)
         {
             throw new NotSupportedException();
         }
 
-        protected virtual void SaveCore(Document document, string fileName)
+        protected virtual void SaveCore(IDocument document, string fileName)
         {
             throw new NotSupportedException();
         }

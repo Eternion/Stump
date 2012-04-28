@@ -1,35 +1,35 @@
 ﻿using System.ComponentModel;
+using System.Waf.Applications;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Stump.Tools.Toolkit.Documents
 {
-    public abstract class Document : INotifyPropertyChanged
+    public abstract class Document : DataModel, IDocument
     {
-        private readonly DocumentType m_documentType;
-        private string m_fileName;
-        private bool m_modified;
+        private readonly IDocumentType documentType;
 
-        public Document(DocumentType documentType)
+
+        protected Document(IDocumentType documentType)
         {
-            m_documentType = documentType;
+            Assert.IsNotNull(documentType);
+            this.documentType = documentType;
+        }
+
+
+        public IDocumentType DocumentType { get { return documentType; } }
+
+        public virtual string FileName
+        {
+            get;
+            set;
+        }
+
+        public virtual bool Modified
+        {
+            get;
+            set;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public DocumentType DocumentType
-        {
-            get { return m_documentType; }
-        }
-
-        public string FileName
-        {
-            get { return m_fileName; }
-            set { m_fileName = value; }
-        }
-
-        public bool Modified
-        {
-            get { return m_modified; }
-            set { m_modified = value; }
-        }
     }
 }

@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 
         public override bool Eval(Character character)
         {
-            return Compare((int)character.Client.Account.Role, (int)Role);
+            return Compare((int)character.Account.Role, (int)Role);
         }
 
         public override void Build()

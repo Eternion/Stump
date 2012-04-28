@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                             (sbyte) emote,
                             DateTime.Now.GetUnixTimeStamp(),
                             character.Id,
-                            (int) character.Client.Account.Id
+                            (int) character.Account.Id
                             ));
         }
 

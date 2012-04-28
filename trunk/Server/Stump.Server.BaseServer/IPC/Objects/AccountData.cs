@@ -182,7 +182,7 @@ namespace Stump.Server.BaseServer.IPC.Objects
         }
 
         [DataMember]
-        public int Points
+        public int Tokens
         {
             get;
             set;

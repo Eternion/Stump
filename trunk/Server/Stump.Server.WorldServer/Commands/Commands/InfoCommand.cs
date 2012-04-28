@@ -113,7 +113,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             var character = GetTarget(trigger);
 
             trigger.Reply("{0} ({1})", trigger.Bold(character.Name), trigger.Bold(character.Id));
-            trigger.Reply("Account : {0} ({1}) - {2}", trigger.Bold(character.Client.Account.Login), trigger.Bold(character.Client.Account.Id), trigger.Bold(character.Client.Account.Role));
+            trigger.Reply("Account : {0} ({1}) - {2}", trigger.Bold(character.Account.Login), trigger.Bold(character.Account.Id), trigger.Bold(character.Account.Role));
             trigger.Reply("Level : {0}", trigger.Bold(character.Level));
             trigger.Reply("Map : {0}, Cell : {1}, Direction : {2}", trigger.Bold(character.Map.Id), trigger.Bold(character.Cell.Id), trigger.Bold(character.Direction));
             trigger.Reply("Items : {0}", character.Inventory.Count);

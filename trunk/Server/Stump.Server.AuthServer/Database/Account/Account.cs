@@ -54,7 +54,7 @@ namespace Stump.Server.AuthServer.Database.Account
                            LastConnectionIp = LastConnection.Ip,
                            CharactersId = Characters.Select(entry => entry.CharacterId).ToList(),
                            DeletedCharactersCount = DeletedCharacters.Count(entry => DateTime.Now - entry.DeletionDate <= TimeSpan.FromDays(1)),
-                           Points = Points,
+                           Tokens = Tokens,
                            LastVote = LastVote,
                        };
         }
@@ -150,7 +150,7 @@ namespace Stump.Server.AuthServer.Database.Account
         }
 
         [Property]
-        public int Points
+        public int Tokens
         {
             get;
             set;

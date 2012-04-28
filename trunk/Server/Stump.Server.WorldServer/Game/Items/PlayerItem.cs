@@ -187,6 +187,11 @@ namespace Stump.Server.WorldServer.Game.Items
             }
         }
 
+        public int Weight
+        {
+            get { return (int) (Template.Weight*Stack); }
+        }
+
         #endregion
     }
 }

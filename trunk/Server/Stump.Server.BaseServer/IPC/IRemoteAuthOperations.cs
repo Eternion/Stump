@@ -28,7 +28,7 @@ namespace Stump.Server.BaseServer.IPC
 
         /// <remarks>It only considers password, secret question & answer and role</remarks>
         [OperationContract]
-        bool ModifyAccountByNickname(string name, AccountData modifiedRecord);
+        bool UpdateAccount(AccountData modifiedRecord);
 
         [OperationContract]
         bool CreateAccount(AccountData accountData);

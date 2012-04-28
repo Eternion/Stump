@@ -1,21 +1,23 @@
-﻿using System;
+﻿using System.Reflection;
 using System.IO;
-using System.Reflection;
 
-namespace Stump.Tools.Toolkit
+namespace System.Waf.Applications
 {
+    /// <summary>
+    /// This class provides information about the running application.
+    /// </summary>
     public static class ApplicationInfo
     {
-        private static string m_productName;
-        private static bool m_productNameCached;
-        private static string m_version;
-        private static bool m_versionCached;
-        private static string m_company;
-        private static bool m_companyCached;
-        private static string m_copyright;
-        private static bool m_copyrightCached;
-        private static string m_applicationPath;
-        private static bool m_applicationPathCached;
+        private static string productName;
+        private static bool productNameCached;
+        private static string version;
+        private static bool versionCached;
+        private static string company;
+        private static bool companyCached;
+        private static string copyright;
+        private static bool copyrightCached;
+        private static string applicationPath;
+        private static bool applicationPathCached;
 
 
         /// <summary>
@@ -25,22 +27,22 @@ namespace Stump.Tools.Toolkit
         {
             get
             {
-                if (!m_productNameCached)
+                if (!productNameCached)
                 {
                     Assembly entryAssembly = Assembly.GetEntryAssembly();
                     if (entryAssembly != null)
                     {
-                        var attribute = ((AssemblyProductAttribute) Attribute.GetCustomAttribute(
-                            entryAssembly, typeof (AssemblyProductAttribute)));
-                        m_productName = (attribute != null) ? attribute.Product : "";
+                        AssemblyProductAttribute attribute = ((AssemblyProductAttribute)Attribute.GetCustomAttribute(
+                            entryAssembly, typeof(AssemblyProductAttribute)));
+                        productName = (attribute != null) ? attribute.Product : "";
                     }
                     else
                     {
-                        m_productName = "";
+                        productName = "";
                     }
-                    m_productNameCached = true;
+                    productNameCached = true;
                 }
-                return m_productName;
+                return productName;
             }
         }
 
@@ -51,20 +53,20 @@ namespace Stump.Tools.Toolkit
         {
             get
             {
-                if (!m_versionCached)
+                if (!versionCached)
                 {
                     Assembly entryAssembly = Assembly.GetEntryAssembly();
                     if (entryAssembly != null)
                     {
-                        m_version = entryAssembly.GetName().Version.ToString();
+                        version = entryAssembly.GetName().Version.ToString();
                     }
                     else
                     {
-                        m_version = "";
+                        version = "";
                     }
-                    m_versionCached = true;
+                    versionCached = true;
                 }
-                return m_version;
+                return version;
             }
         }
 
@@ -75,22 +77,22 @@ namespace Stump.Tools.Toolkit
         {
             get
             {
-                if (!m_companyCached)
+                if (!companyCached)
                 {
                     Assembly entryAssembly = Assembly.GetEntryAssembly();
                     if (entryAssembly != null)
                     {
-                        var attribute = ((AssemblyCompanyAttribute) Attribute.GetCustomAttribute(
-                            entryAssembly, typeof (AssemblyCompanyAttribute)));
-                        m_company = (attribute != null) ? attribute.Company : "";
+                        AssemblyCompanyAttribute attribute = ((AssemblyCompanyAttribute)Attribute.GetCustomAttribute(
+                            entryAssembly, typeof(AssemblyCompanyAttribute)));
+                        company = (attribute != null) ? attribute.Company : "";
                     }
                     else
                     {
-                        m_company = "";
+                        company = "";
                     }
-                    m_companyCached = true;
+                    companyCached = true;
                 }
-                return m_company;
+                return company;
             }
         }
 
@@ -101,22 +103,22 @@ namespace Stump.Tools.Toolkit
         {
             get
             {
-                if (!m_copyrightCached)
+                if (!copyrightCached)
                 {
                     Assembly entryAssembly = Assembly.GetEntryAssembly();
                     if (entryAssembly != null)
                     {
-                        var attribute = (AssemblyCopyrightAttribute) Attribute.GetCustomAttribute(
-                            entryAssembly, typeof (AssemblyCopyrightAttribute));
-                        m_copyright = attribute != null ? attribute.Copyright : "";
+                        AssemblyCopyrightAttribute attribute = (AssemblyCopyrightAttribute)Attribute.GetCustomAttribute(
+                            entryAssembly, typeof(AssemblyCopyrightAttribute));
+                        copyright = attribute != null ? attribute.Copyright : "";
                     }
                     else
                     {
-                        m_copyright = "";
+                        copyright = "";
                     }
-                    m_copyrightCached = true;
+                    copyrightCached = true;
                 }
-                return m_copyright;
+                return copyright;
             }
         }
 
@@ -127,20 +129,20 @@ namespace Stump.Tools.Toolkit
         {
             get
             {
-                if (!m_applicationPathCached)
+                if (!applicationPathCached)
                 {
                     Assembly entryAssembly = Assembly.GetEntryAssembly();
                     if (entryAssembly != null)
                     {
-                        m_applicationPath = Path.GetDirectoryName(entryAssembly.Location);
+                        applicationPath = Path.GetDirectoryName(entryAssembly.Location);
                     }
                     else
                     {
-                        m_applicationPath = "";
+                        applicationPath = "";
                     }
-                    m_applicationPathCached = true;
+                    applicationPathCached = true;
                 }
-                return m_applicationPath;
+                return applicationPath;
             }
         }
     }

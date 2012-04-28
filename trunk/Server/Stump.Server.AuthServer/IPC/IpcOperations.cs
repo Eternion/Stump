@@ -200,14 +200,13 @@ namespace Stump.Server.AuthServer.IPC
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="wsi"></param>
-        /// <param name="name"></param>
         /// <param name="modifiedRecord"></param>
+        /// <param name="wsi"></param>
         /// <returns></returns>
         /// <remarks>It only considers password, secret question & answer and role</remarks>
-        public bool ModifyAccountByNickname(string name, AccountData modifiedRecord)
+        public bool UpdateAccount(AccountData modifiedRecord)
         {
-            Account account = Account.FindAccountByNickname(name.ToLower());
+            Account account = Account.FindAccountByNickname(modifiedRecord.Nickname);
 
             if (account == null)
                 return false;
@@ -216,6 +215,7 @@ namespace Stump.Server.AuthServer.IPC
             account.SecretQuestion = modifiedRecord.SecretQuestion;
             account.SecretAnswer = modifiedRecord.SecretAnswer;
             account.Role = modifiedRecord.Role;
+            account.Tokens = modifiedRecord.Tokens;
 
             account.Update();
 

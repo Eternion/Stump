@@ -7,19 +7,27 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
 {
     public class D2pEntry : INotifyPropertyChanged
     {
-        private string[] m_directories;
-        private string m_fileName;
+        private D2pDirectory[] m_directories;
+        private string m_fullFileName;
         private byte[] m_newData;
 
-        public D2pEntry(D2pFile container)
+        private D2pEntry(D2pFile container)
         {
             Container = container;
             Index = -1;
         }
 
-        public D2pEntry(D2pFile container, byte[] data)
+        public D2pEntry(D2pFile container, string fileName)
         {
             Container = container;
+            FullFileName = fileName;
+            Index = -1;
+        }
+
+        public D2pEntry(D2pFile container, string fileName, byte[] data)
+        {
+            Container = container;
+            FullFileName = fileName;
             m_newData = data;
             State = D2pEntryState.Added;
             Size = data.Length;
@@ -34,17 +42,22 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
 
         public string FileName
         {
-            get { return m_fileName; }
-            set
+            get { return Path.GetFileName(m_fullFileName); }
+        }
+
+        public string FullFileName
+        {
+            get { return m_fullFileName; }
+            private set
             {
-                m_fileName = value;
-                UpdateDirectories();
+                m_fullFileName = value;
             }
         }
 
-        public string[] Directories
+        public D2pDirectory Directory
         {
-            get { return m_directories; }
+            get;
+            set;
         }
 
         public int Index
@@ -71,9 +84,17 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
 
         #endregion
 
+        public static D2pEntry CreateEntryDefinition(D2pFile container, IDataReader reader)
+        {
+            var entry = new D2pEntry(container);
+            entry.ReadEntryDefinition(reader);
+
+            return entry;
+        }
+
         public void ReadEntryDefinition(IDataReader reader)
         {
-            FileName = reader.ReadUTF();
+            FullFileName = reader.ReadUTF();
             Index = reader.ReadInt();
             Size = reader.ReadInt();
         }
@@ -83,7 +104,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
             if (Index == -1)
                 throw new InvalidOperationException("Invalid entry, index = -1");
 
-            writer.WriteUTF(FileName);
+            writer.WriteUTF(FullFileName);
             writer.WriteInt(Index);
             writer.WriteInt(Size);
         }
@@ -106,9 +127,9 @@ namespace Stump.DofusProtocol.D2oClasses.Tool.D2p
             State = D2pEntryState.Dirty;
         }
 
-        private void UpdateDirectories()
+        public string[] GetDirectoriesName()
         {
-            m_directories = Path.GetDirectoryName(FileName).Split(new[] {'/'}, StringSplitOptions.RemoveEmptyEntries);
+            return Path.GetDirectoryName(FullFileName).Split(new[] {'/', '\\'}, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }

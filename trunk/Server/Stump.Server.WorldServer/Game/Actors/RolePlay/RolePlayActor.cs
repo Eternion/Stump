@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
             base.OnInstantMoved(cell);
         }
 
-        public bool Teleport(MapNeighbour mapNeighbour)
+        public virtual bool Teleport(MapNeighbour mapNeighbour)
         {
             var neighbour = Position.Map.GetNeighbouringMap(mapNeighbour);
 
@@ -51,7 +51,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
             return Teleport(destination);
         }
 
-        public bool Teleport(Map map, Cell cell)
+        public virtual bool Teleport(Map map, Cell cell)
         {
             return Teleport(new ObjectPosition(map, cell));
         }

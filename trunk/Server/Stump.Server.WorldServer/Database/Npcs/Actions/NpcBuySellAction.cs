@@ -3,6 +3,7 @@ using Castle.ActiveRecord;
 using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items.Shops;
+using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
@@ -24,6 +25,35 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
             }
         }
 
+        [Property("Shop_Token")]
+        public int TokenId
+        {
+            get;
+            set;
+        }
+
+        private ItemTemplate m_token;
+
+        public ItemTemplate Token
+        {
+            get
+            {
+                return TokenId > 0 ? m_token ?? ( m_token = ItemManager.Instance.TryGetTemplate(TokenId) ) : null;
+            }
+            set
+            {
+                m_token = value;
+                TokenId = value == null ? 0 : m_token.Id;
+            }
+        }
+
+        [Property("Shop_CanSell", Default = "1")]
+        public bool CanSell
+        {
+            get;
+            set;
+        }
+
         public override NpcActionTypeEnum ActionType
         {
             get { return NpcActionTypeEnum.ACTION_BUY_SELL; }
@@ -31,7 +61,10 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
 
         public override void Execute(Npc npc, Character character)
         {
-            var dialog = new NpcShopDialog(character, npc, Items);
+            var dialog = new NpcShopDialog(character, npc, Items, Token)
+            {
+                CanSell = CanSell
+            };
             dialog.Open();
         }
     }

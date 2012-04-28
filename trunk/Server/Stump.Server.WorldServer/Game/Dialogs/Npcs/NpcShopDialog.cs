@@ -4,6 +4,7 @@ using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Database.Items.Shops;
+using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Items;
@@ -22,7 +23,21 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             Items = items;
         }
 
+        public NpcShopDialog(Character character, Npc npc, IEnumerable<NpcItem> items, ItemTemplate token)
+        {
+            Character = character;
+            Npc = npc;
+            Items = items;
+            Token = token;
+        }
+
         public IEnumerable<NpcItem> Items
+        {
+            get;
+            private set;
+        }
+
+        public ItemTemplate Token
         {
             get;
             private set;
@@ -40,6 +55,14 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             private set;
         }
 
+        public bool CanSell
+        {
+            get;
+            set;
+        }
+
+        #region IDialog Members
+
         public void Open()
         {
             Character.SetDialog(this);
@@ -52,62 +75,108 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             Character.ResetDialog();
         }
 
+        #endregion
+
         public void BuyItem(int itemId, uint amount)
         {
-            var itemToSell = Items.Where(entry => entry.Item.Id == itemId).FirstOrDefault();
+            NpcItem itemToSell = Items.Where(entry => entry.Item.Id == itemId).FirstOrDefault();
 
             if (itemToSell == null)
             {
-                Character.Client.Send(new ExchangeErrorMessage((int)ExchangeErrorEnum.BUY_ERROR));
+                Character.Client.Send(new ExchangeErrorMessage((int) ExchangeErrorEnum.BUY_ERROR));
                 return;
             }
 
-            var finalPrice = (int) (itemToSell.Price * amount);
+            var finalPrice = (int) (itemToSell.Price*amount);
 
-            if (finalPrice < 0 || Character.Inventory.Kamas < finalPrice)
+            if (!CanBuy(itemToSell, amount))
             {
-                Character.Client.Send(new ExchangeErrorMessage((int)ExchangeErrorEnum.BUY_ERROR));
+                Character.Client.Send(new ExchangeErrorMessage((int) ExchangeErrorEnum.BUY_ERROR));
                 return;
             }
 
-            BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 46, finalPrice);
-            BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 21, amount, itemId);
-            
-            var item = ItemManager.Instance.CreatePlayerItem(Character, itemId, amount);
+            BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
+                                                    46, finalPrice);
+            BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
+                                                    21, amount, itemId);
+
+            PlayerItem item = ItemManager.Instance.CreatePlayerItem(Character, itemId, amount);
 
             Character.Inventory.AddItem(item);
-            Character.Inventory.SubKamas(finalPrice);
+            if (Token != null)
+            {
+                Character.Inventory.UnStackItem(Character.Inventory.TryGetItem(Token), finalPrice);
+            }
+            else
+            {
+                Character.Inventory.SubKamas(finalPrice);
+            }
 
             Character.Client.Send(new ExchangeBuyOkMessage());
         }
 
+        public bool CanBuy(NpcItem item, uint amount)
+        {
+            if (Token != null)
+            {
+                var token = Character.Inventory.TryGetItem(Token);
+
+                if (token == null || token.Stack < item.Price * amount)
+                    return false;
+            }
+
+            else
+            {
+                if (Character.Inventory.Kamas < item.Price * amount)
+                    return false;
+            }
+
+            return true;
+        }
+
         public void SellItem(int guid, uint amount)
         {
-           var item = Character.Inventory.TryGetItem(guid);
+            if (!CanSell)
+            {
+                Character.Client.Send(new ExchangeErrorMessage((int) ExchangeErrorEnum.SELL_ERROR));
+                return;
+            }
 
-           if (item == null)
-           {
-               Character.Client.Send(new ExchangeErrorMessage((int)ExchangeErrorEnum.SELL_ERROR));
-               return;
-           }
+            PlayerItem item = Character.Inventory.TryGetItem(guid);
 
-            var saleItem = Items.Where(entry => entry.Item.Id == item.Template.Id).FirstOrDefault();
-    
+            if (item == null)
+            {
+                Character.Client.Send(new ExchangeErrorMessage((int) ExchangeErrorEnum.SELL_ERROR));
+                return;
+            }
+
+            NpcItem saleItem = Items.Where(entry => entry.Item.Id == item.Template.Id).FirstOrDefault();
+
             int price;
 
             if (saleItem != null)
-                price = (int)Math.Ceiling(saleItem.Price / 10);
+                price = (int) Math.Ceiling(saleItem.Price/10);
             else
-                price = (int)Math.Ceiling(item.Template.Price / 10);
+                price = (int) Math.Ceiling(item.Template.Price/10);
 
             if (price == 0)
                 price = 1;
 
-            BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 45, price);
-            BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, amount, item.Template.Id);
+            BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
+                                                    45, price);
+            BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
+                                                    22, amount, item.Template.Id);
 
             Character.Inventory.RemoveItem(item, amount);
-            Character.Inventory.AddKamas(price);
+
+            if (Token != null)
+            {
+                Character.Inventory.AddItem(Token, (uint) price);
+            }
+            else
+            {
+                Character.Inventory.AddKamas(price);
+            }
 
             Character.Client.Send(new ExchangeSellOkMessage());
         }

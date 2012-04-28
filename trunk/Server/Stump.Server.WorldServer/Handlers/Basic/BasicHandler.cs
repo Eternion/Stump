@@ -13,6 +13,12 @@ namespace Stump.Server.WorldServer.Handlers.Basic
 {
     public class BasicHandler : WorldHandlerContainer
     {
+        [WorldHandler(BasicPingMessage.Id)]
+        public static void HandleBasicPingMessage(WorldClient client, BasicPingMessage message)
+        {
+            client.Send(new BasicPongMessage(message.quiet));
+        }
+
         [WorldHandler(BasicSwitchModeRequestMessage.Id)]
         public static void HandleBasicSwitchModeRequestMessage(WorldClient client, BasicSwitchModeRequestMessage message)
         {
@@ -25,7 +31,7 @@ namespace Stump.Server.WorldServer.Handlers.Basic
             Character character = client.Character;
 
             /* Send informations about it */
-            client.Send(new BasicWhoIsMessage(true, (sbyte) character.Client.Account.Role,
+            client.Send(new BasicWhoIsMessage(true, (sbyte) character.Account.Role,
                                               character.Client.WorldAccount.Nickname, character.Name, (short) character.Map.SubArea.Id));
         }
 
@@ -44,7 +50,7 @@ namespace Stump.Server.WorldServer.Handlers.Basic
             else
             {
                 client.Send(new BasicWhoIsMessage(message.search == client.Character.Name,
-                                                  (sbyte) character.Client.Account.Role,
+                                                  (sbyte) character.Account.Role,
                                                   character.Client.WorldAccount.Nickname, character.Name,
                                                   (short) character.Map.SubArea.Id));
             }

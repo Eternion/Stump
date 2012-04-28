@@ -40,6 +40,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             var target = GetTarget(trigger);
 
             target.ToggleGodMode(true);
+            trigger.Reply("You are god !");
         }
     }
     public class GodOffCommand : TargetSubCommand
@@ -55,14 +56,14 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-
             var target = GetTarget(trigger);
 
-            target.ToggleGodMode(true);
+            target.ToggleGodMode(false);
+            trigger.Reply("You'r not god more");
         }
     }
 
-    public class LevelUpCommand : CommandBase
+    public class LevelUpCommand : TargetCommand
     {
         public LevelUpCommand()
         {
@@ -70,18 +71,13 @@ namespace Stump.Server.WorldServer.Commands.Commands
             RequiredRole = RoleEnum.Administrator;
  
             AddParameter("amount", "amount", "Amount of levels to add", (short)1);
-            AddParameter("target", "t", "Character who will level up", isOptional: true, converter: ParametersConverter.CharacterConverter);  
+            AddTargetParameter(true, "Character who will level up");
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            Character target;
+            Character target = GetTarget(trigger);
             byte delta;
-
-            if (!trigger.IsArgumentDefined("target") && trigger is GameTrigger)
-                target = (trigger as GameTrigger).Character;
-            else
-                target = trigger.Get<Character>("target");
 
             var amount = trigger.Get<short>("amount");
             if (amount > 0 && amount <= byte.MaxValue)
@@ -102,6 +98,27 @@ namespace Stump.Server.WorldServer.Commands.Commands
             {
                 trigger.ReplyError("Invalid level given. Must be greater then -255 and lesser than 255");
             }
+        }
+    }
+
+    public class SetKamasCommand : TargetCommand
+    {
+        public SetKamasCommand()
+        {
+            Aliases = new[] { "kamas" };
+            RequiredRole = RoleEnum.Administrator;
+
+            AddParameter<int>("amount", "amount", "Amount of kamas to set");
+            AddTargetParameter(true);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            Character target = GetTarget(trigger);
+            int kamas = trigger.Get<int>("amount");
+
+            target.Inventory.SetKamas(kamas);
+            trigger.Reply("{0} has now {1} kamas", target, kamas);
         }
     }
 }

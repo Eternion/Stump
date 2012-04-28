@@ -45,7 +45,7 @@ namespace Stump.Tools.CacheManager.Maps
                     }
                     catch (Exception)
                     {
-                        Console.WriteLine("Cannot evaluate map {0}", file.Key.FileName);
+                        Console.WriteLine("Cannot evaluate map {0}", file.Key.FullFileName);
                         continue;
                     }
                     var values = BuildFromMap(map);

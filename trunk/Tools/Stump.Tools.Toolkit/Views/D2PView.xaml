@@ -1,0 +1,81 @@
+﻿<Window x:Class="Stump.Tools.Toolkit.Views.D2PView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:D2P="clr-namespace:Stump.Tools.Toolkit.ModelViews.D2P" 
+        xmlns:Converters="clr-namespace:Stump.Tools.Toolkit.Converters"
+        xmlns:src="clr-namespace:Stump.Tools.Toolkit.Views"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:behaviours="clr-namespace:Stump.Tools.Toolkit.Behaviors" mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance D2P:D2PViewModel}"
+        Title="D2PView" Height="400" Width="300">
+    <DockPanel LastChildFill="True">
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Button Content="Extract ..." Command="{Binding ExtractCommand}"></Button>
+            <Button Content="Extract All ..." Command="{Binding ExtractAllCommand}"></Button>
+            <Button Content="Add" Command="{Binding AddFileCommand}"></Button>
+            <Button Content="Remove" Command="{Binding RemoveFileCommand}"></Button>
+            <Button Content="Save" Command="{Binding SaveCommand}"></Button>
+            <Button Content="SaveAs" Command="{Binding SaveAsCommand}"></Button>
+        </StackPanel>
+        <StatusBar DockPanel.Dock="Bottom">
+            <TextBlock Text="{Binding StatusText}"/>
+        </StatusBar>
+        <DockPanel DockPanel.Dock="Bottom" Margin="2">
+            <TextBlock Margin="2" VerticalAlignment="Center">Search For :</TextBlock>
+            <Button Content="Find" DockPanel.Dock="Right" Margin="8,2" Command="{Binding SearchCommand}" ></Button>
+            <TextBox Width="Auto" Text="{Binding SearchText}" KeyDown="OnSearchTextBoxKeyDown"/>
+        </DockPanel>
+        <TreeView Name="TreeView" ItemsSource="{Binding TreeViewModel.RootNodes, Mode=OneWay}"
+                  VirtualizingStackPanel.IsVirtualizing="True">
+            <i:Interaction.Behaviors>
+                <behaviours:BindableSelectedItemBehaviour SelectedItem="{Binding TreeViewModel.SelectedItem, Mode=TwoWay}" />
+            </i:Interaction.Behaviors>
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="BorderThickness" Value="1"></Setter>
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneWay}" />
+                    <Setter Property="FontWeight" Value="Normal" />
+                    <Setter Property="ItemsPanel">
+                        <Setter.Value>
+                            <ItemsPanelTemplate>
+                                <src:TreeViewVirtualizingStackPanel/>
+                            </ItemsPanelTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="FontWeight" Value="Bold" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.ItemContainerStyle>
+            
+
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type D2P:D2PDirectoryNode}"  ItemsSource="{Binding Childrens}">
+                    <StackPanel Margin="3" Orientation="Horizontal">
+                        <Image Width="16" Height="16" Margin="3,0" Source="{Binding Icon}" />
+                        <TextBlock Text="{Binding Name}" />
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+                <Converters:ByteUnityFormatter x:Key="bytesFormatter"/>
+                <DataTemplate DataType="{x:Type D2P:D2PFileNode}">
+                    <StackPanel Margin="2" Orientation="Horizontal">
+                        <!--<Image Width="16" Height="16" Margin="3,0" Source="{Binding Icon}" /> TOO SLOW-->
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0} ({1})">
+                                    <Binding Path="Name" />
+                                    <Binding Path="Entry.Size" Converter="{StaticResource ResourceKey=bytesFormatter}"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </TreeView.Resources>
+        </TreeView>
+    </DockPanel>
+</Window>

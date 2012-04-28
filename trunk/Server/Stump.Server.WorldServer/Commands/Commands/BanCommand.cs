@@ -39,18 +39,18 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 var source = trigger.GetSource() as WorldClient;
 
                 if (source != null)
-                    AccountManager.Instance.BanLater(target.Client.Account, source.Account, TimeSpan.FromMinutes(time), reason);
+                    AccountManager.Instance.BanLater(target.Account, source.Account, TimeSpan.FromMinutes(time), reason);
                 else
-                    AccountManager.Instance.BanLater(target.Client.Account, TimeSpan.FromMinutes(time), reason);
+                    AccountManager.Instance.BanLater(target.Account, TimeSpan.FromMinutes(time), reason);
             }
             else if (trigger.IsArgumentDefined("life"))
             {
                 var source = trigger.GetSource() as WorldClient;
 
                 if (source != null)
-                    AccountManager.Instance.BanLater(target.Client.Account, source.Account, TimeSpan.MaxValue, reason);
+                    AccountManager.Instance.BanLater(target.Account, source.Account, TimeSpan.MaxValue, reason);
                 else
-                    AccountManager.Instance.BanLater(target.Client.Account, TimeSpan.MaxValue, reason);
+                    AccountManager.Instance.BanLater(target.Account, TimeSpan.MaxValue, reason);
             }
 
             target.Client.Disconnect();

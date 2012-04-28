@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -21,6 +24,20 @@ namespace Stump.Server.WorldServer.Game.Items
     /// </summary>
     public sealed class Inventory : ItemsStorage<PlayerItem>, IDisposable
     {
+        [Variable]
+        public static readonly bool ActiveTokens = true;
+
+        [Variable]
+        public static readonly int TokenTemplateId = (int)ItemIdEnum.GameMasterToken;
+        private static ItemTemplate TokenTemplate;
+
+        [Initialization(typeof(ItemManager), Silent=true)]
+        private static void InitializeTokenTemplate()
+        {
+            if (ActiveTokens)
+                TokenTemplate = ItemManager.Instance.TryGetTemplate(TokenTemplateId);
+        }
+
         #region Events
 
         #region Delegates
@@ -121,12 +138,18 @@ namespace Stump.Server.WorldServer.Game.Items
             }
         }
 
-        public uint Weight
+        public int Weight
         {
             get
             {
-                return Items.Values.Aggregate<PlayerItem, uint>(0, (current, item) =>
-                                                            (uint) (current + item.Template.Weight*item.Stack));
+                int weight = Items.Values.Sum(entry => entry.Weight);
+
+                if (Tokens != null)
+                {
+                    weight -= Tokens.Weight;
+                }
+
+                return weight > 0 ? weight : 0;
             }
         }
 
@@ -151,6 +174,12 @@ namespace Stump.Server.WorldServer.Game.Items
             }
         }
 
+        public PlayerItem Tokens
+        {
+            get;
+            private set;
+        }
+
         internal void LoadInventory()
         {
             var records = PlayerItemRecord.FindAllByOwner(Owner.Id);
@@ -170,14 +199,47 @@ namespace Stump.Server.WorldServer.Game.Items
             {
                 ApplyItemSetEffects(itemSet, CountItemSetEquiped(itemSet), true, false);
             }
+
+            if (TokenTemplate != null && ActiveTokens && Owner.Account.Tokens > 0)
+            {
+                Tokens = ItemManager.Instance.CreatePlayerItem(Owner, TokenTemplate, (uint)Owner.Account.Tokens);
+                Items.Add(Tokens.Guid, Tokens); // cannot stack
+            }
         }
 
-        internal void UnLoadInventory()
+        private void UnLoadInventory()
         {
             Items.Clear();
             foreach (var item in m_itemsByPosition)
             {
                 m_itemsByPosition[item.Key].Clear();
+            }
+        }
+
+        public override void Save()
+        {
+            lock (Locker)
+            {
+                foreach (var item in Items)
+                {
+                    if (Tokens != null && item.Value == Tokens)
+                        continue;
+
+                    item.Value.Record.Save();
+                }
+
+                while (ItemsToDelete.Count > 0)
+                {
+                    var item = ItemsToDelete.Dequeue();
+
+                    item.Record.Delete();
+                }
+
+                if (Tokens == null && Owner.Account.Tokens > 0 || (Tokens != null && Owner.Account.Tokens != Tokens.Stack))
+                {
+                    Owner.Account.Tokens = Tokens == null ? 0 : Tokens.Stack;
+                    IpcAccessor.Instance.ProxyObject.UpdateAccount(Owner.Account);
+                }
             }
         }
 
@@ -189,6 +251,23 @@ namespace Stump.Server.WorldServer.Game.Items
         }
 
         #endregion
+
+        public PlayerItem AddItem(ItemTemplate template, uint amount = 1)
+        {
+            var item = TryGetItem(template);
+
+            if (!item.IsEquiped())
+            {
+                StackItem(item, (int) amount);
+            }
+            else
+            {
+                item = ItemManager.Instance.CreatePlayerItem(Owner, template, amount);
+                return AddItem(item);
+            }
+
+            return item;
+        }
 
         public bool CanEquip(PlayerItem item, CharacterInventoryPositionEnum position, bool send = true)
         {
@@ -422,6 +501,14 @@ namespace Stump.Server.WorldServer.Game.Items
                 Owner.RefreshStats();
         }
 
+        protected override void DeleteItem(PlayerItem item)
+        {
+            if (item == Tokens)
+                return;
+
+            base.DeleteItem(item);
+        }
+
         protected override void OnItemAdded(PlayerItem item)
         {
             m_itemsByPosition[item.Position].Add(item);
@@ -438,6 +525,9 @@ namespace Stump.Server.WorldServer.Game.Items
         protected override void OnItemRemoved(PlayerItem item)
         {
             m_itemsByPosition[item.Position].Remove(item);
+
+            if (item == Tokens)
+                Tokens = null;
 
             // not equiped
             bool wasEquiped = item.IsEquiped();
