@@ -286,7 +286,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             m_compressedCells = ZipHelper.Compress(m_compressedCells);
 
             m_compressedElements = new byte[Elements.Length * MapElement.Size];
-            for (int i = 0; i < Cells.Length; i++)
+            for (int i = 0; i < Elements.Length; i++)
             {
                 Array.Copy(Elements[i].Serialize(), 0, m_compressedElements, i * MapElement.Size, MapElement.Size);
             }
@@ -308,7 +308,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             m_compressedCells = ZipHelper.Compress(m_compressedCells);
 
             m_compressedElements = new byte[Elements.Length * MapElement.Size];
-            for (int i = 0; i < Cells.Length; i++)
+            for (int i = 0; i < Elements.Length; i++)
             {
                 Array.Copy(Elements[i].Serialize(), 0, m_compressedElements, i * MapElement.Size, MapElement.Size);
             }

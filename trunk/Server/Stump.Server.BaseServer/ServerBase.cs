@@ -150,13 +150,18 @@ namespace Stump.Server.BaseServer
             LoadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToDictionary(entry => entry.GetName().Name);
             AppDomain.CurrentDomain.AssemblyLoad += OnAssemblyLoad;
 
-            ConsoleBase.DrawAsciiLogo();
-            Console.WriteLine();
-
             /* Initialize Logger */
             NLogHelper.DefineLogProfile(true, true);
             NLogHelper.EnableLogging();
             logger = LogManager.GetCurrentClassLogger();
+
+            if (Environment.GetCommandLineArgs().Contains("-config"))
+            {
+                UpdateConfigFiles();
+            }
+
+            ConsoleBase.DrawAsciiLogo();
+            Console.WriteLine();
 
             InitializeGarbageCollector();
 
@@ -212,6 +217,61 @@ namespace Stump.Server.BaseServer
 
             InitializationManager = InitializationManager.Instance;
             InitializationManager.AddAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+        }
+
+        public virtual void UpdateConfigFiles()
+        {           
+            logger.Info("Recreate server config file ...");
+
+            if (File.Exists(ConfigFilePath))
+            {
+                logger.Info("Update {0} file", ConfigFilePath);
+
+                Config = new XmlConfig(ConfigFilePath);
+                Config.AddAssemblies(LoadedAssemblies.Values.ToArray());
+                Config.Load();
+
+                // create the config file but keep the actual values, so it recreate and update
+                Config.Create(true);
+            }
+            else
+            {
+                logger.Info("Create {0} file", ConfigFilePath);
+
+                Config = new XmlConfig(ConfigFilePath);
+                Config.AddAssemblies(LoadedAssemblies.Values.ToArray());
+                Config.Create();
+            }
+
+            logger.Info("Recreate plugins config files ...", ConfigFilePath);
+
+            PluginManager = PluginManager.Instance;
+            PluginManager.Instance.LoadAllPlugins();
+
+            foreach (var plugin in PluginManager.GetPlugins().Select(entry => entry.Plugin).OfType<PluginBase>())
+            {
+                if (!plugin.UseConfig || !plugin.AllowConfigUpdate)
+                    continue;
+
+                bool update = File.Exists(plugin.GetConfigPath());
+
+                if (!update)
+                {
+                    logger.Info("Create '{0}' config file => '{1}'", plugin.Name, Path.GetFileName(plugin.GetConfigPath()));
+                }
+
+                plugin.LoadConfig();
+
+                if (update)
+                {
+                    logger.Info("Update '{0}' config file => '{1}'", plugin.Name, Path.GetFileName(plugin.GetConfigPath()));
+                    plugin.Config.Create(true);
+                }
+            }
+
+            logger.Info("All config files were correctly updated/created ! Shutdown ...");
+            Thread.Sleep(TimeSpan.FromSeconds(4.0));
+            Environment.Exit(0);
         }
 
         /// <summary>

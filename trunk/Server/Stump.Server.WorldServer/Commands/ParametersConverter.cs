@@ -158,6 +158,27 @@ namespace Stump.Server.WorldServer.Commands
             return templateByName;
         };
 
+        public static ConverterHandler<SuperArea> SuperAreaConverter = (entry, trigger) =>
+        {
+            int outvalue;
+            if (int.TryParse(entry, out outvalue))
+            {
+                var superArea = World.Instance.GetSuperArea(outvalue);
+
+                if (superArea == null)
+                    throw new ConverterException(string.Format("'{0}' is not a valid super area id", entry));
+
+                return superArea;
+            }
+
+            var superAreaByName = World.Instance.GetSuperArea(entry);
+
+            if (superAreaByName == null)
+                throw new ConverterException(string.Format("'{0}' is not a super area name", entry));
+
+            return superAreaByName;
+        };
+
         public static ConverterHandler<Area> AreaConverter = (entry, trigger) =>
         {
             int outvalue;
@@ -174,7 +195,7 @@ namespace Stump.Server.WorldServer.Commands
             var areaByName = World.Instance.GetArea(entry);
 
             if (areaByName == null)
-                throw new ConverterException(string.Format("'{0}' is not a area name", entry));
+                throw new ConverterException(string.Format("'{0}' is not an area name", entry));
 
             return areaByName;
         };

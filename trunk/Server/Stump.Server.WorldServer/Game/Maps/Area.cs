@@ -522,12 +522,25 @@ namespace Stump.Server.WorldServer.Game.Maps
             subArea.Area = null;
         }
 
-        public Map[] GetMaps(int x, int y, bool outdoor = true)
+        public Map[] GetMaps(int x, int y)
+        {
+            return GetMaps(new Point(x, y));
+        }
+
+        public Map[] GetMaps(int x, int y, bool outdoor)
         {
             return GetMaps(new Point(x, y), outdoor);
         }
 
-        public Map[] GetMaps(Point position, bool outdoor = true)
+        public Map[] GetMaps(Point position)
+        {
+            if (!m_mapsByPoint.ContainsKey(position))
+                return new Map[0];
+
+            return m_mapsByPoint[position].ToArray();
+        }
+
+        public Map[] GetMaps(Point position, bool outdoor)
         {
             if (!m_mapsByPoint.ContainsKey(position))
                 return new Map[0];

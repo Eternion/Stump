@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
@@ -22,44 +23,47 @@ namespace Stump.Server.WorldServer.Commands.Commands
             AddParameter<int>("x");
             AddParameter<int>("y");
             AddTargetParameter(true);
-            AddParameter<short>("cellId", "cell", "Cell destination", isOptional: true);
-            AddParameter<int>("superArea", "area", "Super area containing the map", isOptional: true);
-            AddParameter("outDoor", "out", defaultValue: true);
+            AddParameter<short>("cellid", "cell", "Cell destination", isOptional: true);
+            AddParameter("superarea", "area", "Super area containing the map (e.g 0 is continent, 3 is incarnam)", isOptional: true, converter:ParametersConverter.SuperAreaConverter);
+            AddParameter<bool>("outdoor", "out", isOptional:true);
         }
 
         public override void Execute(TriggerBase trigger)
         {
             var point = new Point(trigger.Get<int>("x"), trigger.Get<int>("y"));
             var target = GetTarget(trigger);
+            var reference = target.Map;
+            bool outdoorDefined = trigger.IsArgumentDefined("outdoor");
+            bool outdoor = trigger.Get<bool>("outdoor");
+            Map map;
 
-            SuperArea superArea = trigger.IsArgumentDefined("superArea")
-                                      ? World.Instance.GetSuperArea(trigger.Get<int>("superArea"))
-                                      : target.Map.SubArea.Area.SuperArea;
-
-            if (!superArea.MapsByPosition.ContainsKey(point))
+            if (trigger.IsArgumentDefined("superarea"))
             {
-                Map map = World.Instance.GetMap(point.X, point.Y, trigger.Get<bool>("out"));
+                var superArea = trigger.Get<SuperArea>("superarea");
 
-                if (map == null)
-                    trigger.ReplyError("Map x:{0} y:{0} doesn't exists or is indoor", point.X, point.Y);
-
-                else
-                {
-                    Cell cell = trigger.IsArgumentDefined("cell") ? map.Cells[trigger.Get<short>("cell")] : target.Cell;
-
-                    target.Teleport(new ObjectPosition(map, cell, target.Direction));
-
-                    trigger.Reply("Teleported.");
-                }
+                map = outdoorDefined ? 
+                    superArea.GetMaps(point, outdoor).FirstOrDefault() :
+                    superArea.GetMaps(point).FirstOrDefault();
             }
             else
             {
-                Map map = superArea.GetMaps(point)[0];
-                Cell cell = trigger.IsArgumentDefined("cell") ? map.Cells[trigger.Get<short>("cell")] : target.Cell;
+                map = outdoorDefined ?
+                    World.Instance.GetMaps(reference, point.X, point.Y, outdoor).FirstOrDefault() :
+                    World.Instance.GetMaps(reference, point.X, point.Y).FirstOrDefault();
+            }
+
+            if (map == null)
+            {
+                trigger.ReplyError("Map x:{0} y:{1} not found", point.X, point.Y);
+            }
+            else
+            {
+                Cell cell = trigger.IsArgumentDefined("cell") ?
+                    map.Cells[trigger.Get<short>("cell")] : target.Cell;
 
                 target.Teleport(new ObjectPosition(map, cell, target.Direction));
 
-                trigger.Reply("Teleported.");
+                trigger.Reply("Teleported to {0} {1} ({2}).", point.X, point.Y, map.Id);
             }
         }
     }
@@ -71,19 +75,19 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Aliases = new[] {"go", "teleport", "tp"};
             RequiredRole = RoleEnum.Moderator;
             Description = "Teleport the target given map id";
-            AddParameter<int>("mapId", "id", "Map destination");
+            AddParameter<int>("mapid", "id", "Map destination");
             AddTargetParameter(true);
-            AddParameter<short>("cellId", "cell", "Cell destination", isOptional: true);
+            AddParameter<short>("cellid", "cell", "Cell destination", isOptional: true);
         }
 
         public override void Execute(TriggerBase trigger)
         {
             var target = GetTarget(trigger);
-            Map map = World.Instance.GetMap(trigger.Get<int>("mapId"));
+            Map map = World.Instance.GetMap(trigger.Get<int>("mapid"));
 
             if (map == null)
             {
-                trigger.ReplyError("Map '{0}' doesn't exist", trigger.Get<int>("mapId"));
+                trigger.ReplyError("Map '{0}' doesn't exist", trigger.Get<int>("mapid"));
             }
             else
             {

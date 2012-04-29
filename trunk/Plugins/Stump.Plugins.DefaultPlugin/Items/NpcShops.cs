@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Stump.Core.Attributes;
+using Stump.Core.Collections;
 using Stump.Core.Sql;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
@@ -21,7 +22,7 @@ namespace Stump.Plugins.DefaultPlugin.Items
         public static readonly bool Active = true;
         
         [Variable]
-        public static readonly Dictionary<int, ItemTypeEnum> Sellers = new Dictionary<int, ItemTypeEnum>()
+        public static readonly SerializableDictionary<int, ItemTypeEnum> Sellers = new SerializableDictionary<int, ItemTypeEnum>()
             {
                 {812, ItemTypeEnum.HAT},
                 {1158, ItemTypeEnum.CLOAK},
@@ -42,7 +43,7 @@ namespace Stump.Plugins.DefaultPlugin.Items
             };        
         
         [Variable]
-        public static readonly Dictionary<int, int> Prices = new Dictionary<int, int>()
+        public static readonly SerializableDictionary<int, int> Prices = new SerializableDictionary<int, int>()
             {
                 {60, 0},
                 {80, 15000},
@@ -64,6 +65,9 @@ namespace Stump.Plugins.DefaultPlugin.Items
         [Initialization(typeof(ItemManager))]
         public static void Initialize()
         {
+            if (!Active)
+                return;
+
             m_patchPath = Path.Combine(Path.GetDirectoryName(Plugin.CurrentPlugin.Context.AssemblyPath), PatchName);
             if (File.Exists(m_patchPath))
                 File.Delete(m_patchPath);

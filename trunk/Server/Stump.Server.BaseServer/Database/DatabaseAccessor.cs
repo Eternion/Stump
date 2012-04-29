@@ -198,7 +198,7 @@ namespace Stump.Server.BaseServer.Database
         private void ExecuteUpdateAndCreateSchema()
         {
             if (!Directory.Exists(m_config.UpdateFileDir))
-                throw new FileNotFoundException(string.Format("Directory {0} isn't found.", m_config.UpdateFileDir));
+                throw new FileNotFoundException(string.Format("Cannot update schema, update directory {0} isn't found.", m_config.UpdateFileDir));
 
             m_patchs = Directory.GetFiles(m_config.UpdateFileDir, "*", SearchOption.AllDirectories).
                 Select(entry => new PatchFile(entry)).ToArray();

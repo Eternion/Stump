@@ -88,7 +88,14 @@ namespace Stump.Server.AuthServer.IPC
         /// </summary>
         public WorldServer GetCurrentServer()
         {
-            return Manager.GetServerBySessionId(GetCurrentSessionId());
+            var server = Manager.GetServerBySessionId(GetCurrentSessionId());
+
+            if (server == null)
+            {
+                throw new Exception(string.Format("Server with id {0} cannot be found, it's certainly disconnected", GetCurrentSessionId()));
+            }
+
+            return server;
         }
 
         public RemoteEndpointMessageProperty GetCurrentEndPoint()

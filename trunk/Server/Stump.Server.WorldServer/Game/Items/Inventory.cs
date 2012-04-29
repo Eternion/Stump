@@ -428,15 +428,32 @@ namespace Stump.Server.WorldServer.Game.Items
             }
         }
 
-        public void UseItem(PlayerItem item)
+        public bool CanUseItem(PlayerItem item, bool send = true)
         {
             if (!HasItem(item.Guid) || !item.IsUsable())
-                return;
+                return false;
 
             if (!item.AreConditionFilled(Owner))
             {
-                return;
+                if (send)
+                    BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 19);
+                return false;
             }
+
+            if (item.Template.Level > Owner.Level)
+            {
+                if (send)
+                    BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 3);
+                return false;
+            }
+
+            return true;
+        }
+
+        public void UseItem(PlayerItem item)
+        {
+            if (!CanUseItem(item))
+                return;
 
             bool remove = false;
             foreach (var effect in item.Effects)

@@ -94,7 +94,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get
             {
-                int result = Base + Equiped + Given + Owner.Stats[PlayerFields.Vitality] - DamageTaken;
+                int result = Base + Equiped + Given + Context + Owner.Stats[PlayerFields.Vitality] - DamageTaken;
 
                 return result < 0 ? 0 : result;
             }
@@ -107,7 +107,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get
             {
-                int result = Base + Equiped + Given + (Owner.Stats != null ? Owner.Stats[PlayerFields.Vitality].Total : 0);
+                int result = Base + Equiped + Given + Context + ( Owner.Stats != null ? Owner.Stats[PlayerFields.Vitality].Total : 0 );
 
                 return result < 0 ? 0 : result;
             }

@@ -260,18 +260,34 @@ namespace Stump.Server.WorldServer.Game
             return m_maps.Values.Where(entry => entry.Position.X == x && entry.Position.Y == y && entry.Outdoor == outdoor).ToArray();
         }
 
-
-        public Map[] GetMaps(Map adjacent, int x, int y, bool outdoor)
+        public Map[] GetMaps(Map reference, int x, int y)
         {
-            var maps = adjacent.SubArea.GetMaps(x, y, outdoor);
+            var maps = reference.SubArea.GetMaps(x, y);
             if (maps.Length > 0)
                 return maps;
 
-            maps = adjacent.Area.GetMaps(x, y, outdoor);
+            maps = reference.Area.GetMaps(x, y);
             if (maps.Length > 0)
                 return maps;
 
-            maps = adjacent.SuperArea.GetMaps(x, y, outdoor);
+            maps = reference.SuperArea.GetMaps(x, y);
+            if (maps.Length > 0)
+                return maps;
+
+            return new Map[0];
+        }
+
+        public Map[] GetMaps(Map reference, int x, int y, bool outdoor)
+        {
+            var maps = reference.SubArea.GetMaps(x, y, outdoor);
+            if (maps.Length > 0)
+                return maps;
+
+            maps = reference.Area.GetMaps(x, y, outdoor);
+            if (maps.Length > 0)
+                return maps;
+
+            maps = reference.SuperArea.GetMaps(x, y, outdoor);
             if (maps.Length > 0)
                 return maps;
 
@@ -288,7 +304,7 @@ namespace Stump.Server.WorldServer.Game
 
         public SubArea GetSubArea(string name)
         {
-            return m_subAreas.Values.Where(entry => entry.Record.Name == name).FirstOrDefault();
+            return m_subAreas.Values.FirstOrDefault(entry => entry.Record.Name == name);
         }
 
         public Area GetArea(int id)
@@ -299,10 +315,9 @@ namespace Stump.Server.WorldServer.Game
             return area;
         }
 
-
         public Area GetArea(string name)
         {
-            return m_areas.Values.Where(entry => entry.Name == name).FirstOrDefault();
+            return m_areas.Values.FirstOrDefault(entry => entry.Name == name);
         }
 
         public SuperArea GetSuperArea(int id)
@@ -311,6 +326,10 @@ namespace Stump.Server.WorldServer.Game
             m_superAreas.TryGetValue(id, out superArea);
 
             return superArea;
+        }
+        public SuperArea GetSuperArea(string name)
+        {
+            return m_superAreas.Values.FirstOrDefault(entry => entry.Name == name);
         }
 
         #endregion

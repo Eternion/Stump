@@ -25,6 +25,11 @@ namespace Stump.Server.BaseServer.Plugins
             get { return false; }
         }
 
+        public virtual bool AllowConfigUpdate
+        {
+            get { return UseConfig; }
+        }
+
         public virtual string ConfigFileName
         {
             get { return null; }
@@ -69,7 +74,7 @@ namespace Stump.Server.BaseServer.Plugins
             if (!UseConfig)
                 return;
 
-            var configPath = Path.Combine(Path.GetDirectoryName(Context.AssemblyPath), !string.IsNullOrEmpty(ConfigFileName) ? ConfigFileName : Name + ".xml");
+            var configPath = GetConfigPath();
             Config = new XmlConfig(configPath);
             Config.AddAssembly(GetType().Assembly);
 
@@ -77,6 +82,16 @@ namespace Stump.Server.BaseServer.Plugins
                 Config.Load();
             else
                 Config.Create();
+        }
+
+        public virtual string GetConfigPath()
+        {
+            return Path.Combine(GetPluginDirectory(), !string.IsNullOrEmpty(ConfigFileName) ? ConfigFileName : Name + ".xml");
+        }
+
+        public string GetPluginDirectory()
+        {
+            return Path.GetDirectoryName(Context.AssemblyPath);
         }
     }
 }

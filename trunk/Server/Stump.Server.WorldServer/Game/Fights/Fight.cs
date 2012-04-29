@@ -617,17 +617,17 @@ namespace Stump.Server.WorldServer.Game.Fights
             FightTeam team = fighter.Team == RedTeam ? BlueTeam : RedTeam;
 
             Tuple<Cell, uint> closerCell = null;
-            foreach (Cell cell in team.PlacementCells)
+            foreach (var opposant in team.GetAllFighters())
             {
-                var point = new MapPoint(cell);
+                var point = opposant.Position.Point;
 
                 if (closerCell == null)
-                    closerCell = Tuple.Create(cell,
+                    closerCell = Tuple.Create(opposant.Cell,
                                               fighter.Position.Point.DistanceToCell(point));
                 else
                 {
                     if (fighter.Position.Point.DistanceToCell(point) < closerCell.Item2)
-                        closerCell = Tuple.Create(cell,
+                        closerCell = Tuple.Create(opposant.Cell,
                                                   fighter.Position.Point.DistanceToCell(point));
                 }
             }
@@ -1032,7 +1032,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             {
                 if (!CheckFightEnd())
                 {
-                    logger.Error("Something goes wrong : no more actors area available to play but the fight is not ended");
+                    logger.Error("Something goes wrong : no more actors are available to play but the fight is not ended");
                 }
 
                 return;
@@ -1445,8 +1445,6 @@ namespace Stump.Server.WorldServer.Game.Fights
                 {
                     Character character = ((CharacterFighter) fighter).Character;
 
-                    ContextHandler.SendGameFightEndMessage(character.Client, this, Fighters.Select(entry => entry.GetFightResult().GetFightResultListEntry()));
-
                     character.RejoinMap();
                 }
             }
@@ -1460,33 +1458,13 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                     // wait the character to be ready
                     var readyChecker = new ReadyChecker(this, new[] { ( (CharacterFighter)fighter ) });
-                    Action<ReadyChecker> sendResults =
-                        (obj) =>
-                        {
-                            ( (CharacterFighter)fighter ).PersonalReadyChecker = null;
-                            bool isfighterTurn = fighter.IsFighterTurn();
-
-                            ContextHandler.SendGameFightLeaveMessage(Clients, fighter);
-
-                            if (!CheckFightEnd() && isfighterTurn)
-                                StopTurn();
-
-                            ContextHandler.SendGameFightEndMessage(character.Client, this, GetFightersAndLeavers().Select(entry => entry.GetFightResult().GetFightResultListEntry()));
-                            fighter.ResetFightProperties();
-
-                            character.RejoinMap();
-
-                            fighter.Team.RemoveFighter(fighter);
-                            fighter.Team.AddLeaver(fighter);
-                            Leavers.Add(fighter);
-                        };
-                    readyChecker.Success += sendResults;
-                    readyChecker.Timeout += (obj, laggers) => sendResults(obj);
+                    readyChecker.Success += (obj) => OnPlayerReadyToLeave(fighter as CharacterFighter);
+                    readyChecker.Timeout += (obj, laggers) => OnPlayerReadyToLeave(fighter as CharacterFighter);
 
                     ( (CharacterFighter)fighter ).PersonalReadyChecker = readyChecker;
+                    Clients.Remove(character.Client); // can be instant so we remove him before to start the checker
                     readyChecker.Start();
 
-                    Clients.Remove(character.Client);
                 }
                 else
                 {
@@ -1504,6 +1482,30 @@ namespace Stump.Server.WorldServer.Game.Fights
                     Leavers.Add(fighter);
                 }
             }
+        }
+
+        protected virtual void OnPlayerReadyToLeave(CharacterFighter fighter)
+        {
+            fighter.PersonalReadyChecker = null;
+            bool isfighterTurn = fighter.IsFighterTurn();
+
+            ContextHandler.SendGameFightLeaveMessage(Clients, fighter);
+
+            bool fightend = CheckFightEnd();
+
+            if (!fightend && isfighterTurn)
+                StopTurn();
+
+            // already done if the fight is ended
+            if (!fightend)
+            {
+                fighter.ResetFightProperties();
+                fighter.Character.RejoinMap();
+            }
+
+            fighter.Team.RemoveFighter(fighter);
+            fighter.Team.AddLeaver(fighter);
+            Leavers.Add(fighter);
         }
 
         protected virtual void OnPlayerLoggout(Character character)

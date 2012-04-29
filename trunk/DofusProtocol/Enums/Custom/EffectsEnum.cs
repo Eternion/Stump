@@ -1444,6 +1444,7 @@
         /// </summary>
         Effect_1002 = 1002,
         Effect_SubResistances = 1077,
+        Effect_AddVitalityPercent = 1078,
         End,
     }
 }

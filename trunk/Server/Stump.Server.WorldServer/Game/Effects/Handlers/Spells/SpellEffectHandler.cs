@@ -127,12 +127,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (Effect.Targets == SpellTargetType.ALL)
                 return true;
 
-            if (Caster == actor &&
-                !Effect.Targets.HasFlag(SpellTargetType.SELF) &&
-                !Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF))
+            if (Caster == actor && Effect.Targets.HasFlag(SpellTargetType.SELF))
+                return true;
+
+            if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) && actor != Caster)
                 return false;
 
-            if (Caster.IsFriendlyWith(actor))
+            if (Caster.IsFriendlyWith(actor) && Caster != actor)
             {
                 if ((Effect.Targets.HasFlag(SpellTargetType.ALLY_1) ||
                     Effect.Targets.HasFlag(SpellTargetType.ALLY_2) ||

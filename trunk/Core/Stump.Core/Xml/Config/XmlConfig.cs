@@ -101,80 +101,7 @@ namespace Stump.Core.Xml.Config
             if (!overwrite && File.Exists(m_configPath))
                 throw new Exception("Cannot overwrite an existing file");
 
-            foreach (var assembly in m_assemblies.Values)
-            {
-                DotNetDocumentation documentation = null;
-                if (m_assembliesDocFile.ContainsKey(assembly))
-                    if (File.Exists(m_assembliesDocFile[assembly]))
-                        documentation = DotNetDocumentation.Load(m_assembliesDocFile[assembly]);
-
-                foreach(var type in assembly.GetTypes())
-                {
-                    var fields = from field in type.GetFields(BindingFlags.GetField | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
-                                 where field.GetCustomAttribute<VariableAttribute>() != null
-                                 select field;
-
-                    object instance = null;
-                    if (m_instances.ContainsKey(type))
-                        instance = m_instances[type];
-
-                    foreach (var field in fields)
-                    {
-                        var node = new XmlConfigNode(field);
-                        var isStatic = field.IsStatic;
-
-                        if (!isStatic)
-                        {
-                            if (instance != null)
-                                node.Instance = instance;
-                            else 
-                                throw new Exception(
-                                    string.Format(
-                                        "{0} is not static. Declare it static or bind an instance to the type {1}",
-                                        field.Name, type.Name));
-                        }
-                        DocEntry member = null;
-                        if (documentation != null)
-                            member = documentation.Members.Where(entry => entry.Name == type.FullName + "." + field.Name).FirstOrDefault();
-
-                        if (member != null)
-                            node.Documentation = member.Summary;
-
-                        m_nodes.Add(node.Path, node);
-                    }
-
-                    var properties = from property in type.GetProperties(BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
-                                     where property.GetCustomAttribute<VariableAttribute>() != null
-                                     select property;
-
-                    foreach (var property in properties)
-                    {
-                        var node = new XmlConfigNode(property);
-                        var isStatic = property.GetGetMethod().IsStatic;
-
-                        if (!isStatic)
-                        {
-                            if (instance != null)
-                                node.Instance = instance;
-                            else
-                                throw new Exception(
-                                    string.Format(
-                                        "{0} is not static. Declare it static or bind an instance to the type {1}",
-                                        property.Name, type.Name));
-                        }
-
-                        DocEntry member = null;
-                        if (documentation != null)
-                            member = documentation.Members.Where(entry => entry.Name == type.FullName + "." + property.Name).FirstOrDefault();
-
-                        if (member != null)
-                            node.Documentation = member.Summary;
-
-                        m_nodes.Add(node.Path, node);
-                    }
-                }
-            }
-
+            LoadNodesFromAssemblies();
             BuildConfig();
 
             Loaded = true;
@@ -200,13 +127,17 @@ namespace Stump.Core.Xml.Config
                 throw new FileNotFoundException("Config file is not found");
 
             m_reader = new XmlTextReader(new MemoryStream(File.ReadAllBytes(m_configPath)));
+
+            if (m_reader.EOF)
+                throw new Exception("Config file is empty, delete it");
+
             m_document = new XmlDocument();
             m_document.Load(m_reader);
 
             if (!string.IsNullOrEmpty(m_schemaPath))
                 CheckSchema();
 
-            LoadNodes();
+            LoadNodesFromConfig();
             AssignValuesFromNodes(false);
 
             Loaded = true;
@@ -227,14 +158,18 @@ namespace Stump.Core.Xml.Config
             if (!File.Exists(m_configPath))
                 throw new FileNotFoundException("Config file is not found");
 
-            m_reader = new XmlTextReader(new MemoryStream(File.ReadAllBytes(m_configPath)));
+            m_reader = new XmlTextReader(new MemoryStream(File.ReadAllBytes(m_configPath))); 
+            
+            if (m_reader.EOF)
+                throw new Exception("Config file is empty, delete it");
+
             m_document = new XmlDocument();
             m_document.Load(m_reader);
 
             if (!string.IsNullOrEmpty(m_schemaPath))
                 CheckSchema();
 
-            LoadNodes();
+            LoadNodesFromConfig();
             AssignValuesFromNodes(true);
         }
 
@@ -253,13 +188,17 @@ namespace Stump.Core.Xml.Config
                 throw new FileNotFoundException("Config file is not found");
 
             m_reader = new XmlTextReader(new MemoryStream(File.ReadAllBytes(m_configPath)));
+
+            if (m_reader.EOF)
+                throw new Exception("Config file is empty, delete it");
+
             m_document = new XmlDocument();
             m_document.Load(m_reader);
 
             if (!string.IsNullOrEmpty(m_schemaPath))
                 CheckSchema();
 
-            LoadNodes();
+            LoadNodesFromConfig();
             AssignValuesFromNodes(false);
         }
 
@@ -330,7 +269,84 @@ namespace Stump.Core.Xml.Config
             m_document.Validate(ValidationEventHandler);
         }
 
-        private void LoadNodes()
+        private void LoadNodesFromAssemblies()
+        {
+            foreach (var assembly in m_assemblies.Values)
+            {
+                DotNetDocumentation documentation = null;
+                if (m_assembliesDocFile.ContainsKey(assembly))
+                    if (File.Exists(m_assembliesDocFile[assembly]))
+                        documentation = DotNetDocumentation.Load(m_assembliesDocFile[assembly]);
+
+                foreach (var type in assembly.GetTypes())
+                {
+                    var fields = from field in type.GetFields(BindingFlags.GetField | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+                                 where field.GetCustomAttribute<VariableAttribute>() != null
+                                 select field;
+
+                    object instance = null;
+                    if (m_instances.ContainsKey(type))
+                        instance = m_instances[type];
+
+                    foreach (var field in fields)
+                    {
+                        var node = new XmlConfigNode(field);
+                        var isStatic = field.IsStatic;
+
+                        if (!isStatic)
+                        {
+                            if (instance != null)
+                                node.Instance = instance;
+                            else
+                                throw new Exception(
+                                    string.Format(
+                                        "{0} is not static. Declare it static or bind an instance to the type {1}",
+                                        field.Name, type.Name));
+                        }
+                        DocEntry member = null;
+                        if (documentation != null)
+                            member = documentation.Members.Where(entry => entry.Name == type.FullName + "." + field.Name).FirstOrDefault();
+
+                        if (member != null)
+                            node.Documentation = member.Summary;
+
+                        m_nodes.Add(node.Path, node);
+                    }
+
+                    var properties = from property in type.GetProperties(BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+                                     where property.GetCustomAttribute<VariableAttribute>() != null
+                                     select property;
+
+                    foreach (var property in properties)
+                    {
+                        var node = new XmlConfigNode(property);
+                        var isStatic = property.GetGetMethod().IsStatic;
+
+                        if (!isStatic)
+                        {
+                            if (instance != null)
+                                node.Instance = instance;
+                            else
+                                throw new Exception(
+                                    string.Format(
+                                        "{0} is not static. Declare it static or bind an instance to the type {1}",
+                                        property.Name, type.Name));
+                        }
+
+                        DocEntry member = null;
+                        if (documentation != null)
+                            member = documentation.Members.Where(entry => entry.Name == type.FullName + "." + property.Name).FirstOrDefault();
+
+                        if (member != null)
+                            node.Documentation = member.Summary;
+
+                        m_nodes.Add(node.Path, node);
+                    }
+                }
+            }
+        }
+
+        private void LoadNodesFromConfig()
         {
             m_nodes.Clear();
 

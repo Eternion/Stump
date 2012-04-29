@@ -28,6 +28,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         [Variable(true)]
         public static short StarsBonusIncrementation = 2;
 
+        [Variable(true)]
+        public static short StarsBonusLimit = 300;
+
         public event Action<MonsterGroup, Character> EnterFight;
 
         private readonly List<Monster> m_monsters = new List<Monster>();
@@ -188,11 +191,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         public void IncrementBonus(short bonus)
         {
             AgeBonus += bonus;
+
+            if (AgeBonus > StarsBonusLimit)
+                AgeBonus = StarsBonusLimit;
         }
 
         public void DecrementBonus(short bonus)
         {
             AgeBonus -= bonus;
+
+            if (AgeBonus < 0)
+                AgeBonus = 0;
         }
 
         public IEnumerable<Monster> GetMonsters()

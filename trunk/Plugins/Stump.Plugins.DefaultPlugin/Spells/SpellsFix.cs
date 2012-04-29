@@ -21,6 +21,26 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // iop's wrath (159)
             // increase buff duration to 4
             FixEffectOnAllLevels(159, EffectsEnum.Effect_SpellBoost, (level, effect, critical) => effect.Duration = 4);
+
+            // iop's vitality (155)
+            // effect #1 Target = allies (not self)
+            // effect #2 Target = self
+            FixEffectOnAllLevels(155, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_1);
+            FixEffectOnAllLevels(155, 1, (level, effect, critical) => effect.Targets = SpellTargetType.SELF);
+        }
+
+        public static void FixEffectOnAllLevels(int spellId, int effectIndex, Action<SpellLevelTemplate, EffectDice, bool> fixer)
+        {
+            var spellLevels = SpellManager.Instance.GetSpellLevels(spellId).ToArray();
+
+            if (spellLevels.Length == 0)
+                throw new Exception(string.Format("Cannot apply fix on spell {0} : spell do not exists", spellId));
+
+            foreach (var level in spellLevels)
+            {
+                fixer(level, level.Effects[effectIndex], false);
+                fixer(level, level.CritialEffects[effectIndex], true);
+            }
         }
 
         public static void FixEffectOnAllLevels(int spellId, EffectsEnum effect, Action<SpellLevelTemplate, EffectDice, bool> fixer)

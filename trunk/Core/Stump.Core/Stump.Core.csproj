@@ -200,6 +200,7 @@
     <Compile Include="Attributes\VariableAttribute.cs" />
     <Compile Include="Cache\ObjectValidator.cs" />
     <Compile Include="Collections\BlockingQueue.cs" />
+    <Compile Include="Collections\SerializableDictionary.cs" />
     <Compile Include="Collections\ConcurrentList.cs" />
     <Compile Include="Collections\LimitedStack.cs" />
     <Compile Include="Collections\LockFreeQueue.cs" />
