@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Castle.ActiveRecord;
 using NLog;
 using Stump.Core.Reflection;
+using Stump.Core.Sql;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Server.WorldServer.Database.Monsters;
@@ -120,7 +121,8 @@ namespace Stump.Tools.CacheManager
             Program.DBAccessor.ExecuteNonQuery("START TRANSACTION");
             foreach (var record in records)
             {
-                Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsertInto("texts", record.Value));
+                var listKey = new KeyValueListBase("texts", record.Value);
+                Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsert(listKey));
                 counter++;
 
                 Console.SetCursorPosition(cursorLeft, cursorTop);
@@ -189,7 +191,8 @@ namespace Stump.Tools.CacheManager
             counter = 0;
             foreach (var record in recordsUi)
             {
-                Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsertInto("texts_ui", record.Value));
+                var listKey = new KeyValueListBase("texts_ui", record.Value);
+                Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsert(listKey));
                 counter++;
 
                 Console.SetCursorPosition(cursorLeft, cursorTop);
@@ -231,7 +234,8 @@ namespace Stump.Tools.CacheManager
                     if (table.Inheritance != null && row.ContainsKey("Id"))
                         Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildDelete(table.TableName, "Id = " + row["Id"]));
 
-                    Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsertInto(table.TableName, row));
+                    var listKey = new KeyValueListBase(table.TableName, row);
+                    Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsert(listKey));
 
                     Console.SetCursorPosition(cursorLeft, cursorTop);
                     Console.Write("{0}/{1} ({2}%)", i, objects.Length, (int) ((i/(double) objects.Length)*100d));
@@ -252,7 +256,8 @@ namespace Stump.Tools.CacheManager
                 var row = m_monsterGradeTable.GenerateRow(monsterGrade);
 
                 Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildDelete(m_monsterGradeTable.TableName, "MonsterId = " + row["MonsterId"] + " AND Grade = " + row["Grade"]));
-                Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsertInto(m_monsterGradeTable.TableName, row));
+                var listKey = new KeyValueListBase(m_monsterGradeTable.TableName, row);
+                Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsert(listKey));
             }
         }
 

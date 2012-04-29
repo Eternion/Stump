@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.IO;
 using Castle.ActiveRecord.Framework.Config;
 using MySql.Data.MySqlClient;
 using Stump.Server.BaseServer.Database;

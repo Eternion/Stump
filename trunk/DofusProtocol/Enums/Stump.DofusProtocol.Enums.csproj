@@ -145,7 +145,7 @@
     <Compile Include="Custom\EmotesEnum.cs" />
     <Compile Include="Custom\ItemCategoryEnum.cs" />
     <Compile Include="Custom\ItemIdEnum.cs" />
-    <Compile Include="Custom\ItemType.cs" />
+    <Compile Include="Custom\ItemTypeEnum.cs" />
     <Compile Include="Custom\MapIdEnum.cs" />
     <Compile Include="Custom\MapNeighbourEnum.cs" />
     <Compile Include="Custom\MonsterIdEnum.cs" />

@@ -1214,11 +1214,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!IsFighting() && !IsSpectator())
                 return;
 
-            OnFightEnded(Fighter);
+            if (Fighter != null)
+                OnFightEnded(Fighter);
 
             if (GodMode)
                 Stats.Health.DamageTaken = 0;
-            else if (Fighter.HasLeft() || Fight.Losers == Fighter.Team)
+            else if (Fighter != null && (Fighter.HasLeft() || Fight.Losers == Fighter.Team))
                 OnDied();
 
             Fighter = null;

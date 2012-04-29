@@ -329,7 +329,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override bool UseAP(short amount)
         {
             if (Character.GodMode)
+            {
+                base.UseAP(amount);
+                RegainAP(amount);
+
                 return true;
+            }
 
             return base.UseAP(amount);
         }
@@ -345,7 +350,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override bool LostAP(short amount)
         {
             if (Character.GodMode)
+            {
+                base.LostAP(amount);
+                RegainAP(amount);
+
                 return true;
+            }
 
             return base.LostAP(amount);
         }

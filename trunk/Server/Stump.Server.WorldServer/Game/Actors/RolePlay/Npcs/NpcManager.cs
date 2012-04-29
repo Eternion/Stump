@@ -44,6 +44,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             return m_npcsSpawns.Values;
         }
 
+        public IEnumerable<NpcTemplate> GetNpcTemplates()
+        {
+            return m_npcsTemplates.Values;
+        }
+
         public NpcTemplate GetNpcTemplate(int id)
         {
             NpcTemplate template;

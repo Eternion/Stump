@@ -114,14 +114,11 @@
   <ItemGroup>
     <Compile Include="Data\Monster.cs" />
     <Compile Include="PatchCreator.cs" />
-    <Compile Include="Sql\KeyValueListBase.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Readers\Drop.cs" />
     <Compile Include="Readers\DropParser.cs" />
     <Compile Include="Readers\MonsterDataReader.cs" />
-    <Compile Include="Sql\RawData.cs" />
-    <Compile Include="Sql\SqlBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">

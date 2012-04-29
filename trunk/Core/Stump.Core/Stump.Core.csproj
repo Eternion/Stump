@@ -229,6 +229,9 @@
     <Compile Include="Reflection\DynamicExtension.cs" />
     <Compile Include="Reflection\DynamicSwitch.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />
+    <Compile Include="Sql\KeyValueListBase.cs" />
+    <Compile Include="Sql\RawData.cs" />
+    <Compile Include="Sql\SqlBuilder.cs" />
     <Compile Include="Threading\SelfRunningTaskPool.cs" />
     <Compile Include="Threading\IContextHandler.cs" />
     <Compile Include="Threading\TaskCompletionSourceExtensions.cs" />

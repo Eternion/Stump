@@ -103,7 +103,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                         break;
 
                     var chance = ( random.Next(0, 100) + random.NextDouble() ) * Rates.DropsRate;
-                    var dropRate = droppableItem.DropRate * ( fighter.Stats[PlayerFields.Prospecting] / 100 ) * Fight.AgeBonus;
+                    var dropRate = droppableItem.DropRate * ( fighter.Stats[PlayerFields.Prospecting] / 100 ) * ((Fight.AgeBonus / 100d) + 1);
 
                     if (dropRate >= chance)
                     {

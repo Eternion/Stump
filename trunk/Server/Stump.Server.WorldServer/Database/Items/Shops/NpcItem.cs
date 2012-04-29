@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Database.Items.Shops
             get { return m_buyCriterion; }
             set
             {
-                m_buyCriterion = value;
+                m_buyCriterion = value ?? string.Empty;
                 m_objectItemToSellInNpcShop.Invalidate();
             }
         }

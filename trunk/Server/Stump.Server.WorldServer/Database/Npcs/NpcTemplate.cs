@@ -43,29 +43,29 @@ namespace Stump.Server.WorldServer.Database.Npcs
             }
         }
 
-        /*[D2OField("dialogMessages")]
-        [Property("DialogMessages", ColumnType = "Serializable")]
-        public List<List<int>> DialogMessages
+        [D2OField("dialogMessages")]
+        [Property("DialogMessagesId", ColumnType = "Serializable")]
+        public List<List<int>> DialogMessagesId
         {
             get;
             set;
         }
 
         [D2OField("dialogReplies")]
-        [Property("DialogReplies", ColumnType = "Serializable")]
-        public List<List<int>> DialogReplies
+        [Property("DialogRepliesId", ColumnType = "Serializable")]
+        public List<List<int>> DialogRepliesId
         {
             get;
             set;
         }
 
         [D2OField("actions")]
-        [Property("Actions", ColumnType = "Serializable")]
+        [Property("ActionsId", ColumnType = "Serializable")]
         public List<uint> ActionsIds
         {
             get;
             set;
-        }*/
+        }
 
         private List<NpcAction> m_actions;
         public List<NpcAction> Actions

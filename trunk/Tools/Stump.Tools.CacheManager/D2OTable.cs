@@ -4,8 +4,10 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Castle.ActiveRecord;
+using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.Core.Reflection;
+using Stump.Core.Sql;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Server.AuthServer.Database;
@@ -121,13 +123,18 @@ namespace Stump.Tools.CacheManager
                 if (fieldValue == null)
                     value = null;
                 if (field.DbPropAttr != null && field.DbPropAttr.ColumnType == "Serializable")
-                    value = fieldValue.ToBinary();
+                {
+                    var bin = fieldValue.ToBinary();
+
+                    if (bin.Length > 0)
+                        value = new RawData("0x" + bin.ByteArrayToString());
+                    else
+                        value = string.Empty;
+                }
                 else if (fieldValue is bool)
                     value = ( (bool)fieldValue ) ? 1 : 0;
-                else if (fieldValue is float) // hack
-                    value = ( (float)fieldValue ).ToString(CultureInfo.InvariantCulture);
-                else if (fieldValue is double) // hack
-                    value = ( (double)fieldValue ).ToString(CultureInfo.InvariantCulture);
+                else if (fieldValue is IFormattable)
+                    value = ( (IFormattable)fieldValue ).ToString(null, CultureInfo.InvariantCulture);
                 else
                     value = fieldValue;
 

@@ -5,6 +5,7 @@ using System.Linq;
 using NLog;
 using Stump.Core.Extensions;
 using Stump.Core.IO;
+using Stump.Core.Sql;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.DofusProtocol.D2oClasses.Tool.D2p;
 using Stump.DofusProtocol.D2oClasses.Tool.Dlm;
@@ -50,7 +51,8 @@ namespace Stump.Tools.CacheManager.Maps
                     }
                     var values = BuildFromMap(map);
 
-                    Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsertInto("maps", values));
+                    var listKey = new KeyValueListBase("maps", values);
+                    Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsert(listKey));
 
                     counter++;
 
