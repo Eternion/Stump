@@ -21,6 +21,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             Character = character;
             Npc = npc;
             Items = items;
+            CanSell = true;
         }
 
         public NpcShopDialog(Character character, Npc npc, IEnumerable<NpcItem> items, ItemTemplate token)
@@ -29,6 +30,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             Npc = npc;
             Items = items;
             Token = token;
+            CanSell = true;
         }
 
         public IEnumerable<NpcItem> Items
@@ -56,6 +58,12 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
         }
 
         public bool CanSell
+        {
+            get;
+            set;
+        }
+
+        public bool MaxStats
         {
             get;
             set;
@@ -98,7 +106,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
                                                     21, amount, itemId);
 
-            PlayerItem item = ItemManager.Instance.CreatePlayerItem(Character, itemId, amount);
+            PlayerItem item = ItemManager.Instance.CreatePlayerItem(Character, itemId, amount, MaxStats || itemToSell.MaxStats);
 
             Character.Inventory.AddItem(item);
             if (Token != null)

@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Database.Items.Shops
             m_objectItemToSellInNpcShop = new ObjectValidator<ObjectItemToSellInNpcShop>(BuildObjectItemToSellInNpcShop);
         }
 
-        [Property("NpcShopId")]
+        [Property("Npc_NpcShopId")]
         public int NpcShopId
         {
             get;
@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Database.Items.Shops
 
         private float? m_customPrice;
 
-        [Property(NotNull = false)]
+        [Property("Npc_CustomPrice", NotNull = false)]
         public float? CustomPrice
         {
             get { return m_customPrice; }
@@ -46,7 +46,7 @@ namespace Stump.Server.WorldServer.Database.Items.Shops
 
         private string m_buyCriterion;
 
-        [Property]
+        [Property("Npc_BuyCriterion")]
         public string BuyCriterion
         {
             get { return m_buyCriterion; }
@@ -55,6 +55,13 @@ namespace Stump.Server.WorldServer.Database.Items.Shops
                 m_buyCriterion = value;
                 m_objectItemToSellInNpcShop.Invalidate();
             }
+        }
+
+        [Property("Npc_MaxStats")]
+        public bool MaxStats
+        {
+            get;
+            set;
         }
 
         #region ObjectItemToSellInNpcShop

@@ -141,7 +141,8 @@ namespace Stump.Plugins.EditorPlugin.Commands
             ParentCommand = typeof(NpcEditorCommands);
             AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);
             AddParameter("item", "item", converter: ParametersConverter.ItemTemplateConverter);
-            AddParameter<float>("customprice", "price", isOptional:true);
+            AddParameter<float>("customprice", "price", isOptional: true);
+            AddParameter<bool>("max", "max", "Get the max stats when sold", isOptional: true);
         }
 
         public override void ExecuteAdd(TriggerBase trigger)
@@ -169,7 +170,8 @@ namespace Stump.Plugins.EditorPlugin.Commands
                         Item = itemTemplate,
                         CustomPrice = trigger.IsArgumentDefined("customprice") ? (float?)trigger.Get<float>("customprice") : null,
                         NpcShopId = (int)shop.Id,
-                        BuyCriterion = string.Empty
+                        BuyCriterion = string.Empty,
+                        MaxStats = trigger.IsArgumentDefined("max")
                     };
 
                     item.Save();
@@ -246,6 +248,39 @@ namespace Stump.Plugins.EditorPlugin.Commands
                    {
                        trigger.ReplyError("Define token or -notoken");
                    }
+
+                   shop.Save();
+               });
+        }
+    }
+
+    public class NpcShopMaxCommand : SubCommand
+    {
+        public NpcShopMaxCommand()
+        {
+            Aliases = new[] { "shopmax" };
+            RequiredRole = RoleEnum.GameMaster;
+            Description = "Set all sold items to max stats";
+            ParentCommand = typeof(NpcEditorCommands);
+            AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);
+            AddParameter("active", "active", "Active or not", defaultValue:true);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var npc = trigger.Get<NpcTemplate>("npc");
+            var shop = npc.Actions.OfType<NpcBuySellAction>().FirstOrDefault();
+
+            if (shop == null)
+            {
+                trigger.ReplyError("Npc {0} has no shop", npc);
+                return;
+            }
+
+            WorldServer.Instance.IOTaskPool.AddMessage(
+               () =>
+               {
+                   shop.MaxStats = trigger.Get<bool>("active");
 
                    shop.Save();
                });

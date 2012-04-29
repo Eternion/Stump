@@ -137,6 +137,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                 case PreniumAccountCriterion.Identifier:
                     return new PreniumAccountCriterion();
                 case PvpRankCriterion.Identifier:
+                case PvpRankCriterion.Identifier2:
                     return new PvpRankCriterion();
                 case QuestActiveCriterion.Identifier:
                     return new QuestActiveCriterion();
@@ -153,6 +154,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                 case SexCriterion.Identifier:
                     return new SexCriterion();
                 case SkillCriterion.Identifier:
+                case SkillCriterion.Identifier2:
                     return new SkillCriterion();
                 case SoulStoneCriterion.Identifier:
                     return new SoulStoneCriterion();

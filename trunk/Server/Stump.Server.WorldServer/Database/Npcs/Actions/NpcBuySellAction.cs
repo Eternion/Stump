@@ -54,6 +54,13 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
             set;
         }
 
+        [Property("Shop_MaxStats", Default = "0")]
+        public bool MaxStats
+        {
+            get;
+            set;
+        }
+
         public override NpcActionTypeEnum ActionType
         {
             get { return NpcActionTypeEnum.ACTION_BUY_SELL; }
@@ -63,7 +70,8 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
         {
             var dialog = new NpcShopDialog(character, npc, Items, Token)
             {
-                CanSell = CanSell
+                CanSell = CanSell,
+                MaxStats = MaxStats
             };
             dialog.Open();
         }

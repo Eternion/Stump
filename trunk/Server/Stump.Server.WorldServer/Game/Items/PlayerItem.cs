@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Cache;
@@ -60,10 +61,17 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public bool AreConditionFilled(Character character)
         {
-            if (Template.CriteriaExpression == null)
-                return true;
+            try
+            {
+                if (Template.CriteriaExpression == null)
+                    return true;
 
-            return Template.CriteriaExpression.Eval(character);
+                return Template.CriteriaExpression.Eval(character);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -189,7 +197,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public int Weight
         {
-            get { return (int) (Template.Weight*Stack); }
+            get { return (int) (Template.RealWeight*Stack); }
         }
 
         #endregion

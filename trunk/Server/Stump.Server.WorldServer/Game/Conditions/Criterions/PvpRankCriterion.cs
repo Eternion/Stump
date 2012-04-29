@@ -5,8 +5,8 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 {
     public class PvpRankCriterion : Criterion
     {
-        public const string Identifier = "Pp";
-        public const string Identifier2 = "PP";
+        public const string Identifier = "PP";
+        public const string Identifier2 = "Pp";
 
         public int Rank
         {
@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 
         public override bool Eval(Character character)
         {
-            return true;
+            return Compare(character.Account, Rank);
         }
 
         public override void Build()
