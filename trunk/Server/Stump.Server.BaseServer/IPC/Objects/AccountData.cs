@@ -136,15 +136,24 @@ namespace Stump.Server.BaseServer.IPC.Objects
             set;
         }
 
-        [DataMember]
-        public DateTime LastConnection
+        // we ignore connection[0] cause it's the actual one
+        public DateTime? LastConnection
         {
-            get;
-            set;
+            get { return Connections.Length > 1 ? Connections[1].Key : (DateTime?)null; }
+        }
+
+        public bool FirstConnection
+        {
+            get { return Connections.Length == 1; }
+        }
+
+        public string LastConnectionIp
+        {
+            get { return Connections.Length > 1 ? Connections[1].Value : null; }
         }
 
         [DataMember]
-        public string LastConnectionIp
+        public KeyValuePair<DateTime, string>[] Connections
         {
             get;
             set;

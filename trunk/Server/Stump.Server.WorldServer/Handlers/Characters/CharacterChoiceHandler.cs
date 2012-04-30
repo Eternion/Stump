@@ -139,13 +139,17 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             FriendHandler.SendGuildMemberWarnOnConnectionStateMessage(client, false);
 
             BasicHandler.SendTextInformationMessage(client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 89);
-            if (client.Account.LastConnection != default(DateTime))
+            if (client.Account.LastConnection != null)
+            {
+                var date = client.Account.LastConnection.Value;
+
                 BasicHandler.SendTextInformationMessage(client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 193,
-                                                        client.Account.LastConnection.Year,
-                                                        client.Account.LastConnection.Month,
-                                                        client.Account.LastConnection.Day,
-                                                        client.Account.LastConnection.Hour,
-                                                        client.Account.LastConnection.Minute.ToString("00"));
+                                                        date.Year,
+                                                        date.Month,
+                                                        date.Day,
+                                                        date.Hour,
+                                                        date.Minute.ToString("00"));
+            }
 
             //InitializationHandler.SendOnConnectionEventMessage(client, 2);
 

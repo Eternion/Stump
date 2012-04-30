@@ -7,7 +7,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
     {
         public const string Identifier = "PU";
 
-        public int BonesId
+        public short BonesId
         {
             get;
             set;
@@ -24,12 +24,12 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                 BonesId = 1;
             else
             {
-                int bonesId;
+                short bonesId;
 
-                if (!int.TryParse(Literal, out bonesId))
+                if (!short.TryParse(Literal, out bonesId))
                     throw new Exception(string.Format("Cannot build BonesCriterion, {0} is not a valid bones id", Literal));
 
-                BonesId = bonesId != 0 ? bonesId : 1;
+                BonesId = (short) (bonesId != 0 ? bonesId : 1);
             }
         }
 

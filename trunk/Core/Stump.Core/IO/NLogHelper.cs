@@ -1,12 +1,14 @@
 ﻿using NLog;
 using NLog.Config;
 using NLog.Targets;
-using NLog.Win32.Targets;
 
 namespace Stump.Core.IO
 {
     public static class NLogHelper
     {
+        public const string LogFormatConsole = "[${blockcenter:length=18:inner=${callsite:className=true:methodName=false:includeSourcePath=false:nonamespace=true}}](${threadid}) ${message}";
+        public const string LogFormatFile = "[${level}] <${date:format=G}> ${message}";
+
         /// <summary>
         ///   Directory where logs are stored
         /// </summary>
@@ -25,11 +27,11 @@ namespace Stump.Core.IO
             var config = new LoggingConfiguration();
 
             var consoleTarget = new ColoredConsoleTarget();
-            consoleTarget.Layout = "<${date:format=HH\\:mm\\:ss}> ${message}";
+            consoleTarget.Layout = LogFormatConsole;
 
             var fileTarget = new FileTarget();
             fileTarget.FileName = "${basedir}" + LogFilePath + "log_${date:format=dd-MM-yyyy}" + ".txt";
-            fileTarget.Layout = "[${level}] <${date:format=G}> ${message}";
+            fileTarget.Layout = LogFormatFile;
 
             var fileErrorTarget = new FileTarget();
             fileErrorTarget.FileName = "${basedir}" + LogFilePath +

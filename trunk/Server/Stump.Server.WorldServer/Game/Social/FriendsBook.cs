@@ -298,7 +298,7 @@ namespace Stump.Server.WorldServer.Game.Social
             }
 
 
-            World.Instance.CharacterEntered += OnCharacterLogIn;
+            World.Instance.CharacterJoined += OnCharacterLogIn;
         }
 
         public void Save(bool saveAccount = false)
@@ -317,7 +317,7 @@ namespace Stump.Server.WorldServer.Game.Social
 
         public void Dispose()
         {
-            World.Instance.CharacterEntered -= OnCharacterLogIn;
+            World.Instance.CharacterJoined -= OnCharacterLogIn;
         }
     }
 }

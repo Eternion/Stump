@@ -134,14 +134,14 @@ namespace Stump.Server.WorldServer.Core.IPC
                 if (result == RegisterResultEnum.IpNotAllowed ||
                     result == RegisterResultEnum.PropertiesMismatch)
                 {
-                    logger.Error("[IPC] The authentication server has denied the access of this server.");
+                    logger.Error("The authentication server has denied the access of this server.");
                     WorldServer.Instance.Shutdown();
                 }
                 else if (result == RegisterResultEnum.OK)
                 {
                     ProxyObject = proxyobject;
 
-                    logger.Info("[IPC] Server connected to the authentification server");
+                    logger.Info("Server connected to the authentification server");
                     OnConnected();
                 }
                 else if (result == RegisterResultEnum.AuthServerUnreachable)
@@ -165,7 +165,7 @@ namespace Stump.Server.WorldServer.Core.IPC
                 // considered server as connected for a security reason.
             catch (Exception ex)
             {
-                throw new Exception("[IPC] Ping connection throw an exception : " + ex.Message);
+                throw new Exception("Ping connection throw an exception : " + ex.Message);
             }
         }
 
@@ -204,11 +204,11 @@ namespace Stump.Server.WorldServer.Core.IPC
             if (ex is CommunicationException)
             {
                 // Connection got interrupted
-                logger.Warn("[IPC] Lost connection to AuthServer. Scheduling reconnection attempt...");
+                logger.Warn("Lost connection to AuthServer. Scheduling reconnection attempt...");
             }
             else
             {
-                logger.Error("[IPC] Exception occurs on IPC method access : {0} \nScheduling reconnection attempt...", ex);
+                logger.Error("Exception occurs on IPC method access : {0} \nScheduling reconnection attempt...", ex);
             } 
             
             Disconnect();
@@ -244,7 +244,7 @@ namespace Stump.Server.WorldServer.Core.IPC
                 if (IsConnected)
                 {
                     Disconnect();
-                    logger.Info("[IPC] Server disconnected from the authentification server");
+                    logger.Info("Server disconnected from the authentification server");
                 }
             }
             else if (!IsConnected)

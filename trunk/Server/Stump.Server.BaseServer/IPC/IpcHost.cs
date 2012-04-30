@@ -56,7 +56,7 @@ namespace Stump.Server.BaseServer.IPC
 
             string addr = m_host.Description.Endpoints[0].ListenUri.AbsoluteUri;
 
-            logger.Info("IPC Service Start listenning on {0}", addr);
+            logger.Info("IPC Service started ({0})", addr);
         }
 
         public void Stop()

@@ -147,9 +147,6 @@
     <Reference Include="NHibernate">
       <HintPath>..\..\Library\NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\..\Library\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -186,6 +183,7 @@
     <Compile Include="Commands\Commands\LookCommand.cs" />
     <Compile Include="Commands\Commands\MonsterCommands.cs" />
     <Compile Include="Commands\Commands\NpcsCommands.cs" />
+    <Compile Include="Commands\Commands\Patterns\InGameCommand.cs" />
     <Compile Include="Commands\Commands\Patterns\TargetCommand.cs" />
     <Compile Include="Commands\Commands\SaveCommand.cs" />
     <Compile Include="Commands\Commands\TeleportCommand.cs" />
@@ -331,6 +329,7 @@
     <Compile Include="Handlers\Dialogs\DialogHandler.cs" />
     <Compile Include="Handlers\Friends\FriendHandler.cs" />
     <Compile Include="Handlers\Interactives\InteractiveHandler.cs" />
+    <Compile Include="Handlers\Moderation\ModerationHandler.cs" />
     <Compile Include="Handlers\Prism\PrismHandler.cs" />
     <Compile Include="Handlers\PvP\PvPHandler.cs" />
     <Compile Include="Rates.cs" />
@@ -594,6 +593,10 @@
     <ProjectReference Include="..\..\DofusProtocol\Types\Stump.DofusProtocol.Types.csproj">
       <Project>{10884165-D492-4895-B3EF-32429F7A7F55}</Project>
       <Name>Stump.DofusProtocol.Types</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Library\NLog\NLog.netfx40.csproj">
+      <Project>{A0BFF0DB-ED9A-4639-AE86-8E709A1EFC66}</Project>
+      <Name>NLog.netfx40</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Library\TreeSharp\TreeSharp.csproj">
       <Project>{8BFDD80E-9E64-4386-B676-ED3CFDF1B095}</Project>

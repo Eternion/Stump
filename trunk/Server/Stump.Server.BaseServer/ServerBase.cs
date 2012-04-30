@@ -134,6 +134,12 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
+        public bool IsInitialized
+        {
+            get;
+            protected set;
+        }
+
         public virtual void Initialize()
         {
             InstanceAsBase = this;
@@ -180,17 +186,7 @@ namespace Stump.Server.BaseServer
 
 
             /* Set Config Watcher */
-            FileWatcherManager.Watch(ConfigFilePath, WatcherType.Modification,
-                 () =>
-                 {
-                     if (!m_ignoreReload && ConsoleInterface.AskAndWait("Config has been modified, do you want to reload it ?", 20))
-                     {
-                         Config.Reload();
-                         logger.Warn("Config has been reloaded sucessfully");
-                     }
-
-                     m_ignoreReload = false;
-                 });
+            StartConfigReloadOnChange(Config);
 
             logger.Info("Initialize Task Pool");
             IOTaskPool = new SelfRunningTaskQueue(IOTaskInterval, "IO Task Pool");
@@ -208,15 +204,17 @@ namespace Stump.Server.BaseServer
             ClientManager.ClientConnected += OnClientConnected;
             ClientManager.ClientDisconnected += OnClientDisconnected;
 
+            logger.Info("Register Plugins...");
+            // the plugins add them themself to the initializer
+            InitializationManager = InitializationManager.Instance;
+            InitializationManager.AddAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+
             PluginManager = PluginManager.Instance;
             PluginManager.PluginAdded += OnPluginAdded;
             PluginManager.PluginRemoved += OnPluginRemoved;
 
             logger.Info("Loading Plugins...");
             PluginManager.Instance.LoadAllPlugins();
-
-            InitializationManager = InitializationManager.Instance;
-            InitializationManager.AddAssemblies(AppDomain.CurrentDomain.GetAssemblies());
         }
 
         public virtual void UpdateConfigFiles()
@@ -272,6 +270,29 @@ namespace Stump.Server.BaseServer
             logger.Info("All config files were correctly updated/created ! Shutdown ...");
             Thread.Sleep(TimeSpan.FromSeconds(4.0));
             Environment.Exit(0);
+        }
+
+        public void StartConfigReloadOnChange(XmlConfig config)
+        {
+            var action = new Action(() =>
+                {
+                    if (!m_ignoreReload &&
+                        ConsoleInterface.AskAndWait(string.Format("Config {0} has been modified, do you want to reload it ?", Path.GetFileName(config.FilePath)), 20))
+                    {
+                        config.Reload();
+                        logger.Warn("Config has been reloaded sucessfully");
+                    }
+
+                    m_ignoreReload = false;
+                });
+
+
+            FileWatcherManager.Watch(config.FilePath, WatcherType.Modification, action);
+        }
+
+        public void StopConfigReloadOnChange(XmlConfig config)
+        {
+            FileWatcherManager.StopWatching(config.FilePath);
         }
 
         /// <summary>

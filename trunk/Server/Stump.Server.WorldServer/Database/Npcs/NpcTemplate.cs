@@ -76,9 +76,9 @@ namespace Stump.Server.WorldServer.Database.Npcs
             }
         }
 
-        public NpcAction GetNpcAction(NpcActionTypeEnum actionType)
+        public NpcAction[] GetNpcActions(NpcActionTypeEnum actionType)
         {
-            return Actions.Where(entry => entry.ActionType == actionType).FirstOrDefault();
+            return Actions.Where(entry => entry.ActionType == actionType).ToArray();
         }
 
         [D2OField("gender")]

@@ -84,9 +84,9 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                 switch (Identifier)
                 {
                     case "Ce":
-                        return Compare(character.Energy, Comparand);
+                        return Compare(character.Energy, (short)Comparand);
                     case "CE":
-                        return Compare(character.EnergyMax, Comparand);
+                        return Compare(character.EnergyMax, (short)Comparand);
                     case "CD":
                         return true; // dishonor
                     case "CH":

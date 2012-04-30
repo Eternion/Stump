@@ -359,7 +359,7 @@ namespace Stump.Core.Xml.Config
 
                 if (string.IsNullOrEmpty(variableNode.Name))
                 {
-                    logger.Error(string.Format("[Config] Variable in {0} has not attribute 'name'", variableNode.Path));
+                    logger.Error(string.Format("Variable in {0} has not attribute 'name'", variableNode.Path));
                     continue;
                 }
 
@@ -382,7 +382,7 @@ namespace Stump.Core.Xml.Config
                     if (classType == null)
                     {
                         if (!IgnoreUnloadedAssemblies)
-                            logger.Error(string.Format("[Config] Cannot found the class '{0}', is the assembly loaded ?", xmlConfigNode.Namespace + "." + xmlConfigNode.ClassName));
+                            logger.Error(string.Format("Cannot found the class '{0}', is the assembly loaded ?", xmlConfigNode.Namespace + "." + xmlConfigNode.ClassName));
                         
                         continue;
                     }
@@ -407,7 +407,7 @@ namespace Stump.Core.Xml.Config
                         }
                         else
                         {
-                            logger.Error(string.Format("[Config] Field or property '{0}' doesn't exist", xmlConfigNode.Path));
+                            logger.Error(string.Format("Field or property '{0}' doesn't exist", xmlConfigNode.Path));
                             continue;
                         }
                     }
@@ -422,13 +422,13 @@ namespace Stump.Core.Xml.Config
                     }
                     catch (InvalidCastException)
                     {
-                        logger.Warn(string.Format("[Config] Cannot cast {0} to the correct type : {1}", xmlConfigNode.Path, elementType));
+                        logger.Warn(string.Format("Cannot cast {0} to the correct type : {1}", xmlConfigNode.Path, elementType));
                     }
                 }
 
                 catch (Exception e)
                 {
-                    logger.Warn(string.Format("[Config] Cannot define the variable {0} : {1}", xmlConfigNode.Path, e));
+                    logger.Warn(string.Format("Cannot define the variable {0} : {1}", xmlConfigNode.Path, e));
                 }
             }
         }

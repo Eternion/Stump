@@ -116,6 +116,7 @@ namespace Stump.Server.AuthServer
                 IpcHost = new IpcHost(typeof(IpcOperations), typeof(IRemoteAuthOperations), IpcAddress);
 
                 InitializationManager.InitializeAll();
+                IsInitialized = true;
             }
             catch (Exception ex)
             {

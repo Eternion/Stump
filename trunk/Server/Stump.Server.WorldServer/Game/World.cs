@@ -48,11 +48,11 @@ namespace Stump.Server.WorldServer.Game
         private readonly object m_saveLock = new object();
         private readonly ConcurrentBag<ISaveable> m_saveablesInstances = new ConcurrentBag<ISaveable>();
 
-        public event Action<Character> CharacterEntered;
+        public event Action<Character> CharacterJoined;
 
         private void OnCharacterEntered(Character character)
         {
-            Action<Character> handler = CharacterEntered;
+            Action<Character> handler = CharacterJoined;
             if (handler != null) handler(character);
         }
 

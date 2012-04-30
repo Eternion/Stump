@@ -192,19 +192,14 @@ namespace Stump.Server.AuthServer.Managers
                 return RegisterResultEnum.PropertiesMismatch;
             }
 
-            if (!server.Connected)
-            {
-                server.SetOnline(world.Address, world.Port);
-                server.SetSession(channel, sessionId, endpoint);
+            server.SetOnline(world.Address, world.Port);
+            server.SetSession(channel, sessionId, endpoint);
 
-                logger.Info("Registered World : \"{0}\" <Id : {1}> <{2}>", world.Name, world.Id, world.Address);
+            logger.Info("Registered World : \"{0}\" <Id : {1}> <{2}>", world.Name, world.Id, world.Address);
 
-                OnServerAdded(server);
-                return RegisterResultEnum.OK;
-            }
-
-            logger.Error("Tried to register the server <Id : {0}> twice.", world.Id);
-            return RegisterResultEnum.AlreadyRegistered;
+            OnServerAdded(server);
+            return RegisterResultEnum.OK;
+            
         }
 
 
@@ -215,13 +210,7 @@ namespace Stump.Server.AuthServer.Managers
 
         public WorldServer GetServerBySessionId(string sessionId)
         {
-            foreach (var server in Realmlist)
-            {
-                if (!string.IsNullOrEmpty(server.Value.SessionId) && server.Value.SessionId == sessionId)
-                    return server.Value;
-            }
-
-            return null;
+            return (from server in Realmlist where !string.IsNullOrEmpty(server.Value.SessionId) && server.Value.SessionId == sessionId select server.Value).FirstOrDefault();
         }
 
         public bool CanAccessToWorld(AuthClient client, WorldServer world)

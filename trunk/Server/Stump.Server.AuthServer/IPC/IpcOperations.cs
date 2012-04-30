@@ -30,7 +30,14 @@ namespace Stump.Server.AuthServer.IPC
         {
             WorldServer world = GetServerByChannel((IContextChannel) sender);
 
-            Manager.RemoveWorld(world);
+            if (world != null)
+            {
+                Manager.RemoveWorld(world);
+            }
+            else
+            {
+                logger.Warn("A server has been disconnected but we cannot retrieve it");
+            }
         }
 
         private void OnOperationError(Exception ex)
@@ -40,14 +47,15 @@ namespace Stump.Server.AuthServer.IPC
             if (ex is CommunicationException)
             {
                 // Connection got interrupted
-                logger.Warn("[IPC] Lost connection to WorldServer {0}. Scheduling reconnection attempt...", world);
+                logger.Warn("Lost connection to WorldServer {0}. Scheduling reconnection attempt...", world);
             }
             else
             {
-                logger.Error("[IPC] Exception occurs on IPC method access on WorldServer {0} : {1} \nScheduling reconnection attempt...", world, ex);
+                logger.Error("Exception occurs on IPC method access on WorldServer {0} : {1} \nScheduling reconnection attempt...", world, ex);
             }
 
-            Manager.RemoveWorld(world);
+            if (world != null)
+                Manager.RemoveWorld(world);
         }
 
         private WorldServer GetServerByChannel(IContextChannel channel)
@@ -157,7 +165,10 @@ namespace Stump.Server.AuthServer.IPC
 
         public void UnRegisterWorld()
         {
-            Manager.RemoveWorld(GetCurrentServer());
+            var server = GetCurrentServer();
+
+            if (server != null)
+                Manager.RemoveWorld(server);
         }
 
         public void ChangeState(ServerStatusEnum state)

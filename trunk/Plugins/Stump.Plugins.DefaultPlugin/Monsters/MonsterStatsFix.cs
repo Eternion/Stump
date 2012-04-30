@@ -45,8 +45,11 @@ namespace Stump.Plugins.DefaultPlugin.Monsters
 
             if (stats.Length == 0)
             {
-                monster.Stats.Add(PlayerFields.DamageBonusPercent, (short)points);
-                monster.Stats.Add(PlayerFields.Initiative, (short)points);
+                if (!monster.Stats.ContainsKey(PlayerFields.DamageBonusPercent))
+                    monster.Stats.Add(PlayerFields.DamageBonusPercent, (short)points);
+
+                if (!monster.Stats.ContainsKey(PlayerFields.Initiative))
+                    monster.Stats.Add(PlayerFields.Initiative, (short)points);
             }
 
             foreach (var field in stats)

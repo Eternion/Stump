@@ -5,7 +5,7 @@
     /// </summary>
     public static class Definitions
     {
-        public const uint DatabaseRevision = 63;
+        public const uint DatabaseRevision = 64;
 
         public static string ConfigFilePath = "./world_config.xml";
         public static string SchemaFilePath = "./world_config.xsd";

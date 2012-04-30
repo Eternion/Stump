@@ -1,3 +1,4 @@
+using System.Linq;
 using Stump.Core.Cache;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -67,14 +68,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             if (!CanInteractWith(actionType, dialoguer))
                 return;
 
-            var action = Template.GetNpcAction(actionType);
+            var actions = Template.GetNpcActions(actionType);
 
-            action.Execute(this, dialoguer);
+            actions.First(entry => entry.ConditionaExpression == null || entry.ConditionaExpression.Eval(dialoguer))
+                .Execute(this, dialoguer);
         }
 
         public bool CanInteractWith(NpcActionTypeEnum action, Character dialoguer)
         {
-            return dialoguer.Map == Position.Map && Template.GetNpcAction(action) != null;
+            if (dialoguer.Map != Position.Map)
+                return false;
+
+            var actions = Template.GetNpcActions(action);
+
+            return actions.Length > 0 && actions.Any(entry => entry.ConditionaExpression == null || 
+                entry.ConditionaExpression.Eval(dialoguer));
         }
 
         public void SpeakWith(Character dialoguer)

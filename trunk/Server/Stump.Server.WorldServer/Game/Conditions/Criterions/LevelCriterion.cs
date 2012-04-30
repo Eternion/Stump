@@ -7,7 +7,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
     {
         public const string Identifier = "PL";
 
-        public int Level
+        public byte Level
         {
             get;
             set;
@@ -19,10 +19,10 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
         }
 
         public override void Build()
-        {    
-            int level;
+        {
+            byte level;
 
-            if (!int.TryParse(Literal, out level))
+            if (!byte.TryParse(Literal, out level))
                 throw new Exception(string.Format("Cannot build LevelCriterion, {0} is not a valid level", Literal));
 
             Level = level;

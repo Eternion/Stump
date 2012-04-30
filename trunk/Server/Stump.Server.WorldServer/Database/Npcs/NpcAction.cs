@@ -1,7 +1,9 @@
+using System;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Conditions;
 
 namespace Stump.Server.WorldServer.Database.Npcs
 {
@@ -33,6 +35,32 @@ namespace Stump.Server.WorldServer.Database.Npcs
             {
                 m_template = value;
                 NpcId = value.Id;
+            }
+        }
+
+
+        [Property("`Condition`")]
+        public String Condition
+        {
+            get;
+            set;
+        }
+
+        private ConditionExpression m_conditionExpression;
+
+        public ConditionExpression ConditionaExpression
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Condition) || Condition == "null")
+                    return null;
+
+                return m_conditionExpression ?? ( m_conditionExpression = ConditionExpression.Parse(Condition) );
+            }
+            set
+            {
+                m_conditionExpression = value;
+                Condition = value.ToString();
             }
         }
 

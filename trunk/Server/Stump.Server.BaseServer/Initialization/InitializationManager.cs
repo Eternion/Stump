@@ -119,7 +119,9 @@ namespace Stump.Server.BaseServer.Initialization
                 method.Method.Invoke(method.Caller, new object[0]);
 
                 method.Initialized = true;
-                m_initializedTypes.Add(method.Method.DeclaringType);
+
+                if (!m_initializedTypes.Contains(method.Method.DeclaringType))
+                    m_initializedTypes.Add(method.Method.DeclaringType);
 
                 if (m_dependances.ContainsKey(method.Method.DeclaringType))
                 {

@@ -1,3 +1,5 @@
+using System;
+
 namespace Stump.Server.BaseServer.Plugins
 {
     public static class PluginExtensions
@@ -30,7 +32,7 @@ namespace Stump.Server.BaseServer.Plugins
             get;
         }
 
-        string Version
+        Version Version
         {
             get;
         }

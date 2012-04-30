@@ -36,6 +36,7 @@ using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
+using Stump.Server.WorldServer.Handlers.Moderation;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
@@ -851,6 +852,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public void SendServerMessage(string message, Color color)
         {
             SendServerMessage(string.Format("<font color=\"#{0}\">{1}</font>", color.ToArgb().ToString("X"), message));
+        }
+
+        public void OpenPopup(string message)
+        {
+            OpenPopup(message, "Server", 0);
+        }
+
+        public void OpenPopup(string message, string sender, byte lockDuration)
+        {
+            ModerationHandler.SendPopupWarningMessage(Client, message, sender, lockDuration);
         }
 
         #endregion

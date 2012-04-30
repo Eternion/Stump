@@ -8,7 +8,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
         public const string Identifier = "PP";
         public const string Identifier2 = "Pp";
 
-        public int Rank
+        public sbyte Rank
         {
             get;
             set;
@@ -16,14 +16,14 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 
         public override bool Eval(Character character)
         {
-            return Compare(character.Account, Rank);
+            return Compare(character.AlignmentGrade, Rank);
         }
 
         public override void Build()
         {
-            int rank;
+            sbyte rank;
 
-            if (!int.TryParse(Literal, out rank))
+            if (!sbyte.TryParse(Literal, out rank))
                 throw new Exception(string.Format("Cannot build PvpRankCriterion, {0} is not a valid rank", Literal));
 
             Rank = rank;

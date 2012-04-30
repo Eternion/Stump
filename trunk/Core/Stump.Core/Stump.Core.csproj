@@ -181,9 +181,6 @@
     <Reference Include="Ciloci.Flee">
       <HintPath>..\..\Library\Ciloci.Flee.dll</HintPath>
     </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\..\Library\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -264,7 +261,12 @@
     <Compile Include="Xml\Config\XmlConfig.cs" />
     <Compile Include="Xml\XmlUtils.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Library\NLog\NLog.netfx40.csproj">
+      <Project>{A0BFF0DB-ED9A-4639-AE86-8E709A1EFC66}</Project>
+      <Name>NLog.netfx40</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -151,9 +151,6 @@
     <Reference Include="Castle.ActiveRecord">
       <HintPath>..\..\Library\Castle.ActiveRecord.dll</HintPath>
     </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\..\Library\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -213,6 +210,10 @@
     <ProjectReference Include="..\..\DofusProtocol\Messages\Stump.DofusProtocol.Messages.csproj">
       <Project>{53092D2E-8F37-4889-B6B7-B359E093E3F4}</Project>
       <Name>Stump.DofusProtocol.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Library\NLog\NLog.netfx40.csproj">
+      <Project>{A0BFF0DB-ED9A-4639-AE86-8E709A1EFC66}</Project>
+      <Name>NLog.netfx40</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Server\Stump.Server.BaseServer\Stump.Server.BaseServer.csproj">
       <Project>{011FBAFC-7720-4D36-9C59-71BAE6163C9E}</Project>

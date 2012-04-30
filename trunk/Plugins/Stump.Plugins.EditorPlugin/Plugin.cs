@@ -1,3 +1,4 @@
+using System;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Plugins;
 
@@ -26,13 +27,17 @@ namespace Stump.Plugins.EditorPlugin
             get { return "bouh2"; }
         }
 
-        public override string Version
+        public override Version Version
         {
-            get { return "1.0.0.0"; }
+            get
+            {
+                return new Version(1, 0);
+            }
         }
 
         public override void Initialize()
         {
+            base.Initialize();
         }
 
         public override void Shutdown()

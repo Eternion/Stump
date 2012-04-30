@@ -104,10 +104,16 @@ namespace Stump.Server.BaseServer.Commands
             if (command == null)
                 throw new Exception(string.Format("Cannot create a new instance of {0}", commandType));
 
-            if (command.Aliases == null || command.RequiredRole == RoleEnum.None)
+            if (command.Aliases == null)
+            {
+                logger.Error("Cannot register Command {0}, Aliases is null", commandType.Name);
+                return;
+            }
+
+            if (command.RequiredRole == RoleEnum.None)
             {
                 logger.Error(
-                    "An error occurred while registering Command : {0}. Either aliases are null or RequiredRole is incorrect.\nPlease check and repair.", commandType.Name);
+                    "Cannot register Command : {0}. RequiredRole is incorrect", commandType.Name);
                 return;
             }
 
@@ -135,10 +141,16 @@ namespace Stump.Server.BaseServer.Commands
             if (command == null)
                 throw new Exception(string.Format("Cannot create a new instance of {0}", commandType));
 
-            if (command.Aliases == null || command.RequiredRole == RoleEnum.None)
+            if (command.Aliases == null)
+            {
+                logger.Error("Cannot register Command {0}, Aliases is null", commandType.Name);
+                return;
+            }
+
+            if (command.RequiredRole == RoleEnum.None)
             {
                 logger.Error(
-                    "An error occurred while registering Command : {0}. Either aliases are null or RequiredRole is incorrect.\nPlease check and repair.", commandType.Name);
+                    "Cannot register Command : {0}. RequiredRole is incorrect", commandType.Name);
                 return;
             }
 
@@ -165,6 +177,19 @@ namespace Stump.Server.BaseServer.Commands
 
             if (subcommand == null)
                 throw new Exception(string.Format("Cannot create a new instance of {0}", commandType));
+
+            if (subcommand.Aliases == null)
+            {
+                logger.Error("Cannot register subcommand {0}, Aliases is null", commandType.Name);
+                return;
+            }
+
+            if (subcommand.RequiredRole == RoleEnum.None)
+            {
+                logger.Error(
+                    "Cannot register subcommand : {0}. RequiredRole is incorrect", commandType.Name);
+                return;
+            }
 
             if (subcommand.ParentCommand == null)
             {

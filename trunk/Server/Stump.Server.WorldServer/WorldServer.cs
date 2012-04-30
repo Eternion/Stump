@@ -86,14 +86,6 @@ namespace Stump.Server.WorldServer
             get;
             private set;
         }
-
-        public bool IsInitialized
-        {
-            get;
-            private set;
-        }
-
-
         public WorldServer()
             : base(Definitions.ConfigFilePath, Definitions.SchemaFilePath)
         {
@@ -152,8 +144,7 @@ namespace Stump.Server.WorldServer
             logger.Info("Starting Console Handler Interface...");
             ConsoleInterface.Start();
 
-            logger.Info("Starting IPC Communication on " + IpcAccessor.IpcAuthAddress + "/" +
-                        IpcAccessor.IpcWorldAddress + "...");
+            logger.Info("Starting IPC Communications ...");
             IpcAccessor.Instance.Start();
 
             logger.Info("Start listening on port : " + Port + "...");
@@ -184,6 +175,8 @@ namespace Stump.Server.WorldServer
         {
             if (IsInitialized)
                 World.Instance.Save();
+
+            IpcAccessor.Instance.Stop();
 
             ClientManager.Pause();
 
