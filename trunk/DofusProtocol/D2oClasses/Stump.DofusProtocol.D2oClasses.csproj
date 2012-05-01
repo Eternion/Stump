@@ -323,6 +323,7 @@
     <Compile Include="Tool\Ele\Datas\EntityGraphicalElementData.cs" />
     <Compile Include="Tool\Ele\Datas\ParticlesGraphicalElementData.cs" />
     <Compile Include="Tool\I18nFile.cs" />
+    <Compile Include="Tool\Swl\SwlFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">

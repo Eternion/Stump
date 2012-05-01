@@ -49,15 +49,16 @@ namespace ArkalysPlugin.Commands
                 return;
             }
 
-            foreach (var isle in IsleCommand.ProfilsIsle)
+            for (int index = 0; index < IsleCommand.ProfilsIsle.Length; index++)
             {
+                var isle = IsleCommand.ProfilsIsle[index];
                 if (currentlevel >= isle.Level && currentlevel - difference < isle.Level)
                 {
-                    character.SendServerMessage("Vous pouvez désormais accéder à l'île {0} en tapant dans le chat '.ile {0}'",
-                        Color.RoyalBlue);
+                    character.SendServerMessage(
+                        string.Format("Vous pouvez désormais accéder à l'île {0} en tapant dans le chat '.ile {0}'", index + 1),
+                    Color.RoyalBlue);
                 }
             }
         }
-
     }
 }

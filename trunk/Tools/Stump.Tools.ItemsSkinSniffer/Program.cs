@@ -11,11 +11,15 @@ using System.Threading.Tasks;
 using Castle.ActiveRecord.Framework.Config;
 using HtmlAgilityPack;
 using NLog;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.DofusProtocol.D2oClasses.Tool.D2p;
+using Stump.DofusProtocol.D2oClasses.Tool.Swl;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
@@ -48,8 +52,7 @@ namespace Stump.Tools.ItemsSkinSniffer
         private static readonly Regex ProfileRegex = new Regex(@"\[({[^}]+},?)+\]", RegexOptions.Compiled);
         private static readonly Regex ArgumentRegex = new Regex(@"{([^:]+:[^,]+,?)+}", RegexOptions.Compiled);
         private static readonly Regex VariableRegex = new Regex(@"\""([^:]+)\"":\""([^,]+)\""", RegexOptions.Compiled);
-        private static readonly Regex LinkRegex = new Regex(@"<a href=\\\""([^\""]+)", RegexOptions.Compiled);
-
+        private static readonly Regex LinkRegex = new Regex(@"(http:\\/\\/www.dofus.com(\\/\w+\\/perso\\/\w+\\/[^""]+))+", RegexOptions.Compiled);
         private static readonly Regex IconIdRegex = new Regex(@"/img/(\d+)\.png", RegexOptions.Compiled); 
         
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -57,13 +60,19 @@ namespace Stump.Tools.ItemsSkinSniffer
 
         private static DatabaseAccessor m_databaseAccessor;
         private static MySqlAccessor m_directionConnection;
-        private static Dictionary<uint, List<ItemTemplate>> m_itemsSkins;
+        private static Dictionary<uint, List<ItemTemplate>> m_itemsByIcon;
+        private static Dictionary<short, ItemTypeEnum> m_skinGuessedType;
         private static int m_itemsCount;
         private static int m_validItemsCount;
         private static List<uint> m_validSkins;
+        private static string m_dofusPath;
 
         static void Main(string[] args)
         {
+            var response = @"http:\/\/www.dofus.com\/fr\/perso\/lily\/pitrailleuse-452445400021";
+            Match match = LinkRegex.Match(response);
+
+
             NLogHelper.LogFormatConsole = "${message}";
             NLogHelper.DefineLogProfile(false, true);
 
@@ -85,6 +94,11 @@ namespace Stump.Tools.ItemsSkinSniffer
             Console.WriteLine("Loading items...");
             ItemManager.Instance.Initialize();
 
+            m_dofusPath = FindDofusPath();
+
+            if (string.IsNullOrEmpty(m_dofusPath))
+                Exit("Dofus path not found", true);
+
             var items = 
             ItemManager.Instance.GetTemplates().Where(entry =>
                 (ItemTypeEnum)entry.TypeId == ItemTypeEnum.HAT ||
@@ -93,18 +107,59 @@ namespace Stump.Tools.ItemsSkinSniffer
                 entry is WeaponTemplate ||
                 (ItemTypeEnum)entry.TypeId == ItemTypeEnum.SHIELD).ToArray();
             m_itemsCount = items.Length;
-            m_itemsSkins = new Dictionary<uint, List<ItemTemplate>>();
+            m_itemsByIcon = new Dictionary<uint, List<ItemTemplate>>();
 
             foreach (var item in items)
             {
-                if (!m_itemsSkins.ContainsKey(item.IconId))
-                    m_itemsSkins.Add(item.IconId, new List<ItemTemplate>());
+                if (!m_itemsByIcon.ContainsKey(item.IconId))
+                    m_itemsByIcon.Add(item.IconId, new List<ItemTemplate>());
 
-                m_itemsSkins[item.IconId].Add(item);
+                m_itemsByIcon[item.IconId].Add(item);
             }
 
             m_validItemsCount = items.Count(entry => entry.AppearanceId > 0);
-            m_validSkins = m_itemsSkins.Where(entry => entry.Value.All(subentry => subentry.AppearanceId > 0)).Select(entry => entry.Key).ToList();
+            m_validSkins = m_itemsByIcon.Where(entry => entry.Value.All(subentry => subentry.AppearanceId > 0)).Select(entry => entry.Key).ToList();
+
+            m_skinGuessedType = new Dictionary<short, ItemTypeEnum>();
+            using (var d2p = new D2pFile(Path.Combine(m_dofusPath, "content", "gfx", "sprites", "skins.d2p")))
+            {
+                foreach (var filename in d2p.GetFilesName())
+                {
+                    var file = d2p.ReadFile(filename);
+                    short skin = short.Parse(Path.GetFileNameWithoutExtension(filename));
+
+                    using (var swl = new SwlFile(new MemoryStream(file)))
+                    {
+                        if (swl.Classes.Count > 0)
+                        {
+                            var types = new List<KeyValuePair<string, int>>();
+
+                            types.Add(new KeyValuePair<string, int>("Cloak", swl.Classes.Count(entry => entry.StartsWith("Cape", StringComparison.InvariantCultureIgnoreCase))));
+                            types.Add(new KeyValuePair<string, int>("Hat", swl.Classes.Count(entry => entry.StartsWith("Chapeau", StringComparison.InvariantCultureIgnoreCase))));
+                            types.Add(new KeyValuePair<string, int>("Weapon", swl.Classes.Count(entry => entry.StartsWith("Arme", StringComparison.InvariantCultureIgnoreCase))));
+                            types.Add(new KeyValuePair<string, int>("Shield", swl.Classes.Count(entry => entry.StartsWith("Bouclier", StringComparison.InvariantCultureIgnoreCase))));
+
+                            var ordered = types.OrderByDescending(entry => entry.Value).ToArray();
+
+                            if (ordered[0].Key == "Hat")
+                                m_skinGuessedType.Add(skin, ItemTypeEnum.HAT);
+                            else if (ordered[0].Key == "Cloak")
+                                m_skinGuessedType.Add(skin, ItemTypeEnum.CLOAK);
+                            else if (ordered[0].Key == "Weapon")
+                                m_skinGuessedType.Add(skin, ItemTypeEnum.MAGIC_WEAPON);
+                            else if (ordered[0].Key == "Shield")
+                                m_skinGuessedType.Add(skin, ItemTypeEnum.SHIELD);
+                            else
+                            {
+                                logger.Warn("Cannot deduce type of skin {0}", skin);
+                            }
+
+                        }
+                    }
+                    
+                }
+            }
+
             DisplayProgress();
 
             logger.Info("Get {0} ladder profiles", ProfilesNum);
@@ -165,15 +220,15 @@ namespace Stump.Tools.ItemsSkinSniffer
                         /*if (entitylook.skins[0] == 80) //extra skin for iop ?
                             skinsToSkip = 2;*/
 
-                        var itemNodes = new[]
+                        var itemNodes = new Dictionary<ItemTypeEnum, HtmlNodeCollection>()
                                             {
-                                                doc.DocumentNode.SelectNodes(@"//div[@id='hat']/a/img"),
-                                                doc.DocumentNode.SelectNodes(@"//div[@id='cap']/a/img"),
-                                                doc.DocumentNode.SelectNodes(@"//div[@id='shield']/a/img"),
-                                                doc.DocumentNode.SelectNodes(@"//div[@id='weapon']/a/img"),
+                                                {ItemTypeEnum.HAT, doc.DocumentNode.SelectNodes(@"//div[@id='hat']/a/img")},
+                                                {ItemTypeEnum.CLOAK, doc.DocumentNode.SelectNodes(@"//div[@id='cap']/a/img")},
+                                                {ItemTypeEnum.SHIELD, doc.DocumentNode.SelectNodes(@"//div[@id='shield']/a/img")},
+                                                {ItemTypeEnum.MAGIC_WEAPON, doc.DocumentNode.SelectNodes(@"//div[@id='weapon']/a/img")},
                                             };
 
-                        if (itemNodes.Count(entry => entry != null) != entitylook.skins.Count() - 1)
+                        if (itemNodes.Count(entry => entry.Value != null) != entitylook.skins.Count() - 1)
                             return;
 
                         var petNodes = doc.DocumentNode.SelectNodes(@"//div[@id='pet']/a/img");
@@ -183,19 +238,19 @@ namespace Stump.Tools.ItemsSkinSniffer
                             if (( itemSkin > 1119 && itemSkin < 1151 ) || itemSkin > 1099 && itemSkin < 1111) // objiveants
                                 continue;
 
-                            for (int i = 0; i < itemNodes.Length; i++)
+                            if (!m_skinGuessedType.ContainsKey(itemSkin))
                             {
-                                if (itemNodes[i] != null)
-                                {
-                                    var iconId = uint.Parse(IconIdRegex.Match(itemNodes[i].First().Attributes["src"].Value).Groups[1].Value);
-                                    if (!m_validSkins.Contains(iconId))
-                                    {
-                                        RegisterSkin((uint)itemSkin, iconId, profiles[k]);
-                                        itemNodes[i] = null;
-                                    }
+                                logger.Warn("Type of item skin {0} not found", itemSkin);
+                            }
 
-                                    break;
-                                }
+                            ItemTypeEnum itemType = m_skinGuessedType[itemSkin];
+
+                            HtmlNodeCollection itemNode = itemNodes[itemType];
+                            uint iconId =
+                                uint.Parse(IconIdRegex.Match(itemNode.First().Attributes["src"].Value).Groups[1].Value);
+                            if (!m_validSkins.Contains(iconId))
+                            {
+                                RegisterSkin((uint) itemSkin, iconId, profiles[k]);
                             }
                         }
 
@@ -230,7 +285,7 @@ namespace Stump.Tools.ItemsSkinSniffer
         {
             lock (m_validSkins)
             {
-                if (!m_itemsSkins.ContainsKey(iconId))
+                if (!m_itemsByIcon.ContainsKey(iconId))
                 {
                     logger.Warn("Item with icon {0} not found", iconId);
                     return;
@@ -244,7 +299,7 @@ namespace Stump.Tools.ItemsSkinSniffer
                 m_validSkins.Add(iconId);
                 m_validItemsCount++;
 
-                var items = m_itemsSkins[iconId];
+                var items = m_itemsByIcon[iconId];
                 foreach (var item in items)
                 {
                     item.Refresh();
@@ -279,21 +334,17 @@ namespace Stump.Tools.ItemsSkinSniffer
             if (profileFounds.Count >= nums)
             {
                 return profileFounds.Values.OfType<string>().Shuffle().Take(nums).ToArray();
-            } 
-            
-            var dofusPath = FindDofusPath();
+            }
 
-            if (string.IsNullOrEmpty(dofusPath))
-                Exit("Dofus path not found", true);
 
-            var reader = new D2OReader(Path.Combine(dofusPath, "data", "common", "Breeds.d2o"));
+            var reader = new D2OReader(Path.Combine(m_dofusPath, "data", "common", "Breeds.d2o"));
             var breeds = reader.ReadObjects<Breed>();
-            reader = new D2OReader(Path.Combine(dofusPath, "data", "common", "Servers.d2o"));
+            reader = new D2OReader(Path.Combine(m_dofusPath, "data", "common", "Servers.d2o"));
             var servers = reader.ReadObjects<DofusProtocol.D2oClasses.Server>();
 
 
-            int pageLoaded = 0;
-            int pageToLoad = nums - profileFounds.Count;
+            int profils = 0;
+            int profilsToLoad = nums - profileFounds.Count;
             DateTime startTime = DateTime.Now;
 
             foreach (var breed in breeds.Shuffle().AsParallel())
@@ -308,33 +359,35 @@ namespace Stump.Tools.ItemsSkinSniffer
                                 FindLadderProfiles(k, i == 0, breed.Value.id, server.Value.id, "").
                                     Where(entry => !profileFounds.Contains(entry));
 
+                            int j = 0;
                             foreach (string profile in profiles)
                             {
                                 profileFounds.Add(line, profile);
                                 Interlocked.Increment(ref line);
+                                j++;
                             }
 
-                            Interlocked.Increment(ref pageLoaded);
+                            Interlocked.Add(ref profils, j);
 
                             TimeSpan delta = DateTime.Now - startTime;
-                            double quotaProPage = delta.TotalMilliseconds/pageLoaded;
+                            double quotaProPage = delta.TotalMilliseconds / profils;
                             TimeSpan remainingTime =
-                                TimeSpan.FromMilliseconds(quotaProPage*(pageToLoad - pageLoaded));
+                                TimeSpan.FromMilliseconds(quotaProPage * ( profilsToLoad - profils ));
                             Console.Clear();
-                            Console.WriteLine("Loaded " + pageLoaded + "/" + pageToLoad + " pages. " +
+                            Console.WriteLine("Loaded " + profils + "/" + profilsToLoad + " pages. " +
                                               Math.Round(remainingTime.TotalMinutes, MidpointRounding.ToEven) +
                                               " minutes remaining");
                             Console.WriteLine("I got " + profileFounds.Count + " unique profiles");
                         }
                     }
 
-                    if (pageLoaded >= pageToLoad)
+                    if (profils >= profilsToLoad)
                         break;
 
                     Console.WriteLine();
                 }
 
-                if (pageLoaded >= pageToLoad)
+                if (profils >= profilsToLoad)
                     break;
             }
 
@@ -347,37 +400,26 @@ namespace Stump.Tools.ItemsSkinSniffer
 
         public static IEnumerable<string> FindLadderProfiles(int sortedValue, bool ascendig, int classId, int serverId, string name)
         {
-            string response = PostRequestMethod("http://www.dofus.com/requests/ladder_ranking",
-                                                string.Format("or={0}{1}", sortedValue, !ascendig ? "A" : "D"),
-                                                string.Format("vr={0}", 2),
-                                                string.Format("br={0}", classId),
-                                                string.Format("sr={0}", serverId),
-                                                string.Format("na={0}", name));
+            string response = PostRequestMethod("http://api.ankama.com/dofus/ladder.json",
+                                                "{" + string.Join(",",
+                                                string.Format("\"id\":{0}", DateTime.Now.Millisecond),
+                                                string.Format("\"method\":{0}", "\"Ranking\""),
+                                                string.Format("\"params\":{{{0}}}",
+                                                string.Join(",",
+                                                string.Format("\"sOrder\":\"{0}{1}\"", sortedValue, !ascendig ? "A" : "D"),
+                                                string.Format("\"sLang\":\"{0}\"", "fr"),
+                                                string.Format("\"iBreed\":\"{0}\"", classId),
+                                                string.Format("\"iServer\":\"{0}\"", serverId),
+                                                string.Format("\"sName\":\"{0}\"", name)))) + "}");
 
+            JObject jsonObj = JObject.Parse(response);
 
-            Match match = ProfileRegex.Match(response);
+            JArray ranking = jsonObj["result"]["ranking"] as JArray;
 
-            foreach (Capture capture in match.Groups[1].Captures)
-            {
-                Match argMatch = ArgumentRegex.Match(capture.ToString());
+            if (ranking == null)
+                return new string[0];
 
-                foreach (Capture variableCapture in argMatch.Groups[1].Captures)
-                {
-                    Match variableMatch = VariableRegex.Match(variableCapture.ToString());
-
-                    if (variableMatch.Groups[1].ToString() != "link")
-                        continue;
-
-                    Match linkMatch = LinkRegex.Match(variableMatch.Groups[2].Value);
-
-                    if (linkMatch.Groups[1].Value == string.Empty)
-                        continue;
-
-                    string url = linkMatch.Groups[1].Value.Remove(linkMatch.Groups[1].Value.Length - 1, 1).Replace(@"\/", "/");
-
-                    yield return url;
-                }
-            }
+            return ranking.Where(entry => entry["link"] != null).Select(entry => entry["link"].Value<string>());
         }
 
         public static string PostRequestMethod(string url, params string[] args)
@@ -393,6 +435,7 @@ namespace Stump.Tools.ItemsSkinSniffer
             request.Proxy = null;
             request.ContentType = "application/x-www-form-urlencoded";
             request.ContentLength = data.Length;
+            request.Referer = "www.ankama.com";
 
             try
             {

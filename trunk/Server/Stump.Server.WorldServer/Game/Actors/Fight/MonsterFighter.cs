@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -76,7 +77,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override uint GetDroppedKamas()
         {
-            var random = new AsyncRandom();
+            var random = new Random();
 
             return (uint) random.Next(Monster.Template.MinDroppedKamas, Monster.Template.MaxDroppedKamas + 1);
         }
@@ -87,7 +88,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (!IsDead())
                 return new DroppedItem[0];
 
-            var random = new AsyncRandom();
+            var random = new Random();
             var items = new List<DroppedItem>();
 
             var prospectingSum = OpposedTeam.GetAllFighters<CharacterFighter>().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
@@ -103,7 +104,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                         break;
 
                     var chance = ( random.Next(0, 100) + random.NextDouble() ) * Rates.DropsRate;
-                    var dropRate = droppableItem.DropRate * ( fighter.Stats[PlayerFields.Prospecting] / 100 ) * ((Fight.AgeBonus / 100d) + 1);
+                    var dropRate = droppableItem.DropRate * ( fighter.Stats[PlayerFields.Prospecting] / 100d ) * ((Fight.AgeBonus / 100d) + 1);
 
                     if (dropRate >= chance)
                     {
