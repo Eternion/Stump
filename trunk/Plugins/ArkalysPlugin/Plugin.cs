@@ -46,6 +46,8 @@ namespace ArkalysPlugin
                 m_configAutoReload = true;
                 WorldServer.Instance.StartConfigReloadOnChange(Config);
             }
+
+            Initialized = true;
         }
 
         public override void Shutdown()
@@ -56,6 +58,8 @@ namespace ArkalysPlugin
 
             if (Config != null)
                 WorldServer.Instance.StopConfigReloadOnChange(Config);
+
+            Initialized = false;
         }
 
         public override void Dispose()
@@ -74,6 +78,12 @@ namespace ArkalysPlugin
         }
 
         public static Plugin CurrentPlugin
+        {
+            get;
+            private set;
+        }
+
+        public bool Initialized
         {
             get;
             private set;

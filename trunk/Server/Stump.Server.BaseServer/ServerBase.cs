@@ -230,6 +230,7 @@ namespace Stump.Server.BaseServer
                 Config.Load();
 
                 // create the config file but keep the actual values, so it recreate and update
+                IgnoreNextConfigReload();
                 Config.Create(true);
             }
             else
@@ -237,7 +238,7 @@ namespace Stump.Server.BaseServer
                 logger.Info("Create {0} file", ConfigFilePath);
 
                 Config = new XmlConfig(ConfigFilePath);
-                Config.AddAssemblies(LoadedAssemblies.Values.ToArray());
+                Config.AddAssemblies(LoadedAssemblies.Values.ToArray()); 
                 Config.Create();
             }
 
@@ -262,13 +263,14 @@ namespace Stump.Server.BaseServer
 
                 if (update)
                 {
-                    logger.Info("Update '{0}' config file => '{1}'", plugin.Name, Path.GetFileName(plugin.GetConfigPath()));
+                    logger.Info("Update '{0}' config file => '{1}'", plugin.Name, Path.GetFileName(plugin.GetConfigPath())); 
+                    IgnoreNextConfigReload();
                     plugin.Config.Create(true);
                 }
             }
 
             logger.Info("All config files were correctly updated/created ! Shutdown ...");
-            Thread.Sleep(TimeSpan.FromSeconds(4.0));
+            Thread.Sleep(TimeSpan.FromSeconds(2.0));
             Environment.Exit(0);
         }
 
@@ -276,14 +278,19 @@ namespace Stump.Server.BaseServer
         {
             var action = new Action(() =>
                 {
-                    if (!m_ignoreReload &&
-                        ConsoleInterface.AskAndWait(string.Format("Config {0} has been modified, do you want to reload it ?", Path.GetFileName(config.FilePath)), 20))
+                    lock (this)
                     {
-                        config.Reload();
-                        logger.Warn("Config has been reloaded sucessfully");
-                    }
+                        if (!m_ignoreReload &&
+                            ConsoleInterface.AskAndWait(
+                                string.Format("Config {0} has been modified, do you want to reload it ?",
+                                              Path.GetFileName(config.FilePath)), 20))
+                        {
+                            config.Reload();
+                            logger.Warn("Config has been reloaded sucessfully");
+                        }
 
-                    m_ignoreReload = false;
+                        m_ignoreReload = false;
+                    }
                 });
 
 

@@ -12,7 +12,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     public class AnnounceCommand : CommandBase
     {
         [Variable(true)]
-        public static string AnnounceColor = "0x" + Color.Red.ToArgb().ToString("X");
+        public static string AnnounceColor = ColorTranslator.ToHtml(Color.Red);
 
         public AnnounceCommand()
         {
@@ -24,12 +24,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            Color color;
-
-            if (AnnounceColor.ToLower().StartsWith("0x"))
-                color = Color.FromArgb(int.Parse(AnnounceColor.Remove(0, 2), NumberStyles.HexNumber));
-            else
-                color = Color.FromArgb(int.Parse(AnnounceColor));
+            Color color = ColorTranslator.FromHtml(AnnounceColor);
 
             var msg = trigger.Get<string>("msg");
 

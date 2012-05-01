@@ -1414,7 +1414,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             World.Instance.Enter(this);
             m_inWorld = true;
 
-            SendServerMessage(Settings.MOTD);
+            SendServerMessage(Settings.MOTD, Settings.MOTDColor);
 
             IsLoggedIn = true;
             OnLoggedIn();

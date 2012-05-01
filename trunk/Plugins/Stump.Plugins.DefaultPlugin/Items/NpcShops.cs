@@ -65,6 +65,75 @@ namespace Stump.Plugins.DefaultPlugin.Items
         [Initialization(typeof(ItemManager))]
         public static void Initialize()
         {
+            var items = new string[]
+            {
+                "Alliance Sorcelée",
+"Anneau d'Allister",
+"Anneau Frage",
+"Anneau de Frigostine",
+"Anneau d'Haku",
+"Anneau Made",
+"Anneau du Roks Or",
+"Bague de Boréale",
+"BracilozitéAmulette du Boostache",
+"Plumamulette",
+"Amulette de Danathor",
+"Amulette Ementaire Deluxe",
+"Amulette de l'Obsidiantre",
+"Amulette d'Otomaï",
+"Frimamulette",
+"Talisman ChohAcrobate mineur",
+"Dokille",
+"Dofawa",
+"Acrobate mineur",
+"Acrobate",
+"Acrobate Majeur",
+"Furibond mineur",
+"Furibond",
+"Furibond Majeur",
+"Initiateur Mineur",
+"Initiateur ",
+"Initiateur Majeux",
+"Savant Mineur",
+"Savant",
+"Savant Majeur",
+"Survivant mineur",
+"Survivant",
+"Survivant MajeurCaplume",
+"Cape du Tengu Givrefoux",
+"Cape du Roks Or",
+"Cape Ricieuse",
+"Cape du Mulou",
+"Cape Hiculteur",
+"Cape du Petit Chapon RougeFrimacoiffe",
+"Coiffe du Tengu Givrefoux",
+"Coiffe du Royalmouth",
+"Chapeau Pourih",
+"Chapeau Lichinelle",
+"Casque de l'Ecumouth",
+"Chapeau de Ben le Ripate",
+"Casque du Roks Or",
+"RoubalBaguette Gyver",
+"Dagues Réceuses",
+"Epée Maudite du Saigneur Guerrier",
+"L'Épée Nice",
+"Faux maudite du Saigneur Guerrier",
+"Griffe Rose",
+"Marteau du Dragoeuf",
+"Pelle Dragoeuf",
+"Le Ramboton",
+"Rod Gerse",
+            };
+
+            TextManager.Instance.SetDefaultLanguage(Languages.French);
+            foreach (var name in items)
+            {
+                var item = ItemManager.Instance.TryGetTemplate(name, true);
+
+                File.AppendAllText("ids", item.Id + "\r\n");
+                File.AppendAllText("patch.sql", SqlBuilder.BuildDelete("items_selled", "ItemId = " + item.Id) + ";\r\n");
+            }
+
             if (!Active)
                 return;
 
