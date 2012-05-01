@@ -32,6 +32,12 @@ namespace Stump.Server.BaseServer.IPC
             set;
         }
 
+        public bool Running
+        {
+            get;
+            private set;
+        }
+
         public void Open()
         {
             if (IsOpen)
@@ -56,6 +62,7 @@ namespace Stump.Server.BaseServer.IPC
 
             string addr = m_host.Description.Endpoints[0].ListenUri.AbsoluteUri;
 
+            Running = true;
             logger.Info("IPC Service started ({0})", addr);
         }
 
@@ -73,6 +80,7 @@ namespace Stump.Server.BaseServer.IPC
                 }
             }
 
+            Running = false;
             logger.Info("IPC Service get stopped");
             m_host = null;
         }

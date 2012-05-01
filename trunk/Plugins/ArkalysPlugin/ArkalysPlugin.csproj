@@ -64,6 +64,7 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.ActiveRecord, Version=3.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -78,7 +79,9 @@
     <Compile Include="Commands\Isle.cs" />
     <Compile Include="Commands\IsleTrigger.cs" />
     <Compile Include="Commands\ShopCommand.cs" />
-    <Compile Include="ConnectionInformation.cs" />
+    <Compile Include="Commands\WelcomeCommand.cs" />
+    <Compile Include="WelcomeMessage.cs" />
+    <Compile Include="NpcShops.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

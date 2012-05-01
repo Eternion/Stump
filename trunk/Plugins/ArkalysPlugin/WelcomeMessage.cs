@@ -5,12 +5,15 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace ArkalysPlugin
 {
-    public static class ConnectionInformation
+    public static class WelcomeMessage
     {
         [Variable(true)]
-        public static string WelcomeMsg = "Bienvenue sur Arkalys !\n\nLe serveur vous offre ...\n\n'.shop' => Vous téléporte à ...\n\n.ile # => ...";
+        public static string WelcomeMsg = "Welcome !";
 
-        [Initialization(typeof(World))]
+        [Variable(true)]
+        public static string MessageAuthor = "L'équipe Arkalys";
+
+        [Initialization(typeof(World), Silent=true)]
         public static void Initialize()
         {
             World.Instance.CharacterJoined += OnCharacterJoined;
@@ -19,7 +22,12 @@ namespace ArkalysPlugin
         private static void OnCharacterJoined(Character character)
         {
             if (character.Account.FirstConnection)
-                character.OpenPopup(WelcomeMsg, "L'équipe Arkalys", 0);
+                ShowWelcomeMessage(character);
+        }
+
+        public static void ShowWelcomeMessage(Character character)
+        {
+            character.OpenPopup(WelcomeMsg, MessageAuthor, 0);
         }
     }
 }

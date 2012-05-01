@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D882D552-93AA-46D7-A878-46F0C9BD1ABB}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Stump.Tools.ItemsSkinSniffer</RootNamespace>
+    <AssemblyName>Stump.Tools.ItemsSkinSniffer</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.ActiveRecord">
+      <HintPath>..\..\Run\Debug\Plugins\Castle.ActiveRecord.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\..\Library\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.0.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Library\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MySqlAccessor.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">
+      <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
+      <Name>Stump.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DofusProtocol\D2oClasses\Stump.DofusProtocol.D2oClasses.csproj">
+      <Project>{33093793-C4BA-4B89-AC82-6E9D00437452}</Project>
+      <Name>Stump.DofusProtocol.D2oClasses</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DofusProtocol\Enums\Stump.DofusProtocol.Enums.csproj">
+      <Project>{D7BFF8ED-065B-4A53-9805-595DFEA75A0A}</Project>
+      <Name>Stump.DofusProtocol.Enums</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DofusProtocol\Messages\Stump.DofusProtocol.Messages.csproj">
+      <Project>{53092D2E-8F37-4889-B6B7-B359E093E3F4}</Project>
+      <Name>Stump.DofusProtocol.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DofusProtocol\Types\Stump.DofusProtocol.Types.csproj">
+      <Project>{10884165-D492-4895-B3EF-32429F7A7F55}</Project>
+      <Name>Stump.DofusProtocol.Types</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Library\NLog\NLog.netfx40.csproj">
+      <Project>{A0BFF0DB-ED9A-4639-AE86-8E709A1EFC66}</Project>
+      <Name>NLog.netfx40</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Server\Stump.Server.BaseServer\Stump.Server.BaseServer.csproj">
+      <Project>{011FBAFC-7720-4D36-9C59-71BAE6163C9E}</Project>
+      <Name>Stump.Server.BaseServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Server\Stump.Server.WorldServer\Stump.Server.WorldServer.csproj">
+      <Project>{7A1BEAB5-1A69-48B6-B064-0F6F372AC23B}</Project>
+      <Name>Stump.Server.WorldServer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

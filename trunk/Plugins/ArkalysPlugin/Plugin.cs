@@ -50,6 +50,8 @@ namespace ArkalysPlugin
 
         public override void Shutdown()
         {
+            base.Shutdown();
+
             IsleTrigger.TearDown();
 
             if (Config != null)

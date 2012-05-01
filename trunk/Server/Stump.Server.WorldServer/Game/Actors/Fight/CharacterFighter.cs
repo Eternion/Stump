@@ -17,6 +17,7 @@ using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Results.Data;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Handlers.Basic;
 using FightResultAdditionalData = Stump.Server.WorldServer.Game.Fights.Results.Data.FightResultAdditionalData;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
@@ -183,6 +184,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 base.CastSpell(spell, cell);
             }
+        }
+
+        public override bool CanCastSpell(Spell spell, Cell cell)
+        {
+             bool can = base.CanCastSpell(spell, cell);
+
+             if (!can)
+             {
+                 // cannot cast spell msg
+                 BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 175);
+             }
+
+             return can;
         }
 
 

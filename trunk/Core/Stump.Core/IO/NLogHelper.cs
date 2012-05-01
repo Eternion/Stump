@@ -6,8 +6,8 @@ namespace Stump.Core.IO
 {
     public static class NLogHelper
     {
-        public const string LogFormatConsole = "[${blockcenter:length=18:inner=${callsite:className=true:methodName=false:includeSourcePath=false:nonamespace=true}}](${threadid}) ${message}";
-        public const string LogFormatFile = "[${level}] <${date:format=G}> ${message}";
+        public static string LogFormatConsole = "[${blockcenter:length=18:inner=${callsite:className=true:methodName=false:includeSourcePath=false:nonamespace=true}}](${threadid}) ${message}";
+        public static string LogFormatFile = "[${level}] <${date:format=G}> ${message}";
 
         /// <summary>
         ///   Directory where logs are stored

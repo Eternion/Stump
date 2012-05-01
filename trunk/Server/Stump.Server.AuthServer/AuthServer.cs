@@ -127,8 +127,6 @@ namespace Stump.Server.AuthServer
 
         protected override void OnPluginAdded(PluginContext plugincontext)
         {
-            CommandManager.RegisterAll(plugincontext.PluginAssembly);
-
             base.OnPluginAdded(plugincontext);
         }
 

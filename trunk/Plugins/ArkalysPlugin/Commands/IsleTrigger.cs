@@ -33,12 +33,12 @@ namespace ArkalysPlugin.Commands
 
         private static void OnCharacterLeft(Character character)
         {
-            character.LevelChanged += OnLevelChanged;
+            character.LevelChanged -= OnLevelChanged;
         }
 
         private static void OnCharacterJoined(Character character)
         {
-            character.LevelChanged -= OnLevelChanged;
+            character.LevelChanged += OnLevelChanged;
         }
 
         private static void OnLevelChanged(Character character, byte currentlevel, int difference)

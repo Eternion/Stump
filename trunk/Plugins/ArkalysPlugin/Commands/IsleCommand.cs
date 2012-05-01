@@ -12,9 +12,8 @@ namespace ArkalysPlugin.Commands
     public class IsleCommand : InGameCommand
     {
         [Variable(true)]
-        public static Isle[] ProfilsIsle = new []
+        public static Isle[] ProfilsIsle = new Isle[]
         {
-            new Isle(1, 0, 300, 4),
         };
 
         public IsleCommand()
@@ -22,7 +21,7 @@ namespace ArkalysPlugin.Commands
             Aliases = new[] { "ile", "isle" };
             Description = "Teleporte sur une des île";
             RequiredRole = RoleEnum.Player;
-            AddParameter<int>("num", "num", "Numéro de l'île (de 1 à " + ProfilsIsle.Length + 1 + ")");
+            AddParameter<int>("num", "num", "Numéro de l'île (de 1 à " + ProfilsIsle.Length + ")");
         }
 
         public override void Execute(GameTrigger trigger)
@@ -30,9 +29,9 @@ namespace ArkalysPlugin.Commands
             var character = trigger.Character;
             var num = trigger.Get<int>("num");
 
-            if (num < 1 || num > ProfilsIsle.Length + 1)
+            if (num < 1 || num > ProfilsIsle.Length)
             {
-                trigger.ReplyError("Veuillez spécifier un numéro entre {0} et {1}", 1, ProfilsIsle.Length + 1);
+                trigger.ReplyError("Veuillez spécifier un numéro entre {0} et {1}", 1, ProfilsIsle.Length);
                 return;
             }
 
@@ -48,7 +47,7 @@ namespace ArkalysPlugin.Commands
 
             if (map == null)
             {
-                trigger.ReplyError("Map {0} not found",isle.StartMap);
+                trigger.ReplyError("Map {0} not found", isle.StartMap);
                 return;
             }
 

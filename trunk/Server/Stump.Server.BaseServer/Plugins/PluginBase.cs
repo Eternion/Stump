@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using Stump.Core.Xml;
 using Stump.Core.Xml.Config;
+using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Initialization;
 
 namespace Stump.Server.BaseServer.Plugins
@@ -73,9 +74,15 @@ namespace Stump.Server.BaseServer.Plugins
                 // just to ensure the context
                 ServerBase.InstanceAsBase.IOTaskPool.AddMessage(InitializationManager.Instance.InitializeAll);
             }
+
+            CommandManager.Instance.RegisterAll(Context.PluginAssembly);
         }
 
-        public abstract void Shutdown();
+        public virtual void Shutdown()
+        {
+            CommandManager.Instance.UnRegisterAll(Context.PluginAssembly);
+        }
+
         public abstract void Dispose();
 
         #endregion
