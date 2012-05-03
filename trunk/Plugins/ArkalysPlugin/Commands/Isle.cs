@@ -43,6 +43,12 @@ namespace ArkalysPlugin.Commands
             set;
         }
 
+        public double RateMultiplicator
+        {
+            get;
+            set;
+        }
+
         public bool CanJoinIsle(Character character)
         {
             return character.Level >= Level;
