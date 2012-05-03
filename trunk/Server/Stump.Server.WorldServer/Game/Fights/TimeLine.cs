@@ -93,6 +93,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             int counter = 0;
             int index = ( Index + 1 ) < Fighters.Count ? Index + 1 : 0;
 
+            if (index == 0)
+                RoundNumber++;
+
             while (!Fighters[index].CanPlay() && counter < Fighters.Count)
             {
                 index = ( index + 1 ) < Fighters.Count ? index + 1 : 0;
@@ -104,9 +107,6 @@ namespace Stump.Server.WorldServer.Game.Fights
                 Index = -1;
                 return false;
             }
-
-            if (index == 0)
-                RoundNumber++;
 
             Index = index;
 

@@ -163,12 +163,9 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             int price;
 
             if (saleItem != null)
-                price = (int) Math.Ceiling(saleItem.Price/10);
+                price = (int) ((int) Math.Ceiling(saleItem.Price/10) * amount);
             else
-                price = (int) Math.Ceiling(item.Template.Price/10);
-
-            if (price == 0)
-                price = 1;
+                price = (int) ((int)Math.Ceiling(item.Template.Price / 10) * amount);
 
             BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
                                                     22, amount, item.Template.Id);

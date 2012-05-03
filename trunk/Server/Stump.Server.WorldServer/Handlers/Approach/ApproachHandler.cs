@@ -41,14 +41,16 @@ namespace Stump.Server.WorldServer.Handlers.Approach
 
             /* Bind WorldAccount if exist */
             if (WorldAccount.Exists(ticketAccount.Id))
+            {
                 client.WorldAccount = WorldAccount.FindById(ticketAccount.Id);
 
-            if (client.WorldAccount.ConnectedCharacterId != null)
-            {
-                var character = World.Instance.GetCharacter(client.WorldAccount.ConnectedCharacterId.Value);
+                if (client.WorldAccount.ConnectedCharacterId != null)
+                {
+                    var character = World.Instance.GetCharacter(client.WorldAccount.ConnectedCharacterId.Value);
 
-                if (character != null)
-                    character.LogOut();
+                    if (character != null)
+                        character.LogOut();
+                }
             }
 
             /* Bind Account & Characters */

@@ -956,6 +956,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (CheckFightEnd())
                 return;
 
+            if (FighterPlaying.IsDead())
+                PassTurn();
+
             if (TimeLine.Index == 0)
                 ContextHandler.SendGameFightNewRoundMessage(Clients, TimeLine.RoundNumber);
 
@@ -983,7 +986,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (ReadyChecker != null)
             {
-                logger.Debug("Last ReadyChecker was not disposed. (Stop Turn) : {0}", new StackTrace(true));
+                logger.Debug("Last ReadyChecker was not disposed. (Stop Turn)");
                 ReadyChecker.Cancel();
                 ReadyChecker = null;
             }

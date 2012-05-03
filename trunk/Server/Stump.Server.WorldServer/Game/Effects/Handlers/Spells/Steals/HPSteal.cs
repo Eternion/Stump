@@ -36,9 +36,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
                 else
                 {
                     var damage = actor.InflictDamage(integerEffect.Value, GetEffectSchool(Effect.EffectId), Caster, actor is CharacterFighter);
-                    
-                    if (integerEffect.Value / 2 > 0)
-                        Caster.Heal((short)( damage / 2d ), actor);
+
+                    if (damage / 2 > 0)
+                        Caster.HealDirect((short)( damage / 2d ), actor);
                 }
             }
 

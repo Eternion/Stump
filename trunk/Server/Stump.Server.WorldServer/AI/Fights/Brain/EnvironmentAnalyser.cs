@@ -120,8 +120,16 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
         public FightActor GetNearestFighter(Predicate<FightActor> predicate)
         {
             return Fight.GetAllFighters(entry => predicate(entry) && Fighter.CanSee(entry)).
-                OrderBy(entry => entry.Position.Point.DistanceToCell(Fighter.Position.Point)).
-                RandomElementOrDefault();
+                OrderBy(entry => entry.Position.Point.DistanceToCell(Fighter.Position.Point)).FirstOrDefault();
+        }
+
+        public bool IsReachable(FightActor actor)
+        {
+            var adjacents = actor.Position.Point.GetAdjacentCells(entry => 
+                Fight.Map.Cells[entry].Walkable && !Fight.Map.Cells[entry].NonWalkableDuringFight &&
+                Fight.IsCellFree(Fight.Map.Cells[entry]));
+
+            return adjacents.Any();
         }
     }
 }
