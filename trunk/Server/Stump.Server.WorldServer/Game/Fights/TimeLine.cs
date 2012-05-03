@@ -50,6 +50,12 @@ namespace Stump.Server.WorldServer.Game.Fights
             private set;
         }
 
+        public bool NewRound
+        {
+            get;
+            private set;
+        }
+
         public bool RemoveFighter(FightActor fighter)
         {
             if (!Fighters.Contains(fighter))
@@ -94,11 +100,25 @@ namespace Stump.Server.WorldServer.Game.Fights
             int index = ( Index + 1 ) < Fighters.Count ? Index + 1 : 0;
 
             if (index == 0)
+            {
                 RoundNumber++;
+                NewRound = true;
+            }
+            else
+            {
+                NewRound = false;
+            }
 
             while (!Fighters[index].CanPlay() && counter < Fighters.Count)
             {
                 index = ( index + 1 ) < Fighters.Count ? index + 1 : 0;
+
+                if (index == 0)
+                {
+                    RoundNumber++;
+                    NewRound = true;
+                }
+
                 counter++;
             }
 

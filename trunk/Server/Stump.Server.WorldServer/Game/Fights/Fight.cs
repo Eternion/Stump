@@ -959,7 +959,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (FighterPlaying.IsDead())
                 PassTurn();
 
-            if (TimeLine.Index == 0)
+            if (TimeLine.NewRound)
                 ContextHandler.SendGameFightNewRoundMessage(Clients, TimeLine.RoundNumber);
 
             ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id,
