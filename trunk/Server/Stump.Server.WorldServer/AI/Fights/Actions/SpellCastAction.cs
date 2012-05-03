@@ -8,6 +8,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
 {
     public class SpellCastAction : AIAction
     {
+        public const int MaxCastLimit = 20;
+
         public SpellCastAction(AIFighter fighter, Spell spell, Cell target)
             : base(fighter)
         {
@@ -45,10 +47,16 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
         {
             if (!Fighter.CanCastSpell(Spell, Target))
                 return RunStatus.Failure;
+
+            int i = 0;
             do
             {
-                Fighter.CastSpell(Spell, Target);
-            } while (MultipleCast && Fighter.CanCastSpell(Spell, Target));
+                if (!Fighter.CastSpell(Spell, Target))
+                    break;
+
+                // avoid infinite loops
+                i++;
+            } while (MultipleCast && Fighter.CanCastSpell(Spell, Target) && i <= MaxCastLimit);
 
             return RunStatus.Success;
         }

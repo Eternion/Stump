@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 if (integerEffect == null)
                     return false;
 
-                var bonus = actor.Stats.Health.TotalSafe * ( integerEffect.Value / 100d );
+                var bonus = actor.Stats.Health.TotalMax * ( integerEffect.Value / 100d );
 
                 AddStatBuff(actor, (short) bonus, PlayerFields.Health, true, (short) EffectsEnum.Effect_AddVitality);
             }

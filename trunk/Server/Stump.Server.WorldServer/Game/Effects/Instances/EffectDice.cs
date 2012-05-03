@@ -16,8 +16,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
         }
 
-        public EffectDice(short id, short value, short dicenum, short diceface)
-            : base(id, value)
+        public EffectDice(EffectDice copy)
+            : this(copy.Id, copy.Value, copy.DiceNum, copy.DiceFace, copy)
+        {
+            
+        }
+
+        public EffectDice(short id, short value, short dicenum, short diceface, EffectBase effect)
+            : base(id, value, effect)
         {
             m_dicenum = dicenum;
             m_diceface = diceface;
@@ -93,14 +99,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 short min = m_dicenum <= m_diceface ? m_dicenum : m_diceface;
 
                 if (type == EffectGenerationType.MaxEffects)
-                    return new EffectInteger(Id, Template.Operator != "-" ? max : min);
+                    return new EffectInteger(Id, Template.Operator != "-" ? max : min, this);
                 if (type == EffectGenerationType.MinEffects)
-                    return new EffectInteger(Id, Template.Operator != "-" ? min : max);
+                    return new EffectInteger(Id, Template.Operator != "-" ? min : max, this);
 
                 if (min == 0)
-                    return new EffectInteger(Id, max);
+                    return new EffectInteger(Id, max, this);
 
-                return new EffectInteger(Id, (short) rand.Next(min, max + 1));
+                return new EffectInteger(Id, (short) rand.Next(min, max + 1), this);
             }
 
             return this;

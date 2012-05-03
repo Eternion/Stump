@@ -312,7 +312,7 @@ namespace Stump.Server.WorldServer.Game.Social
 
         public Friend TryGetFriend(Character character)
         {
-            return m_friends.FirstOrDefault(entry => entry.Character.Id == character.Id);
+            return m_friends.FirstOrDefault(entry => entry.Character != null && entry.Character.Id == character.Id);
         }
 
         public void Dispose()

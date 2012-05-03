@@ -12,6 +12,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
 {
     public class MoveAction : AIAction
     {
+        public const int MaxMovesTries = 20;
+
         public MoveAction(AIFighter fighter, Cell destinationCell)
             : base(fighter)
         {
@@ -65,8 +67,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             bool success = Fighter.StartMove(path);
             var lastPos = Fighter.Cell.Id;
 
+            int tries = 0;
             // re-attempt to move if we didn't reach the cell i.e as we trigger a trap
-            while (success && Fighter.Cell.Id != DestinationId && Fighter.CanMove())
+            while (success && Fighter.Cell.Id != DestinationId && Fighter.CanMove() && tries <= MaxMovesTries)
             {
                 path = pathfinder.FindPath(Fighter.Position.Cell.Id, DestinationId, false, Fighter.MP);
 
@@ -92,6 +95,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
                 }
 
                 lastPos = Fighter.Cell.Id;
+                tries++; // avoid infinite loops
             }
 
             Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);

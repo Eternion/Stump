@@ -610,9 +610,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             Contract.Requires(spawn != null);
 
             m_monsterSpawns.Add(spawn);
-
-            if (m_monsterSpawns.Count == 1 && !SpawnEnabled)
-                EnableClassicalMonsterSpawns();
         }
 
         public void RemoveMonsterSpawn(MonsterSpawn spawn)
@@ -620,9 +617,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             Contract.Requires(spawn != null);
 
             m_monsterSpawns.Remove(spawn);
-
-            if (m_monsterSpawns.Count == 0 && SpawnEnabled)
-                DisableClassicalMonsterSpawns();
         }
 
         public void AddMonsterDungeonSpawn(MonsterDungeonSpawn spawn)

@@ -14,8 +14,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             
         }
 
-        public EffectInteger(short id, short value)
-            : base(id)
+        public EffectInteger(EffectInteger copy)
+            : this(copy.Id, copy.Value, copy)
+        {
+            
+        }
+
+        public EffectInteger(short id, short value, EffectBase effect)
+            : base(id, effect)
         {
             m_value = value;
         }
@@ -54,7 +60,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             return new ObjectEffectInteger(Id, Value);
         }
-
+        public override EffectBase GenerateEffect(EffectGenerationContext context, EffectGenerationType type = EffectGenerationType.Normal)
+        {
+            return new EffectInteger(this);
+        }
         protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
         {
             base.InternalSerialize(ref writer);

@@ -510,7 +510,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual bool CanCastSpell(Spell spell, Cell cell)
         {
-            if (!IsFighterTurn())
+            if (!IsFighterTurn() || IsDead())
                 return false;
 
             if (!HasSpell(spell.Id))
@@ -551,15 +551,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (int) (spell.Range + ( spell.RangeCanBeBoosted ? Stats[PlayerFields.Range].Total : 0 ));
         }
 
-        public virtual void CastSpell(Spell spell, Cell cell)
+        public virtual bool CastSpell(Spell spell, Cell cell)
         {
             if (!IsFighterTurn() || IsDead())
-                return;
+                return false;
 
             var spellLevel = spell.CurrentSpellLevel;
 
             if (!CanCastSpell(spell, cell))
-                return;
+                return false;
 
             Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
@@ -574,7 +574,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 if (spellLevel.CriticalFailureEndsTurn)
                     PassTurn();
 
-                return;
+                return false;
             }
 
             var handler = SpellManager.Instance.GetSpellCastHandler(this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
@@ -586,6 +586,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             handler.Execute();
 
             OnSpellCasted(spell, cell, critical, handler.SilentCast);
+
+            return true;
         }
 
         public SpellReflectionBuff GetBestReflectionBuff()
@@ -642,13 +644,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (reduction > 0)
                 OnDamageReducted(from, reduction);
 
-            short reflected = CalculateDamageReflection(damage);
-            damage -= reflected;
-
-            if (reflected > 0)
+            if (from != this)
             {
-                from.InflictDamage(reflected, school, this, pvp);
-                OnDamageReflected(from, reflected);
+                short reflected = CalculateDamageReflection(damage);
+                damage -= reflected;
+
+                if (reflected > 0)
+                {
+                    from.InflictDamage(reflected, school, this, pvp);
+                    OnDamageReflected(from, reflected);
+                }
             }
 
             damage -= reduction;
@@ -1396,6 +1401,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public virtual bool CanPlay()
         {
             return IsAlive() && !HasLeft();
+        }
+
+        public override bool CanSee(WorldObject obj)
+        {
+            return base.CanSee(obj);
         }
 
         public override bool CanBeSee(WorldObject obj)

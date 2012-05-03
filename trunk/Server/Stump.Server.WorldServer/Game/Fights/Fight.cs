@@ -775,6 +775,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                 ContextHandler.SendGameFightUpdateTeamMessage(character.Client, this, RedTeam);
                 ContextHandler.SendGameFightUpdateTeamMessage(character.Client, this, BlueTeam);
+
+                ContextHandler.SendGameFightUpdateTeamMessage(Clients, this, fighter.Team);
             }
         }
 
@@ -1550,7 +1552,8 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             var triggersToRemove = new List<MarkTrigger>();
 
-            foreach (MarkTrigger markTrigger in m_triggers)
+            // we use a copy 'cause a trigger can be deleted when a fighter die with it
+            foreach (MarkTrigger markTrigger in m_triggers.ToArray()) 
             {
                 if (markTrigger.TriggerType == triggerType && markTrigger.ContainsCell(cell))
                 {

@@ -15,9 +15,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
 
         protected override RunStatus Run(object context)
         {
+            if (Fighter.CanMove())
+                return RunStatus.Failure;
+
             var fleeCell = Fighter.Brain.Environment.GetCellToFlee();
 
-            if (fleeCell.Equals(default(Cell)))
+            if (fleeCell.Equals(Cell.Null))
                 return RunStatus.Failure;
 
             if (fleeCell.Id == Fighter.Cell.Id)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -41,10 +42,40 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             
         }
 
-        public EffectBase(short id)
+        public EffectBase(EffectBase effect)
+        {
+            Id = effect.Id;
+            m_template = EffectManager.Instance.GetTemplate(effect.Id);
+            Targets = (SpellTargetType)effect.Targets;
+            Delay = effect.Delay;
+            Duration = effect.Duration;
+            Group = effect.Group;
+            Random = effect.Random;
+            Modificator = effect.Modificator;
+            Trigger = effect.Trigger;
+            Hidden = effect.Hidden;
+            m_zoneSize = effect.m_zoneSize;
+            m_zoneMinSize = effect.m_zoneMinSize;
+            ZoneShape = effect.ZoneShape;
+            m_rawZone = BuildRawZone();
+        }
+
+        public EffectBase(short id, EffectBase effect)
         {
             Id = id;
             m_template = EffectManager.Instance.GetTemplate(id);
+            Targets = (SpellTargetType)effect.Targets;
+            Delay = effect.Delay;
+            Duration = effect.Duration;
+            Group = effect.Group;
+            Random = effect.Random;
+            Modificator = effect.Modificator;
+            Trigger = effect.Trigger;
+            Hidden = effect.Hidden;
+            m_zoneSize = effect.m_zoneSize;
+            m_zoneMinSize = effect.m_zoneMinSize;
+            ZoneShape = effect.ZoneShape;
+            m_rawZone = BuildRawZone();
         }
 
         public EffectBase(short id, int targetId, int duration, int delay, int random, int group, int modificator, bool trigger, bool hidden, uint zoneSize, uint zoneShape, uint zoneMinSize)
@@ -61,6 +92,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             m_zoneSize = zoneSize;
             m_zoneMinSize = zoneMinSize;
             ZoneShape = (SpellShapeEnum) zoneShape;
+            m_rawZone = BuildRawZone();
         }
 
         public EffectBase(EffectInstance effect)
@@ -218,6 +250,22 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             ZoneMinSize = minSize;
         }
 
+        protected string BuildRawZone()
+        {
+            var builder = new StringBuilder();
+
+            builder.Append(ZoneShape);
+            builder.Append(ZoneSize);
+
+            if (ZoneMinSize > 0)
+            {
+                builder.Append(",");
+                builder.Append(ZoneMinSize);
+            }
+
+            return builder.ToString();
+        }
+
         public virtual object[] GetValues()
         {
             return new object[0];
@@ -225,7 +273,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public virtual EffectBase GenerateEffect(EffectGenerationContext context, EffectGenerationType type = EffectGenerationType.Normal)
         {
-            return this;
+            return new EffectBase(this);
         }
 
         public virtual ObjectEffect GetObjectEffect()
@@ -289,7 +337,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 writer.Write(Modificator);
                 writer.Write(Trigger);
                 writer.Write(Hidden);
-                writer.Write(RawZone);
+
+                if (RawZone == null)
+                    writer.Write(string.Empty);
+                else
+                    writer.Write(RawZone);
             }
         }
 

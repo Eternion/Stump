@@ -7,6 +7,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.BaseServer.Network;
+using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
@@ -24,6 +25,12 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         [WorldHandler(CharacterCreationRequestMessage.Id, RequiresLogin = false, IsGamePacket = false)]
         public static void HandleCharacterCreationRequestMessage(WorldClient client, CharacterCreationRequestMessage message)
         {
+            if (!IpcAccessor.Instance.IsConnected)
+            {
+                SendCharacterCreationResultMessage(client, CharacterCreationResultEnum.ERR_NO_REASON);
+                return;
+            }
+
             var result = CharacterManager.Instance.CreateCharacter(client, message.name, message.breed, message.sex, message.colors);
            
             SendCharacterCreationResultMessage(client, result);

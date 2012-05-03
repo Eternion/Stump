@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -9,14 +9,14 @@ using Stump.Server.WorldServer.Handlers.Actions;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 {
-    [EffectHandler(EffectsEnum.Effect_DamageWater)]
-    [EffectHandler(EffectsEnum.Effect_DamageEarth)]
-    [EffectHandler(EffectsEnum.Effect_DamageAir)]
-    [EffectHandler(EffectsEnum.Effect_DamageFire)]
-    [EffectHandler(EffectsEnum.Effect_DamageNeutral)]
-    public class DirectDamage : SpellEffectHandler
+    [EffectHandler(EffectsEnum.Effect_DamagePercentAir)]
+    [EffectHandler(EffectsEnum.Effect_DamagePercentEarth)]
+    [EffectHandler(EffectsEnum.Effect_DamagePercentFire)]
+    [EffectHandler(EffectsEnum.Effect_DamagePercentWater)]
+    [EffectHandler(EffectsEnum.Effect_DamagePercentNeutral)]
+    public class DamagePercent : SpellEffectHandler
     {
-        public DirectDamage(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
+        public DamagePercent(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
         {
         }
@@ -30,24 +30,27 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 if (integerEffect == null)
                     return false;
 
+
                 if (Effect.Duration > 0)
                 {
                     AddTriggerBuff(actor, true, BuffTriggerType.TURN_BEGIN, DamageBuffTrigger);
                 }
                 else
                 {
+                    var damage = (short)( actor.MaxLifePoints * ( integerEffect.Value / 100d ) );
+
                     // spell reflected
                     var buff = actor.GetBestReflectionBuff();
                     if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel)
                     {
                         NotifySpellReflected(actor);
-                        Caster.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), Caster, Caster is CharacterFighter, Spell);
+                        Caster.InflictDamage(damage, GetEffectSchool(integerEffect.EffectId), Caster, Caster is CharacterFighter, Spell);
 
                         actor.RemoveAndDispellBuff(buff);
                     }
                     else
                     {
-                        short inflictedDamage = actor.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), Caster, actor is CharacterFighter, Spell);
+                        short inflictedDamage = actor.InflictDamage(damage, GetEffectSchool(integerEffect.EffectId), Caster, actor is CharacterFighter, Spell);
                     }
                 }
             }
@@ -67,22 +70,24 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             if (integerEffect == null)
                 return;
 
-            buff.Target.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), buff.Caster, buff.Target is CharacterFighter, buff.Spell);
+            var damage = (short)( buff.Target.MaxLifePoints * ( integerEffect.Value / 100d ) );
+
+            buff.Target.InflictDamage(damage, GetEffectSchool(integerEffect.EffectId), buff.Caster, buff.Target is CharacterFighter, buff.Spell);
         }
 
         private static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)
         {
             switch (effect)
             {
-                case EffectsEnum.Effect_DamageWater:
+                case EffectsEnum.Effect_DamagePercentAir:
                     return EffectSchoolEnum.Water;
-                case EffectsEnum.Effect_DamageEarth:
+                case EffectsEnum.Effect_DamagePercentEarth:
                     return EffectSchoolEnum.Earth;
-                case EffectsEnum.Effect_DamageAir:
+                case EffectsEnum.Effect_DamagePercentFire:
                     return EffectSchoolEnum.Air;
-                case EffectsEnum.Effect_DamageFire:
+                case EffectsEnum.Effect_DamagePercentWater:
                     return EffectSchoolEnum.Fire;
-                case EffectsEnum.Effect_DamageNeutral:
+                case EffectsEnum.Effect_DamagePercentNeutral:
                     return EffectSchoolEnum.Neutral;
                 default:
                     throw new Exception(string.Format("Effect {0} has not associated School Type", effect));

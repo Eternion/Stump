@@ -110,9 +110,8 @@ namespace Stump.Server.WorldServer.Database.Characters
             set
             {
                 m_lookAsString = value;
+                m_entityLook = !string.IsNullOrEmpty(value) ? m_lookAsString.ToEntityLook() : null;
 
-                if (value != null)
-                    m_entityLook = m_lookAsString.ToEntityLook();
             }
         }
 
@@ -122,10 +121,48 @@ namespace Stump.Server.WorldServer.Database.Characters
             set
             {
                 m_entityLook = value;
-
-                if (value != null)
-                    m_lookAsString = value.ConvertToString();
+                m_lookAsString = value != null ? value.ConvertToString() : string.Empty;
             }
+        }
+
+        [Property("CustomEntityLook", ColumnType = "StringClob", SqlType = "Text")]
+        private string CustomLookAsString
+        {
+            get
+            {
+                if (CustomEntityLook == null)
+                    return string.Empty;
+
+                if (string.IsNullOrEmpty(m_customLookAsString))
+                    m_customLookAsString = CustomEntityLook.ConvertToString();
+
+                return m_customLookAsString;
+            }
+            set
+            {
+                m_customLookAsString = value;
+                m_customEntityLook = !string.IsNullOrEmpty(value) ? m_customLookAsString.ToEntityLook() : null;
+            }
+        }
+
+        public EntityLook CustomEntityLook
+        {
+            get
+            {
+                return m_customEntityLook;
+            }
+            set
+            {
+                m_customEntityLook = value;
+                m_customLookAsString = value != null ? value.ConvertToString() : string.Empty;
+            }
+        }
+
+        [Property]
+        public bool CustomLookActivated
+        {
+            get;
+            set;
         }
 
         [Property("TitleId", NotNull = true, Default = "0")]
@@ -573,6 +610,8 @@ namespace Stump.Server.WorldServer.Database.Characters
         }
 
         private Map m_spawnMap;
+        private string m_customLookAsString;
+        private EntityLook m_customEntityLook;
 
         public Map SpawnMap
         {

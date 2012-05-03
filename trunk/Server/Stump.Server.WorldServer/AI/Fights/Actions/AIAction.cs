@@ -19,6 +19,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
 
         public RunStatus YieldExecute(object context)
         {
+            if (Fighter.IsDead())
+                return RunStatus.Failure;
+
             return Run(context);
         }
 

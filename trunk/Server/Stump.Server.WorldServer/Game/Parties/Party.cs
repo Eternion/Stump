@@ -160,7 +160,7 @@ namespace Stump.Server.WorldServer.Game.Parties
         {
             get
             {
-                return m_members.Count + m_guests.Count;
+                return m_members.Count;
             }
         }
 
@@ -175,6 +175,12 @@ namespace Stump.Server.WorldServer.Game.Parties
         }
 
         public Character Leader
+        {
+            get;
+            private set;
+        }
+
+        public bool Disbanded
         {
             get;
             private set;
@@ -218,6 +224,9 @@ namespace Stump.Server.WorldServer.Game.Parties
         /// <param name="guest"></param>
         public bool PromoteGuestToMember(Character guest)
         {
+            if (IsMember(guest))
+                return false;
+
             if (!IsGuest(guest))
             {
                 // if the player is not invited we force an invitation
@@ -309,6 +318,11 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         public void Disband()
         {
+            if (Disbanded)
+                return;
+
+            Disbanded = true;
+
             PartyManager.Instance.Remove(this);
 
             OnGroupDisbanded();

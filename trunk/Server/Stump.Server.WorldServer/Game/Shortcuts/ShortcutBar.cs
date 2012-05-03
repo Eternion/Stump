@@ -149,12 +149,12 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
 
         public SpellShortcut GetSpellShortcut(int slot)
         {
-            return m_shortcuts.Where(entry => entry is SpellShortcut && entry.Slot == slot).SingleOrDefault() as SpellShortcut;
+            return m_shortcuts.SingleOrDefault(entry => entry is SpellShortcut && entry.Slot == slot) as SpellShortcut;
         }
 
         public ItemShortcut GetItemShortcut(int slot)
         {
-            return m_shortcuts.Where(entry => entry is ItemShortcut && entry.Slot == slot).SingleOrDefault() as ItemShortcut;
+            return m_shortcuts.SingleOrDefault(entry => entry is ItemShortcut && entry.Slot == slot) as ItemShortcut;
         }
 
         public void Save()

@@ -14,8 +14,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             
         }
 
-        public EffectString(short id, string value)
-            : base(id)
+        public EffectString(EffectString copy)
+            : this(copy.Id, copy.m_value, copy)
+        {
+            
+        }
+
+        public EffectString(short id, string value, EffectBase effect)
+            : base(id, effect)
         {
             m_value = value;
         }
@@ -64,6 +70,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 rawZone = RawZone,
                 text = m_value
             };
+        }
+        public override EffectBase GenerateEffect(EffectGenerationContext context, EffectGenerationType type = EffectGenerationType.Normal)
+        {
+            return new EffectString(this);
         }
         protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
         {

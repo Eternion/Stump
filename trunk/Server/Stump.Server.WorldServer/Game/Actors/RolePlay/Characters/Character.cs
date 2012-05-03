@@ -336,14 +336,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public bool CustomLookActivated
         {
-            get;
-            set;
+            get { return m_record.CustomLookActivated; }
+            set { m_record.CustomLookActivated = value; }
         }
 
         public EntityLook CustomLook
         {
-            get;
-            set;
+            get { return m_record.CustomEntityLook; }
+            set { m_record.CustomEntityLook = value; }
         }
 
         public EntityLook RealLook
@@ -1421,6 +1421,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         public void LogOut()
+        {
+            if (Area == null)
+            {
+                WorldServer.Instance.IOTaskPool.AddMessage(PerformLoggout);
+            }
+            else
+            {
+                Area.AddMessage(PerformLoggout);
+            }
+        }
+
+        private void PerformLoggout()
         {
             lock (LoggoutSync)
             {

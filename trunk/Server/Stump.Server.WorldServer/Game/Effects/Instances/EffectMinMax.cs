@@ -16,8 +16,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             
         }
 
-        public EffectMinMax(short id, short valuemin, short valuemax)
-            : base(id)
+        public EffectMinMax(EffectMinMax copy)
+            : this (copy.Id, copy.ValueMin, copy.ValueMax, copy)
+        {
+            
+        }
+
+        public EffectMinMax(short id, short valuemin, short valuemax, EffectBase effect)
+            : base(id, effect)
         {
             m_minvalue = valuemin;
             m_maxvalue = valuemax;
@@ -105,11 +111,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 var rand = new AsyncRandom();
 
                 if (type == EffectGenerationType.MaxEffects)
-                    return new EffectInteger(Id, Template.Operator != "-" ? ValueMax : ValueMin);
+                    return new EffectInteger(Id, Template.Operator != "-" ? ValueMax : ValueMin, this);
                 if (type == EffectGenerationType.MinEffects)
-                    return new EffectInteger(Id, Template.Operator != "-" ? ValueMin : ValueMax);
+                    return new EffectInteger(Id, Template.Operator != "-" ? ValueMin : ValueMax, this);
 
-                return new EffectInteger(Id, (short) rand.Next(ValueMin,  ValueMax + 1));
+                return new EffectInteger(Id, (short) rand.Next(ValueMin,  ValueMax + 1), this);
             }
 
             return this;

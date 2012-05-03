@@ -13,12 +13,6 @@ namespace Stump.Server.WorldServer.Handlers.Basic
 {
     public class BasicHandler : WorldHandlerContainer
     {
-        [WorldHandler(BasicPingMessage.Id)]
-        public static void HandleBasicPingMessage(WorldClient client, BasicPingMessage message)
-        {
-            client.Send(new BasicPongMessage(message.quiet));
-        }
-
         [WorldHandler(BasicSwitchModeRequestMessage.Id)]
         public static void HandleBasicSwitchModeRequestMessage(WorldClient client, BasicSwitchModeRequestMessage message)
         {

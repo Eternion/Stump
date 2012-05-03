@@ -109,7 +109,7 @@ namespace Stump.DofusProtocol.Types.Extensions
 
         public static EntityLook ToEntityLook(this string str)
         {
-            if (str[0] != '{')
+            if (string.IsNullOrEmpty(str) || str[0] != '{')
                 throw new Exception("Incorrect EntityLook format : " + str);
 
             int cursorPos = 1;

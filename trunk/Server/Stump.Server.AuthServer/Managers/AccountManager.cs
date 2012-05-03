@@ -219,21 +219,16 @@ namespace Stump.Server.AuthServer.Managers
 
         public bool DeleteAccountCharacter(Account account, WorldServer world, uint characterId)
         { 
-            using (var scope = new SessionScope(FlushAction.Never))
-            {
-                WorldCharacter character = account.Characters.FirstOrDefault(c => c.CharacterId == characterId);
+            WorldCharacter character = account.Characters.FirstOrDefault(c => c.CharacterId == characterId);
 
-                if (character == null)
-                    return false;
+            if (character == null)
+                return false;
 
-                account.Characters.Remove(character);
-                character.Delete();
+            account.Characters.Remove(character);
+            character.Delete();
 
-                account.DeletedCharacters.Add(AddDeletedCharacter(account, world, characterId));
-                account.Update();
-
-                scope.Flush();
-            }
+            account.DeletedCharacters.Add(AddDeletedCharacter(account, world, characterId));
+            account.Update();
 
             return true;
         }

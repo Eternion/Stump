@@ -109,6 +109,11 @@ namespace Stump.Server.WorldServer.Game.Spells
             return m_spellsLevels.Values.Where(entry => entry.Spell.Id == id).OrderBy(entry => entry.Id);
         }
 
+        public IEnumerable<SpellLevelTemplate> GetSpellLevels()
+        {
+            return m_spellsLevels.Values;
+        }
+
         public SpellType GetSpellType(uint id)
         {
             SpellType template;

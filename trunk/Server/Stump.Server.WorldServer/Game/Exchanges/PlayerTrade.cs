@@ -115,9 +115,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
         private void OnTraderKamasChanged(ITrader trader, uint amount)
         {
-            InventoryHandler.SendExchangeKamaModifiedMessage(FirstTrader.Character.Client, false,
+            InventoryHandler.SendExchangeKamaModifiedMessage(FirstTrader.Character.Client, trader != FirstTrader,
                                                              (int) amount);
-            InventoryHandler.SendExchangeKamaModifiedMessage(SecondTrader.Character.Client, false,
+            InventoryHandler.SendExchangeKamaModifiedMessage(SecondTrader.Character.Client, trader != SecondTrader,
                                                              (int) amount);
         }
 

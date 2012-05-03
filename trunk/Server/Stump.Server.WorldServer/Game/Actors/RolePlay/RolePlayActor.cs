@@ -45,8 +45,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
             if (neighbour == null)
                 return false;
 
+            var cell = Position.Map.GetCellAfterChangeMap(Position.Cell.Id, mapNeighbour);
+
+            if (cell < 0 || cell >= 560)
+            {
+                throw new Exception(string.Format("Cell {0} out of range, current={1} neighbour={2}", cell, Cell, mapNeighbour));
+            }
+
             var destination = new ObjectPosition(neighbour,
-                Position.Map.GetCellAfterChangeMap(Position.Cell.Id, mapNeighbour), Position.Direction);
+                cell, Position.Direction);
 
             return Teleport(destination);
         }

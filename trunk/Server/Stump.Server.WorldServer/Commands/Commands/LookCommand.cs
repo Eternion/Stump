@@ -27,6 +27,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
             {
                 target.CustomLookActivated = false;
                 target.CustomLook = null;
+                trigger.Reply("Demorphed");
+
                 target.Map.Refresh(target);
                 return;
             }

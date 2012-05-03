@@ -12,13 +12,28 @@ namespace Stump.Server.WorldServer
         [Variable(true)]
         public static string MOTD = "Bienvenue sur le serveur test de <b>Stump v. pre-alpha by bouh2</b>";
 
+        private static string m_htmlMOTDColor = ColorTranslator.ToHtml(Color.OrangeRed);
+        private static Color m_MOTDColor = Color.OrangeRed;
+
         [Variable(true)]
-        public static string HtmlMOTDColor = ColorTranslator.ToHtml(Color.OrangeRed);
+        public static string HtmlMOTDColor
+        {
+            get { return m_htmlMOTDColor; }
+            set
+            {
+                m_htmlMOTDColor = value;
+                m_MOTDColor = ColorTranslator.FromHtml(value);
+            }
+        }
 
         public static Color MOTDColor
         {
-            get { return ColorTranslator.FromHtml(HtmlMOTDColor); }
-            set { HtmlMOTDColor = ColorTranslator.ToHtml(value); }
+            get { return m_MOTDColor; }
+            set
+            {
+                m_htmlMOTDColor = ColorTranslator.ToHtml(value);
+                m_MOTDColor = value;
+            }
         }
     }
 }

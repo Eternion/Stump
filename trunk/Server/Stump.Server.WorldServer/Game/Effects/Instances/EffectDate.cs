@@ -18,8 +18,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             
         }
 
-        public EffectDate(short id, short year, short month, short day, short hour, short minute)
-            : base(id)
+        public EffectDate(EffectDate copy)
+            : this(copy.Id, copy.m_year, copy.m_month, copy.m_day, copy.m_hour, copy.m_minute, copy)
+        {
+            
+        }
+
+        public EffectDate(short id, short year, short month, short day, short hour, short minute, EffectBase effect)
+            : base(id, effect)
         {
             m_year = year;
             m_month = month;
@@ -59,6 +65,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                     m_year.ToString(), m_month.ToString("00") + m_day.ToString("00"),
                     m_hour.ToString("00") + m_minute.ToString("00")
                 };
+        }
+
+        public override EffectBase GenerateEffect(EffectGenerationContext context, EffectGenerationType type = EffectGenerationType.Normal)
+        {
+            return new EffectDate(this);
         }
 
         public DateTime GetDate()

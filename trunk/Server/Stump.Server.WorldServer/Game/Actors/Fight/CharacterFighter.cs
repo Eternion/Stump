@@ -110,7 +110,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Fight.ReadyChecker.ToggleReady(this, ready);
         }
 
-        public override void CastSpell(Spell spell, Cell cell)
+        public override bool CastSpell(Spell spell, Cell cell)
         {
             // weapon attack
             if (spell.Id == 0 &&
@@ -121,7 +121,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     WeaponTemplate;
 
                 if (weapon == null || !CanUseWeapon(cell, weapon))
-                    return;
+                    return false;
 
                 Fight.StartSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
 
@@ -136,7 +136,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
                     PassTurn();
 
-                    return;
+                    return false;
                 }
                 if (critical == FightSpellCastCriticalEnum.CRITICAL_HIT)
                     m_criticalWeaponBonus = weapon.CriticalHitBonus;
@@ -179,11 +179,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
                 // is it the right place to do that ?
                 Fight.CheckFightEnd();
+
+                return true;
             }
-            else
-            {
-                base.CastSpell(spell, cell);
-            }
+
+            return base.CastSpell(spell, cell);
         }
 
         public override bool CanCastSpell(Spell spell, Cell cell)

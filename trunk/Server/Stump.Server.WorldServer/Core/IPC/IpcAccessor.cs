@@ -181,6 +181,7 @@ namespace Stump.Server.WorldServer.Core.IPC
                     if (m_proxyObject.State == CommunicationState.Opened)
                         m_proxyObject.UnRegisterWorld();
 
+                    m_proxyObject.Abort();
                     m_proxyObject.Close();
                 }
                 catch (Exception)

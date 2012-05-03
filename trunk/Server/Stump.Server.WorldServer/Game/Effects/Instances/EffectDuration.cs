@@ -16,8 +16,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             
         }
 
-        public EffectDuration(short id, short days, short hours, short minutes)
-            : base(id)
+        public EffectDuration(EffectDuration copy)
+            : this(copy.Id, copy.m_days, copy.m_hours, copy.m_minutes, copy)
+        {
+            
+        }
+
+        public EffectDuration(short id, short days, short hours, short minutes, EffectBase effect)
+            : base(id, effect)
         {
             m_days = days;
             m_hours = hours;
@@ -73,6 +79,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 minutes = (uint) m_minutes
             };
         }
+
+        public override EffectBase GenerateEffect(EffectGenerationContext context, EffectGenerationType type = EffectGenerationType.Normal)
+        {
+            return new EffectDuration(this);
+        }
+
         protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
         {
             base.InternalSerialize(ref writer);

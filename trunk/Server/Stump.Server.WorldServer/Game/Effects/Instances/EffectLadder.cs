@@ -20,8 +20,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             
         }
 
-        public EffectLadder(short id, short monsterfamily, short monstercount)
-            : base(id, monsterfamily)
+        public EffectLadder(EffectLadder copy)
+            : this (copy.Id, copy.MonsterFamily, copy.MonsterCount, copy)
+        {
+            
+        }
+
+        public EffectLadder(short id, short monsterfamily, short monstercount, EffectBase effect)
+            : base(id, monsterfamily, effect)
         {
             m_monsterCount = monstercount;
         }
@@ -71,6 +77,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 monsterCount = (uint) m_monsterCount,
                 monsterFamilyId = (uint) m_monsterfamily,
             };
+        }
+        public override EffectBase GenerateEffect(EffectGenerationContext context, EffectGenerationType type = EffectGenerationType.Normal)
+        {
+            return new EffectLadder(this);
         }
         protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
         {

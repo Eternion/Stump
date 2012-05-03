@@ -5,6 +5,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
+using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Game.Accounts;
@@ -19,6 +20,13 @@ namespace Stump.Server.WorldServer.Handlers.Approach
         [WorldHandler(AuthenticationTicketMessage.Id, RequiresLogin = false, IsGamePacket = false)]
         public static void HandleAuthenticationTicketMessage(WorldClient client, AuthenticationTicketMessage message)
         {
+            if (!IpcAccessor.Instance.IsConnected)
+            {
+                client.Send(new AuthenticationTicketRefusedMessage());
+                client.DisconnectLater(1000);
+                return;
+            }
+
             /* Get Ticket */
             AccountData ticketAccount = AccountManager.Instance.GetAccountByTicket(message.ticket);
 

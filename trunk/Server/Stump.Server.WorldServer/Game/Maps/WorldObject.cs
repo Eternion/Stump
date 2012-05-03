@@ -219,7 +219,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             return byObj != null && byObj.Map != null && byObj.Map == Map;
         }
 
-        public bool CanSee(WorldObject obj)
+        public virtual bool CanSee(WorldObject obj)
         {
             if (obj == null || obj.IsDeleted || obj.IsDisposed)
                 return false;

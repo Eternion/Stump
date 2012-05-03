@@ -18,19 +18,17 @@ namespace Stump.Server.WorldServer.Handlers.Authorized
 
             string[] data = message.content.Split(' ');
             string command = data[0];
-            string[] args = data[1].Split(' ');
 
             switch (command)
             {
                 case ("look"):
                 {
-                    WorldServer.Instance.CommandManager.HandleCommand(
-                        new TriggerConsole(message.content, client.Character));
+                    WorldServer.Instance.CommandManager.HandleCommand(new TriggerConsole("look " + data[2], client.Character));
                     break;
                 }
                 case ("moveto"):
                 {
-                    string id = args[0];
+                    string id = data[1];
 
                     WorldServer.Instance.CommandManager.HandleCommand(
                         new TriggerConsole(string.Format("go {0}", id), client.Character));

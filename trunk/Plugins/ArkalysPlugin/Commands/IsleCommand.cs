@@ -39,7 +39,7 @@ namespace ArkalysPlugin.Commands
 
             if (!isle.CanJoinIsle(character))
             {
-                trigger.ReplyError("Vous ne pouvez pas rejoindre l'île {0}, vous n'avez pas le niveau nécessaire", num);
+                trigger.ReplyError("Vous ne pouvez pas rejoindre l'île {0} avant d'avoir atteint le niveau {1}", num, isle.Level);
                 return;
             }
 

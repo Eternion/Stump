@@ -1,4 +1,5 @@
 ﻿using Stump.Core.Threading;
+using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Handlers;
@@ -10,6 +11,12 @@ namespace Stump.Server.WorldServer.Core.Network
     {
         public override void Dispatch(WorldClient client, Message message)
         {
+            if (message is BasicPingMessage) // pong immediately
+            {
+                client.Send(new BasicPongMessage(( message as BasicPingMessage ).quiet));
+                return;
+            }
+
             MessageHandler handler;
             if (m_handlers.TryGetValue(message.MessageId, out handler))
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.I18n;
 using Stump.Server.WorldServer;
@@ -39,6 +40,13 @@ namespace Stump.Tools.SpellsExplorer
 
             Console.WriteLine("Loading spells...");
             SpellManager.Instance.Initialize();
+
+            var spells = SpellManager.Instance.GetSpellLevels().Where(entry => entry.Effects.Any(effect => effect.EffectId == EffectsEnum.Effect_Punishment && effect.DiceNum == 407));
+
+            foreach (var spell in spells)
+            {
+                
+            }
 
             while (true)
             {

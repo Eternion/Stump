@@ -138,7 +138,7 @@ namespace Stump.Server.WorldServer.Game.Actors
 
         public virtual bool CanMove()
         {
-            return !IsMoving();
+            return Map != null && !IsMoving();
         }
 
         public ObjectPosition GetPositionBeforeMove()

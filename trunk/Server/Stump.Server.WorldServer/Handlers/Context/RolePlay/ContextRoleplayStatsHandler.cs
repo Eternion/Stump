@@ -43,21 +43,35 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             var thresholds = breed.GetThresholds(statsid);
             var index = breed.GetThresholdIndex(actualPoints, thresholds);
 
+            // [0] => limit
+            // [1] => pts for 1
+            // [2] => boosts with 1
+
+            // while enough pts to boost once
             while (pts >= thresholds[index][1])
             {
+                short ptsUsed = 0;
+                short boost = 0;
                 // if not last threshold and enough pts to reach the next threshold we fill this first
                 if (index < thresholds.Count - 1 && (pts / (double)thresholds[index][1]) > (thresholds[index + 1][0] - actualPoints))
                 {
-                    var boost = thresholds[index + 1][0] - actualPoints;
-                    actualPoints += (short)boost;
-                    pts -= (short)( boost * thresholds[index][1] );
+                    boost = (short) (thresholds[index + 1][0] - actualPoints);
+                    ptsUsed = (short)( boost * thresholds[index][1] );
+
+                    if (thresholds[index].Count > 2)
+                        boost = (short)( boost * thresholds[index][2] );
                 }
                 else
                 {
-                    var boost = (short)Math.Floor( pts / (double)thresholds[index][1] );
-                    actualPoints += boost;
-                    pts -= (short)(boost * thresholds[index][1]);
+                    boost = (short)Math.Floor( pts / (double)thresholds[index][1] );
+                    ptsUsed = (short)( boost * thresholds[index][1] );
+
+                    if (thresholds[index].Count > 2)
+                        boost = (short)(boost * thresholds[index][2]);
                 }
+
+                actualPoints += boost;
+                pts -= ptsUsed;
 
                 index = breed.GetThresholdIndex(actualPoints, thresholds);
             }

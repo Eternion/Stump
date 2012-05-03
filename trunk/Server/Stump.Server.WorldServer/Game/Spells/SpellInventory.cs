@@ -91,6 +91,39 @@ namespace Stump.Server.WorldServer.Game.Spells
             InventoryHandler.SendSpellUpgradeSuccessMessage(Owner.Client, id, 0);
         }
 
+        public bool CanBoostSpell(Spell spell, bool send = true)
+        {
+            if (Owner.IsFighting())
+            {
+                if (send)
+                    InventoryHandler.SendSpellUpgradeFailureMessage(Owner.Client);
+                return false;
+            }
+
+            if (spell.CurrentLevel >= 6)
+            {
+                if (send)
+                    InventoryHandler.SendSpellUpgradeFailureMessage(Owner.Client);
+                return false;
+            }
+
+            if (Owner.SpellsPoints < spell.CurrentLevel)
+            {
+                if (send)
+                    InventoryHandler.SendSpellUpgradeFailureMessage(Owner.Client);
+                return false;
+            }
+
+            if (spell.ByLevel[spell.CurrentLevel + 1].MinPlayerLevel > Owner.Level)
+            {
+                if (send)
+                    InventoryHandler.SendSpellUpgradeFailureMessage(Owner.Client);
+                return false;
+            }
+
+            return true;
+        }
+
         public bool BoostSpell(int id)
         {
             var spell = GetSpell(id);
@@ -101,17 +134,8 @@ namespace Stump.Server.WorldServer.Game.Spells
                 return false;
             }
 
-            if (spell.CurrentLevel >= 6)
-            {
-                InventoryHandler.SendSpellUpgradeFailureMessage(Owner.Client);
+            if (!CanBoostSpell(spell))
                 return false;
-            }
-
-            if (Owner.SpellsPoints < spell.CurrentLevel)
-            {
-                InventoryHandler.SendSpellUpgradeFailureMessage(Owner.Client);
-                return false;
-            }
 
             Owner.SpellsPoints -= (ushort)spell.CurrentLevel;
             spell.CurrentLevel++;

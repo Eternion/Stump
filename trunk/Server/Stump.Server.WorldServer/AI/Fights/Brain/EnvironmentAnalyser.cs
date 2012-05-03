@@ -56,7 +56,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             var fighters = Fight.GetAllFighters(entry => entry.IsEnnemyWith(Fighter));
 
             var currentCellIndice = fighters.Sum(entry => entry.Position.Point.DistanceToCell(Fighter.Position.Point)); 
-            var betterCell = default(Cell);
+            var betterCell = Cell.Null;
             long betterCellIndice = 0;
             for (int i = 0; i < movementsCells.Length; i++)
             {

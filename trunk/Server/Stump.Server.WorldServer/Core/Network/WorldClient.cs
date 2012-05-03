@@ -99,8 +99,11 @@ namespace Stump.Server.WorldServer.Core.Network
 
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
             {
-                WorldAccount.ConnectedCharacterId = null;
-                WorldAccount.Save();
+                if (WorldAccount != null)
+                {
+                    WorldAccount.ConnectedCharacterId = null;
+                    WorldAccount.Save();
+                }
             });
 
             base.OnDisconnect();

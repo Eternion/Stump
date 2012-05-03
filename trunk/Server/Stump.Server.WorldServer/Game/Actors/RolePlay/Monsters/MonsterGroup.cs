@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         public static short StarsBonusIncrementation = 2;
 
         [Variable(true)]
-        public static short StarsBonusLimit = 300;
+        public static short StarsBonusLimit = 200;
 
         public event Action<MonsterGroup, Character> EnterFight;
 

@@ -16,8 +16,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             
         }
 
-        public EffectMount(short id, int mountid, double date, int modelid)
-            : base(id)
+        public EffectMount(EffectMount copy)
+            : this (copy.Id, copy.m_mountId, copy.m_date, copy.m_modelId, copy)
+        {
+            
+        }
+
+        public EffectMount(short id, int mountid, double date, int modelid, EffectBase effect)
+            : base(id, effect)
         {
             m_mountId = mountid;
             m_date = date;
@@ -72,6 +78,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 date = (float) m_date,
                 mountId =  (uint) m_mountId
             };
+        }
+        public override EffectBase GenerateEffect(EffectGenerationContext context, EffectGenerationType type = EffectGenerationType.Normal)
+        {
+            return new EffectMount(this);
         }
         protected override void InternalSerialize(ref System.IO.BinaryWriter writer)
         {

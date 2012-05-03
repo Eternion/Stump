@@ -14,8 +14,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             
         }
 
-        public EffectCreature(short id, short monsterfamily)
-            : base(id)
+        public EffectCreature(EffectCreature copy)
+            : this(copy.Id, copy.MonsterFamily, copy)
+        {
+            
+        }
+
+        public EffectCreature(short id, short monsterfamily, EffectBase effectBase)
+            : base(id, effectBase)
         {
             m_monsterfamily = monsterfamily;
         }
@@ -52,6 +58,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public override ObjectEffect GetObjectEffect()
         {
             return new ObjectEffectCreature(Id, MonsterFamily);
+        }
+
+        public override EffectBase GenerateEffect(EffectGenerationContext context, EffectGenerationType type = EffectGenerationType.Normal)
+        {
+            return new EffectCreature(this);
         }
 
         public override EffectInstance GetEffectInstance()

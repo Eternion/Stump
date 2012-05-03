@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
+using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -30,6 +31,12 @@ namespace Stump.Server.WorldServer.Commands.Commands
             if (target == null)
             {
                 trigger.ReplyError("Define a target !");
+                return;
+            } 
+            
+            if (!IpcAccessor.Instance.IsConnected)
+            {
+                trigger.ReplyError("IPC service not operational !");
                 return;
             }
 

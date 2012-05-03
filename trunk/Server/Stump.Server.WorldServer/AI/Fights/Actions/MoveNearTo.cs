@@ -21,6 +21,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
 
         protected override RunStatus Run(object context)
         {
+            if (Fighter.CanMove())
+                return RunStatus.Failure;
+
             var cellInfoProvider = new AIFightCellsInformationProvider(Fighter.Fight, Fighter);
 
             if (Fighter.Position.Point.IsAdjacentTo(Target.Position.Point))

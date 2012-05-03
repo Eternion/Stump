@@ -21,6 +21,13 @@ namespace Stump.Tools.CellPatternBuilder
             InitializeComponent();
             mapControl.CellClicked += MapControlCellClicked;
             mapControl.CellOver += (e, current, last) => { if (current != null) current.Text = current.Id.ToString(); if (last != null) last.Text = string.Empty; };
+
+            foreach (var cell in mapControl.Cells)
+            {
+                cell.Text = cell.Id.ToString();
+            }
+
+            mapControl.Invalidate();
         }
 
         private PlacementPattern GetPattern()
