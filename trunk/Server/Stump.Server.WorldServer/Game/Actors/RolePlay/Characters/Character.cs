@@ -1516,6 +1516,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     m_record.Chance = Stats[PlayerFields.Chance].Base;
                     m_record.Intelligence = Stats[PlayerFields.Intelligence].Base;
                     m_record.Wisdom = Stats[PlayerFields.Wisdom].Base;
+                    m_record.Vitality = Stats[PlayerFields.Vitality].Base;
                     m_record.BaseHealth = (ushort) Stats.Health.Base;
                     m_record.DamageTaken = (ushort) Stats.Health.DamageTaken;
 
