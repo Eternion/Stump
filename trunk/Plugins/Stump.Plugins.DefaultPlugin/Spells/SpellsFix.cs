@@ -27,6 +27,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // effect #2 Target = self
             FixEffectOnAllLevels(155, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_1);
             FixEffectOnAllLevels(155, 1, (level, effect, critical) => effect.Targets = SpellTargetType.SELF);
+
+            // sacrifice dool
+            // target Kill = Only Self
+            FixEffectOnAllLevels(233, EffectsEnum.Effect_Kill, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
         }
 
         public static void FixEffectOnAllLevels(int spellId, int effectIndex, Action<SpellLevelTemplate, EffectDice, bool> fixer)

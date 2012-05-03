@@ -46,25 +46,22 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             var spell = SpellSelector.GetBestSpell();
             var target = Environment.GetNearestEnnemy();
 
-            if (target == null)
-            {
-                Log("No target :(");
-                return;
-            }
-
             var tree = new PrioritySelector(
+                new Decorator(ctx => target == null, new DecoratorContinue(new RandomMove(Fighter))),
                 new Decorator(ctx => spell == null, new DecoratorContinue(new FleeAction(Fighter))),
                 new PrioritySelector(
                     new Decorator(ctx => Fighter.CanCastSpell(spell, target.Cell),
                                   new Sequence(
                                       new SpellCastAction(Fighter, spell, target.Cell, true),
-                                      new DecoratorContinue(ctx => target.LifePoints > Fighter.LifePoints, new FleeAction(Fighter)))),
+                                      new PrioritySelector(
+                                        new Decorator(ctx => target.LifePoints > Fighter.LifePoints, new FleeAction(Fighter)),
+                                        new Decorator(new MoveNearTo(Fighter, target)))))),
                     new Sequence(
                         new MoveNearTo(Fighter, target),
                         new Decorator(ctx => Fighter.CanCastSpell(spell, target.Cell),
                                       new Sequence(
                                           new SpellCastAction(Fighter, spell, target.Cell, true),
-                                          new Decorator(ctx => target.LifePoints > Fighter.LifePoints, new FleeAction(Fighter)))))));
+                                          new Decorator(ctx => target.LifePoints > Fighter.LifePoints, new FleeAction(Fighter))))));
 
             foreach (var action in tree.Execute(this))
             {

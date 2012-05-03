@@ -11,7 +11,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 {
     public abstract class WorldObject : IContextHandler, IDisposable
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        protected static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         internal readonly LockFreeQueue<IMessage> m_messageQueue = new LockFreeQueue<IMessage>();
 

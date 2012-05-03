@@ -212,10 +212,6 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 client.Account.RemoveOldestConnection();
 
             connectionRecord.Create();
-
-            if (connectionRecord.Id == 0)
-                throw new Exception("FUUUUUUUUUUUUUUUUU");
-
             client.SaveNow();
 
             client.Send(new SelectedServerDataMessage(

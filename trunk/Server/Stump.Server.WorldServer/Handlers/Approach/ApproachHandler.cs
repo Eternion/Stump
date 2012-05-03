@@ -8,6 +8,7 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
+using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Breeds;
@@ -41,8 +42,15 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             /* Bind WorldAccount if exist */
             if (WorldAccount.Exists(ticketAccount.Id))
                 client.WorldAccount = WorldAccount.FindById(ticketAccount.Id);
-            
-            
+
+            if (client.WorldAccount.ConnectedCharacterId != null)
+            {
+                var character = World.Instance.GetCharacter(client.WorldAccount.ConnectedCharacterId.Value);
+
+                if (character != null)
+                    character.LogOut();
+            }
+
             /* Bind Account & Characters */
             client.Account = ticketAccount;
             client.Characters = CharacterManager.Instance.GetCharactersByAccount(client);

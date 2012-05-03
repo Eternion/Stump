@@ -29,7 +29,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         public static short StarsBonusIncrementation = 2;
 
         [Variable(true)]
-        public static short StarsBonusLimit = 200;
+        public static short StarsBonusLimit = 300;
+
+        public const short ClientStarsBonusLimit = 200;
 
         public event Action<MonsterGroup, Character> EnterFight;
 
@@ -227,7 +229,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
                                                             Leader.Template.Id,
                                                             (sbyte) Leader.Grade.GradeId,
                                                             GetMonstersWithoutLeader().Select(entry => entry.GetMonsterInGroupInformations()),
-                                                            AgeBonus,
+                                                            AgeBonus > ClientStarsBonusLimit ? ClientStarsBonusLimit : AgeBonus,
                                                             -1,
                                                             false);
         }

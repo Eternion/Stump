@@ -25,7 +25,7 @@
         /// <summary>
         /// Avoids #1% of hits by moving back of #2 square(s)
         /// </summary>
-        Effect_9 = 9,
+        Effect_Dodge = 9,
         /// <summary>
         /// Allows the use of emoticon #3
         /// </summary>
@@ -1043,7 +1043,7 @@
         /// <summary>
         /// Damage: #1{~1~2 to }#2% of the attacker's life (neutral)
         /// </summary>
-        Effect_672 = 672,
+        Effect_Punishment_Damage = 672,
         /// <summary>
         /// Link a job: #1
         /// </summary>

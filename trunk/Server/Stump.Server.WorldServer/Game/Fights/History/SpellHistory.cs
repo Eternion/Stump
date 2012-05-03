@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.DofusProtocol.D2oClasses;
@@ -11,6 +12,8 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 {
     public class SpellHistory
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         [Variable]
         public static readonly int HistoryEntriesLimit = 60;
 
@@ -48,21 +51,29 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 
             //check initial cooldown
             if (mostRecentEntry == null && CurrentRound < spell.InitialCooldown)
+            {
+                logger.Error("Cannot cast spell : Initial cooldown");
                 return false;
+            }
 
             if (mostRecentEntry == null)
                 return true;
 
             if (mostRecentEntry.IsGlobalCooldownActive(CurrentRound))
+            {
+                logger.Error("Cannot cast spell : Global cooldown");
                 return false;
-
+            }
             var castsThisRound = m_underlyingStack.Where(entry => entry.Spell.Id == spell.Id && entry.CastRound == CurrentRound).ToArray();
 
             if (castsThisRound.Length == 0)
                 return true;
 
             if (spell.MaxCastPerTurn > 0 && castsThisRound.Length >= spell.MaxCastPerTurn)
+            {
+                logger.Error("Cannot cast spell : MaxCastPerTurn reached");
                 return false;
+            }
 
             var target = Owner.Fight.GetOneFighter(targetedCell);
 
@@ -72,7 +83,10 @@ namespace Stump.Server.WorldServer.Game.Fights.History
             var castsOnThisTarget = castsThisRound.Count(entry => entry.Target != null && entry.Target.Id == target.Id);
 
             if (spell.MaxCastPerTarget > 0 && castsOnThisTarget >= spell.MaxCastPerTarget)
+            {
+                logger.Error("Cannot cast spell : MaxCastPerTarget reached");
                 return false;
+            }
 
             return true;
         }

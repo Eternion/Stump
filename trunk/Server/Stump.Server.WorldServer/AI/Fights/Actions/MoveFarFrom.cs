@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
 
         protected override RunStatus Run(object context)
         {
-            if (Fighter.CanMove())
+            if (!Fighter.CanMove())
                 return RunStatus.Failure;
 
             var orientation = From.Position.Point.OrientationTo(Fighter.Position.Point);

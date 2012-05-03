@@ -511,38 +511,58 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public virtual bool CanCastSpell(Spell spell, Cell cell)
         {
             if (!IsFighterTurn() || IsDead())
+            {
+                logger.Error("Cannot cast spell : Is dead");
                 return false;
+            }
 
             if (!HasSpell(spell.Id))
+            {
+                logger.Error("Cannot cast spell : Has not spell {0}", spell.Id);
                 return false;
+            }
 
             var spellLevel = spell.CurrentSpellLevel;
             var point = new MapPoint(cell);
 
             if (!cell.Walkable || cell.NonWalkableDuringFight)
+            {
+                logger.Error("Cannot cast spell : Cell not reacheable");
                 return false;
-
+            }
             if (point.DistanceToCell(Position.Point) > GetSpellRange(spellLevel) ||
                 point.DistanceToCell(Position.Point) < spellLevel.MinRange)
+            {
+                logger.Error("Cannot cast spell : Distance");
                 return false;
-
+            }
             if (AP < spellLevel.ApCost)
+            {
+                logger.Error("Cannot cast spell : AP cost");
                 return false;
-
+            }
             var cellfree = Fight.IsCellFree(cell);
             if (( spellLevel.NeedFreeCell && !cellfree ) ||
                 ( spellLevel.NeedTakenCell && cellfree ))
+            {
+                logger.Error("Cannot cast spell : Cell not free or should be");
                 return false;
-
+            }
             if (spellLevel.StatesForbidden.Any(HasState))
+            {
+                logger.Error("Cannot cast spell : Forbidden by state");
                 return false;
-
+            }
             if (spellLevel.StatesRequired.Any(state => !HasState(state)))
+            {
+                logger.Error("Cannot cast spell : Require state");
                 return false;
-
+            }
             if (!SpellHistory.CanCastSpell(spellLevel, cell))
+            {
+                logger.Error("Cannot cast spell : Spell history forbid it");
                 return false;
-
+            }
             return true;
         }
 

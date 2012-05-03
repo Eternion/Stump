@@ -77,6 +77,7 @@
   <ItemGroup>
     <Compile Include="Commands\IsleCommand.cs" />
     <Compile Include="Commands\Isle.cs" />
+    <Compile Include="Commands\IsleRateModifiers.cs" />
     <Compile Include="Commands\IsleTrigger.cs" />
     <Compile Include="Commands\ShopCommand.cs" />
     <Compile Include="Commands\WelcomeCommand.cs" />

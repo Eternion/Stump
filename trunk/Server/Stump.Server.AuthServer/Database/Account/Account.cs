@@ -181,35 +181,35 @@ namespace Stump.Server.AuthServer.Database.Account
             }
         }
 
-        [HasMany(typeof (WorldCharacter), Cascade = ManyRelationCascadeEnum.Delete)]
+        [HasMany(typeof (WorldCharacter))]
         public IList<WorldCharacter> Characters
         {
             get { return m_characters ?? new List<WorldCharacter>(); }
             set { m_characters = value; }
         }
 
-        [HasMany(typeof (DeletedWorldCharacter), Cascade = ManyRelationCascadeEnum.Delete)]
+        [HasMany(typeof (DeletedWorldCharacter))]
         public IList<DeletedWorldCharacter> DeletedCharacters
         {
             get { return m_deletedCharacters ?? new List<DeletedWorldCharacter>(); }
             set { m_deletedCharacters = value; }
         }
 
-        [HasMany(typeof(ConnectionLog), Cascade = ManyRelationCascadeEnum.Delete)]
+        [HasMany(typeof(ConnectionLog))]
         public IList<ConnectionLog> Connections
         {
             get { return m_connections ?? new List<ConnectionLog>(); }
             set { m_connections = value; }
         }
 
-        [HasMany(typeof(SubscriptionLog), Cascade = ManyRelationCascadeEnum.Delete)]
+        [HasMany(typeof(SubscriptionLog))]
         public IList<SubscriptionLog> Subscriptions
         {
             get { return m_subscriptions ?? new List<SubscriptionLog>(); }
             set { m_subscriptions = value; }
         }
 
-        [HasMany(typeof(Sanction), Cascade = ManyRelationCascadeEnum.Delete)]
+        [HasMany(typeof(Sanction))]
         public IList<Sanction> Sanctions
         {
             get { return m_sanctions ?? new List<Sanction>(); }

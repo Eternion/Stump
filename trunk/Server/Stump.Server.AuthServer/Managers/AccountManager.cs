@@ -248,9 +248,9 @@ namespace Stump.Server.AuthServer.Managers
             if (account.LastConnection != null)
             {
                 bool disconnected = false;
-                var server = account.LastConnection.World;
+                var server = WorldServerManager.Instance.GetServerById(account.LastConnection.World.Id);
 
-                if (server.Connected && server.RemoteOperations != null)
+                if (server != null && server.Connected && server.RemoteOperations != null)
                     if (server.RemoteOperations.DisconnectClient(account.Id))
                         disconnected = true;
 
