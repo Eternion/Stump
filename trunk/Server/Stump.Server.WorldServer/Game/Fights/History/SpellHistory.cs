@@ -52,7 +52,6 @@ namespace Stump.Server.WorldServer.Game.Fights.History
             //check initial cooldown
             if (mostRecentEntry == null && CurrentRound < spell.InitialCooldown)
             {
-                logger.Error("Cannot cast spell : Initial cooldown");
                 return false;
             }
 
@@ -61,7 +60,6 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 
             if (mostRecentEntry.IsGlobalCooldownActive(CurrentRound))
             {
-                logger.Error("Cannot cast spell : Global cooldown");
                 return false;
             }
             var castsThisRound = m_underlyingStack.Where(entry => entry.Spell.Id == spell.Id && entry.CastRound == CurrentRound).ToArray();
@@ -71,7 +69,6 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 
             if (spell.MaxCastPerTurn > 0 && castsThisRound.Length >= spell.MaxCastPerTurn)
             {
-                logger.Error("Cannot cast spell : MaxCastPerTurn reached");
                 return false;
             }
 
@@ -84,7 +81,6 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 
             if (spell.MaxCastPerTarget > 0 && castsOnThisTarget >= spell.MaxCastPerTarget)
             {
-                logger.Error("Cannot cast spell : MaxCastPerTarget reached");
                 return false;
             }
 
