@@ -371,7 +371,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightTeamLightInformations GetFightTeamLightInformations()
         {
-            return new FightTeamLightInformations(Id, Leader.Id, (sbyte) AlignmentSide,
+            return new FightTeamLightInformations(Id, Leader == null ? 0 : Leader.Id, (sbyte) AlignmentSide,
                 (sbyte)TeamType, (sbyte) m_fighters.Count);
         }
     }

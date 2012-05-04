@@ -59,6 +59,12 @@ namespace Stump.Server.WorldServer.Game.Items
 
         #region Functions
 
+        public void ChangeOwner(Character newOwner)
+        {
+            Owner = newOwner;
+            Record.OwnerId = newOwner.Id;
+        }
+
         public bool AreConditionFilled(Character character)
         {
             try

@@ -42,7 +42,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void OnOperationError(Exception ex)
         {
-            WorldServer world = GetCurrentServer();
+            WorldServer world = GetCurrentServer(false);
 
             if (ex is CommunicationException)
             {
@@ -94,11 +94,11 @@ namespace Stump.Server.AuthServer.IPC
         /// that is performing the current communication.
         /// Can only be used from remote IPC Channels.
         /// </summary>
-        public WorldServer GetCurrentServer()
+        public WorldServer GetCurrentServer(bool _throw = true)
         {
             var server = Manager.GetServerBySessionId(GetCurrentSessionId());
 
-            if (server == null)
+            if (server == null && _throw)
             {
                 throw new Exception(string.Format("Server with id {0} cannot be found, it's certainly disconnected", GetCurrentSessionId()));
             }

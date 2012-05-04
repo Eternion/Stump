@@ -1198,7 +1198,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             {
                 // if there is a trap on the way we trigger it
                 // or if there is a fighter on a adjacent cell
-                if (m_triggers.Any(entry => entry.TriggerType == TriggerType.MOVE && entry.ContainsCell(cells[i])))
+                if (ShouldTriggerOnMove(cells[i]))
                 {
                     path.CutPath(i + 1);
                     break;
@@ -1266,6 +1266,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             var fighter = actor as FightActor;
 
             TriggerMarks(fighter.Cell, fighter, TriggerType.MOVE);
+        }
+
+        public void SwitchFighters(FightActor fighter1, FightActor fighter2)
+        {
+
         }
 
         #endregion
@@ -1431,6 +1436,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #endregion
 
+
         #endregion
 
         #region Non Turn Actions
@@ -1530,6 +1536,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         public IEnumerable<MarkTrigger> GetTriggers()
         {
             return m_triggers;
+        }
+
+        public bool ShouldTriggerOnMove(Cell cell)
+        {
+            return m_triggers.Any(entry => entry.TriggerType == TriggerType.MOVE && entry.ContainsCell(cell));
         }
 
         public void AddTriger(MarkTrigger trigger)

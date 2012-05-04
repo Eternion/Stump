@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 if (integerEffect == null)
                     return false;
 
-                var damages = (short) (( -Math.Abs((double)actor.LifePoints / actor.MaxLifePoints - 0.5) + 1 ) * ( integerEffect.Value / 100d * actor.LifePoints ));
+                var damages = (short)( ( -Math.Abs((double)Caster.LifePoints / Caster.MaxLifePoints - 0.5) + 1 ) * ( integerEffect.Value / 100d * Caster.LifePoints ) );
 
                // spell reflected
                 var buff = actor.GetBestReflectionBuff();

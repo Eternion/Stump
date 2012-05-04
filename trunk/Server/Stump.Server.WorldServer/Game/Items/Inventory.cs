@@ -408,6 +408,7 @@ namespace Stump.Server.WorldServer.Game.Items
             if (amount >= item.Stack)
             {
                 RemoveItem(item, false);
+                item.ChangeOwner(newOwner);
                 newOwner.Inventory.AddItem(item);
             }
             else

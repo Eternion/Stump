@@ -51,8 +51,7 @@ namespace Stump.Core.Threading
 
         public long LastUpdateTime
         {
-            get;
-            private set;
+            get { return m_lastUpdate; }
         }
 
         public bool IsRunning
@@ -228,7 +227,6 @@ namespace Stump.Core.Threading
                             return;
                         }
                     }
-
                     // get the end time
                     long timerStop = m_queueTimer.ElapsedMilliseconds;
 

@@ -40,11 +40,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 {
                     var nextCell = lastCell.GetNearestCellInDirection(pushDirection);
 
-                    if (!Fight.IsCellFree(Map.Cells[nextCell.CellId]))
+                    if (Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId]))
                     {
-                        var pullDamages = ( 8 + new AsyncRandom().Next(1, 8) * ( Caster.Level / 50 ) ) * ( integerEffect.Value - i );
-
-                        actor.InflictDamage((short) pullDamages, EffectSchoolEnum.Unknown, Caster);
                         break;
                     }
 

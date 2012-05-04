@@ -39,8 +39,21 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             foreach (var drop in m_items.Values)
             {
-                var item = ItemManager.Instance.CreatePlayerItem(character, drop.ItemId, drop.Amount);
-                character.Inventory.AddItem(item);
+                var template = ItemManager.Instance.TryGetTemplate(drop.ItemId);
+
+                if (template.Effects.Count > 0)
+                {
+                    for (int i = 0; i < drop.Amount; i++)
+                    {
+                        var item = ItemManager.Instance.CreatePlayerItem(character, drop.ItemId, drop.Amount);
+                        character.Inventory.AddItem(item);
+                    }
+                }
+                else
+                {
+                    var item = ItemManager.Instance.CreatePlayerItem(character, drop.ItemId, drop.Amount);
+                    character.Inventory.AddItem(item);
+                }
             }
         }
 

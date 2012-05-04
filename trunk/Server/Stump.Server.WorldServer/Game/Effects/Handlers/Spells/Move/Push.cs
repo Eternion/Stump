@@ -40,6 +40,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 {
                     var nextCell = lastCell.GetNearestCellInDirection(pushDirection);
 
+                    if (Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId]))
+                    {
+                        break;
+                    }
+
                     if (nextCell == null || !Fight.IsCellFree(Map.Cells[nextCell.CellId]))
                     {
                         var pushbackDamages = (8 + new AsyncRandom().Next(1, 8) * (Caster.Level / 50)) * (integerEffect.Value - i);

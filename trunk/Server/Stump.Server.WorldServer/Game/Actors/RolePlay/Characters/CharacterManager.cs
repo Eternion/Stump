@@ -170,11 +170,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 name = string.Empty;
 
                 bool vowel = rand.Next(0, 2) == 0;
-                for (int i = 0; i < namelen; i++)
+                name += GetChar(vowel, rand).ToString().ToUpper();
+                vowel = !vowel;
+
+                for (int i = 0; i < namelen - 1; i++)
                 {
                     name += GetChar(vowel, rand);
                     vowel = !vowel;
                 }
+
             } while (CharacterRecord.DoesNameExists(name));
 
             return name;

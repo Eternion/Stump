@@ -195,6 +195,24 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             return (DirectionsEnum) (uint) orientation;
         }
 
+        public MapPoint[] GetCellsOnLineBetween(MapPoint destination)
+        {
+            var result = new List<MapPoint>();
+            var direction = OrientationTo(destination);
+            var current = this;
+            for (int i = 0; i < MapHeight * MapWidth / 2; i++)
+            {
+                current = current.GetCellInDirection(direction, 1);
+
+                if (current == destination)
+                    break;
+
+                result.Add(current);
+            }
+
+            return result.ToArray();
+        }
+
         public MapPoint GetCellInDirection(DirectionsEnum direction, short step)
         {
             MapPoint mapPoint = null;
