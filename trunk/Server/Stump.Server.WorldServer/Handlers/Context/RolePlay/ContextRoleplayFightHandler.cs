@@ -12,11 +12,6 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                                                                               Character source, Character target,
                                                                               bool accepted)
         {
-            Contract.Requires(client != null);
-            Contract.Requires(replier != null);
-            Contract.Requires(source != null);
-            Contract.Requires(target != null);
-
             client.Send(new GameRolePlayPlayerFightFriendlyAnsweredMessage(replier.Id,
                                                                            source.Id,
                                                                            target.Id,
@@ -27,19 +22,12 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                                                                                Character source,
                                                                                Character target)
         {
-            Contract.Requires(client != null);
-            Contract.Requires(requester != null);
-            Contract.Requires(source != null);
-            Contract.Requires(target != null);
-
             client.Send(new GameRolePlayPlayerFightFriendlyRequestedMessage(requester.Id, source.Id,
                                                                             target.Id));
         }
 
         public static void SendGameRolePlayArenaUpdatePlayerInfosMessage(IPacketReceiver client)
         {
-            Contract.Requires(client != null);
-
             client.Send(new GameRolePlayArenaUpdatePlayerInfosMessage(0, 0, 0, 0, 0));
         }
     }

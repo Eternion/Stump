@@ -108,8 +108,6 @@ namespace Stump.Core.Mathematics
 
             // The explicit int cast before the first multiplication gives better performance.
             var value = (int)((RealUnitInt32 * (int)(0x7fffffff & (_w = (_w ^ (_w >> 19)) ^ (t ^ (t >> 8))))) * maxValue);
-            Contract.Assume(value >= 0);
-            Contract.Assume(value < maxValue);
             return value;
         }
 
@@ -142,9 +140,6 @@ namespace Stump.Core.Mathematics
             // 31 bits of precision will suffice if range <= int.MaxValue. This allows us
             // to cast to an int and gain a little more performance.
             var value = minValue + (int)((RealUnitInt32 * (int)(0x7fffffff & (_w = (_w ^ (_w >> 19)) ^ (t ^ (t >> 8))))) * range);
-            Contract.Assume(value >= minValue);
-            Contract.Assume(value <= maxValue);
-            Contract.Assume(value < maxValue || maxValue == minValue && value == minValue);
             return value;
         }
 

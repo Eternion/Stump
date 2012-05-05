@@ -45,8 +45,6 @@ namespace Stump.Core.IO
         /// <param name = "stream">The stream.</param>
         public BigEndianReader(Stream stream)
         {
-            Contract.Requires(stream != null);
-
             m_reader = new BinaryReader(stream, Encoding.UTF8);
         }
 
@@ -56,8 +54,6 @@ namespace Stump.Core.IO
         /// <param name = "tab">Memory buffer.</param>
         public BigEndianReader(byte[] tab)
         {
-            Contract.Requires(tab != null);
-
             m_reader = new BinaryReader(new MemoryStream(tab), Encoding.UTF8);
         }
 
@@ -72,8 +68,6 @@ namespace Stump.Core.IO
         /// <returns></returns>
         private byte[] ReadBigEndianBytes(int count)
         {
-            Contract.Requires(count >= 0);
-
             var bytes = new byte[count];
             int i;
             for (i = count - 1; i >= 0; i--)
@@ -227,9 +221,6 @@ namespace Stump.Core.IO
             ushort length = ReadUShort();
 
             byte[] bytes = ReadBytes(length);
-
-            Contract.Assume(bytes != null);
-
             return Encoding.UTF8.GetString(bytes);
         }
 
@@ -242,9 +233,6 @@ namespace Stump.Core.IO
             int length = ReadInt();
 
             byte[] bytes = ReadBytes(length);
-
-            Contract.Assume(bytes != null);
-
             return Encoding.UTF8.GetString(bytes);
         }
 

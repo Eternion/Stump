@@ -29,7 +29,6 @@ namespace Stump.Core.Reflection
             where T : Attribute
         {
             var attribs = type.GetCustomAttributes(typeof(T), false) as T[];
-            Contract.Assume(attribs != null);
             return attribs;
         }
 

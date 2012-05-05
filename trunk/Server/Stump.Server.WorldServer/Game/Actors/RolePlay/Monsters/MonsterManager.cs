@@ -46,8 +46,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
         public MonsterGrade GetMonsterGrade(int monsterId, int grade)
         {
-            Contract.Requires(grade > 0);
-
             var template = GetTemplate(monsterId);
 
             if (template.Grades.Count <= grade - 1)

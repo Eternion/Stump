@@ -978,8 +978,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!IsInRequest())
                 return;
 
-            Contract.Assume(RequestBox != null);
-
             if (IsRequestSource())
                 RequestBox.Cancel();
             else if (IsRequestTarget())
@@ -1026,7 +1024,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             foreach (var partyInvitation in m_partyInvitations.ToArray())
             {
-                Contract.Assume(partyInvitation.Value != null);
                 partyInvitation.Value.Deny();
             }
         }
@@ -1062,7 +1059,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!IsInParty())
                 return;
 
-            Contract.Assume(Party != null);
 
             Party.MemberRemoved -= OnPartyMemberRemoved;
             Party.PartyDeleted -= OnPartyDeleted;
@@ -1532,9 +1528,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         private void LoadRecord()
         {
             Breed = BreedManager.Instance.GetBreed(BreedId);
-
-            Contract.Assume(Breed != null);
-
             var map = World.Instance.GetMap(m_record.MapId);
 
             if (map == null)

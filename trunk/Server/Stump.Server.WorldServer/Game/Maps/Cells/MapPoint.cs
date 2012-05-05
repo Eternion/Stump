@@ -204,7 +204,10 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             {
                 current = current.GetCellInDirection(direction, 1);
 
-                if (current == destination)
+                if (current == null)
+                    break;
+
+                if (current.CellId == destination.CellId)
                     break;
 
                 result.Add(current);

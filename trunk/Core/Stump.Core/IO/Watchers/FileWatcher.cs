@@ -31,8 +31,6 @@ namespace Stump.Core.IO.Watchers
 
         private void OnChanged(object sender, FileSystemEventArgs e)
         {
-            Contract.Assume(e.FullPath != null);
-
             if (System.IO.Path.GetFullPath(e.FullPath) == FullPath && Watching && Type == WatcherType.Modification &&
                 (DateTime.Now - m_lastModification).TotalMilliseconds > 100d) // it's a hack because sometimes it raises the event twice
             {
@@ -48,8 +46,6 @@ namespace Stump.Core.IO.Watchers
 
         private void OnCreated(object sender, FileSystemEventArgs e)
         {
-            Contract.Assume(e.FullPath != null);
-
             if (e.FullPath == FullPath && Watching && Watching && Type == WatcherType.Creation)
             {
                 Watching = false;
@@ -60,8 +56,6 @@ namespace Stump.Core.IO.Watchers
 
         private void OnDeleted(object sender, FileSystemEventArgs e)
         {
-            Contract.Assume(e.FullPath != null);
-
             if (e.FullPath == FullPath && Watching && Watching && Type == WatcherType.Deletion)
             {
                 Watching = false;

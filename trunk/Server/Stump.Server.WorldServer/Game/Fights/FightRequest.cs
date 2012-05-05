@@ -10,9 +10,6 @@ namespace Stump.Server.WorldServer.Game.Fights
     {
         public FightRequest(Character source, Character target)
         {
-            Contract.Requires(source != null);
-            Contract.Requires(target != null);
-
             Source = source;
             Target = target;
         }

@@ -97,10 +97,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         protected virtual void OnInteractiveUsed(Character user, InteractiveObject interactive, Skill skill)
         {
-            Contract.Requires(user != null);
-            Contract.Requires(interactive != null);
-            Contract.Requires(skill != null);
-
             InteractiveHandler.SendInteractiveUsedMessage(Clients, user, interactive, skill);
 
             Action<Map, Character, InteractiveObject, Skill> handler = InteractiveUsed;
@@ -112,10 +108,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         protected virtual void OnInteractiveUseEnded(Character user, InteractiveObject interactive, Skill skill)
         {
-            Contract.Requires(user != null);
-            Contract.Requires(interactive != null);
-            Contract.Requires(skill != null);
-
             Action<Map, Character, InteractiveObject, Skill> handler = InteractiveUseEnded;
             if (handler != null)
                 handler(this, user, interactive, skill);
@@ -425,8 +417,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public InteractiveObject SpawnInteractive(InteractiveSpawn spawn)
         {
-            Contract.Requires(spawn != null);
-
             var interactiveObject = new InteractiveObject(spawn);
 
             if (interactiveObject.Template != null && interactiveObject.Template.Type == InteractiveTypeEnum.TYPE_ZAAP)
@@ -447,8 +437,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         protected virtual void OnInteractiveSpawned(InteractiveObject interactive)
         {
-            Contract.Requires(interactive != null);
-
             Action<Map, InteractiveObject> handler = InteractiveSpawned;
             if (handler != null)
                 handler(this, interactive);
@@ -456,8 +444,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void UnSpawnInteractive(InteractiveObject interactive)
         {
-            Contract.Requires(interactive != null);
-
             if (interactive.Template != null && interactive.Template.Type == InteractiveTypeEnum.TYPE_ZAAP && Zaap != null)
                 Zaap = null;
 
@@ -470,8 +456,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         protected virtual void OnInteractiveUnSpawned(InteractiveObject interactive)
         {
-            Contract.Requires(interactive != null);
-
             Action<Map, InteractiveObject> handler = InteractiveUnSpawned;
             if (handler != null)
                 handler(this, interactive);
@@ -479,8 +463,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public bool UseInteractiveObject(Character character, int interactiveId, int skillId)
         {
-            Contract.Requires(character != null);
-
             InteractiveObject interactiveObject = GetInteractiveObject(interactiveId);
 
             if (interactiveObject == null)
@@ -506,8 +488,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public bool NotifyInteractiveObjectUseEnded(Character character, int interactiveId, int skillId)
         {
-            Contract.Requires(character != null);
-
             InteractiveObject interactiveObject = GetInteractiveObject(interactiveId);
 
             if (interactiveObject == null)
@@ -607,22 +587,16 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void AddMonsterSpawn(MonsterSpawn spawn)
         {
-            Contract.Requires(spawn != null);
-
             m_monsterSpawns.Add(spawn);
         }
 
         public void RemoveMonsterSpawn(MonsterSpawn spawn)
         {
-            Contract.Requires(spawn != null);
-
             m_monsterSpawns.Remove(spawn);
         }
 
         public void AddMonsterDungeonSpawn(MonsterDungeonSpawn spawn)
         {
-            Contract.Requires(spawn != null);
-
             var pool = m_spawningPools.FirstOrDefault(entry => entry is DungeonSpawningPool) as DungeonSpawningPool;
 
             if (pool == null)
@@ -636,8 +610,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void RemoveMonsterDungeonSpawn(MonsterDungeonSpawn spawn)
         {
-            Contract.Requires(spawn != null);
-
             var pool = m_spawningPools.FirstOrDefault(entry => entry is DungeonSpawningPool) as DungeonSpawningPool;
 
             if (pool == null)
@@ -656,9 +628,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public MonsterGroup GenerateRandomMonsterGroup(int minLength, int maxLength)
         {
-            Contract.Requires(minLength > 0);
-            Contract.Requires(minLength <= maxLength);
-
             if (minLength == maxLength)
                 GenerateRandomMonsterGroup(minLength);
 
@@ -667,8 +636,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public MonsterGroup GenerateRandomMonsterGroup(int length)
         {
-            Contract.Requires(length > 0);
-
             var rand = new AsyncRandom();
 
             if (MonsterSpawns.Count <= 0)
@@ -716,10 +683,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public MonsterGroup SpawnMonsterGroup(MonsterGrade monster, ObjectPosition position)
         {
-            Contract.Requires(monster != null);
-            Contract.Requires(position != null);
-            Contract.Ensures(Contract.Result<MonsterGroup>() != null);
-
             if (position.Map != this)
                 throw new Exception("Try to spawn a monster group on the wrong map");
 
@@ -736,10 +699,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public MonsterGroup SpawnMonsterGroup(IEnumerable<MonsterGrade> monsters, ObjectPosition position)
         {
-            Contract.Requires(monsters != null);
-            Contract.Requires(position != null);
-            Contract.Ensures(Contract.Result<MonsterGroup>() != null);
-
             if (position.Map != this)
                 throw new Exception("Try to spawn a monster group on the wrong map");
 
@@ -809,8 +768,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void AddTrigger(CellTrigger trigger)
         {
-            Contract.Requires(trigger != null);
-
             if (!m_cellsTriggers.ContainsKey(trigger.Position.Cell))
                 m_cellsTriggers.Add(trigger.Position.Cell, new List<CellTrigger>());
 
@@ -819,8 +776,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void RemoveTrigger(CellTrigger trigger)
         {
-            Contract.Requires(trigger != null);
-
            if (!m_cellsTriggers.ContainsKey(trigger.Position.Cell))
                 return;
 
@@ -846,8 +801,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public bool ExecuteTrigger(CellTriggerType triggerType, Cell cell, Character character)
         {
-            Contract.Requires(character != null);
-
             bool applied = false;
 
             foreach (var trigger in GetTriggers(cell))
@@ -878,8 +831,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void AddFight(Fight fight)
         {
-            Contract.Requires(fight != null);
-
             if (fight.Map != this)
                 return;
 
@@ -892,8 +843,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void RemoveFight(Fight fight)
         {
-            Contract.Requires(fight != null);
-
             m_fights.Remove(fight);
 
             ContextRoleplayHandler.SendMapFightCountMessage(Clients, (short) m_fights.Count);
@@ -903,15 +852,11 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public Cell[] GetBlueFightPlacement()
         {
-            Contract.Ensures(Contract.Result<Cell[]>() != null);
-
             return m_bluePlacement;
         }
 
         public Cell[] GetRedFightPlacement()
         {
-            Contract.Ensures(Contract.Result<Cell[]>() != null);
-
             return m_redPlacement;
         }
 
@@ -921,8 +866,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Enter(RolePlayActor actor)
         {
-            Contract.Requires(actor != null);
-
             if (m_actors.ContainsKey(actor.Id))
                 Leave(actor);
 
@@ -936,8 +879,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Leave(RolePlayActor actor)
         {
-            Contract.Requires(actor != null);
-
             if (m_actors.TryRemove(actor.Id, out actor))
             {
                 OnActorLeave(actor);
@@ -948,16 +889,12 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Refresh(RolePlayActor actor)
         {
-            Contract.Requires(actor != null);
-
             if (IsActor(actor))
                 ContextRoleplayHandler.SendGameRolePlayShowActorMessage(Clients, actor);
         }
 
         private void OnEnter(RolePlayActor actor)
         {
-            Contract.Requires(actor != null);
-
             // if the actor change from area we notify it
             if (actor.HasChangedZone())
                 Area.Enter(actor);
@@ -998,8 +935,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void SendActorsActions(Character character)
         {
-            Contract.Requires(character != null);
-
             foreach (RolePlayActor actor in m_actors.Values)
             {
                 if (actor.IsMoving())
@@ -1015,8 +950,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void OnLeave(RolePlayActor actor)
         {
-            Contract.Requires(actor != null);
-
             // if the actor will change of area we notify it
             if (actor.IsGonnaChangeZone())
                 Area.Leave(actor);
@@ -1049,9 +982,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void OnActorStartMoving(ContextActor actor, Path path)
         {
-            Contract.Requires(actor != null);
-            Contract.Requires(path != null);
-
             var movementsKey = path.GetServerPathKeys();
 
              ContextHandler.SendGameMapMovementMessage(Clients, movementsKey, actor);
@@ -1060,10 +990,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void OnActorStopMoving(ContextActor actor, Path path, bool canceled)
         {
-            Contract.Requires(actor != null);
-            Contract.Requires(actor is Character);
-            Contract.Requires(path != null);
-
             var character = actor as Character;
 
             if (ExecuteTrigger(CellTriggerType.END_MOVE_ON, actor.Cell, character))
@@ -1306,8 +1232,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public MapComplementaryInformationsDataMessage GetMapComplementaryInformationsDataMessage(Character character)
         {
-            Contract.Requires(character != null);
-
             return new MapComplementaryInformationsDataMessage(
                 (short) SubArea.Id,
                 Id,

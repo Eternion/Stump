@@ -92,8 +92,6 @@ namespace Stump.Core.Extensions
 
         public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> enumerable)
         {
-            Contract.Requires(enumerable != null);
-
             var rand = new Random();
 
             T[] elements = enumerable.ToArray();
@@ -155,8 +153,6 @@ namespace Stump.Core.Extensions
 
         public static T RandomElementOrDefault<T>(this IEnumerable<T> enumerable)
         {
-            Contract.Requires(enumerable != null);
-
             var rand = new Random();
             int count = enumerable.Count();
 

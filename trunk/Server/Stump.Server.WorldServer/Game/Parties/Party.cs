@@ -367,8 +367,6 @@ namespace Stump.Server.WorldServer.Game.Parties
         {
             foreach (var character in m_members)
             {
-                Contract.Assert(character.Client != null);
-
                 character.Client.Send(message);
             }
         }
@@ -385,16 +383,12 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         private void BindEvents(Character member)
         {
-            Contract.Requires(member != null);
-
             member.LifeRegened += OnLifeUpdated;
             member.LevelChanged += OnLevelChanged;
         }
 
         private void UnBindEvents(Character member)
         {
-            Contract.Requires(member != null);
-
             member.LifeRegened -= OnLifeUpdated;
             member.LevelChanged -= OnLevelChanged;
         }

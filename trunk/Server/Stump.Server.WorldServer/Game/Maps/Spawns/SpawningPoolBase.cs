@@ -204,8 +204,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         public virtual void SetNextGroupToSpawn(IEnumerable<Monster> monsters)
         {
-            Contract.Requires(monsters.Any());
-
             NextGroup = new MonsterGroup(Map.GetNextContextualId(), Map.GetRandomFreePosition());
 
             foreach (Monster monster in monsters)
@@ -237,8 +235,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         protected virtual void OnGroupUnSpawned(MonsterGroup monster)
         {
-            Contract.Requires(Spawns.Contains(monster));
-
             lock (Spawns)
                 Spawns.Remove(monster);
 

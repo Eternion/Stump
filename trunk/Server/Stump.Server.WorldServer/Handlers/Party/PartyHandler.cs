@@ -157,19 +157,11 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
 
         public static void SendPartyRefuseInvitationNotificationMessage(IPacketReceiver client, PartyInvitation invitation)
         {
-            Contract.Requires(client != null);
-            Contract.Requires(invitation != null);
-            Contract.Requires(invitation.Party != null);
-            Contract.Requires(invitation.Target != null);
-
             client.Send(new PartyRefuseInvitationNotificationMessage(invitation.Party.Id, invitation.Target.Id));
         }
 
         public static void SendPartyDeletedMessage(IPacketReceiver client, Game.Parties.Party party)
         {
-            Contract.Requires(client != null);
-            Contract.Requires(party != null);
-
             client.Send(new PartyDeletedMessage(party.Id));
         }
 

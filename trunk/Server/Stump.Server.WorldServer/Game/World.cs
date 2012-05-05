@@ -338,8 +338,6 @@ namespace Stump.Server.WorldServer.Game
 
         public void Enter(Character character)
         {
-            Contract.Requires(character != null);
-
             // note : to delete
             if (m_charactersById.ContainsKey(character.Id))
                 Leave(character);
@@ -355,8 +353,6 @@ namespace Stump.Server.WorldServer.Game
 
         public void Leave(Character character)
         {
-            Contract.Requires(character != null);
-
             Character dummy;
             if (m_charactersById.TryRemove(character.Id, out dummy) && m_charactersByName.TryRemove(character.Name, out dummy))
             {
@@ -391,15 +387,11 @@ namespace Stump.Server.WorldServer.Game
 
         public Character GetCharacter(Predicate<Character> predicate)
         {
-            Contract.Requires(predicate != null);
-
             return m_charactersById.FirstOrDefault(k => predicate(k.Value)).Value;
         }
 
         public IEnumerable<Character> GetCharacters(Predicate<Character> predicate)
         {
-            Contract.Requires(predicate != null);
-
             return m_charactersById.Values.Where(k => predicate(k));
         }
 

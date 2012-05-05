@@ -10,24 +10,17 @@ namespace Stump.Server.WorldServer.Handlers.Dialogs
         [WorldHandler(LeaveDialogRequestMessage.Id)]
         public static void HandleLeaveDialogRequestMessage(WorldClient client, LeaveDialogRequestMessage message)
         {
-            Contract.Requires(client != null);
-            Contract.Requires(client.Character != null);
-
             client.Character.LeaveDialog();
         }
 
         [WorldHandler(LeaveDialogMessage.Id)]
         public static void HandleLeaveDialogMessage(WorldClient client, LeaveDialogMessage message)
         {
-            Contract.Requires(client != null);
-            Contract.Requires(client.Character != null);
-
             client.Character.LeaveDialog();
         }
 
         public static void SendLeaveDialogMessage(IPacketReceiver client)
         {
-            Contract.Requires(client != null);
             client.Send(new LeaveDialogMessage());
         }
     }

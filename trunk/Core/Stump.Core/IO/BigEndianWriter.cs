@@ -29,8 +29,6 @@ namespace Stump.Core.IO
             get { return m_writer.BaseStream.Position; }
             set
             {
-                Contract.Requires(value >= 0L);
-                
                 m_writer.BaseStream.Position = value;
             }
         }
