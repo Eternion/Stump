@@ -195,7 +195,7 @@ namespace Stump.Server.AuthServer.Managers
                     return false;
 
                 account.Characters.Add(character);
-                account.Update();
+                //account.Update();
 
                 scope.Flush();
             }

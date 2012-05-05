@@ -133,7 +133,7 @@ namespace Stump.Core.Sql
             if (obj is RawData)
                 return ( (RawData)obj ).Data.ToString();
 
-            return "'" + obj + "'";
+            return "'" + EscapeField(obj.ToString()) + "'";
         }
 
         private static string QuoteForTableName(string table)
@@ -143,7 +143,12 @@ namespace Stump.Core.Sql
 
         private static string QuoteForColumnName(string table)
         {
-            return "`" + table + "`";
+            return "`" + EscapeField(table) + "`";
+        }
+
+        public static string EscapeField(string field)
+        {
+            return field.Replace("`", "").Replace(@"\", @"\\").Replace("'", @"\'").Replace("\"", "\\\"").Replace("\n", "\\n").Replace("‘", "\\‘");
         }
     }
 }

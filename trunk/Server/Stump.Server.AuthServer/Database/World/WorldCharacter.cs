@@ -30,7 +30,7 @@ namespace Stump.Server.AuthServer.Database.World
             set;
         }
 
-        [KeyProperty(Column = "CharacterId", NotNull = true)]
+        [Property(Column = "CharacterId", NotNull = true)]
         public uint CharacterId
         {
             get;
