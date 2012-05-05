@@ -120,6 +120,9 @@ namespace Stump.Tools.CacheManager
                 object value;
                 object fieldValue = objField.GetValue(obj);
 
+                if (AssignableTable != null)
+                    fieldValue = AssignableTable.GenerateAssignedObject(field.Name, fieldValue);
+
                 if (fieldValue == null)
                     value = null;
                 if (fieldValue is byte[])
@@ -147,8 +150,6 @@ namespace Stump.Tools.CacheManager
                 else
                     value = fieldValue;
 
-                if (AssignableTable != null)
-                    value = AssignableTable.GenerateAssignedObject(field.Name, value);
 
                 row.Add(columnName, value);
             }
