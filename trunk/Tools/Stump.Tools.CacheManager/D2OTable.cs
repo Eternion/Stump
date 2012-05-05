@@ -122,7 +122,16 @@ namespace Stump.Tools.CacheManager
 
                 if (fieldValue == null)
                     value = null;
-                if (field.DbPropAttr != null && field.DbPropAttr.ColumnType == "Serializable")
+                if (fieldValue is byte[])
+                {
+                    var bin = fieldValue as byte[];
+
+                    if (bin.Length > 0)
+                        value = new RawData("0x" + bin.ByteArrayToString());
+                    else
+                        value = string.Empty;
+                }
+                else if (field.DbPropAttr != null && field.DbPropAttr.ColumnType == "Serializable")
                 {
                     var bin = fieldValue.ToBinary();
 

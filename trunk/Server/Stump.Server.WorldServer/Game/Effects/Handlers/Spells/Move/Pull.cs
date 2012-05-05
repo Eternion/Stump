@@ -40,7 +40,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 {
                     var nextCell = lastCell.GetNearestCellInDirection(pushDirection);
 
+                    if (nextCell == null)
+                        break;
+
                     if (Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId]))
+                    {
+                        lastCell = nextCell;
+                        break;
+                    } 
+                    
+                    if (!Fight.IsCellFree(Map.Cells[nextCell.CellId]))
                     {
                         break;
                     }
