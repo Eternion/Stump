@@ -97,17 +97,15 @@ namespace Stump.Tools.CacheManager
             if (string.IsNullOrEmpty(programFiles))
                 programFiles = Environment.GetEnvironmentVariable("programfiles");
 
-            string dofusDataPath = string.Empty;
-
             if (string.IsNullOrEmpty(programFiles))
-                dofusDataPath =  Path.Combine(AskDofusPath(), "app");
+                return Path.Combine(AskDofusPath(), "app");
 
-            dofusDataPath = Path.Combine(programFiles, "Dofus 2", "app");
+            if (Directory.Exists(Path.Combine(programFiles, "Dofus2", "app")))
+                return Path.Combine(programFiles, "Dofus2", "app");
+            if (Directory.Exists(Path.Combine(programFiles, "Dofus 2", "app")))
+                return Path.Combine(programFiles, "Dofus 2", "app");
 
-            if (Directory.Exists(dofusDataPath))
-                return dofusDataPath;
-
-            dofusDataPath = Path.Combine(AskDofusPath(), "app");
+            var dofusDataPath = Path.Combine(AskDofusPath(), "app");
 
             if (!Directory.Exists(dofusDataPath))
                 Exit("Dofus data path not found");
@@ -117,7 +115,7 @@ namespace Stump.Tools.CacheManager
 
         private static string AskDofusPath()
         {
-            logger.Warn("Dofus path not found. Enter Dofus 2 root folder (%programFiles%/Dofus 2):");
+            logger.Warn("Dofus path not found. Enter Dofus 2 root folder (%programFiles%/Dofus2):");
 
             return Path.GetFullPath(Console.ReadLine());
         }

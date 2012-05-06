@@ -122,7 +122,7 @@ namespace Stump.Tools.CacheManager.Maps
 
             compressedCells = ZipHelper.Compress(compressedCells);
 
-            values.Add("CompressedCells",  compressedCells);
+            values.Add("CompressedCells",  new RawData("0x" + compressedCells.ByteArrayToString()));
 
             var rawElements = new byte[elements.Count * MapElement.Size];
 
@@ -131,7 +131,7 @@ namespace Stump.Tools.CacheManager.Maps
                 Array.Copy(elements[i].Serialize(), 0, rawElements, i * MapElement.Size, MapElement.Size);
             }
 
-            values.Add("CompressedElements", ZipHelper.Compress(rawElements));
+            values.Add("CompressedElements", new RawData("0x" + ZipHelper.Compress(rawElements).ByteArrayToString()));
 
             return values;
         }

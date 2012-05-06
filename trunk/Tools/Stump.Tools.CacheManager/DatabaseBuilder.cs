@@ -206,9 +206,6 @@ namespace Stump.Tools.CacheManager
         {
             foreach (D2OTable table in GetTables())
             {
-                if (table.TableName != "spells_level")
-                    continue;
-
                 logger.Info("Build table '{0}' ...", table.TableName);
 
                 D2OReader reader = FindD2OFile(table);
