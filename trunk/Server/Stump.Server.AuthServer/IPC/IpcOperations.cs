@@ -40,22 +40,31 @@ namespace Stump.Server.AuthServer.IPC
             }
         }
 
-        private void OnOperationError(Exception ex)
+        private void OnOperationError(WorldClientAdapter client, Exception ex)
         {
-            WorldServer world = GetCurrentServer(false);
+            var server = Manager.GetServerBySessionId(client.InnerChannel.SessionId);
 
             if (ex is CommunicationException)
             {
                 // Connection got interrupted
-                logger.Warn("Lost connection to WorldServer {0}. Scheduling reconnection attempt...", world);
+                logger.Warn("Lost connection to WorldServer {0}. Scheduling reconnection attempt...", server);
             }
             else
             {
-                logger.Error("Exception occurs on IPC method access on WorldServer {0} : {1} \nScheduling reconnection attempt...", world, ex);
+                logger.Error("Exception occurs on IPC method access on WorldServer {0} : {1} \nScheduling reconnection attempt...", server, ex);
             }
 
-            if (world != null)
-                Manager.RemoveWorld(world);
+            if (server != null)
+                Manager.RemoveWorld(server);
+
+            try
+            {
+                client.Close();
+            }
+            catch (Exception)
+            {
+                client.Abort();
+            }
         }
 
         private WorldServer GetServerByChannel(IContextChannel channel)

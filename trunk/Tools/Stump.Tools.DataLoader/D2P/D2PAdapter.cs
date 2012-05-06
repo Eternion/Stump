@@ -9,9 +9,9 @@ using Stump.Tools.DataLoader.Properties;
 
 namespace Stump.Tools.DataLoader
 {
-    public class D2PAdapter : IFileAdapter
+    public class D2PAdapter //: IFileAdapter
     {
-        public D2PAdapter()
+        /*public D2PAdapter()
         {
             m_form = new FormD2P(this);
 
@@ -117,6 +117,6 @@ namespace Stump.Tools.DataLoader
             }
 
             return files;
-        }
+        }*/
     }
 }

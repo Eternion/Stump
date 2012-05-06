@@ -43,7 +43,19 @@ namespace ArkalysPlugin.Commands
             set;
         }
 
-        public double RateMultiplicator
+        public double KamasRate
+        {
+            get;
+            set;
+        }
+
+        public double XPRate
+        {
+            get;
+            set;
+        }
+
+        public double StatsModifier
         {
             get;
             set;

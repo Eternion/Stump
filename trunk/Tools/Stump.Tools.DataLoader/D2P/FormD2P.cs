@@ -14,9 +14,9 @@ using Stump.Tools.DataLoader.Properties;
 
 namespace Stump.Tools.DataLoader
 {
-    public partial class FormD2P : Form, IFormAdapter
+    public partial class FormD2P : Form//, IFormAdapter
     {
-        #region WIN 32 
+        /*#region WIN 32 
 
         public const uint SHGFI_ICON = 0x100;
         public const uint SHGFI_LARGEICON = 0x0; // 'Large icon
@@ -369,6 +369,6 @@ namespace Stump.Tools.DataLoader
             public string szTypeName;
         } ;
 
-        #endregion
+        #endregion*/
     }
 }

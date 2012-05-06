@@ -34,13 +34,13 @@ namespace Stump.Server.BaseServer.IPC
         {
         }
 
-        public event Action<Exception> Error;
+        public event Action<WorldClientAdapter, Exception> Error;
 
         private void OnError(Exception ex)
         {
-            Action<Exception> handler = Error;
+            Action<WorldClientAdapter, Exception> handler = Error;
             if (handler != null)
-                handler(ex);
+                handler(this, ex);
         }
 
         public bool DisconnectClient(uint accountId)

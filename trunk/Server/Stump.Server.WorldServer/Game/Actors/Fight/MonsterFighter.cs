@@ -13,6 +13,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Formulas;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
@@ -82,7 +83,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (uint) random.Next(Monster.Template.MinDroppedKamas, Monster.Template.MaxDroppedKamas + 1);
         }
 
-        public override IEnumerable<DroppedItem> RollLoot(FightActor fighter)
+        public override IEnumerable<DroppedItem> RollLoot(CharacterFighter looter)
         {
             // have to be dead before
             if (!IsDead())
@@ -103,8 +104,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     if (droppableItem.DropLimit > 0 && m_dropsCount.ContainsKey(droppableItem) && m_dropsCount[droppableItem] >= droppableItem.DropLimit)
                         break;
 
-                    var chance = ( random.Next(0, 100) + random.NextDouble() ) * Rates.DropsRate;
-                    var dropRate = droppableItem.DropRate * ( fighter.Stats[PlayerFields.Prospecting] / 100d ) * ((Fight.AgeBonus / 100d) + 1);
+                    var chance = ( random.Next(0, 100) + random.NextDouble() );
+                    var dropRate = FightFormulas.AdjustDropChance(looter, droppableItem, Fight.AgeBonus);
 
                     if (dropRate >= chance)
                     {

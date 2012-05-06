@@ -1325,7 +1325,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
         }
 
-        public virtual IEnumerable<DroppedItem> RollLoot(FightActor fighter)
+        public virtual IEnumerable<DroppedItem> RollLoot(CharacterFighter looter)
         {
             return new DroppedItem[0];
         }

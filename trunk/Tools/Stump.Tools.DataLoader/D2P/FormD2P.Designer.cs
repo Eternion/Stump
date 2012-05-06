@@ -1,7 +1,7 @@
 ﻿namespace Stump.Tools.DataLoader
 {
     partial class FormD2P
-    {
+    {/*
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -201,6 +201,6 @@
         private System.Windows.Forms.ListView m_filesView;
         private System.Windows.Forms.ContextMenuStrip m_contextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem m_contextMenuExtract;
-
+        */
     }
 }
