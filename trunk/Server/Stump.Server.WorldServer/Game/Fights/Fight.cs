@@ -1564,26 +1564,23 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void TriggerMarks(Cell cell, FightActor trigger, TriggerType triggerType)
         {
-            var triggersToRemove = new List<MarkTrigger>();
+            var triggers = m_triggers.ToArray();
 
             // we use a copy 'cause a trigger can be deleted when a fighter die with it
-            foreach (MarkTrigger markTrigger in m_triggers.ToArray()) 
+            foreach (MarkTrigger markTrigger in triggers) 
             {
                 if (markTrigger.TriggerType == triggerType && markTrigger.ContainsCell(cell))
                 {
                     StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
-                    markTrigger.Trigger(trigger);
 
+                    // avoid the trigger to trggier twice
                     if (markTrigger is Trap)
-                        triggersToRemove.Add(markTrigger);
+                        RemoveTrigger(markTrigger); 
+                    
+                    markTrigger.Trigger(trigger);
 
                     EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
                 }
-            }
-
-            foreach (MarkTrigger markTrigger in triggersToRemove)
-            {
-                RemoveTrigger(markTrigger);
             }
         }
 

@@ -419,7 +419,7 @@ namespace Stump.Server.BaseServer.Network
 
         public int CountClientWithSameIp(IPAddress ipAddress)
         {
-            return m_clients.Count(t => t.Socket != null && ( (IPEndPoint)t.Socket.RemoteEndPoint ).Address.Equals(ipAddress));
+            return m_clients.Count(t => t.Socket != null && t.Socket.Connected && ( (IPEndPoint)t.Socket.RemoteEndPoint ).Address.Equals(ipAddress));
         }
     }
 }

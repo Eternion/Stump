@@ -1303,6 +1303,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (LifePoints + regainedLife > MaxLifePoints)
                 regainedLife = MaxLifePoints - LifePoints;
 
+
             if (regainedLife > 0)
             {
                 Stats.Health.DamageTaken -= (short) regainedLife;

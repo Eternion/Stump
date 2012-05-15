@@ -1168,7 +1168,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         }
 
         /// <summary>
-        ///   Calculate which cell our character will walk on once map changed. Returns 0 if not found
+        ///   Calculate which cell our character should walk on once map changed. Returns 0 if not found
         /// </summary>
         public short GetCellAfterChangeMap(short currentCell, MapNeighbour mapneighbour)
         {

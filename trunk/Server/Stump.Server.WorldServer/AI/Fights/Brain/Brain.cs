@@ -46,24 +46,32 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             var spell = SpellSelector.GetBestSpell();
             var target = Environment.GetNearestEnnemy();
 
-            var tree = new PrioritySelector(
-                new Decorator(ctx => target == null, new DecoratorContinue(new RandomMove(Fighter))),
-                new Decorator(ctx => spell == null, new DecoratorContinue(new FleeAction(Fighter))),
-                new PrioritySelector(
-                    new Decorator(ctx => Fighter.CanCastSpell(spell, target.Cell),
-                                  new Sequence(
-                                      new SpellCastAction(Fighter, spell, target.Cell, true),
-                                      new PrioritySelector(
-                                        new Decorator(ctx => target.LifePoints > Fighter.LifePoints, new FleeAction(Fighter)),
-                                        new Decorator(new MoveNearTo(Fighter, target)))))),
-                    new Sequence(
-                        new MoveNearTo(Fighter, target),
-                        new Decorator(ctx => Fighter.CanCastSpell(spell, target.Cell),
-                                      new Sequence(
-                                          new SpellCastAction(Fighter, spell, target.Cell, true),
-                                          new Decorator(ctx => target.LifePoints > Fighter.LifePoints, new FleeAction(Fighter))))));
+            var selector = new PrioritySelector();
+            selector.AddChild(new Decorator(ctx => target == null, new DecoratorContinue(new RandomMove(Fighter))));
+            selector.AddChild(new Decorator(ctx => spell == null, new DecoratorContinue(new FleeAction(Fighter))));
 
-            foreach (var action in tree.Execute(this))
+            if (target != null && spell != null)
+            {
+                selector.AddChild(new PrioritySelector(
+                                      new Decorator(ctx => Fighter.CanCastSpell(spell, target.Cell),
+                                                    new Sequence(
+                                                        new SpellCastAction(Fighter, spell, target.Cell, true),
+                                                        new PrioritySelector(
+                                                            new Decorator(
+                                                                ctx => target.LifePoints > Fighter.LifePoints,
+                                                                new FleeAction(Fighter)),
+                                                            new Decorator(new MoveNearTo(Fighter, target))))),
+                                      new Sequence(
+                                          new MoveNearTo(Fighter, target),
+                                          new Decorator(ctx => Fighter.CanCastSpell(spell, target.Cell),
+                                                        new Sequence(
+                                                            new SpellCastAction(Fighter, spell, target.Cell, true),
+                                                            new Decorator(
+                                                                ctx => target.LifePoints > Fighter.LifePoints,
+                                                                new FleeAction(Fighter)))))));
+            }
+
+            foreach (var action in selector.Execute(this))
             {
                 // tick the tree
             }
