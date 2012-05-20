@@ -61,6 +61,12 @@ namespace ArkalysPlugin.Commands
             set;
         }
 
+        public int[] SubAreas
+        {
+            get;
+            set;
+        }
+
         public bool CanJoinIsle(Character character)
         {
             return character.Level >= Level;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 using Stump.Core.Attributes;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Monsters;
@@ -15,6 +16,7 @@ namespace ArkalysPlugin.Commands
 {
     public class IsleRateModifiers
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         private static Dictionary<SubArea, Isle> m_isles = new Dictionary<SubArea, Isle>();
 
         [Variable]
@@ -26,23 +28,35 @@ namespace ArkalysPlugin.Commands
         [Initialization(typeof(World))]
         public static void Initialize()
         {
+            int i = 0;
             foreach (var isle in IsleCommand.ProfilsIsle)
             {
-                var area = World.Instance.GetMap(isle.StartMap).SubArea;
-                m_isles.Add(area, isle);
-
-                foreach (var spawn in area.Maps.SelectMany(entry => entry.MonsterSpawns).Distinct())
+                if (isle.SubAreas == null || isle.SubAreas.Length == 0)
                 {
-                    var monster = MonsterManager.Instance.GetTemplate(spawn.MonsterId);
+                    logger.Debug("Isle {0} has no subareas, Rates cannot be applied", i);
+                    continue;
+                }
 
-                    foreach (var grade in monster.Grades)
+                foreach (var subAreaId in isle.SubAreas)
+                {
+                    var area = World.Instance.GetSubArea(subAreaId);
+                    m_isles.Add(area, isle);
+
+                    foreach (var spawn in area.Maps.SelectMany(entry => entry.MonsterSpawns).Distinct())
                     {
-                        grade.Strength = (short)( grade.Strength * ( 1 / isle.StatsModifier ) );
-                        grade.Chance = (short)( grade.Chance * ( 1 / isle.StatsModifier ) );
-                        grade.Agility = (short)( grade.Agility * ( 1 / isle.StatsModifier ) );
-                        grade.Intelligence = (short)( grade.Intelligence * ( 1 / isle.StatsModifier ) );
+                        var monster = MonsterManager.Instance.GetTemplate(spawn.MonsterId);
+
+                        foreach (var grade in monster.Grades)
+                        {
+                            grade.Strength = (short)( grade.Strength * ( 1 / isle.StatsModifier ) );
+                            grade.Chance = (short)( grade.Chance * ( 1 / isle.StatsModifier ) );
+                            grade.Agility = (short)( grade.Agility * ( 1 / isle.StatsModifier ) );
+                            grade.Intelligence = (short)( grade.Intelligence * ( 1 / isle.StatsModifier ) );
+                        }
                     }
                 }
+
+                i++;
             }
 
             FightFormulas.WinXpModifier += WinXpModifier;

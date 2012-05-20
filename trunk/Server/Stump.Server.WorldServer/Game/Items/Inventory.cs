@@ -434,6 +434,9 @@ namespace Stump.Server.WorldServer.Game.Items
             if (!HasItem(item.Guid) || !item.IsUsable())
                 return false;
 
+            if (Owner.IsInFight())
+                return false;
+
             if (!item.AreConditionFilled(Owner))
             {
                 if (send)
