@@ -23,6 +23,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             if (!Fighter.CanMove())
                 return RunStatus.Failure;
 
+            if (From == null)
+                return RunStatus.Failure;
+
             var orientation = From.Position.Point.OrientationTo(Fighter.Position.Point);
             var destination = Fighter.Position.Point.GetCellInDirection(orientation, (short) Fighter.MP);
 

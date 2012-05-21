@@ -18,6 +18,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 {
     public abstract class SpellEffectHandler : EffectHandler
     {
+        private FightActor[] m_customAffectedActors;
         private Cell[] m_affectedCells;
         private MapPoint m_castPoint;
         private Zone m_effectZone;
@@ -171,6 +172,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public IEnumerable<FightActor> GetAffectedActors()
         {
+            if (m_customAffectedActors != null)
+                return m_customAffectedActors;
+
             if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF))
                 return new[] {Caster};
 
@@ -179,6 +183,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public IEnumerable<FightActor> GetAffectedActors(Predicate<FightActor> predicate)
         {
+            if (m_customAffectedActors != null)
+                return m_customAffectedActors;
+
             if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) && predicate(Caster))
                 return new[] {Caster};
 
@@ -187,6 +194,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
 
             return GetAffectedActors().Where(entry => predicate(entry)).ToArray();
+        }
+
+        public void SetAffectedActors(IEnumerable<FightActor> actors)
+        {
+            m_customAffectedActors = actors.ToArray();
         }
 
         public StatBuff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, bool dispelable)

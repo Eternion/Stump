@@ -9,9 +9,10 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts
 {
+    [DefaultSpellCastHandler]
     public class DefaultSpellCastHandler : SpellCastHandler
     {
-        private bool m_initialized;
+        protected bool m_initialized;
 
         public DefaultSpellCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(caster, spell, targetedCell, critical)

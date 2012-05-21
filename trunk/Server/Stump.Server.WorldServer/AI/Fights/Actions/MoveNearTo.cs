@@ -24,6 +24,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             if (!Fighter.CanMove())
                 return RunStatus.Failure;
 
+            if (Target == null)
+                return RunStatus.Failure;
+
             var cellInfoProvider = new AIFightCellsInformationProvider(Fighter.Fight, Fighter);
 
             if (Fighter.Position.Point.IsAdjacentTo(Target.Position.Point))

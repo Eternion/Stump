@@ -45,6 +45,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
 
         protected override RunStatus Run(object context)
         {
+            if (Spell == null)
+                return RunStatus.Failure;
+
             if (!Fighter.CanCastSpell(Spell, Target))
                 return RunStatus.Failure;
 

@@ -323,11 +323,14 @@
     <Compile Include="Game\Social\FriendsBook.cs" />
     <Compile Include="Game\Social\Ignored.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\DefaultSpellCastHandlerAttribute.cs" />
+    <Compile Include="Game\Spells\Casts\LivingChestCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\SpellCastHandler.cs" />
     <Compile Include="Game\Fights\TimeLine.cs" />
     <Compile Include="Game\Jobs\Job.cs" />
     <Compile Include="Game\Jobs\JobsCollection.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Single.cs" />
+    <Compile Include="Game\Spells\Casts\SpellCastHandlerAttribute.cs" />
     <Compile Include="Handlers\Actions\ActionsFightHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsSequenceHandler.cs" />

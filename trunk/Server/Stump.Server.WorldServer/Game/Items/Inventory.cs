@@ -322,6 +322,9 @@ namespace Stump.Server.WorldServer.Game.Items
             if (!CanEquip(item, position))
                 return;
 
+            if (position == item.Position)
+                return;
+
             CharacterInventoryPositionEnum oldPosition = item.Position;
 
             PlayerItem equipedItem;

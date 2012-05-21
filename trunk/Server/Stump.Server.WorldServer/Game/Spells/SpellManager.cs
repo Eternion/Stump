@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using NLog;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
@@ -18,6 +20,8 @@ namespace Stump.Server.WorldServer.Game.Spells
 {
     public class SpellManager : Singleton<SpellManager>
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private Dictionary<uint, SpellLevelTemplate> m_spellsLevels;
         private Dictionary<int, SpellTemplate> m_spells;
         private Dictionary<int, SpellType> m_spellsTypes;
@@ -38,6 +42,35 @@ namespace Stump.Server.WorldServer.Game.Spells
             m_spells = SpellTemplate.FindAll().ToDictionary(entry => entry.Id);
             m_spellsTypes = SpellType.FindAll().ToDictionary(entry => entry.Id);
             m_spellsState = SpellState.FindAll().ToDictionary(entry => entry.Id);
+
+            InitializeHandlers();
+        }
+
+
+        private void InitializeHandlers()
+        {
+            foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(entry => entry.IsSubclassOf(typeof(SpellCastHandler)) && !entry.IsAbstract))
+            {
+                if (type.GetCustomAttribute<DefaultSpellCastHandlerAttribute>() != null)
+                    continue; // we don't mind about default handlers
+
+                var attribute = type.GetCustomAttributes<SpellCastHandlerAttribute>().SingleOrDefault();
+
+                if (attribute == null)
+                {
+                    logger.Error("SpellCastHandler '{0}' has no SpellCastHandlerAttribute, or more than 1", type.Name);
+                    continue;
+                }
+
+                var spell = GetSpellTemplate(attribute.Spell);
+
+                if (spell == null)
+                {
+                    logger.Error("SpellCastHandler '{0}' -> Spell {1} not found", type.Name, attribute.Spell);
+                }
+
+                AddSpellCastHandler(type, spell);
+            }
         }
 
         public CharacterSpellRecord CreateSpellRecord(CharacterRecord owner, SpellTemplate template)
@@ -132,13 +165,12 @@ namespace Stump.Server.WorldServer.Game.Spells
             return null;
         }
 
-        public void AddSpellCastHandler(SpellEffectHandler handler, SpellTemplate spell)
+        public void AddSpellCastHandler(Type handler, SpellTemplate spell)
         {
-            var type = handler.GetType();
-            var ctor = type.GetConstructor(new[] { typeof(FightActor), typeof(Spell), typeof(Cell), typeof(bool) });
+            var ctor = handler.GetConstructor(new[] { typeof(FightActor), typeof(Spell), typeof(Cell), typeof(bool) });
 
             if (ctor == null)
-                throw new Exception("No valid constructors found ! ");
+                throw new Exception(string.Format("Handler {0} : No valid constructor found !", handler.Name));
 
             m_spellsCastHandler.Add(spell.Id, ctor.CreateDelegate<SpellCastConstructor>());
         }
