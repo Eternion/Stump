@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     return false;
 
                 var damageRate = 0d;
-                var life = Caster.LifePoints / Caster.MaxLifePoints;
+                var life = (double)Caster.LifePoints / Caster.MaxLifePoints;
 
                 if (life <= 0.5)
                     damageRate = 2 * life;
