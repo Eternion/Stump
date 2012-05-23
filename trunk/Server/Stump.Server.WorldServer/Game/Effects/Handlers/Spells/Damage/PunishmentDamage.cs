@@ -41,13 +41,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel)
                 {
                     NotifySpellReflected(actor);
-                    Caster.InflictDamage(damages, EffectSchoolEnum.Neutral, Caster, Caster is CharacterFighter, Spell);
+                    Caster.InflictDirectDamage(damages, Caster);
 
                     actor.RemoveAndDispellBuff(buff);
                 }
                 else
                 {
-                    short inflictedDamage = actor.InflictDamage(damages, EffectSchoolEnum.Neutral, Caster, actor is CharacterFighter, Spell);
+                    short inflictedDamage = actor.InflictDirectDamage(damages, Caster);
                 }
             }
 
