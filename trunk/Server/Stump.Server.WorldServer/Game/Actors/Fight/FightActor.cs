@@ -694,8 +694,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void ExchangePositions(FightActor with)
         {
+            var cell = Cell;
+            
             Cell = with.Cell;
-            with.Cell = Cell;
+            with.Cell = cell;
 
             ActionsHandler.SendGameActionFightExchangePositionsMessage(Fight.Clients, this, with);
         }
