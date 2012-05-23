@@ -145,21 +145,25 @@ namespace Stump.Server.BaseServer
             InstanceAsBase = this;
             Initializing = true;
 
+            /* Initialize Logger */
+            NLogHelper.DefineLogProfile(true, true);
+            NLogHelper.EnableLogging();
+            logger = LogManager.GetCurrentClassLogger();
+
             if (!Debugger.IsAttached)
             {
                 AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
                 TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
                 Contract.ContractFailed += OnContractFailed;
             }
+            else
+            {
+                logger.Warn("Exceptions not handled cause Debugger is attatched");
+            }
 
             PreLoadReferences(Assembly.GetCallingAssembly());
             LoadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToDictionary(entry => entry.GetName().Name);
             AppDomain.CurrentDomain.AssemblyLoad += OnAssemblyLoad;
-
-            /* Initialize Logger */
-            NLogHelper.DefineLogProfile(true, true);
-            NLogHelper.EnableLogging();
-            logger = LogManager.GetCurrentClassLogger();
 
             if (Environment.GetCommandLineArgs().Contains("-config"))
             {

@@ -10,6 +10,7 @@ using Stump.Server.WorldServer.Game.Spells;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 {
     [EffectHandler(EffectsEnum.Effect_ChangeAppearance)]
+    [EffectHandler(EffectsEnum.Effect_ChangeAppearance_335)]
     public class ChangeSkin : SpellEffectHandler
     {
         public ChangeSkin(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)

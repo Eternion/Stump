@@ -761,7 +761,7 @@
         /// <summary>
         /// Change appearance
         /// </summary>
-        Effect_335 = 335,
+        Effect_ChangeAppearance_335 = 335,
         /// <summary>
         /// Sets a grade #2 trap
         /// </summary>
@@ -1443,6 +1443,7 @@
         /// 2
         /// </summary>
         Effect_1002 = 1002,
+        Effect_IncreaseDamage_1054 = 1054,
         Effect_SubResistances = 1077,
         Effect_AddVitalityPercent = 1078,
         End,

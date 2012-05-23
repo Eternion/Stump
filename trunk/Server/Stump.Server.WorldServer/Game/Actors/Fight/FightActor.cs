@@ -662,7 +662,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
                 if (reflected > 0)
                 {
-                    from.InflictDamage(reflected, school, this, pvp);
+                    from.InflictDirectDamage(reflected, this);
                     OnDamageReflected(from, reflected);
                 }
             }
@@ -690,6 +690,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public short Heal(short healPoints, FightActor from)
         {
             return HealDirect(from.CalculateHeal(healPoints), from);
+        }
+
+        public void ExchangePositions(FightActor with)
+        {
+            Cell = with.Cell;
+            with.Cell = Cell;
+
+            ActionsHandler.SendGameActionFightExchangePositionsMessage(Fight.Clients, this, with);
         }
 
         #region Formulas
@@ -1008,7 +1016,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool BuffMaxStackReached(Buff buff)
         {
-            return buff.Spell.CurrentSpellLevel.MaxStack > 0 && buff.Spell.CurrentSpellLevel.MaxStack <= m_buffList.Count(entry => entry.Spell == buff.Spell);
+            return buff.Spell.CurrentSpellLevel.MaxStack > 0 && buff.Spell.CurrentSpellLevel.MaxStack <= m_buffList.Count(entry => entry.Spell == buff.Spell && entry.Effect.EffectId == buff.Effect.EffectId);
         }
 
         public bool AddAndApplyBuff(Buff buff, bool freeIdIfFail = true)
@@ -1070,6 +1078,25 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             foreach (var buff in copyOfBuffs)
             {
                 RemoveAndDispellBuff(buff);
+            }
+        }
+
+        public void RemoveAndDispellAllBuffs(FightActor caster)
+        {
+            var copyOfBuffs = m_buffList.ToArray();
+
+            foreach (var buff in copyOfBuffs)
+            {
+                if (buff.Caster == caster)
+                    RemoveAndDispellBuff(buff);
+            }
+        }
+
+        public void RemoveAllCastedBuffs()
+        {
+            foreach (var fighter in Fight.GetAllFighters())
+            {
+                fighter.RemoveAndDispellAllBuffs(this);
             }
         }
 
@@ -1146,6 +1173,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             return m_buffedSpells[spell];
         }
+
 
         #endregion
 

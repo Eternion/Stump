@@ -7,12 +7,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
     public class DodgeBuff : Buff
     {
-        public DodgeBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable) : base(id, target, caster, effect, spell, critical, dispelable)
+        public DodgeBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, int dodgePercent, int backCellsCount) : base(id, target, caster, effect, spell, critical, dispelable)
         {
+            DodgePercent = dodgePercent;
+            BackCellsCount = backCellsCount;
         }
 
-        public DodgeBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, short customActionId) : base(id, target, caster, effect, spell, critical, dispelable, customActionId)
+        public DodgeBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, short customActionId, int dodgePercent, int backCellsCount) : base(id, target, caster, effect, spell, critical, dispelable, customActionId)
         {
+            DodgePercent = dodgePercent;
+            BackCellsCount = backCellsCount;
         }
 
         public int DodgePercent
@@ -29,17 +33,19 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
         public override void Apply()
         {
-            throw new System.NotImplementedException();
+
         }
 
         public override void Dispell()
         {
-            throw new System.NotImplementedException();
+
         }
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {
-            throw new System.NotImplementedException();
+            var values = Effect.GetValues();
+
+            return new FightTriggeredEffect(Id, Target.Id, Duration, (sbyte)( Dispelable ? 0 : 1 ), (short)Spell.Id, 0, (short)values[0], (short)values[1], (short)values[2], 0);
         }
     }
 }

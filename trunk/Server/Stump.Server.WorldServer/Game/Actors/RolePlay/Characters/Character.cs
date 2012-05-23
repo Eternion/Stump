@@ -846,12 +846,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         #region Chat
         public void SendServerMessage(string message)
         {
-            ChatHandler.SendChatServerMessage(Client, message);
+            BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 0, message);
         }
 
         public void SendServerMessage(string message, Color color)
         {
             SendServerMessage(string.Format("<font color=\"#{0}\">{1}</font>", color.ToArgb().ToString("X"), message));
+        }
+
+        public void OpenSystemPopup(short msgId, bool hangUp, params object[] parameters)
+        {
+            BasicHandler.SendSystemMessageDisplayMessage(Client, hangUp, msgId, parameters);
         }
 
         public void OpenPopup(string message)
@@ -1516,8 +1521,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     m_record.Vitality = Stats[PlayerFields.Vitality].Base;
                     m_record.BaseHealth = (ushort) Stats.Health.Base;
                     m_record.DamageTaken = (ushort) Stats.Health.DamageTaken;
-
-                    m_record.EntityLook = Look;
 
                     m_record.Save();
 

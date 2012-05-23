@@ -294,7 +294,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public bool CheckFightEnd()
         {
-            if (RedTeam.AreAllDead() || BlueTeam.AreAllDead())
+            if (RedTeam.AreAllDead() || BlueTeam.AreAllDead() ||
+                Clients.Count <= 0)
             {
                 EndFight();
                 return true;
@@ -1155,6 +1156,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             ActionsHandler.SendGameActionFightDeathMessage(Clients, fighter);
 
             fighter.KillAllSummons();
+            fighter.RemoveAndDispellAllBuffs();
+            fighter.RemoveAllCastedBuffs();
 
             EndSequence(SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH);
 

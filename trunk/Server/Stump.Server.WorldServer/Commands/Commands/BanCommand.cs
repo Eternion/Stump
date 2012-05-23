@@ -61,6 +61,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
 
             target.Client.Disconnect();
+            trigger.Reply("Account {0} banned", target.Account.Nickname);
         }
     }
 }

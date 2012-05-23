@@ -271,6 +271,9 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public bool CanEquip(PlayerItem item, CharacterInventoryPositionEnum position, bool send = true)
         {
+            if (Owner.IsInFight())
+                return false;
+
             if (position == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
                 return true;
 

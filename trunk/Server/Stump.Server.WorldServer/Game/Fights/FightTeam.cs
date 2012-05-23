@@ -212,7 +212,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
         public bool AreAllDead()
         {
-            return m_fighters.Count <= 0 || m_fighters.All(entry => entry.IsDead());
+            return m_fighters.Count <= 0 || m_fighters.All(entry => entry.IsDead() || entry.HasLeft());
         }
 
         public bool IsFull()

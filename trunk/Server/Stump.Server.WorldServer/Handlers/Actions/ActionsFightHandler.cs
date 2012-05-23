@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Items.Templates;
@@ -99,6 +100,16 @@ namespace Stump.Server.WorldServer.Handlers.Actions
                 action = ActionsEnum.ACTION_FIGHT_CLOSE_COMBAT_CRITICAL_HIT;
 
             client.Send(new GameActionFightCloseCombatMessage((short)action, source.Id, cell.Id, (sbyte)castCritical, silentCast, weapon.Id));
+        }
+
+        public static void SendGameActionFightChangeLookMessage(IPacketReceiver client, FightActor source, FightActor target, EntityLook look)
+        {
+            client.Send(new GameActionFightChangeLookMessage((short)ActionsEnum.ACTION_CHARACTER_CHANGE_LOOK, source.Id, target.Id, look));
+        }
+
+        public static void SendGameActionFightExchangePositionsMessage(IPacketReceiver client, FightActor caster, FightActor target)
+        {
+            client.Send(new GameActionFightExchangePositionsMessage((short)ActionsEnum.ACTION_CHARACTER_EXCHANGE_PLACES, caster.Id, target.Id, caster.Cell.Id, target.Cell.Id));
         }
     }
 }

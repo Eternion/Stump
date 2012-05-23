@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Handlers.Actions;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
@@ -37,11 +38,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         {
             OriginalLook = Target.Look.Copy();
             Target.Look = Look.Copy();
+
+            ActionsHandler.SendGameActionFightChangeLookMessage(Target.Fight.Clients, Caster, Target, Target.Look);
         }
 
         public override void Dispell()
         {
             Target.Look = OriginalLook.Copy();
+
+            ActionsHandler.SendGameActionFightChangeLookMessage(Target.Fight.Clients, Caster, Target, Target.Look);
         }
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()

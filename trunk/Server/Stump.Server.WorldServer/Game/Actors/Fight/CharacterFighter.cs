@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Attributes;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -381,6 +382,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             return base.LostMP(amount);
         }
+
 
         public override short CalculateArmorReduction(EffectSchoolEnum damageType)
         {

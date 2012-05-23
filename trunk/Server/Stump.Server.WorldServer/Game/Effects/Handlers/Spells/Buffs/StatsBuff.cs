@@ -20,6 +20,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
     [EffectHandler(EffectsEnum.Effect_AddDamageBonus)]
     [EffectHandler(EffectsEnum.Effect_AddDamageBonus_121)]
     [EffectHandler(EffectsEnum.Effect_IncreaseDamage_138)]
+    [EffectHandler(EffectsEnum.Effect_IncreaseDamage_1054)]
     [EffectHandler(EffectsEnum.Effect_AddDamageBonusPercent)]
     [EffectHandler(EffectsEnum.Effect_AddDamageReflection)]
     [EffectHandler(EffectsEnum.Effect_AddPhysicalDamage_137)]
@@ -76,6 +77,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 case EffectsEnum.Effect_AddDamageBonus_121:
                     return PlayerFields.DamageBonus;
                 case EffectsEnum.Effect_IncreaseDamage_138:
+                case EffectsEnum.Effect_IncreaseDamage_1054:
                 case EffectsEnum.Effect_AddDamageBonusPercent:
                     return PlayerFields.DamageBonusPercent;
                 case EffectsEnum.Effect_AddDamageReflection:

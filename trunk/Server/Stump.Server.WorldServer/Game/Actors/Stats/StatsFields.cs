@@ -101,7 +101,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
                          
             Fields.Add(PlayerFields.Initiative, new StatsInitiative(Owner, 0));
             Fields.Add(PlayerFields.Prospecting, new StatsData(Owner, PlayerFields.Prospecting, (short) record.Prospection, FormulasChanceDependant));
-            Fields.Add(PlayerFields.AP, new StatsAP(Owner, (short) record.AP));
+            Fields.Add(PlayerFields.AP, new StatsAP(Owner, (short) record.AP, true));
             Fields.Add(PlayerFields.MP, new StatsMP(Owner, (short) record.MP));
             Fields.Add(PlayerFields.Strength, new StatsData(Owner, PlayerFields.Strength, record.Strength));
             Fields.Add(PlayerFields.Vitality, new StatsData(Owner, PlayerFields.Vitality, record.Vitality));                             
