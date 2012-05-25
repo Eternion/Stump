@@ -42,5 +42,11 @@ namespace Stump.Server.AuthServer.Database.Account
             set;
         }
 
+        [Version]
+        public int RecordVersion
+        {
+            get;
+            set;
+        }
     }
 }

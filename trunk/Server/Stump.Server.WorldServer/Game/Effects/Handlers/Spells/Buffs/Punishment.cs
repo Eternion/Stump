@@ -31,13 +31,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         {
             var buffs = buff.Target.GetBuffs(entry => entry.Spell == Spell).OfType<StatBuff>();
 
+            var currentBonus = buffs.Sum(entry => entry.Value);
+            var limit = Dice.DiceFace;
             // limit reached
-            if (buffs.Sum(entry => entry.Value) >= Dice.DiceFace)
+            if (currentBonus >= limit)
                 return;
+
+            var bonus = (short)token;
+
+            if (bonus + currentBonus > limit)
+                bonus = (short) (limit - currentBonus);
 
             var caracteristic = GetPunishmentBoostType(Dice.DiceNum);
             var statBuff = new StatBuff(buff.Target.PopNextBuffId(), buff.Target, Caster, Dice,
-                Spell, (short)token, caracteristic, false, true, (short) GetBuffEffectId(caracteristic)) 
+                Spell, bonus, caracteristic, false, true, (short)GetBuffEffectId(caracteristic)) 
                 {Duration = Dice.Value};
 
             buff.Target.AddAndApplyBuff(statBuff);
@@ -58,7 +65,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 case ActionsEnum.ACTION_CHARACTER_BOOST_WISDOM:
                     return PlayerFields.Wisdom;
                 case ActionsEnum.ACTION_CHARACTER_BOOST_VITALITY:
-                case ActionsEnum.ACTION_CHARACTER_BOOST_VITALIT_407: // **** magic numbers
+                case ActionsEnum.ACTION_CHARACTER_BOOST_VITALITY_407: // **** magic numbers
                     return PlayerFields.Vitality;
 
                 default:

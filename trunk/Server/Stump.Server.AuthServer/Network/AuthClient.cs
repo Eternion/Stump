@@ -61,12 +61,14 @@ namespace Stump.Server.AuthServer.Network
 
         public void Save()
         {
-            AuthServer.Instance.IOTaskPool.AddMessage(() => Account.Save());
+            AuthServer.Instance.IOTaskPool.AddMessage(() => SaveNow());
         }
 
         public void SaveNow()
         {
-            Account.Save();
+            Account.Tokens += Account.NewTokens;
+            Account.NewTokens = 0;
+            Account.Update();
         }
 
 

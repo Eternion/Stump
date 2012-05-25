@@ -156,11 +156,26 @@ namespace Stump.Server.AuthServer.Database.Account
         }
 
         [Property]
+        public int NewTokens
+        {
+            get;
+            set;
+        }
+
+        [Property]
         public DateTime? LastVote
         {
             get;
             set;
         }
+
+        [Version]
+        public int RecordVersion
+        {
+            get;
+            set;
+        }
+
 
         public List<PlayableBreedEnum> AvailableBreeds
         {

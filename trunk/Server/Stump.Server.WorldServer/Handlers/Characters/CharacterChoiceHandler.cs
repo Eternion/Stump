@@ -161,10 +161,10 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 client.WorldAccount.LastConnection = DateTime.Now;
                 client.WorldAccount.LastIp = client.IP;
                 client.WorldAccount.ConnectedCharacterId = character.Id;
-                client.WorldAccount.Save();
+                client.WorldAccount.Update();
 
                 character.LastUsage = DateTime.Now;
-                character.Save();
+                character.Update();
 
                 session.Flush();
             }

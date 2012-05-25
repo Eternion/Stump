@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -74,7 +75,11 @@ namespace Stump.Server.BaseServer.Database
 
             var connectionInfos = m_config.GetConnectionInfo();
 #if DEBUG
-            //connectionInfos.Add("show_sql", "true");
+            if (File.Exists("nh_debug.xml"))
+            {
+                m_globalConfig.SetDebugFlag(true);
+                log4net.Config.XmlConfigurator.Configure(new FileInfo("nh_debug.xml"));
+            }
 #endif
             m_globalConfig.Add(m_recordBaseType, connectionInfos);
             NHibernate.Cfg.Environment.UseReflectionOptimizer = true;

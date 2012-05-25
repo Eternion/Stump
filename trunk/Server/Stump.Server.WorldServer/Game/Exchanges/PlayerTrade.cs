@@ -95,6 +95,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
         private void OnTraderItemMoved(ITrader trader, PlayerItem item, bool modified, int difference)
         {
+            FirstTrader.ToggleReady(false);
+            SecondTrader.ToggleReady(false);
+
             if (item.Stack == 0)
             {
                 InventoryHandler.SendExchangeObjectRemovedMessage(FirstTrader.Character.Client, false, item.Guid);
@@ -115,6 +118,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
         private void OnTraderKamasChanged(ITrader trader, uint amount)
         {
+            FirstTrader.ToggleReady(false);
+            SecondTrader.ToggleReady(false);
+
             InventoryHandler.SendExchangeKamaModifiedMessage(FirstTrader.Character.Client, trader != FirstTrader,
                                                              (int) amount);
             InventoryHandler.SendExchangeKamaModifiedMessage(SecondTrader.Character.Client, trader != SecondTrader,

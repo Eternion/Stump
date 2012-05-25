@@ -102,7 +102,7 @@ namespace Stump.Server.WorldServer.Core.Network
                 if (WorldAccount != null)
                 {
                     WorldAccount.ConnectedCharacterId = null;
-                    WorldAccount.Save();
+                    WorldAccount.Update();
                 }
             });
 

@@ -182,7 +182,7 @@ namespace Stump.Server.AuthServer.Database.World
             Address = address;
             Port = port;
 
-            Update();
+            UpdateAndFlush();
         }
 
         public void SetOffline()
