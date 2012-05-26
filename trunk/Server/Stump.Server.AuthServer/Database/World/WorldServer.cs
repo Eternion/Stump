@@ -115,6 +115,9 @@ namespace Stump.Server.AuthServer.Database.World
 
         public void CloseSession()
         {
+            if (RemoteOperations == null)
+                return;
+
             try
             {
                 if (Channel != null)
@@ -133,6 +136,7 @@ namespace Stump.Server.AuthServer.Database.World
             {
             }
 
+            RemoteOperations = null;
             Channel = null;
             SessionId = null;
             RemoteEndpoint = null;
@@ -190,6 +194,7 @@ namespace Stump.Server.AuthServer.Database.World
             Status = ServerStatusEnum.OFFLINE;
             CharsCount = 0;
 
+            CloseSession();
             Update();
         }
 

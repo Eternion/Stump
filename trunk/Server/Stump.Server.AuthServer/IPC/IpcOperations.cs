@@ -55,15 +55,17 @@ namespace Stump.Server.AuthServer.IPC
             }
 
             if (server != null)
+            {
                 Manager.RemoveWorld(server);
 
-            try
-            {
-                client.Close();
-            }
-            catch (Exception)
-            {
-                client.Abort();
+                try
+                {
+                    client.Close();
+                }
+                catch (Exception)
+                {
+                    client.Abort();
+                }
             }
         }
 
