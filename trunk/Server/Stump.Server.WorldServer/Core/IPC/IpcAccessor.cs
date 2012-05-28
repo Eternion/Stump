@@ -111,8 +111,6 @@ namespace Stump.Server.WorldServer.Core.IPC
         public void Initialize()
         {
             IsConnected = false;
-            IpcHost = new IpcHost(typeof(IpcOperations), typeof(IRemoteWorldOperations), IpcWorldAddress);
-            IpcHost.Open();
         }
 
         /// <summary>
@@ -122,7 +120,7 @@ namespace Stump.Server.WorldServer.Core.IPC
         private bool Connect()
         {
             var binding = new NetTcpBinding {Security = {Mode = SecurityMode.None}};
-            var proxyobject = new AuthClientAdapter(binding, new EndpointAddress(IpcAuthAddress));
+            var proxyobject = new AuthClientAdapter(new InstanceContext(WorldServer.Instance), binding, new EndpointAddress(IpcAuthAddress));
             proxyobject.Error += OnOperationError;
 
             try

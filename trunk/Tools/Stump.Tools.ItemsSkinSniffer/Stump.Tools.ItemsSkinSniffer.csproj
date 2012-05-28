@@ -11,7 +11,8 @@
     <RootNamespace>Stump.Tools.ItemsSkinSniffer</RootNamespace>
     <AssemblyName>Stump.Tools.ItemsSkinSniffer</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -93,6 +94,9 @@
       <Project>{7A1BEAB5-1A69-48B6-B064-0F6F372AC23B}</Project>
       <Name>Stump.Server.WorldServer</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

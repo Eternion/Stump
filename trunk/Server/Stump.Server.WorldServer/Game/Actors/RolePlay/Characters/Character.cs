@@ -854,7 +854,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             SendServerMessage(string.Format("<font color=\"#{0}\">{1}</font>", color.ToArgb().ToString("X"), message));
         }
 
-        public void OpenSystemPopup(short msgId, bool hangUp, params object[] parameters)
+        public void SendSystemMessage(short msgId, bool hangUp, params object[] parameters)
         {
             BasicHandler.SendSystemMessageDisplayMessage(Client, hangUp, msgId, parameters);
         }

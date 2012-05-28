@@ -100,7 +100,7 @@ namespace Stump.Server.AuthServer.Database.World
             set;
         }
 
-        public WorldClientAdapter RemoteOperations
+        public IRemoteWorldOperations RemoteOperations
         {
             get;
             set;
@@ -129,8 +129,8 @@ namespace Stump.Server.AuthServer.Database.World
 
             try
             {
-                if (RemoteOperations != null)
-                    RemoteOperations.Close();
+                //if (RemoteOperations != null)
+                  //  RemoteOperations.Close();
             }
             catch
             {

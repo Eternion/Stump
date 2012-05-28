@@ -3,6 +3,7 @@ using System.CodeDom.Compiler;
 using System.Diagnostics;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
+using System.ServiceModel.Description;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.IPC.Objects;
 
@@ -10,29 +11,53 @@ namespace Stump.Server.BaseServer.IPC
 {
     [DebuggerStepThrough]
     [GeneratedCode("System.ServiceModel", "4.0.0.0")]
-    public class AuthClientAdapter : ClientBase<IRemoteAuthOperations>, IRemoteAuthOperations
+    public class AuthClientAdapter : DuplexClientBase<IRemoteAuthOperations>, IRemoteAuthOperations
     {
-        public AuthClientAdapter()
+        public AuthClientAdapter(object callbackInstance) : base(callbackInstance)
         {
         }
 
-        public AuthClientAdapter(string endpointConfigurationName)
-            : base(endpointConfigurationName)
+        public AuthClientAdapter(object callbackInstance, string endpointConfigurationName) : base(callbackInstance, endpointConfigurationName)
         {
         }
 
-        public AuthClientAdapter(string endpointConfigurationName, string remoteAddress)
-            : base(endpointConfigurationName, remoteAddress)
+        public AuthClientAdapter(object callbackInstance, string endpointConfigurationName, string remoteAddress) : base(callbackInstance, endpointConfigurationName, remoteAddress)
         {
         }
 
-        public AuthClientAdapter(string endpointConfigurationName, EndpointAddress remoteAddress)
-            : base(endpointConfigurationName, remoteAddress)
+        public AuthClientAdapter(object callbackInstance, string endpointConfigurationName, EndpointAddress remoteAddress) : base(callbackInstance, endpointConfigurationName, remoteAddress)
         {
         }
 
-        public AuthClientAdapter(Binding binding, EndpointAddress remoteAddress)
-            : base(binding, remoteAddress)
+        public AuthClientAdapter(object callbackInstance, Binding binding, EndpointAddress remoteAddress) : base(callbackInstance, binding, remoteAddress)
+        {
+        }
+
+        public AuthClientAdapter(object callbackInstance, ServiceEndpoint endpoint) : base(callbackInstance, endpoint)
+        {
+        }
+
+        public AuthClientAdapter(InstanceContext callbackInstance) : base(callbackInstance)
+        {
+        }
+
+        public AuthClientAdapter(InstanceContext callbackInstance, string endpointConfigurationName) : base(callbackInstance, endpointConfigurationName)
+        {
+        }
+
+        public AuthClientAdapter(InstanceContext callbackInstance, string endpointConfigurationName, string remoteAddress) : base(callbackInstance, endpointConfigurationName, remoteAddress)
+        {
+        }
+
+        public AuthClientAdapter(InstanceContext callbackInstance, string endpointConfigurationName, EndpointAddress remoteAddress) : base(callbackInstance, endpointConfigurationName, remoteAddress)
+        {
+        }
+
+        public AuthClientAdapter(InstanceContext callbackInstance, Binding binding, EndpointAddress remoteAddress) : base(callbackInstance, binding, remoteAddress)
+        {
+        }
+
+        public AuthClientAdapter(InstanceContext callbackInstance, ServiceEndpoint endpoint) : base(callbackInstance, endpoint)
         {
         }
 

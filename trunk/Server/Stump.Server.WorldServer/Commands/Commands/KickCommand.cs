@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             var target = GetTarget(trigger);
             var kicker = (trigger is GameTrigger) ? (trigger as GameTrigger).Character.Name : "Server";
 
-            target.OpenSystemPopup(18, true, kicker, string.Empty); // you were kicked by %1
+            target.SendSystemMessage(18, true, kicker, string.Empty); // you were kicked by %1
             target.Client.Disconnect();
 
             trigger.Reply("You have kicked {0}", target.Name);

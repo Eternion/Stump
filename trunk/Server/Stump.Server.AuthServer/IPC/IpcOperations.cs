@@ -26,6 +26,11 @@ namespace Stump.Server.AuthServer.IPC
             channel.Faulted += OnDisconnected;
         }
 
+        private IRemoteWorldOperations Callback
+        {
+            get { return OperationContext.Current.GetCallbackChannel<IRemoteWorldOperations>(); }
+        }
+
         private void OnDisconnected(object sender, EventArgs args)
         {
             WorldServer world = GetServerByChannel((IContextChannel) sender);
@@ -44,14 +49,15 @@ namespace Stump.Server.AuthServer.IPC
         {
             var server = Manager.GetServerBySessionId(client.InnerChannel.SessionId);
 
+
             if (ex is CommunicationException)
             {
                 // Connection got interrupted
-                logger.Warn("Lost connection to WorldServer {0}. Scheduling reconnection attempt...", server);
+                logger.Warn("Lost connection to WorldServer {0}.", server);
             }
             else
             {
-                logger.Error("Exception occurs on IPC method access on WorldServer {0} : {1} \nScheduling reconnection attempt...", server, ex);
+                logger.Error("Exception occurs on IPC method access on WorldServer {0} : {1}", server, ex);
             }
 
             if (server != null)
@@ -60,11 +66,11 @@ namespace Stump.Server.AuthServer.IPC
 
                 try
                 {
+                    client.Abort();
                     client.Close();
                 }
                 catch (Exception)
                 {
-                    client.Abort();
                 }
             }
         }
@@ -146,6 +152,7 @@ namespace Stump.Server.AuthServer.IPC
             {
                 try
                 {
+                    channel.Abort();
                     channel.Close();
                 }
                 catch (Exception)
@@ -155,21 +162,7 @@ namespace Stump.Server.AuthServer.IPC
                 return result != RegisterResultEnum.OK ? result : RegisterResultEnum.UnknownError;
             }
 
-            try
-            {
-                var binding = new NetTcpBinding {Security = {Mode = SecurityMode.None}};
-                var remoteClient = new WorldClientAdapter(binding, new EndpointAddress(remoteIpcAddress));
-                remoteClient.Open();
-                server.RemoteOperations = remoteClient;
-                remoteClient.Error += OnOperationError;
-            }
-            catch (Exception)
-            {
-                logger.Error("Cannot retrieve remote object from server {0} localized at {1}", serverData.Name, remoteIpcAddress);
-                Manager.RemoveWorld(server);
-
-                return RegisterResultEnum.IpcConnectionFailed;
-            }
+            server.RemoteOperations = Callback;
 
             return RegisterResultEnum.OK;
         }

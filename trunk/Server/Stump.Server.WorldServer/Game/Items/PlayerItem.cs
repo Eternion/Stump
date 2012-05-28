@@ -105,6 +105,14 @@ namespace Stump.Server.WorldServer.Game.Items
                     compared.Effects.CompareEnumerable(Effects));
         }
 
+        public bool IsLinked()
+        {
+            if (Template.Type.SuperType == ItemSuperTypeEnum.SUPERTYPE_QUEST)
+                return false;
+
+            return true;
+        }
+
         public bool IsUsable()
         {
             return Template.Usable;

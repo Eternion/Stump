@@ -67,6 +67,7 @@ namespace Stump.Server.WorldServer.Game.Spells
                 if (spell == null)
                 {
                     logger.Error("SpellCastHandler '{0}' -> Spell {1} not found", type.Name, attribute.Spell);
+                    continue;
                 }
 
                 AddSpellCastHandler(type, spell);

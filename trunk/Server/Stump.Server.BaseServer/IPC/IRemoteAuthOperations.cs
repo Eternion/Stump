@@ -5,19 +5,19 @@ using Stump.Server.BaseServer.IPC.Objects;
 
 namespace Stump.Server.BaseServer.IPC
 {
-    [ServiceContract]
+    [ServiceContract(CallbackContract = typeof(IRemoteWorldOperations), SessionMode = SessionMode.Required)]
     public interface IRemoteAuthOperations
     {
-        [OperationContract]
+        [OperationContract(IsInitiating = true)]
         RegisterResultEnum RegisterWorld(WorldServerData serverData, string remoteIpcAddress);
 
-        [OperationContract]
+        [OperationContract(IsOneWay=true, IsTerminating = true)]
         void UnRegisterWorld();
 
-        [OperationContract]
+        [OperationContract(IsOneWay=true)]
         void ChangeState(ServerStatusEnum state);
 
-        [OperationContract]
+        [OperationContract(IsOneWay = true)]
         void UpdateConnectedChars(int value);
 
         [OperationContract]

@@ -51,6 +51,7 @@ namespace Stump.Server.BaseServer.IPC
                                       {
                                           Mode = SecurityMode.None,
                                       },
+                                  ReceiveTimeout = TimeSpan.FromSeconds(10),
                               };
 
             ServiceEndpoint endPoint = m_host.AddServiceEndpoint(

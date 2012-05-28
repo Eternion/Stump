@@ -25,6 +25,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Handler;
+using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.BaseServer.Plugins;
@@ -39,7 +40,7 @@ using TreeSharp;
 
 namespace Stump.Server.WorldServer
 {
-    public class WorldServer : ServerBase<WorldServer>
+    public class WorldServer : ServerBase<WorldServer>, IRemoteWorldOperations
     {
         /// <summary>
         /// Current server adress
@@ -169,6 +170,18 @@ namespace Stump.Server.WorldServer
             {
                 client.DisconnectAfk();
             }
+        }
+
+        public bool DisconnectClient(uint accountId)
+        {
+            IEnumerable<WorldClient> clients = WorldServer.Instance.FindClients(client => client.Account != null && client.Account.Id == accountId);
+
+            foreach (WorldClient client in clients)
+            {
+                client.Disconnect();
+            }
+
+            return clients.Any();
         }
 
         protected override void OnShutdown()

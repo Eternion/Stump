@@ -1,5 +1,6 @@
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Exchanges
@@ -98,21 +99,27 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             FirstTrader.ToggleReady(false);
             SecondTrader.ToggleReady(false);
 
+            if (item.IsLinked())
+            {
+                BasicHandler.SendTextInformationMessage((trader as PlayerTrader).Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 345, item.Template.Id, item.Guid);
+                return;
+            }
+
             if (item.Stack == 0)
             {
-                InventoryHandler.SendExchangeObjectRemovedMessage(FirstTrader.Character.Client, false, item.Guid);
-                InventoryHandler.SendExchangeObjectRemovedMessage(SecondTrader.Character.Client, false, item.Guid);
+                InventoryHandler.SendExchangeObjectRemovedMessage(FirstTrader.Character.Client, trader != FirstTrader, item.Guid);
+                InventoryHandler.SendExchangeObjectRemovedMessage(SecondTrader.Character.Client, trader != SecondTrader, item.Guid);
             }
 
             if (modified)
             {
-                InventoryHandler.SendExchangeObjectModifiedMessage(FirstTrader.Character.Client, false, item);
-                InventoryHandler.SendExchangeObjectModifiedMessage(SecondTrader.Character.Client, false, item);
+                InventoryHandler.SendExchangeObjectModifiedMessage(FirstTrader.Character.Client, trader != FirstTrader, item);
+                InventoryHandler.SendExchangeObjectModifiedMessage(SecondTrader.Character.Client, trader != SecondTrader, item);
             }
             else
             {
-                InventoryHandler.SendExchangeObjectAddedMessage(FirstTrader.Character.Client, false, item);
-                InventoryHandler.SendExchangeObjectAddedMessage(SecondTrader.Character.Client, false, item);
+                InventoryHandler.SendExchangeObjectAddedMessage(FirstTrader.Character.Client, trader != FirstTrader, item);
+                InventoryHandler.SendExchangeObjectAddedMessage(SecondTrader.Character.Client, trader != SecondTrader, item);
             }
         }
 
