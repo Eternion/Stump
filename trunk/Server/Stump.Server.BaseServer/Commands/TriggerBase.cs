@@ -201,7 +201,7 @@ namespace Stump.Server.BaseServer.Commands
             var paramToDefine = new List<IParameterDefinition>(BindedCommand.Parameters);
 
             // command has only a string parameter -> then we can assign the entire string to this parameter
-            if (paramToDefine.Count == 1 && paramToDefine[0].ValueType == typeof(string))
+            if (paramToDefine.Count == 1 && paramToDefine[0].ValueType == typeof(string) && !paramToDefine[0].IsOptional)
             {
                 var param = paramToDefine[0].CreateParameter();
 

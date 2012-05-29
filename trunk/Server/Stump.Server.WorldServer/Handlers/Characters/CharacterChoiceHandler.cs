@@ -22,6 +22,7 @@ using Stump.Server.WorldServer.Handlers.Initialization;
 using Stump.Server.WorldServer.Handlers.Inventory;
 using Stump.Server.WorldServer.Handlers.PvP;
 using Stump.Server.WorldServer.Handlers.Shortcuts;
+using Stump.Server.WorldServer.Handlers.Startup;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
 {
@@ -176,6 +177,12 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             if (client.Account != null && client.Account.Login != "")
             {
                 SendCharactersListMessage(client);
+
+
+                if (client.WorldAccount != null && client.StartupActions.Count > 0)
+                {
+                    StartupHandler.SendStartupActionsListMessage(client, client.StartupActions);
+                }
             }
             else
             {

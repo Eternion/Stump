@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             {
                 MapPoint referenceCell;
                 if (TargetedCell.Id == actor.Cell.Id)
-                    referenceCell = new MapPoint(CastCell);
+                    continue;
                 else
                     referenceCell = TargetedPoint;
 

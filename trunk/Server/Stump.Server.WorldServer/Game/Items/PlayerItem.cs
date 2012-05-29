@@ -110,7 +110,15 @@ namespace Stump.Server.WorldServer.Game.Items
             if (Template.Type.SuperType == ItemSuperTypeEnum.SUPERTYPE_QUEST)
                 return false;
 
+            if (IsTokenItem())
+                return false;
+
             return true;
+        }
+
+        public bool IsTokenItem()
+        {
+            return Inventory.ActiveTokens && Template.Id == Inventory.TokenTemplateId;
         }
 
         public bool IsUsable()

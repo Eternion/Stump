@@ -1,6 +1,9 @@
 using Castle.ActiveRecord;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Conditions;
+using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Database.Npcs
 {
@@ -28,6 +31,31 @@ namespace Stump.Server.WorldServer.Database.Npcs
             set;
         }
 
+        [Property("Criteria")]
+        public string Criteria
+        {
+            get;
+            set;
+        }
+
+        private ConditionExpression m_criteriaExpression;
+
+        public ConditionExpression CriteriaExpression
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Criteria) || Criteria == "null")
+                    return null;
+
+                return m_criteriaExpression ?? ( m_criteriaExpression = ConditionExpression.Parse(Criteria) );
+            }
+            set
+            {
+                m_criteriaExpression = value;
+                Criteria = value.ToString();
+            }
+        }
+
         private NpcMessage m_message;
         public NpcMessage Message
         {
@@ -42,6 +70,15 @@ namespace Stump.Server.WorldServer.Database.Npcs
             }
         }
 
-        public abstract void Execute(Npc npc, Character character);
+        public virtual bool Execute(Npc npc, Character character)
+        {
+            if (CriteriaExpression != null && !CriteriaExpression.Eval(character))
+            {
+                BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 34);
+                return false;
+            }
+
+            return true;
+        }
     }
 }

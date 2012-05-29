@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel)
                 {
                     NotifySpellReflected(actor);
-                    Caster.InflictDirectDamage(damages, Caster);
+                    Caster.InflictNoBoostedDamage(damages, EffectSchoolEnum.Neutral, Caster, actor is CharacterFighter, Spell);
 
                     actor.RemoveAndDispellBuff(buff);
                 }

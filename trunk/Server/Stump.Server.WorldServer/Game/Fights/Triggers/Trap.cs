@@ -14,21 +14,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
     public class Trap : MarkTrigger
     {
         public Trap(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell, Cell centerCell, byte size)
-            : base(id, caster, castedSpell, originEffect, new MarkShape(caster.Fight, centerCell, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, size, Color.Brown))
+            : base(id, caster, castedSpell, originEffect, centerCell, new MarkShape(caster.Fight, centerCell, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, size, Color.Brown))
         {
             TrapSpell = glyphSpell;
             VisibleState = GameActionFightInvisibilityStateEnum.INVISIBLE;
         }
 
         public Trap(short id, FightActor caster, Spell spell, EffectDice originEffect, Spell trapSpell, Cell centerCell, GameActionMarkCellsTypeEnum shape, byte size)
-            : base(id, caster, spell, originEffect, new MarkShape(caster.Fight, centerCell, shape, size, Color.Brown))
-        {
-            TrapSpell = trapSpell;
-            VisibleState = GameActionFightInvisibilityStateEnum.INVISIBLE;
-        }
-
-        public Trap(short id, FightActor caster, Spell spell, EffectDice originEffect, Spell trapSpell, params MarkShape[] shapes)
-            : base(id, caster, spell, originEffect ,shapes)
+            : base(id, caster, spell, originEffect, centerCell, new MarkShape(caster.Fight, centerCell, shape, size, Color.Brown))
         {
             TrapSpell = trapSpell;
             VisibleState = GameActionFightInvisibilityStateEnum.INVISIBLE;

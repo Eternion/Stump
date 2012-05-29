@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using Stump.DofusProtocol.Messages;
@@ -8,6 +9,7 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Game.Accounts.Startup;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Basic;
 
@@ -22,6 +24,7 @@ namespace Stump.Server.WorldServer.Core.Network
             Send(new HelloGameMessage());
 
             CanReceive = true;
+            StartupActions = new List<StartupAction>();
         }
 
         public bool AutoConnect
@@ -33,25 +36,37 @@ namespace Stump.Server.WorldServer.Core.Network
         public AccountData Account
         {
             get;
-            set;
+            internal set;
         }
+
+        private WorldAccount m_worldAccount;
 
         public WorldAccount WorldAccount
         {
+            get { return m_worldAccount; }
+            internal set
+            {
+                m_worldAccount = value;
+                StartupActions = m_worldAccount != null ? value.GetStartupActions().ToList() : new List<StartupAction>();
+            }
+        }
+
+        public List<StartupAction> StartupActions
+        {
             get;
-            set;
+            private set;
         }
 
         public List<CharacterRecord> Characters
         {
             get;
-            set;
+            internal set;
         }
 
         public Character Character
         {
             get;
-            set;
+            internal set;
         }
 
         public bool DebugLag

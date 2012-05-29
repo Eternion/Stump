@@ -484,5 +484,13 @@ namespace Stump.Server.WorldServer.Game
                 logger.Info("World server saved ! ({0} ms)", sw.ElapsedMilliseconds);
             }
         }
+
+        public void Stop()
+        {
+            foreach (var area in m_areas)
+            {
+                area.Value.Stop();
+            }
+        }
     }
 }

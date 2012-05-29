@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
+using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Accounts;
 
 namespace Stump.Server.WorldServer.Database.Startup
@@ -14,7 +15,7 @@ namespace Stump.Server.WorldServer.Database.Startup
         private IList<StartupActionItemRecord> m_items;
 
         [PrimaryKey(PrimaryKeyType.Native, "Id")]
-        public uint Id
+        public int Id
         {
             get;
             set;

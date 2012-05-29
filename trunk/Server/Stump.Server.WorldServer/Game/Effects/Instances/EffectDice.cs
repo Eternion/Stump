@@ -91,25 +91,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public override EffectBase GenerateEffect(EffectGenerationContext context,
                                                   EffectGenerationType type = EffectGenerationType.Normal)
         {
-            if (context == EffectGenerationContext.Spell || EffectManager.Instance.IsRandomableItemEffect(EffectId))
-            {
-                var rand = new AsyncRandom();
+            var rand = new AsyncRandom();
 
-                short max = m_dicenum >= m_diceface ? m_dicenum : m_diceface;
-                short min = m_dicenum <= m_diceface ? m_dicenum : m_diceface;
+            short max = m_dicenum >= m_diceface ? m_dicenum : m_diceface;
+            short min = m_dicenum <= m_diceface ? m_dicenum : m_diceface;
 
-                if (type == EffectGenerationType.MaxEffects)
-                    return new EffectInteger(Id, Template.Operator != "-" ? max : min, this);
-                if (type == EffectGenerationType.MinEffects)
-                    return new EffectInteger(Id, Template.Operator != "-" ? min : max, this);
+            if (type == EffectGenerationType.MaxEffects)
+                return new EffectInteger(Id, Template.Operator != "-" ? max : min, this);
+            if (type == EffectGenerationType.MinEffects)
+                return new EffectInteger(Id, Template.Operator != "-" ? min : max, this);
 
-                if (min == 0)
-                    return new EffectInteger(Id, max, this);
+            if (min == 0)
+                return new EffectInteger(Id, max, this);
 
-                return new EffectInteger(Id, (short) rand.Next(min, max + 1), this);
-            }
-
-            return this;
+            return new EffectInteger(Id, (short)rand.Next(min, max + 1), this);
         }
 
         protected override void InternalSerialize(ref BinaryWriter writer)

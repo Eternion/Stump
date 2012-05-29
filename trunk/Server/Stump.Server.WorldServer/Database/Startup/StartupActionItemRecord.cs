@@ -1,6 +1,7 @@
 ﻿using System;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
+using Stump.DofusProtocol.Types;
 
 namespace Stump.Server.WorldServer.Database.Startup
 {
@@ -23,7 +24,14 @@ namespace Stump.Server.WorldServer.Database.Startup
         }
 
         [Property("ItemTemplate", NotNull = true)]
-        public uint ItemTemplate
+        public int ItemTemplate
+        {
+            get;
+            set;
+        }
+
+        [Property("Amount", NotNull = true)]
+        public int Amount
         {
             get;
             set;
@@ -35,7 +43,6 @@ namespace Stump.Server.WorldServer.Database.Startup
             get;
             set;
         }
-
 
         public static StartupActionItemRecord[] FindItemsByStartupActionId(StartupActionRecord startupAction)
         {

@@ -36,7 +36,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         public static void SendNpcDialogQuestionMessage(IPacketReceiver client, NpcMessage message)
         {
             client.Send(new NpcDialogQuestionMessage((short) message.Id, message.Parameters,
-                                                     message.Replies.Select(entry => (short) entry.ReplyId)));
+                                                     message.Replies.Select(entry => (short) entry.ReplyId).Distinct()));
         }
     }
 }

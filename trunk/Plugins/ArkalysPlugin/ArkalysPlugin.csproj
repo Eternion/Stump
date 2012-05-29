@@ -75,6 +75,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\ExploreCommand.cs" />
     <Compile Include="Commands\IsleCommand.cs" />
     <Compile Include="Commands\Isle.cs" />
     <Compile Include="Commands\IsleRateModifiers.cs" />

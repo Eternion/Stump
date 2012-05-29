@@ -72,11 +72,11 @@ namespace Stump.Server.BaseServer.IPC
         
         #region IRemoteAuthOperations Members
 
-        public RegisterResultEnum RegisterWorld(WorldServerData serverData, string remoteIpcAddress)
+        public RegisterResultEnum RegisterWorld(WorldServerData serverData)
         {
             try
             {
-                return Channel.RegisterWorld(serverData, remoteIpcAddress);
+                return Channel.RegisterWorld(serverData);
             }
             catch (Exception ex)
             {

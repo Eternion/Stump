@@ -83,9 +83,12 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             return m_position;
         }
 
-        public override void Execute(Npc npc, Character character)
+        public override bool Execute(Npc npc, Character character)
         {
-            character.Teleport(GetPosition());
+            if (!base.Execute(npc, character))
+                return false;
+
+            return character.Teleport(GetPosition());
         }
     }
 }

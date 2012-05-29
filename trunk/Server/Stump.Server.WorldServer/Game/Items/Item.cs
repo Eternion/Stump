@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -79,6 +81,11 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             get { return Record.Effects; }
             protected set { Record.Effects = value; }
+        }
+
+        public ObjectItemInformationWithQuantity GetObjectItemInformationWithQuantity()
+        {
+            return new ObjectItemInformationWithQuantity((short) Template.Id, 0, false, Effects.Select(entry => entry.GetObjectEffect()).ToArray(), Stack);
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using NLog;
@@ -24,6 +25,16 @@ namespace Stump.Server.AuthServer.IPC
 
             channel.Closed += OnDisconnected;
             channel.Faulted += OnDisconnected;
+
+            var callbackCom = (ICommunicationObject) Callback;
+            callbackCom.Closed += OnDisconnected;
+            callbackCom.Faulted += OnDisconnected;
+        }
+
+        public bool Connected
+        {
+            get;
+            private set;
         }
 
         private IRemoteWorldOperations Callback
@@ -31,104 +42,9 @@ namespace Stump.Server.AuthServer.IPC
             get { return OperationContext.Current.GetCallbackChannel<IRemoteWorldOperations>(); }
         }
 
-        private void OnDisconnected(object sender, EventArgs args)
-        {
-            WorldServer world = GetServerByChannel((IContextChannel) sender);
+        #region IRemoteAuthOperations Members
 
-            if (world != null)
-            {
-                Manager.RemoveWorld(world);
-            }
-            else
-            {
-                logger.Warn("A server has been disconnected but we cannot retrieve it");
-            }
-        }
-
-        private void OnOperationError(WorldClientAdapter client, Exception ex)
-        {
-            var server = Manager.GetServerBySessionId(client.InnerChannel.SessionId);
-
-
-            if (ex is CommunicationException)
-            {
-                // Connection got interrupted
-                logger.Warn("Lost connection to WorldServer {0}.", server);
-            }
-            else
-            {
-                logger.Error("Exception occurs on IPC method access on WorldServer {0} : {1}", server, ex);
-            }
-
-            if (server != null)
-            {
-                Manager.RemoveWorld(server);
-
-                try
-                {
-                    client.Abort();
-                    client.Close();
-                }
-                catch (Exception)
-                {
-                }
-            }
-        }
-
-        private WorldServer GetServerByChannel(IContextChannel channel)
-        {
-            foreach (var server in Manager.Realmlist)
-            {
-                if (server.Value.Channel == channel)
-                    return server.Value;
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Returns the Id of the RealmServer that called the current method.
-        /// Can only be used from remote IPC Channels.
-        /// </summary>
-        /// <returns></returns>
-        public string GetCurrentSessionId()
-        {
-            OperationContext context = OperationContext.Current;
-            if (context == null)
-            {
-                return "";
-            }
-            IContextChannel channel = context.Channel;
-            if (channel == null)
-            {
-                return "";
-            }
-            return channel.InputSession.Id;
-        }
-
-        /// <summary>
-        /// Returns the RealmEntry that belongs to the Channel
-        /// that is performing the current communication.
-        /// Can only be used from remote IPC Channels.
-        /// </summary>
-        public WorldServer GetCurrentServer(bool _throw = true)
-        {
-            var server = Manager.GetServerBySessionId(GetCurrentSessionId());
-
-            if (server == null && _throw)
-            {
-                throw new Exception(string.Format("Server with id {0} cannot be found, it's certainly disconnected", GetCurrentSessionId()));
-            }
-
-            return server;
-        }
-
-        public RemoteEndpointMessageProperty GetCurrentEndPoint()
-        {
-            return (RemoteEndpointMessageProperty) OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name];
-        }
-
-        public RegisterResultEnum RegisterWorld(WorldServerData serverData, string remoteIpcAddress)
+        public RegisterResultEnum RegisterWorld(WorldServerData serverData)
         {
             OperationContext context = OperationContext.Current;
             if (context == null)
@@ -163,16 +79,19 @@ namespace Stump.Server.AuthServer.IPC
             }
 
             server.RemoteOperations = Callback;
+            Connected = true;
 
             return RegisterResultEnum.OK;
         }
 
         public void UnRegisterWorld()
         {
-            var server = GetCurrentServer();
+            WorldServer server = GetCurrentServer();
 
             if (server != null)
                 Manager.RemoveWorld(server);
+
+            Connected = false;
         }
 
         public void ChangeState(ServerStatusEnum state)
@@ -352,16 +271,114 @@ namespace Stump.Server.AuthServer.IPC
             if (bannerAccount == null)
                 return false;
 
-            var record = new IpBan
-                             {
-                                 Ip = ipToBan,
-                                 BannedBy = bannerAccount,
-                                 BanReason = reason,
-                                 Duration = duration
-                             };
-            record.Create();
+            IpBan ipBan = IpBan.FindByIp(ipToBan);
 
+            if (ipBan != null)
+            {
+                ipBan.BanReason = reason;
+                ipBan.BannedBy = bannerAccount;
+                ipBan.Duration = duration;
+
+                ipBan.Update();
+            }
+            else
+            {
+                var record = new IpBan
+                                 {
+                                     Ip = ipToBan,
+                                     BannedBy = bannerAccount,
+                                     BanReason = reason,
+                                     Duration = duration
+                                 };
+                record.Create();
+            }
             return true;
+        }
+
+        #endregion
+
+        private void OnDisconnected(object sender, EventArgs args)
+        {
+            lock (this)
+            {
+                if (!Connected)
+                    return;
+
+                WorldServer world = GetServerByChannel((IContextChannel) sender);
+                logger.Warn("Channel closed or faulted");
+
+                if (world != null)
+                {
+                    Manager.RemoveWorld(world);
+                }
+                else
+                {
+                    logger.Warn("A server has been disconnected but we cannot retrieve it");
+                }
+
+                Connected = false;
+            }
+        }
+
+        private WorldServer GetServerByChannel(IContextChannel channel)
+        {
+            foreach (var server in Manager.Realmlist)
+            {
+                if (server.Value.Channel == channel)
+                    return server.Value;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the Id of the RealmServer that called the current method.
+        /// Can only be used from remote IPC Channels.
+        /// </summary>
+        /// <returns></returns>
+        public string GetCurrentSessionId()
+        {
+            OperationContext context = OperationContext.Current;
+            if (context == null)
+            {
+                return "";
+            }
+            IContextChannel channel = context.Channel;
+            if (channel == null)
+            {
+                return "";
+            }
+            return channel.InputSession.Id;
+        }
+
+        /// <summary>
+        /// Returns the RealmEntry that belongs to the Channel
+        /// that is performing the current communication.
+        /// Can only be used from remote IPC Channels.
+        /// </summary>
+        public WorldServer GetCurrentServer(bool _throw = true)
+        {
+            WorldServer server = Manager.GetServerBySessionId(GetCurrentSessionId());
+
+            if (server == null)
+            {
+                server = Manager.Realmlist.FirstOrDefault(entry => entry.Value.RemoteOperations == Callback).Value;
+            }
+
+            if (server == null && _throw)
+            {
+                throw new Exception(string.Format("Server with id {0} cannot be found, it's certainly disconnected",
+                                                  GetCurrentSessionId()));
+            }
+
+            return server;
+        }
+
+        public RemoteEndpointMessageProperty GetCurrentEndPoint()
+        {
+            return
+                (RemoteEndpointMessageProperty)
+                OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name];
         }
     }
 }

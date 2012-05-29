@@ -550,6 +550,52 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
+        #region Restat
+
+        public short PermanentAddedStrength
+        {
+            get { return m_record.PermanentAddedStrength; }
+            set { m_record.PermanentAddedStrength = value; }
+        }
+
+        public short PermanentAddedChance
+        {
+            get { return m_record.PermanentAddedChance; }
+            set { m_record.PermanentAddedChance = value; }
+        }
+
+        public short PermanentAddedVitality
+        {
+            get { return m_record.PermanentAddedVitality; }
+            set { m_record.PermanentAddedVitality = value; }
+        }
+
+        public short PermanentAddedWisdom
+        {
+            get { return m_record.PermanentAddedWisdom; }
+            set { m_record.PermanentAddedWisdom = value; }
+        }
+
+        public short PermanentAddedIntelligence
+        {
+            get { return m_record.PermanentAddedIntelligence; }
+            set { m_record.PermanentAddedIntelligence = value; }
+        }
+
+        public short PermanentAddedAgility
+        {
+            get { return m_record.PermanentAddedAgility; }
+            set { m_record.PermanentAddedAgility = value; }
+        }
+
+        public bool CanRestat
+        {
+            get { return m_record.CanRestat; }
+            set { m_record.CanRestat = value; }
+        }
+
+        #endregion
+
         public event LevelChangedHandler LevelChanged;
 
         private void OnLevelChanged(byte currentLevel, int difference)

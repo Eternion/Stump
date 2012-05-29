@@ -22,6 +22,7 @@ using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Context;
@@ -521,42 +522,90 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
 
             var spellLevel = spell.CurrentSpellLevel;
-            var point = new MapPoint(cell);
 
             if (!cell.Walkable || cell.NonWalkableDuringFight)
             {
                 return false;
             }
-            if (point.DistanceToCell(Position.Point) > GetSpellRange(spellLevel) ||
-                point.DistanceToCell(Position.Point) < spellLevel.MinRange)
-            {
-                return false;
-            }
+
             if (AP < spellLevel.ApCost)
             {
                 return false;
             }
+
             var cellfree = Fight.IsCellFree(cell);
             if (( spellLevel.NeedFreeCell && !cellfree ) ||
                 ( spellLevel.NeedTakenCell && cellfree ))
             {
                 return false;
             }
+
             if (spellLevel.StatesForbidden.Any(HasState))
             {
                 return false;
             }
+
             if (spellLevel.StatesRequired.Any(state => !HasState(state)))
             {
                 return false;
             }
+
+            var castZone = GetCastZone(spellLevel);
+
+            if (!castZone.Contains(cell))
+            {
+                return false;
+            }
+
             if (!SpellHistory.CanCastSpell(spellLevel, cell))
             {
                 return false;
             }
+
             return true;
         }
 
+
+        public virtual Cell[] GetCastZone(SpellLevelTemplate spellLevel)
+        {
+            var range = spellLevel.Range;
+            IShape shape;
+
+            if (spellLevel.RangeCanBeBoosted)
+            {
+                range += (uint)Stats[PlayerFields.Range].Total;
+
+                if (range < spellLevel.MinRange)
+                    range = spellLevel.MinRange;
+
+                range = Math.Min(range, MapPoint.MapHeight * MapPoint.MapWidth);
+            }
+
+            if (spellLevel.CastInDiagonal && spellLevel.CastInLine)
+            {
+                shape = new Cross((byte)spellLevel.MinRange, (byte)range)
+                {
+                    AllDirections = true
+                };
+            }
+            else if (spellLevel.CastInLine)
+            {
+                shape = new Cross((byte) spellLevel.MinRange, (byte) range);
+            }
+            else if (spellLevel.CastInDiagonal)
+            {
+                shape = new Cross((byte)spellLevel.MinRange, (byte)range)
+                {
+                    Diagonal = true
+                };
+            }
+            else
+            {
+                shape = new Lozenge((byte)spellLevel.MinRange, (byte)range);
+            }
+
+            return shape.GetCells(Cell, Map);
+        }
         public int GetSpellRange(SpellLevelTemplate spell)
         {
             return (int) (spell.Range + ( spell.RangeCanBeBoosted ? Stats[PlayerFields.Range].Total : 0 ));
@@ -645,6 +694,41 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 damage += from.GetSpellBoost(spell);
 
             damage = from.CalculateDamage(damage, school);
+            damage = CalculateDamageResistance(damage, school, pvp);
+
+            short reduction = CalculateArmorReduction(school);
+
+            if (reduction > damage)
+                reduction = damage;
+
+            if (reduction > 0)
+                OnDamageReducted(from, reduction);
+
+            if (from != this)
+            {
+                short reflected = CalculateDamageReflection(damage);
+                damage -= reflected;
+
+                if (reflected > 0)
+                {
+                    from.InflictDirectDamage(reflected, this);
+                    OnDamageReflected(from, reflected);
+                }
+            }
+
+            damage -= reduction;
+
+            if (damage <= 0)
+                damage = 0;
+
+            return InflictDirectDamage(damage, from);
+        }
+
+        public virtual short InflictNoBoostedDamage(short damage, EffectSchoolEnum school, FightActor from, bool pvp = false, Spell spell = null)
+        {
+            if (spell != null)
+                damage += from.GetSpellBoost(spell);
+
             damage = CalculateDamageResistance(damage, school, pvp);
 
             short reduction = CalculateArmorReduction(school);
@@ -1134,6 +1218,20 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             foreach (var buff in buffsToRemove)
             {
+                if (buff is TriggerBuff && ( buff as TriggerBuff ).Trigger.HasFlag(BuffTriggerType.BUFF_ENDED))
+                    ( buff as TriggerBuff ).Apply(BuffTriggerType.BUFF_ENDED);
+
+                if (!(buff is TriggerBuff && ( buff as TriggerBuff ).Trigger.HasFlag(BuffTriggerType.BUFF_ENDED_TURNEND)))
+                    RemoveAndDispellBuff(buff);
+            }
+        }
+
+        public void TriggerBuffsRemovedOnTurnEnd()
+        {
+            foreach (var buff in m_buffList.Where(entry => entry.Duration <= 0 && entry is TriggerBuff &&
+                ( entry as TriggerBuff ).Trigger.HasFlag(BuffTriggerType.BUFF_ENDED_TURNEND)).ToArray())
+            {
+                buff.Apply();
                 RemoveAndDispellBuff(buff);
             }
         }

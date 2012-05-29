@@ -13,11 +13,6 @@ namespace Stump.Server.WorldServer.Core.IPC
 {
     public class IpcAccessor : Singleton<IpcAccessor>, IDisposable
     {
-        /// <summary>
-        ///   Delay in seconds where we should retry connecting to remote server. (in seconds)
-        /// </summary>
-        [Variable(DefinableRunning = true)]
-        public static int ReconnectDelay = 10;
 
         /// <summary>
         /// Delay between two server update (in seconds)
@@ -30,12 +25,6 @@ namespace Stump.Server.WorldServer.Core.IPC
         /// </summary>
         [Variable]
         public static string IpcAuthAddress = "net.tcp://localhost:9100";
-
-        /// <summary>
-        /// IPC world port
-        /// </summary>
-        [Variable]
-        public static string IpcWorldAddress = "net.tcp://localhost:9101";
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -65,7 +54,7 @@ namespace Stump.Server.WorldServer.Core.IPC
             private set { m_proxyObject = value; }
         }
 
-        public IpcHost IpcHost
+        public InstanceContext Context
         {
             get;
             private set;
@@ -77,7 +66,9 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         public void Dispose()
         {
-            IpcHost.Stop();
+            if (m_maintainConnectionTimer != null)
+                m_maintainConnectionTimer.Dispose();
+
             IsConnected = false;
             ProxyObject = null;
             GC.SuppressFinalize(this);
@@ -120,14 +111,15 @@ namespace Stump.Server.WorldServer.Core.IPC
         private bool Connect()
         {
             var binding = new NetTcpBinding {Security = {Mode = SecurityMode.None}};
-            var proxyobject = new AuthClientAdapter(new InstanceContext(WorldServer.Instance), binding, new EndpointAddress(IpcAuthAddress));
+            Context = new InstanceContext(WorldServer.Instance);
+            var proxyobject = new AuthClientAdapter(Context, binding, new EndpointAddress(IpcAuthAddress));
             proxyobject.Error += OnOperationError;
 
             try
             {
                 proxyobject.Open();
 
-                var result = proxyobject.RegisterWorld(WorldServer.ServerInformation, IpcWorldAddress);
+                var result = proxyobject.RegisterWorld(WorldServer.ServerInformation);
 
                 if (result == RegisterResultEnum.IpNotAllowed ||
                     result == RegisterResultEnum.PropertiesMismatch)

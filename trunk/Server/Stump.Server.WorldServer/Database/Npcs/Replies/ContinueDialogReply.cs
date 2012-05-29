@@ -29,12 +29,17 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
                 NextMessageId = value.Id;
             }
         }
-        public override void Execute(Npc npc, Character character)
+        public override bool Execute(Npc npc, Character character)
         {
-            if (!character.IsTalkingWithNpc())
-                return;
+            if (!base.Execute(npc, character))
+                return false;
 
-            ( (NpcDialog)character.Dialog ).ChangeMessage(NextMessage); 
+            if (!character.IsTalkingWithNpc())
+                return false;
+
+            ( (NpcDialog)character.Dialog ).ChangeMessage(NextMessage);
+
+            return true;
         }
     }
 }

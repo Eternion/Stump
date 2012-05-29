@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell,
                      Cell centerCell, byte size, Color color)
             : base(
-                id, caster, castedSpell, originEffect,
+                id, caster, castedSpell, originEffect, centerCell,
                 new MarkShape(caster.Fight, centerCell, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, size, color))
         {
             GlyphSpell = glyphSpell;
@@ -25,16 +25,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell,
                      Cell centerCell, GameActionMarkCellsTypeEnum type, byte size, Color color)
-            : base(id, caster, castedSpell, originEffect, new MarkShape(caster.Fight, centerCell, type, size, color))
-        {
-            GlyphSpell = glyphSpell;
-            Duration = originEffect.Duration;
-        }
-
-
-        public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell,
-                     params MarkShape[] shapes)
-            : base(id, caster, castedSpell, originEffect, shapes)
+            : base(id, caster, castedSpell, originEffect, centerCell, new MarkShape(caster.Fight, centerCell, type, size, color))
         {
             GlyphSpell = glyphSpell;
             Duration = originEffect.Duration;

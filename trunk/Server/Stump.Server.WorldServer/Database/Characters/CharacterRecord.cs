@@ -448,8 +448,58 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
+
+        [Property("PermanentAddedStrength", NotNull = true)]
+        public short PermanentAddedStrength
+        {
+            get;
+            set;
+        }
+
+        [Property("PermanentAddedChance", NotNull = true)]
+        public short PermanentAddedChance
+        {
+            get;
+            set;
+        }
+
+        [Property("PermanentAddedVitality", NotNull = true)]
+        public short PermanentAddedVitality
+        {
+            get;
+            set;
+        }
+
+        [Property("PermanentAddedWisdom", NotNull = true)]
+        public short PermanentAddedWisdom
+        {
+            get;
+            set;
+        }
+
+        [Property("PermanentAddedIntelligence", NotNull = true)]
+        public short PermanentAddedIntelligence
+        {
+            get;
+            set;
+        }
+
+        [Property("PermanentAddedAgility", NotNull = true)]
+        public short PermanentAddedAgility
+        {
+            get;
+            set;
+        }
+
         [Property("Kamas", NotNull = true, Default = "0")]
         public int Kamas
+        {
+            get;
+            set;
+        }
+
+        [Property("CanRestat", NotNull = true, Default = "1")]
+        public bool CanRestat
         {
             get;
             set;

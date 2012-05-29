@@ -144,8 +144,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
                 m_isUsingWeapon = true;
                 IEnumerable<EffectDice> effects =
-                    weapon.Effects.Where(entry => !EffectManager.Instance.IsRandomableItemEffect(entry.EffectId)).OfType
-                        <EffectDice>();
+                    weapon.Effects.Where(entry => EffectManager.Instance.IsUnRandomableWeaponEffect(entry.EffectId)).OfType<EffectDice>();
                 var handlers = new List<SpellEffectHandler>();
                 foreach (EffectDice effect in effects)
                 {

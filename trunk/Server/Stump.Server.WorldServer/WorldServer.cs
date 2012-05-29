@@ -187,9 +187,15 @@ namespace Stump.Server.WorldServer
         protected override void OnShutdown()
         {
             if (IsInitialized)
+            {
                 World.Instance.Save();
+                World.Instance.Stop();
+            }
 
             IpcAccessor.Instance.Stop();
+
+            if (IOTaskPool != null)
+                IOTaskPool.Stop();
 
             ClientManager.Pause();
 

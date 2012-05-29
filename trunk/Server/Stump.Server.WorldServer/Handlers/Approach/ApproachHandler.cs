@@ -13,6 +13,7 @@ using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Handlers.Basic;
+using Stump.Server.WorldServer.Handlers.Startup;
 
 namespace Stump.Server.WorldServer.Handlers.Approach
 {
@@ -67,6 +68,11 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             /* Just to get console AutoCompletion */
             if (client.Account.Role >= RoleEnum.Moderator)
                 SendConsoleCommandsListMessage(client);
+        }
+
+        public static void SendStartupActionsListMessage(IPacketReceiver client)
+        {
+            client.Send(new StartupActionsListMessage());
         }
 
         public static void SendServerOptionalFeaturesMessage(IPacketReceiver client, IEnumerable<short> features)

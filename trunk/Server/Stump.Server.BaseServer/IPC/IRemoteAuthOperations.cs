@@ -9,7 +9,7 @@ namespace Stump.Server.BaseServer.IPC
     public interface IRemoteAuthOperations
     {
         [OperationContract(IsInitiating = true)]
-        RegisterResultEnum RegisterWorld(WorldServerData serverData, string remoteIpcAddress);
+        RegisterResultEnum RegisterWorld(WorldServerData serverData);
 
         [OperationContract(IsOneWay=true, IsTerminating = true)]
         void UnRegisterWorld();

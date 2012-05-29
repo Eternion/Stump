@@ -59,6 +59,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             get { return this[PlayerFields.MP] as StatsMP; }
         }
 
+        public StatsData Vitality
+        {
+            get { return this[PlayerFields.Vitality]; }
+        }
+
         public StatsData Strength
         {
             get { return this[PlayerFields.Strength]; }

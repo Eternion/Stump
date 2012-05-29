@@ -947,9 +947,9 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected virtual void OnTurnStarted()
         {
             StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
-            DecrementGlyphDuration(FighterPlaying);
-            FighterPlaying.DecrementAllCastedBuffsDuration();
             FighterPlaying.TriggerBuffs(Buffs.BuffTriggerType.TURN_BEGIN);
+            FighterPlaying.DecrementAllCastedBuffsDuration();
+            DecrementGlyphDuration(FighterPlaying);
             TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.TURN_BEGIN);
             EndSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
 
@@ -1004,6 +1004,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
             FighterPlaying.TriggerBuffs(BuffTriggerType.TURN_END);
+            FighterPlaying.TriggerBuffsRemovedOnTurnEnd();
             FighterPlaying.ResetUsedPoints();
             EndSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
 
@@ -1544,6 +1545,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         public bool ShouldTriggerOnMove(Cell cell)
         {
             return m_triggers.Any(entry => entry.TriggerType == TriggerType.MOVE && entry.ContainsCell(cell));
+        }
+
+        public MarkTrigger[] GetTriggers(Cell cell)
+        {
+            return m_triggers.Where(entry => entry.CenterCell.Id == cell.Id).ToArray();
         }
 
         public void AddTriger(MarkTrigger trigger)

@@ -13,6 +13,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         AFTER_ATTACKED = 0x00000020,
         BEFORE_ATTACK = 0x00000040,
         AFTER_ATTACK = 0x00000080,
+        BUFF_ENDED = 0x00000100,
+        BUFF_ENDED_TURNEND = 0x00000200,
         UNKNOWN = 0x7FFFFFFF,
     }
 }

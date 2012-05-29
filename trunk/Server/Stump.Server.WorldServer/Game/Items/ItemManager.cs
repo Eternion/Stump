@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Game.Items
@@ -73,7 +74,17 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public List<EffectBase> GenerateItemEffects(ItemTemplate template, bool max = false)
         {
-            return template.Effects.Select(effect => effect.GenerateEffect(EffectGenerationContext.Item, max ? EffectGenerationType.MaxEffects : EffectGenerationType.Normal)).ToList();
+            var effects = new List<EffectBase>();
+
+            foreach (var effect in template.Effects)
+            {
+                if (template.IsWeapon() && !EffectManager.Instance.IsUnRandomableWeaponEffect(effect.EffectId))
+                    effects.Add(effect);
+                else
+                    effects.Add(effect.GenerateEffect(EffectGenerationContext.Item, max ? EffectGenerationType.MaxEffects : EffectGenerationType.Normal));
+            }
+
+            return effects.ToList();
         }
 
         #endregion

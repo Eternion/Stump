@@ -133,12 +133,26 @@ namespace Stump.Server.AuthServer.Managers
             return account;
         }
 
+        public IpBan FindIpBan(string ip)
+        {
+            return IpBan.FindByIp(ip);
+        }
+
         public Account FindRegisteredAccountByTicket(string ticket)
         {
             Account account;
             lock (m_locker)
             {
-                account = m_accountsCache.Values.Where(entry => entry.Ticket == ticket).SingleOrDefault();
+                var accounts = m_accountsCache.Values.Where(entry => entry.Ticket == ticket).ToArray();
+
+                if (accounts.Count() > 1)
+                {
+                    m_accountsCache.Clear();
+
+                    return null;
+                }
+
+                return accounts.SingleOrDefault();
             }
 
             return account;

@@ -911,27 +911,27 @@
         /// <summary>
         /// +#1{~1~2 to }#2 wisdom
         /// </summary>
-        Effect_606 = 606,
+        Effect_AddPermanentWisdom = 606,
         /// <summary>
         /// +#1{~1~2 to }#2 strength
         /// </summary>
-        Effect_607 = 607,
+        Effect_AddPermanentStrength = 607,
         /// <summary>
         /// +#1{~1~2 to }#2 chance
         /// </summary>
-        Effect_608 = 608,
+        Effect_AddPermanentChance = 608,
         /// <summary>
         /// +#1{~1~2 to }#2 agility
         /// </summary>
-        Effect_609 = 609,
+        Effect_AddPermanentAgility = 609,
         /// <summary>
         /// +#1{~1~2 to }#2 vitality
         /// </summary>
-        Effect_610 = 610,
+        Effect_AddPermanentVitality = 610,
         /// <summary>
         /// +#1{~1~2 to }#2 intelligence
         /// </summary>
-        Effect_611 = 611,
+        Effect_AddPermanentIntelligence = 611,
         /// <summary>
         /// +#1{~1~2 to }#2 characteristic points
         /// </summary>

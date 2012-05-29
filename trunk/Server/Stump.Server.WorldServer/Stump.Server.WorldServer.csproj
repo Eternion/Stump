@@ -231,12 +231,16 @@
     <Compile Include="Database\Npcs\NpcTemplate.cs" />
     <Compile Include="Database\Npcs\Replies\ContinueDialogReply.cs" />
     <Compile Include="Database\Npcs\Replies\EndDialogReply.cs" />
+    <Compile Include="Database\Npcs\Replies\LightRestatReply.cs" />
+    <Compile Include="Database\Npcs\Replies\RestatReply.cs" />
     <Compile Include="Database\Npcs\Replies\TeleportReply.cs" />
     <Compile Include="Database\PrimaryKeyIdProvider.cs" />
     <Compile Include="Database\Spells\ISpellRecord.cs" />
     <Compile Include="Database\World\Maps\MapElement.cs" />
     <Compile Include="Database\World\Triggers\CellTriggerRecord.cs" />
     <Compile Include="Database\World\Triggers\TeleportTriggerRecord.cs" />
+    <Compile Include="Game\Accounts\Startup\StartupAction.cs" />
+    <Compile Include="Game\Accounts\Startup\StartupActionItem.cs" />
     <Compile Include="Game\Actors\Fight\SummonedFighter.cs" />
     <Compile Include="Game\Actors\Fight\SummonedMonster.cs" />
     <Compile Include="Game\Actors\Interfaces\INamedActor.cs" />
@@ -302,6 +306,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Steals\MPSteal.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Summon.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\DefaultUsableEffectHandler.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\StatBonus.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\UsableEffectHandler.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\DodgeBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\InvisibilityBuff.cs" />
@@ -326,7 +331,9 @@
     <Compile Include="Game\Social\Ignored.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandlerAttribute.cs" />
+    <Compile Include="Game\Spells\Casts\FelineSpiritCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\LivingChestCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\RekopCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\SpellCastHandler.cs" />
     <Compile Include="Game\Fights\TimeLine.cs" />
     <Compile Include="Game\Jobs\Job.cs" />
@@ -342,6 +349,7 @@
     <Compile Include="Handlers\Moderation\ModerationHandler.cs" />
     <Compile Include="Handlers\Prism\PrismHandler.cs" />
     <Compile Include="Handlers\PvP\PvPHandler.cs" />
+    <Compile Include="Handlers\Startup\StartupHandler.cs" />
     <Compile Include="Rates.cs" />
     <Compile Include="Database\Accounts\WorldAccount.cs" />
     <Compile Include="Database\Breeds\Breed.cs" />

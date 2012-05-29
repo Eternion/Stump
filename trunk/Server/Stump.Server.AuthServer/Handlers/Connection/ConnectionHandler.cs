@@ -93,6 +93,14 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 return false;
             }
 
+            var ipBan = AccountManager.Instance.FindIpBan(client.IP);
+            if (ipBan != null)
+            {
+                SendIdentificationFailedBannedMessage(client, ipBan.BanRemainingTime);
+                client.DisconnectLater(1000);
+                return false;
+            }
+
             /* Already connected on this account */
             bool wasAlreadyConnected = AccountManager.Instance.DisconnectClientsUsingAccount(account);
             if (wasAlreadyConnected)

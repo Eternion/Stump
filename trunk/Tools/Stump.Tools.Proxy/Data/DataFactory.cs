@@ -53,12 +53,12 @@ namespace Stump.Tools.Proxy.Data
 
                 ExecuteIOTask(() =>
                 {
-                    if (client.LastNpcMessage.Replies.Count(entry => entry is TeleportReply &&
+                    if (npcReply.Message.Replies.Count(entry => entry is TeleportReply &&
                                                                      ( entry as TeleportReply ).ReplyId == npcReply.ReplyId) > 0)
                         return;
 
                     npcReply.Save();
-                    client.LastNpcMessage.Replies.Add(npcReply);
+                    npcReply.Message.Replies.Add(npcReply);
 
                     client.SendChatMessage("Npc reply added");
                 });
@@ -174,13 +174,13 @@ namespace Stump.Tools.Proxy.Data
 
                 ExecuteIOTask(() =>
                                   {
-                                      if (client.LastNpcMessage.Replies.Count(entry => entry is ContinueDialogReply &&
+                                      if (npcReply.Message.Replies.Count(entry => entry is ContinueDialogReply &&
                                                                                        (entry as ContinueDialogReply).ReplyId == npcReply.ReplyId &&
                                                                                        (entry as ContinueDialogReply).NextMessage.Id == npcReply.NextMessage.Id) > 0)
                                           return;
 
                                       npcReply.Save();
-                                      client.LastNpcMessage.Replies.Add(npcReply);
+                                      npcReply.Message.Replies.Add(npcReply);
 
                                       client.SendChatMessage("Npc reply added");
                                   });
@@ -229,12 +229,12 @@ namespace Stump.Tools.Proxy.Data
 
             ExecuteIOTask(() =>
                               {
-                                  if (client.LastNpcMessage.Replies.Count(entry => entry is EndDialogReply &&
+                                  if (npcReply.Message.Replies.Count(entry => entry is EndDialogReply &&
                                                                                    (entry as EndDialogReply).ReplyId == npcReply.ReplyId) > 0)
                                       return;
 
                                   npcReply.Save();
-                                  client.LastNpcMessage.Replies.Add(npcReply);
+                                  npcReply.Message.Replies.Add(npcReply);
                                   
                                   client.SendChatMessage("Npc reply added");
                               });

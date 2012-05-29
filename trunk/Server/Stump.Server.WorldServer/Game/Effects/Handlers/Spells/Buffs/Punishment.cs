@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         {
             var buffs = buff.Target.GetBuffs(entry => entry.Spell == Spell).OfType<StatBuff>();
 
-            var currentBonus = buffs.Sum(entry => entry.Value);
+            var currentBonus = buffs.Where(entry => entry.Duration == Effect.Duration).Sum(entry => entry.Value);
             var limit = Dice.DiceFace;
             // limit reached
             if (currentBonus >= limit)

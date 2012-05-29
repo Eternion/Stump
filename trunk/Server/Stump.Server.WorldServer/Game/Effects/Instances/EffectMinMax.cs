@@ -106,19 +106,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public override EffectBase GenerateEffect(EffectGenerationContext context, EffectGenerationType type = EffectGenerationType.Normal)
         {
-            if (context == EffectGenerationContext.Spell || EffectManager.Instance.IsRandomableItemEffect(EffectId))
-            {
-                var rand = new AsyncRandom();
+            var rand = new AsyncRandom();
 
-                if (type == EffectGenerationType.MaxEffects)
-                    return new EffectInteger(Id, Template.Operator != "-" ? ValueMax : ValueMin, this);
-                if (type == EffectGenerationType.MinEffects)
-                    return new EffectInteger(Id, Template.Operator != "-" ? ValueMin : ValueMax, this);
+            if (type == EffectGenerationType.MaxEffects)
+                return new EffectInteger(Id, Template.Operator != "-" ? ValueMax : ValueMin, this);
+            if (type == EffectGenerationType.MinEffects)
+                return new EffectInteger(Id, Template.Operator != "-" ? ValueMin : ValueMax, this);
 
-                return new EffectInteger(Id, (short) rand.Next(ValueMin,  ValueMax + 1), this);
-            }
-
-            return this;
+            return new EffectInteger(Id, (short)rand.Next(ValueMin, ValueMax + 1), this);
         }
 
         public override bool Equals(object obj)

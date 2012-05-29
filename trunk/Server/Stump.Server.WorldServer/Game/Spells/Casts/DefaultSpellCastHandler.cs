@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
         public SpellEffectHandler[] Handlers
         {
             get;
-            private set;
+            protected set;
         }
 
         public override bool SilentCast

@@ -1,5 +1,6 @@
 using System;
 using Castle.ActiveRecord;
+using NHibernate.Criterion;
 
 namespace Stump.Server.AuthServer.Database.Account
 {
@@ -46,6 +47,32 @@ namespace Stump.Server.AuthServer.Database.Account
         {
             get;
             set;
+        }
+
+        public DateTime EndDate
+        {
+            get
+            {
+                return Duration.Ticks == long.MaxValue ? DateTime.MaxValue : Date.Add(Duration);
+            }
+        }
+
+        public uint BanRemainingTime
+        {
+            get
+            {
+                var remainingTime = ( EndDate - DateTime.Now ).TotalMinutes;
+
+                if (remainingTime < 0)
+                    return 0;
+
+                return (uint)remainingTime;
+            }
+        }
+
+        public static IpBan FindByIp(string ip)
+        {
+            return FindOne(Restrictions.Eq("Ip", ip.ToLower()));
         }
     }
 }

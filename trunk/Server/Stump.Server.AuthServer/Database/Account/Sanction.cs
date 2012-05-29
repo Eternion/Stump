@@ -55,7 +55,10 @@ namespace Stump.Server.AuthServer.Database.Account
 
         public DateTime EndDate
         {
-            get { return Date.Add(Duration); }
+            get
+            {
+                return Duration.Ticks == long.MaxValue ? DateTime.MaxValue : Date.Add(Duration);
+            }
         }
     }
 }

@@ -281,21 +281,21 @@ namespace Stump.Server.BaseServer
         public void StartConfigReloadOnChange(XmlConfig config)
         {
             var action = new Action(() =>
-                {
-                    lock (this)
+                IOTaskPool.AddMessage(
+                () =>
                     {
                         if (!m_ignoreReload &&
                             ConsoleInterface.AskAndWait(
-                                string.Format("Config {0} has been modified, do you want to reload it ?",
-                                              Path.GetFileName(config.FilePath)), 20))
+                                string.Format(
+                                    "Config {0} has been modified, do you want to reload it ?",
+                                    Path.GetFileName(config.FilePath)), 20))
                         {
                             config.Reload();
                             logger.Warn("Config has been reloaded sucessfully");
                         }
 
                         m_ignoreReload = false;
-                    }
-                });
+                    }));
 
 
             FileWatcherManager.Watch(config.FilePath, WatcherType.Modification, action);
@@ -438,12 +438,10 @@ namespace Stump.Server.BaseServer
         {
             lock (this)
             {
-                if (Running)
-                    Running = false;
+                Running = false;
 
                 OnShutdown();
 
-                //StopTcp();
 
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
