@@ -74,5 +74,21 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
                     base.Given = (short)( value - ( Total - APLimit ) );
             }
         }
+
+        public int TotalMax
+        {
+            get
+            {
+                return Base + Equiped + Given + Context;
+            }
+        }
+
+        public override int Total
+        {
+            get
+            {
+                return Base + Equiped + Given + Context - Used;
+            }
+        }
     }
 }
