@@ -28,9 +28,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             {
                 MapPoint referenceCell;
                 if (TargetedCell.Id == actor.Cell.Id)
-                    continue;
+                    referenceCell = new MapPoint(CastCell);
                 else
                     referenceCell = TargetedPoint;
+
+                if (referenceCell.CellId == actor.Position.Cell.Id)
+                    continue;
 
                 var pushDirection = referenceCell.OrientationTo(actor.Position.Point, false);
                 var startCell = actor.Position.Point;

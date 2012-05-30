@@ -108,12 +108,12 @@ namespace Stump.Server.WorldServer.Game.Items
         public bool IsLinked()
         {
             if (Template.Type.SuperType == ItemSuperTypeEnum.SUPERTYPE_QUEST)
-                return false;
+                return true;
 
             if (IsTokenItem())
-                return false;
+                return true;
 
-            return true;
+            return false;
         }
 
         public bool IsTokenItem()

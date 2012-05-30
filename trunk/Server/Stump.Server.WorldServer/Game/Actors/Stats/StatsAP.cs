@@ -32,24 +32,46 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             set;
         }
 
-
-        public int TotalMax
+        public override short Context
         {
             get
             {
-                var total = Base + Equiped + Given + Context;
+                return base.Context;
+            }
+            set
+            {
+                base.Context = value;
 
-                return total > APLimit && Limit ? APLimit : total;
+                if (Limit && Total > APLimit)
+                    base.Context = (short)( value - ( Total - APLimit ) );
             }
         }
 
-        public override int Total
+        public override short Equiped
         {
             get
             {
-                var total = Base + Equiped + Given + Context - Used;
+                return base.Equiped;
+            }
+            set
+            {
+                base.Equiped = value;
+                if (Limit && Total > APLimit)
+                    base.Equiped = (short)( value - ( Total - APLimit ) );
+            }
+        }
 
-                return total > APLimit && Limit ? APLimit : total;
+        public override short Given
+        {
+            get
+            {
+                return base.Given;
+            }
+            set
+            {
+                base.Given = value;
+                if (Limit && Total > APLimit)
+                    base.Given = (short)( value - ( Total - APLimit ) );
             }
         }
     }
