@@ -151,5 +151,12 @@ namespace Stump.Server.WorldServer.Database.Monsters
 
             return base.OnFlushDirty(id, previousState, currentState, types);
         }
+
+        protected override bool BeforeSave(IDictionary state)
+        {
+            SerializedMonsterGroup = (byte[])( state["SerializedMonsterGroup"] = SerializeGroup(GroupMonsters) );
+
+            return base.BeforeSave(state);
+        }
     }
 }

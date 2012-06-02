@@ -175,6 +175,14 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             return base.OnFlushDirty(id, previousState, currentState, types);
         }
 
+        protected override bool BeforeSave(System.Collections.IDictionary state)
+        {
+            SerializedEffects = (byte[])( state["SerializedEffects"] = SerializeEffects(BonusEffects) );
+            SerializedItems = (byte[])( state["SerializedItems"] = SerializeItems(Items.Select(entry => entry.Id)) );
+
+            return base.BeforeSave(state);
+        }
+
         public object GenerateAssignedObject(string fieldName, object d2OObject)
         {
             if (fieldName == "SerializedItems")

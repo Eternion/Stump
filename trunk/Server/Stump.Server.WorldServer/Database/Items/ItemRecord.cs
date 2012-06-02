@@ -104,5 +104,12 @@ namespace Stump.Server.WorldServer.Database.Items
 
             return base.OnFlushDirty(id, previousState, currentState, types);
         }
+
+        protected override bool BeforeSave(System.Collections.IDictionary state)
+        {
+            m_serializedEffects = (byte[])( state["SerializedEffects"] = EffectManager.Instance.SerializeEffects(Effects) );
+
+            return base.BeforeSave(state);
+        }
     }
 }

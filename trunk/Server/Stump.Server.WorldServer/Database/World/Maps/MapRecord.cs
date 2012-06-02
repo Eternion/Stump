@@ -296,5 +296,27 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             return base.OnFlushDirty(id, previousState, currentState, types);
         }
 
+        protected override bool BeforeSave(IDictionary state)
+        {
+            m_compressedCells = new byte[Cells.Length * Cell.StructSize];
+
+            for (int i = 0; i < Cells.Length; i++)
+            {
+                Array.Copy(Cells[i].Serialize(), 0, m_compressedCells, i * Cell.StructSize, Cell.StructSize);
+            }
+
+            m_compressedCells = (byte[])( state["CompressedCells"] = ZipHelper.Compress(m_compressedCells) );
+
+            m_compressedElements = new byte[Elements.Length * MapElement.Size];
+            for (int i = 0; i < Elements.Length; i++)
+            {
+                Array.Copy(Elements[i].Serialize(), 0, m_compressedElements, i * MapElement.Size, MapElement.Size);
+            }
+
+            m_compressedElements = (byte[])( state["CompressedElements"] = ZipHelper.Compress(m_compressedElements) );
+
+            return base.BeforeSave(state);
+        }
+
     }
 }

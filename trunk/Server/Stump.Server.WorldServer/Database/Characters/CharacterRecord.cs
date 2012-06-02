@@ -721,6 +721,15 @@ namespace Stump.Server.WorldServer.Database.Characters
             return base.OnFlushDirty(id, previousState, currentState, types);
         }
 
+        protected override bool BeforeSave(System.Collections.IDictionary state)
+        {
+            m_serializedZaaps = (byte[])( state["SerializedZaaps"] = SerializeZaaps(m_knownZaaps) );
+            m_lookAsString = (string)( state["LookAsString"] = EntityLook != null ? EntityLook.ConvertToString() : string.Empty );
+            m_customLookAsString = (string)( state["CustomLookAsString"] = CustomEntityLook != null ? CustomEntityLook.ConvertToString() : string.Empty );
+
+            return base.BeforeSave(state);
+        }
+
         public static CharacterRecord FindById(int characterId)
         {
             return FindByPrimaryKey(characterId);

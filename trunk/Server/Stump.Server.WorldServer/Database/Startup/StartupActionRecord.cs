@@ -21,28 +21,28 @@ namespace Stump.Server.WorldServer.Database.Startup
             set;
         }
 
-        [Property("Title", NotNull = true, Length = 25)]
+        [Property("Title", NotNull = true)]
         public string Title
         {
             get;
             set;
         }
 
-        [Property("Text", NotNull = true, Length = 250)]
+        [Property("Text", NotNull = true)]
         public string Text
         {
             get;
             set;
         }
 
-        [Property("DescUrl", NotNull = true, Length = 50)]
+        [Property("DescUrl", NotNull = true)]
         public string DescUrl
         {
             get;
             set;
         }
 
-        [Property("PictureUrl", NotNull = true, Length = 50)]
+        [Property("PictureUrl", NotNull = true)]
         public string PictureUrl
         {
             get;
