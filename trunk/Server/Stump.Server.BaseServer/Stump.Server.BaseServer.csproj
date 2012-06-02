@@ -180,7 +180,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Benchmark\BenchmarkEntry.cs" />
+    <Compile Include="Benchmark\BenchmarkingType.cs" />
+    <Compile Include="Benchmark\BenchmarkManager.cs" />
     <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\Commands\BenchmarkCommands.cs" />
     <Compile Include="Commands\Commands\ConfigCommand.cs" />
     <Compile Include="Commands\Commands\DebugCommand.cs" />
     <Compile Include="Commands\Commands\HelpCommand.cs" />

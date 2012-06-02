@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
         public void Reply(short replyId)
         {
-            var reply = CurrentMessage.Replies.Where(entry => entry.ReplyId == replyId).FirstOrDefault();
+            var reply = CurrentMessage.Replies.FirstOrDefault(entry => entry.ReplyId == replyId);
 
             if (reply != null)
                 Reply(reply);
@@ -70,7 +70,11 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
         {
             CurrentMessage = message;
 
-            ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage);
+            var replies = message.Replies.
+                Where(entry => entry.CriteriaExpression == null || entry.CriteriaExpression.Eval(Character)).
+                Select(entry => (short)entry.ReplyId).Distinct();
+
+            ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, replies);
         }
     }
 }

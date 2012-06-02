@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using NLog;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -24,6 +25,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
     [Serializable]
     public class EffectBase : ICloneable
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         [NonSerialized]
         protected EffectTemplate m_template;
 
@@ -234,6 +237,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             byte minSize = 0;
 
             var commaIndex = RawZone.IndexOf(',');
+            try
+            {
 
             if (commaIndex == -1 && RawZone.Length > 1)
             {
@@ -243,6 +248,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             {
                 size = byte.Parse(RawZone.Substring(1, commaIndex - 1));
                 minSize = byte.Parse(RawZone.Remove(0, commaIndex + 1));
+            }
+
+            }
+            catch (Exception ex)
+            {
+                ZoneShape = 0;
+                ZoneSize = 0;
+                ZoneMinSize = 0;
+                return;
+
+                logger.Error("ParseRawZone() => Cannot parse {0}", RawZone); 
             }
 
             ZoneShape = shape;

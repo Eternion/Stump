@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -33,10 +34,9 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             client.Send(new NpcDialogCreationMessage(npc.Position.Map.Id, npc.Id));
         }
 
-        public static void SendNpcDialogQuestionMessage(IPacketReceiver client, NpcMessage message)
+        public static void SendNpcDialogQuestionMessage(IPacketReceiver client, NpcMessage message, IEnumerable<short> replies)
         {
-            client.Send(new NpcDialogQuestionMessage((short) message.Id, message.Parameters,
-                                                     message.Replies.Select(entry => (short) entry.ReplyId).Distinct()));
+            client.Send(new NpcDialogQuestionMessage((short)message.Id, message.Parameters, replies));
         }
     }
 }

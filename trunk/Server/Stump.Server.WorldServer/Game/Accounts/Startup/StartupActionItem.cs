@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Accounts.Startup
         {
             var effects = ItemManager.Instance.GenerateItemEffects(ItemTemplate, MaxEffects);
 
-            var item = new PlayerItemRecord // create the associated record
+            var item = new PlayerItemRecord
             {
                 Id = PlayerItemRecord.PopNextId(),
                 OwnerId = record.Id,

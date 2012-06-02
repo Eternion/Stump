@@ -1,10 +1,13 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Game.Exchanges
 {
@@ -108,12 +111,18 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         public bool MoveItem(int guid, int amount)
         {
             var playerItem = Character.Inventory[guid];
-            var tradeItem = Items.Where(entry => entry.Guid == guid).SingleOrDefault();
+            var tradeItem = Items.SingleOrDefault(entry => entry.Guid == guid);
 
             ToggleReady(false);
 
             if (playerItem == null)
                 return false;
+
+            if (playerItem.IsLinked())
+            {
+                BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 345, playerItem.Template.Id, playerItem.Guid);
+                return false;
+            }
 
             if (tradeItem != null)
             {
@@ -123,7 +132,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                 var currentStack = tradeItem.Stack;
                 tradeItem.Stack += amount;
 
-                if (tradeItem.Stack == 0)
+                if (tradeItem.Stack <= 0)
                     m_items.Remove(tradeItem);
 
                 NotifyItemMoved(tradeItem, true, tradeItem.Stack - currentStack);
@@ -131,11 +140,21 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                 return true;
             }
 
-            if (amount > playerItem.Stack || amount < 0)
+            if (amount > playerItem.Stack || amount <= 0)
                 return false;
 
-            tradeItem = new PlayerItem(Character, playerItem.Record) {Stack = amount};
+            var dummyRecord = new PlayerItemRecord()
+            {
+                Id = playerItem.Record.Id,
+                Template = playerItem.Template,
+                OwnerId = Character.Id,
+                Stack = amount,
+                Effects = playerItem.Effects,
+                New = false,
+                Position = playerItem.Position,
+            };
 
+            tradeItem = new PlayerItem(Character, dummyRecord);
             m_items.Add(tradeItem);
 
             NotifyItemMoved(tradeItem, false, amount);

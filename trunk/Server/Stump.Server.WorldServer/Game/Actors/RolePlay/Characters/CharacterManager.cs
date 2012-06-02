@@ -128,6 +128,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     slot++;
                 }
 
+                foreach (var startItem in breed.StartItems)
+                {
+                    var itemRecord = startItem.GenerateItemRecord(record);
+                    itemRecord.Create();
+                }
+
                 session.Flush();
             }
 

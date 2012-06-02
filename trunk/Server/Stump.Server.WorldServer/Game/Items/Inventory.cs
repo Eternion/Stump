@@ -587,7 +587,7 @@ namespace Stump.Server.WorldServer.Game.Items
             base.OnItemRemoved(item);
         }
 
-        private void OnItemMoved(PlayerItem item, CharacterInventoryPositionEnum lastPosition)
+        private void OnItemMoved(PlayerItem  item, CharacterInventoryPositionEnum lastPosition)
         {
             m_itemsByPosition[lastPosition].Remove(item);
             m_itemsByPosition[item.Position].Add(item);

@@ -100,16 +100,9 @@ namespace Stump.Server.WorldServer.Database.Items
 
         protected override bool OnFlushDirty(object id, System.Collections.IDictionary previousState, System.Collections.IDictionary currentState, NHibernate.Type.IType[] types)
         {
-            m_serializedEffects = EffectManager.Instance.SerializeEffects(Effects);
+            m_serializedEffects = (byte[])(currentState["SerializedEffects"] = EffectManager.Instance.SerializeEffects(Effects));
 
             return base.OnFlushDirty(id, previousState, currentState, types);
         }
-
-        protected override bool BeforeSave(System.Collections.IDictionary state)
-        {
-            SerializedEffects = EffectManager.Instance.SerializeEffects(Effects);
-
-            return base.BeforeSave(state);
-        }
     }
 }

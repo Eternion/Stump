@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Stump.Core.Cache;
 using Stump.DofusProtocol.Enums;
@@ -17,11 +18,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             Position = position;
             Look = look;
 
-            m_gameContextActorInformations = new ObjectValidator<GameContextActorInformations>(BuildGameContextActorInformations);
+            m_gameContextActorInformations =
+                new ObjectValidator<GameContextActorInformations>(BuildGameContextActorInformations);
         }
 
         public Npc(int id, NpcSpawn spawn)
-            : this (id, spawn.Template, spawn.GetPosition(), spawn.Look)
+            : this(id, spawn.Template, spawn.GetPosition(), spawn.Look)
         {
             Spawn = spawn;
         }
@@ -55,6 +57,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             set;
         }
 
+        public event Action<Npc, NpcActionTypeEnum, NpcAction, Character> Interacted;
+
+        private void OnInteracted(NpcActionTypeEnum actionType, NpcAction action, Character character)
+        {
+            Action<Npc, NpcActionTypeEnum, NpcAction, Character> handler = Interacted;
+            if (handler != null) handler(this, actionType, action, character);
+        }
+
         public void Refresh()
         {
             m_gameContextActorInformations.Invalidate();
@@ -68,10 +78,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             if (!CanInteractWith(actionType, dialoguer))
                 return;
 
-            var actions = Template.GetNpcActions(actionType);
+            NpcAction[] actions = Template.GetNpcActions(actionType);
 
-            actions.First(entry => entry.ConditionaExpression == null || entry.ConditionaExpression.Eval(dialoguer))
-                .Execute(this, dialoguer);
+            NpcAction action =
+                actions.First(entry => entry.ConditionaExpression == null || entry.ConditionaExpression.Eval(dialoguer));
+
+            action.Execute(this, dialoguer);
+            OnInteracted(actionType, action, dialoguer);
         }
 
         public bool CanInteractWith(NpcActionTypeEnum action, Character dialoguer)
@@ -79,10 +92,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             if (dialoguer.Map != Position.Map)
                 return false;
 
-            var actions = Template.GetNpcActions(action);
+            NpcAction[] actions = Template.GetNpcActions(action);
 
-            return actions.Length > 0 && actions.Any(entry => entry.ConditionaExpression == null || 
-                entry.ConditionaExpression.Eval(dialoguer));
+            return actions.Length > 0 && actions.Any(entry => entry.ConditionaExpression == null ||
+                                                              entry.ConditionaExpression.Eval(dialoguer));
         }
 
         public void SpeakWith(Character dialoguer)
@@ -91,6 +104,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
                 return;
 
             InteractWith(NpcActionTypeEnum.ACTION_TALK, dialoguer);
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} ({1}) [{2}]", Template.Name, Id, TemplateId);
         }
 
         #region GameContextActorInformations
@@ -102,7 +120,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             return new GameRolePlayNpcInformations(Id,
                                                    Look,
                                                    GetEntityDispositionInformations(),
-                                                   (short)Template.Id,
+                                                   (short) Template.Id,
                                                    Template.Gender != 0,
                                                    Template.SpecialArtworkId);
         }
@@ -113,10 +131,5 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
         }
 
         #endregion
-
-        public override string ToString()
-        {
-            return string.Format("{0} ({1}) [{2}]", Template.Name, Id, TemplateId);
-        }
     }
 }

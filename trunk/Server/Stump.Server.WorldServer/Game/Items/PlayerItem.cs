@@ -107,6 +107,9 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public bool IsLinked()
         {
+            if (Template.IsLinkedToOwner)
+                return true;
+
             if (Template.Type.SuperType == ItemSuperTypeEnum.SUPERTYPE_QUEST)
                 return true;
 

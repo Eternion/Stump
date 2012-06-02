@@ -32,21 +32,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             set;
         }
 
-        public override short Context
-        {
-            get
-            {
-                return base.Context;
-            }
-            set
-            {
-                base.Context = value;
-
-                if (Limit && Total > APLimit)
-                    base.Context = (short)( value - ( Total - APLimit ) );
-            }
-        }
-
         public override short Equiped
         {
             get
@@ -58,20 +43,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
                 base.Equiped = value;
                 if (Limit && Total > APLimit)
                     base.Equiped = (short)( value - ( Total - APLimit ) );
-            }
-        }
-
-        public override short Given
-        {
-            get
-            {
-                return base.Given;
-            }
-            set
-            {
-                base.Given = value;
-                if (Limit && Total > APLimit)
-                    base.Given = (short)( value - ( Total - APLimit ) );
             }
         }
 

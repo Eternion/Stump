@@ -169,18 +169,10 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
 
         protected override bool OnFlushDirty(object id, System.Collections.IDictionary previousState, System.Collections.IDictionary currentState, NHibernate.Type.IType[] types)
         {
-            SerializedEffects = SerializeEffects(BonusEffects);
-            SerializedItems = SerializeItems(Items.Select(entry => entry.Id));
+            SerializedEffects = (byte[])(currentState["SerializedEffects"] = SerializeEffects(BonusEffects));
+            SerializedItems = (byte[])( currentState["SerializedItems"] = SerializeItems(Items.Select(entry => entry.Id)) );
 
             return base.OnFlushDirty(id, previousState, currentState, types);
-        }
-
-        protected override bool BeforeSave(System.Collections.IDictionary state)
-        {
-            SerializedEffects = SerializeEffects(BonusEffects);
-            SerializedItems = SerializeItems(Items.Select(entry => entry.Id));
-
-            return base.BeforeSave(state);
         }
 
         public object GenerateAssignedObject(string fieldName, object d2OObject)

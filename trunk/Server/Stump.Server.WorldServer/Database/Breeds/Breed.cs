@@ -252,6 +252,13 @@ namespace Stump.Server.WorldServer.Database.Breeds
             set;
         }
 
+        [HasMany(typeof(StartItem), Table = "breeds_items", ColumnKey = "Breed", Cascade = ManyRelationCascadeEnum.All)]
+        public IList<StartItem> StartItems
+        {
+            get;
+            set;
+        }
+
         [Property("StartMap")]
         public int StartMap
         {

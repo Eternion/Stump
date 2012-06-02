@@ -3,7 +3,7 @@ using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.WorldServer.Database.Breeds
 {
-    [ActiveRecord("breed_spells")]
+    [ActiveRecord("breeds_spells")]
     public class LearnableSpell : WorldBaseRecord<LearnableSpell>
     {
         [PrimaryKey(PrimaryKeyType.Native, "Id")]

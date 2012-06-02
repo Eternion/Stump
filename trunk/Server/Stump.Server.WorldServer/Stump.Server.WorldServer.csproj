@@ -197,6 +197,7 @@
     <Compile Include="Core\Network\WorldClientCollection.cs" />
     <Compile Include="Core\Network\WorldPacketHandler.cs" />
     <Compile Include="Database\AssignedWorldRecord.cs" />
+    <Compile Include="Database\Breeds\StartItem.cs" />
     <Compile Include="Database\IAssignedByD2o.cs" />
     <Compile Include="Database\Interactives\InteractiveSpawn.cs" />
     <Compile Include="Database\Interactives\InteractiveTemplate.cs" />
@@ -234,6 +235,7 @@
     <Compile Include="Database\Npcs\Replies\LightRestatReply.cs" />
     <Compile Include="Database\Npcs\Replies\RestatReply.cs" />
     <Compile Include="Database\Npcs\Replies\TeleportReply.cs" />
+    <Compile Include="Database\Npcs\Replies\UseItemReply.cs" />
     <Compile Include="Database\PrimaryKeyIdProvider.cs" />
     <Compile Include="Database\Spells\ISpellRecord.cs" />
     <Compile Include="Database\World\Maps\MapElement.cs" />

@@ -369,6 +369,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             sbyte id = GetNextContextualId();
 
             var npc = new Npc(id, template, position, look);
+            template.OnNpcSpawned(npc);
 
             Enter(npc);
 
@@ -385,6 +386,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             sbyte id = GetNextContextualId();
 
             var npc = new Npc(id, spawn);
+            spawn.Template.OnNpcSpawned(npc);
 
             Enter(npc);
 

@@ -9,6 +9,7 @@ using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Npc = Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs.Npc;
 
 namespace Stump.Server.WorldServer.Database.Npcs
 {
@@ -16,6 +17,14 @@ namespace Stump.Server.WorldServer.Database.Npcs
     [D2OClass("Npc", "com.ankamagames.dofus.datacenter.npcs")]
     public class NpcTemplate : WorldBaseRecord<NpcTemplate>
     {
+        public delegate void NpcSpawnedEventHandler(NpcTemplate template, Npc npc);
+        public event NpcSpawnedEventHandler NpcSpawned;
+
+        public void OnNpcSpawned(Npc npc)
+        {
+            NpcSpawnedEventHandler handler = NpcSpawned;
+            if (handler != null) handler(this, npc);
+        }
 
         [D2OField("id")]
         [PrimaryKey(PrimaryKeyType.Assigned, "Id")]

@@ -74,7 +74,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
         {
             if (CriteriaExpression != null && !CriteriaExpression.Eval(character))
             {
-                BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 34);
+                character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 34);
                 return false;
             }
 

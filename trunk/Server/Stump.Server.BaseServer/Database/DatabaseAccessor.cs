@@ -208,9 +208,9 @@ namespace Stump.Server.BaseServer.Database
             m_patchs = Directory.GetFiles(m_config.UpdateFileDir, "*", SearchOption.AllDirectories).
                 Select(entry => new PatchFile(entry)).ToArray();
 
-            var sequence = PatchFile.GeneratePatchSequenceExecution(m_patchs, m_version.Revision, m_databaseRevision);
+            var sequence = PatchFile.GeneratePatchSequenceExecution(m_patchs, m_version.Revision, m_databaseRevision).ToArray();
 
-            if (sequence.Count() <= 0)
+            if (!sequence.Any())
             {
                 throw new FileNotFoundException(string.Format("Cannot found the patchs to process update {0} to {1}.", m_version.Revision, m_databaseRevision));
             }
@@ -218,15 +218,48 @@ namespace Stump.Server.BaseServer.Database
             var holder = ActiveRecordMediator.GetSessionFactoryHolder();
             var session = (ISessionImplementor)holder.CreateSession(m_recordBaseType);
 
+            var currentRev = m_version.Revision;
             foreach (var patchFile in sequence)
             {
                 m_logger.Info("Executing patch {0}.sql ...", patchFile.FileName);
 
-                ActiveRecordStarter.CreateSchemaFromFile(patchFile.Path, session.Connection);
+                try
+                {
+                    ExecuteSqlFile(patchFile.Path, session.Connection);
+
+                    currentRev = patchFile.ToRevision;
+                }
+                catch (Exception ex)
+                {
+                    if (currentRev != m_version.Revision)
+                    {
+                        ActiveRecordHelper.DeleteVersionRecord(m_versionType);
+                        ActiveRecordHelper.CreateVersionRecord(m_versionType, currentRev);
+                    }
+
+                    throw new Exception(string.Format("Could not execute patch '{0} properly : {1}", patchFile.Path, ex));
+                }
             }
 
             ActiveRecordHelper.DeleteVersionRecord(m_versionType);
             ActiveRecordHelper.CreateVersionRecord(m_versionType, m_databaseRevision);
+
+            m_logger.Info("Database schema update to rev. {0}", m_databaseRevision);
+        }
+
+        public void ExecuteSqlFile(string file, IDbConnection connection)
+        {
+            var queries = File.ReadAllText(file).Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            
+            using (IDbCommand command = connection.CreateCommand())
+            {
+                foreach (string str in queries)
+                {
+                    command.CommandText = str;
+                    command.CommandType = CommandType.Text;
+                    command.ExecuteNonQuery();
+                }
+            }
         }
 
         internal void CreateBackup()

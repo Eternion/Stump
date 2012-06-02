@@ -283,7 +283,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
                 Array.Copy(Cells[i].Serialize(), 0, m_compressedCells, i * Cell.StructSize, Cell.StructSize);
             }
 
-            m_compressedCells = ZipHelper.Compress(m_compressedCells);
+            m_compressedCells = (byte[])(currentState["CompressedCells"] = ZipHelper.Compress(m_compressedCells));
 
             m_compressedElements = new byte[Elements.Length * MapElement.Size];
             for (int i = 0; i < Elements.Length; i++)
@@ -291,31 +291,10 @@ namespace Stump.Server.WorldServer.Database.World.Maps
                 Array.Copy(Elements[i].Serialize(), 0, m_compressedElements, i * MapElement.Size, MapElement.Size);
             }
 
-            m_compressedElements = ZipHelper.Compress(m_compressedElements);
+            m_compressedElements = (byte[])(currentState["CompressedElements"] = ZipHelper.Compress(m_compressedElements));
 
             return base.OnFlushDirty(id, previousState, currentState, types);
         }
 
-        protected override bool BeforeSave(System.Collections.IDictionary state)
-        {            
-            m_compressedCells = new byte[Cells.Length * Cell.StructSize];
-
-            for (int i = 0; i < Cells.Length; i++)
-            {
-                Array.Copy(Cells[i].Serialize(), 0, m_compressedCells, i * Cell.StructSize, Cell.StructSize);
-            }
-
-            m_compressedCells = ZipHelper.Compress(m_compressedCells);
-
-            m_compressedElements = new byte[Elements.Length * MapElement.Size];
-            for (int i = 0; i < Elements.Length; i++)
-            {
-                Array.Copy(Elements[i].Serialize(), 0, m_compressedElements, i * MapElement.Size, MapElement.Size);
-            }
-
-            m_compressedElements = ZipHelper.Compress(m_compressedElements);
-
-            return base.BeforeSave(state);
-        }
     }
 }

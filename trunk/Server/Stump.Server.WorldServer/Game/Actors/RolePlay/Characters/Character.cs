@@ -900,6 +900,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             SendServerMessage(string.Format("<font color=\"#{0}\">{1}</font>", color.ToArgb().ToString("X"), message));
         }
 
+        public void SendInformationMessage(TextInformationTypeEnum msgType, short msgId, params object[] parameters)
+        {
+            BasicHandler.SendTextInformationMessage(Client, msgType, msgId, parameters);
+        }
+
         public void SendSystemMessage(short msgId, bool hangUp, params object[] parameters)
         {
             BasicHandler.SendSystemMessageDisplayMessage(Client, hangUp, msgId, parameters);
@@ -1566,9 +1571,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     m_record.Wisdom = Stats[PlayerFields.Wisdom].Base;
                     m_record.Vitality = Stats[PlayerFields.Vitality].Base;
                     m_record.BaseHealth = (ushort) Stats.Health.Base;
-                    m_record.DamageTaken = (ushort) Stats.Health.DamageTaken;
+                    m_record.DamageTaken = (ushort)Stats.Health.DamageTaken;
 
-                    m_record.Save();
+                    m_record.Update();
 
                     session.Flush();
                 }

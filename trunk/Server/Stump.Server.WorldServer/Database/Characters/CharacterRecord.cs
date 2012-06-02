@@ -714,16 +714,11 @@ namespace Stump.Server.WorldServer.Database.Characters
 
         protected override bool OnFlushDirty(object id, System.Collections.IDictionary previousState, System.Collections.IDictionary currentState, NHibernate.Type.IType[] types)
         {
-            m_serializedZaaps = SerializeZaaps(m_knownZaaps);
+            m_serializedZaaps = (byte[])(currentState["SerializedZaaps"] = SerializeZaaps(m_knownZaaps));
+            m_lookAsString = (string)(currentState["LookAsString"] = EntityLook != null ? EntityLook.ConvertToString() : string.Empty);
+            m_customLookAsString = (string)(currentState["CustomLookAsString"] = CustomEntityLook != null ? CustomEntityLook.ConvertToString() : string.Empty);
 
             return base.OnFlushDirty(id, previousState, currentState, types);
-        }
-
-        protected override bool BeforeSave(System.Collections.IDictionary state)
-        {
-            m_serializedZaaps = SerializeZaaps(m_knownZaaps);
-
-            return base.BeforeSave(state);
         }
 
         public static CharacterRecord FindById(int characterId)

@@ -19,8 +19,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             logger.Debug("Apply spells fix");
 
             // iop's wrath (159)
-            // increase buff duration to 4
-            FixEffectOnAllLevels(159, EffectsEnum.Effect_SpellBoost, (level, effect, critical) => effect.Duration = 4);
+            // increase buff duration to 5
+            FixEffectOnAllLevels(159, EffectsEnum.Effect_SpellBoost, (level, effect, critical) => effect.Duration = 5);
 
             // iop's vitality (155)
             // effect #1 Target = allies (not self)
@@ -31,6 +31,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // sacrifice dool
             // target Kill = Only Self
             FixEffectOnAllLevels(233, EffectsEnum.Effect_Kill, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+        
+            // punitive arrow (171)
+            // duration buff = 3
+            FixEffectOnAllLevels(171, EffectsEnum.Effect_SpellBoost, (level, effect, critical) => effect.Duration = 3);
         }
 
         public static void FixEffectOnAllLevels(int spellId, int effectIndex, Action<SpellLevelTemplate, EffectDice, bool> fixer)

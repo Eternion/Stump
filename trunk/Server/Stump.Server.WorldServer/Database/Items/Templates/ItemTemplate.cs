@@ -287,22 +287,20 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set;
         }
 
-        protected override bool OnFlushDirty(object id, System.Collections.IDictionary previousState, System.Collections.IDictionary currentState, NHibernate.Type.IType[] types)
+        [Property]
+        public bool IsLinkedToOwner
         {
-            PossibleEffects = m_effects == null
-                      ? null
-                      : m_effects.Select(entry => entry.GetEffectInstance()).ToList();
-
-            return base.OnFlushDirty(id, previousState, currentState, types);
+            get;
+            set;
         }
 
-        protected override bool BeforeSave(System.Collections.IDictionary state)
+        protected override bool OnFlushDirty(object id, System.Collections.IDictionary previousState, System.Collections.IDictionary currentState, NHibernate.Type.IType[] types)
         {
-            PossibleEffects = m_effects == null
+            PossibleEffects = (List<EffectInstance>)(currentState["PossibleEffects"] = m_effects == null
                       ? null
-                      : m_effects.Select(entry => entry.GetEffectInstance()).ToList();
+                      : m_effects.Select(entry => entry.GetEffectInstance()).ToList());
 
-            return base.BeforeSave(state);
+            return base.OnFlushDirty(id, previousState, currentState, types);
         }
 
         public bool IsWeapon()

@@ -78,7 +78,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
             foreach (var effect in template.Effects)
             {
-                if (template.IsWeapon() && !EffectManager.Instance.IsUnRandomableWeaponEffect(effect.EffectId))
+                if (template.IsWeapon() && EffectManager.Instance.IsUnRandomableWeaponEffect(effect.EffectId))
                     effects.Add(effect);
                 else
                     effects.Add(effect.GenerateEffect(EffectGenerationContext.Item, max ? EffectGenerationType.MaxEffects : EffectGenerationType.Normal));

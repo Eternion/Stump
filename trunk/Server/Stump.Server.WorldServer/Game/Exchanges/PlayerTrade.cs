@@ -78,16 +78,20 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                 (int) (SecondTrader.Character.Inventory.Kamas + (FirstTrader.Kamas - SecondTrader.Kamas)));
 
             // trade items
-            foreach (PlayerItem item in FirstTrader.Items)
+            foreach (PlayerItem tradeItem in FirstTrader.Items)
             {
+                var item = FirstTrader.Character.Inventory.TryGetItem(tradeItem.Guid);
+
                 FirstTrader.Character.Inventory.ChangeItemOwner(
-                    SecondTrader.Character, item, (uint) item.Stack);
+                    SecondTrader.Character, item, (uint)tradeItem.Stack);
             }
 
-            foreach (PlayerItem item in SecondTrader.Items)
+            foreach (PlayerItem tradeItem in SecondTrader.Items)
             {
+                var item = FirstTrader.Character.Inventory.TryGetItem(tradeItem.Guid);
+
                 SecondTrader.Character.Inventory.ChangeItemOwner(
-                    FirstTrader.Character, item, (uint) item.Stack);
+                    FirstTrader.Character, item, (uint)tradeItem.Stack);
             }
 
             InventoryHandler.SendInventoryWeightMessage(FirstTrader.Character.Client);
@@ -98,12 +102,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         {
             FirstTrader.ToggleReady(false);
             SecondTrader.ToggleReady(false);
-
-            if (item.IsLinked())
-            {
-                BasicHandler.SendTextInformationMessage((trader as PlayerTrader).Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 345, item.Template.Id, item.Guid);
-                return;
-            }
 
             if (item.Stack == 0)
             {
