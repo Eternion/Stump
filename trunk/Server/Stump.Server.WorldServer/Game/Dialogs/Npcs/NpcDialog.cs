@@ -47,10 +47,12 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
         public void Reply(short replyId)
         {
-            var reply = CurrentMessage.Replies.FirstOrDefault(entry => entry.ReplyId == replyId);
+            var replies = CurrentMessage.Replies.Where(entry => entry.ReplyId == replyId);
 
-            if (reply != null)
-                Reply(reply);
+            foreach (var npcReply in replies)
+            {
+                Reply(npcReply);
+            }
         }
 
         public void Reply(NpcReply reply)

@@ -88,7 +88,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
             foreach (PlayerItem tradeItem in SecondTrader.Items)
             {
-                var item = FirstTrader.Character.Inventory.TryGetItem(tradeItem.Guid);
+                var item = SecondTrader.Character.Inventory.TryGetItem(tradeItem.Guid);
 
                 SecondTrader.Character.Inventory.ChangeItemOwner(
                     FirstTrader.Character, item, (uint)tradeItem.Stack);

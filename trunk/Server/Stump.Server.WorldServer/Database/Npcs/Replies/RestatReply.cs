@@ -37,7 +37,9 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             character.PermanentAddedIntelligence = 0;
             character.PermanentAddedChance = 0;
 
-            character.StatsPoints = (ushort)( character.StatsPoints + character.Level * 5 );
+            character.StatsPoints = (ushort)( character.Level * 5 );
+
+            character.RefreshStats();
 
             if (RestatOnce)
                 character.CanRestat = false;
