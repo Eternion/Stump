@@ -255,6 +255,11 @@ namespace Stump.Server.BaseServer.Database
             {
                 foreach (string str in queries)
                 {
+                    var query = str.Trim();
+
+                    if (string.IsNullOrEmpty(query) || string.IsNullOrWhiteSpace(query) || query == "\r\n")
+                        continue;
+
                     command.CommandText = str;
                     command.CommandType = CommandType.Text;
                     command.ExecuteNonQuery();
