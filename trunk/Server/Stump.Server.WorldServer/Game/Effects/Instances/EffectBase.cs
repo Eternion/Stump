@@ -256,7 +256,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 ZoneShape = 0;
                 ZoneSize = 0;
                 ZoneMinSize = 0;
-                return;
 
                 logger.Error("ParseRawZone() => Cannot parse {0}", RawZone); 
             }

@@ -38,7 +38,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
                 return false;
             }
 
-            Target.Stats[GetEffectCharacteristic(Effect.EffectId)].Base += effect.Value;
+            Target.Stats[GetEffectCharacteristic(Effect.EffectId)].Base += bonus;
+            UpdatePermanentStatField(bonus);
             Target.RefreshStats();
 
             return true;
@@ -65,9 +66,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             }
         }
 
-        private int AdjustBonusStat(short bonus)
+        private short AdjustBonusStat(short bonus)
         {
-            int actualPts;
+            short actualPts;
 
             switch (Effect.EffectId)
             {
@@ -97,9 +98,35 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
                 return 0;
 
             if (actualPts + bonus > StatBonusLimit)
-                return actualPts - StatBonusLimit;
+                return (short) (actualPts - StatBonusLimit);
 
             return bonus;
+        }
+
+        private void UpdatePermanentStatField(short bonus)
+        {
+
+            switch (Effect.EffectId)
+            {
+                case EffectsEnum.Effect_AddPermanentChance:
+                    Target.PermanentAddedChance += bonus;
+                    break;
+                case EffectsEnum.Effect_AddPermanentAgility:
+                    Target.PermanentAddedAgility += bonus;
+                    break;
+                case EffectsEnum.Effect_AddPermanentIntelligence:
+                    Target.PermanentAddedIntelligence += bonus;
+                    break;
+                case EffectsEnum.Effect_AddPermanentStrength:
+                    Target.PermanentAddedStrength += bonus;
+                    break;
+                case EffectsEnum.Effect_AddPermanentWisdom:
+                    Target.PermanentAddedWisdom += bonus;
+                    break;
+                case EffectsEnum.Effect_AddPermanentVitality:
+                    Target.PermanentAddedVitality += bonus;
+                    break;
+            }
         }
     }
 }

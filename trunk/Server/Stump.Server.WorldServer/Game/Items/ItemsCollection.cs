@@ -206,6 +206,13 @@ namespace Stump.Server.WorldServer.Game.Items
         /// </summary>
         protected virtual void DeleteItem(T item)
         {
+            // theorically the item is removed before
+            if (Items.ContainsKey(item.Guid))
+            {
+                Items.Remove(item.Guid);
+                NotifyItemRemoved(item);
+            }
+
             ItemsToDelete.Enqueue(item);
         }
     

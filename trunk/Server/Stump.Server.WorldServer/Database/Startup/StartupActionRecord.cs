@@ -56,15 +56,6 @@ namespace Stump.Server.WorldServer.Database.Startup
             set { m_items = value; }
         }
 
-        [HasAndBelongsToMany(typeof (WorldAccount), Table = "accounts_startup_actions",
-            ColumnKey = "StartupActionId", ColumnRef = "AccountId", Inverse = true)]
-        public IList<WorldAccount> Accounts
-        {
-            get { return m_accounts ?? new List<WorldAccount>(); }
-            set { m_accounts = value; }
-        }
-
-
         public static StartupActionRecord FindStartupActionById(uint id)
         {
             return FindByPrimaryKey(id);
