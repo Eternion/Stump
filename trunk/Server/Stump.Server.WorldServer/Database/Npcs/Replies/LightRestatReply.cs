@@ -14,12 +14,6 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             if (!base.Execute(npc, character))
                 return false;
 
-            if (!character.CanRestat)
-            {
-                character.SendServerMessage("You cannot restat", Color.Red);
-                return false;
-            }
-
             character.Stats.Agility.Base = character.PermanentAddedAgility;
             character.Stats.Strength.Base = character.PermanentAddedStrength;
             character.Stats.Vitality.Base = character.PermanentAddedVitality;

@@ -48,6 +48,8 @@ namespace Stump.Server.WorldServer.Database.Characters
             StatsPoints = (ushort) (breed.StartLevel * 5);
             Kamas = breed.StartKamas;
 
+            CanRestat = true;
+
             if (breed.StartLevel > 100)
                 AP++;
         }
