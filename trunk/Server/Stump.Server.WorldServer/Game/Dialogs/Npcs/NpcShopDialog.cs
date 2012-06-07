@@ -158,7 +158,13 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 return;
             }
 
-            NpcItem saleItem = Items.Where(entry => entry.Item.Id == item.Template.Id).FirstOrDefault();
+            if (item.Stack < amount)
+            {
+                Character.Client.Send(new ExchangeErrorMessage((int)ExchangeErrorEnum.SELL_ERROR));
+                return;
+            } 
+            
+            NpcItem saleItem = Items.FirstOrDefault(entry => entry.Item.Id == item.Template.Id);
 
             int price;
 
