@@ -33,6 +33,26 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Character.Fighter.CastSpell(spell, client.Character.Map.Cells[message.cellId]);
         }
 
+        [WorldHandler(GameActionFightCastOnTargetRequestMessage.Id)]
+        public static void HandleGameActionFightCastOnTargetRequestMessage(WorldClient client, GameActionFightCastOnTargetRequestMessage message)
+        {
+            if (!client.Character.IsFighting())
+                return;
+
+            var spell = client.Character.Spells.GetSpell(message.spellId);
+
+            if (spell == null)
+                return;
+
+            var fighter = client.Character.Fight.GetOneFighter(message.targetId);
+
+            if (fighter == null)
+                return;
+
+            client.Character.Fighter.CastSpell(spell, fighter.Cell);
+        }
+
+
         [WorldHandler(GameFightTurnFinishMessage.Id)]
         public static void HandleGameFightTurnFinishMessage(WorldClient client, GameFightTurnFinishMessage message)
         {
