@@ -1738,13 +1738,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Level,
                 Name,
                 Look,
+                (sbyte)BreedId,
+                Sex == SexTypeEnum.SEX_FEMALE,
                 LifePoints,
                 MaxLifePoints,
                 (short) Stats[PlayerFields.Prospecting].Total,
-                0,
+                RegenSpeed,
                 (short) Stats[PlayerFields.Initiative].Total,
-                false,
-                0);
+                PvPEnabled,
+                (sbyte) AlignmentSide,
+                (short) Map.Position.X,
+                (short) Map.Position.Y,
+                Map.Id,
+                (short) SubArea.Id);
         }
 
         public PartyGuestInformations GetPartyGuestInformations(Party party)
@@ -1758,7 +1764,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Id,
                 invitation.Source.Id,
                 Name,
-                Look);
+                Look,
+                (sbyte)BreedId,
+                Sex == SexTypeEnum.SEX_FEMALE);
         }
 
         #endregion

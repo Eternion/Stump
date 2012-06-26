@@ -1304,17 +1304,19 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region Spells
 
-        protected virtual void OnCloseCombat(FightActor caster, WeaponTemplate weapon, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
+        protected virtual void OnCloseCombat(FightActor caster, WeaponTemplate weapon, Cell targetCell, FightSpellCastCriticalEnum critical, bool silentCast)
         {
-            ForEach(entry => ActionsHandler.SendGameActionFightCloseCombatMessage(entry.Client, caster, target, critical,
+            var target = GetOneFighter(targetCell);
+            ForEach(entry => ActionsHandler.SendGameActionFightCloseCombatMessage(entry.Client, caster, target, targetCell, critical,
                 !caster.IsVisibleFor(entry) || silentCast, weapon), true);
         }
 
 
-        protected virtual void OnSpellCasting(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
+        protected virtual void OnSpellCasting(FightActor caster, Spell spell, Cell targetCell, FightSpellCastCriticalEnum critical, bool silentCast)
         {
+            var target = GetOneFighter(targetCell);
             ForEach(entry => ContextHandler.SendGameActionFightSpellCastMessage(entry.Client, ActionsEnum.ACTION_FIGHT_CAST_SPELL,
-                                                                                caster, target, critical, !caster.IsVisibleFor(entry) || silentCast, spell), true);
+                                                                                caster, target, targetCell, critical, !caster.IsVisibleFor(entry) || silentCast, spell), true);
         }
 
         protected virtual void OnSpellCasted(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)

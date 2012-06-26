@@ -81,7 +81,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 modificator = Modificator,
                 trigger = Trigger,
                 hidden = Hidden,
-                rawZone = RawZone,
+                zoneMinSize = ZoneMinSize,
+                zoneSize = ZoneSize,
+                zoneShape = ZoneShape,
                 value = Value,
                 diceNum = (uint) DiceNum,
                 diceSide = (uint) DiceFace

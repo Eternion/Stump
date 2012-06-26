@@ -14,5 +14,6 @@ namespace Stump.DofusProtocol.D2oClasses
 		public int dialogId;
 		public List<uint> parameters;
 		public Point coords;
+		public QuestObjectiveType type;
 	}
 }

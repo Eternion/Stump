@@ -215,6 +215,7 @@
     <Compile Include="Types\game\context\MapCoordinates.cs" />
     <Compile Include="Types\game\context\MapCoordinatesAndId.cs" />
     <Compile Include="Types\game\context\MapCoordinatesExtended.cs" />
+    <Compile Include="Types\game\context\roleplay\AlternativeMonstersInGroupLightInformations.cs" />
     <Compile Include="Types\game\context\roleplay\AtlasPointsInformations.cs" />
     <Compile Include="Types\game\context\roleplay\BasicGuildInformations.cs" />
     <Compile Include="Types\game\context\roleplay\GameRolePlayActorInformations.cs" />
@@ -229,6 +230,8 @@
     <Compile Include="Types\game\context\roleplay\GameRolePlayNpcInformations.cs" />
     <Compile Include="Types\game\context\roleplay\GameRolePlayNpcWithQuestInformations.cs" />
     <Compile Include="Types\game\context\roleplay\GameRolePlayPrismInformations.cs" />
+    <Compile Include="Types\game\context\roleplay\GroupMonsterStaticInformations.cs" />
+    <Compile Include="Types\game\context\roleplay\GroupMonsterStaticInformationsWithAlternatives.cs" />
     <Compile Include="Types\game\context\roleplay\GuildInformations.cs" />
     <Compile Include="Types\game\context\roleplay\HumanInformations.cs" />
     <Compile Include="Types\game\context\roleplay\HumanWithGuildInformations.cs" />
@@ -239,6 +242,7 @@
     <Compile Include="Types\game\context\roleplay\job\JobDescription.cs" />
     <Compile Include="Types\game\context\roleplay\job\JobExperience.cs" />
     <Compile Include="Types\game\context\roleplay\MonsterInGroupInformations.cs" />
+    <Compile Include="Types\game\context\roleplay\MonsterInGroupLightInformations.cs" />
     <Compile Include="Types\game\context\roleplay\ObjectItemInRolePlay.cs" />
     <Compile Include="Types\game\context\roleplay\party\DungeonPartyFinderPlayer.cs" />
     <Compile Include="Types\game\context\roleplay\party\PartyGuestInformations.cs" />
@@ -336,6 +340,7 @@
     <Compile Include="Types\secure\TrustCertificate.cs" />
     <Compile Include="Types\updater\ContentPart.cs" />
     <Compile Include="Types\version\Version.cs" />
+    <Compile Include="Types\version\VersionExtended.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">
@@ -350,6 +355,7 @@
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

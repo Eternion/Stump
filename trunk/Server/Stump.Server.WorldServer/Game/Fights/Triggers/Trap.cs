@@ -66,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
                 foreach (var effectHandler in handler.GetEffectHandlers())
                 {
-                    effectHandler.EffectZone = new Zone(shape.Shape == GameActionMarkCellsTypeEnum.CELLS_CROSS ? SpellShapeEnum.Q : effectHandler.Effect.ZoneShape, shape.Size);
+                    effectHandler.EffectZone = new Zone(shape.Shape == GameActionMarkCellsTypeEnum.CELLS_CROSS ? SpellShapeEnum.Q : (SpellShapeEnum) effectHandler.Effect.ZoneShape, shape.Size);
                 }
 
                 handler.Execute();

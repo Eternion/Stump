@@ -195,7 +195,8 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
                 invitation.Source.Id,
                 invitation.Source.Name,
                 invitation.Party.Leader.Id,
-                invitation.Party.Members.Select(entry => entry.GetPartyInvitationMemberInformations())
+                invitation.Party.Members.Select(entry => entry.GetPartyInvitationMemberInformations()),
+                invitation.Party.Guests.Select(entry => entry.GetPartyGuestInformations(invitation.Party))
                 ));
         }    
 

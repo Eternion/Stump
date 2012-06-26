@@ -84,6 +84,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             return new MonsterInGroupInformations(Template.Id, (sbyte)Grade.GradeId, Look);
         }
 
+        public MonsterInGroupLightInformations GetMonsterInGroupLightInformations()
+        {
+            return new MonsterInGroupLightInformations(Template.Id, (sbyte)Grade.GradeId);
+        }
+
         public override string ToString()
         {
             return string.Format("{0} ({1})", Template.Name, Template.Id);

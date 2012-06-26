@@ -73,7 +73,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 modificator = Modificator,
                 trigger = Trigger,
                 hidden = Hidden,
-                rawZone = RawZone,
+                zoneMinSize = ZoneMinSize,
+                zoneSize = ZoneSize,
+                zoneShape = ZoneShape,
                 days = (uint) m_days,
                 hours = (uint) m_hours,
                 minutes = (uint) m_minutes

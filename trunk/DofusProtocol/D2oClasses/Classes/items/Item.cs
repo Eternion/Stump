@@ -37,6 +37,7 @@ namespace Stump.DofusProtocol.D2oClasses
 		public List<EffectInstance> possibleEffects;
 		public List<uint> favoriteSubAreas;
 		public uint favoriteSubAreasBonus;
+		public ItemType type;
 		public uint weight;
 	}
 }

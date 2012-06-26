@@ -93,7 +93,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             {
                 return m_effectZone ??
                        (m_effectZone =
-                        new Zone(Effect.ZoneShape, Effect.ZoneSize, CastPoint.OrientationTo(TargetedPoint)));
+                        new Zone((SpellShapeEnum) Effect.ZoneShape, (byte) Effect.ZoneSize, CastPoint.OrientationTo(TargetedPoint)));
             }
             set
             {

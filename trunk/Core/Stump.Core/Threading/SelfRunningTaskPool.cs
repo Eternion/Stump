@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -58,6 +59,16 @@ namespace Stump.Core.Threading
         {
             get;
             protected set;
+        }
+
+        public ReadOnlyCollection<TimerEntry> Timers
+        {
+            get { return m_timers.AsReadOnly(); }
+        }
+
+        public ReadOnlyCollection<SimpleTimerEntry> SimpleTimers
+        {
+            get { return m_simpleTimers.AsReadOnly(); }
         }
 
         public void Start()

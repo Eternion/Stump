@@ -60,7 +60,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             m_zoneSize = effect.m_zoneSize;
             m_zoneMinSize = effect.m_zoneMinSize;
             ZoneShape = effect.ZoneShape;
-            m_rawZone = BuildRawZone();
         }
 
         public EffectBase(short id, EffectBase effect)
@@ -78,7 +77,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             m_zoneSize = effect.m_zoneSize;
             m_zoneMinSize = effect.m_zoneMinSize;
             ZoneShape = effect.ZoneShape;
-            m_rawZone = BuildRawZone();
         }
 
         public EffectBase(short id, int targetId, int duration, int delay, int random, int group, int modificator, bool trigger, bool hidden, uint zoneSize, uint zoneShape, uint zoneMinSize)
@@ -94,8 +92,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             Hidden = hidden;
             m_zoneSize = zoneSize;
             m_zoneMinSize = zoneMinSize;
-            ZoneShape = (SpellShapeEnum) zoneShape;
-            m_rawZone = BuildRawZone();
+            ZoneMinSize = zoneMinSize;
+            ZoneSize = zoneSize;
+            ZoneShape = zoneShape;
         }
 
         public EffectBase(EffectInstance effect)
@@ -111,7 +110,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             Modificator = effect.modificator;
             Trigger = effect.trigger;
             Hidden = effect.hidden;
-            RawZone = effect.rawZone;
+            m_zoneMinSize = effect.zoneMinSize;
+            m_zoneSize = effect.zoneSize;
+            ZoneShape = effect.zoneShape;
         }
 
         public short Id
@@ -185,13 +186,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         private uint m_zoneSize;
 
-        public byte ZoneSize
+        public uint ZoneSize
         {
             get { return m_zoneSize >= 63 ? (byte)63 : (byte)m_zoneSize; }
             set { m_zoneSize = value; }
         }
 
-        public SpellShapeEnum ZoneShape
+        public uint ZoneShape
         {
             get;
             set;
@@ -199,7 +200,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         
         private uint m_zoneMinSize;
 
-        public byte ZoneMinSize
+        public uint ZoneMinSize
         {
             get
             {
@@ -209,22 +210,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             {
                 m_zoneMinSize = value;
             }
-        }
+        } 
 
-        private string m_rawZone;
-
-        public string RawZone
+        protected void ParseRawZone(string rawZone)
         {
-            get { return m_rawZone; }
-            set
-            {
-                m_rawZone = value; ParseRawZone();
-            }
-        }
-
-        protected void ParseRawZone()
-        {
-            if (string.IsNullOrEmpty(RawZone))
+            if (string.IsNullOrEmpty(rawZone))
             {
                 ZoneShape = 0;
                 ZoneSize = 0;
@@ -232,23 +222,23 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 return;
             }
 
-            var shape = (SpellShapeEnum) RawZone[0];
+            var shape = rawZone[0];
             byte size = 0;
             byte minSize = 0;
 
-            var commaIndex = RawZone.IndexOf(',');
+            var commaIndex = rawZone.IndexOf(',');
             try
             {
 
-            if (commaIndex == -1 && RawZone.Length > 1)
-            {
-                size = byte.Parse(RawZone.Remove(0, 1));
-            }
-            else if (RawZone.Length > 1)
-            {
-                size = byte.Parse(RawZone.Substring(1, commaIndex - 1));
-                minSize = byte.Parse(RawZone.Remove(0, commaIndex + 1));
-            }
+                if (commaIndex == -1 && rawZone.Length > 1)
+                {
+                    size = byte.Parse(rawZone.Remove(0, 1));
+                }
+                else if (rawZone.Length > 1)
+                {
+                    size = byte.Parse(rawZone.Substring(1, commaIndex - 1));
+                    minSize = byte.Parse(rawZone.Remove(0, commaIndex + 1));
+                }
 
             }
             catch (Exception ex)
@@ -257,7 +247,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 ZoneSize = 0;
                 ZoneMinSize = 0;
 
-                logger.Error("ParseRawZone() => Cannot parse {0}", RawZone); 
+                logger.Error("ParseRawZone() => Cannot parse {0}", rawZone);
             }
 
             ZoneShape = shape;
@@ -309,7 +299,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 modificator = Modificator,
                 trigger = Trigger,
                 hidden = Hidden,
-                rawZone = RawZone
+                zoneMinSize = ZoneMinSize,
+                zoneSize = ZoneSize,
+                zoneShape = ZoneShape
             };
         }
 
@@ -353,10 +345,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 writer.Write(Trigger);
                 writer.Write(Hidden);
 
-                if (RawZone == null)
+                var rawZone = BuildRawZone();
+                if (rawZone == null)
                     writer.Write(string.Empty);
                 else
-                    writer.Write(RawZone);
+                    writer.Write(rawZone);
             }
         }
 
@@ -390,7 +383,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 Modificator = reader.ReadInt32();
                 Trigger = reader.ReadBoolean();
                 Hidden = reader.ReadBoolean();
-                RawZone = reader.ReadString();
+                ParseRawZone(reader.ReadString());
             }
         }
 

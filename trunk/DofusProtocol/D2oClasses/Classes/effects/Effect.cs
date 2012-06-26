@@ -21,5 +21,6 @@ namespace Stump.DofusProtocol.D2oClasses
 		public Boolean showInSet;
 		public int bonusType;
 		public Boolean useInFight;
+		public uint effectPriority;
 	}
 }

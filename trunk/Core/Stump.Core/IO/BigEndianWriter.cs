@@ -79,8 +79,10 @@ namespace Stump.Core.IO
         /// </summary>
         private void WriteBigEndianBytes(byte[] endianBytes)
         {
-            Array.Reverse(endianBytes);
-            m_writer.Write(endianBytes);
+            for (int i = endianBytes.Length - 1; i >= 0; i--)
+            {
+                m_writer.Write(endianBytes[i]);
+            }
         }
 
         #endregion

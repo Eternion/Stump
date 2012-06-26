@@ -1,5 +1,4 @@
 using System;
-using Stump.DofusProtocol.D2oClasses.Classes;
 
 namespace Stump.DofusProtocol.D2oClasses
 {
@@ -7,4 +6,8 @@ namespace Stump.DofusProtocol.D2oClasses
 	public class AnimFunMonsterData : AnimFunData
 	{
 	}
+
+    public class AnimFunData
+    {
+    }
 }

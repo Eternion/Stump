@@ -149,13 +149,13 @@
     <Compile Include="Classes\alignments\AlignmentSide.cs" />
     <Compile Include="Classes\alignments\AlignmentTitle.cs" />
     <Compile Include="Classes\ambientSounds\AmbientSound.cs" />
-    <Compile Include="Classes\AnimFunData.cs" />
     <Compile Include="Classes\breeds\Breed.cs" />
     <Compile Include="Classes\challenges\Challenge.cs" />
     <Compile Include="Classes\communication\CensoredWord.cs" />
     <Compile Include="Classes\communication\ChatChannel.cs" />
     <Compile Include="Classes\communication\Emoticon.cs" />
     <Compile Include="Classes\communication\InfoMessage.cs" />
+    <Compile Include="Classes\communication\Smiley.cs" />
     <Compile Include="Classes\documents\Document.cs" />
     <Compile Include="Classes\effects\Effect.cs" />
     <Compile Include="Classes\effects\EffectInstance.cs" />
@@ -168,6 +168,9 @@
     <Compile Include="Classes\effects\instances\EffectInstanceMinMax.cs" />
     <Compile Include="Classes\effects\instances\EffectInstanceMount.cs" />
     <Compile Include="Classes\effects\instances\EffectInstanceString.cs" />
+    <Compile Include="Classes\guild\EmblemBackground.cs" />
+    <Compile Include="Classes\guild\EmblemSymbol.cs" />
+    <Compile Include="Classes\guild\EmblemSymbolCategory.cs" />
     <Compile Include="Classes\guild\RankName.cs" />
     <Compile Include="Classes\houses\House.cs" />
     <Compile Include="Classes\interactives\Interactive.cs" />
@@ -182,6 +185,9 @@
     <Compile Include="Classes\items\criterion\FriendlistItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\GiftItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\GroupItemCriterion.cs" />
+    <Compile Include="Classes\items\criterion\GuildItemCriterion.cs" />
+    <Compile Include="Classes\items\criterion\GuildLevelItemCriterion.cs" />
+    <Compile Include="Classes\items\criterion\GuildRightsItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\ItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\ItemCriterionFactory.cs" />
     <Compile Include="Classes\items\criterion\ItemCriterionOperator.cs" />
@@ -204,6 +210,7 @@
     <Compile Include="Classes\items\criterion\SkillItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\SoulStoneItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\SpecializationItemCriterion.cs" />
+    <Compile Include="Classes\items\criterion\SpellItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\StaticCriterionItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\SubareaItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\SubscribeItemCriterion.cs" />

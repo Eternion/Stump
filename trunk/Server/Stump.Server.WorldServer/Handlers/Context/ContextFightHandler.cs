@@ -238,12 +238,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightEndMessage(IPacketReceiver client, Fight fight)
         {
-            client.Send(new GameFightEndMessage(fight.GetFightDuration(), fight.AgeBonus, new FightResultListEntry[0]));
+            client.Send(new GameFightEndMessage(fight.GetFightDuration(), fight.AgeBonus, 0, new FightResultListEntry[0]));
         }
 
         public static void SendGameFightEndMessage(IPacketReceiver client, Fight fight, IEnumerable<FightResultListEntry> results)
         {
-            client.Send(new GameFightEndMessage(fight.GetFightDuration(), fight.AgeBonus, results));
+            client.Send(new GameFightEndMessage(fight.GetFightDuration(), fight.AgeBonus, 0, results));
         }
 
         public static void SendGameFightJoinMessage(IPacketReceiver client, bool canBeCancelled, bool canSayReady,
@@ -355,11 +355,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameFightOptionStateUpdateMessage((short) team.Fight.Id, team.Id, (sbyte)option, state));
         }
 
-        public static void SendGameActionFightSpellCastMessage(IPacketReceiver client, ActionsEnum actionId, FightActor caster,
+        public static void SendGameActionFightSpellCastMessage(IPacketReceiver client, ActionsEnum actionId, FightActor caster, FightActor target,
                                                                Cell cell, FightSpellCastCriticalEnum critical, bool silentCast,
                                                                Spell spell)
         {
-            client.Send(new GameActionFightSpellCastMessage((short) actionId, caster.Id, cell.Id, (sbyte) (critical),
+            client.Send(new GameActionFightSpellCastMessage((short) actionId, caster.Id, target == null ? 0 : target.Id, cell.Id, (sbyte) (critical),
                                                             silentCast, (short) spell.Id, spell.CurrentLevel));
         }
 

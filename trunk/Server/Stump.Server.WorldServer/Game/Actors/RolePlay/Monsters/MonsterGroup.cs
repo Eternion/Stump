@@ -226,12 +226,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             return new GameRolePlayGroupMonsterInformations(Id,
                                                             Leader.Look,
                                                             GetEntityDispositionInformations(),
-                                                            Leader.Template.Id,
-                                                            (sbyte) Leader.Grade.GradeId,
-                                                            GetMonstersWithoutLeader().Select(entry => entry.GetMonsterInGroupInformations()),
+                                                            GetGroupMonsterStaticInformations(),
                                                             AgeBonus > ClientStarsBonusLimit ? ClientStarsBonusLimit : AgeBonus,
+                                                            0,
                                                             -1,
                                                             false);
+        }
+
+        public GroupMonsterStaticInformations GetGroupMonsterStaticInformations()
+        {
+            return new GroupMonsterStaticInformations(Leader.GetMonsterInGroupLightInformations(), GetMonstersWithoutLeader().Select(entry => entry.GetMonsterInGroupInformations()));
         }
 
         protected override void OnDisposed()

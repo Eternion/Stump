@@ -69,10 +69,6 @@ namespace Stump.Tools.ItemsSkinSniffer
 
         static void Main(string[] args)
         {
-            var response = @"http:\/\/www.dofus.com\/fr\/perso\/lily\/pitrailleuse-452445400021";
-            Match match = LinkRegex.Match(response);
-
-
             NLogHelper.LogFormatConsole = "${message}";
             NLogHelper.DefineLogProfile(false, true);
 

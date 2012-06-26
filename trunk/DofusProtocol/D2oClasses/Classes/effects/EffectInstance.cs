@@ -17,6 +17,5 @@ namespace Stump.DofusProtocol.D2oClasses
 		public uint zoneSize;
 		public uint zoneShape;
 		public uint zoneMinSize;
-        public string rawZone;
 	}
 }

@@ -13,5 +13,9 @@ namespace Stump.DofusProtocol.D2oClasses
 		public uint nameId;
 		public uint mapId;
 		public uint realMapId;
+		public int x;
+		public int y;
+		public Boolean outdoor;
+		public int subareaId;
 	}
 }

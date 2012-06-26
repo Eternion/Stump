@@ -170,6 +170,8 @@
     <Compile Include="Export\ChatActivableChannelsEnum.cs" />
     <Compile Include="Export\ChatChannelsMultiEnum.cs" />
     <Compile Include="Export\ChatErrorEnum.cs" />
+    <Compile Include="Export\ClientInstallTypeEnum.cs" />
+    <Compile Include="Export\ClientTechnologyEnum.cs" />
     <Compile Include="Export\CompassTypeEnum.cs" />
     <Compile Include="Export\ConsoleMessageTypeEnum.cs" />
     <Compile Include="Export\CrafterDirectoryParamBitEnum.cs" />

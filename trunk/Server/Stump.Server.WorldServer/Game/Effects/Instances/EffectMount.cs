@@ -73,7 +73,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 modificator = Modificator,
                 trigger = Trigger,
                 hidden = Hidden,
-                rawZone = RawZone,
+                zoneMinSize = ZoneMinSize,
+                zoneSize = ZoneSize,
+                zoneShape = ZoneShape,
                 modelId = (uint) m_modelId,
                 date = (float) m_date,
                 mountId =  (uint) m_mountId

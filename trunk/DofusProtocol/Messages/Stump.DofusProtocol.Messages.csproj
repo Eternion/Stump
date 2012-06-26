@@ -178,6 +178,7 @@
     <Compile Include="Messages\game\actions\AbstractGameActionWithAckMessage.cs" />
     <Compile Include="Messages\game\actions\fight\AbstractGameActionFightTargetedAbilityMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightCarryCharacterMessage.cs" />
+    <Compile Include="Messages\game\actions\fight\GameActionFightCastOnTargetRequestMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightCastRequestMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightChangeLookMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightCloseCombatMessage.cs" />
@@ -278,6 +279,7 @@
     <Compile Include="Messages\game\character\stats\CharacterLevelUpInformationMessage.cs" />
     <Compile Include="Messages\game\character\stats\CharacterLevelUpMessage.cs" />
     <Compile Include="Messages\game\character\stats\CharacterStatsListMessage.cs" />
+    <Compile Include="Messages\game\character\stats\FighterStatsListMessage.cs" />
     <Compile Include="Messages\game\character\stats\LifePointsRegenBeginMessage.cs" />
     <Compile Include="Messages\game\character\stats\LifePointsRegenEndMessage.cs" />
     <Compile Include="Messages\game\character\stats\UpdateLifePointsMessage.cs" />
@@ -635,6 +637,10 @@
     <Compile Include="Messages\game\guild\GuildMemberLeavingMessage.cs" />
     <Compile Include="Messages\game\guild\GuildMemberOnlineStatusMessage.cs" />
     <Compile Include="Messages\game\guild\GuildMembershipMessage.cs" />
+    <Compile Include="Messages\game\guild\GuildModificationEmblemValidMessage.cs" />
+    <Compile Include="Messages\game\guild\GuildModificationNameValidMessage.cs" />
+    <Compile Include="Messages\game\guild\GuildModificationStartedMessage.cs" />
+    <Compile Include="Messages\game\guild\GuildModificationValidMessage.cs" />
     <Compile Include="Messages\game\guild\GuildPaddockBoughtMessage.cs" />
     <Compile Include="Messages\game\guild\GuildPaddockRemovedMessage.cs" />
     <Compile Include="Messages\game\guild\GuildPaddockTeleportRequestMessage.cs" />
@@ -651,7 +657,6 @@
     <Compile Include="Messages\game\guild\tax\TaxCollectorAttackedMessage.cs" />
     <Compile Include="Messages\game\guild\tax\TaxCollectorAttackedResultMessage.cs" />
     <Compile Include="Messages\game\guild\tax\TaxCollectorErrorMessage.cs" />
-    <Compile Include="Messages\game\guild\tax\TaxCollectorFireRequestMessage.cs" />
     <Compile Include="Messages\game\guild\tax\TaxCollectorHireRequestMessage.cs" />
     <Compile Include="Messages\game\guild\tax\TaxCollectorListMessage.cs" />
     <Compile Include="Messages\game\guild\tax\TaxCollectorMovementAddMessage.cs" />
@@ -683,6 +688,7 @@
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidHouseGenericItemRemovedMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidHouseInListAddedMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidHouseInListRemovedMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeBidHouseInListUpdatedMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidHouseItemAddOkMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidHouseItemRemoveOkMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidHouseListMessage.cs" />
@@ -729,6 +735,8 @@
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectMovePricedMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectTransfertAllFromInvMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectTransfertAllToInvMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectTransfertExistingFromInvMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectTransfertExistingToInvMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectTransfertListFromInvMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectTransfertListToInvMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectUseInWorkshopMessage.cs" />
@@ -817,6 +825,8 @@
     <Compile Include="Messages\game\inventory\items\ObjectUseOnCharacterMessage.cs" />
     <Compile Include="Messages\game\inventory\items\SetUpdateMessage.cs" />
     <Compile Include="Messages\game\inventory\KamasUpdateMessage.cs" />
+    <Compile Include="Messages\game\inventory\ObjectAveragePricesErrorMessage.cs" />
+    <Compile Include="Messages\game\inventory\ObjectAveragePricesMessage.cs" />
     <Compile Include="Messages\game\inventory\preset\InventoryPresetDeleteMessage.cs" />
     <Compile Include="Messages\game\inventory\preset\InventoryPresetDeleteResultMessage.cs" />
     <Compile Include="Messages\game\inventory\preset\InventoryPresetItemUpdateErrorMessage.cs" />

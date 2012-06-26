@@ -113,6 +113,7 @@ namespace Stump.Server.WorldServer.Core.IPC
             var binding = new NetTcpBinding {Security = {Mode = SecurityMode.None}};
             Context = new InstanceContext(WorldServer.Instance);
             var proxyobject = new AuthClientAdapter(Context, binding, new EndpointAddress(IpcAuthAddress));
+            
             proxyobject.Error += OnOperationError;
 
             try

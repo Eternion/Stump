@@ -91,7 +91,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
             client.Send(new GameActionFightSlideMessage((short)ActionsEnum.ACTION_CHARACTER_PUSH, source.Id, target.Id, startCellId, endCellId));
         }
 
-        public static void SendGameActionFightCloseCombatMessage(IPacketReceiver client, FightActor source, Cell cell, FightSpellCastCriticalEnum castCritical, bool silentCast, WeaponTemplate weapon)
+        public static void SendGameActionFightCloseCombatMessage(IPacketReceiver client, FightActor source, FightActor target, Cell cell, FightSpellCastCriticalEnum castCritical, bool silentCast, WeaponTemplate weapon)
         {
             var action = ActionsEnum.ACTION_FIGHT_CLOSE_COMBAT;
             if (castCritical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
@@ -99,7 +99,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
             else if (castCritical == FightSpellCastCriticalEnum.CRITICAL_HIT)
                 action = ActionsEnum.ACTION_FIGHT_CLOSE_COMBAT_CRITICAL_HIT;
 
-            client.Send(new GameActionFightCloseCombatMessage((short)action, source.Id, cell.Id, (sbyte)castCritical, silentCast, weapon.Id));
+            client.Send(new GameActionFightCloseCombatMessage((short)action, source.Id, target == null ? 0 : target.Id, cell.Id, (sbyte)castCritical, silentCast, weapon.Id));
         }
 
         public static void SendGameActionFightChangeLookMessage(IPacketReceiver client, FightActor source, FightActor target, EntityLook look)

@@ -60,6 +60,7 @@ namespace Stump.Server.BaseServer.IPC
                 IpcAddress);
 
             m_host.Open();
+            m_host.Description.Behaviors.Add(new ErrorServiceBehavior());
 
             string addr = m_host.Description.Endpoints[0].ListenUri.AbsoluteUri;
 

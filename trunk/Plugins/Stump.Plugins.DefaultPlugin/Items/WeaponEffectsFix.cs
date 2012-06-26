@@ -25,12 +25,12 @@ namespace Stump.Plugins.DefaultPlugin.Items
                     {
                         if (template.TypeId == 7) // hammer
                         {
-                            effect.ZoneShape = SpellShapeEnum.Hammer;
+                            effect.ZoneShape = (uint) SpellShapeEnum.Hammer;
                             effect.ZoneSize = 1;
                         }
                         else if (template.TypeId == 4) // staff
                         {
-                            effect.ZoneShape = SpellShapeEnum.T;
+                            effect.ZoneShape = (uint) SpellShapeEnum.T;
                             effect.ZoneSize = 1;
                         }
                     }

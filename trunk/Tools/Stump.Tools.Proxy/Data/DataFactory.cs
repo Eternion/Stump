@@ -363,9 +363,9 @@ namespace Stump.Tools.Proxy.Data
 
         public static void HandleMonsterGroup(WorldClient client, GameRolePlayGroupMonsterInformations monsterGroup)
         {
-            HandleMonsterSpawn(client, monsterGroup.mainCreatureGenericId, client.CurrentMap);
+            HandleMonsterSpawn(client, monsterGroup.staticInfos.mainCreatureLightInfos.creatureGenericId, client.CurrentMap);
 
-            foreach (MonsterInGroupInformations monster in monsterGroup.underlings)
+            foreach (MonsterInGroupInformations monster in monsterGroup.staticInfos.underlings)
             {
                 HandleMonsterSpawn(client, monster.creatureGenericId, client.CurrentMap);
             }
