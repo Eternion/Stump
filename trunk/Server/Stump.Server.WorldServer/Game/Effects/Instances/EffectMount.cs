@@ -75,7 +75,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 hidden = Hidden,
                 zoneMinSize = ZoneMinSize,
                 zoneSize = ZoneSize,
-                zoneShape = ZoneShape,
+                zoneShape = (uint) ZoneShape,
                 modelId = (uint) m_modelId,
                 date = (float) m_date,
                 mountId =  (uint) m_mountId

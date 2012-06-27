@@ -94,7 +94,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             m_zoneMinSize = zoneMinSize;
             ZoneMinSize = zoneMinSize;
             ZoneSize = zoneSize;
-            ZoneShape = zoneShape;
+            ZoneShape = (SpellShapeEnum) zoneShape;
         }
 
         public EffectBase(EffectInstance effect)
@@ -112,7 +112,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             Hidden = effect.hidden;
             m_zoneMinSize = effect.zoneMinSize;
             m_zoneSize = effect.zoneSize;
-            ZoneShape = effect.zoneShape;
+            ZoneShape = (SpellShapeEnum) effect.zoneShape;
         }
 
         public short Id
@@ -192,7 +192,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             set { m_zoneSize = value; }
         }
 
-        public uint ZoneShape
+        public SpellShapeEnum ZoneShape
         {
             get;
             set;
@@ -222,7 +222,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 return;
             }
 
-            var shape = rawZone[0];
+            var shape = (SpellShapeEnum)rawZone[0];
             byte size = 0;
             byte minSize = 0;
 
@@ -301,7 +301,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 hidden = Hidden,
                 zoneMinSize = ZoneMinSize,
                 zoneSize = ZoneSize,
-                zoneShape = ZoneShape
+                zoneShape = (uint) ZoneShape
             };
         }
 

@@ -1,4 +1,10 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
+using CSScriptLibrary;
+using Stump.Core.Extensions;
+using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.BaseServer.Commands.Commands
@@ -84,6 +90,46 @@ namespace Stump.Server.BaseServer.Commands.Commands
             {
                 trigger.Reply(line);
             }
+        }
+    }
+
+    public class CommandRunCode : SubCommand
+    {
+        public CommandRunCode()
+        {
+            Aliases = new[] { "code", "exec" };
+            ParentCommand = typeof(DebugCommand);
+            RequiredRole = RoleEnum.Administrator;
+            Description = "Execute a code dynamically";
+            AddParameter<string>("code", "code", "The code to execute");
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            CSScript.AssemblyResolvingEnabled = true;
+            var eval = CSScript.BuildEval(string.Format("func() {{ {0}; }}", trigger.Get<string>("code")));
+
+            trigger.Reply("Executed");
+        }
+    }
+
+    public class CommandEval : SubCommand
+    {
+        public CommandEval()
+        {
+            Aliases = new[] { "eval" };
+            ParentCommand = typeof(DebugCommand);
+            RequiredRole = RoleEnum.Administrator;
+            Description = "Eval a code";
+            AddParameter<string>("code", "code", "The code to eval");
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            CSScript.AssemblyResolvingEnabled = true;
+            var eval = CSScript.BuildEval(string.Format("func() {{ return {0}; }}", trigger.Get<string>("code")));
+
+            trigger.Reply(ObjectDumper.Dump(eval()));
         }
     }
 }

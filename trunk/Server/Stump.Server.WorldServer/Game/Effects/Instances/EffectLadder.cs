@@ -75,7 +75,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 hidden = Hidden,
                 zoneMinSize = ZoneMinSize,
                 zoneSize = ZoneSize,
-                zoneShape = ZoneShape,
+                zoneShape = (uint) ZoneShape,
                 monsterCount = (uint) m_monsterCount,
                 monsterFamilyId = (uint) m_monsterfamily,
             };

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;

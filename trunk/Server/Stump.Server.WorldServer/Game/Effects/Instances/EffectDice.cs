@@ -83,7 +83,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 hidden = Hidden,
                 zoneMinSize = ZoneMinSize,
                 zoneSize = ZoneSize,
-                zoneShape = ZoneShape,
+                zoneShape = (uint) ZoneShape,
                 value = Value,
                 diceNum = (uint) DiceNum,
                 diceSide = (uint) DiceFace
