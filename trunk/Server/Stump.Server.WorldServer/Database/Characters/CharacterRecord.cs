@@ -705,6 +705,13 @@ namespace Stump.Server.WorldServer.Database.Characters
 
         #endregion
 
+        [Property]
+        public DateTime? MuteUntil
+        {
+            get;
+            set;
+        }
+
         protected override void OnDelete()
         {
             PlayerItemRecord.DeleteAll("OwnerId = " + Id);

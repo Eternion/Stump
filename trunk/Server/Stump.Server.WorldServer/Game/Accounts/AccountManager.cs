@@ -25,13 +25,13 @@ namespace Stump.Server.WorldServer.Game.Accounts
         public void BanLater(AccountData banned, AccountData banner, TimeSpan duration, string reason)
         {
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
-                IpcAccessor.Instance.ProxyObject.BlamAccountFrom(banned.Id, banner.Id, duration, reason));
+                IpcAccessor.Instance.ProxyObject.BlamAccount(banned.Id, banner.Id, duration, reason));
         }
 
         public void BanLater(AccountData banned, TimeSpan duration, string reason)
         {
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
-                IpcAccessor.Instance.ProxyObject.BlamAccount(banned.Id, duration, reason));
+                IpcAccessor.Instance.ProxyObject.BlamAccount(banned.Id, null, duration, reason));
         }
 
         public AccountData GetAccountByTicket(string ticket)

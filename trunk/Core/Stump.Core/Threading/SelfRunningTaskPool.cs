@@ -238,6 +238,7 @@ namespace Stump.Core.Threading
                             return;
                         }
                     }
+
                     // get the end time
                     long timerStop = m_queueTimer.ElapsedMilliseconds;
 

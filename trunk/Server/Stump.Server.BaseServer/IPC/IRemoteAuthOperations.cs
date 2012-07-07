@@ -43,10 +43,14 @@ namespace Stump.Server.BaseServer.IPC
         bool DeleteAccountCharacter(uint accountId, uint characterId);
 
         [OperationContract]
-        bool BlamAccountFrom(uint victimAccountId, uint bannerAccountId, TimeSpan duration, string reason);
+        bool UnBlamAccount(string victimAccountLogin);
 
-        [OperationContract]
-        bool BlamAccount(uint victimAccountId, TimeSpan duration, string reason);
+        [OperationContract(Name="BlamAccount_FromName")]
+        bool BlamAccount(uint victimAccountId, uint? bannerAccountId, TimeSpan duration, string reason);
+
+
+        [OperationContract(Name = "BlamAccount_FromId")]
+        bool BlamAccount(string victimAccountLogin, uint? bannerAccountId, TimeSpan duration, string reason);
 
         [OperationContract]
         bool BanIp(string ipToBan, uint bannerAccountId, TimeSpan duration, string reason);

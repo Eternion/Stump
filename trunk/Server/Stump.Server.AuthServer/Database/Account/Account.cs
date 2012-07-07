@@ -49,7 +49,7 @@ namespace Stump.Server.AuthServer.Database.Account
                            CreationDate = CreationDate,
                            BanEndDate = strongestSanction != null ? StrongestSanction.EndDate : default(DateTime),
                            BanReason = strongestSanction != null ? strongestSanction.BanReason : string.Empty,
-                           SubscriptionEndDate = DateTime.Now + TimeSpan.FromSeconds(SubscriptionRemainingTime),
+                           SubscriptionEndDate = SubscriptionEndDate,
                            Connections = Connections.Select(entry => new KeyValuePair<DateTime, string>(entry.Date, entry.Ip)).ToArray(),
                            CharactersId = Characters.Select(entry => entry.CharacterId).ToList(),
                            DeletedCharactersCount = DeletedCharacters.Count(entry => DateTime.Now - entry.DeletionDate <= TimeSpan.FromDays(1)),
@@ -241,7 +241,7 @@ namespace Stump.Server.AuthServer.Database.Account
             get { return Connections.MaxOf(c => c.Date); }
         }
 
-        public uint SubscriptionRemainingTime
+        public DateTime SubscriptionEndDate
         {
             get
             {
@@ -261,7 +261,7 @@ namespace Stump.Server.AuthServer.Database.Account
                             Subscriptions[i + 1].Duration += diff;
                     }
                 }
-                return (uint) time.TotalMilliseconds;
+                return DateTime.Now + time;
             }
         }
 

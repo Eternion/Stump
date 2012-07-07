@@ -217,10 +217,48 @@ namespace Stump.Server.AuthServer.IPC
             return AccountManager.Instance.DeleteAccountCharacter(account, world, characterId);
         }
 
-        public bool BlamAccountFrom(uint victimAccountId, uint bannerAccountId, TimeSpan duration, string reason)
+        public bool UnBlamAccount(string victimAccountLogin)
+        {
+            Account victimAccount = Account.FindAccountByLogin(victimAccountLogin);
+
+            foreach (var sanction in victimAccount.Sanctions)
+            {
+                sanction.Delete();
+            }
+
+            victimAccount.Sanctions.Clear();
+            victimAccount.Update();
+
+            return true;
+        }
+
+        public bool BlamAccount(string victimAccountLogin, uint? bannerAccountId, TimeSpan duration, string reason)
+        {
+            Account victimAccount = Account.FindAccountByLogin(victimAccountLogin);
+            Account bannerAccount = bannerAccountId.HasValue ? Account.FindAccountById(bannerAccountId.Value) : null;
+
+            if (victimAccount == null || bannerAccount == null)
+                return false;
+
+            var record = new Sanction
+            {
+                Account = victimAccount,
+                BannedBy = bannerAccount,
+                BanReason = reason,
+                Duration = duration
+            };
+            record.Create();
+
+            victimAccount.Sanctions.Add(record);
+            victimAccount.Update();
+
+            return true;
+        }
+
+        public bool BlamAccount(uint victimAccountId, uint? bannerAccountId, TimeSpan duration, string reason)
         {
             Account victimAccount = Account.FindAccountById(victimAccountId);
-            Account bannerAccount = Account.FindAccountById(bannerAccountId);
+            Account bannerAccount = bannerAccountId.HasValue ? Account.FindAccountById(bannerAccountId.Value) : null;
 
             if (victimAccount == null || bannerAccount == null)
                 return false;
@@ -234,30 +272,6 @@ namespace Stump.Server.AuthServer.IPC
                              };
             record.Create();
 
-            // todo : check if it is necessary
-            victimAccount.Sanctions.Add(record);
-            victimAccount.Update();
-
-            return true;
-        }
-
-
-        public bool BlamAccount(uint victimAccountId, TimeSpan duration, string reason)
-        {
-            Account victimAccount = Account.FindAccountById(victimAccountId);
-
-            if (victimAccount == null)
-                return false;
-
-            var record = new Sanction
-                             {
-                                 Account = victimAccount,
-                                 BanReason = reason,
-                                 Duration = duration
-                             };
-            record.Create();
-
-            // todo : check if it is necessary
             victimAccount.Sanctions.Add(record);
             victimAccount.Update();
 

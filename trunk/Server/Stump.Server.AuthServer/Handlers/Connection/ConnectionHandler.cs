@@ -85,10 +85,9 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             }
 
             /* Check Sanctions */
-            uint banRemainingTime = account.BanRemainingTime;
-            if (banRemainingTime > 0)
+            if (account.StrongestSanction != null && account.StrongestSanction.EndDate > DateTime.Now)
             {
-                SendIdentificationFailedBannedMessage(client, banRemainingTime);
+                SendIdentificationFailedBannedMessage(client, account.StrongestSanction.EndDate);
                 client.DisconnectLater(1000);
                 return false;
             }
@@ -96,7 +95,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             var ipBan = AccountManager.Instance.FindIpBan(client.IP);
             if (ipBan != null)
             {
-                SendIdentificationFailedBannedMessage(client, ipBan.BanRemainingTime);
+                SendIdentificationFailedBannedMessage(client, ipBan.EndDate);
                 client.DisconnectLater(1000);
                 return false;
             }
@@ -133,7 +132,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                             (int) client.Account.Id,
                             0, // community ID ? ( se trouve dans le d2p, utilisé pour trouver les serveurs de la communauté )
                             client.Account.SecretQuestion,
-                            client.Account.SubscriptionRemainingTime, 
+                            client.Account.SubscriptionEndDate > DateTime.Now ? client.Account.SubscriptionEndDate.GetUnixTimeStamp() : 0, 
                             (DateTime.Now - client.Account.CreationDate).TotalMilliseconds));
             client.LookingOfServers = true;
         }
@@ -148,9 +147,9 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             client.Send(new IdentificationFailedForBadVersionMessage((sbyte) IdentificationFailureReasonEnum.BAD_VERSION, version));
         }
 
-        public static void SendIdentificationFailedBannedMessage(AuthClient client, uint time)
+        public static void SendIdentificationFailedBannedMessage(AuthClient client, DateTime date)
         {
-            client.Send(new IdentificationFailedBannedMessage((sbyte) IdentificationFailureReasonEnum.BANNED, (int) time));
+            client.Send(new IdentificationFailedBannedMessage((sbyte) IdentificationFailureReasonEnum.BANNED, date.GetUnixTimeStamp()));
         }
 
         #endregion
@@ -177,7 +176,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             }
 
             /* not suscribe */
-            if (world.RequireSubscription && client.Account.SubscriptionRemainingTime <= 0)
+            if (world.RequireSubscription && client.Account.SubscriptionEndDate <= DateTime.Now)
             {
                 SendSelectServerRefusedMessage(client, world, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_SUBSCRIBERS_ONLY);
                 return;

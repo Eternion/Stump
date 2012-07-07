@@ -183,6 +183,7 @@
     <Compile Include="Commands\Commands\KickCommand.cs" />
     <Compile Include="Commands\Commands\LookCommand.cs" />
     <Compile Include="Commands\Commands\MonsterCommands.cs" />
+    <Compile Include="Commands\Commands\MuteCommand.cs" />
     <Compile Include="Commands\Commands\NpcsCommands.cs" />
     <Compile Include="Commands\Commands\Patterns\InGameCommand.cs" />
     <Compile Include="Commands\Commands\Patterns\TargetCommand.cs" />

@@ -212,11 +212,11 @@ namespace Stump.Server.BaseServer.IPC
             }
         }
 
-        public bool BlamAccountFrom(uint victimAccountId, uint bannerAccountId, TimeSpan duration, string reason)
+        public bool UnBlamAccount(string victimAccountLogin)
         {
             try
             {
-                return Channel.BlamAccountFrom(victimAccountId, bannerAccountId, duration, reason);
+                return Channel.UnBlamAccount(victimAccountLogin);
             }
             catch (Exception ex)
             {
@@ -225,11 +225,24 @@ namespace Stump.Server.BaseServer.IPC
             }
         }
 
-        public bool BlamAccount(uint victimAccountId, TimeSpan duration, string reason)
+        public bool BlamAccount(string victimAccountLogin, uint? bannerAccountId, TimeSpan duration, string reason)
         {
             try
             {
-                return Channel.BlamAccount(victimAccountId, duration, reason);
+                return Channel.BlamAccount(victimAccountLogin, bannerAccountId, duration, reason);
+            }
+            catch (Exception ex)
+            {
+                OnError(ex);
+                return false;
+            }
+        }
+
+        public bool BlamAccount(uint victimAccountId, uint? bannerAccountId, TimeSpan duration, string reason)
+        {
+            try
+            {
+                return Channel.BlamAccount(victimAccountId, bannerAccountId, duration, reason);
             }
             catch (Exception ex)
             {

@@ -7,6 +7,8 @@ namespace Stump.Core.Reflection
 {
     public class ObjectDumper
     {
+        private const int DepthDisplayLimit = 5;
+
         private int m_level;
         private readonly int m_indentSize;
         private readonly StringBuilder m_stringBuilder;
@@ -30,7 +32,7 @@ namespace Stump.Core.Reflection
 
         private string DumpElement(object element)
         {
-            if (m_level > 20)
+            if (m_level > DepthDisplayLimit)
                 return "... (limit reached)";
 
             if (element == null || element is ValueType || element is string)

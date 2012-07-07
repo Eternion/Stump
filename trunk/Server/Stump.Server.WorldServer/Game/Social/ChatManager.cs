@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Stump.Core.Attributes;
+using Stump.Core.Collections;
 using Stump.Core.IO;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
@@ -99,14 +101,19 @@ namespace Stump.Server.WorldServer.Game.Social
                 return;
 
             if (message.StartsWith(CommandPrefix) &&
-                (message.Length < CommandPrefix.Length * 2 || message.Substring(CommandPrefix.Length, CommandPrefix.Length) != CommandPrefix)) // ignore processing command whenever there is the preffix twice
+                ( message.Length < CommandPrefix.Length * 2 || message.Substring(CommandPrefix.Length, CommandPrefix.Length) != CommandPrefix )) // ignore processing command whenever there is the preffix twice
             {
                 message = message.Remove(0, CommandPrefix.Length); // remove our prefix
                 WorldServer.Instance.CommandManager.HandleCommand(new TriggerChat(new StringStream(message),
                                                                                   client.Character));
             }
             else
-                ChatHandlers[channel](client, message);
+            {
+                if (client.Character.IsMuted())
+                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 123, (int)client.Character.GetMuteRemainingTime().TotalSeconds);
+                else
+                    ChatHandlers[channel](client, message);
+            }
         }
 
         private void SendChatServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message)

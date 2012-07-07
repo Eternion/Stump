@@ -59,7 +59,7 @@ namespace Stump.Core.Extensions
             T maxT = collection[0];
             T1 maxT1 = selector(maxT);
 
-            for (int i = 1; i < collection.Count - 1; i++)
+            for (int i = 1; i < collection.Count; i++)
             {
                 T1 currentT1 = selector(collection[i]);
                 if (currentT1.CompareTo(maxT1) > 0)
@@ -78,7 +78,7 @@ namespace Stump.Core.Extensions
             T maxT = collection[0];
             T1 maxT1 = selector(maxT);
 
-            for (int i = 1; i < collection.Count - 1; i++)
+            for (int i = 1; i < collection.Count; i++)
             {
                 T1 currentT1 = selector(collection[i]);
                 if (currentT1.CompareTo(maxT1) < 0)

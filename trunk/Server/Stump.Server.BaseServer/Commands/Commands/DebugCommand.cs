@@ -108,7 +108,8 @@ namespace Stump.Server.BaseServer.Commands.Commands
         {
             CSScript.AssemblyResolvingEnabled = true;
             var eval = CSScript.BuildEval(string.Format("func() {{ {0}; }}", trigger.Get<string>("code")));
-
+            
+            eval();
             trigger.Reply("Executed");
         }
     }
