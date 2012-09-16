@@ -4,7 +4,7 @@ using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.Database.Monsters;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;

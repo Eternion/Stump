@@ -1,28 +1,29 @@
 using System;
-using System.Collections;
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Server.WorldServer.Database.I18n;
 
-namespace Stump.Server.WorldServer.Database.World
+namespace Stump.Server.WorldServer.Database
 {
-    [Serializable]
-    [ActiveRecord("superareas")]
-    [D2OClass("SuperArea", "com.ankamagames.dofus.datacenter.world")]
-    public sealed class SuperAreaRecord : WorldBaseRecord<SuperAreaRecord>
+    public class SuperAreaRecordConfiguration : EntityTypeConfiguration<SuperAreaRecord>
     {
+        public SuperAreaRecordConfiguration()
+        {
+            ToTable("superareas");
+        }
+    }
 
-        [D2OField("id")]
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+    [D2OClass("SuperArea", "com.ankamagames.dofus.datacenter.world")]
+    public sealed class SuperAreaRecord : IAssignedByD2O
+    {
         public int Id
         {
             get;
             set;
         }
 
-        [D2OField("nameId")]
-        [Property("NameId")]
         public uint NameId
         {
             get;
@@ -39,12 +40,18 @@ namespace Stump.Server.WorldServer.Database.World
             }
         }
 
-        [D2OField("worldmapId")]
-        [Property("WorldmapId")]
         public uint WorldmapId
         {
             get;
             set;
+        }
+
+        public void AssignFields(object d2oObject)
+        {
+            var area = (SuperArea)d2oObject;
+            Id = area.id;
+            NameId = area.nameId;
+            WorldmapId = area.worldmapId;
         }
     }
 }

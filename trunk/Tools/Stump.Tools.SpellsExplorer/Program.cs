@@ -120,7 +120,7 @@ namespace Stump.Tools.SpellsExplorer
             Console.WriteLine("Level.SpellBreed = {0}, Level.HideEffects = {1}", levelTemplate.SpellBreed, levelTemplate.HideEffects);
             Console.WriteLine("");
 
-            foreach (var effect in critical ? levelTemplate.CritialEffects : levelTemplate.Effects)
+            foreach (var effect in critical ? levelTemplate.CriticalEffects : levelTemplate.Effects)
             {
                 Console.WriteLine("Effect {0} ({1})", effect.EffectId, (int)effect.EffectId);
                 Console.WriteLine("DiceFace = {0}, DiceNum = {1}, Value = {2}", effect.DiceFace, effect.DiceNum, effect.Value);

@@ -4,6 +4,7 @@ using Stump.Core.Collections;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Exceptions;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 

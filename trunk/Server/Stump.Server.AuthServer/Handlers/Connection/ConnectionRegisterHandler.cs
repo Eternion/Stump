@@ -36,7 +36,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             }
 
             /* Already Used */
-            if (AccountManager.Instance.NicknameExist(nickname))
+            if (AccountManager.Instance.NicknameExists(nickname))
             {
                 client.Send(new NicknameRefusedMessage((sbyte) NicknameErrorEnum.ALREADY_USED));
                 return;

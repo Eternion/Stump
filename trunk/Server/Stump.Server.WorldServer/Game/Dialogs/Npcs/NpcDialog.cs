@@ -1,5 +1,4 @@
 using System.Linq;
-using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;

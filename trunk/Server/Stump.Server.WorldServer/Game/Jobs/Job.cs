@@ -1,4 +1,4 @@
-﻿using Stump.Server.WorldServer.Database.Jobs;
+﻿using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Jobs

@@ -1,13 +1,19 @@
-﻿using System.Drawing;
-using Castle.ActiveRecord;
+﻿using System.Data.Entity.ModelConfiguration;
 using Stump.Core.Attributes;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 
-namespace Stump.Server.WorldServer.Database.Npcs.Replies
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord(DiscriminatorValue = "Restat")]
-    public class RestatReply : NpcReply
+    public class RestatReplyConfiguration : EntityTypeConfiguration<RestatReply>
+    {
+        public RestatReplyConfiguration()
+        {
+            Map(x => x.Requires("Discriminator").HasValue("Restat"));
+
+        }
+    }
+    public class RestatReply : Npcs.NpcReply
     {
         [Variable]
         public static bool RestatOnce = true;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Reflection;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.Database.Npcs;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
 {

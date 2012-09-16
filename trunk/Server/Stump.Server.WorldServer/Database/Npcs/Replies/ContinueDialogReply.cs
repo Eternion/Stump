@@ -1,23 +1,30 @@
-using System;
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 
-namespace Stump.Server.WorldServer.Database.Npcs.Replies
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord(DiscriminatorValue = "Dialog")]
-    public class ContinueDialogReply : NpcReply
+    public class ContinueDialogReplyConfiguration : EntityTypeConfiguration<ContinueDialogReply>
     {
-        [Property("Dialog_NextMessageId", NotNull = false)]
+        public ContinueDialogReplyConfiguration()
+        {
+            Map(x => x.Requires("Discriminator").HasValue("Dialog"));
+
+            Property(x => x.NextMessageId).HasColumnName("Dialog_NextMessageId");
+        }
+    }
+    public class ContinueDialogReply : Npcs.NpcReply
+    {
         public int NextMessageId
         {
             get;
             set;
         }
 
-        private NpcMessage m_message;
-        public NpcMessage NextMessage
+        private Npcs.NpcMessage m_message;
+        public Npcs.NpcMessage NextMessage
         {
             get
             {

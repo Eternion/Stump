@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Data;
+using System.Data.Objects;
 using System.Linq;
 using System.Reflection;
 using Castle.ActiveRecord;
@@ -10,8 +12,7 @@ using Stump.Server.BaseServer.Initialization;
 
 namespace Stump.Server.WorldServer.Database
 {
-    [IgnoreTable]
-    public abstract class AssignedWorldRecord<T> : WorldBaseRecord<T>
+    public abstract class AssignedWorldRecord<T> : ISaveIntercepter
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -73,22 +74,10 @@ namespace Stump.Server.WorldServer.Database
             get { return Id > 0; }
         }
 
-        public override void Save()
+        public virtual void BeforeSave(ObjectStateEntry currentEntry)
         {
-            if (IdAssigned && !New)
-                Update();
-            else
-                Create();
-        }
-
-        public override void Create()
-        {
-            if (!IdAssigned)
+            if (currentEntry.State == EntityState.Added)
                 AssignIdentifier();
-
-            base.Create();
-
-            New = false;
         }
     }
 

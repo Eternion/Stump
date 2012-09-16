@@ -1,12 +1,16 @@
-using System;
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
-using Stump.Server.WorldServer.Database.Characters;
-using DofusItemShortcut = Stump.DofusProtocol.Types.ShortcutObjectItem;
+using Stump.DofusProtocol.Types;
 
-namespace Stump.Server.WorldServer.Database.Shortcuts
+namespace Stump.Server.WorldServer.Database
 {
-    // not used
-    [ActiveRecord(DiscriminatorValue = "Item")]
+    public class ItemShortcutConfiguration : EntityTypeConfiguration<ItemShortcut>
+    {
+        public ItemShortcutConfiguration()
+        {
+            Map(x => x.Requires("Discriminator").HasValue("Item"));
+        }
+    }
     public class ItemShortcut : Shortcut
     {
         public ItemShortcut()
@@ -21,14 +25,12 @@ namespace Stump.Server.WorldServer.Database.Shortcuts
             ItemGuid = itemGuid;
         }
 
-        [Property]
         public int ItemTemplateId
         {
             get;
             set;
         }
 
-        [Property]
         public int ItemGuid
         {
             get;
@@ -37,7 +39,7 @@ namespace Stump.Server.WorldServer.Database.Shortcuts
 
         public override DofusProtocol.Types.Shortcut GetNetworkShortcut()
         {
-            return new DofusItemShortcut(Slot, ItemGuid, ItemTemplateId);
+            return new ShortcutObjectItem(Slot, ItemGuid, ItemTemplateId);
         }
     }
 }

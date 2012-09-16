@@ -1,21 +1,30 @@
 using System;
+using System.Data.Entity.ModelConfiguration;
+using System.Data.Objects;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.I18n;
 
-namespace Stump.Server.WorldServer.Database.Items.Templates
+namespace Stump.Server.WorldServer.Database
 {
-    [Serializable]
-    [ActiveRecord("items_type")]
+    public class ItemTypeRecordConfiguration : EntityTypeConfiguration<ItemTypeRecord>
+    {
+        public ItemTypeRecordConfiguration()
+        {
+            ToTable("items_types");
+            Ignore(x => x.ZoneShape);
+            Ignore(x => x.ZoneSize);
+        }
+    }
+
     [D2OClass("ItemType", "com.ankamagames.dofus.datacenter.items")]
-    public sealed class ItemTypeRecord : WorldBaseRecord<ItemTypeRecord>
+    public sealed class ItemTypeRecord : IAssignedByD2O, ISaveIntercepter
     {
         private string m_name;
 
-        [D2OField("id")]
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
         public int Id
         {
             get;
@@ -30,8 +39,6 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             }
         }
 
-        [D2OField("nameId")]
-        [Property("NameId")]
         public uint NameId
         {
             get;
@@ -43,8 +50,6 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             get { return m_name ?? (m_name = TextManager.Instance.GetText(NameId)); }
         }
 
-        [D2OField("superTypeId")]
-        [Property("SuperTypeId")]
         public uint SuperTypeId
         {
             get;
@@ -56,16 +61,12 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             get { return (ItemSuperTypeEnum) SuperTypeId; }
         }
 
-        [D2OField("plural")]
-        [Property("Plural")]
         public Boolean Plural
         {
             get;
             set;
         }
 
-        [D2OField("gender")]
-        [Property("Gender")]
         public uint Gender
         {
             get;
@@ -74,8 +75,6 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
 
         private string m_rawZone;
 
-        [D2OField("rawZone")]
-        [Property]
         public string RawZone
         {
             get { return m_rawZone; }
@@ -93,6 +92,12 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
         }
 
         public SpellShapeEnum ZoneShape
+        {
+            get;
+            set;
+        }
+
+        public Boolean NeedUseConfirm
         {
             get;
             set;
@@ -117,12 +122,26 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             ZoneShape = type;
         }
 
-        [D2OField("needUseConfirm")]
-        [Property("NeedUseConfirm")]
-        public Boolean NeedUseConfirm
+        private void BuildRawZone()
         {
-            get;
-            set;
+            m_rawZone = ZoneShape.ToString() + ZoneSize;
+        }
+
+        public void AssignFields(object d2oObject)
+        {
+            var type = (DofusProtocol.D2oClasses.ItemType)d2oObject;
+            Id = type.id;
+            NameId = type.nameId;
+            SuperTypeId = type.superTypeId;
+            Plural = type.plural;
+            Gender = type.gender;
+            RawZone = type.rawZone;
+            NeedUseConfirm = type.needUseConfirm;
+        }
+
+        public void BeforeSave(ObjectStateEntry currentEntry)
+        {
+            BuildRawZone();   
         }
     }
 }

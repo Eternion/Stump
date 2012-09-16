@@ -5,16 +5,12 @@ using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Database.Interactives.Skills;
 using Stump.Server.WorldServer.Database.Items.Shops;
-using Stump.Server.WorldServer.Database.Monsters;
-using Stump.Server.WorldServer.Database.Npcs;
-using Stump.Server.WorldServer.Database.Npcs.Actions;
-using Stump.Server.WorldServer.Database.Npcs.Replies;
+using Stump.Server.WorldServer.Database.Triggers;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Database.World.Maps;
-using Stump.Server.WorldServer.Database.World.Triggers;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Interactives;
@@ -22,6 +18,8 @@ using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
 using Stump.Tools.Proxy.Network;
+using NpcMessage = Stump.Server.WorldServer.Database.Npcs.NpcMessage;
+using NpcSpawn = Stump.Server.WorldServer.Database.Npcs.NpcSpawn;
 
 namespace Stump.Tools.Proxy.Data
 {

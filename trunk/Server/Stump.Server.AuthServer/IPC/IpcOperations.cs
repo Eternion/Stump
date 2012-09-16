@@ -1,14 +1,15 @@
 using System;
+using System.Data.Objects;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using NLog;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.AuthServer.Database.Account;
-using Stump.Server.AuthServer.Database.World;
+using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Objects;
+using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.AuthServer.IPC
 {
@@ -17,7 +18,7 @@ namespace Stump.Server.AuthServer.IPC
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public WorldServerManager Manager = WorldServerManager.Instance;
+        private readonly WorldServerManager Manager = WorldServerManager.Instance;
 
         public IpcOperations()
         {
@@ -29,6 +30,18 @@ namespace Stump.Server.AuthServer.IPC
             var callbackCom = (ICommunicationObject) Callback;
             callbackCom.Closed += OnDisconnected;
             callbackCom.Faulted += OnDisconnected;
+        }
+
+        private DatabaseAccessor Database
+        {
+            get;
+            set;
+        }
+
+        private AccountManager AccountManager
+        {
+            get;
+            set;
         }
 
         public bool Connected
@@ -78,6 +91,10 @@ namespace Stump.Server.AuthServer.IPC
                 return result != RegisterResultEnum.OK ? result : RegisterResultEnum.UnknownError;
             }
 
+            Database = new DatabaseAccessor(AuthServer.DatabaseConfiguration.BuildConnection(), true);
+            AccountManager = new AccountManager();
+            AccountManager.ChangeDataSource(Database);
+            AccountManager.Initialize();
             server.RemoteOperations = Callback;
             Connected = true;
 
@@ -120,13 +137,12 @@ namespace Stump.Server.AuthServer.IPC
                 Manager.ChangeWorldState(server, ServerStatusEnum.ONLINE);
             }
 
-            server.Update();
+            AuthServer.Instance.SaveDatabaseChanges();
         }
 
         public AccountData GetAccountByTicket(string ticket)
         {
-            Account account = AccountManager.Instance.FindRegisteredAccountByTicket(ticket);
-
+            Account account = AccountManager.Instance.FindCachedAccountByTicket(ticket);
             if (account == null)
                 return null;
 
@@ -135,7 +151,8 @@ namespace Stump.Server.AuthServer.IPC
 
         public AccountData GetAccountByNickname(string nickname)
         {
-            return Account.FindAccountByNickname(nickname.ToLower()).Serialize();
+            Account account = AccountManager.FindAccountByNickname(nickname);
+            return account != null ? account.Serialize() : null;
         }
 
         /// <summary>
@@ -147,8 +164,7 @@ namespace Stump.Server.AuthServer.IPC
         /// <remarks>It only considers password, secret question & answer and role</remarks>
         public bool UpdateAccount(AccountData modifiedRecord)
         {
-            Account account = Account.FindAccountByNickname(modifiedRecord.Nickname);
-
+            Account account = AccountManager.FindAccountById(modifiedRecord.Id);
             if (account == null)
                 return false;
 
@@ -158,8 +174,7 @@ namespace Stump.Server.AuthServer.IPC
             account.Role = modifiedRecord.Role;
             account.Tokens = modifiedRecord.Tokens;
 
-            account.Update();
-
+            Database.SaveChanges();
             return true;
         }
 
@@ -179,36 +194,34 @@ namespace Stump.Server.AuthServer.IPC
                                   Lang = accountData.Lang,
                                   Email = accountData.Email
                               };
-
-            return AccountManager.Instance.CreateAccount(account);
+            return AccountManager.CreateAccount(account);
         }
 
         public bool DeleteAccount(string accountname)
         {
-            Account account = Account.FindAccountByLogin(accountname);
-
+            Account account = AccountManager.FindAccountByLogin(accountname);
             if (account == null)
                 return false;
 
             AccountManager.Instance.DisconnectClientsUsingAccount(account);
 
-            return AccountManager.Instance.DeleteAccount(account);
+            return AccountManager.DeleteAccount(account);
         }
 
-        public bool AddAccountCharacter(uint accountId, uint characterId)
+        public bool AddAccountCharacter(int accountId, int characterId)
         {
-            Account account = Account.FindAccountById(accountId);
+            Account account = AccountManager.FindAccountById(accountId);
             WorldServer world = GetCurrentServer();
 
             if (account == null || world == null)
                 return false;
 
-            return AccountManager.Instance.AddAccountCharacter(account, world, characterId);
+            return AccountManager.AddAccountCharacter(account, world, characterId);
         }
 
-        public bool DeleteAccountCharacter(uint accountId, uint characterId)
+        public bool DeleteAccountCharacter(int accountId, int characterId)
         {
-            Account account = Account.FindAccountById(accountId);
+            Account account = AccountManager.FindAccountById(accountId);
             WorldServer world = GetCurrentServer();
 
             if (account == null || world == null)
@@ -219,93 +232,82 @@ namespace Stump.Server.AuthServer.IPC
 
         public bool UnBlamAccount(string victimAccountLogin)
         {
-            Account victimAccount = Account.FindAccountByLogin(victimAccountLogin);
+            Account victimAccount = Database.Accounts.FirstOrDefault(entry => entry.Login == victimAccountLogin);
 
-            foreach (var sanction in victimAccount.Sanctions)
-            {
-                sanction.Delete();
-            }
-
-            victimAccount.Sanctions.Clear();
-            victimAccount.Update();
-
-            return true;
-        }
-
-        public bool BlamAccount(string victimAccountLogin, uint? bannerAccountId, TimeSpan duration, string reason)
-        {
-            Account victimAccount = Account.FindAccountByLogin(victimAccountLogin);
-            Account bannerAccount = bannerAccountId.HasValue ? Account.FindAccountById(bannerAccountId.Value) : null;
-
-            if (victimAccount == null || bannerAccount == null)
+            if (victimAccount == null)
                 return false;
 
-            var record = new Sanction
-            {
-                Account = victimAccount,
-                BannedBy = bannerAccount,
-                BanReason = reason,
-                Duration = duration
-            };
-            record.Create();
+            victimAccount.Sanctions.Clear();
 
-            victimAccount.Sanctions.Add(record);
-            victimAccount.Update();
+            Database.SaveChanges();
 
             return true;
         }
 
-        public bool BlamAccount(uint victimAccountId, uint? bannerAccountId, TimeSpan duration, string reason)
+        public bool BlamAccount(string victimAccountLogin, int? bannerAccountId, TimeSpan duration, string reason)
         {
-            Account victimAccount = Account.FindAccountById(victimAccountId);
-            Account bannerAccount = bannerAccountId.HasValue ? Account.FindAccountById(bannerAccountId.Value) : null;
+            Account victimAccount = Database.Accounts.FirstOrDefault(entry => entry.Login == victimAccountLogin);
 
-            if (victimAccount == null || bannerAccount == null)
+            if (victimAccount == null)
                 return false;
 
             var record = new Sanction
                              {
                                  Account = victimAccount,
-                                 BannedBy = bannerAccount,
+                                 BannedBy = bannerAccountId,
                                  BanReason = reason,
                                  Duration = duration
                              };
-            record.Create();
 
             victimAccount.Sanctions.Add(record);
-            victimAccount.Update();
 
+            Database.SaveChanges();
             return true;
         }
 
-        public bool BanIp(string ipToBan, uint bannerAccountId, TimeSpan duration, string reason)
+        public bool BlamAccount(int victimAccountId, int? bannerAccountId, TimeSpan duration, string reason)
         {
-            Account bannerAccount = Account.FindAccountById(bannerAccountId);
+            Account victimAccount = AccountManager.Instance.FindAccountById(victimAccountId);
 
-            if (bannerAccount == null)
+            if (victimAccount == null)
                 return false;
 
-            IpBan ipBan = IpBan.FindByIp(ipToBan);
+            var record = new Sanction
+                             {
+                                 Account = victimAccount,
+                                 BannedBy = bannerAccountId,
+                                 BanReason = reason,
+                                 Duration = duration
+                             };
 
+            victimAccount.Sanctions.Add(record);
+
+            Database.SaveChanges();
+            return true;
+        }
+
+        public bool BanIp(string ipToBan, int bannerAccountId, TimeSpan duration, string reason)
+        {
+            IpBan ipBan = Database.IpBans.FirstOrDefault(entry => entry.IPAsString == ipToBan);
+            IPAddressRange ip = IPAddressRange.Parse(ipToBan);
             if (ipBan != null)
             {
                 ipBan.BanReason = reason;
-                ipBan.BannedBy = bannerAccount;
+                ipBan.BannedBy = bannerAccountId;
                 ipBan.Duration = duration;
-
-                ipBan.Update();
             }
             else
             {
                 var record = new IpBan
                                  {
-                                     Ip = ipToBan,
-                                     BannedBy = bannerAccount,
+                                     IP = ip,
+                                     BannedBy = bannerAccountId,
                                      BanReason = reason,
                                      Duration = duration
                                  };
-                record.Create();
+                Database.IpBans.Add(record);
             }
+            Database.SaveChanges();
             return true;
         }
 

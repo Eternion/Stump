@@ -7,7 +7,6 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game.Breeds;
 

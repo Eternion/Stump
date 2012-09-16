@@ -1,21 +1,25 @@
+using System.ComponentModel;
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
-using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Game.Maps;
 
-namespace Stump.Server.WorldServer.Database.Monsters
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord("monsters_spawns")]
+    public class MonsterSpawnConfiguration : EntityTypeConfiguration<MonsterSpawn>
+    {
+        public MonsterSpawnConfiguration()
+        {
+            ToTable("monsters_spawns");
+        }
+    }
     public class MonsterSpawn : WorldBaseRecord<MonsterSpawn>
     {
-        [PrimaryKey(PrimaryKeyType.Native)]
         public int Id
         {
             get;
             set;
         }
 
-        [Property(NotNull = false)]
         public int? MapId
         {
             get;
@@ -43,7 +47,6 @@ namespace Stump.Server.WorldServer.Database.Monsters
             }
         }
 
-        [Property(NotNull = false)]
         public int? SubAreaId
         {
             get;
@@ -71,28 +74,27 @@ namespace Stump.Server.WorldServer.Database.Monsters
             }
         }
 
-        [Property(NotNull = true)]
         public int MonsterId
         {
             get;
             set;
         }
 
-        [Property(Column = "`Frenquency`", Default = "1.0", NotNull = true)]
+        [DefaultValue(1.0)]
         public double Frequency
         {
             get;
             set;
         }
 
-        [Property(Default = "1", NotNull = true)]
+        [DefaultValue(1)]
         public int MinGrade
         {
             get;
             set;
         }
 
-        [Property(Default = "5", NotNull = true)]
+        [DefaultValue(5)]
         public int MaxGrade
         {
             get;

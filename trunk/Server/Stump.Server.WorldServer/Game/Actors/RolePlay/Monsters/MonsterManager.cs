@@ -4,7 +4,11 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using Stump.Core.Reflection;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.Database.Monsters;
+using Stump.Server.WorldServer.Database;
+using MonsterGrade = Stump.Server.WorldServer.Database.Monsters.MonsterGrade;
+using MonsterSpawn = Stump.Server.WorldServer.Database.Monsters.MonsterSpawn;
+using MonsterSpell = Stump.Server.WorldServer.Database.Monsters.MonsterSpell;
+using MonsterSuperRace = Stump.Server.WorldServer.Database.Monsters.MonsterSuperRace;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 {

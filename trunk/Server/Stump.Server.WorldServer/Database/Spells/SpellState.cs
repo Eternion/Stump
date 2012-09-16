@@ -1,55 +1,70 @@
 using System;
-using Castle.ActiveRecord;
+using System.Data.Entity.ModelConfiguration;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.Server.WorldServer.Database.I18n;
 
-namespace Stump.Server.WorldServer.Database.Spells
+namespace Stump.Server.WorldServer.Database
 {
-    [Serializable]
-    [ActiveRecord("spells_state")]
-    [D2OClass("SpellState", "com.ankamagames.dofus.datacenter.spells")]
-    public sealed class SpellState : WorldBaseRecord<SpellState>
+    public class SpellStateConfiguration : EntityTypeConfiguration<SpellState>
     {
+        public SpellStateConfiguration()
+        {
+            ToTable("spells_state");
+        }
+    }
 
-       [D2OField("id")]
-       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
-       public int Id
-       {
-           get;
-           set;
-       }
+    [D2OClass("SpellState", "com.ankamagames.dofus.datacenter.spells")]
+    public sealed class SpellState : IAssignedByD2O
+    {
+        private string m_name;
 
-       [D2OField("nameId")]
-       [Property("NameId")]
-       public uint NameId
-       {
-           get;
-           set;
-       }
+        public int Id
+        {
+            get;
+            set;
+        }
 
-       [D2OField("preventsSpellCast")]
-       [Property("PreventsSpellCast")]
-       public Boolean PreventsSpellCast
-       {
-           get;
-           set;
-       }
+        public uint NameId
+        {
+            get;
+            set;
+        }
 
-       [D2OField("preventsFight")]
-       [Property("PreventsFight")]
-       public Boolean PreventsFight
-       {
-           get;
-           set;
-       }
+        public string Name
+        {
+            get { return m_name ?? (m_name = TextManager.Instance.GetText(NameId)); }
+        }
 
-       [D2OField("critical")]
-       [Property("Critical")]
-       public Boolean Critical
-       {
-           get;
-           set;
-       }
+        public Boolean PreventsSpellCast
+        {
+            get;
+            set;
+        }
 
+        public Boolean PreventsFight
+        {
+            get;
+            set;
+        }
+
+        public Boolean Critical
+        {
+            get;
+            set;
+        }
+
+        #region IAssignedByD2O Members
+
+        public void AssignFields(object d2oObject)
+        {
+            var state = (DofusProtocol.D2oClasses.SpellState) d2oObject;
+            Id = state.id;
+            NameId = state.nameId;
+            PreventsSpellCast = state.preventsSpellCast;
+            PreventsFight = state.preventsFight;
+            Critical = state.critical;
+        }
+
+        #endregion
     }
 }

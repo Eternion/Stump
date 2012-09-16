@@ -1,0 +1,2676 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="stump_worldModel.Store" Alias="Self" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.5" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityContainer Name="stump_worldModelStoreContainer">
+          <EntitySet Name="accounts" EntityType="stump_worldModel.Store.accounts" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="accounts_friends" EntityType="stump_worldModel.Store.accounts_friends" store:Type="Tables" store:Schema="stump_world" store:Name="accounts_friends">
+            <DefiningQuery>SELECT
+      `accounts_friends`.`AccountId`, 
+      `accounts_friends`.`FriendAccountId`
+      FROM `accounts_friends` AS `accounts_friends`</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="accounts_ignored" EntityType="stump_worldModel.Store.accounts_ignored" store:Type="Tables" store:Schema="stump_world" store:Name="accounts_ignored">
+            <DefiningQuery>SELECT
+      `accounts_ignored`.`AccountId`, 
+      `accounts_ignored`.`IgnoredAccountId`
+      FROM `accounts_ignored` AS `accounts_ignored`</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="accounts_startup_actions" EntityType="stump_worldModel.Store.accounts_startup_actions" store:Type="Tables" store:Schema="stump_world" store:Name="accounts_startup_actions">
+            <DefiningQuery>SELECT
+      `accounts_startup_actions`.`StartupActionId`, 
+      `accounts_startup_actions`.`AccountId`
+      FROM `accounts_startup_actions` AS `accounts_startup_actions`</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="areas" EntityType="stump_worldModel.Store.areas" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="breeds" EntityType="stump_worldModel.Store.breeds" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="breeds_items" EntityType="stump_worldModel.Store.breeds_items" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="breeds_spells" EntityType="stump_worldModel.Store.breeds_spells" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="characters" EntityType="stump_worldModel.Store.characters" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="characters_jobs" EntityType="stump_worldModel.Store.characters_jobs" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="characters_spells" EntityType="stump_worldModel.Store.characters_spells" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="effects" EntityType="stump_worldModel.Store.effects" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="experiences" EntityType="stump_worldModel.Store.experiences" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="hints" EntityType="stump_worldModel.Store.hints" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="interactives" EntityType="stump_worldModel.Store.interactives" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="interactives_custom_skills" EntityType="stump_worldModel.Store.interactives_custom_skills" store:Type="Tables" store:Schema="stump_world" store:Name="interactives_custom_skills">
+            <DefiningQuery>SELECT
+      `interactives_custom_skills`.`InteractiveId`, 
+      `interactives_custom_skills`.`SkillId`
+      FROM `interactives_custom_skills` AS `interactives_custom_skills`</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="interactives_skills" EntityType="stump_worldModel.Store.interactives_skills" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="interactives_spawns" EntityType="stump_worldModel.Store.interactives_spawns" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="interactives_templates_skills" EntityType="stump_worldModel.Store.interactives_templates_skills" store:Type="Tables" store:Schema="stump_world" store:Name="interactives_templates_skills">
+            <DefiningQuery>SELECT
+      `interactives_templates_skills`.`InteractiveId`, 
+      `interactives_templates_skills`.`SkillId`
+      FROM `interactives_templates_skills` AS `interactives_templates_skills`</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="items" EntityType="stump_worldModel.Store.items" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="items_selled" EntityType="stump_worldModel.Store.items_selled" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="items_set" EntityType="stump_worldModel.Store.items_set" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="items_templates" EntityType="stump_worldModel.Store.items_templates" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="items_type" EntityType="stump_worldModel.Store.items_type" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="jobs" EntityType="stump_worldModel.Store.jobs" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="maps" EntityType="stump_worldModel.Store.maps" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="maps_cells_triggers" EntityType="stump_worldModel.Store.maps_cells_triggers" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="maps_coordinates" EntityType="stump_worldModel.Store.maps_coordinates" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="maps_position" EntityType="stump_worldModel.Store.maps_position" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="maps_reference" EntityType="stump_worldModel.Store.maps_reference" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="monsters" EntityType="stump_worldModel.Store.monsters" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="monsters_drops" EntityType="stump_worldModel.Store.monsters_drops" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="monsters_grades" EntityType="stump_worldModel.Store.monsters_grades" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="monsters_races" EntityType="stump_worldModel.Store.monsters_races" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="monsters_spawns" EntityType="stump_worldModel.Store.monsters_spawns" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="monsters_spawns_dungeons" EntityType="stump_worldModel.Store.monsters_spawns_dungeons" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="monsters_spells" EntityType="stump_worldModel.Store.monsters_spells" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="monsters_superraces" EntityType="stump_worldModel.Store.monsters_superraces" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="npcs" EntityType="stump_worldModel.Store.npcs" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="npcs_actions" EntityType="stump_worldModel.Store.npcs_actions" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="npcs_messages" EntityType="stump_worldModel.Store.npcs_messages" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="npcs_replies" EntityType="stump_worldModel.Store.npcs_replies" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="npcs_spawns" EntityType="stump_worldModel.Store.npcs_spawns" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="shortcuts" EntityType="stump_worldModel.Store.shortcuts" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="skills_templates" EntityType="stump_worldModel.Store.skills_templates" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="spells" EntityType="stump_worldModel.Store.spells" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="spells_bomb" EntityType="stump_worldModel.Store.spells_bomb" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="spells_level" EntityType="stump_worldModel.Store.spells_level" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="spells_state" EntityType="stump_worldModel.Store.spells_state" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="spells_type" EntityType="stump_worldModel.Store.spells_type" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="startup_actions" EntityType="stump_worldModel.Store.startup_actions" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="startup_actions_objects" EntityType="stump_worldModel.Store.startup_actions_objects" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="subareas" EntityType="stump_worldModel.Store.subareas" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="superareas" EntityType="stump_worldModel.Store.superareas" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="texts" EntityType="stump_worldModel.Store.texts" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="texts_ui" EntityType="stump_worldModel.Store.texts_ui" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="version" EntityType="stump_worldModel.Store.version" store:Type="Tables" Schema="stump_world" />
+          <EntitySet Name="worldmaps" EntityType="stump_worldModel.Store.worldmaps" store:Type="Tables" Schema="stump_world" />
+        </EntityContainer>
+        <EntityType Name="accounts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uint" Nullable="false" />
+          <Property Name="Nickname" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="LastConnection" Type="datetime" />
+          <Property Name="LastIp" Type="varchar" MaxLength="28" />
+          <Property Name="ConnectedCharacter" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+      warning 6002: The table/view 'def.stump_world.accounts_friends' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+        <EntityType Name="accounts_friends">
+          <Key>
+            <PropertyRef Name="AccountId" />
+            <PropertyRef Name="FriendAccountId" />
+          </Key>
+          <Property Name="AccountId" Type="uint" Nullable="false" />
+          <Property Name="FriendAccountId" Type="uint" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+      warning 6002: The table/view 'def.stump_world.accounts_ignored' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+        <EntityType Name="accounts_ignored">
+          <Key>
+            <PropertyRef Name="AccountId" />
+            <PropertyRef Name="IgnoredAccountId" />
+          </Key>
+          <Property Name="AccountId" Type="uint" Nullable="false" />
+          <Property Name="IgnoredAccountId" Type="uint" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+      warning 6002: The table/view 'def.stump_world.accounts_startup_actions' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+        <EntityType Name="accounts_startup_actions">
+          <Key>
+            <PropertyRef Name="StartupActionId" />
+            <PropertyRef Name="AccountId" />
+          </Key>
+          <Property Name="StartupActionId" Type="uint" Nullable="false" />
+          <Property Name="AccountId" Type="uint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="areas">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="NameId" Type="uint" />
+          <Property Name="SubAreaId" Type="int" />
+          <Property Name="ContainHouses" Type="bool" />
+          <Property Name="ContainPaddocks" Type="bool" />
+          <Property Name="Bounds" Type="longblob" />
+        </EntityType>
+        <EntityType Name="breeds">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="AlternativeMaleSkin" Type="longblob" />
+          <Property Name="AlternativeFemaleSkin" Type="longblob" />
+          <Property Name="GameplayDescriptionId" Type="uint" />
+          <Property Name="ShortNameId" Type="uint" />
+          <Property Name="LongNameId" Type="uint" />
+          <Property Name="DescriptionId" Type="uint" />
+          <Property Name="MaleLook" Type="text" />
+          <Property Name="FemaleLook" Type="text" />
+          <Property Name="CreatureBonesId" Type="uint" />
+          <Property Name="MaleArtwork" Type="int" />
+          <Property Name="FemaleArtwork" Type="int" />
+          <Property Name="StatsPointsForStrength" Type="longblob" />
+          <Property Name="StatsPointsForIntelligence" Type="longblob" />
+          <Property Name="StatsPointsForChance" Type="longblob" />
+          <Property Name="StatsPointsForAgility" Type="longblob" />
+          <Property Name="MaleColors" Type="longblob" />
+          <Property Name="StatsPointsForVitality" Type="longblob" />
+          <Property Name="StatsPointsForWisdom" Type="longblob" />
+          <Property Name="BreedSpellsId" Type="longblob" />
+          <Property Name="FemaleColors" Type="longblob" />
+          <Property Name="StartMap" Type="int" />
+          <Property Name="StartCell" Type="smallint" />
+          <Property Name="StartDirection" Type="int" />
+          <Property Name="StartActionPoints" Type="usmallint" />
+          <Property Name="StartMovementPoints" Type="usmallint" />
+          <Property Name="StartHealthPoint" Type="usmallint" />
+          <Property Name="StartProspection" Type="usmallint" />
+          <Property Name="StartStatsPoints" Type="usmallint" />
+          <Property Name="StartSpellsPoints" Type="usmallint" />
+          <Property Name="StartStrength" Type="smallint" />
+          <Property Name="StartVitality" Type="smallint" />
+          <Property Name="StartWisdom" Type="smallint" />
+          <Property Name="StartIntelligence" Type="smallint" />
+          <Property Name="StartChance" Type="smallint" />
+          <Property Name="StartAgility" Type="smallint" />
+          <Property Name="StartLevel" Type="utinyint" />
+          <Property Name="StartKamas" Type="int" />
+        </EntityType>
+        <EntityType Name="breeds_items">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Breed" Type="int" Nullable="false" />
+          <Property Name="ItemId" Type="int" Nullable="false" />
+          <Property Name="Amount" Type="int" Nullable="false" />
+          <Property Name="MaxEffects" Type="tinyint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="breeds_spells">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Spell" Type="int" />
+          <Property Name="ObtainLevel" Type="usmallint" />
+          <Property Name="Breed" Type="int" />
+        </EntityType>
+        <EntityType Name="characters">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="CreationDate" Type="datetime" />
+          <Property Name="LastUsage" Type="datetime" />
+          <Property Name="Name" Type="varchar" Nullable="false" MaxLength="24" />
+          <Property Name="Breed" Type="int" Nullable="false" />
+          <Property Name="Sex" Type="int" Nullable="false" />
+          <Property Name="EntityLook" Type="text" />
+          <Property Name="CustomEntityLook" Type="text" />
+          <Property Name="CustomLookActivated" Type="tinyint" />
+          <Property Name="TitleId" Type="uint" Nullable="false" />
+          <Property Name="TitleParam" Type="text" Nullable="false" />
+          <Property Name="HasRecolor" Type="bool" Nullable="false" />
+          <Property Name="HasRename" Type="bool" Nullable="false" />
+          <Property Name="CantBeAggressed" Type="bool" />
+          <Property Name="CantBeChallenged" Type="bool" />
+          <Property Name="CantTrade" Type="bool" />
+          <Property Name="CantBeAttackedByMutant" Type="bool" />
+          <Property Name="CantRun" Type="bool" />
+          <Property Name="ForceSlowWalk" Type="bool" />
+          <Property Name="CantMinimize" Type="bool" />
+          <Property Name="CantMove" Type="bool" />
+          <Property Name="CantAggress" Type="bool" />
+          <Property Name="CantChallenge" Type="bool" />
+          <Property Name="CantExchange" Type="bool" />
+          <Property Name="CantAttack" Type="bool" />
+          <Property Name="CantChat" Type="bool" />
+          <Property Name="CantBeMerchant" Type="bool" />
+          <Property Name="CantUseObject" Type="bool" />
+          <Property Name="CantUseTaxCollector" Type="bool" />
+          <Property Name="CantUseInteractive" Type="bool" />
+          <Property Name="CantSpeakToNpc" Type="bool" />
+          <Property Name="CantChangeZone" Type="bool" />
+          <Property Name="CantAttackMonster" Type="bool" />
+          <Property Name="CantWalk8Directions" Type="bool" />
+          <Property Name="MapId" Type="int" Nullable="false" />
+          <Property Name="CellId" Type="smallint" Nullable="false" />
+          <Property Name="Direction" Type="int" Nullable="false" />
+          <Property Name="BaseHealth" Type="usmallint" Nullable="false" />
+          <Property Name="DamageTaken" Type="usmallint" Nullable="false" />
+          <Property Name="AP" Type="usmallint" Nullable="false" />
+          <Property Name="MP" Type="usmallint" Nullable="false" />
+          <Property Name="Prospection" Type="usmallint" Nullable="false" />
+          <Property Name="Strength" Type="smallint" Nullable="false" />
+          <Property Name="Chance" Type="smallint" Nullable="false" />
+          <Property Name="Vitality" Type="smallint" Nullable="false" />
+          <Property Name="Wisdom" Type="smallint" Nullable="false" />
+          <Property Name="Intelligence" Type="smallint" Nullable="false" />
+          <Property Name="Agility" Type="smallint" Nullable="false" />
+          <Property Name="PermanentAddedStrength" Type="smallint" Nullable="false" />
+          <Property Name="PermanentAddedChance" Type="smallint" Nullable="false" />
+          <Property Name="PermanentAddedVitality" Type="smallint" Nullable="false" />
+          <Property Name="PermanentAddedWisdom" Type="smallint" Nullable="false" />
+          <Property Name="PermanentAddedIntelligence" Type="smallint" Nullable="false" />
+          <Property Name="PermanentAddedAgility" Type="smallint" Nullable="false" />
+          <Property Name="Kamas" Type="int" Nullable="false" />
+          <Property Name="CanRestat" Type="bool" Nullable="false" />
+          <Property Name="Experience" Type="bigint" Nullable="false" />
+          <Property Name="EnergyMax" Type="smallint" Nullable="false" />
+          <Property Name="Energy" Type="smallint" Nullable="false" />
+          <Property Name="StatsPoints" Type="usmallint" Nullable="false" />
+          <Property Name="SpellsPoints" Type="usmallint" Nullable="false" />
+          <Property Name="AlignmentSide" Type="int" />
+          <Property Name="AlignmentValue" Type="tinyint" />
+          <Property Name="Honor" Type="usmallint" />
+          <Property Name="Dishonor" Type="usmallint" />
+          <Property Name="PvPEnabled" Type="bool" />
+          <Property Name="KnownZaaps" Type="longblob" Nullable="false" />
+          <Property Name="SpawnMap" Type="int" />
+          <Property Name="WarnOnConnection" Type="bool" />
+          <Property Name="WarnOnLevel" Type="bool" />
+        </EntityType>
+        <EntityType Name="characters_jobs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="JobId" Type="int" />
+          <Property Name="Owner" Type="int" />
+          <Property Name="Experience" Type="bigint" />
+        </EntityType>
+        <EntityType Name="characters_spells">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Owner" Type="int" />
+          <Property Name="SpellId" Type="int" Nullable="false" />
+          <Property Name="Level" Type="tinyint" Nullable="false" />
+          <Property Name="Position" Type="utinyint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="effects">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uint" Nullable="false" />
+          <Property Name="DescriptionId" Type="uint" />
+          <Property Name="IconId" Type="uint" />
+          <Property Name="Characteristic" Type="int" />
+          <Property Name="Category" Type="uint" />
+          <Property Name="Operator" Type="varchar" MaxLength="255" />
+          <Property Name="ShowInTooltip" Type="bool" />
+          <Property Name="UseDice" Type="bool" />
+          <Property Name="ForceMinMax" Type="bool" />
+          <Property Name="Boost" Type="bool" />
+          <Property Name="Active" Type="bool" />
+          <Property Name="ShowInSet" Type="bool" />
+          <Property Name="BonusType" Type="int" />
+          <Property Name="UseInFight" Type="bool" />
+        </EntityType>
+        <EntityType Name="experiences">
+          <Key>
+            <PropertyRef Name="Level" />
+          </Key>
+          <Property Name="Level" Type="utinyint" Nullable="false" />
+          <Property Name="CharacterExp" Type="bigint" />
+          <Property Name="GuildExp" Type="bigint" />
+          <Property Name="MountExp" Type="bigint" />
+          <Property Name="AlignmentHonor" Type="usmallint" />
+        </EntityType>
+        <EntityType Name="hints">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="CategoryId" Type="uint" />
+          <Property Name="Gfx" Type="uint" />
+          <Property Name="NameId" Type="uint" />
+          <Property Name="MapId" Type="uint" />
+          <Property Name="RealMapId" Type="uint" />
+        </EntityType>
+        <EntityType Name="interactives">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="NameId" Type="uint" />
+          <Property Name="ActionId" Type="int" />
+          <Property Name="DisplayTooltip" Type="bool" />
+        </EntityType>
+        <!--Errors Found During Generation:
+      warning 6002: The table/view 'def.stump_world.interactives_custom_skills' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+        <EntityType Name="interactives_custom_skills">
+          <Key>
+            <PropertyRef Name="InteractiveId" />
+            <PropertyRef Name="SkillId" />
+          </Key>
+          <Property Name="InteractiveId" Type="int" Nullable="false" />
+          <Property Name="SkillId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="interactives_skills">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="RecognizerType" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="Duration" Type="uint" />
+          <Property Name="Teleport_MapId" Type="int" />
+          <Property Name="Teleport_CellId" Type="int" />
+          <Property Name="Teleport_Direction" Type="int" />
+          <Property Name="Teleport_Condition" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="interactives_spawns">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="TemplateId" Type="int" />
+          <Property Name="ElementId" Type="int" Nullable="false" />
+          <Property Name="MapId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+      warning 6002: The table/view 'def.stump_world.interactives_templates_skills' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+        <EntityType Name="interactives_templates_skills">
+          <Key>
+            <PropertyRef Name="InteractiveId" />
+            <PropertyRef Name="SkillId" />
+          </Key>
+          <Property Name="InteractiveId" Type="int" Nullable="false" />
+          <Property Name="SkillId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="items">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="RecognizerType" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="Item" Type="int" Nullable="false" />
+          <Property Name="Stack" Type="int" Nullable="false" />
+          <Property Name="Effects" Type="longblob" Nullable="false" />
+          <Property Name="Owner" Type="int" />
+          <Property Name="Position" Type="int" Nullable="false" />
+          <Property Name="IsLinkedToOwner" Type="tinyint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="items_selled">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="RecognizerType" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="ItemId" Type="int" />
+          <Property Name="Npc_NpcShopId" Type="int" />
+          <Property Name="Npc_CustomPrice" Type="float" />
+          <Property Name="Npc_BuyCriterion" Type="varchar" MaxLength="255" />
+          <Property Name="Npc_MaxStats" Type="tinyint" />
+        </EntityType>
+        <EntityType Name="items_set">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uint" Nullable="false" />
+          <Property Name="Items" Type="longblob" />
+          <Property Name="NameId" Type="uint" />
+          <Property Name="BonusIsSecret" Type="bool" />
+          <Property Name="BonusEffects" Type="longblob" Nullable="false" />
+        </EntityType>
+        <EntityType Name="items_templates">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="RecognizerType" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="Weight" Type="uint" />
+          <Property Name="RealWeight" Type="uint" />
+          <Property Name="NameId" Type="uint" />
+          <Property Name="TypeId" Type="uint" />
+          <Property Name="DescriptionId" Type="uint" />
+          <Property Name="IconId" Type="uint" />
+          <Property Name="Level" Type="uint" />
+          <Property Name="Cursed" Type="bool" />
+          <Property Name="UseAnimationId" Type="int" />
+          <Property Name="Usable" Type="bool" />
+          <Property Name="Targetable" Type="bool" />
+          <Property Name="Price" Type="float" />
+          <Property Name="TwoHanded" Type="bool" />
+          <Property Name="Etheral" Type="bool" />
+          <Property Name="ItemSetId" Type="int" />
+          <Property Name="Criteria" Type="varchar" MaxLength="255" />
+          <Property Name="HideEffects" Type="bool" />
+          <Property Name="AppearanceId" Type="uint" />
+          <Property Name="BonusIsSecret" Type="bool" />
+          <Property Name="PossibleEffects" Type="longblob" />
+          <Property Name="FavoriteSubAreasBonus" Type="uint" />
+          <Property Name="ApCost" Type="int" />
+          <Property Name="MinRange" Type="int" />
+          <Property Name="WeaponRange" Type="int" />
+          <Property Name="CastInLine" Type="bool" />
+          <Property Name="CastInDiagonal" Type="bool" />
+          <Property Name="CastTestLos" Type="bool" />
+          <Property Name="CriticalHitProbability" Type="int" />
+          <Property Name="CriticalHitBonus" Type="int" />
+          <Property Name="CriticalFailureProbability" Type="int" />
+          <Property Name="IsLinkedToOwner" Type="tinyint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="items_type">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="NameId" Type="uint" />
+          <Property Name="SuperTypeId" Type="uint" />
+          <Property Name="Plural" Type="bool" />
+          <Property Name="Gender" Type="uint" />
+          <Property Name="RawZone" Type="varchar" MaxLength="255" />
+          <Property Name="NeedUseConfirm" Type="bool" />
+        </EntityType>
+        <EntityType Name="jobs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="NameId" Type="uint" />
+          <Property Name="SpecializationOfId" Type="int" />
+          <Property Name="IconId" Type="int" />
+          <Property Name="ToolIds" Type="longblob" />
+        </EntityType>
+        <EntityType Name="maps">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="BlueCells" Type="longblob" />
+          <Property Name="RedCells" Type="longblob" />
+          <Property Name="Version" Type="uint" />
+          <Property Name="RelativeId" Type="uint" />
+          <Property Name="MapType" Type="int" />
+          <Property Name="SubAreaId" Type="int" />
+          <Property Name="TopNeighbourId" Type="int" />
+          <Property Name="BottomNeighbourId" Type="int" />
+          <Property Name="LeftNeighbourId" Type="int" />
+          <Property Name="RightNeighbourId" Type="int" />
+          <Property Name="ClientTopNeighbourId" Type="int" />
+          <Property Name="ClientBottomNeighbourId" Type="int" />
+          <Property Name="ClientLeftNeighbourId" Type="int" />
+          <Property Name="ClientRightNeighbourId" Type="int" />
+          <Property Name="ShadowBonusOnEntities" Type="int" />
+          <Property Name="UseLowpassFilter" Type="bool" />
+          <Property Name="UseReverb" Type="bool" />
+          <Property Name="PresetId" Type="int" />
+          <Property Name="CompressedCells" Type="longblob" Nullable="false" />
+          <Property Name="CompressedElements" Type="longblob" Nullable="false" />
+        </EntityType>
+        <EntityType Name="maps_cells_triggers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="RecognizerType" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="CellId" Type="smallint" />
+          <Property Name="MapId" Type="int" />
+          <Property Name="TriggerType" Type="int" />
+          <Property Name="Condition" Type="varchar" MaxLength="255" />
+          <Property Name="DestinationCellId" Type="smallint" />
+          <Property Name="DestinationMapId" Type="int" />
+        </EntityType>
+        <EntityType Name="maps_coordinates">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="CompressedCoords" Type="uint" />
+          <Property Name="Ids" Type="longblob" />
+        </EntityType>
+        <EntityType Name="maps_position">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="PosX" Type="int" />
+          <Property Name="PosY" Type="int" />
+          <Property Name="Outdoor" Type="bool" />
+          <Property Name="SubAreaId" Type="int" />
+          <Property Name="Capabilities" Type="int" />
+          <Property Name="WorldMap" Type="int" />
+          <Property Name="Sounds" Type="longblob" />
+          <Property Name="NameId" Type="int" />
+          <Property Name="HasPriorityOnWorldmap" Type="bool" />
+        </EntityType>
+        <EntityType Name="maps_reference">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="MapId" Type="uint" />
+          <Property Name="CellId" Type="int" />
+        </EntityType>
+        <EntityType Name="monsters">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="NameId" Type="uint" />
+          <Property Name="GfxId" Type="uint" />
+          <Property Name="Race" Type="int" />
+          <Property Name="MinDroppedKamas" Type="int" />
+          <Property Name="MaxDroppedKamas" Type="int" />
+          <Property Name="Look" Type="varchar" MaxLength="255" />
+          <Property Name="UseSummonSlot" Type="bool" />
+          <Property Name="UseBombSlot" Type="bool" />
+          <Property Name="CanPlay" Type="bool" />
+          <Property Name="IsBoss" Type="bool" />
+        </EntityType>
+        <EntityType Name="monsters_drops">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="MonsterOwnerId" Type="int" Nullable="false" />
+          <Property Name="ItemId" Type="smallint" Nullable="false" />
+          <Property Name="DropLimit" Type="int" Nullable="false" />
+          <Property Name="DropRate" Type="double" Nullable="false" />
+          <Property Name="RollsCounter" Type="int" Nullable="false" />
+          <Property Name="ProspectingLock" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="monsters_grades">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Wisdom" Type="int" />
+          <Property Name="Grade" Type="uint" />
+          <Property Name="GradeXp" Type="int" />
+          <Property Name="MonsterId" Type="int" />
+          <Property Name="Level" Type="uint" />
+          <Property Name="PaDodge" Type="int" />
+          <Property Name="PmDodge" Type="int" />
+          <Property Name="EarthResistance" Type="int" />
+          <Property Name="AirResistance" Type="int" />
+          <Property Name="FireResistance" Type="int" />
+          <Property Name="WaterResistance" Type="int" />
+          <Property Name="NeutralResistance" Type="int" />
+          <Property Name="LifePoints" Type="int" />
+          <Property Name="ActionPoints" Type="int" />
+          <Property Name="MovementPoints" Type="int" />
+          <Property Name="TackleEvade" Type="smallint" />
+          <Property Name="TackleBlock" Type="smallint" />
+          <Property Name="Strength" Type="smallint" />
+          <Property Name="Chance" Type="smallint" />
+          <Property Name="Vitality" Type="smallint" />
+          <Property Name="Intelligence" Type="smallint" />
+          <Property Name="Agility" Type="smallint" />
+          <Property Name="Stats" Type="longblob" />
+        </EntityType>
+        <EntityType Name="monsters_races">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="SuperRaceId" Type="int" />
+          <Property Name="NameId" Type="uint" />
+        </EntityType>
+        <EntityType Name="monsters_spawns">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="MapId" Type="int" />
+          <Property Name="SubAreaId" Type="int" />
+          <Property Name="MonsterId" Type="int" Nullable="false" />
+          <Property Name="Frenquency" Type="double" Nullable="false" />
+          <Property Name="MinGrade" Type="int" Nullable="false" />
+          <Property Name="MaxGrade" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="monsters_spawns_dungeons">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="MapId" Type="int" Nullable="false" />
+          <Property Name="SerializedMonsterGroup" Type="longblob" Nullable="false" />
+          <Property Name="TeleportEvent" Type="bool" />
+          <Property Name="TeleportMapId" Type="int" />
+          <Property Name="TeleportCell" Type="smallint" />
+          <Property Name="Direction" Type="int" />
+        </EntityType>
+        <EntityType Name="monsters_spells">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="MonsterGradeId" Type="int" />
+          <Property Name="SpellId" Type="int" Nullable="false" />
+          <Property Name="Level" Type="tinyint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="monsters_superraces">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="NameId" Type="uint" />
+        </EntityType>
+        <EntityType Name="npcs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="NameId" Type="uint" />
+          <Property Name="DialogMessagesId" Type="mediumblob" />
+          <Property Name="DialogRepliesId" Type="mediumblob" />
+          <Property Name="ActionsId" Type="mediumblob" />
+          <Property Name="Gender" Type="uint" />
+          <Property Name="Look" Type="varchar" MaxLength="255" />
+          <Property Name="SpecialArtworkId" Type="smallint" />
+          <Property Name="TokenShop" Type="bool" />
+        </EntityType>
+        <EntityType Name="npcs_actions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uint" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="RecognizerType" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="Npc" Type="int" />
+          <Property Name="Condition" Type="tinytext" />
+          <Property Name="Talk_MessageId" Type="int" />
+          <Property Name="Shop_Token" Type="int" />
+          <Property Name="Shop_CanSell" Type="tinyint" />
+          <Property Name="Shop_MaxStats" Type="tinyint" />
+        </EntityType>
+        <EntityType Name="npcs_messages">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="MessageId" Type="uint" />
+          <Property Name="MessageParams" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="npcs_replies">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="RecognizerType" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="Reply" Type="int" />
+          <Property Name="Message" Type="int" />
+          <Property Name="Criteria" Type="varchar" MaxLength="255" />
+          <Property Name="Teleport_Map" Type="int" />
+          <Property Name="Teleport_Cell" Type="int" />
+          <Property Name="Teleport_Direction" Type="int" />
+          <Property Name="Dialog_NextMessageId" Type="int" />
+          <Property Name="UseItem_Item" Type="int" />
+          <Property Name="UseItem_Amount" Type="uint" />
+        </EntityType>
+        <EntityType Name="npcs_spawns">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uint" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Npc" Type="int" />
+          <Property Name="Map" Type="int" Nullable="false" />
+          <Property Name="Cell" Type="int" Nullable="false" />
+          <Property Name="Direction" Type="int" Nullable="false" />
+          <Property Name="Look" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="shortcuts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="RecognizerType" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="Owner" Type="int" />
+          <Property Name="Slot" Type="int" />
+          <Property Name="SpellId" Type="smallint" />
+          <Property Name="ItemTemplateId" Type="int" />
+          <Property Name="ItemGuid" Type="int" />
+        </EntityType>
+        <EntityType Name="skills_templates">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="NameId" Type="uint" />
+          <Property Name="ParentJobId" Type="int" />
+          <Property Name="IsForgemagus" Type="bool" />
+          <Property Name="ModifiableItemType" Type="int" />
+          <Property Name="GatheredRessourceItem" Type="int" />
+          <Property Name="CraftableItemIds" Type="longblob" />
+          <Property Name="InteractiveId" Type="int" />
+          <Property Name="UseAnimation" Type="varchar" MaxLength="255" />
+          <Property Name="IsRepair" Type="bool" />
+          <Property Name="Cursor" Type="int" />
+          <Property Name="AvailableInHouse" Type="bool" />
+          <Property Name="LevelMin" Type="int" />
+        </EntityType>
+        <EntityType Name="spells">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="NameId" Type="uint" />
+          <Property Name="DescriptionId" Type="uint" />
+          <Property Name="TypeId" Type="uint" />
+          <Property Name="ScriptParams" Type="mediumtext" />
+          <Property Name="ScriptParamsCritical" Type="mediumtext" />
+          <Property Name="ScriptId" Type="int" />
+          <Property Name="ScriptIdCritical" Type="int" />
+          <Property Name="IconId" Type="int" />
+          <Property Name="SpellLevels" Type="longblob" />
+          <Property Name="UseParamCache" Type="bool" />
+        </EntityType>
+        <EntityType Name="spells_bomb">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="ChainReactionSpellId" Type="int" />
+          <Property Name="ExplodSpellId" Type="int" />
+          <Property Name="WallId" Type="int" />
+          <Property Name="InstantSpellId" Type="int" />
+          <Property Name="ComboCoeff" Type="int" />
+        </EntityType>
+        <EntityType Name="spells_level">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uint" Nullable="false" />
+          <Property Name="SpellId" Type="int" />
+          <Property Name="SpellBreed" Type="uint" />
+          <Property Name="ApCost" Type="uint" />
+          <Property Name="Range" Type="uint" />
+          <Property Name="CastInLine" Type="bool" />
+          <Property Name="CastInDiagonal" Type="bool" />
+          <Property Name="CastTestLos" Type="bool" />
+          <Property Name="CriticalHitProbability" Type="uint" />
+          <Property Name="StatesRequired" Type="longblob" />
+          <Property Name="CriticalFailureProbability" Type="uint" />
+          <Property Name="NeedFreeCell" Type="bool" />
+          <Property Name="NeedFreeTrapCell" Type="bool" />
+          <Property Name="NeedTakenCell" Type="bool" />
+          <Property Name="RangeCanBeBoosted" Type="bool" />
+          <Property Name="MaxStack" Type="int" />
+          <Property Name="MaxCastPerTurn" Type="uint" />
+          <Property Name="MaxCastPerTarget" Type="uint" />
+          <Property Name="MinCastInterval" Type="uint" />
+          <Property Name="InitialCooldown" Type="uint" />
+          <Property Name="GlobalCooldown" Type="int" />
+          <Property Name="MinPlayerLevel" Type="uint" />
+          <Property Name="CriticalFailureEndsTurn" Type="bool" />
+          <Property Name="HideEffects" Type="bool" />
+          <Property Name="Hidden" Type="bool" />
+          <Property Name="MinRange" Type="uint" />
+          <Property Name="StatesForbidden" Type="longblob" />
+          <Property Name="Effects" Type="longblob" />
+          <Property Name="CriticalEffect" Type="longblob" />
+        </EntityType>
+        <EntityType Name="spells_state">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="NameId" Type="uint" />
+          <Property Name="PreventsSpellCast" Type="bool" />
+          <Property Name="PreventsFight" Type="bool" />
+          <Property Name="Critical" Type="bool" />
+        </EntityType>
+        <EntityType Name="spells_type">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="LongNameId" Type="uint" />
+          <Property Name="ShortNameId" Type="uint" />
+        </EntityType>
+        <EntityType Name="startup_actions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uint" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="varchar" Nullable="false" MaxLength="25" />
+          <Property Name="Text" Type="varchar" Nullable="false" MaxLength="250" />
+          <Property Name="DescUrl" Type="varchar" Nullable="false" MaxLength="50" />
+          <Property Name="PictureUrl" Type="varchar" Nullable="false" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="startup_actions_objects">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uint" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ItemTemplate" Type="uint" Nullable="false" />
+          <Property Name="Amount" Type="int" Nullable="false" />
+          <Property Name="MaxEffects" Type="bool" Nullable="false" />
+          <Property Name="StartupActionId" Type="uint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="subareas">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="NameId" Type="uint" />
+          <Property Name="AreaId" Type="int" />
+          <Property Name="AmbientSounds" Type="longblob" />
+          <Property Name="MapIds" Type="longblob" />
+          <Property Name="Bounds" Type="longblob" />
+          <Property Name="Shape" Type="longblob" />
+          <Property Name="CustomWorldMap" Type="longblob" />
+          <Property Name="PackId" Type="int" />
+          <Property Name="Difficulty" Type="utinyint" Nullable="false" />
+          <Property Name="SpawnsLimit" Type="int" />
+          <Property Name="CustomSpawnInterval" Type="uint" />
+        </EntityType>
+        <EntityType Name="superareas">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="NameId" Type="uint" />
+          <Property Name="WorldmapId" Type="uint" />
+        </EntityType>
+        <EntityType Name="texts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uint" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="French" Type="mediumtext" />
+          <Property Name="English" Type="mediumtext" />
+          <Property Name="German" Type="mediumtext" />
+          <Property Name="Spanish" Type="mediumtext" />
+          <Property Name="Italian" Type="mediumtext" />
+          <Property Name="Japanish" Type="mediumtext" />
+          <Property Name="Dutsh" Type="mediumtext" />
+          <Property Name="Portugese" Type="mediumtext" />
+          <Property Name="Russish" Type="mediumtext" />
+        </EntityType>
+        <EntityType Name="texts_ui">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uint" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="varchar" MaxLength="255" />
+          <Property Name="French" Type="mediumtext" />
+          <Property Name="English" Type="mediumtext" />
+          <Property Name="German" Type="mediumtext" />
+          <Property Name="Spanish" Type="mediumtext" />
+          <Property Name="Italian" Type="mediumtext" />
+          <Property Name="Japanish" Type="mediumtext" />
+          <Property Name="Dutsh" Type="mediumtext" />
+          <Property Name="Portugese" Type="mediumtext" />
+          <Property Name="Russish" Type="mediumtext" />
+        </EntityType>
+        <EntityType Name="version">
+          <Key>
+            <PropertyRef Name="Revision" />
+          </Key>
+          <Property Name="Revision" Type="uint" Nullable="false" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="DofusVersion" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="worldmaps">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="OrigineX" Type="int" />
+          <Property Name="OrigineY" Type="int" />
+          <Property Name="MapWidth" Type="double" />
+          <Property Name="MapHeight" Type="double" />
+          <Property Name="HorizontalChunck" Type="uint" />
+          <Property Name="VerticalChunck" Type="uint" />
+          <Property Name="ViewableEverywhere" Type="bool" />
+          <Property Name="MinScale" Type="double" />
+          <Property Name="MaxScale" Type="double" />
+          <Property Name="StartScale" Type="double" />
+          <Property Name="CenterX" Type="int" />
+          <Property Name="CenterY" Type="int" />
+          <Property Name="TotalWidth" Type="int" />
+          <Property Name="TotalHeight" Type="int" />
+          <Property Name="Zoom" Type="longblob" />
+        </EntityType>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="stump_worldModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Accounts" EntityType="stump_worldModel.WorldAccount" />
+          <EntitySet Name="Areas" EntityType="stump_worldModel.Area" />
+          <EntitySet Name="Breeds" EntityType="stump_worldModel.Breed" />
+          <EntitySet Name="BreedItems" EntityType="stump_worldModel.BreedItem" />
+          <EntitySet Name="BreedSpells" EntityType="stump_worldModel.BreedSpell" />
+          <EntitySet Name="Characters" EntityType="stump_worldModel.CharacterRecord" />
+          <EntitySet Name="CharacterJobs" EntityType="stump_worldModel.CharacterJob" />
+          <EntitySet Name="CharacterSpells" EntityType="stump_worldModel.CharacterSpell" />
+          <EntitySet Name="Effects" EntityType="stump_worldModel.Effect" />
+          <EntitySet Name="ExperiencesEntries" EntityType="stump_worldModel.ExperienceTableEntry" />
+          <EntitySet Name="Hints" EntityType="stump_worldModel.Hint" />
+          <EntitySet Name="Interactives" EntityType="stump_worldModel.Interactive" />
+          <EntitySet Name="InteractivesCustomSkills" EntityType="stump_worldModel.InteractiveCustomSkill" />
+          <EntitySet Name="InteractivesSkills" EntityType="stump_worldModel.InteractiveSkill" />
+          <EntitySet Name="InteractivesSpawns" EntityType="stump_worldModel.InteractiveSpawn" />
+          <EntitySet Name="InteractivesTemplatesSkills" EntityType="stump_worldModel.InteractiveTemplateSkill" />
+          <EntitySet Name="Items" EntityType="stump_worldModel.ItemRecord" />
+          <EntitySet Name="ItemsSelled" EntityType="stump_worldModel.ItemSelled" />
+          <EntitySet Name="ItemsSets" EntityType="stump_worldModel.ItemSet" />
+          <EntitySet Name="ItemsTemplates" EntityType="stump_worldModel.ItemTemplate" />
+          <EntitySet Name="ItemsTypes" EntityType="stump_worldModel.ItemType" />
+          <EntitySet Name="Jobs" EntityType="stump_worldModel.Job" />
+          <EntitySet Name="Maps" EntityType="stump_worldModel.MapRecord" />
+          <EntitySet Name="MapsCellsTriggers" EntityType="stump_worldModel.MapCellTrigger" />
+          <EntitySet Name="MapsCoordinates" EntityType="stump_worldModel.MapCoordinates" />
+          <EntitySet Name="MapsPositions" EntityType="stump_worldModel.MapPosition" />
+          <EntitySet Name="MapsReferences" EntityType="stump_worldModel.MapReference" />
+          <EntitySet Name="Monsters" EntityType="stump_worldModel.Monster" />
+          <EntitySet Name="MonstersDrops" EntityType="stump_worldModel.MonsterDrop" />
+          <EntitySet Name="MonstersGrades" EntityType="stump_worldModel.MonsterGrade" />
+          <EntitySet Name="MonstersRaces" EntityType="stump_worldModel.MonsterRace" />
+          <EntitySet Name="MonstersSpawns" EntityType="stump_worldModel.MonsterSpawn" />
+          <EntitySet Name="MonstersSpawnsDungeon" EntityType="stump_worldModel.MonsterSpawnDungeon" />
+          <EntitySet Name="MonstersSpells" EntityType="stump_worldModel.MonsterSpell" />
+          <EntitySet Name="MonstersSuperRaces" EntityType="stump_worldModel.MonsterSuperRace" />
+          <EntitySet Name="Npcs" EntityType="stump_worldModel.NpcTemplate" />
+          <EntitySet Name="NpcsActions" EntityType="stump_worldModel.NpcAction" />
+          <EntitySet Name="NpcsMessages" EntityType="stump_worldModel.NpcMessage" />
+          <EntitySet Name="Npcs_Replies" EntityType="stump_worldModel.NpcReply" />
+          <EntitySet Name="NpcSpawns" EntityType="stump_worldModel.NpcSpawn" />
+          <EntitySet Name="Shortcuts" EntityType="stump_worldModel.ShortcutRecord" />
+          <EntitySet Name="SkillsTemplates" EntityType="stump_worldModel.SkillTemplate" />
+          <EntitySet Name="Spells" EntityType="stump_worldModel.Spell" />
+          <EntitySet Name="SpellsBomb" EntityType="stump_worldModel.SpellBomb" />
+          <EntitySet Name="SpellsLevels" EntityType="stump_worldModel.SpellLevel" />
+          <EntitySet Name="SpellsStates" EntityType="stump_worldModel.SpellState" />
+          <EntitySet Name="SpellsTypes" EntityType="stump_worldModel.SpellType" />
+          <EntitySet Name="StartupActions" EntityType="stump_worldModel.StartupAction" />
+          <EntitySet Name="StartupActionsObjects" EntityType="stump_worldModel.StartupActionObject" />
+          <EntitySet Name="SubAreas" EntityType="stump_worldModel.SubAreaRecord" />
+          <EntitySet Name="SuperAreas" EntityType="stump_worldModel.SuperAreaRecord" />
+          <EntitySet Name="Texts" EntityType="stump_worldModel.TextRecord" />
+          <EntitySet Name="TextsUI" EntityType="stump_worldModel.TextUIRecord" />
+          <EntitySet Name="versions" EntityType="stump_worldModel.version" />
+          <EntitySet Name="WorldMaps" EntityType="stump_worldModel.WorldMap" />
+          <AssociationSet Name="WorldAccountFriends" Association="stump_worldModel.WorldAccountFriends">
+            <End Role="WorldAccount" EntitySet="Accounts" />
+            <End Role="WorldAccountFriends" EntitySet="Accounts" />
+          </AssociationSet>
+          <AssociationSet Name="AccountIgnoreds" Association="stump_worldModel.WorldAccountIgnoreds">
+            <End Role="WorldAccount" EntitySet="Accounts" />
+            <End Role="WorldAccountIgnored" EntitySet="Accounts" />
+          </AssociationSet>
+          <AssociationSet Name="WorldAccountStartupAction" Association="stump_worldModel.WorldAccountStartupAction">
+            <End Role="WorldAccount" EntitySet="Accounts" />
+            <End Role="StartupAction" EntitySet="StartupActions" />
+          </AssociationSet>
+          <AssociationSet Name="StartupActionStartupActionObject" Association="stump_worldModel.StartupActionStartupActionObject">
+            <End Role="StartupAction" EntitySet="StartupActions" />
+            <End Role="StartupActionObject" EntitySet="StartupActionsObjects" />
+          </AssociationSet>
+          <AssociationSet Name="BreedBreedItem" Association="stump_worldModel.BreedBreedItem">
+            <End Role="Breed" EntitySet="Breeds" />
+            <End Role="BreedItem" EntitySet="BreedItems" />
+          </AssociationSet>
+          <AssociationSet Name="BreedBreedSpell" Association="stump_worldModel.BreedBreedSpell">
+            <End Role="Breed" EntitySet="Breeds" />
+            <End Role="BreedSpell" EntitySet="BreedSpells" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="WorldAccount">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Nickname" Type="String" Nullable="false" />
+          <Property Name="LastConnection" Type="DateTime" />
+          <Property Name="LastIp" Type="String" />
+          <Property Name="ConnectedCharacter" Type="Int32" />
+          <NavigationProperty Name="FriendWith" Relationship="stump_worldModel.WorldAccountFriends" FromRole="WorldAccount" ToRole="WorldAccountFriends" />
+          <NavigationProperty Name="Friends" Relationship="stump_worldModel.WorldAccountFriends" FromRole="WorldAccountFriends" ToRole="WorldAccount" />
+          <NavigationProperty Name="IgnoredBy" Relationship="stump_worldModel.WorldAccountIgnoreds" FromRole="WorldAccount" ToRole="WorldAccountIgnored" />
+          <NavigationProperty Name="IgnoredAccounts" Relationship="stump_worldModel.WorldAccountIgnoreds" FromRole="WorldAccountIgnored" ToRole="WorldAccount" />
+          <NavigationProperty Name="StartupActions" Relationship="stump_worldModel.WorldAccountStartupAction" FromRole="WorldAccount" ToRole="StartupAction" />
+        </EntityType>
+        <EntityType Name="Area">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="NameId" Type="Int64" />
+          <Property Name="SubAreaId" Type="Int32" />
+          <Property Name="ContainHouses" Type="Boolean" />
+          <Property Name="ContainPaddocks" Type="Boolean" />
+          <Property Name="Bounds" Type="Binary" />
+        </EntityType>
+        <EntityType Name="Breed">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="AlternativeMaleSkin" Type="Binary" Nullable="false" />
+          <Property Name="AlternativeFemaleSkin" Type="Binary" />
+          <Property Name="GameplayDescriptionId" Type="Int64" />
+          <Property Name="ShortNameId" Type="Int64" />
+          <Property Name="LongNameId" Type="Int64" />
+          <Property Name="DescriptionId" Type="Int64" />
+          <Property Name="MaleLook" Type="String" />
+          <Property Name="FemaleLook" Type="String" />
+          <Property Name="CreatureBonesId" Type="Int64" />
+          <Property Name="MaleArtwork" Type="Int32" />
+          <Property Name="FemaleArtwork" Type="Int32" />
+          <Property Name="StatsPointsForStrength" Type="Binary" />
+          <Property Name="StatsPointsForIntelligence" Type="Binary" />
+          <Property Name="StatsPointsForChance" Type="Binary" />
+          <Property Name="StatsPointsForAgility" Type="Binary" />
+          <Property Name="MaleColors" Type="Binary" />
+          <Property Name="StatsPointsForVitality" Type="Binary" />
+          <Property Name="StatsPointsForWisdom" Type="Binary" />
+          <Property Name="BreedSpellsId" Type="Binary" />
+          <Property Name="FemaleColors" Type="Binary" />
+          <Property Name="StartMap" Type="Int32" />
+          <Property Name="StartCell" Type="Int16" />
+          <Property Name="StartDirection" Type="Int32" />
+          <Property Name="StartActionPoints" Type="Int32" />
+          <Property Name="StartMovementPoints" Type="Int32" />
+          <Property Name="StartHealthPoint" Type="Int32" />
+          <Property Name="StartProspection" Type="Int32" />
+          <Property Name="StartStatsPoints" Type="Int32" />
+          <Property Name="StartSpellsPoints" Type="Int32" />
+          <Property Name="StartStrength" Type="Int16" />
+          <Property Name="StartVitality" Type="Int16" />
+          <Property Name="StartWisdom" Type="Int16" />
+          <Property Name="StartIntelligence" Type="Int16" />
+          <Property Name="StartChance" Type="Int16" />
+          <Property Name="StartAgility" Type="Int16" />
+          <Property Name="StartLevel" Type="Byte" />
+          <Property Name="StartKamas" Type="Int32" />
+          <NavigationProperty Name="Items" Relationship="stump_worldModel.BreedBreedItem" FromRole="Breed" ToRole="BreedItem" />
+          <NavigationProperty Name="Spells" Relationship="stump_worldModel.BreedBreedSpell" FromRole="Breed" ToRole="BreedSpell" />
+        </EntityType>
+        <EntityType Name="BreedItem">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="BreedId" Type="Int32" Nullable="false" />
+          <Property Name="ItemId" Type="Int32" Nullable="false" />
+          <Property Name="Amount" Type="Int32" Nullable="false" />
+          <Property Name="MaxEffects" Type="SByte" Nullable="false" />
+          <NavigationProperty Name="Breed" Relationship="stump_worldModel.BreedBreedItem" FromRole="BreedItem" ToRole="Breed" />
+        </EntityType>
+        <EntityType Name="BreedSpell">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Spell" Type="Int32" />
+          <Property Name="ObtainLevel" Type="Int32" />
+          <Property Name="BreedId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Breed" Relationship="stump_worldModel.BreedBreedSpell" FromRole="BreedSpell" ToRole="Breed" />
+        </EntityType>
+        <EntityType Name="CharacterRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreationDate" Type="DateTime" />
+          <Property Name="LastUsage" Type="DateTime" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Breed" Type="Int32" Nullable="false" />
+          <Property Name="Sex" Type="Int32" Nullable="false" />
+          <Property Name="EntityLook" Type="String" />
+          <Property Name="CustomEntityLook" Type="String" />
+          <Property Name="CustomLookActivated" Type="SByte" />
+          <Property Name="TitleId" Type="Int64" Nullable="false" />
+          <Property Name="TitleParam" Type="String" Nullable="false" />
+          <Property Name="HasRecolor" Type="Boolean" Nullable="false" />
+          <Property Name="HasRename" Type="Boolean" Nullable="false" />
+          <Property Name="CantBeAggressed" Type="Boolean" />
+          <Property Name="CantBeChallenged" Type="Boolean" />
+          <Property Name="CantTrade" Type="Boolean" />
+          <Property Name="CantBeAttackedByMutant" Type="Boolean" />
+          <Property Name="CantRun" Type="Boolean" />
+          <Property Name="ForceSlowWalk" Type="Boolean" />
+          <Property Name="CantMinimize" Type="Boolean" />
+          <Property Name="CantMove" Type="Boolean" />
+          <Property Name="CantAggress" Type="Boolean" />
+          <Property Name="CantChallenge" Type="Boolean" />
+          <Property Name="CantExchange" Type="Boolean" />
+          <Property Name="CantAttack" Type="Boolean" />
+          <Property Name="CantChat" Type="Boolean" />
+          <Property Name="CantBeMerchant" Type="Boolean" />
+          <Property Name="CantUseObject" Type="Boolean" />
+          <Property Name="CantUseTaxCollector" Type="Boolean" />
+          <Property Name="CantUseInteractive" Type="Boolean" />
+          <Property Name="CantSpeakToNpc" Type="Boolean" />
+          <Property Name="CantChangeZone" Type="Boolean" />
+          <Property Name="CantAttackMonster" Type="Boolean" />
+          <Property Name="CantWalk8Directions" Type="Boolean" />
+          <Property Name="MapId" Type="Int32" Nullable="false" />
+          <Property Name="CellId" Type="Int16" Nullable="false" />
+          <Property Name="Direction" Type="Int32" Nullable="false" />
+          <Property Name="BaseHealth" Type="Int32" Nullable="false" />
+          <Property Name="DamageTaken" Type="Int32" Nullable="false" />
+          <Property Name="AP" Type="Int32" Nullable="false" />
+          <Property Name="MP" Type="Int32" Nullable="false" />
+          <Property Name="Prospection" Type="Int32" Nullable="false" />
+          <Property Name="Strength" Type="Int16" Nullable="false" />
+          <Property Name="Chance" Type="Int16" Nullable="false" />
+          <Property Name="Vitality" Type="Int16" Nullable="false" />
+          <Property Name="Wisdom" Type="Int16" Nullable="false" />
+          <Property Name="Intelligence" Type="Int16" Nullable="false" />
+          <Property Name="Agility" Type="Int16" Nullable="false" />
+          <Property Name="PermanentAddedStrength" Type="Int16" Nullable="false" />
+          <Property Name="PermanentAddedChance" Type="Int16" Nullable="false" />
+          <Property Name="PermanentAddedVitality" Type="Int16" Nullable="false" />
+          <Property Name="PermanentAddedWisdom" Type="Int16" Nullable="false" />
+          <Property Name="PermanentAddedIntelligence" Type="Int16" Nullable="false" />
+          <Property Name="PermanentAddedAgility" Type="Int16" Nullable="false" />
+          <Property Name="Kamas" Type="Int32" Nullable="false" />
+          <Property Name="CanRestat" Type="Boolean" Nullable="false" />
+          <Property Name="Experience" Type="Int64" Nullable="false" />
+          <Property Name="EnergyMax" Type="Int16" Nullable="false" />
+          <Property Name="Energy" Type="Int16" Nullable="false" />
+          <Property Name="StatsPoints" Type="Int32" Nullable="false" />
+          <Property Name="SpellsPoints" Type="Int32" Nullable="false" />
+          <Property Name="AlignmentSide" Type="Int32" />
+          <Property Name="AlignmentValue" Type="SByte" />
+          <Property Name="Honor" Type="Int32" />
+          <Property Name="Dishonor" Type="Int32" />
+          <Property Name="PvPEnabled" Type="Boolean" />
+          <Property Name="KnownZaaps" Type="Binary" Nullable="false" />
+          <Property Name="SpawnMap" Type="Int32" />
+          <Property Name="WarnOnConnection" Type="Boolean" />
+          <Property Name="WarnOnLevel" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="CharacterJob">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="JobId" Type="Int32" />
+          <Property Name="Owner" Type="Int32" />
+          <Property Name="Experience" Type="Int64" />
+        </EntityType>
+        <EntityType Name="CharacterSpell">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Owner" Type="Int32" />
+          <Property Name="SpellId" Type="Int32" Nullable="false" />
+          <Property Name="Level" Type="SByte" Nullable="false" />
+          <Property Name="Position" Type="Byte" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Effect">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" />
+          <Property Name="DescriptionId" Type="Int64" />
+          <Property Name="IconId" Type="Int64" />
+          <Property Name="Characteristic" Type="Int32" />
+          <Property Name="Category" Type="Int64" />
+          <Property Name="Operator" Type="String" />
+          <Property Name="ShowInTooltip" Type="Boolean" />
+          <Property Name="UseDice" Type="Boolean" />
+          <Property Name="ForceMinMax" Type="Boolean" />
+          <Property Name="Boost" Type="Boolean" />
+          <Property Name="Active" Type="Boolean" />
+          <Property Name="ShowInSet" Type="Boolean" />
+          <Property Name="BonusType" Type="Int32" />
+          <Property Name="UseInFight" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="ExperienceTableEntry">
+          <Key>
+            <PropertyRef Name="Level" />
+          </Key>
+          <Property Name="Level" Type="Byte" Nullable="false" />
+          <Property Name="CharacterExp" Type="Int64" />
+          <Property Name="GuildExp" Type="Int64" />
+          <Property Name="MountExp" Type="Int64" />
+          <Property Name="AlignmentHonor" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Hint">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="CategoryId" Type="Int64" />
+          <Property Name="Gfx" Type="Int64" />
+          <Property Name="NameId" Type="Int64" />
+          <Property Name="MapId" Type="Int64" />
+          <Property Name="RealMapId" Type="Int64" />
+        </EntityType>
+        <EntityType Name="Interactive">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="NameId" Type="Int64" />
+          <Property Name="ActionId" Type="Int32" />
+          <Property Name="DisplayTooltip" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="InteractiveCustomSkill">
+          <Key>
+            <PropertyRef Name="InteractiveId" />
+            <PropertyRef Name="SkillId" />
+          </Key>
+          <Property Name="InteractiveId" Type="Int32" Nullable="false" />
+          <Property Name="SkillId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="InteractiveSkill">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RecognizerType" Type="String" Nullable="false" />
+          <Property Name="Duration" Type="Int64" />
+          <Property Name="Teleport_MapId" Type="Int32" />
+          <Property Name="Teleport_CellId" Type="Int32" />
+          <Property Name="Teleport_Direction" Type="Int32" />
+          <Property Name="Teleport_Condition" Type="String" />
+        </EntityType>
+        <EntityType Name="InteractiveSpawn">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TemplateId" Type="Int32" />
+          <Property Name="ElementId" Type="Int32" Nullable="false" />
+          <Property Name="MapId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="InteractiveTemplateSkill">
+          <Key>
+            <PropertyRef Name="InteractiveId" />
+            <PropertyRef Name="SkillId" />
+          </Key>
+          <Property Name="InteractiveId" Type="Int32" Nullable="false" />
+          <Property Name="SkillId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ItemRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="RecognizerType" Type="String" Nullable="false" />
+          <Property Name="Item1" Type="Int32" Nullable="false" />
+          <Property Name="Stack" Type="Int32" Nullable="false" />
+          <Property Name="Effects" Type="Binary" Nullable="false" />
+          <Property Name="Owner" Type="Int32" />
+          <Property Name="Position" Type="Int32" Nullable="false" />
+          <Property Name="IsLinkedToOwner" Type="SByte" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ItemSelled">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RecognizerType" Type="String" Nullable="false" />
+          <Property Name="ItemId" Type="Int32" />
+          <Property Name="Npc_NpcShopId" Type="Int32" />
+          <Property Name="Npc_CustomPrice" Type="Single" />
+          <Property Name="Npc_BuyCriterion" Type="String" />
+          <Property Name="Npc_MaxStats" Type="SByte" />
+        </EntityType>
+        <EntityType Name="ItemSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" />
+          <Property Name="Items" Type="Binary" />
+          <Property Name="NameId" Type="Int64" />
+          <Property Name="BonusIsSecret" Type="Boolean" />
+          <Property Name="BonusEffects" Type="Binary" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ItemTemplate">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="RecognizerType" Type="String" Nullable="false" />
+          <Property Name="Weight" Type="Int64" />
+          <Property Name="RealWeight" Type="Int64" />
+          <Property Name="NameId" Type="Int64" />
+          <Property Name="TypeId" Type="Int64" />
+          <Property Name="DescriptionId" Type="Int64" />
+          <Property Name="IconId" Type="Int64" />
+          <Property Name="Level" Type="Int64" />
+          <Property Name="Cursed" Type="Boolean" />
+          <Property Name="UseAnimationId" Type="Int32" />
+          <Property Name="Usable" Type="Boolean" />
+          <Property Name="Targetable" Type="Boolean" />
+          <Property Name="Price" Type="Single" />
+          <Property Name="TwoHanded" Type="Boolean" />
+          <Property Name="Etheral" Type="Boolean" />
+          <Property Name="ItemSetId" Type="Int32" />
+          <Property Name="Criteria" Type="String" />
+          <Property Name="HideEffects" Type="Boolean" />
+          <Property Name="AppearanceId" Type="Int64" />
+          <Property Name="BonusIsSecret" Type="Boolean" />
+          <Property Name="PossibleEffects" Type="Binary" />
+          <Property Name="FavoriteSubAreasBonus" Type="Int64" />
+          <Property Name="ApCost" Type="Int32" />
+          <Property Name="MinRange" Type="Int32" />
+          <Property Name="WeaponRange" Type="Int32" />
+          <Property Name="CastInLine" Type="Boolean" />
+          <Property Name="CastInDiagonal" Type="Boolean" />
+          <Property Name="CastTestLos" Type="Boolean" />
+          <Property Name="CriticalHitProbability" Type="Int32" />
+          <Property Name="CriticalHitBonus" Type="Int32" />
+          <Property Name="CriticalFailureProbability" Type="Int32" />
+          <Property Name="IsLinkedToOwner" Type="SByte" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ItemType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="NameId" Type="Int64" />
+          <Property Name="SuperTypeId" Type="Int64" />
+          <Property Name="Plural" Type="Boolean" />
+          <Property Name="Gender" Type="Int64" />
+          <Property Name="RawZone" Type="String" />
+          <Property Name="NeedUseConfirm" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Job">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="NameId" Type="Int64" />
+          <Property Name="SpecializationOfId" Type="Int32" />
+          <Property Name="IconId" Type="Int32" />
+          <Property Name="ToolIds" Type="Binary" />
+        </EntityType>
+        <EntityType Name="MapRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="BlueCells" Type="Binary" />
+          <Property Name="RedCells" Type="Binary" />
+          <Property Name="Version" Type="Int64" />
+          <Property Name="RelativeId" Type="Int64" />
+          <Property Name="MapType" Type="Int32" />
+          <Property Name="SubAreaId" Type="Int32" />
+          <Property Name="TopNeighbourId" Type="Int32" />
+          <Property Name="BottomNeighbourId" Type="Int32" />
+          <Property Name="LeftNeighbourId" Type="Int32" />
+          <Property Name="RightNeighbourId" Type="Int32" />
+          <Property Name="ClientTopNeighbourId" Type="Int32" />
+          <Property Name="ClientBottomNeighbourId" Type="Int32" />
+          <Property Name="ClientLeftNeighbourId" Type="Int32" />
+          <Property Name="ClientRightNeighbourId" Type="Int32" />
+          <Property Name="ShadowBonusOnEntities" Type="Int32" />
+          <Property Name="UseLowpassFilter" Type="Boolean" />
+          <Property Name="UseReverb" Type="Boolean" />
+          <Property Name="PresetId" Type="Int32" />
+          <Property Name="CompressedCells" Type="Binary" Nullable="false" />
+          <Property Name="CompressedElements" Type="Binary" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MapCellTrigger">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RecognizerType" Type="String" Nullable="false" />
+          <Property Name="CellId" Type="Int16" />
+          <Property Name="MapId" Type="Int32" />
+          <Property Name="TriggerType" Type="Int32" />
+          <Property Name="Condition" Type="String" />
+          <Property Name="DestinationCellId" Type="Int16" />
+          <Property Name="DestinationMapId" Type="Int32" />
+        </EntityType>
+        <EntityType Name="MapCoordinates">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CompressedCoords" Type="Int64" />
+          <Property Name="Ids" Type="Binary" />
+        </EntityType>
+        <EntityType Name="MapPosition">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="PosX" Type="Int32" />
+          <Property Name="PosY" Type="Int32" />
+          <Property Name="Outdoor" Type="Boolean" />
+          <Property Name="SubAreaId" Type="Int32" />
+          <Property Name="Capabilities" Type="Int32" />
+          <Property Name="WorldMap" Type="Int32" />
+          <Property Name="Sounds" Type="Binary" />
+          <Property Name="NameId" Type="Int32" />
+          <Property Name="HasPriorityOnWorldmap" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="MapReference">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="MapId" Type="Int64" />
+          <Property Name="CellId" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Monster">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="NameId" Type="Int64" />
+          <Property Name="GfxId" Type="Int64" />
+          <Property Name="Race" Type="Int32" />
+          <Property Name="MinDroppedKamas" Type="Int32" />
+          <Property Name="MaxDroppedKamas" Type="Int32" />
+          <Property Name="Look" Type="String" />
+          <Property Name="UseSummonSlot" Type="Boolean" />
+          <Property Name="UseBombSlot" Type="Boolean" />
+          <Property Name="CanPlay" Type="Boolean" />
+          <Property Name="IsBoss" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="MonsterDrop">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MonsterOwnerId" Type="Int32" Nullable="false" />
+          <Property Name="ItemId" Type="Int16" Nullable="false" />
+          <Property Name="DropLimit" Type="Int32" Nullable="false" />
+          <Property Name="DropRate" Type="Double" Nullable="false" />
+          <Property Name="RollsCounter" Type="Int32" Nullable="false" />
+          <Property Name="ProspectingLock" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MonsterGrade">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Wisdom" Type="Int32" />
+          <Property Name="Grade" Type="Int64" />
+          <Property Name="GradeXp" Type="Int32" />
+          <Property Name="MonsterId" Type="Int32" />
+          <Property Name="Level" Type="Int64" />
+          <Property Name="PaDodge" Type="Int32" />
+          <Property Name="PmDodge" Type="Int32" />
+          <Property Name="EarthResistance" Type="Int32" />
+          <Property Name="AirResistance" Type="Int32" />
+          <Property Name="FireResistance" Type="Int32" />
+          <Property Name="WaterResistance" Type="Int32" />
+          <Property Name="NeutralResistance" Type="Int32" />
+          <Property Name="LifePoints" Type="Int32" />
+          <Property Name="ActionPoints" Type="Int32" />
+          <Property Name="MovementPoints" Type="Int32" />
+          <Property Name="TackleEvade" Type="Int16" />
+          <Property Name="TackleBlock" Type="Int16" />
+          <Property Name="Strength" Type="Int16" />
+          <Property Name="Chance" Type="Int16" />
+          <Property Name="Vitality" Type="Int16" />
+          <Property Name="Intelligence" Type="Int16" />
+          <Property Name="Agility" Type="Int16" />
+          <Property Name="Stats" Type="Binary" />
+        </EntityType>
+        <EntityType Name="MonsterRace">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="SuperRaceId" Type="Int32" />
+          <Property Name="NameId" Type="Int64" />
+        </EntityType>
+        <EntityType Name="MonsterSpawn">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MapId" Type="Int32" />
+          <Property Name="SubAreaId" Type="Int32" />
+          <Property Name="MonsterId" Type="Int32" Nullable="false" />
+          <Property Name="Frenquency" Type="Double" Nullable="false" />
+          <Property Name="MinGrade" Type="Int32" Nullable="false" />
+          <Property Name="MaxGrade" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MonsterSpawnDungeon">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MapId" Type="Int32" Nullable="false" />
+          <Property Name="SerializedMonsterGroup" Type="Binary" Nullable="false" />
+          <Property Name="TeleportEvent" Type="Boolean" />
+          <Property Name="TeleportMapId" Type="Int32" />
+          <Property Name="TeleportCell" Type="Int16" />
+          <Property Name="Direction" Type="Int32" />
+        </EntityType>
+        <EntityType Name="MonsterSpell">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MonsterGradeId" Type="Int32" />
+          <Property Name="SpellId" Type="Int32" Nullable="false" />
+          <Property Name="Level" Type="SByte" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MonsterSuperRace">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="NameId" Type="Int64" />
+        </EntityType>
+        <EntityType Name="NpcTemplate">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="NameId" Type="Int64" />
+          <Property Name="DialogMessagesId" Type="Binary" />
+          <Property Name="DialogRepliesId" Type="Binary" />
+          <Property Name="ActionsId" Type="Binary" />
+          <Property Name="Gender" Type="Int64" />
+          <Property Name="Look" Type="String" />
+          <Property Name="SpecialArtworkId" Type="Int16" />
+          <Property Name="TokenShop" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="NpcAction">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RecognizerType" Type="String" Nullable="false" />
+          <Property Name="Npc" Type="Int32" />
+          <Property Name="Condition" Type="String" />
+          <Property Name="Talk_MessageId" Type="Int32" />
+          <Property Name="Shop_Token" Type="Int32" />
+          <Property Name="Shop_CanSell" Type="SByte" />
+          <Property Name="Shop_MaxStats" Type="SByte" />
+        </EntityType>
+        <EntityType Name="NpcMessage">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="MessageId" Type="Int64" />
+          <Property Name="MessageParams" Type="String" />
+        </EntityType>
+        <EntityType Name="NpcReply">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RecognizerType" Type="String" Nullable="false" />
+          <Property Name="Reply" Type="Int32" />
+          <Property Name="Message" Type="Int32" />
+          <Property Name="Criteria" Type="String" />
+          <Property Name="Teleport_Map" Type="Int32" />
+          <Property Name="Teleport_Cell" Type="Int32" />
+          <Property Name="Teleport_Direction" Type="Int32" />
+          <Property Name="Dialog_NextMessageId" Type="Int32" />
+          <Property Name="UseItem_Item" Type="Int32" />
+          <Property Name="UseItem_Amount" Type="Int64" />
+        </EntityType>
+        <EntityType Name="NpcSpawn">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Npc" Type="Int32" />
+          <Property Name="Map" Type="Int32" Nullable="false" />
+          <Property Name="Cell" Type="Int32" Nullable="false" />
+          <Property Name="Direction" Type="Int32" Nullable="false" />
+          <Property Name="Look" Type="String" />
+        </EntityType>
+        <EntityType Name="ShortcutRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RecognizerType" Type="String" Nullable="false" />
+          <Property Name="Owner" Type="Int32" />
+          <Property Name="Slot" Type="Int32" />
+          <Property Name="SpellId" Type="Int16" />
+          <Property Name="ItemTemplateId" Type="Int32" />
+          <Property Name="ItemGuid" Type="Int32" />
+        </EntityType>
+        <EntityType Name="SkillTemplate">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NameId" Type="Int64" />
+          <Property Name="ParentJobId" Type="Int32" />
+          <Property Name="IsForgemagus" Type="Boolean" />
+          <Property Name="ModifiableItemType" Type="Int32" />
+          <Property Name="GatheredRessourceItem" Type="Int32" />
+          <Property Name="CraftableItemIds" Type="Binary" />
+          <Property Name="InteractiveId" Type="Int32" />
+          <Property Name="UseAnimation" Type="String" />
+          <Property Name="IsRepair" Type="Boolean" />
+          <Property Name="Cursor" Type="Int32" />
+          <Property Name="AvailableInHouse" Type="Boolean" />
+          <Property Name="LevelMin" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Spell">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="NameId" Type="Int64" />
+          <Property Name="DescriptionId" Type="Int64" />
+          <Property Name="TypeId" Type="Int64" />
+          <Property Name="ScriptParams" Type="String" />
+          <Property Name="ScriptParamsCritical" Type="String" />
+          <Property Name="ScriptId" Type="Int32" />
+          <Property Name="ScriptIdCritical" Type="Int32" />
+          <Property Name="IconId" Type="Int32" />
+          <Property Name="SpellLevels" Type="Binary" />
+          <Property Name="UseParamCache" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="SpellBomb">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="ChainReactionSpellId" Type="Int32" />
+          <Property Name="ExplodSpellId" Type="Int32" />
+          <Property Name="WallId" Type="Int32" />
+          <Property Name="InstantSpellId" Type="Int32" />
+          <Property Name="ComboCoeff" Type="Int32" />
+        </EntityType>
+        <EntityType Name="SpellLevel">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" />
+          <Property Name="SpellId" Type="Int32" />
+          <Property Name="SpellBreed" Type="Int64" />
+          <Property Name="ApCost" Type="Int64" />
+          <Property Name="Range" Type="Int64" />
+          <Property Name="CastInLine" Type="Boolean" />
+          <Property Name="CastInDiagonal" Type="Boolean" />
+          <Property Name="CastTestLos" Type="Boolean" />
+          <Property Name="CriticalHitProbability" Type="Int64" />
+          <Property Name="StatesRequired" Type="Binary" />
+          <Property Name="CriticalFailureProbability" Type="Int64" />
+          <Property Name="NeedFreeCell" Type="Boolean" />
+          <Property Name="NeedFreeTrapCell" Type="Boolean" />
+          <Property Name="NeedTakenCell" Type="Boolean" />
+          <Property Name="RangeCanBeBoosted" Type="Boolean" />
+          <Property Name="MaxStack" Type="Int32" />
+          <Property Name="MaxCastPerTurn" Type="Int64" />
+          <Property Name="MaxCastPerTarget" Type="Int64" />
+          <Property Name="MinCastInterval" Type="Int64" />
+          <Property Name="InitialCooldown" Type="Int64" />
+          <Property Name="GlobalCooldown" Type="Int32" />
+          <Property Name="MinPlayerLevel" Type="Int64" />
+          <Property Name="CriticalFailureEndsTurn" Type="Boolean" />
+          <Property Name="HideEffects" Type="Boolean" />
+          <Property Name="Hidden" Type="Boolean" />
+          <Property Name="MinRange" Type="Int64" />
+          <Property Name="StatesForbidden" Type="Binary" />
+          <Property Name="Effects" Type="Binary" />
+          <Property Name="CriticalEffect" Type="Binary" />
+        </EntityType>
+        <EntityType Name="SpellState">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="NameId" Type="Int64" />
+          <Property Name="PreventsSpellCast" Type="Boolean" />
+          <Property Name="PreventsFight" Type="Boolean" />
+          <Property Name="Critical" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="SpellType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="LongNameId" Type="Int64" />
+          <Property Name="ShortNameId" Type="Int64" />
+        </EntityType>
+        <EntityType Name="StartupAction">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" Nullable="false" />
+          <Property Name="Text" Type="String" Nullable="false" />
+          <Property Name="DescUrl" Type="String" Nullable="false" />
+          <Property Name="PictureUrl" Type="String" Nullable="false" />
+          <NavigationProperty Name="Accounts" Relationship="stump_worldModel.WorldAccountStartupAction" FromRole="StartupAction" ToRole="WorldAccount" />
+          <NavigationProperty Name="Items" Relationship="stump_worldModel.StartupActionStartupActionObject" FromRole="StartupAction" ToRole="StartupActionObject" />
+        </EntityType>
+        <EntityType Name="StartupActionObject">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ItemTemplate" Type="Int64" Nullable="false" />
+          <Property Name="Amount" Type="Int32" Nullable="false" />
+          <Property Name="MaxEffects" Type="Boolean" Nullable="false" />
+          <Property Name="StartupActionId" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="StartupAction" Relationship="stump_worldModel.StartupActionStartupActionObject" FromRole="StartupActionObject" ToRole="StartupAction" />
+        </EntityType>
+        <EntityType Name="SubAreaRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="NameId" Type="Int64" />
+          <Property Name="AreaId" Type="Int32" />
+          <Property Name="AmbientSounds" Type="Binary" />
+          <Property Name="MapIds" Type="Binary" />
+          <Property Name="Bounds" Type="Binary" />
+          <Property Name="Shape" Type="Binary" />
+          <Property Name="CustomWorldMap" Type="Binary" />
+          <Property Name="PackId" Type="Int32" />
+          <Property Name="Difficulty" Type="Byte" Nullable="false" />
+          <Property Name="SpawnsLimit" Type="Int32" />
+          <Property Name="CustomSpawnInterval" Type="Int64" />
+        </EntityType>
+        <EntityType Name="SuperAreaRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="NameId" Type="Int64" />
+          <Property Name="WorldmapId" Type="Int64" />
+        </EntityType>
+        <EntityType Name="TextRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="French" Type="String" />
+          <Property Name="English" Type="String" />
+          <Property Name="German" Type="String" />
+          <Property Name="Spanish" Type="String" />
+          <Property Name="Italian" Type="String" />
+          <Property Name="Japanish" Type="String" />
+          <Property Name="Dutsh" Type="String" />
+          <Property Name="Portugese" Type="String" />
+          <Property Name="Russish" Type="String" />
+        </EntityType>
+        <EntityType Name="TextUIRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" />
+          <Property Name="French" Type="String" />
+          <Property Name="English" Type="String" />
+          <Property Name="German" Type="String" />
+          <Property Name="Spanish" Type="String" />
+          <Property Name="Italian" Type="String" />
+          <Property Name="Japanish" Type="String" />
+          <Property Name="Dutsh" Type="String" />
+          <Property Name="Portugese" Type="String" />
+          <Property Name="Russish" Type="String" />
+        </EntityType>
+        <EntityType Name="version">
+          <Key>
+            <PropertyRef Name="Revision" />
+          </Key>
+          <Property Name="Revision" Type="Int64" Nullable="false" />
+          <Property Name="UpdateDate" Type="DateTime" />
+          <Property Name="DofusVersion" Type="String" />
+        </EntityType>
+        <EntityType Name="WorldMap">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="OrigineX" Type="Int32" />
+          <Property Name="OrigineY" Type="Int32" />
+          <Property Name="MapWidth" Type="Double" />
+          <Property Name="MapHeight" Type="Double" />
+          <Property Name="HorizontalChunck" Type="Int64" />
+          <Property Name="VerticalChunck" Type="Int64" />
+          <Property Name="ViewableEverywhere" Type="Boolean" />
+          <Property Name="MinScale" Type="Double" />
+          <Property Name="MaxScale" Type="Double" />
+          <Property Name="StartScale" Type="Double" />
+          <Property Name="CenterX" Type="Int32" />
+          <Property Name="CenterY" Type="Int32" />
+          <Property Name="TotalWidth" Type="Int32" />
+          <Property Name="TotalHeight" Type="Int32" />
+          <Property Name="Zoom" Type="Binary" />
+        </EntityType>
+        <Association Name="WorldAccountFriends">
+          <End Type="stump_worldModel.WorldAccount" Role="WorldAccount" Multiplicity="*" />
+          <End Type="stump_worldModel.WorldAccount" Role="WorldAccountFriends" Multiplicity="*" />
+        </Association>
+        <Association Name="WorldAccountIgnoreds">
+          <End Type="stump_worldModel.WorldAccount" Role="WorldAccount" Multiplicity="*" />
+          <End Type="stump_worldModel.WorldAccount" Role="WorldAccountIgnored" Multiplicity="*" />
+        </Association>
+        <Association Name="WorldAccountStartupAction">
+          <End Type="stump_worldModel.WorldAccount" Role="WorldAccount" Multiplicity="*" />
+          <End Type="stump_worldModel.StartupAction" Role="StartupAction" Multiplicity="*" />
+        </Association>
+        <Association Name="StartupActionStartupActionObject">
+          <End Type="stump_worldModel.StartupAction" Role="StartupAction" Multiplicity="1" />
+          <End Type="stump_worldModel.StartupActionObject" Role="StartupActionObject" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StartupAction">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StartupActionObject">
+              <PropertyRef Name="StartupActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="BreedBreedItem">
+          <End Type="stump_worldModel.Breed" Role="Breed" Multiplicity="1" />
+          <End Type="stump_worldModel.BreedItem" Role="BreedItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Breed">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="BreedItem">
+              <PropertyRef Name="BreedId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="BreedBreedSpell">
+          <End Type="stump_worldModel.Breed" Role="Breed" Multiplicity="1" />
+          <End Type="stump_worldModel.BreedSpell" Role="BreedSpell" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Breed">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="BreedSpell">
+              <PropertyRef Name="BreedId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="stump_worldModelStoreContainer" CdmEntityContainer="Entities">
+          <EntitySetMapping Name="Accounts"><EntityTypeMapping TypeName="stump_worldModel.WorldAccount"><MappingFragment StoreEntitySet="accounts">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="Nickname" ColumnName="Nickname" />
+            <ScalarProperty Name="LastConnection" ColumnName="LastConnection" />
+            <ScalarProperty Name="LastIp" ColumnName="LastIp" />
+            <ScalarProperty Name="ConnectedCharacter" ColumnName="ConnectedCharacter" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Areas"><EntityTypeMapping TypeName="stump_worldModel.Area"><MappingFragment StoreEntitySet="areas">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="NameId" ColumnName="NameId" />
+            <ScalarProperty Name="SubAreaId" ColumnName="SubAreaId" />
+            <ScalarProperty Name="ContainHouses" ColumnName="ContainHouses" />
+            <ScalarProperty Name="ContainPaddocks" ColumnName="ContainPaddocks" />
+            <ScalarProperty Name="Bounds" ColumnName="Bounds" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Breeds"><EntityTypeMapping TypeName="stump_worldModel.Breed"><MappingFragment StoreEntitySet="breeds">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="AlternativeMaleSkin" ColumnName="AlternativeMaleSkin" />
+            <ScalarProperty Name="AlternativeFemaleSkin" ColumnName="AlternativeFemaleSkin" />
+            <ScalarProperty Name="GameplayDescriptionId" ColumnName="GameplayDescriptionId" />
+            <ScalarProperty Name="ShortNameId" ColumnName="ShortNameId" />
+            <ScalarProperty Name="LongNameId" ColumnName="LongNameId" />
+            <ScalarProperty Name="DescriptionId" ColumnName="DescriptionId" />
+            <ScalarProperty Name="MaleLook" ColumnName="MaleLook" />
+            <ScalarProperty Name="FemaleLook" ColumnName="FemaleLook" />
+            <ScalarProperty Name="CreatureBonesId" ColumnName="CreatureBonesId" />
+            <ScalarProperty Name="MaleArtwork" ColumnName="MaleArtwork" />
+            <ScalarProperty Name="FemaleArtwork" ColumnName="FemaleArtwork" />
+            <ScalarProperty Name="StatsPointsForStrength" ColumnName="StatsPointsForStrength" />
+            <ScalarProperty Name="StatsPointsForIntelligence" ColumnName="StatsPointsForIntelligence" />
+            <ScalarProperty Name="StatsPointsForChance" ColumnName="StatsPointsForChance" />
+            <ScalarProperty Name="StatsPointsForAgility" ColumnName="StatsPointsForAgility" />
+            <ScalarProperty Name="MaleColors" ColumnName="MaleColors" />
+            <ScalarProperty Name="StatsPointsForVitality" ColumnName="StatsPointsForVitality" />
+            <ScalarProperty Name="StatsPointsForWisdom" ColumnName="StatsPointsForWisdom" />
+            <ScalarProperty Name="BreedSpellsId" ColumnName="BreedSpellsId" />
+            <ScalarProperty Name="FemaleColors" ColumnName="FemaleColors" />
+            <ScalarProperty Name="StartMap" ColumnName="StartMap" />
+            <ScalarProperty Name="StartCell" ColumnName="StartCell" />
+            <ScalarProperty Name="StartDirection" ColumnName="StartDirection" />
+            <ScalarProperty Name="StartActionPoints" ColumnName="StartActionPoints" />
+            <ScalarProperty Name="StartMovementPoints" ColumnName="StartMovementPoints" />
+            <ScalarProperty Name="StartHealthPoint" ColumnName="StartHealthPoint" />
+            <ScalarProperty Name="StartProspection" ColumnName="StartProspection" />
+            <ScalarProperty Name="StartStatsPoints" ColumnName="StartStatsPoints" />
+            <ScalarProperty Name="StartSpellsPoints" ColumnName="StartSpellsPoints" />
+            <ScalarProperty Name="StartStrength" ColumnName="StartStrength" />
+            <ScalarProperty Name="StartVitality" ColumnName="StartVitality" />
+            <ScalarProperty Name="StartWisdom" ColumnName="StartWisdom" />
+            <ScalarProperty Name="StartIntelligence" ColumnName="StartIntelligence" />
+            <ScalarProperty Name="StartChance" ColumnName="StartChance" />
+            <ScalarProperty Name="StartAgility" ColumnName="StartAgility" />
+            <ScalarProperty Name="StartLevel" ColumnName="StartLevel" />
+            <ScalarProperty Name="StartKamas" ColumnName="StartKamas" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="BreedItems"><EntityTypeMapping TypeName="stump_worldModel.BreedItem"><MappingFragment StoreEntitySet="breeds_items">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="BreedId" ColumnName="Breed" />
+            <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+            <ScalarProperty Name="Amount" ColumnName="Amount" />
+            <ScalarProperty Name="MaxEffects" ColumnName="MaxEffects" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="BreedSpells"><EntityTypeMapping TypeName="stump_worldModel.BreedSpell"><MappingFragment StoreEntitySet="breeds_spells">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="Spell" ColumnName="Spell" />
+            <ScalarProperty Name="ObtainLevel" ColumnName="ObtainLevel" />
+            <ScalarProperty Name="BreedId" ColumnName="Breed" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Characters"><EntityTypeMapping TypeName="stump_worldModel.CharacterRecord"><MappingFragment StoreEntitySet="characters">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+            <ScalarProperty Name="LastUsage" ColumnName="LastUsage" />
+            <ScalarProperty Name="Name" ColumnName="Name" />
+            <ScalarProperty Name="Breed" ColumnName="Breed" />
+            <ScalarProperty Name="Sex" ColumnName="Sex" />
+            <ScalarProperty Name="EntityLook" ColumnName="EntityLook" />
+            <ScalarProperty Name="CustomEntityLook" ColumnName="CustomEntityLook" />
+            <ScalarProperty Name="CustomLookActivated" ColumnName="CustomLookActivated" />
+            <ScalarProperty Name="TitleId" ColumnName="TitleId" />
+            <ScalarProperty Name="TitleParam" ColumnName="TitleParam" />
+            <ScalarProperty Name="HasRecolor" ColumnName="HasRecolor" />
+            <ScalarProperty Name="HasRename" ColumnName="HasRename" />
+            <ScalarProperty Name="CantBeAggressed" ColumnName="CantBeAggressed" />
+            <ScalarProperty Name="CantBeChallenged" ColumnName="CantBeChallenged" />
+            <ScalarProperty Name="CantTrade" ColumnName="CantTrade" />
+            <ScalarProperty Name="CantBeAttackedByMutant" ColumnName="CantBeAttackedByMutant" />
+            <ScalarProperty Name="CantRun" ColumnName="CantRun" />
+            <ScalarProperty Name="ForceSlowWalk" ColumnName="ForceSlowWalk" />
+            <ScalarProperty Name="CantMinimize" ColumnName="CantMinimize" />
+            <ScalarProperty Name="CantMove" ColumnName="CantMove" />
+            <ScalarProperty Name="CantAggress" ColumnName="CantAggress" />
+            <ScalarProperty Name="CantChallenge" ColumnName="CantChallenge" />
+            <ScalarProperty Name="CantExchange" ColumnName="CantExchange" />
+            <ScalarProperty Name="CantAttack" ColumnName="CantAttack" />
+            <ScalarProperty Name="CantChat" ColumnName="CantChat" />
+            <ScalarProperty Name="CantBeMerchant" ColumnName="CantBeMerchant" />
+            <ScalarProperty Name="CantUseObject" ColumnName="CantUseObject" />
+            <ScalarProperty Name="CantUseTaxCollector" ColumnName="CantUseTaxCollector" />
+            <ScalarProperty Name="CantUseInteractive" ColumnName="CantUseInteractive" />
+            <ScalarProperty Name="CantSpeakToNpc" ColumnName="CantSpeakToNpc" />
+            <ScalarProperty Name="CantChangeZone" ColumnName="CantChangeZone" />
+            <ScalarProperty Name="CantAttackMonster" ColumnName="CantAttackMonster" />
+            <ScalarProperty Name="CantWalk8Directions" ColumnName="CantWalk8Directions" />
+            <ScalarProperty Name="MapId" ColumnName="MapId" />
+            <ScalarProperty Name="CellId" ColumnName="CellId" />
+            <ScalarProperty Name="Direction" ColumnName="Direction" />
+            <ScalarProperty Name="BaseHealth" ColumnName="BaseHealth" />
+            <ScalarProperty Name="DamageTaken" ColumnName="DamageTaken" />
+            <ScalarProperty Name="AP" ColumnName="AP" />
+            <ScalarProperty Name="MP" ColumnName="MP" />
+            <ScalarProperty Name="Prospection" ColumnName="Prospection" />
+            <ScalarProperty Name="Strength" ColumnName="Strength" />
+            <ScalarProperty Name="Chance" ColumnName="Chance" />
+            <ScalarProperty Name="Vitality" ColumnName="Vitality" />
+            <ScalarProperty Name="Wisdom" ColumnName="Wisdom" />
+            <ScalarProperty Name="Intelligence" ColumnName="Intelligence" />
+            <ScalarProperty Name="Agility" ColumnName="Agility" />
+            <ScalarProperty Name="PermanentAddedStrength" ColumnName="PermanentAddedStrength" />
+            <ScalarProperty Name="PermanentAddedChance" ColumnName="PermanentAddedChance" />
+            <ScalarProperty Name="PermanentAddedVitality" ColumnName="PermanentAddedVitality" />
+            <ScalarProperty Name="PermanentAddedWisdom" ColumnName="PermanentAddedWisdom" />
+            <ScalarProperty Name="PermanentAddedIntelligence" ColumnName="PermanentAddedIntelligence" />
+            <ScalarProperty Name="PermanentAddedAgility" ColumnName="PermanentAddedAgility" />
+            <ScalarProperty Name="Kamas" ColumnName="Kamas" />
+            <ScalarProperty Name="CanRestat" ColumnName="CanRestat" />
+            <ScalarProperty Name="Experience" ColumnName="Experience" />
+            <ScalarProperty Name="EnergyMax" ColumnName="EnergyMax" />
+            <ScalarProperty Name="Energy" ColumnName="Energy" />
+            <ScalarProperty Name="StatsPoints" ColumnName="StatsPoints" />
+            <ScalarProperty Name="SpellsPoints" ColumnName="SpellsPoints" />
+            <ScalarProperty Name="AlignmentSide" ColumnName="AlignmentSide" />
+            <ScalarProperty Name="AlignmentValue" ColumnName="AlignmentValue" />
+            <ScalarProperty Name="Honor" ColumnName="Honor" />
+            <ScalarProperty Name="Dishonor" ColumnName="Dishonor" />
+            <ScalarProperty Name="PvPEnabled" ColumnName="PvPEnabled" />
+            <ScalarProperty Name="KnownZaaps" ColumnName="KnownZaaps" />
+            <ScalarProperty Name="SpawnMap" ColumnName="SpawnMap" />
+            <ScalarProperty Name="WarnOnConnection" ColumnName="WarnOnConnection" />
+            <ScalarProperty Name="WarnOnLevel" ColumnName="WarnOnLevel" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="CharacterJobs"><EntityTypeMapping TypeName="stump_worldModel.CharacterJob"><MappingFragment StoreEntitySet="characters_jobs">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="JobId" ColumnName="JobId" />
+            <ScalarProperty Name="Owner" ColumnName="Owner" />
+            <ScalarProperty Name="Experience" ColumnName="Experience" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="CharacterSpells"><EntityTypeMapping TypeName="stump_worldModel.CharacterSpell"><MappingFragment StoreEntitySet="characters_spells">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="Owner" ColumnName="Owner" />
+            <ScalarProperty Name="SpellId" ColumnName="SpellId" />
+            <ScalarProperty Name="Level" ColumnName="Level" />
+            <ScalarProperty Name="Position" ColumnName="Position" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Effects"><EntityTypeMapping TypeName="stump_worldModel.Effect"><MappingFragment StoreEntitySet="effects">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="DescriptionId" ColumnName="DescriptionId" />
+            <ScalarProperty Name="IconId" ColumnName="IconId" />
+            <ScalarProperty Name="Characteristic" ColumnName="Characteristic" />
+            <ScalarProperty Name="Category" ColumnName="Category" />
+            <ScalarProperty Name="Operator" ColumnName="Operator" />
+            <ScalarProperty Name="ShowInTooltip" ColumnName="ShowInTooltip" />
+            <ScalarProperty Name="UseDice" ColumnName="UseDice" />
+            <ScalarProperty Name="ForceMinMax" ColumnName="ForceMinMax" />
+            <ScalarProperty Name="Boost" ColumnName="Boost" />
+            <ScalarProperty Name="Active" ColumnName="Active" />
+            <ScalarProperty Name="ShowInSet" ColumnName="ShowInSet" />
+            <ScalarProperty Name="BonusType" ColumnName="BonusType" />
+            <ScalarProperty Name="UseInFight" ColumnName="UseInFight" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="ExperiencesEntries"><EntityTypeMapping TypeName="stump_worldModel.ExperienceTableEntry"><MappingFragment StoreEntitySet="experiences">
+            <ScalarProperty Name="Level" ColumnName="Level" />
+            <ScalarProperty Name="CharacterExp" ColumnName="CharacterExp" />
+            <ScalarProperty Name="GuildExp" ColumnName="GuildExp" />
+            <ScalarProperty Name="MountExp" ColumnName="MountExp" />
+            <ScalarProperty Name="AlignmentHonor" ColumnName="AlignmentHonor" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Hints"><EntityTypeMapping TypeName="stump_worldModel.Hint"><MappingFragment StoreEntitySet="hints">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+            <ScalarProperty Name="Gfx" ColumnName="Gfx" />
+            <ScalarProperty Name="NameId" ColumnName="NameId" />
+            <ScalarProperty Name="MapId" ColumnName="MapId" />
+            <ScalarProperty Name="RealMapId" ColumnName="RealMapId" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Interactives"><EntityTypeMapping TypeName="stump_worldModel.Interactive"><MappingFragment StoreEntitySet="interactives">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="NameId" ColumnName="NameId" />
+            <ScalarProperty Name="ActionId" ColumnName="ActionId" />
+            <ScalarProperty Name="DisplayTooltip" ColumnName="DisplayTooltip" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="InteractivesCustomSkills"><EntityTypeMapping TypeName="stump_worldModel.InteractiveCustomSkill"><MappingFragment StoreEntitySet="interactives_custom_skills">
+            <ScalarProperty Name="InteractiveId" ColumnName="InteractiveId" />
+            <ScalarProperty Name="SkillId" ColumnName="SkillId" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="InteractivesSkills"><EntityTypeMapping TypeName="stump_worldModel.InteractiveSkill"><MappingFragment StoreEntitySet="interactives_skills">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="RecognizerType" ColumnName="RecognizerType" />
+            <ScalarProperty Name="Duration" ColumnName="Duration" />
+            <ScalarProperty Name="Teleport_MapId" ColumnName="Teleport_MapId" />
+            <ScalarProperty Name="Teleport_CellId" ColumnName="Teleport_CellId" />
+            <ScalarProperty Name="Teleport_Direction" ColumnName="Teleport_Direction" />
+            <ScalarProperty Name="Teleport_Condition" ColumnName="Teleport_Condition" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="InteractivesSpawns"><EntityTypeMapping TypeName="stump_worldModel.InteractiveSpawn"><MappingFragment StoreEntitySet="interactives_spawns">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="TemplateId" ColumnName="TemplateId" />
+            <ScalarProperty Name="ElementId" ColumnName="ElementId" />
+            <ScalarProperty Name="MapId" ColumnName="MapId" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="InteractivesTemplatesSkills"><EntityTypeMapping TypeName="stump_worldModel.InteractiveTemplateSkill"><MappingFragment StoreEntitySet="interactives_templates_skills">
+            <ScalarProperty Name="InteractiveId" ColumnName="InteractiveId" />
+            <ScalarProperty Name="SkillId" ColumnName="SkillId" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Items"><EntityTypeMapping TypeName="stump_worldModel.ItemRecord"><MappingFragment StoreEntitySet="items">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="RecognizerType" ColumnName="RecognizerType" />
+            <ScalarProperty Name="Item1" ColumnName="Item" />
+            <ScalarProperty Name="Stack" ColumnName="Stack" />
+            <ScalarProperty Name="Effects" ColumnName="Effects" />
+            <ScalarProperty Name="Owner" ColumnName="Owner" />
+            <ScalarProperty Name="Position" ColumnName="Position" />
+            <ScalarProperty Name="IsLinkedToOwner" ColumnName="IsLinkedToOwner" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="ItemsSelled"><EntityTypeMapping TypeName="stump_worldModel.ItemSelled"><MappingFragment StoreEntitySet="items_selled">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="RecognizerType" ColumnName="RecognizerType" />
+            <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+            <ScalarProperty Name="Npc_NpcShopId" ColumnName="Npc_NpcShopId" />
+            <ScalarProperty Name="Npc_CustomPrice" ColumnName="Npc_CustomPrice" />
+            <ScalarProperty Name="Npc_BuyCriterion" ColumnName="Npc_BuyCriterion" />
+            <ScalarProperty Name="Npc_MaxStats" ColumnName="Npc_MaxStats" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="ItemsSets"><EntityTypeMapping TypeName="stump_worldModel.ItemSet"><MappingFragment StoreEntitySet="items_set">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="Items" ColumnName="Items" />
+            <ScalarProperty Name="NameId" ColumnName="NameId" />
+            <ScalarProperty Name="BonusIsSecret" ColumnName="BonusIsSecret" />
+            <ScalarProperty Name="BonusEffects" ColumnName="BonusEffects" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="ItemsTemplates"><EntityTypeMapping TypeName="stump_worldModel.ItemTemplate"><MappingFragment StoreEntitySet="items_templates">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="RecognizerType" ColumnName="RecognizerType" />
+            <ScalarProperty Name="Weight" ColumnName="Weight" />
+            <ScalarProperty Name="RealWeight" ColumnName="RealWeight" />
+            <ScalarProperty Name="NameId" ColumnName="NameId" />
+            <ScalarProperty Name="TypeId" ColumnName="TypeId" />
+            <ScalarProperty Name="DescriptionId" ColumnName="DescriptionId" />
+            <ScalarProperty Name="IconId" ColumnName="IconId" />
+            <ScalarProperty Name="Level" ColumnName="Level" />
+            <ScalarProperty Name="Cursed" ColumnName="Cursed" />
+            <ScalarProperty Name="UseAnimationId" ColumnName="UseAnimationId" />
+            <ScalarProperty Name="Usable" ColumnName="Usable" />
+            <ScalarProperty Name="Targetable" ColumnName="Targetable" />
+            <ScalarProperty Name="Price" ColumnName="Price" />
+            <ScalarProperty Name="TwoHanded" ColumnName="TwoHanded" />
+            <ScalarProperty Name="Etheral" ColumnName="Etheral" />
+            <ScalarProperty Name="ItemSetId" ColumnName="ItemSetId" />
+            <ScalarProperty Name="Criteria" ColumnName="Criteria" />
+            <ScalarProperty Name="HideEffects" ColumnName="HideEffects" />
+            <ScalarProperty Name="AppearanceId" ColumnName="AppearanceId" />
+            <ScalarProperty Name="BonusIsSecret" ColumnName="BonusIsSecret" />
+            <ScalarProperty Name="PossibleEffects" ColumnName="PossibleEffects" />
+            <ScalarProperty Name="FavoriteSubAreasBonus" ColumnName="FavoriteSubAreasBonus" />
+            <ScalarProperty Name="ApCost" ColumnName="ApCost" />
+            <ScalarProperty Name="MinRange" ColumnName="MinRange" />
+            <ScalarProperty Name="WeaponRange" ColumnName="WeaponRange" />
+            <ScalarProperty Name="CastInLine" ColumnName="CastInLine" />
+            <ScalarProperty Name="CastInDiagonal" ColumnName="CastInDiagonal" />
+            <ScalarProperty Name="CastTestLos" ColumnName="CastTestLos" />
+            <ScalarProperty Name="CriticalHitProbability" ColumnName="CriticalHitProbability" />
+            <ScalarProperty Name="CriticalHitBonus" ColumnName="CriticalHitBonus" />
+            <ScalarProperty Name="CriticalFailureProbability" ColumnName="CriticalFailureProbability" />
+            <ScalarProperty Name="IsLinkedToOwner" ColumnName="IsLinkedToOwner" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="ItemsTypes"><EntityTypeMapping TypeName="stump_worldModel.ItemType"><MappingFragment StoreEntitySet="items_type">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="NameId" ColumnName="NameId" />
+            <ScalarProperty Name="SuperTypeId" ColumnName="SuperTypeId" />
+            <ScalarProperty Name="Plural" ColumnName="Plural" />
+            <ScalarProperty Name="Gender" ColumnName="Gender" />
+            <ScalarProperty Name="RawZone" ColumnName="RawZone" />
+            <ScalarProperty Name="NeedUseConfirm" ColumnName="NeedUseConfirm" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Jobs"><EntityTypeMapping TypeName="stump_worldModel.Job"><MappingFragment StoreEntitySet="jobs">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="NameId" ColumnName="NameId" />
+            <ScalarProperty Name="SpecializationOfId" ColumnName="SpecializationOfId" />
+            <ScalarProperty Name="IconId" ColumnName="IconId" />
+            <ScalarProperty Name="ToolIds" ColumnName="ToolIds" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Maps"><EntityTypeMapping TypeName="stump_worldModel.MapRecord"><MappingFragment StoreEntitySet="maps">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="BlueCells" ColumnName="BlueCells" />
+            <ScalarProperty Name="RedCells" ColumnName="RedCells" />
+            <ScalarProperty Name="Version" ColumnName="Version" />
+            <ScalarProperty Name="RelativeId" ColumnName="RelativeId" />
+            <ScalarProperty Name="MapType" ColumnName="MapType" />
+            <ScalarProperty Name="SubAreaId" ColumnName="SubAreaId" />
+            <ScalarProperty Name="TopNeighbourId" ColumnName="TopNeighbourId" />
+            <ScalarProperty Name="BottomNeighbourId" ColumnName="BottomNeighbourId" />
+            <ScalarProperty Name="LeftNeighbourId" ColumnName="LeftNeighbourId" />
+            <ScalarProperty Name="RightNeighbourId" ColumnName="RightNeighbourId" />
+            <ScalarProperty Name="ClientTopNeighbourId" ColumnName="ClientTopNeighbourId" />
+            <ScalarProperty Name="ClientBottomNeighbourId" ColumnName="ClientBottomNeighbourId" />
+            <ScalarProperty Name="ClientLeftNeighbourId" ColumnName="ClientLeftNeighbourId" />
+            <ScalarProperty Name="ClientRightNeighbourId" ColumnName="ClientRightNeighbourId" />
+            <ScalarProperty Name="ShadowBonusOnEntities" ColumnName="ShadowBonusOnEntities" />
+            <ScalarProperty Name="UseLowpassFilter" ColumnName="UseLowpassFilter" />
+            <ScalarProperty Name="UseReverb" ColumnName="UseReverb" />
+            <ScalarProperty Name="PresetId" ColumnName="PresetId" />
+            <ScalarProperty Name="CompressedCells" ColumnName="CompressedCells" />
+            <ScalarProperty Name="CompressedElements" ColumnName="CompressedElements" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="MapsCellsTriggers"><EntityTypeMapping TypeName="stump_worldModel.MapCellTrigger"><MappingFragment StoreEntitySet="maps_cells_triggers">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="RecognizerType" ColumnName="RecognizerType" />
+            <ScalarProperty Name="CellId" ColumnName="CellId" />
+            <ScalarProperty Name="MapId" ColumnName="MapId" />
+            <ScalarProperty Name="TriggerType" ColumnName="TriggerType" />
+            <ScalarProperty Name="Condition" ColumnName="Condition" />
+            <ScalarProperty Name="DestinationCellId" ColumnName="DestinationCellId" />
+            <ScalarProperty Name="DestinationMapId" ColumnName="DestinationMapId" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="MapsCoordinates"><EntityTypeMapping TypeName="stump_worldModel.MapCoordinates"><MappingFragment StoreEntitySet="maps_coordinates">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="CompressedCoords" ColumnName="CompressedCoords" />
+            <ScalarProperty Name="Ids" ColumnName="Ids" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="MapsPositions"><EntityTypeMapping TypeName="stump_worldModel.MapPosition"><MappingFragment StoreEntitySet="maps_position">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="PosX" ColumnName="PosX" />
+            <ScalarProperty Name="PosY" ColumnName="PosY" />
+            <ScalarProperty Name="Outdoor" ColumnName="Outdoor" />
+            <ScalarProperty Name="SubAreaId" ColumnName="SubAreaId" />
+            <ScalarProperty Name="Capabilities" ColumnName="Capabilities" />
+            <ScalarProperty Name="WorldMap" ColumnName="WorldMap" />
+            <ScalarProperty Name="Sounds" ColumnName="Sounds" />
+            <ScalarProperty Name="NameId" ColumnName="NameId" />
+            <ScalarProperty Name="HasPriorityOnWorldmap" ColumnName="HasPriorityOnWorldmap" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="MapsReferences"><EntityTypeMapping TypeName="stump_worldModel.MapReference"><MappingFragment StoreEntitySet="maps_reference">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="MapId" ColumnName="MapId" />
+            <ScalarProperty Name="CellId" ColumnName="CellId" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Monsters"><EntityTypeMapping TypeName="stump_worldModel.Monster"><MappingFragment StoreEntitySet="monsters">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="NameId" ColumnName="NameId" />
+            <ScalarProperty Name="GfxId" ColumnName="GfxId" />
+            <ScalarProperty Name="Race" ColumnName="Race" />
+            <ScalarProperty Name="MinDroppedKamas" ColumnName="MinDroppedKamas" />
+            <ScalarProperty Name="MaxDroppedKamas" ColumnName="MaxDroppedKamas" />
+            <ScalarProperty Name="Look" ColumnName="Look" />
+            <ScalarProperty Name="UseSummonSlot" ColumnName="UseSummonSlot" />
+            <ScalarProperty Name="UseBombSlot" ColumnName="UseBombSlot" />
+            <ScalarProperty Name="CanPlay" ColumnName="CanPlay" />
+            <ScalarProperty Name="IsBoss" ColumnName="IsBoss" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="MonstersDrops"><EntityTypeMapping TypeName="stump_worldModel.MonsterDrop"><MappingFragment StoreEntitySet="monsters_drops">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="MonsterOwnerId" ColumnName="MonsterOwnerId" />
+            <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+            <ScalarProperty Name="DropLimit" ColumnName="DropLimit" />
+            <ScalarProperty Name="DropRate" ColumnName="DropRate" />
+            <ScalarProperty Name="RollsCounter" ColumnName="RollsCounter" />
+            <ScalarProperty Name="ProspectingLock" ColumnName="ProspectingLock" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="MonstersGrades"><EntityTypeMapping TypeName="stump_worldModel.MonsterGrade"><MappingFragment StoreEntitySet="monsters_grades">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="Wisdom" ColumnName="Wisdom" />
+            <ScalarProperty Name="Grade" ColumnName="Grade" />
+            <ScalarProperty Name="GradeXp" ColumnName="GradeXp" />
+            <ScalarProperty Name="MonsterId" ColumnName="MonsterId" />
+            <ScalarProperty Name="Level" ColumnName="Level" />
+            <ScalarProperty Name="PaDodge" ColumnName="PaDodge" />
+            <ScalarProperty Name="PmDodge" ColumnName="PmDodge" />
+            <ScalarProperty Name="EarthResistance" ColumnName="EarthResistance" />
+            <ScalarProperty Name="AirResistance" ColumnName="AirResistance" />
+            <ScalarProperty Name="FireResistance" ColumnName="FireResistance" />
+            <ScalarProperty Name="WaterResistance" ColumnName="WaterResistance" />
+            <ScalarProperty Name="NeutralResistance" ColumnName="NeutralResistance" />
+            <ScalarProperty Name="LifePoints" ColumnName="LifePoints" />
+            <ScalarProperty Name="ActionPoints" ColumnName="ActionPoints" />
+            <ScalarProperty Name="MovementPoints" ColumnName="MovementPoints" />
+            <ScalarProperty Name="TackleEvade" ColumnName="TackleEvade" />
+            <ScalarProperty Name="TackleBlock" ColumnName="TackleBlock" />
+            <ScalarProperty Name="Strength" ColumnName="Strength" />
+            <ScalarProperty Name="Chance" ColumnName="Chance" />
+            <ScalarProperty Name="Vitality" ColumnName="Vitality" />
+            <ScalarProperty Name="Intelligence" ColumnName="Intelligence" />
+            <ScalarProperty Name="Agility" ColumnName="Agility" />
+            <ScalarProperty Name="Stats" ColumnName="Stats" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="MonstersRaces"><EntityTypeMapping TypeName="stump_worldModel.MonsterRace"><MappingFragment StoreEntitySet="monsters_races">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="SuperRaceId" ColumnName="SuperRaceId" />
+            <ScalarProperty Name="NameId" ColumnName="NameId" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="MonstersSpawns"><EntityTypeMapping TypeName="stump_worldModel.MonsterSpawn"><MappingFragment StoreEntitySet="monsters_spawns">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="MapId" ColumnName="MapId" />
+            <ScalarProperty Name="SubAreaId" ColumnName="SubAreaId" />
+            <ScalarProperty Name="MonsterId" ColumnName="MonsterId" />
+            <ScalarProperty Name="Frenquency" ColumnName="Frenquency" />
+            <ScalarProperty Name="MinGrade" ColumnName="MinGrade" />
+            <ScalarProperty Name="MaxGrade" ColumnName="MaxGrade" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="MonstersSpawnsDungeon"><EntityTypeMapping TypeName="stump_worldModel.MonsterSpawnDungeon"><MappingFragment StoreEntitySet="monsters_spawns_dungeons">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="MapId" ColumnName="MapId" />
+            <ScalarProperty Name="SerializedMonsterGroup" ColumnName="SerializedMonsterGroup" />
+            <ScalarProperty Name="TeleportEvent" ColumnName="TeleportEvent" />
+            <ScalarProperty Name="TeleportMapId" ColumnName="TeleportMapId" />
+            <ScalarProperty Name="TeleportCell" ColumnName="TeleportCell" />
+            <ScalarProperty Name="Direction" ColumnName="Direction" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="MonstersSpells"><EntityTypeMapping TypeName="stump_worldModel.MonsterSpell"><MappingFragment StoreEntitySet="monsters_spells">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="MonsterGradeId" ColumnName="MonsterGradeId" />
+            <ScalarProperty Name="SpellId" ColumnName="SpellId" />
+            <ScalarProperty Name="Level" ColumnName="Level" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="MonstersSuperRaces"><EntityTypeMapping TypeName="stump_worldModel.MonsterSuperRace"><MappingFragment StoreEntitySet="monsters_superraces">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="NameId" ColumnName="NameId" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Npcs"><EntityTypeMapping TypeName="stump_worldModel.NpcTemplate"><MappingFragment StoreEntitySet="npcs">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="NameId" ColumnName="NameId" />
+            <ScalarProperty Name="DialogMessagesId" ColumnName="DialogMessagesId" />
+            <ScalarProperty Name="DialogRepliesId" ColumnName="DialogRepliesId" />
+            <ScalarProperty Name="ActionsId" ColumnName="ActionsId" />
+            <ScalarProperty Name="Gender" ColumnName="Gender" />
+            <ScalarProperty Name="Look" ColumnName="Look" />
+            <ScalarProperty Name="SpecialArtworkId" ColumnName="SpecialArtworkId" />
+            <ScalarProperty Name="TokenShop" ColumnName="TokenShop" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="NpcsActions"><EntityTypeMapping TypeName="stump_worldModel.NpcAction"><MappingFragment StoreEntitySet="npcs_actions">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="RecognizerType" ColumnName="RecognizerType" />
+            <ScalarProperty Name="Npc" ColumnName="Npc" />
+            <ScalarProperty Name="Condition" ColumnName="Condition" />
+            <ScalarProperty Name="Talk_MessageId" ColumnName="Talk_MessageId" />
+            <ScalarProperty Name="Shop_Token" ColumnName="Shop_Token" />
+            <ScalarProperty Name="Shop_CanSell" ColumnName="Shop_CanSell" />
+            <ScalarProperty Name="Shop_MaxStats" ColumnName="Shop_MaxStats" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="NpcsMessages"><EntityTypeMapping TypeName="stump_worldModel.NpcMessage"><MappingFragment StoreEntitySet="npcs_messages">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="MessageId" ColumnName="MessageId" />
+            <ScalarProperty Name="MessageParams" ColumnName="MessageParams" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Npcs_Replies"><EntityTypeMapping TypeName="stump_worldModel.NpcReply"><MappingFragment StoreEntitySet="npcs_replies">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="RecognizerType" ColumnName="RecognizerType" />
+            <ScalarProperty Name="Reply" ColumnName="Reply" />
+            <ScalarProperty Name="Message" ColumnName="Message" />
+            <ScalarProperty Name="Criteria" ColumnName="Criteria" />
+            <ScalarProperty Name="Teleport_Map" ColumnName="Teleport_Map" />
+            <ScalarProperty Name="Teleport_Cell" ColumnName="Teleport_Cell" />
+            <ScalarProperty Name="Teleport_Direction" ColumnName="Teleport_Direction" />
+            <ScalarProperty Name="Dialog_NextMessageId" ColumnName="Dialog_NextMessageId" />
+            <ScalarProperty Name="UseItem_Item" ColumnName="UseItem_Item" />
+            <ScalarProperty Name="UseItem_Amount" ColumnName="UseItem_Amount" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="NpcSpawns"><EntityTypeMapping TypeName="stump_worldModel.NpcSpawn"><MappingFragment StoreEntitySet="npcs_spawns">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="Npc" ColumnName="Npc" />
+            <ScalarProperty Name="Map" ColumnName="Map" />
+            <ScalarProperty Name="Cell" ColumnName="Cell" />
+            <ScalarProperty Name="Direction" ColumnName="Direction" />
+            <ScalarProperty Name="Look" ColumnName="Look" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Shortcuts"><EntityTypeMapping TypeName="stump_worldModel.ShortcutRecord"><MappingFragment StoreEntitySet="shortcuts">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="RecognizerType" ColumnName="RecognizerType" />
+            <ScalarProperty Name="Owner" ColumnName="Owner" />
+            <ScalarProperty Name="Slot" ColumnName="Slot" />
+            <ScalarProperty Name="SpellId" ColumnName="SpellId" />
+            <ScalarProperty Name="ItemTemplateId" ColumnName="ItemTemplateId" />
+            <ScalarProperty Name="ItemGuid" ColumnName="ItemGuid" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="SkillsTemplates"><EntityTypeMapping TypeName="stump_worldModel.SkillTemplate"><MappingFragment StoreEntitySet="skills_templates">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="NameId" ColumnName="NameId" />
+            <ScalarProperty Name="ParentJobId" ColumnName="ParentJobId" />
+            <ScalarProperty Name="IsForgemagus" ColumnName="IsForgemagus" />
+            <ScalarProperty Name="ModifiableItemType" ColumnName="ModifiableItemType" />
+            <ScalarProperty Name="GatheredRessourceItem" ColumnName="GatheredRessourceItem" />
+            <ScalarProperty Name="CraftableItemIds" ColumnName="CraftableItemIds" />
+            <ScalarProperty Name="InteractiveId" ColumnName="InteractiveId" />
+            <ScalarProperty Name="UseAnimation" ColumnName="UseAnimation" />
+            <ScalarProperty Name="IsRepair" ColumnName="IsRepair" />
+            <ScalarProperty Name="Cursor" ColumnName="Cursor" />
+            <ScalarProperty Name="AvailableInHouse" ColumnName="AvailableInHouse" />
+            <ScalarProperty Name="LevelMin" ColumnName="LevelMin" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Spells"><EntityTypeMapping TypeName="stump_worldModel.Spell"><MappingFragment StoreEntitySet="spells">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="NameId" ColumnName="NameId" />
+            <ScalarProperty Name="DescriptionId" ColumnName="DescriptionId" />
+            <ScalarProperty Name="TypeId" ColumnName="TypeId" />
+            <ScalarProperty Name="ScriptParams" ColumnName="ScriptParams" />
+            <ScalarProperty Name="ScriptParamsCritical" ColumnName="ScriptParamsCritical" />
+            <ScalarProperty Name="ScriptId" ColumnName="ScriptId" />
+            <ScalarProperty Name="ScriptIdCritical" ColumnName="ScriptIdCritical" />
+            <ScalarProperty Name="IconId" ColumnName="IconId" />
+            <ScalarProperty Name="SpellLevels" ColumnName="SpellLevels" />
+            <ScalarProperty Name="UseParamCache" ColumnName="UseParamCache" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="SpellsBomb"><EntityTypeMapping TypeName="stump_worldModel.SpellBomb"><MappingFragment StoreEntitySet="spells_bomb">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="ChainReactionSpellId" ColumnName="ChainReactionSpellId" />
+            <ScalarProperty Name="ExplodSpellId" ColumnName="ExplodSpellId" />
+            <ScalarProperty Name="WallId" ColumnName="WallId" />
+            <ScalarProperty Name="InstantSpellId" ColumnName="InstantSpellId" />
+            <ScalarProperty Name="ComboCoeff" ColumnName="ComboCoeff" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="SpellsLevels"><EntityTypeMapping TypeName="stump_worldModel.SpellLevel"><MappingFragment StoreEntitySet="spells_level">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="SpellId" ColumnName="SpellId" />
+            <ScalarProperty Name="SpellBreed" ColumnName="SpellBreed" />
+            <ScalarProperty Name="ApCost" ColumnName="ApCost" />
+            <ScalarProperty Name="Range" ColumnName="Range" />
+            <ScalarProperty Name="CastInLine" ColumnName="CastInLine" />
+            <ScalarProperty Name="CastInDiagonal" ColumnName="CastInDiagonal" />
+            <ScalarProperty Name="CastTestLos" ColumnName="CastTestLos" />
+            <ScalarProperty Name="CriticalHitProbability" ColumnName="CriticalHitProbability" />
+            <ScalarProperty Name="StatesRequired" ColumnName="StatesRequired" />
+            <ScalarProperty Name="CriticalFailureProbability" ColumnName="CriticalFailureProbability" />
+            <ScalarProperty Name="NeedFreeCell" ColumnName="NeedFreeCell" />
+            <ScalarProperty Name="NeedFreeTrapCell" ColumnName="NeedFreeTrapCell" />
+            <ScalarProperty Name="NeedTakenCell" ColumnName="NeedTakenCell" />
+            <ScalarProperty Name="RangeCanBeBoosted" ColumnName="RangeCanBeBoosted" />
+            <ScalarProperty Name="MaxStack" ColumnName="MaxStack" />
+            <ScalarProperty Name="MaxCastPerTurn" ColumnName="MaxCastPerTurn" />
+            <ScalarProperty Name="MaxCastPerTarget" ColumnName="MaxCastPerTarget" />
+            <ScalarProperty Name="MinCastInterval" ColumnName="MinCastInterval" />
+            <ScalarProperty Name="InitialCooldown" ColumnName="InitialCooldown" />
+            <ScalarProperty Name="GlobalCooldown" ColumnName="GlobalCooldown" />
+            <ScalarProperty Name="MinPlayerLevel" ColumnName="MinPlayerLevel" />
+            <ScalarProperty Name="CriticalFailureEndsTurn" ColumnName="CriticalFailureEndsTurn" />
+            <ScalarProperty Name="HideEffects" ColumnName="HideEffects" />
+            <ScalarProperty Name="Hidden" ColumnName="Hidden" />
+            <ScalarProperty Name="MinRange" ColumnName="MinRange" />
+            <ScalarProperty Name="StatesForbidden" ColumnName="StatesForbidden" />
+            <ScalarProperty Name="Effects" ColumnName="Effects" />
+            <ScalarProperty Name="CriticalEffect" ColumnName="CriticalEffect" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="SpellsStates"><EntityTypeMapping TypeName="stump_worldModel.SpellState"><MappingFragment StoreEntitySet="spells_state">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="NameId" ColumnName="NameId" />
+            <ScalarProperty Name="PreventsSpellCast" ColumnName="PreventsSpellCast" />
+            <ScalarProperty Name="PreventsFight" ColumnName="PreventsFight" />
+            <ScalarProperty Name="Critical" ColumnName="Critical" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="SpellsTypes"><EntityTypeMapping TypeName="stump_worldModel.SpellType"><MappingFragment StoreEntitySet="spells_type">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="LongNameId" ColumnName="LongNameId" />
+            <ScalarProperty Name="ShortNameId" ColumnName="ShortNameId" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="StartupActions"><EntityTypeMapping TypeName="stump_worldModel.StartupAction"><MappingFragment StoreEntitySet="startup_actions">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="Title" ColumnName="Title" />
+            <ScalarProperty Name="Text" ColumnName="Text" />
+            <ScalarProperty Name="DescUrl" ColumnName="DescUrl" />
+            <ScalarProperty Name="PictureUrl" ColumnName="PictureUrl" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="StartupActionsObjects"><EntityTypeMapping TypeName="stump_worldModel.StartupActionObject"><MappingFragment StoreEntitySet="startup_actions_objects">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="ItemTemplate" ColumnName="ItemTemplate" />
+            <ScalarProperty Name="Amount" ColumnName="Amount" />
+            <ScalarProperty Name="MaxEffects" ColumnName="MaxEffects" />
+            <ScalarProperty Name="StartupActionId" ColumnName="StartupActionId" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="SubAreas"><EntityTypeMapping TypeName="stump_worldModel.SubAreaRecord"><MappingFragment StoreEntitySet="subareas">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="NameId" ColumnName="NameId" />
+            <ScalarProperty Name="AreaId" ColumnName="AreaId" />
+            <ScalarProperty Name="AmbientSounds" ColumnName="AmbientSounds" />
+            <ScalarProperty Name="MapIds" ColumnName="MapIds" />
+            <ScalarProperty Name="Bounds" ColumnName="Bounds" />
+            <ScalarProperty Name="Shape" ColumnName="Shape" />
+            <ScalarProperty Name="CustomWorldMap" ColumnName="CustomWorldMap" />
+            <ScalarProperty Name="PackId" ColumnName="PackId" />
+            <ScalarProperty Name="Difficulty" ColumnName="Difficulty" />
+            <ScalarProperty Name="SpawnsLimit" ColumnName="SpawnsLimit" />
+            <ScalarProperty Name="CustomSpawnInterval" ColumnName="CustomSpawnInterval" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="SuperAreas"><EntityTypeMapping TypeName="stump_worldModel.SuperAreaRecord"><MappingFragment StoreEntitySet="superareas">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="NameId" ColumnName="NameId" />
+            <ScalarProperty Name="WorldmapId" ColumnName="WorldmapId" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Texts"><EntityTypeMapping TypeName="stump_worldModel.TextRecord"><MappingFragment StoreEntitySet="texts">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="French" ColumnName="French" />
+            <ScalarProperty Name="English" ColumnName="English" />
+            <ScalarProperty Name="German" ColumnName="German" />
+            <ScalarProperty Name="Spanish" ColumnName="Spanish" />
+            <ScalarProperty Name="Italian" ColumnName="Italian" />
+            <ScalarProperty Name="Japanish" ColumnName="Japanish" />
+            <ScalarProperty Name="Dutsh" ColumnName="Dutsh" />
+            <ScalarProperty Name="Portugese" ColumnName="Portugese" />
+            <ScalarProperty Name="Russish" ColumnName="Russish" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="TextsUI"><EntityTypeMapping TypeName="stump_worldModel.TextUIRecord"><MappingFragment StoreEntitySet="texts_ui">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="Name" ColumnName="Name" />
+            <ScalarProperty Name="French" ColumnName="French" />
+            <ScalarProperty Name="English" ColumnName="English" />
+            <ScalarProperty Name="German" ColumnName="German" />
+            <ScalarProperty Name="Spanish" ColumnName="Spanish" />
+            <ScalarProperty Name="Italian" ColumnName="Italian" />
+            <ScalarProperty Name="Japanish" ColumnName="Japanish" />
+            <ScalarProperty Name="Dutsh" ColumnName="Dutsh" />
+            <ScalarProperty Name="Portugese" ColumnName="Portugese" />
+            <ScalarProperty Name="Russish" ColumnName="Russish" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="versions"><EntityTypeMapping TypeName="stump_worldModel.version"><MappingFragment StoreEntitySet="version">
+            <ScalarProperty Name="Revision" ColumnName="Revision" />
+            <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+            <ScalarProperty Name="DofusVersion" ColumnName="DofusVersion" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="WorldMaps"><EntityTypeMapping TypeName="stump_worldModel.WorldMap"><MappingFragment StoreEntitySet="worldmaps">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="OrigineX" ColumnName="OrigineX" />
+            <ScalarProperty Name="OrigineY" ColumnName="OrigineY" />
+            <ScalarProperty Name="MapWidth" ColumnName="MapWidth" />
+            <ScalarProperty Name="MapHeight" ColumnName="MapHeight" />
+            <ScalarProperty Name="HorizontalChunck" ColumnName="HorizontalChunck" />
+            <ScalarProperty Name="VerticalChunck" ColumnName="VerticalChunck" />
+            <ScalarProperty Name="ViewableEverywhere" ColumnName="ViewableEverywhere" />
+            <ScalarProperty Name="MinScale" ColumnName="MinScale" />
+            <ScalarProperty Name="MaxScale" ColumnName="MaxScale" />
+            <ScalarProperty Name="StartScale" ColumnName="StartScale" />
+            <ScalarProperty Name="CenterX" ColumnName="CenterX" />
+            <ScalarProperty Name="CenterY" ColumnName="CenterY" />
+            <ScalarProperty Name="TotalWidth" ColumnName="TotalWidth" />
+            <ScalarProperty Name="TotalHeight" ColumnName="TotalHeight" />
+            <ScalarProperty Name="Zoom" ColumnName="Zoom" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <AssociationSetMapping Name="WorldAccountStartupAction" TypeName="stump_worldModel.WorldAccountStartupAction" StoreEntitySet="accounts_startup_actions" >
+            <EndProperty Name="StartupAction">
+              <ScalarProperty Name="Id" ColumnName="StartupActionId" />
+            </EndProperty>
+            <EndProperty Name="WorldAccount">
+              <ScalarProperty Name="Id" ColumnName="AccountId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="AccountIgnoreds" TypeName="stump_worldModel.WorldAccountIgnoreds" StoreEntitySet="accounts_ignored" >
+            <EndProperty Name="WorldAccount">
+              <ScalarProperty Name="Id" ColumnName="AccountId" />
+            </EndProperty>
+            <EndProperty Name="WorldAccountIgnored">
+              <ScalarProperty Name="Id" ColumnName="IgnoredAccountId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="WorldAccountFriends" TypeName="stump_worldModel.WorldAccountFriends" StoreEntitySet="accounts_friends" >
+            <EndProperty Name="WorldAccountFriends">
+              <ScalarProperty Name="Id" ColumnName="FriendAccountId" />
+            </EndProperty>
+            <EndProperty Name="WorldAccount">
+              <ScalarProperty Name="Id" ColumnName="AccountId" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="DDLGenerationTemplate" Value="$(VSEFTools)\DBGen\SSDLToMySQL.tt" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="Model" ZoomLevel="61">
+        <EntityTypeShape EntityType="stump_worldModel.WorldAccount" Width="1.375" PointX="0.75" PointY="1" Height="2.9417936197916656" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.Area" Width="1.5" PointX="4.625" PointY="3.75" Height="2.1725878906249996" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.Breed" Width="1.5" PointX="1.125" PointY="4.625" Height="8.7108365885416656" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.BreedItem" Width="1.5" PointX="3" PointY="5.125" Height="2.1725878906249996" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.BreedSpell" Width="1.5" PointX="3" PointY="8" Height="1.9802864583333317" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.CharacterRecord" Width="1.5" PointX="7.75" PointY="0.75" Height="1.0187792968749996" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.CharacterJob" Width="1.5" PointX="6.25" PointY="4.75" Height="1.7879850260416674" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.CharacterSpell" Width="1.5" PointX="8" PointY="5.75" Height="1.9802864583333353" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.Effect" Width="1.5" PointX="5.75" PointY="8.75" Height="3.7109993489583317" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.ExperienceTableEntry" Width="1.5" PointX="7.75" PointY="8.75" Height="1.9802864583333388" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.Hint" Width="1.5" PointX="9.75" PointY="0.75" Height="2.1725878906250031" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.Interactive" Width="1.5" PointX="9.75" PointY="3.75" Height="1.7879850260416674" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.InteractiveCustomSkill" Width="1.5" PointX="9.75" PointY="6.75" Height="1.4033821614583388" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.InteractiveSkill" Width="1.5" PointX="9.75" PointY="9.75" Height="2.3648893229166674" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.InteractiveSpawn" Width="1.5" PointX="4.375" PointY="11" Height="1.7879850260416674" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.InteractiveTemplateSkill" Width="1.5" PointX="2.75" PointY="10.75" Height="1.4033821614583388" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.ItemRecord" Width="1.5" PointX="11.75" PointY="0.75" Height="2.5571907552083388" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.ItemSelled" Width="1.5" PointX="11.75" PointY="4.75" Height="2.3648893229166674" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.ItemSet" Width="1.5" PointX="11.75" PointY="8.75" Height="1.9802864583333246" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.ItemTemplate" Width="1.5" PointX="11.75" PointY="11.75" Height="7.36472656250001" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.ItemType" Width="1.5" PointX="13.75" PointY="0.75" Height="2.3648893229166674" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.Job" Width="1.5" PointX="0.75" PointY="13.75" Height="1.9802864583333246" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.MapRecord" Width="1.5" PointX="2.75" PointY="13.75" Height="5.05710937500001" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.MapCellTrigger" Width="1.5" PointX="13.75" PointY="4.75" Height="2.5571907552083246" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.MapCoordinates" Width="1.5" PointX="4.75" PointY="13.75" Height="1.5956835937500102" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.MapPosition" Width="1.5" PointX="6.75" PointY="13.75" Height="2.9417936197916674" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.MapReference" Width="1.5" PointX="13.75" PointY="8.75" Height="1.5956835937500102" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.Monster" Width="1.5" PointX="8.75" PointY="13.75" Height="3.1340950520833246" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.MonsterDrop" Width="1.5" PointX="13.75" PointY="11.75" Height="2.3648893229166674" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.MonsterGrade" Width="1.5" PointX="15.75" PointY="0.75" Height="5.63401367187501" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.MonsterRace" Width="1.5" PointX="15.75" PointY="7.75" Height="1.5956835937500102" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.MonsterSpawn" Width="1.5" PointX="15.75" PointY="10.75" Height="2.3648893229166674" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.MonsterSpawnDungeon" Width="1.5" PointX="13.75" PointY="15.75" Height="2.3648893229166674" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.MonsterSpell" Width="1.5" PointX="15.75" PointY="14.75" Height="1.7879850260416674" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.MonsterSuperRace" Width="1.5" PointX="17.75" PointY="0.75" Height="1.4033821614583246" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.NpcTemplate" Width="1.5" PointX="17.75" PointY="3.75" Height="2.7494921875000102" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.NpcAction" Width="1.5" PointX="4.75" PointY="17.75" Height="2.5571907552083246" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.NpcMessage" Width="1.5" PointX="6.75" PointY="17.75" Height="1.5956835937500102" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.NpcReply" Width="1.5" PointX="17.75" PointY="7.75" Height="3.1340950520833246" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.NpcSpawn" Width="1.5" PointX="8.75" PointY="17.75" Height="2.1725878906250102" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.ShortcutRecord" Width="1.5" PointX="17.75" PointY="11.75" Height="2.3648893229166674" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.SkillTemplate" Width="1.5" PointX="17.75" PointY="15.75" Height="3.5186979166666674" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.Spell" Width="1.5" PointX="19.75" PointY="0.75" Height="3.1340950520833246" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.SpellBomb" Width="1.5" PointX="0.75" PointY="19.75" Height="2.1725878906249818" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.SpellLevel" Width="1.5" PointX="19.75" PointY="4.75" Height="6.5955208333333246" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.SpellState" Width="1.5" PointX="19.75" PointY="12.75" Height="1.9802864583333246" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.SpellType" Width="1.5" PointX="13.75" PointY="19.75" Height="1.5956835937499818" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.StartupAction" Width="1.5" PointX="3.25" PointY="0.5" Height="2.3648893229166656" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.StartupActionObject" Width="1.5" PointX="5.125" PointY="1.375" Height="2.1725878906249996" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.SubAreaRecord" Width="1.5" PointX="19.75" PointY="15.75" Height="3.3263964843749818" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.SuperAreaRecord" Width="1.5" PointX="6.75" PointY="20.75" Height="1.5956835937499818" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.TextRecord" Width="1.5" PointX="8.75" PointY="20.75" Height="2.9417936197916674" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.TextUIRecord" Width="1.5" PointX="10.75" PointY="20.75" Height="3.1340950520833246" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.version" Width="1.5" PointX="15.75" PointY="20.75" Height="1.5956835937499818" IsExpanded="true" />
+        <EntityTypeShape EntityType="stump_worldModel.WorldMap" Width="1.5" PointX="17.75" PointY="20.75" Height="4.0956022135416674" IsExpanded="true" />
+        <AssociationConnector Association="stump_worldModel.WorldAccountFriends">
+          <ConnectorPoint PointX="1.2375961538461537" PointY="3.9417936197916656" />
+          <ConnectorPoint PointX="1.2375961538461537" PointY="4.1917936197916656" />
+          <ConnectorPoint PointX="1.6469230769230767" PointY="4.1917936197916656" />
+          <ConnectorPoint PointX="1.6469230769230767" PointY="3.9417936197916656" />
+        </AssociationConnector>
+        <AssociationConnector Association="stump_worldModel.WorldAccountIgnoreds">
+          <ConnectorPoint PointX="1.2375961538461537" PointY="1" />
+          <ConnectorPoint PointX="1.2375961538461537" PointY="0.75" />
+          <ConnectorPoint PointX="1.6469230769230767" PointY="0.75" />
+          <ConnectorPoint PointX="1.6469230769230767" PointY="1" />
+        </AssociationConnector>
+        <AssociationConnector Association="stump_worldModel.WorldAccountStartupAction">
+          <ConnectorPoint PointX="2.125" PointY="1.9324446614583326" />
+          <ConnectorPoint PointX="3.25" PointY="1.9324446614583326" />
+        </AssociationConnector>
+        <AssociationConnector Association="stump_worldModel.StartupActionStartupActionObject">
+          <ConnectorPoint PointX="4.75" PointY="2.1199446614583337" />
+          <ConnectorPoint PointX="5.125" PointY="2.1199446614583337" />
+        </AssociationConnector>
+        <AssociationConnector Association="stump_worldModel.BreedBreedItem">
+          <ConnectorPoint PointX="2.625" PointY="6.2112939453125" />
+          <ConnectorPoint PointX="3" PointY="6.2112939453125" />
+        </AssociationConnector>
+        <AssociationConnector Association="stump_worldModel.BreedBreedSpell">
+          <ConnectorPoint PointX="2.625" PointY="8.9901432291666659" />
+          <ConnectorPoint PointX="3" PointY="8.9901432291666659" />
+        </AssociationConnector>
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>

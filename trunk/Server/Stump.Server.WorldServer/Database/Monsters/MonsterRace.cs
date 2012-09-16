@@ -1,33 +1,38 @@
+using System;
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 
-namespace Stump.Server.WorldServer.Database.Monsters
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord("monsters_races")]
-    [D2OClass("MonsterRace", "com.ankamagames.dofus.datacenter.monsters")]
-    public sealed class MonsterRace : WorldBaseRecord<MonsterRace>
+    public class MonsterRaceConfiguration : EntityTypeConfiguration<MonsterRace>
     {
-        [D2OField("id")]
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+        public MonsterRaceConfiguration()
+        {
+            ToTable("monsters_races");
+        }
+    }
+
+    [D2OClass("MonsterRace", "com.ankamagames.dofus.datacenter.monsters")]
+    public class MonsterRace : IAssignedByD2O
+    {
         public int Id
         {
             get;
             set;
         }
 
-        [D2OField("superRaceId")]
-        [Property("SuperRaceId")]
         public int SuperRaceId
         {
             get;
             set;
         }
 
-        private MonsterSuperRace m_superRace;
-        public MonsterSuperRace SuperRace
+        private Monsters.MonsterSuperRace m_superRace;
+        public Monsters.MonsterSuperRace SuperRace
         {
             get
             {
@@ -40,8 +45,6 @@ namespace Stump.Server.WorldServer.Database.Monsters
             }
         }
 
-        [D2OField("nameId")]
-        [Property("NameId")]
         public uint NameId
         {
             get;
@@ -55,7 +58,14 @@ namespace Stump.Server.WorldServer.Database.Monsters
             {
                 return m_name ?? ( m_name = TextManager.Instance.GetText(NameId) );
             }
-        } 
+        }
 
+        public void AssignFields(object d2oObject)
+        {
+            var race = (DofusProtocol.D2oClasses.MonsterRace)d2oObject;
+            Id = race.id;
+            NameId = race.nameId;
+            SuperRaceId = race.superRaceId;
+        }
     }
 }

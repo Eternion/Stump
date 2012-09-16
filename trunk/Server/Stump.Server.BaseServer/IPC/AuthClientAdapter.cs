@@ -186,7 +186,7 @@ namespace Stump.Server.BaseServer.IPC
             }
         }
 
-        public bool AddAccountCharacter(uint accountId, uint characterId)
+        public bool AddAccountCharacter(int accountId, int characterId)
         {
             try
             {
@@ -199,7 +199,7 @@ namespace Stump.Server.BaseServer.IPC
             }
         }
 
-        public bool DeleteAccountCharacter(uint accountId, uint characterId)
+        public bool DeleteAccountCharacter(int accountId, int characterId)
         {
             try
             {
@@ -225,7 +225,7 @@ namespace Stump.Server.BaseServer.IPC
             }
         }
 
-        public bool BlamAccount(string victimAccountLogin, uint? bannerAccountId, TimeSpan duration, string reason)
+        public bool BlamAccount(string victimAccountLogin, int? bannerAccountId, TimeSpan duration, string reason)
         {
             try
             {
@@ -238,7 +238,7 @@ namespace Stump.Server.BaseServer.IPC
             }
         }
 
-        public bool BlamAccount(uint victimAccountId, uint? bannerAccountId, TimeSpan duration, string reason)
+        public bool BlamAccount(int victimAccountId, int? bannerAccountId, TimeSpan duration, string reason)
         {
             try
             {
@@ -253,7 +253,7 @@ namespace Stump.Server.BaseServer.IPC
 
         public
             bool BanIp
-            (string ipToBan, uint bannerAccountId, TimeSpan duration, string reason)
+            (string ipToBan, int bannerAccountId, TimeSpan duration, string reason)
         {
             try
             {

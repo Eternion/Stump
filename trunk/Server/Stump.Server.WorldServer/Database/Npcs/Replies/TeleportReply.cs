@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
@@ -7,10 +8,21 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
-namespace Stump.Server.WorldServer.Database.Npcs.Replies
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord(DiscriminatorValue = "Teleport")]
-    public class TeleportReply : NpcReply
+    public class TeleportReplyConfiguration : EntityTypeConfiguration<TeleportReply>
+    {
+        public TeleportReplyConfiguration()
+        {
+            Map(x => x.Requires("Discriminator").HasValue("Teleport"));
+
+            Property(x => x.MapId).HasColumnName("Teleport_Map");
+            Property(x => x.CellId).HasColumnName("Teleport_Cell");
+            Property(x => x.Direction).HasColumnName("Teleport_Direction");
+        }
+    }
+
+    public class TeleportReply : Npcs.NpcReply
     {
         private bool m_mustRefreshPosition;
 
@@ -19,7 +31,6 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
         private int m_mapId;
         private ObjectPosition m_position;
 
-        [Property("Teleport_Map")]
         public int MapId
         {
             get
@@ -33,7 +44,6 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             }
         }
 
-        [Property("Teleport_Cell")]
         public int CellId
         {
             get
@@ -47,7 +57,6 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             }
         }
 
-        [Property("Teleport_Direction")]
         public DirectionsEnum Direction
         {
             get

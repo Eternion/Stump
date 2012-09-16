@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Threading;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
@@ -34,7 +35,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
         {
             var random = new AsyncRandom();
 
-            List<EffectDice> effects = Critical ? SpellLevel.CritialEffects : SpellLevel.Effects;
+            List<EffectDice> effects = Critical ? SpellLevel.CriticalEffects : SpellLevel.Effects;
             var handlers = new List<SpellEffectHandler>();
 
             double rand = random.NextDouble();

@@ -3,6 +3,7 @@ using System.Linq;
 using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
@@ -47,7 +48,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             foreach (var level in spellLevels)
             {
                 fixer(level, level.Effects[effectIndex], false);
-                fixer(level, level.CritialEffects[effectIndex], true);
+                fixer(level, level.CriticalEffects[effectIndex], true);
             }
         }
 
@@ -65,7 +66,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
                     fixer(level, spellEffect, false);
                 }
 
-                foreach (var spellEffect in level.CritialEffects.Where(entry => entry.EffectId == effect))
+                foreach (var spellEffect in level.CriticalEffects.Where(entry => entry.EffectId == effect))
                 {
                     fixer(level, spellEffect, true);
                 }

@@ -1,19 +1,26 @@
+using System.ComponentModel;
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 
-namespace Stump.Server.WorldServer.Database.Monsters
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord("monsters_drops")]
-    public class DroppableItem : WorldBaseRecord<DroppableItem>
+    public class DroppableItemConfiguration : EntityTypeConfiguration<DroppableItem>
     {
-        [PrimaryKey(PrimaryKeyType.Native)]
+        public DroppableItemConfiguration()
+        {
+            ToTable("monsters_drops");
+        }
+    }
+
+    public class DroppableItem
+    {
         public int Id
         {
             get;
             set;
         }
 
-        [Property(NotNull = true)]
         public int MonsterOwnerId
         {
             get;
@@ -37,7 +44,6 @@ namespace Stump.Server.WorldServer.Database.Monsters
         /// <summary>
         /// The id of the item to drop
         /// </summary>
-        [Property(NotNull = true)]
         public short ItemId
         {
             get;
@@ -47,7 +53,6 @@ namespace Stump.Server.WorldServer.Database.Monsters
         /// <summary>
         /// A monster cannot drop this item more times than the drop limit. 0 to disable this limit
         /// </summary>
-        [Property(Default = "0", NotNull = true)]
         public int DropLimit
         {
             get;
@@ -57,7 +62,6 @@ namespace Stump.Server.WorldServer.Database.Monsters
         /// <summary>
         /// Define the probability that the item drop. Between 0.00% and 100.00%
         /// </summary>
-        [Property(NotNull = true)]
         public double DropRate
         {
             get;
@@ -68,7 +72,6 @@ namespace Stump.Server.WorldServer.Database.Monsters
         /// <summary>
         /// How many times the rolls are threw
         /// </summary>
-        [Property(Default = "1", NotNull = true)]
         public int RollsCounter
         {
             get;
@@ -78,7 +81,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
         /// <summary>
         /// Requiered team prospection to have a chance to drop the item
         /// </summary>
-        [Property(NotNull = true, Default = "100")]
+        [DefaultValue(100)]
         public int ProspectingLock
         {
             get;

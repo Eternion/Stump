@@ -13,7 +13,7 @@ namespace Stump.Core.Threading
     /// <summary>
     /// Thank's to WCell project
     /// </summary>
-    public class SelfRunningTaskQueue : IContextHandler
+    public class SelfRunningTaskPool : IContextHandler
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -26,7 +26,7 @@ namespace Stump.Core.Threading
         private Task m_updateTask;
         private int m_lastUpdate;
 
-        public SelfRunningTaskQueue(int interval, string name)
+        public SelfRunningTaskPool(int interval, string name)
         {
             m_messageQueue = new LockFreeQueue<IMessage>();
             m_queueTimer = Stopwatch.StartNew();

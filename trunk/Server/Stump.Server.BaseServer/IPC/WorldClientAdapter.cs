@@ -43,7 +43,7 @@ namespace Stump.Server.BaseServer.IPC
                 handler(this, ex);
         }
 
-        public bool DisconnectClient(uint accountId)
+        public bool DisconnectClient(int accountId)
         {
             try
             {

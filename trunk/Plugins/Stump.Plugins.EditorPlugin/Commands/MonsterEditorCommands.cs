@@ -6,12 +6,14 @@ using Stump.Server.BaseServer.Commands.Patterns;
 using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Items.Templates;
-using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Maps;
+using MonsterSpawn = Stump.Server.WorldServer.Database.Monsters.MonsterSpawn;
+using MonsterSpell = Stump.Server.WorldServer.Database.Monsters.MonsterSpell;
 
 namespace Stump.Plugins.EditorPlugin.Commands
 {

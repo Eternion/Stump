@@ -1,17 +1,31 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.ModelConfiguration;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
-using Castle.ActiveRecord;
-using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.IPC;
 
-namespace Stump.Server.AuthServer.Database.World
+namespace Stump.Server.AuthServer.Database
 {
-    [Serializable]
-    [ActiveRecord("worlds")]
-    public sealed class WorldServer : AuthBaseRecord<WorldServer>
+    public class WorldServerConfiguration : EntityTypeConfiguration<WorldServer>
     {
+        public WorldServerConfiguration()
+        {
+            ToTable("worlds");
+            Ignore(x => x.RemoteEndpoint);
+            Ignore(x => x.RemoteOperations);
+            Ignore(x => x.SessionId);
+            Ignore(x => x.LastPing);
+            Ignore(x => x.Address);
+        }
+    }
+
+    public partial class WorldServer
+    {
+        // Primitive properties
+
         private int m_charsCount;
 
         public WorldServer()
@@ -19,65 +33,64 @@ namespace Stump.Server.AuthServer.Database.World
             Status = ServerStatusEnum.OFFLINE;
         }
 
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
         public int Id
         {
             get;
             set;
         }
 
-        [Property("Name", NotNull = true, Length = 25)]
         public string Name
         {
             get;
             set;
         }
 
-        [Property("RequireSubscription", NotNull = true, Default = "0")]
         public bool RequireSubscription
         {
             get;
             set;
         }
 
-        [Property("RequiredRole", NotNull = true, Default = "1")]
-        public RoleEnum RequiredRole
+        private int RequiredRoleAsInt
         {
             get;
             set;
         }
 
-        [Property("Completion", NotNull = true, Default = "0")]
         public int Completion
         {
             get;
             set;
         }
 
-        [Property("ServerSelectable", NotNull = true, Default = "1")]
         public bool ServerSelectable
         {
             get;
             set;
         }
 
-        [Property("CharCapacity", NotNull = true, Default = "1000")]
         public int CharCapacity
         {
             get;
             set;
         }
 
-        public string Address
+        private int StatusAsInt
         {
             get;
             set;
         }
 
-        public ushort Port
+        public int? CharsCount
         {
             get;
             set;
+        }
+
+        public RoleEnum RequiredRole
+        {
+            get { return (RoleEnum) RequiredRoleAsInt; }
+            set { RequiredRoleAsInt = (byte) value; }
         }
 
         #region Session
@@ -130,7 +143,7 @@ namespace Stump.Server.AuthServer.Database.World
             try
             {
                 //if (RemoteOperations != null)
-                  //  RemoteOperations.Close();
+                //  RemoteOperations.Close();
             }
             catch
             {
@@ -146,11 +159,10 @@ namespace Stump.Server.AuthServer.Database.World
 
         #region Status
 
-        [Property]
         public ServerStatusEnum Status
         {
-            get;
-            set;
+            get { return (ServerStatusEnum) StatusAsInt; }
+            set { StatusAsInt = (int) value; }
         }
 
         public bool Connected
@@ -164,19 +176,16 @@ namespace Stump.Server.AuthServer.Database.World
             set;
         }
 
-        [Property]
-        public int CharsCount
+        public ushort Port
         {
-            get { return m_charsCount; }
-            set { m_charsCount = value < 0 ? 0 : value; }
+            get;
+            private set;
         }
 
-        public void SetOnline()
+        public string Address
         {
-            Status = ServerStatusEnum.ONLINE;
-            LastPing = DateTime.Now;
-
-            Update();
+            get;
+            private set;
         }
 
         public void SetOnline(string address, ushort port)
@@ -186,7 +195,7 @@ namespace Stump.Server.AuthServer.Database.World
             Address = address;
             Port = port;
 
-            UpdateAndFlush();
+            AuthServer.Instance.SaveDatabaseChanges();
         }
 
         public void SetOffline()
@@ -195,20 +204,10 @@ namespace Stump.Server.AuthServer.Database.World
             CharsCount = 0;
 
             CloseSession();
-            Update();
+            AuthServer.Instance.SaveDatabaseChanges();
         }
 
         #endregion
-
-        public static WorldServer FindWorldById(int id)
-        {
-            return FindByPrimaryKey(id);
-        }
-
-        public static bool Exists(int id)
-        {
-            return Exists(Restrictions.Eq("Id", id));
-        }
 
         public override string ToString()
         {

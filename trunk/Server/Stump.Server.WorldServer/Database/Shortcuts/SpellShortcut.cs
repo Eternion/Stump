@@ -1,11 +1,16 @@
-using System;
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
-using Stump.Server.WorldServer.Database.Characters;
-using DofusSpellShortcut = Stump.DofusProtocol.Types.ShortcutSpell;
+using Stump.DofusProtocol.Types;
 
-namespace Stump.Server.WorldServer.Database.Shortcuts
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord(DiscriminatorValue = "Spell")]
+    public class SpellShortcutConfiguration : EntityTypeConfiguration<SpellShortcut>
+    {
+        public SpellShortcutConfiguration()
+        {
+            Map(x => x.Requires("Discriminator").HasValue("Spell"));
+        }
+    }
     public class SpellShortcut : Shortcut
     {
         public SpellShortcut()
@@ -19,7 +24,6 @@ namespace Stump.Server.WorldServer.Database.Shortcuts
             SpellId = spellId;
         }
 
-        [Property("SpellId")]
         public short SpellId
         {
             get;
@@ -28,7 +32,7 @@ namespace Stump.Server.WorldServer.Database.Shortcuts
 
         public override DofusProtocol.Types.Shortcut GetNetworkShortcut()
         {
-            return new DofusSpellShortcut(Slot, SpellId);
+            return new ShortcutSpell(Slot, SpellId);
         }
     }
 }

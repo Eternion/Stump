@@ -17,7 +17,8 @@ namespace Stump.Plugins.DefaultPlugin.Items
         {
             logger.Debug("Apply weapons effects fix");
 
-            foreach (var template in ItemManager.Instance.GetTemplates().OfType<WeaponTemplate>())
+            // not needed anymore
+            /*foreach (var template in ItemManager.Instance.GetTemplates().OfType<WeaponTemplate>())
             {
                 foreach (var effect in template.Effects)
                 {
@@ -35,7 +36,7 @@ namespace Stump.Plugins.DefaultPlugin.Items
                         }
                     }
                 }
-            }
+            }*/
 
 
         }  

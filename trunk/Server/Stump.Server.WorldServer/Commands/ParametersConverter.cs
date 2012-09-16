@@ -3,9 +3,8 @@ using System;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.WorldServer.Commands.Trigger;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Items.Templates;
-using Stump.Server.WorldServer.Database.Monsters;
-using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -14,6 +13,8 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Spells;
+using Area = Stump.Server.WorldServer.Game.Maps.Area;
+using NpcTemplate = Stump.Server.WorldServer.Database.Npcs.NpcTemplate;
 
 namespace Stump.Server.WorldServer.Commands
 {

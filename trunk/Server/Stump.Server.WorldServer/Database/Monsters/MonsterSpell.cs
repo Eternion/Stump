@@ -1,22 +1,28 @@
+using System.ComponentModel;
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 
-namespace Stump.Server.WorldServer.Database.Monsters
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord("monsters_spells")]
+    public class MonsterSpellConfiguration : EntityTypeConfiguration<MonsterSpell>
+    {
+        public MonsterSpellConfiguration()
+        {
+            ToTable("monsters_spells");
+        }
+    }
+
     public class MonsterSpell : WorldBaseRecord<MonsterSpell>, ISpellRecord
     {
-        [PrimaryKey(PrimaryKeyType.Native)]
         public int Id
         {
             get;
             set;
         }
 
-        [Property("MonsterGradeId")]
         public int MonsterGradeId
         {
             get;
@@ -37,14 +43,13 @@ namespace Stump.Server.WorldServer.Database.Monsters
             }
         }
 
-        [Property("SpellId", NotNull = true)]
         public int SpellId
         {
             get;
             set;
         }
 
-        [Property("Level", NotNull = true, Default = "1")]
+        [DefaultValue(1)]
         public sbyte Level
         {
             get;

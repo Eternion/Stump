@@ -1,21 +1,25 @@
-using Castle.ActiveRecord;
-using Stump.Server.WorldServer.Database.Items.Templates;
+using System.Data.Entity.ModelConfiguration;
 using Stump.Server.WorldServer.Game.Items;
 using Item = Stump.DofusProtocol.Types.Item;
 
-namespace Stump.Server.WorldServer.Database.Items.Shops
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord("items_selled", DiscriminatorColumn = "RecognizerType", DiscriminatorType = "String", DiscriminatorValue = "Base")]
-    public abstract class ItemToSell : WorldBaseRecord<ItemToSell>
+    public class ItemToSellConfiguration : EntityTypeConfiguration<ItemToSell>
     {
-        [PrimaryKey(PrimaryKeyType.Native)]
+        public ItemToSellConfiguration()
+        {
+            ToTable("items_tosell");
+        }
+    }
+
+    public abstract class ItemToSell
+    {
         public int Id
         {
             get;
             set;
         }
 
-        [Property("ItemId")]
         public int ItemId
         {
             get;

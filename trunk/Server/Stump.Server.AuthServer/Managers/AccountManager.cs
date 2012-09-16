@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -13,239 +14,238 @@ using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.OpenSsl;
 using Stump.Core.Attributes;
+using Stump.Core.Collections;
 using Stump.Core.Cryptography;
 using Stump.Core.Extensions;
 using Stump.Core.Reflection;
+using Stump.Core.Threading;
+using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.AuthServer.Database.Account;
-using Stump.Server.AuthServer.Database.World;
-using Stump.Server.AuthServer.IPC;
+using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Network;
-using Stump.Server.BaseServer.IPC;
+using Stump.Server.BaseServer.Database;
+using DatabaseAccessor = Stump.Server.AuthServer.Database.DatabaseAccessor;
 
 namespace Stump.Server.AuthServer.Managers
 {
-    public class AccountManager : Singleton<AccountManager>
+    public class AccountManager : DataManager<DatabaseAccessor, AccountManager>
     {
         /// <summary>
         /// List of available breeds
         /// </summary>
         [Variable]
         public static List<PlayableBreedEnum> AvailableBreeds = new List<PlayableBreedEnum>
-                                                                    {
-                                                                        PlayableBreedEnum.Feca,
-                                                                        PlayableBreedEnum.Osamodas,
-                                                                        PlayableBreedEnum.Enutrof,
-                                                                        PlayableBreedEnum.Sram,
-                                                                        PlayableBreedEnum.Xelor,
-                                                                        PlayableBreedEnum.Ecaflip,
-                                                                        PlayableBreedEnum.Eniripsa,
-                                                                        PlayableBreedEnum.Iop,
-                                                                        PlayableBreedEnum.Cra,
-                                                                        PlayableBreedEnum.Sadida,
-                                                                        PlayableBreedEnum.Sacrieur,
-                                                                        PlayableBreedEnum.Pandawa,
-                                                                        PlayableBreedEnum.Roublard,
-                                                                        PlayableBreedEnum.Zobal,
-                                                                    };
+            {
+            PlayableBreedEnum.Feca,
+            PlayableBreedEnum.Osamodas,
+            PlayableBreedEnum.Enutrof,
+            PlayableBreedEnum.Sram,
+            PlayableBreedEnum.Xelor,
+            PlayableBreedEnum.Ecaflip,
+            PlayableBreedEnum.Eniripsa,
+            PlayableBreedEnum.Iop,
+            PlayableBreedEnum.Cra,
+            PlayableBreedEnum.Sadida,
+            PlayableBreedEnum.Sacrieur,
+            PlayableBreedEnum.Pandawa,
+            PlayableBreedEnum.Roublard,
+            PlayableBreedEnum.Zobal,
+            };
+
+
+        [Variable]
+        public static int CacheTimeout = 300;
 
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly Dictionary<uint, Account> m_accountsCache = new Dictionary<uint, Account>();
-        private readonly object m_locker = new object();
+        private readonly Dictionary<int, Tuple<DateTime, Account>> m_accountsCache = new Dictionary<int, Tuple<DateTime, Account>>(CacheTimeout);
+        private SimpleTimerEntry m_timer;
 
-        private readonly RSACryptoServiceProvider m_rsaProvider = new RSACryptoServiceProvider();
-
-        public readonly string Salt = new Random().RandomString(32);
-        public readonly sbyte[] RsaPublicKey;
-
-        private AccountManager()
+        public AccountManager()
         {
-            RsaPublicKey = GenerateRSAPublicKey();
-        }
-
-        public sbyte[] GetRSAPublicKey()
-        {
-            return RsaPublicKey;
-        }
-
-        public string GetSalt()
-        {
-            return Salt;
-        }
-
-        private sbyte[] GenerateRSAPublicKey()
-        {
-            var exportParameters = m_rsaProvider.ExportParameters(false);
-            var keyParameters = new RsaKeyParameters(false, new BigInteger(1, exportParameters.Modulus), new BigInteger(1, exportParameters.Exponent));
             
-            var stringBuilder = new StringBuilder();
-            var writer = new PemWriter(new StringWriter(stringBuilder));
-            writer.WriteObject(keyParameters);
-
-            string key = stringBuilder.ToString();
-
-            string partial = key.Remove(key.IndexOf("-----END PUBLIC KEY-----")).Remove(0, "-----BEGIN PUBLIC KEY-----\n".Length);
-
-            return Convert.FromBase64String(partial).Select(entry => (sbyte)entry).ToArray();
         }
 
-        public bool CompareAccountPassword(Account account, IEnumerable<sbyte> credentials)
+        public override void Initialize()
         {
-            try
+            m_timer = AuthServer.Instance.IOTaskPool.CallPeriodically(CacheTimeout * 60 / 4, TimerTick);
+        }
+
+        public override void TearDown()
+        {
+            AuthServer.Instance.IOTaskPool.CancelSimpleTimer(m_timer);
+        }
+
+        private void TimerTick()
+        {
+            var toRemove = new List<int>();
+
+            foreach (var tuple in m_accountsCache.Values)
             {
-                var data = m_rsaProvider.Decrypt(credentials.Select(entry => (byte)entry).ToArray(), false);
-                var str = Encoding.ASCII.GetString(data);
-
-                if (!str.StartsWith(Salt))
-                    return false;
-
-                var givenPass = str.Remove(0, Salt.Length);
-
-                return account.PasswordHash == givenPass.GetMD5();
+                if (tuple.Item1 >= DateTime.Now)
+                    toRemove.Add(tuple.Item2.Id);
             }
-            catch (Exception)
+
+            foreach (var id in toRemove)
             {
-                return false;
+                m_accountsCache.Remove(id);
             }
         }
 
-        public Account FindAccount(string login)
+        public Account FindAccountById(int id)
         {
-            Account account = Account.FindAccountByLogin(login);
+            return Database.Accounts.Find(id);
+        }
 
-            if (account == null)
-                return null;
+        public Account FindAccountByLogin(string login)
+        {
+            return Database.Accounts.FirstOrDefault(entry => entry.Login == login);
+        }
 
-            lock (m_locker)
-            {
-                Account cachedAccount;
-                if (m_accountsCache.TryGetValue(account.Id, out cachedAccount))
-                {
-                    m_accountsCache[account.Id] = account;
-                }
-                else
-                {
-                    m_accountsCache.Add(account.Id, account);
-                }
-            }
-
-            return account;
+        public Account FindAccountByNickname(string nickname)
+        {
+            return Database.Accounts.FirstOrDefault(entry => entry.Nickname == nickname);
         }
 
         public IpBan FindIpBan(string ip)
         {
-            return IpBan.FindByIp(ip);
+            return Database.IpBans.FirstOrDefault(entry => entry.IPAsString == ip);
         }
 
-        public Account FindRegisteredAccountByTicket(string ticket)
+        public IpBan FindMatchingIpBan(string ipStr)
         {
-            Account account;
-            lock (m_locker)
+            var ip = IPAddress.Parse(ipStr);
+            var bans = Database.IpBans.Where(entry => entry.Match(ip));
+
+            return bans.OrderByDescending(entry => entry.GetRemainingTime()).FirstOrDefault();
+        }
+
+        public void CacheAccount(Account account)
+        {
+            m_accountsCache.Add(account.Id, Tuple.Create(DateTime.Now + TimeSpan.FromSeconds(CacheTimeout), account));
+        }
+
+        public void UnCacheAccount(Account account)
+        {
+            m_accountsCache.Remove(account.Id);
+        }
+
+        public Account FindCachedAccountByTicket(string ticket)
+        {
+            var accounts = m_accountsCache.Values.Where(entry => entry.Item2.Ticket == ticket).ToArray();
+
+            if (accounts.Count() > 1)
             {
-                var accounts = m_accountsCache.Values.Where(entry => entry.Ticket == ticket).ToArray();
-
-                if (accounts.Count() > 1)
+                foreach (var conflictedAccount in accounts)
                 {
-                    m_accountsCache.Clear();
-
-                    return null;
+                    conflictedAccount.Item2.Ticket = string.Empty;
+                    UnCacheAccount(conflictedAccount.Item2);
                 }
 
-                return accounts.SingleOrDefault();
+                return null;
             }
 
-            return account;
+            var result = accounts.SingleOrDefault();
+
+            return result != null ? result.Item2 : null;
         }
 
-        public bool LoginExist(string login)
+        public bool LoginExists(string login)
         {
-            return Account.Exists(Restrictions.Eq("Login", login.ToLower()));
+            return Database.Accounts.Any(entry => entry.Login == login);
         }
 
-        public bool NicknameExist(string nickname)
+        public bool NicknameExists(string nickname)
         {
-            return Account.Exists(Restrictions.Eq("Nickname", nickname));
+            return Database.Accounts.Any(entry => entry.Nickname == nickname);
         }
 
         public bool CreateAccount(Account account)
         {
-            if (LoginExist(account.Login.ToLower()))
+            if (LoginExists(account.Login))
                 return false;
 
-            account.Save();
+            Database.Accounts.Add(account);
+            Database.SaveChanges();
 
             return true;
         }
 
         public bool DeleteAccount(Account account)
         {
-            account.Delete();
+            Database.Accounts.Remove(account);
+            Database.SaveChanges();
 
             return true;
         }
 
-        public WorldCharacter CreateAccountCharacter(Account account, WorldServer world, uint characterId)
+        public WorldCharacter CreateAccountCharacter(Account account, WorldServer world, int characterId)
         {
+            if (account.WorldCharacters.Any(entry => entry.CharacterId == characterId))
+                return null;
+
             var character = new WorldCharacter
                                 {
                                     Account = account,
-                                    World = world,
+                                    WorldId = world.Id,
                                     CharacterId = characterId
                                 };
 
-            character.Create();
+            account.WorldCharacters.Add(character);
+            Database.SaveChanges();
 
             return character;
         }
 
-        public bool AddAccountCharacter(Account account, WorldServer world, uint characterId)
+        public bool DeleteAccountCharacter(Account account, WorldServer world, int characterId)
         {
-            using (var scope = new SessionScope(FlushAction.Never))
-            {
-                WorldCharacter character = CreateAccountCharacter(account, world, characterId);
-
-                if (account.Characters.Contains(character))
-                    return false;
-
-                account.Characters.Add(character);
-
-                scope.Flush();
-            }
-
-            return true;
-        }
-
-        public DeletedWorldCharacter AddDeletedCharacter(Account account, WorldServer world, uint characterId)
-        {
-            var character = new DeletedWorldCharacter
-                                {
-                                    Account = account,
-                                    World = world,
-                                    CharacterId = characterId
-                                };
-
-            character.Create();
-
-            return character;
-        }
-
-        public bool DeleteAccountCharacter(Account account, WorldServer world, uint characterId)
-        { 
-            WorldCharacter character = account.Characters.FirstOrDefault(c => c.CharacterId == characterId);
+            WorldCharacter character = Database.WorldCharacters.FirstOrDefault(c => c.CharacterId == characterId);
 
             if (character == null)
                 return false;
 
-            account.Characters.Remove(character);
-            character.Delete();
+            CreateDeletedCharacter(account, world, characterId);
 
-            account.DeletedCharacters.Add(AddDeletedCharacter(account, world, characterId));
-            account.Update();
+            account.WorldCharacters.Remove(character);
+            Database.WorldCharacters.Remove(character);
+
 
             return true;
         }
 
+        public bool AddAccountCharacter(Account account, WorldServer world, int characterId)
+        {
+            WorldCharacter character = CreateAccountCharacter(account, world, characterId);
+
+
+            return true;
+        }
+
+        public WorldCharacterDeleted CreateDeletedCharacter(Account account, WorldServer world, int characterId)
+        {
+            var character = new WorldCharacterDeleted
+                                {
+                                    Account = account,
+                                    WorldId = world.Id,
+                                    CharacterId = characterId
+                                };
+
+            account.WorldDeletedCharacters.Add(character);
+            Database.SaveChanges();
+
+            return character;
+        }
+
+        public bool DeleteDeletedCharacter(WorldCharacterDeleted deletedCharacter)
+        {
+            if (deletedCharacter == null)
+                return false;
+
+            deletedCharacter.Account.WorldDeletedCharacters.Remove(deletedCharacter);
+            Database.SaveChanges();
+
+            return true;
+        }
 
         public bool DisconnectClientsUsingAccount(Account account)
         {
@@ -258,10 +258,11 @@ namespace Stump.Server.AuthServer.Managers
                 client.Disconnect();
             }
 
-            if (account.LastConnection != null)
+            var lastConnection = account.GetLastConnection();
+            if (lastConnection != null && lastConnection.WorldId.HasValue)
             {
                 bool disconnected = false;
-                var server = WorldServerManager.Instance.GetServerById(account.LastConnection.World.Id);
+                var server = WorldServerManager.Instance.GetServerById(lastConnection.WorldId.Value);
 
                 if (server != null && server.Connected && server.RemoteOperations != null)
                     if (server.RemoteOperations.DisconnectClient(account.Id))
@@ -270,8 +271,8 @@ namespace Stump.Server.AuthServer.Managers
                 // diconnect clients from last game server
                 if (disconnected)
                 {
-                    return true;
                 }
+                    return true;
             }
 
             return clients.Length > 0;

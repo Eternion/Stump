@@ -6,7 +6,6 @@ using Stump.Core.Attributes;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.Database.Breeds;
 
 namespace Stump.Server.WorldServer.Game.Breeds
 {

@@ -4,6 +4,6 @@ namespace Stump.Server.WorldServer.Database
 {
     public interface IAssignedByD2O
     {
-        object GenerateAssignedObject(string fieldName, object d2OObject);
+        void AssignFields(object d2oObject);
     }
 }

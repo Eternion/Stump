@@ -1,21 +1,31 @@
-using System;
 using System.Collections.Generic;
+using System.Data.Entity.ModelConfiguration;
+using System.Data.Objects;
 using System.Linq;
 using Castle.ActiveRecord;
+using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Npc = Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs.Npc;
 
-namespace Stump.Server.WorldServer.Database.Npcs
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord("npcs")]
+    public class NpcTemplateConfiguration : EntityTypeConfiguration<NpcTemplate>
+    {
+        public NpcTemplateConfiguration()
+        {
+            ToTable("npcs_templates");
+        }
+    }
+
     [D2OClass("Npc", "com.ankamagames.dofus.datacenter.npcs")]
-    public class NpcTemplate : WorldBaseRecord<NpcTemplate>
+    public class NpcTemplate : IAssignedByD2O, ISaveIntercepter
     {
         public delegate void NpcSpawnedEventHandler(NpcTemplate template, Npc npc);
         public event NpcSpawnedEventHandler NpcSpawned;
@@ -26,16 +36,12 @@ namespace Stump.Server.WorldServer.Database.Npcs
             if (handler != null) handler(this, npc);
         }
 
-        [D2OField("id")]
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
         public int Id
         {
             get;
             set;
         }
 
-        [D2OField("nameId")]
-        [Property("NameId")]
         public uint NameId
         {
             get;
@@ -52,24 +58,54 @@ namespace Stump.Server.WorldServer.Database.Npcs
             }
         }
 
-        [D2OField("dialogMessages")]
-        [Property("DialogMessagesId", ColumnType = "Serializable")]
+        private byte[] m_dialogMessagesIdBin;
+
+        public byte[] DialogMessagesIdBin
+        {
+            get { return m_dialogMessagesIdBin; }
+            set
+            {
+                m_dialogMessagesIdBin = value;
+                DialogMessagesId = m_dialogMessagesIdBin.ToObject<List<List<int>>>();
+            }
+        }
+
         public List<List<int>> DialogMessagesId
         {
             get;
             set;
         }
 
-        [D2OField("dialogReplies")]
-        [Property("DialogRepliesId", ColumnType = "Serializable")]
+        private byte[] m_dialogRepliesIdBin;
+
+        public byte[] DialogRepliesIdBin
+        {
+            get { return m_dialogRepliesIdBin; }
+            set
+            {
+                m_dialogRepliesIdBin = value;
+                DialogRepliesId = m_dialogRepliesIdBin.ToObject<List<List<int>>>();
+            }
+        }
+
         public List<List<int>> DialogRepliesId
         {
             get;
             set;
         }
 
-        [D2OField("actions")]
-        [Property("ActionsId", ColumnType = "Serializable")]
+        private byte[] m_actionsIdsBin;
+
+        public byte[] ActionsIdsBin
+        {
+            get { return m_actionsIdsBin; }
+            set
+            {
+                m_actionsIdsBin = value;
+                ActionsIds = m_actionsIdsBin.ToObject<List<uint>>();
+            }
+        }
+
         public List<uint> ActionsIds
         {
             get;
@@ -90,8 +126,6 @@ namespace Stump.Server.WorldServer.Database.Npcs
             return Actions.Where(entry => entry.ActionType == actionType).ToArray();
         }
 
-        [D2OField("gender")]
-        [Property("Gender")]
         public uint Gender
         {
             get;
@@ -101,8 +135,6 @@ namespace Stump.Server.WorldServer.Database.Npcs
         private string m_lookAsString;
         private EntityLook m_entityLook;
 
-        [D2OField("look")]
-        [Property("Look")]
         private string LookAsString
         {
             get
@@ -136,19 +168,36 @@ namespace Stump.Server.WorldServer.Database.Npcs
             }
         }
 
-        [Property]
         public short SpecialArtworkId
         {
             get;
             set;
         }
 
-        [Property]
-        [D2OField("tokenShop")]
-        public bool TokenShop
+        public int TokenShop
         {
             get;
             set;
+        }
+
+        public void BeforeSave(ObjectStateEntry currentEntry)
+        {
+            m_dialogMessagesIdBin = DialogMessagesId.ToBinary();
+            m_dialogRepliesIdBin = DialogRepliesId.ToBinary();
+            m_actionsIdsBin = ActionsIds.ToBinary();
+        }
+
+        public void AssignFields(object d2oObject)
+        {
+            var npc = (DofusProtocol.D2oClasses.Npc)d2oObject;
+            Id = npc.id;
+            NameId = npc.nameId;
+            DialogMessagesId = npc.dialogMessages;
+            DialogRepliesId = npc.dialogReplies;
+            ActionsIds = npc.actions;
+            Gender = npc.gender;
+            LookAsString = npc.look;
+            TokenShop = npc.tokenShop;
         }
 
         public override string ToString()

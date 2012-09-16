@@ -5,8 +5,7 @@ using Stump.Core.Cryptography;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.AuthServer.Database.Account;
-using Stump.Server.AuthServer.Database.World;
+using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.AuthServer.Network;
 using Stump.Server.BaseServer.Network;
@@ -32,10 +31,11 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 return;
 
             /* If autoconnect, send to the lastServer */
-            ConnectionLog lastConnection = client.Account.LastConnection;
-            if (message.autoconnect && lastConnection != null && WorldServerManager.Instance.CanAccessToWorld(client, lastConnection.World.Id))
+            var lastConnection = client.Account.GetLastConnection();
+            if (message.autoconnect && lastConnection != null && lastConnection.WorldId.HasValue &&
+                WorldServerManager.Instance.CanAccessToWorld(client, lastConnection.WorldId.Value))
             {
-                SendSelectServerData(client, WorldServerManager.Instance.GetServerById(lastConnection.World.Id));
+                SendSelectServerData(client, WorldServerManager.Instance.GetServerById(lastConnection.WorldId.Value));
             }
             else
             {
@@ -74,10 +74,10 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             client.Login = message.login.EscapeString();
 
             /* Get corresponding account */
-            Account account = AccountManager.Instance.FindAccount(client.Login);
+            Account account = AccountManager.Instance.FindAccountByLogin(client.Login);
 
             /* Invalid password */
-            if (account == null || !AccountManager.Instance.CompareAccountPassword(account, message.credentials))
+            if (account == null || !CredentialManager.Instance.CompareAccountPassword(account, message.credentials))
             {
                 SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.WRONG_CREDENTIALS);
                 client.DisconnectLater(1000);
@@ -85,9 +85,10 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             }
 
             /* Check Sanctions */
-            if (account.StrongestSanction != null && account.StrongestSanction.EndDate > DateTime.Now)
+            var sanction = account.GetStrongestSanction();
+            if (sanction != null && sanction.GetEndDate() > DateTime.Now)
             {
-                SendIdentificationFailedBannedMessage(client, account.StrongestSanction.EndDate);
+                SendIdentificationFailedBannedMessage(client, sanction.GetEndDate());
                 client.DisconnectLater(1000);
                 return false;
             }
@@ -95,7 +96,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             var ipBan = AccountManager.Instance.FindIpBan(client.IP);
             if (ipBan != null)
             {
-                SendIdentificationFailedBannedMessage(client, ipBan.EndDate);
+                SendIdentificationFailedBannedMessage(client, ipBan.GetEndDate());
                 client.DisconnectLater(1000);
                 return false;
             }
@@ -124,6 +125,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
         public static void SendIdentificationSuccessMessage(AuthClient client, bool wasAlreadyConnected)
         {
+            var subEndDate = client.Account.GetSubscriptionEndDate();
             client.Send(new IdentificationSuccessMessage(
                             client.Account.Role >= RoleEnum.Moderator,
                             wasAlreadyConnected,
@@ -132,8 +134,9 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                             (int) client.Account.Id,
                             0, // community ID ? ( se trouve dans le d2p, utilisé pour trouver les serveurs de la communauté )
                             client.Account.SecretQuestion,
-                            client.Account.SubscriptionEndDate > DateTime.Now ? client.Account.SubscriptionEndDate.GetUnixTimeStamp() : 0, 
+                            subEndDate > DateTime.Now ? subEndDate.GetUnixTimeStamp() : 0, 
                             (DateTime.Now - client.Account.CreationDate).TotalMilliseconds));
+
             client.LookingOfServers = true;
         }
 
@@ -176,7 +179,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             }
 
             /* not suscribe */
-            if (world.RequireSubscription && client.Account.SubscriptionEndDate <= DateTime.Now)
+            if (world.RequireSubscription && client.Account.GetSubscriptionEndDate() <= DateTime.Now)
             {
                 SendSelectServerRefusedMessage(client, world, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_SUBSCRIBERS_ONLY);
                 return;
@@ -203,11 +206,12 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
             /* Bind Ticket */
             client.Account.Ticket = client.Key;
+            AccountManager.Instance.CacheAccount(client.Account);
 
             /* Insert connection info */
-            var connectionRecord = new ConnectionLog
+            var connectionRecord = new Database.Connection
                                        {
-                                           World = world,
+                                           WorldId = world.Id,
                                            Date = DateTime.Now,
                                            Account = client.Account,
                                            Ip = client.IP
@@ -218,7 +222,6 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             if (client.Account.Connections.Count > MaxConnectionLogs)
                 client.Account.RemoveOldestConnection();
 
-            connectionRecord.Create();
             client.SaveNow();
 
             client.Send(new SelectedServerDataMessage(

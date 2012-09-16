@@ -1,38 +1,91 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.ModelConfiguration;
 using System.Linq;
-using Castle.ActiveRecord;
-using NHibernate.Criterion;
-using Stump.Server.WorldServer.Core.IPC;
-using Stump.Server.WorldServer.Database.Startup;
-using Stump.Server.WorldServer.Game.Accounts.Startup;
 
-namespace Stump.Server.WorldServer.Database.Accounts
+namespace Stump.Server.WorldServer.Database
 {
-    [Serializable]
-    [ActiveRecord("accounts")]
-    public class WorldAccount : WorldBaseRecord<WorldAccount>
+    public class WorldAccountConfiguration : EntityTypeConfiguration<WorldAccount>
     {
-        private IList<WorldAccount> m_ignoreds;
-        private IList<WorldAccount> m_friends;
-        private IList<StartupActionRecord> m_startupActions;
+        public WorldAccountConfiguration()
+        {
+            ToTable("accounts");
+            HasMany(x => x.Friends).WithMany(x => x.Followers).Map(x => x.MapLeftKey("AccountId").MapRightKey("FriendAccountId").ToTable("accounts_friends"));
+            HasMany(x => x.IgnoredAccounts).WithMany(x => x.IgnoredBy).Map(x => x.MapLeftKey("AccountId").MapRightKey("IgnoredAccountId").ToTable("accounts_ignoreds"));
+            HasMany(x => x.StartupActions).WithMany().Map(x => x.MapLeftKey("AccountId").MapRightKey("StartupActionId").ToTable("accounts_startup_actions"));
+        }
+    }
 
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
-        public uint Id
+    public partial class WorldAccount
+    {
+        public WorldAccount()
+        {
+            Followers = new HashSet<WorldAccount>();
+            Friends = new HashSet<WorldAccount>();
+            IgnoredBy = new HashSet<WorldAccount>();
+            IgnoredAccounts = new HashSet<WorldAccount>();
+            StartupActions = new HashSet<StartupAction>();
+        }
+
+        // Primitive properties
+
+        public int Id
         {
             get;
             set;
         }
 
-        [Property("Nickname", NotNull = true)]
         public string Nickname
         {
             get;
             set;
         }
 
-        [Property("LastConnection", NotNull = false)]
-        public DateTime LastConnection
+        public DateTime? LastConnection
+        {
+            get;
+            set;
+        }
+
+        public string LastIp
+        {
+            get;
+            set;
+        }
+
+        public int? ConnectedCharacter
+        {
+            get;
+            set;
+        }
+
+        // Navigation properties
+
+        public virtual ICollection<WorldAccount> Followers
+        {
+            get;
+            set;
+        }
+
+        public virtual ICollection<WorldAccount> Friends
+        {
+            get;
+            set;
+        }
+
+        public virtual ICollection<WorldAccount> IgnoredBy
+        {
+            get;
+            set;
+        }
+
+        public virtual ICollection<WorldAccount> IgnoredAccounts
+        {
+            get;
+            set;
+        }
+
+        public virtual ICollection<StartupAction> StartupActions
         {
             get;
             set;
@@ -40,65 +93,7 @@ namespace Stump.Server.WorldServer.Database.Accounts
 
         public int LastConnectionTimeStamp
         {
-            get { return (int) (DateTime.Now - LastConnection).TotalHours; }
-        }
-
-        [Property("LastIp", NotNull = false, Length = 28)]
-        public string LastIp
-        {
-            get;
-            set;
-        }
-
-        [Property("ConnectedCharacter", NotNull = false)]
-        public int? ConnectedCharacterId
-        {
-            get;
-            set;
-        }
-
-        [HasAndBelongsToMany(typeof (StartupActionRecord), Table = "accounts_startup_actions", ColumnKey = "AccountId",
-            ColumnRef = "StartupActionId", Cascade = ManyRelationCascadeEnum.Delete)]
-        public IList<StartupActionRecord> StartupActions
-        {
-            get { return m_startupActions ?? new List<StartupActionRecord>(); }
-            set { m_startupActions = value; }
-        }
-        
-        [HasAndBelongsToMany(typeof (WorldAccount), Table = "accounts_friends", ColumnKey = "AccountId",
-            ColumnRef = "FriendAccountId", Cascade = ManyRelationCascadeEnum.Delete)]
-        public IList<WorldAccount> Friends
-        {
-            get { return m_friends ?? new List<WorldAccount>(); }
-            set { m_friends = value; }
-        }
-
-        [HasAndBelongsToMany(typeof (WorldAccount), Table = "accounts_ignored", ColumnKey = "AccountId",
-            ColumnRef = "IgnoredAccountId", Cascade = ManyRelationCascadeEnum.Delete)]
-        public IList<WorldAccount> Ignoreds
-        {
-            get { return m_ignoreds ?? new List<WorldAccount>(); }
-            set { m_ignoreds = value; }
-        }
-        
-        public bool IsRevertFriend(WorldAccount account)
-        {
-            return Friends.Contains(account) && account.Friends.Contains(this);
-        }
-        
-        public static WorldAccount FindById(uint id)
-        {
-            return FindByPrimaryKey(id);
-        }
-
-        public static WorldAccount FindByNickname(string nickname)
-        {
-            return FindOne(Restrictions.Eq("Nickname", nickname));
-        }
-
-        public static bool Exists(string nickname)
-        {
-            return Exists(Restrictions.Eq("Nickname", nickname));
+            get { return LastConnection.HasValue ? (int) (DateTime.Now - LastConnection.Value).TotalHours : 0; }
         }
 
         public StartupAction[] GetStartupActions()

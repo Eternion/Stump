@@ -6,13 +6,14 @@ using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
-using Stump.Server.WorldServer.Database.Npcs;
-using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using NpcSpawn = Stump.Server.WorldServer.Database.Npcs.NpcSpawn;
+using NpcTemplate = Stump.Server.WorldServer.Database.Npcs.NpcTemplate;
 
 namespace Stump.Plugins.EditorPlugin.Commands
 {

@@ -1,19 +1,28 @@
-﻿using Castle.ActiveRecord;
+﻿using System.Data.Entity.ModelConfiguration;
+using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Items;
 
-namespace Stump.Server.WorldServer.Database.Npcs.Replies
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord(DiscriminatorValue = "UseItem")]
-    public class UseItemReply : NpcReply
+    public class UseItemReplyConfiguration : EntityTypeConfiguration<UseItemReply>
+    {
+        public UseItemReplyConfiguration()
+        {
+            Map(x => x.Requires("Discriminator").HasValue("UseItem"));
+
+            Property(x => x.ItemId).HasColumnName("UseItem_Item");
+            Property(x => x.Amount).HasColumnName("UseItem_Amount");
+        }
+    }
+
+    public class UseItemReply : Npcs.NpcReply
     {
         private ItemTemplate m_itemTemplate;
 
-        [Property("UseItem_Item")]
-        private int ItemId
+        public int ItemId
         {
             get;
             set;

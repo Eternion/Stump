@@ -1,19 +1,29 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Data.Entity.ModelConfiguration;
+using System.Data.Objects;
 using System.Linq;
 using Castle.ActiveRecord;
 using Stump.Core.IO;
+using Stump.Server.BaseServer.Database;
+using Stump.Server.WorldServer.Database.World;
 
-namespace Stump.Server.WorldServer.Database.World.Maps
+namespace Stump.Server.WorldServer.Database.Maps
 {
-    [ActiveRecord("maps")]
-    public class MapRecord : WorldBaseRecord<MapRecord>
+    public class MapRecordConfiguration : EntityTypeConfiguration<MapRecord>
+    {
+        public MapRecordConfiguration()
+        {
+            ToTable("maps");
+            HasRequired(x => x.Position);
+            Ignore(x => x.Outdoor);
+        }
+    } 
+    public class MapRecord : ISaveIntercepter
     {
         private byte[] m_compressedCells;
         private byte[] m_compressedElements;
 
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
         public int Id
         {
             get;
@@ -23,7 +33,6 @@ namespace Stump.Server.WorldServer.Database.World.Maps
         /// <summary>
         ///   Map version of this map.
         /// </summary>
-        [Property]
         public uint Version
         {
             get;
@@ -32,8 +41,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
 
         /// <summary>
         ///   Relative id of this map.
-        /// </summary>.
-        [Property]
+        /// </summary>
         public uint RelativeId
         {
             get;
@@ -43,7 +51,6 @@ namespace Stump.Server.WorldServer.Database.World.Maps
         /// <summary>
         ///   Type of this map.
         /// </summary>
-        [Property]
         public int MapType
         {
             get;
@@ -53,14 +60,12 @@ namespace Stump.Server.WorldServer.Database.World.Maps
         /// <summary>
         ///   Zone Id which owns this map.
         /// </summary>
-        [Property]
         public int SubAreaId
         {
             get;
             set;
         }
 
-        [OneToOne]
         public MapPositionRecord Position
         {
             get;
@@ -73,84 +78,72 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             set { if (Position != null) Position.Outdoor = value; }
         }
 
-        [Property]
         public int TopNeighbourId
         {
             get;
             set;
         }
 
-        [Property]
         public int BottomNeighbourId
         {
             get;
             set;
         }
 
-        [Property]
         public int LeftNeighbourId
         {
             get;
             set;
         }
 
-        [Property]
         public int RightNeighbourId
         {
             get;
             set;
         }
 
-        [Property]
         public int ClientTopNeighbourId
         {
             get;
             set;
         }
 
-        [Property]
         public int ClientBottomNeighbourId
         {
             get;
             set;
         }
 
-        [Property]
         public int ClientLeftNeighbourId
         {
             get;
             set;
         }
 
-        [Property]
         public int ClientRightNeighbourId
         {
             get;
             set;
         }
 
-        [Property]
         public int ShadowBonusOnEntities
         {
             get;
             set;
         }
 
-        [Property]
         public bool UseLowpassFilter
         {
             get;
             set;
         }
 
-        [Property]
         public bool UseReverb
         {
             get;
             set;
         }
 
-        [Property]
         public int PresetId
         {
             get;
@@ -160,23 +153,29 @@ namespace Stump.Server.WorldServer.Database.World.Maps
         private short[] m_blueCells;
         private short[] m_redCells;
 
-        [Field("BlueCells")]
-        private byte[] m_rawBlueCells;
+        public byte[] BlueCellsBin
+        {
+            get;
+            set;
+        }
 
-        [Field("RedCells")]
-        private byte[] m_rawRedCells;
+        public byte[] RedCellsBin
+        {
+            get;
+            set;
+        }
 
         public short[] BlueFightCells
         {
             get
             {
-                return m_rawBlueCells == null ? new short[0] : (m_blueCells ?? ( m_blueCells = DeserializeFightCells(m_rawBlueCells) ));
+                return BlueCellsBin == null ? new short[0] : ( m_blueCells ?? ( m_blueCells = DeserializeFightCells(BlueCellsBin) ) );
             }
             set
             {
                 m_blueCells = value;
 
-                m_rawBlueCells = value != null ? SerializeFightCells(value) : null;
+                BlueCellsBin = value != null ? SerializeFightCells(value) : null;
             }
         }
 
@@ -184,12 +183,12 @@ namespace Stump.Server.WorldServer.Database.World.Maps
         {
             get
             {
-                return m_rawRedCells == null ? new short[0] : (m_redCells ?? ( m_redCells = DeserializeFightCells(m_rawRedCells) ));
+                return RedCellsBin == null ? new short[0] : ( m_redCells ?? ( m_redCells = DeserializeFightCells(RedCellsBin) ) );
             }
             set
             {
                 m_redCells = value;
-                m_rawRedCells = value != null ? SerializeFightCells(value) : null;
+                RedCellsBin = value != null ? SerializeFightCells(value) : null;
             }
         }
 
@@ -219,8 +218,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             return cells;
         }
 
-        [Property(ColumnType = "BinaryBlob", NotNull = true)]
-        private byte[] CompressedCells
+        public byte[] CompressedCells
         {
             get { return m_compressedCells; }
             set
@@ -237,8 +235,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             }
         }
 
-        [Property(ColumnType = "BinaryBlob", NotNull = true)]
-        private byte[] CompressedElements
+        public byte[] CompressedElements
         {
             get { return m_compressedElements; }
             set
@@ -274,7 +271,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             set;
         }
 
-        protected override bool OnFlushDirty(object id, IDictionary previousState, IDictionary currentState, NHibernate.Type.IType[] types)
+        public void BeforeSave(ObjectStateEntry currentEntry)
         {
             m_compressedCells = new byte[Cells.Length * Cell.StructSize];
 
@@ -283,7 +280,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
                 Array.Copy(Cells[i].Serialize(), 0, m_compressedCells, i * Cell.StructSize, Cell.StructSize);
             }
 
-            m_compressedCells = (byte[])(currentState["CompressedCells"] = ZipHelper.Compress(m_compressedCells));
+            m_compressedCells = ZipHelper.Compress(m_compressedCells);
 
             m_compressedElements = new byte[Elements.Length * MapElement.Size];
             for (int i = 0; i < Elements.Length; i++)
@@ -291,32 +288,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
                 Array.Copy(Elements[i].Serialize(), 0, m_compressedElements, i * MapElement.Size, MapElement.Size);
             }
 
-            m_compressedElements = (byte[])(currentState["CompressedElements"] = ZipHelper.Compress(m_compressedElements));
-
-            return base.OnFlushDirty(id, previousState, currentState, types);
+            m_compressedElements = ZipHelper.Compress(m_compressedElements);
         }
-
-        protected override bool BeforeSave(IDictionary state)
-        {
-            m_compressedCells = new byte[Cells.Length * Cell.StructSize];
-
-            for (int i = 0; i < Cells.Length; i++)
-            {
-                Array.Copy(Cells[i].Serialize(), 0, m_compressedCells, i * Cell.StructSize, Cell.StructSize);
-            }
-
-            m_compressedCells = (byte[])( state["CompressedCells"] = ZipHelper.Compress(m_compressedCells) );
-
-            m_compressedElements = new byte[Elements.Length * MapElement.Size];
-            for (int i = 0; i < Elements.Length; i++)
-            {
-                Array.Copy(Elements[i].Serialize(), 0, m_compressedElements, i * MapElement.Size, MapElement.Size);
-            }
-
-            m_compressedElements = (byte[])( state["CompressedElements"] = ZipHelper.Compress(m_compressedElements) );
-
-            return base.BeforeSave(state);
-        }
-
     }
 }

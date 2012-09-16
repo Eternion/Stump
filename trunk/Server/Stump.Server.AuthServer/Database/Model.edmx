@@ -1,0 +1,676 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="AuthModel.Store" Alias="Self" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.5" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+  <EntityContainer Name="AuthModelStoreContainer">
+    <EntitySet Name="Accounts" EntityType="AuthModel.Store.Accounts" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Connections" EntityType="AuthModel.Store.Connections" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="IpBans" EntityType="AuthModel.Store.IpBans" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Sanctions" EntityType="AuthModel.Store.Sanctions" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Subscriptions" EntityType="AuthModel.Store.Subscriptions" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Texts" EntityType="AuthModel.Store.Texts" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TextsUI" EntityType="AuthModel.Store.TextsUI" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Worlds" EntityType="AuthModel.Store.Worlds" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="WorldCharacters" EntityType="AuthModel.Store.WorldCharacters" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="WorldCharactersDeleted" EntityType="AuthModel.Store.WorldCharactersDeleted" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="AccountSubscription" Association="AuthModel.Store.AccountSubscription">
+      <End Role="Account" EntitySet="Accounts" />
+      <End Role="Subscription" EntitySet="Subscriptions" />
+    </AssociationSet>
+    <AssociationSet Name="AccountSanction" Association="AuthModel.Store.AccountSanction">
+      <End Role="Account" EntitySet="Accounts" />
+      <End Role="Sanction" EntitySet="Sanctions" />
+    </AssociationSet>
+    <AssociationSet Name="AccountWorldCharacter" Association="AuthModel.Store.AccountWorldCharacter">
+      <End Role="Account" EntitySet="Accounts" />
+      <End Role="WorldCharacter" EntitySet="WorldCharacters" />
+    </AssociationSet>
+    <AssociationSet Name="AccountWorldCharacterDeleted" Association="AuthModel.Store.AccountWorldCharacterDeleted">
+      <End Role="Account" EntitySet="Accounts" />
+      <End Role="WorldCharacterDeleted" EntitySet="WorldCharactersDeleted" />
+    </AssociationSet>
+    <AssociationSet Name="AccountConnection" Association="AuthModel.Store.AccountConnection">
+      <End Role="Account" EntitySet="Accounts" />
+      <End Role="Connection" EntitySet="Connections" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Accounts">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Login" Type="longtext" Nullable="false" />
+    <Property Name="PasswordHash" Type="longtext" Nullable="false" />
+    <Property Name="Nickname" Type="longtext" Nullable="false" />
+    <Property Name="RoleAsInt" Type="int" Nullable="false" />
+    <Property Name="AvailableBreedsFlag" Type="bigint" Nullable="false" DefaultValue="16383" />
+    <Property Name="Ticket" Type="longtext" Nullable="true" />
+    <Property Name="SecretQuestion" Type="longtext" Nullable="false" />
+    <Property Name="SecretAnswer" Type="longtext" Nullable="false" />
+    <Property Name="Lang" Type="longtext" Nullable="false" />
+    <Property Name="Email" Type="longtext" Nullable="false" />
+    <Property Name="CreationDate" Type="datetime" Nullable="false" />
+    <Property Name="Tokens" Type="int" Nullable="false" />
+    <Property Name="NewTokens" Type="int" Nullable="false" />
+    <Property Name="LastVote" Type="datetime" Nullable="true" />
+    <Property Name="RecordVersion" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Connections">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Date" Type="datetime" Nullable="false" />
+    <Property Name="Ip" Type="longtext" Nullable="false" />
+    <Property Name="AccountId" Type="int" Nullable="false" />
+    <Property Name="WorldId" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="IpBans">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IPAsString" Type="longtext" Nullable="false" />
+    <Property Name="Date" Type="datetime" Nullable="false" />
+    <Property Name="Duration" Type="time" Nullable="true" />
+    <Property Name="BanReason" Type="longtext" Nullable="true" />
+    <Property Name="BannedBy" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Sanctions">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Date" Type="datetime" Nullable="false" />
+    <Property Name="Duration" Type="time" Nullable="true" />
+    <Property Name="BanReason" Type="longtext" Nullable="true" />
+    <Property Name="AccountId" Type="int" Nullable="false" />
+    <Property Name="BannedBy" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Subscriptions">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="BuyDate" Type="datetime" Nullable="false" />
+    <Property Name="Duration" Type="time" Nullable="true" />
+    <Property Name="PaymentType" Type="longtext" Nullable="true" />
+    <Property Name="AccountId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Texts">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="French" Type="longtext" Nullable="true" />
+    <Property Name="English" Type="longtext" Nullable="true" />
+    <Property Name="German" Type="longtext" Nullable="true" />
+    <Property Name="Spanish" Type="longtext" Nullable="true" />
+    <Property Name="Italian" Type="longtext" Nullable="true" />
+    <Property Name="Japanish" Type="longtext" Nullable="true" />
+    <Property Name="Dutsh" Type="longtext" Nullable="true" />
+    <Property Name="Portugese" Type="longtext" Nullable="true" />
+    <Property Name="Russish" Type="longtext" Nullable="true" />
+  </EntityType>
+  <EntityType Name="TextsUI">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="longtext" Nullable="true" />
+    <Property Name="French" Type="longtext" Nullable="true" />
+    <Property Name="English" Type="longtext" Nullable="true" />
+    <Property Name="German" Type="longtext" Nullable="true" />
+    <Property Name="Spanish" Type="longtext" Nullable="true" />
+    <Property Name="Italian" Type="longtext" Nullable="true" />
+    <Property Name="Japanish" Type="longtext" Nullable="true" />
+    <Property Name="Dutsh" Type="longtext" Nullable="true" />
+    <Property Name="Portugese" Type="longtext" Nullable="true" />
+    <Property Name="Russish" Type="longtext" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Worlds">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Name" Type="longtext" Nullable="false" />
+    <Property Name="RequireSubscription" Type="bool" Nullable="false" />
+    <Property Name="RequiredRoleAsInt" Type="int" Nullable="false" />
+    <Property Name="Completion" Type="int" Nullable="false" />
+    <Property Name="ServerSelectable" Type="bool" Nullable="false" />
+    <Property Name="CharCapacity" Type="int" Nullable="false" />
+    <Property Name="StatusAsInt" Type="int" Nullable="false" />
+    <Property Name="CharsCount" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="WorldCharacters">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CharacterId" Type="int" Nullable="false" />
+    <Property Name="AccountId" Type="int" Nullable="false" />
+    <Property Name="WorldId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="WorldCharactersDeleted">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CharacterId" Type="int" Nullable="false" />
+    <Property Name="DeletionDate" Type="datetime" Nullable="false" />
+    <Property Name="AccountId" Type="int" Nullable="false" />
+    <Property Name="WorldId" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="AccountSubscription">
+    <End Role="Account" Type="AuthModel.Store.Accounts" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Subscription" Type="AuthModel.Store.Subscriptions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Account">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Subscription">
+        <PropertyRef Name="AccountId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AccountSanction">
+    <End Role="Account" Type="AuthModel.Store.Accounts" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Sanction" Type="AuthModel.Store.Sanctions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Account">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Sanction">
+        <PropertyRef Name="AccountId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AccountWorldCharacter">
+    <End Role="Account" Type="AuthModel.Store.Accounts" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="WorldCharacter" Type="AuthModel.Store.WorldCharacters" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Account">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="WorldCharacter">
+        <PropertyRef Name="AccountId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AccountWorldCharacterDeleted">
+    <End Role="Account" Type="AuthModel.Store.Accounts" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="WorldCharacterDeleted" Type="AuthModel.Store.WorldCharactersDeleted" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Account">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="WorldCharacterDeleted">
+        <PropertyRef Name="AccountId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AccountConnection">
+    <End Role="Account" Type="AuthModel.Store.Accounts" Multiplicity="1" />
+    <End Role="Connection" Type="AuthModel.Store.Connections" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Account">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Connection">
+        <PropertyRef Name="AccountId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="AuthModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="DatabaseAccessor" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Accounts" EntityType="AuthModel.Account" />
+          <EntitySet Name="Connections" EntityType="AuthModel.Connection" />
+          <EntitySet Name="IpBans" EntityType="AuthModel.IpBan" />
+          <EntitySet Name="Sanctions" EntityType="AuthModel.Sanction" />
+          <EntitySet Name="Subscriptions" EntityType="AuthModel.Subscription" />
+          <EntitySet Name="Texts" EntityType="AuthModel.TextRecord" />
+          <EntitySet Name="TextsUI" EntityType="AuthModel.TextUIRecord" />
+          <EntitySet Name="Worlds" EntityType="AuthModel.WorldServer" />
+          <EntitySet Name="WorldCharacters" EntityType="AuthModel.WorldCharacter" />
+          <EntitySet Name="WorldCharactersDeleted" EntityType="AuthModel.WorldCharacterDeleted" />
+          <AssociationSet Name="AccountSubscription" Association="AuthModel.AccountSubscription">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="Subscription" EntitySet="Subscriptions" />
+          </AssociationSet>
+          <AssociationSet Name="AccountSanction" Association="AuthModel.AccountSanction">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="Sanction" EntitySet="Sanctions" />
+          </AssociationSet>
+          <AssociationSet Name="AccountWorldCharacter" Association="AuthModel.AccountWorldCharacter">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="WorldCharacter" EntitySet="WorldCharacters" />
+          </AssociationSet>
+          <AssociationSet Name="AccountWorldCharacterDeleted" Association="AuthModel.AccountWorldCharacterDeleted">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="WorldCharacterDeleted" EntitySet="WorldCharactersDeleted" />
+          </AssociationSet>
+          <AssociationSet Name="AccountConnection" Association="AuthModel.AccountConnection">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="Connection" EntitySet="Connections" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Login" Type="String" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" Nullable="false" />
+          <Property Name="Nickname" Type="String" Nullable="false" />
+          <Property Name="RoleAsInt" Type="Int32" Nullable="false" a:GetterAccess="Private" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" a:SetterAccess="Private" />
+          <Property Name="AvailableBreedsFlag" Type="Int64" Nullable="false" DefaultValue="16383" />
+          <Property Name="Ticket" Type="String" />
+          <Property Name="SecretQuestion" Type="String" Nullable="false" />
+          <Property Name="SecretAnswer" Type="String" Nullable="false" />
+          <Property Name="Lang" Type="String" Nullable="false" />
+          <Property Name="Email" Type="String" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" />
+          <Property Name="Tokens" Type="Int32" Nullable="false" />
+          <Property Name="NewTokens" Type="Int32" Nullable="false" />
+          <Property Name="LastVote" Type="DateTime" />
+          <Property Name="RecordVersion" Type="Int32" />
+          <NavigationProperty Name="Subscriptions" Relationship="AuthModel.AccountSubscription" FromRole="Account" ToRole="Subscription" />
+          <NavigationProperty Name="Sanctions" Relationship="AuthModel.AccountSanction" FromRole="Account" ToRole="Sanction" />
+          <NavigationProperty Name="WorldCharacters" Relationship="AuthModel.AccountWorldCharacter" FromRole="Account" ToRole="WorldCharacter" />
+          <NavigationProperty Name="WorldDeletedCharacters" Relationship="AuthModel.AccountWorldCharacterDeleted" FromRole="Account" ToRole="WorldCharacterDeleted" />
+          <NavigationProperty Name="Connections" Relationship="AuthModel.AccountConnection" FromRole="Account" ToRole="Connection" />
+        </EntityType>
+        <EntityType Name="Connection">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date" Type="DateTime" Nullable="false" />
+          <Property Name="Ip" Type="String" Nullable="false" />
+          <Property Name="AccountId" Type="Int32" Nullable="false" />
+          <Property Name="WorldId" Type="Int32" Nullable="true" />
+          <NavigationProperty Name="Account" Relationship="AuthModel.AccountConnection" FromRole="Connection" ToRole="Account" />
+        </EntityType>
+        <EntityType Name="IpBan">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IPAsString" Type="String" a:GetterAccess="Public" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" a:SetterAccess="Private" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" />
+          <Property Name="Duration" Type="Time" Nullable="true" />
+          <Property Name="BanReason" Type="String" Nullable="true" />
+          <Property Name="BannedBy" Type="Int32" Nullable="true" />
+        </EntityType>
+        <EntityType Name="Sanction">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date" Type="DateTime" Nullable="false" />
+          <Property Name="Duration" Type="Time" Nullable="true" />
+          <Property Name="BanReason" Type="String" Nullable="true" />
+          <Property Name="AccountId" Type="Int32" Nullable="false" />
+          <Property Name="BannedBy" Type="Int32" Nullable="true" />
+          <NavigationProperty Name="Account" Relationship="AuthModel.AccountSanction" FromRole="Sanction" ToRole="Account" />
+        </EntityType>
+        <EntityType Name="Subscription">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BuyDate" Type="DateTime" Nullable="false" />
+          <Property Name="Duration" Type="Time" Nullable="true" />
+          <Property Name="PaymentType" Type="String" />
+          <Property Name="AccountId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Account" Relationship="AuthModel.AccountSubscription" FromRole="Subscription" ToRole="Account" />
+        </EntityType>
+        <EntityType Name="TextRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="French" Type="String" Nullable="true" />
+          <Property Name="English" Type="String" Nullable="true" />
+          <Property Name="German" Type="String" Nullable="true" />
+          <Property Name="Spanish" Type="String" Nullable="true" />
+          <Property Name="Italian" Type="String" Nullable="true" />
+          <Property Name="Japanish" Type="String" Nullable="true" />
+          <Property Name="Dutsh" Type="String" Nullable="true" />
+          <Property Name="Portugese" Type="String" Nullable="true" />
+          <Property Name="Russish" Type="String" Nullable="true" />
+        </EntityType>
+        <EntityType Name="TextUIRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" />
+          <Property Name="French" Type="String" />
+          <Property Name="English" Type="String" />
+          <Property Name="German" Type="String" />
+          <Property Name="Spanish" Type="String" />
+          <Property Name="Italian" Type="String" />
+          <Property Name="Japanish" Type="String" />
+          <Property Name="Dutsh" Type="String" />
+          <Property Name="Portugese" Type="String" />
+          <Property Name="Russish" Type="String" />
+        </EntityType>
+        <EntityType Name="WorldServer">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="RequireSubscription" Type="Boolean" Nullable="false" />
+          <Property Name="RequiredRoleAsInt" Type="Int32" Nullable="false" a:SetterAccess="Private" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" a:GetterAccess="Private" />
+          <Property Name="Completion" Type="Int32" Nullable="false" />
+          <Property Name="ServerSelectable" Type="Boolean" Nullable="false" />
+          <Property Name="CharCapacity" Type="Int32" Nullable="false" />
+          <Property Name="StatusAsInt" Type="Int32" a:GetterAccess="Private" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" a:SetterAccess="Private" Nullable="false" />
+          <Property Name="CharsCount" Type="Int32" />
+        </EntityType>
+        <EntityType Name="WorldCharacter">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CharacterId" Type="Int32" Nullable="false" />
+          <Property Name="AccountId" Type="Int32" Nullable="false" />
+          <Property Name="WorldId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Account" Relationship="AuthModel.AccountWorldCharacter" FromRole="WorldCharacter" ToRole="Account" />
+        </EntityType>
+        <EntityType Name="WorldCharacterDeleted">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CharacterId" Type="Int32" Nullable="false" />
+          <Property Name="DeletionDate" Type="DateTime" Nullable="false" />
+          <Property Name="AccountId" Type="Int32" Nullable="false" />
+          <Property Name="WorldId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Account" Relationship="AuthModel.AccountWorldCharacterDeleted" FromRole="WorldCharacterDeleted" ToRole="Account" />
+        </EntityType>
+        <Association Name="AccountSubscription">
+          <End Type="AuthModel.Account" Role="Account" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="AuthModel.Subscription" Role="Subscription" Multiplicity="*" >
+          </End>
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Subscription">
+              <PropertyRef Name="AccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AccountSanction">
+          <End Type="AuthModel.Account" Role="Account" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="AuthModel.Sanction" Role="Sanction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Sanction">
+              <PropertyRef Name="AccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AccountWorldCharacter">
+          <End Type="AuthModel.Account" Role="Account" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="AuthModel.WorldCharacter" Role="WorldCharacter" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="WorldCharacter">
+              <PropertyRef Name="AccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AccountWorldCharacterDeleted">
+          <End Type="AuthModel.Account" Role="Account" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="AuthModel.WorldCharacterDeleted" Role="WorldCharacterDeleted" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="WorldCharacterDeleted">
+              <PropertyRef Name="AccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AccountConnection">
+          <End Type="AuthModel.Account" Role="Account" Multiplicity="1" />
+          <End Type="AuthModel.Connection" Role="Connection" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Connection">
+              <PropertyRef Name="AccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="AuthModelStoreContainer" CdmEntityContainer="DatabaseAccessor">
+    <EntitySetMapping Name="Accounts">
+      <EntityTypeMapping TypeName="IsTypeOf(AuthModel.Account)">
+        <MappingFragment StoreEntitySet="Accounts">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Login" ColumnName="Login" />
+          <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+          <ScalarProperty Name="Nickname" ColumnName="Nickname" />
+          <ScalarProperty Name="RoleAsInt" ColumnName="RoleAsInt" />
+          <ScalarProperty Name="AvailableBreedsFlag" ColumnName="AvailableBreedsFlag" />
+          <ScalarProperty Name="Ticket" ColumnName="Ticket" />
+          <ScalarProperty Name="SecretQuestion" ColumnName="SecretQuestion" />
+          <ScalarProperty Name="SecretAnswer" ColumnName="SecretAnswer" />
+          <ScalarProperty Name="Lang" ColumnName="Lang" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+          <ScalarProperty Name="Tokens" ColumnName="Tokens" />
+          <ScalarProperty Name="NewTokens" ColumnName="NewTokens" />
+          <ScalarProperty Name="LastVote" ColumnName="LastVote" />
+          <ScalarProperty Name="RecordVersion" ColumnName="RecordVersion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Connections">
+      <EntityTypeMapping TypeName="IsTypeOf(AuthModel.Connection)">
+        <MappingFragment StoreEntitySet="Connections">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="Ip" ColumnName="Ip" />
+          <ScalarProperty Name="AccountId" ColumnName="AccountId" />
+          <ScalarProperty Name="WorldId" ColumnName="WorldId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="IpBans">
+      <EntityTypeMapping TypeName="IsTypeOf(AuthModel.IpBan)">
+        <MappingFragment StoreEntitySet="IpBans">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="IPAsString" ColumnName="IPAsString" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="Duration" ColumnName="Duration" />
+          <ScalarProperty Name="BanReason" ColumnName="BanReason" />
+          <ScalarProperty Name="BannedBy" ColumnName="BannedBy" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Sanctions">
+      <EntityTypeMapping TypeName="IsTypeOf(AuthModel.Sanction)">
+        <MappingFragment StoreEntitySet="Sanctions">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="Duration" ColumnName="Duration" />
+          <ScalarProperty Name="BanReason" ColumnName="BanReason" />
+          <ScalarProperty Name="AccountId" ColumnName="AccountId" />
+          <ScalarProperty Name="BannedBy" ColumnName="BannedBy" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Subscriptions">
+      <EntityTypeMapping TypeName="IsTypeOf(AuthModel.Subscription)">
+        <MappingFragment StoreEntitySet="Subscriptions">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="BuyDate" ColumnName="BuyDate" />
+          <ScalarProperty Name="Duration" ColumnName="Duration" />
+          <ScalarProperty Name="PaymentType" ColumnName="PaymentType" />
+          <ScalarProperty Name="AccountId" ColumnName="AccountId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Texts">
+      <EntityTypeMapping TypeName="IsTypeOf(AuthModel.TextRecord)">
+        <MappingFragment StoreEntitySet="Texts">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="French" ColumnName="French" />
+          <ScalarProperty Name="English" ColumnName="English" />
+          <ScalarProperty Name="German" ColumnName="German" />
+          <ScalarProperty Name="Spanish" ColumnName="Spanish" />
+          <ScalarProperty Name="Italian" ColumnName="Italian" />
+          <ScalarProperty Name="Japanish" ColumnName="Japanish" />
+          <ScalarProperty Name="Dutsh" ColumnName="Dutsh" />
+          <ScalarProperty Name="Portugese" ColumnName="Portugese" />
+          <ScalarProperty Name="Russish" ColumnName="Russish" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TextsUI">
+      <EntityTypeMapping TypeName="IsTypeOf(AuthModel.TextUIRecord)">
+        <MappingFragment StoreEntitySet="TextsUI">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="French" ColumnName="French" />
+          <ScalarProperty Name="English" ColumnName="English" />
+          <ScalarProperty Name="German" ColumnName="German" />
+          <ScalarProperty Name="Spanish" ColumnName="Spanish" />
+          <ScalarProperty Name="Italian" ColumnName="Italian" />
+          <ScalarProperty Name="Japanish" ColumnName="Japanish" />
+          <ScalarProperty Name="Dutsh" ColumnName="Dutsh" />
+          <ScalarProperty Name="Portugese" ColumnName="Portugese" />
+          <ScalarProperty Name="Russish" ColumnName="Russish" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Worlds">
+      <EntityTypeMapping TypeName="IsTypeOf(AuthModel.WorldServer)">
+        <MappingFragment StoreEntitySet="Worlds">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="RequireSubscription" ColumnName="RequireSubscription" />
+          <ScalarProperty Name="RequiredRoleAsInt" ColumnName="RequiredRoleAsInt" />
+          <ScalarProperty Name="Completion" ColumnName="Completion" />
+          <ScalarProperty Name="ServerSelectable" ColumnName="ServerSelectable" />
+          <ScalarProperty Name="CharCapacity" ColumnName="CharCapacity" />
+          <ScalarProperty Name="StatusAsInt" ColumnName="StatusAsInt" />
+          <ScalarProperty Name="CharsCount" ColumnName="CharsCount" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="WorldCharacters">
+      <EntityTypeMapping TypeName="IsTypeOf(AuthModel.WorldCharacter)">
+        <MappingFragment StoreEntitySet="WorldCharacters">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
+          <ScalarProperty Name="AccountId" ColumnName="AccountId" />
+          <ScalarProperty Name="WorldId" ColumnName="WorldId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="WorldCharactersDeleted">
+      <EntityTypeMapping TypeName="IsTypeOf(AuthModel.WorldCharacterDeleted)">
+        <MappingFragment StoreEntitySet="WorldCharactersDeleted">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
+          <ScalarProperty Name="DeletionDate" ColumnName="DeletionDate" />
+          <ScalarProperty Name="AccountId" ColumnName="AccountId" />
+          <ScalarProperty Name="WorldId" ColumnName="WorldId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="DDLGenerationTemplate" Value="$(VSEFTools)\DBGen\SSDLToMySQL.tt" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="Model">
+        <EntityTypeShape EntityType="AuthModel.Account" Width="1.5" PointX="0.75" PointY="5.875" Height="5.057109375" IsExpanded="true" />
+        <EntityTypeShape EntityType="AuthModel.Connection" Width="1.5" PointX="3" PointY="4.25" Height="2.1725878906249996" IsExpanded="true" />
+        <EntityTypeShape EntityType="AuthModel.IpBan" Width="1.5" PointX="5.75" PointY="0.75" Height="2.1725878906249996" IsExpanded="true" />
+        <EntityTypeShape EntityType="AuthModel.Sanction" Width="1.5" PointX="3" PointY="7.125" Height="2.3648893229166674" IsExpanded="true" />
+        <EntityTypeShape EntityType="AuthModel.Subscription" Width="1.5" PointX="3" PointY="10.25" Height="2.1725878906249996" IsExpanded="true" />
+        <EntityTypeShape EntityType="AuthModel.TextRecord" Width="1.5" PointX="5.75" PointY="3.75" Height="2.941793619791667" IsExpanded="true" />
+        <EntityTypeShape EntityType="AuthModel.TextUIRecord" Width="1.5" PointX="7.75" PointY="0.75" Height="3.1340950520833317" IsExpanded="true" />
+        <EntityTypeShape EntityType="AuthModel.WorldServer" Width="1.5" PointX="7.75" PointY="4.75" Height="2.7494921874999996" IsExpanded="true" />
+        <EntityTypeShape EntityType="AuthModel.WorldCharacter" Width="1.5" PointX="3" PointY="1.5" Height="1.9802864583333337" IsExpanded="true" />
+        <EntityTypeShape EntityType="AuthModel.WorldCharacterDeleted" Width="1.5" PointX="3" PointY="13.25" Height="2.1725878906249996" IsExpanded="true" />
+        <AssociationConnector Association="AuthModel.AccountSubscription">
+          <ConnectorPoint PointX="2.25" PointY="10.5910546875" />
+          <ConnectorPoint PointX="3" PointY="10.5910546875" />
+        </AssociationConnector>
+        <AssociationConnector Association="AuthModel.AccountSanction">
+          <ConnectorPoint PointX="2.25" PointY="8.3074446614583337" />
+          <ConnectorPoint PointX="3" PointY="8.3074446614583337" />
+        </AssociationConnector>
+        <AssociationConnector Association="AuthModel.AccountWorldCharacter">
+          <ConnectorPoint PointX="1.5" PointY="5.875" />
+          <ConnectorPoint PointX="1.5" PointY="2.4901432291666667" />
+          <ConnectorPoint PointX="3" PointY="2.4901432291666667" />
+        </AssociationConnector>
+        <AssociationConnector Association="AuthModel.AccountWorldCharacterDeleted">
+          <ConnectorPoint PointX="1.5" PointY="10.932109375" />
+          <ConnectorPoint PointX="1.5" PointY="14.3362939453125" />
+          <ConnectorPoint PointX="3" PointY="14.3362939453125" />
+        </AssociationConnector>
+        <AssociationConnector Association="AuthModel.AccountConnection">
+          <ConnectorPoint PointX="2.25" PointY="6.1487939453125" />
+          <ConnectorPoint PointX="3" PointY="6.1487939453125" />
+        </AssociationConnector>
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>

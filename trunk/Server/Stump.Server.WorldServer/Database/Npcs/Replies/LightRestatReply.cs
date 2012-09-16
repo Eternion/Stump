@@ -1,13 +1,18 @@
-﻿using System.Drawing;
-using Castle.ActiveRecord;
-using Stump.Core.Attributes;
+﻿using System.Data.Entity.ModelConfiguration;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 
-namespace Stump.Server.WorldServer.Database.Npcs.Replies
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord(DiscriminatorValue = "LightRestat")]
-    public class LightRestatReply : NpcReply
+    public class LightRestatReplyConfiguration : EntityTypeConfiguration<LightRestatReply>
+    {
+        public LightRestatReplyConfiguration()
+        {
+            Map(x => x.Requires("Discriminator").HasValue("LightRestats"));
+
+        }
+    }
+    public class LightRestatReply : Npcs.NpcReply
     {
         public override bool Execute(Npc npc, Character character)
         {

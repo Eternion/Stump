@@ -1,125 +1,127 @@
-using System;
-using Castle.ActiveRecord;
+using System.Data.Entity.ModelConfiguration;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.Server.WorldServer.Database.Effects
+namespace Stump.Server.WorldServer.Database
 {
-    [Serializable]
-    [ActiveRecord("effects")]
-    [D2OClass("Effect", "com.ankamagames.dofus.datacenter.effects")]
-    public class EffectTemplate : WorldBaseRecord<EffectTemplate>
+    public class EffectTemplateConfiguration : EntityTypeConfiguration<EffectTemplate>
     {
-        [PrimaryKey(PrimaryKeyType.Assigned)]
-        [D2OField("id")]
-        public uint Id
+        public EffectTemplateConfiguration()
+        {
+            ToTable("effects_templates");
+        }
+    }
+
+    [D2OClass("Effect", "com.ankamagames.dofus.datacenter.effects")]
+    public class EffectTemplate : IAssignedByD2O
+    {
+        // Primitive properties
+
+        public long Id
         {
             get;
             set;
         }
 
-        [Property]
-        [D2OField("descriptionId")]
-        public uint DescriptionId
+        public long DescriptionId
         {
             get;
             set;
         }
 
-        [Property]
-        [D2OField("iconId")]
-        public uint IconId
+        public long IconId
         {
             get;
             set;
         }
 
-        [Property]
-        [D2OField("characteristic")]
         public int Characteristic
         {
             get;
             set;
         }
 
-        [Property]
-        [D2OField("category")]
-        public uint Category
+        public long Category
         {
             get;
             set;
         }
 
-        [Property]
-        [D2OField("operator")]
         public string Operator
         {
             get;
             set;
         }
 
-        [Property]
-        [D2OField("showInTooltip")]
         public bool ShowInTooltip
         {
             get;
             set;
         }
 
-        [Property]
-        [D2OField("useDice")]
         public bool UseDice
         {
             get;
             set;
         }
 
-        [Property]
-        [D2OField("forceMinMax")]
         public bool ForceMinMax
         {
             get;
             set;
         }
 
-        [Property]
-        [D2OField("boost")]
         public bool Boost
         {
             get;
             set;
         }
 
-        [Property]
-        [D2OField("active")]
         public bool Active
         {
             get;
             set;
         }
 
-        [Property]
-        [D2OField("showInSet")]
         public bool ShowInSet
         {
             get;
             set;
         }
 
-        [Property]
-        [D2OField("bonusType")]
         public int BonusType
         {
             get;
             set;
         }
 
-        [Property]
-        [D2OField("useInFight")]
         public bool UseInFight
         {
             get;
             set;
         }
+
+        #region IAssignedByD2O Members
+
+        public void AssignFields(object d2oObject)
+        {
+            var effect = (Effect) d2oObject;
+
+            Id = effect.id;
+            DescriptionId = effect.descriptionId;
+            IconId = effect.iconId;
+            Characteristic = effect.characteristic;
+            Category = effect.category;
+            Operator = effect.@operator;
+            ShowInTooltip = effect.showInTooltip;
+            UseDice = effect.useDice;
+            ForceMinMax = effect.forceMinMax;
+            Boost = effect.boost;
+            Active = effect.active;
+            ShowInSet = effect.showInSet;
+            BonusType = effect.bonusType;
+            UseInFight = effect.useInFight;
+        }
+
+        #endregion
     }
 }

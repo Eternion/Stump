@@ -7,16 +7,16 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database.Monsters;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Formulas;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
+using Monster = Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters.Monster;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {

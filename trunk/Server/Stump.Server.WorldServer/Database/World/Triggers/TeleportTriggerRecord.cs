@@ -1,13 +1,23 @@
 using System;
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
 
-namespace Stump.Server.WorldServer.Database.World.Triggers
+namespace Stump.Server.WorldServer.Database.Triggers
 {
-    [ActiveRecord(DiscriminatorValue = "Teleport")]
+    public class TeleportTriggerRecordConfiguration : EntityTypeConfiguration<TeleportTriggerRecord>
+    {
+        public TeleportTriggerRecordConfiguration()
+        {
+            Map(x => x.Requires("Discriminator").HasValue("Teleport"));
+            Property(x => x.DestinationCellId).HasColumnName("Teleport_DestinationCellId");
+            Property(x => x.DestinationMapId).HasColumnName("Teleport_DestinationMapId");
+        }
+    }
     public class TeleportTriggerRecord : CellTriggerRecord
     {
         private short m_destinationCellId;
@@ -16,7 +26,6 @@ namespace Stump.Server.WorldServer.Database.World.Triggers
         private ObjectPosition m_destinationPosition;
         private bool m_mustRefreshDestinationPosition;
 
-        [Property]
         public short DestinationCellId
         {
             get { return m_destinationCellId; }
@@ -27,7 +36,6 @@ namespace Stump.Server.WorldServer.Database.World.Triggers
             }
         }
 
-        [Property]
         public int DestinationMapId
         {
             get { return m_destinationMapId; }

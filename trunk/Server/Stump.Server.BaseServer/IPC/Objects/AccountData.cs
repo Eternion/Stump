@@ -16,7 +16,7 @@ namespace Stump.Server.BaseServer.IPC.Objects
         private List<PlayableBreedEnum> m_breeds;
 
         [DataMember]
-        public uint Id
+        public int Id
         {
             get;
             set;
@@ -116,7 +116,7 @@ namespace Stump.Server.BaseServer.IPC.Objects
         }
 
         [DataMember]
-        public IList<uint> CharactersId
+        public IList<int> CharactersId
         {
             get;
             set;

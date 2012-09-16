@@ -150,10 +150,16 @@
     <Reference Include="Castle.ActiveRecord">
       <HintPath>..\..\Library\Castle.ActiveRecord.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFramework, Version=4.4.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\EntityFramework.5.0.0-rc\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.6.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="NHibernate">
       <HintPath>..\..\Library\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Remoting" />
@@ -167,22 +173,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Database\I18n\TextUIRecord.cs" />
-    <Compile Include="Database\I18n\TextRecord.cs" />
+    <Compile Include="Database\DatabaseAccessor.cs" />
+    <Compile Include="Database\I18n\LangTextUI.cs" />
+    <Compile Include="Database\I18n\LangText.cs" />
     <Compile Include="IO\AuthConsole.cs" />
     <Compile Include="AuthServer.cs" />
     <Compile Include="Commands\AccountCommands.cs" />
     <Compile Include="Commands\Trigger\AuthConsoleTrigger.cs" />
     <Compile Include="Commands\ParametersConverter.cs" />
-    <Compile Include="Database\Account\Account.cs" />
-    <Compile Include="Database\Account\IpBan.cs" />
-    <Compile Include="Database\AuthBaseRecord.cs" />
-    <Compile Include="Database\AuthVersionRecord.cs" />
-    <Compile Include="Database\Account\ConnectionLog.cs" />
-    <Compile Include="Database\Account\Sanction.cs" />
-    <Compile Include="Database\Account\SubscriptionLog.cs" />
-    <Compile Include="Database\World\DeletedWorldCharacter.cs" />
-    <Compile Include="Database\World\WorldCharacter.cs" />
+    <Compile Include="Database\Accounts\Account.cs" />
+    <Compile Include="Database\Accounts\IpBan.cs" />
+    <Compile Include="Database\Accounts\Connection.cs" />
+    <Compile Include="Database\Accounts\Sanction.cs" />
+    <Compile Include="Database\Accounts\Subscription.cs" />
+    <Compile Include="Database\Accounts\WorldCharacterDeleted.cs" />
+    <Compile Include="Database\Accounts\WorldCharacter.cs" />
     <Compile Include="Database\World\WorldServer.cs" />
     <Compile Include="Definitions.cs" />
     <Compile Include="Handlers\AuthHandlerAttribute.cs" />
@@ -193,6 +198,7 @@
     <Compile Include="Handlers\PredicatesDefinitions.cs" />
     <Compile Include="IPC\IpcOperations.cs" />
     <Compile Include="Managers\AccountManager.cs" />
+    <Compile Include="Managers\CredentialManager.cs" />
     <Compile Include="Managers\WorldServerManager.cs" />
     <Compile Include="Network\AuthClient.cs" />
     <Compile Include="Network\AuthPacketHandler.cs" />
@@ -229,7 +235,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.Config" />
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -11,9 +11,8 @@ using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database.Breeds;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Characters;
-using Stump.Server.WorldServer.Database.Shortcuts;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Spells;
 

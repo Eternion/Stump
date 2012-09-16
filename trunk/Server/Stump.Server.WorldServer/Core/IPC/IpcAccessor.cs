@@ -162,6 +162,8 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         private bool Disconnect()
         {
+            IsConnected = false;
+
             // check whenever the connection is not already closed or closing
             if (m_proxyObject != null &&
                 m_proxyObject.State != CommunicationState.Closed &&

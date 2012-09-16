@@ -301,7 +301,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tool
             {
                 object fieldValue = ReadField(reader, field, field.TypeId);
 
-                if (field.FieldType.IsAssignableFrom(fieldValue.GetType()))
+                if (field.FieldType.IsInstanceOfType(fieldValue))
                     values.Add(fieldValue);
                 else if (fieldValue is IConvertible &&
                          field.FieldType.GetInterface("IConvertible") != null)

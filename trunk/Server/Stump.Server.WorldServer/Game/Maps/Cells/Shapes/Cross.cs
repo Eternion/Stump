@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes

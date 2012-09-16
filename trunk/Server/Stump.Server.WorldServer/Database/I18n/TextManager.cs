@@ -8,15 +8,15 @@ namespace Stump.Server.WorldServer.Database.I18n
 {
     public class TextManager : Singleton<TextManager>
     {
-        private Dictionary<uint, TextRecord> m_texts = new Dictionary<uint, TextRecord>();
-        private Dictionary<string, TextUIRecord> m_textsUi = new Dictionary<string, TextUIRecord>();
+        private Dictionary<uint, LangText> m_texts = new Dictionary<uint, LangText>();
+        private Dictionary<string, LangTextUi> m_textsUi = new Dictionary<string, LangTextUi>();
         private Languages? m_defaultLanguages;
 
         [Initialization(InitializationPass.First)]
         public void Initialize()
         {
-            m_texts = TextRecord.FindAll().ToDictionary(entry => entry.Id);
-            m_textsUi = TextUIRecord.FindAll().ToDictionary(entry => entry.Name);
+            m_texts = LangText.FindAll().ToDictionary(entry => entry.Id);
+            m_textsUi = LangTextUi.FindAll().ToDictionary(entry => entry.Name);
         }
 
         public void SetDefaultLanguage(Languages languages)
@@ -49,19 +49,19 @@ namespace Stump.Server.WorldServer.Database.I18n
 
         public string GetText(uint id, Languages lang)
         {
-            TextRecord record;
+            LangText record;
             if (!m_texts.TryGetValue(id, out record))
                 return "(not found)";
 
             return GetText(record, lang);
         }
 
-        public string GetText(TextRecord record)
+        public string GetText(LangText record)
         {
             return GetText(record, GetDefaultLanguage());
         }
 
-        public string GetText(TextRecord record, Languages lang)
+        public string GetText(LangText record, Languages lang)
         {
             switch (lang)
             {
@@ -95,7 +95,7 @@ namespace Stump.Server.WorldServer.Database.I18n
 
         public string GetUiText(string id, Languages lang)
         {
-            TextUIRecord record;
+            LangTextUi record;
             if (!m_textsUi.TryGetValue(id, out record))
                 return "(not found)";
 

@@ -1,43 +1,40 @@
 using System;
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Server.WorldServer.Database.I18n;
 
-namespace Stump.Server.WorldServer.Database.World
+namespace Stump.Server.WorldServer.Database
 {
-    [Serializable]
-    [ActiveRecord("hints")]
-    [D2OClass("Hint", "com.ankamagames.dofus.datacenter.world")]
-    public sealed class HintRecord : WorldBaseRecord<HintRecord>
+    public class HintRecordConfiguration : EntityTypeConfiguration<HintRecord>
     {
-
-       [D2OField("id")]
-       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+        public HintRecordConfiguration()
+        {
+            ToTable("hints");
+        }
+    }
+    [D2OClass("Hint", "com.ankamagames.dofus.datacenter.world")]
+    public sealed class HintRecord : IAssignedByD2O
+    {
        public int Id
        {
            get;
            set;
        }
 
-       [D2OField("categoryId")]
-       [Property("CategoryId")]
        public uint CategoryId
        {
            get;
            set;
        }
 
-       [D2OField("gfx")]
-       [Property("Gfx")]
        public uint Gfx
        {
            get;
            set;
        }
 
-       [D2OField("nameId")]
-       [Property("NameId")]
        public uint NameId
        {
            get;
@@ -54,21 +51,27 @@ namespace Stump.Server.WorldServer.Database.World
            }
        }
 
-       [D2OField("mapId")]
-       [Property("MapId")]
        public uint MapId
        {
            get;
            set;
        }
 
-       [D2OField("realMapId")]
-       [Property("RealMapId")]
        public uint RealMapId
        {
            get;
            set;
        }
 
+        public void AssignFields(object d2oObject)
+        {
+            var hint = (DofusProtocol.D2oClasses.Hint)d2oObject;
+            Id = hint.id;
+            NameId = hint.nameId;
+            CategoryId = hint.categoryId;
+            Gfx = hint.gfx;
+            MapId = hint.mapId;
+            RealMapId = hint.realMapId;
+        }
     }
 }

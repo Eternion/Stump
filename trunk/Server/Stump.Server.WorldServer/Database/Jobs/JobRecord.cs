@@ -1,25 +1,29 @@
-﻿using Castle.ActiveRecord;
+﻿using System.Data.Entity.ModelConfiguration;
+using Castle.ActiveRecord;
 
-namespace Stump.Server.WorldServer.Database.Jobs
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord("characters_jobs")]
+    public class JobRecordConfiguration : EntityTypeConfiguration<JobRecord>
+    {
+        public JobRecordConfiguration()
+        {
+            ToTable("characters_jobs");
+        }
+    }
     public class JobRecord : AssignedWorldRecord<JobRecord>
     {
-        [Property("JobId")]
         public int JobId
         {
             get;
             set;
         }
 
-        [Property("Owner")]
         public int OwnerId
         {
             get;
             set;
         }
 
-        [Property("Experience")]
         public long Experience
         {
             get;

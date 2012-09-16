@@ -1,143 +1,133 @@
 ﻿using System;
-using System.Collections.Generic;
-using Castle.ActiveRecord;
+using System.Data.Entity.ModelConfiguration;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.Server.WorldServer.Database.World
+namespace Stump.Server.WorldServer.Database
 {
-    [Serializable]
-    [ActiveRecord("worldMaps")]
-    [D2OClass("WorldMap", "com.ankamagames.dofus.datacenter.world")]
-    public sealed class WorldMapRecord : WorldBaseRecord<WorldMapRecord>
+    public class WorldMapRecordConfiguration : EntityTypeConfiguration<WorldMapRecord>
     {
+        public WorldMapRecordConfiguration()
+        {
+            ToTable("worlds_maps");
+        }
+    }
 
-       [D2OField("id")]
-       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
-       public int Id
-       {
-           get;
-           set;
-       }
+    [D2OClass("WorldMap", "com.ankamagames.dofus.datacenter.world")]
+    public sealed class WorldMapRecord : IAssignedByD2O
+    {
+        public int Id
+        {
+            get;
+            set;
+        }
 
-       [D2OField("origineX")]
-       [Property("OrigineX")]
-       public int OrigineX
-       {
-           get;
-           set;
-       }
+        public int OrigineX
+        {
+            get;
+            set;
+        }
 
-       [D2OField("origineY")]
-       [Property("OrigineY")]
-       public int OrigineY
-       {
-           get;
-           set;
-       }
+        public int OrigineY
+        {
+            get;
+            set;
+        }
 
-       [D2OField("mapWidth")]
-       [Property("MapWidth")]
-       public double MapWidth
-       {
-           get;
-           set;
-       }
+        public double MapWidth
+        {
+            get;
+            set;
+        }
 
-       [D2OField("mapHeight")]
-       [Property("MapHeight")]
-       public double MapHeight
-       {
-           get;
-           set;
-       }
+        public double MapHeight
+        {
+            get;
+            set;
+        }
 
-       [D2OField("horizontalChunck")]
-       [Property("HorizontalChunck")]
-       public uint HorizontalChunck
-       {
-           get;
-           set;
-       }
+        public uint HorizontalChunck
+        {
+            get;
+            set;
+        }
 
-       [D2OField("verticalChunck")]
-       [Property("VerticalChunck")]
-       public uint VerticalChunck
-       {
-           get;
-           set;
-       }
+        public uint VerticalChunck
+        {
+            get;
+            set;
+        }
 
-       [D2OField("viewableEverywhere")]
-       [Property("ViewableEverywhere")]
-       public Boolean ViewableEverywhere
-       {
-           get;
-           set;
-       }
+        public Boolean ViewableEverywhere
+        {
+            get;
+            set;
+        }
 
-       [D2OField("minScale")]
-       [Property("MinScale")]
-       public double MinScale
-       {
-           get;
-           set;
-       }
+        public double MinScale
+        {
+            get;
+            set;
+        }
 
-       [D2OField("maxScale")]
-       [Property("MaxScale")]
-       public double MaxScale
-       {
-           get;
-           set;
-       }
+        public double MaxScale
+        {
+            get;
+            set;
+        }
 
-       [D2OField("startScale")]
-       [Property("StartScale")]
-       public double StartScale
-       {
-           get;
-           set;
-       }
+        public double StartScale
+        {
+            get;
+            set;
+        }
 
-       [D2OField("centerX")]
-       [Property("CenterX")]
-       public int CenterX
-       {
-           get;
-           set;
-       }
+        public int CenterX
+        {
+            get;
+            set;
+        }
 
-       [D2OField("centerY")]
-       [Property("CenterY")]
-       public int CenterY
-       {
-           get;
-           set;
-       }
+        public int CenterY
+        {
+            get;
+            set;
+        }
 
-       [D2OField("totalWidth")]
-       [Property("TotalWidth")]
-       public int TotalWidth
-       {
-           get;
-           set;
-       }
+        public int TotalWidth
+        {
+            get;
+            set;
+        }
 
-       [D2OField("totalHeight")]
-       [Property("TotalHeight")]
-       public int TotalHeight
-       {
-           get;
-           set;
-       }
+        public int TotalHeight
+        {
+            get;
+            set;
+        }
 
-       [Property(ColumnType = "Serializable")]
-       [D2OField("zoom")]
-       public List<string> Zoom
-       {
-           get;
-           set;
-       }
+        #region IAssignedByD2O Members
+
+        public void AssignFields(object d2oObject)
+        {
+            var map = (DofusProtocol.D2oClasses.WorldMap) d2oObject;
+            Id = map.id;
+            OrigineX = map.origineX;
+            OrigineY = map.origineY;
+
+            MapWidth = map.mapWidth;
+            MapHeight = map.mapHeight;
+            HorizontalChunck = map.horizontalChunck;
+            VerticalChunck = map.verticalChunck;
+            ViewableEverywhere = map.viewableEverywhere;
+            MinScale = map.minScale;
+            MaxScale = map.maxScale;
+            StartScale = map.startScale;
+            CenterX = map.centerX;
+            CenterY = map.centerY;
+            TotalWidth = map.totalWidth;
+            TotalHeight = map.totalHeight;
+        }
+
+        #endregion
     }
 }

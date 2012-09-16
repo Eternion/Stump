@@ -1,14 +1,24 @@
 using System;
+using System.Data.Entity.ModelConfiguration;
 using System.Linq;
 using Castle.ActiveRecord;
 using Stump.Core.Cache;
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.Database.Npcs;
-using Stump.Server.WorldServer.Database.Npcs.Actions;
 
-namespace Stump.Server.WorldServer.Database.Items.Shops
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord(DiscriminatorValue = "Npc")]
+    public class NpcItemConfiguration : EntityTypeConfiguration<NpcItem>
+    {
+        public NpcItemConfiguration()
+        {
+            Map(x => x.Requires("Discriminator").HasValue("Npc"));
+            Property(x => x.NpcShopId).HasColumnName("Npc_NpcShopId");
+            Property(x => x.CustomPrice).HasColumnName("Npc_CustomPrice");
+            Property(x => x.BuyCriterion).HasColumnName("Npc_BuyCriterion");
+            Property(x => x.MaxStats).HasColumnName("Npc_MaxStats");
+        }
+    }
+
     public class NpcItem : ItemToSell
     {
         public NpcItem()
@@ -16,7 +26,6 @@ namespace Stump.Server.WorldServer.Database.Items.Shops
             m_objectItemToSellInNpcShop = new ObjectValidator<ObjectItemToSellInNpcShop>(BuildObjectItemToSellInNpcShop);
         }
 
-        [Property("Npc_NpcShopId")]
         public int NpcShopId
         {
             get;
@@ -33,7 +42,6 @@ namespace Stump.Server.WorldServer.Database.Items.Shops
 
         private float? m_customPrice;
 
-        [Property("Npc_CustomPrice", NotNull = false)]
         public float? CustomPrice
         {
             get { return m_customPrice; }
@@ -46,7 +54,6 @@ namespace Stump.Server.WorldServer.Database.Items.Shops
 
         private string m_buyCriterion;
 
-        [Property("Npc_BuyCriterion")]
         public string BuyCriterion
         {
             get { return m_buyCriterion; }
@@ -57,7 +64,6 @@ namespace Stump.Server.WorldServer.Database.Items.Shops
             }
         }
 
-        [Property("Npc_MaxStats")]
         public bool MaxStats
         {
             get;

@@ -12,7 +12,6 @@ using Stump.Core.Reflection;
 using Stump.Core.Sql;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
-using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Tools.CacheManager.SQL;
 using MonsterGrade = Stump.Server.WorldServer.Database.Monsters.MonsterGrade;
 
@@ -45,8 +44,8 @@ namespace Stump.Tools.CacheManager
 
         private void BuildD2ITables()
         {
-            Type textRecordType = m_assembly.GetTypes().Where(entry => entry.Name == "TextRecord").Single();
-            Type textUIRecordType = m_assembly.GetTypes().Where(entry => entry.Name == "TextUIRecord").Single();
+            Type textRecordType = m_assembly.GetTypes().Where(entry => entry.Name == "LangText").Single();
+            Type textUIRecordType = m_assembly.GetTypes().Where(entry => entry.Name == "LangTextUi").Single();
 
             // delete all existing rows. BE CAREFUL !!
             Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildDelete("texts"));

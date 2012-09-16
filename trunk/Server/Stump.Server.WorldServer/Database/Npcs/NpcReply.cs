@@ -1,37 +1,41 @@
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Conditions;
-using Stump.Server.WorldServer.Handlers.Basic;
 
-namespace Stump.Server.WorldServer.Database.Npcs
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord("npcs_replies", DiscriminatorColumn = "RecognizerType", DiscriminatorType = "String", DiscriminatorValue = "Base")]
-    public abstract class NpcReply : WorldBaseRecord<NpcReply>
+    public class NpcReplyConfiguration : EntityTypeConfiguration<NpcReply>
     {
-        [PrimaryKey(PrimaryKeyType.Native)]
+        public NpcReplyConfiguration()
+        {
+            ToTable("npcs_replies");
+            Map(x => x.Requires("Discriminator").HasValue("Base"));
+        }
+    }
+
+    public abstract class NpcReply
+    {
         public int Id
         {
             get;
             set;
         }
 
-        [Property("Reply")]
         public int ReplyId
         {
             get;
             set;
         }
 
-        [Property("Message")]
         public int MessageId
         {
             get;
             set;
         }
 
-        [Property("Criteria")]
         public string Criteria
         {
             get;

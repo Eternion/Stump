@@ -8,6 +8,7 @@ using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Effects;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;

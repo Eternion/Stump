@@ -1,31 +1,38 @@
 using System;
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Conditions;
 
-namespace Stump.Server.WorldServer.Database.Npcs
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord("npcs_actions", DiscriminatorColumn = "RecognizerType", DiscriminatorType = "String", DiscriminatorValue = "Base")]
-    public abstract class NpcAction : WorldBaseRecord<NpcAction>
+    public class NpcActionConfiguration : EntityTypeConfiguration<NpcAction>
     {
-        [PrimaryKey(PrimaryKeyType.Native)]
+        public NpcActionConfiguration()
+        {
+            ToTable("npcs_actions");
+            Map(x => x.Requires("Discriminator").HasValue("Base"));
+        }
+    }
+
+    public abstract class NpcAction
+    {
         public uint Id
         {
             get;
             set;
         }
 
-        [Property("Npc")]
         public int NpcId
         {
             get;
             set;
         }
 
-        private NpcTemplate m_template;
-        public NpcTemplate Template
+        private Npcs.NpcTemplate m_template;
+        public Npcs.NpcTemplate Template
         {
             get
             {
@@ -39,7 +46,6 @@ namespace Stump.Server.WorldServer.Database.Npcs
         }
 
 
-        [Property("`Condition`")]
         public String Condition
         {
             get;

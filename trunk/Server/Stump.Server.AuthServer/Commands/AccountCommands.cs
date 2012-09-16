@@ -1,7 +1,7 @@
 ﻿using System;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.AuthServer.Database.Account;
+using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.Commands;
 

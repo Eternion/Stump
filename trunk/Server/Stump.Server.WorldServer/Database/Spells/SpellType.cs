@@ -1,26 +1,28 @@
 using System;
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Server.WorldServer.Database.I18n;
 
-namespace Stump.Server.WorldServer.Database.Spells
+namespace Stump.Server.WorldServer.Database
 {
-    [Serializable]
-    [ActiveRecord("spells_type")]
-    [D2OClass("SpellType", "com.ankamagames.dofus.datacenter.spells")]
-    public sealed class SpellType : WorldBaseRecord<SpellType>
+    public class SpellTypeConfiguration : EntityTypeConfiguration<SpellType>
     {
-        [D2OField("id")]
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+        public SpellTypeConfiguration()
+        {
+            ToTable("spells_types");
+        }
+    }
+    [D2OClass("SpellType", "com.ankamagames.dofus.datacenter.spells")]
+    public sealed class SpellType : IAssignedByD2O
+    {
         public int Id
         {
             get;
             set;
         }
 
-        [D2OField("longNameId")]
-        [Property("LongNameId")]
         public uint LongNameId
         {
             get;
@@ -37,8 +39,6 @@ namespace Stump.Server.WorldServer.Database.Spells
             }
         }
 
-        [D2OField("shortNameId")]
-        [Property("ShortNameId")]
         public uint ShortNameId
         {
             get;
@@ -53,6 +53,14 @@ namespace Stump.Server.WorldServer.Database.Spells
             {
                 return m_shortName ?? ( m_shortName = TextManager.Instance.GetText(ShortNameId) );
             }
+        }
+
+        public void AssignFields(object d2oObject)
+        {
+            var type = (DofusProtocol.D2oClasses.SpellType)d2oObject;
+            Id = type.id;
+            LongNameId = type.longNameId;
+            ShortNameId = type.shortNameId;
         }
     }
 }

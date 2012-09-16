@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
@@ -8,26 +9,28 @@ using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 
-namespace Stump.Server.WorldServer.Database.Monsters
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord("monsters")]
+    public class MonsterTemplateConfiguration : EntityTypeConfiguration<MonsterTemplate>
+    {
+        public MonsterTemplateConfiguration()
+        {
+            ToTable("monsters_templates");
+        }
+    }
     [D2OClass("Monster", "com.ankamagames.dofus.datacenter.monsters")]
-    public sealed class MonsterTemplate : WorldBaseRecord<MonsterTemplate>
+    public sealed class MonsterTemplate : IAssignedByD2O
     {
         private EntityLook m_entityLook;
         private string m_lookAsString;
         private string m_name;
 
-        [D2OField("id")]
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
         public int Id
         {
             get;
             set;
         }
 
-        [D2OField("nameId")]
-        [Property("NameId")]
         public uint NameId
         {
             get;
@@ -39,30 +42,24 @@ namespace Stump.Server.WorldServer.Database.Monsters
             get { return m_name ?? (m_name = TextManager.Instance.GetText(NameId)); }
         }
 
-        [D2OField("gfxId")]
-        [Property("GfxId")]
         public uint GfxId
         {
             get;
             set;
         }
 
-        [D2OField("race")]
-        [Property("Race")]
         public int Race
         {
             get;
             set;
         }
 
-        [Property]
         public int MinDroppedKamas
         {
             get;
             set;
         }
 
-        [Property]
         public int MaxDroppedKamas
         {
             get;
@@ -87,8 +84,6 @@ namespace Stump.Server.WorldServer.Database.Monsters
             }
         }
 
-        [D2OField("look")]
-        [Property("Look")]
         private string LookAsString
         {
             get
@@ -124,36 +119,49 @@ namespace Stump.Server.WorldServer.Database.Monsters
             }
         }
 
-        [D2OField("useSummonSlot")]
-        [Property("UseSummonSlot")]
         public Boolean UseSummonSlot
         {
             get;
             set;
         }
 
-        [D2OField("useBombSlot")]
-        [Property("UseBombSlot")]
         public Boolean UseBombSlot
         {
             get;
             set;
         }
 
-        [D2OField("canPlay")]
-        [Property("CanPlay")]
         public Boolean CanPlay
         {
             get;
             set;
         }
 
-        [D2OField("isBoss")]
-        [Property("IsBoss")]
+        public Boolean CanTackle
+        {
+            get;
+            set;
+        }
+
         public Boolean IsBoss
         {
             get;
             set;
+        }
+
+        public void AssignFields(object d2oObject)
+        {
+            var monster = (DofusProtocol.D2oClasses.Monster)d2oObject;
+            Id = monster.id;
+            NameId = monster.nameId;
+            GfxId = monster.gfxId;
+            Race = monster.race;
+            LookAsString = monster.look;
+            UseSummonSlot = monster.useSummonSlot;
+            UseBombSlot = monster.useBombSlot;
+            CanPlay = monster.canPlay;
+            CanTackle = monster.canTackle;
+            IsBoss = monster.isBoss;
         }
     }
 }

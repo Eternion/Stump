@@ -1,39 +1,44 @@
-using System;
-using Castle.ActiveRecord;
+using System.Data.Entity.ModelConfiguration;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.Server.WorldServer.Database.World.Maps
+namespace Stump.Server.WorldServer.Database.Maps
 {
-    [Serializable]
-    [ActiveRecord("maps_reference")]
+    public class MapReferenceRecordConfiguration : EntityTypeConfiguration<MapReferenceRecord>
+    {
+        public MapReferenceRecordConfiguration()
+        {
+            ToTable("maps_references");
+        }
+    }
+
     [D2OClass("MapReference", "com.ankamagames.dofus.datacenter.world")]
-    public sealed class MapReferenceRecord : WorldBaseRecord<MapReferenceRecord>
+    public sealed class MapReferenceRecord : IAssignedByD2O
     {
 
-       [D2OField("id")]
-       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
        public int Id
        {
            get;
            set;
        }
 
-       [D2OField("mapId")]
-       [Property("MapId")]
        public uint MapId
        {
            get;
            set;
        }
 
-       [D2OField("cellId")]
-       [Property("CellId")]
        public int CellId
        {
            get;
            set;
        }
 
+        public void AssignFields(object d2oObject)
+        {
+            var map = (DofusProtocol.D2oClasses.MapReference)d2oObject;
+            Id = map.id;
+            MapId = map.mapId;
+            CellId = map.cellId;
+        }
     }
 }

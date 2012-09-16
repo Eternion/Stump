@@ -1,42 +1,48 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.ModelConfiguration;
+using System.Data.Objects;
 using System.IO;
 using System.Linq;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
 
-namespace Stump.Server.WorldServer.Database.Items.Templates
+namespace Stump.Server.WorldServer.Database
 {
-    [Serializable]
-    [ActiveRecord("items_set")]
+    public class ItemSetTemplateConfiguration : EntityTypeConfiguration<ItemSetTemplate>
+    {
+        public ItemSetTemplateConfiguration()
+        {
+            ToTable("items_sets");
+            Ignore(x => x.Effects);
+            Ignore(x => x.Items);
+        }
+    }
+
     [D2OClass("ItemSet", "com.ankamagames.dofus.datacenter.items")]
-    public sealed class ItemSetTemplate : WorldBaseRecord<ItemSetTemplate>, IAssignedByD2O
+    public sealed class ItemSetTemplate : IAssignedByD2O, ISaveIntercepter
     {
         private string m_name;
 
-        [D2OField("id")]
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
         public uint Id
         {
             get;
             set;
         }
 
-        private byte[] m_serializedItems;
-
-        [D2OField("items")]
-        [Property("Items")]
-        private byte[] SerializedItems
+        private byte[] m_itemsBin;
+        public byte[] ItemsBin
         {
-            get { return m_serializedItems; }
+            get { return m_itemsBin; }
             set
             {
-                m_serializedItems = value; 
+                m_itemsBin = value; 
 
                 if (value != null)
                     Items = DeserializeItems(value);
@@ -49,8 +55,6 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set;
         }
 
-        [D2OField("nameId")]
-        [Property("NameId")]
         public uint NameId
         {
             get;
@@ -62,34 +66,29 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             get { return m_name ?? (m_name = TextManager.Instance.GetText(NameId)); }
         }
 
-        [D2OField("bonusIsSecret")]
-        [Property("BonusIsSecret")]
         public Boolean BonusIsSecret
         {
             get;
             set;
         }
 
-        private byte[] m_serializedEffects;
-
-        [D2OField("effects")]
-        [Property("BonusEffects", NotNull = true)]
-        private byte[] SerializedEffects
+        private byte[] m_effectsBin;
+        public byte[] EffectsBin
         {
             get
             {
-                return m_serializedEffects;
+                return m_effectsBin;
             }
             set
             {
-                m_serializedEffects = value;
+                m_effectsBin = value;
 
-                if (m_serializedEffects != null)
-                    BonusEffects = DeserializeEffects(m_serializedEffects);
+                if (m_effectsBin != null)
+                    Effects = DeserializeEffects(m_effectsBin);
             }
         }
 
-        public List<List<EffectBase>> BonusEffects
+        public List<List<EffectBase>> Effects
         {
             get;
             set;
@@ -99,10 +98,10 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
         {
             int index = itemsCount - 1;
 
-            if (BonusEffects == null || BonusEffects.Count <= index || index < 0)
+            if (Effects == null || Effects.Count <= index || index < 0)
                 return new EffectBase[0];
 
-            return BonusEffects[index].ToArray();
+            return Effects[index].ToArray();
         }
 
         private static byte[] SerializeEffects(List<List<EffectBase>> bonusEffects)
@@ -167,47 +166,22 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             return templates.ToArray();
         }
 
-        protected override bool OnFlushDirty(object id, System.Collections.IDictionary previousState, System.Collections.IDictionary currentState, NHibernate.Type.IType[] types)
+        public void AssignFields(object d2oObject)
         {
-            SerializedEffects = (byte[])(currentState["SerializedEffects"] = SerializeEffects(BonusEffects));
-            SerializedItems = (byte[])( currentState["SerializedItems"] = SerializeItems(Items.Select(entry => entry.Id)) );
-
-            return base.OnFlushDirty(id, previousState, currentState, types);
+            var itemSet = (DofusProtocol.D2oClasses.ItemSet)d2oObject;
+            Id = itemSet.id;
+            ItemsBin = SerializeItems(itemSet.items.Select(entry => (int)entry));
+            NameId = itemSet.nameId;
+            BonusIsSecret = itemSet.bonusIsSecret;
+            var effects = itemSet.effects.Select(entry => entry.Where(subentry => subentry != null).
+                Select(subentry => EffectManager.Instance.ConvertExportedEffect(subentry)).ToList()).ToList();
+            EffectsBin = SerializeEffects(effects);
         }
 
-        protected override bool BeforeSave(System.Collections.IDictionary state)
+        public void BeforeSave(ObjectStateEntry currentEntry)
         {
-            SerializedEffects = (byte[])( state["SerializedEffects"] = SerializeEffects(BonusEffects) );
-            SerializedItems = (byte[])( state["SerializedItems"] = SerializeItems(Items.Select(entry => entry.Id)) );
-
-            return base.BeforeSave(state);
-        }
-
-        public object GenerateAssignedObject(string fieldName, object d2OObject)
-        {
-            if (fieldName == "SerializedItems")
-            {
-                var list = d2OObject as List<uint>;
-
-                if (list == null)
-                    return new byte[0];
-
-                return SerializeItems(list.Select(entry => (int)entry));
-            }
-
-            if (fieldName == "SerializedEffects")
-            {
-                var list = d2OObject as List<List<EffectInstance>>;
-
-                if (list == null)
-                    return new byte[0];
-
-                var effects = list.Select(entry => entry.Where(subentry => subentry != null).Select(subentry => EffectManager.Instance.ConvertExportedEffect(subentry)).ToList()).ToList();
-
-                return SerializeEffects(effects);
-            }
-
-            return d2OObject;
+            EffectsBin = SerializeEffects(Effects);
+            ItemsBin = SerializeItems(Items.Select(entry => entry.Id));
         }
     }
 }

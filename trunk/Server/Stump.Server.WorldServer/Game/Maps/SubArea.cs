@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using Stump.Core.Threading;
-using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 
 namespace Stump.Server.WorldServer.Game.Maps

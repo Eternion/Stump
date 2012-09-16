@@ -120,6 +120,12 @@ namespace Stump.Core.Extensions
             return occurences;
         }
 
+        public static int CountOccurences(this string str, char chr)
+        {
+            return CountOccurences(str, chr, 0, str.Length);
+        }
+
+
         public static string GetMD5(this string encryptString)
         {
             byte[] passByteCrypt = new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(encryptString));

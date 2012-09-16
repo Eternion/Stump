@@ -144,14 +144,26 @@
     <Reference Include="Ciloci.Flee">
       <HintPath>..\..\Library\Ciloci.Flee.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFramework, Version=4.4.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\EntityFramework.5.0.0-rc\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.5.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="NHibernate">
       <HintPath>..\..\Library\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -198,17 +210,16 @@
     <Compile Include="Core\Network\WorldClientCollection.cs" />
     <Compile Include="Core\Network\WorldPacketHandler.cs" />
     <Compile Include="Database\AssignedWorldRecord.cs" />
-    <Compile Include="Database\Breeds\StartItem.cs" />
+    <Compile Include="Database\Breeds\BreedItem.cs" />
+    <Compile Include="Database\DatabaseAccessor.cs" />
     <Compile Include="Database\IAssignedByD2o.cs" />
     <Compile Include="Database\Interactives\InteractiveSpawn.cs" />
     <Compile Include="Database\Interactives\InteractiveTemplate.cs" />
-    <Compile Include="Database\Interactives\Skills\SkillRecord.cs" />
-    <Compile Include="Database\Interactives\Skills\SkillTeleportRecord.cs" />
-    <Compile Include="Database\Interactives\Skills\SkillTemplate.cs" />
-    <Compile Include="Database\Interactives\Skills\SkillZaapSaveRecord.cs" />
-    <Compile Include="Database\Interactives\Skills\SkillZaapTeleportRecord.cs" />
-    <Compile Include="Database\Interactives\Skills\TemplateDependantSkill.cs" />
-    <Compile Include="Database\Interactives\Skills\TemplateIndependantSkill.cs" />
+    <Compile Include="Database\Interactives\Skills\InteractiveSkillRecord.cs" />
+    <Compile Include="Database\Interactives\Skills\InteractiveSkillTeleportRecord.cs" />
+    <Compile Include="Database\Interactives\Skills\InteractiveSkillZaapSaveRecord.cs" />
+    <Compile Include="Database\Interactives\Skills\InteractiveSkillZaapTeleportRecord.cs" />
+    <Compile Include="Database\Interactives\Skills\InteractiveSkillTemplate.cs" />
     <Compile Include="Database\ISaveable.cs" />
     <Compile Include="Database\Items\Templates\PetTemplate.cs" />
     <Compile Include="Database\Items\PlayerItemRecord.cs" />
@@ -216,6 +227,11 @@
     <Compile Include="Database\Items\Shops\NpcItem.cs" />
     <Compile Include="Database\Jobs\JobRecord.cs" />
     <Compile Include="Database\Jobs\JobTemplate.cs" />
+    <Compile Include="Database\Model.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model.Context.tt</DependentUpon>
+    </Compile>
     <Compile Include="Database\Monsters\DroppableItem.cs" />
     <Compile Include="Database\Monsters\MonsterDungeonSpawn.cs" />
     <Compile Include="Database\Monsters\MonsterGrade.cs" />
@@ -356,19 +372,19 @@
     <Compile Include="Rates.cs" />
     <Compile Include="Database\Accounts\WorldAccount.cs" />
     <Compile Include="Database\Breeds\Breed.cs" />
-    <Compile Include="Database\Breeds\LearnableSpell.cs" />
+    <Compile Include="Database\Breeds\BreedSpell.cs" />
     <Compile Include="Database\Characters\CharacterRecord.cs" />
-    <Compile Include="Database\Characters\ExperienceRecord.cs" />
+    <Compile Include="Database\Characters\ExperienceTableEntry.cs" />
     <Compile Include="Database\Effects\EffectTemplate.cs" />
     <Compile Include="Database\I18n\TextManager.cs" />
-    <Compile Include="Database\I18n\TextRecord.cs" />
-    <Compile Include="Database\I18n\TextUIRecord.cs" />
+    <Compile Include="Database\I18n\LangText.cs" />
+    <Compile Include="Database\I18n\LangTextUi.cs" />
     <Compile Include="Database\Items\ItemRecord.cs" />
     <Compile Include="Database\Items\Templates\ItemTemplate.cs" />
     <Compile Include="Database\Items\Templates\ItemSetTemplate.cs" />
     <Compile Include="Database\Items\Templates\ItemTypeRecord.cs" />
     <Compile Include="Database\Items\Templates\WeaponTemplate.cs" />
-    <Compile Include="Database\Characters\CharacterSpellRecord.cs" />
+    <Compile Include="Database\Characters\CharacterSpell.cs" />
     <Compile Include="Database\Shortcuts\ItemShortcut.cs" />
     <Compile Include="Database\Shortcuts\Shortcut.cs" />
     <Compile Include="Database\Shortcuts\SpellShortcut.cs" />
@@ -384,7 +400,7 @@
     <Compile Include="Database\World\AreaRecord.cs" />
     <Compile Include="Database\World\Cell.cs" />
     <Compile Include="Database\World\HintRecord.cs" />
-    <Compile Include="Database\World\Maps\MapCoordinatesRecord.cs" />
+    <Compile Include="Database\World\Maps\MapCoordinateRecord.cs" />
     <Compile Include="Database\World\Maps\MapPositionRecord.cs" />
     <Compile Include="Database\World\Maps\MapRecord.cs" />
     <Compile Include="Database\World\Maps\MapReferenceRecord.cs" />
@@ -435,6 +451,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Core\IO\WorldConsole.cs" />
+    <Compile Include="stump_worldDataSet.cs">
+      <DependentUpon>stump_worldDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="stump_worldDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>stump_worldDataSet.xsd</DependentUpon>
+    </Compile>
     <Compile Include="WorldServer.cs" />
     <Compile Include="Game\Accounts\AccountManager.cs" />
     <Compile Include="Game\Actors\ContextActor.cs" />
@@ -628,7 +652,29 @@
       <Name>Stump.Server.BaseServer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="App.Config" />
+    <None Include="Database\Model.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Model.Context.cs</LastGenOutput>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\DataSources\Stump.Server.WorldServer.Database.Entities.datasource" />
+    <None Include="stump_worldDataSet.xsc">
+      <DependentUpon>stump_worldDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="stump_worldDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>stump_worldDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="stump_worldDataSet.xss">
+      <DependentUpon>stump_worldDataSet.xsd</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

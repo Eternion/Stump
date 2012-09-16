@@ -1,73 +1,96 @@
 ﻿using System;
-using System.Collections;
-using Castle.ActiveRecord;
+using System.Data.Entity.ModelConfiguration;
+using System.Data.Objects;
+using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.I18n;
 
-namespace Stump.Server.WorldServer.Database.World
+namespace Stump.Server.WorldServer.Database
 {
-    [Serializable]
-    [ActiveRecord("areas")]
-    [D2OClass("Area", "com.ankamagames.dofus.datacenter.world")]
-    public sealed class AreaRecord : WorldBaseRecord<AreaRecord>
+    public class AreaRecordConfiguration : EntityTypeConfiguration<AreaRecord>
     {
-       [D2OField("id")]
-       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
-       public int Id
-       {
-           get;
-           set;
-       }
+        public AreaRecordConfiguration()
+        {
+            ToTable("areas");
+        }
+    }
 
-       [D2OField("nameId")]
-       [Property("NameId")]
-       public uint NameId
-       {
-           get;
-           set;
-       }
+    [D2OClass("Area", "com.ankamagames.dofus.datacenter.world")]
+    public sealed class AreaRecord : IAssignedByD2O, ISaveIntercepter
+    {
+        private byte[] m_boundsBin;
+        private string m_name;
 
-       private string m_name;
+        public int Id
+        {
+            get;
+            set;
+        }
 
-       public string Name
-       {
-           get
-           {
-               return m_name ?? ( m_name = TextManager.Instance.GetText(NameId) );
-           }
-       }
+        public uint NameId
+        {
+            get;
+            set;
+        }
 
-       [D2OField("superAreaId")]
-       [Property("SubAreaId")]
-       public int SuperAreaId
-       {
-           get;
-           set;
-       }
+        public string Name
+        {
+            get { return m_name ?? (m_name = TextManager.Instance.GetText(NameId)); }
+        }
 
-       [D2OField("containHouses")]
-       [Property("ContainHouses")]
-       public Boolean ContainHouses
-       {
-           get;
-           set;
-       }
+        public int SuperAreaId
+        {
+            get;
+            set;
+        }
 
-       [D2OField("containPaddocks")]
-       [Property("ContainPaddocks")]
-       public Boolean ContainPaddocks
-       {
-           get;
-           set;
-       }
+        public Boolean ContainHouses
+        {
+            get;
+            set;
+        }
 
-       [D2OField("bounds")]
-       [Property("Bounds", ColumnType="Serializable")]
-       public Rectangle Bounds
-       {
-           get;
-           set;
-       }
+        public Boolean ContainPaddocks
+        {
+            get;
+            set;
+        }
+
+        public byte[] BoundsBin
+        {
+            get { return m_boundsBin; }
+            set
+            {
+                m_boundsBin = value;
+                Bounds = value.ToObject<Rectangle>();
+            }
+        }
+
+        public Rectangle Bounds
+        {
+            get;
+            set;
+        }
+
+        #region IAssignedByD2O Members
+
+        public void AssignFields(object d2oObject)
+        {
+            var area = (DofusProtocol.D2oClasses.Area)d2oObject;
+            Id = area.id;
+            NameId = area.nameId;
+            SuperAreaId = area.superAreaId;
+            ContainHouses = area.containHouses;
+            ContainPaddocks = area.containPaddocks;
+            Bounds = area.bounds;
+        }
+
+        #endregion
+
+        public void BeforeSave(ObjectStateEntry currentEntry)
+        {
+            m_boundsBin = Bounds.ToBinary();
+        }
     }
 }

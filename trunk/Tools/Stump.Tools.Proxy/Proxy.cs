@@ -101,7 +101,7 @@ namespace Stump.Tools.Proxy
             private set;
         }
 
-        public SelfRunningTaskQueue IOTaskPool
+        public SelfRunningTaskPool IOTaskPool
         {
             get;
             private set;
@@ -153,7 +153,7 @@ namespace Stump.Tools.Proxy
             AuthHandler.RegisterAll(Assembly.GetExecutingAssembly());
             WorldHandler = WorldPacketHandler.Instance;
             WorldHandler.RegisterAll(Assembly.GetExecutingAssembly());
-            IOTaskPool = new SelfRunningTaskQueue(IOTaskPoolInterval, "IO Task Pool");
+            IOTaskPool = new SelfRunningTaskPool(IOTaskPoolInterval, "IO Task Pool");
 
             logger.Info("Initializing Network Messages...");
             MessageReceiver.Initialize();

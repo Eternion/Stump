@@ -1,4 +1,5 @@
 using System;
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -6,27 +7,31 @@ using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
-namespace Stump.Server.WorldServer.Database.Npcs
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord("npcs_spawns")]
-    public class NpcSpawn : WorldBaseRecord<NpcSpawn>
+    public class NpcSpawnConfiguration : EntityTypeConfiguration<NpcSpawn>
     {
-        [PrimaryKey(PrimaryKeyType.Native)]
+        public NpcSpawnConfiguration()
+        {
+            ToTable("npcs_spawns");
+        }
+    }
+    public class NpcSpawn
+    {
         public uint Id
         {
             get;
             set;
         }
 
-        [Property("Npc")]
         public int NpcId
         {
             get;
             set;
         }
 
-        private NpcTemplate m_template;
-        public NpcTemplate Template
+        private Npcs.NpcTemplate m_template;
+        public Npcs.NpcTemplate Template
         {
             get
             {
@@ -39,21 +44,18 @@ namespace Stump.Server.WorldServer.Database.Npcs
             }
         }
 
-        [Property("Map", NotNull = true)]
         public int MapId
         {
             get;
             set;
         }
 
-        [Property("Cell", NotNull = true)]
         public int CellId
         {
             get;
             set;
         }
 
-        [Property("Direction", NotNull = true)]
         public DirectionsEnum Direction
         {
             get;
@@ -64,7 +66,6 @@ namespace Stump.Server.WorldServer.Database.Npcs
         private string m_lookAsString;
         private EntityLook m_entityLook;
 
-        [Property("Look", NotNull = false)]
         private string LookAsString
         {
             get

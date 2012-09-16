@@ -14,11 +14,9 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Interactives;
-using Stump.Server.WorldServer.Database.Monsters;
-using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Game.Actors;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
@@ -37,6 +35,12 @@ using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Handlers.Interactives;
+using MapRecord = Stump.Server.WorldServer.Database.Maps.MapRecord;
+using Monster = Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters.Monster;
+using MonsterGrade = Stump.Server.WorldServer.Database.Monsters.MonsterGrade;
+using MonsterSpawn = Stump.Server.WorldServer.Database.Monsters.MonsterSpawn;
+using NpcSpawn = Stump.Server.WorldServer.Database.Npcs.NpcSpawn;
+using NpcTemplate = Stump.Server.WorldServer.Database.Npcs.NpcTemplate;
 
 namespace Stump.Server.WorldServer.Game.Maps
 {

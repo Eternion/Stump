@@ -5,7 +5,6 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Characters;
-using Stump.Server.WorldServer.Database.Startup;
 using Stump.Server.WorldServer.Game.Accounts.Startup;
 
 namespace Stump.Server.WorldServer.Handlers.Startup

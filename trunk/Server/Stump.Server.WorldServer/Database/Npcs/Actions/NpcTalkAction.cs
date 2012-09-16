@@ -1,14 +1,22 @@
-using System;
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 
-namespace Stump.Server.WorldServer.Database.Npcs.Actions
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord(DiscriminatorValue = "Talk")]
-    public class NpcTalkAction : NpcAction
+    public class NpcTalkActionConfiguration : EntityTypeConfiguration<NpcTalkAction>
+    {
+        public NpcTalkActionConfiguration()
+        {
+            Map(x => x.Requires("Discriminator").HasValue("Talk"));
+
+            Property(x => x.MessageId).HasColumnName("Talk_MessageId");
+        }
+    }
+    public class NpcTalkAction : Npcs.NpcAction
     {
         public override NpcActionTypeEnum ActionType
         {
@@ -18,15 +26,14 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
             }
         }
 
-        [Property("Talk_MessageId")]
         public int MessageId
         {
             get;
             set;
         }
 
-        private NpcMessage m_message;
-        public NpcMessage Message
+        private Npcs.NpcMessage m_message;
+        public Npcs.NpcMessage Message
         {
             get
             {

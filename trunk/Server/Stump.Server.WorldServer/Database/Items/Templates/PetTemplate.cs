@@ -1,36 +1,96 @@
 ﻿using System.Collections.Generic;
-using Castle.ActiveRecord;
+using System.Data.Entity.ModelConfiguration;
+using System.Data.Objects;
+using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.Server.BaseServer.Database;
 
-namespace Stump.Server.WorldServer.Database.Items.Templates
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord("items_pets_templates")]
-    [D2OClass("Pet", "com.ankamagames.dofus.datacenter.pets")]
-    public class PetTemplate
+    public class PetTemplateConfiguration : EntityTypeConfiguration<PetTemplate>
     {
-        [D2OField("id")]
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
+        public PetTemplateConfiguration()
+        {
+            ToTable("items_pets");
+            Ignore(x => x.FoodItems);
+            Ignore(x => x.FoodTypes);
+        }
+    }
+
+    [D2OClass("Pet", "com.ankamagames.dofus.datacenter.pets")]
+    public class PetTemplate : IAssignedByD2O, ISaveIntercepter
+    {
+        private List<int> m_foodItems;
+        private byte[] m_foodItemsBin;
+        private List<int> m_foodTypes;
+        private byte[] m_foodTypesBin;
+
         public int Id
         {
             get;
             set;
         }
 
-        [D2OField("foodItems")]
-        [Property("FoodItems", ColumnType = "Serializable")]
-        public List<int> FoodItems
+        public byte[] FoodItemsBin
         {
-            get;
-            set;
+            get { return m_foodItemsBin; }
+            set
+            {
+                m_foodItemsBin = value;
+                m_foodItems = value.ToObject<List<int>>();
+            }
         }
 
-        [D2OField("foodTypes")]
-        [Property("FoodTypes", ColumnType = "Serializable")]
+        public List<int> FoodItems
+        {
+            get { return m_foodItems; }
+            set
+            {
+                m_foodItems = value;
+                m_foodItemsBin = value.ToBinary();
+            }
+        }
+
+        public byte[] FoodTypesBin
+        {
+            get { return m_foodTypesBin; }
+            set
+            {
+                m_foodTypesBin = value;
+                m_foodTypes = value.ToObject<List<int>>();
+            }
+        }
+
         public List<int> FoodTypes
         {
-            get;
-            set;
+            get { return m_foodTypes; }
+            set
+            {
+                m_foodTypes = value;
+                m_foodTypesBin = value.ToBinary();
+            }
         }
+
+        #region IAssignedByD2O Members
+
+        public void AssignFields(object d2oObject)
+        {
+            var pet = (Pet) d2oObject;
+            Id = pet.id;
+            FoodItems = pet.foodItems;
+            FoodTypes = pet.foodTypes;
+        }
+
+        #endregion
+
+        #region ISaveIntercepter Members
+
+        public void BeforeSave(ObjectStateEntry currentEntry)
+        {
+            m_foodItemsBin = m_foodItems.ToBinary();
+            m_foodTypesBin = m_foodTypes.ToBinary();
+        }
+
+        #endregion
     }
 }

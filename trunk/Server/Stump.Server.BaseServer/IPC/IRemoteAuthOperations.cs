@@ -37,22 +37,22 @@ namespace Stump.Server.BaseServer.IPC
         bool DeleteAccount(string accountname);
 
         [OperationContract]
-        bool AddAccountCharacter(uint accountId, uint characterId);
+        bool AddAccountCharacter(int accountId, int characterId);
 
         [OperationContract]
-        bool DeleteAccountCharacter(uint accountId, uint characterId);
+        bool DeleteAccountCharacter(int accountId, int characterId);
 
         [OperationContract]
         bool UnBlamAccount(string victimAccountLogin);
 
         [OperationContract(Name="BlamAccount_FromName")]
-        bool BlamAccount(uint victimAccountId, uint? bannerAccountId, TimeSpan duration, string reason);
+        bool BlamAccount(int victimAccountId, int? bannerAccountId, TimeSpan duration, string reason);
 
 
         [OperationContract(Name = "BlamAccount_FromId")]
-        bool BlamAccount(string victimAccountLogin, uint? bannerAccountId, TimeSpan duration, string reason);
+        bool BlamAccount(string victimAccountLogin, int? bannerAccountId, TimeSpan duration, string reason);
 
         [OperationContract]
-        bool BanIp(string ipToBan, uint bannerAccountId, TimeSpan duration, string reason);
+        bool BanIp(string ipToBan, int bannerAccountId, TimeSpan duration, string reason);
     }
 }

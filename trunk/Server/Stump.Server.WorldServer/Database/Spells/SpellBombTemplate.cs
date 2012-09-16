@@ -1,63 +1,67 @@
 using System;
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 
-namespace Stump.Server.WorldServer.Database.Spells
+namespace Stump.Server.WorldServer.Database
 {
-    [Serializable]
-    [ActiveRecord("spells_bomb")]
+    public class SpellBombTemplateConfiguration : EntityTypeConfiguration<SpellBombTemplate>
+    {
+        public SpellBombTemplateConfiguration()
+        {
+            ToTable("spells_bombs");
+        }
+    }
     [D2OClass("SpellBomb", "com.ankamagames.dofus.datacenter.spells")]
-    public sealed class SpellBombTemplate : WorldBaseRecord<SpellBombTemplate>
+    public sealed class SpellBombTemplate : IAssignedByD2O
     {
 
-       [D2OField("id")]
-       [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
        public int Id
        {
            get;
            set;
        }
 
-       [D2OField("chainReactionSpellId")]
-       [Property("ChainReactionSpellId")]
        public int ChainReactionSpellId
        {
            get;
            set;
        }
 
-       [D2OField("explodSpellId")]
-       [Property("ExplodSpellId")]
        public int ExplodSpellId
        {
            get;
            set;
        }
 
-       [D2OField("wallId")]
-       [Property("WallId")]
        public int WallId
        {
            get;
            set;
        }
 
-       [D2OField("instantSpellId")]
-       [Property("InstantSpellId")]
        public int InstantSpellId
        {
            get;
            set;
        }
 
-       [D2OField("comboCoeff")]
-       [Property("ComboCoeff")]
        public int ComboCoeff
        {
            get;
            set;
        }
 
+        public void AssignFields(object d2oObject)
+        {
+            var spell = (DofusProtocol.D2oClasses.SpellBomb)d2oObject;
+            Id = spell.id;
+            ChainReactionSpellId = spell.chainReactionSpellId;
+            ExplodSpellId = spell.explodSpellId;
+            WallId = spell.wallId;
+            InstantSpellId = spell.instantSpellId;
+            ComboCoeff = spell.comboCoeff;
+        }
     }
 }

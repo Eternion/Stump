@@ -63,12 +63,6 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
-        public DatabaseAccessor DatabaseAccessor
-        {
-            get;
-            protected set;
-        }
-
         public ConsoleBase ConsoleInterface
         {
             get;
@@ -90,7 +84,7 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
-        public SelfRunningTaskQueue IOTaskPool
+        public SelfRunningTaskPool IOTaskPool
         {
             get;
             protected set;
@@ -193,7 +187,7 @@ namespace Stump.Server.BaseServer
             StartConfigReloadOnChange(Config);
 
             logger.Info("Initialize Task Pool");
-            IOTaskPool = new SelfRunningTaskQueue(IOTaskInterval, "IO Task Pool");
+            IOTaskPool = new SelfRunningTaskPool(IOTaskInterval, "IO Task Pool");
 
             CommandManager = CommandManager.Instance;
             CommandManager.RegisterAll(Assembly.GetExecutingAssembly());

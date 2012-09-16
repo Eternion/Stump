@@ -3,7 +3,7 @@ using System.Linq;
 using System.Net.Sockets;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.AuthServer.Database.Account;
+using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.Network;
 
@@ -20,7 +20,7 @@ namespace Stump.Server.AuthServer.Network
             
 
             Send(new ProtocolRequired(VersionExtension.ProtocolRequired, VersionExtension.ActualProtocol));
-            Send(new HelloConnectMessage(AccountManager.Instance.GetSalt(), AccountManager.Instance.GetRSAPublicKey()));
+            Send(new HelloConnectMessage(CredentialManager.Instance.GetSalt(), CredentialManager.Instance.GetRSAPublicKey()));
 
             CanReceive = true;
         }
@@ -66,9 +66,12 @@ namespace Stump.Server.AuthServer.Network
 
         public void SaveNow()
         {
+            AuthServer.Instance.IOTaskPool.EnsureContext();
+
             Account.Tokens += Account.NewTokens;
             Account.NewTokens = 0;
-            Account.Update();
+
+            AuthServer.Instance.Database.SaveChanges();
         }
 
 

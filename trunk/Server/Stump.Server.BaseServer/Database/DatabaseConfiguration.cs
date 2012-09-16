@@ -1,6 +1,10 @@
 ﻿
 
+using System;
 using System.Collections.Generic;
+using System.Data.Common;
+using System.Data.EntityClient;
+using System.Data.SqlClient;
 using Castle.ActiveRecord.Framework.Config;
 
 namespace Stump.Server.BaseServer.Database
@@ -8,15 +12,6 @@ namespace Stump.Server.BaseServer.Database
     public class DatabaseConfiguration
     {
         public DatabaseType DatabaseType
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Folder which contains all of sql file to update db
-        /// </summary>
-        public string UpdateFileDir
         {
             get;
             set;
@@ -58,49 +53,32 @@ namespace Stump.Server.BaseServer.Database
             set;
         }
 
-        public Dictionary<string, string> GetConnectionInfo()
+        public DbConnection BuildConnection()
         {
-            var props = new Dictionary<string, string>(5);
+            string driver;
 
             switch (DatabaseType)
             {
                 case DatabaseType.MySql:
-                    {
-                        props.Add("connection.driver_class", "NHibernate.Driver.MySqlDataDriver");
-                        props.Add("dialect", "NHibernate.Dialect.MySQLDialect");
-                        props.Add("connection.provider", "NHibernate.Connection.DriverConnectionProvider");
-                        props.Add("connection.connection_string", "Database=" + Name + ";Data Source=" + Host +
-                                                                  ";User Id=" + User + ";Password=" + Password);
-                        props.Add("proxyfactory.factory_class",
-                                  "NHibernate.ByteCode.Castle.ProxyFactoryFactory, NHibernate.ByteCode.Castle");
-                        break;
-                    }
-                case DatabaseType.MsSqlServer2005:
-                    {
-                        props.Add("connection.driver_class", "NHibernate.Driver.SqlClientDriver");
-                        props.Add("dialect", "NHibernate.Dialect.MsSql2005Dialect");
-                        props.Add("connection.provider", "NHibernate.Connection.DriverConnectionProvider");
-                        props.Add("connection.connection_string",
-                                  "Data Source=" + Host + ";Initial Catalog=" + Name + ";User Id=" + User +
-                                  ";Password=" + Password + ";");
-                        props.Add("proxyfactory.factory_class",
-                                  "NHibernate.ByteCode.Castle.ProxyFactoryFactory, NHibernate.ByteCode.Castle");
-                        break;
-                    }
-                case DatabaseType.MsSqlServer2008:
-                    {
-                        props.Add("connection.driver_class", "NHibernate.Driver.SqlClientDriver");
-                        props.Add("dialect", "NHibernate.Dialect.MsSql2008Dialect");
-                        props.Add("connection.provider", "NHibernate.Connection.DriverConnectionProvider");
-                        props.Add("connection.connection_string",
-                                  "Data Source=" + Host + ";Initial Catalog=" + Name + ";User Id=" + User +
-                                  ";Password=" + Password + ";");
-                        props.Add("proxyfactory.factory_class",
-                                  "NHibernate.ByteCode.Castle.ProxyFactoryFactory, NHibernate.ByteCode.Castle");
-                        break;
-                    }
+                    driver = "MySql.Data.MySqlClient";
+                    break;
+                default:
+                    throw new NotImplementedException();
             }
-            return props;
+
+            var sqlBuilder =
+                new SqlConnectionStringBuilder
+                    {DataSource = Host, InitialCatalog = Name, Password = Password, UserID = User};
+
+            var factory = DbProviderFactories.GetFactory(driver);
+            var connection = factory.CreateConnection();
+
+            if (connection == null)
+                throw new Exception(string.Format("Connection not build correcty, is the driver {0} correctly installed ?", driver));
+
+            connection.ConnectionString = sqlBuilder.ConnectionString;
+
+            return connection;
         }
     }
 }

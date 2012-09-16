@@ -36,7 +36,7 @@ namespace Stump.Core.Timers
             set;
         }
 
-        internal void Execute(SelfRunningTaskQueue queue)
+        internal void Execute(SelfRunningTaskPool queue)
         {
             Callback();
             LastCallTime = queue.LastUpdateTime;

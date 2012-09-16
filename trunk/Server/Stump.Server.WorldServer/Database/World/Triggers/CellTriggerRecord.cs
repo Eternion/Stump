@@ -1,13 +1,23 @@
 using System;
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
 
-namespace Stump.Server.WorldServer.Database.World.Triggers
+namespace Stump.Server.WorldServer.Database.Triggers
 {
-    [ActiveRecord("maps_cells_triggers", DiscriminatorColumn = "RecognizerType", DiscriminatorType = "String", DiscriminatorValue = "Base")]
+    public class CellTriggerRecordConfiguration : EntityTypeConfiguration<CellTriggerRecord>
+    {
+        public CellTriggerRecordConfiguration()
+        {
+            ToTable("maps_triggers");
+            Map(x => x.Requires("Discriminator").HasValue("Base"));
+        }
+    }
+
     public abstract class CellTriggerRecord : WorldBaseRecord<CellTriggerRecord>
     {
         private short m_cellId;
@@ -15,14 +25,12 @@ namespace Stump.Server.WorldServer.Database.World.Triggers
         private bool m_mustRefreshPosition;
         private ObjectPosition m_position;
 
-        [PrimaryKey(PrimaryKeyType.Native)]
         public int Id
         {
             get;
             set;
         }
 
-        [Property]
         public short CellId
         {
             get { return m_cellId; }
@@ -33,8 +41,6 @@ namespace Stump.Server.WorldServer.Database.World.Triggers
             }
         }
 
-
-        [Property]
         public int MapId
         {
             get { return m_mapId; }
@@ -45,14 +51,18 @@ namespace Stump.Server.WorldServer.Database.World.Triggers
             }
         }
 
-        [Property]
-        public CellTriggerType TriggerType
+        public int TriggerTypeInt
         {
             get;
             set;
         }
 
-        [Property("`Condition`")]
+        public CellTriggerType TriggerType
+        {
+            get { return (CellTriggerType) TriggerTypeInt; }
+            set { TriggerTypeInt = (int) value; }
+        }
+
         public string Condition
         {
             get;
@@ -80,7 +90,6 @@ namespace Stump.Server.WorldServer.Database.World.Triggers
 
             return m_position;
         }
-
 
         public abstract CellTrigger GenerateTrigger();
     }

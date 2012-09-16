@@ -2,7 +2,7 @@
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.Server.AuthServer.Database.Account;
+using Stump.Server.AuthServer.Managers;
 using Stump.Server.AuthServer.Network;
 
 namespace Stump.Server.AuthServer.Handlers.Connection
@@ -13,7 +13,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         [AuthHandler(AcquaintanceSearchMessage.Id)]
         public static void HandleAcquaintanceSearchMessage(AuthClient client, AcquaintanceSearchMessage message)
         {
-            var account = Account.FindAccountByNickname(message.nickname);
+            var account = AccountManager.Instance.FindAccountByNickname(message.nickname);
 
             if (account == null)
             {
@@ -21,7 +21,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 return;
             }
 
-            SendAcquaintanceSearchServerListMessage(client, account.Characters.Select(wcr => (short)wcr.World.Id).Distinct());
+            SendAcquaintanceSearchServerListMessage(client, account.WorldCharacters.Select(wcr => (short)wcr.WorldId).Distinct());
         }
 
         public static void SendAcquaintanceSearchServerListMessage(AuthClient client, IEnumerable<short> serverIds)

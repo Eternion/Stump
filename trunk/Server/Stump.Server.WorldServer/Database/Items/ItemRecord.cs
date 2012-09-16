@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity.ModelConfiguration;
+using System.Data.Objects;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
@@ -43,15 +45,23 @@ namespace Stump.Server.WorldServer.Database.Items
         void Delete();
     }
 
-    [ActiveRecord("items", DiscriminatorColumn = "RecognizerType", DiscriminatorType = "String", DiscriminatorValue = "Base")]
-    public abstract class ItemRecord<T> : AssignedWorldRecord<T>, IItemRecord where T : ItemRecord<T>
+    public class ItemRecordConfiguration : EntityTypeConfiguration<ItemRecord>
+    {
+        public ItemRecordConfiguration()
+        {
+            ToTable("items");
+            Ignore(x => x.Effects);
+            Map(x => x.Requires("Discriminator").HasValue("Item"));
+        }
+    }
+
+    public abstract class ItemRecord : ISaveIntercepter
     {
         public ItemRecord()
         {
             m_serializedEffects = new byte[0];
         }
 
-        [Property("Item", NotNull = true)]
         protected int ItemId
         {
             get;
@@ -70,7 +80,6 @@ namespace Stump.Server.WorldServer.Database.Items
             }
         }
 
-        [Property("Stack", NotNull = true, Default = "0")]
         public int Stack
         {
             get;
@@ -79,7 +88,6 @@ namespace Stump.Server.WorldServer.Database.Items
 
         private byte[] m_serializedEffects;
 
-        [Property("Effects", NotNull = true)]
         private byte[] SerializedEffects
         {
             get { return m_serializedEffects; }
@@ -98,18 +106,9 @@ namespace Stump.Server.WorldServer.Database.Items
             set { m_effects = value; }
         }
 
-        protected override bool OnFlushDirty(object id, System.Collections.IDictionary previousState, System.Collections.IDictionary currentState, NHibernate.Type.IType[] types)
+        public void BeforeSave(ObjectStateEntry currentEntry)
         {
-            m_serializedEffects = (byte[])(currentState["SerializedEffects"] = EffectManager.Instance.SerializeEffects(Effects));
-
-            return base.OnFlushDirty(id, previousState, currentState, types);
-        }
-
-        protected override bool BeforeSave(System.Collections.IDictionary state)
-        {
-            m_serializedEffects = (byte[])( state["SerializedEffects"] = EffectManager.Instance.SerializeEffects(Effects) );
-
-            return base.BeforeSave(state);
+            m_serializedEffects = EffectManager.Instance.SerializeEffects(Effects);
         }
     }
 }

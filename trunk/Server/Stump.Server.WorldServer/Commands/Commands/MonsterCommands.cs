@@ -2,11 +2,12 @@ using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
-using Stump.Server.WorldServer.Database.Monsters;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Spawns;
+using Monster = Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters.Monster;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {

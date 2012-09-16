@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Characters;
-using Stump.Server.WorldServer.Database.Startup;
 
 namespace Stump.Server.WorldServer.Game.Accounts.Startup
 {

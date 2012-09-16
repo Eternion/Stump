@@ -1,22 +1,30 @@
 using System.Collections.Generic;
-using Castle.ActiveRecord;
+using System.Data.Entity.ModelConfiguration;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.I18n;
-using Stump.Server.WorldServer.Database.Interactives.Skills;
 
-namespace Stump.Server.WorldServer.Database.Interactives
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord("interactives")]
+    public class InteractiveTemplateConfiguration : EntityTypeConfiguration<InteractiveTemplate>
+    {
+        public InteractiveTemplateConfiguration()
+        {
+            ToTable("interactives_templates");
+            HasMany(x => x.Skills).WithMany().
+                Map(x => x.
+                             MapLeftKey("InteractiveTemplateId").
+                             MapRightKey("SkillId").
+                             ToTable("interactives_templates_skills"));
+        }
+    }
+
     [D2OClass("Interactive", "com.ankamagames.dofus.datacenter.interactives")]
-    public class InteractiveTemplate : WorldBaseRecord<InteractiveTemplate>
+    public class InteractiveTemplate : IAssignedByD2O
     {
         private string m_name;
         private IList<SkillRecord> m_skills;
 
-        [D2OField("id")]
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
         public int Id
         {
             get;
@@ -28,41 +36,46 @@ namespace Stump.Server.WorldServer.Database.Interactives
             get { return (InteractiveTypeEnum) Id; }
         }
 
-        [D2OField("nameId")]
-        [Property("NameId")]
         public uint NameId
         {
             get;
             set;
         }
 
-
         public string Name
         {
             get { return m_name ?? (m_name = TextManager.Instance.GetText(NameId)); }
         }
 
-        [D2OField("actionId")]
-        [Property("ActionId")]
         public int ActionId
         {
             get;
             set;
         }
 
-        [HasAndBelongsToMany(Table = "interactives_templates_skills", ColumnKey = "InteractiveId", ColumnRef = "SkillId")]
-        public IList<SkillRecord> Skills
-        {
-            get { return m_skills ?? (m_skills = new List<SkillRecord>()); }
-            set { m_skills = value; }
-        }
-
-        [D2OField("displayTooltip")]
-        [Property]
         public bool DisplayTooltip
         {
             get;
             set;
         }
+
+        public virtual HashSet<SkillRecord> Skills
+        {
+            get;
+            set;
+        }
+
+        #region IAssignedByD2O Members
+
+        public void AssignFields(object d2oObject)
+        {
+            var template = (DofusProtocol.D2oClasses.Interactive) d2oObject;
+            Id = template.id;
+            NameId = template.nameId;
+            ActionId = template.actionId;
+            DisplayTooltip = template.displayTooltip;
+        }
+
+        #endregion
     }
 }

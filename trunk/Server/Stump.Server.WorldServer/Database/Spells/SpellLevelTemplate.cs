@@ -1,40 +1,41 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.ModelConfiguration;
+using System.Data.Objects;
 using System.Linq;
-using System.Reflection;
 using Castle.ActiveRecord;
+using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
-using Stump.Server.WorldServer.Database.World;
+using Stump.Server.BaseServer.Database;
+using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Maps;
-using Stump.Server.WorldServer.Game.Maps.Cells;
-using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Spells;
 
-namespace Stump.Server.WorldServer.Database.Spells
+namespace Stump.Server.WorldServer.Database
 {
-    [Serializable]
-    [ActiveRecord("spells_level")]
+    public class SpellLevelTemplateConfiguration : EntityTypeConfiguration<SpellLevelTemplate>
+    {
+        public SpellLevelTemplateConfiguration()
+        {
+            ToTable("spells_level");
+        }
+    }
     [D2OClass("SpellLevel", "com.ankamagames.dofus.datacenter.spells")]
-    public sealed class SpellLevelTemplate : WorldBaseRecord<SpellLevelTemplate>, IAssignedByD2O
+    public sealed class SpellLevelTemplate : IAssignedByD2O, ISaveIntercepter
     {
         private List<EffectDice> m_criticalEffects;
         private List<EffectDice> m_effects;
         private SpellTemplate m_spell;
 
-        [D2OField("id")]
-        [PrimaryKey(PrimaryKeyType.Assigned, "Id")]
         public uint Id
         {
             get;
             set;
         }
 
-        [D2OField("spellId")]
-        [Property("SpellId")]
-        public int SpellId
+        public uint SpellId
         {
             get;
             set;
@@ -45,209 +46,179 @@ namespace Stump.Server.WorldServer.Database.Spells
             get { return m_spell ?? (m_spell = SpellManager.Instance.GetSpellTemplate(SpellId)); }
         }
 
-        [D2OField("spellBreed")]
-        [Property("SpellBreed")]
         public uint SpellBreed
         {
             get;
             set;
         }
 
-        [D2OField("apCost")]
-        [Property("ApCost")]
         public uint ApCost
         {
             get;
             set;
         }
 
-        [D2OField("range")]
-        [Property("`Range`")]
         public uint Range
         {
             get;
             set;
         }
 
-        [D2OField("castInLine")]
-        [Property("CastInLine")]
         public Boolean CastInLine
         {
             get;
             set;
         }
 
-        [D2OField("castInDiagonal")]
-        [Property("CastInDiagonal")]
         public Boolean CastInDiagonal
         {
             get;
             set;
         }
 
-        [D2OField("castTestLos")]
-        [Property("CastTestLos")]
         public Boolean CastTestLos
         {
             get;
             set;
         }
 
-        [D2OField("criticalHitProbability")]
-        [Property("CriticalHitProbability")]
         public uint CriticalHitProbability
         {
             get;
             set;
         }
 
-        [D2OField("statesRequired")]
-        [Property("StatesRequired", ColumnType = "Serializable")]
+        private byte[] m_statesRequiredBin;
+
+        public byte[] StatesRequiredBin
+        {
+            get { return m_statesRequiredBin; }
+            set
+            {
+                m_statesRequiredBin = value;
+                StatesRequired = m_statesRequiredBin.ToObject<List<int>>();
+            }
+        }
+
         public List<int> StatesRequired
         {
             get;
             set;
         }
 
-        [D2OField("criticalFailureProbability")]
-        [Property("CriticalFailureProbability")]
         public uint CriticalFailureProbability
         {
             get;
             set;
         }
 
-        [D2OField("needFreeCell")]
-        [Property("NeedFreeCell")]
         public Boolean NeedFreeCell
         {
             get;
             set;
         }
 
-        [D2OField("needFreeTrapCell")]
-        [Property("NeedFreeTrapCell")]
         public Boolean NeedFreeTrapCell
         {
             get;
             set;
         }
 
-        [D2OField("needTakenCell")]
-        [Property("NeedTakenCell")]
         public Boolean NeedTakenCell
         {
             get;
             set;
         }
 
-        [D2OField("rangeCanBeBoosted")]
-        [Property("RangeCanBeBoosted")]
         public Boolean RangeCanBeBoosted
         {
             get;
             set;
         }
 
-        [D2OField("maxStack")]
-        [Property("MaxStack")]
         public int MaxStack
         {
             get;
             set;
         }
 
-        [D2OField("maxCastPerTurn")]
-        [Property("MaxCastPerTurn")]
         public uint MaxCastPerTurn
         {
             get;
             set;
         }
 
-        [D2OField("maxCastPerTarget")]
-        [Property("MaxCastPerTarget")]
         public uint MaxCastPerTarget
         {
             get;
             set;
         }
 
-        [D2OField("minCastInterval")]
-        [Property("MinCastInterval")]
         public uint MinCastInterval
         {
             get;
             set;
         }
 
-        [D2OField("initialCooldown")]
-        [Property("InitialCooldown")]
         public uint InitialCooldown
         {
             get;
             set;
         }
 
-        [D2OField("globalCooldown")]
-        [Property("GlobalCooldown")]
         public int GlobalCooldown
         {
             get;
             set;
         }
 
-        [D2OField("minPlayerLevel")]
-        [Property("MinPlayerLevel")]
         public uint MinPlayerLevel
         {
             get;
             set;
         }
 
-        [D2OField("criticalFailureEndsTurn")]
-        [Property("CriticalFailureEndsTurn")]
         public Boolean CriticalFailureEndsTurn
         {
             get;
             set;
         }
 
-        [D2OField("hideEffects")]
-        [Property("HideEffects")]
         public Boolean HideEffects
         {
             get;
             set;
         }
 
-        [D2OField("hidden")]
-        [Property]
         public Boolean Hidden
         {
             get;
             set;
         }
 
-        [D2OField("minRange")]
-        [Property("MinRange")]
         public uint MinRange
         {
             get;
             set;
         }
 
-        [D2OField("statesForbidden")]
-        [Property("StatesForbidden", ColumnType = "Serializable")]
+        private byte[] m_statesForbiddenBin;
+
+        public byte[] StatesForbiddenBin
+        {
+            get { return m_statesForbiddenBin; }
+            set { m_statesForbiddenBin = value;
+                StatesForbidden = value.ToObject<List<int>>();
+            }
+        }
+
         public List<int> StatesForbidden
         {
             get;
             set;
         }
 
-        [D2OField("effects")]
-        [Property("Effects")]
-        private byte[] RawEffects
+        private byte[] EffectsBin
         {
             get;
             set;
@@ -255,47 +226,67 @@ namespace Stump.Server.WorldServer.Database.Spells
 
         public List<EffectDice> Effects
         {
-            get { return m_effects ?? (m_effects = EffectManager.Instance.DeserializeEffects(RawEffects).Cast<EffectDice>().ToList()); }
+            get
+            {
+                return m_effects ?? ( m_effects = EffectManager.Instance.DeserializeEffects(EffectsBin).Cast<EffectDice>().ToList() );
+            }
             set { m_effects = value; }
         }
 
-        [D2OField("criticalEffect")]
-        [Property("CriticalEffect")]
-        private byte[] RawCriticalEffects
+        private byte[] CriticalEffectsBin
         {
             get;
             set;
         }
 
-        public List<EffectDice> CritialEffects
+        public List<EffectDice> CriticalEffects
         {
-            get { return m_criticalEffects ?? (m_criticalEffects = EffectManager.Instance.DeserializeEffects(RawCriticalEffects).Cast<EffectDice>().ToList()); }
+            get
+            {
+                return m_criticalEffects ?? ( m_criticalEffects = EffectManager.Instance.DeserializeEffects(CriticalEffectsBin).Cast<EffectDice>().ToList() );
+            }
             set { m_criticalEffects = value; }
         }
 
-        public object GenerateAssignedObject(string fieldName, object d2OObject)
+        public void AssignFields(object d2oObject)
         {
-            if (fieldName == "RawEffects")
-            {
-                var list = d2OObject as List<EffectInstanceDice>;
+            var spell = (DofusProtocol.D2oClasses.SpellLevel)d2oObject;
+            Id = spell.id;
+            SpellId = spell.spellId;
+            SpellBreed = spell.spellBreed;
+            ApCost = spell.apCost;
+            Range = spell.range;
+            CastInLine = spell.castInLine;
+            CastInDiagonal = spell.castInDiagonal;
+            CastTestLos = spell.castTestLos;
+            CriticalHitProbability = spell.criticalHitProbability;
+            StatesRequired = spell.statesRequired;
+            CriticalFailureProbability = spell.criticalFailureProbability;
+            NeedFreeCell = spell.needFreeCell;
+            NeedFreeTrapCell = spell.needFreeTrapCell;
+            NeedTakenCell = spell.needTakenCell;
+            RangeCanBeBoosted = spell.rangeCanBeBoosted;
+            MaxStack = spell.maxStack;
+            MaxCastPerTarget = spell.maxCastPerTarget;
+            MinCastInterval = spell.minCastInterval;
+            InitialCooldown = spell.initialCooldown;
+            GlobalCooldown = spell.globalCooldown;
+            MinPlayerLevel = spell.minPlayerLevel;
+            CriticalFailureEndsTurn = spell.criticalFailureEndsTurn;
+            HideEffects = spell.hideEffects;
+            Hidden = spell.hidden;
+            MinRange = spell.minRange;
+            StatesForbidden = spell.statesForbidden;
+            EffectsBin = EffectManager.Instance.SerializeEffects(spell.effects);
+            CriticalEffectsBin = EffectManager.Instance.SerializeEffects(spell.criticalEffect);
+        }
 
-                if (list == null)
-                    return d2OObject;
-
-                return EffectManager.Instance.SerializeEffects(list);
-            }
-
-            if (fieldName == "RawCriticalEffects")
-            {
-                var list = d2OObject as List<EffectInstanceDice>;
-
-                if (list == null)
-                    return d2OObject;
-
-                return EffectManager.Instance.SerializeEffects(list);
-            }
-
-            return d2OObject;
+        public void BeforeSave(ObjectStateEntry currentEntry)
+        {
+            m_statesForbiddenBin = StatesForbidden.ToBinary();
+            m_statesRequiredBin = StatesRequired.ToBinary();
+            EffectsBin = EffectManager.Instance.SerializeEffects(Effects);
+            CriticalEffectsBin = EffectManager.Instance.SerializeEffects(CriticalEffects);
         }
     }
 }

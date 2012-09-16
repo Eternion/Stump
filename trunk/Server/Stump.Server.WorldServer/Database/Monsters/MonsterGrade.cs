@@ -1,41 +1,43 @@
 using System.Collections.Generic;
+using System.Data.Entity.ModelConfiguration;
+using System.Data.Objects;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 
-namespace Stump.Server.WorldServer.Database.Monsters
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord("monsters_grades")]
-    [D2OClass("MonsterGrade", "com.ankamagames.dofus.datacenter.monsters", AutoBuild = false)]
-    public class MonsterGrade : WorldBaseRecord<MonsterGrade>
+    public class MonsterGradeConfiguration : EntityTypeConfiguration<MonsterGrade>
     {
-        [PrimaryKey(PrimaryKeyType.Native)]
+        public MonsterGradeConfiguration()
+        {
+            ToTable("monsters_grades");
+        }
+    }
+    [D2OClass("MonsterGrade", "com.ankamagames.dofus.datacenter.monsters")]
+    public class MonsterGrade : IAssignedByD2O, ISaveIntercepter
+    {
         public int Id
         {
             get;
             set;
         }
 
-        [D2OField("grade")]
-        [Property("Grade")]
         public uint GradeId
         {
             get;
             set;
         }
 
-        [D2OField("gradeXp")]
-        [Property]
         public int GradeXp
         {
             get;
             set;
         }
 
-        [D2OField("monsterId")]
-        [Property("MonsterId")]
         public int MonsterId
         {
             get;
@@ -56,131 +58,102 @@ namespace Stump.Server.WorldServer.Database.Monsters
             }
         }
 
-        [D2OField("level")]
-        [Property("Level")]
         public uint Level
         {
             get;
             set;
         }
 
-        [D2OField("paDodge")]
-        [Property("PaDodge")]
         public int PaDodge
         {
             get;
             set;
         }
 
-        [D2OField("pmDodge")]
-        [Property("PmDodge")]
         public int PmDodge
         {
             get;
             set;
         }
 
-        [D2OField("earthResistance")]
-        [Property("EarthResistance")]
         public int EarthResistance
         {
             get;
             set;
         }
 
-        [D2OField("airResistance")]
-        [Property("AirResistance")]
         public int AirResistance
         {
             get;
             set;
         }
 
-        [D2OField("fireResistance")]
-        [Property("FireResistance")]
         public int FireResistance
         {
             get;
             set;
         }
 
-        [D2OField("waterResistance")]
-        [Property("WaterResistance")]
         public int WaterResistance
         {
             get;
             set;
         }
 
-        [D2OField("neutralResistance")]
-        [Property("NeutralResistance")]
         public int NeutralResistance
         {
             get;
             set;
         }
 
-        [D2OField("lifePoints")]
-        [Property("LifePoints")]
         public int LifePoints
         {
             get;
             set;
         }
 
-        [D2OField("actionPoints")]
-        [Property("ActionPoints")]
         public int ActionPoints
         {
             get;
             set;
         }
 
-        [D2OField("movementPoints")]
-        [Property("MovementPoints")]
         public int MovementPoints
         {
             get;
             set;
         }
 
-        [Property("TackleEvade")]
         public short TackleEvade
         {
             get;
             set;
         }
 
-        [Property("TackleBlock")]
         public short TackleBlock
         {
             get;
             set;
         }
 
-        [Property("Strength")]
         public short Strength
         {
             get;
             set;
         }
 
-        [Property("Chance")]
         public short Chance
         {
             get;
             set;
         }
 
-        [Property("Vitality")]
         public short Vitality
         {
             get;
             set;
         }
 
-        [D2OField("wisdom")]
-        [Field("Wisdom")]
         private int m_wisdom;
 
         public short Wisdom
@@ -189,27 +162,23 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set { m_wisdom = value; }
         }
 
-        [Property("Intelligence")]
         public short Intelligence
         {
             get;
             set;
         }
 
-        [Property("Agility")]
         public short Agility
         {
             get;
             set;
         }
 
-        private byte[] m_serializedStats;
-
-        [Property("Stats", NotNull=false)]
-        private byte[] SerializedStats
+        private byte[] m_statsBin;
+        private byte[] StatsBin
         {
-            get { return m_serializedStats; }
-            set { m_serializedStats = value;
+            get { return m_statsBin; }
+            set { m_statsBin = value;
 
             if (value == null)
                 Stats = new Dictionary<PlayerFields, short>();
@@ -254,8 +223,8 @@ namespace Stump.Server.WorldServer.Database.Monsters
             return stats;
         }
 
-        private List<MonsterSpell> m_spells;
-        public List<MonsterSpell> Spells
+        private List<Monsters.MonsterSpell> m_spells;
+        public List<Monsters.MonsterSpell> Spells
         {
             get
             {
@@ -263,11 +232,29 @@ namespace Stump.Server.WorldServer.Database.Monsters
             }
         }
 
-        protected override int[] FindDirty(object id, System.Collections.IDictionary previousState, System.Collections.IDictionary currentState, NHibernate.Type.IType[] types)
+        public void AssignFields(object d2oObject)
         {
-            SerializedStats = SerializeStats(Stats);
+            var grade = (DofusProtocol.D2oClasses.MonsterGrade)d2oObject;
+            GradeId = grade.grade;
+            GradeXp = grade.gradeXp;
+            MonsterId = grade.monsterId;
+            Level = grade.level;
+            PaDodge = grade.paDodge;
+            PmDodge = grade.pmDodge;
+            EarthResistance = grade.earthResistance;
+            AirResistance = grade.airResistance;
+            FireResistance = grade.fireResistance;
+            WaterResistance = grade.waterResistance;
+            NeutralResistance = grade.neutralResistance;
+            LifePoints = grade.lifePoints;
+            ActionPoints = grade.actionPoints;
+            MovementPoints = grade.movementPoints;
+            Wisdom = (short) grade.wisdom;
+        }
 
-            return base.FindDirty(id, previousState, currentState, types);
+        public void BeforeSave(ObjectStateEntry currentEntry)
+        {
+            m_statsBin = SerializeStats(Stats);
         }
     }
 }

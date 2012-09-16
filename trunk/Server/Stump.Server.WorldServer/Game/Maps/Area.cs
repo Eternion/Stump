@@ -10,7 +10,7 @@ using Stump.Core.Collections;
 using Stump.Core.Threading;
 using Stump.Core.Timers;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.Server.WorldServer.Database.Monsters;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Point = System.Drawing.Point;

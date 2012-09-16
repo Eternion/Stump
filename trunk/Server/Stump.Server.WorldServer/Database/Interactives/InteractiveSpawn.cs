@@ -1,78 +1,81 @@
+using System;
 using System.Collections.Generic;
+using System.Data.Entity.ModelConfiguration;
 using Castle.ActiveRecord;
 using NLog;
-using Stump.Server.WorldServer.Database.Interactives.Skills;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
-namespace Stump.Server.WorldServer.Database.Interactives
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord("interactives_spawns")]
-    public class InteractiveSpawn : WorldBaseRecord<InteractiveSpawn>
+    public class InteractiveSpawnConfiguration : EntityTypeConfiguration<InteractiveSpawn>
+    {
+        public InteractiveSpawnConfiguration()
+        {
+            ToTable("interactives_spawns");
+            HasOptional(x => x.Template);
+            HasMany(x => x.Skills).WithMany().Map(x => x.
+                MapLeftKey("InteractiveSpawnId").
+                MapRightKey("SkillId").
+                ToTable("interactives_spawns_skills"));
+        }
+    }
+
+    public class InteractiveSpawn
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private Map m_map;
         private IList<SkillRecord> m_skills;
 
-        [PrimaryKey(PrimaryKeyType.Native)]
+        public InteractiveSpawn()
+        {
+            CustomSkills = new HashSet<SkillRecord>();
+        }
+
+        // Primitive properties
+
         public int Id
         {
             get;
             set;
         }
 
-        /// <summary>
-        /// Can be null
-        /// </summary>
-        [Property(NotNull = false)]
-        public int TemplateId
+        public InteractiveTemplate Template
         {
             get;
             set;
         }
 
-        private InteractiveTemplate m_template;
-        public InteractiveTemplate Template
-        {
-            get
-            {
-                if (TemplateId < 0)
-                    return null;
-
-                return m_template ?? ( m_template = InteractiveManager.Instance.GetTemplate(TemplateId) );
-            }
-            set
-            {
-                m_template = value;
-                TemplateId = value.Id;
-            }
-        }
-
-        [Property(NotNull = true)]
         public int ElementId
         {
             get;
             set;
         }
 
-        [Property(NotNull = true)]
         public int MapId
         {
             get;
             set;
         }
 
-        /// <summary>
-        /// Custom skills in case of Template is null
-        /// </summary>
-        [HasAndBelongsToMany(Table = "interactives_custom_skills", ColumnKey = "InteractiveId", ColumnRef = "SkillId")]
-        public IList<SkillRecord> Skills
+        // Navigation properties
+
+        public virtual ICollection<SkillRecord> CustomSkills
         {
-            get { return m_skills ?? (m_skills = new List<SkillRecord>()); }
-            set { m_skills = value; }
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Custom skills if Template is null
+        /// </summary>
+        public HashSet<SkillRecord> Skills
+        {
+            get;
+            set;
         }
 
         public IEnumerable<SkillRecord> GetSkills()
@@ -101,5 +104,6 @@ namespace Stump.Server.WorldServer.Database.Interactives
         {
             return m_map ?? (m_map = Game.World.Instance.GetMap(MapId));
         }
+
     }
 }

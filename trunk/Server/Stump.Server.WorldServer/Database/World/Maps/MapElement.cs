@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Stump.Server.WorldServer.Database.World.Maps
+﻿namespace Stump.Server.WorldServer.Database.Maps
 {
     public struct MapElement
     {

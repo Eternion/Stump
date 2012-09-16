@@ -1,7 +1,6 @@
 using System;
-using System.IO;
 
-namespace Stump.Server.WorldServer.Database.World
+namespace Stump.Server.WorldServer.Database
 {
     [Serializable]
     public struct Cell

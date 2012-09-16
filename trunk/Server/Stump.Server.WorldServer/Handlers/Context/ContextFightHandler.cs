@@ -8,6 +8,7 @@ using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -300,10 +301,6 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameFightHumanReadyStateMessage(fighter.Id, fighter.IsReady));
         }
 
-        public static void SendGameFightTurnReadyRequestMessage(IPacketReceiver client, FightActor entity)
-        {
-            client.Send(new GameFightTurnReadyRequestMessage(entity.Id));
-        }
 
         public static void SendGameFightSynchronizeMessage(WorldClient client, Fight fight)
         {

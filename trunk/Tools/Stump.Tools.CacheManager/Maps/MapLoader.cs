@@ -9,8 +9,9 @@ using Stump.Core.Sql;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.DofusProtocol.D2oClasses.Tool.D2p;
 using Stump.DofusProtocol.D2oClasses.Tool.Dlm;
+using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.Maps;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Tools.CacheManager.SQL;
 

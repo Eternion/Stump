@@ -1,29 +1,37 @@
-﻿using Castle.ActiveRecord;
+﻿using System.Data.Entity.ModelConfiguration;
+using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.Items;
 
-namespace Stump.Server.WorldServer.Database.Items
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord(DiscriminatorValue = "Player")]
+    public class PlayerItemRecordConfiguration : EntityTypeConfiguration<PlayerItemRecord>
+    {
+        public PlayerItemRecordConfiguration()
+        {
+            Map(x => x.Requires("Discriminator").HasValue("Player"));
+        }
+    }
+    
     public class PlayerItemRecord : ItemRecord<PlayerItemRecord>
     {
-        [Property("Owner")]
         public int OwnerId
         {
             get;
             set;
         }
 
-        [Property("Position", NotNull = true, Default = "63")]
-        public CharacterInventoryPositionEnum Position
+        public int PositionInt
         {
             get;
             set;
         }
 
-        public static PlayerItemRecord[] FindAllByOwner(int ownerId)
+        public CharacterInventoryPositionEnum Position
         {
-            return FindAll(Restrictions.Eq("OwnerId", ownerId));
+            get { return (CharacterInventoryPositionEnum) PositionInt; }
+            set { PositionInt = (int) value; }
         }
     }
 }

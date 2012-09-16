@@ -1,18 +1,28 @@
 using System.Collections.Generic;
-using Castle.ActiveRecord;
+using System.ComponentModel;
+using System.Data.Entity.ModelConfiguration;
 using NLog;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database.Items.Shops;
-using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Items;
 
-namespace Stump.Server.WorldServer.Database.Npcs.Actions
+namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord(DiscriminatorValue = "Shop")]
-    public class NpcBuySellAction : NpcAction
+    public class NpcBuySellActionConfiguration : EntityTypeConfiguration<NpcBuySellAction>
+    {
+        public NpcBuySellActionConfiguration()
+        {
+            Map(x => x.Requires("Discriminator").HasValue("Shop"));
+
+            Property(x => x.TokenId).HasColumnName("Shop_TokenId");
+            Property(x => x.CanSell).HasColumnName("Shop_CanSell");
+            Property(x => x.MaxStats).HasColumnName("Shop_MaxStats");
+
+        }
+    }
+    public class NpcBuySellAction : Npcs.NpcAction
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -25,7 +35,6 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
             }
         }
 
-        [Property("Shop_Token")]
         public int TokenId
         {
             get;
@@ -47,14 +56,13 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
             }
         }
 
-        [Property("Shop_CanSell", Default = "1")]
+        [DefaultValue(1)]
         public bool CanSell
         {
             get;
             set;
         }
 
-        [Property("Shop_MaxStats", Default = "0")]
         public bool MaxStats
         {
             get;

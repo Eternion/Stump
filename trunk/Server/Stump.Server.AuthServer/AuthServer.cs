@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Data.EntityClient;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -9,12 +10,15 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Castle.ActiveRecord.Framework.Config;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities.IO.Pem;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
+using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
@@ -29,6 +33,7 @@ using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.BaseServer.Plugins;
+using DatabaseAccessor = Stump.Server.AuthServer.Database.DatabaseAccessor;
 
 namespace Stump.Server.AuthServer
 {
@@ -62,10 +67,15 @@ namespace Stump.Server.AuthServer
             Name = "stump_auth",
             User = "root",
             Password = "",
-            UpdateFileDir = "./sql_update/",
         };
 
         public IpcHost IpcHost
+        {
+            get;
+            private set;
+        }
+
+        public DatabaseAccessor Database
         {
             get;
             private set;
@@ -91,11 +101,11 @@ namespace Stump.Server.AuthServer
                 ConsoleBase.SetTitle("#Stump Authentification Server");
 
                 logger.Info("Initializing Database...");
-                DatabaseAccessor = new DatabaseAccessor(DatabaseConfiguration, Definitions.DatabaseRevision, typeof(AuthBaseRecord<>), Assembly.GetExecutingAssembly(), true);
-                DatabaseAccessor.Initialize();
+                Database = new DatabaseAccessor(DatabaseConfiguration.BuildConnection(), true);
+                DataManager<DatabaseAccessor>.DefaultDatabase = Database;
 
                 logger.Info("Opening Database...");
-                DatabaseAccessor.OpenDatabase();
+                Database.Database.CreateIfNotExists();
 
                 logger.Info("Register Messages...");
                 MessageReceiver.Initialize();
@@ -110,7 +120,6 @@ namespace Stump.Server.AuthServer
 
                 logger.Info("Start World Servers Manager");
                 WorldServerManager.Instance.Initialize();
-                WorldServerManager.Instance.Start();
 
                 logger.Info("Initialize IPC Server..");
                 IpcHost = new IpcHost(typeof(IpcOperations), typeof(IRemoteAuthOperations), IpcAddress);
@@ -147,8 +156,10 @@ namespace Stump.Server.AuthServer
             StartTime = DateTime.Now;
         }
 
+
         protected override void OnShutdown()
         {
+            Database.Dispose();
         }
 
         protected override BaseClient CreateClient(Socket s)
@@ -159,6 +170,11 @@ namespace Stump.Server.AuthServer
         public IEnumerable<AuthClient> FindClients(Predicate<AuthClient> predicate)
         {
             return ClientManager.FindAll(predicate);
+        }
+
+        public void SaveDatabaseChanges()
+        {
+            IOTaskPool.ExecuteInContext(() => Database.SaveChanges());
         }
     }
 }

@@ -6,6 +6,6 @@ namespace Stump.Server.BaseServer.IPC
     public interface IRemoteWorldOperations
     {
         [OperationContract]
-        bool DisconnectClient(uint account);
+        bool DisconnectClient(int account);
     }
 }
