@@ -1,0 +1,26 @@
+#
+# VS Solution user file
+#
+*.suo
+*.user
+*.*.user
+*.vsp
+_ReSharper.*/
+
+# Output path
+bin/
+obj/
+/trunk/Run/Debug
+/trunk/Run/Release
+
+# Static data
+*.d2o
+*.d2i
+*.map
+*.meta
+
+#TestUnit
+TestResults/
+
+#TaskList
+/trunk/backup
