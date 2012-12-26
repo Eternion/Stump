@@ -935,7 +935,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void SendServerMessage(string message, Color color)
         {
-            SendServerMessage(string.Format("<font color=\"#{0}\">{1}</font>", color.ToArgb().ToString("X"), message));
+            SendServerMessage(string.Format("<font col" +
+                                            "or=\"#{0}\">{1}</font>", color.ToArgb().ToString("X"), message));
         }
 
         public void SendInformationMessage(TextInformationTypeEnum msgType, short msgId, params object[] parameters)

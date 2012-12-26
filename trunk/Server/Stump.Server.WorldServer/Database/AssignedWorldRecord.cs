@@ -7,6 +7,7 @@ using Castle.ActiveRecord;
 using NLog;
 using Stump.Core.Extensions;
 using Stump.Core.Reflection;
+using Stump.ORM;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 

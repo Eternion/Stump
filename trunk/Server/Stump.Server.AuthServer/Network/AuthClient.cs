@@ -71,7 +71,7 @@ namespace Stump.Server.AuthServer.Network
             Account.Tokens += Account.NewTokens;
             Account.NewTokens = 0;
 
-            AuthServer.Instance.Database.SaveChanges();
+            AuthServer.Instance.DBAccessor.Database.Save(Account);
         }
 
 

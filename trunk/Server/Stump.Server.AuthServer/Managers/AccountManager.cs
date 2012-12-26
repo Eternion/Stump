@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using Castle.ActiveRecord;
-using NHibernate.Criterion;
 using NLog;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -24,11 +19,10 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Network;
 using Stump.Server.BaseServer.Database;
-using DatabaseAccessor = Stump.Server.AuthServer.Database.DatabaseAccessor;
 
 namespace Stump.Server.AuthServer.Managers
 {
-    public class AccountManager : DataManager<DatabaseAccessor, AccountManager>
+    public class AccountManager : DataManager<AccountManager>
     {
         /// <summary>
         /// List of available breeds
@@ -56,10 +50,15 @@ namespace Stump.Server.AuthServer.Managers
         [Variable]
         public static int CacheTimeout = 300;
 
+        [Variable]
+        public static int IpBanRefreshTime = 60;
+
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly Dictionary<int, Tuple<DateTime, Account>> m_accountsCache = new Dictionary<int, Tuple<DateTime, Account>>(CacheTimeout);
+        private readonly Dictionary<int, Tuple<DateTime, Account>> m_accountsCache = new Dictionary<int, Tuple<DateTime, Account>>();
+        private List<IpBan> m_ipBans = new List<IpBan>(); 
         private SimpleTimerEntry m_timer;
+        private SimpleTimerEntry m_bansTimer;
 
         public AccountManager()
         {
@@ -69,11 +68,14 @@ namespace Stump.Server.AuthServer.Managers
         public override void Initialize()
         {
             m_timer = AuthServer.Instance.IOTaskPool.CallPeriodically(CacheTimeout * 60 / 4, TimerTick);
+            m_bansTimer = AuthServer.Instance.IOTaskPool.CallPeriodically(IpBanRefreshTime, TimerTick);
+            m_ipBans = Database.Fetch<IpBan>(IpBanRelator.FetchQuery);
         }
 
         public override void TearDown()
         {
             AuthServer.Instance.IOTaskPool.CancelSimpleTimer(m_timer);
+            AuthServer.Instance.IOTaskPool.CancelSimpleTimer(m_bansTimer);
         }
 
         private void TimerTick()
@@ -92,32 +94,50 @@ namespace Stump.Server.AuthServer.Managers
             }
         }
 
+        private void RefreshIpBans()
+        {
+            lock (m_ipBans)
+            {
+                m_ipBans.Clear();
+                m_ipBans.AddRange(Database.Query<IpBan>(IpBanRelator.FetchQuery));
+            }
+        }
+
         public Account FindAccountById(int id)
         {
-            return Database.Accounts.Find(id);
+            return Database.Query<Account, WorldCharacter, Account>(new AccountRelator().Map,
+                string.Format(AccountRelator.FindAccountById, id)).SingleOrDefault();
         }
 
         public Account FindAccountByLogin(string login)
         {
-            return Database.Accounts.FirstOrDefault(entry => entry.Login == login);
+            return Database.Query<Account, WorldCharacter, Account>(new AccountRelator().Map,
+                AccountRelator.FindAccountByLogin, login).SingleOrDefault();
         }
 
         public Account FindAccountByNickname(string nickname)
         {
-            return Database.Accounts.FirstOrDefault(entry => entry.Nickname == nickname);
+            return Database.Query<Account, WorldCharacter, Account>(new AccountRelator().Map,
+                AccountRelator.FindAccountByNickname, nickname).SingleOrDefault();
         }
 
         public IpBan FindIpBan(string ip)
         {
-            return Database.IpBans.FirstOrDefault(entry => entry.IPAsString == ip);
+            lock (m_ipBans)
+            {
+                return m_ipBans.FirstOrDefault(x => x.IPAsString == ip);
+            }
         }
 
         public IpBan FindMatchingIpBan(string ipStr)
         {
-            var ip = IPAddress.Parse(ipStr);
-            var bans = Database.IpBans.Where(entry => entry.Match(ip));
+            lock (m_ipBans)
+            {
+                var ip = IPAddress.Parse(ipStr);
+                var bans = m_ipBans.Where(entry => entry.Match(ip));
 
-            return bans.OrderByDescending(entry => entry.GetRemainingTime()).FirstOrDefault();
+                return bans.OrderByDescending(entry => entry.GetRemainingTime()).FirstOrDefault();
+            }
         }
 
         public void CacheAccount(Account account)
@@ -152,12 +172,12 @@ namespace Stump.Server.AuthServer.Managers
 
         public bool LoginExists(string login)
         {
-            return Database.Accounts.Any(entry => entry.Login == login);
+            return Database.ExecuteScalar<bool>("SELECT EXISTS(SELECT 1 FROM accounts WHERE Login=@0)", login);
         }
 
         public bool NicknameExists(string nickname)
         {
-            return Database.Accounts.Any(entry => entry.Nickname == nickname);
+            return Database.ExecuteScalar<bool>("SELECT EXISTS(SELECT 1 FROM accounts WHERE Nickname=@0)", nickname);
         }
 
         public bool CreateAccount(Account account)
@@ -165,16 +185,14 @@ namespace Stump.Server.AuthServer.Managers
             if (LoginExists(account.Login))
                 return false;
 
-            Database.Accounts.Add(account);
-            Database.SaveChanges();
+            Database.Save(account);
 
             return true;
         }
 
         public bool DeleteAccount(Account account)
         {
-            Database.Accounts.Remove(account);
-            Database.SaveChanges();
+            Database.Delete(account);
 
             return true;
         }
@@ -186,29 +204,26 @@ namespace Stump.Server.AuthServer.Managers
 
             var character = new WorldCharacter
                                 {
-                                    Account = account,
+                                    AccountId = account.Id,
                                     WorldId = world.Id,
                                     CharacterId = characterId
                                 };
 
             account.WorldCharacters.Add(character);
-            Database.SaveChanges();
+            Database.Save(character);
 
             return character;
         }
 
         public bool DeleteAccountCharacter(Account account, WorldServer world, int characterId)
         {
-            WorldCharacter character = Database.WorldCharacters.FirstOrDefault(c => c.CharacterId == characterId);
+            var success = Database.Execute(string.Format("DELETE FROM worlds_characters WHERE AccountId={0} AND CharacterId={1} AND WorldId={2}", account.Id, characterId, world.Id)) > 0;
 
-            if (character == null)
+            if (!success)
                 return false;
 
             CreateDeletedCharacter(account, world, characterId);
-
-            account.WorldCharacters.Remove(character);
-            Database.WorldCharacters.Remove(character);
-
+            account.WorldCharacters.RemoveAll(x => x.CharacterId == characterId && x.WorldId == world.Id);
 
             return true;
         }
@@ -225,13 +240,12 @@ namespace Stump.Server.AuthServer.Managers
         {
             var character = new WorldCharacterDeleted
                                 {
-                                    Account = account,
+                                    AccountId = account.Id,
                                     WorldId = world.Id,
                                     CharacterId = characterId
                                 };
 
-            account.WorldDeletedCharacters.Add(character);
-            Database.SaveChanges();
+            Database.Save(character);
 
             return character;
         }
@@ -241,8 +255,7 @@ namespace Stump.Server.AuthServer.Managers
             if (deletedCharacter == null)
                 return false;
 
-            deletedCharacter.Account.WorldDeletedCharacters.Remove(deletedCharacter);
-            Database.SaveChanges();
+            Database.Delete(deletedCharacter);
 
             return true;
         }
@@ -258,11 +271,11 @@ namespace Stump.Server.AuthServer.Managers
                 client.Disconnect();
             }
 
-            var lastConnection = account.GetLastConnection();
-            if (lastConnection != null && lastConnection.WorldId.HasValue)
+            var lastConnection = account.LastConnection;
+            if (account.LastConnectionWorld != null)
             {
                 bool disconnected = false;
-                var server = WorldServerManager.Instance.GetServerById(lastConnection.WorldId.Value);
+                var server = WorldServerManager.Instance.GetServerById(account.LastConnectionWorld.Value);
 
                 if (server != null && server.Connected && server.RemoteOperations != null)
                     if (server.RemoteOperations.DisconnectClient(account.Id))
@@ -271,8 +284,8 @@ namespace Stump.Server.AuthServer.Managers
                 // diconnect clients from last game server
                 if (disconnected)
                 {
-                }
                     return true;
+                }
             }
 
             return clients.Length > 0;

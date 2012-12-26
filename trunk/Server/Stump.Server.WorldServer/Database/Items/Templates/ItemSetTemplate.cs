@@ -7,6 +7,7 @@ using System.Linq;
 using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
+using Stump.ORM;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Effects;

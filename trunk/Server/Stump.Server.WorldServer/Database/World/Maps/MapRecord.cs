@@ -5,6 +5,7 @@ using System.Data.Objects;
 using System.Linq;
 using Castle.ActiveRecord;
 using Stump.Core.IO;
+using Stump.ORM;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.World;
 

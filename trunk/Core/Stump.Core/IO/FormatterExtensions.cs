@@ -1,8 +1,12 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 
 namespace Stump.Core.IO
 {
@@ -44,6 +48,63 @@ namespace Stump.Core.IO
 
                 return (T)formatter.Deserialize(stream);
             }
+        }
+
+        public static string ToCSV(this IEnumerable enumerable, string separator)
+        {
+            var builder = new StringBuilder();
+            foreach (var entity in enumerable)
+            {
+                builder.Append(entity.ToString());
+                builder.Append(separator);
+            }
+            builder.Remove(builder.Length - separator.Length, separator.Length);
+            return builder.ToString();
+        }        
+        
+        public static string ToCSV<T>(this IEnumerable<T> enumerable, string separator, Func<T, string> formatter)
+        {
+            var builder = new StringBuilder();
+            foreach (var entity in enumerable)
+            {
+                builder.Append(formatter(entity));
+                builder.Append(separator);
+            }
+            builder.Remove(builder.Length - separator.Length, separator.Length);
+            return builder.ToString();
+        }
+
+        public static T[] FromCSV<T>(this string csvValue, string separator)
+            where T : IConvertible
+        {
+            var result = new List<T>();
+            int lastIndex = 0;
+            int i = csvValue.IndexOf(separator, StringComparison.Ordinal);
+            while (i >= 0 && i < csvValue.Length)
+            {
+                result.Add((T)Convert.ChangeType(csvValue.Substring(lastIndex, i - lastIndex), typeof(T)));
+                lastIndex = i + separator.Length;
+                i = csvValue.IndexOf(separator, lastIndex, StringComparison.Ordinal);
+            }
+            result.Add((T)Convert.ChangeType(csvValue.Substring(lastIndex, csvValue.Length - lastIndex), typeof(T)));
+
+            return result.ToArray();
+        }
+
+        public static T[] FromCSV<T>(this string csvValue, string separator, Func<string, T> converter)
+        {
+            var result = new List<T>();
+            int lastIndex = 0;
+            int i = csvValue.IndexOf(separator, StringComparison.Ordinal);
+            while (i >= 0 && i < csvValue.Length)
+            {
+                result.Add(converter(csvValue.Substring(lastIndex, i - lastIndex)));
+                lastIndex = i + separator.Length;
+                i = csvValue.IndexOf(separator, lastIndex, StringComparison.Ordinal);
+            }
+            result.Add(converter(csvValue.Substring(lastIndex, csvValue.Length - lastIndex)));
+
+            return result.ToArray();
         }
     }
 }

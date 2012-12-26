@@ -9,6 +9,7 @@ using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
+using Stump.ORM;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;

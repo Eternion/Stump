@@ -1,5 +1,4 @@
 using System;
-using Castle.ActiveRecord;
 using Stump.Core.Attributes;
 using Stump.Core.Cryptography;
 using Stump.Core.Extensions;
@@ -31,11 +30,10 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 return;
 
             /* If autoconnect, send to the lastServer */
-            var lastConnection = client.Account.GetLastConnection();
-            if (message.autoconnect && lastConnection != null && lastConnection.WorldId.HasValue &&
-                WorldServerManager.Instance.CanAccessToWorld(client, lastConnection.WorldId.Value))
+            if (message.autoconnect && client.Account.LastConnectionWorld != null &&
+                WorldServerManager.Instance.CanAccessToWorld(client, client.Account.LastConnectionWorld.Value))
             {
-                SendSelectServerData(client, WorldServerManager.Instance.GetServerById(lastConnection.WorldId.Value));
+                SendSelectServerData(client, WorldServerManager.Instance.GetServerById(client.Account.LastConnectionWorld.Value));
             }
             else
             {
@@ -85,15 +83,19 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             }
 
             /* Check Sanctions */
-            var sanction = account.GetStrongestSanction();
-            if (sanction != null && sanction.GetEndDate() > DateTime.Now)
+            if (account.IsBanned && account.BanEndDate > DateTime.Now)
             {
-                SendIdentificationFailedBannedMessage(client, sanction.GetEndDate());
+                SendIdentificationFailedBannedMessage(client, account.BanEndDate.Value);
                 client.DisconnectLater(1000);
                 return false;
             }
+            else if (account.IsBanned)
+            {
+                account.IsBanned = false;
+                account.BanEndDate = null;
+            }
 
-            var ipBan = AccountManager.Instance.FindIpBan(client.IP);
+            var ipBan = AccountManager.Instance.FindMatchingIpBan(client.IP);
             if (ipBan != null)
             {
                 SendIdentificationFailedBannedMessage(client, ipBan.GetEndDate());
@@ -125,7 +127,6 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
         public static void SendIdentificationSuccessMessage(AuthClient client, bool wasAlreadyConnected)
         {
-            var subEndDate = client.Account.GetSubscriptionEndDate();
             client.Send(new IdentificationSuccessMessage(
                             client.Account.Role >= RoleEnum.Moderator,
                             wasAlreadyConnected,
@@ -134,7 +135,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                             (int) client.Account.Id,
                             0, // community ID ? ( se trouve dans le d2p, utilisé pour trouver les serveurs de la communauté )
                             client.Account.SecretQuestion,
-                            subEndDate > DateTime.Now ? subEndDate.GetUnixTimeStamp() : 0, 
+                            client.Account.SubscriptionEnd > DateTime.Now ? client.Account.SubscriptionEnd.GetUnixTimeStamp() : 0, 
                             (DateTime.Now - client.Account.CreationDate).TotalMilliseconds));
 
             client.LookingOfServers = true;
@@ -179,7 +180,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             }
 
             /* not suscribe */
-            if (world.RequireSubscription && client.Account.GetSubscriptionEndDate() <= DateTime.Now)
+            if (world.RequireSubscription && client.Account.SubscriptionEnd <= DateTime.Now)
             {
                 SendSelectServerRefusedMessage(client, world, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_SUBSCRIBERS_ONLY);
                 return;
@@ -208,20 +209,9 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             client.Account.Ticket = client.Key;
             AccountManager.Instance.CacheAccount(client.Account);
 
-            /* Insert connection info */
-            var connectionRecord = new Database.Connection
-                                       {
-                                           WorldId = world.Id,
-                                           Date = DateTime.Now,
-                                           Account = client.Account,
-                                           Ip = client.IP
-                                       };
-            client.Account.Connections.Add(connectionRecord);
-
-            /* Remove the oldest Connection */
-            if (client.Account.Connections.Count > MaxConnectionLogs)
-                client.Account.RemoveOldestConnection();
-
+            client.Account.LastConnection = DateTime.Now;
+            client.Account.LastConnectedIp = client.IP;
+            client.Account.LastConnectionWorld = world.Id;
             client.SaveNow();
 
             client.Send(new SelectedServerDataMessage(

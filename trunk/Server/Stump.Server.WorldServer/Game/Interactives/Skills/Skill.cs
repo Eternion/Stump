@@ -1,12 +1,12 @@
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.Database.Interactives.Skills;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
     public abstract class Skill
     {
-        protected Skill(int id, SkillRecord record, InteractiveObject interactiveObject)
+        protected Skill(int id, InteractiveSkillRecord record, InteractiveObject interactiveObject)
         {
             Id = id;
             Record = record;
@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             private set;
         }
 
-        public SkillRecord Record
+        public InteractiveSkillRecord Record
         {
             get;
             private set;
@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
         public virtual uint GetDuration(Character character)
         {
-            return Record.Duration;
+            return 0;
         }
 
         public abstract bool IsEnabled(Character character);

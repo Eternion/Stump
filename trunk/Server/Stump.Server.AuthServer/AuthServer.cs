@@ -12,7 +12,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Castle.ActiveRecord.Framework.Config;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities.IO.Pem;
@@ -22,6 +21,7 @@ using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
+using Stump.ORM;
 using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.IO;
 using Stump.Server.AuthServer.IPC;
@@ -33,7 +33,7 @@ using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.BaseServer.Plugins;
-using DatabaseAccessor = Stump.Server.AuthServer.Database.DatabaseAccessor;
+using DatabaseConfiguration = Stump.ORM.DatabaseConfiguration;
 
 namespace Stump.Server.AuthServer
 {
@@ -62,9 +62,9 @@ namespace Stump.Server.AuthServer
         [Variable(Priority = 10)]
         public static DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
         {
-            DatabaseType = DatabaseType.MySql,
+            ProviderName = "MySql.Data.MySqlClient",
             Host = "localhost",
-            Name = "stump_auth",
+            DbName = "stump_auth",
             User = "root",
             Password = "",
         };
@@ -75,7 +75,7 @@ namespace Stump.Server.AuthServer
             private set;
         }
 
-        public DatabaseAccessor Database
+        public DatabaseAccessor DBAccessor
         {
             get;
             private set;
@@ -101,11 +101,11 @@ namespace Stump.Server.AuthServer
                 ConsoleBase.SetTitle("#Stump Authentification Server");
 
                 logger.Info("Initializing Database...");
-                Database = new DatabaseAccessor(DatabaseConfiguration.BuildConnection(), true);
-                DataManager<DatabaseAccessor>.DefaultDatabase = Database;
+                DBAccessor = new DatabaseAccessor(DatabaseConfiguration);
+                DataManager<DatabaseAccessor>.DefaultDatabase = DBAccessor.Database;
 
                 logger.Info("Opening Database...");
-                Database.Database.CreateIfNotExists();
+                DBAccessor.OpenConnection();
 
                 logger.Info("Register Messages...");
                 MessageReceiver.Initialize();
@@ -159,7 +159,7 @@ namespace Stump.Server.AuthServer
 
         protected override void OnShutdown()
         {
-            Database.Dispose();
+            DBAccessor.CloseConnection();
         }
 
         protected override BaseClient CreateClient(Socket s)
@@ -170,11 +170,6 @@ namespace Stump.Server.AuthServer
         public IEnumerable<AuthClient> FindClients(Predicate<AuthClient> predicate)
         {
             return ClientManager.FindAll(predicate);
-        }
-
-        public void SaveDatabaseChanges()
-        {
-            IOTaskPool.ExecuteInContext(() => Database.SaveChanges());
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Data.Objects;
 using System.Linq;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.ORM;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Conditions;
@@ -26,6 +27,7 @@ namespace Stump.Server.WorldServer.Database
         }
     }
 
+    [
     [D2OClass("Item", "com.ankamagames.dofus.datacenter.items")]
     public partial class ItemTemplate : IAssignedByD2O, ISaveIntercepter
     {

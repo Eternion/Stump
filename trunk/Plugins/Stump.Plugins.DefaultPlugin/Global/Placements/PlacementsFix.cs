@@ -170,4 +170,4 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
             logger.Debug("Maps placements fix applied");
         }
     }
-}
+}d

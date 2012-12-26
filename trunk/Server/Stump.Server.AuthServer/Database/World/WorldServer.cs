@@ -1,33 +1,21 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity.ModelConfiguration;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using Stump.DofusProtocol.Enums;
+using Stump.ORM;
+using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.BaseServer.IPC;
 
 namespace Stump.Server.AuthServer.Database
 {
-    public class WorldServerConfiguration : EntityTypeConfiguration<WorldServer>
+    public class WorldServerRelator
     {
-        public WorldServerConfiguration()
-        {
-            ToTable("worlds");
-            Ignore(x => x.RemoteEndpoint);
-            Ignore(x => x.RemoteOperations);
-            Ignore(x => x.SessionId);
-            Ignore(x => x.LastPing);
-            Ignore(x => x.Address);
-        }
+        public static string FetchQuery = "SELECT * FROM worlds";
     }
 
+    [TableName("worlds")]
     public partial class WorldServer
     {
-        // Primitive properties
-
-        private int m_charsCount;
-
         public WorldServer()
         {
             Status = ServerStatusEnum.OFFLINE;
@@ -51,12 +39,6 @@ namespace Stump.Server.AuthServer.Database
             set;
         }
 
-        private int RequiredRoleAsInt
-        {
-            get;
-            set;
-        }
-
         public int Completion
         {
             get;
@@ -75,12 +57,6 @@ namespace Stump.Server.AuthServer.Database
             set;
         }
 
-        private int StatusAsInt
-        {
-            get;
-            set;
-        }
-
         public int? CharsCount
         {
             get;
@@ -89,30 +65,34 @@ namespace Stump.Server.AuthServer.Database
 
         public RoleEnum RequiredRole
         {
-            get { return (RoleEnum) RequiredRoleAsInt; }
-            set { RequiredRoleAsInt = (byte) value; }
+            get;
+            set;
         }
 
         #region Session
 
+        [Ignore]
         public string SessionId
         {
             get;
             set;
         }
 
+        [Ignore]
         public RemoteEndpointMessageProperty RemoteEndpoint
         {
             get;
             set;
         }
 
+        [Ignore]
         public IContextChannel Channel
         {
             get;
             set;
         }
 
+        [Ignore]
         public IRemoteWorldOperations RemoteOperations
         {
             get;
@@ -161,15 +141,17 @@ namespace Stump.Server.AuthServer.Database
 
         public ServerStatusEnum Status
         {
-            get { return (ServerStatusEnum) StatusAsInt; }
-            set { StatusAsInt = (int) value; }
+            get;
+            set;
         }
 
+        [Ignore]
         public bool Connected
         {
             get { return Status == ServerStatusEnum.ONLINE; }
         }
 
+        [Ignore]
         public DateTime LastPing
         {
             get;
@@ -194,8 +176,6 @@ namespace Stump.Server.AuthServer.Database
             LastPing = DateTime.Now;
             Address = address;
             Port = port;
-
-            AuthServer.Instance.SaveDatabaseChanges();
         }
 
         public void SetOffline()
@@ -204,7 +184,6 @@ namespace Stump.Server.AuthServer.Database
             CharsCount = 0;
 
             CloseSession();
-            AuthServer.Instance.SaveDatabaseChanges();
         }
 
         #endregion

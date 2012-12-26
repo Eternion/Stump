@@ -4,6 +4,7 @@ using System.Data.Objects;
 using Castle.ActiveRecord;
 using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
+using Stump.ORM;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects;

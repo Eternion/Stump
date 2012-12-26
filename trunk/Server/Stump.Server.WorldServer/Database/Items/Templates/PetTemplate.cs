@@ -3,6 +3,7 @@ using System.Data.Entity.ModelConfiguration;
 using System.Data.Objects;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.ORM;
 using Stump.Server.BaseServer.Database;
 
 namespace Stump.Server.WorldServer.Database

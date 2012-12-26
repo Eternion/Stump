@@ -1,4 +1,4 @@
-﻿using Stump.Server.WorldServer.Database.Interactives.Skills;
+﻿using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs.Interactives;
 
@@ -6,7 +6,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
     public class SkillZaapTeleport : Skill
     {
-        public SkillZaapTeleport(int id, SkillRecord record, InteractiveObject interactiveObject)
+        public SkillZaapTeleport(int id, InteractiveSkillRecord record, InteractiveObject interactiveObject)
             : base(id, record, interactiveObject)
         {
         }

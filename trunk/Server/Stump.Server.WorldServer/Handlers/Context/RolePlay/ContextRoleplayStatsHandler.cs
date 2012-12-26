@@ -59,7 +59,9 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                     ptsUsed = (short)( boost * thresholds[index][1] );
 
                     if (thresholds[index].Count > 2)
-                        boost = (short)( boost * thresholds[index][2] );
+                        boost =
+                            
+                            (short)( boost * thresholds[index][2] );
                 }
                 else
                 {

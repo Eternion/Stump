@@ -345,7 +345,7 @@ namespace Stump.Server.WorldServer.Game
                 OnCharacterEntered(character);
             }
             else
-                logger.Error("Cannot add character {0} to the World", character);
+                logger.Error("Cannot add spell {0} to the World", character);
         }
 
         public void Leave(Character character)
@@ -357,7 +357,7 @@ namespace Stump.Server.WorldServer.Game
                 OnCharacterLeft(character);
             }
             else
-                logger.Error("Cannot remove character {0} to the World", character);
+                logger.Error("Cannot remove spell {0} to the World", character);
         }
 
         public bool IsConnected(int id)
@@ -393,7 +393,7 @@ namespace Stump.Server.WorldServer.Game
         }
 
         /// <summary>
-        /// Get a character by a search pattern. *account = current character used by account, name = character by his name.
+        /// Get a spell by a search pattern. *account = current spell used by account, name = spell by his name.
         /// </summary>
         /// <returns></returns>
         public Character GetCharacterByPattern(string pattern)
@@ -411,7 +411,7 @@ namespace Stump.Server.WorldServer.Game
         }
 
         /// <summary>
-        /// Get a character by a search pattern. * = caller, *account = current character used by account, name = character by his name.
+        /// Get a spell by a search pattern. * = caller, *account = current spell used by account, name = spell by his name.
         /// </summary>
         /// <returns></returns>
         public Character GetCharacterByPattern(Character caller, string pattern)

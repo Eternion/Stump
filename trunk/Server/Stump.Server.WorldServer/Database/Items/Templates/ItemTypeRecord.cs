@@ -5,6 +5,7 @@ using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.DofusProtocol.Enums;
+using Stump.ORM;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.I18n;
 

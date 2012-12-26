@@ -1,17 +1,13 @@
-using System.Data.Entity.ModelConfiguration;
-using Castle.ActiveRecord;
-using Stump.Server.BaseServer.Database.Interfaces;
+using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace Stump.Server.AuthServer.Database
 {
-    public class LangTextUIConfiguration : EntityTypeConfiguration<LangTextUI>
+    public class LangTextUIRelator
     {
-        public LangTextUIConfiguration()
-        {
-            ToTable("langs_ui");
-        }
+        public static string FetchQuery = "SELECT * FROM langs_ui";
     }
 
+    [TableName("langs_ui")]
     public partial class LangTextUI
     {
         // Primitive properties

@@ -136,20 +136,18 @@ namespace Stump.Server.BaseServer.IPC.Objects
             set;
         }
 
-        // we ignore connection[0] cause it's the actual one
+        [DataMember]
         public DateTime? LastConnection
         {
-            get { return Connections.Length > 1 ? Connections[1].Key : (DateTime?)null; }
+            get;
+            set;
         }
 
-        public bool FirstConnection
-        {
-            get { return Connections.Length == 1; }
-        }
-
+        [DataMember]
         public string LastConnectionIp
         {
-            get { return Connections.Length > 1 ? Connections[1].Value : null; }
+            get;
+            set;
         }
 
         [DataMember]
@@ -177,7 +175,7 @@ namespace Stump.Server.BaseServer.IPC.Objects
         }
 
         [DataMember]
-        public DateTime BanEndDate
+        public DateTime? BanEndDate
         {
             get;
             set;
