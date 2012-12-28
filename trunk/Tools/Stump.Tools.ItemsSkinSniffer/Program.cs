@@ -27,6 +27,7 @@ using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.I18n;
+using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Items;

@@ -6,18 +6,19 @@ using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
+using Stump.ORM;
+using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 
 namespace Stump.Server.WorldServer.Database
 {
-    public class MonsterTemplateConfiguration : EntityTypeConfiguration<MonsterTemplate>
+    public class MonsterTemplateRelator
     {
-        public MonsterTemplateConfiguration()
-        {
-            ToTable("monsters_templates");
-        }
+        public static string FetchQuery = "SELECT * FROM monsters_templates";
     }
+
+    [TableName("monsters_templates")]
     [D2OClass("Monster", "com.ankamagames.dofus.datacenter.monsters")]
     public sealed class MonsterTemplate : IAssignedByD2O
     {
@@ -67,6 +68,7 @@ namespace Stump.Server.WorldServer.Database
         }
 
         private List<DroppableItem> m_droppableItems;
+        [Ignore]
         public List<DroppableItem> DroppableItems
         {
             get
@@ -76,6 +78,7 @@ namespace Stump.Server.WorldServer.Database
         }
 
         private List<MonsterGrade> m_grades;
+        [Ignore]
         public List<MonsterGrade> Grades
         {
             get
@@ -107,6 +110,7 @@ namespace Stump.Server.WorldServer.Database
             }
         }
 
+        [Ignore]
         public EntityLook EntityLook
         {
             get { return m_entityLook; }

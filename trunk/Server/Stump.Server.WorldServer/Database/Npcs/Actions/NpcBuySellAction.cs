@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Data.Entity.ModelConfiguration;
 using NLog;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;

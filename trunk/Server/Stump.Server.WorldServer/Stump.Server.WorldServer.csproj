@@ -154,6 +154,9 @@
     <Reference Include="NHibernate">
       <HintPath>..\..\Library\NHibernate.dll</HintPath>
     </Reference>
+    <Reference Include="ServiceStack.Text">
+      <HintPath>..\..\Library\ServiceStack.Text.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -225,6 +228,7 @@
     <Compile Include="Database\Items\PlayerItemRecord.cs" />
     <Compile Include="Database\Items\Shops\ItemToSell.cs" />
     <Compile Include="Database\Items\Shops\NpcItem.cs" />
+    <Compile Include="Database\Items\Templates\WeaponTemplate.cs" />
     <Compile Include="Database\Jobs\JobRecord.cs" />
     <Compile Include="Database\Jobs\JobTemplate.cs" />
     <Compile Include="Database\Model.Context.cs">
@@ -383,7 +387,6 @@
     <Compile Include="Database\Items\Templates\ItemTemplate.cs" />
     <Compile Include="Database\Items\Templates\ItemSetTemplate.cs" />
     <Compile Include="Database\Items\Templates\ItemTypeRecord.cs" />
-    <Compile Include="Database\Items\Templates\WeaponTemplate.cs" />
     <Compile Include="Database\Characters\CharacterSpell.cs" />
     <Compile Include="Database\Shortcuts\ItemShortcut.cs" />
     <Compile Include="Database\Shortcuts\Shortcut.cs" />

@@ -6,56 +6,12 @@ using NHibernate.Criterion;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.Server.BaseServer.Database;
-using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Database.Items
 {
-    public interface IItemRecord
-    {
-        ItemTemplate Template
-        {
-            get;
-            set;
-        }
-
-        int Stack
-        {
-            get;
-            set;
-        }
-
-        List<EffectBase> Effects
-        {
-            get;
-            set;
-        }
-
-        int Id
-        {
-            get;
-            set;
-        }
-
-        void AssignIdentifier();
-
-        void Save();
-        void Create();
-        void Delete();
-    }
-
-    public class ItemRecordConfiguration : EntityTypeConfiguration<ItemRecord>
-    {
-        public ItemRecordConfiguration()
-        {
-            ToTable("items");
-            Ignore(x => x.Effects);
-            Map(x => x.Requires("Discriminator").HasValue("Item"));
-        }
-    }
-
     public abstract class ItemRecord : ISaveIntercepter
     {
         public ItemRecord()
@@ -101,13 +57,14 @@ namespace Stump.Server.WorldServer.Database.Items
 
         private List<EffectBase> m_effects;
 
+        [Ignore]
         public List<EffectBase> Effects
         {
             get { return m_effects; }
             set { m_effects = value; }
         }
 
-        public void BeforeSave(ObjectStateEntry currentEntry)
+        public void BeforeSave(bool insert)
         {
             m_serializedEffects = EffectManager.Instance.SerializeEffects(Effects);
         }

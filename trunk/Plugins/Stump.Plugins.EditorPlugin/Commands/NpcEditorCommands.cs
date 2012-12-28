@@ -7,6 +7,7 @@ using Stump.Server.WorldServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;

@@ -1,17 +1,11 @@
 using System.Data.Entity.ModelConfiguration;
+using Stump.ORM;
+using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Game.Items;
 using Item = Stump.DofusProtocol.Types.Item;
 
 namespace Stump.Server.WorldServer.Database
 {
-    public class ItemToSellConfiguration : EntityTypeConfiguration<ItemToSell>
-    {
-        public ItemToSellConfiguration()
-        {
-            ToTable("items_tosell");
-        }
-    }
-
     public abstract class ItemToSell
     {
         public int Id
@@ -27,6 +21,7 @@ namespace Stump.Server.WorldServer.Database
         }
 
         private ItemTemplate m_item;
+        [Ignore]
         public ItemTemplate Item
         {
             get

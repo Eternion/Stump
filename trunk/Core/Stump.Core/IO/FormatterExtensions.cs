@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using ServiceStack.Text;
 
 namespace Stump.Core.IO
 {
