@@ -1,4 +1,3 @@
-using System.Data.Entity.ModelConfiguration;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 

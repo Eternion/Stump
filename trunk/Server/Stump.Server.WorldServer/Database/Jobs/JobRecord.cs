@@ -1,6 +1,4 @@
-﻿using System.Data.Entity.ModelConfiguration;
-using Castle.ActiveRecord;
-using Stump.ORM;
+﻿using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace Stump.Server.WorldServer.Database
@@ -8,6 +6,7 @@ namespace Stump.Server.WorldServer.Database
     public class JobRecordRelator
     {
         public static string FetchQuery = "SELECT * FROM characters_jobs";
+
         /// <summary>
         /// Use string.Format
         /// </summary>

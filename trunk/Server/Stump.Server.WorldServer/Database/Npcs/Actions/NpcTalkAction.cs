@@ -1,44 +1,33 @@
-using System.Data.Entity.ModelConfiguration;
-using Castle.ActiveRecord;
-using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 
 namespace Stump.Server.WorldServer.Database
 {
-    public class NpcTalkActionConfiguration : EntityTypeConfiguration<NpcTalkAction>
+    public class NpcTalkAction : NpcAction
     {
-        public NpcTalkActionConfiguration()
-        {
-            Map(x => x.Requires("Discriminator").HasValue("Talk"));
-
-            Property(x => x.MessageId).HasColumnName("Talk_MessageId");
-        }
-    }
-    public class NpcTalkAction : Npcs.NpcAction
-    {
-        public override NpcActionTypeEnum ActionType
+        /*public override NpcActionTypeEnum ActionType
         {
             get
             {
                 return NpcActionTypeEnum.ACTION_TALK;
             }
-        }
+        }*/
 
+        private NpcMessage m_message;
+
+        /// <summary>
+        /// Parameter 0
+        /// </summary>
         public int MessageId
         {
-            get;
-            set;
+            get { return Record.GetParameter<int>(0); }
+            set { Record.SetParameter(0, value); }
         }
 
-        private Npcs.NpcMessage m_message;
-        public Npcs.NpcMessage Message
+        public NpcMessage Message
         {
-            get
-            {
-                return m_message ?? ( m_message = NpcManager.Instance.GetNpcMessage(MessageId) );
-            }
+            get { return m_message ?? (m_message = NpcManager.Instance.GetNpcMessage(MessageId)); }
             set
             {
                 m_message = value;

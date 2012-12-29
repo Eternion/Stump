@@ -1,4 +1,4 @@
-using Stump.Server.WorldServer.Database.Triggers;
+using Stump.Server.WorldServer.Database.World.Triggers;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Reflection;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.Database.Triggers;
+using Stump.Server.WorldServer.Database.World.Triggers;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
 {

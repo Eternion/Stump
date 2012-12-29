@@ -9,11 +9,15 @@ namespace Stump.Server.WorldServer.Database
         public LightRestatReplyConfiguration()
         {
             Map(x => x.Requires("Discriminator").HasValue("LightRestats"));
-
         }
     }
-    public class LightRestatReply : Npcs.NpcReply
+
+    public class LightRestatReply : NpcReply
     {
+        public LightRestatReply(NpcReplyRecord record) : base(record)
+        {
+        }
+
         public override bool Execute(Npc npc, Character character)
         {
             if (!base.Execute(npc, character))
@@ -26,7 +30,7 @@ namespace Stump.Server.WorldServer.Database
             character.Stats.Intelligence.Base = character.PermanentAddedIntelligence;
             character.Stats.Chance.Base = character.PermanentAddedChance;
 
-            character.StatsPoints = (ushort)( character.Level * 5 );
+            character.StatsPoints = (ushort) (character.Level*5);
 
             character.RefreshStats();
 

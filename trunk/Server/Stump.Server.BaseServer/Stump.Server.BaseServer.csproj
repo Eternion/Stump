@@ -222,6 +222,7 @@
     <Compile Include="Database\Interfaces\ILangText.cs" />
     <Compile Include="Database\Interfaces\ILangTextUI.cs" />
     <Compile Include="Database\Interfaces\IVersionRecord.cs" />
+    <Compile Include="Database\ParameterizableRecord.cs" />
     <Compile Include="Database\Patchs\PatchFile.cs" />
     <Compile Include="Definitions.cs" />
     <Compile Include="Exceptions\ExceptionManager.cs" />

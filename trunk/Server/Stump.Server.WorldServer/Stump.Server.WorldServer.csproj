@@ -244,16 +244,18 @@
     <Compile Include="Database\Monsters\MonsterSpell.cs" />
     <Compile Include="Database\Monsters\MonsterSuperRace.cs" />
     <Compile Include="Database\Monsters\MonsterTemplate.cs" />
+    <Compile Include="Database\Npcs\Actions\NpcAction.cs" />
     <Compile Include="Database\Npcs\Actions\NpcBuySellAction.cs" />
     <Compile Include="Database\Npcs\Actions\NpcTalkAction.cs" />
-    <Compile Include="Database\Npcs\NpcAction.cs" />
+    <Compile Include="Database\Npcs\NpcActionRecord.cs" />
     <Compile Include="Database\Npcs\NpcMessage.cs" />
-    <Compile Include="Database\Npcs\NpcReply.cs" />
+    <Compile Include="Database\Npcs\NpcReplyRecord.cs" />
     <Compile Include="Database\Npcs\NpcSpawn.cs" />
     <Compile Include="Database\Npcs\NpcTemplate.cs" />
     <Compile Include="Database\Npcs\Replies\ContinueDialogReply.cs" />
     <Compile Include="Database\Npcs\Replies\EndDialogReply.cs" />
     <Compile Include="Database\Npcs\Replies\LightRestatReply.cs" />
+    <Compile Include="Database\Npcs\Replies\NpcReply.cs" />
     <Compile Include="Database\Npcs\Replies\RestatReply.cs" />
     <Compile Include="Database\Npcs\Replies\TeleportReply.cs" />
     <Compile Include="Database\Npcs\Replies\UseItemReply.cs" />
@@ -261,7 +263,6 @@
     <Compile Include="Database\Spells\ISpellRecord.cs" />
     <Compile Include="Database\World\Maps\MapElement.cs" />
     <Compile Include="Database\World\Triggers\CellTriggerRecord.cs" />
-    <Compile Include="Database\World\Triggers\TeleportTriggerRecord.cs" />
     <Compile Include="Game\Accounts\Startup\StartupAction.cs" />
     <Compile Include="Game\Accounts\Startup\StartupActionItem.cs" />
     <Compile Include="Game\Actors\Fight\SummonedFighter.cs" />
@@ -402,7 +403,6 @@
     <Compile Include="Database\WorldVersionRecord.cs" />
     <Compile Include="Database\World\AreaRecord.cs" />
     <Compile Include="Database\World\Cell.cs" />
-    <Compile Include="Database\World\HintRecord.cs" />
     <Compile Include="Database\World\Maps\MapCoordinateRecord.cs" />
     <Compile Include="Database\World\Maps\MapPositionRecord.cs" />
     <Compile Include="Database\World\Maps\MapRecord.cs" />

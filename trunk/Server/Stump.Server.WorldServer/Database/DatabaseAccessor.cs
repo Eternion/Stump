@@ -1,9 +1,9 @@
 ﻿using System.Data.Entity;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.Items;
-using Stump.Server.WorldServer.Database.Maps;
-using Stump.Server.WorldServer.Database.Triggers;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Database.World.Maps;
+using Stump.Server.WorldServer.Database.World.Triggers;
 
 namespace Stump.Server.WorldServer.Database
 {
@@ -213,7 +213,7 @@ namespace Stump.Server.WorldServer.Database
             set;
         }
 
-        public DbSet<NpcAction> NpcsActions
+        public DbSet<NpcActionRecord> NpcsActions
         {
             get;
             set;
@@ -225,7 +225,7 @@ namespace Stump.Server.WorldServer.Database
             set;
         }
 
-        public DbSet<NpcReply> NpcsReplies
+        public DbSet<NpcReplyRecord> NpcsReplies
         {
             get;
             set;

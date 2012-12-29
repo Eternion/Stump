@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Data.Entity.ModelConfiguration;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
@@ -11,11 +10,13 @@ namespace Stump.Server.WorldServer.Database
     public class InteractiveTemplateRelator
     {
         public static string FetchQuery = "SELECT * FROM interactives_templates " +
-            "LEFT JOIN interactives_templates_skills ON interactives_templates_skills.InteractiveTemplateId=interactives_templates.Id " +
-            "LEFT JOIN interactives_skills ON interactives_skills.Id=interactives_templates_skills.SkillId";
+                                          "LEFT JOIN interactives_templates_skills ON interactives_templates_skills.InteractiveTemplateId=interactives_templates.Id " +
+                                          "LEFT JOIN interactives_skills ON interactives_skills.Id=interactives_templates_skills.SkillId";
 
         private InteractiveTemplate m_current;
-        public InteractiveTemplate Map(InteractiveTemplate template, InteractiveSpawnSkills dummy, InteractiveSkillRecord skill)
+
+        public InteractiveTemplate Map(InteractiveTemplate template, InteractiveSpawnSkills dummy,
+                                       InteractiveSkillRecord skill)
         {
             if (template == null)
                 return m_current;
@@ -26,7 +27,7 @@ namespace Stump.Server.WorldServer.Database
                 return null;
             }
 
-            var previous = m_current;
+            InteractiveTemplate previous = m_current;
 
             m_current = template;
             m_current.Skills.Add(skill);
@@ -109,7 +110,7 @@ namespace Stump.Server.WorldServer.Database
 
         public void AssignFields(object d2oObject)
         {
-            var template = (DofusProtocol.D2oClasses.Interactive) d2oObject;
+            var template = (Interactive) d2oObject;
             Id = template.id;
             NameId = template.nameId;
             ActionId = template.actionId;

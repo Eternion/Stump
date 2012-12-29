@@ -26,10 +26,7 @@ namespace Stump.Server.WorldServer.Database.Items
 
         public ItemTypeEnum ItemType
         {
-            get
-            {
-                return (ItemTypeEnum)Id;
-            }
+            get { return (ItemTypeEnum) Id; }
         }
 
         public uint NameId
@@ -90,6 +87,22 @@ namespace Stump.Server.WorldServer.Database.Items
             set;
         }
 
+        #region IAssignedByD2O Members
+
+        public void AssignFields(object d2oObject)
+        {
+            var type = (ItemType) d2oObject;
+            Id = type.id;
+            NameId = type.nameId;
+            SuperTypeId = type.superTypeId;
+            Plural = type.plural;
+            Gender = type.gender;
+            ParseRawZone(type.rawZone);
+            NeedUseConfirm = type.needUseConfirm;
+        }
+
+        #endregion
+
         private void ParseRawZone(string rawZone)
         {
             if (string.IsNullOrEmpty(rawZone) || rawZone == "null")
@@ -100,7 +113,7 @@ namespace Stump.Server.WorldServer.Database.Items
                 return;
             }
 
-            var chr = rawZone[0];
+            char chr = rawZone[0];
             SpellShapeEnum shape;
             switch (chr)
             {
@@ -120,14 +133,14 @@ namespace Stump.Server.WorldServer.Database.Items
                     shape = SpellShapeEnum.sharp;
                     break;
                 default:
-                    shape = (SpellShapeEnum)Enum.Parse(typeof(SpellShapeEnum), chr.ToString());
+                    shape = (SpellShapeEnum) Enum.Parse(typeof (SpellShapeEnum), chr.ToString());
                     break;
             }
             ZoneShape = shape;
 
             if (rawZone.Length > 1)
             {
-                var comma = rawZone.IndexOf(",", StringComparison.Ordinal);
+                int comma = rawZone.IndexOf(",", StringComparison.Ordinal);
                 if (comma != -1)
                 {
                     ZoneSize = uint.Parse(rawZone.Substring(1, rawZone.Length - comma - 1));
@@ -141,18 +154,6 @@ namespace Stump.Server.WorldServer.Database.Items
                 ZoneSize = 0;
                 ZoneMinSize = 0;
             }
-        }
-
-        public void AssignFields(object d2oObject)
-        {
-            var type = (DofusProtocol.D2oClasses.ItemType)d2oObject;
-            Id = type.id;
-            NameId = type.nameId;
-            SuperTypeId = type.superTypeId;
-            Plural = type.plural;
-            Gender = type.gender;
-            ParseRawZone(type.rawZone);
-            NeedUseConfirm = type.needUseConfirm;
         }
     }
 }

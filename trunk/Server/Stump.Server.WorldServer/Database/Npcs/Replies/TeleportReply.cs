@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data.Entity.ModelConfiguration;
-using Castle.ActiveRecord;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -22,50 +21,54 @@ namespace Stump.Server.WorldServer.Database
         }
     }
 
-    public class TeleportReply : Npcs.NpcReply
+    public class TeleportReply : NpcReply
     {
-        private bool m_mustRefreshPosition;
-
         private int m_cellId;
         private DirectionsEnum m_direction;
         private int m_mapId;
+        private bool m_mustRefreshPosition;
         private ObjectPosition m_position;
 
+        public TeleportReply(NpcReplyRecord record)
+            : base(record)
+        {
+        }
+
+        /// <summary>
+        /// Parameter 0
+        /// </summary>
         public int MapId
         {
-            get
-            {
-                return m_mapId;
-            }
+            get { return GetParameter<int>(0); }
             set
             {
-                m_mapId = value;
+                SetParameter(0, value);
                 m_mustRefreshPosition = true;
             }
         }
 
+        /// <summary>
+        /// Parameter 1
+        /// </summary>
         public int CellId
         {
-            get
-            {
-                return m_cellId;
-            }
+            get { return GetParameter<int>(1); }
             set
             {
-                m_cellId = value;
+                SetParameter(1, value);
                 m_mustRefreshPosition = true;
             }
         }
 
+        /// <summary>
+        /// Parameter 2
+        /// </summary>
         public DirectionsEnum Direction
         {
-            get
-            {
-                return m_direction;
-            }
+            get { return (DirectionsEnum) GetParameter<int>(2); }
             set
             {
-                m_direction = value;
+                SetParameter(2, (int) value);
                 m_mustRefreshPosition = true;
             }
         }

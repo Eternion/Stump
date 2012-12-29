@@ -7,17 +7,15 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Data.Entity;
+
 namespace Stump.Server.WorldServer.Database
 {
-    using System;
-    using System.Data.Entity;
-    
-    public partial class Entities : DbContext
+    public class Entities : DbContext
     {
         public Entities()
             : base("name=Entities")
         {
         }
-    
     }
 }

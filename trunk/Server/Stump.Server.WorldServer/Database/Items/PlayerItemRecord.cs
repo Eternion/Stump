@@ -1,7 +1,4 @@
-﻿using System.Data.Entity.ModelConfiguration;
-using Castle.ActiveRecord;
-using NHibernate.Criterion;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.Items;
@@ -11,6 +8,7 @@ namespace Stump.Server.WorldServer.Database
     public class PlayerItemRelator
     {
         public static string FetchQuery = "SELECT * FROM characters_items";
+
         /// <summary>
         /// Use string.Format
         /// </summary>

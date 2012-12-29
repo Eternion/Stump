@@ -9,7 +9,6 @@ using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Database.Interactives.Skills;
 using Stump.Server.WorldServer.Database.Items.Shops;
-using Stump.Server.WorldServer.Database.Triggers;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
@@ -20,6 +19,7 @@ using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
 using Stump.Tools.Proxy.Network;
 using NpcMessage = Stump.Server.WorldServer.Database.Npcs.NpcMessage;
 using NpcSpawn = Stump.Server.WorldServer.Database.Npcs.NpcSpawn;
+using TeleportTrigger = Stump.Server.WorldServer.Database.Triggers.TeleportTrigger;
 
 namespace Stump.Tools.Proxy.Data
 {
@@ -124,7 +124,7 @@ namespace Stump.Tools.Proxy.Data
                 if (!client.IsCellTriggerValid())
                     return;
 
-                var trigger = new TeleportTriggerRecord
+                var trigger = new TeleportTrigger
                                   {
                                       MapId = client.LastMap.Id,
                                       CellId = cell,
@@ -138,12 +138,12 @@ namespace Stump.Tools.Proxy.Data
 
                 ExecuteIOTask(() =>
                                   {
-                                      if (CellTriggerManager.Instance.GetOneCellTrigger(entry => entry is TeleportTriggerRecord &&
-                                                                                                 (entry as TeleportTriggerRecord).MapId == trigger.MapId &&
-                                                                                                 (entry as TeleportTriggerRecord).CellId == trigger.CellId &&
-                                                                                                 (entry as TeleportTriggerRecord).DestinationCellId == trigger.DestinationCellId &&
-                                                                                                 (entry as TeleportTriggerRecord).DestinationMapId == trigger.DestinationMapId &&
-                                                                                                 (entry as TeleportTriggerRecord).TriggerType == trigger.TriggerType) != null)
+                                      if (CellTriggerManager.Instance.GetOneCellTrigger(entry => entry is TeleportTrigger &&
+                                                                                                 (entry as TeleportTrigger).MapId == trigger.MapId &&
+                                                                                                 (entry as TeleportTrigger).CellId == trigger.CellId &&
+                                                                                                 (entry as TeleportTrigger).DestinationCellId == trigger.DestinationCellId &&
+                                                                                                 (entry as TeleportTrigger).DestinationMapId == trigger.DestinationMapId &&
+                                                                                                 (entry as TeleportTrigger).TriggerType == trigger.TriggerType) != null)
                                           return;
 
                                       CellTriggerManager.Instance.AddCellTrigger(trigger);

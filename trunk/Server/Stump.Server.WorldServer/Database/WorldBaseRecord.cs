@@ -1,6 +1,4 @@
-﻿
-using Castle.ActiveRecord;
-using Stump.Server.BaseServer.Database;
+﻿using Castle.ActiveRecord;
 
 namespace Stump.Server.WorldServer.Database
 {

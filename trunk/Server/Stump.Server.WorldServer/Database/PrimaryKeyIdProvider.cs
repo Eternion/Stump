@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Castle.ActiveRecord.Queries;
 using Stump.Core.Pool;
@@ -12,17 +11,6 @@ namespace Stump.Server.WorldServer.Database
     {
         private static readonly ConcurrentBag<PrimaryKeyIdProvider> m_pool = new ConcurrentBag<PrimaryKeyIdProvider>();
         private static bool m_synchronised;
-
-        [Initialization(InitializationPass.Eighth, "Synchronize id providers")]
-        public static void SynchronizeAll()
-        {
-            foreach (var provider in m_pool)
-            {
-                provider.Synchronize();
-            }
-
-            m_synchronised = true;
-        }
 
         public PrimaryKeyIdProvider(Type recordType, string columnName)
         {
@@ -47,10 +35,23 @@ namespace Stump.Server.WorldServer.Database
             set;
         }
 
+        [Initialization(InitializationPass.Eighth, "Synchronize id providers")]
+        public static void SynchronizeAll()
+        {
+            foreach (PrimaryKeyIdProvider provider in m_pool)
+            {
+                provider.Synchronize();
+            }
+
+            m_synchronised = true;
+        }
+
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void Synchronize()
         {
-            var query = new ScalarQuery<object>(RecordType, string.Format("SELECT max(r.{0}) FROM {1} r", ColumnName, RecordType.Name));
+            var query = new ScalarQuery<object>(RecordType,
+                                                string.Format("SELECT max(r.{0}) FROM {1} r", ColumnName,
+                                                              RecordType.Name));
 
             object id;
             try
@@ -63,7 +64,7 @@ namespace Stump.Server.WorldServer.Database
                 id = query.Execute() ?? 0;
             }
 
-            m_highestId = (int)Convert.ChangeType(id, typeof(int));
+            m_highestId = (int) Convert.ChangeType(id, typeof (int));
         }
 
         public override int Pop()

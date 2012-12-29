@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.ModelConfiguration;
-using Castle.ActiveRecord;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
+using Monster = Stump.DofusProtocol.D2oClasses.Monster;
 
 namespace Stump.Server.WorldServer.Database
 {
@@ -22,7 +20,9 @@ namespace Stump.Server.WorldServer.Database
     [D2OClass("Monster", "com.ankamagames.dofus.datacenter.monsters")]
     public sealed class MonsterTemplate : IAssignedByD2O
     {
+        private List<DroppableItem> m_droppableItems;
         private EntityLook m_entityLook;
+        private List<MonsterGrade> m_grades;
         private string m_lookAsString;
         private string m_name;
 
@@ -67,24 +67,16 @@ namespace Stump.Server.WorldServer.Database
             set;
         }
 
-        private List<DroppableItem> m_droppableItems;
         [Ignore]
         public List<DroppableItem> DroppableItems
         {
-            get
-            {
-                return m_droppableItems ?? ( m_droppableItems = MonsterManager.Instance.GetMonsterDroppableItems(Id) );
-            }
+            get { return m_droppableItems ?? (m_droppableItems = MonsterManager.Instance.GetMonsterDroppableItems(Id)); }
         }
 
-        private List<MonsterGrade> m_grades;
         [Ignore]
         public List<MonsterGrade> Grades
         {
-            get
-            {
-                return m_grades ?? ( m_grades = MonsterManager.Instance.GetMonsterGrades(Id) );
-            }
+            get { return m_grades ?? (m_grades = MonsterManager.Instance.GetMonsterGrades(Id)); }
         }
 
         private string LookAsString
@@ -153,9 +145,11 @@ namespace Stump.Server.WorldServer.Database
             set;
         }
 
+        #region IAssignedByD2O Members
+
         public void AssignFields(object d2oObject)
         {
-            var monster = (DofusProtocol.D2oClasses.Monster)d2oObject;
+            var monster = (Monster) d2oObject;
             Id = monster.id;
             NameId = monster.nameId;
             GfxId = monster.gfxId;
@@ -167,5 +161,7 @@ namespace Stump.Server.WorldServer.Database
             CanTackle = monster.canTackle;
             IsBoss = monster.isBoss;
         }
+
+        #endregion
     }
 }

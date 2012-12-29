@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
 using NLog;
 using Stump.ORM;
-using Stump.ORM.SubSonic.DataProviders;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
-using Stump.ORM.SubSonic.Schema;
+using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -14,10 +13,11 @@ namespace Stump.Server.WorldServer.Database
     public class InteractiveSpawnRelator
     {
         public static string FetchQuery = "SELECT * FROM interactives_spawns " +
-            "LEFT JOIN interactives_spawns_skills ON interactives_spawns_skills.InteractiveSpawnId=interactives_spawns.Id " +
-            "LEFT JOIN interactives_skills ON interactives_skills.Id=interactives_spawns_skills.SkillId";
+                                          "LEFT JOIN interactives_spawns_skills ON interactives_spawns_skills.InteractiveSpawnId=interactives_spawns.Id " +
+                                          "LEFT JOIN interactives_skills ON interactives_skills.Id=interactives_spawns_skills.SkillId";
 
         private InteractiveSpawn m_current;
+
         public InteractiveSpawn Map(InteractiveSpawn spawn, InteractiveSpawnSkills dummy, InteractiveSkillRecord skill)
         {
             if (spawn == null)
@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Database
                 return null;
             }
 
-            var previous = m_current;
+            InteractiveSpawn previous = m_current;
 
             m_current = spawn;
             m_current.Skills.Add(skill);
@@ -104,6 +104,7 @@ namespace Stump.Server.WorldServer.Database
         /// <summary>
         /// Custom skills if Template is null
         /// </summary>
+        [Ignore]
         public List<InteractiveSkillRecord> Skills
         {
             get;
@@ -117,9 +118,9 @@ namespace Stump.Server.WorldServer.Database
 
         public ObjectPosition GetPosition()
         {
-            var map = GetMap();
+            Map map = GetMap();
 
-            var elements = map.Record.FindMapElement(ElementId);
+            MapElement[] elements = map.Record.FindMapElement(ElementId);
 
             if (elements.Length <= 0)
                 return new ObjectPosition(map, Cell.Null);
@@ -127,7 +128,7 @@ namespace Stump.Server.WorldServer.Database
             if (elements.Length > 1)
                 logger.Debug("More than 1 elements found in interactive id = {0}", Id);
 
-            var cell = elements[0].CellId;
+            short cell = elements[0].CellId;
 
             return new ObjectPosition(map, cell);
         }
@@ -136,6 +137,5 @@ namespace Stump.Server.WorldServer.Database
         {
             return m_map ?? (m_map = Game.World.Instance.GetMap(MapId));
         }
-
     }
 }

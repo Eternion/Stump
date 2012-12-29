@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.Reflection;
 using Stump.Server.BaseServer.I18n;
 using Stump.Server.BaseServer.Initialization;
@@ -8,9 +7,9 @@ namespace Stump.Server.WorldServer.Database.I18n
 {
     public class TextManager : Singleton<TextManager>
     {
+        private Languages? m_defaultLanguages;
         private Dictionary<uint, LangText> m_texts = new Dictionary<uint, LangText>();
         private Dictionary<string, LangTextUi> m_textsUi = new Dictionary<string, LangTextUi>();
-        private Languages? m_defaultLanguages;
 
         [Initialization(InitializationPass.First)]
         public void Initialize()
@@ -39,7 +38,7 @@ namespace Stump.Server.WorldServer.Database.I18n
 
         public string GetText(int id, Languages lang)
         {
-            return GetText((uint)id, lang);
+            return GetText((uint) id, lang);
         }
 
         public string GetText(uint id)

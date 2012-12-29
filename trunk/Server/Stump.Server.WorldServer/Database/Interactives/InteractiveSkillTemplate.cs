@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.ModelConfiguration;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM;
@@ -103,6 +101,7 @@ namespace Stump.Server.WorldServer.Database
             set;
         }
 
+        [Ignore]
         public int[] CraftableItemIds
         {
             get { return m_craftableItemIds ?? (m_craftableItemIds = CraftableItemIdsCSV.FromCSV<int>(",")); }

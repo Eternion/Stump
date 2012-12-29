@@ -35,7 +35,7 @@ using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Handlers.Interactives;
-using MapRecord = Stump.Server.WorldServer.Database.Maps.MapRecord;
+using MapRecord = Stump.Server.WorldServer.Database.World.Maps.MapRecord;
 using Monster = Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters.Monster;
 using MonsterGrade = Stump.Server.WorldServer.Database.Monsters.MonsterGrade;
 using MonsterSpawn = Stump.Server.WorldServer.Database.Monsters.MonsterSpawn;

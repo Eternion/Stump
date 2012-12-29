@@ -10,13 +10,16 @@ namespace Stump.Server.WorldServer.Database
         public RestatReplyConfiguration()
         {
             Map(x => x.Requires("Discriminator").HasValue("Restat"));
-
         }
     }
-    public class RestatReply : Npcs.NpcReply
+
+    public class RestatReply : NpcReply
     {
-        [Variable]
-        public static bool RestatOnce = true;
+        [Variable] public static bool RestatOnce = true;
+
+        public RestatReply(NpcReplyRecord record) : base(record)
+        {
+        }
 
         public override bool Execute(Npc npc, Character character)
         {
@@ -37,7 +40,7 @@ namespace Stump.Server.WorldServer.Database
             character.PermanentAddedIntelligence = 0;
             character.PermanentAddedChance = 0;
 
-            character.StatsPoints = (ushort)( character.Level * 5 );
+            character.StatsPoints = (ushort) (character.Level*5);
 
             character.RefreshStats();
 

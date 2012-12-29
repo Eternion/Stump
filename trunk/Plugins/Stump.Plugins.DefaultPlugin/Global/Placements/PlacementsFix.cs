@@ -11,7 +11,7 @@ using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.Core.Xml;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.Database.Maps;
+using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;

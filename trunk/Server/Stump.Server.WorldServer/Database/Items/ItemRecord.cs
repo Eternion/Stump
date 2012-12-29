@@ -1,11 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Data.Entity.ModelConfiguration;
-using System.Data.Objects;
-using Castle.ActiveRecord;
-using NHibernate.Criterion;
-using Stump.DofusProtocol.Enums;
 using Stump.ORM;
-using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
@@ -14,6 +8,10 @@ namespace Stump.Server.WorldServer.Database.Items
 {
     public abstract class ItemRecord : ISaveIntercepter
     {
+        private List<EffectBase> m_effects;
+        private byte[] m_serializedEffects;
+        private ItemTemplate m_template;
+
         public ItemRecord()
         {
             m_serializedEffects = new byte[0];
@@ -24,8 +22,6 @@ namespace Stump.Server.WorldServer.Database.Items
             get;
             set;
         }
-
-        private ItemTemplate m_template;
 
         public ItemTemplate Template
         {
@@ -43,8 +39,6 @@ namespace Stump.Server.WorldServer.Database.Items
             set;
         }
 
-        private byte[] m_serializedEffects;
-
         private byte[] SerializedEffects
         {
             get { return m_serializedEffects; }
@@ -55,8 +49,6 @@ namespace Stump.Server.WorldServer.Database.Items
             }
         }
 
-        private List<EffectBase> m_effects;
-
         [Ignore]
         public List<EffectBase> Effects
         {
@@ -64,9 +56,13 @@ namespace Stump.Server.WorldServer.Database.Items
             set { m_effects = value; }
         }
 
+        #region ISaveIntercepter Members
+
         public void BeforeSave(bool insert)
         {
             m_serializedEffects = EffectManager.Instance.SerializeEffects(Effects);
         }
+
+        #endregion
     }
 }
