@@ -3,6 +3,9 @@ namespace Stump.Server.BaseServer.Initialization
     public enum InitializationPass : byte
     {
         Any,
+        /// <summary>
+        /// DiscriminatorManager
+        /// </summary>
         CoreReserved,
         /// <summary>
         /// TextManager, ChatManager

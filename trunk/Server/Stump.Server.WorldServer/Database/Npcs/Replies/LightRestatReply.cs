@@ -1,17 +1,11 @@
 ﻿using System.Data.Entity.ModelConfiguration;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 
 namespace Stump.Server.WorldServer.Database
 {
-    public class LightRestatReplyConfiguration : EntityTypeConfiguration<LightRestatReply>
-    {
-        public LightRestatReplyConfiguration()
-        {
-            Map(x => x.Requires("Discriminator").HasValue("LightRestats"));
-        }
-    }
-
+    [Discriminator("LightRestats", typeof(NpcReply), typeof(NpcReplyRecord))]
     public class LightRestatReply : NpcReply
     {
         public LightRestatReply(NpcReplyRecord record) : base(record)

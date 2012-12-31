@@ -32,6 +32,12 @@ namespace Stump.Server.WorldServer.Database
             set;
         }
 
+        public string Type
+        {
+            get;
+            set;
+        }
+
         [Ignore]
         public NpcTemplate Template
         {
@@ -79,7 +85,7 @@ namespace Stump.Server.WorldServer.Database
 
         public NpcAction GenerateAction()
         {
-            throw new NotImplementedException();
+            return DiscriminatorManager<NpcAction>.Instance.Generate(Type, this);
         }
     }
 }

@@ -1,11 +1,13 @@
 using System;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Database.World.Triggers;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
 {
+    [Discriminator("Teleport", typeof(CellTrigger), typeof(CellTriggerRecord))]
     public class TeleportTrigger : CellTrigger
     {
         public TeleportTrigger(CellTriggerRecord record)

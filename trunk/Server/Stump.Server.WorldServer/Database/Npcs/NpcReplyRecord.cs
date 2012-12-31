@@ -1,6 +1,7 @@
 using System;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Conditions;
 
@@ -76,7 +77,7 @@ namespace Stump.Server.WorldServer.Database
 
         public NpcReply GenerateReply()
         {
-            throw new NotImplementedException();
+            return DiscriminatorManager<NpcReply>.Instance.Generate(Type, this);
         }
     }
 }

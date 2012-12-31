@@ -1,18 +1,12 @@
 ﻿using System.Data.Entity.ModelConfiguration;
 using Stump.Core.Attributes;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 
 namespace Stump.Server.WorldServer.Database
 {
-    public class RestatReplyConfiguration : EntityTypeConfiguration<RestatReply>
-    {
-        public RestatReplyConfiguration()
-        {
-            Map(x => x.Requires("Discriminator").HasValue("Restat"));
-        }
-    }
-
+    [Discriminator("Restat", typeof(NpcReply), typeof(NpcReplyRecord))]
     public class RestatReply : NpcReply
     {
         [Variable] public static bool RestatOnce = true;

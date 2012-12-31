@@ -1,9 +1,11 @@
+using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 
 namespace Stump.Server.WorldServer.Database
 {
+    [Discriminator("Talk", typeof(NpcAction), typeof(NpcActionRecord))]
     public class NpcTalkAction : NpcAction
     {
         /*public override NpcActionTypeEnum ActionType
@@ -15,6 +17,11 @@ namespace Stump.Server.WorldServer.Database
         }*/
 
         private NpcMessage m_message;
+
+        public NpcTalkAction(NpcActionRecord record)
+            : base(record)
+        {
+        }
 
         /// <summary>
         /// Parameter 0

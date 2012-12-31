@@ -102,7 +102,7 @@ namespace Stump.Server.WorldServer.Database
 
         public virtual Skill GenerateSkill(int id, InteractiveObject interactiveObject)
         {
-            throw new NotImplementedException("Must be override");
+            return DiscriminatorManager<Skill>.Instance.Generate(Type, id, this, interactiveObject);
         }
     }
 }

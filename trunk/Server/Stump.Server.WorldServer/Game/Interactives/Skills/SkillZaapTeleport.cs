@@ -1,9 +1,11 @@
-﻿using Stump.Server.WorldServer.Database;
+﻿using Stump.Server.BaseServer.Database;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs.Interactives;
 
 namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
+    [Discriminator("ZaapTeleport", typeof(Skill), typeof(int), typeof(InteractiveSkillRecord), typeof(InteractiveObject))]
     public class SkillZaapTeleport : Skill
     {
         public SkillZaapTeleport(int id, InteractiveSkillRecord record, InteractiveObject interactiveObject)

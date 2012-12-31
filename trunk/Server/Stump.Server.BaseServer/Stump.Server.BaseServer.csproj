@@ -218,6 +218,8 @@
     <Compile Include="Database\DatabaseAccessor.cs" />
     <Compile Include="Database\DatabaseConfiguration.cs" />
     <Compile Include="Database\DataManager.cs" />
+    <Compile Include="Database\DiscriminatorAttribute.cs" />
+    <Compile Include="Database\DiscriminatorManager.cs" />
     <Compile Include="Database\IgnoreTableAttribute.cs" />
     <Compile Include="Database\Interfaces\ILangText.cs" />
     <Compile Include="Database\Interfaces\ILangTextUI.cs" />

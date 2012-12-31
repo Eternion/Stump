@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using NLog;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
@@ -9,6 +10,7 @@ using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Database
 {
+    [Discriminator("BuySell", typeof(NpcAction), typeof(NpcActionRecord))]
     public class NpcBuySellAction : NpcAction
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();

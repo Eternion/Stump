@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Entity.ModelConfiguration;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
@@ -9,18 +10,7 @@ using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Database
 {
-    public class TeleportReplyConfiguration : EntityTypeConfiguration<TeleportReply>
-    {
-        public TeleportReplyConfiguration()
-        {
-            Map(x => x.Requires("Discriminator").HasValue("Teleport"));
-
-            Property(x => x.MapId).HasColumnName("Teleport_Map");
-            Property(x => x.CellId).HasColumnName("Teleport_Cell");
-            Property(x => x.Direction).HasColumnName("Teleport_Direction");
-        }
-    }
-
+    [Discriminator("Teleport", typeof(NpcReply), typeof(NpcReplyRecord))]
     public class TeleportReply : NpcReply
     {
         private int m_cellId;

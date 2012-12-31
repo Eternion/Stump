@@ -14,7 +14,15 @@ namespace Stump.Core.Reflection
             var parameters = ctor.GetParameters().Select(param => Expression.Parameter(param.ParameterType)).ToList();
 
             var lamba = Expression.Lambda<T>(Expression.New(ctor, parameters), parameters);
+            return lamba.Compile();
+        }
 
+        public static Delegate CreateDelegate(this ConstructorInfo ctor)
+        {
+            var parameters = ctor.GetParameters().Select(param => Expression.Parameter(param.ParameterType)).ToList();
+
+            var lamba = Expression.Lambda(Expression.New(ctor, parameters), parameters);
+            
             return lamba.Compile();
         }
 

@@ -114,7 +114,7 @@ namespace Stump.Server.WorldServer.Database.World.Triggers
 
         public CellTrigger GenerateTrigger()
         {
-            throw new NotImplementedException();
+            return DiscriminatorManager<CellTrigger>.Instance.Generate(Type, this);
         }
     }
 }
