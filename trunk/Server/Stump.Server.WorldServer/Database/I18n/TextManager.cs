@@ -3,7 +3,7 @@ using Stump.Core.Reflection;
 using Stump.Server.BaseServer.I18n;
 using Stump.Server.BaseServer.Initialization;
 
-namespace Stump.Server.WorldServer.Database.I18n
+namespace Stump.Server.WorldServer.Database
 {
     public class TextManager : Singleton<TextManager>
     {

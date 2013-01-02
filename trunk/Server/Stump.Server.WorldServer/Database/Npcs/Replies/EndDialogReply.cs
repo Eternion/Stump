@@ -1,4 +1,3 @@
-using System.Data.Entity.ModelConfiguration;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;

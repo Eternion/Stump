@@ -8,12 +8,11 @@ using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
-using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Database
 {
-    public class BreedConfigurationRelator
+    public class BreedRelator
     {
         public static string FetchQuery = "SELECT * FROM breeds " +
                                           "LEFT JOIN breeds_items ON breeds_items.BreedId = breeds.id " +
@@ -28,16 +27,20 @@ namespace Stump.Server.WorldServer.Database
 
             if (m_current != null && m_current.Id == breed.Id)
             {
-                m_current.Items.Add(item);
-                m_current.Spells.Add(spell);
+                if (item != null)
+                    m_current.Items.Add(item);
+                if (spell != null)
+                    m_current.Spells.Add(spell);
                 return null;
             }
 
             Breed previous = m_current;
 
             m_current = breed;
-            m_current.Items.Add(item);
-            m_current.Spells.Add(spell);
+            if (item != null)
+                m_current.Items.Add(item);
+            if (spell != null)
+                m_current.Spells.Add(spell);
 
             return previous;
         }
@@ -66,7 +69,7 @@ namespace Stump.Server.WorldServer.Database
         public Breed()
         {
             Items = new List<BreedItem>();
-            Spells = new List<BreedItem>();
+            Spells = new List<BreedSpell>();
         }
 
         // Primitive properties

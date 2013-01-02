@@ -1,9 +1,9 @@
 using Stump.DofusProtocol.Types;
 using Stump.ORM;
-using Stump.Server.WorldServer.Database.Items;
+using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Items;
 
-namespace Stump.Server.WorldServer.Database
+namespace Stump.Server.WorldServer.Database.Items.Shops
 {
     public abstract class ItemToSell
     {

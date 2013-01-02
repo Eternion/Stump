@@ -67,6 +67,7 @@ namespace Stump.Server.AuthServer.Managers
 
         public override void Initialize()
         {
+            base.Initialize();
             m_timer = AuthServer.Instance.IOTaskPool.CallPeriodically(CacheTimeout * 60 / 4, TimerTick);
             m_bansTimer = AuthServer.Instance.IOTaskPool.CallPeriodically(IpBanRefreshTime, TimerTick);
             m_ipBans = Database.Fetch<IpBan>(IpBanRelator.FetchQuery);

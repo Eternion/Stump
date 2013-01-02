@@ -3,7 +3,7 @@ using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
-namespace Stump.Server.WorldServer.Database.Items
+namespace Stump.Server.WorldServer.Database.Items.Templates
 {
     public class PetTemplateRelator
     {

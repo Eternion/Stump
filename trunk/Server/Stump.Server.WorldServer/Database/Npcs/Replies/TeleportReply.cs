@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.Entity.ModelConfiguration;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.World;

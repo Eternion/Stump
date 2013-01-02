@@ -5,7 +5,9 @@ using System.Text.RegularExpressions;
 using NLog;
 using Stump.Core.Extensions;
 using Stump.Core.Reflection;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Items;
@@ -17,7 +19,7 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
-    public class ItemManager : Singleton<ItemManager>
+    public class ItemManager : DataManager<ItemManager>
     {
         #region Fields
 
@@ -26,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Items
         private Dictionary<int, ItemTemplate> m_itemTemplates = new Dictionary<int, ItemTemplate>();
         private Dictionary<uint, ItemSetTemplate> m_itemsSets = new Dictionary<uint, ItemSetTemplate>();
         private Dictionary<int, ItemTypeRecord> m_itemTypes = new Dictionary<int, ItemTypeRecord>();
-        private Dictionary<int, ItemToSell> m_itemsToSell = new Dictionary<int, ItemToSell>();
+        private Dictionary<int, NpcItem> m_npcShopItems = new Dictionary<int, NpcItem>();
 
         #endregion
 
@@ -93,12 +95,12 @@ namespace Stump.Server.WorldServer.Game.Items
         #region Loading
 
         [Initialization(InitializationPass.Fourth)]
-        public void Initialize()
+        public override void Initialize()
         {
-            m_itemTypes = ItemTypeRecord.FindAll().ToDictionary(entry => entry.Id);
-            m_itemTemplates = ItemTemplate.FindAll().ToDictionary(entry => entry.Id);
-            m_itemsSets = ItemSetTemplate.FindAll().ToDictionary(entry => entry.Id);
-            m_itemsToSell = ItemToSell.FindAll().ToDictionary(entry => entry.Id);
+            m_itemTypes = Database.Fetch<ItemTypeRecord>(ItemTypeRecordRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_itemTemplates = Database.Fetch<ItemTemplate>(ItemTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_itemsSets = Database.Fetch<ItemSetTemplate>(ItemSetTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_npcShopItems = Database.Fetch<NpcItem>(NpcItemRelator.FetchQuery).ToDictionary(entry => entry.Id);
         }
 
         #endregion
@@ -118,12 +120,10 @@ namespace Stump.Server.WorldServer.Game.Items
         public ItemTemplate TryGetTemplate(string name, bool ignorecase)
         {
             return
-                m_itemTemplates.Values.Where(
-                    entry =>
-                    entry.Name.Equals(name,
-                                      ignorecase
-                                          ? StringComparison.InvariantCultureIgnoreCase
-                                          : StringComparison.InvariantCulture)).FirstOrDefault();
+                m_itemTemplates.Values.FirstOrDefault(entry => entry.Name.Equals(name,
+                                                                                 ignorecase
+                                                                                     ? StringComparison.InvariantCultureIgnoreCase
+                                                                                     : StringComparison.InvariantCulture));
         }
 
         public ItemSetTemplate TryGetItemSetTemplate(uint id)
@@ -134,22 +134,25 @@ namespace Stump.Server.WorldServer.Game.Items
         public ItemSetTemplate TryGetItemSetTemplate(string name, bool ignorecase)
         {
             return
-                m_itemsSets.Values.Where(
-                    entry =>
-                    entry.Name.Equals(name,
-                                      ignorecase
-                                          ? StringComparison.InvariantCultureIgnoreCase
-                                          : StringComparison.InvariantCulture)).FirstOrDefault();
+                m_itemsSets.Values.FirstOrDefault(entry => entry.Name.Equals(name,
+                                                                             ignorecase
+                                                                                 ? StringComparison.InvariantCultureIgnoreCase
+                                                                                 : StringComparison.InvariantCulture));
         }
 
         public List<NpcItem> GetNpcShopItems(uint id)
         {
-            return m_itemsToSell.Values.OfType<NpcItem>().Where(entry => entry.NpcShopId == id).ToList();
+            return m_npcShopItems.Values.Where(entry => entry.NpcShopId == id).ToList();
         }
 
         public ItemTypeRecord TryGetItemType(int id)
         {
             return !m_itemTypes.ContainsKey(id) ? null : m_itemTypes[id];
+        }
+
+        public List<PlayerItemRecord> FindPlayerItems(int ownerId)
+        {
+            return Database.Fetch<PlayerItemRecord>(string.Format(PlayerItemRelator.FetchByOwner, ownerId));
         }
 
         /// <summary>

@@ -15,8 +15,5 @@ namespace Stump.Server.BaseServer.Database.Interfaces
             get;
             set;
         }
-
-        void CreateAndFlush();
-        void DeleteAndFlush();
     }
 }

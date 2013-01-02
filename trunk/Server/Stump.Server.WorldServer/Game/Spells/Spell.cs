@@ -2,7 +2,6 @@
 using System.Linq;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Database.Spells;
 using SpellType = Stump.Server.WorldServer.Database.Spells.SpellType;
 
 namespace Stump.Server.WorldServer.Game.Spells

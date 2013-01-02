@@ -8,7 +8,6 @@ using Stump.Core.Sql;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.I18n;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
 

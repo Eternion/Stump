@@ -75,12 +75,6 @@ namespace Stump.Server.AuthServer
             private set;
         }
 
-        public DatabaseAccessor DBAccessor
-        {
-            get;
-            private set;
-        }
-
         public AuthPacketHandler HandlerManager
         {
             get;

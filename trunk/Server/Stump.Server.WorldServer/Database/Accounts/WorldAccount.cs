@@ -42,6 +42,7 @@ namespace Stump.Server.WorldServer.Database
             Relations = new List<AccountRelation>();
         }
 
+        [PrimaryKey("Id", false)]
         public int Id
         {
             get;
@@ -79,21 +80,21 @@ namespace Stump.Server.WorldServer.Database
             set;
         }
 
-        [Ignore]
+        /*[Ignore]
         public virtual ICollection<StartupAction> StartupActions
         {
             get;
             set;
-        }
+        }*/
 
         public int LastConnectionTimeStamp
         {
             get { return LastConnection.HasValue ? (int) (DateTime.Now - LastConnection.Value).TotalHours : 0; }
         }
 
-        public StartupAction[] GetStartupActions()
+        /*public StartupAction[] GetStartupActions()
         {
             return StartupActions.Select(entry => new StartupAction(entry)).ToArray();
-        }
+        }*/
     }
 }

@@ -17,6 +17,7 @@ using Stump.Core.Pool.Task;
 using Stump.Core.Threading;
 using Stump.Core.Xml;
 using Stump.Core.Xml.Config;
+using Stump.ORM;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Exceptions;
@@ -64,6 +65,13 @@ namespace Stump.Server.BaseServer
         }
 
         public ConsoleBase ConsoleInterface
+        {
+            get;
+            protected set;
+        }
+
+
+        public DatabaseAccessor DBAccessor
         {
             get;
             protected set;

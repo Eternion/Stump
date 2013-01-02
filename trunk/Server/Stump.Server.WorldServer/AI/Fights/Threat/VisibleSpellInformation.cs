@@ -1,6 +1,5 @@
 using System;
 using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 

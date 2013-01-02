@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Stump.Server.BaseServer.Database;
-using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Tools.QuickItemEditor

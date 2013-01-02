@@ -3,36 +3,45 @@ using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using Castle.ActiveRecord.Queries;
 using Stump.Core.Pool;
+using Stump.ORM;
 using Stump.Server.BaseServer.Initialization;
 
 namespace Stump.Server.WorldServer.Database
 {
     public class PrimaryKeyIdProvider : UniqueIdProvider
     {
+        public ORM.Database Database
+        {
+            get;
+            set;
+        }
+
         private static readonly ConcurrentBag<PrimaryKeyIdProvider> m_pool = new ConcurrentBag<PrimaryKeyIdProvider>();
         private static bool m_synchronised;
 
-        public PrimaryKeyIdProvider(Type recordType, string columnName)
+        public PrimaryKeyIdProvider(string columnName, string tableName)
         {
-            RecordType = recordType;
             ColumnName = columnName;
+            TableName = tableName;
 
             if (m_synchronised)
                 Synchronize();
             else
                 m_pool.Add(this);
+
+            Database = WorldServer.Instance.DBAccessor.Database;
         }
 
-        public Type RecordType
+        public string ColumnName
         {
             get;
             private set;
         }
 
-        public string ColumnName
+        public string TableName
         {
-            private get;
-            set;
+            get;
+            private set;
         }
 
         [Initialization(InitializationPass.Eighth, "Synchronize id providers")]
@@ -49,22 +58,19 @@ namespace Stump.Server.WorldServer.Database
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void Synchronize()
         {
-            var query = new ScalarQuery<object>(RecordType,
-                                                string.Format("SELECT max(r.{0}) FROM {1} r", ColumnName,
-                                                              RecordType.Name));
+            var query = string.Format("SELECT max(r.{0}) FROM {1} r", ColumnName);
 
-            object id;
+            int id;
             try
             {
-                id = query.Execute() ?? 0;
+                id = Database.ExecuteScalar<int>("SELECT max(r.{0}) FROM {1} r");
             }
-            catch
+            catch (Exception ex)
             {
-                // it's a hack
-                id = query.Execute() ?? 0;
+                throw new Exception(string.Format("Cannot retrieve max({0}) from table {1} : {2}", ColumnName, TableName, ex));
             }
 
-            m_highestId = (int) Convert.ChangeType(id, typeof (int));
+            m_highestId = id;
         }
 
         public override int Pop()

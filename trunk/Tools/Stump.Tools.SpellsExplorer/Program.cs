@@ -6,8 +6,6 @@ using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.I18n;
 using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Database.I18n;
-using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Spells;
 

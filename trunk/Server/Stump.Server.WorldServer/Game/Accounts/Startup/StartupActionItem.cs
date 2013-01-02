@@ -2,7 +2,6 @@
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Items;
@@ -57,11 +56,10 @@ namespace Stump.Server.WorldServer.Game.Accounts.Startup
                 Template = ItemTemplate,
                 Stack = Amount,
                 Position = CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
-                Effects = effects,
-                New = true
+                Effects = effects
             };
 
-            item.Create();
+            WorldServer.Instance.DBAccessor.Database.Insert(item);
         }
 
         public ObjectItemInformationWithQuantity GetObjectItemInformationWithQuantity()

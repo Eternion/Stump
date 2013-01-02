@@ -1,13 +1,12 @@
 using System;
-using Castle.ActiveRecord;
+using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.BaseServer.Database.Interfaces;
 
 namespace Stump.Server.WorldServer.Database
 {
-    [ActiveRecord("version")]
-    public class WorldVersionRecord : WorldBaseRecord<WorldVersionRecord>, IVersionRecord
+    [TableName("version")]
+    public class VersionRecord : IVersionRecord
     {
-        [Property]
         public string DofusVersion
         {
             get;
@@ -16,14 +15,12 @@ namespace Stump.Server.WorldServer.Database
 
         #region IVersionRecord Members
 
-        [PrimaryKey(PrimaryKeyType.Assigned, "Revision")]
+        [PrimaryKey("Revision")]
         public uint Revision
         {
             get;
             set;
         }
-
-        [Property("UpdateDate")]
         public DateTime UpdateDate
         {
             get;

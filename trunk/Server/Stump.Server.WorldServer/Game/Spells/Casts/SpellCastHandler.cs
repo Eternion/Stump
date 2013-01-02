@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;

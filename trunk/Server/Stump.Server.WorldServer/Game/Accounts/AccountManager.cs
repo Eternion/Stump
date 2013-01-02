@@ -1,15 +1,16 @@
 ﻿using System;
 using Stump.Core.Reflection;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database.Accounts;
+using Stump.Server.WorldServer.Database;
 
 namespace Stump.Server.WorldServer.Game.Accounts
 {
-    public class AccountManager : Singleton<AccountManager>
+    public class AccountManager : DataManager<AccountManager>
     {
-        public static WorldAccount CreateWorldAccount(WorldClient client)
+        public WorldAccount CreateWorldAccount(WorldClient client)
         {
             /* Create WorldAccount */
             var worldAccount = new WorldAccount
@@ -17,7 +18,7 @@ namespace Stump.Server.WorldServer.Game.Accounts
                 Id = client.Account.Id,
                 Nickname = client.Account.Nickname,
             };
-            worldAccount.Create();
+            Database.Insert(worldAccount);
 
             return worldAccount;
         }

@@ -183,7 +183,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
         internal void LoadInventory()
         {
-            var records = PlayerItemRecord.FindAllByOwner(Owner.Id);
+            var records = ItemManager.Instance.FindPlayerItems(Owner.Id);
 
             Items = records.Select(entry => new PlayerItem(Owner, entry)).ToDictionary(entry => entry.Guid);
             foreach (var item in this)
@@ -221,21 +221,23 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             lock (Locker)
             {
+                var database = WorldServer.Instance.DBAccessor.Database;
                 foreach (var item in Items)
                 {
                     if (Tokens != null && item.Value == Tokens)
                         continue;
 
-                    item.Value.Record.Save();
+                    database.Save(item.Value.Record);
                 }
 
                 while (ItemsToDelete.Count > 0)
                 {
                     var item = ItemsToDelete.Dequeue();
 
-                    item.Record.Delete();
+                    database.Delete(item.Record);
                 }
 
+                // update tokens amount
                 if (Tokens == null && Owner.Account.Tokens > 0 || (Tokens != null && Owner.Account.Tokens != Tokens.Stack))
                 {
                     Owner.Account.Tokens = Tokens == null ? 0 : Tokens.Stack;
