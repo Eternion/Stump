@@ -5,6 +5,7 @@ using System.Reflection;
 using NLog;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Characters;
@@ -21,7 +22,7 @@ using SpellType = Stump.Server.WorldServer.Database.Spells.SpellType;
 
 namespace Stump.Server.WorldServer.Game.Spells
 {
-    public class SpellManager : Singleton<SpellManager>
+    public class SpellManager : DataManager<SpellManager>
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -39,12 +40,12 @@ namespace Stump.Server.WorldServer.Game.Spells
         #endregion
 
         [Initialization(typeof(EffectManager))]
-        public void Initialize()
+        public override void Initialize()
         {
-            m_spellsLevels = SpellLevelTemplate.FindAll().ToDictionary(entry => entry.Id);
-            m_spells = SpellTemplate.FindAll().ToDictionary(entry => entry.Id);
-            m_spellsTypes = SpellType.FindAll().ToDictionary(entry => entry.Id);
-            m_spellsState = SpellState.FindAll().ToDictionary(entry => entry.Id);
+            m_spellsLevels = Database.Fetch<SpellLevelTemplate>(SpellLevelTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_spells = Database.Fetch<SpellTemplate>(SpellTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_spellsTypes = Database.Fetch<SpellType>(SpellTypeRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_spellsState = Database.Fetch<SpellState>(SpellStateRelator.FetchQuery).ToDictionary(entry => entry.Id);
 
             InitializeHandlers();
         }
@@ -135,7 +136,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             if (template == null)
                 return null;
 
-            if (template.SpellLevelsIds.Count <= level - 1)
+            if (template.SpellLevelsIds.Length <= level - 1)
                 return null;
 
             return GetSpellLevel((int) template.SpellLevelsIds[level - 1]);

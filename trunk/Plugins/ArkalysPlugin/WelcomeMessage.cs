@@ -44,7 +44,7 @@ namespace ArkalysPlugin
 
         private static void OnCharacterJoined(Character character)
         {
-            if (character.Account.FirstConnection)
+            if (character.Account.LastConnection == null)
                 ShowWelcomeMessage(character);
         }
 

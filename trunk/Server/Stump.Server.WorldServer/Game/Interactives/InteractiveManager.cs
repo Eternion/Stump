@@ -3,25 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Pool;
 using Stump.Core.Reflection;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Interactives;
-using Stump.Server.WorldServer.Database.Interactives.Skills;
 
 namespace Stump.Server.WorldServer.Game.Interactives
 {
-    public class InteractiveManager : Singleton<InteractiveManager>
+    public class InteractiveManager : DataManager<InteractiveManager>
     {
         private readonly UniqueIdProvider m_idProvider = new UniqueIdProvider();
         private Dictionary<int, InteractiveSpawn> m_interactivesSpawns;
         private Dictionary<int, InteractiveTemplate> m_interactivesTemplates;
-        private Dictionary<int, SkillTemplate> m_skillsTemplates;
+        private Dictionary<int, InteractiveSkillTemplate> m_skillsTemplates;
 
         [Initialization(InitializationPass.Fourth)]
-        public void Initialize()
+        public override void Initialize()
         {
-            m_interactivesTemplates = InteractiveTemplate.FindAll().ToDictionary(entry => entry.Id);
-            m_interactivesSpawns = InteractiveSpawn.FindAll().ToDictionary(entry => entry.Id);
-            m_skillsTemplates = SkillTemplate.FindAll().ToDictionary(entry => entry.Id);
+            m_interactivesTemplates = Database.Fetch<InteractiveTemplate>(InteractiveTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_interactivesSpawns = Database.Fetch<InteractiveSpawn>(InteractiveSpawnRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_skillsTemplates = Database.Fetch<InteractiveSkillTemplate>(InteractiveSkillTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
         }
 
         public int PopSkillId()
@@ -53,9 +53,9 @@ namespace Stump.Server.WorldServer.Game.Interactives
             return template;
         }
 
-        public SkillTemplate GetSkillTemplate(int id)
+        public InteractiveSkillTemplate GetSkillTemplate(int id)
         {
-            SkillTemplate template;
+            InteractiveSkillTemplate template;
             if (m_skillsTemplates.TryGetValue(id, out template))
                 return template;
 
@@ -64,7 +64,7 @@ namespace Stump.Server.WorldServer.Game.Interactives
 
         public void AddInteractiveSpawn(InteractiveSpawn spawn)
         {
-            spawn.Save();
+            Database.Insert(spawn);
             m_interactivesSpawns.Add(spawn.Id, spawn);
         }
     }

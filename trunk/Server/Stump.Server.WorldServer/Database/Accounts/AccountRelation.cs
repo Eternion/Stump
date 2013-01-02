@@ -6,6 +6,10 @@ namespace Stump.Server.WorldServer.Database.Accounts
     public class AccountRelationRelator
     {
         public static string FetchQuery = "SELECT * FROM accounts_relations";
+        /// <summary>
+        /// Use string.Format
+        /// </summary>
+        public static string FetchByAccount = "SELECT * FROM accounts_relations WHERE AccountId={0}";
     }
 
     [TableName("accounts_relations")]

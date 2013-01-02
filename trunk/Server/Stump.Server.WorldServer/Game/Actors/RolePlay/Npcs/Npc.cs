@@ -3,6 +3,8 @@ using System.Linq;
 using Stump.Core.Cache;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Database.Npcs;
+using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
@@ -80,7 +82,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             NpcAction[] actions = Template.GetNpcActions(actionType);
 
             NpcAction action =
-                actions.First(entry => entry.ConditionaExpression == null || entry.ConditionaExpression.Eval(dialoguer));
+                actions.First(entry => entry.Record.ConditionExpression == null || entry.Record.ConditionExpression.Eval(dialoguer));
 
             action.Execute(this, dialoguer);
             OnInteracted(actionType, action, dialoguer);
@@ -93,8 +95,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
 
             NpcAction[] actions = Template.GetNpcActions(action);
 
-            return actions.Length > 0 && actions.Any(entry => entry.ConditionaExpression == null ||
-                                                              entry.ConditionaExpression.Eval(dialoguer));
+            return actions.Length > 0 && actions.Any(entry => entry.Record.ConditionExpression == null ||
+                                                              entry.Record.ConditionExpression.Eval(dialoguer));
         }
 
         public void SpeakWith(Character dialoguer)

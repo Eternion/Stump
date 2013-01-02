@@ -20,6 +20,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Conditions;
 
 namespace Stump.Server.WorldServer.Database.Npcs.Replies
 {
@@ -28,6 +29,37 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
         public NpcReply(NpcReplyRecord record)
         {
             Record = record;
+        }
+
+        public int Id
+        {
+            get { return Record.Id; }
+            set { Record.Id = value; }
+        }
+
+
+        public int ReplyId
+        {
+            get { return Record.ReplyId; }
+            set { Record.ReplyId = value; }
+        }
+
+        public int MessageId
+        {
+            get { return Record.MessageId; }
+            set { Record.MessageId = value; }
+        }
+
+        public ConditionExpression CriteriaExpression
+        {
+            get { return Record.CriteriaExpression; }
+            set { Record.CriteriaExpression = value; }
+        }
+
+        public NpcMessage Message
+        {
+            get { return Record.Message; }
+            set { Record.Message = value; }
         }
 
         public NpcReplyRecord Record

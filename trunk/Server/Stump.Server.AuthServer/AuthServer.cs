@@ -96,7 +96,7 @@ namespace Stump.Server.AuthServer
 
                 logger.Info("Initializing Database...");
                 DBAccessor = new DatabaseAccessor(DatabaseConfiguration);
-                DataManager<DatabaseAccessor>.DefaultDatabase = DBAccessor.Database;
+                DataManager.DefaultDatabase = DBAccessor.Database;
 
                 logger.Info("Opening Database...");
                 DBAccessor.OpenConnection();

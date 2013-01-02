@@ -24,9 +24,9 @@ namespace Stump.Server.WorldServer.Game.Spells
 
         internal void LoadSpells()
         {
-            var records = CharacterSpellRecord.FindAllByOwner(Owner.Id);
+            var database = WorldServer.Instance.DBAccessor.Database;
 
-            foreach (var record in records)
+            foreach (var record in database.Query<CharacterSpellRecord>(string.Format(CharacterSpellRelator.FetchByOwner, Owner.Id)))
             {
                 var spell = new CharacterSpell(record);
 
@@ -159,16 +159,17 @@ namespace Stump.Server.WorldServer.Game.Spells
         {
             lock (m_locker)
             {
+                var database = WorldServer.Instance.DBAccessor.Database;
                 foreach (var characterSpell in m_spells)
                 {
-                    characterSpell.Value.Record.Save();
+                    database.Save(characterSpell.Value.Record);
                 }
 
                 while (m_spellsToDelete.Count > 0)
                 {
                     var record = m_spellsToDelete.Dequeue();
 
-                    record.Delete();
+                    database.Delete(record);
                 }
             }
         }

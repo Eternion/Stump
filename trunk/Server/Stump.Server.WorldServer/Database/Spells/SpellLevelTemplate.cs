@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Database.Spells
 
         public SpellTemplate Spell
         {
-            get { return m_spell ?? (m_spell = SpellManager.Instance.GetSpellTemplate(SpellId)); }
+            get { return m_spell ?? (m_spell = SpellManager.Instance.GetSpellTemplate((int) SpellId)); }
         }
 
         public uint SpellBreed

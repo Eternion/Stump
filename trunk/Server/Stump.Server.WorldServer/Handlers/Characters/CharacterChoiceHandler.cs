@@ -65,7 +65,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             /* Set Colors */
             character.EntityLook.indexedColors = message.indexedColor;
-            character.Save();
+            WorldServer.Instance.DBAccessor.Database.Update(character);
 
             /* Common selection */
             CommonCharacterSelection(client, character);
@@ -84,7 +84,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             }
 
             /* Check if name is free */
-            if (CharacterRecord.DoesNameExists(message.name) || !Regex.IsMatch(message.name.ToLower().FirstLetterUpper(),
+            if (CharacterManager.Instance.DoesNameExist(message.name) || !Regex.IsMatch(message.name.ToLower().FirstLetterUpper(),
                                                                                "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled))
             {
                 client.Send(new CharacterCreationResultMessage((int) CharacterCreationResultEnum.ERR_NAME_ALREADY_EXISTS));
@@ -93,7 +93,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             /* Set new name */
             character.Name = message.name.ToLower().FirstLetterUpper();
-            character.Save();
+            WorldServer.Instance.DBAccessor.Database.Update(character);
 
             /* Common selection */
             CommonCharacterSelection(client, character);
@@ -105,9 +105,10 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             // Check if we also have a world account
             if (client.WorldAccount == null)
             {
-                client.WorldAccount = !WorldAccount.Exists(client.Account.Id)
-                                          ? AccountManager.CreateWorldAccount(client)
-                                          : WorldAccount.FindById(client.Account.Id);
+                var account = AccountManager.Instance.FindById(client.Account.Id);
+                if (account == null)
+                    account = AccountManager.Instance.CreateWorldAccount(client);
+                client.WorldAccount = account;
             }
 
             client.Character = new Character(character, client);
@@ -161,11 +162,11 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 // Update LastConnection and Last Ip
                 client.WorldAccount.LastConnection = DateTime.Now;
                 client.WorldAccount.LastIp = client.IP;
-                client.WorldAccount.ConnectedCharacterId = character.Id;
-                client.WorldAccount.Update();
+                client.WorldAccount.ConnectedCharacter = character.Id;
+                WorldServer.Instance.DBAccessor.Database.Update(client.WorldAccount);
 
                 character.LastUsage = DateTime.Now;
-                character.Update();
+                WorldServer.Instance.DBAccessor.Database.Update(character);
 
                 session.Flush();
             }

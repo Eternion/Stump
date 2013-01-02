@@ -123,6 +123,10 @@
       <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
       <Name>Stump.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\Stump.ORM\Stump.ORM.csproj">
+      <Project>{E7406629-E127-4B96-8F29-287947075631}</Project>
+      <Name>Stump.ORM</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DofusProtocol\D2oClasses\Stump.DofusProtocol.D2oClasses.csproj">
       <Project>{33093793-C4BA-4B89-AC82-6E9D00437452}</Project>
       <Name>Stump.DofusProtocol.D2oClasses</Name>

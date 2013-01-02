@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Stump.ORM;
+using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -7,7 +8,36 @@ using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Database.Items
 {
-    public abstract class ItemRecord<T> : AutoAssignedRecord<T>
+    public interface IItemRecord
+    {
+        int Id
+        {
+            get;
+            set;
+        }
+
+        ItemTemplate Template
+        {
+            get;
+            set;
+        }
+
+        int Stack
+        {
+            get;
+            set;
+        }
+
+        List<EffectBase> Effects
+        {
+            get;
+            set;
+        }
+
+        void AssignIdentifier();
+    }
+
+    public abstract class ItemRecord<T> : AutoAssignedRecord<T>, IItemRecord
     {
         private List<EffectBase> m_effects;
         private byte[] m_serializedEffects;
@@ -16,12 +46,6 @@ namespace Stump.Server.WorldServer.Database.Items
         public ItemRecord()
         {
             m_serializedEffects = new byte[0];
-        }
-
-        public int Id
-        {
-            get;
-            set;
         }
 
         protected int ItemId

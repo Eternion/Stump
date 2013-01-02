@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Core.Network
             internal set
             {
                 m_worldAccount = value;
-                StartupActions = m_worldAccount != null ? value.GetStartupActions().ToList() : new List<StartupAction>();
+                //StartupActions = m_worldAccount != null ? value.GetStartupActions().ToList() : new List<StartupAction>();
             }
         }
 
@@ -116,8 +116,8 @@ namespace Stump.Server.WorldServer.Core.Network
             {
                 if (WorldAccount != null)
                 {
-                    WorldAccount.ConnectedCharacterId = null;
-                    WorldAccount.Update();
+                    WorldAccount.ConnectedCharacter = null;
+                    WorldServer.Instance.DBAccessor.Database.Update(WorldAccount);
                 }
             });
 

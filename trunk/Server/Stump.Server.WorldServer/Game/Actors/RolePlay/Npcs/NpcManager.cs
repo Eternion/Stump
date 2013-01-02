@@ -5,6 +5,8 @@ using Stump.Core.Reflection;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Npcs;
+using Stump.Server.WorldServer.Database.Npcs.Actions;
+using Stump.Server.WorldServer.Database.Npcs.Replies;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
 {
@@ -62,12 +64,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
         public NpcTemplate GetNpcTemplate(string name, bool ignorecase)
         {
             return
-                m_npcsTemplates.Values.Where(
-                    entry =>
-                    entry.Name.Equals(name,
-                                      ignorecase
-                                          ? StringComparison.InvariantCultureIgnoreCase
-                                          : StringComparison.InvariantCulture)).FirstOrDefault();
+                m_npcsTemplates.Values.FirstOrDefault(entry => entry.Name.Equals(name,
+                                                                                 ignorecase
+                                                                                     ? StringComparison.InvariantCultureIgnoreCase
+                                                                                     : StringComparison.InvariantCulture));
         }
 
         public NpcMessage GetNpcMessage(int id)
@@ -79,38 +79,48 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             return message;
         }
 
-        public List<NpcActionRecord> GetNpcActions(int id)
+        public List<NpcActionRecord> GetNpcActionsRecords(int id)
         {
             return m_npcsActions.Where(entry => entry.Value.NpcId == id).Select(entry => entry.Value).ToList();
         }
 
-        public List<NpcReplyRecord> GetMessageReplies(int id)
+        public List<NpcReplyRecord> GetMessageRepliesRecords(int id)
         {
             return m_npcsReplies.Where(entry => entry.Value.MessageId == id).Select(entry => entry.Value).ToList();
         }
 
+        public List<NpcAction> GetNpcActions(int id)
+        {
+            return m_npcsActions.Where(entry => entry.Value.NpcId == id).Select(entry => entry.Value.GenerateAction()).ToList();
+        }
+
+        public List<NpcReply> GetMessageReplies(int id)
+        {
+            return m_npcsReplies.Where(entry => entry.Value.MessageId == id).Select(entry => entry.Value.GenerateReply()).ToList();
+        }
+
         public void AddNpcSpawn(NpcSpawn spawn)
         {
-            spawn.Save();
+            Database.Insert(spawn);
             m_npcsSpawns.Add(spawn.Id, spawn);
         }
 
         public void RemoveNpcSpawn(NpcSpawn spawn)
         {
-            spawn.Delete();
+            Database.Delete(spawn);
             m_npcsSpawns.Remove(spawn.Id);
         }
 
-        public void AddNpcAction(NpcActionRecord action)
+        public void AddNpcAction(NpcAction action)
         {
-            action.Save();
-            m_npcsActions.Add(action.Id, action);
+            Database.Insert(action.Record);
+            m_npcsActions.Add(action.Record.Id, action.Record);
         }
 
-        public void RemoveNpcAction(NpcActionRecord action)
+        public void RemoveNpcAction(NpcAction action)
         {
-            action.Delete();
-            m_npcsActions.Remove(action.Id);
+            Database.Delete(action);
+            m_npcsActions.Remove(action.Record.Id);
         }
     }
 }

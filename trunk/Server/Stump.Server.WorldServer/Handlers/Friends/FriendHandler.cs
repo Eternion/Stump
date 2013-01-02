@@ -6,6 +6,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
+using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Social;
 
 namespace Stump.Server.WorldServer.Handlers.Friends
@@ -38,7 +39,7 @@ namespace Stump.Server.WorldServer.Handlers.Friends
                 WorldServer.Instance.IOTaskPool.AddMessage(
                     () =>
                         {
-                            WorldAccount record = WorldAccount.FindByNickname(message.name);
+                            var record = AccountManager.Instance.FindByNickname(message.name);
 
                             if (record != null)
                             {
@@ -81,7 +82,7 @@ namespace Stump.Server.WorldServer.Handlers.Friends
                 WorldServer.Instance.IOTaskPool.AddMessage(
                     () =>
                     {
-                        WorldAccount record = WorldAccount.FindByNickname(message.name);
+                        var record = AccountManager.Instance.FindByNickname(message.name);
 
                         if (record != null)
                         {

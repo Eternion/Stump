@@ -9,7 +9,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
 {
     public class InteractiveSkillTemplateRelator
     {
-        public string FetchQuery = "SELECT * FROM interactives_skills_templates";
+        public static string FetchQuery = "SELECT * FROM interactives_skills_templates";
     }
 
     [TableName("interactives_skills_templates")]

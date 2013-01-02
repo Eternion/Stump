@@ -1,3 +1,4 @@
+using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
@@ -8,13 +9,13 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
     [Discriminator("Talk", typeof(NpcAction), typeof(NpcActionRecord))]
     public class NpcTalkAction : NpcAction
     {
-        /*public override NpcActionTypeEnum ActionType
+        public override NpcActionTypeEnum ActionType
         {
             get
             {
                 return NpcActionTypeEnum.ACTION_TALK;
             }
-        }*/
+        }
 
         private NpcMessage m_message;
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 
 namespace Stump.Server.WorldServer.Game.Actors.Stats

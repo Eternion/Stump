@@ -10,6 +10,7 @@ using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Maps;
@@ -159,10 +160,11 @@ namespace Stump.Plugins.EditorPlugin.Commands
                 {
                     if (shop == null)
                     {
-                        shop = new NpcBuySellAction()
-                        {
-                            Template = template
-                        };
+                        shop = new NpcBuySellAction(new NpcActionRecord
+                            {
+                                Type = NpcBuySellAction.Discriminator,
+                                Template = template
+                            });
 
                         NpcManager.Instance.AddNpcAction(shop);
                         template.Actions.Add(shop);
@@ -172,12 +174,12 @@ namespace Stump.Plugins.EditorPlugin.Commands
                     {
                         Item = itemTemplate,
                         CustomPrice = trigger.IsArgumentDefined("customprice") ? (float?)trigger.Get<float>("customprice") : null,
-                        NpcShopId = (int)shop.Id,
+                        NpcShopId = (int)shop.Record.Id,
                         BuyCriterion = string.Empty,
                         MaxStats = trigger.IsArgumentDefined("max")
                     };
 
-                    item.Save();
+                    WorldServer.Instance.DBAccessor.Database.Insert(item);
                     shop.Items.Add(item);
                     trigger.Reply("Item '{0}' added to '{1}'s' shop", itemTemplate.Name, template.Name);
                 });
@@ -201,7 +203,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
 
                     foreach (NpcItem item in items)
                     {
-                        item.Delete();
+                        WorldServer.Instance.DBAccessor.Database.Delete(item);
                         shop.Items.Remove(item);
                         trigger.Reply("Item '{0}' removed from '{1}'s' shop", itemTemplate.Name, template.Name);
                     }
@@ -252,7 +254,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
                        trigger.ReplyError("Define token or -notoken");
                    }
 
-                   shop.Save();
+                   NpcManager.Instance.RemoveNpcAction(shop);
                });
         }
     }
@@ -285,7 +287,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
                {
                    shop.MaxStats = trigger.Get<bool>("active");
 
-                   shop.Save();
+                   NpcManager.Instance.RemoveNpcAction(shop);
                });
         }
     }

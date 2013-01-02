@@ -7,13 +7,15 @@ namespace Stump.Server.WorldServer.Game.Social
 {
     public class Friend
     {
-        public Friend(WorldAccount account)
+        public Friend(AccountRelation relation, WorldAccount account)
         {
+            Relation = relation;
             Account = account;
         }
 
-        public Friend(WorldAccount account, Character character)
+        public Friend(AccountRelation relation, WorldAccount account, Character character)
         {
+            Relation = relation;
             Account = account;
             Character = character;
         }
@@ -25,6 +27,12 @@ namespace Stump.Server.WorldServer.Game.Social
         }
 
         public Character Character
+        {
+            get;
+            private set;
+        }
+
+        public AccountRelation Relation
         {
             get;
             private set;

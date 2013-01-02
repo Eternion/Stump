@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        public int? AlignmentHonor
+        public ushort? AlignmentHonor
         {
             get;
             set;

@@ -49,7 +49,7 @@ namespace Stump.Server.BaseServer.Database
 
             instance.Revision = revision;
             instance.UpdateDate = DateTime.Now;
-            instance.CreateAndFlush();
+            ServerBase.InstanceAsBase.DBAccessor.Database.Insert(instance);
         }
 
         public static void DeleteVersionRecord(Type versionType)

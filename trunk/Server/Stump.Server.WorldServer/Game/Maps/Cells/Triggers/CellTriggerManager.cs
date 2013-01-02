@@ -2,19 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Reflection;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.World.Triggers;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
 {
-    public class CellTriggerManager : Singleton<CellTriggerManager>
+    public class CellTriggerManager : DataManager<CellTriggerManager>
     {
         private Dictionary<int, CellTriggerRecord> m_cellTriggers;
 
         [Initialization(InitializationPass.Fourth)]
-        public void Initialize()
+        public override void Initialize()
         {
-            m_cellTriggers = CellTriggerRecord.FindAll().ToDictionary(entry => entry.Id);
+            m_cellTriggers = Database.Query<CellTriggerRecord>(CellTriggerRecordRelator.FetchQuery).ToDictionary(entry => entry.Id);
         }
 
         public IEnumerable<CellTriggerRecord> GetCellTriggers()
@@ -24,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
 
         public CellTriggerRecord GetOneCellTrigger(Predicate<CellTriggerRecord> predicate)
         {
-            return m_cellTriggers.Values.Where(entry => predicate(entry)).FirstOrDefault();
+            return m_cellTriggers.Values.FirstOrDefault(entry => predicate(entry));
         }
 
         public CellTriggerRecord GetCellTrigger(int id)
@@ -38,8 +39,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
 
         public void AddCellTrigger(CellTriggerRecord cellTrigger)
         {
-            cellTrigger.Save();
-
+            Database.Insert(cellTrigger);
             m_cellTriggers.Add(cellTrigger.Id, cellTrigger);
         }
     }

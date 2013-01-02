@@ -92,7 +92,8 @@ namespace Stump.Server.AuthServer.IPC
                 return result != RegisterResultEnum.OK ? result : RegisterResultEnum.UnknownError;
             }
 
-            Database = new ORM.Database(AuthServer.DatabaseConfiguration.GetConnectionString(), AuthServer.DatabaseConfiguration.ProviderName);
+            Database = new ORM.Database(AuthServer.DatabaseConfiguration.GetConnectionString(),
+                                        AuthServer.DatabaseConfiguration.ProviderName) {KeepConnectionAlive = true};
             Database.OpenSharedConnection();
 
             AccountManager = new AccountManager();

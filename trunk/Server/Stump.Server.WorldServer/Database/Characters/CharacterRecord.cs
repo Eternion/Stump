@@ -13,28 +13,13 @@ namespace Stump.Server.WorldServer.Database.Characters
     public class CharacterRelator
     {
         public static string FetchQuery =
-            "SELECT * FROM characters LEFT JOIN characters_spells ON characters_spells.OwnerId = characters.Id";
+            "SELECT * FROM characters";
 
-        private CharacterRecord m_current;
-
-        public CharacterRecord Map(CharacterRecord character, CharacterSpell spell)
-        {
-            if (character == null)
-                return m_current;
-
-            if (m_current != null && m_current.Id == character.Id)
-            {
-                m_current.Spells.Add(spell);
-                return null;
-            }
-
-            CharacterRecord previous = m_current;
-
-            m_current = character;
-            m_current.Spells.Add(spell);
-
-            return previous;
-        }
+        /// <summary>
+        /// Use string.Format(ToCSV(","))
+        /// </summary>
+        public static string FetchByMultipleId =
+            "SELECT * FROM characters WHERE Id IN ({0})";
     }
 
     [TableName("characters")]
@@ -52,7 +37,6 @@ namespace Stump.Server.WorldServer.Database.Characters
 
         public CharacterRecord()
         {
-            Spells = new List<CharacterSpell>();
             TitleParam = string.Empty;
         }
 
@@ -82,13 +66,13 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        public int Breed
+        public PlayableBreedEnum Breed
         {
             get;
             set;
         }
 
-        public int Sex
+        public SexTypeEnum Sex
         {
             get;
             set;
@@ -422,19 +406,19 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        public int StatsPoints
+        public ushort StatsPoints
         {
             get;
             set;
         }
 
-        public int SpellsPoints
+        public ushort SpellsPoints
         {
             get;
             set;
         }
 
-        public int AlignmentSide
+        public AlignmentSideEnum AlignmentSide
         {
             get;
             set;
@@ -446,13 +430,13 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        public int Honor
+        public ushort Honor
         {
             get;
             set;
         }
 
-        public int Dishonor
+        public ushort Dishonor
         {
             get;
             set;
@@ -496,8 +480,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        [Ignore]
-        public List<CharacterSpell> Spells
+        public DateTime? MuteUntil
         {
             get;
             set;
@@ -508,7 +491,7 @@ namespace Stump.Server.WorldServer.Database.Characters
         public CharacterRecord(Breed breed)
             : this()
         {
-            Breed = breed.Id;
+            Breed = (PlayableBreedEnum) breed.Id;
 
             BaseHealth = (ushort) (breed.StartHealthPoint + breed.StartLevel*5);
             AP = breed.StartActionPoints;
@@ -560,6 +543,17 @@ namespace Stump.Server.WorldServer.Database.Characters
             }
         }
 
+        public bool Rename
+        {
+            get;
+            set;
+        }
+
+        public bool Recolor
+        {
+            get;
+            set;
+        }
         #region Zaaps
 
         private EntityLook m_customEntityLook;
@@ -598,6 +592,7 @@ namespace Stump.Server.WorldServer.Database.Characters
                     SpawnMapId = value.Id;
             }
         }
+
 
         private byte[] SerializeZaaps(List<Map> knownZaaps)
         {

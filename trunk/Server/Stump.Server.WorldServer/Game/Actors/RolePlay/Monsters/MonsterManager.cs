@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Stump.Core.Reflection;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Monsters;
@@ -13,7 +14,7 @@ using MonsterSuperRace = Stump.Server.WorldServer.Database.Monsters.MonsterSuper
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 {
-    public class MonsterManager : Singleton<MonsterManager>
+    public class MonsterManager : DataManager<MonsterManager>
     {
         private Dictionary<int, MonsterTemplate> m_monsterTemplates;
         private Dictionary<int, MonsterSpell> m_monsterSpells;
@@ -24,15 +25,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         private Dictionary<int, MonsterSuperRace> m_monsterSuperRaces;
 
         [Initialization(InitializationPass.Sixth)]
-        public void Initialize()
+        public override void Initialize()
         {
-            m_monsterTemplates = MonsterTemplate.FindAll().ToDictionary(entry => entry.Id);
-            m_monsterGrades = MonsterGrade.FindAll().ToDictionary(entry => entry.Id);
-            m_monsterSpells = MonsterSpell.FindAll().ToDictionary(entry => entry.Id);
-            m_monsterSpawns = MonsterSpawn.FindAll().ToDictionary(entry => entry.Id);
-            m_monsterDungeonsSpawns = MonsterDungeonSpawn.FindAll().ToDictionary(entry => entry.Id);
-            m_droppableItems = DroppableItem.FindAll().ToDictionary(entry => entry.Id);
-            m_monsterSuperRaces = MonsterSuperRace.FindAll().ToDictionary(entry => entry.Id);
+            m_monsterTemplates = Database.Query<MonsterTemplate>(MonsterTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_monsterGrades = Database.Query<MonsterGrade>(MonsterGradeRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_monsterSpells = Database.Query<MonsterSpell>(MonsterSpellRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_monsterSpawns = Database.Query<MonsterSpawn>(MonsterSpawnRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_monsterDungeonsSpawns = Database.Query<MonsterDungeonSpawn>(MonsterDungeonSpawnRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_droppableItems = Database.Query<DroppableItem>(DroppableItemRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_monsterSuperRaces = Database.Query<MonsterSuperRace>(MonsterSuperRaceRelator.FetchQuery).ToDictionary(entry => entry.Id);
         }
 
         public MonsterGrade[] GetMonsterGrades()
@@ -100,12 +101,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         public MonsterTemplate GetTemplate(string name, bool ignoreCommandCase)
         {
             return
-                m_monsterTemplates.Values.Where(
-                    entry =>
-                    entry.Name.Equals(name,
-                                      ignoreCommandCase
-                                          ? StringComparison.InvariantCultureIgnoreCase
-                                          : StringComparison.InvariantCulture)).FirstOrDefault();
+                m_monsterTemplates.Values.FirstOrDefault(entry => entry.Name.Equals(name,
+                                                                                    ignoreCommandCase
+                                                                                        ? StringComparison.InvariantCultureIgnoreCase
+                                                                                        : StringComparison.InvariantCulture));
         }
 
         public MonsterSpell GetOneMonsterSpell(Predicate<MonsterSpell> predicate)
@@ -115,13 +114,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
         public void AddMonsterSpell(MonsterSpell spell)
         {
-            spell.Save();
+            Database.Insert(spell);
             m_monsterSpells.Add(spell.Id, spell);
         }
 
         public void RemoveMonsterSpell(MonsterSpell spell)
         {
-            spell.Delete();
+            Database.Delete(spell);
             m_monsterSpells.Remove(spell.Id);
         }
 
@@ -142,25 +141,25 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
         public void AddMonsterSpawn(MonsterSpawn spawn)
         {
-            spawn.Save();
+            Database.Insert(spawn);
             m_monsterSpawns.Add(spawn.Id, spawn);
         }
 
         public void RemoveMonsterSpawn(MonsterSpawn spawn)
         {
-            spawn.Delete();
+            Database.Delete(spawn);
             m_monsterSpawns.Remove(spawn.Id);
         }
 
         public void AddMonsterDrop(DroppableItem drop)
         {
-            drop.Save();
+            Database.Insert(drop);
             m_droppableItems.Add(drop.Id, drop);
         }
 
         public void RemoveMonsterDrop(DroppableItem drop)
         {
-            drop.Delete();
+            Database.Delete(drop);
             m_droppableItems.Remove(drop.Id);
         }
     }

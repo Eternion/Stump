@@ -3,6 +3,7 @@ using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using Stump.Server.WorldServer.Database.Npcs.Replies;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 
 namespace Stump.Server.WorldServer.Database.Npcs
@@ -18,7 +19,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
     {
         private IList<string> m_parameters;
         private string m_parametersCSV;
-        private List<NpcReplyRecord> m_replies;
+        private List<NpcReply> m_replies;
 
         public int Id
         {
@@ -53,7 +54,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
             }
         }
 
-        public List<NpcReplyRecord> Replies
+        public List<NpcReply> Replies
         {
             get { return m_replies ?? (m_replies = NpcManager.Instance.GetMessageReplies(Id)); }
         }

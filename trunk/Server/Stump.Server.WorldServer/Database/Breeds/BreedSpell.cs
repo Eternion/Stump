@@ -19,13 +19,13 @@ namespace Stump.Server.WorldServer.Database.Breeds
             set;
         }
 
-        public int? Spell
+        public int Spell
         {
             get;
             set;
         }
 
-        public int? ObtainLevel
+        public int ObtainLevel
         {
             get;
             set;

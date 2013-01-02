@@ -70,7 +70,6 @@ namespace Stump.Server.WorldServer.Database.Breeds
                     Stack = Amount,
                     Position = CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
                     Effects = effects,
-                    New = true
                 };
 
             return record;

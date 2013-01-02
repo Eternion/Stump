@@ -7,14 +7,17 @@ using System.Linq;
 using System.Threading;
 using NLog;
 using Stump.Core.Reflection;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Database.World.Triggers;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
@@ -26,7 +29,7 @@ using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
 
 namespace Stump.Server.WorldServer.Game
 {
-    public class World : Singleton<World>
+    public class World : DataManager<World>
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -35,6 +38,9 @@ namespace Stump.Server.WorldServer.Game
 
         private readonly ConcurrentDictionary<string, Character> m_charactersByName =
             new ConcurrentDictionary<string, Character>(Environment.ProcessorCount, ClientManager.MaxConcurrentConnections);
+
+        private readonly Dictionary<int, WorldAccount> m_connectedAccounts =
+            new Dictionary<int, WorldAccount>();
 
         private Dictionary<int, Area> m_areas = new Dictionary<int, Area>();
 
@@ -79,7 +85,7 @@ namespace Stump.Server.WorldServer.Game
         private bool m_spacesSpawned;
 
         [Initialization(InitializationPass.Seventh)]
-        public void Initialize()
+        public override void Initialize()
         {
             // maps
             LoadSpaces();
@@ -94,16 +100,16 @@ namespace Stump.Server.WorldServer.Game
             m_spacesLoaded = true;
 
             logger.Info("Load maps...");
-            m_maps = MapRecord.FindAll().ToDictionary(entry => entry.Id, entry => new Map(entry));
+            m_maps = Database.Fetch<MapRecord>(MapRecordRelator.FetchQuery).ToDictionary(entry => entry.Id, entry => new Map(entry));
 
             logger.Info("Load sub areas...");
-            m_subAreas = SubAreaRecord.FindAll().ToDictionary(entry => entry.Id, entry => new SubArea(entry));
+            m_subAreas = Database.Fetch<SubAreaRecord>(SubAreaRecordRelator.FetchQuery).ToDictionary(entry => entry.Id, entry => new SubArea(entry));
 
             logger.Info("Load areas...");
-            m_areas = AreaRecord.FindAll().ToDictionary(entry => entry.Id, entry => new Area(entry));
+            m_areas = Database.Fetch<AreaRecord>(AreaRecordRelator.FetchQuery).ToDictionary(entry => entry.Id, entry => new Area(entry));
 
             logger.Info("Load super areas...");
-            m_superAreas = SuperAreaRecord.FindAll().ToDictionary(entry => entry.Id, entry => new SuperArea(entry));
+            m_superAreas = Database.Fetch<SuperAreaRecord>(SuperAreaRecordRelator.FetchQuery).ToDictionary(entry => entry.Id, entry => new SuperArea(entry));
 
             SetLinks();
 
@@ -347,7 +353,10 @@ namespace Stump.Server.WorldServer.Game
                 OnCharacterEntered(character);
             }
             else
-                logger.Error("Cannot add spell {0} to the World", character);
+                logger.Error("Cannot add character {0} to the World", character);
+
+            if (!m_connectedAccounts.ContainsKey(character.Account.Id))
+                m_connectedAccounts.Add(character.Account.Id, character.Client.WorldAccount);
         }
 
         public void Leave(Character character)
@@ -359,7 +368,9 @@ namespace Stump.Server.WorldServer.Game
                 OnCharacterLeft(character);
             }
             else
-                logger.Error("Cannot remove spell {0} to the World", character);
+                logger.Error("Cannot remove character {0} from the World", character);
+
+            m_connectedAccounts.Remove(character.Account.Id);
         }
 
         public bool IsConnected(int id)
@@ -370,6 +381,17 @@ namespace Stump.Server.WorldServer.Game
         public bool IsConnected(string name)
         {
             return m_charactersByName.ContainsKey(name);
+        }
+
+        public bool IsAccountConnected(int id)
+        {
+            return m_connectedAccounts.ContainsKey(id);
+        }
+
+        public WorldAccount GetConnectedAccount(int id)
+        {
+            WorldAccount account;
+            return m_connectedAccounts.TryGetValue(id, out account) ? account : null;
         }
 
         public Character GetCharacter(int id)

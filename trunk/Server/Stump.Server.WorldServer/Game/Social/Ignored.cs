@@ -7,14 +7,16 @@ namespace Stump.Server.WorldServer.Game.Social
 {
     public class Ignored
     {
-        public Ignored(WorldAccount account, bool session)
+        public Ignored(AccountRelation relation, WorldAccount account, bool session)
         {
+            Relation = relation;
             Session = session;
             Account = account;
         }
 
-        public Ignored(WorldAccount account, bool session, Character character)
+        public Ignored(AccountRelation relation, WorldAccount account, bool session, Character character)
         {
+            Relation = relation;
             Session = session;
             Account = account;
             Character = character;
@@ -33,6 +35,12 @@ namespace Stump.Server.WorldServer.Game.Social
         }
 
         public Character Character
+        {
+            get;
+            private set;
+        }
+
+        public AccountRelation Relation
         {
             get;
             private set;

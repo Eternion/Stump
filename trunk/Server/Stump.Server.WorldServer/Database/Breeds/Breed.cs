@@ -265,7 +265,7 @@ namespace Stump.Server.WorldServer.Database.Breeds
             set;
         }
 
-        public int StartDirection
+        public DirectionsEnum StartDirection
         {
             get;
             set;
@@ -295,13 +295,13 @@ namespace Stump.Server.WorldServer.Database.Breeds
             set;
         }
 
-        public int StartStatsPoints
+        public ushort StartStatsPoints
         {
             get;
             set;
         }
 
-        public int StartSpellsPoints
+        public ushort StartSpellsPoints
         {
             get;
             set;

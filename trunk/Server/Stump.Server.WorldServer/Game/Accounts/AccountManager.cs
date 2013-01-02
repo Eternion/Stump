@@ -24,6 +24,30 @@ namespace Stump.Server.WorldServer.Game.Accounts
             return worldAccount;
         }
 
+        /// <summary>
+        /// Returns null if not found
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public WorldAccount FindById(int id)
+        {
+            return Database.FirstOrDefault<WorldAccount>(string.Format(WorldAccountRelator.FetchById, id));
+        }
+
+        /// <summary>
+        /// Returns null if not found
+        /// </summary>
+        /// <returns></returns>
+        public WorldAccount FindByNickname(string nickname)
+        {
+            return Database.FirstOrDefault<WorldAccount>(WorldAccountRelator.FetchByNickname, nickname);
+        }
+
+        public bool DoesExist(int id)
+        {
+            return Database.ExecuteScalar<bool>(string.Format("SELECT EXISTS(SELECT 1 FROM accounts WHERE Id={0})", id));
+        }
+
         public void BanLater(AccountData banned, AccountData banner, TimeSpan duration, string reason)
         {
             WorldServer.Instance.IOTaskPool.AddMessage(() =>

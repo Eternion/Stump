@@ -403,5 +403,10 @@ namespace Stump.Server.WorldServer.Handlers.Context
             var action = trigger.Type == GameActionMarkTypeEnum.GLYPH ? ActionsEnum.ACTION_FIGHT_TRIGGER_GLYPH : ActionsEnum.ACTION_FIGHT_TRIGGER_TRAP;
             client.Send(new GameActionFightTriggerGlyphTrapMessage((short)action, trigger.Caster.Id, trigger.Id, target.Id, (short) triggeredSpell.Id));
         }
+
+        public static void SendGameFightTurnReadyRequestMessage(IPacketReceiver client, FightActor current)
+        {
+            client.Send(new GameFightTurnReadyRequestMessage(current.Id));
+        }
     }
 }

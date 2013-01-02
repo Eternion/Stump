@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
         }
 
         [Ignore]
-        public ConditionExpression ConditionaExpression
+        public ConditionExpression ConditionExpression
         {
             get
             {
@@ -75,12 +75,6 @@ namespace Stump.Server.WorldServer.Database.Npcs
                 m_conditionExpression = value;
                 Condition = value.ToString();
             }
-        }
-
-        public NpcActionTypeEnum ActionType
-        {
-            get;
-            set;
         }
 
         public NpcAction GenerateAction()

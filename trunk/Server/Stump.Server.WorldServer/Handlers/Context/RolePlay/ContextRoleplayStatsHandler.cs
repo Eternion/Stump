@@ -53,22 +53,20 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                 short ptsUsed = 0;
                 short boost = 0;
                 // if not last threshold and enough pts to reach the next threshold we fill this first
-                if (index < thresholds.Count - 1 && (pts / (double)thresholds[index][1]) > (thresholds[index + 1][0] - actualPoints))
+                if (index < thresholds.Length - 1 && (pts / (double)thresholds[index][1]) > (thresholds[index + 1][0] - actualPoints))
                 {
                     boost = (short) (thresholds[index + 1][0] - actualPoints);
                     ptsUsed = (short)( boost * thresholds[index][1] );
 
-                    if (thresholds[index].Count > 2)
-                        boost =
-                            
-                            (short)( boost * thresholds[index][2] );
+                    if (thresholds[index].Length > 2)
+                        boost = (short) (boost * thresholds[index][2]);
                 }
                 else
                 {
                     boost = (short)Math.Floor( pts / (double)thresholds[index][1] );
                     ptsUsed = (short)( boost * thresholds[index][1] );
 
-                    if (thresholds[index].Count > 2)
+                    if (thresholds[index].Length > 2)
                         boost = (short)(boost * thresholds[index][2]);
                 }
 

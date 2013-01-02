@@ -2,67 +2,71 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Castle.ActiveRecord;
 using NLog;
 using Stump.Core.Attributes;
-using Stump.Core.Reflection;
+using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
+using Stump.ORM;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Shortcuts;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
-    public class CharacterManager : Singleton<CharacterManager>
+    public class CharacterManager : DataManager<CharacterManager>
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         ///   Maximum number of characters you can create/store in your account
         /// </summary>
-        [Variable(true)]
-        public static uint MaxCharacterSlot = 5;
+        [Variable(true)] public static uint MaxCharacterSlot = 5;
 
-        private static readonly Regex m_nameCheckerRegex = new Regex("^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled);
+        private static readonly Regex m_nameCheckerRegex = new Regex(
+            "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled);
 
         public List<CharacterRecord> GetCharactersByAccount(WorldClient client)
         {
-            var characters = new List<CharacterRecord>();
+            var characters =
+                Database.Fetch<CharacterRecord>(string.Format(CharacterRelator.FetchByMultipleId,client.Account.CharactersId.ToCSV(",")));
 
-            characters.AddRange(
-                client.Account.CharactersId.Select(delegate(uint id)
-                                                       {
-                                                           try
-                                                           {
-                                                               return CharacterRecord.FindById((int) id);
-                                                           }
-                                                           catch (NotFoundException)
-                                                           {
-                                                               // character do not exist, then we remove it from the auth database
-                                                               WorldServer.Instance.IOTaskPool.AddMessage(() =>
-                                                                                                           IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(
-                                                                                                               client.Account.Id,
-                                                                                                               id));
-                                                               return null;
-                                                           }
-                                                       }).Where(character => character != null).OrderByDescending(entry => entry.LastUsage));
+            if (characters.Count != client.Account.CharactersId.Count)
+            {
+                foreach (
+                    int characterId in
+                        client.Account.CharactersId.Where(id => characters.All(character => character.Id != id)))
+                {
+                    // character do not exist, then we remove it from the auth database
+                    int id = characterId;
+                    WorldServer.Instance.IOTaskPool.AddMessage(() =>
+                                                               IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(
+                                                                   client.Account.Id, id));
+                }
+            }
 
             return characters;
         }
 
-        public CharacterCreationResultEnum CreateCharacter(WorldClient client, string name, sbyte breedId, bool sex, IEnumerable<int> colors)
+        public bool DoesNameExist(string name)
+        {
+            return Database.ExecuteScalar<bool>("SELECT EXISTS(SELECT 1 FROM characters WHERE Name=@0)", name);
+        }
+
+        public CharacterCreationResultEnum CreateCharacter(WorldClient client, string name, sbyte breedId, bool sex,
+                                                           IEnumerable<int> colors)
         {
             if (client.Characters.Count >= MaxCharacterSlot)
                 return CharacterCreationResultEnum.ERR_TOO_MANY_CHARACTERS;
 
-            if (CharacterRecord.DoesNameExists(name))
+            if (DoesNameExist(name))
                 return CharacterCreationResultEnum.ERR_NAME_ALREADY_EXISTS;
 
             if (!m_nameCheckerRegex.IsMatch(name))
@@ -78,8 +82,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             int i = 0;
             foreach (int color in colors)
             {
-                List<uint> breedColors = !sex ? breed.MaleColors : breed.FemaleColors;
-                if (breedColors.Count > i)
+                uint[] breedColors = !sex ? breed.MaleColors : breed.FemaleColors;
+                if (breedColors.Length > i)
                 {
                     if (color == -1)
                         indexedColors.Add((i + 1) << 24 | (int) breedColors[i]);
@@ -94,71 +98,76 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             look.indexedColors = indexedColors;
 
             CharacterRecord record;
-            using (var session = new SessionScope(FlushAction.Never))
+            using (Transaction transaction = Database.GetTransaction())
             {
                 record = new CharacterRecord(breed)
-                             {
-                                 Experience = ExperienceManager.Instance.GetCharacterLevelExperience(breed.StartLevel),
-                                 Name = name,
-                                 Sex = sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE,
-                                 EntityLook = look,
-                                 CreationDate = DateTime.Now,
-                                 LastUsage = DateTime.Now,
-                                 AlignmentSide = AlignmentSideEnum.ALIGNMENT_NEUTRAL,
-                                 WarnOnConnection = true,
-                                 WarnOnLevel = true,
-                             };
+                    {
+                        Experience = ExperienceManager.Instance.GetCharacterLevelExperience(breed.StartLevel),
+                        Name = name,
+                        Sex = sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE,
+                        EntityLook = look,
+                        CreationDate = DateTime.Now,
+                        LastUsage = DateTime.Now,
+                        AlignmentSide = AlignmentSideEnum.ALIGNMENT_NEUTRAL,
+                        WarnOnConnection = true,
+                        WarnOnLevel = true,
+                    };
 
-                record.Save();
+                Database.Insert(record);
 
                 // add items here
 
-                IOrderedEnumerable<LearnableSpell> spellsToLearn = from spell in breed.LearnableSpells
-                                                                   where spell.ObtainLevel <= breed.StartLevel
-                                                                   orderby spell.ObtainLevel , spell.SpellId ascending
-                                                                   select spell;
+                IOrderedEnumerable<BreedSpell> spellsToLearn = from spell in breed.Spells
+                                                               where spell.ObtainLevel <= breed.StartLevel
+                                                               orderby spell.ObtainLevel , spell.Spell ascending
+                                                               select spell;
 
                 int slot = 0;
-                foreach (LearnableSpell learnableSpell in spellsToLearn)
+                foreach (BreedSpell learnableSpell in spellsToLearn)
                 {
-                    CharacterSpellRecord spellRecord = SpellManager.Instance.CreateSpellRecord(record, SpellManager.Instance.GetSpellTemplate(learnableSpell.SpellId));
-                    spellRecord.Save();
+                    CharacterSpellRecord spellRecord = SpellManager.Instance.CreateSpellRecord(record,
+                                                                                               SpellManager.Instance.
+                                                                                                   GetSpellTemplate(
+                                                                                                       learnableSpell.
+                                                                                                           Spell));
+                    Database.Insert(spellRecord);
 
                     var shortcut = new SpellShortcut(record, slot, (short) spellRecord.SpellId);
-                    shortcut.Save();
+                    Database.Insert(shortcut);
                     slot++;
                 }
 
-                foreach (var startItem in breed.StartItems)
+                foreach (BreedItem startItem in breed.Items)
                 {
-                    var itemRecord = startItem.GenerateItemRecord(record);
-                    itemRecord.Create();
+                    PlayerItemRecord itemRecord = startItem.GenerateItemRecord(record);
+                    Database.Insert(itemRecord);
                 }
 
-                session.Flush();
+
+                if (client.Characters == null)
+                    client.Characters = new List<CharacterRecord>();
+
+                client.Characters.Insert(0, record);
+                transaction.Complete();
             }
 
-            if (client.Characters == null)
-                client.Characters = new List<CharacterRecord>();
-
-            client.Characters.Insert(0, record);
-
             IpcAccessor.Instance.ProxyObject.AddAccountCharacter(client.Account.Id,
-                                                                 (uint) record.Id);
+                                                                 record.Id);
 
             logger.Debug("Character {0} created", record.Name);
-            
+
 
             return CharacterCreationResultEnum.OK;
         }
 
         public void DeleteCharacterOnAccount(CharacterRecord character, WorldClient client)
         {
-            character.Delete();
+            // todo casade
+            Database.Delete(character);
             client.Characters.Remove(character);
 
             WorldServer.Instance.IOTaskPool.AddMessage(
-                () => IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(client.Account.Id, (uint) character.Id));
+                () => IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(client.Account.Id, character.Id));
         }
 
         #region Character Name Random Generation
@@ -185,8 +194,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     name += GetChar(vowel, rand);
                     vowel = !vowel;
                 }
-
-            } while (CharacterRecord.DoesNameExists(name));
+            } while (DoesNameExist(name));
 
             return name;
         }

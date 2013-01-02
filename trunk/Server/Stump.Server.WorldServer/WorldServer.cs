@@ -22,6 +22,7 @@ using Stump.DofusProtocol.D2oClasses.Tool.D2p;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.ORM;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Handler;
@@ -37,6 +38,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Conditions;
 using TreeSharp;
+using DatabaseConfiguration = Stump.ORM.DatabaseConfiguration;
 
 namespace Stump.Server.WorldServer
 {
@@ -66,12 +68,12 @@ namespace Stump.Server.WorldServer
         [Variable(Priority = 10)]
         public static DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
         {
-            DatabaseType = DatabaseType.MySql,
             Host = "localhost",
-            Name = "stump_world",
+            DbName = "stump_world",
             User = "root",
             Password = "",
-            UpdateFileDir = "./sql_update/",
+            ProviderName = "MySql.Data.MySqlClient",
+            //UpdateFileDir = "./sql_update/",
         };
 
         [Variable(true)]
@@ -101,11 +103,11 @@ namespace Stump.Server.WorldServer
             ConsoleBase.SetTitle("#Stump World Server : " + ServerInformation.Name);
 
             logger.Info("Initializing Database...");
-            DatabaseAccessor = new DatabaseAccessor(DatabaseConfiguration, Definitions.DatabaseRevision, typeof(WorldBaseRecord<>), Assembly.GetExecutingAssembly(), true);
-            DatabaseAccessor.Initialize();
+            DBAccessor = new DatabaseAccessor(DatabaseConfiguration);
+            DataManager.DefaultDatabase = DBAccessor.Database;
 
             logger.Info("Opening Database...");
-            DatabaseAccessor.OpenDatabase();
+            DBAccessor.OpenConnection();
 
             logger.Info("Register Messages...");
             MessageReceiver.Initialize();
@@ -122,7 +124,8 @@ namespace Stump.Server.WorldServer
             IpcAccessor.Instance.Initialize();
 
 #if DEBUG
-            if (( GetKeyState(0x41) & 0x8000 ) == 0)
+            // if 'a' is pressed
+            if (( GetKeyState(0x41) & 0x8000 ) != 0)
 #endif
                 InitializationManager.InitializeAll();
             IsInitialized = true;
@@ -172,7 +175,7 @@ namespace Stump.Server.WorldServer
             }
         }
 
-        public bool DisconnectClient(uint accountId)
+        public bool DisconnectClient(int accountId)
         {
             IEnumerable<WorldClient> clients = WorldServer.Instance.FindClients(client => client.Account != null && client.Account.Id == accountId);
 
@@ -211,7 +214,7 @@ namespace Stump.Server.WorldServer
         {
             return ClientManager.FindAll(predicate);
         }
-
+        // bof bof
         public void RegisterAllSaveableInstances(Assembly assembly)
         {
             foreach (var type in assembly.GetTypes())

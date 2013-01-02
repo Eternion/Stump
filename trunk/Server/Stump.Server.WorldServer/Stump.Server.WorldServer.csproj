@@ -359,7 +359,7 @@
     <Compile Include="Database\Items\Templates\ItemTemplate.cs" />
     <Compile Include="Database\Items\Templates\ItemSetTemplate.cs" />
     <Compile Include="Database\Items\Templates\ItemTypeRecord.cs" />
-    <Compile Include="Database\Characters\CharacterSpell.cs" />
+    <Compile Include="Database\Characters\CharacterSpellRecord.cs" />
     <Compile Include="Database\Shortcuts\ItemShortcut.cs" />
     <Compile Include="Database\Shortcuts\Shortcut.cs" />
     <Compile Include="Database\Shortcuts\SpellShortcut.cs" />

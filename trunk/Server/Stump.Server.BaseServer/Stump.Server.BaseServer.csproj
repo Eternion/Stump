@@ -214,8 +214,6 @@
     <Compile Include="Commands\ConverterException.cs" />
     <Compile Include="ConsoleBase.cs" />
     <Compile Include="Database\ActiveRecordHelper.cs" />
-    <Compile Include="Database\BaseContext.cs" />
-    <Compile Include="Database\DatabaseAccessor.cs" />
     <Compile Include="Database\DatabaseConfiguration.cs" />
     <Compile Include="Database\DataManager.cs" />
     <Compile Include="Database\DiscriminatorAttribute.cs" />

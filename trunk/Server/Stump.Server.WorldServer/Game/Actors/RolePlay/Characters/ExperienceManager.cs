@@ -2,16 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Reflection;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Characters;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
-    public class ExperienceManager : Singleton<ExperienceManager>
+    public class ExperienceManager : DataManager<ExperienceManager>
     {
-        private readonly Dictionary<byte, ExperienceRecord> m_records = new Dictionary<byte, ExperienceRecord>();
-        private KeyValuePair<byte, ExperienceRecord> m_highestCharacterLevel;
-        private KeyValuePair<byte, ExperienceRecord> m_highestGrade;
+        private readonly Dictionary<byte, ExperienceTableEntry> m_records = new Dictionary<byte, ExperienceTableEntry>();
+        private KeyValuePair<byte, ExperienceTableEntry> m_highestCharacterLevel;
+        private KeyValuePair<byte, ExperienceTableEntry> m_highestGrade;
 
         public byte HighestCharacterLevel
         {
@@ -144,9 +145,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         #endregion
 
         [Initialization(InitializationPass.Fourth)]
-        public void Initialize()
+        public override void Initialize()
         {
-            foreach (ExperienceRecord record in ExperienceRecord.FindAll())
+            foreach (var record in Database.Query<ExperienceTableEntry>(ExperienceTableRelator.FetchQuery))
             {
                 m_records.Add(record.Level, record);
             }

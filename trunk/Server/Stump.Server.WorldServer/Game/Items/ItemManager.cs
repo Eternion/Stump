@@ -258,6 +258,7 @@ namespace Stump.Server.WorldServer.Game.Items
             return list.Where(entry => Regex.Match(entry.Template.Name, pattern, ignorecase ? RegexOptions.IgnoreCase : RegexOptions.None).Success);
         }
 
+
         #endregion
     }
 }

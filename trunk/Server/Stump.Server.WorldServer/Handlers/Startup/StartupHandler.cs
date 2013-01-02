@@ -14,7 +14,8 @@ namespace Stump.Server.WorldServer.Handlers.Startup
         [WorldHandler(StartupActionsObjetAttributionMessage.Id, RequiresLogin = false, IsGamePacket = false)]
         public static void HandleStartupActionsObjetAttributionMessage(WorldClient client, StartupActionsObjetAttributionMessage message)
         {
-            if (client.WorldAccount == null || client.StartupActions == null)
+            // todo
+            /*if (client.WorldAccount == null || client.StartupActions == null)
                 return;
 
             var action = client.StartupActions.FirstOrDefault(entry => entry.Id == message.actionId);
@@ -33,7 +34,7 @@ namespace Stump.Server.WorldServer.Handlers.Startup
             client.WorldAccount.StartupActions.Remove(action.Record);
             client.WorldAccount.Update();
 
-            SendStartupActionFinishedMessage(client, action, true);
+            SendStartupActionFinishedMessage(client, action, true);*/
         }
 
         public static void SendStartupActionsListMessage(IPacketReceiver client, IEnumerable<StartupAction> actions)

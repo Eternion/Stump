@@ -7,29 +7,15 @@ namespace Stump.Server.WorldServer.Database.Accounts
 {
     public class WorldAccountRelator
     {
-        public static string FetchQuery =
-            "SELECT * FROM accounts LEFT JOIN accounts_relations ON accounts_relations.AccountId=accounts.Id";
-
-        private WorldAccount m_current;
-
-        public WorldAccount Map(WorldAccount account, AccountRelation relation)
-        {
-            if (account == null)
-                return m_current;
-
-            if (m_current != null && m_current.Id == account.Id)
-            {
-                m_current.Relations.Add(relation);
-                return null;
-            }
-
-            WorldAccount previous = m_current;
-
-            m_current = account;
-            m_current.Relations.Add(relation);
-
-            return previous;
-        }
+        public static string FetchQuery = "SELECT * FROM accounts";
+        /// <summary>
+        /// Use string.Format
+        /// </summary>
+        public static string FetchById = "SELECT * FROM accounts WHERE Id={0}";
+        /// <summary>
+        /// Use parameters
+        /// </summary>
+        public static string FetchByNickname = "SELECT * FROM accounts WHERE Nickname={0}";
     }
 
     [TableName("accounts")]
@@ -37,7 +23,6 @@ namespace Stump.Server.WorldServer.Database.Accounts
     {
         public WorldAccount()
         {
-            Relations = new List<AccountRelation>();
         }
 
         [PrimaryKey("Id", false)]
@@ -66,13 +51,6 @@ namespace Stump.Server.WorldServer.Database.Accounts
         }
 
         public int? ConnectedCharacter
-        {
-            get;
-            set;
-        }
-
-        [Ignore]
-        public List<AccountRelation> Relations
         {
             get;
             set;

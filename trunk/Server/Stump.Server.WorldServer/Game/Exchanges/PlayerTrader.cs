@@ -151,7 +151,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                 OwnerId = Character.Id,
                 Stack = amount,
                 Effects = playerItem.Effects,
-                New = false,
                 Position = playerItem.Position,
             };
 

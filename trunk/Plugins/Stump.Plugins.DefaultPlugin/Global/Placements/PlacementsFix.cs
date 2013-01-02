@@ -11,6 +11,7 @@ using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.Core.Xml;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -135,7 +136,8 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
                     // save it
                     if (success != null)
                     {
-                        map.Record.Update();
+                        var database = WorldServer.Instance.DBAccessor.Database;
+                        database.Update(map.Record);
                         map.UpdateFightPlacements();
 
                         var builder = new StringBuilder();
@@ -170,4 +172,4 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
             logger.Debug("Maps placements fix applied");
         }
     }
-}d
+}

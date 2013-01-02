@@ -52,7 +52,6 @@ namespace Stump.Server.WorldServer.Game.Items
                              Stack = stack,
                              Position = position,
                              Effects = effects,
-                             New = true
                          };
         }
 

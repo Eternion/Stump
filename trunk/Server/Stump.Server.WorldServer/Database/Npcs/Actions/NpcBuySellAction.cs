@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using NLog;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
@@ -11,9 +12,10 @@ using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Database.Npcs.Actions
 {
-    [Discriminator("BuySell", typeof(NpcAction), typeof(NpcActionRecord))]
+    [Discriminator(Discriminator, typeof(NpcAction), typeof(NpcActionRecord))]
     public class NpcBuySellAction : NpcAction
     {
+        public const string Discriminator = "BuySell";
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private List<NpcItem> m_items;
@@ -74,6 +76,11 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
         {
             get { return NpcActionTypeEnum.ACTION_BUY_SELL; }
         }*/
+
+        public override NpcActionTypeEnum ActionType
+        {
+            get { return NpcActionTypeEnum.ACTION_BUY_SELL; }
+        }
 
         public override void Execute(Npc npc, Character character)
         {

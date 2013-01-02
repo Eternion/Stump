@@ -11,6 +11,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
@@ -617,14 +618,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Stats.AP.Base--;
             }
 
-            foreach (LearnableSpell spell in Breed.LearnableSpells)
+            foreach (var spell in Breed.Spells)
             {
-                if (spell.ObtainLevel > currentLevel && Spells.HasSpell(spell.SpellId))
-                    Spells.UnLearnSpell(spell.SpellId);
-                else if (spell.ObtainLevel <= currentLevel && !Spells.HasSpell(spell.SpellId))
+                if (spell.ObtainLevel > currentLevel && Spells.HasSpell(spell.Spell))
+                    Spells.UnLearnSpell(spell.Spell);
+                else if (spell.ObtainLevel <= currentLevel && !Spells.HasSpell(spell.Spell))
                 {
-                    Spells.LearnSpell(spell.SpellId);
-                    Shortcuts.AddSpellShortcut(Shortcuts.GetNextFreeSlot(), (short) spell.SpellId);
+                    Spells.LearnSpell(spell.Spell);
+                    Shortcuts.AddSpellShortcut(Shortcuts.GetNextFreeSlot(ShortcutBarEnum.SPELL_SHORTCUT_BAR), (short)spell.Spell);
                 }
             }
 
@@ -1585,13 +1586,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         internal void SaveNow()
         {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
+
             if (!m_recordLoaded)
                 return;
 
             lock (SaveSync)
             {
-                using (var session = new SessionScope(FlushAction.Never))
+                using (var transaction = WorldServer.Instance.DBAccessor.Database.GetTransaction())
                 {
+                    // do something better here
                     Inventory.Save();
                     Spells.Save();
                     Shortcuts.Save();
@@ -1612,9 +1616,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     m_record.BaseHealth = (ushort) Stats.Health.Base;
                     m_record.DamageTaken = (ushort)Stats.Health.DamageTaken;
 
-                    m_record.Update();
+                    WorldServer.Instance.DBAccessor.Database.Update(m_record);
 
-                    session.Flush();
+                    transaction.Complete();
                 }
             }
         }

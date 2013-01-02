@@ -276,16 +276,16 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             lock (Locker)
             {
+                var database = WorldServer.Instance.DBAccessor.Database;
                 foreach (var item in Items)
                 {
-                    item.Value.Record.Save();
+                    database.Save(item.Value.Record);
                 }
 
                 while (ItemsToDelete.Count > 0)
                 {
                     var item = ItemsToDelete.Dequeue();
-
-                    item.Record.Delete();
+                    database.Delete(item.Record);
                 }
             }
         }

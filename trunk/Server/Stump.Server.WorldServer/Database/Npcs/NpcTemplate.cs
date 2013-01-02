@@ -10,6 +10,7 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Npc = Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs.Npc;
+using NpcAction = Stump.Server.WorldServer.Database.Npcs.Actions.NpcAction;
 
 namespace Stump.Server.WorldServer.Database.Npcs
 {
@@ -28,7 +29,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
 
         #endregion
 
-        private List<NpcActionRecord> m_actions;
+        private List<Actions.NpcAction> m_actions;
         private string m_actionsIdsCSV;
         private string m_dialogMessagesIdCSV;
         private string m_dialogRepliesIdCSV;
@@ -104,7 +105,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
             set;
         }
 
-        public List<NpcActionRecord> Actions
+        public List<NpcAction> Actions
         {
             get { return m_actions ?? (m_actions = NpcManager.Instance.GetNpcActions(Id)); }
         }
@@ -198,7 +199,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
             if (handler != null) handler(this, npc);
         }
 
-        public NpcActionRecord[] GetNpcActions(NpcActionTypeEnum actionType)
+        public NpcAction[] GetNpcActions(NpcActionTypeEnum actionType)
         {
             return Actions.Where(entry => entry.ActionType == actionType).ToArray();
         }

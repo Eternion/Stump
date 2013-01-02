@@ -3,7 +3,6 @@ using System.Linq;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Interactives;
-using Stump.Server.WorldServer.Database.Interactives.Skills;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Game.Maps;
@@ -49,7 +48,7 @@ namespace Stump.Server.WorldServer.Game.Interactives
 
         private void GenerateSkills()
         {
-            foreach (SkillRecord skillTemplate in Spawn.GetSkills())
+            foreach (var skillTemplate in Spawn.GetSkills())
             {
                 int id = InteractiveManager.Instance.PopSkillId();
 

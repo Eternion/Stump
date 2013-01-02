@@ -8,6 +8,7 @@ using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Breeds;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
@@ -35,7 +36,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             }
 
             /* Check if name is free */
-            if (CharacterRecord.DoesNameExists(message.name))
+            if (CharacterManager.Instance.DoesNameExist(message.name))
             {
                 client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.ERR_NAME_ALREADY_EXISTS));
                 return;
@@ -51,8 +52,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             }
 
             /* Bind look and save character */
-            character.Name = characterName;
-            character.Save();
+            character.Name = characterName; 
+            WorldServer.Instance.DBAccessor.Database.Update(character);
         }
 
         [WorldHandler(CharacterReplayWithRecolorRequestMessage.Id, RequiresLogin = false, IsGamePacket = false)]
@@ -69,7 +70,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             }
 
             /* Get character Breed */
-            Breed breed = BreedManager.Instance.GetBreed((int) character.Breed);
+            var breed = BreedManager.Instance.GetBreed((int) character.Breed);
 
             if (breed == null)
             {
@@ -94,7 +95,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             /* Bind look and save character */
             character.EntityLook = breedLook;
-            character.Save();
+            WorldServer.Instance.DBAccessor.Database.Update(character);
         }
 
     }
