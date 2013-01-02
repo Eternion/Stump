@@ -2,7 +2,7 @@ using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.BaseServer.Database.Interfaces;
 
-namespace Stump.Server.WorldServer.Database
+namespace Stump.Server.WorldServer.Database.I18n
 {
     public class LangTextRelator
     {

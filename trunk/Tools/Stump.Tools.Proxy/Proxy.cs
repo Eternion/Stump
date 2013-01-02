@@ -22,6 +22,7 @@ using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;

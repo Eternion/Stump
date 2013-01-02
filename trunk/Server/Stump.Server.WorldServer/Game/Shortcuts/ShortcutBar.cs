@@ -3,10 +3,11 @@ using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.Shortcuts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Shortcuts;
-using Shortcut = Stump.Server.WorldServer.Database.Shortcut;
+using Shortcut = Stump.Server.WorldServer.Database.Shortcuts.Shortcut;
 
 namespace Stump.Server.WorldServer.Game.Shortcuts
 {

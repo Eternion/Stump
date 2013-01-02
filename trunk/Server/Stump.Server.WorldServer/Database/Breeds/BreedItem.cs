@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
 
-namespace Stump.Server.WorldServer.Database
+namespace Stump.Server.WorldServer.Database.Breeds
 {
     public class BreedItemRelator
     {

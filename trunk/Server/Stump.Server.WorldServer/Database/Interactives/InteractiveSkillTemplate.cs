@@ -5,7 +5,7 @@ using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Game.Interactives;
 
-namespace Stump.Server.WorldServer.Database
+namespace Stump.Server.WorldServer.Database.Interactives
 {
     public class InteractiveSkillTemplateRelator
     {

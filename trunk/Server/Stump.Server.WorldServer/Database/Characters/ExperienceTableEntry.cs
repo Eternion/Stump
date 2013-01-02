@@ -1,7 +1,7 @@
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
-namespace Stump.Server.WorldServer.Database
+namespace Stump.Server.WorldServer.Database.Characters
 {
     public class ExperienceTableRelator
     {

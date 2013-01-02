@@ -8,6 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Stump.Core.Sql;
 using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.Monsters;
+using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Tools.MonsterDataFinder.Readers;

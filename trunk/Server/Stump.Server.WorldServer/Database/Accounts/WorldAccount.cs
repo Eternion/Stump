@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
-using Stump.Server.WorldServer.Game.Accounts.Startup;
 
-namespace Stump.Server.WorldServer.Database
+namespace Stump.Server.WorldServer.Database.Accounts
 {
     public class WorldAccountRelator
     {

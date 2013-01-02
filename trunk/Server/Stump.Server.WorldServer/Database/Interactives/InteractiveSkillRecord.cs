@@ -1,4 +1,3 @@
-using System;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.BaseServer.Database;
@@ -7,7 +6,7 @@ using Stump.Server.WorldServer.Game.Conditions;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
 
-namespace Stump.Server.WorldServer.Database
+namespace Stump.Server.WorldServer.Database.Interactives
 {
     public class InteractiveSkillRelator
     {

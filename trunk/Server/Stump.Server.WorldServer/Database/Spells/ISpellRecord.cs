@@ -1,4 +1,4 @@
-namespace Stump.Server.WorldServer.Database
+namespace Stump.Server.WorldServer.Database.Spells
 {
     public interface ISpellRecord
     {

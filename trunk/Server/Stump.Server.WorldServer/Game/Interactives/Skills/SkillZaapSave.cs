@@ -1,5 +1,6 @@
 ﻿using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Interactives.Skills

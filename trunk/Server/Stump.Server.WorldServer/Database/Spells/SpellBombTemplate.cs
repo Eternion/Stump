@@ -1,7 +1,7 @@
 using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
-namespace Stump.Server.WorldServer.Database
+namespace Stump.Server.WorldServer.Database.Spells
 {
     public class SpellBombRelator
     {

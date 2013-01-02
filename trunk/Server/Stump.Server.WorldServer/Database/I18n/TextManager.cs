@@ -1,21 +1,22 @@
 using System.Collections.Generic;
-using Stump.Core.Reflection;
+using System.Linq;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.I18n;
 using Stump.Server.BaseServer.Initialization;
 
-namespace Stump.Server.WorldServer.Database
+namespace Stump.Server.WorldServer.Database.I18n
 {
-    public class TextManager : Singleton<TextManager>
+    public class TextManager : DataManager<TextManager>
     {
         private Languages? m_defaultLanguages;
         private Dictionary<uint, LangText> m_texts = new Dictionary<uint, LangText>();
         private Dictionary<string, LangTextUi> m_textsUi = new Dictionary<string, LangTextUi>();
 
         [Initialization(InitializationPass.First)]
-        public void Initialize()
+        public override void Initialize()
         {
-            m_texts = LangText.FindAll().ToDictionary(entry => entry.Id);
-            m_textsUi = LangTextUi.FindAll().ToDictionary(entry => entry.Name);
+            m_texts = Database.Fetch<LangText>(LangTextRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_textsUi = Database.Fetch<LangTextUi>(LangTextUiRelator.FetchQuery).ToDictionary(entry => entry.Name);
         }
 
         public void SetDefaultLanguage(Languages languages)
@@ -101,23 +102,23 @@ namespace Stump.Server.WorldServer.Database
             switch (lang)
             {
                 case Languages.English:
-                    return record.En ?? "(not found)";
+                    return record.English ?? "(not found)";
                 case Languages.French:
-                    return record.Fr ?? "(not found)";
+                    return record.French ?? "(not found)";
                 case Languages.German:
-                    return record.De ?? "(not found)";
+                    return record.German ?? "(not found)";
                 case Languages.Spanish:
-                    return record.Es ?? "(not found)";
+                    return record.Spanish ?? "(not found)";
                 case Languages.Italian:
-                    return record.It ?? "(not found)";
+                    return record.Italian ?? "(not found)";
                 case Languages.Japanish:
-                    return record.Ja ?? "(not found)";
+                    return record.Japanish ?? "(not found)";
                 case Languages.Dutsh:
-                    return record.Nl ?? "(not found)";
+                    return record.Dutsh ?? "(not found)";
                 case Languages.Portugese:
-                    return record.Pt ?? "(not found)";
+                    return record.Portugese ?? "(not found)";
                 case Languages.Russish:
-                    return record.Ru ?? "(not found)";
+                    return record.Russish ?? "(not found)";
                 default:
                     return "(not found)";
             }

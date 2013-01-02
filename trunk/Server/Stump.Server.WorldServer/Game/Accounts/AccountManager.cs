@@ -5,6 +5,7 @@ using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.Accounts;
 
 namespace Stump.Server.WorldServer.Game.Accounts
 {

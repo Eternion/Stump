@@ -1,8 +1,9 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using Stump.Server.WorldServer.Database.Spells;
 
-namespace Stump.Server.WorldServer.Database
+namespace Stump.Server.WorldServer.Database.Characters
 {
     public class CharacterSpellRelator
     {

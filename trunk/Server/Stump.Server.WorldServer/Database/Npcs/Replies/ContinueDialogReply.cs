@@ -3,7 +3,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 
-namespace Stump.Server.WorldServer.Database
+namespace Stump.Server.WorldServer.Database.Npcs.Replies
 {
     [Discriminator("Dialog", typeof(NpcReply), typeof(NpcReplyRecord))]
     public class ContinueDialogReply : NpcReply

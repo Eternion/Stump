@@ -5,7 +5,7 @@ using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 
-namespace Stump.Server.WorldServer.Database
+namespace Stump.Server.WorldServer.Database.Npcs
 {
     public class NpcMessageRelator
     {

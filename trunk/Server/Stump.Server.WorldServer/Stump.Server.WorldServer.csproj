@@ -424,14 +424,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Core\IO\WorldConsole.cs" />
-    <Compile Include="stump_worldDataSet.cs">
-      <DependentUpon>stump_worldDataSet.xsd</DependentUpon>
-    </Compile>
-    <Compile Include="stump_worldDataSet.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>stump_worldDataSet.xsd</DependentUpon>
-    </Compile>
     <Compile Include="WorldServer.cs" />
     <Compile Include="Game\Accounts\AccountManager.cs" />
     <Compile Include="Game\Actors\ContextActor.cs" />
@@ -633,17 +625,6 @@
     <None Include="App.Config" />
     <None Include="packages.config" />
     <None Include="Properties\DataSources\Stump.Server.WorldServer.Database.Entities.datasource" />
-    <None Include="stump_worldDataSet.xsc">
-      <DependentUpon>stump_worldDataSet.xsd</DependentUpon>
-    </None>
-    <None Include="stump_worldDataSet.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>stump_worldDataSet.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="stump_worldDataSet.xss">
-      <DependentUpon>stump_worldDataSet.xsd</DependentUpon>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

@@ -5,6 +5,7 @@ using System.Linq;
 using Stump.Core.Reflection;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.Monsters;
 using MonsterGrade = Stump.Server.WorldServer.Database.Monsters.MonsterGrade;
 using MonsterSpawn = Stump.Server.WorldServer.Database.Monsters.MonsterSpawn;
 using MonsterSpell = Stump.Server.WorldServer.Database.Monsters.MonsterSpell;

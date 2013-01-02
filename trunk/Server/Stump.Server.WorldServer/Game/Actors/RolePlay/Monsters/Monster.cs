@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database;
 using System.Linq;
+using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Stats;

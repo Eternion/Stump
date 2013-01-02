@@ -1,5 +1,6 @@
 ﻿using Stump.DofusProtocol.D2oClasses;
 using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 

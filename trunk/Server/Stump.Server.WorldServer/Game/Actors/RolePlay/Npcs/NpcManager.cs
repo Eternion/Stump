@@ -2,26 +2,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Reflection;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer.Database.Npcs;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
 {
-    public class NpcManager : Singleton<NpcManager>
+    public class NpcManager : DataManager<NpcManager>
     {
         private Dictionary<uint, NpcSpawn> m_npcsSpawns;
         private Dictionary<int, NpcTemplate> m_npcsTemplates;
-        private Dictionary<uint, NpcAction> m_npcsActions;
-        private Dictionary<int, NpcReply> m_npcsReplies;
+        private Dictionary<uint, NpcActionRecord> m_npcsActions;
+        private Dictionary<int, NpcReplyRecord> m_npcsReplies;
         private Dictionary<int, NpcMessage> m_npcsMessages;
 
         [Initialization(InitializationPass.Fifth)]
-        public void Initialize()
+        public override void Initialize()
         {
-            m_npcsSpawns = NpcSpawn.FindAll().ToDictionary(entry => entry.Id);
-            m_npcsTemplates = NpcTemplate.FindAll().ToDictionary(entry => entry.Id);
-            m_npcsActions = NpcAction.FindAll().ToDictionary(entry => entry.Id);
-            m_npcsReplies = NpcReply.FindAll().ToDictionary(entry => entry.Id);
-            m_npcsMessages = NpcMessage.FindAll().ToDictionary(entry => entry.Id);
+            m_npcsSpawns = Database.Fetch<NpcSpawn>(NpcSpawnRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_npcsTemplates = Database.Fetch<NpcTemplate>(NpcTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_npcsActions = Database.Fetch<NpcActionRecord>(NpcActionRecordRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_npcsReplies = Database.Fetch<NpcReplyRecord>(NpcReplyRecordRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_npcsMessages = Database.Fetch<NpcMessage>(NpcMessageRelator.FetchQuery).ToDictionary(entry => entry.Id);
         }
 
         public NpcSpawn GetNpcSpawn(uint id)
@@ -77,12 +79,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             return message;
         }
 
-        public List<NpcAction> GetNpcActions(int id)
+        public List<NpcActionRecord> GetNpcActions(int id)
         {
             return m_npcsActions.Where(entry => entry.Value.NpcId == id).Select(entry => entry.Value).ToList();
         }
 
-        public List<NpcReply> GetMessageReplies(int id)
+        public List<NpcReplyRecord> GetMessageReplies(int id)
         {
             return m_npcsReplies.Where(entry => entry.Value.MessageId == id).Select(entry => entry.Value).ToList();
         }
@@ -99,13 +101,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             m_npcsSpawns.Remove(spawn.Id);
         }
 
-        public void AddNpcAction(NpcAction action)
+        public void AddNpcAction(NpcActionRecord action)
         {
             action.Save();
             m_npcsActions.Add(action.Id, action);
         }
 
-        public void RemoveNpcAction(NpcAction action)
+        public void RemoveNpcAction(NpcActionRecord action)
         {
             action.Delete();
             m_npcsActions.Remove(action.Id);

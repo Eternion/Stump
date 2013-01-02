@@ -1,4 +1,6 @@
-namespace Stump.Server.WorldServer.Database
+using Stump.Server.WorldServer.Database.Characters;
+
+namespace Stump.Server.WorldServer.Database.Shortcuts
 {
     public abstract class Shortcut
     {

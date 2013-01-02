@@ -1,8 +1,9 @@
 using Stump.DofusProtocol.Types;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using Stump.Server.WorldServer.Database.Characters;
 
-namespace Stump.Server.WorldServer.Database
+namespace Stump.Server.WorldServer.Database.Shortcuts
 {
     public class ItemShortcutRelator
     {

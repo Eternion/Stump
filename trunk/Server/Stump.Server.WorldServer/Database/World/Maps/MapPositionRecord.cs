@@ -2,6 +2,7 @@ using System;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using Stump.Server.WorldServer.Database.I18n;
 using Point = System.Drawing.Point;
 
 namespace Stump.Server.WorldServer.Database.World.Maps
