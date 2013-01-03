@@ -1,31 +1,17 @@
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
-using Castle.ActiveRecord.Framework.Config;
 using Stump.Core.Attributes;
-using Stump.Core.Extensions;
-using Stump.Core.Mathematics;
-using Stump.Core.Pool;
 using Stump.Core.Reflection;
-using Stump.Core.Threading;
-using Stump.DofusProtocol.D2oClasses;
-using Stump.DofusProtocol.D2oClasses.Tool.D2p;
-using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.ORM;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Database;
-using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
@@ -34,10 +20,7 @@ using Stump.Server.WorldServer.Core.IO;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game;
-using Stump.Server.WorldServer.Game.Conditions;
-using TreeSharp;
 using DatabaseConfiguration = Stump.ORM.DatabaseConfiguration;
 
 namespace Stump.Server.WorldServer
@@ -104,10 +87,12 @@ namespace Stump.Server.WorldServer
 
             logger.Info("Initializing Database...");
             DBAccessor = new DatabaseAccessor(DatabaseConfiguration);
-            DataManager.DefaultDatabase = DBAccessor.Database;
+            DBAccessor.RegisterMappingAssembly(Assembly.GetExecutingAssembly());
+            DBAccessor.Initialize();
 
             logger.Info("Opening Database...");
             DBAccessor.OpenConnection();
+            DataManager.DefaultDatabase = DBAccessor.Database;
 
             logger.Info("Register Messages...");
             MessageReceiver.Initialize();
@@ -124,8 +109,8 @@ namespace Stump.Server.WorldServer
             IpcAccessor.Instance.Initialize();
 
 #if DEBUG
-            // if 'a' is pressed
-            if (( GetKeyState(0x41) & 0x8000 ) != 0)
+            // if 'a' is pressed we ignore initialization
+            if (( GetKeyState(0x41) & 0x8000 ) == 0)
 #endif
                 InitializationManager.InitializeAll();
             IsInitialized = true;

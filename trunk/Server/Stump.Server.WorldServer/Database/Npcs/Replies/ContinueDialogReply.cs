@@ -20,8 +20,11 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
         /// </summary>
         public int NextMessageId
         {
-            get { return GetParameter<int>(0); }
-            set { SetParameter(0, value); }
+            get { return Record.GetParameter<int>(0); }
+            set
+            {
+                Record.SetParameter(0, value);
+            }
         }
 
         public NpcMessage NextMessage

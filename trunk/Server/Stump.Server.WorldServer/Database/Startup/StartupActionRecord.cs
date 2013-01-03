@@ -67,6 +67,7 @@ namespace Stump.Server.WorldServer.Database.Startup
             set;
         }
 
+        [Ignore]
         public List<StartupActionItemRecord> Items
         {
             get { return m_items ?? new List<StartupActionItemRecord>(); }

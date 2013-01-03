@@ -15,19 +15,19 @@ namespace Stump.Server.WorldServer.Database.Effects
     {
         // Primitive properties
 
-        public long Id
+        public int Id
         {
             get;
             set;
         }
 
-        public long DescriptionId
+        public uint DescriptionId
         {
             get;
             set;
         }
 
-        public long IconId
+        public int IconId
         {
             get;
             set;
@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Database.Effects
             set;
         }
 
-        public long Category
+        public uint Category
         {
             get;
             set;

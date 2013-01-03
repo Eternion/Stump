@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using Castle.ActiveRecord;
 using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;

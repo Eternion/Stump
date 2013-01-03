@@ -21,8 +21,14 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
         /// </summary>
         public int ItemId
         {
-            get { return GetParameter<int>(0); }
-            set { SetParameter(0, value); }
+            get
+            {
+                return Record.GetParameter<int>(0);
+            }
+            set
+            {
+                Record.SetParameter(0, value);
+            }
         }
 
         public ItemTemplate Item
@@ -40,8 +46,14 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
         /// </summary>
         public uint Amount
         {
-            get { return GetParameter<uint>(1); }
-            set { SetParameter(1, value); }
+            get
+            {
+                return Record.GetParameter<uint>(1);
+            }
+            set
+            {
+                Record.SetParameter(1, value);
+            }
         }
 
         public override bool Execute(Npc npc, Character character)

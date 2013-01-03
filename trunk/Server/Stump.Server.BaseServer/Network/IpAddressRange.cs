@@ -32,6 +32,7 @@ namespace Stump.Server.BaseServer.Network
             var bytes = ip.GetAddressBytes();
 
             if (bytes.Length != Tokens.Length)
+                return true;
 
             for (int i = 0; i < Tokens.Length; i++)
             {

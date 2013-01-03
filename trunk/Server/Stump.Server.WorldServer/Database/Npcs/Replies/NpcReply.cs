@@ -24,7 +24,7 @@ using Stump.Server.WorldServer.Game.Conditions;
 
 namespace Stump.Server.WorldServer.Database.Npcs.Replies
 {
-    public abstract class NpcReply : ParameterizableRecord
+    public abstract class NpcReply
     {
         public NpcReply(NpcReplyRecord record)
         {

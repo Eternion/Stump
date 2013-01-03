@@ -28,10 +28,13 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
         /// </summary>
         public int MapId
         {
-            get { return GetParameter<int>(0); }
+            get
+            {
+                return Record.GetParameter<int>(0);
+            }
             set
             {
-                SetParameter(0, value);
+                Record.SetParameter(0, value);
                 m_mustRefreshPosition = true;
             }
         }
@@ -41,10 +44,13 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
         /// </summary>
         public int CellId
         {
-            get { return GetParameter<int>(1); }
+            get
+            {
+                return Record.GetParameter<int>(1);
+            }
             set
             {
-                SetParameter(1, value);
+                Record.SetParameter(1, value);
                 m_mustRefreshPosition = true;
             }
         }
@@ -54,10 +60,13 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
         /// </summary>
         public DirectionsEnum Direction
         {
-            get { return (DirectionsEnum) GetParameter<int>(2); }
+            get
+            {
+                return (DirectionsEnum)Record.GetParameter<int>(2, false);
+            }
             set
             {
-                SetParameter(2, (int) value);
+                Record.SetParameter(2, (int)value);
                 m_mustRefreshPosition = true;
             }
         }

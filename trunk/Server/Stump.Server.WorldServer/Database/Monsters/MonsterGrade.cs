@@ -185,6 +185,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
             }
         }
 
+        [Ignore]
         public Dictionary<PlayerFields, short> Stats
         {
             get;

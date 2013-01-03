@@ -69,6 +69,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             set;
         }
 
+        [Ignore]
         public MapPositionRecord Position
         {
             get;
@@ -233,12 +234,14 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             }
         }
 
+        [Ignore]
         public MapElement[] Elements
         {
             get;
             set;
         }
 
+        [Ignore]
         public Cell[] Cells
         {
             get;

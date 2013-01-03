@@ -96,10 +96,12 @@ namespace Stump.Server.AuthServer
 
                 logger.Info("Initializing Database...");
                 DBAccessor = new DatabaseAccessor(DatabaseConfiguration);
-                DataManager.DefaultDatabase = DBAccessor.Database;
+                DBAccessor.RegisterMappingAssembly(Assembly.GetExecutingAssembly());
+                DBAccessor.Initialize();
 
                 logger.Info("Opening Database...");
                 DBAccessor.OpenConnection();
+                DataManager.DefaultDatabase = DBAccessor.Database;
 
                 logger.Info("Register Messages...");
                 MessageReceiver.Initialize();

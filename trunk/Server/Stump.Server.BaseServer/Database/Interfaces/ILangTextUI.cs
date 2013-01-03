@@ -1,5 +1,3 @@
-using Castle.ActiveRecord;
-
 namespace Stump.Server.BaseServer.Database.Interfaces
 {
     public interface ILangTextUI

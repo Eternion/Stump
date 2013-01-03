@@ -149,7 +149,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             foreach (var record in Database.Query<ExperienceTableEntry>(ExperienceTableRelator.FetchQuery))
             {
-                m_records.Add(record.Level, record);
+                if (record.Level > 200)
+                    throw new Exception("Level cannot exceed 200 (protocol constraint)");
+
+                m_records.Add((byte) record.Level, record);
             }
 
             m_highestCharacterLevel = m_records.OrderByDescending(entry => entry.Value.CharacterExp).FirstOrDefault();

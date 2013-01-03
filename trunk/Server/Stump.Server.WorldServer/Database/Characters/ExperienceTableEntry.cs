@@ -13,7 +13,8 @@ namespace Stump.Server.WorldServer.Database.Characters
     {
         // Primitive properties
 
-        public byte Level
+        [PrimaryKey("Level")]
+        public short Level
         {
             get;
             set;

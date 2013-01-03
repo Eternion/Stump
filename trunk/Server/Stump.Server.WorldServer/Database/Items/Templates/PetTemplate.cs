@@ -35,6 +35,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             }
         }
 
+        [Ignore]
         public int[] FoodItems
         {
             get { return m_foodItems; }
@@ -55,6 +56,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             }
         }
 
+        [Ignore]
         public int[] FoodTypes
         {
             get { return m_foodTypes; }

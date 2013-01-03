@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Castle.ActiveRecord;
 using NLog;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Effects;
@@ -25,7 +25,7 @@ using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects
 {
-    public class EffectManager : Singleton<EffectManager>
+    public class EffectManager : DataManager<EffectManager>
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -42,9 +42,9 @@ namespace Stump.Server.WorldServer.Game.Effects
         private readonly Dictionary<EffectsEnum, List<Type>> m_effectsHandlers = new Dictionary<EffectsEnum, List<Type>>();
 
         [Initialization(InitializationPass.Third)]
-        public void Initialize()
+        public override void Initialize()
         {
-            m_effects = ActiveRecordBase<EffectTemplate>.FindAll().ToDictionary(entry => (short) entry.Id);
+            m_effects = Database.Fetch<EffectTemplate>(EffectTemplateRelator.FetchQuery).ToDictionary(entry => (short) entry.Id);
 
             InitializeHandlers();
         }

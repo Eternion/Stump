@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
-using Castle.ActiveRecord.Queries;
 using Stump.Core.Pool;
-using Stump.ORM;
 using Stump.Server.BaseServer.Initialization;
 
 namespace Stump.Server.WorldServer.Database
