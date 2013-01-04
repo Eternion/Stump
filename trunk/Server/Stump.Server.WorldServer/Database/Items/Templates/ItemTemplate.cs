@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ServiceStack.Text;
 using Stump.Core.IO;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
@@ -36,11 +37,12 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
         private ItemSetTemplate m_itemSet;
         private string m_name;
         private List<EffectInstance> m_possibleEffects;
-        private string m_possibleEffectsJson;
+        private byte[] m_possibleEffectsBin;
         private uint[] m_recipeIds;
         private string m_recipeIdsCSV;
         private ItemTypeRecord m_type;
 
+        [PrimaryKey("Id", false)]
         public int Id
         {
             get;
@@ -246,13 +248,13 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set;
         }
 
-        public string PossibleEffectsJson
+        public byte[] PossibleEffectsBin
         {
-            get { return m_possibleEffectsJson; }
+            get { return m_possibleEffectsBin; }
             set
             {
-                m_possibleEffectsJson = value;
-                m_possibleEffects = value.FromJson<List<EffectInstance>>();
+                m_possibleEffectsBin = value;
+                m_possibleEffects = value == null ? null : value.ToObject<List<EffectInstance>>();
             }
         }
 
@@ -263,7 +265,8 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set
             {
                 m_possibleEffects = value;
-                m_possibleEffectsJson = value.ToJson();
+                m_possibleEffectsBin = value == null ? null : value.ToBinary(); 
+                m_effects = value == null ? new List<EffectBase>() : new List<EffectBase>(PossibleEffects.Select(EffectManager.Instance.ConvertExportedEffect));
             }
         }
 
@@ -334,8 +337,8 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
 
         public void BeforeSave(bool insert)
         {
-            PossibleEffects = m_effects == null ? null : m_effects.Select(entry => entry.GetEffectInstance()).ToList();
-            m_possibleEffectsJson = m_possibleEffects.ToJson();
+            m_possibleEffects = m_effects == null ? null : m_effects.Select(entry => entry.GetEffectInstance()).ToList();
+            m_possibleEffectsBin = m_possibleEffects == null ? null : m_possibleEffects.ToBinary();
             m_favoriteSubAreasCSV = m_favoriteSubAreas.ToCSV(",");
             m_recipeIdsCSV = m_recipeIds.ToCSV(",");
         }

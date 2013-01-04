@@ -1,5 +1,6 @@
 using System;
 using Stump.Core.IO;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
@@ -21,6 +22,7 @@ namespace Stump.Server.WorldServer.Database.Spells
         private string m_name;
         private string m_spellLevelsIdsCSV;
 
+        [PrimaryKey("Id", false)]
         public int Id
         {
             get;

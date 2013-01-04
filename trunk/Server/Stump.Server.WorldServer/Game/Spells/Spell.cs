@@ -11,13 +11,13 @@ namespace Stump.Server.WorldServer.Game.Spells
     {
         private readonly ISpellRecord m_record;
         private readonly int m_id;
-        private sbyte m_level;
+        private byte m_level;
 
         public Spell(ISpellRecord record)
         {
             m_record = record;
             m_id = m_record.SpellId;
-            m_level = m_record.Level;
+            m_level = (byte) m_record.Level;
 
             Template = SpellManager.Instance.GetSpellTemplate(Id);
             SpellType = SpellManager.Instance.GetSpellType(Template.TypeId);
@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             ByLevel = SpellManager.Instance.GetSpellLevels(Id).ToDictionary(entry => counter++);
         }
 
-        public Spell(int id, sbyte level)
+        public Spell(int id, byte level)
         {
             m_id = id;
             m_level = level;
@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             private set;
         }
 
-        public sbyte CurrentLevel
+        public byte CurrentLevel
         {
             get
             {
@@ -97,7 +97,7 @@ namespace Stump.Server.WorldServer.Game.Spells
 
         public SpellItem GetSpellItem()
         {
-            return new SpellItem(Position, Id, CurrentLevel);
+            return new SpellItem(Position, Id, (sbyte) CurrentLevel);
         }
     }
 }

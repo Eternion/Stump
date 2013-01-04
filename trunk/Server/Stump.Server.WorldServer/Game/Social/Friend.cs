@@ -64,6 +64,7 @@ namespace Stump.Server.WorldServer.Game.Social
                     Account.Nickname,
                     (sbyte)( Character.IsFighting() ? PlayerStateEnum.GAME_TYPE_FIGHT : PlayerStateEnum.GAME_TYPE_ROLEPLAY ),
                     Account.LastConnectionTimeStamp,
+                    0, // todo achievement
                     Character.Name,
                     Character.Level,
                     (sbyte)Character.AlignmentSide,
@@ -77,7 +78,8 @@ namespace Stump.Server.WorldServer.Game.Social
                 (int)Account.Id,
                 Account.Nickname,
                 (sbyte) PlayerStateEnum.NOT_CONNECTED,
-                Account.LastConnectionTimeStamp);
+                Account.LastConnectionTimeStamp,
+                0); // todo achievement
         }
     }
 }

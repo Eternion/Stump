@@ -78,6 +78,12 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
+        public int Head
+        {
+            get;
+            set;
+        }
+
         public string EntityLookString
         {
             get { return m_entityLookString; }
@@ -486,6 +492,24 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
+        public bool Rename
+        {
+            get;
+            set;
+        }
+
+        public bool Recolor
+        {
+            get;
+            set;
+        }
+
+        public bool Relook
+        {
+            get;
+            set;
+        }
+
         #endregion
 
         public CharacterRecord(Breed breed)
@@ -541,18 +565,6 @@ namespace Stump.Server.WorldServer.Database.Characters
                 m_customEntityLook = value;
                 CustomEntityLookString = value != null ? value.ConvertToString() : string.Empty;
             }
-        }
-
-        public bool Rename
-        {
-            get;
-            set;
-        }
-
-        public bool Recolor
-        {
-            get;
-            set;
         }
         #region Zaaps
 

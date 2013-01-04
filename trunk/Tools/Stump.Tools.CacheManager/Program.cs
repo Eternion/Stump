@@ -1,18 +1,18 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using NLog;
 using Stump.Core.IO;
 using Stump.Core.Xml.Config;
-using Stump.DofusProtocol.D2oClasses.Tool;
-using Stump.Server.AuthServer;
+using Stump.ORM;
 using Stump.Server.WorldServer;
-using Stump.Tools.CacheManager.SQL;
+using Stump.Tools.CacheManager.Maps;
 
 namespace Stump.Tools.CacheManager
 {
     internal class Program
     {
-        public static MySqlAccessor DBAccessor;
+        public static DatabaseAccessor DBAccessor;
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -46,24 +46,6 @@ namespace Stump.Tools.CacheManager
             SpecificLanguage = args.Length > 3 ? args[3] : SpecificLanguage;
 
             XmlConfig config;
-            if (!string.IsNullOrEmpty(Path.GetFullPath(AuthConfigPath)))
-            {
-                logger.Info("Opening Auth Config");
-                config = new XmlConfig(AuthConfigPath) {IgnoreUnloadedAssemblies = true};
-                config.AddAssembly(typeof (AuthServer).Assembly);
-                config.Load();
-            }
-
-            logger.Info("Opening Auth Database");
-            DBAccessor = new MySqlAccessor(AuthServer.DatabaseConfiguration);
-            DBAccessor.Open();
-
-            logger.Info("Building Auth Database...");
-            var dbBuilder = new DatabaseBuilder(typeof (AuthServer).Assembly, d2OFolder, d2IFolder, "auth_patchs");
-            dbBuilder.Build();
-
-            DBAccessor.Close();
-
             if (!string.IsNullOrEmpty(Path.GetFullPath(WorldConfigPath)))
             {
                 logger.Info("Opening World Config");
@@ -74,17 +56,20 @@ namespace Stump.Tools.CacheManager
             }
 
             logger.Info("Opening World Database");
-            DBAccessor = new MySqlAccessor(WorldServer.DatabaseConfiguration);
-            DBAccessor.Open();
+            DBAccessor = new DatabaseAccessor(WorldServer.DatabaseConfiguration);
+            DBAccessor.RegisterMappingAssembly(Assembly.GetExecutingAssembly());
+            DBAccessor.Initialize();
+            DBAccessor.OpenConnection();
 
             logger.Info("Building World Database");
             // build maps
-            Maps.MapLoader.LoadMaps(mapsFolder);
+            var mapBuilder = new MapLoader(DBAccessor);
+            mapBuilder.LoadMaps(mapsFolder);
 
-            dbBuilder = new DatabaseBuilder(typeof (WorldServer).Assembly, d2OFolder, d2IFolder, "world_patchs");
+            var dbBuilder = new DatabaseBuilder(DBAccessor, typeof(WorldServer).Assembly, d2OFolder, d2IFolder, "world_patchs");
             dbBuilder.Build();
 
-            DBAccessor.Close();
+            DBAccessor.CloseConnection();
 
             logger.Info("All tasks done.");
             Console.Read();

@@ -27,6 +27,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
         private byte[] m_compressedElements;
         private short[] m_redCells;
 
+        [PrimaryKey("Id", false)]
         public int Id
         {
             get;

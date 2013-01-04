@@ -81,21 +81,21 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
-        [SubSonicDefaultSetting(1.0)]
+        [DefaultSetting(1.0)]
         public double Frequency
         {
             get;
             set;
         }
 
-        [SubSonicDefaultSetting(1)]
+        [DefaultSetting(1)]
         public int MinGrade
         {
             get;
             set;
         }
 
-        [SubSonicDefaultSetting(5)]
+        [DefaultSetting(5)]
         public int MaxGrade
         {
             get;

@@ -47,8 +47,8 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
-        [SubSonicDefaultSetting(1)]
-        public sbyte Level
+        [DefaultSetting(1)]
+        public short Level
         {
             get;
             set;

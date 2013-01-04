@@ -1,4 +1,5 @@
 ﻿using Stump.Core.IO;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
@@ -17,12 +18,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
         private int[] m_mapIds;
         private string m_mapIdsCSV;
 
-        public int Id
-        {
-            get;
-            set;
-        }
-
+        [PrimaryKey("CompressedCoords", false)]
         public uint CompressedCoords
         {
             get;
@@ -39,6 +35,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             }
         }
 
+        [Ignore]
         public int[] MapIds
         {
             get { return m_mapIds; }

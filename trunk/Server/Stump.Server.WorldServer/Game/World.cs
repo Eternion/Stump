@@ -100,16 +100,17 @@ namespace Stump.Server.WorldServer.Game
             m_spacesLoaded = true;
 
             logger.Info("Load maps...");
-            m_maps = Database.Fetch<MapRecord>(MapRecordRelator.FetchQuery).ToDictionary(entry => entry.Id, entry => new Map(entry));
+            m_maps = Database.Query<MapRecord, MapPositionRecord, MapRecord>
+                (new MapRecordRelator().Map, MapRecordRelator.FetchQuery).ToDictionary(entry => entry.Id, entry => new Map(entry));
 
             logger.Info("Load sub areas...");
-            m_subAreas = Database.Fetch<SubAreaRecord>(SubAreaRecordRelator.FetchQuery).ToDictionary(entry => entry.Id, entry => new SubArea(entry));
+            m_subAreas = Database.Query<SubAreaRecord>(SubAreaRecordRelator.FetchQuery).ToDictionary(entry => entry.Id, entry => new SubArea(entry));
 
             logger.Info("Load areas...");
-            m_areas = Database.Fetch<AreaRecord>(AreaRecordRelator.FetchQuery).ToDictionary(entry => entry.Id, entry => new Area(entry));
+            m_areas = Database.Query<AreaRecord>(AreaRecordRelator.FetchQuery).ToDictionary(entry => entry.Id, entry => new Area(entry));
 
             logger.Info("Load super areas...");
-            m_superAreas = Database.Fetch<SuperAreaRecord>(SuperAreaRecordRelator.FetchQuery).ToDictionary(entry => entry.Id, entry => new SuperArea(entry));
+            m_superAreas = Database.Query<SuperAreaRecord>(SuperAreaRecordRelator.FetchQuery).ToDictionary(entry => entry.Id, entry => new SuperArea(entry));
 
             SetLinks();
 

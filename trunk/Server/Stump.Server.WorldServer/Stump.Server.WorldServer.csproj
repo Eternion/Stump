@@ -191,6 +191,7 @@
     <Compile Include="Database\Accounts\AccountRelation.cs" />
     <Compile Include="Database\AutoAssignedRecord.cs" />
     <Compile Include="Database\Breeds\BreedItem.cs" />
+    <Compile Include="Database\Breeds\Head.cs" />
     <Compile Include="Database\IAssignedByD2o.cs" />
     <Compile Include="Database\Interactives\InteractiveSkillTemplate.cs" />
     <Compile Include="Database\Interactives\InteractiveSpawn.cs" />

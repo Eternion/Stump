@@ -8,7 +8,7 @@ namespace Stump.Server.WorldServer.Database.Spells
             set;
         }
 
-        sbyte Level
+        short Level
         {
             get;
             set;

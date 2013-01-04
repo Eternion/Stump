@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
         public static void SendSpellUpgradeSuccessMessage(IPacketReceiver client, Spell spell)
         {
-            client.Send(new SpellUpgradeSuccessMessage(spell.Id, spell.CurrentLevel));
+            client.Send(new SpellUpgradeSuccessMessage(spell.Id, (sbyte) spell.CurrentLevel));
         }
 
         public static void SendSpellUpgradeSuccessMessage(IPacketReceiver client, int spellId, sbyte level)

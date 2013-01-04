@@ -379,7 +379,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                                Spell spell)
         {
             client.Send(new GameActionFightSpellCastMessage((short) actionId, caster.Id, target == null ? 0 : target.Id, cell.Id, (sbyte) (critical),
-                                                            silentCast, (short) spell.Id, spell.CurrentLevel));
+                                                            silentCast, (short) spell.Id, (sbyte) spell.CurrentLevel));
         }
 
         public static void SendGameActionFightDispellableEffectMessage(IPacketReceiver client, Buff buff)

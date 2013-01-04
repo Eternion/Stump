@@ -1,16 +1,20 @@
+
+// Generated on 01/04/2013 14:36:07
 using System;
+using System.Collections.Generic;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 
 namespace Stump.DofusProtocol.D2oClasses
 {
-	[D2OClass("AlignmentBalance")]
-	[Serializable]
-	public class AlignmentBalance
-	{
-		private const String MODULE = "AlignmentBalance";
-		public int id;
-		public int startValue;
-		public int endValue;
-		public uint nameId;
-		public uint descriptionId;
-	}
+    [D2OClass("AlignmentBalance")]
+    [Serializable]
+    public class AlignmentBalance : IDataObject
+    {
+        private const String MODULE = "AlignmentBalance";
+        public int id;
+        public int startValue;
+        public int endValue;
+        public uint nameId;
+        public uint descriptionId;
+    }
 }

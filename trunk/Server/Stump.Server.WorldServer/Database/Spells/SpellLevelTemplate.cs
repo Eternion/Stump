@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.IO;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
@@ -28,6 +29,7 @@ namespace Stump.Server.WorldServer.Database.Spells
         private string m_statesForbiddenCSV;
         private string m_statesRequiredCSV;
 
+        [PrimaryKey("Id", false)]
         public uint Id
         {
             get;
@@ -217,7 +219,7 @@ namespace Stump.Server.WorldServer.Database.Spells
             set;
         }
 
-        private byte[] EffectsBin
+        public byte[] EffectsBin
         {
             get { return m_effectsBin; }
             set
@@ -238,7 +240,7 @@ namespace Stump.Server.WorldServer.Database.Spells
             set { m_effects = value; }
         }
 
-        private byte[] CriticalEffectsBin
+        public byte[] CriticalEffectsBin
         {
             get { return m_criticalEffectsBin; }
             set

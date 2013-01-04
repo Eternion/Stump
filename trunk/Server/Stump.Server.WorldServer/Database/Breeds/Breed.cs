@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.IO;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
+using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -53,8 +56,6 @@ namespace Stump.Server.WorldServer.Database.Breeds
     {
         #region Record Properties
 
-        private string m_alternativeFemaleSkinCSV;
-        private string m_alternativeMaleSkinCSV;
         private string m_breedSpellsIdCSV;
         private string m_femaleColorsCSV;
         private string m_femaleLookString;
@@ -75,30 +76,11 @@ namespace Stump.Server.WorldServer.Database.Breeds
 
         // Primitive properties
 
+        [PrimaryKey("Id", false)]
         public int Id
         {
             get;
             set;
-        }
-
-        public string AlternativeMaleSkinCSV
-        {
-            get { return m_alternativeMaleSkinCSV; }
-            set
-            {
-                m_alternativeMaleSkinCSV = value;
-                m_alternativeMaleSkin = AlternativeMaleSkinCSV.FromCSV<uint>(",");
-            }
-        }
-
-        public string AlternativeFemaleSkinCSV
-        {
-            get { return m_alternativeFemaleSkinCSV; }
-            set
-            {
-                m_alternativeFemaleSkinCSV = value;
-                m_alternativeFemaleSkin = AlternativeFemaleSkinCSV.FromCSV<uint>(",");
-            }
         }
 
         public int GameplayDescriptionId
@@ -371,8 +353,6 @@ namespace Stump.Server.WorldServer.Database.Breeds
 
         #endregion
 
-        private uint[] m_alternativeFemaleSkin;
-        private uint[] m_alternativeMaleSkin;
         private uint[] m_breedSpellsId;
         private uint[] m_femaleColors;
         private EntityLook m_femaleLook;
@@ -388,32 +368,6 @@ namespace Stump.Server.WorldServer.Database.Breeds
         private uint[][] m_statsPointsForStrength;
         private uint[][] m_statsPointsForVitality;
         private uint[][] m_statsPointsForWisdom;
-
-        [Ignore]
-        public uint[] AlternativeFemaleSkin
-        {
-            get
-            {
-                return m_alternativeFemaleSkin ??
-                       (m_alternativeFemaleSkin = AlternativeFemaleSkinCSV.FromCSV<uint>(","));
-            }
-            set
-            {
-                m_alternativeFemaleSkin = value;
-                AlternativeFemaleSkinCSV = value.ToCSV(",");
-            }
-        }
-
-        [Ignore]
-        public uint[] AlternativeMaleSkin
-        {
-            get { return m_alternativeMaleSkin ?? (m_alternativeMaleSkin = AlternativeMaleSkinCSV.FromCSV<uint>(",")); }
-            set
-            {
-                m_alternativeMaleSkin = value;
-                AlternativeMaleSkinCSV = value.ToCSV(",");
-            }
-        }
 
 
         [Ignore]
@@ -580,9 +534,7 @@ namespace Stump.Server.WorldServer.Database.Breeds
         public void AssignFields(object d2oObject)
         {
             var breed = (DofusProtocol.D2oClasses.Breed) d2oObject;
-
-            AlternativeFemaleSkin = breed.alternativeFemaleSkin.ToArray();
-            AlternativeMaleSkin = breed.alternativeMaleSkin.ToArray();
+            Id = breed.id;
             GameplayDescriptionId = (int) breed.gameplayDescriptionId;
             ShortNameId = (int) breed.shortNameId;
             LongNameId = (int) breed.longNameId;
@@ -609,9 +561,6 @@ namespace Stump.Server.WorldServer.Database.Breeds
 
         public void BeforeSave(bool insert)
         {
-            AlternativeFemaleSkinCSV = m_alternativeFemaleSkin.ToCSV(",");
-            AlternativeMaleSkinCSV = m_alternativeMaleSkin.ToCSV(",");
-
             MaleLookString = m_maleLook.ConvertToString();
             FemaleLookString = m_femaleLook.ConvertToString();
 

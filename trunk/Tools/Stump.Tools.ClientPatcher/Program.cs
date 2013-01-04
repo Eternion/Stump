@@ -9,7 +9,6 @@ using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
 using Stump.Core.Xml.Config;
-using Stump.DofusProtocol.D2oClasses.Tool;
 using Stump.Tools.ClientPatcher.Patchs;
 using Stump.Tools.ClientPatcher.Properties;
 

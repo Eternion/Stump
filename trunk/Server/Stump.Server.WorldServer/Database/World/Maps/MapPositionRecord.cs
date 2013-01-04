@@ -1,4 +1,5 @@
 using System;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
@@ -19,12 +20,14 @@ namespace Stump.Server.WorldServer.Database.World.Maps
         private string m_name;
         private Point m_pos;
 
+        [PrimaryKey("Id", false)]
         public int Id
         {
             get;
             set;
         }
 
+        [Ignore]
         public MapRecord Map
         {
             get;
@@ -45,8 +48,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
 
         public Point Pos
         {
-            get { return m_pos; }
-            set { m_pos = value; }
+            get { return new Point(PosX, PosY); }
         }
 
         public Boolean Outdoor

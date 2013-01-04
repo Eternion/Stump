@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
 
         public override bool Apply()
         {
-            var glyphSpell = new Spell(Dice.DiceNum, (sbyte) Dice.DiceFace);
+            var glyphSpell = new Spell(Dice.DiceNum, (byte) Dice.DiceFace);
 
             if (glyphSpell.Template == null || !glyphSpell.ByLevel.ContainsKey(Dice.DiceFace))
             {

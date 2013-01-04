@@ -1,5 +1,6 @@
 ﻿using System;
 using Stump.Core.IO;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
@@ -19,6 +20,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
         private string m_craftableItemIdsCSV;
         private InteractiveTemplate m_interactive;
 
+        [PrimaryKey("Id", false)]
         public int Id
         {
             get;

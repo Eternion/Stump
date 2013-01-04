@@ -3,7 +3,7 @@ using System;
 namespace Stump.DofusProtocol.D2oClasses
 {
     [Serializable]
-    public class Point
+    public class Point : IDataObject
     {
         public int x;
         public int y;

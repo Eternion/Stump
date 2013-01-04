@@ -54,6 +54,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
         /// <summary>
         /// A monster cannot drop this item more times than the drop limit. 0 to disable this limit
         /// </summary>
+        [DefaultSetting(0)]
         public int DropLimit
         {
             get;
@@ -71,7 +72,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
 
 
         /// <summary>
-        /// How many times the rolls are threw
+        /// How many times the rolls are thrown
         /// </summary>
         public int RollsCounter
         {
@@ -82,7 +83,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
         /// <summary>
         /// Requiered team prospection to have a chance to drop the item
         /// </summary>
-        [SubSonicDefaultSetting(100)]
+        [DefaultSetting(100)]
         public int ProspectingLock
         {
             get;

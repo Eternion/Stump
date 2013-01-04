@@ -6,61 +6,86 @@ using NLog;
 using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.Core.Sql;
-using Stump.DofusProtocol.D2oClasses.Tool;
-using Stump.DofusProtocol.D2oClasses.Tool.D2p;
-using Stump.DofusProtocol.D2oClasses.Tool.Dlm;
+using Stump.DofusProtocol.D2oClasses.Tools.D2p;
+using Stump.DofusProtocol.D2oClasses.Tools.Dlm;
+using Stump.ORM;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
-using Stump.Tools.CacheManager.SQL;
 
 namespace Stump.Tools.CacheManager.Maps
 {
-    public static class MapLoader
+    public class MapLoader
     {
+
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public const string DecryptionKey = "649ae451ca33ec53bbcbcc33becf15f4";
 
-        public static void LoadMaps(string mapFolder)
+        public MapLoader(DatabaseAccessor dbAccessor)
         {
-            logger.Info("Build table 'maps' ...");
+            DBAccessor = dbAccessor;
+        }
 
-            Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildDelete("maps"));
+        public DatabaseAccessor DBAccessor
+        {
+            get;
+            set;
+        }
 
-            using (var d2pFile = new D2pFile(Path.Combine(mapFolder, "maps0.d2p")))
+        public Database Database
+        {
+            get
             {
-                var files = d2pFile.ReadAllFiles();
-                int counter = 0;
-                int cursorLeft = Console.CursorLeft;
-                int cursorTop = Console.CursorTop;
-                foreach (var file in files)
+                return DBAccessor.Database;
+            }
+        }
+
+        public void LoadMaps(string mapFolder)
+        {
+            logger.Info("Build table 'world_maps' ...");
+
+            Database.Execute("DELETE FROM world_maps");
+            using (var transaction = Database.GetTransaction())
+            {
+                using (var d2pFile = new D2pFile(Path.Combine(mapFolder, "maps0.d2p")))
                 {
-                    var data = file.Value;
-
-                    var reader = new DlmReader(new MemoryStream(data), DecryptionKey);
-                    DlmMap map;
-                    try
+                    var files = d2pFile.ReadAllFiles();
+                    int counter = 0;
+                    int cursorLeft = Console.CursorLeft;
+                    int cursorTop = Console.CursorTop;
+                    foreach (var file in files)
                     {
-                        map = reader.ReadMap();
+                        var data = file.Value;
+
+                        var reader = new DlmReader(data);
+                        reader.DecryptionKey = DecryptionKey;
+                        DlmMap map;
+                        try
+                        {
+                            map = reader.ReadMap();
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine("Cannot evaluate map {0}", file.Key.FullFileName);
+                            continue;
+                        }
+                        var values = BuildFromMap(map);
+
+                        var listKey = new KeyValueListBase("world_maps", values);
+                        Database.Execute(SqlBuilder.BuildInsert(listKey));
+
+                        counter++;
+
+                        Console.SetCursorPosition(cursorLeft, cursorTop);
+                        Console.Write("{0}/{1} ({2}%)", counter, files.Count,
+                                      (int) ((counter/(double) files.Count)*100d));
                     }
-                    catch (Exception)
-                    {
-                        Console.WriteLine("Cannot evaluate map {0}", file.Key.FullFileName);
-                        continue;
-                    }
-                    var values = BuildFromMap(map);
-
-                    var listKey = new KeyValueListBase("maps", values);
-                    Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsert(listKey));
-
-                    counter++;
-
                     Console.SetCursorPosition(cursorLeft, cursorTop);
-                    Console.Write("{0}/{1} ({2}%)", counter, files.Count, (int)( ( counter / (double)files.Count ) * 100d ));
                 }
-                Console.SetCursorPosition(cursorLeft, cursorTop);
+                transaction.Complete();
             }
         }
 
@@ -77,6 +102,10 @@ namespace Stump.Tools.CacheManager.Maps
             values.Add("ClientBottomNeighbourId", map.BottomNeighbourId);
             values.Add("ClientLeftNeighbourId", map.LeftNeighbourId);
             values.Add("ClientRightNeighbourId", map.RightNeighbourId);
+            values.Add("TopNeighbourId", map.TopNeighbourId);
+            values.Add("BottomNeighbourId", map.BottomNeighbourId);
+            values.Add("LeftNeighbourId", map.LeftNeighbourId);
+            values.Add("RightNeighbourId", map.RightNeighbourId);
             values.Add("ShadowBonusOnEntities",  map.ShadowBonusOnEntities);
 
 

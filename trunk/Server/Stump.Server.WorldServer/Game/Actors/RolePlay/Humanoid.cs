@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay
@@ -23,28 +24,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
             m_followingCharacters.Remove(actor);
         }
 
-        #region Network
-
-        public override GameContextActorInformations GetGameContextActorInformations()
+        public virtual SexTypeEnum Sex
         {
-            return new GameRolePlayHumanoidInformations(
-                Id,
-                Look,
-                GetEntityDispositionInformations(),
-                Name,
-                GetHumanInformations());
+            get;
+            protected set;
         }
+
+        #region Network
 
         #region HumanInformations
 
         public virtual HumanInformations GetHumanInformations()
         {
-            return new HumanInformations(FollowingCharacters.Select(entry => entry.Look),
-                -1, // todo : emote
-                0,
-                new ActorRestrictionsInformations(), // todo : restrictions
-                0, // todo : title
-                "");
+            return new HumanInformations(new ActorRestrictionsInformations(),
+                Sex == SexTypeEnum.SEX_FEMALE,
+                new HumanOption[0]); // todo
         }
 
         #endregion 

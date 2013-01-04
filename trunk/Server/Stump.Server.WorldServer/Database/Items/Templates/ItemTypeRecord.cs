@@ -1,4 +1,5 @@
 using System;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
@@ -18,6 +19,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
     {
         private string m_name;
 
+        [PrimaryKey("Id", false)]
         public int Id
         {
             get;

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.IO;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -37,6 +38,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
         private string m_lookAsString;
         private string m_name;
 
+        [PrimaryKey("Id", false)]
         public int Id
         {
             get;

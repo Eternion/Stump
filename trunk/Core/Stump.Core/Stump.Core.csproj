@@ -182,6 +182,9 @@
     <Reference Include="Ciloci.Flee">
       <HintPath>..\..\Library\Ciloci.Flee.dll</HintPath>
     </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\..\Library\protobuf-net.dll</HintPath>
+    </Reference>
     <Reference Include="ServiceStack.Text">
       <HintPath>..\..\Library\ServiceStack.Text.dll</HintPath>
     </Reference>
@@ -213,6 +216,8 @@
     <Compile Include="Extensions\TimeExtensions.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="IO\ConsoleProgress.cs" />
+    <Compile Include="IO\FastBigEndianReader.cs" />
+    <Compile Include="IO\FastLittleEndianReader.cs" />
     <Compile Include="IO\Watchers\FileWatcher.cs">
       <SubType>Component</SubType>
     </Compile>

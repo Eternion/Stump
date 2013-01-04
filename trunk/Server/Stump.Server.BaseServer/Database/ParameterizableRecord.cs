@@ -17,6 +17,8 @@
 using System;
 using System.Text;
 using Stump.Core.Extensions;
+using Stump.ORM;
+using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace Stump.Server.BaseServer.Database
 {
@@ -27,36 +29,42 @@ namespace Stump.Server.BaseServer.Database
             ParameterSeparatorChar = '|';
         }
 
+        [Ignore]
         public char ParameterSeparatorChar
         {
             get;
             set;
         }
 
+        [NullString]
         public string Parameter0
         {
             get;
             set;
         }
 
+        [NullString]
         public string Parameter1
         {
             get;
             set;
         }
 
+        [NullString]
         public string Parameter2
         {
             get;
             set;
         }
 
+        [NullString]
         public string Parameter3
         {
             get;
             set;
         }
 
+        [NullString]
         public string Parameter4
         {
             get;
@@ -66,6 +74,7 @@ namespace Stump.Server.BaseServer.Database
         /// <summary>
         /// Comma separated value
         /// </summary>
+        [NullString]
         public string AdditionalParameters
         {
             get;

@@ -44,7 +44,8 @@ namespace Stump.Server.WorldServer.Game.Breeds
             }
         }
 
-            private readonly Dictionary<int, Breed> m_breeds = new Dictionary<int, Breed>();
+        private Dictionary<int, Breed> m_breeds = new Dictionary<int, Breed>();
+        private Dictionary<int, Head> m_heads = new Dictionary<int, Head>();
 
         [Initialization(InitializationPass.Third)]
         public override void Initialize()
@@ -54,6 +55,7 @@ namespace Stump.Server.WorldServer.Game.Breeds
             {
                 m_breeds.Add(breed.Id, breed);
             }
+            m_heads = Database.Query<Head>(HeadRelator.FetchQuery).ToDictionary(x => x.Id);
         }
 
         public Breed GetBreed(PlayableBreedEnum breed)
@@ -71,6 +73,14 @@ namespace Stump.Server.WorldServer.Game.Breeds
             m_breeds.TryGetValue(id, out breed);
 
             return breed;
+        }
+
+        public Head GetHead(int id)
+        {
+            Head head;
+            m_heads.TryGetValue(id, out head);
+
+            return head;
         }
 
         public bool IsBreedAvailable(int id)

@@ -33,8 +33,7 @@ namespace Stump.Core.IO
             using (var stream = new MemoryStream(bytes))
             {
                 formatter.AssemblyFormat = FormatterAssemblyStyle.Simple;
-
-                return (T)formatter.Deserialize(stream);
+                return (T) formatter.Deserialize(stream);
             }
         }
 
@@ -47,31 +46,38 @@ namespace Stump.Core.IO
                 formatter.AssemblyFormat = FormatterAssemblyStyle.Simple;
                 formatter.Binder = binder;
 
-                return (T)formatter.Deserialize(stream);
+                return (T) formatter.Deserialize(stream);
             }
         }
 
         public static string ToCSV(this IEnumerable enumerable, string separator)
         {
             var builder = new StringBuilder();
+            int count = 0;
             foreach (var entity in enumerable)
             {
                 builder.Append(entity.ToString());
                 builder.Append(separator);
+                count++;
             }
-            builder.Remove(builder.Length - separator.Length, separator.Length);
+            if (count > 0)
+                builder.Remove(builder.Length - separator.Length, separator.Length);
             return builder.ToString();
-        }        
-        
+        }
+
         public static string ToCSV<T>(this IEnumerable<T> enumerable, string separator, Func<T, string> formatter)
         {
             var builder = new StringBuilder();
+            int count = 0;
             foreach (var entity in enumerable)
             {
                 builder.Append(formatter(entity));
                 builder.Append(separator);
+                count++;
             }
-            builder.Remove(builder.Length - separator.Length, separator.Length);
+            if (count > 0)
+                builder.Remove(builder.Length - separator.Length, separator.Length);
+
             return builder.ToString();
         }
 
@@ -83,11 +89,13 @@ namespace Stump.Core.IO
             int i = csvValue.IndexOf(separator, StringComparison.Ordinal);
             while (i >= 0 && i < csvValue.Length)
             {
-                result.Add((T)Convert.ChangeType(csvValue.Substring(lastIndex, i - lastIndex), typeof(T)));
+                result.Add((T) Convert.ChangeType(csvValue.Substring(lastIndex, i - lastIndex), typeof (T)));
                 lastIndex = i + separator.Length;
                 i = csvValue.IndexOf(separator, lastIndex, StringComparison.Ordinal);
             }
-            result.Add((T)Convert.ChangeType(csvValue.Substring(lastIndex, csvValue.Length - lastIndex), typeof(T)));
+            if (!string.IsNullOrEmpty(csvValue))
+                result.Add(
+                    (T) Convert.ChangeType(csvValue.Substring(lastIndex, csvValue.Length - lastIndex), typeof (T)));
 
             return result.ToArray();
         }
@@ -103,8 +111,8 @@ namespace Stump.Core.IO
                 lastIndex = i + separator.Length;
                 i = csvValue.IndexOf(separator, lastIndex, StringComparison.Ordinal);
             }
-            result.Add(converter(csvValue.Substring(lastIndex, csvValue.Length - lastIndex)));
-
+            if (!string.IsNullOrEmpty(csvValue))
+                    result.Add(converter(csvValue.Substring(lastIndex, csvValue.Length - lastIndex)));
             return result.ToArray();
         }
     }

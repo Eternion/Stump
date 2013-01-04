@@ -71,7 +71,7 @@ namespace Stump.Server.WorldServer.Database.Items
             set;
         }
 
-        private byte[] SerializedEffects
+        public byte[] SerializedEffects
         {
             get { return m_serializedEffects; }
             set

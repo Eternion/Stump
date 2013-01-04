@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ServiceStack.Text;
 using Stump.Core.IO;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
@@ -27,6 +28,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
         private string m_itemsCSV;
         private string m_name;
 
+        [PrimaryKey("Id", false)]
         public uint Id
         {
             get;
@@ -97,12 +99,8 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             ItemsCSV = SerializeItems(itemSet.items.Select(entry => (int) entry).ToArray());
             NameId = itemSet.nameId;
             BonusIsSecret = itemSet.bonusIsSecret;
-            List<List<EffectBase>> effects = itemSet.effects.Select(entry => entry.Where(subentry => subentry != null).
-                                                                                 Select(
-                                                                                     subentry =>
-                                                                                     EffectManager.Instance.
-                                                                                         ConvertExportedEffect(subentry))
-                                                                                 .ToList()).ToList();
+            var effects = itemSet.effects.Select(entry => entry.Where(subentry => subentry != null).
+                Select(subentry =>EffectManager.Instance.ConvertExportedEffect(subentry)).ToList()).ToList();
             EffectsJSON = SerializeEffects(effects);
         }
 
@@ -112,8 +110,9 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
 
         public void BeforeSave(bool insert)
         {
-            EffectsJSON = SerializeEffects(Effects);
-            ItemsCSV = SerializeItems(Items.Select(entry => entry.Id).ToArray());
+            m_effectsJSON = SerializeEffects(Effects);
+            if (Items != null && Items.All(x => x != null))
+                ItemsCSV = SerializeItems(Items.Select(entry => entry.Id).ToArray());
         }
 
         #endregion

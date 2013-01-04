@@ -69,7 +69,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             }
 
             /* Bind Login and Pass to Client */
-            client.Login = message.login.EscapeString();
+            //client.Login = message.login.EscapeString();
 
             /* Get corresponding account */
             Account account = AccountManager.Instance.FindAccountByLogin(client.Login);

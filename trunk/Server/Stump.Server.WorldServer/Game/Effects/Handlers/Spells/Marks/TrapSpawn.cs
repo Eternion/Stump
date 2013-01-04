@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
 
         public override bool Apply()
         {
-            var trapSpell = new Spell(Dice.DiceNum, (sbyte)Dice.DiceFace);
+            var trapSpell = new Spell(Dice.DiceNum, (byte)Dice.DiceFace);
 
             if (trapSpell.Template == null || !trapSpell.ByLevel.ContainsKey(Dice.DiceFace))
             {

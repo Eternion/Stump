@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        public byte Position
+        public short Position
         {
             get;
             set;
@@ -45,7 +45,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        public sbyte Level
+        public short Level
         {
             get;
             set;

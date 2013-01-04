@@ -359,10 +359,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get { return (CustomLookActivated && CustomLook != null ? CustomLook : RealLook); }
         }
 
-        public SexTypeEnum Sex
+        public override SexTypeEnum Sex
         {
             get { return m_record.Sex; }
-            private set { m_record.Sex = value; }
+            protected set { m_record.Sex = value; }
         }
 
         public PlayableBreedEnum BreedId
@@ -1702,6 +1702,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 GetEntityDispositionInformations(),
                 Name,
                 GetHumanInformations(),
+                Account.Id,
                 GetActorAlignmentInformations());
         }
 

@@ -63,6 +63,7 @@ namespace Stump.Server.WorldServer.Database.World.Triggers
             set;
         }
 
+        [NullString]
         public string Condition
         {
             get { return m_condition; }

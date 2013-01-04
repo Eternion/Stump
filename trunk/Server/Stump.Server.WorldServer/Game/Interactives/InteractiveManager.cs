@@ -19,9 +19,11 @@ namespace Stump.Server.WorldServer.Game.Interactives
         [Initialization(InitializationPass.Fourth)]
         public override void Initialize()
         {
-            m_interactivesTemplates = Database.Fetch<InteractiveTemplate>(InteractiveTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
-            m_interactivesSpawns = Database.Fetch<InteractiveSpawn>(InteractiveSpawnRelator.FetchQuery).ToDictionary(entry => entry.Id);
-            m_skillsTemplates = Database.Fetch<InteractiveSkillTemplate>(InteractiveSkillTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_interactivesTemplates = Database.Query<InteractiveTemplate, InteractiveTemplateSkills, InteractiveSkillRecord, InteractiveTemplate>
+                (new InteractiveTemplateRelator().Map, InteractiveTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_interactivesSpawns = Database.Query<InteractiveSpawn, InteractiveSpawnSkills, InteractiveSkillRecord, InteractiveSpawn>
+                (new InteractiveSpawnRelator().Map, InteractiveSpawnRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_skillsTemplates = Database.Query<InteractiveSkillTemplate>(InteractiveSkillTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
         }
 
         public int PopSkillId()

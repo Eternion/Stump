@@ -1,4 +1,4 @@
-﻿using Stump.DofusProtocol.D2oClasses.Tool.D2p;
+﻿using Stump.DofusProtocol.D2oClasses.Tools.D2p;
 
 namespace Stump.Tools.Toolkit.Documents
 {

@@ -22,54 +22,72 @@ namespace Stump.Server.WorldServer.Database.I18n
             set;
         }
 
+        
+        [NullString]
         public string French
         {
             get;
             set;
         }
 
+        
+        [NullString]
         public string English
         {
             get;
             set;
         }
 
+        
+        [NullString]
         public string German
         {
             get;
             set;
         }
 
+        
+        [NullString]
         public string Spanish
         {
             get;
             set;
         }
 
+        
+        [NullString]
         public string Italian
         {
             get;
             set;
         }
 
+        
+        [NullString]
         public string Japanish
         {
             get;
             set;
         }
 
+        
+        [NullString]
         public string Dutsh
         {
             get;
             set;
         }
 
+        
+        [NullString]
         public string Portugese
         {
             get;
             set;
         }
 
+        
+        [NullString]
         public string Russish
         {
             get;

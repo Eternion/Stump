@@ -171,9 +171,18 @@
     <Compile Include="Messages\debug\DebugClearHighlightCellsMessage.cs" />
     <Compile Include="Messages\debug\DebugHighlightCellsMessage.cs" />
     <Compile Include="Messages\debug\DebugInClientMessage.cs" />
+    <Compile Include="Messages\game\achievement\AchievementDetailedListMessage.cs" />
+    <Compile Include="Messages\game\achievement\AchievementDetailedListRequestMessage.cs" />
+    <Compile Include="Messages\game\achievement\AchievementDetailsMessage.cs" />
+    <Compile Include="Messages\game\achievement\AchievementDetailsRequestMessage.cs" />
+    <Compile Include="Messages\game\achievement\AchievementFinishedInformationMessage.cs" />
     <Compile Include="Messages\game\achievement\AchievementFinishedMessage.cs" />
     <Compile Include="Messages\game\achievement\AchievementListMessage.cs" />
-    <Compile Include="Messages\game\achievement\AchievementUpdateMessage.cs" />
+    <Compile Include="Messages\game\achievement\AchievementRewardErrorMessage.cs" />
+    <Compile Include="Messages\game\achievement\AchievementRewardRequestMessage.cs" />
+    <Compile Include="Messages\game\achievement\AchievementRewardSuccessMessage.cs" />
+    <Compile Include="Messages\game\achievement\FriendGuildSetWarnOnAchievementCompleteMessage.cs" />
+    <Compile Include="Messages\game\achievement\FriendGuildWarnOnAchievementCompleteStateMessage.cs" />
     <Compile Include="Messages\game\actions\AbstractGameActionMessage.cs" />
     <Compile Include="Messages\game\actions\AbstractGameActionWithAckMessage.cs" />
     <Compile Include="Messages\game\actions\fight\AbstractGameActionFightTargetedAbilityMessage.cs" />
@@ -222,20 +231,22 @@
     <Compile Include="Messages\game\actions\GameActionNoopMessage.cs" />
     <Compile Include="Messages\game\actions\sequence\SequenceEndMessage.cs" />
     <Compile Include="Messages\game\actions\sequence\SequenceStartMessage.cs" />
+    <Compile Include="Messages\game\almanach\AlmanachCalendarDateMessage.cs" />
     <Compile Include="Messages\game\approach\AccountCapabilitiesMessage.cs" />
     <Compile Include="Messages\game\approach\AccountLoggingKickedMessage.cs" />
     <Compile Include="Messages\game\approach\AlreadyConnectedMessage.cs" />
     <Compile Include="Messages\game\approach\AuthenticationTicketAcceptedMessage.cs" />
     <Compile Include="Messages\game\approach\AuthenticationTicketMessage.cs" />
     <Compile Include="Messages\game\approach\AuthenticationTicketRefusedMessage.cs" />
-    <Compile Include="Messages\game\approach\AuthenticationTicketWithClientPacksMessage.cs" />
     <Compile Include="Messages\game\approach\HelloGameMessage.cs" />
     <Compile Include="Messages\game\approach\ServerOptionalFeaturesMessage.cs" />
+    <Compile Include="Messages\game\approach\ServerSettingsMessage.cs" />
     <Compile Include="Messages\game\atlas\AtlasPointInformationsMessage.cs" />
     <Compile Include="Messages\game\atlas\compass\CompassResetMessage.cs" />
     <Compile Include="Messages\game\atlas\compass\CompassUpdateMessage.cs" />
     <Compile Include="Messages\game\atlas\compass\CompassUpdatePartyMemberMessage.cs" />
     <Compile Include="Messages\game\atlas\compass\CompassUpdatePvpSeekMessage.cs" />
+    <Compile Include="Messages\game\basic\BasicAckMessage.cs" />
     <Compile Include="Messages\game\basic\BasicDateMessage.cs" />
     <Compile Include="Messages\game\basic\BasicLatencyStatsMessage.cs" />
     <Compile Include="Messages\game\basic\BasicLatencyStatsRequestMessage.cs" />
@@ -260,6 +271,7 @@
     <Compile Include="Messages\game\character\choice\CharacterSelectedSuccessMessage.cs" />
     <Compile Include="Messages\game\character\choice\CharacterSelectionMessage.cs" />
     <Compile Include="Messages\game\character\choice\CharacterSelectionWithRecolorMessage.cs" />
+    <Compile Include="Messages\game\character\choice\CharacterSelectionWithRelookMessage.cs" />
     <Compile Include="Messages\game\character\choice\CharacterSelectionWithRenameMessage.cs" />
     <Compile Include="Messages\game\character\choice\CharactersListErrorMessage.cs" />
     <Compile Include="Messages\game\character\choice\CharactersListMessage.cs" />
@@ -274,6 +286,7 @@
     <Compile Include="Messages\game\character\deletion\CharacterDeletionRequestMessage.cs" />
     <Compile Include="Messages\game\character\replay\CharacterReplayRequestMessage.cs" />
     <Compile Include="Messages\game\character\replay\CharacterReplayWithRecolorRequestMessage.cs" />
+    <Compile Include="Messages\game\character\replay\CharacterReplayWithRelookRequestMessage.cs" />
     <Compile Include="Messages\game\character\replay\CharacterReplayWithRenameRequestMessage.cs" />
     <Compile Include="Messages\game\character\stats\CharacterExperienceGainMessage.cs" />
     <Compile Include="Messages\game\character\stats\CharacterLevelUpInformationMessage.cs" />
@@ -305,6 +318,7 @@
     <Compile Include="Messages\game\chat\smiley\MoodSmileyRequestMessage.cs" />
     <Compile Include="Messages\game\chat\smiley\MoodSmileyResultMessage.cs" />
     <Compile Include="Messages\game\context\display\DisplayNumericalValueMessage.cs" />
+    <Compile Include="Messages\game\context\display\DisplayNumericalValueWithAgeBonusMessage.cs" />
     <Compile Include="Messages\game\context\dungeon\DungeonEnteredMessage.cs" />
     <Compile Include="Messages\game\context\dungeon\DungeonKeyRingMessage.cs" />
     <Compile Include="Messages\game\context\dungeon\DungeonKeyRingUpdateMessage.cs" />
@@ -539,6 +553,7 @@
     <Compile Include="Messages\game\context\roleplay\party\PartyLocateMembersMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyLoyaltyStatusMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyMemberEjectedMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\party\PartyMemberInFightMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyMemberRemoveMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyModifiableStatusMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyNewGuestMessage.cs" />
@@ -592,7 +607,6 @@
     <Compile Include="Messages\game\friend\FriendSetWarnOnLevelGainMessage.cs" />
     <Compile Include="Messages\game\friend\FriendsGetListMessage.cs" />
     <Compile Include="Messages\game\friend\FriendsListMessage.cs" />
-    <Compile Include="Messages\game\friend\FriendsListWithSpouseMessage.cs" />
     <Compile Include="Messages\game\friend\FriendSpouseFollowWithCompassRequestMessage.cs" />
     <Compile Include="Messages\game\friend\FriendSpouseJoinRequestMessage.cs" />
     <Compile Include="Messages\game\friend\FriendUpdateMessage.cs" />
@@ -607,6 +621,8 @@
     <Compile Include="Messages\game\friend\IgnoredDeleteResultMessage.cs" />
     <Compile Include="Messages\game\friend\IgnoredGetListMessage.cs" />
     <Compile Include="Messages\game\friend\IgnoredListMessage.cs" />
+    <Compile Include="Messages\game\friend\SpouseGetInformationsMessage.cs" />
+    <Compile Include="Messages\game\friend\SpouseInformationsMessage.cs" />
     <Compile Include="Messages\game\friend\SpouseStatusMessage.cs" />
     <Compile Include="Messages\game\guild\ChallengeFightJoinRefusedMessage.cs" />
     <Compile Include="Messages\game\guild\GuildChangeMemberParametersMessage.cs" />
@@ -662,6 +678,7 @@
     <Compile Include="Messages\game\guild\tax\TaxCollectorMovementAddMessage.cs" />
     <Compile Include="Messages\game\guild\tax\TaxCollectorMovementMessage.cs" />
     <Compile Include="Messages\game\guild\tax\TaxCollectorMovementRemoveMessage.cs" />
+    <Compile Include="Messages\game\initialization\CharacterCapabilitiesMessage.cs" />
     <Compile Include="Messages\game\initialization\OnConnectionEventMessage.cs" />
     <Compile Include="Messages\game\initialization\ServerExperienceModificatorMessage.cs" />
     <Compile Include="Messages\game\initialization\SetCharacterRestrictionsMessage.cs" />
@@ -826,6 +843,7 @@
     <Compile Include="Messages\game\inventory\items\SetUpdateMessage.cs" />
     <Compile Include="Messages\game\inventory\KamasUpdateMessage.cs" />
     <Compile Include="Messages\game\inventory\ObjectAveragePricesErrorMessage.cs" />
+    <Compile Include="Messages\game\inventory\ObjectAveragePricesGetMessage.cs" />
     <Compile Include="Messages\game\inventory\ObjectAveragePricesMessage.cs" />
     <Compile Include="Messages\game\inventory\preset\InventoryPresetDeleteMessage.cs" />
     <Compile Include="Messages\game\inventory\preset\InventoryPresetDeleteResultMessage.cs" />
@@ -897,6 +915,17 @@
     <Compile Include="Messages\game\startup\StartupActionsObjetAttributionMessage.cs" />
     <Compile Include="Messages\game\subscriber\SubscriptionLimitationMessage.cs" />
     <Compile Include="Messages\game\subscriber\SubscriptionZoneMessage.cs" />
+    <Compile Include="Messages\game\tinsel\OrnamentGainedMessage.cs" />
+    <Compile Include="Messages\game\tinsel\OrnamentSelectedMessage.cs" />
+    <Compile Include="Messages\game\tinsel\OrnamentSelectErrorMessage.cs" />
+    <Compile Include="Messages\game\tinsel\OrnamentSelectRequestMessage.cs" />
+    <Compile Include="Messages\game\tinsel\TitleGainedMessage.cs" />
+    <Compile Include="Messages\game\tinsel\TitleLostMessage.cs" />
+    <Compile Include="Messages\game\tinsel\TitlesAndOrnamentsListMessage.cs" />
+    <Compile Include="Messages\game\tinsel\TitlesAndOrnamentsListRequestMessage.cs" />
+    <Compile Include="Messages\game\tinsel\TitleSelectedMessage.cs" />
+    <Compile Include="Messages\game\tinsel\TitleSelectErrorMessage.cs" />
+    <Compile Include="Messages\game\tinsel\TitleSelectRequestMessage.cs" />
     <Compile Include="Messages\handshake\ProtocolRequired.cs" />
     <Compile Include="Messages\queues\LoginQueueStatusMessage.cs" />
     <Compile Include="Messages\queues\QueueStatusMessage.cs" />
@@ -917,6 +946,15 @@
     <Compile Include="Messages\updater\parts\PartsListMessage.cs" />
     <Compile Include="Messages\web\ankabox\MailStatusMessage.cs" />
     <Compile Include="Messages\web\ankabox\NewMailMessage.cs" />
+    <Compile Include="Messages\web\krosmaster\KrosmasterAuthTokenErrorMessage.cs" />
+    <Compile Include="Messages\web\krosmaster\KrosmasterAuthTokenMessage.cs" />
+    <Compile Include="Messages\web\krosmaster\KrosmasterAuthTokenRequestMessage.cs" />
+    <Compile Include="Messages\web\krosmaster\KrosmasterInventoryErrorMessage.cs" />
+    <Compile Include="Messages\web\krosmaster\KrosmasterInventoryMessage.cs" />
+    <Compile Include="Messages\web\krosmaster\KrosmasterInventoryRequestMessage.cs" />
+    <Compile Include="Messages\web\krosmaster\KrosmasterPlayingStatusMessage.cs" />
+    <Compile Include="Messages\web\krosmaster\KrosmasterTransferMessage.cs" />
+    <Compile Include="Messages\web\krosmaster\KrosmasterTransferRequestMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

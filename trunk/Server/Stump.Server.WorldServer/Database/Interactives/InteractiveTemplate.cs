@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
@@ -15,7 +16,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
 
         private InteractiveTemplate m_current;
 
-        public InteractiveTemplate Map(InteractiveTemplate template, InteractiveSpawnSkills dummy,
+        public InteractiveTemplate Map(InteractiveTemplate template, InteractiveTemplateSkills dummy,
                                        InteractiveSkillRecord skill)
         {
             if (template == null)
@@ -66,6 +67,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
             Skills = new List<InteractiveSkillRecord>();
         }
 
+        [PrimaryKey("Id", false)]
         public int Id
         {
             get;

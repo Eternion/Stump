@@ -148,8 +148,16 @@
     <Compile Include="Classes\alignments\AlignmentRankJntGift.cs" />
     <Compile Include="Classes\alignments\AlignmentSide.cs" />
     <Compile Include="Classes\alignments\AlignmentTitle.cs" />
+    <Compile Include="Classes\almanax\AlmanaxCalendar.cs" />
     <Compile Include="Classes\ambientSounds\AmbientSound.cs" />
+    <Compile Include="AnimFunData.cs" />
+    <Compile Include="Classes\appearance\Appearance.cs" />
+    <Compile Include="Classes\appearance\Ornament.cs" />
+    <Compile Include="Classes\appearance\SkinMapping.cs" />
+    <Compile Include="Classes\appearance\Title.cs" />
+    <Compile Include="Classes\appearance\TitleCategory.cs" />
     <Compile Include="Classes\breeds\Breed.cs" />
+    <Compile Include="Classes\breeds\Head.cs" />
     <Compile Include="Classes\challenges\Challenge.cs" />
     <Compile Include="Classes\communication\CensoredWord.cs" />
     <Compile Include="Classes\communication\ChatChannel.cs" />
@@ -168,6 +176,7 @@
     <Compile Include="Classes\effects\instances\EffectInstanceMinMax.cs" />
     <Compile Include="Classes\effects\instances\EffectInstanceMount.cs" />
     <Compile Include="Classes\effects\instances\EffectInstanceString.cs" />
+    <Compile Include="Classes\externalnotifications\ExternalNotification.cs" />
     <Compile Include="Classes\guild\EmblemBackground.cs" />
     <Compile Include="Classes\guild\EmblemSymbol.cs" />
     <Compile Include="Classes\guild\EmblemSymbolCategory.cs" />
@@ -179,8 +188,11 @@
     <Compile Include="Classes\items\criterion\AccountRightsItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\AlignmentItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\AlignmentLevelItemCriterion.cs" />
+    <Compile Include="Classes\items\criterion\AreaItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\BonesItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\BreedItemCriterion.cs" />
+    <Compile Include="Classes\items\criterion\CommunityItemCriterion.cs" />
+    <Compile Include="Classes\items\criterion\DayItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\EmoteItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\FriendlistItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\GiftItemCriterion.cs" />
@@ -231,13 +243,11 @@
     <Compile Include="Classes\livingObjects\SpeakingItemsTrigger.cs" />
     <Compile Include="Classes\livingObjects\SpeakingItemText.cs" />
     <Compile Include="Classes\misc\ActionDescription.cs" />
-    <Compile Include="Classes\misc\Appearance.cs" />
     <Compile Include="Classes\misc\CensoredContent.cs" />
     <Compile Include="Classes\misc\Month.cs" />
     <Compile Include="Classes\misc\OptionalFeature.cs" />
     <Compile Include="Classes\misc\Pack.cs" />
     <Compile Include="Classes\misc\Tips.cs" />
-    <Compile Include="Classes\misc\Title.cs" />
     <Compile Include="Classes\misc\TypeAction.cs" />
     <Compile Include="Classes\misc\Url.cs" />
     <Compile Include="Classes\monsters\AnimFunMonsterData.cs" />
@@ -248,6 +258,7 @@
     <Compile Include="Classes\monsters\MonsterSuperRace.cs" />
     <Compile Include="Classes\mounts\Mount.cs" />
     <Compile Include="Classes\mounts\MountBehavior.cs" />
+    <Compile Include="Classes\mounts\MountBone.cs" />
     <Compile Include="Classes\mounts\RideFood.cs" />
     <Compile Include="Classes\notifications\Notification.cs" />
     <Compile Include="Classes\npcs\AnimFunNpcData.cs" />
@@ -256,6 +267,10 @@
     <Compile Include="Classes\npcs\NpcMessage.cs" />
     <Compile Include="Classes\npcs\TaxCollectorFirstname.cs" />
     <Compile Include="Classes\npcs\TaxCollectorName.cs" />
+    <Compile Include="Classes\quest\Achievement.cs" />
+    <Compile Include="Classes\quest\AchievementCategory.cs" />
+    <Compile Include="Classes\quest\AchievementObjective.cs" />
+    <Compile Include="Classes\quest\AchievementReward.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveBringItemToNpc.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveBringSoulToNpc.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveDiscoverMap.cs" />
@@ -277,6 +292,9 @@
     <Compile Include="Classes\servers\ServerPopulation.cs" />
     <Compile Include="Classes\sounds\SoundAnimation.cs" />
     <Compile Include="Classes\sounds\SoundBones.cs" />
+    <Compile Include="Classes\sounds\SoundUi.cs" />
+    <Compile Include="Classes\sounds\SoundUiElement.cs" />
+    <Compile Include="Classes\sounds\SoundUiHook.cs" />
     <Compile Include="Classes\spells\Spell.cs" />
     <Compile Include="Classes\spells\SpellBomb.cs" />
     <Compile Include="Classes\spells\SpellLevel.cs" />
@@ -292,50 +310,56 @@
     <Compile Include="Classes\world\SubArea.cs" />
     <Compile Include="Classes\world\SuperArea.cs" />
     <Compile Include="Classes\world\WorldMap.cs" />
+    <Compile Include="IDataObject.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rectangle.cs" />
-    <Compile Include="Tool\D2OClassAttribute.cs" />
-    <Compile Include="Tool\D2OClassDefinition.cs" />
-    <Compile Include="Tool\D2OFieldAttribute.cs" />
-    <Compile Include="Tool\D2oFieldDefinition.cs" />
-    <Compile Include="Tool\D2OFieldType.cs" />
-    <Compile Include="Tool\D2OIgnore.cs" />
-    <Compile Include="Tool\D2OReader.cs" />
-    <Compile Include="Tool\D2OWriter.cs" />
-    <Compile Include="Tool\D2p\D2pDirectory.cs" />
-    <Compile Include="Tool\D2p\D2pEntry.cs" />
-    <Compile Include="Tool\D2p\D2pEntryState.cs" />
-    <Compile Include="Tool\D2p\D2pFile.cs" />
-    <Compile Include="Tool\D2p\D2pIndexTable.cs" />
-    <Compile Include="Tool\D2p\D2pProperty.cs" />
-    <Compile Include="Tool\Dlm\ColorMultiplicator.cs" />
-    <Compile Include="Tool\Dlm\DlmBasicElement.cs" />
-    <Compile Include="Tool\Dlm\DlmCell.cs" />
-    <Compile Include="Tool\Dlm\DlmCellData.cs" />
-    <Compile Include="Tool\Dlm\DlmFixture.cs" />
-    <Compile Include="Tool\Dlm\DlmGraphicalElement.cs" />
-    <Compile Include="Tool\Dlm\DlmLayer.cs" />
-    <Compile Include="Tool\Dlm\DlmMap.cs" />
-    <Compile Include="Tool\Dlm\DlmReader.cs" />
-    <Compile Include="Tool\Dlm\DlmSoundElement.cs" />
-    <Compile Include="Tool\Ele\Datas\BlendedGraphicalElementData.cs" />
-    <Compile Include="Tool\Ele\Datas\AnimatedGraphicalElementData.cs" />
-    <Compile Include="Tool\Ele\Datas\BoundingBoxGraphicalElementData.cs" />
-    <Compile Include="Tool\Ele\EleGraphicalData.cs" />
-    <Compile Include="Tool\Ele\EleGraphicalElementTypes.cs" />
-    <Compile Include="Tool\Ele\EleInstance.cs" />
-    <Compile Include="Tool\Ele\Datas\NormalGraphicalElementData.cs" />
-    <Compile Include="Tool\Ele\EleReader.cs" />
-    <Compile Include="Tool\Ele\Datas\EntityGraphicalElementData.cs" />
-    <Compile Include="Tool\Ele\Datas\ParticlesGraphicalElementData.cs" />
-    <Compile Include="Tool\I18nFile.cs" />
-    <Compile Include="Tool\Swl\SwlFile.cs" />
+    <Compile Include="Tools\D2i\D2IFile.cs" />
+    <Compile Include="Tools\D2o\D2OClassAttribute.cs" />
+    <Compile Include="Tools\D2o\D2OClassDefinition.cs" />
+    <Compile Include="Tools\D2o\D2OFieldAttribute.cs" />
+    <Compile Include="Tools\D2o\D2oFieldDefinition.cs" />
+    <Compile Include="Tools\D2o\D2OFieldType.cs" />
+    <Compile Include="Tools\D2o\D2OIgnore.cs" />
+    <Compile Include="Tools\D2o\D2OReader.cs" />
+    <Compile Include="Tools\D2o\D2OWriter.cs" />
+    <Compile Include="Tools\D2p\D2pDirectory.cs" />
+    <Compile Include="Tools\D2p\D2pEntry.cs" />
+    <Compile Include="Tools\D2p\D2pEntryState.cs" />
+    <Compile Include="Tools\D2p\D2pFile.cs" />
+    <Compile Include="Tools\D2p\D2pIndexTable.cs" />
+    <Compile Include="Tools\D2p\D2pProperty.cs" />
+    <Compile Include="Tools\Dlm\ColorMultiplicator.cs" />
+    <Compile Include="Tools\Dlm\DlmBasicElement.cs" />
+    <Compile Include="Tools\Dlm\DlmCell.cs" />
+    <Compile Include="Tools\Dlm\DlmCellData.cs" />
+    <Compile Include="Tools\Dlm\DlmFixture.cs" />
+    <Compile Include="Tools\Dlm\DlmGraphicalElement.cs" />
+    <Compile Include="Tools\Dlm\DlmLayer.cs" />
+    <Compile Include="Tools\Dlm\DlmMap.cs" />
+    <Compile Include="Tools\Dlm\DlmReader.cs" />
+    <Compile Include="Tools\Dlm\DlmSoundElement.cs" />
+    <Compile Include="Tools\Ele\Datas\AnimatedGraphicalElementData.cs" />
+    <Compile Include="Tools\Ele\Datas\BlendedGraphicalElementData.cs" />
+    <Compile Include="Tools\Ele\Datas\BoundingBoxGraphicalElementData.cs" />
+    <Compile Include="Tools\Ele\Datas\EntityGraphicalElementData.cs" />
+    <Compile Include="Tools\Ele\Datas\NormalGraphicalElementData.cs" />
+    <Compile Include="Tools\Ele\Datas\ParticlesGraphicalElementData.cs" />
+    <Compile Include="Tools\Ele\EleGraphicalData.cs" />
+    <Compile Include="Tools\Ele\EleGraphicalElementTypes.cs" />
+    <Compile Include="Tools\Ele\EleInstance.cs" />
+    <Compile Include="Tools\Ele\EleReader.cs" />
+    <Compile Include="Tools\StringPatternDecoder.cs" />
+    <Compile Include="Tools\Swl\SwlFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">
       <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
       <Name>Stump.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Library\NLog\NLog.netfx40.csproj">
+      <Project>{A0BFF0DB-ED9A-4639-AE86-8E709A1EFC66}</Project>
+      <Name>NLog.netfx40</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ServiceStack.Text;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
@@ -21,6 +22,11 @@ namespace Stump.Server.WorldServer.Database.Monsters
         private string m_statsJSON;
         private MonsterTemplate m_template;
         private int m_wisdom;
+
+        public MonsterGrade()
+        {
+            Stats = new Dictionary<PlayerFields, short>();
+        }
 
         public int Id
         {
@@ -171,7 +177,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
-        private string StatsJSON
+        public string StatsJSON
         {
             get { return m_statsJSON; }
             set

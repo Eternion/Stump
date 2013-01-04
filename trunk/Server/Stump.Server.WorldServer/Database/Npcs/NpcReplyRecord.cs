@@ -43,6 +43,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
             set;
         }
 
+        [NullString]
         public string Criteria
         {
             get { return m_criteria; }

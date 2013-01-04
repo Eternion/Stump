@@ -1,9 +1,14 @@
+
+// Generated on 01/04/2013 14:36:10
 using System;
+using System.Collections.Generic;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 
 namespace Stump.DofusProtocol.D2oClasses
 {
-	[Serializable]
-	public class QuestObjectiveDiscoverSubArea : QuestObjective
-	{
-	}
+    [D2OClass("QuestObjectiveDiscoverSubArea")]
+    [Serializable]
+    public class QuestObjectiveDiscoverSubArea : QuestObjective
+    {
+    }
 }

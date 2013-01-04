@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using Stump.DofusProtocol.D2oClasses.Tool.Dlm;
+using Stump.DofusProtocol.D2oClasses.Tools.Dlm;
 
 namespace Stump.Tools.Toolkit.Controls.Map
 {

@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Media.Imaging;
-using Stump.DofusProtocol.D2oClasses.Tool.D2p;
+using Stump.DofusProtocol.D2oClasses.Tools.D2p;
 using Stump.Tools.Toolkit.Helpers;
 
 namespace Stump.Tools.Toolkit.ModelViews.D2P

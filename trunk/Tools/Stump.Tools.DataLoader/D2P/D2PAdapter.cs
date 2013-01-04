@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Stump.DofusProtocol.D2oClasses.Tool;
-using Stump.DofusProtocol.D2oClasses.Tool.D2p;
 using Stump.Tools.DataLoader.Properties;
 
 namespace Stump.Tools.DataLoader

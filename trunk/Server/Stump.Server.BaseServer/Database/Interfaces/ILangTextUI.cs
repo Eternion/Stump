@@ -2,12 +2,6 @@ namespace Stump.Server.BaseServer.Database.Interfaces
 {
     public interface ILangTextUI
     {
-        uint Id
-        {
-            get;
-            set;
-        }
-
         string Name
         {
             get;

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Stump.DofusProtocol.D2oClasses.Tool.D2p;
+using Stump.DofusProtocol.D2oClasses.Tools.D2p;
 
 namespace Stump.Tools.Toolkit.ModelViews.D2P
 {

@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using Stump.Core.Attributes;
 using Stump.Core.Reflection;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.ORM;
@@ -20,7 +21,9 @@ using Stump.Server.WorldServer.Core.IO;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.Effects;
 using Stump.Server.WorldServer.Game;
+using ServiceStack.Text;
 using DatabaseConfiguration = Stump.ORM.DatabaseConfiguration;
 
 namespace Stump.Server.WorldServer
@@ -204,7 +207,7 @@ namespace Stump.Server.WorldServer
         {
             foreach (var type in assembly.GetTypes())
             {
-                if (type.HasInterface(typeof(ISaveable)))
+                if (Stump.Core.Reflection.ReflectionExtensions.HasInterface(type, typeof(ISaveable)))
                 {
                     if (type.IsDerivedFromGenericType(typeof (Singleton<>)))
                     {

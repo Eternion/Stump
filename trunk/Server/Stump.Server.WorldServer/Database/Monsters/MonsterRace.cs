@@ -1,3 +1,4 @@
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
@@ -18,6 +19,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
         private string m_name;
         private MonsterSuperRace m_superRace;
 
+        [PrimaryKey("Id", false)]
         public int Id
         {
             get;

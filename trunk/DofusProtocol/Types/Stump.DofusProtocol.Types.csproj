@@ -150,8 +150,9 @@
     <Compile Include="ProtocolTypeManager.cs" />
     <Compile Include="Types\connection\GameServerInformations.cs" />
     <Compile Include="Types\game\achievement\Achievement.cs" />
-    <Compile Include="Types\game\achievement\AchievementStartedPercent.cs" />
-    <Compile Include="Types\game\achievement\AchievementStartedValue.cs" />
+    <Compile Include="Types\game\achievement\AchievementObjective.cs" />
+    <Compile Include="Types\game\achievement\AchievementRewardable.cs" />
+    <Compile Include="Types\game\achievement\AchievementStartedObjective.cs" />
     <Compile Include="Types\game\actions\fight\AbstractFightDispellableEffect.cs" />
     <Compile Include="Types\game\actions\fight\FightTemporaryBoostEffect.cs" />
     <Compile Include="Types\game\actions\fight\FightTemporaryBoostStateEffect.cs" />
@@ -162,6 +163,7 @@
     <Compile Include="Types\game\actions\fight\GameActionMark.cs" />
     <Compile Include="Types\game\actions\fight\GameActionMarkedCell.cs" />
     <Compile Include="Types\game\action\fight\FightDispellableEffectExtendedInformations.cs" />
+    <Compile Include="Types\game\character\AbstractCharacterInformation.cs" />
     <Compile Include="Types\game\character\alignment\ActorAlignmentInformations.cs" />
     <Compile Include="Types\game\character\alignment\ActorExtendedAlignmentInformations.cs" />
     <Compile Include="Types\game\character\characteristic\CharacterBaseCharacteristic.cs" />
@@ -173,6 +175,7 @@
     <Compile Include="Types\game\character\choice\CharacterBaseInformations.cs" />
     <Compile Include="Types\game\character\choice\CharacterHardcoreInformations.cs" />
     <Compile Include="Types\game\character\choice\CharacterToRecolorInformation.cs" />
+    <Compile Include="Types\game\character\choice\CharacterToRelookInformation.cs" />
     <Compile Include="Types\game\character\restriction\ActorRestrictionsInformations.cs" />
     <Compile Include="Types\game\context\ActorOrientation.cs" />
     <Compile Include="Types\game\context\EntityDispositionInformations.cs" />
@@ -234,7 +237,12 @@
     <Compile Include="Types\game\context\roleplay\GroupMonsterStaticInformationsWithAlternatives.cs" />
     <Compile Include="Types\game\context\roleplay\GuildInformations.cs" />
     <Compile Include="Types\game\context\roleplay\HumanInformations.cs" />
-    <Compile Include="Types\game\context\roleplay\HumanWithGuildInformations.cs" />
+    <Compile Include="Types\game\context\roleplay\HumanOption.cs" />
+    <Compile Include="Types\game\context\roleplay\HumanOptionEmote.cs" />
+    <Compile Include="Types\game\context\roleplay\HumanOptionFollowers.cs" />
+    <Compile Include="Types\game\context\roleplay\HumanOptionGuild.cs" />
+    <Compile Include="Types\game\context\roleplay\HumanOptionOrnament.cs" />
+    <Compile Include="Types\game\context\roleplay\HumanOptionTitle.cs" />
     <Compile Include="Types\game\context\roleplay\job\JobCrafterDirectoryEntryJobInfo.cs" />
     <Compile Include="Types\game\context\roleplay\job\JobCrafterDirectoryEntryPlayerInfo.cs" />
     <Compile Include="Types\game\context\roleplay\job\JobCrafterDirectoryListEntry.cs" />
@@ -303,6 +311,7 @@
     <Compile Include="Types\game\interactive\InteractiveElement.cs" />
     <Compile Include="Types\game\interactive\InteractiveElementNamedSkill.cs" />
     <Compile Include="Types\game\interactive\InteractiveElementSkill.cs" />
+    <Compile Include="Types\game\interactive\InteractiveElementWithAgeBonus.cs" />
     <Compile Include="Types\game\interactive\MapObstacle.cs" />
     <Compile Include="Types\game\interactive\skill\SkillActionDescription.cs" />
     <Compile Include="Types\game\interactive\skill\SkillActionDescriptionCollect.cs" />
@@ -313,6 +322,7 @@
     <Compile Include="Types\game\inventory\preset\Preset.cs" />
     <Compile Include="Types\game\inventory\preset\PresetItem.cs" />
     <Compile Include="Types\game\look\EntityLook.cs" />
+    <Compile Include="Types\game\look\IndexedEntityLook.cs" />
     <Compile Include="Types\game\look\SubEntity.cs" />
     <Compile Include="Types\game\mount\ItemDurability.cs" />
     <Compile Include="Types\game\mount\MountClientData.cs" />
@@ -341,6 +351,7 @@
     <Compile Include="Types\updater\ContentPart.cs" />
     <Compile Include="Types\version\Version.cs" />
     <Compile Include="Types\version\VersionExtended.cs" />
+    <Compile Include="Types\web\krosmaster\KrosmasterFigure.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">
@@ -351,9 +362,6 @@
       <Project>{D7BFF8ED-065B-4A53-9805-595DFEA75A0A}</Project>
       <Name>Stump.DofusProtocol.Enums</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

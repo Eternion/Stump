@@ -1,15 +1,18 @@
+
+// Generated on 01/04/2013 14:36:09
 using System;
 using System.Collections.Generic;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 
 namespace Stump.DofusProtocol.D2oClasses
 {
-	[D2OClass("SpeakingItemsTriggers")]
-	[Serializable]
-	public class SpeakingItemsTrigger
-	{
-		private const String MODULE = "SpeakingItemsTriggers";
-		public int triggersId;
-		public List<int> textIds;
-		public List<int> states;
-	}
+    [D2OClass("SpeakingItemsTriggers")]
+    [Serializable]
+    public class SpeakingItemsTrigger : IDataObject
+    {
+        private const String MODULE = "SpeakingItemsTriggers";
+        public int triggersId;
+        public List<int> textIds;
+        public List<int> states;
+    }
 }

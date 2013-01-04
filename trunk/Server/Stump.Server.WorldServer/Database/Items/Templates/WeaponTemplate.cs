@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
@@ -86,6 +87,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
 
         public override void AssignFields(object d2oObject)
         {
+            base.AssignFields(d2oObject);
             var weapon = (Weapon) d2oObject;
             ApCost = weapon.apCost;
             MinRange = weapon.minRange;

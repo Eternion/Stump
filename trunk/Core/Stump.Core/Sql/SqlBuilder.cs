@@ -148,7 +148,7 @@ namespace Stump.Core.Sql
 
         public static string EscapeField(string field)
         {
-            return field.Replace("`", "").Replace(@"\", @"\\").Replace("'", @"\'").Replace("\"", "\\\"").Replace("\n", "\\n").Replace("‘", "\\‘");
+            return field.Replace("`", "").Replace(@"\", @"\\").Replace("'", @"\'").Replace("\"", "\\\"").Replace("\n", "\\n").Replace("‘", "\\‘").Replace("@", "@@");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Stump.Core.IO;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
@@ -25,6 +26,7 @@ namespace Stump.Server.WorldServer.Database.World
         private int[] m_shape;
         private string m_shapeCSV;
 
+        [PrimaryKey("Id", false)]
         public int Id
         {
             get;
@@ -118,14 +120,14 @@ namespace Stump.Server.WorldServer.Database.World
             set;
         }
 
-        [SubSonicDefaultSetting(2)]
+        [DefaultSetting(2)]
         public Difficulty Difficulty
         {
             get;
             set;
         }
 
-        [SubSonicDefaultSetting(3)]
+        [DefaultSetting(3)]
         public int SpawnsLimit
         {
             get;
@@ -160,9 +162,9 @@ namespace Stump.Server.WorldServer.Database.World
 
         public void BeforeSave(bool insert)
         {
-            MapsIdsCSV = m_mapsIds.ToCSV(",");
-            ShapeCSV = m_shape.ToCSV(",");
-            CustomWorldMapCSV = m_customWorldMap.ToCSV(",");
+            m_mapsIdsCSV = m_mapsIds.ToCSV(",");
+            m_shapeCSV = m_shape.ToCSV(",");
+            m_customWorldMapCSV = m_customWorldMap.ToCSV(",");
         }
 
         #endregion

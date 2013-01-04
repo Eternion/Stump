@@ -5,14 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Castle.ActiveRecord;
 using NLog;
 using Stump.Core.Reflection;
 using Stump.Core.Sql;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.DofusProtocol.D2oClasses.Tool;
-using Stump.Tools.CacheManager.SQL;
+using Stump.DofusProtocol.D2oClasses.Tools.D2i;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
+using Stump.ORM;
+using Stump.Server.WorldServer.Database;
 using MonsterGrade = Stump.Server.WorldServer.Database.Monsters.MonsterGrade;
 
 namespace Stump.Tools.CacheManager
@@ -27,9 +27,19 @@ namespace Stump.Tools.CacheManager
         private readonly string m_d2oFolder;
         private D2OReader[] m_d2oReaders;
 
-        public DatabaseBuilder(Assembly assembly, string d2oFolder, string d2iFolder, string patchsFolder)
+        private DatabaseAccessor m_dbAccessor;
+        public Database Database
+        {
+            get
+            {
+                return m_dbAccessor.Database;
+            }
+        }
+
+        public DatabaseBuilder(DatabaseAccessor dbAccesor, Assembly assembly, string d2oFolder, string d2iFolder, string patchsFolder)
         {
             m_assembly = assembly;
+            m_dbAccessor = dbAccesor;
             m_d2oFolder = d2oFolder;
             m_d2iFolder = d2iFolder;
             m_patchsFolder = patchsFolder;
@@ -44,18 +54,15 @@ namespace Stump.Tools.CacheManager
 
         private void BuildD2ITables()
         {
-            Type textRecordType = m_assembly.GetTypes().Where(entry => entry.Name == "LangText").Single();
-            Type textUIRecordType = m_assembly.GetTypes().Where(entry => entry.Name == "LangTextUi").Single();
-
             // delete all existing rows. BE CAREFUL !!
-            Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildDelete("texts"));
-            Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildDelete("texts_ui"));
+            Database.Execute(SqlBuilder.BuildDelete("langs"));
+            Database.Execute(SqlBuilder.BuildDelete("langs_ui"));
 
-            var d2iFiles = new Dictionary<string, I18NFile>();
+            var d2iFiles = new Dictionary<string, D2IFile>();
             foreach (string file in Directory.EnumerateFiles(m_d2iFolder, "*.d2i"))
             {
                 Match match = Regex.Match(Path.GetFileName(file), @"i18n_(\w+)\.d2i");
-                var i18NFile = new I18NFile(file);
+                var i18NFile = new D2IFile(file);
 
                 d2iFiles.Add(match.Groups[1].Value, i18NFile);
             }
@@ -117,17 +124,20 @@ namespace Stump.Tools.CacheManager
             int cursorLeft = Console.CursorLeft;
             int cursorTop = Console.CursorTop;
             int counter = 0;
-            Program.DBAccessor.ExecuteNonQuery("START TRANSACTION");
-            foreach (var record in records)
+            using (var transaction = Database.GetTransaction())
             {
-                var listKey = new KeyValueListBase("texts", record.Value);
-                Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsert(listKey));
-                counter++;
+                foreach (var record in records)
+                {
+                    var listKey = new KeyValueListBase("langs", record.Value);
+                    Database.Execute(SqlBuilder.BuildInsert(listKey));
+                    counter++;
 
-                Console.SetCursorPosition(cursorLeft, cursorTop);
-                Console.Write("{0}/{1} ({2}%)", counter, records.Count, (int) ((counter/(double) records.Count)*100d));
+                    Console.SetCursorPosition(cursorLeft, cursorTop);
+                    Console.Write("{0}/{1} ({2}%)", counter, records.Count,
+                                  (int) ((counter/(double) records.Count)*100d));
+                }
+                transaction.Complete();
             }
-            Program.DBAccessor.ExecuteNonQuery("COMMIT");
             Console.SetCursorPosition(cursorLeft, cursorTop);
 
 
@@ -188,14 +198,19 @@ namespace Stump.Tools.CacheManager
             cursorLeft = Console.CursorLeft;
             cursorTop = Console.CursorTop;
             counter = 0;
-            foreach (var record in recordsUi)
+            using (var transaction = Database.GetTransaction())
             {
-                var listKey = new KeyValueListBase("texts_ui", record.Value);
-                Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsert(listKey));
-                counter++;
+                foreach (var record in recordsUi)
+                {
+                    var listKey = new KeyValueListBase("langs_ui", record.Value);
+                    Database.Execute(SqlBuilder.BuildInsert(listKey));
+                    counter++;
 
-                Console.SetCursorPosition(cursorLeft, cursorTop);
-                Console.Write("{0}/{1} ({2}%)", counter, records.Count, (int) ((counter/(double) recordsUi.Count)*100d));
+                    Console.SetCursorPosition(cursorLeft, cursorTop);
+                    Console.Write("{0}/{1} ({2}%)", counter, recordsUi.Count,
+                                  (int) ((counter/(double) recordsUi.Count)*100d));
+                }
+                transaction.Complete();
             }
 
             Console.SetCursorPosition(cursorLeft, cursorTop);
@@ -203,44 +218,40 @@ namespace Stump.Tools.CacheManager
 
         private void BuildD2OTables()
         {
-            foreach (D2OTable table in GetTables())
+            foreach (var table in GetTables())
             {
                 logger.Info("Build table '{0}' ...", table.TableName);
 
                 D2OReader reader = FindD2OFile(table);
 
-                // delete all existing rows. BE CAREFUL !!
-                if (table.Inheritance == null)
+                // reset the table
+                Database.Execute(SqlBuilder.BuildDelete(table.TableName));
+                Database.Execute("ALTER TABLE " + table.TableName + " AUTO_INCREMENT=1");
+
+                using (var transaction = Database.GetTransaction())
                 {
-                    Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildDelete(table.TableName));
-                    Program.DBAccessor.ExecuteNonQuery("ALTER TABLE " + table.TableName + " AUTO_INCREMENT=1");
-                }
+                    int cursorLeft = Console.CursorLeft;
+                    int cursorTop = Console.CursorTop;
+                    int i = 0;
+                    foreach (var obj in reader.EnumerateObjects())
+                    {
+                        if (!IsSubClassOf(obj.GetType(), table.ClassAttribute.Name))
+                            continue;
 
-                object[] objects = reader.ReadObjects().Values.ToArray();
-                int cursorLeft = Console.CursorLeft;
-                int cursorTop = Console.CursorTop;
-                for (int i = 0; i < objects.Length; i++)
-                {
-                    if (!IsSubClassOf(objects[i].GetType(), table.ClassAttribute.Name))
-                        continue;
+                        if (obj is Monster)
+                            BuildMonsterGrades(obj as Monster);
 
-                    Dictionary<string, object> row = table.GenerateRow(objects[i]);
+                        var peta = table.GenerateRow(obj);
+                        Database.Insert(peta);
 
-                    if (objects[i] is Monster)
-                        BuildMonsterGrades(objects[i] as Monster);
-
-                    // row might already exists
-                    if (table.Inheritance != null && row.ContainsKey("Id"))
-                        Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildDelete(table.TableName, "Id = " + row["Id"]));
-
-                    var listKey = new KeyValueListBase(table.TableName, row);
-                    Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsert(listKey));
-
+                        i++;
+                        Console.SetCursorPosition(cursorLeft, cursorTop);
+                        Console.Write("{0}/{1} ({2}%)", i, reader.IndexCount,
+                                      (int) ((i/(double) reader.IndexCount)*100d));
+                    }
                     Console.SetCursorPosition(cursorLeft, cursorTop);
-                    Console.Write("{0}/{1} ({2}%)", i, objects.Length, (int) ((i/(double) objects.Length)*100d));
+                    transaction.Complete();
                 }
-
-                Console.SetCursorPosition(cursorLeft, cursorTop);
             }
         }
 
@@ -252,11 +263,10 @@ namespace Stump.Tools.CacheManager
 
             foreach (var monsterGrade in monster.grades)
             {
-                var row = m_monsterGradeTable.GenerateRow(monsterGrade);
+                var row = (MonsterGrade)m_monsterGradeTable.GenerateRow(monsterGrade);
 
-                Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildDelete(m_monsterGradeTable.TableName, "MonsterId = " + row["MonsterId"] + " AND Grade = " + row["Grade"]));
-                var listKey = new KeyValueListBase(m_monsterGradeTable.TableName, row);
-                Program.DBAccessor.ExecuteNonQuery(SqlBuilder.BuildInsert(listKey));
+                Database.Execute(SqlBuilder.BuildDelete(m_monsterGradeTable.TableName, "MonsterId = " + row.MonsterId + " AND GradeId = " + row.GradeId));
+                Database.Insert(row);
             }
         }
 
@@ -273,35 +283,12 @@ namespace Stump.Tools.CacheManager
 
         private IEnumerable<D2OTable> GetTables()
         {
-            return from type in m_assembly.GetTypes()
-                   where type.IsDerivedFromGenericType(typeof (ActiveRecordBase<>))
-                   let attribute = type.GetCustomAttribute<D2OClassAttribute>()
-                   where attribute != null && attribute.AutoBuild
-                   select new D2OTable(type);
-        }
-
-        internal static Dictionary<string, string> GetNamesRelations(Type type)
-        {
-            var result = new Dictionary<string, string>();
-            foreach (PropertyInfo property in type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+            foreach (var type in m_assembly.GetTypes())
             {
-                var d2oattribute = property.GetCustomAttribute<D2OFieldAttribute>();
-                var dbattribute = property.GetCustomAttribute<PropertyAttribute>();
-
-                if (d2oattribute == null)
-                    continue;
-
-                if (dbattribute != null && !string.IsNullOrEmpty(dbattribute.Column))
-                {
-                    result.Add(d2oattribute.FieldName, dbattribute.Column);
-                }
-                else
-                {
-                    result.Add(d2oattribute.FieldName, property.Name);
-                }
+                if (type.GetCustomAttribute<D2OClassAttribute>() != null &&
+                    type.HasInterface(typeof(IAssignedByD2O)))
+                    yield return new D2OTable(type);
             }
-
-            return result;
         }
 
         private D2OReader FindD2OFile(D2OTable table)
@@ -314,11 +301,8 @@ namespace Stump.Tools.CacheManager
                                 select new D2OReader(file)).ToArray();
             }
 
-            return m_d2oReaders.Where(entry =>
-                                      entry.Classes.Values.Count(
-                                          subentry => subentry.Name == table.ClassAttribute.Name &&
-                                                      subentry.PackageName == table.ClassAttribute.PackageName) > 0).
-                Single();
+            return m_d2oReaders.Single(entry => entry.Classes.Values.Count(
+                subentry => subentry.Name == table.ClassAttribute.Name) > 0);
         }
 
         private void ExecutePatchs()
@@ -332,7 +316,7 @@ namespace Stump.Tools.CacheManager
                 foreach (var line in File.ReadAllLines(sqlFile))
                 {
                      if (!string.IsNullOrWhiteSpace(line))
-                         Program.DBAccessor.ExecuteNonQuery(line);
+                         Database.Execute(line);
                 }
             }
         }

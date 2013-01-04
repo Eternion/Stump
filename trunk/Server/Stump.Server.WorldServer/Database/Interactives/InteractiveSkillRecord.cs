@@ -69,6 +69,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
 
         private ConditionExpression m_conditionExpression;
 
+        [NullString]
         public string Condition
         {
             get;

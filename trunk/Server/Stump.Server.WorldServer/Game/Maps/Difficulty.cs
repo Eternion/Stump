@@ -1,6 +1,6 @@
 namespace Stump.Server.WorldServer.Game.Maps
 {
-    public enum Difficulty : byte
+    public enum Difficulty
     {
         VeryEasy = 0,
         Easy = 1,

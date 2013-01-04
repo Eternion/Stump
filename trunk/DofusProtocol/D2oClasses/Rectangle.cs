@@ -3,7 +3,7 @@ using System;
 namespace Stump.DofusProtocol.D2oClasses
 {
     [Serializable]
-    public class Rectangle
+    public class Rectangle : IDataObject
     {
         public int x;
         public int y;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
@@ -26,6 +27,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
         private string m_lookAsString;
         private string m_name;
 
+        [PrimaryKey("Id", false)]
         public int Id
         {
             get;

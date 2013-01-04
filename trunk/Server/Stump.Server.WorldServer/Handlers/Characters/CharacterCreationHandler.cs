@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 return;
             }
 
-            var result = CharacterManager.Instance.CreateCharacter(client, message.name, message.breed, message.sex, message.colors);
+            var result = CharacterManager.Instance.CreateCharacter(client, message.name, message.breed, message.sex, message.colors, message.cosmeticId);
            
             SendCharacterCreationResultMessage(client, result);
             

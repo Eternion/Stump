@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
             }
         }
 
-
+        [NullString]
         public string Condition
         {
             get { return m_condition; }

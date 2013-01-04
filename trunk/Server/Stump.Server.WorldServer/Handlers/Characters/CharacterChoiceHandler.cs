@@ -209,6 +209,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         {
             var characterBaseInformations = new List<CharacterBaseInformations>();
             var charactersToRecolor = new List<CharacterToRecolorInformation>();
+            var charactersToRelook = new List<CharacterToRelookInformation>();
             var charactersToRename = new List<int>();
             var unusableCharacters = new List<int>();
 
@@ -229,6 +230,11 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     charactersToRecolor.Add(new CharacterToRecolorInformation(characterRecord.Id, characterRecord.EntityLook.indexedColors));
                 }
 
+                if (characterRecord.Relook)
+                {
+                    charactersToRelook.Add(new CharacterToRelookInformation(characterRecord.Id, characterRecord.Head));
+                }
+
                 if (!(characterRecord.Recolor && characterRecord.Rename))
                 {
                     unusableCharacters.Add(characterRecord.Id);
@@ -238,7 +244,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                                                                    characterBaseInformations,
                                                                    charactersToRecolor,
                                                                    charactersToRename,
-                                                                   unusableCharacters));
+                                                                   unusableCharacters,
+                                                                   charactersToRelook));
         }
 
         public static void SendCharacterSelectedSuccessMessage(WorldClient client)

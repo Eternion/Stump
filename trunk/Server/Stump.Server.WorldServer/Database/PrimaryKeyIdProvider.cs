@@ -56,12 +56,15 @@ namespace Stump.Server.WorldServer.Database
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void Synchronize()
         {
-            var query = string.Format("SELECT max(r.{0}) FROM {1} r", ColumnName);
-
             int id;
             try
             {
-                id = Database.ExecuteScalar<int>("SELECT max(r.{0}) FROM {1} r");
+                var result = Database.ExecuteScalar<object>(string.Format("SELECT max({0}) FROM {1}", ColumnName, TableName));
+
+                if (result is DBNull)
+                    id = 0;
+                else
+                    id = (int)result;
             }
             catch (Exception ex)
             {
