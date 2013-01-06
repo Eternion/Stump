@@ -14,15 +14,15 @@ namespace Stump.Server.AuthServer.Database
         /// <summary>
         /// Use string.Format
         /// </summary>
-        public static string FindAccountById = "SELECT * FROM accounts LEFT JOIN worlds_characters ON worlds_characters.AccountId = accounts.Id WHERE accounts.Id == {0} LIMIT 1";
+        public static string FindAccountById = "SELECT * FROM accounts LEFT JOIN worlds_characters ON worlds_characters.AccountId = accounts.Id WHERE accounts.Id = {0} LIMIT 1";
         /// <summary>
         /// Use SQL parameter
         /// </summary>
-        public static string FindAccountByLogin = "SELECT * FROM accounts LEFT JOIN worlds_characters ON worlds_characters.AccountId = accounts.Id WHERE accounts.Login == @0 LIMIT 1";
+        public static string FindAccountByLogin = "SELECT * FROM accounts LEFT JOIN worlds_characters ON worlds_characters.AccountId = accounts.Id WHERE accounts.Login = @0 LIMIT 1";
         /// <summary>
         /// Use string.Format
         /// </summary>
-        public static string FindAccountByNickname = "SELECT * FROM accounts LEFT JOIN worlds_characters ON worlds_characters.AccountId = accounts.Id WHERE accounts.Nickname == {0} LIMIT 1";
+        public static string FindAccountByNickname = "SELECT * FROM accounts LEFT JOIN worlds_characters ON worlds_characters.AccountId = accounts.Id WHERE accounts.Nickname = {0} LIMIT 1";
 
         private Account m_current;
         public Account Map(Account account, WorldCharacter character)
@@ -107,6 +107,7 @@ namespace Stump.Server.AuthServer.Database
             }
         }
 
+        [NullString]
         public string Ticket
         {
             get;
@@ -131,6 +132,7 @@ namespace Stump.Server.AuthServer.Database
             set;
         }
 
+        [NullString]
         public string Email
         {
             get;
@@ -177,6 +179,7 @@ namespace Stump.Server.AuthServer.Database
 
         private string m_lastConnectedIp;
 
+        [NullString]
         public string LastConnectedIp
         {
             get { return m_lastConnectedIp; }
@@ -207,6 +210,7 @@ namespace Stump.Server.AuthServer.Database
             set;
         }
 
+        [NullString]
         public string BanReason
         {
             get;

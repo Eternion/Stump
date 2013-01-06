@@ -143,7 +143,10 @@ namespace Stump.Server.AuthServer.Managers
 
         public void CacheAccount(Account account)
         {
-            m_accountsCache.Add(account.Id, Tuple.Create(DateTime.Now + TimeSpan.FromSeconds(CacheTimeout), account));
+            if (m_accountsCache.ContainsKey(account.Id))
+                m_accountsCache[account.Id] = Tuple.Create(DateTime.Now + TimeSpan.FromSeconds(CacheTimeout), account);
+            else
+                m_accountsCache.Add(account.Id, Tuple.Create(DateTime.Now + TimeSpan.FromSeconds(CacheTimeout), account));
         }
 
         public void UnCacheAccount(Account account)
@@ -186,7 +189,7 @@ namespace Stump.Server.AuthServer.Managers
             if (LoginExists(account.Login))
                 return false;
 
-            Database.Save(account);
+            Database.Insert(account);
 
             return true;
         }
@@ -211,7 +214,7 @@ namespace Stump.Server.AuthServer.Managers
                                 };
 
             account.WorldCharacters.Add(character);
-            Database.Save(character);
+            Database.Insert(character);
 
             return character;
         }
@@ -246,7 +249,7 @@ namespace Stump.Server.AuthServer.Managers
                                     CharacterId = characterId
                                 };
 
-            Database.Save(character);
+            Database.Insert(character);
 
             return character;
         }

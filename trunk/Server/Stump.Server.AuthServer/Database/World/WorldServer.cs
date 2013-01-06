@@ -110,7 +110,7 @@ namespace Stump.Server.AuthServer.Database
         {
             if (RemoteOperations == null)
                 return;
-
+            
             try
             {
                 if (Channel != null)

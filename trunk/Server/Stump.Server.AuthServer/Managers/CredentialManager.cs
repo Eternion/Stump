@@ -4,10 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Security;
 using Stump.Core.Extensions;
+using Stump.Core.IO;
 using Stump.Core.Reflection;
 using Stump.Server.AuthServer.Database;
 
@@ -39,7 +43,7 @@ namespace Stump.Server.AuthServer.Managers
         {
             var exportParameters = m_rsaProvider.ExportParameters(false);
             var keyParameters = new RsaKeyParameters(false, new BigInteger(1, exportParameters.Modulus), new BigInteger(1, exportParameters.Exponent));
-
+            
             var stringBuilder = new StringBuilder();
             var writer = new PemWriter(new StringWriter(stringBuilder));
             writer.WriteObject(keyParameters);
@@ -51,22 +55,31 @@ namespace Stump.Server.AuthServer.Managers
             return Convert.FromBase64String(partial).Select(entry => (sbyte)entry).ToArray();
         }
 
-        public bool CompareAccountPassword(Account account, IEnumerable<sbyte> credentials)
+        public bool DecryptCredentials(out Account account, IEnumerable<sbyte> credentials)
         {
             try
             {
+                account = null;
                 var data = m_rsaProvider.Decrypt(credentials.Select(entry => (byte)entry).ToArray(), false);
-                var str = Encoding.ASCII.GetString(data);
+                var reader = new FastBigEndianReader(data);
 
-                if (!str.StartsWith(m_salt))
+                if (reader.ReadUTFBytes((ushort) m_salt.Length) != m_salt)
                     return false;
 
-                var givenPass = str.Remove(0, m_salt.Length);
+                var userLength = reader.ReadByte();
+                var username = reader.ReadUTFBytes(userLength);
+                account = AccountManager.Instance.FindAccountByLogin(username);
 
-                return account.PasswordHash == givenPass.GetMD5();
+                if (account == null)
+                    return false;
+
+                var password = reader.ReadUTFBytes((ushort) reader.BytesAvailable);
+
+                return account.PasswordHash == password.GetMD5();
             }
             catch (Exception)
             {
+                account = null;
                 return false;
             }
         }

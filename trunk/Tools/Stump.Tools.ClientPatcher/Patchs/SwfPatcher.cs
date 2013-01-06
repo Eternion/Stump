@@ -61,6 +61,9 @@ namespace Stump.Tools.ClientPatcher.Patchs
         {
             Open();
 
+            if (string.IsNullOrEmpty(mask))
+                mask = new string('x', findPattern.Length);
+
             if (findPattern.Length != replacePattern.Length || replacePattern.Length != mask.Length)
                 throw new ArgumentException("findPattern.Length != replacePattern.Length || replacePattern.Length != mask.Length");
 
@@ -82,6 +85,18 @@ namespace Stump.Tools.ClientPatcher.Patchs
 
                 m_swfBuffer[index + i] = replacePattern[i];
             }
+        }
+
+        public int[] FindPattern(byte[] findPattern, string mask = null)
+        {
+            var finder = new PatternFinder(m_swfBuffer);
+
+            if (string.IsNullOrEmpty(mask))
+                mask = new string('x', findPattern.Length);
+
+            int[] indexes = finder.FindPattern(findPattern, mask);
+
+             return indexes;
         }
 
         public void Save(string destinationFile, bool compress = true)

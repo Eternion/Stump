@@ -125,7 +125,7 @@ namespace Stump.Server.AuthServer.Managers
             foreach (var worldServer in m_realmlist)
             {
                 worldServer.Value.SetOffline();
-                Database.Update(worldServer);
+                Database.Update(worldServer.Value);
             }
         }
 

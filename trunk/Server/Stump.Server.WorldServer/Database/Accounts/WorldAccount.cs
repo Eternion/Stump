@@ -44,6 +44,7 @@ namespace Stump.Server.WorldServer.Database.Accounts
             set;
         }
 
+        [NullString]
         public string LastIp
         {
             get;

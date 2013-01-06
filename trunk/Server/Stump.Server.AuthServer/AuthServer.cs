@@ -72,6 +72,7 @@ namespace Stump.Server.AuthServer
 
         public override void Initialize()
         {
+
             try
             {
                 base.Initialize();

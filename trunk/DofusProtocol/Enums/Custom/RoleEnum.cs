@@ -1,6 +1,6 @@
 ﻿namespace Stump.DofusProtocol.Enums
 {
-    public enum RoleEnum : byte
+    public enum RoleEnum
     {
         None = 0,
         Player = 1,

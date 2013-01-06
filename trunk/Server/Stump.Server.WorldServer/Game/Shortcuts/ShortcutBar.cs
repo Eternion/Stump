@@ -178,12 +178,12 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
                 var database = WorldServer.Instance.DBAccessor.Database;
                 foreach (var shortcut in m_itemShortcuts)
                 {
-                    database.Save(shortcut);
+                    database.Save(shortcut.Value);
                 }
 
                 foreach (var shortcut in m_spellShortcuts)
                 {
-                    database.Save(shortcut);
+                    database.Save(shortcut.Value);
                 }
 
                 while (m_shortcutsToDelete.Count > 0)

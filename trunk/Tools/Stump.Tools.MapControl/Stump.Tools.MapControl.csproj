@@ -106,6 +106,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CellIdConverter.cs" />
+    <Compile Include="D2O\D2OAdapater.cs" />
+    <Compile Include="D2O\FormD2O.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="D2O\FormD2O.Designer.cs">
+      <DependentUpon>FormD2O.cs</DependentUpon>
+    </Compile>
+    <Compile Include="D2O\FormObjectViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="D2O\FormObjectViewer.Designer.cs">
+      <DependentUpon>FormObjectViewer.cs</DependentUpon>
+    </Compile>
     <Compile Include="MapControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -115,6 +128,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="D2O\FormD2O.resx">
+      <DependentUpon>FormD2O.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="D2O\FormObjectViewer.resx">
+      <DependentUpon>FormObjectViewer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MapControl.resx">
       <DependentUpon>MapControl.cs</DependentUpon>
     </EmbeddedResource>

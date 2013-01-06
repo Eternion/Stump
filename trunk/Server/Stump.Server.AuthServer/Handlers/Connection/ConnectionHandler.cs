@@ -72,15 +72,17 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             //client.Login = message.login.EscapeString();
 
             /* Get corresponding account */
-            Account account = AccountManager.Instance.FindAccountByLogin(client.Login);
+            Account account;
 
             /* Invalid password */
-            if (account == null || !CredentialManager.Instance.CompareAccountPassword(account, message.credentials))
+            if (!CredentialManager.Instance.DecryptCredentials(out account, message.credentials))
             {
                 SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.WRONG_CREDENTIALS);
                 client.DisconnectLater(1000);
                 return false;
             }
+
+            client.Login = account.Login;
 
             /* Check Sanctions */
             if (account.IsBanned && account.BanEndDate > DateTime.Now)

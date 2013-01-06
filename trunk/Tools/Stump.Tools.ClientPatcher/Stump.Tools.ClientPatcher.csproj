@@ -136,6 +136,7 @@
     <Compile Include="Patchs\PatchLang.cs" />
     <Compile Include="Patchs\PatchPatterns.cs" />
     <Compile Include="Patchs\PatchUrl.cs" />
+    <Compile Include="Patchs\StringToPattern.cs" />
     <Compile Include="Patchs\SwfPatcher.cs" />
     <Compile Include="Patchs\PatternFinder.cs" />
     <Compile Include="Program.cs" />
