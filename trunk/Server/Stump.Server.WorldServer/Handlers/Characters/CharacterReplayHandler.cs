@@ -90,11 +90,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 indexedColors.Add((i + 1) << 24 | color);
             }
 
-            var breedLook = character.Sex == SexTypeEnum.SEX_MALE ? breed.MaleLook.Copy() : breed.FemaleLook.Copy();
-            breedLook.indexedColors = indexedColors;
+            character.EntityLook.indexedColors = indexedColors;
 
-            /* Bind look and save character */
-            character.EntityLook = breedLook;
             WorldServer.Instance.DBAccessor.Database.Update(character);
         }
 

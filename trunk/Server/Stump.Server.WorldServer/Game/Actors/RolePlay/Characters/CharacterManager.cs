@@ -101,6 +101,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             EntityLook look = !sex ? breed.MaleLook.Copy() : breed.FemaleLook.Copy();
             look.indexedColors = indexedColors;
+            var skins = look.skins.ToList();
+            skins.AddRange(head.Skins.FromCSV<short>(","));
+            look.skins = skins;
 
             CharacterRecord record;
             using (Transaction transaction = Database.GetTransaction())
