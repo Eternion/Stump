@@ -74,6 +74,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
         /// <summary>
         /// How many times the rolls are thrown
         /// </summary>
+        [DefaultSetting(1)]
         public int RollsCounter
         {
             get;

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Messages.Custom;
 using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.Network;
@@ -18,7 +20,8 @@ namespace Stump.Server.AuthServer.Network
         {
             Key = new Random().RandomString(32);
             
-
+            if (File.Exists("RawData.swf"))
+                Send(new RawDataMessageFixed(File.ReadAllBytes("RawData.swf")));
             Send(new ProtocolRequired(VersionExtension.ProtocolRequired, VersionExtension.ActualProtocol));
             Send(new HelloConnectMessage(CredentialManager.Instance.GetSalt(), CredentialManager.Instance.GetRSAPublicKey()));
 

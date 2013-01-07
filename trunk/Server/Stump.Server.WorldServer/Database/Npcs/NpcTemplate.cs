@@ -118,7 +118,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
             set;
         }
 
-        private string LookAsString
+        public string LookAsString
         {
             get
             {

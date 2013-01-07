@@ -138,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BooleanByteWrapper.cs" />
+    <Compile Include="Custom\RawDataMessageFixed.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageReceiver.cs" />
     <Compile Include="Messages\authorized\AdminCommandMessage.cs" />

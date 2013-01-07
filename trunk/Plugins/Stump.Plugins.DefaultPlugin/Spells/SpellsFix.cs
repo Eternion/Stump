@@ -57,7 +57,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             var spellLevels = SpellManager.Instance.GetSpellLevels(spellId).ToArray();
 
             if (spellLevels.Length == 0)
-                throw new Exception(string.Format("Cannot apply fix on spell {0} : spell do not exists", spellId));
+            {
+                logger.Error("Cannot apply fix on spell {0} : spell do not exists", spellId);
+                return;
+            }
 
             foreach (var level in spellLevels)
             {

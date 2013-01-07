@@ -81,7 +81,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
             get { return m_grades ?? (m_grades = MonsterManager.Instance.GetMonsterGrades(Id)); }
         }
 
-        private string LookAsString
+        public string LookAsString
         {
             get
             {

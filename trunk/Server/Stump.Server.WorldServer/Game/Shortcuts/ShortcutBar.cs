@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
 
             var shortcut = new SpellShortcut(Owner.Record, slot, spellId);
 
-            m_spellShortcuts.Add(shortcut.Id, shortcut);
+            m_spellShortcuts.Add(slot, shortcut);
             ShortcutHandler.SendShortcutBarRefreshMessage(Owner.Client, ShortcutBarEnum.SPELL_SHORTCUT_BAR, shortcut);
         }
 
@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
 
             var shortcut = new ItemShortcut(Owner.Record, slot, item.Template.Id, item.Guid);
 
-            m_itemShortcuts.Add(shortcut.Id, shortcut);
+            m_itemShortcuts.Add(slot, shortcut);
             ShortcutHandler.SendShortcutBarRefreshMessage(Owner.Client, ShortcutBarEnum.GENERAL_SHORTCUT_BAR, shortcut);
         }
 
@@ -103,9 +103,9 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
                 return;
 
             if (barType == ShortcutBarEnum.SPELL_SHORTCUT_BAR)
-                m_spellShortcuts.Remove(shortcut.Id);
+                m_spellShortcuts.Remove(slot);
             else if (barType == ShortcutBarEnum.GENERAL_SHORTCUT_BAR)
-                m_itemShortcuts.Remove(shortcut.Id);
+                m_itemShortcuts.Remove(slot);
 
             m_shortcutsToDelete.Enqueue(shortcut);
 
@@ -126,11 +126,11 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
         public bool IsSlotFree(int slot, ShortcutBarEnum barType)
         {
             if (barType == ShortcutBarEnum.SPELL_SHORTCUT_BAR)
-                return m_spellShortcuts.ContainsKey(slot);
+                return !m_spellShortcuts.ContainsKey(slot);
             else if (barType == ShortcutBarEnum.GENERAL_SHORTCUT_BAR)
-                return m_itemShortcuts.ContainsKey(slot);
+                return !m_itemShortcuts.ContainsKey(slot);
             else
-                return false;
+                return true;
         }
 
         public Shortcut GetShortcut(ShortcutBarEnum barType, int slot)
