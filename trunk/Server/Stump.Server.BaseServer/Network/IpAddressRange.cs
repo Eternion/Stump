@@ -45,11 +45,12 @@ namespace Stump.Server.BaseServer.Network
 
         public static IPAddressRange Parse(string str)
         {
-            if (str.CountOccurences('.') != 4)
-                throw new FormatException(string.Format("{0} must contains 4 dot", str));
 
             var split = str.Split('.');
             var tokens = new IPAddressToken[4];
+
+            if (split.Length != 4)
+                throw new FormatException(string.Format("{0} must contains 3 dots", str));
 
             for (int i = 0; i < split.Length; i++)
             {

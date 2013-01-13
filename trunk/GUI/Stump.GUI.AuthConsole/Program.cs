@@ -20,7 +20,7 @@ namespace Stump.GUI.AuthConsole
 
                     GC.Collect();
 
-                    while (server.Running)
+                    while (true)
                     {
                         Thread.Sleep(5000);
                     }
@@ -41,7 +41,7 @@ namespace Stump.GUI.AuthConsole
 
                 GC.Collect();
 
-                while (server.Running)
+                while (true)
                 {
                     Thread.Sleep(5000);
                 }

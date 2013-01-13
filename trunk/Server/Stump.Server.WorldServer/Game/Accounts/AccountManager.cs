@@ -47,27 +47,5 @@ namespace Stump.Server.WorldServer.Game.Accounts
         {
             return Database.ExecuteScalar<bool>(string.Format("SELECT EXISTS(SELECT 1 FROM accounts WHERE Id={0})", id));
         }
-
-        public void BanLater(AccountData banned, AccountData banner, TimeSpan duration, string reason)
-        {
-            WorldServer.Instance.IOTaskPool.AddMessage(() =>
-                IpcAccessor.Instance.ProxyObject.BlamAccount(banned.Id, banner.Id, duration, reason));
-        }
-
-        public void BanLater(AccountData banned, TimeSpan duration, string reason)
-        {
-            WorldServer.Instance.IOTaskPool.AddMessage(() =>
-                IpcAccessor.Instance.ProxyObject.BlamAccount(banned.Id, null, duration, reason));
-        }
-
-        public AccountData GetAccountByTicket(string ticket)
-        {
-            return IpcAccessor.Instance.ProxyObject.GetAccountByTicket(ticket);
-        }
-
-        public AccountData GetAccountByNickname(string nickName)
-        {
-            return IpcAccessor.Instance.ProxyObject.GetAccountByNickname(nickName);
-        }
     }
 }

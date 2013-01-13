@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using ProtoBuf;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.BaseServer.IPC.Objects
@@ -9,90 +10,89 @@ namespace Stump.Server.BaseServer.IPC.Objects
     /// <summary>
     /// Represents a serialized Account
     /// </summary>
-    [DataContract]
+    [ProtoContract]
     public class AccountData
     {
-        [DataMember]
         private List<PlayableBreedEnum> m_breeds;
 
-        [DataMember]
+        [ProtoMember(1)]
         public int Id
         {
             get;
             set;
         }
 
-        [DataMember]
+        [ProtoMember(2)]
         public string Login
         {
             get;
             set;
         }
 
-        [DataMember]
+        [ProtoMember(3)]
         public string PasswordHash
         {
             get;
             set;
         }
 
-        [DataMember]
+        [ProtoMember(4)]
         public string Nickname
         {
             get;
             set;
         }
 
-        [DataMember]
+        [ProtoMember(5)]
         public RoleEnum Role
         {
             get;
             set;
         }
 
-        [DataMember]
+        [ProtoMember(6)]
         public string Ticket
         {
             get;
             set;
         }
 
-        [DataMember]
+        [ProtoMember(7)]
         public string SecretQuestion
         {
             get;
             set;
         }
 
-        [DataMember]
+        [ProtoMember(8)]
         public string SecretAnswer
         {
             get;
             set;
         }
 
-        [DataMember]
+        [ProtoMember(9)]
         public string Lang
         {
             get;
             set;
         }
 
-        [DataMember]
+        [ProtoMember(10)]
         public string Email
         {
             get;
             set;
         }
 
-        [DataMember]
+        [ProtoMember(11)]
         public DateTime CreationDate
         {
             get;
             set;
         }
 
-        [DataMember]
+        [ProtoMember(12)]
         public uint BreedFlags
         {
             get;
@@ -115,43 +115,36 @@ namespace Stump.Server.BaseServer.IPC.Objects
             set { BreedFlags = (uint) value.Aggregate(0, (current, breedEnum) => current | (1 << ((int) breedEnum - 1))); }
         }
 
-        [DataMember]
+        [ProtoMember(13)]
         public IList<int> CharactersId
         {
             get;
             set;
         }
 
-        [DataMember]
+        [ProtoMember(14)]
         public int DeletedCharactersCount
         {
             get;
             set;
         }
 
-        [DataMember]
+        [ProtoMember(15)]
         public DateTime LastDeletedCharacterDate
         {
             get;
             set;
         }
 
-        [DataMember]
+        [ProtoMember(16)]
         public DateTime? LastConnection
         {
             get;
             set;
         }
 
-        [DataMember]
+        [ProtoMember(17)]
         public string LastConnectionIp
-        {
-            get;
-            set;
-        }
-
-        [DataMember]
-        public KeyValuePair<DateTime, string>[] Connections
         {
             get;
             set;
@@ -162,7 +155,7 @@ namespace Stump.Server.BaseServer.IPC.Objects
             get { return SubscriptionEndDate > DateTime.Now; }
         }
 
-        [DataMember]
+        [ProtoMember(18)]
         public DateTime SubscriptionEndDate
         {
             get;
@@ -174,28 +167,28 @@ namespace Stump.Server.BaseServer.IPC.Objects
             get { return BanEndDate > DateTime.Now; }
         }
 
-        [DataMember]
+        [ProtoMember(19)]
         public DateTime? BanEndDate
         {
             get;
             set;
         }
 
-        [DataMember]
+        [ProtoMember(20)]
         public string BanReason
         {
             get;
             set;
         }
 
-        [DataMember]
+        [ProtoMember(21)]
         public int Tokens
         {
             get;
             set;
         }
 
-        [DataMember]
+        [ProtoMember(22)]
         public DateTime? LastVote
         {
             get;

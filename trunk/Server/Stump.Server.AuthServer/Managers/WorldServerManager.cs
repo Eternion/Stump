@@ -15,6 +15,7 @@ using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Handlers.Connection;
 using Stump.Server.AuthServer.IPC;
 using Stump.Server.AuthServer.Network;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
 
@@ -24,7 +25,7 @@ namespace Stump.Server.AuthServer.Managers
     ///   Manager for handling different connected worlds
     ///   as well as the database's worldlist.
     /// </summary>
-    public class WorldServerManager : Singleton<WorldServerManager>
+    public class WorldServerManager : DataManager<WorldServerManager>
     {
         /// <summary>
         ///   Defines after how many seconds a world server is considered as timed out.
@@ -91,33 +92,12 @@ namespace Stump.Server.AuthServer.Managers
 
         private ConcurrentDictionary<int, WorldServer> m_realmlist;
 
-        private ORM.Database Database
-        {
-            get
-            {
-                return AuthServer.Instance.DBAccessor.Database;
-            }
-        }
-
-
-        #region Properties
-
-        /// <summary>
-        ///   List of registered world server
-        /// </summary>
-        public ConcurrentDictionary<int, WorldServer> Realmlist
-        {
-            get { return m_realmlist; }
-        }
-
-        #endregion
-
         /// <summary>
         ///   Initialize up our list and get all
         ///   world registered in our database in
         ///   "world list".
         /// </summary>
-        public void Initialize()
+        public override void Initialize()
         {
             var servers = Database.Query<WorldServer>(WorldServerRelator.FetchQuery);
             m_realmlist = new ConcurrentDictionary<int, WorldServer>(servers.ToDictionary(entry => entry.Id));
@@ -130,15 +110,6 @@ namespace Stump.Server.AuthServer.Managers
         }
 
         /// <summary>
-        ///   Start up a new task which will ping
-        ///   connected world servers.
-        /// </summary>
-        public void Start()
-        {
-            //AuthServer.Instance.IOTaskPool.CallPeriodically(PingCheckInterval, CheckPing);
-        }
-
-        /// <summary>
         ///   Create a new world record and save it
         ///   directly in database.
         /// </summary>
@@ -148,10 +119,12 @@ namespace Stump.Server.AuthServer.Managers
                               {
                                   Id = worldServerData.Id,
                                   Name = worldServerData.Name,
-                                  RequireSubscription = false,
-                                  RequiredRole = RoleEnum.Player,
-                                  CharCapacity = 1000,
+                                  RequireSubscription = worldServerData.RequireSubscription,
+                                  RequiredRole = worldServerData.RequiredRole,
+                                  CharCapacity = worldServerData.Capacity,
                                   ServerSelectable = true,
+                                  Address = worldServerData.Address,
+                                  Port = worldServerData.Port,
                               };
 
             if (!m_realmlist.TryAdd(record.Id, record))
@@ -159,68 +132,63 @@ namespace Stump.Server.AuthServer.Managers
 
             Database.Insert(record);
 
+            logger.Info(string.Format("World {0} created", worldServerData.Name));
+
             return record;
         }
 
-        /// <summary>
-        ///   Check and add a new world server to handle.
-        ///   If server info differs from worldlist, it's rejected.
-        /// </summary>
-        /// <returns></returns>
-        public RegisterResultEnum RequestConnection(WorldServerData world, IContextChannel channel, RemoteEndpointMessageProperty endpoint, string sessionId)
+        public void UpdateWorld(WorldServer record, WorldServerData worldServerData, bool save = true)
         {
+            if (record.Id != worldServerData.Id)
+                throw new Exception("Ids don't match");
+
+            record.Name = worldServerData.Name;
+            record.Address = worldServerData.Address;
+            record.Port = worldServerData.Port;
+            record.CharCapacity = worldServerData.Capacity;
+            record.RequiredRole = worldServerData.RequiredRole;
+            record.RequireSubscription = worldServerData.RequireSubscription;
+
+            if (save)
+                Database.Update(record);
+        }
+
+        public WorldServer RequestConnection(IPCClient client, WorldServerData world)
+        {
+            //check ip
+            if (!IsIPAllowed(client.Address))
+            {
+                logger.Error("Server <Id : {0}> ({1}) Try to connect self on the authenfication server but its ip is not allowed (see WorldServerManager.AllowedServerIps)",
+                                world.Id, client.Address);
+                throw new Exception(string.Format("Ip {0} not allow by auth. server", client.Address));
+            }
+
             WorldServer server;
             if (!m_realmlist.ContainsKey(world.Id))
-            {
-                //if (AskAddWorldRecord(world))
-                IPAddress[] addresses = Dns.GetHostAddresses(world.Address);
-                foreach (IPAddress ipAddress in addresses)
-                {
-                    logger.Debug(ipAddress.ToString());
-                }
-
-                if (AllowedServerIps.Any(entry => addresses.Any(subentry => entry == subentry.ToString())))
-                {
-                    server = CreateWorld(world);
-                }
-                else
-                {
-                    logger.Error("Server <Id : {0}> ({1}) Try to connect self on the authenfication server but its ip is not allowed (see WorldServerManager.AllowedServerIps)",
-                                 world.Id, endpoint.Address);
-                    return RegisterResultEnum.IpNotAllowed;
-                }
-            }
+                server = CreateWorld(world);
             else
-                server = m_realmlist[world.Id];
-
-            if (server.Name != world.Name)
             {
-                logger.Error(
-                    "Server <Id : {0}> has unexpected properties.\nCheck your worldlist's table and your gameserver's configuration file. They may mismatch.",
-                    world.Id);
-                return RegisterResultEnum.PropertiesMismatch;
+                server = m_realmlist[world.Id];
+                UpdateWorld(server, world, false);
             }
 
-            server.SetOnline(world.Address, world.Port);
-            server.SetSession(channel, sessionId, endpoint);
+            server.SetOnline(client);
             Database.Update(server);
 
             logger.Info("Registered World : \"{0}\" <Id : {1}> <{2}>", world.Name, world.Id, world.Address);
 
             OnServerAdded(server);
-            return RegisterResultEnum.OK;
-            
+            return server;
         }
 
+        public bool IsIPAllowed(IPAddress ip)
+        {
+            return AllowedServerIps.Select(IPAddressRange.Parse).Any(x => x.Match(ip));
+        }
 
         public WorldServer GetServerById(int id)
         {
             return m_realmlist.ContainsKey(id) ? m_realmlist[id] : null;
-        }
-
-        public WorldServer GetServerBySessionId(string sessionId)
-        {
-            return (from server in Realmlist where !string.IsNullOrEmpty(server.Value.SessionId) && server.Value.SessionId == sessionId select server.Value).FirstOrDefault();
         }
 
         public bool CanAccessToWorld(AuthClient client, WorldServer world)
@@ -236,23 +204,13 @@ namespace Stump.Server.AuthServer.Managers
                    ( !world.RequireSubscription || ( client.Account.SubscriptionEnd <= DateTime.Now ) );
         }
 
-        public void ChangeWorldState(int worldId, ServerStatusEnum state)
+        public void ChangeWorldState(WorldServer server, ServerStatusEnum state, bool save = true)
         {
-            WorldServer world = GetServerById(worldId);
-            if (world != null)
-            {
-                world.Status = state;
-                OnServerStateChanged(world);
-            }
-        }
+            server.Status = state;
+            OnServerStateChanged(server);
 
-        public void ChangeWorldState(WorldServer server, ServerStatusEnum state)
-        {
-            if (server != null)
-            {
-                server.Status = state;
-                OnServerStateChanged(server);
-            }
+            if (save)
+                Database.Update(server);
         }
 
         public IEnumerable<GameServerInformations> GetServersInformationArray(AuthClient client)
@@ -283,7 +241,7 @@ namespace Stump.Server.AuthServer.Managers
 
         /// <summary>
         ///   Remove a given world from our list
-        ///   and set it off line.
+        ///   and set it offline.
         /// </summary>
         /// <param name = "world"></param>
         public void RemoveWorld(WorldServerData world)
@@ -293,7 +251,6 @@ namespace Stump.Server.AuthServer.Managers
             if (server != null && server.Connected)
             {
                 server.SetOffline();
-                server.CloseSession();
                 Database.Update(server);
 
                 OnServerRemoved(m_realmlist[world.Id]);
@@ -315,7 +272,6 @@ namespace Stump.Server.AuthServer.Managers
             if (server != null && server.Connected)
             {
                 server.SetOffline();
-                server.CloseSession();
                 Database.Update(server);
 
                 OnServerRemoved(m_realmlist[world.Id]);
@@ -323,14 +279,6 @@ namespace Stump.Server.AuthServer.Managers
                 logger.Info("Unregistered \"{0}\" <Id : {1}> <{2}>", world.Name, world.Id, world.Address);
             }
 
-        }
-
-        private static bool AskAddWorldRecord(WorldServerData worldServerData)
-        {
-            return
-                AuthServer.Instance.ConsoleInterface.AskAndWait(
-                    string.Format("Server {0} request to be registered. Accept Request ?",
-                                  worldServerData.Name), WorldServerTimeout);
         }
     }
 }

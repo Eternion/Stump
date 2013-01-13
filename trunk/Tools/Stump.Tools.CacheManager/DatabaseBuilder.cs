@@ -235,7 +235,7 @@ namespace Stump.Tools.CacheManager
                     int i = 0;
                     foreach (var obj in reader.EnumerateObjects())
                     {
-                        if (!IsSubClassOf(obj.GetType(), table.ClassAttribute.Name))
+                        if (obj.GetType().Name != table.ClassAttribute.Name)
                             continue;
 
                         if (obj is Monster)

@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         [WorldHandler(CharacterDeletionRequestMessage.Id, RequiresLogin = false, IsGamePacket = false)]
         public static void HandleCharacterDeletionRequestMessage(WorldClient client, CharacterDeletionRequestMessage message)
         {
-            if (!IpcAccessor.Instance.IsConnected)
+            if (!IPCAccessor.Instance.IsConnected)
             {
                 client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_NO_REASON));
                 client.DisconnectLater(1000);

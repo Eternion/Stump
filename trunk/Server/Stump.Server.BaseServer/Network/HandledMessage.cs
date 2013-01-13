@@ -8,13 +8,13 @@ using Message = Stump.DofusProtocol.Messages.Message;
 
 namespace Stump.Server.BaseServer.Network
 {
-    public class HandledMessage<T> : Message2<T, Message>
+    public class HandledMessage<T> : Message3<object, T, Message>
         where T : BaseClient
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public HandledMessage(Action<T, Message> callback, T client, Message message)
-            : base (client, message, callback)
+        public HandledMessage(Action<object, T, Message> callback, T client, Message message)
+            : base (null, client, message, callback)
         {
             
         }
@@ -29,12 +29,12 @@ namespace Stump.Server.BaseServer.Network
                 sw.Stop();
 
                 if (BenchmarkManager.Enable)
-                    BenchmarkManager.Instance.RegisterEntry(BenchmarkEntry.Create(sw.Elapsed, Parameter2));
+                    BenchmarkManager.Instance.RegisterEntry(BenchmarkEntry.Create(sw.Elapsed, Parameter3));
             }
             catch (Exception ex)
             {
-                logger.Error("[Handler : {0}] Force disconnection of client {1} : {2}", Parameter2, Parameter1, ex);
-                Parameter1.Disconnect();
+                logger.Error("[Handler : {0}] Force disconnection of client {1} : {2}", Parameter3, Parameter2, ex);
+                Parameter2.Disconnect();
                 ExceptionManager.Instance.RegisterException(ex);
             }
         }

@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using Stump.Core.Attributes;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.ORM;
@@ -28,7 +29,7 @@ using DatabaseConfiguration = Stump.ORM.DatabaseConfiguration;
 
 namespace Stump.Server.WorldServer
 {
-    public class WorldServer : ServerBase<WorldServer>, IRemoteWorldOperations
+    public class WorldServer : ServerBase<WorldServer>
     {
         /// <summary>
         /// Current server adress
@@ -49,6 +50,9 @@ namespace Stump.Server.WorldServer
             Name = "Jiva",
             Address = "localhost",
             Port = 3467,
+            Capacity = 2000,
+            RequiredRole = RoleEnum.Player,
+            RequireSubscription = false,
         };
 
         [Variable(Priority = 10)]
@@ -108,9 +112,6 @@ namespace Stump.Server.WorldServer
             logger.Info("Register Commands...");
             CommandManager.RegisterAll(Assembly.GetExecutingAssembly());
 
-            logger.Info("Initializing IPC Client..");
-            IpcAccessor.Instance.Initialize();
-
 #if DEBUG
             // if 'a' is pressed we ignore initialization
             if (( GetKeyState(0x41) & 0x8000 ) == 0)
@@ -137,7 +138,7 @@ namespace Stump.Server.WorldServer
             ConsoleInterface.Start();
 
             logger.Info("Starting IPC Communications ...");
-            IpcAccessor.Instance.Start();
+            IPCAccessor.Instance.Start();
 
             logger.Info("Start listening on port : " + Port + "...");
             ClientManager.Start(Host, Port);
@@ -165,7 +166,7 @@ namespace Stump.Server.WorldServer
 
         public bool DisconnectClient(int accountId)
         {
-            IEnumerable<WorldClient> clients = WorldServer.Instance.FindClients(client => client.Account != null && client.Account.Id == accountId);
+            IEnumerable<WorldClient> clients = FindClients(client => client.Account != null && client.Account.Id == accountId);
 
             foreach (WorldClient client in clients)
             {
@@ -173,6 +174,11 @@ namespace Stump.Server.WorldServer
             }
 
             return clients.Any();
+        }
+
+        public WorldClient[] FindClients(Predicate<WorldClient> predicate)
+        {
+            return ClientManager.FindAll(predicate);
         }
 
         protected override void OnShutdown()
@@ -183,44 +189,19 @@ namespace Stump.Server.WorldServer
                 World.Instance.Stop();
             }
 
-            IpcAccessor.Instance.Stop();
+            IPCAccessor.Instance.Stop();
 
             if (IOTaskPool != null)
                 IOTaskPool.Stop();
 
             ClientManager.Pause();
 
-            foreach (var client in ClientManager.Clients.ToArray())
+            foreach (var client in ClientManager.Clients)
             {
                 client.Disconnect();
             }
 
             ClientManager.Close();
-        }
-
-        public WorldClient[] FindClients(Predicate<WorldClient> predicate)
-        {
-            return ClientManager.FindAll(predicate);
-        }
-        // bof bof
-        public void RegisterAllSaveableInstances(Assembly assembly)
-        {
-            foreach (var type in assembly.GetTypes())
-            {
-                if (Stump.Core.Reflection.ReflectionExtensions.HasInterface(type, typeof(ISaveable)))
-                {
-                    if (type.IsDerivedFromGenericType(typeof (Singleton<>)))
-                    {
-                        var instanceProp = type.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-                        var instance = instanceProp.GetValue(null, new object[0]) as ISaveable;
-
-                        if (instance != null)
-                        {
-                            World.Instance.RegisterSaveableInstance(instance);
-                        }
-                    }
-                }
-            }
         }
     }
 }

@@ -34,6 +34,12 @@ namespace Stump.Server.WorldServer.Database.Items
             set;
         }
 
+        bool IsNew
+        {
+            get;
+            set;
+        }
+
         void AssignIdentifier();
     }
 

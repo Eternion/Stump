@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         [WorldHandler(CharacterCreationRequestMessage.Id, RequiresLogin = false, IsGamePacket = false)]
         public static void HandleCharacterCreationRequestMessage(WorldClient client, CharacterCreationRequestMessage message)
         {
-            if (!IpcAccessor.Instance.IsConnected)
+            if (!IPCAccessor.Instance.IsConnected)
             {
                 SendCharacterCreationResultMessage(client, CharacterCreationResultEnum.ERR_NO_REASON);
                 return;

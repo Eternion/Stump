@@ -160,6 +160,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Library\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\..\Library\protobuf-net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.AddIn" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -217,14 +220,26 @@
     <Compile Include="Initialization\InitializationManager.cs" />
     <Compile Include="Initialization\InitializationMethod.cs" />
     <Compile Include="Initialization\InitializationPass.cs" />
-    <Compile Include="IPC\AuthClientAdapter.cs" />
-    <Compile Include="IPC\IpcErrorHandler.cs" />
-    <Compile Include="IPC\IpcHost.cs" />
-    <Compile Include="IPC\IRemoteAuthOperations.cs" />
-    <Compile Include="IPC\IRemoteWorldOperations.cs" />
+    <Compile Include="IPC\IPCMessage.cs" />
+    <Compile Include="IPC\Messages\AccountAnswerMessage.cs" />
+    <Compile Include="IPC\Messages\AccountRequestMessage.cs" />
+    <Compile Include="IPC\Messages\AddCharacterMessage.cs" />
+    <Compile Include="IPC\Messages\BanAccountMessage.cs" />
+    <Compile Include="IPC\Messages\BanIPMessage.cs" />
+    <Compile Include="IPC\Messages\ChangeStateMessage.cs" />
+    <Compile Include="IPC\Messages\CreateAccountMessage.cs" />
+    <Compile Include="IPC\Messages\DeleteAccountMessage.cs" />
+    <Compile Include="IPC\Messages\DeleteCharacterMessage.cs" />
+    <Compile Include="IPC\Messages\DisconnectClientMessage.cs" />
+    <Compile Include="IPC\Messages\HandshakeMessage.cs" />
+    <Compile Include="IPC\IPCErrorMessage.cs" />
+    <Compile Include="IPC\Messages\CommonOKMessage.cs" />
+    <Compile Include="IPC\Messages\ServerUpdateMessage.cs" />
+    <Compile Include="IPC\Messages\UnBanAccountMessage.cs" />
+    <Compile Include="IPC\Messages\UnBanIPMessage.cs" />
+    <Compile Include="IPC\IPCMessageSerializer.cs" />
+    <Compile Include="IPC\Messages\UpdateAccountMessage.cs" />
     <Compile Include="IPC\Objects\AccountData.cs" />
-    <Compile Include="IPC\Objects\RegisterResultEnum.cs" />
-    <Compile Include="IPC\WorldClientAdapter.cs" />
     <Compile Include="Network\BaseClient.cs" />
     <Compile Include="Handler\HandlerManager.cs" />
     <Compile Include="Handler\HandlerAttribute.cs" />
@@ -279,6 +294,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

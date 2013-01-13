@@ -91,6 +91,12 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 client.DisconnectLater(1000);
                 return false;
             }
+            else if (account.IsLifeBanned)
+            {
+                SendIdentificationFailedBannedMessage(client);
+                client.DisconnectLater(1000);
+                return false;
+            }
             else if (account.IsBanned)
             {
                 account.IsBanned = false;
@@ -106,11 +112,12 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             }
 
             /* Already connected on this account */
-            bool wasAlreadyConnected = AccountManager.Instance.DisconnectClientsUsingAccount(account);
+            /*bool wasAlreadyConnected = AccountManager.Instance.DisconnectClientsUsingAccount(account);
             if (wasAlreadyConnected)
             {
                 client.Send(new AlreadyConnectedMessage());
-            }
+            }*/
+            AccountManager.Instance.DisconnectClientsUsingAccount(account);
 
             /* Bind Account to Client */
             client.Account = account;
@@ -122,7 +129,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 return false;
             }
 
-            SendIdentificationSuccessMessage(client, wasAlreadyConnected);
+            SendIdentificationSuccessMessage(client, false);
 
             return true;
         }
@@ -151,6 +158,11 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         public static void SendIdentificationFailedForBadVersionMessage(AuthClient client, Version version)
         {
             client.Send(new IdentificationFailedForBadVersionMessage((sbyte) IdentificationFailureReasonEnum.BAD_VERSION, version));
+        }
+
+        public static void SendIdentificationFailedBannedMessage(AuthClient client)
+        {
+            client.Send(new IdentificationFailedMessage((sbyte)IdentificationFailureReasonEnum.BANNED));
         }
 
         public static void SendIdentificationFailedBannedMessage(AuthClient client, DateTime date)

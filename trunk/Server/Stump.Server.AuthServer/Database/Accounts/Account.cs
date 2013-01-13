@@ -210,6 +210,14 @@ namespace Stump.Server.AuthServer.Database
             set;
         }
 
+        public bool IsLifeBanned
+        {
+            get
+            {
+                return BanEndDate == null && IsBanned;
+            }
+        }
+
         [NullString]
         public string BanReason
         {

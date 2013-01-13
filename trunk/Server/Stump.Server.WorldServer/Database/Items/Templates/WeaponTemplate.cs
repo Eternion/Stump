@@ -29,6 +29,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
     }
 
     [TableName("items_templates_weapons")]
+    [D2OClass("Weapon", "com.ankamagames.dofus.datacenter.items")]
     public class WeaponTemplate : ItemTemplate
     {
         public int ApCost

@@ -15,6 +15,8 @@ namespace Stump.Server.BaseServer.Network
 {
     public abstract class BaseClient : IPacketReceiver
     {
+        private readonly ClientManager m_clientManager;
+
         [Variable(DefinableRunning = true)]
         public static bool LogPackets = false;
 
@@ -27,10 +29,18 @@ namespace Stump.Server.BaseServer.Network
 
         private bool m_onDisconnectCalled = false;
 
+        protected BaseClient(Socket socket, ClientManager clientManager)
+        {
+            Socket = socket;
+            IP = ( (IPEndPoint)socket.RemoteEndPoint ).Address.ToString();
+            m_clientManager = clientManager;
+        }
+
         protected BaseClient(Socket socket)
         {
             Socket = socket;
             IP = ( (IPEndPoint)socket.RemoteEndPoint ).Address.ToString();
+            m_clientManager = ClientManager.Instance;
         }
 
         public Socket Socket
@@ -87,7 +97,7 @@ namespace Stump.Server.BaseServer.Network
 
             if (!Socket.SendAsync(args))
             {
-                ClientManager.Instance.PushWriteSocketAsyncArgs(args);
+                PushWriteSocketAsyncArgs(args);
             }
 
             if (LogPackets)
@@ -99,22 +109,22 @@ namespace Stump.Server.BaseServer.Network
 
         protected virtual SocketAsyncEventArgs PopWriteSocketAsyncArgs()
         {
-            return ClientManager.Instance.PopWriteSocketAsyncArgs();
+            return m_clientManager.PopWriteSocketAsyncArgs();
         }
 
         protected virtual void PushWriteSocketAsyncArgs(SocketAsyncEventArgs args)
         {
-            ClientManager.Instance.PushWriteSocketAsyncArgs(args);
+            m_clientManager.PushWriteSocketAsyncArgs(args);
         }
 
         protected virtual SocketAsyncEventArgs PopReadSocketAsyncArgs()
         {
-            return ClientManager.Instance.PopReadSocketAsyncArgs();
+            return m_clientManager.PopReadSocketAsyncArgs();
         }
 
         protected virtual void PushReadSocketAsyncArgs(SocketAsyncEventArgs args)
         {
-            ClientManager.Instance.PushReadSocketAsyncArgs(args);
+            m_clientManager.PushReadSocketAsyncArgs(args);
         }
 
         #endregion
@@ -239,8 +249,6 @@ namespace Stump.Server.BaseServer.Network
             {
                 Socket.Shutdown(SocketShutdown.Both);
                 Socket.Close();
-
-                Socket = null;
             }
         }
 

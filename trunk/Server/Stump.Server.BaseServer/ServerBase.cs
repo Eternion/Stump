@@ -454,12 +454,12 @@ namespace Stump.Server.BaseServer
 
                 if (ConditionWaiter.WaitFor(() => Console.KeyAvailable, Definitions.ExitWaitTime * 1000, 20))
                 {
-                    Console.ReadKey(false);
-
+                    Console.ReadKey(true);
+                    Thread.Sleep(500);
                     Console.WriteLine("Press now a key to exit...");
-                    Thread.Sleep(100);
+                    
 
-                    Console.ReadKey(false);
+                    Console.ReadKey(true);
                 }
 
                 Environment.Exit(0);

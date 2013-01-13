@@ -149,6 +149,9 @@
       <HintPath>..\..\Library\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data, Version=6.6.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
+    <Reference Include="protobuf-net">
+      <HintPath>..\..\Library\protobuf-net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -183,7 +186,9 @@
     <Compile Include="Handlers\Connection\ConnectionRegisterHandler.cs" />
     <Compile Include="Handlers\Connection\ConnectionSearchHandler.cs" />
     <Compile Include="Handlers\PredicatesDefinitions.cs" />
-    <Compile Include="IPC\IpcOperations.cs" />
+    <Compile Include="IPC\IPCClient.cs" />
+    <Compile Include="IPC\IPCHost.cs" />
+    <Compile Include="IPC\IPCOperations.cs" />
     <Compile Include="Managers\AccountManager.cs" />
     <Compile Include="Managers\CredentialManager.cs" />
     <Compile Include="Managers\WorldServerManager.cs" />

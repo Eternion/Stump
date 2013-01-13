@@ -39,9 +39,12 @@ namespace Stump.Server.AuthServer
         public static readonly int Port = 443;
 
         [Variable]
-        public static string IpcAddress = "net.tcp://localhost:9100";
+        public static string IpcAddress = "localhost";
 
-        public static string Host;
+        [Variable]
+        public static int IpcPort = 9100;
+
+        private string m_host;
 
         [Variable(Priority = 10)]
         public static DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
@@ -53,7 +56,7 @@ namespace Stump.Server.AuthServer
             Password = "",
         };
 
-        public IpcHost IpcHost
+        public IPCHost IpcHost
         {
             get;
             private set;
@@ -103,7 +106,7 @@ namespace Stump.Server.AuthServer
                 WorldServerManager.Instance.Initialize();
 
                 logger.Info("Initialize IPC Server..");
-                IpcHost = new IpcHost(typeof(IpcOperations), typeof(IRemoteAuthOperations), IpcAddress);
+                IpcHost = new IPCHost(IpcAddress, IpcPort);
 
                 InitializationManager.InitializeAll();
                 IsInitialized = true;
@@ -125,14 +128,14 @@ namespace Stump.Server.AuthServer
             base.Start();
 
             logger.Info("Start Ipc Server");
-            IpcHost.Open();
+            IpcHost.Start();
 
             logger.Info("Starting Console Handler Interface...");
             ConsoleInterface.Start();
 
             logger.Info("Start listening on port : " + Port + "...");
-            Host = HostAutoDefined ? IPAddress.Loopback.ToString() : CustomHost;
-            ClientManager.Start(Host, Port);
+            m_host = HostAutoDefined ? IPAddress.Loopback.ToString() : CustomHost;
+            ClientManager.Start(m_host, Port);
 
             StartTime = DateTime.Now;
         }

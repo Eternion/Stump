@@ -186,6 +186,8 @@
     <Compile Include="Commands\Trigger\TriggerChat.cs" />
     <Compile Include="Commands\Trigger\TriggerConsole.cs" />
     <Compile Include="Commands\Trigger\WorldConsoleTrigger.cs" />
+    <Compile Include="Core\IPC\IPCAccessor.cs" />
+    <Compile Include="Core\IPC\IPCRequest.cs" />
     <Compile Include="Core\Network\WorldClientCollection.cs" />
     <Compile Include="Core\Network\WorldPacketHandler.cs" />
     <Compile Include="Database\Accounts\AccountRelation.cs" />
@@ -416,8 +418,6 @@
     <Compile Include="Handlers\Shortcuts\ShortcutHandler.cs" />
     <Compile Include="Handlers\WorldHandlerAttribute.cs" />
     <Compile Include="Handlers\WorldHandlerContainer.cs" />
-    <Compile Include="Core\IPC\IpcAccessor.cs" />
-    <Compile Include="Core\IPC\IpcOperations.cs" />
     <Compile Include="Core\Network\WorldClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />

@@ -19,7 +19,7 @@ namespace Stump.Server.BaseServer.Handler
     {
         protected class MessageHandler
         {
-            public MessageHandler(TContainer container, TAttribute handlerAttribute, Action<TClient, Message> action)
+            public MessageHandler(TContainer container, TAttribute handlerAttribute, Action<object, TClient, Message> action)
             {
                 Container = container;
                 Attribute = handlerAttribute;
@@ -38,7 +38,7 @@ namespace Stump.Server.BaseServer.Handler
                 private set;
             }
 
-            public Action<TClient, Message> Action
+            public Action<object, TClient, Message> Action
             {
                 get;
                 private set;
@@ -104,7 +104,7 @@ namespace Stump.Server.BaseServer.Handler
                              (entry.ParameterType == typeof(TClient) || entry.ParameterType.IsSubclassOf(typeof(TClient))) )) != 2)
                         throw new ArgumentException("Incorrect delegate parameters");
 
-                    var handlerDelegate = method.CreateDelegate(typeof(TClient), typeof(Message)) as Action<TClient, Message>;
+                    var handlerDelegate = method.CreateDelegate(typeof(TClient), typeof(Message)) as Action<object, TClient, Message>;
                     
                     foreach (var attribute in attributes)
                     {
@@ -122,7 +122,7 @@ namespace Stump.Server.BaseServer.Handler
             }
         }
 
-        private void RegisterHandler(uint messageId, TContainer handlerContainer, TAttribute handlerAttribute, Action<TClient, Message> target)
+        private void RegisterHandler(uint messageId, TContainer handlerContainer, TAttribute handlerAttribute, Action<object, TClient, Message> target)
         {
             if (m_handlers.ContainsKey(messageId))
             {
@@ -153,7 +153,7 @@ namespace Stump.Server.BaseServer.Handler
                         return;
                     }
 
-                    ServerBase.InstanceAsBase.IOTaskPool.AddMessage(() => handler.Action(client, message));
+                    ServerBase.InstanceAsBase.IOTaskPool.AddMessage(() => handler.Action(null, client, message));
                 }
                 catch (Exception ex)
                 {

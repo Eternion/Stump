@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Accounts.Startup
                 Template = ItemTemplate,
                 Stack = Amount,
                 Position = CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
-                Effects = effects
+                Effects = effects,
             };
 
             WorldServer.Instance.DBAccessor.Database.Insert(item);

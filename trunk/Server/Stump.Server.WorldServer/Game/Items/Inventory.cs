@@ -6,6 +6,7 @@ using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Database;
@@ -227,7 +228,15 @@ namespace Stump.Server.WorldServer.Game.Items
                     if (Tokens != null && item.Value == Tokens)
                         continue;
 
-                    database.Save(item.Value.Record);
+                    if (item.Value.Record.IsNew)
+                    {
+                        database.Insert(item.Value.Record);
+                        item.Value.Record.IsNew = false;
+                    }
+                    else
+                    {
+                        database.Update(item.Value.Record);
+                    }
                 }
 
                 while (ItemsToDelete.Count > 0)
@@ -241,7 +250,7 @@ namespace Stump.Server.WorldServer.Game.Items
                 if (Tokens == null && Owner.Account.Tokens > 0 || (Tokens != null && Owner.Account.Tokens != Tokens.Stack))
                 {
                     Owner.Account.Tokens = Tokens == null ? 0 : Tokens.Stack;
-                    IpcAccessor.Instance.ProxyObject.UpdateAccount(Owner.Account);
+                    IPCAccessor.Instance.Send(new UpdateAccountMessage(Owner.Account));;
                 }
             }
         }

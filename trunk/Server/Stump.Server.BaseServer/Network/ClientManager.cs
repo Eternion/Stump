@@ -74,11 +74,10 @@ namespace Stump.Server.BaseServer.Network
         private readonly Socket m_listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream,
                                                     ProtocolType.Tcp);
 
-        private readonly ConcurrentList<BaseClient> m_clients = new ConcurrentList<BaseClient>();
+        private readonly List<BaseClient> m_clients = new List<BaseClient>();
 
         private BufferManager m_bufferManager; // allocate memory dedicated to a client to avoid memory alloc on each send/recv
         private SocketAsyncEventArgsPool m_readAsyncEventArgsPool; // pool of SocketAsyncEventArgs
-        private SocketAsyncEventArgsPool m_writeAsyncEventArgsPool;
         private SocketAsyncEventArgs m_acceptArgs = new SocketAsyncEventArgs(); // async arg used on client connection
         private SemaphoreSlim m_semaphore; // limit the number of threads accessing to a ressource
 
@@ -130,6 +129,11 @@ namespace Stump.Server.BaseServer.Network
             private set;
         }
 
+        public bool IsFull
+        {
+            get;
+            private set;
+        }
 
         public void Initialize(CreateClientHandler createClientHandler)
         {
@@ -154,16 +158,6 @@ namespace Stump.Server.BaseServer.Network
                 m_bufferManager.SetBuffer(args);
                 args.Completed += OnReceiveCompleted;
                 m_readAsyncEventArgsPool.Push(args);
-            }
-
-            // initialize write pool
-            m_writeAsyncEventArgsPool = new SocketAsyncEventArgsPool(MaxConcurrentConnections * 2);
-            for (var i = 0; i < MaxConcurrentConnections * 2; i++)
-            {
-                var args = new SocketAsyncEventArgs();
-
-                args.Completed += OnSendCompleted;
-                m_writeAsyncEventArgsPool.Push(args);
             }
 
             m_acceptArgs.Completed += (sender, e) => ProcessAccept(e);
@@ -200,7 +194,6 @@ namespace Stump.Server.BaseServer.Network
         public void Pause()
         {
             Paused = true;
-
         }
 
         /// <summary>
@@ -218,12 +211,14 @@ namespace Stump.Server.BaseServer.Network
         /// </summary>
         public void Close()
         {
+            // interrupt accept process
+            Paused = true;
+
             m_listenSocket.Close();
             m_listenSocket.Dispose();
 
             m_bufferManager.Dispose();
 
-            m_writeAsyncEventArgsPool.Dispose();
             m_readAsyncEventArgsPool.Dispose();
         }
 
@@ -231,8 +226,20 @@ namespace Stump.Server.BaseServer.Network
         {
             m_acceptArgs.AcceptSocket = null;
 
+            if (m_semaphore.CurrentCount == 0)
+            {
+                logger.Warn("Connected clients limits reached ! ({0}) Waiting for a disconnection ...", Count);
+                IsFull = true;
+            }
+
             // thread block if the max connections limit is reached
             m_semaphore.Wait();
+
+            if (IsFull)
+            {
+                IsFull = false;
+                logger.Warn("A client get disconnected, connection allowed", m_semaphore.CurrentCount);
+            }
 
             // raise or not the event depending on AcceptAsync return
             if (!m_listenSocket.AcceptAsync(m_acceptArgs))
@@ -247,42 +254,65 @@ namespace Stump.Server.BaseServer.Network
         /// <param name="e"></param>
         private void ProcessAccept(SocketAsyncEventArgs e)
         {
-            // do not accept connections while pausing
-            if (Paused)
+            SocketAsyncEventArgs readAsyncEventArgs = null;
+            try
             {
-                // if paused wait until Resume() is called
-                m_resumeEvent.WaitOne();
-            }
+                // do not accept connections while pausing
+                if (Paused)
+                {
+                    logger.Warn("Pause state. Connection pending ...", m_semaphore.CurrentCount);
+                    // if paused wait until Resume() is called
+                    m_resumeEvent.WaitOne();
+                }
 
-            if (MaxIPConnexions.HasValue &&
-                CountClientWithSameIp(( (IPEndPoint) e.AcceptSocket.RemoteEndPoint ).Address) > MaxIPConnexions.Value)
+                if (MaxIPConnexions.HasValue &&
+                    CountClientWithSameIp(( (IPEndPoint)e.AcceptSocket.RemoteEndPoint ).Address) > MaxIPConnexions.Value)
+                {
+                    logger.Error("Client {0} try to connect more then {1} times", e.AcceptSocket.RemoteEndPoint.ToString(), MaxIPConnexions.Value);
+                    m_semaphore.Release();
+
+                    StartAccept();
+                    return;
+                }
+
+                // use a async arg from the pool avoid to re-allocate memory on each connection
+                readAsyncEventArgs = PopReadSocketAsyncArgs();
+
+                // create the client instance
+                var client = m_createClientDelegate(e.AcceptSocket);
+                readAsyncEventArgs.UserToken = client;
+
+                lock (m_clients)
+                    m_clients.Add(client);
+
+                NotifyClientConnected(client);
+
+                // if the event is not raised we first check new connections before parsing message that can blocks the connection queue
+                if (!client.Socket.ReceiveAsync(readAsyncEventArgs))
+                {
+                    StartAccept();
+                    ProcessReceive(readAsyncEventArgs);
+                }
+                else
+                {
+                    StartAccept();
+                }
+
+            }
+            catch (Exception ex)
             {
-                logger.Error("Client {0} try to connect more {1} times", e.AcceptSocket.RemoteEndPoint.ToString(), MaxIPConnexions.Value);
+                // if an error occurs we do our possible to reset all possible allocated ressources
+                logger.Error("Cannot accept a connection from {0}. Exception : {1}", e.RemoteEndPoint, ex);
+
                 m_semaphore.Release();
 
-                StartAccept();
-                return;
-            }
+                if (readAsyncEventArgs != null)
+                    PushReadSocketAsyncArgs(readAsyncEventArgs);
 
-            // use a async arg from the pool avoid to re-allocate memory on each connection
-            SocketAsyncEventArgs readAsyncEventArgs = PopReadSocketAsyncArgs();
+                if (e.AcceptSocket != null)
+                    e.AcceptSocket.Disconnect(false);
 
-            // create the client instance
-            var client = m_createClientDelegate(e.AcceptSocket);
-            readAsyncEventArgs.UserToken = client;
 
-            m_clients.Add(client);
-
-            NotifyClientConnected(client);
-
-            // if the event is not raised we first check new connections before parsing message that can blocks the connection queue
-            if (!client.Socket.ReceiveAsync(readAsyncEventArgs))
-            {
-                StartAccept();
-                ProcessReceive(readAsyncEventArgs);
-            }
-            else
-            {
                 StartAccept();
             }
         }
@@ -356,17 +386,31 @@ namespace Stump.Server.BaseServer.Network
                 {
                     client.Disconnect();
                 }
+                catch (Exception ex)
+                {
+                    logger.Error("Last catch. Disconnection of {0} failed : {1}", client, ex);
+                }
                 finally
                 {
-                    m_clients.Remove(client);
+                    bool removed;
+                    lock (m_clients)
+                        removed = m_clients.Remove(client);
 
-                    NotifyClientDisconnected(client);
+                    if (removed)
+                    {
+                        NotifyClientDisconnected(client);
 
-                    m_semaphore.Release();
+                        m_semaphore.Release();
+                    }
 
                     // free the SocketAsyncEventArg so it can be reused by another client
                     PushReadSocketAsyncArgs(e);
                 }
+            }
+            else
+            {
+                // free the SocketAsyncEventArg so it can be reused by another client
+                PushReadSocketAsyncArgs(e);
             }
         }
 
@@ -378,15 +422,12 @@ namespace Stump.Server.BaseServer.Network
 
         public SocketAsyncEventArgs PopWriteSocketAsyncArgs()
         {
-            if (m_writeAsyncEventArgsPool.Count <= 0)
-                throw new Exception("The writer async argument pool is empty");
-
-            return m_writeAsyncEventArgsPool.Pop();
+            return new SocketAsyncEventArgs();
         }
 
         public void PushWriteSocketAsyncArgs(SocketAsyncEventArgs args)
         {
-            m_writeAsyncEventArgsPool.Push(args);
+            // not used anymore
         }
 
         public SocketAsyncEventArgs PopReadSocketAsyncArgs()
@@ -404,22 +445,38 @@ namespace Stump.Server.BaseServer.Network
 
         public BaseClient[] FindAll(Predicate<BaseClient> predicate)
         {
-            return m_clients.Where(entry => predicate(entry)).ToArray();
+            lock (m_clients)
+            {
+                return m_clients.Where(entry => predicate(entry)).ToArray();
+            }
         }
 
         public T[] FindAll<T>(Predicate<T> predicate)
         {
-            return m_clients.OfType<T>().Where(entry => predicate(entry)).ToArray();
+            lock (m_clients)
+            {
+                return m_clients.OfType<T>().Where(entry => predicate(entry)).ToArray();
+            }
         }
 
         public T[] FindAll<T>()
         {
-            return m_clients.OfType<T>().ToArray();
+            lock (m_clients)
+            {
+                return m_clients.OfType<T>().ToArray();
+            }
         }
 
         public int CountClientWithSameIp(IPAddress ipAddress)
         {
-            return m_clients.Count(t => t.Socket != null && t.Socket.Connected && ( (IPEndPoint)t.Socket.RemoteEndPoint ).Address.Equals(ipAddress));
+            lock (m_clients)
+            {
+                return
+                    m_clients.Count(
+                        t =>
+                        t.Socket != null && t.Socket.Connected &&
+                        ((IPEndPoint) t.Socket.RemoteEndPoint).Address.Equals(ipAddress));
+            }
         }
     }
 }

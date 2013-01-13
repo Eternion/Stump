@@ -189,8 +189,7 @@ namespace Stump.Core.Threading
                         catch (Exception ex)
                         {
                             logger.Error("Failed to update {0} : {1}", timer, ex);
-                        } 
-                        
+                        }
                         if (!IsRunning)
                         {
                             return;

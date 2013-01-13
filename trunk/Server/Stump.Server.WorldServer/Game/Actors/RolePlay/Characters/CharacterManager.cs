@@ -10,6 +10,7 @@ using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
 using Stump.ORM;
 using Stump.Server.BaseServer.Database;
+using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Breeds;
@@ -46,9 +47,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 {
                     // character do not exist, then we remove it from the auth database
                     int id = characterId;
-                    WorldServer.Instance.IOTaskPool.AddMessage(() =>
-                                                               IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(
-                                                                   client.Account.Id, id));
+                    if (IPCAccessor.Instance.IsConnected)
+                    {
+                        IPCAccessor.Instance.Send(new DeleteCharacterMessage(client.Account.Id, id));
+                    }
                 }
             }
 
@@ -102,7 +104,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             EntityLook look = !sex ? breed.MaleLook.Copy() : breed.FemaleLook.Copy();
             look.indexedColors = indexedColors;
             var skins = look.skins.ToList();
-            skins.AddRange(head.Skins.FromCSV<short>(","));
+            skins.AddRange(head.Skins);
             look.skins = skins;
 
             CharacterRecord record;
@@ -160,8 +162,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 transaction.Complete();
             }
 
-            IpcAccessor.Instance.ProxyObject.AddAccountCharacter(client.Account.Id,
-                                                                 record.Id);
+            IPCAccessor.Instance.Send(new AddCharacterMessage(client.Account.Id, record.Id));;
 
             logger.Debug("Character {0} created", record.Name);
 
@@ -171,12 +172,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void DeleteCharacterOnAccount(CharacterRecord character, WorldClient client)
         {
-            // todo casade
+            // todo cascade
             Database.Delete(character);
             client.Characters.Remove(character);
-
-            WorldServer.Instance.IOTaskPool.AddMessage(
-                () => IpcAccessor.Instance.ProxyObject.DeleteAccountCharacter(client.Account.Id, character.Id));
+            // no check needed
+            IPCAccessor.Instance.Send(new DeleteCharacterMessage(client.Account.Id, character.Id));
         }
 
         #region Character Name Random Generation

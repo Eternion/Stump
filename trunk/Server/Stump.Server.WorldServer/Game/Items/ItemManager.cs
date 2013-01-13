@@ -97,10 +97,14 @@ namespace Stump.Server.WorldServer.Game.Items
         [Initialization(InitializationPass.Fourth)]
         public override void Initialize()
         {
-            m_itemTypes = Database.Fetch<ItemTypeRecord>(ItemTypeRecordRelator.FetchQuery).ToDictionary(entry => entry.Id);
-            m_itemTemplates = Database.Fetch<ItemTemplate>(ItemTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
-            m_itemsSets = Database.Fetch<ItemSetTemplate>(ItemSetTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
-            m_npcShopItems = Database.Fetch<NpcItem>(NpcItemRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_itemTypes = Database.Query<ItemTypeRecord>(ItemTypeRecordRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_itemTemplates = Database.Query<ItemTemplate>(ItemTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            foreach (var weapon in Database.Query<WeaponTemplate>(WeaponTemplateRelator.FetchQuery))
+            {
+                m_itemTemplates.Add(weapon.Id, weapon);
+            }
+            m_itemsSets = Database.Query<ItemSetTemplate>(ItemSetTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_npcShopItems = Database.Query<NpcItem>(NpcItemRelator.FetchQuery).ToDictionary(entry => entry.Id);
         }
 
         #endregion

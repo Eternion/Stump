@@ -10,8 +10,8 @@ namespace Stump.DofusProtocol.Messages
 {
     public static class MessageReceiver
     {
-        private static readonly Dictionary<uint, Type> Messages = new Dictionary<uint, Type>(800);
-        private static readonly Dictionary<uint, Func<Message>> Constructors = new Dictionary<uint, Func<Message>>(800);
+        private static readonly Dictionary<uint, Type> Messages = new Dictionary<uint, Type>();
+        private static readonly Dictionary<uint, Func<Message>> Constructors = new Dictionary<uint, Func<Message>>();
 
 
         /// <summary>

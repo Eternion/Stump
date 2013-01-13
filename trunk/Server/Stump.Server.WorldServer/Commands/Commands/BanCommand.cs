@@ -2,6 +2,8 @@ using System;
 using System.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
+using Stump.Server.BaseServer.IPC.Messages;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Accounts;
@@ -11,11 +13,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
 {
     public class BanCommand : CommandBase
     {
-        public static TimeSpan LifeBanValue
-        {
-            get { return new DateTime(2038, 1, 19) - DateTime.Now; } // max unix timestamp
-        }
-
         public BanCommand()
         {
             Aliases = new[] { "ban" };
@@ -37,36 +34,39 @@ namespace Stump.Server.WorldServer.Commands.Commands
             {
                 trigger.ReplyError("Define a target !");
                 return;
-            } 
-            
-            if (!IpcAccessor.Instance.IsConnected)
+            }
+
+            if (!IPCAccessor.Instance.IsConnected)
             {
                 trigger.ReplyError("IPC service not operational !");
                 return;
             }
 
+            var message = new BanAccountMessage()
+            {
+                AccountId = target.Account.Id,
+                BanReason = reason,
+            };
+
+            var source = trigger.GetSource() as WorldClient;
+            if (source != null)
+                message.BannerAccountId = source.Account.Id;
+
             if (trigger.IsArgumentDefined("time"))
-            {
-                var time = trigger.Get<int>("time");
-                var source = trigger.GetSource() as WorldClient;
-
-                if (source != null)
-                    AccountManager.Instance.BanLater(target.Account, source.Account, TimeSpan.FromMinutes(time), reason);
-                else
-                    AccountManager.Instance.BanLater(target.Account, TimeSpan.FromMinutes(time), reason);
-            }
+                message.BanEndDate = DateTime.Now + TimeSpan.FromMinutes(trigger.Get<int>("time"));
             else if (trigger.IsArgumentDefined("life"))
+                message.BanEndDate = null;
+            else
             {
-                var source = trigger.GetSource() as WorldClient;
-
-                if (source != null)
-                    AccountManager.Instance.BanLater(target.Account, source.Account, LifeBanValue, reason);
-                else
-                    AccountManager.Instance.BanLater(target.Account, LifeBanValue, reason);
+                trigger.ReplyError("No ban duration given");
+                return;
             }
 
             target.Client.Disconnect();
-            trigger.Reply("Account {0} banned", target.Account.Nickname);
+
+            IPCAccessor.Instance.SendRequest(message, 
+                ok => trigger.Reply("Account {0} banned", target.Account.Login),
+                error => trigger.ReplyError("Account {0} not banned : {1}", target.Account.Login, error.Message));
         }
     }
 
@@ -89,23 +89,72 @@ namespace Stump.Server.WorldServer.Commands.Commands
             var ip = trigger.Get<string>("ip");
             var reason = trigger.Get<string>("reason");
 
-            if (!IpcAccessor.Instance.IsConnected)
+            if (!IPCAccessor.Instance.IsConnected)
             {
                 trigger.ReplyError("IPC service not operational !");
                 return;
             }
 
+            try
+            {
+                IPAddressRange.Parse(ip);
+            }
+            catch
+            {
+                trigger.ReplyError("IP format '{0}' incorrect", ip);
+                return;
+            }
+
+            var message = new BanIPMessage()
+            {
+                IPRange = ip,
+                BanReason = reason,
+            };
+
             var source = trigger.GetSource() as WorldClient;
-            var sourceId = source != null ? source.Account.Id : 0;
+            if (source != null)
+                message.BannerAccountId = source.Account.Id;
 
-            var time = trigger.IsArgumentDefined("time") ? TimeSpan.FromMinutes(trigger.Get<int>("time")) : BanCommand.LifeBanValue;
+            if (trigger.IsArgumentDefined("time"))
+                message.BanEndDate = DateTime.Now + TimeSpan.FromMinutes(trigger.Get<int>("time"));
+            else if (trigger.IsArgumentDefined("life"))
+                message.BanEndDate = null;
+            else
+            {
+                trigger.ReplyError("No ban duration given");
+                return;
+            }
 
-            if (trigger.IsArgumentDefined("life"))
-                time = TimeSpan.MaxValue;
+            IPCAccessor.Instance.SendRequest(message,
+                ok => trigger.Reply("IP {0} banned", ip),
+                error => trigger.ReplyError("IP {0} not banned : {1}", ip, error.Message));
+        }
+    }
 
-            WorldServer.Instance.IOTaskPool.AddMessage(() => IpcAccessor.Instance.ProxyObject.BanIp(ip, sourceId, time, reason));
+    public class UnBanIPCommand : CommandBase
+    {
+        public UnBanIPCommand()
+        {
+            Aliases = new[] { "unbanip" };
+            RequiredRole = RoleEnum.Moderator;
+            Description = "Unban an ip";
 
-            trigger.Reply("Ip {0} banned", ip);
+            AddParameter<string>("ip", "ip", "The ip to unban");
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var ip = trigger.Get<string>("ip");
+
+            if (!IPCAccessor.Instance.IsConnected)
+            {
+                trigger.ReplyError("IPC service not operational !");
+                return;
+            }
+
+            IPCAccessor.Instance.SendRequest(new UnBanIPMessage(ip), 
+                ok => trigger.Reply("IP {0} unbanned", ip),
+                error => trigger.ReplyError("IP {0} not unbanned : {1}", ip, error.Message));
         }
     }
 
@@ -128,26 +177,35 @@ namespace Stump.Server.WorldServer.Commands.Commands
             var accountName = trigger.Get<string>("account");
             var reason = trigger.Get<string>("reason");
 
-            if (!IpcAccessor.Instance.IsConnected)
+            if (!IPCAccessor.Instance.IsConnected)
             {
                 trigger.ReplyError("IPC service not operational !");
                 return;
             }
 
+            var message = new BanAccountMessage()
+            {
+                AccountName = accountName,
+                BanReason = reason,
+            };
+
             var source = trigger.GetSource() as WorldClient;
-            var sourceId = source != null ? source.Account.Id : 0;
+            if (source != null)
+                message.BannerAccountId = source.Account.Id;
 
-            var time = trigger.IsArgumentDefined("time")
-                           ? TimeSpan.FromMinutes(trigger.Get<int>("time"))
-                           : TimeSpan.MaxValue;
+            if (trigger.IsArgumentDefined("time"))
+                message.BanEndDate = DateTime.Now + TimeSpan.FromMinutes(trigger.Get<int>("time"));
+            else if (trigger.IsArgumentDefined("life"))
+                message.BanEndDate = null;
+            else
+            {
+                trigger.ReplyError("No ban duration given");
+                return;
+            }
 
-            if (trigger.IsArgumentDefined("life"))
-                time = BanCommand.LifeBanValue;
-
-            WorldServer.Instance.IOTaskPool.AddMessage(
-                () => IpcAccessor.Instance.ProxyObject.BlamAccount(accountName, sourceId, time, reason));
-
-            trigger.Reply("Account {0} banned", accountName);
+            IPCAccessor.Instance.SendRequest(message,
+                ok => trigger.Reply("Account {0} banned", accountName),
+                error => trigger.ReplyError("Account {0} not banned : {1}", accountName, error.Message));
         }
     }
 
@@ -167,15 +225,15 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             var accountName = trigger.Get<string>("account");
            
-            if (!IpcAccessor.Instance.IsConnected)
+            if (!IPCAccessor.Instance.IsConnected)
             {
                 trigger.ReplyError("IPC service not operational !");
                 return;
             }
 
-            WorldServer.Instance.IOTaskPool.AddMessage(() => IpcAccessor.Instance.ProxyObject.UnBlamAccount(accountName));
-
-            trigger.Reply("Account {0} unbanned", accountName);
+            IPCAccessor.Instance.SendRequest(new UnBanAccountMessage(accountName), 
+                ok => trigger.Reply("Account {0} unbanned", accountName),
+                error => trigger.ReplyError("Account {0} not unbanned : {1}", accountName, error.Message));
         }
     }
 }

@@ -1,36 +1,57 @@
+﻿#region License GNU GPL
+// IPCOperations.cs
+// 
+// Copyright (C) 2013 - BehaviorIsManaged
+// 
+// This program is free software; you can redistribute it and/or modify it 
+// under the terms of the GNU General Public License as published by the Free Software Foundation;
+// either version 2 of the License, or (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+// See the GNU General Public License for more details. 
+// You should have received a copy of the GNU General Public License along with this program; 
+// if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+#endregion
+
 using System;
-using System.Data.Objects;
-using System.Linq;
-using System.ServiceModel;
-using System.ServiceModel.Channels;
+using System.Collections.Generic;
+using System.Reflection;
 using NLog;
+using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
-using Stump.ORM;
 using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.IPC;
-using Stump.Server.BaseServer.IPC.Objects;
+using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.AuthServer.IPC
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession, IncludeExceptionDetailInFaults = true)]
-    public class IpcOperations : IRemoteAuthOperations
+    public class IPCOperations
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly WorldServerManager Manager = WorldServerManager.Instance;
 
-        public IpcOperations()
+        private Dictionary<Type, Action<object, IPCMessage>> m_handlers = new Dictionary<Type, Action<object, IPCMessage>>();
+
+        public IPCOperations(IPCClient ipcClient)
         {
-            IContextChannel channel = OperationContext.Current.Channel;
+            Client = ipcClient;
 
-            channel.Closed += OnDisconnected;
-            channel.Faulted += OnDisconnected;
+            InitializeHandlers();
+            InitializeDatabase();
+        }
 
-            var callbackCom = (ICommunicationObject) Callback;
-            callbackCom.Closed += OnDisconnected;
-            callbackCom.Faulted += OnDisconnected;
+        public IPCClient Client
+        {
+            get;
+            private set;
+        }
+
+        public WorldServer WorldServer
+        {
+            get { return Client.Server; }
         }
 
         private ORM.Database Database
@@ -45,356 +66,321 @@ namespace Stump.Server.AuthServer.IPC
             set;
         }
 
-        public bool Connected
+        private void InitializeHandlers()
         {
-            get;
-            private set;
+            foreach (var method in GetType().GetMethods(BindingFlags.Instance| BindingFlags.Public | BindingFlags.NonPublic))
+            {
+                if (method.Name == "HandleMessage")
+                    continue;
+
+                var parameters = method.GetParameters();
+
+                if (parameters.Length != 1 || !parameters[0].ParameterType.IsSubclassOf(typeof(IPCMessage)))
+                    continue;
+
+                m_handlers.Add(parameters[0].ParameterType, (Action<object, IPCMessage>)method.CreateDelegate(typeof(IPCMessage)));
+            }
         }
 
-        private IRemoteWorldOperations Callback
+        private void InitializeDatabase()
         {
-            get { return OperationContext.Current.GetCallbackChannel<IRemoteWorldOperations>(); }
-        }
-
-        #region IRemoteAuthOperations Members
-
-        public RegisterResultEnum RegisterWorld(WorldServerData serverData)
-        {
-            OperationContext context = OperationContext.Current;
-            if (context == null)
-            {
-                return RegisterResultEnum.ContextNotFound;
-            }
-
-            IContextChannel channel = context.Channel;
-            if (channel == null)
-            {
-                return RegisterResultEnum.ChannelNotFound;
-            }
-
-            string id = GetCurrentSessionId();
-            RemoteEndpointMessageProperty endPoint = GetCurrentEndPoint();
-            WorldServer server;
-
-            RegisterResultEnum result;
-            if (((result = Manager.RequestConnection(serverData, channel, endPoint, id)) != RegisterResultEnum.OK) ||
-                (server = GetCurrentServer()) == null)
-            {
-                try
-                {
-                    channel.Abort();
-                    channel.Close();
-                }
-                catch (Exception)
-                {
-                }
-
-                return result != RegisterResultEnum.OK ? result : RegisterResultEnum.UnknownError;
-            }
-
+            logger.Info("Opening Database connection for '{0}' server", WorldServer.Name);
             Database = new ORM.Database(AuthServer.DatabaseConfiguration.GetConnectionString(),
-                                        AuthServer.DatabaseConfiguration.ProviderName) {KeepConnectionAlive = true};
+                                       AuthServer.DatabaseConfiguration.ProviderName)
+                                       {
+                                           KeepConnectionAlive = true
+                                       };
             Database.OpenSharedConnection();
 
             AccountManager = new AccountManager();
             AccountManager.ChangeDataSource(Database);
             AccountManager.Initialize();
-            server.RemoteOperations = Callback;
-            Connected = true;
-
-            return RegisterResultEnum.OK;
         }
 
-        public void UnRegisterWorld()
+        public void HandleMessage(IPCMessage message)
         {
-            WorldServer server = GetCurrentServer();
-
-            if (server != null)
-                Manager.RemoveWorld(server);
-
-            Connected = false;
-        }
-
-        public void ChangeState(ServerStatusEnum state)
-        {
-            Manager.ChangeWorldState(GetCurrentServer(), state);
-        }
-
-        public void UpdateConnectedChars(int value)
-        {
-            WorldServer server = GetCurrentServer();
-
-            if (server.CharsCount == value)
+            Action<object, IPCMessage> handler;
+            if (!m_handlers.TryGetValue(message.GetType(), out handler))
+            {
+                logger.Error("Received message {0} but no method handle it !", message.GetType());
                 return;
-
-            server.CharsCount = value;
-
-            if (server.CharsCount >= server.CharCapacity &&
-                server.Status == ServerStatusEnum.ONLINE)
-            {
-                Manager.ChangeWorldState(server, ServerStatusEnum.FULL);
             }
 
-            if (server.CharsCount < server.CharCapacity &&
-                server.Status == ServerStatusEnum.FULL)
+            handler(this, message);
+        }
+
+        private void Handle(AccountRequestMessage message)
+        {
+            if (!string.IsNullOrEmpty(message.Ticket))
             {
-                Manager.ChangeWorldState(server, ServerStatusEnum.ONLINE);
+                // no DB action here
+                Account account = AccountManager.Instance.FindCachedAccountByTicket(message.Ticket);
+                if (account == null)
+                {
+                    Client.SendError(string.Format("Account not found with ticket {0}", message.Ticket));
+                    return;
+                }
+
+                Client.Send(new AccountAnswerMessage(account.Serialize()));
+            }
+            else if (!string.IsNullOrEmpty(message.Nickname))
+            {
+                Account account = AccountManager.FindAccountByNickname(message.Nickname);
+
+                if (account == null)
+                {
+                    Client.SendError(string.Format("Account not found with nickname {0}", message.Nickname));
+                    return;
+                }
+
+                Client.Send(new AccountAnswerMessage(account.Serialize()));
+            }
+            else
+            {
+                Client.SendError("Ticket and Nickname null or empty");
+            }
+        }
+
+        private void Handle(ChangeStateMessage message)
+        {
+            WorldServerManager.Instance.ChangeWorldState(WorldServer, message.State);
+            Client.Send(new CommonOKMessage());
+        }
+
+        private void Handle(ServerUpdateMessage message)
+        {
+            if (WorldServer.CharsCount == message.CharsCount)
+            {
+                Client.Send(new CommonOKMessage());
+                return;
             }
 
-            Database.Save(server);
+            WorldServer.CharsCount = message.CharsCount;
+
+            if (WorldServer.CharsCount >= WorldServer.CharCapacity &&
+                WorldServer.Status == ServerStatusEnum.ONLINE)
+            {
+                WorldServerManager.Instance.ChangeWorldState(WorldServer, ServerStatusEnum.FULL);
+            }
+
+            if (WorldServer.CharsCount < WorldServer.CharCapacity &&
+                WorldServer.Status == ServerStatusEnum.FULL)
+            {
+                WorldServerManager.Instance.ChangeWorldState(WorldServer, ServerStatusEnum.ONLINE);
+            }
+            Client.Send(new CommonOKMessage());
         }
 
-        public AccountData GetAccountByTicket(string ticket)
+        private void Handle(CreateAccountMessage message)
         {
-            Account account = AccountManager.Instance.FindCachedAccountByTicket(ticket);
-            if (account == null)
-                return null;
+            var accountData = message.Account;
 
-            return account.Serialize();
-        }
-
-        public AccountData GetAccountByNickname(string nickname)
-        {
-            Account account = AccountManager.FindAccountByNickname(nickname);
-            return account != null ? account.Serialize() : null;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="modifiedRecord"></param>
-        /// <param name="wsi"></param>
-        /// <returns></returns>
-        /// <remarks>It only considers password, secret question & answer and role</remarks>
-        public bool UpdateAccount(AccountData modifiedRecord)
-        {
-            Account account = AccountManager.FindAccountById(modifiedRecord.Id);
-            if (account == null)
-                return false;
-
-            account.PasswordHash = modifiedRecord.PasswordHash;
-            account.SecretQuestion = modifiedRecord.SecretQuestion;
-            account.SecretAnswer = modifiedRecord.SecretAnswer;
-            account.Role = modifiedRecord.Role;
-            account.Tokens = modifiedRecord.Tokens;
-
-            Database.Save(account);
-            return true;
-        }
-
-        public bool CreateAccount(AccountData accountData)
-        {
             var account = new Account
-                              {
-                                  Id = accountData.Id,
-                                  Login = accountData.Login,
-                                  PasswordHash = accountData.PasswordHash,
-                                  Nickname = accountData.Nickname,
-                                  Role = accountData.Role,
-                                  AvailableBreeds = accountData.AvailableBreeds,
-                                  Ticket = accountData.Ticket,
-                                  SecretQuestion = accountData.SecretQuestion,
-                                  SecretAnswer = accountData.SecretAnswer,
-                                  Lang = accountData.Lang,
-                                  Email = accountData.Email
-                              };
-            return AccountManager.CreateAccount(account);
+            {
+                Id = accountData.Id,
+                Login = accountData.Login,
+                PasswordHash = accountData.PasswordHash,
+                Nickname = accountData.Nickname,
+                Role = accountData.Role,
+                AvailableBreeds = accountData.AvailableBreeds,
+                Ticket = accountData.Ticket,
+                SecretQuestion = accountData.SecretQuestion,
+                SecretAnswer = accountData.SecretAnswer,
+                Lang = accountData.Lang,
+                Email = accountData.Email
+            };
+
+            if (AccountManager.CreateAccount(account))
+                Client.Send(new CommonOKMessage());
+            else
+                Client.SendError(string.Format("Login {0} already exists", accountData.Login));
         }
 
-        public bool DeleteAccount(string accountname)
+        private void Handle(UpdateAccountMessage message)
         {
-            Account account = AccountManager.FindAccountByLogin(accountname);
+            Account account = AccountManager.FindAccountById(message.Account.Id);
+
             if (account == null)
-                return false;
+            {
+                Client.SendError(string.Format("Account {0} not found", message.Account.Id));
+                return;
+            }
+
+            account.PasswordHash = message.Account.PasswordHash;
+            account.SecretQuestion = message.Account.SecretQuestion;
+            account.SecretAnswer = message.Account.SecretAnswer;
+            account.Role = message.Account.Role;
+            account.Tokens = message.Account.Tokens;
+
+            Database.Update(account);
+            Client.Send(new CommonOKMessage());
+        }
+
+        private void Handle(DeleteAccountMessage message)
+        {
+            Account account = null;
+            if (message.AccountId != null)
+                account = AccountManager.FindAccountById((int) message.AccountId);
+            else if (!string.IsNullOrEmpty(message.AccountName))
+                account = AccountManager.FindAccountByLogin(message.AccountName);
+            else
+            {
+                Client.SendError("AccoundId and AccountName are null or empty");
+                return;
+            }
+
+            if (account == null)
+            {
+                Client.SendError(string.Format("Account {0}{1} not found", message.AccountId, message.AccountName));
+                return;
+            }
 
             AccountManager.Instance.DisconnectClientsUsingAccount(account);
 
-            return AccountManager.DeleteAccount(account);
+            if (AccountManager.DeleteAccount(account))
+                Client.Send(new CommonOKMessage());
+            else
+                Client.SendError(string.Format("Cannot delete {0}", account.Login));
         }
 
-        public bool AddAccountCharacter(int accountId, int characterId)
+        private void Handle(AddCharacterMessage message)
         {
-            Account account = AccountManager.FindAccountById(accountId);
-            WorldServer world = GetCurrentServer();
+            Account account = AccountManager.FindAccountById(message.AccountId);
 
-            if (account == null || world == null)
-                return false;
+            if (account == null)
+            {
+                Client.SendError(string.Format("Account {0} not found", message.AccountId));
+                return;
+            }
 
-            return AccountManager.AddAccountCharacter(account, world, characterId);
+            if (AccountManager.AddAccountCharacter(account, WorldServer, message.CharacterId))
+                Client.Send(new CommonOKMessage());
+            else
+                Client.SendError(string.Format("Cannot add {0} character to {1} account", message.CharacterId, message.AccountId));
         }
 
-        public bool DeleteAccountCharacter(int accountId, int characterId)
+        private void Handle(DeleteCharacterMessage message)
         {
-            Account account = AccountManager.FindAccountById(accountId);
-            WorldServer world = GetCurrentServer();
+            Account account = AccountManager.FindAccountById(message.AccountId);
 
-            if (account == null || world == null)
-                return false;
+            if (account == null)
+            {
+                Client.SendError(string.Format("Account {0} not found", message.AccountId));
+                return;
+            }
 
-            return AccountManager.DeleteAccountCharacter(account, world, characterId);
+            if (AccountManager.DeleteAccountCharacter(account, WorldServer, message.CharacterId))
+                Client.Send(new CommonOKMessage());
+            else
+                Client.SendError(string.Format("Cannot delete {0} character from {1} account", message.CharacterId, message.AccountId));
         }
 
-        public bool UnBlamAccount(string victimAccountLogin)
+        private void Handle(BanAccountMessage message)
         {
-            Account victimAccount = AccountManager.FindAccountByLogin(victimAccountLogin);
+            Account victimAccount = null;
+            if (message.AccountId != null)
+                victimAccount = AccountManager.FindAccountById((int)message.AccountId);
+            else if (!string.IsNullOrEmpty(message.AccountName))
+                victimAccount = AccountManager.FindAccountByLogin(message.AccountName);
+            else
+            {
+                Client.SendError("AccoundId and AccountName are null or empty");
+                return;
+            }
 
             if (victimAccount == null)
-                return false;
+            {
+                Client.SendError(string.Format("Account {0}{1} not found", message.AccountId, message.AccountName));
+                return;
+            }
+
+            victimAccount.IsBanned = true;
+            victimAccount.BanReason = message.BanReason;
+            victimAccount.BanEndDate = message.BanEndDate;
+            victimAccount.BannerAccountId = message.BannerAccountId;
+
+            Database.Update(victimAccount);
+            Client.Send(new CommonOKMessage());
+        }
+
+        private void Handle(UnBanAccountMessage message)
+        {
+            Account victimAccount = null;
+            if (message.AccountId != null)
+                victimAccount = AccountManager.FindAccountById((int)message.AccountId);
+            else if (!string.IsNullOrEmpty(message.AccountName))
+                victimAccount = AccountManager.FindAccountByLogin(message.AccountName);
+            else
+            {
+                Client.SendError("AccoundId and AccountName are null or empty");
+                return;
+            }
+
+            if (victimAccount == null)
+            {
+                Client.SendError(string.Format("Account {0}{1} not found", message.AccountId, message.AccountName));
+                return;
+            }
 
             victimAccount.IsBanned = false;
             victimAccount.BanEndDate = null;
             victimAccount.BanReason = null;
             victimAccount.BannerAccountId = null;
 
-            Database.Save(victimAccount);
-
-            return true;
+            Database.Update(victimAccount);
+            Client.Send(new CommonOKMessage());
         }
 
-        public bool BlamAccount(string victimAccountLogin, int? bannerAccountId, TimeSpan duration, string reason)
+        private void Handle(BanIPMessage message)
         {
-            Account victimAccount = AccountManager.FindAccountByLogin(victimAccountLogin);
-
-            if (victimAccount == null)
-                return false;
-
-            victimAccount.IsBanned = true;
-            victimAccount.BanReason = reason;
-            victimAccount.BanEndDate = DateTime.Now + duration;
-            victimAccount.BannerAccountId = bannerAccountId;
-
-            Database.Save(victimAccount);
-            return true;
-        }
-
-        public bool BlamAccount(int victimAccountId, int? bannerAccountId, TimeSpan duration, string reason)
-        {
-            Account victimAccount = AccountManager.FindAccountById(victimAccountId);
-
-            if (victimAccount == null)
-                return false;
-
-            victimAccount.IsBanned = true;
-            victimAccount.BanReason = reason;
-            victimAccount.BanEndDate = DateTime.Now + duration;
-            victimAccount.BannerAccountId = bannerAccountId;
-
-            Database.Save(victimAccount);
-            return true;
-        }
-
-        public bool BanIp(string ipToBan, int bannerAccountId, TimeSpan duration, string reason)
-        {
-            IpBan ipBan = AccountManager.FindIpBan(ipToBan);
-            IPAddressRange ip = IPAddressRange.Parse(ipToBan);
+            IpBan ipBan = AccountManager.FindIpBan(message.IPRange);
+            IPAddressRange ip = IPAddressRange.Parse(message.IPRange);
             if (ipBan != null)
             {
-                ipBan.BanReason = reason;
-                ipBan.BannedBy = bannerAccountId;
-                ipBan.Duration = duration;
+                ipBan.BanReason = message.BanReason;
+                ipBan.BannedBy = message.BannerAccountId;
+                ipBan.Duration = message.BanEndDate.HasValue ? message.BanEndDate - DateTime.Now : null;
+                ipBan.Date = DateTime.Now;
 
                 Database.Update(ipBan);
             }
             else
             {
                 var record = new IpBan
-                                 {
-                                     IP = ip,
-                                     BannedBy = bannerAccountId,
-                                     BanReason = reason,
-                                     Duration = duration
-                                 };
+                {
+                    IP = ip,
+                    BanReason = message.BanReason,
+                    BannedBy = message.BannerAccountId,
+                    Duration = message.BanEndDate.HasValue ? message.BanEndDate - DateTime.Now : null,
+                    Date = DateTime.Now
+                };
 
                 Database.Insert(record);
             }
 
-            return true;
+            Client.Send(new CommonOKMessage());
         }
 
-        #endregion
-
-        private void OnDisconnected(object sender, EventArgs args)
+        private void Handle(UnBanIPMessage message)
         {
-            lock (this)
+            IpBan ipBan = AccountManager.FindIpBan(message.IPRange);
+            if (ipBan == null)
             {
-                if (!Connected)
-                    return;
-
-                WorldServer world = GetServerByChannel((IContextChannel) sender);
-                logger.Warn("Channel closed or faulted");
-
-                if (world != null)
-                {
-                    Manager.RemoveWorld(world);
-                }
-                else
-                {
-                    logger.Warn("A server has been disconnected but we cannot retrieve it");
-                }
-
-                Connected = false;
+                Client.SendError(string.Format("IP ban {0} not found", message.IPRange));
+            }
+            else
+            {
+                Database.Delete(ipBan);
+                Client.Send(new CommonOKMessage());
             }
         }
 
-        private WorldServer GetServerByChannel(IContextChannel channel)
+        public void Dispose()
         {
-            foreach (var server in Manager.Realmlist)
-            {
-                if (server.Value.Channel == channel)
-                    return server.Value;
-            }
+            if (Database != null)
+                Database.CloseSharedConnection();
 
-            return null;
-        }
-
-        /// <summary>
-        /// Returns the Id of the RealmServer that called the current method.
-        /// Can only be used from remote IPC Channels.
-        /// </summary>
-        /// <returns></returns>
-        public string GetCurrentSessionId()
-        {
-            OperationContext context = OperationContext.Current;
-            if (context == null)
-            {
-                return "";
-            }
-            IContextChannel channel = context.Channel;
-            if (channel == null)
-            {
-                return "";
-            }
-            return channel.InputSession.Id;
-        }
-
-        /// <summary>
-        /// Returns the RealmEntry that belongs to the Channel
-        /// that is performing the current communication.
-        /// Can only be used from remote IPC Channels.
-        /// </summary>
-        public WorldServer GetCurrentServer(bool _throw = true)
-        {
-            WorldServer server = Manager.GetServerBySessionId(GetCurrentSessionId());
-
-            if (server == null)
-            {
-                server = Manager.Realmlist.FirstOrDefault(entry => entry.Value.RemoteOperations == Callback).Value;
-            }
-
-            if (server == null && _throw)
-            {
-                throw new Exception(string.Format("Server with id {0} cannot be found, it's certainly disconnected",
-                                                  GetCurrentSessionId()));
-            }
-
-            return server;
-        }
-
-        public RemoteEndpointMessageProperty GetCurrentEndPoint()
-        {
-            return
-                (RemoteEndpointMessageProperty)
-                OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name];
+            m_handlers.Clear();
         }
     }
 }

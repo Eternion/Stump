@@ -19,6 +19,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Network;
 using Stump.Server.BaseServer.Database;
+using Stump.Server.BaseServer.IPC.Messages;
 
 namespace Stump.Server.AuthServer.Managers
 {
@@ -264,7 +265,8 @@ namespace Stump.Server.AuthServer.Managers
             return true;
         }
 
-        public bool DisconnectClientsUsingAccount(Account account)
+        // todo : callback to know if an account has been disconnected
+        public void DisconnectClientsUsingAccount(Account account)
         {
             AuthClient[] clients = AuthServer.Instance.FindClients(entry => entry.Account != null &&
                                                                             entry.Account.Id == account.Id).ToArray();
@@ -275,24 +277,15 @@ namespace Stump.Server.AuthServer.Managers
                 client.Disconnect();
             }
 
-            var lastConnection = account.LastConnection;
             if (account.LastConnectionWorld != null)
             {
-                bool disconnected = false;
                 var server = WorldServerManager.Instance.GetServerById(account.LastConnectionWorld.Value);
 
-                if (server != null && server.Connected && server.RemoteOperations != null)
-                    if (server.RemoteOperations.DisconnectClient(account.Id))
-                        disconnected = true;
-
-                // diconnect clients from last game server
-                if (disconnected)
+                if (server != null && server.Connected && server.IPCClient != null)
                 {
-                    return true;
+                    server.IPCClient.Send(new DisconnectClientMessage(account.Id));
                 }
             }
-
-            return clients.Length > 0;
         }
     }
 }

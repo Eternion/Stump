@@ -41,6 +41,13 @@ namespace Stump.Server.WorldServer.Database
             set;
         }
 
+        [Ignore]
+        public bool IsNew
+        {
+            get;
+            set;
+        }
+
         public static int PopNextId()
         {
             return IdProvider.Pop();
@@ -53,7 +60,7 @@ namespace Stump.Server.WorldServer.Database
 
         public virtual void BeforeSave(bool insert)
         {
-            if (insert)
+            if (insert && Id == 0)
                 AssignIdentifier();
         }
     }

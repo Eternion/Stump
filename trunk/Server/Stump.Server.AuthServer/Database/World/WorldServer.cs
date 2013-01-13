@@ -4,6 +4,7 @@ using System.ServiceModel.Channels;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using Stump.Server.AuthServer.IPC;
 using Stump.Server.BaseServer.IPC;
 
 namespace Stump.Server.AuthServer.Database
@@ -28,6 +29,18 @@ namespace Stump.Server.AuthServer.Database
         }
 
         public string Name
+        {
+            get;
+            set;
+        }
+
+        public ushort Port
+        {
+            get;
+            set;
+        }
+
+        public string Address
         {
             get;
             set;
@@ -69,73 +82,6 @@ namespace Stump.Server.AuthServer.Database
             set;
         }
 
-        #region Session
-
-        [Ignore]
-        public string SessionId
-        {
-            get;
-            set;
-        }
-
-        [Ignore]
-        public RemoteEndpointMessageProperty RemoteEndpoint
-        {
-            get;
-            set;
-        }
-
-        [Ignore]
-        public IContextChannel Channel
-        {
-            get;
-            set;
-        }
-
-        [Ignore]
-        public IRemoteWorldOperations RemoteOperations
-        {
-            get;
-            set;
-        }
-
-        public void SetSession(IContextChannel channel, string sessionId, RemoteEndpointMessageProperty remoteEndpoint)
-        {
-            Channel = channel;
-            SessionId = sessionId;
-            RemoteEndpoint = remoteEndpoint;
-        }
-
-        public void CloseSession()
-        {
-            if (RemoteOperations == null)
-                return;
-            
-            try
-            {
-                if (Channel != null)
-                    Channel.Close();
-            }
-            catch
-            {
-            }
-
-            try
-            {
-                //if (RemoteOperations != null)
-                //  RemoteOperations.Close();
-            }
-            catch
-            {
-            }
-
-            RemoteOperations = null;
-            Channel = null;
-            SessionId = null;
-            RemoteEndpoint = null;
-        }
-
-        #endregion
 
         #region Status
 
@@ -145,10 +91,16 @@ namespace Stump.Server.AuthServer.Database
             set;
         }
 
-        [Ignore]
         public bool Connected
         {
             get { return Status == ServerStatusEnum.ONLINE; }
+        }
+
+        [Ignore]
+        public IPCClient IPCClient
+        {
+            get;
+            set;
         }
 
         [Ignore]
@@ -158,32 +110,18 @@ namespace Stump.Server.AuthServer.Database
             set;
         }
 
-        public ushort Port
-        {
-            get;
-            private set;
-        }
-
-        public string Address
-        {
-            get;
-            private set;
-        }
-
-        public void SetOnline(string address, ushort port)
+        public void SetOnline(IPCClient client)
         {
             Status = ServerStatusEnum.ONLINE;
             LastPing = DateTime.Now;
-            Address = address;
-            Port = port;
+            IPCClient = client;
         }
 
         public void SetOffline()
         {
             Status = ServerStatusEnum.OFFLINE;
             CharsCount = 0;
-
-            CloseSession();
+            IPCClient = null;
         }
 
         #endregion

@@ -381,12 +381,20 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
+        public Head Head
+        {
+            get;
+            private set;
+        }
+
         public void UpdateLook(bool send = true)
         {
             var skins = new List<short>(Breed.GetLook(Sex).skins);
+            skins.AddRange(Head.Skins);
             skins.AddRange(Inventory.GetItemsSkins());
 
             RealLook.skins = skins;
+            
 
             var pets = Inventory.GetPetsSkins();
             var subentities = pets.Select((t, i) => new SubEntity(1, (sbyte) i, new EntityLook(t, new short[0], new int[0], new short[] {75}, new SubEntity[0]))).ToList();
@@ -1624,6 +1632,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         private void LoadRecord()
         {
             Breed = BreedManager.Instance.GetBreed(BreedId);
+            Head = BreedManager.Instance.GetHead(Record.Head);
             var map = World.Instance.GetMap(m_record.MapId);
 
             if (map == null)
