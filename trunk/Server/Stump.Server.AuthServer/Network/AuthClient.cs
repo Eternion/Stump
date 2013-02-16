@@ -20,8 +20,6 @@ namespace Stump.Server.AuthServer.Network
         {
             Key = new Random().RandomString(32);
             
-            if (File.Exists("RawData.swf"))
-                Send(new RawDataMessageFixed(File.ReadAllBytes("RawData.swf")));
             Send(new ProtocolRequired(VersionExtension.ProtocolRequired, VersionExtension.ActualProtocol));
             Send(new HelloConnectMessage(CredentialManager.Instance.GetSalt(), CredentialManager.Instance.GetRSAPublicKey()));
 

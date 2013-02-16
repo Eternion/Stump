@@ -54,10 +54,14 @@ namespace Stump.Server.WorldServer.Database.Items
             m_serializedEffects = new byte[0];
         }
 
-        protected int ItemId
+        private int m_itemId;
+
+        public int ItemId
         {
-            get;
-            set;
+            get { return m_itemId; }
+            set { m_itemId = value;
+            m_template = null;
+            }
         }
 
         [Ignore]

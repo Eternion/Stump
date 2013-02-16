@@ -31,8 +31,8 @@
     <SolidColorBrush x:Key="NearBorderBrush" Color="White" />
     <SolidColorBrush x:Key="FarBorderBrush" Color="#FF3FCEF2" />
 
-    <BitmapImage x:Key="TopLeftFocused" UriSource="/WPF.MDI;component/Themes/Resources/Luna/TopLeftFocused.png" />
-    <BitmapImage x:Key="TopLeftUnfocused" UriSource="/WPF.MDI;component/Themes/Resources/Luna/TopLeftUnfocused.png" />
+    <BitmapImage x:Key="TopLeftFocused" >Resources/Luna/TopLeftFocused.png</BitmapImage>
+    <BitmapImage x:Key="TopLeftUnfocused" >Resources/Luna/TopLeftUnfocused.png</BitmapImage>
 
     <BitmapImage x:Key="TopMiddleFocused" UriSource="/WPF.MDI;component/Themes/Resources/Luna/TopMiddleFocused.png" />
     <BitmapImage x:Key="TopMiddleUnfocused" UriSource="/WPF.MDI;component/Themes/Resources/Luna/TopMiddleUnfocused.png" />

@@ -899,10 +899,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set { m_record.MuteUntil = value; }
         }
 
-        private bool m_muted;
         public void Mute(TimeSpan time, Character from)
         {
-            m_muted = true;
             MuteUntil = DateTime.Now + time;
 
             SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 17, from != null ? from.Name : "(no name)", time.TotalMinutes);
@@ -910,13 +908,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void UnMute()
         {
-            m_muted = false;
             MuteUntil = null;
         }
 
         public bool IsMuted()
         {
-            return m_muted && (!MuteUntil.HasValue || MuteUntil > DateTime.Now);
+            return MuteUntil.HasValue && MuteUntil > DateTime.Now;
         }
 
         public TimeSpan GetMuteRemainingTime()

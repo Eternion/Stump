@@ -1,0 +1,28 @@
+﻿<Window x:Class="WPF.MDI.Themes.ThemeTester"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mdi="clr-namespace:WPF.MDI" Title="ThemeTester" Height="430" Width="480">
+	<Window.Resources>        
+		<ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary 
+                  Source="Themes/Luna.xaml">
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+	</Window.Resources>
+  <DockPanel>
+    <mdi:MdiContainer x:Name="Container" Theme="Luna" Width="456">
+      <mdi:MdiChild Title="Empty Window Using XAML" />
+      <mdi:MdiChild x:Name="Window1" Title="Window Using XAML" Position="20,15" ShowIcon="False">
+        <StackPanel>
+          <Button Name="DisableMinimize" Height="20">Disable Minimize</Button>
+          <Button Name="EnableMinimize" Height="20">Enable Minimize</Button>
+          <Button Name="DisableMaximize" Height="20">Disable Maximize</Button>
+          <Button Name="EnableMaximize" Height="20">Enable Maximize</Button>
+          <Button Name="ShowIcon" Height="20">Show Icon</Button>
+          <Button Name="HideIcon" Height="20">Hide Icon</Button>
+        </StackPanel>
+      </mdi:MdiChild>
+    </mdi:MdiContainer>
+  </DockPanel>
+</Window>
