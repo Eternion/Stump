@@ -101,6 +101,16 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2i
                 m_textIndexes.Add(id, value);
         }
 
+        public bool DeleteText(int id)
+        {
+            return m_indexes.Remove(id);
+        }
+
+        public bool DeleteText(string id)
+        {
+            return m_textIndexes.Remove(id);
+        }
+
         public Dictionary<int, string> GetAllText()
         {
             return m_indexes;

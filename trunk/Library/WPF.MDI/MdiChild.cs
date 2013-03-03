@@ -431,7 +431,7 @@ namespace WPF.MDI
             switch (e.Key)
             {
                 case Key.F4:
-                    if (e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+                    if (e.KeyboardDevice.Modifiers == ModifierKeys.Alt)
                     {
                         mdiChild.Close();
                         e.Handled = true;
@@ -690,7 +690,7 @@ namespace WPF.MDI
             if (Position.X + newLeft < 0)
                 newLeft = 0 - Position.X;
 
-            Width -= newLeft;
+            Width = ActualWidth - newLeft;
             Position = new Point(Position.X + newLeft, Position.Y);
 
             if (sender != null)
@@ -712,7 +712,7 @@ namespace WPF.MDI
             if (Position.Y + newTop < 0)
                 newTop = 0 - Position.Y;
 
-            Height -= newTop;
+            Height = ActualHeight - newTop;
             Position = new Point(Position.X, Position.Y + newTop);
 
             if (sender != null)
@@ -729,7 +729,7 @@ namespace WPF.MDI
             if (Width + e.HorizontalChange < MinWidth)
                 return;
 
-            Width += e.HorizontalChange;
+            Width = ActualWidth + e.HorizontalChange;
 
             if (sender != null)
                 Container.InvalidateSize();
@@ -745,7 +745,7 @@ namespace WPF.MDI
             if (Height + e.VerticalChange < MinHeight)
                 return;
 
-            Height += e.VerticalChange;
+            Height = ActualHeight + e.VerticalChange;
 
             if (sender != null)
                 Container.InvalidateSize();

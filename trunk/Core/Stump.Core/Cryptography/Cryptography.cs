@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -29,6 +30,23 @@ namespace Stump.Core.Cryptography
             }
 
             return sBuilder.ToString();
+        }
+
+        public static string GetFileMD5Hash(string fileName)
+        {
+            String md5Result;
+            var sb = new StringBuilder();
+            var md5Hasher = MD5.Create();
+
+            using (var fs = File.OpenRead(fileName))
+            {
+                foreach (Byte b in md5Hasher.ComputeHash(fs))
+                    sb.Append(b.ToString("x2").ToLower());
+            }
+
+            md5Result = sb.ToString();
+
+            return md5Result;
         }
 
         /// <summary>

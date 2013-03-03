@@ -27,6 +27,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2p
 {
     public class D2pFile : INotifyPropertyChanged, IDisposable
     {
+        private readonly bool m_preload;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly Dictionary<string, D2pEntry> m_entries = new Dictionary<string, D2pEntry>();
@@ -41,6 +42,8 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2p
         private bool m_isDisposed;
         private IDataReader m_reader;
 
+        private FileStream m_fileStream;
+
         public D2pFile()
         {
             IndexTable = new D2pIndexTable(this);
@@ -49,11 +52,12 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2p
 
         public D2pFile(string file, bool preload=false)
         {
+            m_preload = preload;
             FilePath = file;
             if (preload)
                 m_reader = new FastBigEndianReader(File.ReadAllBytes(file));
             else
-                m_reader = new BigEndianReader(File.OpenRead(file));
+                m_reader = new BigEndianReader(m_fileStream = File.OpenRead(file));
 
             InternalOpen();
         }
@@ -382,34 +386,37 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2p
             D2pDirectory current = null;
             if (!m_rootDirectories.ContainsKey(directories[0]))
             {
-                m_rootDirectories.Add(directories[0], current = new D2pDirectory(directories[0]));
+                m_rootDirectories.Add(directories[0], current = new D2pDirectory(this, directories[0]));
             }
             else
             {
                 current = m_rootDirectories[directories[0]];
             }
 
-            current.Entries.Add(entry);
+            if (directories.Length == 1)
+                current.Entries.Add(entry);
 
-            foreach (string directory in directories.Skip(1))
+            for (int i = 1; i < directories.Length; i++)
             {
+                string directory = directories[i];
                 var next = current.TryGetDirectory(directory);
                 if (next == null)
                 {
-                    var dir = new D2pDirectory(directory)
-                                  {
-                                      Parent = current
-                                  };
+                    var dir = new D2pDirectory(this, directory)
+                        {
+                            Parent = current
+                        };
                     current.Directories.Add(directory, dir);
 
                     current = dir;
                 }
                 else
                 {
-                    current = current.TryGetDirectory(directory);
+                    current = next;
                 }
 
-                current.Entries.Add(entry);
+                if (i == directories.Length - 1)
+                    current.Entries.Add(entry);
             }
 
             entry.Directory = current;
@@ -503,7 +510,93 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2p
 
             return ReadFile(entry);
         }
+        /*
+        public void Rename(D2pEntry entry, string name)
+        {
+            if (name.Contains("/") || name.Contains("\\"))
+                throw new Exception("File name cannot contains \\ or /. Use Move method");
 
+            var fullname = Path.Combine(Path.GetDirectoryName(entry.FullFileName), name);
+
+            if (Exists(fullname))
+                throw new Exception(string.Format("Cannot rename {0} to {1} because a file named {1} already exists", entry.FullFileName, name));
+
+            if (!m_entries.Remove(entry.FullFileName))
+                throw new Exception(string.Format("File {0} not found", entry.FullFileName));
+
+            m_entries.Add(fullname, entry);
+            entry.FullFileName = fullname;
+
+            if (!m_linksToSave.Contains(entry.Container))
+                m_linksToSave.Enqueue(entry.Container);
+        }
+
+        public void CheckRename(D2pDirectory directory, string name)
+        {
+            if (name.Contains("/") || name.Contains("\\"))
+                throw new Exception("Directory name cannot contains \\ or /. Use Move method");
+
+            var fullname = Path.Combine(Path.GetDirectoryName(directory.FullName), name);
+
+            if (HasDirectory(fullname))
+                throw new Exception(string.Format("Cannot rename {0} to {1} because a directory named {1} already exists", directory.FullName, name));
+
+            if (directory.Entries.Any(x => Exists(Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(x.FullFileName)), name, x.FileName))))
+            {
+                throw new Exception(string.Format("Following files already exists : {0}",
+                    string.Join(", ", directory.Entries.Where(x => Exists(Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(x.FullFileName)), name, x.FileName))).
+                                    Select(x => Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(x.FullFileName)), name, x.FileName)))));
+            }
+        }
+
+        public void Rename(D2pDirectory directory, string name)
+        {
+            CheckRename(directory, name);
+
+            foreach (var link in m_links)
+            {
+                var dir = link.TryGetDirectory(directory.FullName);
+                if (dir != null)
+                    link.CheckRename(dir, name);
+            }
+
+            InternalRename(directory, name);
+         
+            foreach (var link in m_links)
+            {
+                var dir = link.TryGetDirectory(directory.FullName);
+                if (dir != null)
+                    link.InternalRename(dir, name);
+            }
+        }
+
+        private void InternalRename(D2pDirectory directory, string name)
+        {
+            if (directory.IsRoot)
+            {
+                if (!m_rootDirectories.Remove(directory.Name))
+                    throw new Exception(string.Format("Directory {0} not found", directory.Name));
+
+                m_rootDirectories.Add(name, directory);
+                directory.Name = name;
+            }
+            else
+            {
+                if (!directory.Parent.Directories.Remove(directory.Name))
+                    throw new Exception(string.Format("Directory {0} not found", directory.FullName));
+
+                directory.Parent.Directories.Add(name, directory);
+                directory.Name = name;
+            }
+
+            foreach (var entry in directory.Entries)
+            {
+                entry.FullFileName = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(entry.FullFileName)), name, entry.FileName);
+            }
+
+        }
+
+        */
         public void ExtractFile(string fileName, bool overwrite = false)
         {
             if (!Exists(fileName))
@@ -522,11 +615,15 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2p
         public void ExtractFile(string fileName, string destination, bool overwrite = false)
         {
             byte[] bytes = ReadFile(fileName);
-            FileAttributes attr = File.GetAttributes(destination);
 
-            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+            if (Directory.Exists(destination))
             {
-                destination = Path.Combine(destination, Path.GetFileName(fileName));
+                FileAttributes attr = File.GetAttributes(destination);
+
+                if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                {
+                    destination = Path.Combine(destination, Path.GetFileName(fileName));
+                }
             }
 
             if (File.Exists(destination) && !overwrite)
@@ -545,8 +642,8 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2p
 
             D2pDirectory directory = TryGetDirectory(directoryName);
 
-            if (!Directory.Exists(Path.GetDirectoryName(Path.Combine(destination, directory.FullName))))
-                Directory.CreateDirectory(Path.GetDirectoryName(Path.Combine(destination, directory.FullName)));
+            if (!Directory.Exists(Path.Combine(destination, directory.FullName)))
+                Directory.CreateDirectory(Path.Combine(destination, directory.FullName));
 
             foreach (D2pEntry entry in directory.Entries)
             {
@@ -656,16 +753,9 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2p
 
         public void Save()
         {
-            if (HasFilePath())
-                SaveAs(FilePath);
-            else
-            {
+            if (!HasFilePath())
                 throw new InvalidOperationException("Cannot perform Save : No path defined, use SaveAs instead");
-            }
-        }
 
-        public void SaveAs(string destination, bool overwrite = true)
-        {
             lock (m_linksToSave)
             {
                 // save the links before
@@ -678,6 +768,44 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2p
                 }
             }
 
+            if (m_fileStream != null)
+            {
+                var tempPath = Path.GetTempFileName();
+                var tempStream = File.Create(tempPath);
+
+                InternalSave(tempStream);
+
+                tempStream.Close();
+
+                m_reader.Dispose();
+                File.Delete(FilePath);
+                File.Move(tempPath, FilePath);
+                m_reader = new BigEndianReader(m_fileStream = File.OpenRead(FilePath));
+            }
+            else
+            {
+                using (var stream = File.OpenWrite(FilePath))
+                {
+                    InternalSave(stream);
+                }
+
+                m_reader = new FastBigEndianReader(File.ReadAllBytes(FilePath));
+            }
+        }
+
+        public void SaveAs(string destination, bool overwrite = true)
+        {
+            if (destination == FilePath)
+            {
+                Save();
+                return;
+            }
+
+            foreach (var link in Links)
+            {
+                link.SaveAs(Path.Combine(Path.GetDirectoryName(destination), link.FileName));                
+            }
+          
             Stream stream;
             if (!File.Exists(destination))
                 stream = File.Create(destination);
@@ -687,47 +815,56 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2p
             else
                 stream = File.OpenWrite(destination);
 
-            using (var writer = new BigEndianWriter(stream))
+            InternalSave(stream);
+            stream.Close();
+
+            FilePath = destination;
+
+            m_reader.Dispose();
+            m_reader = new BigEndianReader(m_fileStream = File.OpenRead(destination));
+        }
+
+        private void InternalSave(Stream stream)
+        {
+            var writer = new BigEndianWriter(stream);
+            // header
+            writer.WriteByte(2);
+            writer.WriteByte(1);
+
+            D2pEntry[] entries = GetEntriesOfInstanceOnly();
+            // avoid the header
+            int offset = 2;
+
+            foreach (D2pEntry entry in entries)
             {
-                // header
-                writer.WriteByte(2);
-                writer.WriteByte(1);
+                byte[] data = ReadFile(entry);
 
-                D2pEntry[] entries = GetEntriesOfInstanceOnly();
-                // avoid the header
-                int offset = 2;
-
-                foreach (D2pEntry entry in entries)
-                {
-                    byte[] data = ReadFile(entry);
-
-                    entry.Index = (int) writer.Position - offset;
-                    writer.WriteBytes(data);
-                }
-
-                var entriesDefOffset = (int) writer.Position;
-
-                foreach (D2pEntry entry in entries)
-                {
-                    entry.WriteEntryDefinition(writer);
-                }
-
-                var propertiesOffset = (int) writer.Position;
-
-                foreach (D2pProperty property in m_properties)
-                {
-                    property.WriteProperty(writer);
-                }
-
-                IndexTable.OffsetBase = offset;
-                IndexTable.EntriesCount = entries.Length;
-                IndexTable.EntriesDefinitionOffset = entriesDefOffset;
-                IndexTable.PropertiesCount = m_properties.Count;
-                IndexTable.PropertiesOffset = propertiesOffset;
-                IndexTable.Size = IndexTable.EntriesDefinitionOffset - IndexTable.OffsetBase;
-
-                IndexTable.WriteTable(writer);
+                entry.Index = (int) writer.Position - offset;
+                writer.WriteBytes(data);
             }
+
+            var entriesDefOffset = (int) writer.Position;
+
+            foreach (D2pEntry entry in entries)
+            {
+                entry.WriteEntryDefinition(writer);
+            }
+
+            var propertiesOffset = (int) writer.Position;
+
+            foreach (D2pProperty property in m_properties)
+            {
+                property.WriteProperty(writer);
+            }
+
+            IndexTable.OffsetBase = offset;
+            IndexTable.EntriesCount = entries.Length;
+            IndexTable.EntriesDefinitionOffset = entriesDefOffset;
+            IndexTable.PropertiesCount = m_properties.Count;
+            IndexTable.PropertiesOffset = propertiesOffset;
+            IndexTable.Size = IndexTable.EntriesDefinitionOffset - IndexTable.OffsetBase;
+
+            IndexTable.WriteTable(writer);
         }
 
         #endregion

@@ -64,5 +64,52 @@ namespace Stump.Core.Reflection
             return dynamicMethod.CreateDelegate(Expression.GetActionType(new[] { typeof(object) }.Concat(delegParams).ToArray()));
 
         }
+
+        public static Delegate CreateFuncDelegate(this MethodInfo method, Type returnType, params Type[] delegParams)
+        {
+            var methodParams = method.GetParameters().Select(p => p.ParameterType).ToArray();
+
+            if (delegParams.Length != methodParams.Length)
+                throw new Exception("Method parameters count != delegParams.Length");
+
+            var dynamicMethod = new DynamicMethod(string.Empty, returnType, new[] { typeof(object) }.Concat(delegParams).ToArray(), true);
+            var ilGenerator = dynamicMethod.GetILGenerator();
+
+            if (!method.IsStatic)
+            {
+                ilGenerator.Emit(OpCodes.Ldarg_0);
+                ilGenerator.Emit(method.DeclaringType.IsClass ? OpCodes.Castclass : OpCodes.Unbox, method.DeclaringType);
+            }
+
+            for (var i = 0; i < delegParams.Length; i++)
+            {
+                ilGenerator.Emit(OpCodes.Ldarg, i + 1);
+                if (delegParams[i] != methodParams[i])
+                    if (methodParams[i].IsSubclassOf(delegParams[i]) || methodParams[i].HasInterface(delegParams[i]))
+                        ilGenerator.Emit(methodParams[i].IsClass ? OpCodes.Castclass : OpCodes.Unbox, methodParams[i]);
+                    else
+                        throw new Exception(string.Format("Cannot cast {0} to {1}", delegParams[i].Name, methodParams[i].Name));
+            }
+
+            ilGenerator.Emit(OpCodes.Call, method);
+
+            if (returnType != null && returnType != method.ReturnType)
+                if (method.ReturnType.IsSubclassOf(returnType) || method.ReturnType.HasInterface(returnType))
+                {
+                    if (method.ReturnType.IsClass && returnType.IsClass)
+                        ilGenerator.Emit(OpCodes.Castclass, returnType);
+                    else if (returnType == typeof(object))
+                        ilGenerator.Emit(OpCodes.Box, method.ReturnType);
+                    else if (method.ReturnType.IsClass)
+                        ilGenerator.Emit(OpCodes.Unbox, returnType);
+                }
+                else
+                    throw new Exception(string.Format("Cannot cast {0} to {1}", method.ReturnType.Name, returnType));
+
+
+            ilGenerator.Emit(OpCodes.Ret);
+            return dynamicMethod.CreateDelegate(Expression.GetFuncType(new[] { typeof(object) }.Concat(delegParams).Concat(new[] {returnType}).ToArray()));
+
+        }
     }
 }

@@ -1,5 +1,5 @@
 
-// Generated on 01/04/2013 14:36:07
+// Generated on 03/02/2013 21:17:43
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
@@ -8,12 +8,42 @@ namespace Stump.DofusProtocol.D2oClasses
 {
     [D2OClass("Titles")]
     [Serializable]
-    public class Title : IDataObject
+    public class Title : IDataObject, IIndexedData
     {
         private const String MODULE = "Titles";
         public int id;
         public uint nameId;
         public Boolean visible;
         public int categoryId;
+
+        int IIndexedData.Id
+        {
+            get { return (int)id; }
+        }
+
+        public int Id
+        {
+            get { return id; }
+            set { id = value; }
+        }
+
+        public uint NameId
+        {
+            get { return nameId; }
+            set { nameId = value; }
+        }
+
+        public Boolean Visible
+        {
+            get { return visible; }
+            set { visible = value; }
+        }
+
+        public int CategoryId
+        {
+            get { return categoryId; }
+            set { categoryId = value; }
+        }
+
     }
 }

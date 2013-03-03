@@ -21,22 +21,35 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2p
 {
     public class D2pDirectory
     {
-        public D2pDirectory(string name)
+        public D2pDirectory(D2pFile container, string name)
         {
+            Container = container;
             Name = name;
             FullName = name;
         }
 
-        public string Name
+        private string m_name;
+
+        public D2pFile Container
         {
             get;
             set;
+        }
+
+        public string Name
+        {
+            get { return m_name; }
+            internal set
+            {
+                m_name = value;
+                UpdateFullName();
+            }
         }
 
         public string FullName
         {
             get;
-            set;
+            private set;
         }
 
         private D2pDirectory m_parent;
@@ -105,7 +118,11 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2p
         public D2pEntry TryGetEntry(string entryName)
         {
             return m_entries.SingleOrDefault(entry => entry.FullFileName == entryName);
+        }
 
+        public IEnumerable<D2pEntry> GetAllEntries()
+        {
+            return Entries.Concat(Directories.SelectMany(x => x.Value.GetAllEntries()));
         }
     }
 }

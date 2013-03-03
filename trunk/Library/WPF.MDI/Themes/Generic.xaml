@@ -7,8 +7,20 @@
     <SolidColorBrush x:Key="BaseBackgroundBrush" Color="White" />
     <SolidColorBrush x:Key="BaseBorderBrush" Color="#FFBDBDBD" />
 
-    <SolidColorBrush x:Key="TitleForegroundBrush" Color="#FFBEBEBE" />
+    <SolidColorBrush x:Key="TitleForegroundBrush" Color="#FF9B9B9B" />
     <SolidColorBrush x:Key="InnerBorderBrush" Color="#FFF6F6F6" />
+		
+	<Style TargetType="Button" x:Key="TransparentButton">
+	    <Setter Property="Template">
+	        <Setter.Value>
+	            <ControlTemplate TargetType="Button">
+	                <Border Background="Transparent">
+	                   <ContentPresenter/>
+	                </Border>
+	            </ControlTemplate>
+	        </Setter.Value>
+	    </Setter>
+	</Style>
 
     <Style TargetType="{x:Type local:MdiChild}">
         <Setter Property="Width" Value="300" />
@@ -20,12 +32,23 @@
                         <Border.BitmapEffect>
                             <OuterGlowBitmapEffect GlowColor="Black" GlowSize="5" Opacity="0.8" />
                         </Border.BitmapEffect>
-                        <Grid>
-                            <TextBlock Margin="10,0,0,0" Foreground="{StaticResource TitleForegroundBrush}" Text="{TemplateBinding Title}" />
-                            <Border Margin="10,26,10,10" BorderThickness="1" Background="{TemplateBinding Background}" BorderBrush="{StaticResource InnerBorderBrush}">
+						<DockPanel>
+						<DockPanel DockPanel.Dock="Top" HorizontalAlignment="Stretch">
+                            <TextBlock DockPanel.Dock="Left" Margin="10,3,0,0" Foreground="{StaticResource TitleForegroundBrush}" Text="{TemplateBinding Title}"  />
+							<StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,3,0,0" >
+								<Button Name="MinimizeButton" Width="31" Height="17" HorizontalAlignment="Right" VerticalAlignment="Top">
+									<Path Data="M0,8 L12,8" Fill="Black" Stroke="Black" Width="12"/>
+								</Button>
+								<Button Name="CloseButton" Width="31" Height="17" HorizontalAlignment="Right" VerticalAlignment="Top"  Style="{StaticResource TransparentButton}">
+									<Path Data="M0,0 L1,1 M0,1 L1,0" Fill="Black" Stretch="Fill" Stroke="Black" Height="10" Width="10"/>
+								</Button>
+							</StackPanel>
+
+                        </DockPanel>
+                            <Border DockPanel.Dock="Bottom" Margin="10,26,10,10" BorderThickness="1" Background="{TemplateBinding Background}" BorderBrush="{StaticResource InnerBorderBrush}">
                                 <ContentControl Content="{TemplateBinding Content}" />
                             </Border>
-                        </Grid>
+                        </DockPanel>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

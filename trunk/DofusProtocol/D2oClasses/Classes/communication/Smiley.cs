@@ -1,5 +1,5 @@
 
-// Generated on 01/04/2013 14:36:07
+// Generated on 03/02/2013 21:17:44
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
@@ -8,7 +8,7 @@ namespace Stump.DofusProtocol.D2oClasses
 {
     [D2OClass("Smileys")]
     [Serializable]
-    public class Smiley : IDataObject
+    public class Smiley : IDataObject, IIndexedData
     {
         private const String MODULE = "Smileys";
         public uint id;
@@ -16,5 +16,41 @@ namespace Stump.DofusProtocol.D2oClasses
         public String gfxId;
         public Boolean forPlayers;
         public List<String> triggers;
+
+        int IIndexedData.Id
+        {
+            get { return (int)id; }
+        }
+
+        public uint Id
+        {
+            get { return id; }
+            set { id = value; }
+        }
+
+        public uint Order
+        {
+            get { return order; }
+            set { order = value; }
+        }
+
+        public String GfxId
+        {
+            get { return gfxId; }
+            set { gfxId = value; }
+        }
+
+        public Boolean ForPlayers
+        {
+            get { return forPlayers; }
+            set { forPlayers = value; }
+        }
+
+        public List<String> Triggers
+        {
+            get { return triggers; }
+            set { triggers = value; }
+        }
+
     }
 }

@@ -139,6 +139,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimFunData.cs" />
     <Compile Include="Classes\abuse\AbuseReasons.cs" />
     <Compile Include="Classes\alignments\AlignmentBalance.cs" />
     <Compile Include="Classes\alignments\AlignmentEffect.cs" />
@@ -150,7 +151,6 @@
     <Compile Include="Classes\alignments\AlignmentTitle.cs" />
     <Compile Include="Classes\almanax\AlmanaxCalendar.cs" />
     <Compile Include="Classes\ambientSounds\AmbientSound.cs" />
-    <Compile Include="AnimFunData.cs" />
     <Compile Include="Classes\appearance\Appearance.cs" />
     <Compile Include="Classes\appearance\Ornament.cs" />
     <Compile Include="Classes\appearance\SkinMapping.cs" />
@@ -311,6 +311,7 @@
     <Compile Include="Classes\world\SuperArea.cs" />
     <Compile Include="Classes\world\WorldMap.cs" />
     <Compile Include="IDataObject.cs" />
+    <Compile Include="IIndexedData.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rectangle.cs" />
@@ -361,6 +362,9 @@
       <Project>{A0BFF0DB-ED9A-4639-AE86-8E709A1EFC66}</Project>
       <Name>NLog.netfx40</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Classes\ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

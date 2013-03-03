@@ -17,6 +17,5 @@ namespace Stump.DofusProtocol.D2oClasses
 {
     public interface IDataObject
     {
-         
     }
 }

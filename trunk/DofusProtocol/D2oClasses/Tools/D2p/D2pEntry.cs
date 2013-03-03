@@ -59,12 +59,13 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2p
         public string FileName
         {
             get { return Path.GetFileName(m_fullFileName); }
+            set { m_fullFileName = Path.Combine(Path.GetDirectoryName(m_fullFileName), value); }
         }
 
         public string FullFileName
         {
             get { return m_fullFileName; }
-            private set
+            set
             {
                 m_fullFileName = value;
             }

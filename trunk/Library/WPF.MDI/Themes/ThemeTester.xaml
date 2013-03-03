@@ -1,28 +1,23 @@
-﻿<Window x:Class="WPF.MDI.Themes.ThemeTester"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mdi="clr-namespace:WPF.MDI" Title="ThemeTester" Height="430" Width="480">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mdi="clr-namespace:WPF.MDI" xmlns:ee="http://schemas.microsoft.com/expression/2010/effects" x:Class="WPF.MDI.Themes.ThemeTester"
+        Title="ThemeTester" Height="430" Width="480">
 	<Window.Resources>        
-		<ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary 
-                  Source="Themes/Luna.xaml">
-                </ResourceDictionary>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
 	</Window.Resources>
   <DockPanel>
-    <mdi:MdiContainer x:Name="Container" Theme="Luna" Width="456">
-      <mdi:MdiChild Title="Empty Window Using XAML" />
-      <mdi:MdiChild x:Name="Window1" Title="Window Using XAML" Position="20,15" ShowIcon="False">
-        <StackPanel>
-          <Button Name="DisableMinimize" Height="20">Disable Minimize</Button>
-          <Button Name="EnableMinimize" Height="20">Enable Minimize</Button>
-          <Button Name="DisableMaximize" Height="20">Disable Maximize</Button>
-          <Button Name="EnableMaximize" Height="20">Enable Maximize</Button>
-          <Button Name="ShowIcon" Height="20">Show Icon</Button>
-          <Button Name="HideIcon" Height="20">Hide Icon</Button>
-        </StackPanel>
+    <mdi:MdiContainer x:Name="Container" Theme="Aero" Width="456">
+      <mdi:MdiChild Title="Empty Window Using XAML" >
       </mdi:MdiChild>
+    	<mdi:MdiChild x:Name="Window1" Title="Window Using XAML" Position="200,150" ShowIcon="False">
+    		<StackPanel>
+    			<Button x:Name="DisableMinimize" Height="20" Content="Disable Minimize"/>
+    			<Button x:Name="EnableMinimize" Height="20" Content="Enable Minimize"/>
+    			<Button x:Name="DisableMaximize" Height="20" Content="Disable Maximize"/>
+    			<Button x:Name="EnableMaximize" Height="20" Content="Enable Maximize"/>
+    			<Button x:Name="ShowIcon" Height="20" Content="Show Icon"/>
+    			<Button x:Name="HideIcon" Height="20" Content="Hide Icon"/>
+    		</StackPanel>
+    	</mdi:MdiChild>
     </mdi:MdiContainer>
   </DockPanel>
 </Window>

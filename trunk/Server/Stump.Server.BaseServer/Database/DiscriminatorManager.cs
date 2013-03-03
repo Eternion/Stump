@@ -29,6 +29,7 @@ namespace Stump.Server.BaseServer.Database
     {
         private bool m_initialized;
         private Dictionary<string, Delegate> m_constructors = new Dictionary<string, Delegate>();
+        // todo  : manage assemblies correctly
 
         public void Initialize(Assembly assembly)
         {
@@ -48,17 +49,20 @@ namespace Stump.Server.BaseServer.Database
                     continue;
 
                 var del = type.GetConstructor(attribute.CtorParameters).CreateDelegate();
-                var parameters = new List<Type>();
+                m_constructors.Add(attribute.Discriminator, del);
+                /*var parameters = new List<Type>();
                 parameters.AddRange(attribute.CtorParameters);
                 parameters.Add(type);
-                m_constructors.Add(attribute.Discriminator, Delegate.CreateDelegate(Expression.GetFuncType(parameters.ToArray()), del.Target, del.Method));
+                m_constructors.Add(attribute.Discriminator, Delegate.CreateDelegate(Expression.GetFuncType(parameters.ToArray()), del.Target, del.Method));*/
             }
+
+            m_initialized = true;
         }
 
-        private void CheckBeforeGenerate(string discriminator)
+        private void CheckBeforeGenerate(string discriminator, Assembly assembly)
         {
             if (!m_initialized)
-                Initialize(Assembly.GetCallingAssembly());
+                Initialize(assembly);
 
             if (!m_constructors.ContainsKey(discriminator))
                 throw new Exception(string.Format("Type bound to discriminator '{0}' not found ({1})", discriminator, typeof(T)));
@@ -67,28 +71,28 @@ namespace Stump.Server.BaseServer.Database
 
         public T Generate<TArg>(string discriminator, TArg parameter)
         {
-            CheckBeforeGenerate(discriminator);
+            CheckBeforeGenerate(discriminator, Assembly.GetCallingAssembly());
 
             return ((Func<TArg, T>)m_constructors[discriminator])(parameter);
         }
 
         public T Generate<TArg1, TArg2>(string discriminator, TArg1 parameter1, TArg2 parameter2)
         {
-            CheckBeforeGenerate(discriminator);
+            CheckBeforeGenerate(discriminator, Assembly.GetCallingAssembly());
 
             return ( (Func<TArg1, TArg2, T>)m_constructors[discriminator] )(parameter1, parameter2);
         }
 
         public T Generate<TArg1, TArg2, TArg3>(string discriminator, TArg1 parameter1, TArg2 parameter2, TArg3 parameter3)
         {
-            CheckBeforeGenerate(discriminator);
+            CheckBeforeGenerate(discriminator, Assembly.GetCallingAssembly());
 
             return ( (Func<TArg1, TArg2, TArg3, T>)m_constructors[discriminator] )(parameter1, parameter2, parameter3);
         }
 
         public T Generate<TArg1, TArg2, TArg3, TArg4>(string discriminator, TArg1 parameter1, TArg2 parameter2, TArg3 parameter3, TArg4 parameter4)
         {
-            CheckBeforeGenerate(discriminator);
+            CheckBeforeGenerate(discriminator, Assembly.GetCallingAssembly());
 
             return ( (Func<TArg1, TArg2, TArg3, TArg4, T>)m_constructors[discriminator] )(parameter1, parameter2, parameter3, parameter4);
         }

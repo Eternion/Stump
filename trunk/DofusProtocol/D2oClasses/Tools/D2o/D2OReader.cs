@@ -98,6 +98,11 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
             }
         }
 
+        public int IndexTableOffset
+        {
+            get { return m_headeroffset; }
+        }
+
         public Dictionary<int, D2OClassDefinition> Classes
         {
             get
@@ -175,7 +180,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
                         if (id == D2OFieldType.List)
                             goto addVectorType;
-                    }
+                    }   
 
                     FieldInfo field = classType.GetField(fieldname);
 

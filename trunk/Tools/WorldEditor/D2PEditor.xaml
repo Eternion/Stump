@@ -1,0 +1,41 @@
+﻿<MDI:MdiChild x:Class="WorldEditor.D2PEditor" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+              xmlns:MDI="clr-namespace:WPF.MDI;assembly=WPF.MDI" mc:Ignorable="d" Title="D2P Editor" d:DesignHeight="400" d:DesignWidth="500">
+  <DockPanel>
+    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+      <StackPanel.Resources>
+        <Style TargetType="Button" x:Key="SquareButton">
+          <Style.Setters>
+            <Setter Property="Width" Value="50" />
+            <Setter Property="Height" Value="60" />
+            <Setter Property="Margin" Value="3" />
+          </Style.Setters>
+        </Style>
+      </StackPanel.Resources>
+
+      <Button Style="{StaticResource SquareButton}">
+        <TextBlock Text="Add a file" TextWrapping="Wrap" TextAlignment="Center" />
+      </Button>
+      <Button Style="{StaticResource SquareButton}">
+        <TextBlock Text="Remove" TextWrapping="Wrap" TextAlignment="Center" />
+      </Button>
+      <Button Style="{StaticResource SquareButton}">
+        <TextBlock Text="Extract to ..." TextWrapping="Wrap" TextAlignment="Center" />
+      </Button>
+      <Button Style="{StaticResource SquareButton}">
+        <TextBlock Text="Extract all to ..." TextWrapping="Wrap" TextAlignment="Center" />
+      </Button>
+      <Button Style="{StaticResource SquareButton}">
+        <TextBlock Text="Find" TextWrapping="Wrap" TextAlignment="Center" />
+      </Button>
+    </StackPanel>
+    <DataGrid>
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="Name" Width="13*" />
+        <DataGridTextColumn Header="File Type" Width="9*" />
+        <DataGridTextColumn Header="Size" Width="6*" />
+        <DataGridTextColumn Header="Container" Width="9*" />
+      </DataGrid.Columns>
+    </DataGrid>
+  </DockPanel>
+</MDI:MdiChild>

@@ -1,4 +1,5 @@
 ﻿#region License GNU GPL
+
 // D2OWriter.cs
 // 
 // Copyright (C) 2012 - BehaviorIsManaged
@@ -12,6 +13,7 @@
 // See the GNU General Public License for more details. 
 // You should have received a copy of the GNU General Public License along with this program; 
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
 #endregion
 
 using System;
@@ -25,6 +27,33 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 {
     public class D2OWriter : IDisposable
     {
+        private const int NullIdentifier = unchecked((int) 0xAAAAAAAA);
+        private readonly object m_writingSync = new object();
+        private Dictionary<Type, int> m_allocatedClassId = new Dictionary<Type, int>();
+
+        private Dictionary<int, D2OClassDefinition> m_classes;
+        private Dictionary<int, int> m_indexTable;
+        private bool m_needToBeSync;
+        private Dictionary<int, object> m_objects = new Dictionary<int, object>();
+        private BigEndianWriter m_writer;
+        private bool m_writing;
+        private int m_nextIndex;
+
+        /// <summary>
+        /// Create a new instance of D2oWriter
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="readExistingFile"> </param>
+        public D2OWriter(string filename, bool readDefinitionsOnly = false)
+        {
+            Filename = filename;
+
+            if (!File.Exists(filename))
+                CreateWrite(filename);
+            else
+                OpenWrite(readDefinitionsOnly);
+        }
+
         public string BakFilename
         {
             get;
@@ -37,17 +66,15 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
             set;
         }
 
-        private const int NullIdentifier = unchecked((int)0xAAAAAAAA);
+        #region IDisposable Members
 
-        private Dictionary<int, D2OClassDefinition> m_classes;
-        private Dictionary<int, int> m_indexTable;
-        private Dictionary<Type, int> m_allocatedClassId = new Dictionary<Type, int>();
-        private Dictionary<int, object> m_objects = new Dictionary<int, object>();
+        public void Dispose()
+        {
+            if (m_writing)
+                EndWriting();
+        }
 
-        private object m_writingSync = new object();
-        private bool m_writing;
-        private bool m_needToBeSync;
-        private BigEndianWriter m_writer;
+        #endregion
 
         /// <summary>
         /// Create and flush and empty d2o file
@@ -61,27 +88,13 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
             var writer = new BinaryWriter(File.OpenWrite(path));
 
             writer.Write("D2O");
-            writer.Write((int)writer.BaseStream.Position + 4); // index table offset
+            writer.Write((int) writer.BaseStream.Position + 4); // index table offset
 
             writer.Write(0); // index table len
             writer.Write(0); // class count
 
             writer.Flush();
             writer.Close();
-        }
-
-        /// <summary>
-        /// Create a new instance of D2oWriter
-        /// </summary>
-        /// <param name="filename"></param>
-        public D2OWriter(string filename)
-        {
-            Filename = filename;
-
-            if (!File.Exists(filename))
-                CreateWrite(filename);
-            else
-                OpenWrite();
         }
 
         private void CreateWrite(string filename)
@@ -94,21 +107,19 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
             m_allocatedClassId = new Dictionary<Type, int>();
         }
 
-        private void OpenWrite()
+        private void OpenWrite(bool readDefinitionsOnly = false)
         {
-            m_writer = new BigEndianWriter(File.OpenWrite(Filename));
-
-            ResetMembersByReading();
+            ResetMembersByReading(readDefinitionsOnly);
         }
 
-        private void ResetMembersByReading()
+        private void ResetMembersByReading(bool readDefinitionsOnly = false)
         {
             var reader = new D2OReader(File.OpenRead(Filename));
 
-            m_indexTable = reader.Indexes;
+            m_indexTable = readDefinitionsOnly ? new Dictionary<int, int>() : reader.Indexes;
             m_classes = reader.Classes;
             m_allocatedClassId = m_classes.ToDictionary(entry => entry.Value.ClassType, entry => entry.Key);
-            m_objects = reader.ReadObjects();
+            m_objects = readDefinitionsOnly ? new Dictionary<int, object>() : reader.ReadObjects();
 
             reader.Close();
         }
@@ -119,15 +130,17 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
         /// <param name="backupFile"></param>
         public void StartWriting(bool backupFile = true)
         {
-            if (backupFile)
+            if (File.Exists(Filename))
             {
-                BakFilename = Filename + ".bak";
-                File.Copy(Filename, BakFilename, true);
+                if (backupFile)
+                {
+                    BakFilename = Filename + ".bak";
+                    File.Copy(Filename, BakFilename, true);
+                }
+                File.Delete(Filename);
             }
-
-            // overwrite existing file
-            File.WriteAllBytes(Filename, new byte[0]);
-
+            
+            m_writer = new BigEndianWriter(File.Create(Filename));
             m_writing = true;
             lock (m_writingSync)
             {
@@ -155,13 +168,14 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
                 foreach (var obj in m_objects)
                 {
                     if (!m_indexTable.ContainsKey(obj.Key))
-                        m_indexTable.Add(obj.Key, (int)m_writer.BaseStream.Position);
+                        m_indexTable.Add(obj.Key, (int) m_writer.BaseStream.Position);
                     else
                     {
-                        m_indexTable[obj.Key] = (int)m_writer.BaseStream.Position;
+                        m_indexTable[obj.Key] = (int) m_writer.BaseStream.Position;
                     }
 
-                    WriteObject(obj.Value, obj.Value.GetType());
+                    
+                    WriteObject(m_writer, obj.Value, obj.Value.GetType());
                 }
 
                 WriteIndexTable();
@@ -169,12 +183,6 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
                 m_writer.Dispose();
             }
-        }
-
-        public void Dispose()
-        {
-            if (m_writing)
-                EndWriting();
         }
 
 
@@ -186,13 +194,13 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
         private void WriteIndexTable()
         {
-            int offset = (int)m_writer.BaseStream.Position;
+            var offset = (int) m_writer.BaseStream.Position;
 
             m_writer.Seek(3, SeekOrigin.Begin);
             m_writer.WriteInt(offset);
 
             m_writer.Seek(offset, SeekOrigin.Begin);
-            m_writer.WriteInt(m_indexTable.Count * 8);
+            m_writer.WriteInt(m_indexTable.Count*8);
 
             foreach (var index in m_indexTable)
             {
@@ -205,9 +213,9 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
         {
             m_writer.WriteInt(m_classes.Count);
 
-            foreach (var classDefinition in m_classes.Values)
+            foreach (D2OClassDefinition classDefinition in m_classes.Values)
             {
-                classDefinition.Offset = (int)m_writer.BaseStream.Position;
+                classDefinition.Offset = (int) m_writer.BaseStream.Position;
                 m_writer.WriteInt(classDefinition.Id);
 
                 m_writer.WriteUTF(classDefinition.Name);
@@ -215,27 +223,22 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
                 m_writer.WriteInt(classDefinition.Fields.Count);
 
-                foreach (var field in classDefinition.Fields.Values)
+                foreach (D2OFieldDefinition field in classDefinition.Fields.Values)
                 {
-                    field.Offset = (int)m_writer.BaseStream.Position;
+                    field.Offset = (int) m_writer.BaseStream.Position;
                     m_writer.WriteUTF(field.Name);
-                    m_writer.WriteInt((int)field.TypeId);
+                    m_writer.WriteInt((int) field.TypeId);
 
                     foreach (var vectorType in field.VectorTypes)
                     {
                         m_writer.WriteUTF(vectorType.Item2);
-                        m_writer.WriteInt((int)vectorType.Item1);
+                        m_writer.WriteInt((int) vectorType.Item1);
                     }
                 }
             }
         }
 
-        public void Write<T>(T obj)
-        {
-            Write(obj, m_objects.Count > 0 ? m_objects.Keys.Max() + 1 : 0);
-        }
-
-        public void Write<T>(T obj, int index)
+        public void Write(object obj, Type type, int index)
         {
             if (!m_writing)
                 StartWriting();
@@ -244,15 +247,40 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
             {
                 m_needToBeSync = true;
 
-                if (!IsClassDeclared(typeof(T)))
+                if (!IsClassDeclared(type))
                     // if the class is not allocated then the class is not defined
-                    DefineClassDefinition(typeof(T));
+                    DefineClassDefinition(type);
 
                 if (m_objects.ContainsKey(index))
-                    m_objects[index] = obj;
+                     m_objects[index] = obj;
                 else
                     m_objects.Add(index, obj);
             }
+        }
+
+        public void Write(object obj, Type type)
+        {
+            Write(obj, type, m_objects.Count > 0 ? m_objects.Keys.Max() + 1 : 1);
+        }
+
+        public void Write(object obj, int index)
+        {
+            Write(obj, obj.GetType(), index);
+        }
+
+        public void Write(object obj)
+        {
+            Write(obj, obj.GetType());
+        }
+
+        public void Write<T>(T obj)
+        {
+            Write(obj, typeof(T));
+        }
+
+        public void Write<T>(T obj, int index)
+        {
+            Write(obj, typeof(T), index);
         }
 
         public void Delete(int index)
@@ -284,41 +312,50 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
         private void DefineClassDefinition(Type classType)
         {
-            if (m_classes.Count(entry => entry.Value.ClassType == ( classType )) > 0) // already define
+            if (m_classes.Count(entry => entry.Value.ClassType == (classType)) > 0) // already define
                 return;
 
             AllocateClassId(classType);
 
-            object[] attributes = classType.GetCustomAttributes(typeof(D2OClassAttribute), false);
+            object[] attributes = classType.GetCustomAttributes(typeof (D2OClassAttribute), false);
 
             if (attributes.Length != 1)
                 throw new Exception("The given class has no D2OClassAttribute attribute and cannot be wrote");
 
-            string package = ( (D2OClassAttribute)attributes[0] ).PackageName;
+            string package = ((D2OClassAttribute) attributes[0]).PackageName;
             string name = !string.IsNullOrEmpty(((D2OClassAttribute) attributes[0]).Name)
                               ? ((D2OClassAttribute) attributes[0]).Name
                               : classType.Name;
 
             // add fields
-            var fields = ( from field in classType.GetFields()
-                           let attribute = (D2OFieldAttribute)field.GetCustomAttributes(typeof(D2OFieldAttribute), false).SingleOrDefault()
-                           let fieldTypeId = GetIdByType(field.FieldType)
-                           let vectorTypes = GetVectorTypes(field.FieldType)
-                           let fieldName = attribute != null ? attribute.FieldName : field.Name
-                           where field.GetCustomAttributes(typeof(D2OIgnore), false).Count() <= 0
-                           select new D2OFieldDefinition(fieldName, fieldTypeId, field, -1, vectorTypes) );
+            IEnumerable<D2OFieldDefinition> fields = (from field in classType.GetFields()
+                                                      let attribute =
+                                                          (D2OFieldAttribute)
+                                                          field.GetCustomAttributes(typeof (D2OFieldAttribute), false).
+                                                              SingleOrDefault()
+                                                      let fieldTypeId = GetIdByType(field.FieldType)
+                                                      let vectorTypes = GetVectorTypes(field.FieldType)
+                                                      let fieldName =
+                                                          attribute != null ? attribute.FieldName : field.Name
+                                                      where
+                                                          !field.GetCustomAttributes(typeof (D2OIgnore), false).Any()
+                                                      select
+                                                          new D2OFieldDefinition(fieldName, fieldTypeId, field, -1,
+                                                                                 vectorTypes));
 
             // add properties
             fields.Concat(from property in classType.GetProperties()
-                          let attribute = (D2OFieldAttribute)property.GetCustomAttributes(typeof(D2OFieldAttribute), false).SingleOrDefault()
+                          let attribute =
+                              (D2OFieldAttribute)
+                              property.GetCustomAttributes(typeof (D2OFieldAttribute), false).SingleOrDefault()
                           let fieldTypeId = GetIdByType(property.PropertyType)
                           let vectorTypes = GetVectorTypes(property.PropertyType)
                           let fieldName = attribute != null ? attribute.FieldName : property.Name
-                          where property.GetCustomAttributes(typeof(D2OIgnore), false).Count() <= 0
+                          where !property.GetCustomAttributes(typeof (D2OIgnore), false).Any()
                           select new D2OFieldDefinition(fieldName, fieldTypeId, property, -1, vectorTypes));
 
             m_classes.Add(m_allocatedClassId[classType],
-                new D2OClassDefinition(m_allocatedClassId[classType], name, package, classType, fields, -1));
+                          new D2OClassDefinition(m_allocatedClassId[classType], name, package, classType, fields, -1));
 
             DefineAllocatedTypes(); // build class definition of allocated types that aren't define
         }
@@ -333,19 +370,19 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
         private D2OFieldType GetIdByType(Type fieldType)
         {
-            if (fieldType == typeof(int))
+            if (fieldType == typeof (int))
                 return D2OFieldType.Int;
-            if (fieldType == typeof(bool))
+            if (fieldType == typeof (bool))
                 return D2OFieldType.Bool;
-            if (fieldType == typeof(string))
+            if (fieldType == typeof (string))
                 return D2OFieldType.String;
-            if (fieldType == typeof(double))
+            if (fieldType == typeof (double))
                 return D2OFieldType.Double;
-            if (fieldType == typeof(int)) // that's useless, i know ...
+            if (fieldType == typeof (int)) // that's useless, i know ...
                 return D2OFieldType.I18N;
-            if (fieldType == typeof(uint))
+            if (fieldType == typeof (uint))
                 return D2OFieldType.UInt;
-            if (fieldType.GetGenericTypeDefinition() == typeof(List<>))
+            if (fieldType.GetGenericTypeDefinition() == typeof (List<>))
                 return D2OFieldType.List;
 
             int classId;
@@ -358,7 +395,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
             classId = m_allocatedClassId[fieldType];
 
-            return (D2OFieldType)classId;
+            return (D2OFieldType) classId;
         }
 
         private Tuple<D2OFieldType, string>[] GetVectorTypes(Type vectorType)
@@ -382,29 +419,29 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
             return ids.ToArray();
         }
 
-        private void WriteObject(object obj, Type type)
+        private void WriteObject(IDataWriter writer, object obj, Type type)
         {
             if (!m_allocatedClassId.ContainsKey(obj.GetType()))
                 throw new Exception(string.Format("Unexpected object of type {0} (was not registered)", obj.GetType()));
 
-            var @class = m_classes[m_allocatedClassId[type]];
+            D2OClassDefinition @class = m_classes[m_allocatedClassId[type]];
 
-            m_writer.WriteInt(@class.Id);
+            writer.WriteInt(@class.Id);
 
             foreach (var field in @class.Fields)
             {
                 object fieldValue = field.Value.GetValue(obj);
 
-                WriteField(m_writer, field.Value, fieldValue);
+                WriteField(writer, field.Value.TypeId, field.Value, fieldValue);
             }
         }
 
-        private void WriteField(BigEndianWriter writer, D2OFieldDefinition field, dynamic obj, int vectorDimension = 0)
+        private void WriteField(IDataWriter writer, D2OFieldType fieldType, D2OFieldDefinition field, dynamic obj, int vectorDimension = 0)
         {
-            switch (field.TypeId)
+            switch (fieldType)
             {
                 case D2OFieldType.Int:
-                    WriteFieldInt(writer, (int)obj);
+                    WriteFieldInt(writer, (int) obj);
                     break;
                 case D2OFieldType.Bool:
                     WriteFieldBool(writer, obj);
@@ -416,10 +453,10 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
                     WriteFieldDouble(writer, obj);
                     break;
                 case D2OFieldType.I18N:
-                    WriteFieldI18n(writer, obj);
+                    WriteFieldI18n(writer, (int) obj);
                     break;
                 case D2OFieldType.UInt:
-                    WriteFieldUInt(writer, (uint)obj);
+                    WriteFieldUInt(writer, (uint) obj);
                     break;
                 case D2OFieldType.List:
                     WriteFieldVector(writer, field, obj, vectorDimension);
@@ -431,58 +468,59 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
         }
 
 
-        private void WriteFieldVector(BigEndianWriter writer, D2OFieldDefinition field, IList list, int vectorDimension)
+        private void WriteFieldVector(IDataWriter writer, D2OFieldDefinition field, IList list, int vectorDimension)
         {
             writer.WriteInt(list.Count);
 
             for (int i = 0; i < list.Count; i++)
             {
-                WriteField(writer, field, field.VectorTypes[vectorDimension], ++vectorDimension);
+                WriteField(writer, field.VectorTypes[vectorDimension].Item1, field, list[i], vectorDimension + 1);
             }
         }
 
-        private void WriteFieldObject(BigEndianWriter writer, object obj)
+        private void WriteFieldObject(IDataWriter writer, object obj)
         {
             if (obj == null)
                 writer.WriteInt(NullIdentifier);
             else
             {
                 if (!m_allocatedClassId.ContainsKey(obj.GetType()))
-                    throw new Exception(string.Format("Unexpected object of type {0} (was not registered)", obj.GetType()));
+                    throw new Exception(string.Format("Unexpected object of type {0} (was not registered)",
+                                                      obj.GetType()));
 
-                int classid = m_allocatedClassId[obj.GetType()];
-                writer.WriteInt(classid);
-
-                WriteObject(obj, obj.GetType());
+                WriteObject(writer, obj, obj.GetType());
             }
         }
 
-        private static void WriteFieldInt(BigEndianWriter writer, int value)
+        private static void WriteFieldInt(IDataWriter writer, int value)
         {
             writer.WriteInt(value);
         }
 
-        private static void WriteFieldUInt(BigEndianWriter writer, uint value)
+        private static void WriteFieldUInt(IDataWriter writer, uint value)
         {
             writer.WriteUInt(value);
         }
 
-        private static void WriteFieldBool(BigEndianWriter writer, bool value)
+        private static void WriteFieldBool(IDataWriter writer, bool value)
         {
             writer.WriteBoolean(value);
         }
 
-        private static void WriteFieldUTF(BigEndianWriter writer, string value)
+        private static void WriteFieldUTF(IDataWriter writer, string value)
         {
+            if (value == null)
+                value = string.Empty;
+
             writer.WriteUTF(value);
         }
 
-        private static void WriteFieldDouble(BigEndianWriter writer, double value)
+        private static void WriteFieldDouble(IDataWriter writer, double value)
         {
             writer.WriteDouble(value);
         }
 
-        private static void WriteFieldI18n(BigEndianWriter writer, int value)
+        private static void WriteFieldI18n(IDataWriter writer, int value)
         {
             writer.WriteInt(value);
         }

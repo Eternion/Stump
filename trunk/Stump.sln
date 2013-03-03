@@ -94,6 +94,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stump.ORM", "Core\Stump.ORM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldEditor", "Tools\WorldEditor\WorldEditor.csproj", "{8785E18F-243C-4D1C-AD5C-5519E81F4104}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xceed.Wpf.Toolkit", "Library\Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.csproj", "{72E591D6-8F83-4D8C-8F67-9C325E623234}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Stump.vsmdi
@@ -670,6 +672,18 @@ Global
 		{8785E18F-243C-4D1C-AD5C-5519E81F4104}.Release|x64.ActiveCfg = Release|x86
 		{8785E18F-243C-4D1C-AD5C-5519E81F4104}.Release|x86.ActiveCfg = Release|x86
 		{8785E18F-243C-4D1C-AD5C-5519E81F4104}.Release|x86.Build.0 = Release|x86
+		{72E591D6-8F83-4D8C-8F67-9C325E623234}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72E591D6-8F83-4D8C-8F67-9C325E623234}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72E591D6-8F83-4D8C-8F67-9C325E623234}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{72E591D6-8F83-4D8C-8F67-9C325E623234}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{72E591D6-8F83-4D8C-8F67-9C325E623234}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{72E591D6-8F83-4D8C-8F67-9C325E623234}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{72E591D6-8F83-4D8C-8F67-9C325E623234}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72E591D6-8F83-4D8C-8F67-9C325E623234}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72E591D6-8F83-4D8C-8F67-9C325E623234}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{72E591D6-8F83-4D8C-8F67-9C325E623234}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{72E591D6-8F83-4D8C-8F67-9C325E623234}.Release|x64.ActiveCfg = Release|Any CPU
+		{72E591D6-8F83-4D8C-8F67-9C325E623234}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -712,5 +726,6 @@ Global
 		{BE1ED569-5E0B-4DF0-8964-33AD2AAE4C4A} = {38155C42-AA0B-483C-98FB-EE1F0FA9B293}
 		{27B67DFE-0BF1-4435-B036-E4C083EAEA03} = {38155C42-AA0B-483C-98FB-EE1F0FA9B293}
 		{A0BFF0DB-ED9A-4639-AE86-8E709A1EFC66} = {38155C42-AA0B-483C-98FB-EE1F0FA9B293}
+		{72E591D6-8F83-4D8C-8F67-9C325E623234} = {38155C42-AA0B-483C-98FB-EE1F0FA9B293}
 	EndGlobalSection
 EndGlobal

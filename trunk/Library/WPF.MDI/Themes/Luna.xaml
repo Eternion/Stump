@@ -15,7 +15,10 @@
         </Setter>
     </Style>
 
-    <SolidColorBrush x:Key="BackBorderBackgroundBrush" Color="#bbd2eb" />
+    <LinearGradientBrush x:Key="BackBorderBackgroundBrush" EndPoint="0.5,1" StartPoint="0.5,0">
+    	<GradientStop Color="#FFB0E4DE" Offset="0"/>
+    	<GradientStop Color="#FF798D8B" Offset="1"/>
+    </LinearGradientBrush>
     <SolidColorBrush x:Key="BackBorderBrush" Color="Black" />
 
     <LinearGradientBrush x:Key="DarkenBackgroundBrush" EndPoint="0,1">
@@ -31,8 +34,8 @@
     <SolidColorBrush x:Key="NearBorderBrush" Color="White" />
     <SolidColorBrush x:Key="FarBorderBrush" Color="#FF3FCEF2" />
 
-    <BitmapImage x:Key="TopLeftFocused" >Resources/Luna/TopLeftFocused.png</BitmapImage>
-    <BitmapImage x:Key="TopLeftUnfocused" >Resources/Luna/TopLeftUnfocused.png</BitmapImage>
+    <BitmapImage x:Key="TopLeftFocused" UriSource="/WPF.MDI;component/Themes/Resources/Luna/TopLeftFocused.png" />
+    <BitmapImage x:Key="TopLeftUnfocused" UriSource="/WPF.MDI;component/Themes/Resources/Luna/TopLeftUnfocused.png" />
 
     <BitmapImage x:Key="TopMiddleFocused" UriSource="/WPF.MDI;component/Themes/Resources/Luna/TopMiddleFocused.png" />
     <BitmapImage x:Key="TopMiddleUnfocused" UriSource="/WPF.MDI;component/Themes/Resources/Luna/TopMiddleUnfocused.png" />
