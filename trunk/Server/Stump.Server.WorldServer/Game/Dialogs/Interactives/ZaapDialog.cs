@@ -28,6 +28,11 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
             m_destinations = destinations.ToList();
         }
 
+        public DialogTypeEnum DialogType
+        {
+            get { return DialogTypeEnum.DIALOG_TELEPORTER; }
+        }
+
         public Character Character
         {
             get;
@@ -54,7 +59,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
         public void Close()
         {
             Character.ResetDialog();
-            DialogHandler.SendLeaveDialogMessage(Character.Client);
+            DialogHandler.SendLeaveDialogMessage(Character.Client, DialogType);
         }
 
         public void Teleport(Map map)

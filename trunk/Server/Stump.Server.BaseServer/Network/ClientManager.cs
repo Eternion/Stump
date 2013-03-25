@@ -358,7 +358,7 @@ namespace Stump.Server.BaseServer.Network
                 {
                     client.ProcessReceive(e.Buffer, e.Offset, e.BytesTransferred);
 
-                    if (client.Socket == null)
+                    if (client.Socket == null || !client.Socket.Connected)
                     {
                         CloseClientSocket(e);
                     }

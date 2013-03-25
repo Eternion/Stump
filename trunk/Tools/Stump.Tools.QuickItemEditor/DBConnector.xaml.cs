@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using Castle.ActiveRecord.Framework.Config;
 using Stump.Core.Attributes;
 using Stump.Core.Xml.Config;
+using Stump.ORM;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.I18n;
 using Stump.Server.WorldServer;
@@ -32,7 +33,6 @@ namespace Stump.Tools.QuickItemEditor
         {
             DataContext = this;
             Configuration = new DatabaseConfigurationModel();
-            Configuration.DatabaseType = DatabaseType.MySql;
 
             m_xmlConfig = new XmlConfig(ConfigPath);
             m_xmlConfig.AddAssembly(Assembly.GetExecutingAssembly());
@@ -87,19 +87,18 @@ namespace Stump.Tools.QuickItemEditor
 
         public bool EtablishConnection()
         {
-            var dbAccessor = new DatabaseAccessor(Configuration.GetConfig(), Definitions.DatabaseRevision,
-                                                  typeof (WorldBaseRecord<>), typeof (WorldBaseRecord<>).Assembly, false);
+            var dbAccessor = new DatabaseAccessor(Configuration.GetConfig());
+            dbAccessor.RegisterMappingAssembly(typeof (WorldServer).Assembly);
 
             try
             {
                 dbAccessor.Initialize();
-                dbAccessor.OpenDatabase();
+                dbAccessor.OpenConnection();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Cannot etablish connection with database : \r\n\r\n" + ex.Message, "Error",
                                 MessageBoxButton.OK, MessageBoxImage.Error);
-                dbAccessor.Reset();
                 return false;
             }
 

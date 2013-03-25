@@ -40,7 +40,6 @@ namespace NLog.Targets
     using System.ServiceModel;
     using System.ServiceModel.Channels;
 #endif
-    using System.Threading;
 #if SILVERLIGHT
     using System.Windows;
     using System.Windows.Threading;

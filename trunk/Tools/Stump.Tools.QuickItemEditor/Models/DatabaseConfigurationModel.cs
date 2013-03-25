@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel;
 using Castle.ActiveRecord.Framework.Config;
+using Stump.ORM;
 using Stump.Server.BaseServer.Database;
 
 namespace Stump.Tools.QuickItemEditor.Models
 {
     public class DatabaseConfigurationModel : INotifyPropertyChanged
     {
-        private DatabaseType m_databaseType;
         private string m_host;
         private string m_name;
         private string m_password;
@@ -14,29 +14,6 @@ namespace Stump.Tools.QuickItemEditor.Models
         private string m_updateFileDir;
 
         private string m_user;
-
-        public DatabaseType DatabaseType
-        {
-            get { return m_databaseType; }
-            set
-            {
-                m_databaseType = value;
-                OnPropertyChanged("DatabaseType");
-            }
-        }
-
-        /// <summary>
-        /// Folder which contains all of sql file to update db
-        /// </summary>
-        public string UpdateFileDir
-        {
-            get { return m_updateFileDir; }
-            set
-            {
-                m_updateFileDir = value;
-                OnPropertyChanged("UpdateFileDir");
-            }
-        }
 
         /// <summary>
         /// Database user
@@ -108,11 +85,10 @@ namespace Stump.Tools.QuickItemEditor.Models
         {
             return new DatabaseConfiguration()
             {
-                DatabaseType = DatabaseType,
+                ProviderName = "MySql.Data.MySqlClient",
                 Host = Host,
                 Password = Password,
-                Name = Name,
-                UpdateFileDir = UpdateFileDir,
+                DbName = Name,
                 User = User
             };
         }

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.Contracts;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
@@ -19,9 +20,9 @@ namespace Stump.Server.WorldServer.Handlers.Dialogs
             client.Character.LeaveDialog();
         }
 
-        public static void SendLeaveDialogMessage(IPacketReceiver client)
+        public static void SendLeaveDialogMessage(IPacketReceiver client, DialogTypeEnum dialogType)
         {
-            client.Send(new LeaveDialogMessage());
+            client.Send(new LeaveDialogMessage((sbyte)dialogType));
         }
     }
 }

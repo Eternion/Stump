@@ -16,6 +16,7 @@ namespace Stump.Tools.Proxy.Network
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly List<Message> m_receivedMessagesStack = new List<Message>(20);
         private readonly List<Message> m_sendedMessagesStack = new List<Message>(20);
+        private ManualResetEvent m_serverConnectionWait = new ManualResetEvent(false);
         private readonly object m_syncLock = new object();
         protected bool m_isInCriticalZone;
 
@@ -48,10 +49,12 @@ namespace Stump.Tools.Proxy.Network
             get { return m_sendedMessagesStack; }
         }
 
-        public bool IsBinded
+        public bool IsBoundToServer
         {
-            get;
-            private set;
+            get
+            {
+                return Server != null && Server.Socket.Connected;
+            }
         }
 
         public void BindToServer(IPEndPoint ipEndPoint)
@@ -87,12 +90,12 @@ namespace Stump.Tools.Proxy.Network
 
         private void OnServerConnected(ServerConnection connection)
         {
-            IsBinded = true;
+            m_serverConnectionWait.Set();
         }
 
         private void OnServerDisconnected(ServerConnection connection)
         {
-            IsBinded = false;
+            m_serverConnectionWait.Reset();
             if (Socket != null)
                 Disconnect();
         }
@@ -150,8 +153,8 @@ namespace Stump.Tools.Proxy.Network
 
                 if (!Dispatch(message))
                 {
-                    if (!IsBinded)
-                        throw new Exception("Attempt to send a packet to the server but the client is not bind to him");
+                    if (!IsBoundToServer && !m_serverConnectionWait.WaitOne(10*1000))
+                        throw new Exception("Attempt to send a packet to the server but the client is not bound to him");
 
                     Proxy.Instance.IOTaskPool.AddMessage(() =>m_serverConnection.Send(message));
                 }

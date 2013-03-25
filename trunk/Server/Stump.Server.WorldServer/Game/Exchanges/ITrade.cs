@@ -7,7 +7,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
     {
         int Id { get; }
 
-        ExchangeTypeEnum Type
+        ExchangeTypeEnum ExchangeType
         {
             get;
         }

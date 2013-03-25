@@ -51,7 +51,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Ele.Datas
             var data = new AnimatedGraphicalElementData(instance, id);
 
             data.Gfx = reader.ReadInt();
-            data.Height = reader.ReadUInt();
+            data.Height = reader.ReadByte();
             data.HorizontalSymmetry = reader.ReadBoolean();
             data.Origin = new System.Drawing.Point(reader.ReadShort(), reader.ReadShort());
             data.Size = new System.Drawing.Point(reader.ReadShort(), reader.ReadShort());

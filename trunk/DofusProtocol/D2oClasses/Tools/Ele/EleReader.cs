@@ -47,12 +47,16 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Ele
             {
                 try
                 {
-                    var uncompress = ZipHelper.Uncompress(m_reader.ReadBytes((int)m_reader.BytesAvailable));
+                    m_reader.Seek(0, SeekOrigin.Begin);
+                    var output = new MemoryStream();
+                    ZipHelper.Deflate(new MemoryStream(m_reader.ReadBytes((int)m_reader.BytesAvailable)), output);
 
+                    var uncompress = output.ToArray();
                     if (uncompress.Length <= 0 || uncompress[0] != 69)
                         throw new FileLoadException("Wrong header file");
 
                     ChangeStream(new MemoryStream(uncompress));
+                    m_reader.SkipBytes(1);
                 }
                 catch (Exception)
                 {

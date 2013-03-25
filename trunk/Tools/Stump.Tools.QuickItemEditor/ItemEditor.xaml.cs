@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using NHibernate.Criterion;
+using Stump.ORM;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.I18n;
 using Stump.Server.WorldServer.Database;
@@ -63,8 +64,10 @@ namespace Stump.Tools.QuickItemEditor
         private void OnSaveButtonClicked(object sender, RoutedEventArgs e)
         {
             saveButton.IsEnabled = false;
-            SelectedItem.Template.Update();
+            m_dbAccessor.Database.Update(SelectedItem.Template);
             saveButton.IsEnabled = true;
+
+            MessageBox.Show(string.Format("Item '{0}' saved !", SelectedItem.Name), "Save", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         public bool Search(string s)
@@ -75,15 +78,14 @@ namespace Stump.Tools.QuickItemEditor
             }
             else
             {
-                var texts = TextRecord.FindAll(Restrictions.InsensitiveLike(m_language.ToString(),
-                                                                            string.Format("%{0}%", s)))
+                var texts = m_dbAccessor.Database.Query<LangText>(string.Format("SELECT * FROM langs WHERE {0} COLLATE UTF8_GENERAL_CI LIKE '%{1}%'", m_language, s))
                     .ToDictionary(entry => entry.Id);
 
-                Items = ItemTemplate.FindAll(Restrictions.In("NameId", texts.Keys))
-                    .Select(
-                        entry =>
-                        new ItemTemplateModel(entry, TextManager.Instance.GetText(texts[entry.NameId], m_language))).
-                    ToArray();
+                if (texts.Count == 0)
+                    Items = new ItemTemplateModel[0];
+                else
+                    Items = m_dbAccessor.Database.Query<ItemTemplate>(string.Format("SELECT * FROM items_templates WHERE NameId IN ({0})", string.Join(",", texts.Keys)))
+                        .Select( entry => new ItemTemplateModel(entry, TextManager.Instance.GetText(texts[entry.NameId], m_language))).ToArray();
             }
 
             itemsList.ItemsSource = Items;

@@ -18,6 +18,11 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
         private bool m_mustRefreshPosition;
         private ObjectPosition m_position;
 
+        public TeleportReply()
+        {
+            Record.Type = "Teleport";
+        }
+
         public TeleportReply(NpcReplyRecord record)
             : base(record)
         {

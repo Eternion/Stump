@@ -1,5 +1,4 @@
 using System;
-using System.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Messages;

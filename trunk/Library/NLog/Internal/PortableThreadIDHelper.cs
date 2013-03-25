@@ -31,6 +31,8 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 // 
 
+using System.Threading;
+
 #if !SILVERLIGHT && !NET_CF
 
 namespace NLog.Internal
@@ -38,7 +40,6 @@ namespace NLog.Internal
     using System;
     using System.Diagnostics;
     using System.IO;
-    using System.Threading;
 
     /// <summary>
     /// Portable implementation of <see cref="ThreadIDHelper"/>.

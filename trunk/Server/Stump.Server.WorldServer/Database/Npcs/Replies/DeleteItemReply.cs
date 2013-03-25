@@ -7,12 +7,12 @@ using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Database.Npcs.Replies
 {
-    [Discriminator("UseItem", typeof(NpcReply), typeof(NpcReplyRecord))]
-    public class UseItemReply : NpcReply
+    [Discriminator("DeleteItem", typeof(NpcReply), typeof(NpcReplyRecord))]
+    public class DeleteItemReply : NpcReply
     {
         private ItemTemplate m_itemTemplate;
 
-        public UseItemReply(NpcReplyRecord record) : base(record)
+        public DeleteItemReply(NpcReplyRecord record) : base(record)
         {
         }
 

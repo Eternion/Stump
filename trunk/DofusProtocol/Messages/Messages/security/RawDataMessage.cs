@@ -1,5 +1,5 @@
 
-// Generated on 01/04/2013 14:36:01
+// Generated on 03/25/2013 19:24:25
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,21 +15,21 @@ namespace Stump.DofusProtocol.Messages
         {
             get { return Id; }
         }
-
+        
+        
         public RawDataMessage()
         {
-            
         }
+        
         
         public override void Serialize(IDataWriter writer)
         {
-            
         }
         
         public override void Deserialize(IDataReader reader)
         {
         }
         
-    }*/
-    
+    }
+    */
 }

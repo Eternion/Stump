@@ -31,11 +31,12 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 // 
 
+using System.Threading;
+
 namespace NLog.LayoutRenderers
 {
     using System.Globalization;
     using System.Text;
-    using System.Threading;
 
     /// <summary>
     /// The identifier of the current thread.

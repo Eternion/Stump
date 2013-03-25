@@ -31,6 +31,8 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 // 
 
+using System.Threading;
+
 #if !NET_CF && !SILVERLIGHT
 
 namespace NLog.Internal.FileAppenders
@@ -38,7 +40,6 @@ namespace NLog.Internal.FileAppenders
     using System;
     using System.Globalization;
     using System.IO;
-    using System.Threading;
     using NLog.Common;
 
     /// <summary>

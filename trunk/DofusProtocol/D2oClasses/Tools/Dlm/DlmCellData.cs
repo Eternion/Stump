@@ -1,4 +1,5 @@
 ﻿#region License GNU GPL
+
 // DlmCellData.cs
 // 
 // Copyright (C) 2012 - BehaviorIsManaged
@@ -12,6 +13,7 @@
 // See the GNU General Public License for more details. 
 // You should have received a copy of the GNU General Public License along with this program; 
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
 #endregion
 
 using Stump.Core.IO;
@@ -20,68 +22,96 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
 {
     public struct DlmCellData
     {
+        private short? m_floor;
+        private short m_id;
+
+        private byte m_losMov;
+
+        private byte m_mapChangeData;
+        private byte m_moveZone;
+        private sbyte m_rawFloor;
+        private byte m_speed;
+
         public DlmCellData(short id)
         {
-            Id = id;
-            LosMov = 3;
+            m_id = id;
+            m_losMov = 3;
             m_rawFloor = 0;
             m_floor = 0;
-            Speed = 0;
-            MapChangeData = 0;
-            MoveZone = 0;
+            m_speed = 0;
+            m_mapChangeData = 0;
+            m_moveZone = 0;
         }
-
-        public short Id;
 
         public short Floor
         {
             get { return m_floor ?? (m_floor = (short) (m_rawFloor*10)).Value; }
         }
 
-        private sbyte m_rawFloor;
-        private short? m_floor;
-
-        public byte LosMov;
-
-        public byte Speed;
-
-        public byte MapChangeData;
-        public byte MoveZone;
         public bool Los
         {
-            get { return (LosMov & 2) >> 1 == 1; }
+            get { return (m_losMov & 2) >> 1 == 1; }
         }
 
         public bool Mov
         {
-            get { return (LosMov & 1) == 1 && !NonWalkableDuringFight && !FarmCell; }
+            get { return (m_losMov & 1) == 1 && !NonWalkableDuringFight && !FarmCell; }
         }
 
         public bool NonWalkableDuringFight
         {
-            get { return (LosMov & 4) >> 2 == 1; }
+            get { return (m_losMov & 4) >> 2 == 1; }
         }
 
         public bool Red
         {
-            get { return (LosMov & 8) >> 3 == 1; }
+            get { return (m_losMov & 8) >> 3 == 1; }
         }
 
         public bool Blue
         {
-            get { return (LosMov & 16) >> 4 == 1; }
+            get { return (m_losMov & 16) >> 4 == 1; }
         }
 
         public bool FarmCell
         {
-            get { return (LosMov & 32) >> 5 == 1; }
+            get { return (m_losMov & 32) >> 5 == 1; }
         }
 
         public bool Visible
         {
-            get { return (LosMov & 64) >> 6 == 1; }
+            get { return (m_losMov & 64) >> 6 == 1; }
         }
 
+        public short Id
+        {
+            get { return m_id; }
+            set { m_id = value; }
+        }
+
+        public byte MapChangeData
+        {
+            get { return m_mapChangeData; }
+            set { m_mapChangeData = value; }
+        }
+
+        public byte MoveZone
+        {
+            get { return m_moveZone; }
+            set { m_moveZone = value; }
+        }
+
+        public byte Speed
+        {
+            get { return m_speed; }
+            set { m_speed = value; }
+        }
+
+        public byte LosMov
+        {
+            get { return m_losMov; }
+            set { m_losMov = value; }
+        }
 
 
         public static DlmCellData ReadFromStream(short id, byte version, IDataReader reader)
@@ -96,13 +126,13 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
             }
 
 
-            cell.LosMov = reader.ReadByte();
-            cell.Speed = reader.ReadByte();
-            cell.MapChangeData = reader.ReadByte();
+            cell.m_losMov = reader.ReadByte();
+            cell.m_speed = reader.ReadByte();
+            cell.m_mapChangeData = reader.ReadByte();
 
             if (version > 5)
             {
-                cell.MoveZone = reader.ReadByte();
+                cell.m_moveZone = reader.ReadByte();
             }
 
             return cell;

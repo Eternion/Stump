@@ -1,5 +1,5 @@
 
-// Generated on 03/02/2013 21:17:44
+// Generated on 03/25/2013 19:24:32
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
@@ -22,7 +22,8 @@ namespace Stump.DofusProtocol.D2oClasses
         public uint zoneSize;
         public uint zoneShape;
         public uint zoneMinSize;
-        public string rawZone;
+        public Boolean rawZoneInit;
+        public String rawZone;
 
         int IIndexedData.Id
         {
@@ -99,6 +100,18 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return zoneMinSize; }
             set { zoneMinSize = value; }
+        }
+
+        public Boolean RawZoneInit
+        {
+            get { return rawZoneInit; }
+            set { rawZoneInit = value; }
+        }
+
+        public String RawZone
+        {
+            get { return rawZone; }
+            set { rawZone = value; }
         }
 
     }

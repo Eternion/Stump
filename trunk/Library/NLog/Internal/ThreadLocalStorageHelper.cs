@@ -31,6 +31,8 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 // 
 
+using System.Threading;
+
 #if SILVERLIGHT || NET_CF
 #define TLS_WORKAROUND
 #endif
@@ -39,7 +41,6 @@ namespace NLog.Internal
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading;
 
     /// <summary>
     /// Helper for dealing with thread-local storage.

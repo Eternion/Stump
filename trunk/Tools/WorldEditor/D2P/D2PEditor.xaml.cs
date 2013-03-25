@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Stump.DofusProtocol.D2oClasses.Tools.D2p;
-using WPF.MDI;
 
 namespace WorldEditor.D2P
 {

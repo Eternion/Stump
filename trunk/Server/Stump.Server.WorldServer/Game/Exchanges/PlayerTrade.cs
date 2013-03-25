@@ -12,6 +12,14 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             Id = id;
         }
 
+        public DialogTypeEnum DialogType
+        {
+            get
+            {
+                return DialogTypeEnum.DIALOG_EXCHANGE;
+            }
+        }
+
         public PlayerTrader FirstTrader
         {
             get;
@@ -32,7 +40,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             private set;
         }
 
-        public ExchangeTypeEnum Type
+        public ExchangeTypeEnum ExchangeType
         {
             get
             {
@@ -59,9 +67,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             if (FirstTrader.ReadyToApply && SecondTrader.ReadyToApply)
                 Apply();
 
-            InventoryHandler.SendExchangeLeaveMessage(FirstTrader.Character.Client, Type,
+            InventoryHandler.SendExchangeLeaveMessage(FirstTrader.Character.Client, ExchangeType,
                                                       FirstTrader.ReadyToApply && SecondTrader.ReadyToApply);
-            InventoryHandler.SendExchangeLeaveMessage(SecondTrader.Character.Client, Type,
+            InventoryHandler.SendExchangeLeaveMessage(SecondTrader.Character.Client, ExchangeType,
                                                       FirstTrader.ReadyToApply && SecondTrader.ReadyToApply);
 
             FirstTrader.Character.ResetDialog();

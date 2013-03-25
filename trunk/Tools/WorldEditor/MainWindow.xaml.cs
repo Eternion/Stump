@@ -15,10 +15,12 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Stump.DofusProtocol.D2oClasses.Tools.D2i;
 using Stump.DofusProtocol.D2oClasses.Tools.D2p;
-using WPF.MDI;
+using Stump.DofusProtocol.D2oClasses.Tools.Dlm;
 using WorldEditor.D2I;
 using WorldEditor.D2O;
 using WorldEditor.D2P;
+using WorldEditor.Helpers;
+using WorldEditor.Maps;
 using WorldEditor.Meta;
 
 namespace WorldEditor
@@ -43,7 +45,7 @@ namespace WorldEditor
                 foreach (string filename in filenames)
                 {
                     var ext = System.IO.Path.GetExtension(filename);
-                    if ((ext == ".d2p" || ext == ".d2i" || ext==".d2o" || ext==".meta") && File.Exists(filename))
+                    if ((ext == ".d2p" || ext == ".d2i" || ext==".d2o" || ext==".meta" || ext==".dlm") && File.Exists(filename))
                     {
                         isCorrect = true;
                         break;
@@ -73,6 +75,8 @@ namespace WorldEditor
 
         private void ThreadStartingPoint(string filename, Point mousePosition)
         {
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+
             Window window = null;
             if (System.IO.Path.GetExtension(filename) == ".d2p" && File.Exists(filename))
             {
@@ -89,6 +93,10 @@ namespace WorldEditor
             else if (System.IO.Path.GetExtension(filename) == ".meta" && File.Exists(filename))
             {
                 window = new MetaEditor(new MetaFile(filename));
+            }
+            else if (System.IO.Path.GetExtension(filename) == ".dlm" && File.Exists(filename))
+            {
+                window = new MapEditor(new DlmReader(filename, Settings.GenericMapDecryptionKey));
             }
             else
                 return;

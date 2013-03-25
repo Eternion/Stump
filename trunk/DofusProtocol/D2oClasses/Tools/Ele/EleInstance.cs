@@ -22,9 +22,12 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Ele
 {
     public class EleInstance : INotifyPropertyChanged
     {
+        private readonly bool m_lazyLoad;
+        private Dictionary<int, int> m_indexes = new Dictionary<int, int>(); 
         public event PropertyChangedEventHandler PropertyChanged;
         public EleInstance()
         {
+            m_lazyLoad = false;
             GraphicalDatas = new Dictionary<int, EleGraphicalData>();
             GfxJpgMap = new Dictionary<int, bool>();
         }
@@ -51,13 +54,30 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Ele
         {
             var instance = new EleInstance();
 
+            int skypLen = 0;
             instance.Version = reader.ReadByte();
 
             var count = reader.ReadUInt();
             for (int i = 0; i < count; i++)
             {
-                var elem = EleGraphicalData.ReadFromStream(instance, reader);
-                instance.GraphicalDatas.Add(elem.Id, elem);
+                if (instance.Version >= 9)
+                {
+                    skypLen = reader.ReadUShort();
+                }
+                var id = reader.ReadInt();
+                if (instance.Version <= 8 || !instance.m_lazyLoad)
+                {
+                    instance.m_indexes.Add(id, (int)reader.Position);
+
+                    var elem = EleGraphicalData.ReadFromStream(id, instance, reader);
+                    instance.GraphicalDatas.Add(elem.Id, elem);
+                }
+                else
+                {
+                    // never go there atm
+                    instance.m_indexes.Add(id, (int)reader.Position);
+                    reader.SkipBytes(skypLen - 4);
+                }
             }
 
             if (instance.Version >= 8)

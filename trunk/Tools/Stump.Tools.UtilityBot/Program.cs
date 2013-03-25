@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using ProtoBuf;
 using Stump.Server.BaseServer.Data.MapTool;
 using Stump.Tools.UtilityBot.Commands;

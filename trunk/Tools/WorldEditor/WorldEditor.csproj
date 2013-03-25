@@ -28,6 +28,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -39,6 +40,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Expression.Effects, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -47,6 +49,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -70,6 +73,33 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helpers\CanvasAutoSize.cs" />
+    <Compile Include="Helpers\Collections\AsyncVirtualizingCollection.cs" />
+    <Compile Include="Helpers\Collections\IItemsProvider.cs" />
+    <Compile Include="Helpers\Collections\VirtualizingCollection.cs" />
+    <Compile Include="Helpers\ObservableCollectionRange.cs" />
+    <Compile Include="Helpers\OpaqueClickableImage.cs" />
+    <Compile Include="Helpers\SynchronizationCallback.cs" />
+    <Compile Include="Helpers\VirtualizingWrapPanel.cs" />
+    <Compile Include="Maps\BrowsableGfx.cs" />
+    <Compile Include="Maps\BrowsableGfxProvider.cs" />
+    <Compile Include="Maps\Elements\DisplayedCell.cs" />
+    <Compile Include="Maps\Elements\DisplayedElement.cs" />
+    <Compile Include="Maps\Elements\GfxTemplate.cs" />
+    <Compile Include="Maps\Layers\GridLayer.cs" />
+    <Compile Include="Maps\Layers\Layer.cs" />
+    <Compile Include="Maps\Elements\GfxElement.cs" />
+    <Compile Include="Maps\Layers\ObjectsLayer.cs" />
+    <Compile Include="Maps\MapControl.xaml.cs">
+      <DependentUpon>MapControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Maps\MapEditor.xaml.cs">
+      <DependentUpon>MapEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Maps\MapEditorModelView.cs" />
+    <Compile Include="Maps\MapModelView.cs" />
+    <Compile Include="Maps\WorldGFXManager.cs" />
+    <Compile Include="Settings.cs" />
     <Page Include="D2I\D2IEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -139,6 +169,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Maps\MapControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Maps\MapEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Meta\MetaEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -185,13 +223,21 @@
       <Project>{33093793-C4BA-4B89-AC82-6E9D00437452}</Project>
       <Name>Stump.DofusProtocol.D2oClasses</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\WPF.MDI\WPF.MDI.csproj">
-      <Project>{BE1ED569-5E0B-4DF0-8964-33AD2AAE4C4A}</Project>
-      <Name>WPF.MDI</Name>
+    <ProjectReference Include="..\..\Library\AvalonDock\AvalonDock.csproj">
+      <Project>{DB81988F-E0F2-45A0-A1FD-8C37F3D35244}</Project>
+      <Name>AvalonDock</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Library\Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.csproj">
       <Project>{72E591D6-8F83-4D8C-8F67-9C325E623234}</Project>
       <Name>Xceed.Wpf.Toolkit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Library\ZoomAndPan\ZoomAndPan.csproj">
+      <Project>{468ADEDE-6F5E-40C0-99C9-C6DAC4FAC934}</Project>
+      <Name>ZoomAndPan</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Server\Stump.Server.WorldServer\Stump.Server.WorldServer.csproj">
+      <Project>{7A1BEAB5-1A69-48B6-B064-0F6F372AC23B}</Project>
+      <Name>Stump.Server.WorldServer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -206,6 +252,7 @@
   <ItemGroup>
     <Resource Include="Images\page_white.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

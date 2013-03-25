@@ -31,6 +31,8 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 // 
 
+using System.Threading;
+
 namespace NLog
 {
     using System;
@@ -39,7 +41,6 @@ namespace NLog
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Globalization;
-    using System.Threading;
     using NLog.Common;
     using NLog.Internal;
     using NLog.Layouts;

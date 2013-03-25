@@ -15,10 +15,11 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 
 namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
 {
-    public class ColorMultiplicator
+    public class ColorMultiplicator : INotifyPropertyChanged
     {
         private int m_blue;
         private int m_green;
@@ -29,7 +30,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
             m_red = p1;
             m_green = p2;
             m_blue = p3;
-            if (!p4 && p1 + p2 + p3 == 0)
+            if (!p4 && Math.Abs(p1 + p2 + p3 - 0) < 0.01)
             {
                 IsOne = true;
             }
@@ -91,5 +92,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
             }
             return p1 < p2 ? p2 : p1;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

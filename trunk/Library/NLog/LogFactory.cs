@@ -31,6 +31,8 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 // 
 
+using System.Threading;
+
 namespace NLog
 {
     using System;
@@ -41,7 +43,6 @@ namespace NLog
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using System.Text;
-    using System.Threading;
     using System.Windows;
     using NLog.Common;
     using NLog.Config;

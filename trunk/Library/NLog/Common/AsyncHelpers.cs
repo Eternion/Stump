@@ -31,12 +31,13 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 // 
 
+using System.Threading;
+
 namespace NLog.Common
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
-    using System.Threading;
     using NLog.Internal;
 
     /// <summary>

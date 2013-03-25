@@ -179,14 +179,6 @@
       <Project>{10884165-D492-4895-B3EF-32429F7A7F55}</Project>
       <Name>Stump.DofusProtocol.Types</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\WPF.MDI\WPF.MDI.csproj">
-      <Project>{BE1ED569-5E0B-4DF0-8964-33AD2AAE4C4A}</Project>
-      <Name>WPF.MDI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Library\WpfApplicationFramework\WpfApplicationFramework.csproj">
-      <Project>{27B67DFE-0BF1-4435-B036-E4C083EAEA03}</Project>
-      <Name>WpfApplicationFramework</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Library\ZoomAndPan\ZoomAndPan.csproj">
       <Project>{468ADEDE-6F5E-40C0-99C9-C6DAC4FAC934}</Project>
       <Name>ZoomAndPan</Name>

@@ -26,6 +26,11 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
 {
     public abstract class NpcReply
     {
+        public NpcReply()
+        {
+            Record = new NpcReplyRecord();
+        }
+
         public NpcReply(NpcReplyRecord record)
         {
             Record = record;
@@ -68,9 +73,14 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             private set;
         }
 
+        public virtual bool CanExecute(Npc npc, Character character)
+        {
+            return Record.CriteriaExpression == null || Record.CriteriaExpression.Eval(character);
+        }
+
         public virtual bool Execute(Npc npc, Character character)
         {
-            if (Record.CriteriaExpression != null && !Record.CriteriaExpression.Eval(character))
+            if (!CanExecute(npc, character))
             {
                 character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 34);
                 return false;

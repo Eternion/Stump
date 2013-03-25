@@ -37,12 +37,14 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             }
         }
 
+        public override bool CanExecute(Npc npc, Character character)
+        {
+            return base.CanExecute(npc, character) && character.IsTalkingWithNpc();
+        }
+
         public override bool Execute(Npc npc, Character character)
         {
             if (!base.Execute(npc, character))
-                return false;
-
-            if (!character.IsTalkingWithNpc())
                 return false;
 
             ((NpcDialog) character.Dialog).ChangeMessage(NextMessage);

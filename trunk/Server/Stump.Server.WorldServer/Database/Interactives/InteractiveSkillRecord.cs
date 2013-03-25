@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
         private int? m_customTemplateId;
         private InteractiveSkillTemplate m_template;
 
-        private InteractiveSkillRecord()
+        public InteractiveSkillRecord()
         {
         }
 
@@ -32,6 +32,13 @@ namespace Stump.Server.WorldServer.Database.Interactives
         }
 
         public string Type
+        {
+            get;
+            set;
+        }
+
+        // note : not used at the moment
+        public int Duration
         {
             get;
             set;

@@ -25,12 +25,12 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
     <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
     <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
     <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
     <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
-    <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
     <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
     <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
     <CodeContractsArithmeticObligations>True</CodeContractsArithmeticObligations>
@@ -48,7 +48,7 @@
     <CodeContractsBaseLineFile />
     <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
-    <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
+    <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
@@ -181,6 +181,7 @@
     <Compile Include="Handlers\World\WorldPacketHandler.cs" />
     <Compile Include="Handlers\World\ZaapListMessageHandler.cs" />
     <Compile Include="Handlers\World\TeleportHandler.cs" />
+    <Compile Include="LogDatabase.cs" />
     <Compile Include="Network\AuthClient.cs" />
     <Compile Include="Network\ProxyClient.cs" />
     <Compile Include="Network\WorldClient.cs" />
@@ -194,6 +195,10 @@
     <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">
       <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
       <Name>Stump.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Stump.ORM\Stump.ORM.csproj">
+      <Project>{E7406629-E127-4B96-8F29-287947075631}</Project>
+      <Name>Stump.ORM</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DofusProtocol\Types\Stump.DofusProtocol.Types.csproj">
       <Project>{10884165-D492-4895-B3EF-32429F7A7F55}</Project>

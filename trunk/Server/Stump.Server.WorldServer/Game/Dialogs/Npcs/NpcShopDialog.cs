@@ -33,6 +33,14 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             CanSell = true;
         }
 
+        public DialogTypeEnum DialogType
+        {
+            get
+            {
+                return DialogTypeEnum.DIALOG_PURCHASABLE;
+            }
+        }
+
         public IEnumerable<NpcItem> Items
         {
             get;
@@ -79,7 +87,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
         public void Close()
         {
-            DialogHandler.SendLeaveDialogMessage(Character.Client);
+            DialogHandler.SendLeaveDialogMessage(Character.Client, DialogType);
             Character.ResetDialog();
         }
 

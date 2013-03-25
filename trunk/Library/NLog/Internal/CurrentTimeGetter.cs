@@ -34,7 +34,6 @@
 namespace NLog.Internal
 {
     using System;
-    using System.Threading;
 
     /// <summary>
     /// Optimized methods to get current time.

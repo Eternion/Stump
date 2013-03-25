@@ -31,6 +31,8 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 // 
 
+using System.Threading;
+
 #if !SILVERLIGHT2 && !SILVERLIGHT3 && !WINDOWS_PHONE
 
 namespace NLog.Targets
@@ -42,7 +44,6 @@ namespace NLog.Targets
     using System.Globalization;
     using System.IO;
     using System.Text;
-    using System.Threading;
     using NLog.Common;
     using NLog.Config;
     using NLog.Internal;

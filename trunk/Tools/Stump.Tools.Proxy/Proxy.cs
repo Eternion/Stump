@@ -17,6 +17,7 @@ using Stump.Core.Threading;
 using Stump.Core.Xml.Config;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.ORM;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.Network;
@@ -55,7 +56,7 @@ namespace Stump.Tools.Proxy
         public static int WorldPort = 5556;
 
         [Variable]
-        public static string RealServerAddress = "213.248.126.180";
+        public static string RealServerAddress = "213.248.126.39";
 
         [Variable]
         public static int RealServerPort = 5555;
@@ -66,12 +67,11 @@ namespace Stump.Tools.Proxy
         [Variable(Priority = 10)]
         public static DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
         {
-            DatabaseType = DatabaseType.MySql,
+            ProviderName = "MySql.Data.MySqlClient",
             Host = "localhost",
-            Name = "stump_world",
+            DbName = "stump_world",
             User = "root",
             Password = "",
-            UpdateFileDir = "./sql_update/",
         };
 
 
@@ -165,16 +165,20 @@ namespace Stump.Tools.Proxy
 
             logger.Info("Loading Database...");
             DatabaseAccessor = new DatabaseAccessor(
-                DatabaseConfiguration,
-                Server.WorldServer.Definitions.DatabaseRevision,
-                typeof(WorldBaseRecord<>),
-                typeof(WorldBaseRecord<>).Assembly, false);
+                DatabaseConfiguration);
+            DatabaseAccessor.RegisterMappingAssembly(typeof(WorldServer).Assembly);
             DatabaseAccessor.Initialize();
 
+
             logger.Info("Open Database...");
-            DatabaseAccessor.OpenDatabase();
+            DatabaseAccessor.OpenConnection(
+                new LogDatabase(DatabaseConfiguration.GetConnectionString(), DatabaseConfiguration.ProviderName)
+                {
+                    KeepConnectionAlive = true,
+                });
 
             logger.Info("Loading some others stuff...");
+            DataManager.DefaultDatabase = DatabaseAccessor.Database;
             TextManager.Instance.Initialize();
             EffectManager.Instance.Initialize();
             ItemManager.Instance.Initialize();

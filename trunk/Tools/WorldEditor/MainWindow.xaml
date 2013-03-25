@@ -1,6 +1,6 @@
 ﻿<Window x:Class="WorldEditor.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:MDI="clr-namespace:WPF.MDI;assembly=WPF.MDI" WindowStartupLocation="CenterScreen" Height="350" Width="525" Title="Stump World Editor">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  WindowStartupLocation="CenterScreen" Height="350" Width="525" Title="Stump World Editor">
   <StackPanel x:Name="MdiContainer" AllowDrop="True" PreviewDragEnter="MdiContainer_PreviewDragEnter" Drop="MdiContainer_Drop" Background="Transparent">
     <TextBlock AllowDrop="True" Text="Drop Files Here !" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="32" Margin="10" />
     <Rectangle AllowDrop="True" Height="200" Width="250" RadiusX="5" RadiusY="5" Stroke="Black" />

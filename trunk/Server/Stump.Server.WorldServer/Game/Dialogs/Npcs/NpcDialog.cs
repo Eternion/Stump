@@ -1,4 +1,5 @@
 using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.Npcs.Replies;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -14,6 +15,14 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
         {
             Character = character;
             Npc = npc;
+        }
+
+        public DialogTypeEnum DialogType
+        {
+            get
+            {
+                return DialogTypeEnum.DIALOG_DIALOG;
+            }
         }
 
         public Character Character
@@ -42,18 +51,29 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
         public void Close()
         {
-            DialogHandler.SendLeaveDialogMessage(Character.Client);
+            DialogHandler.SendLeaveDialogMessage(Character.Client, DialogType);
             Character.ResetDialog();
         }
 
         public void Reply(short replyId)
         {
-            var replies = CurrentMessage.Replies.Where(entry => entry.ReplyId == replyId);
+            var lastMessage = CurrentMessage;
+            var replies = CurrentMessage.Replies.Where(entry => entry.ReplyId == replyId).ToArray();
+
+            if (replies.Any(x => !x.CanExecute(Npc, Character)))
+            {
+                Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 34);
+                return;
+            }
 
             foreach (var npcReply in replies)
             {
                 Reply(npcReply);
             }
+
+            // default action : close dialog
+            if (replies.Length == 0 || lastMessage == CurrentMessage)
+                Close();
         }
 
         public void Reply(NpcReply reply)

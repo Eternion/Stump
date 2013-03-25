@@ -47,9 +47,8 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Ele
             get;
         }
 
-        public static EleGraphicalData ReadFromStream(EleInstance instance, BigEndianReader reader)
+        public static EleGraphicalData ReadFromStream(int id, EleInstance instance, BigEndianReader reader)
         {
-            var id = reader.ReadInt();
             var type = (EleGraphicalElementTypes)reader.ReadByte();
 
             switch (type)

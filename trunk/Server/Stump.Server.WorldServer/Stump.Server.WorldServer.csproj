@@ -229,7 +229,7 @@
     <Compile Include="Database\Npcs\Replies\NpcReply.cs" />
     <Compile Include="Database\Npcs\Replies\RestatReply.cs" />
     <Compile Include="Database\Npcs\Replies\TeleportReply.cs" />
-    <Compile Include="Database\Npcs\Replies\UseItemReply.cs" />
+    <Compile Include="Database\Npcs\Replies\DeleteItemReply.cs" />
     <Compile Include="Database\PrimaryKeyIdProvider.cs" />
     <Compile Include="Database\Spells\ISpellRecord.cs" />
     <Compile Include="Database\World\Maps\MapElement.cs" />

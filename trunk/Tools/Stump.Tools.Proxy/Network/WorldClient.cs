@@ -8,6 +8,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
+using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Game.Maps;
 
 namespace Stump.Tools.Proxy.Network

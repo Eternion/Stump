@@ -31,13 +31,14 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 // 
 
+using System.Threading;
+
 namespace NLog.Internal.NetworkSenders
 {
     using System;
     using System.IO;
     using System.Net;
     using System.Net.Sockets;
-    using System.Threading;
     using NLog.Common;
 
     /// <summary>

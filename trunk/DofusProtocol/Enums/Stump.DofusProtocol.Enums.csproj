@@ -177,6 +177,7 @@
     <Compile Include="Export\CrafterDirectoryParamBitEnum.cs" />
     <Compile Include="Export\CraftResultEnum.cs" />
     <Compile Include="Export\DebugLevelEnum.cs" />
+    <Compile Include="Export\DialogTypeEnum.cs" />
     <Compile Include="Export\DirectionsEnum.cs" />
     <Compile Include="Export\ExchangeErrorEnum.cs" />
     <Compile Include="Export\ExchangeReplayStopReasonEnum.cs" />
@@ -195,6 +196,7 @@
     <Compile Include="Export\GuildCreationResultEnum.cs" />
     <Compile Include="Export\GuildInformationsTypeEnum.cs" />
     <Compile Include="Export\GuildInvitationStateEnum.cs" />
+    <Compile Include="Export\GuildRightsBitEnum.cs" />
     <Compile Include="Export\HardcoreDeathStateEnum.cs" />
     <Compile Include="Export\IdentificationFailureReasonEnum.cs" />
     <Compile Include="Export\ListAddFailureEnum.cs" />
