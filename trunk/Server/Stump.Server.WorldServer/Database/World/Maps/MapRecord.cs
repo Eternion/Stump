@@ -168,6 +168,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             set;
         }
 
+        [Ignore]
         public short[] BlueFightCells
         {
             get
@@ -184,6 +185,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             }
         }
 
+        [Ignore]
         public short[] RedFightCells
         {
             get
