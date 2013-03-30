@@ -1,9 +1,12 @@
 using System;
+using System.IO;
+using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Cryptography;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Messages.Custom;
 using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.AuthServer.Network;
@@ -14,6 +17,8 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 {
     public partial class ConnectionHandler : AuthHandlerContainer
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Max Number of connection to logs in the database
         /// </summary>
@@ -68,8 +73,6 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 return false;
             }
 
-            /* Bind Login and Pass to Client */
-            //client.Login = message.login.EscapeString();
 
             /* Get corresponding account */
             Account account;
@@ -81,8 +84,6 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 client.DisconnectLater(1000);
                 return false;
             }
-
-            client.Login = account.Login;
 
             /* Check Sanctions */
             if (account.IsBanned && account.BanEndDate > DateTime.Now)

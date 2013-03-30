@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
@@ -44,6 +45,10 @@ namespace Stump.Server.AuthServer
         [Variable]
         public static int IpcPort = 9100;
 
+
+        [Variable]
+        public static string ConnectionSwfPatch = "./swf_patchs/StumpPatch.swf";
+
         private string m_host;
 
         [Variable(Priority = 10)]
@@ -55,6 +60,8 @@ namespace Stump.Server.AuthServer
             User = "root",
             Password = "",
         };
+
+        private byte[] m_patchBuffer;
 
         public IPCHost IpcHost
         {
@@ -138,6 +145,20 @@ namespace Stump.Server.AuthServer
             ClientManager.Start(m_host, Port);
 
             StartTime = DateTime.Now;
+        }
+
+        public byte[] GetConnectionSwfPatch()
+        {
+            if (m_patchBuffer != null)
+                return m_patchBuffer;
+
+            if (!File.Exists(ConnectionSwfPatch))
+            {
+                logger.Warn("SWF Patch for connection not found ({0}", ConnectionSwfPatch);
+                return null;
+            }
+            else
+                return m_patchBuffer = File.ReadAllBytes(ConnectionSwfPatch);
         }
 
 

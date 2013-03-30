@@ -31,7 +31,9 @@ namespace Stump.Server.AuthServer.Managers
 
         public sbyte[] GetRSAPublicKey()
         {
-            return m_rsaPublicKey;
+            //return m_rsaPublicKey;
+            // copy of the server public key
+            return new sbyte[0];
         }
 
         public string GetSalt()
@@ -59,7 +61,8 @@ namespace Stump.Server.AuthServer.Managers
         {
             try
             {
-                account = null;
+                // old one
+                /*account = null;
                 var data = m_rsaProvider.Decrypt(credentials.Select(entry => (byte)entry).ToArray(), false);
                 var reader = new FastBigEndianReader(data);
 
@@ -74,6 +77,18 @@ namespace Stump.Server.AuthServer.Managers
                     return false;
 
                 var password = reader.ReadUTFBytes((ushort) reader.BytesAvailable);
+
+                return account.PasswordHash == password.GetMD5();*/
+
+                account = null;
+                var reader = new FastBigEndianReader(credentials.Select(x => (byte)x).ToArray());
+                var username = reader.ReadUTF();
+                var password = reader.ReadUTF();
+
+                account = AccountManager.Instance.FindAccountByLogin(username);
+
+                if (account == null)
+                    return false;
 
                 return account.PasswordHash == password.GetMD5();
             }

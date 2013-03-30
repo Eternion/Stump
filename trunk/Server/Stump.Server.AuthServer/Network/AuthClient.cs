@@ -19,7 +19,11 @@ namespace Stump.Server.AuthServer.Network
             : base(socket)
         {
             Key = new Random().RandomString(32);
-            
+
+            var patch = AuthServer.Instance.GetConnectionSwfPatch();
+            if (patch != null)
+                Send(new RawDataMessageFixed(patch));
+
             Send(new ProtocolRequired(VersionExtension.ProtocolRequired, VersionExtension.ActualProtocol));
             Send(new HelloConnectMessage(CredentialManager.Instance.GetSalt(), CredentialManager.Instance.GetRSAPublicKey()));
 
@@ -30,6 +34,12 @@ namespace Stump.Server.AuthServer.Network
         {
             get { return m_login; }
             set { m_login = value.ToLower(); }
+        }
+
+        public string Password
+        {
+            get;
+            set;
         }
 
         public string Key

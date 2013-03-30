@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fxpProperties abbreviated="false" authoringTool="Flex Builder" compiles="true" parentProject="1932c360-db57-41e4-9e10-de0d33ceed72" projectUUID="1932c360-db57-41e4-9e10-de0d33ceed72" sdkVersion="4.0.0" uuid="3d82aafa-7c72-427d-956d-b5bb06c77271" version="4">
+  <projects/>
+  <src/>
+  <swc>
+    <linked location="sdkPlaceHolder" path="sdkPlaceHolder" position="0" uuid="3d82aafa-7c72-427d-956d-b5bb06c77271"/>
+    <linked location="C:/Users/Bouh2/Desktop/Programming/CSharp/Project Stump (git)/trunk/SWF/StumpPatch/libs" path="/libs" position="1" uuid="3d82aafa-7c72-427d-956d-b5bb06c77271"/>
+  </swc>
+  <misc/>
+  <theme/>
+</fxpProperties>

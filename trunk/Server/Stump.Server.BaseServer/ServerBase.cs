@@ -351,7 +351,10 @@ namespace Stump.Server.BaseServer
 
         private void OnAssemblyLoad(object sender, AssemblyLoadEventArgs args)
         {
-            LoadedAssemblies.Add(args.LoadedAssembly.GetName().Name, args.LoadedAssembly);
+            var name = args.LoadedAssembly.GetName().Name;
+
+            if (!LoadedAssemblies.ContainsKey(name))
+                LoadedAssemblies.Add(name, args.LoadedAssembly);
         }
 
         private void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)

@@ -169,6 +169,7 @@
   <ItemGroup>
     <Compile Include="Database\I18n\LangTextUI.cs" />
     <Compile Include="Database\I18n\LangText.cs" />
+    <Compile Include="Handlers\Connection\PingHandler.cs" />
     <Compile Include="IO\AuthConsole.cs" />
     <Compile Include="AuthServer.cs" />
     <Compile Include="Commands\AccountCommands.cs" />
