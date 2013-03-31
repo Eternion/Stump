@@ -141,9 +141,9 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
                         map.UpdateFightPlacements();
 
                         var builder = new StringBuilder();
-                        builder.Append("UPDATE `maps` SET BlueCells=0x");
+                        builder.Append("UPDATE world_maps SET BlueCellsBin=0x");
                         builder.Append(string.Join("", MapRecord.SerializeFightCells(map.Record.BlueFightCells).Select(entry => entry.ToString("X2"))));
-                        builder.Append(", RedCells=0x");
+                        builder.Append(", RedCellsBin=0x");
                         builder.Append(string.Join("", MapRecord.SerializeFightCells(map.Record.RedFightCells).Select(entry => entry.ToString("X2"))));
                         builder.Append(" WHERE Id='");
                         builder.Append(map.Id);

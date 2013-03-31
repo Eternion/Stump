@@ -300,6 +300,17 @@ namespace Stump.Server.WorldServer.Game.Social
             foreach (var relation in m_relations)
             {
                 var account = World.Instance.GetConnectedAccount(relation.TargetId);
+
+                if (account == null)
+                    account = AccountManager.Instance.FindById(relation.TargetId);
+
+                // doesn't exist anymore, so we delete it
+                if (account == null)
+                {
+                    WorldServer.Instance.DBAccessor.Database.Delete(relation);
+                    continue;
+                }
+
                 if (relation.Type == AccountRelationType.Friend)
                 {
                     if (account.ConnectedCharacter.HasValue)

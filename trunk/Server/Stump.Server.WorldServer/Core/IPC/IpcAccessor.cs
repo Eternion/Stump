@@ -185,6 +185,9 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         private void OnAccessDenied(IPCErrorMessage error)
         {
+            if (error is IPCErrorTimeoutMessage)
+                return;
+
             AccessGranted = false;
             logger.Error("Access to auth. server denied ! Reason : {0}", error.Message);
             WorldServer.Instance.Shutdown();
@@ -221,7 +224,7 @@ namespace Stump.Server.WorldServer.Core.IPC
                 }
                 catch (Exception ex)
                 {
-                    logger.Error("Connection to {0}:{1} failed. Try again in {1}s", RemoteHost, RemotePort, UpdateInterval / 1000);
+                    logger.Error("Connection to {0}:{1} failed. Try again in {2}s", RemoteHost, RemotePort, UpdateInterval / 1000);
                 }
 
                 m_requestingAccess = true;
@@ -327,7 +330,7 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         private void RequestTimedOut(IIPCRequest request)
         {
-            request.ProcessMessage(new IPCErrorMessage(string.Format("Request {0} timed out", request.RequestMessage.GetType())));
+            request.ProcessMessage(new IPCErrorTimeoutMessage(string.Format("Request {0} timed out", request.RequestMessage.GetType())));
         }
 
         private void DefaultRequestErrorCallback(IPCErrorMessage errorMessage)
