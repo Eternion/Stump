@@ -83,7 +83,7 @@ namespace Stump.Tools.Proxy.Network
 
         public bool IsSkillActionValid()
         {
-            return HasReceive(InteractiveUsedMessage.Id, 3);
+            return HasReceive(InteractiveUsedMessage.Id, 6);
         }
 
         public Dictionary<int, GameRolePlayNpcInformations> MapNpcs
@@ -141,7 +141,7 @@ namespace Stump.Tools.Proxy.Network
 
         public bool IsCellTriggerValid()
         {
-            return HasReceive(GameMapMovementConfirmMessage.Id, 3);
+            return HasReceive(GameMapMovementMessage.Id, 6);
         }
 
         public EntityDispositionInformations Disposition

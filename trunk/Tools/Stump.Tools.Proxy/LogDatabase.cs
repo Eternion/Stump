@@ -53,7 +53,7 @@ namespace Stump.Tools.Proxy
                 if (!Directory.Exists("./sql_logs/"))
                     Directory.CreateDirectory("./sql_logs/");
 
-                File.AppendAllText("./sql_logs/logs.sql", query + "\r\n");
+                File.AppendAllText("./sql_logs/logs.sql", query + ";\r\n");
                 Console.WriteLine(query);
             }
         }
@@ -64,11 +64,24 @@ namespace Stump.Tools.Proxy
 
             foreach (DbParameter parameter in cmd.Parameters)
             {
-                var value = "\"" + SqlBuilder.EscapeField(parameter.Value.ToString()) + "\"";
+                string value;
+                if (parameter.Value.ToString() == string.Empty)
+                {
+                    value = "NULL";
+                }
+                else if (parameter.DbType.ToString().Contains("String"))
+                {
+                    value = "\"" + SqlBuilder.EscapeField(parameter.Value.ToString()) + "\"";
+                }
+                else
+                {
+                    value = SqlBuilder.EscapeField(parameter.Value.ToString());
+                }
+
                 builder.Replace(parameter.ParameterName, value);
             }
 
-            return query;
+            return builder.ToString();
         }
     }
 }

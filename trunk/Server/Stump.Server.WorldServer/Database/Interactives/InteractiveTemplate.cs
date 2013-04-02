@@ -16,13 +16,14 @@ namespace Stump.Server.WorldServer.Database.Interactives
 
         private InteractiveTemplate m_current;
 
-        public InteractiveTemplate Map(InteractiveTemplate template, InteractiveTemplateSkills dummy,
+        public InteractiveTemplate Map(InteractiveTemplate template, InteractiveTemplateSkills binding,
                                        InteractiveSkillRecord skill)
         {
             if (template == null)
                 return m_current;
 
-            if (m_current != null && m_current.Id == template.Id)
+            if (m_current != null && m_current.Id == template.Id &&
+                binding.InteractiveTemplateId == m_current.Id && binding.SkillId == skill.Id)
             {
                 m_current.Skills.Add(skill);
                 return null;
@@ -31,7 +32,8 @@ namespace Stump.Server.WorldServer.Database.Interactives
             InteractiveTemplate previous = m_current;
 
             m_current = template;
-            m_current.Skills.Add(skill);
+            if (binding.InteractiveTemplateId == m_current.Id && binding.SkillId == skill.Id)
+                m_current.Skills.Add(skill);
 
             return previous;
         }

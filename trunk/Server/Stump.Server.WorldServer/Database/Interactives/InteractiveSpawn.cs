@@ -18,12 +18,13 @@ namespace Stump.Server.WorldServer.Database.Interactives
 
         private InteractiveSpawn m_current;
 
-        public InteractiveSpawn Map(InteractiveSpawn spawn, InteractiveSpawnSkills dummy, InteractiveSkillRecord skill)
+        public InteractiveSpawn Map(InteractiveSpawn spawn, InteractiveSpawnSkills binding, InteractiveSkillRecord skill)
         {
             if (spawn == null)
                 return m_current;
 
-            if (m_current != null && m_current.Id == spawn.Id)
+            if (m_current != null && m_current.Id == spawn.Id && 
+                binding.InteractiveSpawnId == m_current.Id && binding.SkillId == skill.Id)
             {
                 m_current.Skills.Add(skill);
                 return null;
@@ -32,7 +33,8 @@ namespace Stump.Server.WorldServer.Database.Interactives
             InteractiveSpawn previous = m_current;
 
             m_current = spawn;
-            m_current.Skills.Add(skill);
+            if (binding.InteractiveSpawnId == m_current.Id && binding.SkillId == skill.Id)
+                m_current.Skills.Add(skill);
 
             return previous;
         }

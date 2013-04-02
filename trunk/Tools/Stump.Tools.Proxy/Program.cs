@@ -16,8 +16,7 @@ namespace Stump.Tools.Proxy
 
             proxy.Initialize();
 
-            while (true)
-                Thread.Yield();
+            Thread.Sleep(Timeout.Infinite);
         }
     }
 }
