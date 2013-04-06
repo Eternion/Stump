@@ -32,14 +32,16 @@ namespace Stump.Server.AuthServer.Database
 
             if (m_current != null && m_current.Id == account.Id)
             {
-                m_current.WorldCharacters.Add(character);
+                if (character.AccountId == account.Id)
+                    m_current.WorldCharacters.Add(character);
                 return null;
             }
 
             var previous = m_current;
 
             m_current = account;
-            m_current.WorldCharacters.Add(character);
+            if (character.AccountId == account.Id)
+                m_current.WorldCharacters.Add(character);
 
             return previous;
         }

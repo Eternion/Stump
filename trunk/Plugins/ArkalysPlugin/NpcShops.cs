@@ -19,25 +19,25 @@ namespace ArkalysPlugin
         public static readonly bool Active = true;
         
         [Variable]
-        public static readonly SerializableDictionary<int, ItemTypeEnum> Sellers = 
-        new SerializableDictionary<int, ItemTypeEnum>()
+        public static readonly SerializableDictionary<int, ItemTypeEnum[]> Sellers = 
+        new SerializableDictionary<int, ItemTypeEnum[]>()
             {
-                {812, ItemTypeEnum.HAT},
-                {1158, ItemTypeEnum.CLOAK},
-                {790, ItemTypeEnum.RING},
-                {952, ItemTypeEnum.AMULET},
-                {794, ItemTypeEnum.BOOTS},
-                {787, ItemTypeEnum.BELT},
-                {1053, ItemTypeEnum.DOFUS},                
-                {61, ItemTypeEnum.HAMMER},
-                {786, ItemTypeEnum.SWORD},
-                {59, ItemTypeEnum.AXE},
-                {45, ItemTypeEnum.DAGGER},
-                {1447, ItemTypeEnum.WAND},
-                {1437, ItemTypeEnum.STAFF},
-                {605, ItemTypeEnum.BOW},
-                {622, ItemTypeEnum.SHIELD},
-                {240, ItemTypeEnum.BREAD},
+                {812, new [] {ItemTypeEnum.HAT}},
+                {1158, new [] {ItemTypeEnum.CLOAK}},
+                {790, new [] {ItemTypeEnum.RING}},
+                {952, new [] {ItemTypeEnum.AMULET}},
+                {794, new [] {ItemTypeEnum.BOOTS}},
+                {787, new [] {ItemTypeEnum.BELT}},
+                {1053, new [] {ItemTypeEnum.DOFUS}},                
+                {61, new [] {ItemTypeEnum.HAMMER}},
+                {786, new [] {ItemTypeEnum.SWORD}},
+                {59, new [] {ItemTypeEnum.AXE}},
+                {45, new [] {ItemTypeEnum.DAGGER}},
+                {1447, new [] {ItemTypeEnum.WAND}},
+                {1437, new [] {ItemTypeEnum.STAFF}},
+                {605, new [] {ItemTypeEnum.BOW}},
+                {622, new [] {ItemTypeEnum.SHIELD}},
+                {240, new [] {ItemTypeEnum.BREAD}},
             };        
         
         [Variable]
@@ -56,6 +56,9 @@ namespace ArkalysPlugin
 
         [Variable]
         public static readonly double BreadHpPerKama = 0.25;
+
+        [Variable]
+        public static readonly int MinItemLevel = 20;
 
         [Variable]
         public static string PatchName = "npcs_shops.sql";
@@ -188,14 +191,14 @@ namespace ArkalysPlugin
             foreach (var seller in Sellers)
             {
                 var npcAction = new KeyValueListBase("npcs_actions");
-                npcAction.AddPair("RecognizerType", "Shop");
+                npcAction.AddPair("Type", "Shop");
                 npcAction.AddPair("Npc", seller.Key);
 
                 AppendQuery(SqlBuilder.BuildInsert(npcAction));
                 AppendQuery("SET @shopid=(SELECT LAST_INSERT_ID())");
 
                 var selector = (from entry in ItemManager.Instance.GetTemplates()
-                                where entry.TypeId == (int)seller.Value && entry.Level >= 20 &&
+                                where Array.IndexOf(seller.Value, (ItemTypeEnum)entry.TypeId) != -1 && entry.Level >= MinItemLevel &&
                                 entry.Effects.Count > 0 && !entry.Etheral
                                 orderby entry.Level ascending
                                 select entry);
@@ -218,12 +221,11 @@ namespace ArkalysPlugin
                         price = (int)( Math.Max(restoreEffect.DiceFace, restoreEffect.DiceNum) * BreadHpPerKama);
                     }
 
-                    var itemQuery = new KeyValueListBase("items_selled");
-                    itemQuery.AddPair("RecognizerType", "Npc");
+                    var itemQuery = new KeyValueListBase("npcs_items");
                     itemQuery.AddPair("ItemId", template.Id);
-                    itemQuery.AddPair("Npc_NpcShopId", new RawData("@shopid"));
-                    itemQuery.AddPair("Npc_CustomPrice", price);
-                    itemQuery.AddPair("Npc_MaxStats", price == 0 ? "1" : "0");
+                    itemQuery.AddPair("NpcShopId", new RawData("@shopid"));
+                    itemQuery.AddPair("CustomPrice", price);
+                    itemQuery.AddPair("MaxStats", price == 0 ? "1" : "0");
 
                     AppendQuery(SqlBuilder.BuildInsert(itemQuery));
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using ProtoBuf;
@@ -115,11 +116,13 @@ namespace Stump.Server.BaseServer.IPC.Objects
             set { BreedFlags = (uint) value.Aggregate(0, (current, breedEnum) => current | (1 << ((int) breedEnum - 1))); }
         }
 
+        private IList<int> m_charactersId = new List<int>();
+
         [ProtoMember(13)]
         public IList<int> CharactersId
         {
-            get;
-            set;
+            get { return m_charactersId; }
+            set { m_charactersId = value; }
         }
 
         [ProtoMember(14)]
