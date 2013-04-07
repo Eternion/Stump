@@ -192,7 +192,7 @@ namespace ArkalysPlugin
             {
                 var npcAction = new KeyValueListBase("npcs_actions");
                 npcAction.AddPair("Type", "Shop");
-                npcAction.AddPair("Npc", seller.Key);
+                npcAction.AddPair("NpcId", seller.Key);
 
                 AppendQuery(SqlBuilder.BuildInsert(npcAction));
                 AppendQuery("SET @shopid=(SELECT LAST_INSERT_ID())");

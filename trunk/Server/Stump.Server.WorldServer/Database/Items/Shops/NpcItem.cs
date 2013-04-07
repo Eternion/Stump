@@ -48,6 +48,7 @@ namespace Stump.Server.WorldServer.Database.Items.Shops
             }
         }
 
+        [NullString]
         public string BuyCriterion
         {
             get { return m_buyCriterion; }
