@@ -77,7 +77,7 @@ namespace Stump.Server.WorldServer.Database.Items.Shops
                 false,
                 Item.Effects.Select(entry => entry.GetObjectEffect()),
                 (int) (CustomPrice.HasValue ? CustomPrice.Value : Item.Price),
-                BuyCriterion);
+                BuyCriterion ?? string.Empty);
         }
 
         public override Item GetNetworkItem()
