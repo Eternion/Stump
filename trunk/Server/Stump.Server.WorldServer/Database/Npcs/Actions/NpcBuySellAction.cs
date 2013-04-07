@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
     [Discriminator(Discriminator, typeof(NpcAction), typeof(NpcActionRecord))]
     public class NpcBuySellAction : NpcAction
     {
-        public const string Discriminator = "BuySell";
+        public const string Discriminator = "Shop";
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private List<NpcItem> m_items;
@@ -71,11 +71,6 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
             get { return Record.GetParameter<bool>(2, true); }
             set { Record.SetParameter(2, value); }
         }
-
-        /*public override NpcActionTypeEnum ActionType
-        {
-            get { return NpcActionTypeEnum.ACTION_BUY_SELL; }
-        }*/
 
         public override NpcActionTypeEnum ActionType
         {
