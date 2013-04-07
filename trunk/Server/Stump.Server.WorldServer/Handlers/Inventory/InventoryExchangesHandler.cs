@@ -129,9 +129,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ExchangeStartOkNpcShopMessage(dialog.Npc.Id, dialog.Token != null ? dialog.Token.Id : 0, dialog.Items.Select(entry => entry.GetNetworkItem() as ObjectItemToSellInNpcShop)));
         }
 
-        public static void SendExchangeLeaveMessage(IPacketReceiver client, ExchangeTypeEnum exchangeType, bool success)
+        public static void SendExchangeLeaveMessage(IPacketReceiver client, DialogTypeEnum dialogType, bool success)
         {
-            client.Send(new ExchangeLeaveMessage((sbyte)exchangeType, success));
+            client.Send(new ExchangeLeaveMessage((sbyte)dialogType, success));
         }
 
         public static void SendExchangeObjectAddedMessage(IPacketReceiver client, bool remote, PlayerItem item)

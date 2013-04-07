@@ -67,9 +67,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             if (FirstTrader.ReadyToApply && SecondTrader.ReadyToApply)
                 Apply();
 
-            InventoryHandler.SendExchangeLeaveMessage(FirstTrader.Character.Client, ExchangeType,
+            InventoryHandler.SendExchangeLeaveMessage(FirstTrader.Character.Client, DialogTypeEnum.DIALOG_EXCHANGE, 
                                                       FirstTrader.ReadyToApply && SecondTrader.ReadyToApply);
-            InventoryHandler.SendExchangeLeaveMessage(SecondTrader.Character.Client, ExchangeType,
+            InventoryHandler.SendExchangeLeaveMessage(SecondTrader.Character.Client, DialogTypeEnum.DIALOG_EXCHANGE,
                                                       FirstTrader.ReadyToApply && SecondTrader.ReadyToApply);
 
             FirstTrader.Character.ResetDialog();

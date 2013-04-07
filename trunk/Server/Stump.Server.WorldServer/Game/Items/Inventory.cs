@@ -425,17 +425,15 @@ namespace Stump.Server.WorldServer.Game.Items
             // delete the item if there is no more stack else we unstack it
             if (amount >= item.Stack)
             {
-                RemoveItem(item, false);
-                item.ChangeOwner(newOwner);
-                newOwner.Inventory.AddItem(item);
+                RemoveItem(item);
             }
             else
             {
                 UnStackItem(item, (int) amount);
-
-                var copy = ItemManager.Instance.CreatePlayerItem(newOwner, item, amount);
-                newOwner.Inventory.AddItem(copy);
             }
+
+            var copy = ItemManager.Instance.CreatePlayerItem(newOwner, item, amount);
+            newOwner.Inventory.AddItem(copy);
         }
 
         public void CheckItemsCriterias()
