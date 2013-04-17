@@ -118,6 +118,20 @@ namespace Stump.Core.Xml
                 return (T)Serializers[typeof(T)].Deserialize(reader);
             }
         }
+        
+        /// <summary>
+        ///   Deserializes the specified stream.
+        /// </summary>
+        /// <typeparam name = "T"></typeparam>
+        /// <param name = "stream">The stream.</param>
+        /// <returns></returns>
+        public static T Deserialize<T>(StringReader reader)
+        {
+            if (!Serializers.ContainsKey(typeof(T)))
+                Serializers.Add(typeof(T), new XmlSerializer(typeof(T)));
+
+            return (T)Serializers[typeof(T)].Deserialize(reader);
+        }
 
         /// <summary>
         ///   Deserializes the specified file name.
