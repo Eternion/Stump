@@ -90,8 +90,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ApplicationRunningHelper.cs" />
-    <Compile Include="HyperlinkUtility.cs" />
+    <Compile Include="Helpers\ApplicationRunningHelper.cs" />
+    <Compile Include="Helpers\HyperlinkUtility.cs" />
+    <Compile Include="Helpers\NetworkHelper.cs" />
     <Compile Include="Patcher\AddFileTask.cs" />
     <Compile Include="Patcher\Patch.cs" />
     <Compile Include="Patcher\PatchTask.cs" />
@@ -103,16 +104,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="WebBrowserHelper.cs" />
-    <Compile Include="ColorToBrushConverter.cs" />
+    <Compile Include="Helpers\WebBrowserHelper.cs" />
+    <Compile Include="Helpers\ColorToBrushConverter.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="DelegateCommand.cs" />
-    <Compile Include="DialogCloser.cs" />
+    <Compile Include="Helpers\DelegateCommand.cs" />
+    <Compile Include="Helpers\DialogCloser.cs" />
+    <Compile Include="SoundProxy.cs" />
     <Compile Include="UplauncherModelView.cs" />
-    <Compile Include="VoteModelView.cs" />
-    <Compile Include="VoteView.xaml.cs">
-      <DependentUpon>VoteView.xaml</DependentUpon>
-    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -125,10 +123,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="VoteView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Uplauncher
+namespace Uplauncher.Helpers
 {
     public static class WebBrowserHelper
     {

@@ -1,10 +1,10 @@
 ﻿<Window xmlns:my="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"  x:Class="Uplauncher.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms" 
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Uplauncher="clr-namespace:Uplauncher"
-        WindowStartupLocation="CenterScreen"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Uplauncher="clr-namespace:Uplauncher" xmlns:System="clr-namespace:System;assembly=System"
+        xmlns:Helpers="clr-namespace:Uplauncher.Helpers" WindowStartupLocation="CenterScreen"
         DataContext="{Binding RelativeSource={RelativeSource Self}, Path=ModelView}"
-        Title="UpLauncher Barbarian Games"
+        Title="{x:Static Uplauncher:Constants.ApplicationName}"
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight"
         Icon="pack://application:,,/dofus-icon-48.ico"
@@ -12,12 +12,12 @@
         Closing="OnClosing"
         Loaded="OnLoaded">
   <Window.Resources>
-    <XmlDataProvider x:Key="News" 
-                     Source="http://barbarian-games.biz/news.xml" 
+    <XmlDataProvider x:Key="News"
+                     Source="{x:Static Uplauncher:Constants.RSSNewsURL}"
                      XPath="/rss/channel"/>
     <BitmapImage x:Key="Header" UriSource="pack://application:,,/Resources/famileons.jpg" />
     <BitmapImage x:Key="NewsIcon" UriSource="pack://application:,,/Resources/news.png" />
-    <Uplauncher:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
+    <Helpers:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
   </Window.Resources>
     <Grid>
     <Grid.RowDefinitions>
@@ -49,7 +49,7 @@
                 <Image Source="{StaticResource NewsIcon}"/>
                 <StackPanel Margin="5">
                   <TextBlock Text="{Binding XPath=title}" FontSize="24" Foreground="Chocolate"  />
-                  <TextBlock Uplauncher:HyperlinkUtility.LaunchDefaultBrowser="True" FontSize="14" Foreground="LightSalmon" Margin="5,0,0,5">
+                  <TextBlock Helpers:HyperlinkUtility.LaunchDefaultBrowser="True" FontSize="14" Foreground="LightSalmon" Margin="5,0,0,5">
                   <Hyperlink NavigateUri="{Binding XPath=link}">Lire la news</Hyperlink>
                   </TextBlock>
                 </StackPanel>

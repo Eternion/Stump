@@ -17,9 +17,8 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Windows.Interop;
 
-namespace Uplauncher
+namespace Uplauncher.Helpers
 {
     public static class ApplicationRunningHelper
     {

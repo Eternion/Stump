@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Input;
 
-namespace Uplauncher
+namespace Uplauncher.Helpers
 {
     /// <summary>
     /// Provides an <see cref="Execute"/> implementation which relays the <see cref="CanExecute"/> and <see cref="ICommand"/> 

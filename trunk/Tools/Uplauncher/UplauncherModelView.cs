@@ -29,6 +29,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Stump.Core.IO;
 using Stump.Core.Xml;
+using Uplauncher.Helpers;
 using Uplauncher.Patcher;
 using Uplauncher.Properties;
 using Application = System.Windows.Forms.Application;
@@ -44,12 +45,15 @@ namespace Uplauncher
         private bool m_validCrendentials;
 
         private WebClient m_client = new WebClient();
+        private SoundProxy m_soundProxy = new SoundProxy();
         private UpdateMeta m_meta;
         private UpdateEntry m_currentUpdate;
         private Stack<PatchTask> m_currentTasks;
         private Stack<UpdateEntry> m_sequence;
         private DateTime? m_lastUpdateCheck;
         private static readonly Color DefaultMessageColor = Colors.Black;
+
+        private int? RegConnectionPort;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -103,9 +107,15 @@ namespace Uplauncher
                 return;
             }
 
+            if (!m_soundProxy.Started)
+                m_soundProxy.StartProxy();
+
+            if (m_regProcess == null || m_regProcess.HasExited)
+                StartRegApp();
+
             var process = new Process()
             {
-                StartInfo = new ProcessStartInfo(Constants.DofusExePath),
+                StartInfo = new ProcessStartInfo(Constants.DofusExePath, m_soundProxy.Started ? "--reg-client-port=" + m_soundProxy.ClientPort : string.Empty),
             };
 
             if (!process.Start())
@@ -119,11 +129,31 @@ namespace Uplauncher
             }
         }
 
+        private void StartRegApp()
+        {
+            if (!File.Exists(Constants.DofusExePath))
+            {
+                NotifyIcon.ShowBalloonTip(4000, Constants.ApplicationName, "\"reg/Reg.exe\" est introuvable. Les sons ne seront pas activés", ToolTipIcon.Warning);
+                return;
+            }
+
+            m_regProcess = new Process()
+            {
+                StartInfo = new ProcessStartInfo(Constants.DofusRegExePath, "--reg-engine-port=" + m_soundProxy.RegPort),
+            };
+
+            if (!m_regProcess.Start())
+            {
+                NotifyIcon.ShowBalloonTip(4000, Constants.ApplicationName, "Impossible de lancer \"reg/Reg.exe\". Raison inconnue", ToolTipIcon.Warning);
+            }
+        }
+
         #endregion
 
         #region VoteCommand
 
         private DelegateCommand m_voteCommand;
+        private Process m_regProcess;
 
         public DelegateCommand VoteCommand
         {
@@ -138,48 +168,8 @@ namespace Uplauncher
         private void OnVote(object parameter)
         {
             Process.Start(Constants.VoteURL);
-
-            /*var dialog = new VoteView(string.Format(Constants.VoteURL, Constants.SiteID), Constants.SiteID);
-            dialog.Owner = View;
-
-            ShowVoteView(dialog);*/
+            LastVote = DateTime.Now;
         }
-        /*
-        private void ShowVoteView(VoteView dialog)
-        {
-            if (m_validCrendentials)
-            {
-                dialog.ModelView.Username = m_username;
-                dialog.ModelView.Password = m_password;
-                dialog.ModelView.AskingCredentials = false;
-            }
-
-            var dialogResult = dialog.ShowDialog();
-            if (dialogResult == true)
-            {
-                SetState(Resources.Vote_OK, Colors.Green);
-                LastVote = DateTime.Now;
-                VoteCommand.RaiseCanExecuteChanged();
-            }
-            else
-            {
-                // vote failed, so we reset the timer
-                if (dialogResult == false)
-                    LastVote = DateTime.Now;
-
-                SetState(Resources.Vote_Error, Colors.Red);
-            }
-
-            if (!m_validCrendentials)
-            {
-                if (dialog.ModelView.AreCredentialsValid)
-                {
-                    m_username = dialog.ModelView.Username;
-                    m_password = dialog.ModelView.Password;
-                    m_validCrendentials = true;
-                }
-            }
-        }*/
 
         #endregion
 
@@ -189,15 +179,13 @@ namespace Uplauncher
             View.Hide();
             if (NotifyIcon != null)
             {
-                NotifyIcon.ShowBalloonTip(4000, "Uplauncher Barbarian Games", "La fenêtre est rangé dans la barre de notifications", ToolTipIcon.Info);
+                NotifyIcon.ShowBalloonTip(4000, Constants.ApplicationName, "La fenêtre est rangé dans la barre de notifications", ToolTipIcon.Info);
             }
         }
 
         private void OnTrayClickVote(object sender, EventArgs eventArgs)
         {
             View.Show();
-            /*var dialog = new VoteView(string.Format(Constants.VoteURL, Constants.SiteID), Constants.SiteID);
-            dialog.Owner = View;*/
             OnVote(null);
         }
 
@@ -221,10 +209,11 @@ namespace Uplauncher
         #region Vote Timer
         private void CheckVoteTiming()
         {
-            if (DateTime.Now - Process.GetCurrentProcess().StartTime > TimeSpan.FromMinutes(3))
+            var processStart = Process.GetCurrentProcess().StartTime;
+            if (DateTime.Now - processStart > TimeSpan.FromMinutes(3))
             {
                 if (LastVote == null || DateTime.Now - LastVote >= TimeSpan.FromHours(2))
-                    NotifyIcon.ShowBalloonTip(5000, "Uplauncher Arkalys", "Vous pouvez à nouveau voter pour le serveur", ToolTipIcon.Warning);
+                    NotifyIcon.ShowBalloonTip(5000, Constants.ApplicationName, "Vous pouvez à nouveau voter pour le serveur", ToolTipIcon.Warning);
             }
             Thread.Sleep(2 * 60 * 1000);
             Task.Factory.StartNew(CheckVoteTiming);

@@ -1,5 +1,5 @@
 ﻿#region License GNU GPL
-// ColorToBrushConverter.cs
+// DialogCloser.cs
 // 
 // Copyright (C) 2013 - BehaviorIsManaged
 // 
@@ -14,25 +14,30 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
-using System;
-using System.Globalization;
-using System.Windows.Data;
-using System.Windows.Media;
+using System.Windows;
 
-namespace Uplauncher
+namespace Uplauncher.Helpers
 {
-    public class ColorToBrushConverter : IValueConverter
+    public static class DialogCloser
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var col = (Color)value;
-            return new SolidColorBrush(col);
-        }
+        public static readonly DependencyProperty DialogResultProperty =
+            DependencyProperty.RegisterAttached(
+                "DialogResult",
+                typeof(bool?),
+                typeof(DialogCloser),
+                new PropertyMetadata(DialogResultChanged));
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        private static void DialogResultChanged(
+            DependencyObject d,
+            DependencyPropertyChangedEventArgs e)
         {
-            var c = (SolidColorBrush)value;
-            return c.Color;;
+            var window = d as Window;
+            if (window != null)
+                window.DialogResult = e.NewValue as bool?;
+        }
+        public static void SetDialogResult(Window target, bool? value)
+        {
+            target.SetValue(DialogResultProperty, value);
         }
     }
 }
