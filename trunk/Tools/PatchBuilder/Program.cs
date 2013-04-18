@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Stump.Core.Xml;
 using Uplauncher.Patcher;
+using System.Diagnostics;
 
 namespace PatchBuilder
 {
@@ -13,7 +14,7 @@ namespace PatchBuilder
     {
         static void Main(string[] args)
         {
-            if (args.Length != 0)
+            if (args.Length == 0)
             {
                 Console.WriteLine("Give the patch directory in argument");
                 Console.Read();
@@ -31,8 +32,9 @@ namespace PatchBuilder
             {
                 meta = new UpdateMeta();
                 meta.LastVersion = 1;
+                meta.Updates = new List<UpdateEntry>();
             }
-
+            Debugger.Launch();
             foreach (var directory in Directory.GetDirectories(patchDir))
             {
                 var directoryName = Path.GetFileName(directory);
@@ -41,21 +43,26 @@ namespace PatchBuilder
                     continue;
 
                 var from = int.Parse(match.Groups[1].Captures[0].Value);
-                var to = int.Parse(match.Groups[1].Captures[1].Value);
+                var to = int.Parse(match.Groups[2].Captures[0].Value);
 
                 if (meta.Updates.Any(x => x.FromVersion == from && x.ToVersion == to))
                     continue;
 
                 var tasks = Directory.EnumerateFiles(directory, "*", SearchOption.AllDirectories).Select(x => new AddFileTask()
                 {
-                    LocalURL = GetRelativePath(x, directory),
-                    RelativeURL = GetRelativePath(x, patchDir),
+                    LocalURL = GetRelativePath(x, directory + "\\"),
+                    RelativeURL = GetRelativePath(x, patchDir + "\\"),
                 }).ToArray();
 
                 var patch = new Patch()
                 {
                     Tasks = tasks,
                 };
+
+                foreach (var task in tasks)
+                {
+                    Console.WriteLine("Add " + ((AddFileTask)task).RelativeURL);
+                }
 
                 XmlUtils.Serialize(Path.Combine(directory, "patch.xml"), patch);
                 Console.WriteLine(string.Format("Create Patch from '{0}' to '{1}' : {2} !", from, to, Path.Combine(directory, "patch.xml")));
@@ -70,19 +77,20 @@ namespace PatchBuilder
 
             }
 
+            meta.LastChange = DateTime.Now;
 
             XmlUtils.Serialize(Path.Combine(patchDir, "updates.xml"), meta);
 
             Console.WriteLine(string.Format("Meta file {0} updated !", Path.Combine(patchDir, "updates.xml")));
+            Console.Read();
 
         }
 
         static string GetRelativePath(string fullPath, string relativeTo)
         {
-            string folder = Path.GetDirectoryName(fullPath);
-            string[] foldersSplitted = folder.Split(new[] { relativeTo.Replace("/", "\\") }, StringSplitOptions.RemoveEmptyEntries); // cut the source path and the "rest" of the path
+            string[] foldersSplitted = fullPath.Split(new[] { relativeTo.Replace("/", "\\") }, StringSplitOptions.RemoveEmptyEntries); // cut the source path and the "rest" of the path
 
-            return foldersSplitted.Length > 1 ? foldersSplitted[1] : ""; // return the "rest"
+            return foldersSplitted.Length > 0 ? foldersSplitted.Last() : ""; // return the "rest"
         }
     }
 }
