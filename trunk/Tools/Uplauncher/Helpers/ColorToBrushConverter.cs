@@ -1,5 +1,5 @@
 ﻿#region License GNU GPL
-// Constants.cs
+// ColorToBrushConverter.cs
 // 
 // Copyright (C) 2013 - BehaviorIsManaged
 // 
@@ -15,20 +15,24 @@
 #endregion
 
 using System;
+using System.Globalization;
+using System.Windows.Data;
+using System.Windows.Media;
 
-namespace Uplauncher
+namespace Uplauncher.Helpers
 {
-    public class Constants
+    public class ColorToBrushConverter : IValueConverter
     {
-        public const string ApplicationName = "Uplauncher Arkalys";
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var col = (Color)value;
+            return new SolidColorBrush(col);
+        }
 
-        public const string SiteURL = "http://5.135.166.144/";
-        public static readonly Uri RSSNewsURL = new Uri("http://www.google.com");
-
-        public const string VoteURL = "http://www.rpg-paradize.com/?page=vote&vote=37207";
-        public const string DofusExePath = "DofusMod.exe";
-        public const string DofusRegExePath = "reg\\Reg.exe";
-        public const string RemoteMetaFile = "updates.xml";
-        public const string LocalVersionFile = "version";
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var c = (SolidColorBrush)value;
+            return c.Color;;
+        }
     }
 }

@@ -1,5 +1,5 @@
 ﻿#region License GNU GPL
-// DialogCloser.cs
+// NetworkHelper.cs
 // 
 // Copyright (C) 2013 - BehaviorIsManaged
 // 
@@ -14,30 +14,26 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
-using System.Windows;
+using System;
+using System.Linq;
+using System.Net.NetworkInformation;
 
-namespace Uplauncher
+namespace Uplauncher.Helpers
 {
-    public static class DialogCloser
+    public class NetworkHelper
     {
-        public static readonly DependencyProperty DialogResultProperty =
-            DependencyProperty.RegisterAttached(
-                "DialogResult",
-                typeof(bool?),
-                typeof(DialogCloser),
-                new PropertyMetadata(DialogResultChanged));
+        public static int FindFreePort(int min, int max)
+        {
+            var properties = IPGlobalProperties.GetIPGlobalProperties();
+            var connections = properties.GetActiveTcpConnections();
 
-        private static void DialogResultChanged(
-            DependencyObject d,
-            DependencyPropertyChangedEventArgs e)
-        {
-            var window = d as Window;
-            if (window != null)
-                window.DialogResult = e.NewValue as bool?;
-        }
-        public static void SetDialogResult(Window target, bool? value)
-        {
-            target.SetValue(DialogResultProperty, value);
+            for (int i = min; i < max; i++)
+            {
+                if (connections.All(x => x.LocalEndPoint.Port != i))
+                    return i;
+            }
+
+            throw new Exception(string.Format("No free port available in range {0}-{1}", min, max));
         }
     }
 }
