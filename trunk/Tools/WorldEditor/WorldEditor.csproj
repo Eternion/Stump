@@ -73,6 +73,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Database\DatabaseManager.cs" />
     <Compile Include="Helpers\CanvasAutoSize.cs" />
     <Compile Include="Helpers\Collections\AsyncVirtualizingCollection.cs" />
     <Compile Include="Helpers\Collections\IItemsProvider.cs" />
@@ -219,6 +220,10 @@
       <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
       <Name>Stump.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\Stump.ORM\Stump.ORM.csproj">
+      <Project>{E7406629-E127-4B96-8F29-287947075631}</Project>
+      <Name>Stump.ORM</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DofusProtocol\D2oClasses\Stump.DofusProtocol.D2oClasses.csproj">
       <Project>{33093793-C4BA-4B89-AC82-6E9D00437452}</Project>
       <Name>Stump.DofusProtocol.D2oClasses</Name>
@@ -252,7 +257,9 @@
   <ItemGroup>
     <Resource Include="Images\page_white.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Items\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

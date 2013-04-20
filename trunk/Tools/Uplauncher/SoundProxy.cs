@@ -14,11 +14,14 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Windows.Forms;
 using Uplauncher.Helpers;
 
@@ -32,7 +35,8 @@ namespace Uplauncher
                                                     ProtocolType.Tcp);
 
         private Socket m_regClient;
-        private List<Socket> m_clients = new List<Socket>();
+        private List<SoundClient> m_clients = new List<SoundClient>();
+        private SoundClient m_mainClient;
 
         public bool Started
         {
@@ -72,11 +76,13 @@ namespace Uplauncher
 
         private void OnClientConnected(SocketAsyncEventArgs e)
         {
-            m_clients.Add(e.AcceptSocket);
+            var client = new SoundClient(e.AcceptSocket);
+            m_clients.Add(client);
+
             var args = new SocketAsyncEventArgs();
             args.Completed += (sender, arg) => OnClientReceived(arg);
             args.SetBuffer(new byte[8192], 0, 8192);
-            args.UserToken = e.AcceptSocket;
+            args.UserToken = client;
 
             if (!e.AcceptSocket.ReceiveAsync(args))
                 OnClientReceived(args);
@@ -89,30 +95,42 @@ namespace Uplauncher
             }
         }
 
-        private void RemoveClient(Socket socket)
+        private void RemoveClient(SoundClient client)
         {
-            m_clients.Remove(socket);
+            m_clients.Remove(client);
         }
 
         private void OnClientReceived(SocketAsyncEventArgs e)
         {
             if (e.BytesTransferred == 0 || e.SocketError != SocketError.Success)
             {
-                ((Socket)e.UserToken).Disconnect(false);
-                RemoveClient((Socket)e.UserToken);
+                ( (SoundClient)e.UserToken ).Socket.Disconnect(false);
+                RemoveClient((SoundClient)e.UserToken);
             }
             else
             {
                 if (m_regClient == null || !m_regClient.Connected)
                 {
-                    ( (Socket)e.UserToken ).Disconnect(false);
-                    RemoveClient((Socket)e.UserToken);
+                    ( (SoundClient)e.UserToken ).Socket.Disconnect(false);
+                    RemoveClient((SoundClient)e.UserToken);
                 }
                 else
                 {
+                    var message = Encoding.ASCII.GetString(e.Buffer, e.Offset, e.BytesTransferred);
+
+                    if (( (SoundClient)e.UserToken ).ID == 0 && message.Contains("sayHello"))
+                    {
+                        // example: 1366402807812=>sayHello(1366402807812,C:\Users\Bouh2\Desktop\Dofus\Dofus 2.10\app/config.xml)|
+                        var index = message.IndexOf("sayHello") + ("sayHello").Length;
+                        var idStr = message.Substring(index + 1, message.IndexOf(",", index) - (index + 1));
+
+                        ( (SoundClient)e.UserToken ).ID = long.Parse(idStr);
+                    }
+
+                    Debug.WriteLine("CLIENT : " + message);
                     m_regClient.Send(e.Buffer, e.Offset, e.BytesTransferred, SocketFlags.None);
 
-                    if (!( (Socket)e.UserToken ).ReceiveAsync(e))
+                    if (!( (SoundClient)e.UserToken ).Socket.ReceiveAsync(e))
                         OnClientReceived(e);
                 }
             }
@@ -122,13 +140,56 @@ namespace Uplauncher
         private void OnRegConnected(SocketAsyncEventArgs e)
         {
             if (m_regClient == null || !m_regClient.Connected)
+            {
                 m_regClient = e.AcceptSocket;
+
+                var args = new SocketAsyncEventArgs();
+                args.Completed += (sender, arg) => OnRegReceived(arg);
+                args.SetBuffer(new byte[8192], 0, 8192);
+                args.UserToken = e.AcceptSocket;
+
+                if (!e.AcceptSocket.ReceiveAsync(args))
+                    OnRegReceived(args);
+            }
 
             var listenArgs = new SocketAsyncEventArgs();
             listenArgs.Completed += (sender, x) => OnRegConnected(x);
             if (!m_regListener.AcceptAsync(listenArgs))
             {
                 OnRegConnected(listenArgs);
+            }
+        }
+
+        private void OnRegReceived(SocketAsyncEventArgs e)
+        {
+            if (e.BytesTransferred == 0 || e.SocketError != SocketError.Success)
+            {
+                ( (Socket)e.UserToken ).Disconnect(false);
+            }
+            else
+            {
+                var message = Encoding.ASCII.GetString(e.Buffer, e.Offset, e.BytesTransferred);
+
+                Debug.WriteLine("REG : " + message);
+
+                // example : main_client_is():1366402807812|
+                if (message.Contains("main_client_is():"))
+                {
+                    var index = message.IndexOf("main_client_is():") + ( "main_client_is():" ).Length;
+                    var idStr = message.Substring(index, message.IndexOf("|", index) - index);
+
+                    var id = long.Parse(idStr);
+
+                    m_mainClient = m_clients.First(x => x.ID == id);
+                }
+
+                foreach (var soundClient in m_clients)
+                {
+                    soundClient.Socket.Send(e.Buffer, e.Offset, e.BytesTransferred, SocketFlags.None);
+                }
+
+                if (!( (Socket)e.UserToken ).ReceiveAsync(e))
+                    OnRegReceived(e);
             }
         }
 

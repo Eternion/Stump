@@ -109,6 +109,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Helpers\DelegateCommand.cs" />
     <Compile Include="Helpers\DialogCloser.cs" />
+    <Compile Include="SoundClient.cs" />
     <Compile Include="SoundProxy.cs" />
     <Compile Include="UplauncherModelView.cs" />
     <Page Include="MainWindow.xaml">
@@ -157,6 +158,7 @@
     <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">
       <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
       <Name>Stump.Core</Name>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
