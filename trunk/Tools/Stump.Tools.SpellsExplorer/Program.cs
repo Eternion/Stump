@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
+using Stump.ORM;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.I18n;
 using Stump.Server.WorldServer;
@@ -26,11 +27,13 @@ namespace Stump.Tools.SpellsExplorer
             Console.WindowHeight = 45;
             
             Console.WriteLine("Initializing Database...");
-            m_databaseAccessor = new DatabaseAccessor(WorldServer.DatabaseConfiguration, Definitions.DatabaseRevision, typeof (WorldBaseRecord<>), typeof (WorldBaseRecord<>).Assembly, false);
+            m_databaseAccessor = new DatabaseAccessor(WorldServer.DatabaseConfiguration);
+            m_databaseAccessor.RegisterMappingAssembly(typeof(WorldServer).Assembly);
             m_databaseAccessor.Initialize();
 
             Console.WriteLine("Opening Database...");
-            m_databaseAccessor.OpenDatabase();
+            m_databaseAccessor.OpenConnection();
+            DataManager.DefaultDatabase = m_databaseAccessor.Database;
 
             Console.WriteLine("Loading texts...");
             TextManager.Instance.Initialize();
