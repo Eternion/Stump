@@ -148,7 +148,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Library\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data, Version=6.6.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
+    <Reference Include="MySql.Data, Version=6.6.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Library\MySql.Data.dll</HintPath>
+    </Reference>
     <Reference Include="protobuf-net">
       <HintPath>..\..\Library\protobuf-net.dll</HintPath>
     </Reference>
