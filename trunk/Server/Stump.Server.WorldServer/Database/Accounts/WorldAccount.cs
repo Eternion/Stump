@@ -11,7 +11,7 @@ namespace Stump.Server.WorldServer.Database.Accounts
         /// <summary>
         /// Use string.Format
         /// </summary>
-        public static string FetchById = "SELECT * FROM accounts WHERE Id=@0";
+        public static string FetchById = "SELECT * FROM accounts WHERE Id={0}";
         /// <summary>
         /// Use parameters
         /// </summary>
