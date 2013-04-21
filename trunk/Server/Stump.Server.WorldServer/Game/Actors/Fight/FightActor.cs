@@ -290,6 +290,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             private set;
         }
 
+        public ObjectPosition TurnStartPosition
+        {
+            get;
+            internal set;
+        }
+
         #region Stats
 
         public abstract byte Level

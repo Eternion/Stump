@@ -286,6 +286,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\PunishmentDamage.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Dodge.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Move\RewindEffect.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\SwitchPosition.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\RestoreHp.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\Punishment.cs" />

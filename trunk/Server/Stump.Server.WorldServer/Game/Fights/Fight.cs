@@ -971,6 +971,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
             ForEach(entry => entry.RefreshStats());
 
+            FighterPlaying.TurnStartPosition = FighterPlaying.Position.Clone();
+
             TurnStartTime = DateTime.Now;
             m_turnTimer = Map.Area.CallDelayed(TurnTime, StopTurn);
 
