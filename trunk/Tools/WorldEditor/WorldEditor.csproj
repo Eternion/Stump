@@ -101,6 +101,7 @@
     <Compile Include="Maps\MapModelView.cs" />
     <Compile Include="Maps\WorldGFXManager.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="StartModelView.cs" />
     <Page Include="D2I\D2IEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

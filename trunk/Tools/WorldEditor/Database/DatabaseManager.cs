@@ -13,10 +13,62 @@
 // You should have received a copy of the GNU General Public License along with this program; 
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
+
+using System;
+using System.Reflection;
+using Stump.ORM;
+
 namespace WorldEditor.Database
 {
-    public class DatabaseManager
+    public static class DatabaseManager
     {
-         
+        private static DatabaseAccessor m_dbAccessor = new DatabaseAccessor();
+
+
+        public static DatabaseConfiguration Configuration
+        {
+            get { return m_dbAccessor.Configuration; }
+            set { m_dbAccessor.Configuration = value; }
+        }
+
+        public static Stump.ORM.Database Database
+        {
+            get { return m_dbAccessor.Database; }
+        }
+
+        public static void Initialize(Assembly worldAssembly)
+        {
+            m_dbAccessor.RegisterMappingAssembly(worldAssembly);
+        }
+
+        public static void Connect()
+        {
+            m_dbAccessor.OpenConnection();
+        }
+
+        public static void Disconnect()
+        {
+            m_dbAccessor.CloseConnection();
+        }
+
+        public static bool TryConnection()
+        {
+            var db = new Stump.ORM.Database(Configuration.GetConnectionString(), Configuration.ProviderName)
+            {
+                KeepConnectionAlive = true,
+            };
+
+            try
+            {
+                db.OpenSharedConnection();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            db.CloseSharedConnection();
+            return true;
+        }
     }
 }
