@@ -15,43 +15,63 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.Reflection;
+using Stump.Core.Reflection;
 using Stump.ORM;
 
 namespace WorldEditor.Database
 {
-    public static class DatabaseManager
+    public class DatabaseManager : Singleton<DatabaseManager>, INotifyPropertyChanged
     {
-        private static DatabaseAccessor m_dbAccessor = new DatabaseAccessor();
+        private DatabaseAccessor m_dbAccessor = new DatabaseAccessor();
 
+        public DatabaseManager()
+        {
+            Configuration.Host = string.Empty;
+            Configuration.User = string.Empty;
+            Configuration.Password = string.Empty;
+            Configuration.DbName = string.Empty;
+            Configuration.ProviderName = "MySql.Data.MySqlClient";
+        }
 
-        public static DatabaseConfiguration Configuration
+        public DatabaseConfiguration Configuration
         {
             get { return m_dbAccessor.Configuration; }
             set { m_dbAccessor.Configuration = value; }
         }
 
-        public static Stump.ORM.Database Database
+        public Stump.ORM.Database Database
         {
             get { return m_dbAccessor.Database; }
         }
 
-        public static void Initialize(Assembly worldAssembly)
+        public bool Connected
+        {
+            get;
+            private set;
+        }
+
+        public void Initialize(Assembly worldAssembly)
         {
             m_dbAccessor.RegisterMappingAssembly(worldAssembly);
         }
 
-        public static void Connect()
+        public void Connect()
         {
             m_dbAccessor.OpenConnection();
+
+            Connected = true;
         }
 
-        public static void Disconnect()
+        public  void Disconnect()
         {
             m_dbAccessor.CloseConnection();
+
+            Connected = false;
         }
 
-        public static bool TryConnection()
+        public bool TryConnection()
         {
             var db = new Stump.ORM.Database(Configuration.GetConnectionString(), Configuration.ProviderName)
             {
@@ -70,5 +90,7 @@ namespace WorldEditor.Database
             db.CloseSharedConnection();
             return true;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

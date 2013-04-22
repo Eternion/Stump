@@ -1325,7 +1325,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (GodMode)
                 Stats.Health.DamageTaken = 0;
-            else if (Fighter != null && (Fighter.HasLeft() || Fight.Losers == Fighter.Team))
+            else if (Fighter != null && (Fighter.HasLeft() || Fight.Losers == Fighter.Team) && !(Fight is FightDuel))
                 OnDied();
 
             Fighter = null;

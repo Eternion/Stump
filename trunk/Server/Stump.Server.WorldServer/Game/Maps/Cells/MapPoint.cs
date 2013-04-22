@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
         private static readonly Point VectorUpRight = new Point(0, 1);
 
         private static bool m_initialized;
-        private static readonly Point[] OrthogonalGridReference = new Point[MapSize];
+        private static readonly MapPoint[] OrthogonalGridReference = new MapPoint[MapSize];
 
 
         private short m_cellId;
@@ -110,7 +110,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             if (m_cellId < 0 || m_cellId > MapSize)
                 throw new IndexOutOfRangeException("Cell identifier out of bounds (" + m_cellId + ").");
 
-            Point point = OrthogonalGridReference[m_cellId];
+            var point = OrthogonalGridReference[m_cellId];
             m_x = point.X;
             m_y = point.Y;
         }
@@ -196,6 +196,21 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             return (DirectionsEnum) (uint) orientation;
         }
 
+        public IEnumerable<MapPoint> GetAllCellsInRectangle(MapPoint oppositeCell, bool skipStartAndEndCells = true, Func<MapPoint, bool> predicate = null)
+        {
+            int x1 = Math.Min(oppositeCell.X, X),
+                y1 = Math.Min(oppositeCell.Y, Y),
+                x2 = Math.Max(oppositeCell.X, X),
+                y2 = Math.Max(oppositeCell.Y, Y);
+            for (int x = x1; x <= x2; x++)
+                for (int y = y1; y <= y2; y++)
+                    if (!skipStartAndEndCells || ( !( x == X && y == Y ) && !( x == oppositeCell.X && y == oppositeCell.Y ) ))
+                    {
+                        var cell = GetPoint(x, y);
+                        if (cell != null && ( predicate == null || predicate(cell) )) yield return cell;
+                    }
+        }
+
         public MapPoint[] GetCellsOnLineBetween(MapPoint destination)
         {
             var result = new List<MapPoint>();
@@ -224,42 +239,42 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             {
                 case DirectionsEnum.DIRECTION_EAST:
                     {
-                        mapPoint = new MapPoint(m_x + step, m_y + step);
+                        mapPoint = GetPoint(m_x + step, m_y + step);
                         break;
                     }
                 case DirectionsEnum.DIRECTION_SOUTH_EAST:
                     {
-                        mapPoint = new MapPoint(m_x + step, m_y);
+                        mapPoint = GetPoint(m_x + step, m_y);
                         break;
                     }
                 case DirectionsEnum.DIRECTION_SOUTH:
                     {
-                        mapPoint = new MapPoint(m_x + step, m_y - step);
+                        mapPoint = GetPoint(m_x + step, m_y - step);
                         break;
                     }
                 case DirectionsEnum.DIRECTION_SOUTH_WEST:
                     {
-                        mapPoint = new MapPoint(m_x, m_y - step);
+                        mapPoint = GetPoint(m_x, m_y - step);
                         break;
                     }
                 case DirectionsEnum.DIRECTION_WEST:
                     {
-                        mapPoint = new MapPoint(m_x - step, m_y - step);
+                        mapPoint = GetPoint(m_x - step, m_y - step);
                         break;
                     }
                 case DirectionsEnum.DIRECTION_NORTH_WEST:
                     {
-                        mapPoint = new MapPoint(m_x - step, m_y);
+                        mapPoint = GetPoint(m_x - step, m_y);
                         break;
                     }
                 case DirectionsEnum.DIRECTION_NORTH:
                     {
-                        mapPoint = new MapPoint(m_x - step, m_y + step);
+                        mapPoint = GetPoint(m_x - step, m_y + step);
                         break;
                     }
                 case DirectionsEnum.DIRECTION_NORTH_EAST:
                     {
-                        mapPoint = new MapPoint(m_x, m_y + step);
+                        mapPoint = GetPoint(m_x, m_y + step);
                         break;
                     }
             }
@@ -310,12 +325,14 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             return (uint) ((x - y)*MapWidth + y + (x - y)/2);
         }
 
-        public static Point CellIdToCoord(uint param1)
+        public static Point CellIdToCoord(uint cellId)
         {
             if (!m_initialized)
                 InitializeStaticGrid();
 
-            return OrthogonalGridReference[param1];
+            var point = GetPoint((short)cellId);
+
+            return new Point(point.X, point.Y);
         }
 
         /// <summary>
@@ -323,6 +340,8 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
         /// </summary>
         private static void InitializeStaticGrid()
         {
+            m_initialized = true;
+
             int posX = 0;
             int posY = 0;
             int cellCount = 0;
@@ -330,17 +349,31 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             for (int x = 0; x < MapHeight; x++)
             {
                 for (int y = 0; y < MapWidth; y++)
-                    OrthogonalGridReference[cellCount++] = new Point(posX + y, posY + y);
+                    OrthogonalGridReference[cellCount++] = new MapPoint(posX + y, posY + y);
 
                 posX++;
 
                 for (int y = 0; y < MapWidth; y++)
-                    OrthogonalGridReference[cellCount++] = new Point(posX + y, posY + y);
+                    OrthogonalGridReference[cellCount++] = new MapPoint(posX + y, posY + y);
 
                 posY--;
             }
 
-            m_initialized = true;
+        }
+
+        public static MapPoint GetPoint(int x, int y)
+        {
+            return new MapPoint(x, y);
+        }
+
+        public static MapPoint GetPoint(short cell)
+        {
+            return OrthogonalGridReference[cell];
+        }
+
+        public static MapPoint GetPoint(Cell cell)
+        {
+            return GetPoint(cell.Id);
         }
 
         public override string ToString()

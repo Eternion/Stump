@@ -33,7 +33,7 @@ using TriggerType = Stump.Server.WorldServer.Game.Fights.Triggers.TriggerType;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
-    public abstract class Fight : ICharacterContainer
+    public abstract class Fight : WorldObjectsContext, ICharacterContainer
     {
         protected readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -117,6 +117,22 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             get;
             private set;
+        }
+
+        public override Cell[] Cells
+        {
+            get
+            {
+                return Map.Cells;
+            }
+        }
+
+        protected override IEnumerable<WorldObject> Objects
+        {
+            get
+            {
+                return Fighters;
+            }
         }
 
         public abstract FightTypeEnum FightType
@@ -1453,7 +1469,8 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             if (State == FightState.Placement)
             {
-                fighter.Stats.Health.DamageTaken += (short)(fighter.LifePoints - 1);
+                if (!(this is FightDuel))
+                    fighter.Stats.Health.DamageTaken += (short)(fighter.LifePoints - 1);
 
                 if (CheckFightEnd())
                     return;
@@ -1481,7 +1498,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                     readyChecker.Timeout += (obj, laggers) => OnPlayerReadyToLeave(fighter as CharacterFighter);
 
                     ( (CharacterFighter)fighter ).PersonalReadyChecker = readyChecker;
-                    Clients.Remove(character.Client); // can be instant so we remove him before to start the checker
+                    // Clients.Remove(character.Client); // can be instant so we remove him before to start the checker .. why ???
                     readyChecker.Start();
 
                 }
@@ -1515,12 +1532,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (!fightend && isfighterTurn)
                 StopTurn();
 
-            // already done if the fight is ended
-            if (!fightend)
-            {
-                fighter.ResetFightProperties();
-                fighter.Character.RejoinMap();
-            }
+            fighter.ResetFightProperties();
+            fighter.Character.RejoinMap();
 
             fighter.Team.RemoveFighter(fighter);
             fighter.Team.AddLeaver(fighter);

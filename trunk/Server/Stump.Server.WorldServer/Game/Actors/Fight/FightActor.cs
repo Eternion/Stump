@@ -566,6 +566,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return false;
             }
 
+            // check LoS
+            if (!Fight.CanBeSeen(Cell, cell))
+            {
+                return false;
+            }
+
             return true;
         }
 
