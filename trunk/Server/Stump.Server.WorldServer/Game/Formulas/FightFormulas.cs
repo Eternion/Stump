@@ -5,6 +5,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 
 namespace Stump.Server.WorldServer.Game.Formulas
 {
@@ -32,9 +33,9 @@ namespace Stump.Server.WorldServer.Game.Formulas
             return kamas;
         }
 
-        public static event Func<CharacterFighter, DroppableItem, int, int> DropRateModifier;
+        public static event Func<CharacterFighter, DroppableItem, double, double> DropRateModifier;
 
-        public static int InvokeDropRateModifier(CharacterFighter looter, DroppableItem item, int rate)
+        public static double InvokeDropRateModifier(CharacterFighter looter, DroppableItem item, double rate)
         {
             var handler = DropRateModifier;
             if (handler != null)
@@ -104,9 +105,9 @@ namespace Stump.Server.WorldServer.Game.Formulas
             return InvokeWinKamasModifier(looter, kamas);
         }
 
-        public static int AdjustDropChance(CharacterFighter looter, DroppableItem item, int monsterAgeBonus)
+        public static double AdjustDropChance(CharacterFighter looter, DroppableItem item, Monster dropper, int monsterAgeBonus)
         {
-            var rate = (int)(item.DropRate * ( looter.Stats[PlayerFields.Prospecting] / 100d ) * ( ( monsterAgeBonus / 100d ) + 1 ) * Rates.DropsRate);
+            var rate = item.GetDropRate((int) dropper.Grade.GradeId) * ( looter.Stats[PlayerFields.Prospecting] / 100d ) * ( ( monsterAgeBonus / 100d ) + 1 ) * Rates.DropsRate;
 
             return InvokeDropRateModifier(looter, item, rate);
         }

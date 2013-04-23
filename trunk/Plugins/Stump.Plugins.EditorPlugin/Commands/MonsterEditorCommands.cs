@@ -130,12 +130,13 @@ namespace Stump.Plugins.EditorPlugin.Commands
             var drop = new DroppableItem()
             {
                 ItemId = (short) trigger.Get<ItemTemplate>("item").Id,
-                DropRate = trigger.Get<double>("rate"),
                 ProspectingLock = trigger.Get<int>("lock"),
                 DropLimit = trigger.Get<int>("limit"),
                 RollsCounter = trigger.Get<int>("rolls"),
                 MonsterOwner = monster,
             };
+
+            drop.SetDropRate(trigger.Get<double>("rate"));
 
             WorldServer.Instance.IOTaskPool.AddMessage(
                 () =>

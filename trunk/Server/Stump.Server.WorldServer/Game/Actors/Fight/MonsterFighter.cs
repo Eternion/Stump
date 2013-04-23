@@ -105,7 +105,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                         break;
 
                     var chance = ( random.Next(0, 100) + random.NextDouble() );
-                    var dropRate = FightFormulas.AdjustDropChance(looter, droppableItem, Fight.AgeBonus);
+                    var dropRate = FightFormulas.AdjustDropChance(looter, droppableItem, Monster, Fight.AgeBonus);
 
                     if (dropRate >= chance)
                     {
