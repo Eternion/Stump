@@ -80,7 +80,7 @@ namespace Stump.Plugins.DefaultPlugin.Monsters
             var stats = new List<PlayerFields>();
             foreach (var spell in monster.Spells)
             {
-                var spellLevel = SpellManager.Instance.GetSpellLevel(spell.SpellId, spell.Level);
+                var spellLevel = SpellManager.Instance.GetSpellLevel(spell.Id, spell.CurrentLevel);
 
                 if (spellLevel == null)
                     continue;

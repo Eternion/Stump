@@ -196,7 +196,8 @@ namespace Stump.Plugins.EditorPlugin.Commands
                         };
 
                         MonsterManager.Instance.AddMonsterSpell(monsterSpell);
-                        grade.Spells.Add(monsterSpell);
+                        grade.SpellsTemplates.Add(monsterSpell);
+                        grade.ReloadSpells();
                     }
 
                     trigger.Reply("Spell '{0}' added to '{1}'", spell.Name, monster.Name);
@@ -213,12 +214,13 @@ namespace Stump.Plugins.EditorPlugin.Commands
                 {
                     foreach (var grade in monster.Grades)
                     {
-                        var spells = grade.Spells.Where(entry => entry.SpellId == spell.Id).ToArray();
+                        var spells = grade.SpellsTemplates.Where(entry => entry.SpellId == spell.Id).ToArray();
 
                         foreach (var monsterSpell in spells)
                         {
                             MonsterManager.Instance.RemoveMonsterSpell(monsterSpell);
-                            grade.Spells.Remove(monsterSpell);
+                            grade.SpellsTemplates.Remove(monsterSpell);
+                            grade.ReloadSpells();
                         }
                     }
 

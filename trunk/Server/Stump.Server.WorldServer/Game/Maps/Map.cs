@@ -757,6 +757,9 @@ namespace Stump.Server.WorldServer.Game.Maps
             var circle = new Lozenge(1, 4);
             var dest = circle.GetCells(group.Cell, this).Where(entry => entry.Walkable && !entry.NonWalkableDuringRP && entry.MapChangeData == 0).RandomElementOrDefault();
 
+            // no possible move :/
+            if (dest == null)
+                return;
 
             var pathfinder = new Pathfinder(CellsInfoProvider);
             var path = pathfinder.FindPath(group.Cell.Id, dest.Id, false);

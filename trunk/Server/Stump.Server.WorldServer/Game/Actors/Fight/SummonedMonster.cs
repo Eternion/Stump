@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         private readonly StatsFields m_stats;
 
         public SummonedMonster(int id, FightTeam team, FightActor summoner, MonsterGrade template, Cell cell)
-            : base(id, team, template.Spells.Select(entry => new Spell(entry)).ToArray(), summoner, cell)
+            : base(id, team, template.Spells.ToArray(), summoner, cell)
         {
             Monster = template;
             Look = Monster.Template.EntityLook;
