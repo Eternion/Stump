@@ -33,6 +33,7 @@ namespace WorldEditor
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new StartModelView();
         }
 
         private void MdiContainer_PreviewDragEnter(object sender, DragEventArgs e)

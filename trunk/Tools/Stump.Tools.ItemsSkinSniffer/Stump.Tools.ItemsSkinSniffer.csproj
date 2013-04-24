@@ -35,8 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.ActiveRecord">
-      <HintPath>..\..\Run\Debug\Plugins\Castle.ActiveRecord.dll</HintPath>
+    <Reference Include="Castle.Core">
+      <HintPath>..\..\Library\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="HtmlAgilityPack">
       <HintPath>..\..\Library\HtmlAgilityPack.dll</HintPath>

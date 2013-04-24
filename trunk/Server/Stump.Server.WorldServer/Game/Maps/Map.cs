@@ -45,7 +45,7 @@ using NpcTemplate = Stump.Server.WorldServer.Database.Npcs.NpcTemplate;
 
 namespace Stump.Server.WorldServer.Game.Maps
 {
-    public class Map : ICharacterContainer
+    public class Map : WorldObjectsContext, ICharacterContainer
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -217,9 +217,17 @@ namespace Stump.Server.WorldServer.Game.Maps
             get { return Record.Id; }
         }
 
-        public Cell[] Cells
+        public override Cell[] Cells
         {
             get { return Record.Cells; }
+        }
+
+        protected override IEnumerable<WorldObject> Objects
+        {
+            get
+            {
+                return m_actors.Values;
+            }
         }
 
         public MapCellsInformationProvider CellsInfoProvider

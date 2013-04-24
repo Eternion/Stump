@@ -57,7 +57,7 @@ namespace Stump.Tools.CacheManager
 
             logger.Info("Opening World Database");
             DBAccessor = new DatabaseAccessor(WorldServer.DatabaseConfiguration);
-            DBAccessor.RegisterMappingAssembly(Assembly.GetExecutingAssembly());
+            DBAccessor.RegisterMappingAssembly(Assembly.GetAssembly(typeof(WorldServer)));
             DBAccessor.Initialize();
             DBAccessor.OpenConnection();
 

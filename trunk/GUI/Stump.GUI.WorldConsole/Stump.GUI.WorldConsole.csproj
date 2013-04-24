@@ -21,6 +21,7 @@
     <DefineConstants>TRACE;DEBUG;CONTRACTS_FULL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -122,10 +123,6 @@
     <ProjectReference Include="..\..\Server\Stump.Server.WorldServer\Stump.Server.WorldServer.csproj">
       <Project>{7A1BEAB5-1A69-48B6-B064-0F6F372AC23B}</Project>
       <Name>Stump.Server.WorldServer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Tools\PostBuild\PostBuild.csproj">
-      <Project>{1B676803-A9AF-4F49-8D67-483D701C9A6B}</Project>
-      <Name>PostBuild</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

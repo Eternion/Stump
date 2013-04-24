@@ -1,0 +1,1 @@
+You need the last version of WinPcap to run the sniffer !

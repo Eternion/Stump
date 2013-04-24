@@ -31,10 +31,10 @@ namespace PatchBuilder
             else
             {
                 meta = new UpdateMeta();
-                meta.LastVersion = 1;
+                meta.LastVersion = 0;
                 meta.Updates = new List<UpdateEntry>();
             }
-            Debugger.Launch();
+
             foreach (var directory in Directory.GetDirectories(patchDir))
             {
                 var directoryName = Path.GetFileName(directory);
@@ -61,7 +61,7 @@ namespace PatchBuilder
 
                 foreach (var task in tasks)
                 {
-                    Console.WriteLine("Add " + ((AddFileTask)task).RelativeURL);
+                    Console.WriteLine("Add " + task.RelativeURL);
                 }
 
                 XmlUtils.Serialize(Path.Combine(directory, "patch.xml"), patch);
@@ -73,10 +73,9 @@ namespace PatchBuilder
                     ToVersion = to,
                     PatchRelativURL = directoryName + "/patch.xml",
                 });
-
-
             }
 
+            meta.LastVersion++;
             meta.LastChange = DateTime.Now;
 
             XmlUtils.Serialize(Path.Combine(patchDir, "updates.xml"), meta);

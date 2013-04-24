@@ -17,6 +17,7 @@
 using System;
 using System.IO;
 using Stump.Core.Attributes;
+using Stump.ORM;
 
 namespace WorldEditor
 {
@@ -33,6 +34,17 @@ namespace WorldEditor
 
         [Variable(true)]
         public static string GenericMapDecryptionKey = "649ae451ca33ec53bbcbcc33becf15f4";
+
+        [Variable(Priority = 10)]
+        public static DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
+        {
+            Host = "localhost",
+            DbName = "stump_world",
+            User = "root",
+            Password = "",
+            ProviderName = "MySql.Data.MySqlClient",
+            //UpdateFileDir = "./sql_update/",
+        };
 
         public static string DofusAppPath
         {

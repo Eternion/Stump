@@ -290,6 +290,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             private set;
         }
 
+        public ObjectPosition TurnStartPosition
+        {
+            get;
+            internal set;
+        }
+
         #region Stats
 
         public abstract byte Level
@@ -562,6 +568,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
 
             if (!SpellHistory.CanCastSpell(spellLevel, cell))
+            {
+                return false;
+            }
+
+            // check LoS
+            if (!Fight.CanBeSeen(Cell, cell))
             {
                 return false;
             }
