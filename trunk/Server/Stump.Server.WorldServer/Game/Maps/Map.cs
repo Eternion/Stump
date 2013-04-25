@@ -442,6 +442,12 @@ namespace Stump.Server.WorldServer.Game.Maps
                 Zaap = interactiveObject;
             }
 
+            if (m_interactives.ContainsKey(interactiveObject.Id))
+            {
+                logger.Error("Interactive object {0} already exists on map {1}", interactiveObject.Id, Id);
+                return null;
+            }
+
             m_interactives.Add(interactiveObject.Id, interactiveObject);
             Area.Enter(interactiveObject);
 

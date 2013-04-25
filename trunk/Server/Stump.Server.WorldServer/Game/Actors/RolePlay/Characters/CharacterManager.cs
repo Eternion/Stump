@@ -27,6 +27,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
+        /// Called before the record is saved
+        /// </summary>
+        public event Action<CharacterRecord> CreatingCharacter;
+
+        private void OnCreatingCharacter(CharacterRecord record)
+        {
+            Action<CharacterRecord> handler = CreatingCharacter;
+            if (handler != null) handler(record);
+        }
+
+        /// <summary>
         ///   Maximum number of characters you can create/store in your account
         /// </summary>
         [Variable(true)] public static uint MaxCharacterSlot = 5;
@@ -158,6 +169,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     Database.Insert(itemRecord);
                 }
 
+                OnCreatingCharacter(record);
 
                 if (client.Characters == null)
                     client.Characters = new List<CharacterRecord>();

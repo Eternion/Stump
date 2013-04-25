@@ -10,7 +10,7 @@
         <Maps:MapControl/>
       </ControlTemplate>
     </avalonDock:DockingManager.DocumentPaneTemplate>
-    <avalonDock:LayoutRoot>
+    <!--<avalonDock:LayoutRoot>
       <avalonDock:LayoutPanel>
         <avalonDock:LayoutDocumentPane x:Name="DocumentPane"></avalonDock:LayoutDocumentPane>
       </avalonDock:LayoutPanel>
@@ -51,7 +51,7 @@
           </avalonDock:LayoutAnchorGroup>
         </avalonDock:LayoutAnchorSide>
       </avalonDock:LayoutRoot.RightSide>
-    </avalonDock:LayoutRoot>
+    </avalonDock:LayoutRoot>-->
 
 
   </avalonDock:DockingManager>
