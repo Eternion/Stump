@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game.Accounts.Startup;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Handlers.Approach;
 using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Core.Network
@@ -25,6 +26,9 @@ namespace Stump.Server.WorldServer.Core.Network
 
             CanReceive = true;
             StartupActions = new List<StartupAction>();
+
+            lock (ApproachHandler.ConnectionQueue.SyncRoot)
+                ApproachHandler.ConnectionQueue.Add(this);
         }
 
         public bool AutoConnect
@@ -37,6 +41,12 @@ namespace Stump.Server.WorldServer.Core.Network
         {
             get;
             internal set;
+        }
+
+        public DateTime InQueueUntil
+        {
+            get;
+            set;
         }
 
         private WorldAccount m_worldAccount;

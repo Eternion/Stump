@@ -1,15 +1,20 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
+using System.Threading.Tasks;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Cryptography;
 using Stump.Core.Extensions;
+using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Messages.Custom;
 using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.AuthServer.Network;
+using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
 using Version = Stump.DofusProtocol.Types.Version;
 
@@ -17,7 +22,53 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 {
     public partial class ConnectionHandler : AuthHandlerContainer
     {
+        public static SynchronizedCollection<AuthClient> ConnectionQueue = new SynchronizedCollection<AuthClient>();
+        private static Task m_queueRefresherTask;
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        [Initialization(InitializationPass.First)]
+        private static void Initialize()
+        {
+            m_queueRefresherTask = Task.Factory.StartNewDelayed(3000, RefreshQueue);
+        }
+        
+        // still thread safe theorically
+        private static void RefreshQueue()
+        {
+            try
+            {
+
+                var toRemove = new List<AuthClient>();
+                int count = 0;
+                foreach (AuthClient authClient in ConnectionQueue)
+                {
+                    count++;
+
+                    if (!authClient.Connected)
+                    {
+                        toRemove.Add(authClient);
+                    }
+
+                    if (DateTime.Now - authClient.InQueueUntil > TimeSpan.FromSeconds(3))
+                    {
+                        SendQueueStatusMessage(authClient, (ushort) count, (ushort) ConnectionQueue.Count);
+                    }
+                }
+
+                lock (ConnectionQueue.SyncRoot)
+                {
+                    foreach (var authClient in toRemove)
+                    {
+                        ConnectionQueue.Remove(authClient);
+                    }
+                }
+            }
+            finally
+            {
+                m_queueRefresherTask = Task.Factory.StartNewDelayed(3000, RefreshQueue);
+            }
+        }
 
         /// <summary>
         /// Max Number of connection to logs in the database
@@ -30,6 +81,9 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         [AuthHandler(IdentificationMessage.Id)]
         public static void HandleIdentificationMessage(AuthClient client, IdentificationMessage message)
         {
+            lock (ConnectionQueue.SyncRoot)
+                ConnectionQueue.Remove(client);
+
             /* Handle common identification */
             if (!HandleIndentification(client, message))
                 return;
@@ -169,6 +223,11 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         public static void SendIdentificationFailedBannedMessage(AuthClient client, DateTime date)
         {
             client.Send(new IdentificationFailedBannedMessage((sbyte) IdentificationFailureReasonEnum.BANNED, date.GetUnixTimeStamp()));
+        }
+
+        public static void SendQueueStatusMessage(IPacketReceiver client, ushort position, ushort total)
+        {
+            client.Send(new LoginQueueStatusMessage(position, total));
         }
 
         #endregion

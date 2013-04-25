@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using NLog;
+using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.IPC.Objects;
+using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
@@ -20,6 +24,52 @@ namespace Stump.Server.WorldServer.Handlers.Approach
 {
     public class ApproachHandler : WorldHandlerContainer
     {
+        public static SynchronizedCollection<WorldClient> ConnectionQueue = new SynchronizedCollection<WorldClient>();
+
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static Task m_queueRefresherTask;
+
+        [Initialization(InitializationPass.First)]
+        private static void Initialize()
+        {
+            m_queueRefresherTask = Task.Factory.StartNewDelayed(3000, RefreshQueue);
+        }
+
+        private static void RefreshQueue()
+        {
+            try
+            {
+                var toRemove = new List<WorldClient>();
+                int count = 0;
+                foreach (WorldClient worldClient in ConnectionQueue)
+                {
+                    count++;
+
+                    if (!worldClient.Connected)
+                    {
+                        toRemove.Add(worldClient);
+                    }
+
+                    if (DateTime.Now - worldClient.InQueueUntil > TimeSpan.FromSeconds(3))
+                    {
+                        SendQueueStatusMessage(worldClient, (ushort)count, (ushort)ConnectionQueue.Count);
+                    }
+                }
+
+                lock (ConnectionQueue.SyncRoot)
+                {
+                    foreach (var worldClient in toRemove)
+                    {
+                        ConnectionQueue.Remove(worldClient);
+                    }
+                }
+            }
+            finally 
+            {
+                m_queueRefresherTask = Task.Factory.StartNewDelayed(3000, RefreshQueue);
+            }
+        }
+
         [WorldHandler(AuthenticationTicketMessage.Id, RequiresLogin = false, IsGamePacket = false)]
         public static void HandleAuthenticationTicketMessage(WorldClient client, AuthenticationTicketMessage message)
         {
@@ -36,6 +86,9 @@ namespace Stump.Server.WorldServer.Handlers.Approach
 
         private static void OnAccountReceived(AccountAnswerMessage message, WorldClient client)
         {
+            lock (ConnectionQueue.SyncRoot)
+                ConnectionQueue.Remove(client);
+
             AccountData ticketAccount = message.Account;
 
             /* Check null ticket */
@@ -103,6 +156,12 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                 new ConsoleCommandsListMessage(
                     WorldServer.Instance.CommandManager.AvailableCommands.SelectMany(c => c.Aliases),
                     new string[0],  new string[0]));
+        }
+        
+
+        public static void SendQueueStatusMessage(IPacketReceiver client, ushort position, ushort total)
+        {
+            client.Send(new QueueStatusMessage(position, total));
         }
     }
 }
