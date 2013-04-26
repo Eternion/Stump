@@ -62,8 +62,11 @@ namespace Stump.Tools.SpellsExplorer
                         pattern = pattern.Remove(pattern.Length - 1, 1);
 
                     foreach (SpellTemplate spell in FindSpells(pattern))
-                    {
-                        ExploreSpell(spell, FindPatternSpellLevel(pattern), critical);
+                        {
+                        if (spell == null)
+                            Console.WriteLine("Spell not found");
+                        else
+                            ExploreSpell(spell, FindPatternSpellLevel(pattern), critical);
                     }
                 }
                 catch (Exception e)
@@ -125,10 +128,10 @@ namespace Stump.Tools.SpellsExplorer
 
             foreach (var effect in critical ? levelTemplate.CriticalEffects : levelTemplate.Effects)
             {
-                Console.WriteLine("Effect {0} ({1})", effect.EffectId, (int)effect.EffectId);
+                Console.WriteLine("Effect \"{0}\" ({1})", TextManager.Instance.GetText(effect.Template.DescriptionId), (int)effect.EffectId);
                 Console.WriteLine("DiceFace = {0}, DiceNum = {1}, Value = {2}", effect.DiceFace, effect.DiceNum, effect.Value);
                 Console.WriteLine("Hidden = {0}, Modificator = {1}, Random = {2}, Trigger = {3}", effect.Hidden, effect.Modificator, effect.Random, effect.Trigger);
-                Console.WriteLine("ZoneShape = {0}, ZoneSize = {1}, Duration = {2}, Target = {3}", effect.ZoneShape, effect.ZoneSize, effect.Duration, effect.Targets);
+                Console.WriteLine("ZoneShape = {0}, ZoneSize = {1}, Duration = {2}, Target = {3}", (SpellShapeEnum)effect.ZoneShape, effect.ZoneSize, effect.Duration, effect.Targets);
                 Console.WriteLine("Template.Active = {0}, Template.BonusType = {1}, Template.Boost = {2}", effect.Template.Active, effect.Template.BonusType, effect.Template.Boost);
                 Console.WriteLine("Template.Category = {0}, Template.Characteristic = {1}, Template.ForceMinMax = {2}", effect.Template.Category, effect.Template.Characteristic, effect.Template.ForceMinMax);
                 Console.WriteLine("Template.Operator = {0}, Template.Id = {1}, Template.ShowInSet = {2}", effect.Template.Operator, effect.Template.Id, effect.Template.ShowInSet);

@@ -232,6 +232,43 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             return result.ToArray();
         }
 
+        public IEnumerable<MapPoint> GetCellsInLine(MapPoint destination)
+        {
+            // http://playtechs.blogspot.fr/2007/03/raytracing-on-grid.html
+
+            int dx = Math.Abs(destination.X - X);
+            int dy = Math.Abs(destination.Y - Y);
+            int x = X;
+            int y = Y;
+            int n = 1 + dx + dy;
+            int vectorX = ( destination.X > X ) ? 1 : -1;
+            int vectorY = ( destination.Y > Y ) ? 1 : -1;
+            int error = dx - dy;
+            dx *= 2;
+            dy *= 2;
+
+            for (; n > 0; --n)
+            {
+                yield return GetPoint(x, y);
+
+                if (error > 0)
+                {
+                    x += vectorX;
+                    error -= dy;
+                }
+                else if (error == 0)
+                {
+                    x += vectorX;
+                    y += vectorY;
+                }
+                else
+                {
+                    y += vectorY;
+                    error += dx;
+                }
+            }
+        }
+
         public MapPoint GetCellInDirection(DirectionsEnum direction, short step)
         {
             MapPoint mapPoint = null;

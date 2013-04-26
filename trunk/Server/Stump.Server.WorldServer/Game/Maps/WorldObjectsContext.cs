@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         }
 
         // complexity : O(n) n - numbers of actors
-        public bool CanBeSeen(Cell from, Cell to, bool throughEntities = false)
+        public bool CanBeSeenOld(Cell from, Cell to, bool throughEntities = false)
         {
             if (from == null || to == null) return false;
             if (from == to) return true;
@@ -74,6 +74,30 @@ namespace Stump.Server.WorldServer.Game.Maps
                 cell => cell != null && (!Cells[cell.CellId].LineOfSight || ( !throughEntities && Array.IndexOf(occupiedCells, cell.CellId) != -1 ))))
                 if (TooCloseFromSegment(cell.X, cell.Y, fromPoint.X, fromPoint.Y, toPoint.X, toPoint.Y))
                     return false;
+
+            return true;
+        }
+
+        public bool CanBeSeen(Cell from, Cell to, bool throughEntities = false)
+        {
+            if (from == null || to == null) return false;
+            if (from == to) return true;
+            
+            var occupiedCells = new short[0];
+            if (!throughEntities)
+                occupiedCells = Objects.Select(x => x.Cell.Id).ToArray();
+
+            var line = MapPoint.GetPoint(from).GetCellsInLine(MapPoint.GetPoint(to));
+            foreach (var point in line.Skip(1)) // skip first cell
+            {
+                if (to.Id == point.CellId)
+                    continue;
+
+                var cell = Cells[point.CellId];
+
+                if (!cell.LineOfSight || !throughEntities && Array.IndexOf(occupiedCells, point.CellId) != -1)
+                    return false;
+            }
 
             return true;
         }
