@@ -18669,3 +18669,5 @@ INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGra
 INSERT INTO `monsters_drops` (MonsterOwnerId, ItemId, DropLimit, DropRateForGrade1, DropRateForGrade2, DropRateForGrade3, DropRateForGrade4, DropRateForGrade5, RollsCounter, ProspectingLock) VALUES (3416, 13994, 63, 15, 15, 15, 15, 15, 1, 0);
 INSERT INTO `monsters_drops` (MonsterOwnerId, ItemId, DropLimit, DropRateForGrade1, DropRateForGrade2, DropRateForGrade3, DropRateForGrade4, DropRateForGrade5, RollsCounter, ProspectingLock) VALUES (3416, 13995, 63, 1.5, 1.5, 1.5, 1.5, 1.5, 1, 0);
 
+DELETE FROM monsters_spells WHERE SpellId NOT IN (SELECT Id FROM spells_templates);
+DELETE FROM monsters_spawns WHERE MonsterId NOT IN (SELECT Id FROM monsters_templates);

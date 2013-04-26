@@ -573,24 +573,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return false;
             }
 
-            var sw = Stopwatch.StartNew();
             // check LoS
             if (!Fight.CanBeSeen(Cell, cell))
             {
                 return false;
             }
-            sw.Stop();
-            Debug.WriteLine("CanBeSeen => {0} ms - {1} ticks", sw.ElapsedMilliseconds, sw.ElapsedTicks);
-
-
-            sw = Stopwatch.StartNew();
-            // check LoS
-            if (!Fight.CanBeSeenOld(Cell, cell))
-            {
-                return false;
-            }
-            sw.Stop();
-            Debug.WriteLine("CanBeSeenOld => {0} ms - {1} ticks", sw.ElapsedMilliseconds, sw.ElapsedTicks);
 
             return true;
         }

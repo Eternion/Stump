@@ -22,9 +22,6 @@ namespace Stump.Tools.CacheManager
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly Assembly m_assembly;
-        private readonly string m_d2iFolder;
-        private readonly string m_patchsFolder;
-        private readonly string m_d2oFolder;
         private D2OReader[] m_d2oReaders;
 
         private DatabaseAccessor m_dbAccessor;
@@ -36,30 +33,20 @@ namespace Stump.Tools.CacheManager
             }
         }
 
-        public DatabaseBuilder(DatabaseAccessor dbAccesor, Assembly assembly, string d2oFolder, string d2iFolder, string patchsFolder)
+        public DatabaseBuilder(DatabaseAccessor dbAccesor, Assembly assembly)
         {
             m_assembly = assembly;
             m_dbAccessor = dbAccesor;
-            m_d2oFolder = d2oFolder;
-            m_d2iFolder = d2iFolder;
-            m_patchsFolder = patchsFolder;
         }
 
-        public void Build()
-        {
-            BuildD2ITables();
-            BuildD2OTables();
-            ExecutePatchs();
-        }
-
-        private void BuildD2ITables()
+        public void BuildD2ITables(string d2iFolder)
         {
             // delete all existing rows. BE CAREFUL !!
             Database.Execute(SqlBuilder.BuildDelete("langs"));
             Database.Execute(SqlBuilder.BuildDelete("langs_ui"));
 
             var d2iFiles = new Dictionary<string, D2IFile>();
-            foreach (string file in Directory.EnumerateFiles(m_d2iFolder, "*.d2i"))
+            foreach (string file in Directory.EnumerateFiles(d2iFolder, "*.d2i"))
             {
                 Match match = Regex.Match(Path.GetFileName(file), @"i18n_(\w+)\.d2i");
                 var i18NFile = new D2IFile(file);
@@ -216,13 +203,16 @@ namespace Stump.Tools.CacheManager
             Console.SetCursorPosition(cursorLeft, cursorTop);
         }
 
-        private void BuildD2OTables()
+        public void BuildD2OTables(string d2oFolder, string[] tables = null)
         {
             foreach (var table in GetTables())
             {
+                if (tables != null && tables.Length != 0 && !tables.Any(x => table.TableName.Contains(x)))
+                    continue;
+
                 logger.Info("Build table '{0}' ...", table.TableName);
 
-                D2OReader reader = FindD2OFile(table);
+                D2OReader reader = FindD2OFile(d2oFolder, table);
 
                 // reset the table
                 Database.Execute(SqlBuilder.BuildDelete(table.TableName));
@@ -291,11 +281,11 @@ namespace Stump.Tools.CacheManager
             }
         }
 
-        private D2OReader FindD2OFile(D2OTable table)
+        private D2OReader FindD2OFile(string d2oFolder, D2OTable table)
         {
             if (m_d2oReaders == null)
             {
-                m_d2oReaders = (from file in Directory.EnumerateFiles(m_d2oFolder, "*.d2o")
+                m_d2oReaders = ( from file in Directory.EnumerateFiles(d2oFolder, "*.d2o")
                                 where Path.GetExtension(file) == ".d2o"
                                 // it's a fucking quirk with 3 characters length extensions
                                 select new D2OReader(file)).ToArray();
@@ -305,13 +295,16 @@ namespace Stump.Tools.CacheManager
                 subentry => subentry.Name == table.ClassAttribute.Name) > 0);
         }
 
-        private void ExecutePatchs()
+        public void ExecutePatchs(string patchsFolder, string[] names = null)
         {
-            if (!Directory.Exists("./"+ m_patchsFolder + "/"))
+            if (!Directory.Exists("./" + patchsFolder + "/"))
                 return;
 
-            foreach (var sqlFile in Directory.EnumerateFiles("./"+ m_patchsFolder + "/", "*.sql"))
+            foreach (var sqlFile in Directory.EnumerateFiles("./" + patchsFolder + "/", "*.sql"))
             {
+                if (names != null && names.Length != 0 && !names.Any(x => Path.GetFileName(sqlFile).Contains(x)))
+                    continue;
+
                 logger.Info("Execute patch '{0}'", sqlFile);
                 foreach (var line in File.ReadAllLines(sqlFile))
                 {

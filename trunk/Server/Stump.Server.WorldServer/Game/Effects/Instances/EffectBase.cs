@@ -110,9 +110,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             Modificator = effect.modificator;
             Trigger = effect.trigger;
             Hidden = effect.hidden;
-            m_zoneMinSize = effect.zoneMinSize;
-            m_zoneSize = effect.zoneSize;
-            ZoneShape = (SpellShapeEnum) effect.zoneShape;
+            ParseRawZone(effect.rawZone);
         }
 
         public short Id
@@ -259,7 +257,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             var builder = new StringBuilder();
 
-            builder.Append(ZoneShape);
+            builder.Append((char)(int)ZoneShape);
             builder.Append(ZoneSize);
 
             if (ZoneMinSize > 0)

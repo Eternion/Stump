@@ -294,8 +294,8 @@ namespace Stump.Server.WorldServer.Database.Spells
             Hidden = spell.hidden;
             MinRange = spell.minRange;
             StatesForbidden = spell.statesForbidden.ToArray();
-            EffectsBin = EffectManager.Instance.SerializeEffects(spell.effects);
-            CriticalEffectsBin = EffectManager.Instance.SerializeEffects(spell.criticalEffect);
+            m_effectsBin = EffectManager.Instance.SerializeEffects(spell.effects);
+            m_criticalEffectsBin = EffectManager.Instance.SerializeEffects(spell.criticalEffect);
         }
 
         #endregion
@@ -306,8 +306,8 @@ namespace Stump.Server.WorldServer.Database.Spells
         {
             m_statesForbiddenCSV = StatesForbidden.ToCSV(",");
             m_statesRequiredCSV = StatesRequired.ToCSV(",");
-            EffectsBin = EffectManager.Instance.SerializeEffects(Effects);
-            CriticalEffectsBin = EffectManager.Instance.SerializeEffects(CriticalEffects);
+            m_effectsBin = EffectManager.Instance.SerializeEffects(Effects);
+            m_criticalEffectsBin = EffectManager.Instance.SerializeEffects(CriticalEffects);
         }
 
         #endregion
