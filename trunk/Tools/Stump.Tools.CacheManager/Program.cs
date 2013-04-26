@@ -217,6 +217,8 @@ namespace Stump.Tools.CacheManager
             string d2IFolder = Path.Combine(dofusPath, "data", "i18n");
             string mapsFolder = Path.Combine(dofusPath, "content", "maps");
 
+            OpenDatabase();
+
             // build maps
             var mapBuilder = new MapLoader(m_dbAccessor);
             mapBuilder.LoadMaps(mapsFolder);
