@@ -108,7 +108,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
 
         public MapPoint Point
         {
-            get { return m_point ?? (m_point = new MapPoint(Cell)); }
+            get { return m_point ?? (m_point = MapPoint.GetPoint(Cell)); }
         }
 
         public ObjectPosition Clone()

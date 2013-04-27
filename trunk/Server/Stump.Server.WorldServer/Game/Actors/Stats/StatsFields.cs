@@ -98,6 +98,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             }
         }
 
+        public int GetTotal(PlayerFields name)
+        {
+            var field = this[name];
+
+            if (field == null)
+                return 0;
+
+            return field.Total;
+        }
+
         public void Initialize(CharacterRecord record)
         {
             // note : keep this order !

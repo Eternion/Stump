@@ -53,6 +53,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                     if (DateTime.Now - authClient.InQueueUntil > TimeSpan.FromSeconds(3))
                     {
                         SendQueueStatusMessage(authClient, (ushort) count, (ushort) ConnectionQueue.Count);
+                        authClient.QueueShowed = true;
                     }
                 }
 
@@ -83,6 +84,9 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         {
             lock (ConnectionQueue.SyncRoot)
                 ConnectionQueue.Remove(client);
+
+            if (client.QueueShowed)
+                SendQueueStatusMessage(client, 0, 0); // close the popup
 
             /* Handle common identification */
             if (!HandleIndentification(client, message))

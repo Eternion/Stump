@@ -29,6 +29,7 @@ namespace Stump.Server.WorldServer.Core.Network
 
             lock (ApproachHandler.ConnectionQueue.SyncRoot)
                 ApproachHandler.ConnectionQueue.Add(this);
+            InQueueUntil = DateTime.Now;
         }
 
         public bool AutoConnect
@@ -44,6 +45,12 @@ namespace Stump.Server.WorldServer.Core.Network
         }
 
         public DateTime InQueueUntil
+        {
+            get;
+            set;
+        }
+
+        public bool QueueShowed
         {
             get;
             set;

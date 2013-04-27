@@ -53,6 +53,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                     if (DateTime.Now - worldClient.InQueueUntil > TimeSpan.FromSeconds(3))
                     {
                         SendQueueStatusMessage(worldClient, (ushort)count, (ushort)ConnectionQueue.Count);
+                        worldClient.QueueShowed = true;
                     }
                 }
 
@@ -88,6 +89,9 @@ namespace Stump.Server.WorldServer.Handlers.Approach
         {
             lock (ConnectionQueue.SyncRoot)
                 ConnectionQueue.Remove(client);
+
+            if (client.QueueShowed)
+                SendQueueStatusMessage(client, 0, 0); // close the popup
 
             AccountData ticketAccount = message.Account;
 
