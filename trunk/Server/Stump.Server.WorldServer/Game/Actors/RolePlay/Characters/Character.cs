@@ -1608,6 +1608,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     m_record.CellId = Cell.Id;
                     m_record.Direction = Direction;
 
+                    m_record.EntityLook = Look;
+
                     m_record.AP = (ushort) Stats[PlayerFields.AP].Base;
                     m_record.MP = (ushort) Stats[PlayerFields.MP].Base;
                     m_record.Strength = Stats[PlayerFields.Strength].Base;
@@ -1656,10 +1658,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             Inventory = new Inventory(this);
             Inventory.LoadInventory();
+            UpdateLook(false);
+
             Spells = new SpellInventory(this);
             Spells.LoadSpells();
+
             Shortcuts = new ShortcutBar(this);
             Shortcuts.Load();
+
             FriendsBook = new FriendsBook(this);
             FriendsBook.Load();
 
