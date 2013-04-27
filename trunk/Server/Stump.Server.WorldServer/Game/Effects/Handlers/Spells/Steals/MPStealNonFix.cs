@@ -52,11 +52,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
                 AddStatBuff(actor, (short)( -value ), PlayerFields.MP, true, (short)EffectsEnum.Effect_SubMP);
                 if (Effect.Duration > 0)
                 {
-                    AddStatBuff(Caster, (short)(-value), PlayerFields.MP, true, (short)EffectsEnum.Effect_AddMP_128);
+                    AddStatBuff(Caster, (short)(value), PlayerFields.MP, true, (short)EffectsEnum.Effect_AddMP_128);
                 }
                 else
                 {
-                    Caster.RegainMP((short)(-value));
+                    Caster.RegainMP((short)(value));
                 }
             }
 
