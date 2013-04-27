@@ -1,17 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Handlers.Actions;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
+using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
     [EffectHandler(EffectsEnum.Effect_SubMP)]
-    [EffectHandler(EffectsEnum.Effect_LosingMP)]
-    [EffectHandler(EffectsEnum.Effect_LostMP)]
-    public class MPDebuff : SpellEffectHandler
+    public class MPDebuff: SpellEffectHandler
     {
         public MPDebuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
@@ -27,40 +27,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (integerEffect == null)
                     return false;
 
-                var value = integerEffect.Value;
-
-                // Effect_LosingMP ignore resistance
-                if (Effect.EffectId != EffectsEnum.Effect_LosingMP)
-                {
-                    value = 0;
-
-                    for (int i = 0; i < integerEffect.Value && value < actor.MP; i++)
-                    {
-                        if (actor.RollMPLose(Caster))
-                        {
-                            value++;
-                        }
-                    }
-
-                    var dodged = (short)( integerEffect.Value - value );
-
-                    if (dodged > 0)
-                    {
-                        ActionsHandler.SendGameActionFightDodgePointLossMessage(Fight.Clients,
-                            ActionsEnum.ACTION_FIGHT_SPELL_DODGED_PM, Caster, actor, dodged);
-                    }
-                }
-
-                if (value <= 0)
-                    return false;
-
                 if (Effect.Duration > 1)
                 {
-                    AddStatBuff(actor, (short)( -value ), PlayerFields.MP, true);
+                    AddStatBuff(actor, (short)(-(integerEffect.Value)), PlayerFields.MP, true, (short)EffectsEnum.Effect_SubMP);
                 }
                 else
                 {
-                    actor.LostMP(value);
+                    actor.LostMP(integerEffect.Value);
                 }
             }
 

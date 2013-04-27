@@ -286,6 +286,8 @@
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\VitalityPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\PunishmentDamage.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Debuffs\APDebuff.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Debuffs\MPDebuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Dodge.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\RewindEffect.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\SwitchPosition.cs" />
@@ -472,8 +474,8 @@
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\APBuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\MPBuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\StatsBuff.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Debuffs\APDebuff.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Debuffs\MPDebuff.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Debuffs\APDebuffNonFix.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Debuffs\MPDebuffNonFix.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\Resistances.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\StatsDebuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Marks\GlyphSpawn.cs" />

@@ -1,18 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Handlers.Actions;
-using Stump.Server.WorldServer.Handlers.Context;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
+using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
-    [EffectHandler(EffectsEnum.Effect_RemoveAP)]
     [EffectHandler(EffectsEnum.Effect_SubAP)]
-    [EffectHandler(EffectsEnum.Effect_LosingAP)]
-    public class APDebuff : SpellEffectHandler
+    public class APDebuff: SpellEffectHandler
     {
         public APDebuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
@@ -28,40 +27,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (integerEffect == null)
                     return false;
 
-                var value = integerEffect.Value;
-
-                // Effect_RemoveAP ignore resistance
-                // if (Effect.EffectId != EffectsEnum.Effect_RemoveAP) // note : was i wrong ?
-                {
-                    value = 0;
-
-                    for (int i = 0; i < integerEffect.Value && value < actor.AP; i++)
-                    {
-                        if (actor.RollAPLose(Caster))
-                        {
-                            value++;
-                        }
-                    }
-
-                    var dodged = (short) (integerEffect.Value - value);
-
-                    if (dodged > 0)
-                    {
-                        ActionsHandler.SendGameActionFightDodgePointLossMessage(Fight.Clients, 
-                            ActionsEnum.ACTION_FIGHT_SPELL_DODGED_PA, Caster, actor, dodged);
-                    }
-                }
-
-                if (value <= 0)
-                    return false;
-
                 if (Effect.Duration > 1)
                 {
-                    AddStatBuff(actor, (short)( -value ), PlayerFields.AP, true);
+                    AddStatBuff(actor, (short)(-(integerEffect.Value)), PlayerFields.AP, true, (short)EffectsEnum.Effect_SubAP);
                 }
                 else
                 {
-                    actor.LostAP(value);
+                    actor.LostAP(integerEffect.Value);
                 }
             }
 
