@@ -207,6 +207,9 @@ namespace Stump.Tools.CacheManager
         {
             foreach (var table in GetTables())
             {
+                if (table.TableName == "monsters_grades") // handled by monsters_templates
+                    continue;
+
                 if (tables != null && tables.Length != 0 && !tables.Any(x => table.TableName.Contains(x)))
                     continue;
 

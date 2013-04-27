@@ -41,9 +41,9 @@ namespace Stump.Server.WorldServer.Handlers.Friends
                         {
                             var record = AccountManager.Instance.FindByNickname(message.name);
 
-                            if (record != null)
+                            if (record != null && client.Character.Context != null)
                             {
-                                client.Character.ExecuteInContext(
+                                client.Character.Context.ExecuteInContext(
                                     () => client.Character.FriendsBook.AddFriend(record));
                             }
                             else
@@ -84,9 +84,9 @@ namespace Stump.Server.WorldServer.Handlers.Friends
                     {
                         var record = AccountManager.Instance.FindByNickname(message.name);
 
-                        if (record != null)
+                        if (record != null && client.Character.Context != null)
                         {
-                            client.Character.ExecuteInContext(
+                            client.Character.Context.ExecuteInContext(
                                 () => client.Character.FriendsBook.AddIgnored(record, message.session));
                         }
                         else

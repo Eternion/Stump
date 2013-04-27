@@ -92,6 +92,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             trigger.Reply("Area {0}", trigger.Bold(area.Id));
             trigger.Reply("Enabled : {0}", trigger.Bold(area.IsRunning));
             trigger.Reply("Objects : {0}", trigger.Bold(area.ObjectCount));
+            trigger.Reply("Timers : {0}", trigger.Bold(area.TimersCount));
             trigger.Reply("Update interval : {0}ms", trigger.Bold(area.UpdateDelay));
             trigger.Reply("AvgUpdateTime : {0}ms", trigger.Bold((int)area.AverageUpdateTime));
             trigger.Reply("LastUpdate : {0}", trigger.Bold(area.LastUpdateTime));

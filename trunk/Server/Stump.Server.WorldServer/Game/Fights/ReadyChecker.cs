@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         private readonly List<CharacterFighter> m_fighters;
         private readonly Fight m_fight;
         private bool m_started;
-        private TimerEntry m_timer;
+        private TimedTimerEntry m_timer;
 
         public ReadyChecker(Fight fight, IEnumerable<CharacterFighter> actors)
         {

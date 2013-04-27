@@ -46,7 +46,8 @@ namespace Stump.Server.WorldServer.Game.Maps
         private readonly List<WorldObject> m_objects = new List<WorldObject>();
         private readonly List<SubArea> m_subAreas = new List<SubArea>();
         private readonly Dictionary<Point, List<Map>> m_mapsByPoint = new Dictionary<Point, List<Map>>();
-        private readonly List<TimerEntry> m_timers = new List<TimerEntry>();
+        private readonly PriorityQueueB<TimedTimerEntry> m_timers = new PriorityQueueB<TimedTimerEntry>(new TimedTimerComparer());
+        private readonly List<TimedTimerEntry> m_pausedTimers = new List<TimedTimerEntry>(); 
         protected internal AreaRecord Record;
         private float m_avgUpdateTime;
         private int m_currentThreadId;
@@ -100,6 +101,11 @@ namespace Stump.Server.WorldServer.Game.Maps
         public int ObjectCount
         {
             get { return m_objects.Count; }
+        }
+
+        public int TimersCount
+        {
+            get { return m_timers.Count; }
         }
 
         /// <summary>
@@ -266,48 +272,51 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
-        public void RegisterTimer(TimerEntry timer)
+        public void RegisterTimer(TimedTimerEntry timer)
         {
             EnsureContext();
-            m_timers.Add(timer);
+            m_timers.Push(timer);
         }
 
-        public void UnregisterTimer(TimerEntry timer)
+        public void UnregisterTimer(TimedTimerEntry timer)
         {
             EnsureContext();
             m_timers.Remove(timer);
         }
 
-        public void RegisterTimerLater(TimerEntry timer)
+        public void RegisterTimerLater(TimedTimerEntry timer)
         {
             m_messageQueue.Enqueue(new Message(() => RegisterTimer(timer)));
         }
 
-        public void UnregisterTimerLater(TimerEntry timer)
+        public void UnregisterTimerLater(TimedTimerEntry timer)
         {
             m_messageQueue.Enqueue(new Message(() => UnregisterTimer(timer)));
         }
 
-        public TimerEntry CallDelayed(int millis, Action action)
+        public TimedTimerEntry CallDelayed(int delay, Action action)
         {
-            var timer = new TimerEntry();
-            timer.Action = delay =>
-                               {
-                                   action();
-                                   UnregisterTimerLater(timer);
-                               };
-            timer.Start(millis, 0);
+            var timer = new TimedTimerEntry
+            {
+                Interval = -1,
+                Delay = delay,
+                Action = action
+            };
+
+            timer.Start();
             RegisterTimerLater(timer);
             return timer;
         }
 
-        public TimerEntry CallPeriodically(int seconds, Action action)
+        public TimedTimerEntry CallPeriodically(int interval, Action action)
         {
-            var timer = new TimerEntry
-                            {
-                                Action = (delay => { action(); })
-                            };
-            timer.Start(seconds, seconds);
+            var timer = new TimedTimerEntry()
+            {
+                Interval = interval,
+                Action = action
+            };
+
+            timer.Start();
             RegisterTimerLater(timer);
             return timer;
         }
@@ -338,59 +347,37 @@ namespace Stump.Server.WorldServer.Game.Maps
 
                 m_isUpdating = true;
 
-                foreach (TimerEntry timerEntry in m_timers)
+                foreach (var timer in m_pausedTimers)
                 {
-                    try
+                    if (timer.Enabled)
+                        m_timers.Push(timer);
+                }
+
+                while (m_timers.Peek().NextTick <= DateTime.Now)
+                {
+                    var timer = m_timers.Pop();
+
+                    if (!timer.Enabled)
                     {
-                        timerEntry.Update(updateDelta);
+                        if (!timer.IsDisposed)
+                            m_pausedTimers.Add(timer);
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        logger.Error("Exception raised when processing TimerEntry in {0} : {1}.", this, ex);
-                        UnregisterTimerLater(timerEntry);
+                        try
+                        {
+                            timer.Trigger();
+
+                            if (timer.Enabled)
+                                m_timers.Push(timer);
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Error("Exception raised when processing TimerEntry in {0} : {1}.", this, ex);
+                        }
                     }
                 }
 
-                // we copy to allow manipulations on the list
-                foreach (WorldObject obj in m_objects.GetRange(0, m_objects.Count))
-                {
-                    if (obj.IsDisposed) // disposed items should not be in the list
-                    {
-                        m_objects.Remove(obj);
-                        continue;
-                    }
-
-                    if (obj.IsTeleporting)
-                        continue;
-
-                    // todo : use priority
-                    UpdatePriority priority = UpdatePriority.HighPriority;
-
-                    try
-                    {
-                        int minObjUpdateDelta = UpdatePriorityMillis[(int) priority];
-                        var objUpdateDelta = (int) ((updateStart - obj.LastUpdateTime).TotalMilliseconds);
-
-                        if (objUpdateDelta >= minObjUpdateDelta)
-                        {
-                            obj.LastUpdateTime = updateStart;
-                            obj.Update(objUpdateDelta);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.Error("Exception raised when updating object '{0}' : {1}", obj, this);
-
-                        if (obj is Character)
-                        {
-                            ((Character) obj).Client.Disconnect();
-                        }
-                        else
-                        {
-                            obj.Delete();
-                        }
-                    }
-                }
             }
             finally
             {

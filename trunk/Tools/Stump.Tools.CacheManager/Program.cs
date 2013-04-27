@@ -168,15 +168,15 @@ namespace Stump.Tools.CacheManager
         {
             OpenDatabase();
 
-            Console.WriteLine("Enter the tables to build (separated by comma, empty = all)");
-            var tables = Console.ReadLine().Split(',');
-            
             string d2OFolder = Path.Combine(FindDofusPath(), "data", "common");
 
             if (!Directory.Exists(d2OFolder))
                 logger.Error("{0} doesn't exists", d2OFolder);
             else
             {
+                Console.WriteLine("Enter the tables to build (separated by comma, empty = all)");
+                var tables = Console.ReadLine().Split(',');
+            
                 m_databaseBuilder.BuildD2OTables(d2OFolder, tables);
             }
         }
@@ -199,13 +199,18 @@ namespace Stump.Tools.CacheManager
         {
             OpenDatabase();
 
-            Console.WriteLine("Enter the patchs to build (separated by comma, empty = all)");
-            var patchs = Console.ReadLine().Split(',');
-
             if (!Directory.Exists(PatchsFolder))
                 logger.Error("{0} doesn't exists", Path.GetFullPath(PatchsFolder));
             else
             {
+                foreach (var file in Directory.EnumerateFiles(PatchsFolder))
+                {
+                    Console.WriteLine(" - " + Path.GetFileName(file));
+                }
+
+                Console.WriteLine("Enter the patchs to build (separated by comma, empty = all)");
+                var patchs = Console.ReadLine().Split(',');
+
                 m_databaseBuilder.ExecutePatchs(PatchsFolder, patchs);
             }
         }

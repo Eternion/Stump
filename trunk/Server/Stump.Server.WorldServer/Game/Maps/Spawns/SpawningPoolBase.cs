@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         public int RemainingTime
         {
-            get { return State != SpawningPoolState.Running ? 0 : SpawnTimer.RemainingTime; }
+            get { return State != SpawningPoolState.Running ? 0 : (int)(SpawnTimer.NextTick - DateTime.Now).TotalMilliseconds; }
         }
 
         protected List<MonsterGroup> Spawns
@@ -64,7 +64,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             set;
         }
 
-        protected TimerEntry SpawnTimer
+        protected TimedTimerEntry SpawnTimer
         {
             get;
             set;
