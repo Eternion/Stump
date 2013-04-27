@@ -573,8 +573,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return false;
             }
 
-            // check LoS
-            if (!Fight.CanBeSeen(Cell, cell))
+            if (spell.CurrentSpellLevel.CastTestLos && !Fight.CanBeSeen(Cell, cell))
             {
                 return false;
             }
