@@ -99,8 +99,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected readonly List<Buff> m_buffs = new List<Buff>();
 
-        protected TimerEntry m_placementTimer;
-        protected TimerEntry m_turnTimer;
+        protected TimedTimerEntry m_placementTimer;
+        protected TimedTimerEntry m_turnTimer;
 
         private bool m_isInitialized;
         private bool m_disposed;

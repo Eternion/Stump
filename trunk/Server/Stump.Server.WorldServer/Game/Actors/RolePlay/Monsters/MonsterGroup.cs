@@ -73,13 +73,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             private set;
         }
 
-        internal TimerEntry MoveTimer
+        public DateTime LastMoveTime
         {
             get;
             set;
         }
 
-        internal TimerEntry StarsTimer
+        internal TimedTimerEntry MoveTimer
+        {
+            get;
+            set;
+        }
+
+        internal TimedTimerEntry StarsTimer
         {
             get;
             set;

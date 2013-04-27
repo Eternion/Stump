@@ -264,6 +264,7 @@
     <Compile Include="Reflection\Singleton.cs" />
     <Compile Include="Pool\Task\TaskPool.cs" />
     <Compile Include="Timers\SimpleTimerEntry.cs" />
+    <Compile Include="Timers\TimedTimerEntry.cs" />
     <Compile Include="Timers\TimerEntry.cs" />
     <Compile Include="Xml\Config\XmlConfigNode.cs" />
     <Compile Include="Xml\Docs\DocEntry.cs" />

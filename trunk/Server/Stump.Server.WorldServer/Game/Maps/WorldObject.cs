@@ -10,7 +10,7 @@ using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game.Maps
 {
-    public abstract class WorldObject : IContextHandler, IDisposable
+    public abstract class WorldObject : IDisposable
     {
         protected static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -128,58 +128,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             get { return Area; }
         }
 
-        #region IContextHandler Members
-
-        public bool IsInContext
-        {
-            get
-            {
-                if (IsInWorld)
-                {
-                    IContextHandler context = Context;
-                    if (context != null && context.IsInContext)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-        }
-
-        public void AddMessage(IMessage message)
-        {
-            m_messageQueue.Enqueue(message);
-        }
-
-        public void AddMessage(Action action)
-        {
-            m_messageQueue.Enqueue(new Message(action));
-        }
-
-        public bool ExecuteInContext(Action action)
-        {
-            if (!IsInContext)
-            {
-                AddMessage(() => action());
-                return false;
-            }
-
-            action();
-            return true;
-        }
-
-        public void EnsureContext()
-        {
-            if (IsInWorld)
-            {
-                IContextHandler handler = Context;
-                if (handler != null)
-                    handler.EnsureContext();
-            }
-        }
-
-        #endregion
+      
 
         #region IDisposable Members
 
@@ -230,23 +179,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Update(int objUpdateDelta)
         {
-            if (IsDisposed || IsDeleted)
-                return;
-
-            IMessage msg;
-            while (m_messageQueue.TryDequeue(out msg))
-            {
-                try
-                {
-                    msg.Execute();
-                }
-                catch (Exception ex)
-                {
-                    logger.Error("Exception raised when processing Message for '{0}' : {1}", this, ex);
-                    ExceptionManager.Instance.RegisterException(ex);
-                    //Delete();
-                }
-            }
+          
         }
     }
 }

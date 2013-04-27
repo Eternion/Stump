@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             Template = SpellManager.Instance.GetSpellTemplate(Id);
             SpellType = SpellManager.Instance.GetSpellType(Template.TypeId);
             int counter = 1;
-            ByLevel = SpellManager.Instance.GetSpellLevels(Id).ToDictionary(entry => counter++);
+            ByLevel = SpellManager.Instance.GetSpellLevels(Template).ToDictionary(entry => counter++);
         }
 
         public Spell(int id, byte level)
@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             Template = SpellManager.Instance.GetSpellTemplate(Id);
             SpellType = SpellManager.Instance.GetSpellType(Template.TypeId);
             int counter = 1;
-            ByLevel = SpellManager.Instance.GetSpellLevels(Id).ToDictionary(entry => counter++);
+            ByLevel = SpellManager.Instance.GetSpellLevels(Template).ToDictionary(entry => counter++);
         }
 
         #region Properties
