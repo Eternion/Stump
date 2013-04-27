@@ -160,7 +160,12 @@
     <Compile Include="AI\Fights\Actions\RandomMove.cs" />
     <Compile Include="AI\Fights\Actions\SpellCastAction.cs" />
     <Compile Include="AI\Fights\Brain\EnvironmentAnalyser.cs" />
-    <Compile Include="AI\Fights\Brain\SpellSelector.cs" />
+    <Compile Include="AI\Fights\Spells\SpellCast.cs" />
+    <Compile Include="AI\Fights\Spells\SpellCastInformations.cs" />
+    <Compile Include="AI\Fights\Spells\SpellCategory.cs" />
+    <Compile Include="AI\Fights\Spells\SpellIdentifier.cs" />
+    <Compile Include="AI\Fights\Spells\SpellTarget.cs" />
+    <Compile Include="AI\Fights\Spells\SpellSelector.cs" />
     <Compile Include="AI\Fights\Behaviors\AIBehavior.cs" />
     <Compile Include="AI\Fights\Behaviors\EfficienceCalculator.cs" />
     <Compile Include="AI\Fights\Brain\Brain.cs" />

@@ -87,5 +87,35 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 
             return true;
         }
+
+        public bool CanCastSpell(SpellLevelTemplate spell)
+        {
+            var mostRecentEntry = m_underlyingStack.LastOrDefault(entry => entry.Spell.Id == spell.Id);
+
+            //check initial cooldown
+            if (mostRecentEntry == null && CurrentRound < spell.InitialCooldown)
+            {
+                return false;
+            }
+
+            if (mostRecentEntry == null)
+                return true;
+
+            if (mostRecentEntry.IsGlobalCooldownActive(CurrentRound))
+            {
+                return false;
+            }
+            var castsThisRound = m_underlyingStack.Where(entry => entry.Spell.Id == spell.Id && entry.CastRound == CurrentRound).ToArray();
+
+            if (castsThisRound.Length == 0)
+                return true;
+
+            if (spell.MaxCastPerTurn > 0 && castsThisRound.Length >= spell.MaxCastPerTurn)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

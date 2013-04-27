@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public override void StartFighting()
         {
-            m_placementTimer.Stop();
+            m_placementTimer.Dispose();
 
             base.StartFighting();
         }

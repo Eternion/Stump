@@ -993,9 +993,9 @@ namespace Stump.Server.WorldServer.Game.Maps
             var monsterGroup = actor as MonsterGroup;
             if (monsterGroup != null)
             {
-                monsterGroup.MoveTimer.Stop();
+                monsterGroup.MoveTimer.Dispose();
                 monsterGroup.MoveTimer = null;
-                monsterGroup.StarsTimer.Stop();
+                monsterGroup.StarsTimer.Dispose();
                 monsterGroup.StarsTimer = null;
             }
         }

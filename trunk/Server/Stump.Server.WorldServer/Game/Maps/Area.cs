@@ -353,7 +353,8 @@ namespace Stump.Server.WorldServer.Game.Maps
                         m_timers.Push(timer);
                 }
 
-                while (m_timers.Peek().NextTick <= DateTime.Now)
+                TimedTimerEntry peek;
+                while (( peek = m_timers.Peek() ) != null && peek.NextTick <= DateTime.Now)
                 {
                     var timer = m_timers.Pop();
 

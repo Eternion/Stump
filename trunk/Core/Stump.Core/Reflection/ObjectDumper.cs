@@ -13,10 +13,16 @@ namespace Stump.Core.Reflection
         private readonly int m_indentSize;
         private readonly StringBuilder m_stringBuilder;
 
-        private ObjectDumper(int indentSize)
+        public ObjectDumper(int indentSize)
         {
             m_indentSize = indentSize;
             m_stringBuilder = new StringBuilder();
+        }
+
+        public Func<MemberInfo, bool> MemberPredicate
+        {
+            get;
+            set;
         }
 
         public static string Dump(object element)
@@ -30,7 +36,7 @@ namespace Stump.Core.Reflection
             return instance.DumpElement(element);
         }
 
-        private string DumpElement(object element)
+        public string DumpElement(object element)
         {
             if (m_level > DepthDisplayLimit)
                 return "... (limit reached)";
@@ -83,6 +89,9 @@ namespace Stump.Core.Reflection
                         var propertyInfo = memberInfo as PropertyInfo;
 
                         if (fieldInfo == null && propertyInfo == null)
+                            continue;
+
+                        if (MemberPredicate != null && !MemberPredicate(memberInfo))
                             continue;
 
                         var type = fieldInfo != null ? fieldInfo.FieldType : propertyInfo.PropertyType;

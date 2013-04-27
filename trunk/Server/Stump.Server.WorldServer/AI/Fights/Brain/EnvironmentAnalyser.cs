@@ -40,6 +40,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             get { return Fighter.Fight; }
         }
 
+        public Cell GetFreeAdjacentCell()
+        {
+            var cell = Fighter.Position.Point.GetAdjacentCells(CellInformationProvider.IsCellWalkable).FirstOrDefault();
+
+            return CellInformationProvider.GetCellInformation(cell.CellId).Cell;
+        }
+
         public Cell GetCellToCastSpell(FightActor target, Spell spell)
         {
             var cell = target.Position.Point.GetAdjacentCells(CellInformationProvider.IsCellWalkable).OrderBy(entry => entry.DistanceToCell(Fighter.Position.Point)).FirstOrDefault();

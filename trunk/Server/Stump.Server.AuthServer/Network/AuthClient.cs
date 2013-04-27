@@ -31,6 +31,7 @@ namespace Stump.Server.AuthServer.Network
             CanReceive = true;
             lock (ConnectionHandler.ConnectionQueue.SyncRoot)
                 ConnectionHandler.ConnectionQueue.Add(this);
+            InQueueUntil = DateTime.Now;
         }
         
         public string Login
@@ -70,7 +71,13 @@ namespace Stump.Server.AuthServer.Network
         {
             get;
             set;
-         }
+        }
+
+        public bool QueueShowed
+        {
+            get;
+            set;
+        }
 
         protected override void OnMessageReceived(Message message)
         {

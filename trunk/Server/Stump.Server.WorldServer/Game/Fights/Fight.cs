@@ -356,7 +356,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             SetFightState(FightState.Ended);
 
             if (m_turnTimer != null)
-                m_turnTimer.Stop();
+                m_turnTimer.Dispose();
 
             EndAllSequences();
 
@@ -463,10 +463,10 @@ namespace Stump.Server.WorldServer.Game.Fights
                 ReadyChecker.Cancel();
 
             if (m_placementTimer != null)
-                m_placementTimer.Stop();
+                m_placementTimer.Dispose();
 
             if (m_turnTimer != null)
-                m_turnTimer.Stop();
+                m_turnTimer.Dispose();
         }
 
         #endregion
@@ -1003,7 +1003,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
 
             if (m_turnTimer != null)
-                m_turnTimer.Stop();
+                m_turnTimer.Dispose();
 
             if (ReadyChecker != null)
             {

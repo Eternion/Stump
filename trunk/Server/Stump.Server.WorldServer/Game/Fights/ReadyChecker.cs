@@ -71,7 +71,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             m_started = false;
 
             if (m_timer != null)
-                m_timer.Stop();
+                m_timer.Dispose();
         }
 
         public void ToggleReady(CharacterFighter actor, bool ready = true)
