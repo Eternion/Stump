@@ -133,6 +133,11 @@ namespace Stump.Server.WorldServer.Game.Effects
             return !m_effects.ContainsKey(id) ? null : m_effects[id];
         }
 
+        public IEnumerable<EffectTemplate> GetTemplates()
+        {
+            return m_effects.Values;
+        }
+
         public void AddItemEffectHandler(ItemEffectHandler handler)
         {
             var type = handler.GetType();

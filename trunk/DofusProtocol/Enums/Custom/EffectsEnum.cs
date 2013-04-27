@@ -1443,9 +1443,516 @@
         /// 2
         /// </summary>
         Effect_1002 = 1002,
+        /// <summary>
+        /// Reduces the maximum bonus by #1{~1~2 to }#2
+        /// </summary>
+        Effect_1003 = 1003,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1004 = 1004,
+        /// <summary>
+        /// Reduces the maximum bonus by #1{~1~2 to }#2
+        /// </summary>
+        Effect_1005 = 1005,
+        /// <summary>
+        /// Reduces the minimum bonus by #1{~1~2 to }#2
+        /// </summary>
+        Effect_1006 = 1006,
+        /// <summary>
+        /// Effectiveness: #1{~1~2 to }#2
+        /// </summary>
+        Effect_1007 = 1007,
+        /// <summary>
+        /// Summons #1
+        /// </summary>
+        Effect_1008 = 1008,
+        /// <summary>
+        /// Activate a bomb
+        /// </summary>
+        Effect_1009 = 1009,
+        /// <summary>
+        /// Places a grade #2 Glyph
+        /// </summary>
+        Effect_1010 = 1010,
+        /// <summary>
+        /// Summons #1
+        /// </summary>
+        Effect_1011 = 1011,
+        /// <summary>
+        /// #1{~1~2 to }#2 (Neutral damage)
+        /// </summary>
+        Effect_1012 = 1012,
+        /// <summary>
+        /// #1{~1~2 to }#2 (Air damage)
+        /// </summary>
+        Effect_1013 = 1013,
+        /// <summary>
+        /// #1{~1~2 to }#2 (Water damage)
+        /// </summary>
+        Effect_1014 = 1014,
+        /// <summary>
+        /// #1{~1~2 to }#2 (Fire damage)
+        /// </summary>
+        Effect_1015 = 1015,
+        /// <summary>
+        /// #1{~1~2 to }#2 (Earth damage)
+        /// </summary>
+        Effect_1016 = 1016,
+        /// <summary>
+        /// #1
+        /// </summary>
+        Effect_1017 = 1017,
+        /// <summary>
+        /// #1
+        /// </summary>
+        Effect_1018 = 1018,
+        /// <summary>
+        /// #1
+        /// </summary>
+        Effect_1019 = 1019,
+        /// <summary>
+        /// Pushes back #1 cell(s)
+        /// </summary>
+        Effect_1021 = 1021,
+        /// <summary>
+        /// Attracts #1 cell(s)
+        /// </summary>
+        Effect_1022 = 1022,
+        /// <summary>
+        /// Switches positions
+        /// </summary>
+        Effect_1023 = 1023,
+        /// <summary>
+        /// Creates illusions
+        /// </summary>
+        Effect_1024 = 1024,
+        /// <summary>
+        /// Trigger traps
+        /// </summary>
+        Effect_1025 = 1025,
+        /// <summary>
+        /// Trigger glyphs
+        /// </summary>
+        Effect_1026 = 1026,
+        /// <summary>
+        /// #1{~1~2 to }#2% Combo Damage
+        /// </summary>
+        Effect_1027 = 1027,
+        /// <summary>
+        /// Trigger powders
+        /// </summary>
+        Effect_1028 = 1028,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1029 = 1029,
+        /// <summary>
+        /// Place grade #2 powder
+        /// </summary>
+        Effect_1030 = 1030,
+        /// <summary>
+        /// Ends turn
+        /// </summary>
+        Effect_1031 = 1031,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1032 = 1032,
+        /// <summary>
+        /// -#1{~1~2 to -}#2% Vitality
+        /// </summary>
+        Effect_1033 = 1033,
+        /// <summary>
+        /// Summons the last ally killed with #1{~1~2 to }#2% of their HP
+        /// </summary>
+        Effect_1034 = 1034,
+        /// <summary>
+        /// #1: +#3 turns until recast
+        /// </summary>
+        Effect_1035 = 1035,
+        /// <summary>
+        /// #1: -#3 turns until recast
+        /// </summary>
+        Effect_1036 = 1036,
+        /// <summary>
+        /// HP restored: #1 {~1~2 to}#2
+        /// </summary>
+        Effect_1037 = 1037,
+        /// <summary>
+        /// Aura: #1
+        /// </summary>
+        Effect_1038 = 1038,
+        /// <summary>
+        /// #1{~1~2 to }#2% of HP to shield
+        /// </summary>
+        Effect_1039 = 1039,
+        /// <summary>
+        /// #1{~1~2 to }#2 Shield
+        /// </summary>
+        Effect_1040 = 1040,
+        /// <summary>
+        /// Retreats #1 cell(s)
+        /// </summary>
+        Effect_1041 = 1041,
+        /// <summary>
+        /// Advances #1 cell(s)
+        /// </summary>
+        Effect_1042 = 1042,
+        /// <summary>
+        /// Attract to the selected cell
+        /// </summary>
+        Effect_1043 = 1043,
+        /// <summary>
+        /// Immunity: #1
+        /// </summary>
+        Effect_1044 = 1044,
+        /// <summary>
+        /// #1: #3 turns until recast
+        /// </summary>
+        Effect_1045 = 1045,
+        /// <summary>
+        /// Using #1 MP will cause a loss of #2 HP
+        /// </summary>
+        Effect_1046 = 1046,
+        /// <summary>
+        /// -#1{~1~2 to }#2 HP
+        /// </summary>
+        Effect_1047 = 1047,
+        /// <summary>
+        /// -#1{~1~2 to }#2% HP
+        /// </summary>
+        Effect_1048 = 1048,
+        /// <summary>
+        /// +#1{~1~2 to}level #2
+        /// </summary>
+        Effect_1049 = 1049,
+        /// <summary>
+        /// + #1 level in the #2 profession
+        /// </summary>
+        Effect_1050 = 1050,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1051 = 1051,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1052 = 1052,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1053 = 1053,
+        /// <summary>
+        /// #1{~1~2 to }#2 Power (spells)
+        /// </summary>
         Effect_IncreaseDamage_1054 = 1054,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1055 = 1055,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1057 = 1057,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1058 = 1058,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1059 = 1059,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1060 = 1060,
+        /// <summary>
+        /// Damage sharing
+        /// </summary>
+        Effect_1061 = 1061,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1062 = 1062,
+        /// <summary>
+        /// #1{~1~2 to }#2 (fixed Earth damage)
+        /// </summary>
+        Effect_1063 = 1063,
+        /// <summary>
+        /// #1{~1~2 to }#2 (fixed Air damage)
+        /// </summary>
+        Effect_1064 = 1064,
+        /// <summary>
+        /// #1{~1~2 to }#2 (fixed Water damage)
+        /// </summary>
+        Effect_1065 = 1065,
+        /// <summary>
+        /// #1{~1~2 to }#2 (fixed Fire damage)
+        /// </summary>
+        Effect_1066 = 1066,
+        /// <summary>
+        /// #1{~1~2 to }#2% of the target's HP (Air damage)
+        /// </summary>
+        Effect_1067 = 1067,
+        /// <summary>
+        /// #1{~1~2 to }#2% of the target's HP (Water damage)
+        /// </summary>
+        Effect_1068 = 1068,
+        /// <summary>
+        /// #1{~1~2 to }#2% of the target's HP (Fire damage)
+        /// </summary>
+        Effect_1069 = 1069,
+        /// <summary>
+        /// #1{~1~2 to }#2% of the target's HP (Earth damage)
+        /// </summary>
+        Effect_1070 = 1070,
+        /// <summary>
+        /// #1{~1~2 to }#2% of the target's HP (Neutral damage)
+        /// </summary>
+        Effect_1071 = 1071,
+        /// <summary>
+        /// Provocation
+        /// </summary>
+        Effect_1072 = 1072,
+        /// <summary>
+        /// Change attack element
+        /// </summary>
+        Effect_1073 = 1073,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1074 = 1074,
+        /// <summary>
+        /// -#1{~1~2 to }#2 duration of effects
+        /// </summary>
+        Effect_1075 = 1075,
+        /// <summary>
+        /// #1{~1~2 to }#2% Resistance
+        /// </summary>
+        Effect_1076 = 1076,
+        /// <summary>
+        /// -#1{~1~2 to -}#2% Resistance
+        /// </summary>
         Effect_SubResistances = 1077,
+        /// <summary>
+        /// #1{~1~2 to }#2% Vitality
+        /// </summary>
         Effect_AddVitalityPercent = 1078,
+        /// <summary>
+        /// -#1{~1~2 to -}#2 AP
+        /// </summary>
+        Effect_1079 = 1079,
+        /// <summary>
+        /// -#1{~1~2 to -}#2 MP
+        /// </summary>
+        Effect_1080 = 1080,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1081 = 1081,
+        /// <summary>
+        /// Wrapped by: #4
+        /// </summary>
+        Effect_1082 = 1082,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1083 = 1083,
+        /// <summary>
+        /// #1
+        /// </summary>
+        Effect_1084 = 1084,
+        /// <summary>
+        /// Quantity: #1
+        /// </summary>
+        Effect_1085 = 1085,
+        /// <summary>
+        /// For: #4
+        /// </summary>
+        Effect_1086 = 1086,
+        /// <summary>
+        /// Write a character's name
+        /// </summary>
+        Effect_1087 = 1087,
+        /// <summary>
+        /// Places a grade #2 Glyph
+        /// </summary>
+        Effect_1091 = 1091,
+        /// <summary>
+        /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Neutral damage
+        /// </summary>
+        Effect_1092 = 1092,
+        /// <summary>
+        /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Air damage
+        /// </summary>
+        Effect_1093 = 1093,
+        /// <summary>
+        /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Fire damage
+        /// </summary>
+        Effect_1094 = 1094,
+        /// <summary>
+        /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Water damage
+        /// </summary>
+        Effect_1095 = 1095,
+        /// <summary>
+        /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Earth damage
+        /// </summary>
+        Effect_1096 = 1096,
+        /// <summary>
+        /// Creates illusions
+        /// </summary>
+        Effect_1097 = 1097,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1098 = 1098,
+        /// <summary>
+        /// Teleports the target to the cell where they started their turn
+        /// </summary>
+        Effect_1099 = 1099,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_1100 = 1100,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1101 = 1101,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_1102 = 1102,
+        /// <summary>
+        /// Pushes back #1 cell(s)
+        /// </summary>
+        Effect_1103 = 1103,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_1104 = 1104,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_1105 = 1105,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_1106 = 1106,
+        /// <summary>
+        /// Rename the guild
+        /// </summary>
+        Effect_1107 = 1107,
+        /// <summary>
+        /// Change the guild's emblem
+        /// </summary>
+        Effect_1108 = 1108,
+        /// <summary>
+        /// #1{~1~2 to }#2% (HP restored)
+        /// </summary>
+        Effect_1109 = 1109,
+        /// <summary>
+        /// #3 loot
+        /// </summary>
+        Effect_1111 = 1111,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1118 = 1118,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1119 = 1119,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1120 = 1120,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1121 = 1121,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1122 = 1122,
+        /// <summary>
+        /// [!]
+        /// </summary>
+        Effect_1123 = 1123,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1124 = 1124,
+        /// <summary>
+        /// [!]
+        /// </summary>
+        Effect_1125 = 1125,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1126 = 1126,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1127 = 1127,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_1128 = 1128,
+        /// <summary>
+        /// Send to Krosmaster
+        /// </summary>
+        Effect_1129 = 1129,
+        /// <summary>
+        /// #2 HP (Air) lost for every #1 AP used
+        /// </summary>
+        Effect_1131 = 1131,
+        /// <summary>
+        /// #2 HP (Water) lost for every #1 AP used
+        /// </summary>
+        Effect_1132 = 1132,
+        /// <summary>
+        /// #2 HP (Fire) lost for every #1 AP used
+        /// </summary>
+        Effect_1133 = 1133,
+        /// <summary>
+        /// #2 HP (Neutral) lost for every #1 AP used
+        /// </summary>
+        Effect_1134 = 1134,
+        /// <summary>
+        /// #2 HP (Earth) lost for every #1 AP used
+        /// </summary>
+        Effect_1135 = 1135,
+        /// <summary>
+        /// #2 HP (Air) lost for every #1 MP used
+        /// </summary>
+        Effect_1136 = 1136,
+        /// <summary>
+        /// #2 HP (Water) lost for every #1 MP used
+        /// </summary>
+        Effect_1137 = 1137,
+        /// <summary>
+        /// #2 HP (Fire) lost for every #1 MP used
+        /// </summary>
+        Effect_1138 = 1138,
+        /// <summary>
+        /// #2 HP (Neutral) lost for every #1 MP used
+        /// </summary>
+        Effect_1139 = 1139,
+        /// <summary>
+        /// #2 HP (Earth) lost for every #1 MP used
+        /// </summary>
+        Effect_1140 = 1140,
+        /// <summary>
+        /// [!]
+        /// </summary>
+        Effect_1141 = 1141,
+        /// <summary>
+        /// [!]
+        /// </summary>
+        Effect_1142 = 1142,
+        
+        
         End,
     }
 }
