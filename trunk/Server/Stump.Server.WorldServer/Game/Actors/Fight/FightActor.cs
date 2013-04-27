@@ -723,7 +723,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (from != this)
             {
                 short reflected = CalculateDamageReflection(damage);
-                damage -= reflected;
 
                 if (reflected > 0)
                 {
@@ -758,7 +757,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (from != this)
             {
                 short reflected = CalculateDamageReflection(damage);
-                damage -= reflected;
 
                 if (reflected > 0)
                 {
@@ -811,23 +809,23 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 case EffectSchoolEnum.Neutral:
                     return (short) (damage*
                                     (100 + Stats[PlayerFields.Strength] + Stats[PlayerFields.DamageBonusPercent] + Stats[PlayerFields.DamageMultiplicator].Total*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].Total + Stats[PlayerFields.PhysicalDamage].Total));
+                                    (Stats[PlayerFields.DamageBonus].Total + Stats[PlayerFields.PhysicalDamage].Total + Stats[PlayerFields.NeutralDamageBonus]));
                 case EffectSchoolEnum.Earth:
                     return (short) (damage*
                                     (100 + Stats[PlayerFields.Strength] + Stats[PlayerFields.DamageBonusPercent] + Stats[PlayerFields.DamageMultiplicator].Total*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].Total + Stats[PlayerFields.PhysicalDamage].Total));
+                                    (Stats[PlayerFields.DamageBonus].Total + Stats[PlayerFields.PhysicalDamage].Total + Stats[PlayerFields.EarthDamageBonus]));
                 case EffectSchoolEnum.Air:
                     return (short) (damage*
                                     (100 + Stats[PlayerFields.Agility] + Stats[PlayerFields.DamageBonusPercent] + Stats[PlayerFields.DamageMultiplicator].Total*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].Total + Stats[PlayerFields.MagicDamage].Total));
+                                    (Stats[PlayerFields.DamageBonus].Total + Stats[PlayerFields.MagicDamage].Total + Stats[PlayerFields.AirDamageBonus]));
                 case EffectSchoolEnum.Water:
                     return (short) (damage*
                                     (100 + Stats[PlayerFields.Chance] + Stats[PlayerFields.DamageBonusPercent] + Stats[PlayerFields.DamageMultiplicator].Total*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].Total + Stats[PlayerFields.MagicDamage].Total));
+                                    (Stats[PlayerFields.DamageBonus].Total + Stats[PlayerFields.MagicDamage].Total + Stats[PlayerFields.WaterDamageBonus]));
                 case EffectSchoolEnum.Fire:
                     return (short) (damage*
                                     (100 + Stats[PlayerFields.Intelligence] + Stats[PlayerFields.DamageBonusPercent] + Stats[PlayerFields.DamageMultiplicator].Total*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].Total + Stats[PlayerFields.MagicDamage].Total));
+                                    (Stats[PlayerFields.DamageBonus].Total + Stats[PlayerFields.MagicDamage].Total + Stats[PlayerFields.FireDamageBonus]));
                 default:
                     return damage;
             }
