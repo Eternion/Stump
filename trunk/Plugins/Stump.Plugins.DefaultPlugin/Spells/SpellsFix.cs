@@ -36,6 +36,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // punitive arrow (171)
             // duration buff = 3
             FixEffectOnAllLevels(171, EffectsEnum.Effect_SpellBoost, (level, effect, critical) => effect.Duration = 3);
+
+            // atonement arrow (167)
+            // duration buff = 4
+            FixEffectOnAllLevels(167, EffectsEnum.Effect_SpellBoost, (level, effect, critical) => effect.Duration = 4);
         }
 
         public static void FixEffectOnAllLevels(int spellId, int effectIndex, Action<SpellLevelTemplate, EffectDice, bool> fixer)

@@ -289,6 +289,8 @@
     <Compile Include="Game\Effects\Handlers\Spells\Move\Dodge.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\RewindEffect.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\SwitchPosition.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Steals\APStealNonFix.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Steals\MPStealNonFix.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\RestoreHp.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\Punishment.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\SpellBoost.cs" />

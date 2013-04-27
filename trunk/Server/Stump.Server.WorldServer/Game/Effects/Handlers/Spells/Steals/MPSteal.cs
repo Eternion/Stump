@@ -7,7 +7,6 @@ using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
 {
-    [EffectHandler(EffectsEnum.Effect_StealMP_77)]
     [EffectHandler(EffectsEnum.Effect_StealMP_441)]
     public class MPSteal : SpellEffectHandler
     {
