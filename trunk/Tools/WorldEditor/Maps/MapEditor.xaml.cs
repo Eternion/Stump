@@ -42,7 +42,7 @@ namespace WorldEditor.Maps
                 Title = title,
             };
 
-            DocumentPane.Children.Add(document);
+            //DocumentPane.Children.Add(document);
 
             return document;
         }
