@@ -1,68 +1,25 @@
 ﻿using System;
 using System.Drawing;
+using Stump.Core.Attributes;
 
 namespace Stump.Tools.ItemsSkinFinder.Analyzer
 {
-    public class BitmapComparer
+    public static class BitmapComparer
     {
-        public sbyte ErrorMargin
-        {
-            get; 
-            private set;
-        }
+        [Variable(true)]
+        public static int ErrorMargin = 30;
 
-        public Bitmap Bitmap1
-        {
-            get; 
-            private set;
-        }
-
-        public Bitmap Bitmap2
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Constructor of BitmapComparer.
-        /// </summary>
-        /// <param name="errorMargin">error margin, value must be between 0 and 100 included </param>
-        /// <param name="bitmap1">bitmap 1</param>
-        /// <param name="bitmap2">bitmap 2</param>
-        public BitmapComparer(sbyte errorMargin, Bitmap bitmap1, Bitmap bitmap2)
-        {
-            if (errorMargin >= 0 || errorMargin <= 100)
-                throw new ArgumentException("", "errorMargin");
-
-            ErrorMargin = errorMargin;
-
-            if (bitmap1 == null)
-                throw new ArgumentNullException("bitmap1");
-
-            if (bitmap2 == null)
-                throw new ArgumentNullException("bitmap2");
-
-            //TODO Crop&Resize bitmap1&bitmap2
-
-        }
-
-        /// <summary>
-        /// Compare two bitmaps and references percentage of validity.
-        /// 
-        /// TODO : try to get a faster method ...
-        /// </summary>
-        /// <returns>percentage</returns>
-        public sbyte Compare()
+        public static sbyte Compare(this Bitmap bitmap, Bitmap specimen)
         {
             uint total = 0;
             uint success = 0;
 
-            for (int j = 0; j < Bitmap1.Height; j++)
+            for (int j = 0; j < bitmap.Height; j++)
             {
-                for (int i = 0; i < Bitmap1.Width; i++)
+                for (int i = 0; i < bitmap.Width; i++)
                 {
-                    var pixel1 = Bitmap1.GetPixel(i, j);
-                    var pixel2 = Bitmap2.GetPixel(i, j);
+                    var pixel1 = bitmap.GetPixel(i, j);
+                    var pixel2 = specimen.GetPixel(i, j);
 
                     int redMin = pixel1.R - (((pixel1.R * ErrorMargin) / 100));
                     int redMax = pixel1.R + (((pixel1.R * ErrorMargin) / 100));
