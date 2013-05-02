@@ -73,7 +73,7 @@ namespace Stump.Tools.ItemSkinFinderWPF
             return bmp;
         }
 
-        public unsafe static BitmapSource ReplaceTransparentToWhite(this BitmapSource bitmap)
+        public unsafe static BitmapSource ReplaceWhiteToTransparent(this BitmapSource bitmap)
         {
             var writeable = new WriteableBitmap(bitmap);
 
@@ -91,14 +91,14 @@ namespace Stump.Tools.ItemSkinFinderWPF
                     {
                         int index = y * stride + 4 * x;
 
+                        byte red = *(byte*)( pBackBuffer + index  );
+                        byte green = *(byte*)( pBackBuffer + index + 1 );
+                        byte blue = *(byte*)( pBackBuffer + index + 2 );
                         byte alpha = *(byte*)(pBackBuffer + index + 3);
 
-                        if (alpha == 0)
+                        if (red == 255 && green == 255 && blue == 255)
                         {
-                            *(byte*)( pBackBuffer + index ) = 255;
-                            *(byte*)( pBackBuffer + index + 1 ) = 255;
-                            *(byte*)( pBackBuffer + index + 2 ) = 255;
-                            *(byte*)( pBackBuffer + index + 3 ) = byte.MaxValue;
+                            *(byte*)( pBackBuffer + index + 3 ) = 0;
                         }
                     }
                 }
@@ -139,9 +139,7 @@ namespace Stump.Tools.ItemSkinFinderWPF
                     byte blue2 = pixels2[index2 + 2];
                     byte alpha2 = pixels2[index2 + 3];
 
-                    if (alpha1 == 0 || alpha2 == 0 ||
-                        ( red1 == 255 && green1 == 255 && blue1 == 255 ) ||
-                        ( red2 == 255 && green2 == 255 && blue2 == 255 ))
+                    if (alpha1 == 0 || alpha2 == 0)
                         continue;
 
                     var redMin = red1 - (((red1 * margin) / 100));
@@ -176,7 +174,7 @@ namespace Stump.Tools.ItemSkinFinderWPF
                 }
             }
 
-            return ( success * 100d ) / total; // does not exceed 100
+            return success;
         }
     }
 }

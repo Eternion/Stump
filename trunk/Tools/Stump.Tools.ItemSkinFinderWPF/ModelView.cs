@@ -159,7 +159,7 @@ namespace Stump.Tools.ItemSkinFinderWPF
                     var bmp = new CroppedBitmap(completeBmp, new Int32Rect(j * imageSize, k * imageSize, imageSize, imageSize)).CropBitmap();
 
                     if (bmp.Format != PixelFormats.Bgra32)
-                        bmp = new FormatConvertedBitmap(bmp, PixelFormats.Bgra32, null, 0);
+                        bmp = new FormatConvertedBitmap(bmp, PixelFormats.Bgra32, null, 0).ReplaceWhiteToTransparent();
 
                     bmp.Freeze();
                     m_contentIcons.Add(new Icon(i - 2, bmp, (int)pair.Key));
