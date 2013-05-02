@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Stump.Tools.ItemSkinFinderWPF
@@ -130,7 +131,7 @@ namespace Stump.Tools.ItemSkinFinderWPF
 
                     var id = int.Parse(Path.GetFileName(file).Replace(".png", ""));
                     var itemType = (int)pair.Key;
-                    var cropped = src.CropBitmap().ReplaceTransparentToWhite().ResizeBitmap(100, 100);
+                    var cropped = src.CropBitmap();
                     cropped.Freeze();
                     m_clientIconsByType[itemType].Add(new Icon(id, cropped, itemType));
 
@@ -155,7 +156,11 @@ namespace Stump.Tools.ItemSkinFinderWPF
                 int j = 0, k = 0;
                 for (int i = 2; i < content.Length - 2; i++)
                 {
-                    var bmp = new CroppedBitmap(completeBmp, new Int32Rect(j * imageSize, k * imageSize, imageSize, imageSize)).CropBitmap().ResizeBitmap(100, 100);
+                    var bmp = new CroppedBitmap(completeBmp, new Int32Rect(j * imageSize, k * imageSize, imageSize, imageSize)).CropBitmap();
+
+                    if (bmp.Format != PixelFormats.Bgra32)
+                        bmp = new FormatConvertedBitmap(bmp, PixelFormats.Bgra32, null, 0);
+
                     bmp.Freeze();
                     m_contentIcons.Add(new Icon(i - 2, bmp, (int)pair.Key));
                     m_skinsIds.Add(i - 2);
@@ -189,7 +194,7 @@ namespace Stump.Tools.ItemSkinFinderWPF
             Icon match = null;
             foreach (var clientIcon in m_clientIconsByType[icon.ItemType])
             {
-                var similarity = clientIcon.Bitmap.Compare(icon.Bitmap, 30);
+                var similarity = clientIcon.Bitmap.Compare(icon.Bitmap.ResizeBitmap(clientIcon.Bitmap.PixelWidth, clientIcon.Bitmap.PixelHeight), 20);
 
                 if (similarity > max)
                 {

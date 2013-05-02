@@ -91,17 +91,13 @@ namespace Stump.Tools.ItemSkinFinderWPF
                     {
                         int index = y * stride + 4 * x;
 
-                       
-                        byte red =  *(byte*)(pBackBuffer + index);
-                        byte green = *(byte*)(pBackBuffer + index + 1);
-                        byte blue = *(byte*)(pBackBuffer + index + 2);
                         byte alpha = *(byte*)(pBackBuffer + index + 3);
 
                         if (alpha == 0)
                         {
-                            *(byte*)( pBackBuffer + index ) = 0;
-                            *(byte*)( pBackBuffer + index + 1 ) = 0;
-                            *(byte*)( pBackBuffer + index + 2 ) = 0;
+                            *(byte*)( pBackBuffer + index ) = 255;
+                            *(byte*)( pBackBuffer + index + 1 ) = 255;
+                            *(byte*)( pBackBuffer + index + 2 ) = 255;
                             *(byte*)( pBackBuffer + index + 3 ) = byte.MaxValue;
                         }
                     }
@@ -116,29 +112,37 @@ namespace Stump.Tools.ItemSkinFinderWPF
             uint total = 0;
             uint success = 0;
 
-            int stride = bitmap.PixelWidth * 4;
-            int size = bitmap.PixelHeight * stride;
-            byte[] pixels1 = new byte[size];
-            bitmap.CopyPixels(pixels1, stride, 0);
+            int stride1 = bitmap.PixelWidth * 4;
+            int size1 = bitmap.PixelHeight * stride1;
+            byte[] pixels1 = new byte[size1];
+            bitmap.CopyPixels(pixels1, stride1, 0);
 
-            stride = specimen.PixelWidth * 4;
-            size = specimen.PixelHeight * stride;
-            byte[] pixels2 = new byte[size];
-            specimen.CopyPixels(pixels2, stride, 0);
+            int stride2 = specimen.PixelWidth * 4;
+            int size2 = specimen.PixelHeight * stride2;
+            byte[] pixels2 = new byte[size2];
+            specimen.CopyPixels(pixels2, stride2, 0);
 
             for (int j = 0; j < bitmap.Height; j++)
             {
                 for (int i = 0; i < bitmap.Width; i++)
                 {
-                    int index = i * stride + 4 * j;
+                    int index1 = j * stride1 + 4 * i;
+                    int index2 = j * stride2 + 4 * i;
 
-                    byte red1 = pixels1[index];
-                    byte green1 = pixels1[index + 1];
-                    byte blue1 = pixels1[index + 2];
+                    byte red1 = pixels1[index1];
+                    byte green1 = pixels1[index1 + 1];
+                    byte blue1 = pixels1[index1 + 2];
+                    byte alpha1 = pixels1[index1 + 3];
 
-                    byte red2 = pixels2[index];
-                    byte green2 = pixels2[index + 1];
-                    byte blue2 = pixels2[index + 2];
+                    byte red2 = pixels2[index2];
+                    byte green2 = pixels2[index2 + 1];
+                    byte blue2 = pixels2[index2 + 2];
+                    byte alpha2 = pixels2[index2 + 3];
+
+                    if (alpha1 == 0 || alpha2 == 0 ||
+                        ( red1 == 255 && green1 == 255 && blue1 == 255 ) ||
+                        ( red2 == 255 && green2 == 255 && blue2 == 255 ))
+                        continue;
 
                     var redMin = red1 - (((red1 * margin) / 100));
                     var redMax = red1 + ( ( ( red1 * margin ) / 100 ) );
