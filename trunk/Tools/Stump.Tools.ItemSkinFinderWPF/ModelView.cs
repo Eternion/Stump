@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -23,6 +24,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Stump.Tools.ItemSkinFinderWPF.Colors;
 
 namespace Stump.Tools.ItemSkinFinderWPF
 {
@@ -37,6 +39,15 @@ namespace Stump.Tools.ItemSkinFinderWPF
 
         private readonly string m_clientFolder = "Client";
         private readonly string m_contentFolder = "Content";
+
+        private List<int> m_ignoredIcons = new List<int>()
+        {
+            16290,
+            16341,
+            16126,
+            16074,
+            16324,
+        };
 
         private readonly Dictionary<uint, string> m_folders = new Dictionary<uint, string> { { 16, "hats" }, { 17, "cloaks" }, { 82, "shields" }, { 18, "pets" } };
         private Dictionary<int, List<Icon>> m_clientIconsByType = new Dictionary<int, List<Icon>>()
@@ -104,6 +115,24 @@ namespace Stump.Tools.ItemSkinFinderWPF
             set;
         }
 
+        public Color ColorA
+        {
+            get;
+            set;
+        }
+
+        public Color ColorB
+        {
+            get;
+            set;
+        }
+
+        public string DebugString
+        {
+            get;
+            set;
+        }
+
         public void LoadBitmapsAsync()
         {
             var thread = new Thread(LoadBitmapsPrivate); ;
@@ -131,7 +160,7 @@ namespace Stump.Tools.ItemSkinFinderWPF
 
                     var id = int.Parse(Path.GetFileName(file).Replace(".png", ""));
                     var itemType = (int)pair.Key;
-                    var cropped = src.CropBitmap();
+                    var cropped = src.CropBitmap(0.96);
                     cropped.Freeze();
                     m_clientIconsByType[itemType].Add(new Icon(id, cropped, itemType));
 
@@ -156,10 +185,12 @@ namespace Stump.Tools.ItemSkinFinderWPF
                 int j = 0, k = 0;
                 for (int i = 2; i < content.Length - 2; i++)
                 {
-                    var bmp = new CroppedBitmap(completeBmp, new Int32Rect(j * imageSize, k * imageSize, imageSize, imageSize)).CropBitmap();
+                    var bmp = (BitmapSource)new CroppedBitmap(completeBmp, new Int32Rect(j * imageSize, k * imageSize, imageSize, imageSize));
 
                     if (bmp.Format != PixelFormats.Bgra32)
                         bmp = new FormatConvertedBitmap(bmp, PixelFormats.Bgra32, null, 0).ReplaceWhiteToTransparent();
+
+                    bmp = bmp.CropBitmap(0.99);
 
                     bmp.Freeze();
                     m_contentIcons.Add(new Icon(i - 2, bmp, (int)pair.Key));
@@ -186,15 +217,46 @@ namespace Stump.Tools.ItemSkinFinderWPF
             Loading = false;
         }
 
+        private int m_id = 0;
         private void ProcessNext(bool updateValues = true)
         {
-            var icon = m_contentIcons[m_currentId];
 
+            /*var folder = m_folders.First().Value;
+            var files = Directory.GetFiles(Path.Combine(m_clientFolder, folder));
+
+            var file = files[++m_id];
+            var src = new BitmapImage();
+            src.BeginInit();
+            src.UriSource = new Uri(file, UriKind.Relative);
+            src.CacheOption = BitmapCacheOption.OnLoad;
+            src.EndInit();
+
+            var id = int.Parse(Path.GetFileName(file).Replace(".png", ""));
+            var cropped = src.CropBitmap(0.9);
+
+            ImageB = cropped;*/
+            var icon = m_contentIcons[m_currentId];
             double max = 0;
             Icon match = null;
             foreach (var clientIcon in m_clientIconsByType[icon.ItemType])
             {
-                var similarity = clientIcon.Bitmap.Compare(icon.Bitmap.ResizeBitmap(clientIcon.Bitmap.PixelWidth, clientIcon.Bitmap.PixelHeight), 20);
+                if (m_ignoredIcons.Contains(clientIcon.Id))
+                    continue;
+
+
+                //var hash = icon.Bitmap.ResizeBitmap(clientIcon.Bitmap.PixelWidth, clientIcon.Bitmap.PixelHeight);
+                //var hash2 = clientIcon.Bitmap.AverageHash();
+
+                //var similarity = ( ( 64 - BitCount(hash ^ hash2) ) * 100.0 ) / 64.0;
+                var resizedBmp = icon.Bitmap.ResizeBitmap(clientIcon.Bitmap.PixelWidth, clientIcon.Bitmap.PixelHeight);
+                var avgColor = resizedBmp.GetAverageColor();
+                RGB color = clientIcon.Bitmap.GetAverageColor();
+                var diff = ColorHelper.GetColorsDistance(avgColor, color);
+
+                if (diff > 60)
+                    continue;
+
+                var similarity = clientIcon.Bitmap.Compare(resizedBmp, 10);
 
                 if (similarity > max)
                 {
@@ -202,15 +264,46 @@ namespace Stump.Tools.ItemSkinFinderWPF
                     match = clientIcon;
                 }
             }
-
+             
             // todo : save result here
+
+            if (updateValues && match !=  null)
+            {
+                Value = max;
+                ImageA = icon.Bitmap.ResizeBitmap(match.Bitmap.PixelWidth, match.Bitmap.PixelHeight);
+                ImageB = match.Bitmap;
+
+                var avgColor = icon.Bitmap.GetAverageColor();
+                RGB color = match.Bitmap.GetAverageColor();
+                ColorA = Color.FromRgb((byte)avgColor.Red, (byte)avgColor.Green, (byte)avgColor.Blue);
+                ColorB = Color.FromRgb((byte)color.Red, (byte)color.Green, (byte)color.Blue);
+                DebugString = string.Format("A = {0} B = {1}", icon.Id, match.Id);
+            }
+
+            /*uint min = uint.MaxValue;
+            RGB color = RGB.Empty;
+            Icon match = null;
+            var avgColor = icon.Bitmap.GetAverageColor();
+            foreach (var clientIcon in m_clientIconsByType[icon.ItemType])
+            {
+                var otherColor = clientIcon.Bitmap.ResizeBitmap(icon.Bitmap.PixelWidth, icon.Bitmap.PixelHeight).GetAverageColor();
+                var diff = ColorHelper.GetColorsDistance(avgColor, otherColor);
+
+                if (diff < min)
+                {
+                    color = otherColor;
+                    min = (uint) diff;
+                    match = clientIcon;
+                }
+            }
 
             if (updateValues)
             {
-                Value = max;
+                ColorA = Color.FromRgb((byte)avgColor.Red, (byte)avgColor.Green, (byte)avgColor.Blue);
+                ColorB = Color.FromRgb((byte)color.Red, (byte)color.Green, (byte)color.Blue);
                 ImageA = icon.Bitmap;
-                ImageB = match.Bitmap;
-            }
+                ImageB = match.Bitmap.ResizeBitmap(icon.Bitmap.PixelWidth, icon.Bitmap.PixelHeight);
+            }*/
 
             m_currentId++;
         }
@@ -226,6 +319,27 @@ namespace Stump.Tools.ItemSkinFinderWPF
             }
 
             Processing = false;
+        }
+
+        private static byte[] bitCounts = {
+	        0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4,1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,1,2,2,3,2,3,3,4,
+	        2,3,3,4,3,4,4,5,2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,
+	        2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,3,4,4,5,4,5,5,6,
+	        4,5,5,6,5,6,6,7,1,2,2,3,2,3,3,4,2,3,3,4,3,4,4,5,2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,
+	        2,3,3,4,3,4,4,5,3,4,4,5,4,5,5,6,3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,2,3,3,4,3,4,4,5,
+	        3,4,4,5,4,5,5,6,3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,3,4,4,5,4,5,5,6,4,5,5,6,5,6,6,7,
+	        4,5,5,6,5,6,6,7,5,6,6,7,6,7,7,8 };
+
+        private static uint BitCount(ulong theNumber)
+        {
+            uint count=0;
+
+            for (; theNumber > 0; theNumber >>= 8)
+            {
+                count += bitCounts[( theNumber & 0xFF )];
+            }
+
+            return count;
         }
 
         #region ProcessAllCommand

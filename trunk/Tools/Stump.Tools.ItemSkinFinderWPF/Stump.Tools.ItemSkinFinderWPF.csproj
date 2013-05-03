@@ -71,6 +71,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BitmapHelper.cs" />
+    <Compile Include="Colors\CIELAB.cs" />
+    <Compile Include="Colors\ColorHelper.cs" />
+    <Compile Include="Colors\RGB.cs" />
+    <Compile Include="Colors\CIEXYZ.cs" />
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="Icon.cs" />
     <Compile Include="MainWindow.xaml.cs">

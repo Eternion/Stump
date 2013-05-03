@@ -37,5 +37,23 @@ namespace Stump.Tools.ItemSkinFinderWPF
         {
             ModelView.LoadBitmapsAsync();
         }
+
+        private void ImageB_MouseMove(object sender, MouseEventArgs e)
+        {
+            var pos = e.GetPosition((Image)sender);
+            var pixel = ModelView.ImageB.GetPixelColor((int) pos.X, (int) pos.Y);
+
+            ModelView.DebugString = string.Format("R:{0} G:{1} B:{2} A:{3}", pixel.R, pixel.G, pixel.B, pixel.A);
+            ModelView.ColorB = pixel;
+        }
+
+        private void ImageA_MouseMove(object sender, MouseEventArgs e)
+        {
+            var pos = e.GetPosition((Image)sender);
+            var pixel = ModelView.ImageA.GetPixelColor((int)pos.X, (int)pos.Y);
+
+            ModelView.DebugString = string.Format("R:{0} G:{1} B:{2} A:{3}", pixel.R, pixel.G, pixel.B, pixel.A);
+            ModelView.ColorA = pixel;
+        }
     }
 }

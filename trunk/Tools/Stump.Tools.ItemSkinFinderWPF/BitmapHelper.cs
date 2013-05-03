@@ -19,6 +19,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Stump.Tools.ItemSkinFinderWPF.Colors;
 
 namespace Stump.Tools.ItemSkinFinderWPF
 {
@@ -35,41 +36,91 @@ namespace Stump.Tools.ItemSkinFinderWPF
             return tbBitmap;
         }
 
-        public static BitmapSource CropBitmap(this BitmapSource original)
+
+        public static BitmapSource CropBitmap(this BitmapSource original, double tolerance)
         {
+            int w = original.PixelWidth, h = original.PixelHeight;
+
             int stride = original.PixelWidth * 4;
             int size = original.PixelHeight * stride;
             byte[] pixels = new byte[size];
             original.CopyPixels(pixels, stride, 0);
 
-            var min = new Point(int.MaxValue, int.MaxValue);
-            var max = new Point(int.MinValue, int.MinValue);
+            var whiteTolerance = 255 * tolerance;
+            var transparentTolerance = 255 - 255 * tolerance;
 
-            for (int x = 0; x < original.PixelWidth; ++x)
+            Func<int, bool> allWhiteRow = row =>
             {
-                for (int y = 0; y < original.PixelHeight; ++y)
+                for (int i = 0; i < w; ++i)
                 {
-                    int index = y * stride + 4 * x;
-
-
-                    byte red = pixels[index];
+                    int index = row * stride + 4 * i;
+                    byte blue = pixels[index];
                     byte green = pixels[index + 1];
-                    byte blue = pixels[index + 2];
+                    byte red = pixels[index + 2];
                     byte alpha = pixels[index + 3];
 
-                    if (( red != 255 || green != 255 || blue != 255 )
-                        && alpha > 0)
-                    {
-                        if (x < min.X) min.X = x;
-                        if (y < min.Y) min.Y = y;
-
-                        if (x > max.X) max.X = x;
-                        if (y > max.Y) max.Y = y;
-                    }
+                    if (( (red + blue + green / 3) < whiteTolerance) && alpha > transparentTolerance)
+                        return false;
                 }
+                return true;
+            };
+
+            Func<int, bool> allWhiteColumn = col =>
+            {
+                for (int i = 0; i < h; ++i)
+                {
+                    int index = i * stride + 4 * col;
+                    byte blue = pixels[index];
+                    byte green = pixels[index + 1];
+                    byte red = pixels[index + 2];
+                    byte alpha = pixels[index + 3];
+
+                    if (( ( red + blue + green / 3 ) < whiteTolerance ) && alpha > transparentTolerance)
+                        return false;
+                }
+                return true;
+            };
+
+            int topmost = 0;
+            for (int row = 0; row < h; ++row)
+            {
+                if (allWhiteRow(row))
+                    topmost = row;
+                else break;
             }
 
-            var bmp = new CroppedBitmap(original, new Int32Rect((int)min.X, (int)min.Y, (int)(max.X - min.X), (int)(max.Y - min.Y))); ;
+            int bottommost = h - 1;
+            for (int row = h - 1; row >= 0; --row)
+            {
+                if (allWhiteRow(row))
+                    bottommost = row;
+                else break;
+            }
+
+            int leftmost = 0, rightmost = w - 1;
+            for (int col = 0; col < w; ++col)
+            {
+                if (allWhiteColumn(col))
+                    leftmost = col;
+                else
+                    break;
+            }
+
+            for (int col = w - 1; col >= 0; --col)
+            {
+                if (allWhiteColumn(col))
+                    rightmost = col;
+                else
+                    break;
+            }
+
+            int croppedWidth = rightmost - leftmost;
+            int croppedHeight = bottommost - topmost;
+
+            if (croppedHeight < 0 || croppedWidth < 0)
+                return original;
+
+            var bmp = new CroppedBitmap(original, new Int32Rect(leftmost, topmost, croppedWidth, croppedHeight));
             return bmp;
         }
 
@@ -91,9 +142,9 @@ namespace Stump.Tools.ItemSkinFinderWPF
                     {
                         int index = y * stride + 4 * x;
 
-                        byte red = *(byte*)( pBackBuffer + index  );
+                        byte blue = *(byte*)( pBackBuffer + index  );
                         byte green = *(byte*)( pBackBuffer + index + 1 );
-                        byte blue = *(byte*)( pBackBuffer + index + 2 );
+                        byte red = *(byte*)( pBackBuffer + index + 2 );
                         byte alpha = *(byte*)(pBackBuffer + index + 3);
 
                         if (red == 255 && green == 255 && blue == 255)
@@ -129,14 +180,14 @@ namespace Stump.Tools.ItemSkinFinderWPF
                     int index1 = j * stride1 + 4 * i;
                     int index2 = j * stride2 + 4 * i;
 
-                    byte red1 = pixels1[index1];
+                    byte blue1 = pixels1[index1];
                     byte green1 = pixels1[index1 + 1];
-                    byte blue1 = pixels1[index1 + 2];
+                    byte red1 = pixels1[index1 + 2];
                     byte alpha1 = pixels1[index1 + 3];
 
-                    byte red2 = pixels2[index2];
+                    byte blue2 = pixels2[index2];
                     byte green2 = pixels2[index2 + 1];
-                    byte blue2 = pixels2[index2 + 2];
+                    byte red2 = pixels2[index2 + 2];
                     byte alpha2 = pixels2[index2 + 3];
 
                     if (alpha1 == 0 || alpha2 == 0)
@@ -174,7 +225,113 @@ namespace Stump.Tools.ItemSkinFinderWPF
                 }
             }
 
-            return success;
+            return (double)success / total * 100d;
         }
+
+        public static Color GetPixelColor(this BitmapSource source, int x, int y)
+        {
+            Color c = System.Windows.Media.Colors.White;
+            if (source != null)
+            {
+                try
+                {
+                    CroppedBitmap cb = new CroppedBitmap(source, new Int32Rect(x, y, 1, 1));
+                    var pixels = new byte[4];
+                    cb.CopyPixels(pixels, 4, 0);
+                    c = Color.FromArgb(pixels[3], pixels[2], pixels[1], pixels[0]);
+                }
+                catch (Exception)
+                {
+                }
+            }
+            return c;
+        }
+
+        public static RGB GetAverageColor(this BitmapSource bitmap)
+        {
+            int stride = bitmap.PixelWidth * 4;
+            int size = bitmap.PixelHeight * stride;
+            byte[] pixels = new byte[size];
+            bitmap.CopyPixels(pixels, stride, 0);
+
+            int sumRed = 0;
+            int sumGreen = 0;
+            int sumBlue = 0;
+            int pixelCount = 0;
+
+            for (int x = 0; x < bitmap.PixelWidth; ++x)
+            {
+                for (int y = 0; y < bitmap.PixelHeight; ++y)
+                {
+                    int index = y * stride + 4 * x;
+
+                    if (pixels[index + 3] == 0)
+                        continue;
+
+                    sumBlue += pixels[index];
+                    sumGreen += pixels[index + 1];
+                    sumRed += pixels[index + 2];
+                    pixelCount++;
+                }
+            }
+
+            return new RGB(sumRed / pixelCount, sumGreen / pixelCount, sumBlue / pixelCount);
+        }
+
+        public static ulong AverageHash(this BitmapSource src)
+        {
+            // Squeeze the image down to an 8x8 image.
+
+            // Chant the ancient incantations to create the correct data structures.
+            var squeezedImage = ResizeBitmap(src, 8, 8);
+
+            byte[] grayScaleImage = new byte[64];
+
+            uint averageValue = 0;
+            ulong finalHash = 0;
+
+            int stride = squeezedImage.PixelWidth * 4;
+            int size = squeezedImage.PixelHeight * stride;
+            byte[] pixels = new byte[size];
+            squeezedImage.CopyPixels(pixels, stride, 0);
+
+            // Reduce to 8-bit grayscale and alculate the average pixel value.
+            for (int y = 0; y < 8; y++)
+            {
+                for (int x = 0; x < 8; x++)
+                {
+                    int index = y * stride + 4 * x;
+
+                    byte red = pixels[index];
+                    byte green = pixels[index + 1];
+                    byte blue = pixels[index + 2];
+
+                    uint grayTone = ( (uint)( ( red * 0.3 ) + ( green * 0.59 ) + ( blue * 0.11 ) ) );
+
+                    grayScaleImage[x + y * 8] = (byte)grayTone;
+                    averageValue += grayTone;
+                }
+            }
+            averageValue /= 64;
+
+            // Return 1-bits when the tone is equal to or above the average,
+            // and 0-bits when it's below the average.
+            for (int k = 0; k < 64; k++)
+            {
+                //if(k % 8 == 0)
+                //	Console.WriteLine();
+
+                if (grayScaleImage[k] >= averageValue)
+                {
+                    finalHash |= ( 1UL << ( 63 - k ) );
+                    //	Console.Write(" ");
+                }
+                //else
+                //	Console.Write("#");
+            }
+
+            return finalHash;
+        }
+
     }
 }
