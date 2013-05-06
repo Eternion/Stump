@@ -22,7 +22,8 @@ namespace Uplauncher
     {
         public const string ApplicationName = "Uplauncher Arkalys";
 
-        public const string SiteURL = "http://5.135.166.144/";
+        public const string SiteURL = "http://arkalys.com/";
+        public const string UpdateSiteURL = "http://5.135.166.144/";
         public static readonly Uri RSSNewsURL = new Uri("http://www.google.com");
 
         public const string VoteURL = "http://www.rpg-paradize.com/?page=vote&vote=37207";

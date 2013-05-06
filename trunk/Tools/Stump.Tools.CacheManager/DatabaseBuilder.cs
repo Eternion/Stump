@@ -309,10 +309,30 @@ namespace Stump.Tools.CacheManager
                     continue;
 
                 logger.Info("Execute patch '{0}'", sqlFile);
-                foreach (var line in File.ReadAllLines(sqlFile))
+                int lineIndex = 0;
+                int cursorLeft = Console.CursorLeft;
+                int cursorTop = Console.CursorTop;
+                var lines = File.ReadAllLines(sqlFile);
+                foreach (var line in lines)
                 {
-                     if (!string.IsNullOrWhiteSpace(line))
-                         Database.Execute(line);
+                    try
+                    {
+                        if (!string.IsNullOrWhiteSpace(line))
+                            Database.Execute(line);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error("Error at line {0} : {1}", lineIndex, ex.Message);
+                    }
+                    finally
+                    {
+                        lineIndex++;
+
+
+                        Console.SetCursorPosition(cursorLeft, cursorTop);
+                        Console.Write("{0}/{1} ({2}%)", lineIndex, lines.Length,
+                                      (int)( ( lineIndex / (double)lines.Length ) * 100d ));
+                    }
                 }
             }
         }

@@ -173,6 +173,55 @@ namespace Uplauncher
 
         #endregion
 
+        #region SiteCommand
+
+        private DelegateCommand m_siteCommand;
+
+        public DelegateCommand SiteCommand
+        {
+            get { return m_siteCommand ?? (m_siteCommand = new DelegateCommand(OnSite, CanSite)); }
+        }
+
+        private bool CanSite(object parameter)
+        {
+            return true;
+        }
+
+        private void OnSite(object parameter)
+        {
+            if (!CanSite(parameter))
+                return;
+
+
+            Process.Start(Constants.SiteURL);
+        }
+
+        #endregion
+
+        #region CloseCommand
+
+        private DelegateCommand m_closeCommand;
+
+        public DelegateCommand CloseCommand
+        {
+            get { return m_closeCommand ?? (m_closeCommand = new DelegateCommand(OnClose, CanClose)); }
+        }
+
+        private bool CanClose(object parameter)
+        {
+            return true;
+        }
+
+        private void OnClose(object parameter)
+        {
+            if (!CanClose(parameter))
+                return;
+
+            HideWindowInTrayIcon();
+        }
+
+        #endregion
+
         #region TrayIcon
         public void HideWindowInTrayIcon()
         {
@@ -247,7 +296,7 @@ namespace Uplauncher
             m_client = new WebClient();
             m_client.DownloadProgressChanged += OnDownloadProgressChanged;
             m_client.DownloadStringCompleted += OnMetaFileDownloaded;
-            m_client.DownloadStringAsync(new Uri(Constants.SiteURL + Constants.RemoteMetaFile), Constants.SiteURL + Constants.RemoteMetaFile);
+            m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemoteMetaFile), Constants.UpdateSiteURL + Constants.RemoteMetaFile);
         }
 
        
@@ -351,7 +400,7 @@ namespace Uplauncher
 
             // download patch xml
             m_client.DownloadStringCompleted += OnPatchDownloaded;
-            m_client.DownloadStringAsync(new Uri(Constants.SiteURL + m_currentUpdate.PatchRelativURL), Constants.SiteURL + m_currentUpdate.PatchRelativURL);
+            m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + m_currentUpdate.PatchRelativURL), Constants.UpdateSiteURL + m_currentUpdate.PatchRelativURL);
         }
 
         private void OnPatchDownloaded(object sender, DownloadStringCompletedEventArgs e)

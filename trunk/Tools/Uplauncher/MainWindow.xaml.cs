@@ -61,5 +61,12 @@ namespace Uplauncher
             e.Cancel = true;
             ModelView.HideWindowInTrayIcon();
         }
+
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
+
+            DragMove();
+        }
     }
 }

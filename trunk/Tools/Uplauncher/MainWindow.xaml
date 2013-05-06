@@ -1,48 +1,114 @@
-﻿<Window xmlns:my="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"  x:Class="Uplauncher.MainWindow"
+﻿<Window xmlns:my="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms" 
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Uplauncher="clr-namespace:Uplauncher" xmlns:System="clr-namespace:System;assembly=System"
-        xmlns:Helpers="clr-namespace:Uplauncher.Helpers" WindowStartupLocation="CenterScreen"
-        DataContext="{Binding RelativeSource={RelativeSource Self}, Path=ModelView}"
+        xmlns:Helpers="clr-namespace:Uplauncher.Helpers" xmlns:UI="clr-namespace:Uplauncher.Helpers.UI" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" xmlns:ee="http://schemas.microsoft.com/expression/2010/effects" mc:Ignorable="d"  x:Class="Uplauncher.MainWindow"
+        WindowStartupLocation="CenterScreen"
+        DataContext="{Binding ModelView, RelativeSource={RelativeSource Self}}"
         Title="{x:Static Uplauncher:Constants.ApplicationName}"
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight"
-        Icon="pack://application:,,/dofus-icon-48.ico"
-        ShowInTaskbar="True"
-        Closing="OnClosing"
-        Loaded="OnLoaded">
+        Icon="pack://application:,,,/dofus-icon-48.ico" ShowInTaskbar="True"
+        Closing="OnClosing" Loaded="OnLoaded" WindowStyle="None"
+        AllowsTransparency="True" Background="Transparent" >
   <Window.Resources>
-    <XmlDataProvider x:Key="News"
-                     Source="{x:Static Uplauncher:Constants.RSSNewsURL}"
-                     XPath="/rss/channel"/>
-    <BitmapImage x:Key="Header" UriSource="pack://application:,,/Resources/famileons.jpg" />
-    <BitmapImage x:Key="NewsIcon" UriSource="pack://application:,,/Resources/news.png" />
-    <Helpers:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
+    <Style x:Key="Arial-Rounded" TargetType="{x:Type TextBlock}">
+    	<Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Resources/#Arial Rounded MT" />
+    </Style>
+    <Style x:Key="GlowingImage" TargetType="UI:OpaqueClickableImage">
+      <Style.Triggers>
+        <Trigger Property="IsMouseOver" Value="True">
+          <Setter Property="Effect">
+            <Setter.Value>
+              <ee:BloomEffect BaseIntensity="0.33" BaseSaturation="1" BloomIntensity="1.15"/>
+            </Setter.Value>
+          </Setter>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+  	<Style x:Key="ImageButton" TargetType="{x:Type Button}">
+  		<Setter Property="Background" Value="Transparent"/>
+  		<Setter Property="BorderBrush" Value="Transparent"/>
+  		<Setter Property="BorderThickness" Value="0"/>
+  		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Template">
+  			<Setter.Value>
+  				<ControlTemplate TargetType="{x:Type Button}">
+  					<ContentPresenter Content="{TemplateBinding Content}"/>
+  				</ControlTemplate>
+  			</Setter.Value>
+  		</Setter>
+      <Style.Triggers>
+        <Trigger Property="IsEnabled" Value="false">
+          <Setter Property="Effect">
+            <Setter.Value>
+              <ee:BloomEffect BaseIntensity="0.15" BaseSaturation="0.22" BloomIntensity="0.4" BloomSaturation="0.18" Threshold="0.37" />
+            </Setter.Value>
+          </Setter>
+        </Trigger>
+      </Style.Triggers>
+  		
+  	</Style>
   </Window.Resources>
-    <Grid>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="Auto"/>
-    </Grid.RowDefinitions>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*"/>
-      <ColumnDefinition Width="Auto"/>
-    </Grid.ColumnDefinitions>
+  <Grid>
+    <Image Source="Resources/background.png" Height="619px" Width="828px" />
+    <Canvas>
+      <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent"  Canvas.Left="76" Canvas.Top="435" Style="{StaticResource ImageButton}" 
+              Command="{Binding PlayCommand}">
+        <UI:OpaqueClickableImage Width="99" Height="129" Source="pack://application:,,,/Resources/play_button.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
+      </Button>
+      <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Canvas.Left="6" Canvas.Top="172" Style="{StaticResource ImageButton}" Command="{Binding CloseCommand}">
+        <UI:OpaqueClickableImage Width="19" Height="19" Source="pack://application:,,,/Resources/close.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
+      </Button>
+      <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Canvas.Left="8" Canvas.Top="587" Style="{StaticResource ImageButton}">
+        <UI:OpaqueClickableImage Width="105" Height="24" Source="pack://application:,,,/Resources/language_button.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
+      </Button>
+      <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Style="{StaticResource ImageButton}" Canvas.Left="117" Canvas.Top="587" Command="{Binding SiteCommand}">
+        <UI:OpaqueClickableImage Width="105" Height="24" Source="pack://application:,,,/Resources/site_button.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
+      </Button>
+      <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Canvas.Left="529" Canvas.Top="353" Style="{StaticResource ImageButton}" Command="{Binding VoteCommand}">
+        <UI:OpaqueClickableImage Width="167" Height="30" Source="pack://application:,,,/Resources/vote_button.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
+      </Button>
+      <ProgressBar Canvas.Left="233" Canvas.Top="390" Width="461" Height="26" Value="{Binding Path=DownloadProgress}" Maximum="100" Minimum="0" >
+        <ProgressBar.Template>
+          <ControlTemplate TargetType="ProgressBar">
+            <Border BorderThickness="1" CornerRadius="10" BorderBrush="#665527">
+              <Border.Background>
+                <SolidColorBrush Color="#342811"/> 
+              </Border.Background>
+              <Grid x:Name="PART_Track" >
+                <Border x:Name="PART_Indicator" HorizontalAlignment="Left" CornerRadius="9,0,0,9">
+                  <Border.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                      <GradientStop Color="#7c8f00" Offset="1"/>
+                      <GradientStop Color="#d0d503"/>
+                    </LinearGradientBrush>
+                  </Border.Background>
+                </Border>
+              </Grid>
+            </Border>
+          </ControlTemplate>
+        </ProgressBar.Template>
 
-    <Canvas Height="260" Width="550" Grid.ColumnSpan="2" Grid.Row="0" Margin="5" >
-      <Image  Source="{StaticResource Header}" Height="260" Width="550"/>
-      <TextBlock Text="by Bouh2" Canvas.Left="0" Canvas.Top="244" Margin="5,0,0,5" Foreground="Brown" Opacity="0.4" />
-    </Canvas>
-    <ProgressBar Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Margin="3" Height="27" Value="{Binding Path=DownloadProgress}" Maximum="100" Minimum="0" />
-    <TextBlock Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" TextAlignment="Center"
-               Text="{Binding Path=StateMessage}" Foreground="{Binding Path=StateMessageColor, Converter={StaticResource ColorToBrushConverter}}"/>
-    <GroupBox Header="News" Grid.Row="3" Grid.RowSpan="2" Margin="5" Height="150">
-      <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <ItemsControl DataContext="{StaticResource News}" ItemsSource="{Binding XPath=item}" 
-		     Grid.Row="1">
+      </ProgressBar>
+      <Grid Canvas.Left="234" Canvas.Top="418" Width="460" Height="20">
+        <Grid.Background>
+          <ImageBrush ImageSource="pack://application:,,,/Resources/status_background.png"/>
+        </Grid.Background>
+        <TextBlock Text="{Binding StateMessage}" Foreground="#a79a84" FontWeight="DemiBold" Margin="5,0,5,0"
+                   TextAlignment="Center" VerticalAlignment="Center" Style="{StaticResource Arial-Rounded}"
+                   ToolTip="{Binding StateMessage}">
+        </TextBlock>
+      </Grid>
+
+      <Grid Canvas.Left="234" Canvas.Top="442" Width="462" Height="170">
+        <Grid.Background>
+          <ImageBrush ImageSource="pack://application:,,,/Resources/news_background.png"/>
+        </Grid.Background>
+        <ItemsControl  ItemsSource="{Binding XPath=item}" 
+		       Grid.Row="1">
           <ItemsControl.ItemTemplate>
             <DataTemplate>
               <StackPanel Orientation="Horizontal">
@@ -50,7 +116,7 @@
                 <StackPanel Margin="5">
                   <TextBlock Text="{Binding XPath=title}" FontSize="24" Foreground="Chocolate"  />
                   <TextBlock Helpers:HyperlinkUtility.LaunchDefaultBrowser="True" FontSize="14" Foreground="LightSalmon" Margin="5,0,0,5">
-                  <Hyperlink NavigateUri="{Binding XPath=link}">Lire la news</Hyperlink>
+                    <Hyperlink NavigateUri="{Binding XPath=link}">Lire la news</Hyperlink>
                   </TextBlock>
                 </StackPanel>
               </StackPanel>
@@ -58,9 +124,7 @@
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ItemsControl>
-      </ScrollViewer>
-    </GroupBox>
-    <Button Content="Jouer" Grid.Row="3" Margin="5" Grid.Column="1" Padding="15" FontSize="24" FontWeight="Bold" Foreground="OrangeRed" Command="{Binding PlayCommand}" />
-    <Button Content="Voter" Grid.Row="4" Margin="5" Grid.Column="1" Padding="15" FontSize="18" Foreground="DarkGoldenrod" Command="{Binding VoteCommand}"/>
+      </Grid>
+    </Canvas>
   </Grid>
 </Window>
