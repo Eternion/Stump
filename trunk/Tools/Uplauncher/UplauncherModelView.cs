@@ -222,6 +222,30 @@ namespace Uplauncher
 
         #endregion
 
+
+
+        #region ChangeLanguageCommand
+
+        private DelegateCommand m_changeLanguageCommand;
+
+        public DelegateCommand ChangeLanguageCommand
+        {
+            get { return m_changeLanguageCommand ?? (m_changeLanguageCommand = new DelegateCommand(OnChangeLanguage, CanChangeLanguage)); }
+        }
+
+        private bool CanChangeLanguage(object parameter)
+        {
+            return false;
+        }
+
+        private void OnChangeLanguage(object parameter)
+        {
+            if (parameter == null || !CanChangeLanguage(parameter))
+                return;
+        }
+
+        #endregion
+
         #region TrayIcon
         public void HideWindowInTrayIcon()
         {

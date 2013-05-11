@@ -99,6 +99,7 @@
     <Compile Include="Helpers\ApplicationRunningHelper.cs" />
     <Compile Include="Helpers\HyperlinkUtility.cs" />
     <Compile Include="Helpers\NetworkHelper.cs" />
+    <Compile Include="Helpers\SingleLineConverter.cs" />
     <Compile Include="Helpers\UI\OpaqueClickableImage.cs" />
     <Compile Include="Helpers\UI\OutlinedTextBlock.cs" />
     <Compile Include="Patcher\AddFileTask.cs" />
@@ -187,6 +188,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\news_background.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\news_icon_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\rss.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterCompile">

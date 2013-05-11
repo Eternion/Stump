@@ -314,7 +314,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return Stats.Health.TotalMax; }
         }
 
-        public short DamageTaken
+        public int DamageTaken
         {
             get { return Stats.Health.DamageTaken; }
             set { Stats.Health.DamageTaken = value; }
@@ -678,12 +678,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void Die()
         {
-            DamageTaken += (short) LifePoints;
+            DamageTaken += LifePoints;
 
             OnDead(this);
         }
 
-        public virtual short InflictDirectDamage(short damage, FightActor from)
+        public virtual int InflictDirectDamage(int damage, FightActor from)
         {
             if (LifePoints - damage < 0)
                 damage = (short) LifePoints;
@@ -702,12 +702,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return damage;
         }
 
-        public short InflictDirectDamage(short damage)
+        public int InflictDirectDamage(int damage)
         {
             return InflictDirectDamage(damage, this);
         }
 
-        public short InflictDamage(short damage, EffectSchoolEnum school, FightActor from, bool pvp = false, Spell spell = null)
+        public int InflictDamage(int damage, EffectSchoolEnum school, FightActor from, bool pvp = false, Spell spell = null)
         {
             if (spell != null)
                 damage += from.GetSpellBoost(spell);
@@ -715,7 +715,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             damage = from.CalculateDamage(damage, school);
             damage = CalculateDamageResistance(damage, school, pvp);
 
-            short reduction = CalculateArmorReduction(school);
+            int reduction = CalculateArmorReduction(school);
 
             if (reduction > damage)
                 reduction = damage;
@@ -725,7 +725,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (from != this)
             {
-                short reflected = CalculateDamageReflection(damage);
+                int reflected = CalculateDamageReflection(damage);
 
                 if (reflected > 0)
                 {
@@ -742,14 +742,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return InflictDirectDamage(damage, from);
         }
 
-        public virtual short InflictNoBoostedDamage(short damage, EffectSchoolEnum school, FightActor from, bool pvp = false, Spell spell = null)
+        public virtual int InflictNoBoostedDamage(int damage, EffectSchoolEnum school, FightActor from, bool pvp = false, Spell spell = null)
         {
             if (spell != null)
                 damage += from.GetSpellBoost(spell);
 
             damage = CalculateDamageResistance(damage, school, pvp);
 
-            short reduction = CalculateArmorReduction(school);
+            int reduction = CalculateArmorReduction(school);
 
             if (reduction > damage)
                 reduction = damage;
@@ -759,7 +759,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (from != this)
             {
-                short reflected = CalculateDamageReflection(damage);
+                int reflected = CalculateDamageReflection(damage);
 
                 if (reflected > 0)
                 {
@@ -776,10 +776,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return InflictDirectDamage(damage, from);
         }
 
-        public virtual short HealDirect(short healPoints, FightActor from)
+        public virtual int HealDirect(int healPoints, FightActor from)
         {
             if (LifePoints + healPoints > MaxLifePoints)
-                healPoints = (short) (MaxLifePoints - LifePoints);
+                healPoints = MaxLifePoints - LifePoints;
 
             DamageTaken -= healPoints;
 
@@ -788,7 +788,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return healPoints;
         }
 
-        public short Heal(short healPoints, FightActor from)
+        public int Heal(int healPoints, FightActor from)
         {
             return HealDirect(from.CalculateHeal(healPoints), from);
         }
@@ -805,7 +805,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Formulas
 
-        public virtual short CalculateDamage(short damage, EffectSchoolEnum type)
+        public virtual int CalculateDamage(int damage, EffectSchoolEnum type)
         {
             switch (type)
             {
@@ -834,7 +834,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
         }
 
-        public virtual short CalculateDamageResistance(short damage, EffectSchoolEnum type, bool pvp)
+        public virtual int CalculateDamageResistance(int damage, EffectSchoolEnum type, bool pvp)
         {
             double percentResistance = 0;
             double fixResistance = 0;
@@ -865,27 +865,27 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     return damage;
             }
 
-            return (short) ((1 - percentResistance/100d)*(damage - fixResistance));
+            return (int)( ( 1 - percentResistance / 100d ) * ( damage - fixResistance ) );
         }
 
-        public virtual short CalculateDamageReflection(short damage)
+        public virtual int CalculateDamageReflection(int damage)
         {
             // only spell damage reflection are mutlplied by wisdom
             var reflectDamages = Stats[PlayerFields.DamageReflection].Context * ( 1 + ( Stats[PlayerFields.Wisdom].Total / 100 ) ) +
                 ( Stats[PlayerFields.DamageReflection].Total - Stats[PlayerFields.DamageReflection].Context );
 
             if (reflectDamages > damage / 2d)
-                return (short) (damage / 2d);
+                return (int)( damage / 2d );
 
-            return (short) reflectDamages;
+            return reflectDamages;
         }
 
-        public virtual short CalculateHeal(int heal)
+        public virtual int CalculateHeal(int heal)
         {
-            return (short) (heal*(100 + Stats[PlayerFields.Intelligence].Total)/100d + Stats[PlayerFields.HealBonus].Total);
+            return (int)( heal * ( 100 + Stats[PlayerFields.Intelligence].Total ) / 100d + Stats[PlayerFields.HealBonus].Total );
         }
 
-        public virtual short CalculateArmorValue(int reduction, EffectSchoolEnum type)
+        public virtual int CalculateArmorValue(int reduction, EffectSchoolEnum type)
         {
             PlayerFields schoolCaracteristic;
             switch (type)
@@ -909,12 +909,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     return (short) (reduction*(1 + Stats[PlayerFields.Intelligence].Total/200d));
             }
 
-            return (short) (reduction*
+            return (int)( reduction *
                             Math.Max(1 + Stats[schoolCaracteristic].Total/100d,
                                      1 + (Stats[PlayerFields.Intelligence].Total/200d) + (Stats[schoolCaracteristic].Total/200d)));
         }
 
-        public virtual short CalculateArmorReduction(EffectSchoolEnum damageType)
+        public virtual int CalculateArmorReduction(EffectSchoolEnum damageType)
         {
             int specificArmor = 0;
             switch (damageType)
@@ -938,7 +938,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     return 0;
             }
 
-            return (short) (specificArmor + Stats[PlayerFields.GlobalDamageReduction].Total);
+            return specificArmor + Stats[PlayerFields.GlobalDamageReduction].Total;
         }
 
         public virtual double CalculateCriticRate(double baseRate)
@@ -956,7 +956,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var critical = FightSpellCastCriticalEnum.NORMAL;
 
-            if (spell.CriticalHitProbability != 0 && random.Next((int) spell.CriticalFailureProbability) == 0)
+            if (spell.CriticalFailureProbability != 0 && random.Next((int)spell.CriticalFailureProbability) == 0)
                 critical = FightSpellCastCriticalEnum.CRITICAL_FAIL;
 
             else if (spell.CriticalHitProbability != 0 && random.Next((int) CalculateCriticRate(spell.CriticalHitProbability)) == 0)

@@ -8,12 +8,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
     public class StatsData
     {
         protected StatsFormulasHandler m_formulas;
-        protected short ValueBase;
-        protected short ValueContext;
-        protected short ValueEquiped;
-        protected short ValueGiven;
+        protected int ValueBase;
+        protected int ValueContext;
+        protected int ValueEquiped;
+        protected int ValueGiven;
 
-        public StatsData(IStatsOwner owner, PlayerFields name, short valueBase, StatsFormulasHandler formulas = null)
+        public StatsData(IStatsOwner owner, PlayerFields name, int valueBase, StatsFormulasHandler formulas = null)
         {
             ValueBase = valueBase;
             m_formulas = formulas;
@@ -33,11 +33,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             protected set;
         }
 
-        public virtual short Base
+        public virtual int Base
         {
             get
             {
-                return (short) (m_formulas != null ? m_formulas(Owner) + ValueBase : ValueBase);
+                return (int)( m_formulas != null ? m_formulas(Owner) + ValueBase : ValueBase );
             }
             set
             {
@@ -46,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             }
         }
 
-        public virtual short Equiped
+        public virtual int Equiped
         {
             get { return ValueEquiped; }
             set
@@ -56,7 +56,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             }
         }
 
-        public virtual short Given
+        public virtual int Given
         {
             get { return ValueGiven; }
             set
@@ -66,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             }
         }
 
-        public virtual short Context
+        public virtual int Context
         {
             get { return ValueContext; }
             set
@@ -149,7 +149,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         public static implicit operator CharacterBaseCharacteristic(StatsData s1)
         {
-            return new CharacterBaseCharacteristic(s1.Base, s1.Equiped, s1.Given, s1.Context);
+            return new CharacterBaseCharacteristic(
+                (short)( s1.Base > short.MaxValue ? short.MaxValue : s1.Base ),
+                (short)( s1.Equiped > short.MaxValue ? short.MaxValue : s1.Equiped ),
+                (short)( s1.Given > short.MaxValue ? short.MaxValue : s1.Given ),
+                (short)( s1.Context > short.MaxValue ? short.MaxValue : s1.Context ));
         }
     }
 }

@@ -30,16 +30,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
                 return false;
             }
 
-            if (Target.Stats.Health.DamageTaken < integerEffect.Value)
+            int heal = integerEffect.Value;
+            if (Target.Stats.Health.DamageTaken < heal)
             {
-                integerEffect.Value = Target.Stats.Health.DamageTaken;
+                heal = Target.Stats.Health.DamageTaken;
             }
 
-            Target.Stats.Health.DamageTaken -= integerEffect.Value;
+            Target.Stats.Health.DamageTaken -= heal;
 
             // x hp restored
             Target.RefreshStats();
-            BasicHandler.SendTextInformationMessage(Target.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 1, integerEffect.Value);
+            BasicHandler.SendTextInformationMessage(Target.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 1, heal);
             Target.PlayEmote(EmotesEnum.EMOTE_EAT);
 
             return true;

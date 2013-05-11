@@ -1610,16 +1610,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                     m_record.EntityLook = Look;
 
-                    m_record.AP = (ushort) Stats[PlayerFields.AP].Base;
-                    m_record.MP = (ushort) Stats[PlayerFields.MP].Base;
+                    m_record.AP = Stats[PlayerFields.AP].Base;
+                    m_record.MP = Stats[PlayerFields.MP].Base;
                     m_record.Strength = Stats[PlayerFields.Strength].Base;
                     m_record.Agility = Stats[PlayerFields.Agility].Base;
                     m_record.Chance = Stats[PlayerFields.Chance].Base;
                     m_record.Intelligence = Stats[PlayerFields.Intelligence].Base;
                     m_record.Wisdom = Stats[PlayerFields.Wisdom].Base;
                     m_record.Vitality = Stats[PlayerFields.Vitality].Base;
-                    m_record.BaseHealth = (ushort) Stats.Health.Base;
-                    m_record.DamageTaken = (ushort)Stats.Health.DamageTaken;
+                    m_record.BaseHealth = Stats.Health.Base;
+                    m_record.DamageTaken = Stats.Health.DamageTaken;
 
                     WorldServer.Instance.DBAccessor.Database.Update(m_record);
 

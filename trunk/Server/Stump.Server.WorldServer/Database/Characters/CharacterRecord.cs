@@ -311,37 +311,37 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        public short Strength
+        public int Strength
         {
             get;
             set;
         }
 
-        public short Chance
+        public int Chance
         {
             get;
             set;
         }
 
-        public short Vitality
+        public int Vitality
         {
             get;
             set;
         }
 
-        public short Wisdom
+        public int Wisdom
         {
             get;
             set;
         }
 
-        public short Intelligence
+        public int Intelligence
         {
             get;
             set;
         }
 
-        public short Agility
+        public int Agility
         {
             get;
             set;

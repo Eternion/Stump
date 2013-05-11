@@ -12,6 +12,10 @@
         Closing="OnClosing" Loaded="OnLoaded" WindowStyle="None"
         AllowsTransparency="True" Background="Transparent" >
   <Window.Resources>
+    <XmlDataProvider x:Key="News"
+                     Source="pack://application:,,,/Resources/rss.xml"
+                     XPath="/rss/channel"/>
+    <Helpers:SingleLineTextConverter x:Key="SingleLineTextConverter"/>
     <Style x:Key="Arial-Rounded" TargetType="{x:Type TextBlock}">
     	<Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Resources/#Arial Rounded MT" />
     </Style>
@@ -62,7 +66,7 @@
       <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Canvas.Left="6" Canvas.Top="172" Style="{StaticResource ImageButton}" Command="{Binding CloseCommand}">
         <UI:OpaqueClickableImage Width="19" Height="19" Source="pack://application:,,,/Resources/close.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
       </Button>
-      <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Canvas.Left="8" Canvas.Top="587" Style="{StaticResource ImageButton}">
+      <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Canvas.Left="8" Canvas.Top="587" Style="{StaticResource ImageButton}" Command="{Binding ChangeLanguageCommand}">
         <UI:OpaqueClickableImage Width="105" Height="24" Source="pack://application:,,,/Resources/language_button.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
       </Button>
       <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Style="{StaticResource ImageButton}" Canvas.Left="117" Canvas.Top="587" Command="{Binding SiteCommand}">
@@ -71,7 +75,7 @@
       <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Canvas.Left="529" Canvas.Top="353" Style="{StaticResource ImageButton}" Command="{Binding VoteCommand}">
         <UI:OpaqueClickableImage Width="167" Height="30" Source="pack://application:,,,/Resources/vote_button.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
       </Button>
-      <ProgressBar Canvas.Left="233" Canvas.Top="390" Width="461" Height="26" Value="{Binding Path=DownloadProgress}" Maximum="100" Minimum="0" >
+      <ProgressBar Canvas.Left="233" Canvas.Top="390" Width="461" Height="26" Value="100" Maximum="100" Minimum="0" >
         <ProgressBar.Template>
           <ControlTemplate TargetType="ProgressBar">
             <Border BorderThickness="1" CornerRadius="10" BorderBrush="#665527">
@@ -79,7 +83,10 @@
                 <SolidColorBrush Color="#342811"/> 
               </Border.Background>
               <Grid x:Name="PART_Track" >
-                <Border x:Name="PART_Indicator" HorizontalAlignment="Left" CornerRadius="9,0,0,9">
+                <Border x:Name="PART_Indicator" HorizontalAlignment="Left" CornerRadius="9,0,0,9" >
+                  <Border.Clip>
+                    <RectangleGeometry RadiusX="9" RadiusY="9" Rect="0,0,459,24"/>
+                  </Border.Clip>
                   <Border.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                       <GradientStop Color="#7c8f00" Offset="1"/>
@@ -107,19 +114,44 @@
         <Grid.Background>
           <ImageBrush ImageSource="pack://application:,,,/Resources/news_background.png"/>
         </Grid.Background>
-        <ItemsControl  ItemsSource="{Binding XPath=item}" 
+        <ItemsControl DataContext="{StaticResource News}" ItemsSource="{Binding XPath=item}" 
 		       Grid.Row="1">
           <ItemsControl.ItemTemplate>
             <DataTemplate>
-              <StackPanel Orientation="Horizontal">
-                <Image Source="{StaticResource NewsIcon}"/>
-                <StackPanel Margin="5">
-                  <TextBlock Text="{Binding XPath=title}" FontSize="24" Foreground="Chocolate"  />
-                  <TextBlock Helpers:HyperlinkUtility.LaunchDefaultBrowser="True" FontSize="14" Foreground="LightSalmon" Margin="5,0,0,5">
-                    <Hyperlink NavigateUri="{Binding XPath=link}">Lire la news</Hyperlink>
-                  </TextBlock>
-                </StackPanel>
-              </StackPanel>
+              <Grid >
+                <Grid.RowDefinitions>
+                  <RowDefinition/>
+                  <RowDefinition/>
+                  <RowDefinition/>
+                  <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto"/>
+                  <ColumnDefinition/>
+                  <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Source="pack://application:,,,/Resources/news_icon_1.png"  Height="46" Width="46" Margin="4" VerticalAlignment="Center"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding XPath=title}" FontSize="18" Foreground="White" FontFamily="Arial" FontWeight="Regular" Margin="0,3,0,0" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Height="28" Text="{Binding XPath=content, Converter={StaticResource SingleLineTextConverter}}"  
+                           FontSize="12" Foreground="#2c1d00" FontFamily="Arial" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis"  />
+                <TextBlock Grid.Row="0" Grid.Column="2" Helpers:HyperlinkUtility.LaunchDefaultBrowser="True" FontSize="14" HorizontalAlignment="Right" Margin="5" FontFamily="Arial">
+                  <Hyperlink NavigateUri="{Binding XPath=link}" TextDecorations="{x:Null}">
+                    <Hyperlink.Style>
+                      <Style TargetType="Hyperlink">
+                            <Setter Property="Foreground" Value="#dbe806"/>
+                        <Style.Triggers>
+                          <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="#F1F88C"/>
+                          </Trigger>
+                        </Style.Triggers>
+                      </Style>
+                    </Hyperlink.Style>
+                    ► En savoir plus
+                  </Hyperlink>
+                </TextBlock>
+                <Separator Grid.Row="2" Grid.ColumnSpan="3" Margin="5,0,5,0" Background="#FF7D6130" />
+                <Separator Grid.Row="3" Grid.ColumnSpan="3" Margin="5,0,5,0" Background="#433214"/>
+              </Grid>
 
             </DataTemplate>
           </ItemsControl.ItemTemplate>

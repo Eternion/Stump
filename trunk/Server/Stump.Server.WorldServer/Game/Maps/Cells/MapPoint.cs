@@ -260,6 +260,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
                 {
                     x += vectorX;
                     y += vectorY;
+                    n--;
                 }
                 else
                 {

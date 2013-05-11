@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<rss version="2.0">
+  <channel>
+    <title>Arkalys RSS</title>
+    <link>arkalys</link>
+    <description>Flux RSS des news Arkalys</description>
+    <language>fr-fr</language>
+    <item>
+      <title>Arkalys avance !</title>
+      <author>Karl</author>
+      <date>08/05/2013</date>
+      <content>Bonjour à tous, Je suis heureux de vous apprendre que le serveur Arkalys va bientôt ouvrir ses portes. En effet, après des mois de travail nous sommes enfin prêts à ouvrir. Je tiens à remercier
+        tous les membres de l'équipe pour le superbe travail accompli. Vous pouvez vous rendre sur notre forum en cliquant sur le lien suivant : forum.arkalys.com
+        (http://forum.arkalys.com)
+Bon jeu à tous sur Arkalys !</content>
+    </item>
+
+  </channel>
+</rss>

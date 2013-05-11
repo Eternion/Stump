@@ -68,5 +68,11 @@ namespace Uplauncher
 
             DragMove();
         }
+
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
+        {
+            var hyperlink = (Hyperlink)sender;
+            Process.Start(hyperlink.NavigateUri.ToString());
+        }
     }
 }

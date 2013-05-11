@@ -168,7 +168,10 @@
     <Content Include="world_patchs\maps_placements_fix.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="world_patchs\monsters.sql">
+    <Content Include="world_patchs\monsters_drops.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="world_patchs\monsters_spawns.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="world_patchs\monsters_spells.sql">

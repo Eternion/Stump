@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
     public sealed class CharacterFighter : NamedFighter
     {
         private int m_criticalWeaponBonus;
-        private short m_damageTakenBeforeFight;
+        private int m_damageTakenBeforeFight;
         private short m_earnedDishonor;
         private int m_earnedExp;
         private short m_earnedHonor;
@@ -202,15 +202,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
 
-        public override short CalculateDamage(short damage, EffectSchoolEnum type)
+        public override int CalculateDamage(int damage, EffectSchoolEnum type)
         {
             if (Character.GodMode)
                 return short.MaxValue;
 
             return
                 base.CalculateDamage(
-                    (short)
-                    ((m_isUsingWeapon ? m_criticalWeaponBonus + Stats[PlayerFields.WeaponDamageBonus] : 0) + damage),
+                ((m_isUsingWeapon ? m_criticalWeaponBonus + Stats[PlayerFields.WeaponDamageBonus] : 0) + damage),
                     type);
         }
 
@@ -385,7 +384,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
 
-        public override short CalculateArmorReduction(EffectSchoolEnum damageType)
+        public override int CalculateArmorReduction(EffectSchoolEnum damageType)
         {
             if (Character.GodMode)
                 return short.MaxValue;

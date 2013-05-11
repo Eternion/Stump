@@ -119,6 +119,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 {
                     foreach (var fighter in Fighter.Fight.Fighters)
                     {
+                        if (!fighter.IsAlive())
+                            continue;
                       
                         int mpToUse;
                         if (!CanReach(fighter, spell, out mpToUse))
@@ -471,7 +473,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
         public int CompareBoost(SpellCastInformations cast1, SpellCastInformations cast2)
         {
-            if (cast1.Impacts.Count == 0)
+            if (cast1.Impacts.Count == 0 || cast2.Impacts.Count == 0)
                 return cast1.Impacts.Count.CompareTo(cast2.Impacts.Count);
 
             var max1 = cast1.Impacts.Max(x => x.Boost);

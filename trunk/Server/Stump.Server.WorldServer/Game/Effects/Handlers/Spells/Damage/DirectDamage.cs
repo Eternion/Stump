@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     }
                     else
                     {
-                        short inflictedDamage = actor.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), Caster, actor is CharacterFighter, Spell);
+                        var inflictedDamage = actor.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), Caster, actor is CharacterFighter, Spell);
                     }
                 }
             }

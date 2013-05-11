@@ -5,10 +5,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 {
     public class StatsHealth : StatsData
     {
-        private short m_damageTaken;
-        private short m_realDamageTaken;
+        private int m_damageTaken;
+        private int m_realDamageTaken;
 
-        public StatsHealth(IStatsOwner owner, short valueBase, short damageTaken)
+        public StatsHealth(IStatsOwner owner, int valueBase, int damageTaken)
             : base(owner, PlayerFields.Health, valueBase)
         {
             DamageTaken = damageTaken;
@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             AdjustTakenDamage();
         }
 
-        public override short Base
+        public override int Base
         {
             get { return ValueBase; }
             set
@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             }
         }
 
-        public override short Equiped
+        public override int Equiped
         {
             get { return ValueEquiped; }
             set
@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             }
         }
 
-        public override short Given
+        public override int Given
         {
             get { return ValueGiven; }
             set
@@ -54,7 +54,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             }
         }
 
-        public override short Context
+        public override int Context
         {
             get { return ValueContext; }
             set
@@ -65,13 +65,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             }
         }
 
-        public short DamageTaken
+        public int DamageTaken
         {
             get { return m_damageTaken; }
             set
             {
                 m_realDamageTaken = value;
-                m_damageTaken = (short) (value > TotalMax ? TotalMax : value);
+                m_damageTaken = value > TotalMax ? TotalMax : value;
                 OnModified();
             }
         }

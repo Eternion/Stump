@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
     {
         public static SpellCategory GetSpellCategories(Spell spell)
         {
-            return spell.CurrentSpellLevel.Effects.Aggregate(SpellCategory.None, (current, effect) => current ^ GetEffectCategories(effect.EffectId));
+            return spell.CurrentSpellLevel.Effects.Aggregate(SpellCategory.None, (current, effect) => current | GetEffectCategories(effect.EffectId));
         }
 
         public static SpellCategory GetEffectCategories(EffectsEnum effectId)

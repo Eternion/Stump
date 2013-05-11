@@ -9,12 +9,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         [Variable]
         public static int APLimit = 12;
 
-        public StatsAP(IStatsOwner owner, short valueBase)
+        public StatsAP(IStatsOwner owner, int valueBase)
             : base(owner, PlayerFields.AP, valueBase)
         {
         }
 
-        public StatsAP(IStatsOwner owner, short valueBase, bool limit)
+        public StatsAP(IStatsOwner owner, int valueBase, bool limit)
             : base(owner, PlayerFields.AP, valueBase)
         {
             Limit = limit;
@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             set;
         }
 
-        public override short Equiped
+        public override int Equiped
         {
             get
             {
@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             {
                 base.Equiped = value;
                 if (Limit && Total > APLimit)
-                    base.Equiped = (short)( value - ( Total - APLimit ) );
+                    base.Equiped =  value - ( Total - APLimit );
             }
         }
 

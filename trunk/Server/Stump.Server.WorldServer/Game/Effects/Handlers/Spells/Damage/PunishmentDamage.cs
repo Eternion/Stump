@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 }
                 else
                 {
-                    short inflictedDamage = actor.InflictDirectDamage(damages, Caster);
+                    var inflictedDamage = actor.InflictDirectDamage(damages, Caster);
                 }
             }
 
