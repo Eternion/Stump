@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.Items.Templates;
@@ -40,6 +41,12 @@ namespace Stump.Server.WorldServer.Database.Items
             set;
         }
 
+        bool IsDirty
+        {
+            get;
+            set;
+        }
+
         void AssignIdentifier();
     }
 
@@ -60,7 +67,8 @@ namespace Stump.Server.WorldServer.Database.Items
         {
             get { return m_itemId; }
             set { m_itemId = value;
-            m_template = null;
+                m_template = null;
+                IsDirty = true;
             }
         }
 
@@ -72,6 +80,7 @@ namespace Stump.Server.WorldServer.Database.Items
             {
                 m_template = value;
                 ItemId = value.Id;
+                IsDirty = true;
             }
         }
 
@@ -88,6 +97,7 @@ namespace Stump.Server.WorldServer.Database.Items
             {
                 m_serializedEffects = value;
                 m_effects = EffectManager.Instance.DeserializeEffects(m_serializedEffects);
+                IsDirty = true;
             }
         }
 
@@ -95,13 +105,33 @@ namespace Stump.Server.WorldServer.Database.Items
         public List<EffectBase> Effects
         {
             get { return m_effects; }
-            set { m_effects = value; }
+            set
+            {
+                m_effects = value; IsDirty = true;
+            }
+        }
+
+        private bool m_isDirty;
+
+        [Ignore]
+        public bool IsDirty
+        {
+            get
+            {
+                return m_isDirty || m_effects.Any(x => x.IsDirty);
+            }
+            set { m_isDirty = value; }
         }
 
         public override void BeforeSave(bool insert)
         {
             base.BeforeSave(insert);
             m_serializedEffects = EffectManager.Instance.SerializeEffects(Effects);
+            IsDirty = false;
+            foreach (var effectBase in Effects)
+            {
+                effectBase.IsDirty = false;
+            }
         }
     }
 }

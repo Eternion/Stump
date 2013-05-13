@@ -29,16 +29,26 @@ namespace Stump.Server.WorldServer.Database.Shortcuts
             ItemGuid = itemGuid;
         }
 
+        private int m_itemTemplateId;
+
         public int ItemTemplateId
         {
-            get;
-            set;
+            get { return m_itemTemplateId; }
+            set
+            {
+                m_itemTemplateId = value; IsDirty = true;
+            }
         }
+
+        private int m_itemGuid;
 
         public int ItemGuid
         {
-            get;
-            set;
+            get { return m_itemGuid; }
+            set
+            {
+                m_itemGuid = value; IsDirty = true;
+            }
         }
 
         public override DofusProtocol.Types.Shortcut GetNetworkShortcut()

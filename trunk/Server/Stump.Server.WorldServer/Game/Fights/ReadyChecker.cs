@@ -89,7 +89,12 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
 
             if (m_fighters.Count == 0)
+            {
+                if (m_timer != null)
+                    m_timer.Dispose();
+
                 NotifySuccess();
+            }
         }
 
         private void TimedOut()

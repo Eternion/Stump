@@ -12,7 +12,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public short MonsterCount
         {
             get { return m_monsterCount; }
-            set { m_monsterCount = value; }
+            set
+            {
+                m_monsterCount = value; IsDirty = true;
+            }
         }
 
         public EffectLadder()

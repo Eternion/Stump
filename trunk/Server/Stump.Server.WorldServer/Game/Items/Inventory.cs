@@ -233,7 +233,7 @@ namespace Stump.Server.WorldServer.Game.Items
                         database.Insert(item.Value.Record);
                         item.Value.Record.IsNew = false;
                     }
-                    else
+                    else if (item.Value.Record.IsDirty)
                     {
                         database.Update(item.Value.Record);
                     }

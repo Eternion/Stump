@@ -1726,7 +1726,7 @@
         /// <summary>
         /// -#1{~1~2 to }#2 duration of effects
         /// </summary>
-        Effect_1075 = 1075,
+        Effect_ReduceEffectsDuration = 1075,
         /// <summary>
         /// #1{~1~2 to }#2% Resistance
         /// </summary>
@@ -1746,7 +1746,7 @@
         /// <summary>
         /// -#1{~1~2 to -}#2 MP
         /// </summary>
-        Effect_1080 = 1080,
+        Effect_SubMP_1080 = 1080,
         /// <summary>
         /// (not found)
         /// </summary>
@@ -1826,7 +1826,7 @@
         /// <summary>
         /// Pushes back #1 cell(s)
         /// </summary>
-        Effect_1103 = 1103,
+        Effect_PushBack_1103 = 1103,
         /// <summary>
         /// 
         /// </summary>

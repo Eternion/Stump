@@ -288,6 +288,7 @@
     <Compile Include="Game\Conditions\ConditionParser.cs" />
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
     <Compile Include="Game\Dialogs\Interactives\ZaapDialog.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\ReduceBuffDuration.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\VitalityPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\PunishmentDamage.cs" />

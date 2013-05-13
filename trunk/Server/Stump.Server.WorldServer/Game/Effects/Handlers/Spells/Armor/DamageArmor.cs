@@ -20,13 +20,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
 
         public override bool Apply()
         {
-            var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
-
-            if (integerEffect == null)
-                return false;
-
             foreach (FightActor actor in GetAffectedActors())
             {
+                var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
+
+                if (integerEffect == null)
+                    return false;
+
                 if (Effect.Duration <= 0)
                     return false;
 

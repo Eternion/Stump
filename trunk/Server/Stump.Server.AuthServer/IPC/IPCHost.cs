@@ -137,6 +137,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void StartAccept()
         {
+            m_acceptArgs = new SocketAsyncEventArgs();
             m_acceptArgs.AcceptSocket = null;
             m_acceptArgs.Completed += (sender, e) => ProcessAccept(e);
 

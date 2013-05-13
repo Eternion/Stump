@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using Stump.Core.Pool;
@@ -685,12 +686,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual int InflictDirectDamage(int damage, FightActor from)
         {
+            TriggerBuffs(BuffTriggerType.BEFORE_ATTACKED, damage);
+
+            if (HasState((int)SpellStatesEnum.Invulnerable))
+            {
+                OnDamageReducted(from, damage);
+                TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
+                return 0;
+            }
+
             if (LifePoints - damage < 0)
                 damage = (short) LifePoints;
 
             DamageTaken += damage;
-
-            TriggerBuffs(BuffTriggerType.BEFORE_ATTACKED, damage);
 
             OnLifePointsChanged(-damage, from);
 
@@ -1296,25 +1304,39 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Summons
 
+        private int m_summonedCount;
+
         private readonly List<SummonedFighter> m_summons = new List<SummonedFighter>();
 
-        public IEnumerable<SummonedFighter> GetSummons()
+        public int SummonedCount
         {
-            return m_summons;
+            get { return m_summonedCount; }
+        }
+
+        public ReadOnlyCollection<SummonedFighter> GetSummons()
+        {
+            return m_summons.AsReadOnly();
         }
 
         public bool CanSummon()
         {
-            return m_summons.Count < Stats[PlayerFields.SummonLimit].Total;
+            return m_summonedCount < Stats[PlayerFields.SummonLimit].Total;
         }
 
         public void AddSummon(SummonedFighter summon)
         {
+            if (summon is SummonedMonster && ( summon as SummonedMonster ).Monster.Template.UseSummonSlot)
+                m_summonedCount++;
+            // clone
+
             m_summons.Add(summon);
         }
 
         public void RemoveSummon(SummonedFighter summon)
         {
+            if (summon is SummonedMonster && ( summon as SummonedMonster ).Monster.Template.UseSummonSlot)
+                m_summonedCount--;
+
             m_summons.Remove(summon);
         }
 

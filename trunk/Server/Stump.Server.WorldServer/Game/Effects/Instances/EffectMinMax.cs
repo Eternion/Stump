@@ -52,13 +52,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public short ValueMin
         {
             get { return m_minvalue; }
-            set { m_minvalue = value; }
+            set
+            {
+                m_minvalue = value; IsDirty = true;
+            }
         }
 
         public short ValueMax
         {
             get { return m_maxvalue; }
-            set { m_maxvalue = value; }
+            set
+            {
+                m_maxvalue = value; IsDirty = true;
+            }
         }
 
         public override object[] GetValues()

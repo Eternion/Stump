@@ -81,9 +81,13 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
             Shortcut shortcutToSwitch = GetShortcut(barType, slot);
             Shortcut shortcutDestination = GetShortcut(barType, newSlot);
 
+            RemoveInternal(shortcutToSwitch);
+            RemoveInternal(shortcutDestination);
+
             if (shortcutDestination != null)
             {
                 shortcutDestination.Slot = slot;
+                AddInternal(shortcutDestination);
                 ShortcutHandler.SendShortcutBarRefreshMessage(Owner.Client, barType, shortcutDestination);
             }
             else
@@ -92,6 +96,7 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
             }
 
             shortcutToSwitch.Slot = newSlot;
+            AddInternal(shortcutToSwitch);
             ShortcutHandler.SendShortcutBarRefreshMessage(Owner.Client, barType, shortcutToSwitch);
         }
 
@@ -106,10 +111,27 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
                 m_spellShortcuts.Remove(slot);
             else if (barType == ShortcutBarEnum.GENERAL_SHORTCUT_BAR)
                 m_itemShortcuts.Remove(slot);
-
             m_shortcutsToDelete.Enqueue(shortcut);
 
             ShortcutHandler.SendShortcutBarRemovedMessage(Owner.Client, barType, slot);
+        }
+
+        private void AddInternal(Shortcut shortcut)
+        {
+            if (shortcut is SpellShortcut)
+                m_spellShortcuts.Add(shortcut.Slot, (SpellShortcut)shortcut);
+            else if (shortcut is ItemShortcut)
+                m_itemShortcuts.Add(shortcut.Slot, (ItemShortcut)shortcut);
+        }
+
+        private bool RemoveInternal(Shortcut shortcut)
+        {
+            if (shortcut is SpellShortcut)
+                return m_spellShortcuts.Remove(shortcut.Slot);
+            else if (shortcut is ItemShortcut)
+                return m_itemShortcuts.Remove(shortcut.Slot);
+
+            return false;
         }
 
         public int GetNextFreeSlot(ShortcutBarEnum barType)
@@ -178,12 +200,14 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
                 var database = WorldServer.Instance.DBAccessor.Database;
                 foreach (var shortcut in m_itemShortcuts)
                 {
-                    database.Save(shortcut.Value);
+                    if (shortcut.Value.IsDirty || shortcut.Value.IsNew)
+                        database.Save(shortcut.Value);
                 }
 
                 foreach (var shortcut in m_spellShortcuts)
                 {
-                    database.Save(shortcut.Value);
+                    if (shortcut.Value.IsDirty || shortcut.Value.IsNew)
+                        database.Save(shortcut.Value);
                 }
 
                 while (m_shortcutsToDelete.Count > 0)

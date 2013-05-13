@@ -48,7 +48,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public short Value
         {
             get { return m_value; }
-            set { m_value = value; }
+            set
+            {
+                m_value = value; IsDirty = true;
+            }
         }
 
         public override object[] GetValues()

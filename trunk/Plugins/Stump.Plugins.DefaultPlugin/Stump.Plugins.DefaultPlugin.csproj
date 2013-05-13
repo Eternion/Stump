@@ -109,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Code\EffectsEnumGeneration.cs" />
+    <Compile Include="Code\StateEnumGeneration.cs" />
     <Compile Include="Global\Placements\PlacementComplexityCalculator.cs" />
     <Compile Include="Global\Placements\PlacementPattern.cs" />
     <Compile Include="Global\Placements\PlacementsFix.cs" />

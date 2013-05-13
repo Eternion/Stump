@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Game.Spells;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
     [EffectHandler(EffectsEnum.Effect_SubMP)]
+    [EffectHandler(EffectsEnum.Effect_SubMP_1080)]
     public class MPDebuff: SpellEffectHandler
     {
         public MPDebuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)

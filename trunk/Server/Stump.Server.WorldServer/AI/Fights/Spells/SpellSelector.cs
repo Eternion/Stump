@@ -132,10 +132,14 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                         cast.MPToUse = mpToUse;
 
                         var impact = ComputeSpellImpact(spell, fighter);
+
+                        if (impact == null)
+                            continue;
+
                         impact.Target = fighter;
 
-                        if ((impact.Damage < 0 && -impact.Damage > impact.Heal) ||
-                            (impact.Curse < 0 && -impact.Curse > impact.Boost))
+                        if ((impact.Damage > 0 && fighter.IsFriendlyWith(Fighter)) ||
+                            (impact.Damage < 0 && fighter.IsEnnemyWith(Fighter)))
                             continue; // hurts more allies than boost them
 
                         cast.Impacts.Add(impact);
@@ -486,7 +490,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
         public int CompareDamage(SpellCastInformations cast1, SpellCastInformations cast2)
         {
-            if (cast1.Impacts.Count == 0)
+            if (cast1.Impacts.Count == 0 || cast2.Impacts.Count == 0)
                 return cast1.Impacts.Count.CompareTo(cast2.Impacts.Count);
 
             var max1 = cast1.Impacts.Max(x => x.Damage);
@@ -499,7 +503,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
         public int CompareHeal(SpellCastInformations cast1, SpellCastInformations cast2)
         {
-            if (cast1.Impacts.Count == 0)
+            if (cast1.Impacts.Count == 0 || cast2.Impacts.Count == 0)
                 return cast1.Impacts.Count.CompareTo(cast2.Impacts.Count);
 
             var max1 = cast1.Impacts.Max(x => x.Heal);
@@ -512,7 +516,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
         public int CompareCurse(SpellCastInformations cast1, SpellCastInformations cast2)
         {
-            if (cast1.Impacts.Count == 0)
+            if (cast1.Impacts.Count == 0 || cast2.Impacts.Count == 0)
                 return cast1.Impacts.Count.CompareTo(cast2.Impacts.Count);
 
             var max1 = cast1.Impacts.Max(x => x.Curse);

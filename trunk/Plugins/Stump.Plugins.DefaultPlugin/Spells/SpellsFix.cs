@@ -19,6 +19,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
         {
             logger.Debug("Apply spells fix");
 
+            #region IOP
             // iop's wrath (159)
             // increase buff duration to 5
             FixEffectOnAllLevels(159, EffectsEnum.Effect_SpellBoost, (level, effect, critical) => effect.Duration = 5);
@@ -28,11 +29,19 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // effect #2 Target = self
             FixEffectOnAllLevels(155, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_1);
             FixEffectOnAllLevels(155, 1, (level, effect, critical) => effect.Targets = SpellTargetType.SELF);
+            #endregion
 
+            #region SADIDA
             // sacrifice dool
             // target Kill = Only Self
-            FixEffectOnAllLevels(233, EffectsEnum.Effect_Kill, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
-        
+            FixEffectOnAllLevels(2006, EffectsEnum.Effect_Kill, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+
+            // sylvan power (197)
+            // new skin 671 => 893 (todo find relation)
+            FixEffectOnAllLevels(197, EffectsEnum.Effect_ChangeAppearance, (level, effect, critical) => effect.Value = 893);
+            #endregion
+
+            #region CRA
             // punitive arrow (171)
             // duration buff = 3
             FixEffectOnAllLevels(171, EffectsEnum.Effect_SpellBoost, (level, effect, critical) => effect.Duration = 3);
@@ -40,6 +49,13 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // atonement arrow (167)
             // duration buff = 4
             FixEffectOnAllLevels(167, EffectsEnum.Effect_SpellBoost, (level, effect, critical) => effect.Duration = 4);
+            #endregion
+
+            #region XELOR
+            // mummification (99)
+            // new skin 729 => 113 (todo find relation)
+            FixEffectOnAllLevels(99, EffectsEnum.Effect_ChangeAppearance_335, (level, effect, critical) => effect.Value = 113);
+            #endregion
         }
 
         public static void FixEffectOnAllLevels(int spellId, int effectIndex, Action<SpellLevelTemplate, EffectDice, bool> fixer)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -329,9 +330,12 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             DateTime updateStart = DateTime.Now;
             var updateDelta = (int) ((updateStart - m_lastUpdateTime).TotalMilliseconds);
-
+            long messageProcessTime = 0;
+            long timerProcessingTime = 0;
+            int timerProcessed = 0;
             try
             {
+                var sw = Stopwatch.StartNew();
                 IMessage msg;
                 while (m_messageQueue.TryDequeue(out msg))
                 {
@@ -344,6 +348,8 @@ namespace Stump.Server.WorldServer.Game.Maps
                         logger.Error("Exception raised when processing Message in {0} : {1}.", this, ex);
                     }
                 }
+                sw.Stop();
+                messageProcessTime = sw.ElapsedMilliseconds;
 
                 m_isUpdating = true;
 
@@ -353,6 +359,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                         m_timers.Push(timer);
                 }
 
+                sw = Stopwatch.StartNew();
                 TimedTimerEntry peek;
                 while (( peek = m_timers.Peek() ) != null && peek.NextTick <= DateTime.Now)
                 {
@@ -371,6 +378,8 @@ namespace Stump.Server.WorldServer.Game.Maps
 
                             if (timer.Enabled)
                                 m_timers.Push(timer);
+
+                            timerProcessed++;
                         }
                         catch (Exception ex)
                         {
@@ -378,6 +387,8 @@ namespace Stump.Server.WorldServer.Game.Maps
                         }
                     }
                 }
+                sw.Stop();
+                timerProcessingTime = sw.ElapsedMilliseconds;
 
             }
             finally
@@ -402,7 +413,8 @@ namespace Stump.Server.WorldServer.Game.Maps
                 {
                     // even if we are in a hurry: For the sake of load-balance we have to give control back to the ThreadPool
                     callbackTimeout = 0;
-                    logger.Debug("Area '{0}' update lagged ({1}ms)", this, (int) newUpdateDelta.TotalMilliseconds);
+                    logger.Debug("Area '{0}' update lagged ({1}ms) (msg:{2}ms, timers:{3}ms, timerProc:{4}/{5})",
+                        this, (int) newUpdateDelta.TotalMilliseconds, messageProcessTime, timerProcessingTime, timerProcessed, m_timers.Count);
                 }
 
                 Task.Factory.StartNewDelayed(callbackTimeout, UpdateCallback, this);

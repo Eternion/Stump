@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Stump.Core.Attributes;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses;
@@ -185,8 +186,15 @@ namespace Stump.Server.WorldServer
         {
             if (IsInitialized)
             {
-                World.Instance.Save();
-                World.Instance.Stop();
+                var wait = new AutoResetEvent(false);
+                IOTaskPool.ExecuteInContext(() =>
+                    {
+                        World.Instance.Save();
+                        World.Instance.Stop();
+                        wait.Set();
+                    });
+
+                wait.WaitOne();
             }
 
             IPCAccessor.Instance.Stop();

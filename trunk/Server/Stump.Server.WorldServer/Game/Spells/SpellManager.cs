@@ -175,6 +175,11 @@ namespace Stump.Server.WorldServer.Game.Spells
             return null;
         }
 
+        public IEnumerable<SpellState> GetSpellStates()
+        {
+            return m_spellsState.Values;
+        }
+
         public void AddSpellCastHandler(Type handler, SpellTemplate spell)
         {
             var ctor = handler.GetConstructor(new[] { typeof(FightActor), typeof(Spell), typeof(Cell), typeof(bool) });

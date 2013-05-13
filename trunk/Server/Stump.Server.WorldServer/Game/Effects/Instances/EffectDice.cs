@@ -49,13 +49,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public short DiceNum
         {
             get { return m_dicenum; }
-            set { m_dicenum = value; }
+            set
+            {
+                m_dicenum = value; IsDirty = true;
+            }
         }
 
         public short DiceFace
         {
             get { return m_diceface; }
-            set { m_diceface = value; }
+            set
+            {
+                m_diceface = value; IsDirty = true;
+            }
         }
 
         public override object[] GetValues()

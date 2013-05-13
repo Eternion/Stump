@@ -16,6 +16,7 @@ using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Results.Data;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -384,12 +385,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
 
-        public override int CalculateArmorReduction(EffectSchoolEnum damageType)
+        public override int InflictDirectDamage(int damage, FightActor from)
         {
             if (Character.GodMode)
-                return short.MaxValue;
+            {
+                TriggerBuffs(BuffTriggerType.BEFORE_ATTACKED, damage);
+                OnDamageReducted(from, damage);
+                TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
+                return 0;
+            }
 
-            return base.CalculateArmorReduction(damageType);
+            return base.InflictDirectDamage(damage, from);
         }
         #endregion
     }

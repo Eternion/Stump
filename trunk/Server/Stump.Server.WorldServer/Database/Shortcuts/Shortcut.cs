@@ -1,8 +1,9 @@
+using Stump.ORM;
 using Stump.Server.WorldServer.Database.Characters;
 
 namespace Stump.Server.WorldServer.Database.Shortcuts
 {
-    public abstract class Shortcut
+    public abstract class Shortcut : ISaveIntercepter
     {
         protected Shortcut()
         {
@@ -12,26 +13,60 @@ namespace Stump.Server.WorldServer.Database.Shortcuts
         {
             OwnerId = owner.Id;
             Slot = slot;
+            IsNew = true;
         }
+
+        private int m_id;
 
         public int Id
         {
-            get;
-            set;
+            get { return m_id; }
+            set
+            {
+                m_id = value; IsDirty = true;
+            }
         }
 
+        private int m_ownerId;
+
         public int OwnerId
+        {
+            get { return m_ownerId; }
+            set
+            {
+                m_ownerId = value; IsDirty = true;
+            }
+        }
+
+        private int m_slot;
+
+        public int Slot
+        {
+            get { return m_slot; }
+            set
+            {
+                m_slot = value; IsDirty = true;
+            }
+        }
+
+        [Ignore]
+        public bool IsDirty
         {
             get;
             set;
         }
 
-        public int Slot
+        [Ignore]
+        public bool IsNew
         {
             get;
             set;
         }
 
         public abstract DofusProtocol.Types.Shortcut GetNetworkShortcut();
+        public void BeforeSave(bool insert)
+        {
+            IsDirty = false;
+        }
     }
 }

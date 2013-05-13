@@ -28,10 +28,15 @@ namespace Stump.Server.WorldServer.Database.Shortcuts
             SpellId = spellId;
         }
 
+        private short m_spellId;
+
         public short SpellId
         {
-            get;
-            set;
+            get { return m_spellId; }
+            set
+            {
+                m_spellId = value; IsDirty = true;
+            }
         }
 
         public override DofusProtocol.Types.Shortcut GetNetworkShortcut()

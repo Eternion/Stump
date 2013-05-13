@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             Effect = effect;
             Spell = spell;
             Critical = critical;
-            Dispelable = dispelable;
+            Dispellable = dispelable;
 
             Duration = (short)Effect.Duration;
         }
@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             Effect = effect;
             Spell = spell;
             Critical = critical;
-            Dispelable = dispelable;
+            Dispellable = dispelable;
             CustomActionId = customActionId;
 
             Duration = (short)Effect.Duration;
@@ -79,7 +79,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             private set;
         }
 
-        public bool Dispelable
+        public bool Dispellable
         {
             get;
             private set;

@@ -1,5 +1,5 @@
 ﻿#region License GNU GPL
-// EffectsEnumGeneration.cs
+// StateEnumGeneration.cs
 // 
 // Copyright (C) 2013 - BehaviorIsManaged
 // 
@@ -15,24 +15,26 @@
 #endregion
 
 using System.IO;
+using System.Text;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Plugins.DefaultPlugin.Code
 {
-    public class EffectsEnumGeneration
+    public class StateEnumGeneration
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         [Variable]
         public static bool Active = true;
 
         [Variable]
-        public static string Output = "Gen/EffectsEnum.cs";
+        public static string Output = "Gen/SpellStatesEnum.cs";
 
-        [Initialization(typeof(EffectManager), Silent=true)]
+        [Initialization(typeof(SpellManager), Silent = true)]
         public static void Initialize()
         {
             if (!Active)
@@ -49,22 +51,30 @@ namespace Stump.Plugins.DefaultPlugin.Code
             {
                 writer.WriteLine("namespace Stump.DofusProtocol.Enums");
                 writer.WriteLine("{");
-                writer.WriteLine("\tpublic enum EffectsEnum : short");
+                writer.WriteLine("\tpublic enum SpellStatesEnum");
                 writer.WriteLine("\t{");
-                foreach (var effect in EffectManager.Instance.GetTemplates())
+                foreach (var state in SpellManager.Instance.GetSpellStates())
                 {
-                    var description = TextManager.Instance.GetText(effect.DescriptionId);
-
                     writer.WriteLine("\t\t/// <summary>");
-                    writer.WriteLine("\t\t/// " + description);
+                    writer.WriteLine("\t\t/// " + state.Name);
                     writer.WriteLine("\t\t/// </summary>");
-                    writer.WriteLine("\t\tEffect_{0} = {0},", effect.Id);
+                    writer.WriteLine("\t\t{0} = {1},", state.Name != "(not found)" ? EscapeString(state.Name) : "State_" + state.Id.ToString(), state.Id);
                 }
 
                 writer.WriteLine("\t}");
                 writer.WriteLine("}");
                 writer.Flush();
             }
+        }
+
+        private static string EscapeString(string str)
+        {
+            var builder = new StringBuilder(str);
+            builder.Replace(" ", "_");
+            builder.Replace("\"", "");
+            builder.Replace("'", "");
+            builder.Replace("-", "");
+            return builder.ToString();
         }
     }
 }
