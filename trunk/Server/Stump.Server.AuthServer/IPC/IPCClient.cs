@@ -79,15 +79,25 @@ namespace Stump.Server.AuthServer.IPC
             set;
         }
 
-        public void Send(IPCMessage message, bool noReply = false)
+        public void ReplyRequest(IPCMessage message, IPCMessage request)
         {
             if (!Connected)
             {
                 return;
             }
 
-            if (m_currentRequest != null)
-                message.RequestGuid = m_currentRequest.RequestGuid;
+            if (request != null)
+                message.RequestGuid = request.RequestGuid;
+
+            Send(message);
+        }
+
+        public void Send(IPCMessage message)
+        {
+            if (!Connected)
+            {
+                return;
+            }
 
             var args = new SocketAsyncEventArgs();
             var data = IPCMessageSerializer.Instance.Serialize(message);
@@ -138,7 +148,7 @@ namespace Stump.Server.AuthServer.IPC
             {
                 if (!( message is HandshakeMessage ))
                 {
-                    SendError(string.Format("The first received packet should be a HandshakeMessage not {0}", message.GetType()));
+                    SendError(string.Format("The first received packet should be a HandshakeMessage not {0}", message.GetType()), message);
                     Disconnect();
                 }
                 else
@@ -151,7 +161,7 @@ namespace Stump.Server.AuthServer.IPC
                     }
                     catch (Exception ex)
                     {
-                        SendError(ex);
+                        SendError(ex, message);
                         Disconnect();
                         return;
                     }
@@ -159,10 +169,7 @@ namespace Stump.Server.AuthServer.IPC
                     Server = server;
                     m_operations = new IPCOperations(this);
                     // guid setted manually cause the request is not stored
-                    Send(new CommonOKMessage()
-                    {
-                        RequestGuid = message.RequestGuid
-                    });
+                    ReplyRequest(new CommonOKMessage(), message);
                 }
             }
             else
@@ -178,19 +185,19 @@ namespace Stump.Server.AuthServer.IPC
                 }
                 catch (Exception ex)
                 {
-                    SendError(ex);
+                    SendError(ex, message);
                 }
             }
         }
 
-        public void SendError(Exception exception)
+        public void SendError(Exception exception, IPCMessage request)
         {
-            Send(new IPCErrorMessage(exception.Message, exception.StackTrace));
+            ReplyRequest(new IPCErrorMessage(exception.Message, exception.StackTrace), request);
         }
 
-        public void SendError(string error)
+        public void SendError(string error, IPCMessage request)
         {
-            Send(new IPCErrorMessage(error));
+            ReplyRequest(new IPCErrorMessage(error), request);
         }
 
         public void Disconnect()

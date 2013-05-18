@@ -283,7 +283,7 @@ namespace WorldEditor.D2O
             try
             {
                 var writer = new D2OWriter(filePath, true);
-                writer.StartWriting(false);
+                writer.StartWriting(true);
 
                 foreach (var row in Rows)
                 {

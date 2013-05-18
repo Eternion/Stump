@@ -138,8 +138,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
                         impact.Target = fighter;
 
-                        if ((impact.Damage > 0 && fighter.IsFriendlyWith(Fighter)) ||
-                            (impact.Damage < 0 && fighter.IsEnnemyWith(Fighter)))
+                        if (impact.Damage < 0)
                             continue; // hurts more allies than boost them
 
                         cast.Impacts.Add(impact);
@@ -329,8 +328,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 var hptoHeal = (uint)( Math.Max(0, target.MaxLifePoints - target.LifePoints) ); // Can't heal over max
                 if (steal)
                 {
-                    result.MinHeal = -Math.Min(hptoHeal, Math.Abs(result.MinDamage));
-                    result.MaxHeal = -Math.Min(hptoHeal, Math.Abs(result.MaxDamage));
+                    result.MinHeal = Math.Min(hptoHeal, Math.Abs(result.MinDamage));
+                    result.MaxHeal = Math.Min(hptoHeal, Math.Abs(result.MaxDamage));
                 }
                 else
                 {
@@ -340,22 +339,22 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                              Fighter.Stats.GetTotal(PlayerFields.HealBonus),
                              Fighter.Stats.GetTotal(PlayerFields.Intelligence),
                              0,
-                             0, isFriend);
+                             0, !isFriend);
 
                         if (result.Heal > hptoHeal)
                             if (isFriend)
-                                result.MinHeal = result.MaxHeal = -hptoHeal;
+                                result.MinHeal = result.MaxHeal = +hptoHeal;
                             else
-                                result.MinHeal = result.MaxHeal = hptoHeal;
+                                result.MinHeal = result.MaxHeal = -hptoHeal;
                     }
                 }
             }
 
             if (( category & SpellCategory.Buff ) > 0)
                 if (isFriend)
-                    result.Boost -= spell.CurrentLevel * chanceToHappen;
-                else
                     result.Boost += spell.CurrentLevel * chanceToHappen;
+                else
+                    result.Boost -= spell.CurrentLevel * chanceToHappen;
 
             if (( category & SpellCategory.Curse ) > 0)
             {

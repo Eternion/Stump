@@ -41,14 +41,14 @@ namespace Stump.Server.WorldServer.Core.Network
 
         public IContextHandler GetContextHandler(WorldHandlerAttribute attr, WorldClient client, Message message)
         {
-            if (client.Character == null && attr.RequiresLogin)
+            if (client.Character == null && attr.ShouldBeLogged)
             {
                 m_logger.Warn("Handler id = {0} cannot handle this message because the client {1} is not logged and should be", message, client);
                 client.Disconnect();
                 return null;
             }
 
-            if (client.Character != null && !attr.RequiresLogin)
+            if (client.Character != null && !attr.ShouldBeLogged)
             {
                 m_logger.Warn("Handler id = {0} cannot handle this message because the client {1} is already logged and should be not", message, client);
                 client.Disconnect();

@@ -16,13 +16,13 @@ namespace Stump.Server.WorldServer.Handlers.Characters
     public partial class CharacterHandler
     {
 
-        [WorldHandler(CharacterReplayRequestMessage.Id, RequiresLogin = false, IsGamePacket = false)]
+        [WorldHandler(CharacterReplayRequestMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterReplayRequestMessage(WorldClient client, CharacterReplayRequestMessage message)
         {
             // TODO mhh ?
         }
 
-        [WorldHandler(CharacterReplayWithRenameRequestMessage.Id, RequiresLogin = false, IsGamePacket = false)]
+        [WorldHandler(CharacterReplayWithRenameRequestMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterReplayWithRenameRequestMessage(WorldClient client, CharacterReplayWithRenameRequestMessage message)
         {
             var character = client.Characters.Find(o => o.Id == message.characterId);
@@ -56,7 +56,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             WorldServer.Instance.DBAccessor.Database.Update(character);
         }
 
-        [WorldHandler(CharacterReplayWithRecolorRequestMessage.Id, RequiresLogin = false, IsGamePacket = false)]
+        [WorldHandler(CharacterReplayWithRecolorRequestMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterReplayWithRecolorRequestMessage(WorldClient client, CharacterReplayWithRecolorRequestMessage message)
         {
             var character = client.Characters.Find(entry => entry.Id == message.characterId);

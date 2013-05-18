@@ -119,6 +119,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             if (playerItem == null)
                 return false;
 
+            if (amount > playerItem.Stack || amount <= 0)
+                return false;
+
             if (playerItem.IsLinked())
             {
                 BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 345, playerItem.Template.Id, playerItem.Guid);
@@ -140,9 +143,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
                 return true;
             }
-
-            if (amount > playerItem.Stack || amount <= 0)
-                return false;
 
             var dummyRecord = new PlayerItemRecord()
             {

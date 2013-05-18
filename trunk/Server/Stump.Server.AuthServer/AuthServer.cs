@@ -95,7 +95,10 @@ namespace Stump.Server.AuthServer
                 DBAccessor.Initialize();
 
                 logger.Info("Opening Database...");
-                DBAccessor.OpenConnection();
+                DBAccessor.OpenConnection(new DatabaseLogged(DatabaseConfiguration.GetConnectionString(), DatabaseConfiguration.ProviderName)
+                {
+                    KeepConnectionAlive = true,
+                });
                 DataManager.DefaultDatabase = DBAccessor.Database;
 
                 logger.Info("Register Messages...");

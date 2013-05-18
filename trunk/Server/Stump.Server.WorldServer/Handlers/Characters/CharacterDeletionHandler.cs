@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         [Variable]
         public static int MaxDayCharacterDeletion = 5;
 
-        [WorldHandler(CharacterDeletionRequestMessage.Id, RequiresLogin = false, IsGamePacket = false)]
+        [WorldHandler(CharacterDeletionRequestMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterDeletionRequestMessage(WorldClient client, CharacterDeletionRequestMessage message)
         {
             if (!IPCAccessor.Instance.IsConnected)

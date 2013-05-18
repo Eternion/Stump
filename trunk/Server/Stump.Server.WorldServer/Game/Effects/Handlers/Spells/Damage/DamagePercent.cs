@@ -45,13 +45,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel)
                     {
                         NotifySpellReflected(actor);
-                        Caster.InflictNoBoostedDamage(damage, GetEffectSchool(integerEffect.EffectId), Caster, Caster is CharacterFighter, Spell);
+                        Caster.InflictDamage(damage, GetEffectSchool(integerEffect.EffectId), Caster, Caster is CharacterFighter, Spell, withBoost:false);
 
                         actor.RemoveAndDispellBuff(buff);
                     }
                     else
                     {
-                        var inflictedDamage = actor.InflictNoBoostedDamage(damage, GetEffectSchool(integerEffect.EffectId), Caster, actor is CharacterFighter, Spell);
+                        var inflictedDamage = actor.InflictDamage(damage, GetEffectSchool(integerEffect.EffectId), Caster, actor is CharacterFighter, Spell, withBoost:false);
                     }
                 }
             }

@@ -27,14 +27,14 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 {
     public partial class CharacterHandler
     {
-        [WorldHandler(CharacterFirstSelectionMessage.Id, RequiresLogin = false, IsGamePacket = false)]
+        [WorldHandler(CharacterFirstSelectionMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterFirstSelectionMessage(WorldClient client, CharacterFirstSelectionMessage message)
         {
             // TODO ADD TUTORIAL EFFECTS
             HandleCharacterSelectionMessage(client, message);
         }
 
-        [WorldHandler(CharacterSelectionMessage.Id, RequiresLogin = false, IsGamePacket = false)]
+        [WorldHandler(CharacterSelectionMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterSelectionMessage(WorldClient client, CharacterSelectionMessage message)
         {
             CharacterRecord character = client.Characters.First(entry => entry.Id == message.id);
@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             CommonCharacterSelection(client, character);
         }
 
-        [WorldHandler(CharacterSelectionWithRecolorMessage.Id, RequiresLogin = false, IsGamePacket = false)]
+        [WorldHandler(CharacterSelectionWithRecolorMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterSelectionWithRecolorMessage(WorldClient client, CharacterSelectionWithRecolorMessage message)
         {
             CharacterRecord character = client.Characters.First(entry => entry.Id == message.id);
@@ -70,7 +70,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             CommonCharacterSelection(client, character);
         }
 
-        [WorldHandler(CharacterSelectionWithRenameMessage.Id, RequiresLogin = false, IsGamePacket = false)]
+        [WorldHandler(CharacterSelectionWithRenameMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterSelectionWithRenameMessage(WorldClient client, CharacterSelectionWithRenameMessage message)
         {
             CharacterRecord character = client.Characters.First(entry => entry.Id == message.id);
@@ -167,7 +167,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             WorldServer.Instance.DBAccessor.Database.Update(character);
         }
 
-        [WorldHandler(CharactersListRequestMessage.Id, RequiresLogin = false, IsGamePacket = false)]
+        [WorldHandler(CharactersListRequestMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterListRequest(WorldClient client, CharactersListRequestMessage message)
         {
             if (client.Account != null && client.Account.Login != "")

@@ -11,7 +11,7 @@ namespace Stump.Server.WorldServer.Handlers.Startup
 {
     public class StartupHandler : WorldHandlerContainer
     {
-        [WorldHandler(StartupActionsObjetAttributionMessage.Id, RequiresLogin = false, IsGamePacket = false)]
+        [WorldHandler(StartupActionsObjetAttributionMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleStartupActionsObjetAttributionMessage(WorldClient client, StartupActionsObjetAttributionMessage message)
         {
             // todo

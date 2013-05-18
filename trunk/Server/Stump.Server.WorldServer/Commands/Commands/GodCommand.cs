@@ -68,7 +68,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public LevelUpCommand()
         {
             Aliases = new[] { "levelup" };
-            RequiredRole = RoleEnum.Administrator;
+            RequiredRole = RoleEnum.Moderator;
  
             AddParameter("amount", "amount", "Amount of levels to add", (short)1);
             AddTargetParameter(true, "Character who will level up");
@@ -106,7 +106,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public SetKamasCommand()
         {
             Aliases = new[] { "kamas" };
-            RequiredRole = RoleEnum.Administrator;
+            RequiredRole = RoleEnum.Moderator;
 
             AddParameter<int>("amount", "amount", "Amount of kamas to set");
             AddTargetParameter(true);

@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         [Variable]
         public static bool EnableNameSuggestion = true;
 
-        [WorldHandler(CharacterCreationRequestMessage.Id, RequiresLogin = false, IsGamePacket = false)]
+        [WorldHandler(CharacterCreationRequestMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterCreationRequestMessage(WorldClient client, CharacterCreationRequestMessage message)
         {
             if (!IPCAccessor.Instance.IsConnected)
@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             }
         }
 
-        [WorldHandler(CharacterNameSuggestionRequestMessage.Id, RequiresLogin = false, IsGamePacket = false)]
+        [WorldHandler(CharacterNameSuggestionRequestMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterNameSuggestionRequestMessage(WorldClient client, CharacterNameSuggestionRequestMessage message)
         {
             if (!EnableNameSuggestion)

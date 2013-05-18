@@ -62,12 +62,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             protected set { }
         }
 
-        public override bool IsTurnReady
-        {
-            get { return true; }
-            internal set { }
-        }
-
         private void OnTurnStarted(Fights.Fight fight, FightActor currentfighter)
         {
             if (!IsFighterTurn())

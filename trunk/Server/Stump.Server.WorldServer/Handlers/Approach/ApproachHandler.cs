@@ -71,7 +71,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             }
         }
 
-        [WorldHandler(AuthenticationTicketMessage.Id, RequiresLogin = false, IsGamePacket = false)]
+        [WorldHandler(AuthenticationTicketMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleAuthenticationTicketMessage(WorldClient client, AuthenticationTicketMessage message)
         {
             if (!IPCAccessor.Instance.IsConnected)

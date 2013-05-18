@@ -77,5 +77,6 @@ namespace Stump.DofusProtocol.Enums
         NeutralDamageArmor,
         AirDamageArmor,
         FireDamageArmor,
+        Erosion,
     }
 }

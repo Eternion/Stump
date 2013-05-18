@@ -11,17 +11,17 @@ namespace Stump.Server.WorldServer.Handlers
             : base(messageId)
         {
             IsGamePacket = true;
-            RequiresLogin = true;
+            ShouldBeLogged = true;
         }
 
         public WorldHandlerAttribute(uint messageId, bool isGamePacket, bool requiresLogin)
             : base(messageId)
         {
             IsGamePacket = isGamePacket;
-            RequiresLogin = requiresLogin;
+            ShouldBeLogged = requiresLogin;
         }
 
-        public bool RequiresLogin
+        public bool ShouldBeLogged
         {
             get;
             set;

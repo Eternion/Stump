@@ -86,7 +86,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
         {
             get
             {
-                return MinFire + MinAir + MinEarth + MinWater + MinNeutral - MaxHeal + Curse - Boost;
+                return MinFire + MinAir + MinEarth + MinWater + MinNeutral + MaxHeal + Curse + Boost;
             }
         }
 
@@ -95,7 +95,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
         {
             get
             {
-                return MaxFire + MaxAir + MaxEarth + MaxWater + MaxNeutral - MinHeal + Curse - Boost;
+                return MaxFire + MaxAir + MaxEarth + MaxWater + MaxNeutral + MinHeal + Curse + Boost;
             }
         }
 

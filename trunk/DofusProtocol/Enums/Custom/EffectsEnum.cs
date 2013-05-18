@@ -1177,7 +1177,7 @@
         /// <summary>
         /// Increases permanent damage taken by #1{~1~2 to }#2%
         /// </summary>
-        Effect_776 = 776,
+        Effect_AddErosion = 776,
         /// <summary>
         /// Summons the last ally who died with #1{~1~2 to }#2 % of their HP
         /// </summary>
@@ -1850,7 +1850,7 @@
         /// <summary>
         /// #1{~1~2 to }#2% (HP restored)
         /// </summary>
-        Effect_1109 = 1109,
+        Effect_RestoreHPPercent = 1109,
         /// <summary>
         /// #3 loot
         /// </summary>

@@ -204,6 +204,7 @@
     <Compile Include="Commands\TriggerBase.cs" />
     <Compile Include="Commands\ConverterException.cs" />
     <Compile Include="ConsoleBase.cs" />
+    <Compile Include="Database\DatabaseLogged.cs" />
     <Compile Include="Database\DataManager.cs" />
     <Compile Include="Database\DiscriminatorAttribute.cs" />
     <Compile Include="Database\DiscriminatorManager.cs" />

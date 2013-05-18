@@ -45,7 +45,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
 
             foreach (var caracteristic in GetAssociatedCaracteristics(buff.Spell.Id))
             {
-                buff.Target.Stats[caracteristic].Context += buff.Target.CalculateArmorValue(integerEffect.Value, GetEffectSchool(buff.Spell.Id));
+                buff.Target.Stats[caracteristic].Context += buff.Target.CalculateArmorValue(integerEffect.Value);
             }
         }
 
@@ -58,33 +58,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
 
             foreach (var caracteristic in GetAssociatedCaracteristics(buff.Spell.Id))
             {
-                buff.Target.Stats[caracteristic].Context -= buff.Target.CalculateArmorValue(integerEffect.Value, GetEffectSchool(buff.Spell.Id));
+                buff.Target.Stats[caracteristic].Context -= buff.Target.CalculateArmorValue(integerEffect.Value);
             }
         }
-
-        public static EffectSchoolEnum GetEffectSchool(int spellId)
-        {
-            // ugly ...
-            switch ((SpellIdEnum)spellId)
-            {
-                case SpellIdEnum.AqueousArmour:
-                case SpellIdEnum.AqueousArmour_50:
-                    return EffectSchoolEnum.Water;
-                case SpellIdEnum.EarthArmour:
-                case SpellIdEnum.EarthArmour_52:
-                    return EffectSchoolEnum.Earth; // and neutral
-                case SpellIdEnum.WindArmour:
-                case SpellIdEnum.WindArmour_53:
-                    return EffectSchoolEnum.Air;
-                case SpellIdEnum.GlowingArmour:
-                case SpellIdEnum.GlowingArmour_51:
-                case SpellIdEnum.Mummification:
-                    return EffectSchoolEnum.Fire;
-                default:
-                    return EffectSchoolEnum.Fire;
-            }
-        }
-
 
         public static IEnumerable<PlayerFields> GetAssociatedCaracteristics(int spellId)
         {

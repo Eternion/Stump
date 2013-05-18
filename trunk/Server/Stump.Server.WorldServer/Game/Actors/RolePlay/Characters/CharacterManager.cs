@@ -80,7 +80,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public CharacterCreationResultEnum CreateCharacter(WorldClient client, string name, sbyte breedId, bool sex,
                                                            IEnumerable<int> colors, int headId)
         {
-            if (client.Characters.Count >= MaxCharacterSlot)
+            if (client.Characters.Count >= MaxCharacterSlot && client.Account.Role <= RoleEnum.Player)
                 return CharacterCreationResultEnum.ERR_TOO_MANY_CHARACTERS;
 
             if (DoesNameExist(name))

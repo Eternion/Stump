@@ -56,6 +56,13 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // new skin 729 => 113 (todo find relation)
             FixEffectOnAllLevels(99, EffectsEnum.Effect_ChangeAppearance_335, (level, effect, critical) => effect.Value = 113);
             #endregion
+
+            #region ENIRIPSA
+            // stimulatin word (126)
+            // target ally => all
+            FixEffectOnAllLevels(126, EffectsEnum.Effect_AddAP_111, (level, effect, critical) => effect.Targets = SpellTargetType.ALL);
+            #endregion
+
         }
 
         public static void FixEffectOnAllLevels(int spellId, int effectIndex, Action<SpellLevelTemplate, EffectDice, bool> fixer)

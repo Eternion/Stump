@@ -280,12 +280,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             protected set;
         }
 
-        public virtual bool IsTurnReady
-        {
-            get;
-            internal set;
-        }
-
         public SpellHistory SpellHistory
         {
             get;
@@ -715,18 +709,29 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return InflictDirectDamage(damage, this);
         }
 
-        public int InflictDamage(int damage, EffectSchoolEnum school, FightActor from, bool pvp = false, Spell spell = null)
+        public int InflictDamage(int damage, EffectSchoolEnum school, FightActor from, bool pvp = false, Spell spell = null, bool withBoost = true)
         {
             if (spell != null)
                 damage += from.GetSpellBoost(spell);
 
-            damage = from.CalculateDamage(damage, school);
+            if (withBoost)
+                damage = from.CalculateDamage(damage, school);
+
             damage = CalculateDamageResistance(damage, school, pvp);
 
             int reduction = CalculateArmorReduction(school);
 
             if (reduction > damage)
                 reduction = damage;
+
+            var maxHealth = CalculateMaxHealableHealth();
+
+            if (LifePoints > maxHealth)
+            {
+                reduction -= LifePoints - maxHealth;
+                if (reduction < 0)
+                    reduction = 0;
+            }
 
             if (reduction > 0)
                 OnDamageReducted(from, reduction);
@@ -742,41 +747,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 }
             }
 
-            damage -= reduction;
-
-            if (damage <= 0)
-                damage = 0;
-
-            return InflictDirectDamage(damage, from);
-        }
-
-        public virtual int InflictNoBoostedDamage(int damage, EffectSchoolEnum school, FightActor from, bool pvp = false, Spell spell = null)
-        {
-            if (spell != null)
-                damage += from.GetSpellBoost(spell);
-
-            damage = CalculateDamageResistance(damage, school, pvp);
-
-            int reduction = CalculateArmorReduction(school);
-
-            if (reduction > damage)
-                reduction = damage;
-
             if (reduction > 0)
-                OnDamageReducted(from, reduction);
-
-            if (from != this)
-            {
-                int reflected = CalculateDamageReflection(damage);
-
-                if (reflected > 0)
-                {
-                    from.InflictDirectDamage(reflected, this);
-                    OnDamageReflected(from, reflected);
-                }
-            }
-
-            damage -= reduction;
+                damage -= reduction;
 
             if (damage <= 0)
                 damage = 0;
@@ -786,6 +758,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual int HealDirect(int healPoints, FightActor from)
         {
+            if (HasState((int)SpellStatesEnum.Unhealable))
+            {
+                OnLifePointsChanged(0, from);
+                return 0;
+            }
+
             if (LifePoints + healPoints > MaxLifePoints)
                 healPoints = MaxLifePoints - LifePoints;
 
@@ -796,9 +774,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return healPoints;
         }
 
-        public int Heal(int healPoints, FightActor from)
+        public int Heal(int healPoints, FightActor from , bool withBoost = true)
         {
-            return HealDirect(from.CalculateHeal(healPoints), from);
+            if (withBoost)
+                healPoints = from.CalculateHeal(healPoints);
+
+            healPoints = AdjustHealErosion(healPoints);
+
+            return HealDirect(healPoints, from);
         }
 
         public void ExchangePositions(FightActor with)
@@ -890,36 +873,38 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual int CalculateHeal(int heal)
         {
-            return (int)( heal * ( 100 + Stats[PlayerFields.Intelligence].Total ) / 100d + Stats[PlayerFields.HealBonus].Total );
+            return
+                (int) (heal*(100 + Stats[PlayerFields.Intelligence].Total)/100d + Stats[PlayerFields.HealBonus].Total);
         }
 
-        public virtual int CalculateArmorValue(int reduction, EffectSchoolEnum type)
+        public virtual int AdjustHealErosion(int heal)
         {
-            PlayerFields schoolCaracteristic;
-            switch (type)
+            var maxHealedHP = CalculateMaxHealableHealth();
+
+            if (LifePoints > maxHealedHP)
+                return 0;
+            else if (LifePoints + heal > maxHealedHP)
             {
-                case EffectSchoolEnum.Neutral:
-                    schoolCaracteristic = PlayerFields.Strength;
-                    break;
-                case EffectSchoolEnum.Earth:
-                    schoolCaracteristic = PlayerFields.Strength;
-                    break;
-                case EffectSchoolEnum.Air:
-                    schoolCaracteristic = PlayerFields.Agility;
-                    break;
-                case EffectSchoolEnum.Water:
-                    schoolCaracteristic = PlayerFields.Chance;
-                    break;
-                case EffectSchoolEnum.Fire:
-                    schoolCaracteristic = PlayerFields.Intelligence;
-                    break;
-                default:
-                    return (short) (reduction*(1 + Stats[PlayerFields.Intelligence].Total/200d));
+                heal = maxHealedHP - LifePoints;
             }
 
-            return (int)( reduction *
-                            Math.Max(1 + Stats[schoolCaracteristic].Total/100d,
-                                     1 + (Stats[PlayerFields.Intelligence].Total/200d) + (Stats[schoolCaracteristic].Total/200d)));
+            return heal;
+        }
+
+        public virtual int CalculateArmorValue(int reduction)
+        {
+            return (int) (reduction*(100 + 5*Level)/100d);
+        }
+
+        public virtual int CalculateMaxHealableHealth()
+        {
+            var erosion = Stats[PlayerFields.Erosion].TotalSafe;
+
+            if (erosion > 50)
+                erosion = 50;
+
+
+            return (int) (MaxLifePoints - ( MaxLifePoints * ( erosion / 100d ) ));
         }
 
         public virtual int CalculateArmorReduction(EffectSchoolEnum damageType)

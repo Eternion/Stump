@@ -276,6 +276,7 @@ namespace Stump.Core.IO
 
         public void Dispose()
         {
+            m_writer.Flush();
             m_writer.Dispose();
             m_writer = null;
         }
