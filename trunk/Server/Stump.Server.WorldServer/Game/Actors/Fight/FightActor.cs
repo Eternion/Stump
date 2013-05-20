@@ -306,7 +306,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public int MaxLifePoints
         {
-            get { return Stats.Health.TotalMax; }
+            get
+            {
+                return Stats.Health.TotalMax - ReducedMaxLife;
+            }
+        }
+
+        public int ReducedMaxLife
+        {
+            get;
+            set;
         }
 
         public int DamageTaken
@@ -689,6 +698,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return 0;
             }
 
+            var erosion = Stats[PlayerFields.Erosion].TotalSafe;
+
+            if (erosion > 50)
+                erosion = 50;
+
+            ReducedMaxLife += (int)(damage*(erosion/100d));
+
             if (LifePoints - damage < 0)
                 damage = (short) LifePoints;
 
@@ -723,15 +739,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (reduction > damage)
                 reduction = damage;
-
-            var maxHealth = CalculateMaxHealableHealth();
-
-            if (LifePoints > maxHealth)
-            {
-                reduction -= LifePoints - maxHealth;
-                if (reduction < 0)
-                    reduction = 0;
-            }
 
             if (reduction > 0)
                 OnDamageReducted(from, reduction);
@@ -778,8 +785,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             if (withBoost)
                 healPoints = from.CalculateHeal(healPoints);
-
-            healPoints = AdjustHealErosion(healPoints);
 
             return HealDirect(healPoints, from);
         }
@@ -875,20 +880,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             return
                 (int) (heal*(100 + Stats[PlayerFields.Intelligence].Total)/100d + Stats[PlayerFields.HealBonus].Total);
-        }
-
-        public virtual int AdjustHealErosion(int heal)
-        {
-            var maxHealedHP = CalculateMaxHealableHealth();
-
-            if (LifePoints > maxHealedHP)
-                return 0;
-            else if (LifePoints + heal > maxHealedHP)
-            {
-                heal = maxHealedHP - LifePoints;
-            }
-
-            return heal;
         }
 
         public virtual int CalculateArmorValue(int reduction)
