@@ -698,12 +698,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return 0;
             }
 
-            var erosion = Stats[PlayerFields.Erosion].TotalSafe;
-
-            if (erosion > 50)
-                erosion = 50;
-
-            ReducedMaxLife += (int)(damage*(erosion/100d));
+            ReducedMaxLife += CalculateErosionDamage(damage);
 
             if (LifePoints - damage < 0)
                 damage = (short) LifePoints;
@@ -733,12 +728,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (withBoost)
                 damage = from.CalculateDamage(damage, school);
 
+            var minDamage = CalculateErosionDamage(damage);
+
             damage = CalculateDamageResistance(damage, school, pvp);
 
             int reduction = CalculateArmorReduction(school);
 
-            if (reduction > damage)
-                reduction = damage;
+            if (damage - reduction < minDamage)
+            {
+                reduction = damage - minDamage;
+            }
 
             if (reduction > 0)
                 OnDamageReducted(from, reduction);
@@ -887,17 +886,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (int) (reduction*(100 + 5*Level)/100d);
         }
 
-        public virtual int CalculateMaxHealableHealth()
+        public virtual int CalculateErosionDamage(int damages)
         {
             var erosion = Stats[PlayerFields.Erosion].TotalSafe;
 
             if (erosion > 50)
                 erosion = 50;
 
+            return (int)( damages * ( erosion / 100d ) );
 
-            return (int) (MaxLifePoints - ( MaxLifePoints * ( erosion / 100d ) ));
         }
-
         public virtual int CalculateArmorReduction(EffectSchoolEnum damageType)
         {
             int specificArmor = 0;
