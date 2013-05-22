@@ -59,14 +59,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 CellShown(this, cell, team);
         }
 
-        public event Action<FightActor, int, FightActor> LifePointsChanged;
+        public event Action<FightActor, int, int, FightActor> LifePointsChanged;
 
-        protected virtual void OnLifePointsChanged(int delta, FightActor from)
+        protected virtual void OnLifePointsChanged(int delta, int permanentDamages, FightActor from)
         {
-            Action<FightActor, int, FightActor> handler = LifePointsChanged;
+            Action<FightActor, int, int, FightActor> handler = LifePointsChanged;
 
             if (handler != null)
-                handler(this, delta, from);
+                handler(this, delta, permanentDamages, from);
         }
 
         public event Action<FightActor, FightActor, int> DamageReducted;
@@ -308,11 +308,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             get
             {
-                return Stats.Health.TotalMax - ReducedMaxLife;
+                return Stats.Health.TotalMax;
             }
         }
 
-        public int ReducedMaxLife
+        public int PermanentDamages
         {
             get;
             set;
@@ -698,14 +698,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return 0;
             }
 
-            ReducedMaxLife += CalculateErosionDamage(damage);
-
             if (LifePoints - damage < 0)
-                damage = (short) LifePoints;
+                damage = (short)LifePoints;
 
-            DamageTaken += damage;
+            Stats.Health.DamageTaken += damage;
 
-            OnLifePointsChanged(-damage, from);
+            var permanentDamages = CalculateErosionDamage(damage);
+            Stats.Health.PermanentDamages += permanentDamages;
+
+
+            OnLifePointsChanged(-damage, permanentDamages, from);
 
             if (IsDead())
                 OnDead(from);
@@ -766,7 +768,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             if (HasState((int)SpellStatesEnum.Unhealable))
             {
-                OnLifePointsChanged(0, from);
+                OnLifePointsChanged(0, 0, from);
                 return 0;
             }
 
@@ -775,7 +777,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             DamageTaken -= healPoints;
 
-            OnLifePointsChanged(healPoints, from);
+            OnLifePointsChanged(healPoints, 0, from);
 
             return healPoints;
         }
@@ -1464,6 +1466,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 field.Value.Context = 0;
             }
+
+            Stats.Health.PermanentDamages = 0;
         }
 
         public virtual IEnumerable<DroppedItem> RollLoot(CharacterFighter looter)

@@ -7,6 +7,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
     {
         private int m_damageTaken;
         private int m_realDamageTaken;
+        private int m_permanentDamages;
 
         public StatsHealth(IStatsOwner owner, int valueBase, int damageTaken)
             : base(owner, PlayerFields.Health, valueBase)
@@ -76,6 +77,26 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             }
         }
 
+        public int PermanentDamages
+        {
+            get { return m_permanentDamages; }
+            set { 
+                if (TotalMax - value < 0)
+                    m_permanentDamages = Base + Equiped + Given + Context + ( Owner.Stats != null ? Owner.Stats[PlayerFields.Vitality].Total : 0 ) - 1;
+                else
+                {
+                    m_permanentDamages = value;
+                }
+
+                if (TotalSafe > TotalMax)
+                {
+                    DamageTaken += TotalSafe - TotalMax;
+                }
+
+                OnModified();
+            }
+        }
+
         /// <summary>
         ///   Addition of values
         /// </summary>
@@ -107,7 +128,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get
             {
-                int result = Base + Equiped + Given + Context + ( Owner.Stats != null ? Owner.Stats[PlayerFields.Vitality].Total : 0 );
+                int result = Base + Equiped + Given + Context + ( Owner.Stats != null ? Owner.Stats[PlayerFields.Vitality].Total : 0 ) - PermanentDamages;
 
                 return result < 0 ? 0 : result;
             }

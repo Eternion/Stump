@@ -404,10 +404,8 @@ namespace Stump.Server.BaseServer
         {
             Running = true;
             Initializing = false;
-        }
 
-        public virtual void Update()
-        {
+            IOTaskPool.CallPeriodically((int) TimeSpan.FromSeconds(30).TotalMilliseconds, KeepSQLConnectionAlive);
         }
 
         /// <summary>
@@ -417,6 +415,18 @@ namespace Stump.Server.BaseServer
         public void IgnoreNextConfigReload()
         {
             m_ignoreReload = true;
+        }
+
+        protected virtual void KeepSQLConnectionAlive()
+        {
+            try
+            {
+                DBAccessor.Database.Execute("DO 1");
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Cannot ping SQL connection : {0}", ex);
+            }
         }
 
         protected virtual void DisconnectAfkClient()

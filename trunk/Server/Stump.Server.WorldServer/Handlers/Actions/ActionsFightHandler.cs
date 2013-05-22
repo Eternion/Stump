@@ -63,7 +63,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
         public static void SendGameActionFightLifePointsLostMessage(IPacketReceiver client, FightActor source,
                                                                          FightActor target, short loss, short permanentDamages)
         {
-            client.Send(new GameActionFightLifePointsLostMessage((short)ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_LOST, source.Id, target.Id, loss, permanentDamages));
+            client.Send(new GameActionFightLifePointsLostMessage((short)ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST, source.Id, target.Id, loss, permanentDamages));
         }
 
 
