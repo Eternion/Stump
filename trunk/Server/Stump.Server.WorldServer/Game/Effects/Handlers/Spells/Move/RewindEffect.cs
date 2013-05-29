@@ -30,6 +30,18 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
         {
             buff.Target.Position.Cell = buff.Target.TurnStartPosition.Cell;
             buff.Target.Fight.ForEach(entry => ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(entry.Client, Caster, buff.Target, buff.Target.Position.Cell));
+
+            if (buff.Spell.Id == 82) //if the spell is rewind (xelor), need to show the animation in the end of turn.
+                buff.Target.Fight.ForEach(entry => Stump.Server.WorldServer.Handlers.Context.ContextHandler.SendGameActionFightSpellCastMessage(
+                entry.Client,
+                ActionsEnum.ACTION_FIGHT_CAST_SPELL,
+                buff.Target,
+                buff.Target,
+                buff.Target.Position.Cell,
+                FightSpellCastCriticalEnum.NORMAL,
+                true,
+                new Spell(3181, 1))
+                ); //TODO: à changer
         }
     }
 }
