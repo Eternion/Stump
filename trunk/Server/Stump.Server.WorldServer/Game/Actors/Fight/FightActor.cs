@@ -701,9 +701,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (LifePoints - damage < 0)
                 damage = (short)LifePoints;
 
-            Stats.Health.DamageTaken += damage;
-
             var permanentDamages = CalculateErosionDamage(damage);
+            damage -= permanentDamages;
+            Stats.Health.DamageTaken += damage;
             Stats.Health.PermanentDamages += permanentDamages;
 
 
