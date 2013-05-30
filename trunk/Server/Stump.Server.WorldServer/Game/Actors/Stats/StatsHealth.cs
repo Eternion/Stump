@@ -115,7 +115,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get
             {
-                int result = Base + Equiped + Given + Context + Owner.Stats[PlayerFields.Vitality] - DamageTaken;
+                int result = TotalMax - DamageTaken;
 
                 return result < 0 ? 0 : result;
             }
