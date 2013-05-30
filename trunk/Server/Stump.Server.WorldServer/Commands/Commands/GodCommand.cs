@@ -121,4 +121,26 @@ namespace Stump.Server.WorldServer.Commands.Commands
             trigger.Reply("{0} has now {1} kamas", target, kamas);
         }
     }
+
+    public class SetStatsCommand : TargetCommand
+    {
+        public SetStatsCommand()
+        {
+            Aliases = new[] { "stats" };
+            RequiredRole = RoleEnum.Administrator;
+
+            AddParameter<ushort>("amount", "amount", "Amount of stats points to set");
+            AddTargetParameter(true);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            Character target = GetTarget(trigger);
+            ushort statsPoints = trigger.Get<ushort>("amount");
+
+            target.StatsPoints = statsPoints;
+            target.RefreshStats();
+            trigger.Reply("{0} has now {1} stats points", target, statsPoints);
+        }
+    }
 }

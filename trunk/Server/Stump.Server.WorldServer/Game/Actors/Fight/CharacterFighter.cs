@@ -231,7 +231,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (AP < weapon.ApCost)
                 return false;
 
-            // todo : check Los
+            if (!Fight.CanBeSeen(cell, Position.Cell))
+                return false;
 
             return true;
         }
