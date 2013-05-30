@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.AI.Fights.Actions;
 using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
+using Stump.Server.WorldServer.Game.Spells;
 using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain
@@ -96,7 +97,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                 }
 
                 int i = 0;
-                while (Fighter.CanCastSpell(cast.Spell, cast.TargetCell) && i <= MaxCastLimit)
+                while (Fighter.CanCastSpell(cast.Spell, cast.TargetCell) == SpellCastResult.OK && i <= MaxCastLimit)
                 {
                     if (!Fighter.CastSpell(cast.Spell, cast.TargetCell))
                         break;

@@ -382,6 +382,14 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                             silentCast, (short) spell.Id, (sbyte) spell.CurrentLevel));
         }
 
+        public static void SendGameActionFightSpellCastMessage(IPacketReceiver client, ActionsEnum actionId, FightActor caster, FightActor target,
+                                                       Cell cell, FightSpellCastCriticalEnum critical, bool silentCast,
+                                                       short spellId, sbyte spellLevel)
+        {
+            client.Send(new GameActionFightSpellCastMessage((short)actionId, caster.Id, target == null ? 0 : target.Id, cell.Id, (sbyte)( critical ),
+                                                            silentCast, spellId, spellLevel));
+        }
+
         public static void SendGameActionFightDispellableEffectMessage(IPacketReceiver client, Buff buff)
         {
             client.Send(new GameActionFightDispellableEffectMessage(buff.GetActionId(), buff.Caster.Id, buff.GetAbstractFightDispellableEffect()));

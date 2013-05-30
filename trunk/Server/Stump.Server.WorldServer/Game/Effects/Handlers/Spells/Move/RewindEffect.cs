@@ -5,12 +5,16 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
+using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
     [EffectHandler(EffectsEnum.Effect_793)]
     public class RewindEffect : SpellEffectHandler
     {
+        private const int BOBBIN_SPELL_ID = 3181;
+
+
         public RewindEffect(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
         {
@@ -29,19 +33,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
         public void TriggerBuffApply(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
             buff.Target.Position.Cell = buff.Target.TurnStartPosition.Cell;
-            buff.Target.Fight.ForEach(entry => ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(entry.Client, Caster, buff.Target, buff.Target.Position.Cell));
+            ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(buff.Target.Fight.Clients, Caster, buff.Target, buff.Target.Position.Cell);
 
-            if (buff.Spell.Id == 82) //if the spell is rewind (xelor), need to show the animation in the end of turn.
-                buff.Target.Fight.ForEach(entry => Stump.Server.WorldServer.Handlers.Context.ContextHandler.SendGameActionFightSpellCastMessage(
-                entry.Client,
+            ContextHandler.SendGameActionFightSpellCastMessage(
+                buff.Target.Fight.Clients,
                 ActionsEnum.ACTION_FIGHT_CAST_SPELL,
                 buff.Target,
                 buff.Target,
                 buff.Target.Position.Cell,
                 FightSpellCastCriticalEnum.NORMAL,
                 true,
-                new Spell(3181, 1))
-                ); //TODO: à changer
+                BOBBIN_SPELL_ID, 1);
         }
     }
 }

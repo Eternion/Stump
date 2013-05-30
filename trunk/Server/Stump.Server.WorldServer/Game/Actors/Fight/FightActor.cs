@@ -524,45 +524,45 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Stats.MP.Used = 0;
         }
 
-        public virtual bool CanCastSpell(Spell spell, Cell cell)
+        public virtual SpellCastResult CanCastSpell(Spell spell, Cell cell)
         {
             if (!IsFighterTurn() || IsDead())
             {
-                return false;
+                return SpellCastResult.CANNOT_PLAY;
             }
 
             if (!HasSpell(spell.Id))
             {
-                return false;
+                return SpellCastResult.HAS_NOT_SPELL;
             }
 
             var spellLevel = spell.CurrentSpellLevel;
 
             if (!cell.Walkable || cell.NonWalkableDuringFight)
             {
-                return false;
+                return SpellCastResult.UNWALKABLE_CELL;
             }
 
             if (AP < spellLevel.ApCost)
             {
-                return false;
+                return SpellCastResult.NOT_ENOUGH_AP;
             }
 
             var cellfree = Fight.IsCellFree(cell);
             if (( spellLevel.NeedFreeCell && !cellfree ) ||
                 ( spellLevel.NeedTakenCell && cellfree ))
             {
-                return false;
+                return SpellCastResult.CELL_NOT_FREE;
             }
 
             if (spellLevel.StatesForbidden.Any(HasState))
             {
-                return false;
+                return SpellCastResult.STATE_FORBIDDEN;
             }
 
             if (spellLevel.StatesRequired.Any(state => !HasState(state)))
             {
-                return false;
+                return SpellCastResult.STATE_REQUIRED;
             }
 
             var castZone = GetCastZone(spellLevel);
@@ -570,22 +570,22 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (!castZone.Contains(cell))
             {
                 Debug.WriteLine("!castZone.Contains(cell)");
-                return false;
+                return SpellCastResult.NOT_IN_ZONE;
             }
 
             if (!SpellHistory.CanCastSpell(spellLevel, cell))
             {
                 Debug.WriteLine("!SpellHistory.CanCastSpell(spellLevel, cell)");
-                return false;
+                return SpellCastResult.HISTORY_ERROR;
             }
 
             if (spell.CurrentSpellLevel.CastTestLos && !Fight.CanBeSeen(Cell, cell))
             {
                 Debug.WriteLine("spell.CurrentSpellLevel.CastTestLos && !Fight.CanBeSeen(Cell, cell)");
-                return false;
+                return SpellCastResult.NO_LOS;
             }
 
-            return true;
+            return SpellCastResult.OK;
         }
 
 
@@ -641,7 +641,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var spellLevel = spell.CurrentSpellLevel;
 
-            if (!CanCastSpell(spell, cell))
+            if (CanCastSpell(spell, cell) != SpellCastResult.OK)
                 return false;
 
             Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Stump.Core.Attributes;
 using Stump.Core.Threading;
@@ -20,6 +21,7 @@ using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Results.Data;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Basic;
 using FightResultAdditionalData = Stump.Server.WorldServer.Game.Fights.Results.Data.FightResultAdditionalData;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
@@ -189,17 +191,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return base.CastSpell(spell, cell);
         }
 
-        public override bool CanCastSpell(Spell spell, Cell cell)
+        public override SpellCastResult CanCastSpell(Spell spell, Cell cell)
         {
-             bool can = base.CanCastSpell(spell, cell);
+             var result = base.CanCastSpell(spell, cell);
 
-             if (!can)
+             if (result != SpellCastResult.OK)
              {
                  // cannot cast spell msg
                  BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 175);
+                 Character.SendServerMessage("(" + result.ToString() + ")", Color.Red);
              }
 
-             return can;
+             return result;
         }
 
 
