@@ -117,7 +117,6 @@ namespace Stump.Tools.Sniffer
                 catch (Exception)
                 {
                     Debug.Print("Message = {0}", m_currentMessage.Data);
-                    throw;
                 }
 
                 m_currentMessage = null;
