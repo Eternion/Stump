@@ -117,9 +117,8 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ExchangeRequestOnShopStockMessage.Id)]
         public static void HandleExchangeRequestOnShopStockMessage(WorldClient client, ExchangeRequestOnShopStockMessage message)
         {
-            // todo: Work In Progress
             client.Send(new ExchangeShopStockStartedMessage(
-                            client.Character.Inventory.Select(x => new ObjectItemToSell((short)x.Template.Id, 0, false, x.Effects.Select(effect => effect.GetObjectEffect()), x.Guid, 1, 300))
+                            client.Character.MerchantBag.Select(x => new ObjectItemToSell((short)x.Record.Template.Id, 0, false, x.Record.Effects.Select(effect => effect.GetObjectEffect()), x.Guid, x.Record.Quantity, x.Price))
                             ));
         }
 

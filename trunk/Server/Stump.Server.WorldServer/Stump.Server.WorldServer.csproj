@@ -241,6 +241,7 @@
     <Compile Include="Database\Spells\ISpellRecord.cs" />
     <Compile Include="Database\World\Maps\MapElement.cs" />
     <Compile Include="Database\World\Triggers\CellTriggerRecord.cs" />
+    <Compile Include="Database\World\WorldMapMerchants.cs" />
     <Compile Include="Game\Accounts\Startup\StartupAction.cs" />
     <Compile Include="Game\Accounts\Startup\StartupActionItem.cs" />
     <Compile Include="Game\Actors\Fight\SummonedFighter.cs" />
