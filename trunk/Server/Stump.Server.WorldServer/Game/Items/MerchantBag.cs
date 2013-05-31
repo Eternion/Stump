@@ -20,12 +20,12 @@ namespace Stump.Server.WorldServer.Game.Items
         internal void LoadMerchantBag()
         {
             var records = ItemManager.Instance.FindPlayerMerchantItems(Owner.Id);
-            ItemsBag = records.Select(entry => new MerchantItem(Owner, entry)).ToDictionary(entry => entry.Guid);
+            Items = records.Select(entry => new MerchantItem(Owner, entry)).ToDictionary(entry => entry.Guid);
         }
 
         private void UnLoadMerchantBag()
         {
-            ItemsBag.Clear();
+            Items.Clear();
         }
 
         public void MoveItemToInventory(MerchantItem Item)
