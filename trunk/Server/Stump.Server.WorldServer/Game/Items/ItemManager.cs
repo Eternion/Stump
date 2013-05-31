@@ -159,6 +159,11 @@ namespace Stump.Server.WorldServer.Game.Items
             return Database.Fetch<PlayerItemRecord>(string.Format(PlayerItemRelator.FetchByOwner, ownerId));
         }
 
+        public List<PlayerMerchantItemRecord> FindPlayerMerchantItems(int ownerId)
+        {
+            return Database.Fetch<PlayerMerchantItemRecord>(string.Format(PlayerMerchantItemRelator.FetchByOwner, ownerId));
+        }
+
         /// <summary>
         /// Find an item template contains in a given list with a pattern
         /// </summary>
