@@ -118,8 +118,16 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void HandleExchangeRequestOnShopStockMessage(WorldClient client, ExchangeRequestOnShopStockMessage message)
         {
             client.Send(new ExchangeShopStockStartedMessage(
-                            client.Character.MerchantBag.Select(x => new ObjectItemToSell((short)x.Record.Template.Id, 0, false, x.Record.Effects.Select(effect => effect.GetObjectEffect()), x.Guid, x.Record.Quantity, x.Price))
+                            client.Character.MerchantBag.Select(x => new ObjectItemToSell((short)x.Template.Id, 0, false, x.Effects.Select(effect => effect.GetObjectEffect()), x.Guid, x.Quantity, x.Price))
                             ));
+        }
+
+        [WorldHandler(ExchangeObjectMovePricedMessage.Id)]
+        public static void HandleExchangeObjectMovePricedMessage(WorldClient client, ExchangeObjectMovePricedMessage message)
+        {
+            //client.Send(new ExchangeShopStockMovementUpdatedMessage(
+            //                new ObjectItemToSell(message.objectUID, 0, false, message.objectUID)
+            //                ));
         }
 
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,
