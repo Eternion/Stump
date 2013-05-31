@@ -118,6 +118,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
+        public MerchantBag MerchantBag
+        {
+            get;
+            private set;
+        }
+
         #region Identifier
 
         public override string Name
@@ -1659,6 +1665,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Inventory = new Inventory(this);
             Inventory.LoadInventory();
             UpdateLook(false);
+
+            MerchantBag = new MerchantBag(this);
+            MerchantBag.LoadMerchantBag();
 
             Spells = new SpellInventory(this);
             Spells.LoadSpells();
