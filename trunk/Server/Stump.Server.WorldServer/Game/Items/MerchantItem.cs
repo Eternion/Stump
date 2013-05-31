@@ -6,7 +6,7 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
-    class MerchantItem : Item<PlayerMerchantItemRecord>
+    public class MerchantItem : Item<PlayerMerchantItemRecord>
     {
         #region Fields
 
