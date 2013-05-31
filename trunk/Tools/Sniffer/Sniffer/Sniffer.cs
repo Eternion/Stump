@@ -61,6 +61,8 @@ namespace Stump.Tools.Sniffer
             _moduleProvider.LoadModules();
             AppDomain.CurrentDomain.GetAssemblies().ToDictionary(entry => entry.GetName().Name);
 
+            MessageReceiver.Initialize();
+
             Port = DefaultPortToSniff;
             form.toolStripTextBoxPort.Text = Port.ToString();
             form.toolStripTextBoxPort.TextChanged += (sender, e) =>

@@ -102,6 +102,27 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 client.Character.NpcShopDialog.SellItem(message.objectToSellId, (uint)message.quantity);
         }
 
+        [WorldHandler(ExchangeShowVendorTaxMessage.Id)]
+        public static void HandleExchangeShowVendorTaxMessage(WorldClient client, ExchangeShowVendorTaxMessage message)
+        {
+            // todo: totalTax = 0,05% of all sell items
+            int objectValue = 0;
+            int totalTax = 1;
+
+            client.Send(new ExchangeReplyTaxVendorMessage(
+                            objectValue,
+                            totalTax));
+        }
+
+        [WorldHandler(ExchangeRequestOnShopStockMessage.Id)]
+        public static void HandleExchangeRequestOnShopStockMessage(WorldClient client, ExchangeRequestOnShopStockMessage message)
+        {
+            // todo: Work In Progress
+            client.Send(new ExchangeShopStockStartedMessage(
+                            client.Character.Inventory.Select(x => new ObjectItemToSell((short)x.Template.Id, 0, false, x.Effects.Select(effect => effect.GetObjectEffect()), x.Guid, 1, 300))
+                            ));
+        }
+
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,
                                                              Character target)
         {
