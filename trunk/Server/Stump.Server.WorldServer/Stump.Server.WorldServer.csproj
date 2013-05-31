@@ -334,6 +334,8 @@
     <Compile Include="Game\Interactives\Skills\SkillZaapSave.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapTeleport.cs" />
     <Compile Include="Game\Items\Item.cs" />
+    <Compile Include="Game\Items\MerchantBag.cs" />
+    <Compile Include="Game\Items\MerchantItem.cs" />
     <Compile Include="Game\Items\Pet.cs" />
     <Compile Include="Game\Maps\WorldObjectsContext.cs" />
     <Compile Include="Game\Maps\Spawns\DungeonSpawningPool.cs" />
