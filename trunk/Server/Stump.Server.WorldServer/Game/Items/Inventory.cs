@@ -388,17 +388,13 @@ namespace Stump.Server.WorldServer.Game.Items
             if (!HasItem(item))
                 return false;
 
-            RemoveItem(item);
-
-            if (HasItem(item))
-                return false;
+            RemoveItem(item, (uint)quantity);
 
             MerchantItem mItem = new MerchantItem(
                                     Owner,
                                     item.Guid,
                                     item.Template,
                                     item.Template.Effects,
-                                    item.Stack,
                                     quantity,
                                     price);
 
