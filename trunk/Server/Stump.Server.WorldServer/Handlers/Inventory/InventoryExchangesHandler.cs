@@ -10,6 +10,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Database.Items.Templates;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
@@ -118,8 +119,22 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void HandleExchangeRequestOnShopStockMessage(WorldClient client, ExchangeRequestOnShopStockMessage message)
         {
             client.Send(new ExchangeShopStockStartedMessage(
-                            client.Character.MerchantBag.Select(x => new ObjectItemToSell((short)x.Record.Template.Id, 0, false, x.Record.Effects.Select(effect => effect.GetObjectEffect()), x.Guid, x.Record.Quantity, x.Price))
+                            client.Character.MerchantBag.Select(x => new ObjectItemToSell((short)x.Template.Id, 0, false, x.Effects.Select(effect => effect.GetObjectEffect()), x.Guid, x.Quantity, x.Price))
                             ));
+        }
+
+        [WorldHandler(ExchangeObjectMovePricedMessage.Id)]
+        public static void HandleExchangeObjectMovePricedMessage(WorldClient client, ExchangeObjectMovePricedMessage message)
+        {
+            PlayerItem pItem = client.Character.Inventory.TryGetItem(message.objectUID);
+            bool result = client.Character.Inventory.MoveToMerchantBag(pItem, message.quantity, message.price);
+
+            if (result)
+            {
+                client.Send(new ExchangeShopStockMovementUpdatedMessage(
+                                new ObjectItemToSell((short)pItem.Template.Id, 0, false, pItem.Template.Effects.Select(x => x.GetObjectEffect()), message.objectUID, message.quantity, message.price
+                                )));
+            }
         }
 
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,

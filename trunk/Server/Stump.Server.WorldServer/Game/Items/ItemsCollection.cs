@@ -29,7 +29,6 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             Locker = new object();
             Items = new Dictionary<int, T>();
-            ItemsBag = new Dictionary<int,T>();
             ItemsToDelete = new Queue<T>();
         }
 
@@ -40,12 +39,6 @@ namespace Stump.Server.WorldServer.Game.Items
         }
 
         protected Dictionary<int, T> Items
-        {
-            get;
-            set;
-        }
-
-        protected Dictionary<int, T> ItemsBag
         {
             get;
             set;
