@@ -383,6 +383,30 @@ namespace Stump.Server.WorldServer.Game.Items
             }
         }
 
+        public bool MoveToMerchantBag(PlayerItem item, int quantity, int price)
+        {
+            if (!HasItem(item))
+                return false;
+
+            RemoveItem(item);
+
+            if (HasItem(item))
+                return false;
+
+            MerchantItem mItem = new MerchantItem(
+                                    Owner,
+                                    item.Guid,
+                                    item.Template,
+                                    item.Template.Effects,
+                                    item.Stack,
+                                    quantity,
+                                    price);
+
+            Owner.MerchantBag.AddItem(mItem);
+
+            return true;
+        }
+
         private bool UnEquipedDouble(PlayerItem itemToEquip)
         {
             if (itemToEquip.Template.Type.ItemType == ItemTypeEnum.DOFUS)
