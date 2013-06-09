@@ -1606,6 +1606,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 {
                     // do something better here
                     Inventory.Save();
+                    MerchantBag.Save();
                     Spells.Save();
                     Shortcuts.Save();
                     FriendsBook.Save();

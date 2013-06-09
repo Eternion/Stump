@@ -28,6 +28,33 @@ namespace Stump.Server.WorldServer.Game.Items
             Items.Clear();
         }
 
+        public override void Save()
+        {
+            lock (Locker)
+            {
+                var database = WorldServer.Instance.DBAccessor.Database;
+                foreach (var item in Items)
+                {
+                    if (item.Value.Record.IsNew)
+                    {
+                        database.Insert(item.Value.Record);
+                        item.Value.Record.IsNew = false;
+                    }
+                    else if (item.Value.Record.IsDirty)
+                    {
+                        database.Update(item.Value.Record);
+                    }
+                }
+
+                while (ItemsToDelete.Count > 0)
+                {
+                    var item = ItemsToDelete.Dequeue();
+
+                    database.Delete(item.Record);
+                }
+            }
+        }
+
         public void MoveItemToInventory(MerchantItem Item)
         {
             //Todo
