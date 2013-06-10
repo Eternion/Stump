@@ -820,8 +820,15 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (!m_cellsTriggers.ContainsKey(cell))
                 return Enumerable.Empty<CellTrigger>();
 
+
             return m_cellsTriggers[cell];
         }
+
+        public IEnumerable<CellTrigger> GetTriggers()
+        {
+            return m_cellsTriggers.Values.SelectMany(x => x);
+        }
+        
 
         public bool ExecuteTrigger(CellTriggerType triggerType, Cell cell, Character character)
         {
@@ -1116,6 +1123,11 @@ namespace Stump.Server.WorldServer.Game.Maps
         public InteractiveObject GetInteractiveObject(int id)
         {
             return m_interactives[id];
+        }
+
+        public IEnumerable<InteractiveObject> GetInteractiveObjects()
+        {
+            return m_interactives.Values;
         }
 
         public ObjectPosition GetRandomFreePosition(bool actorFree = false)

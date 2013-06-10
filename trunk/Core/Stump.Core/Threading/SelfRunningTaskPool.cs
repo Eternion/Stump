@@ -11,7 +11,7 @@ using Stump.Core.Timers;
 namespace Stump.Core.Threading
 {
     /// <summary>
-    /// Thank's to WCell project
+    ///     Thank's to WCell project
     /// </summary>
     public class SelfRunningTaskPool : IContextHandler
     {
@@ -20,11 +20,12 @@ namespace Stump.Core.Threading
         private readonly LockFreeQueue<IMessage> m_messageQueue;
         private readonly Stopwatch m_queueTimer;
         private readonly List<SimpleTimerEntry> m_simpleTimers;
+        private readonly ManualResetEvent m_stoppedAsync = new ManualResetEvent(false);
         private readonly List<TimerEntry> m_timers;
 
         private int m_currentThreadId;
-        private Task m_updateTask;
         private int m_lastUpdate;
+        private Task m_updateTask;
 
         public SelfRunningTaskPool(int interval, string name)
         {
@@ -71,24 +72,9 @@ namespace Stump.Core.Threading
             get { return m_simpleTimers.AsReadOnly(); }
         }
 
-        public void Start()
-        {
-            IsRunning = true;
-
-            m_updateTask = Task.Factory.StartNewDelayed(UpdateInterval, ProcessCallback, this);
-        }
-
-        public void Stop()
-        {
-            IsRunning = false;
-        }
-
         public bool IsInContext
         {
-            get
-            {
-                return Thread.CurrentThread.ManagedThreadId == m_currentThreadId;
-            }
+            get { return Thread.CurrentThread.ManagedThreadId == m_currentThreadId; }
         }
 
         public void AddMessage(IMessage message)
@@ -113,19 +99,34 @@ namespace Stump.Core.Threading
             return false;
         }
 
-        public void EnsureNotContext()
-        {
-            if (IsInContext)
-            {
-                throw new InvalidOperationException("Forbidden context");
-            }
-        }
-
         public void EnsureContext()
         {
             if (!IsInContext)
             {
                 throw new InvalidOperationException("Not in context");
+            }
+        }
+
+        public void Start()
+        {
+            IsRunning = true;
+
+            m_updateTask = Task.Factory.StartNewDelayed(UpdateInterval, ProcessCallback, this);
+        }
+
+        public void Stop(bool async = false)
+        {
+            IsRunning = false;
+
+            if (async && m_currentThreadId != 0)
+                m_stoppedAsync.WaitOne();
+        }
+
+        public void EnsureNotContext()
+        {
+            if (IsInContext)
+            {
+                throw new InvalidOperationException("Forbidden context");
             }
         }
 
@@ -160,27 +161,28 @@ namespace Stump.Core.Threading
 
         internal int GetDelayUntilNextExecution(SimpleTimerEntry timer)
         {
-            return timer.Delay - (int)( LastUpdateTime - timer.LastCallTime );
+            return timer.Delay - (int) (LastUpdateTime - timer.LastCallTime);
         }
 
         protected void ProcessCallback(object state)
         {
-            try
+            if (!IsRunning)
             {
-                if (!IsRunning)
-                {
-                    return;
-                }
+                return;
+            }
 
-                if (Interlocked.CompareExchange(ref m_currentThreadId, Thread.CurrentThread.ManagedThreadId, 0) == 0)
+            if (Interlocked.CompareExchange(ref m_currentThreadId, Thread.CurrentThread.ManagedThreadId, 0) == 0)
+            {
+                long timerStart = 0;
+                try
                 {
                     // get the time at the start of our task processing
-                    var timerStart = m_queueTimer.ElapsedMilliseconds;
-                    var updateDt = (int)( timerStart - m_lastUpdate );
-                    m_lastUpdate = (int)timerStart;
+                    timerStart = m_queueTimer.ElapsedMilliseconds;
+                    var updateDt = (int) (timerStart - m_lastUpdate);
+                    m_lastUpdate = (int) timerStart;
 
                     // process timer entries
-                    foreach (var timer in m_timers)
+                    foreach (TimerEntry timer in m_timers)
                     {
                         try
                         {
@@ -197,10 +199,10 @@ namespace Stump.Core.Threading
                     }
 
                     // process timers
-                    var count = m_simpleTimers.Count;
-                    for (var i = count - 1; i >= 0; i--)
+                    int count = m_simpleTimers.Count;
+                    for (int i = count - 1; i >= 0; i--)
                     {
-                        var timer = m_simpleTimers[i];
+                        SimpleTimerEntry timer = m_simpleTimers[i];
                         if (GetDelayUntilNextExecution(timer) <= 0)
                         {
                             try
@@ -211,8 +213,8 @@ namespace Stump.Core.Threading
                             {
                                 logger.Error("Failed to execute timer {0} : {1}", timer, ex);
                             }
-                        } 
-                        
+                        }
+
                         if (!IsRunning)
                         {
                             return;
@@ -237,12 +239,18 @@ namespace Stump.Core.Threading
                             return;
                         }
                     }
-
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("Failed to run TaskQueue callback for \"{0}\" : {1}", Name, ex);
+                }
+                finally
+                {
                     // get the end time
                     long timerStop = m_queueTimer.ElapsedMilliseconds;
 
                     bool updateLagged = timerStop - timerStart > UpdateInterval;
-                    long callbackTimeout = updateLagged ? 0 : ( ( timerStart + UpdateInterval ) - timerStop );
+                    long callbackTimeout = updateLagged ? 0 : ((timerStart + UpdateInterval) - timerStop);
 
                     Interlocked.Exchange(ref m_currentThreadId, 0);
 
@@ -252,13 +260,13 @@ namespace Stump.Core.Threading
                     if (IsRunning)
                     {
                         // re-register the Update-callback
-                        m_updateTask = Task.Factory.StartNewDelayed((int)callbackTimeout, ProcessCallback, this);
+                        m_updateTask = Task.Factory.StartNewDelayed((int) callbackTimeout, ProcessCallback, this);
+                    }
+                    else
+                    {
+                        m_stoppedAsync.Set();
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                logger.Error("Failed to run TaskQueue callback for \"{0}\" : {1}", Name, ex);
             }
         }
     }
