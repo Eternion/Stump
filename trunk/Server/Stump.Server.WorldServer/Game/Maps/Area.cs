@@ -48,7 +48,8 @@ namespace Stump.Server.WorldServer.Game.Maps
         private readonly List<SubArea> m_subAreas = new List<SubArea>();
         private readonly Dictionary<Point, List<Map>> m_mapsByPoint = new Dictionary<Point, List<Map>>();
         private readonly PriorityQueueB<TimedTimerEntry> m_timers = new PriorityQueueB<TimedTimerEntry>(new TimedTimerComparer());
-        private readonly List<TimedTimerEntry> m_pausedTimers = new List<TimedTimerEntry>(); 
+        private readonly List<TimedTimerEntry> m_pausedTimers = new List<TimedTimerEntry>();
+        private ManualResetEvent m_stoppedAsync = new ManualResetEvent(false);
         protected internal AreaRecord Record;
         private float m_avgUpdateTime;
         private int m_currentThreadId;
@@ -257,7 +258,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
-        public void Stop()
+        public void Stop(bool async = false)
         {
             if (!m_running)
                 return;
@@ -268,6 +269,9 @@ namespace Stump.Server.WorldServer.Game.Maps
                     return;
 
                 m_running = false;
+
+                if (async && m_currentThreadId != 0)
+                    m_stoppedAsync.WaitOne();
 
                 logger.Info("Area '{0}' stopped", this);
             }
@@ -416,6 +420,9 @@ namespace Stump.Server.WorldServer.Game.Maps
                     logger.Debug("Area '{0}' update lagged ({1}ms) (msg:{2}ms, timers:{3}ms, timerProc:{4}/{5})",
                         this, (int) newUpdateDelta.TotalMilliseconds, messageProcessTime, timerProcessingTime, timerProcessed, m_timers.Count);
                 }
+
+                if (!IsRunning)
+                    m_stoppedAsync.Set();
 
                 Task.Factory.StartNewDelayed(callbackTimeout, UpdateCallback, this);
             }

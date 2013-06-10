@@ -27,19 +27,11 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Color color = ColorTranslator.FromHtml(AnnounceColor);
 
             var msg = trigger.Get<string>("msg");
+            var formatMsg = trigger is GameTrigger
+                                ? string.Format("(ANNOUNCE) [{0}] : {1}", ((GameTrigger) trigger).Character.Name, msg)
+                                : string.Format("(ANNOUNCE) {0}", msg);
 
-            WorldServer.Instance.IOTaskPool.AddMessage(
-                () =>
-                    {
-                        if (trigger is GameTrigger)
-                        {
-                            World.Instance.ForEachCharacter(entry => entry.SendServerMessage(string.Format("(ANNOUNCE) [{0}] : {1}", ( (GameTrigger)trigger ).Character.Name, msg), color));
-                        }
-                        else
-                        {
-                            World.Instance.ForEachCharacter(entry => entry.SendServerMessage(string.Format("(ANNOUNCE) {0}", msg), color));
-                        }
-                    });
+            World.Instance.SendAnnounce(formatMsg, color);
         }
     }
 }

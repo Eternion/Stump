@@ -3,10 +3,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using NLog;
 using Stump.Core.Reflection;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
@@ -19,6 +21,7 @@ using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Database.World.Triggers;
+using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
@@ -26,6 +29,8 @@ using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
+using Stump.Server.WorldServer.Handlers.Basic;
+using Stump.Server.WorldServer.Handlers.Chat;
 
 namespace Stump.Server.WorldServer.Game
 {
@@ -95,7 +100,9 @@ namespace Stump.Server.WorldServer.Game
         public void LoadSpaces()
         {
             if (m_spacesLoaded)
-                return;
+            {
+                UnSetLinks();
+            }
 
             m_spacesLoaded = true;
 
@@ -119,7 +126,9 @@ namespace Stump.Server.WorldServer.Game
         public void SpawnSpaces()
         {
             if (m_spacesSpawned)
-                return;
+            {
+                UnSpawnSpaces();
+            }
 
             m_spacesSpawned = true;
 
@@ -169,6 +178,39 @@ namespace Stump.Server.WorldServer.Game
             }
         }
 
+        private void UnSetLinks()
+        {
+            foreach (Map map in m_maps.Values)
+            {
+                if (map.Record.Position == null)
+                    continue;
+
+                SubArea subArea;
+                if (m_subAreas.TryGetValue(map.Record.Position.SubAreaId, out subArea))
+                {
+                    subArea.RemoveMap(map);
+                }
+            }
+
+            foreach (SubArea subArea in m_subAreas.Values)
+            {
+                Area area;
+                if (m_areas.TryGetValue(subArea.Record.AreaId, out area))
+                {
+                    area.RemoveSubArea(subArea);
+                }
+            }
+
+            foreach (Area area in m_areas.Values)
+            {
+                SuperArea superArea;
+                if (m_superAreas.TryGetValue(area.Record.SuperAreaId, out superArea))
+                {
+                    superArea.RemoveArea(area);
+                }
+            }
+        }
+
         private void SpawnNpcs()
         {
             foreach (NpcSpawn npcSpawn in NpcManager.Instance.GetNpcSpawns())
@@ -176,6 +218,39 @@ namespace Stump.Server.WorldServer.Game
                 ObjectPosition position = npcSpawn.GetPosition();
 
                 position.Map.SpawnNpc(npcSpawn);
+            }
+        }
+
+        public void UnSpawnSpaces()
+        {
+            foreach (var map in m_maps.Values)
+            {
+                var interactives = map.GetInteractiveObjects().ToArray();
+
+                foreach (var interactive in interactives)
+                {
+                    map.UnSpawnInteractive(interactive);
+                }
+
+                foreach (var pool in map.SpawningPools.ToArray())
+                {
+                    map.RemoveSpawningPool(pool);
+                }
+
+                var triggers = map.GetTriggers().ToArray();
+
+                foreach (var trigger in triggers)
+                {
+                    map.RemoveTrigger(trigger);
+                }
+            }
+
+            foreach (var subArea in m_subAreas)
+            {
+                foreach (var monsterSpawn in subArea.Value.MonsterSpawns)
+                {
+                    subArea.Value.RemoveMonsterSpawn(monsterSpawn);
+                }
             }
         }
 
@@ -459,6 +534,16 @@ namespace Stump.Server.WorldServer.Game
                 action(key.Value);
         }
 
+        public void SendAnnounce(string announce)
+        {
+            WorldServer.Instance.IOTaskPool.AddMessage(() => ForEachCharacter(character => character.SendServerMessage(announce)));
+        }
+        
+        public void SendAnnounce(string announce, Color color)
+        {
+            WorldServer.Instance.IOTaskPool.AddMessage(() => ForEachCharacter(character => character.SendServerMessage(announce, color)));
+        }
+
         #endregion
 
 
@@ -513,6 +598,42 @@ namespace Stump.Server.WorldServer.Game
             {
                 area.Value.Stop();
             }
+        }
+
+        private List<Area> m_pausedAreas = new List<Area>();
+        /// <summary>
+        /// Have to be called from another thread !!
+        /// </summary>
+        public void Pause()
+        {
+            logger.Info("World Paused !!");
+            foreach (var area in m_areas)
+            {
+                if (area.Value.IsInContext)
+                    throw new Exception("Has to be called from another thread !!");
+
+                area.Value.Stop(true);
+                m_pausedAreas.Add(area.Value);
+            }
+
+            if (WorldServer.Instance.IOTaskPool.IsInContext)
+                throw new Exception("Has to be called from another thread !!");
+
+            WorldServer.Instance.IOTaskPool.Stop(true);
+        }
+
+        public void Resume()
+        {
+            logger.Info("World Resumed");
+            foreach (var pausedArea in m_pausedAreas)
+            {
+                pausedArea.Start();
+            }
+
+            m_pausedAreas.Clear();
+
+
+            WorldServer.Instance.IOTaskPool.Start();
         }
     }
 }

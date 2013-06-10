@@ -184,6 +184,7 @@
     <Compile Include="Commands\Commands\NpcsCommands.cs" />
     <Compile Include="Commands\Commands\Patterns\InGameCommand.cs" />
     <Compile Include="Commands\Commands\Patterns\TargetCommand.cs" />
+    <Compile Include="Commands\Commands\ReloadCommands.cs" />
     <Compile Include="Commands\Commands\SaveCommand.cs" />
     <Compile Include="Commands\Commands\TeleportCommand.cs" />
     <Compile Include="Commands\Commands\WhoCommand.cs" />
