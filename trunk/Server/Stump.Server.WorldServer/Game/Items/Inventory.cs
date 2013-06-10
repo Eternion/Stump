@@ -388,21 +388,29 @@ namespace Stump.Server.WorldServer.Game.Items
             if (!HasItem(item))
                 return false;
 
-            RemoveItem(item);
-
-            if (HasItem(item))
-                return false;
+            RemoveItem(item, (uint)quantity); //Todo: Refresh packet
 
             MerchantItem mItem = new MerchantItem(
                                     Owner,
                                     item.Guid,
                                     item.Template,
                                     item.Template.Effects,
-                                    item.Stack,
                                     quantity,
                                     price);
 
-            Owner.MerchantBag.AddItem(mItem);
+            if (Owner.MerchantBag.Any(x => x.Template.Id == item.Template.Id))
+            {
+                MerchantItem pItem = Owner.Client.Character.MerchantBag.TryGetItem(item.Template);
+                pItem.Stack += quantity;
+
+                //Todo: Refresh packet
+
+                return false;
+            }
+            else
+            {
+                Owner.MerchantBag.AddItem(mItem);
+            }
 
             return true;
         }

@@ -16,12 +16,6 @@ namespace Stump.Server.WorldServer.Game.Items
             private set;
         }
 
-        public int Quantity
-        {
-            get;
-            private set;
-        }
-
         public int Price
         {
             get;
@@ -38,14 +32,14 @@ namespace Stump.Server.WorldServer.Game.Items
             //m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);
 
             Owner = owner;
-            Quantity = Record.Quantity;
             Price = Record.Price;
         }
 
-        public MerchantItem(Character owner, int guid, ItemTemplate template, List<EffectBase> effects, int stack, int quantity, int price)
+        public MerchantItem(Character owner, int guid, ItemTemplate template, List<EffectBase> effects, int stack, int price)
         {
             //m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);
             Owner = owner;
+            Price = price;
 
             Record = new PlayerMerchantItemRecord // create the associated record
                          {
@@ -53,7 +47,6 @@ namespace Stump.Server.WorldServer.Game.Items
                              OwnerId = owner.Id,
                              Template = template,
                              Stack = stack,
-                             Quantity = quantity,
                              Price = price,
                              Effects = effects,
                          };
