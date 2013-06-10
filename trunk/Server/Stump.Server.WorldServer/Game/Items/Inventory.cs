@@ -157,7 +157,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public uint WeightTotal
         {
-            get { return 1000; }
+            get { return 1000; } // todo : manage weight properly
         }
 
         public uint WeaponCriticalHit
