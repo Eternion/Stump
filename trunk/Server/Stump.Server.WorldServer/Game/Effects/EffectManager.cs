@@ -361,7 +361,7 @@ namespace Stump.Server.WorldServer.Game.Effects
         }
 
 
-        public List<EffectBase>  DeserializeEffects(byte[] buffer, int index = 0)
+        public List<EffectBase>  DeserializeEffects(byte[] buffer)
         {
             var result = new List<EffectBase>();
 
