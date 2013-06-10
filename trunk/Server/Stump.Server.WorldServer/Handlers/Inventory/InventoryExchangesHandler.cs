@@ -127,12 +127,12 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void HandleExchangeObjectMovePricedMessage(WorldClient client, ExchangeObjectMovePricedMessage message)
         {
             PlayerItem pItem = client.Character.Inventory.TryGetItem(message.objectUID);
-            bool result = client.Character.Inventory.MoveToMerchantBag(pItem, message.quantity, message.price);
+            MerchantItem result = client.Character.Inventory.MoveToMerchantBag(pItem, message.quantity, message.price);
 
-            if (result)
+            if (result != null)
             {
                 client.Send(new ExchangeShopStockMovementUpdatedMessage(
-                                new ObjectItemToSell((short)pItem.Template.Id, 0, false, pItem.Template.Effects.Select(x => x.GetObjectEffect()), message.objectUID, message.quantity, message.price
+                                new ObjectItemToSell((short)result.Template.Id, 0, false, result.Template.Effects.Select(x => x.GetObjectEffect()), result.Guid, result.Stack, result.Price
                                 )));
             }
         }
@@ -192,6 +192,13 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendExchangeErrorMessage(IPacketReceiver client, ExchangeErrorEnum errorEnum)
         {
             client.Send(new ExchangeErrorMessage((sbyte) errorEnum));
+        }
+
+        public static void SendExchangeShopStockStartedMessage(WorldClient client)
+        {
+            client.Send(new ExchangeShopStockStartedMessage(
+                            client.Character.MerchantBag.Select(x => new ObjectItemToSell((short)x.Template.Id, 0, false, x.Effects.Select(effect => effect.GetObjectEffect()), x.Guid, x.Stack, x.Price))
+                            ));
         }
     }
 }
