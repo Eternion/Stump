@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Items
         public int Price
         {
             get;
-            private set;
+            set;
         }
 
         #endregion

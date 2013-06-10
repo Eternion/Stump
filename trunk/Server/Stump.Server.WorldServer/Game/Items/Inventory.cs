@@ -383,36 +383,39 @@ namespace Stump.Server.WorldServer.Game.Items
             }
         }
 
-        public bool MoveToMerchantBag(PlayerItem item, int quantity, int price)
+        public MerchantItem MoveToMerchantBag(PlayerItem item, int quantity, int price)
         {
-            if (!HasItem(item))
-                return false;
+            MerchantItem nullItem = null;
 
-            RemoveItem(item, (uint)quantity); //Todo: Refresh packet
-
-            MerchantItem mItem = new MerchantItem(
-                                    Owner,
-                                    item.Guid,
-                                    item.Template,
-                                    item.Template.Effects,
-                                    quantity,
-                                    price);
-
-            if (Owner.MerchantBag.Any(x => x.Template.Id == item.Template.Id))
+            if (HasItem(item))
             {
-                MerchantItem pItem = Owner.Client.Character.MerchantBag.TryGetItem(item.Template);
-                pItem.Stack += quantity;
+                RemoveItem(item, (uint)quantity); //Todo: Refresh packet
 
-                //Todo: Refresh packet
+                MerchantItem mItem = new MerchantItem(
+                                        Owner,
+                                        item.Guid,
+                                        item.Template,
+                                        item.Template.Effects,
+                                        quantity,
+                                        price);
 
-                return false;
+                if (Owner.MerchantBag.Any(x => x.Template.Id == item.Template.Id))
+                {
+                    MerchantItem pItem = Owner.Client.Character.MerchantBag.TryGetItem(item.Template);
+                    pItem.Stack += quantity;
+                    pItem.Price = price;
+
+                    return pItem;
+                }
+                else
+                {
+                    Owner.MerchantBag.AddItem(mItem);
+                }
+
+                return mItem;
             }
-            else
-            {
-                Owner.MerchantBag.AddItem(mItem);
-            }
 
-            return true;
+            return nullItem;
         }
 
         private bool UnEquipedDouble(PlayerItem itemToEquip)
