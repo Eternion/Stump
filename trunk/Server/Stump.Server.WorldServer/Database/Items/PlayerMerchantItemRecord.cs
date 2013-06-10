@@ -28,18 +28,6 @@ namespace Stump.Server.WorldServer.Database.Items
             }
         }
 
-        private int m_Quantity;
-
-        public int Quantity
-        {
-            get { return m_Quantity; }
-            set
-            {
-                m_Quantity = value;
-                IsDirty = true;
-            }
-        }
-
         private int m_Price;
 
         public int Price
