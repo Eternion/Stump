@@ -55,9 +55,41 @@ namespace Stump.Server.WorldServer.Game.Items
             }
         }
 
-        public void MoveItemToInventory(MerchantItem Item)
+        public int CalcMerchantTax()
         {
-            //Todo
+            double resultTax = 0;
+
+            foreach(var Item in Items)
+            {
+                resultTax += (Item.Value.Price * Item.Value.Stack);
+            }
+
+            resultTax = (resultTax * 0.1);
+
+            return (int)resultTax;
+        }
+
+        public bool MoveToInventory(MerchantItem item)
+        {
+            RemoveItem(item);
+
+            var cItem = ItemManager.Instance.CreatePlayerItem(Owner, item.Template, (uint)item.Stack);
+
+            Owner.Inventory.AddItem(cItem);
+
+            return true;
+        }
+
+        public bool ModifyQuantity(MerchantItem item, int quantity)
+        {
+            int newQuantity = item.Stack - quantity;
+            RemoveItem(item, (uint)newQuantity);
+
+            var cItem = ItemManager.Instance.CreatePlayerItem(Owner, item.Template, (uint)newQuantity);
+
+            Owner.Inventory.AddItem(cItem);
+
+            return true;
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Items
         public int Price
         {
             get;
-            set;
+            private set;
         }
 
         #endregion
@@ -29,7 +29,6 @@ namespace Stump.Server.WorldServer.Game.Items
         public MerchantItem(Character owner, PlayerMerchantItemRecord record)
             : base(record)
         {
-            //m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);
 
             Owner = owner;
             Price = Record.Price;
@@ -37,7 +36,6 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public MerchantItem(Character owner, int guid, ItemTemplate template, List<EffectBase> effects, int stack, int price)
         {
-            //m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);
             Owner = owner;
             Price = price;
 
@@ -55,6 +53,16 @@ namespace Stump.Server.WorldServer.Game.Items
         #endregion
 
         #region Functions
+
+        public void changeOwner(Character newOwner)
+        {
+            this.Owner = newOwner;
+        }
+
+        public void setPrice(int newPrice)
+        {
+            this.Price = newPrice;
+        }
 
         #endregion
     }
