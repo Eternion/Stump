@@ -389,7 +389,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
             if (HasItem(item))
             {
-                RemoveItem(item, (uint)quantity); //Todo: Refresh packet
+                RemoveItem(item, (uint)quantity);
 
                 MerchantItem mItem = new MerchantItem(
                                         Owner,
@@ -403,7 +403,8 @@ namespace Stump.Server.WorldServer.Game.Items
                 {
                     MerchantItem pItem = Owner.Client.Character.MerchantBag.TryGetItem(item.Template);
                     pItem.Stack += quantity;
-                    pItem.Price = price;
+
+                    pItem.setPrice(price);
 
                     return pItem;
                 }

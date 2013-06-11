@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ExchangePlayerRequestMessage.Id)]
         public static void HandleExchangePlayerRequestMessage(WorldClient client, ExchangePlayerRequestMessage message)
         {
-            switch ((ExchangeTypeEnum) message.exchangeType)
+            switch ((ExchangeTypeEnum)message.exchangeType)
             {
                 case ExchangeTypeEnum.PLAYER_TRADE:
                     var target = World.Instance.GetCharacter(message.target);
@@ -70,30 +70,41 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             if (!client.Character.IsTrading())
                 return;
-            
-            client.Character.Trader.SetKamas((uint) message.quantity);
+
+            client.Character.Trader.SetKamas((uint)message.quantity);
         }
 
         [WorldHandler(ExchangeObjectMoveMessage.Id)]
         public static void HandleExchangeObjectMoveMessage(WorldClient client, ExchangeObjectMoveMessage message)
         {
-            if (!client.Character.IsTrading())
-                return;
+            if (!client.Character.MerchantBag.HasItem(message.objectUID))
+            {
+                if (!client.Character.IsTrading())
+                    return;
 
-            client.Character.Trader.MoveItem(message.objectUID, message.quantity);
+                client.Character.Trader.MoveItem(message.objectUID, message.quantity);
+            }
+            else
+            {
+                MerchantItem mItem = client.Character.MerchantBag.TryGetItem(message.objectUID);
+                bool result = client.Character.MerchantBag.MoveToInventory(mItem);
+
+                client.Send(new ExchangeShopStockMovementRemovedMessage(
+                                message.objectUID));
+            }
         }
 
         [WorldHandler(ExchangeReadyMessage.Id)]
         public static void HandleExchangeReadyMessage(WorldClient client, ExchangeReadyMessage message)
         {
-           client.Character.Trader.ToggleReady(message.ready);
+            client.Character.Trader.ToggleReady(message.ready);
         }
 
         [WorldHandler(ExchangeBuyMessage.Id)]
         public static void HandleExchangeBuyMessage(WorldClient client, ExchangeBuyMessage message)
         {
             if (client.Character.NpcShopDialog != null)
-                client.Character.NpcShopDialog.BuyItem(message.objectToBuyId, (uint) message.quantity);
+                client.Character.NpcShopDialog.BuyItem(message.objectToBuyId, (uint)message.quantity);
         }
 
         [WorldHandler(ExchangeSellMessage.Id)]
@@ -106,9 +117,11 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ExchangeShowVendorTaxMessage.Id)]
         public static void HandleExchangeShowVendorTaxMessage(WorldClient client, ExchangeShowVendorTaxMessage message)
         {
-            // todo: totalTax = 0,05% of all sell items
             int objectValue = 0;
-            int totalTax = 1;
+            int totalTax = client.Character.MerchantBag.CalcMerchantTax();
+
+            if (totalTax <= 0)
+                totalTax = 1;
 
             client.Send(new ExchangeReplyTaxVendorMessage(
                             objectValue,
@@ -134,6 +147,44 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 client.Send(new ExchangeShopStockMovementUpdatedMessage(
                                 new ObjectItemToSell((short)result.Template.Id, 0, false, result.Template.Effects.Select(x => x.GetObjectEffect()), result.Guid, result.Stack, result.Price
                                 )));
+
+                InventoryHandler.SendObjectQuantityMessage(client, pItem);
+                InventoryHandler.SendInventoryWeightMessage(client);
+            }
+        }
+
+        [WorldHandler(ExchangeObjectModifyPricedMessage.Id)]
+        public static void HandleExchangeObjectModifyPricedMessage(WorldClient client, ExchangeObjectModifyPricedMessage message)
+        {
+            MerchantItem mItem = client.Character.MerchantBag.TryGetItem(message.objectUID);
+            mItem.setPrice(message.price);
+
+            if (message.quantity != mItem.Stack && message.quantity != 0)
+            {
+                if (message.quantity < mItem.Stack)
+                {
+                    client.Character.MerchantBag.ModifyQuantity(mItem, message.quantity);
+                }
+
+                if (message.quantity > mItem.Stack)
+                {
+                    PlayerItem pItem = client.Character.Inventory.TryGetItem(mItem.Template);
+                    client.Character.Inventory.MoveToMerchantBag(pItem, (message.quantity - mItem.Stack), message.price);
+
+                    InventoryHandler.SendObjectQuantityMessage(client, pItem);
+                }
+
+                client.Send(new ExchangeShopStockMovementUpdatedMessage(
+                                new ObjectItemToSell((short)mItem.Template.Id, 0, false, mItem.Template.Effects.Select(x => x.GetObjectEffect()), message.objectUID, message.quantity, message.price
+                                )));
+
+                InventoryHandler.SendInventoryWeightMessage(client);
+            }
+            else
+            {
+                client.Send(new ExchangeShopStockMovementUpdatedMessage(
+                                new ObjectItemToSell((short)mItem.Template.Id, 0, false, mItem.Template.Effects.Select(x => x.GetObjectEffect()), message.objectUID, mItem.Stack, message.price
+                                )));
             }
         }
 
@@ -141,7 +192,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                                                              Character target)
         {
             client.Send(new ExchangeRequestedTradeMessage(
-                            (sbyte) type,
+                            (sbyte)type,
                             source.Id,
                             target.Id));
         }
@@ -149,13 +200,13 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendExchangeStartedWithPodsMessage(IPacketReceiver client, PlayerTrade playerTrade)
         {
             client.Send(new ExchangeStartedWithPodsMessage(
-                            (sbyte) ExchangeTypeEnum.PLAYER_TRADE,
+                            (sbyte)ExchangeTypeEnum.PLAYER_TRADE,
                             playerTrade.FirstTrader.Character.Id,
-                            (int) playerTrade.FirstTrader.Character.Inventory.Weight,
-                            (int) playerTrade.FirstTrader.Character.Inventory.WeightTotal,
+                            (int)playerTrade.FirstTrader.Character.Inventory.Weight,
+                            (int)playerTrade.FirstTrader.Character.Inventory.WeightTotal,
                             playerTrade.SecondTrader.Character.Id,
-                            (int) playerTrade.SecondTrader.Character.Inventory.Weight,
-                            (int) playerTrade.SecondTrader.Character.Inventory.WeightTotal
+                            (int)playerTrade.SecondTrader.Character.Inventory.Weight,
+                            (int)playerTrade.SecondTrader.Character.Inventory.WeightTotal
                             ));
         }
 
@@ -191,7 +242,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
         public static void SendExchangeErrorMessage(IPacketReceiver client, ExchangeErrorEnum errorEnum)
         {
-            client.Send(new ExchangeErrorMessage((sbyte) errorEnum));
+            client.Send(new ExchangeErrorMessage((sbyte)errorEnum));
         }
 
         public static void SendExchangeShopStockStartedMessage(WorldClient client)
