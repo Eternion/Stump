@@ -532,27 +532,16 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         #region Merchants
 
-        public int MerchantSpawnsCount
+        public Merchant SpawnMerchant(WorldMapMerchantRecord spawn)
         {
-            get { return m_merchantSpawns.Count; }
-        }
+            if (spawn.Map != this)
+                throw new Exception("Try to spawn a merchant on the wrong map");
 
-        public ReadOnlyCollection<WorldMapMerchantRecord> MerchantSpawns
-        {
-            get
-            {
-                return m_merchantSpawns.AsReadOnly();
-            }
-        }
+            var merchant = new Merchant(spawn.Name, spawn.SellType);
 
-        public void AddMerchantSpawn(WorldMapMerchantRecord spawn)
-        {
-            m_merchantSpawns.Add(spawn);
-        }
+            Enter(merchant);
 
-        public void RemoveMerchantSpawn(WorldMapMerchantRecord spawn)
-        {
-            m_merchantSpawns.Remove(spawn);
+            return merchant;
         }
 
         #endregion
@@ -1060,7 +1049,13 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (monster != null)
                 monster.FightWith(character);
 
-            if (character.Direction == DirectionsEnum.DIRECTION_SOUTH)
+            /// <summary>
+            /// Auras
+            /// Note: Auras doesn't work
+            /// </summary>
+            if (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 200)
+                character.PlayEmote(EmotesEnum.EMOTE_BLOODY_AURA);
+            else if (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 100)
                 character.PlayEmote(EmotesEnum.EMOTE_POWER_AURA);
         }
 

@@ -82,14 +82,20 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public bool ModifyQuantity(MerchantItem item, int quantity)
         {
-            int newQuantity = item.Stack - quantity;
-            RemoveItem(item, (uint)newQuantity);
+            if (quantity <= item.Stack)
+            {
+                int newQuantity = item.Stack - quantity;
+                RemoveItem(item, (uint)newQuantity);
 
-            var cItem = ItemManager.Instance.CreatePlayerItem(Owner, item.Template, (uint)newQuantity);
+                var cItem = ItemManager.Instance.CreatePlayerItem(Owner, item.Template, (uint)newQuantity);
 
-            Owner.Inventory.AddItem(cItem);
+                if (cItem != null)
+                    Owner.Inventory.AddItem(cItem);
 
-            return true;
+                return true;
+            }
+
+            return false;
         }
     }
 }

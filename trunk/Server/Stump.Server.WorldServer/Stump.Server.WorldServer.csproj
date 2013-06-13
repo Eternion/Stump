@@ -248,6 +248,7 @@
     <Compile Include="Game\Actors\Fight\SummonedFighter.cs" />
     <Compile Include="Game\Actors\Fight\SummonedMonster.cs" />
     <Compile Include="Game\Actors\Interfaces\INamedActor.cs" />
+    <Compile Include="Game\Actors\RolePlay\Merchants\MerchantManager.cs" />
     <Compile Include="Game\Actors\Stats\StatsInitiative.cs" />
     <Compile Include="Game\Conditions\BoolOperator.cs" />
     <Compile Include="Game\Conditions\Criterions\AdminRightsCriterion.cs" />
@@ -461,7 +462,7 @@
     <Compile Include="Game\Actors\RolePlay\Characters\ExperienceManager.cs" />
     <Compile Include="Game\Actors\RolePlay\Monsters\MonsterGroup.cs" />
     <Compile Include="Game\Actors\RolePlay\Humanoid.cs" />
-    <Compile Include="Game\Actors\RolePlay\Merchant.cs" />
+    <Compile Include="Game\Actors\RolePlay\Merchants\Merchant.cs" />
     <Compile Include="Game\Actors\RolePlay\Monsters\Monster.cs" />
     <Compile Include="Game\Actors\RolePlay\Monsters\MonsterManager.cs" />
     <Compile Include="Game\Actors\RolePlay\MountNpc.cs" />
