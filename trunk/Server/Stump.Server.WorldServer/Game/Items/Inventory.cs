@@ -389,31 +389,38 @@ namespace Stump.Server.WorldServer.Game.Items
 
             if (HasItem(item))
             {
-                RemoveItem(item, (uint)quantity);
-
-                MerchantItem mItem = new MerchantItem(
-                                        Owner,
-                                        item.Guid,
-                                        item.Template,
-                                        item.Template.Effects,
-                                        quantity,
-                                        price);
-
-                if (Owner.MerchantBag.Any(x => x.Template.Id == item.Template.Id))
+                if (quantity <= item.Stack)
                 {
-                    MerchantItem pItem = Owner.Client.Character.MerchantBag.TryGetItem(item.Template);
-                    pItem.Stack += quantity;
+                    RemoveItem(item, (uint)quantity);
 
-                    pItem.setPrice(price);
+                    MerchantItem mItem = new MerchantItem(
+                                            Owner,
+                                            item.Guid,
+                                            item.Template,
+                                            item.Template.Effects,
+                                            quantity,
+                                            price);
 
-                    return pItem;
+                    if (Owner.MerchantBag.Any(x => x.Template.Id == item.Template.Id))
+                    {
+                        MerchantItem pItem = Owner.Client.Character.MerchantBag.TryGetItem(item.Template);
+
+                        if (pItem != null)
+                        {
+                            pItem.Stack += quantity;
+
+                            pItem.setPrice(price);
+
+                            return pItem;
+                        }
+                    }
+                    else
+                    {
+                        Owner.MerchantBag.AddItem(mItem);
+                    }
+
+                    return mItem;
                 }
-                else
-                {
-                    Owner.MerchantBag.AddItem(mItem);
-                }
-
-                return mItem;
             }
 
             return nullItem;

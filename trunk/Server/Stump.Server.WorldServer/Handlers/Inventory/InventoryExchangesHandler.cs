@@ -7,10 +7,12 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Database.World;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
@@ -126,6 +128,19 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ExchangeReplyTaxVendorMessage(
                             objectValue,
                             totalTax));
+
+            WorldMapMerchantRecord merchantSpawn = new WorldMapMerchantRecord();
+            merchantSpawn.Id = 1;
+            merchantSpawn.MapId = client.Character.Map.Id;
+            merchantSpawn.Name = client.Character.Name;
+            merchantSpawn.EntityLook = client.Character.Look.TypeId;
+            merchantSpawn.CharacterId = client.Character.Id;
+            merchantSpawn.Cell = client.Character.Cell.Id;
+            merchantSpawn.SellType = 0;
+            merchantSpawn.Map = client.Character.Map;
+            merchantSpawn.Direction = (int)DirectionsEnum.DIRECTION_SOUTH_EAST;
+
+            client.Character.Map.SpawnMerchant(merchantSpawn);
         }
 
         [WorldHandler(ExchangeRequestOnShopStockMessage.Id)]
@@ -140,16 +155,20 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void HandleExchangeObjectMovePricedMessage(WorldClient client, ExchangeObjectMovePricedMessage message)
         {
             PlayerItem pItem = client.Character.Inventory.TryGetItem(message.objectUID);
-            MerchantItem result = client.Character.Inventory.MoveToMerchantBag(pItem, message.quantity, message.price);
 
-            if (result != null)
+            if (pItem != null)
             {
-                client.Send(new ExchangeShopStockMovementUpdatedMessage(
-                                new ObjectItemToSell((short)result.Template.Id, 0, false, result.Template.Effects.Select(x => x.GetObjectEffect()), result.Guid, result.Stack, result.Price
-                                )));
+                MerchantItem result = client.Character.Inventory.MoveToMerchantBag(pItem, message.quantity, message.price);
 
-                InventoryHandler.SendObjectQuantityMessage(client, pItem);
-                InventoryHandler.SendInventoryWeightMessage(client);
+                if (result != null)
+                {
+                    client.Send(new ExchangeShopStockMovementUpdatedMessage(
+                                    new ObjectItemToSell((short)result.Template.Id, 0, false, result.Template.Effects.Select(x => x.GetObjectEffect()), result.Guid, result.Stack, result.Price
+                                    )));
+
+                    InventoryHandler.SendObjectQuantityMessage(client, pItem);
+                    InventoryHandler.SendInventoryWeightMessage(client);
+                }
             }
         }
 
@@ -157,34 +176,41 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void HandleExchangeObjectModifyPricedMessage(WorldClient client, ExchangeObjectModifyPricedMessage message)
         {
             MerchantItem mItem = client.Character.MerchantBag.TryGetItem(message.objectUID);
-            mItem.setPrice(message.price);
 
-            if (message.quantity != mItem.Stack && message.quantity != 0)
+            if (mItem != null)
             {
-                if (message.quantity < mItem.Stack)
+                mItem.setPrice(message.price);
+
+                if (message.quantity != mItem.Stack && message.quantity != 0)
                 {
-                    client.Character.MerchantBag.ModifyQuantity(mItem, message.quantity);
-                }
+                    if (message.quantity < mItem.Stack)
+                    {
+                        client.Character.MerchantBag.ModifyQuantity(mItem, message.quantity);
+                    }
 
-                if (message.quantity > mItem.Stack)
+                    if (message.quantity > mItem.Stack)
+                    {
+                        PlayerItem pItem = client.Character.Inventory.TryGetItem(mItem.Template);
+                        if (pItem != null)
+                        {
+                            client.Character.Inventory.MoveToMerchantBag(pItem, (message.quantity - mItem.Stack), message.price);
+
+                            InventoryHandler.SendObjectQuantityMessage(client, pItem);
+                        }
+                    }
+
+                    client.Send(new ExchangeShopStockMovementUpdatedMessage(
+                                    new ObjectItemToSell((short)mItem.Template.Id, 0, false, mItem.Template.Effects.Select(x => x.GetObjectEffect()), message.objectUID, message.quantity, message.price
+                                    )));
+
+                    InventoryHandler.SendInventoryWeightMessage(client);
+                }
+                else
                 {
-                    PlayerItem pItem = client.Character.Inventory.TryGetItem(mItem.Template);
-                    client.Character.Inventory.MoveToMerchantBag(pItem, (message.quantity - mItem.Stack), message.price);
-
-                    InventoryHandler.SendObjectQuantityMessage(client, pItem);
+                    client.Send(new ExchangeShopStockMovementUpdatedMessage(
+                                    new ObjectItemToSell((short)mItem.Template.Id, 0, false, mItem.Template.Effects.Select(x => x.GetObjectEffect()), message.objectUID, mItem.Stack, message.price
+                                    )));
                 }
-
-                client.Send(new ExchangeShopStockMovementUpdatedMessage(
-                                new ObjectItemToSell((short)mItem.Template.Id, 0, false, mItem.Template.Effects.Select(x => x.GetObjectEffect()), message.objectUID, message.quantity, message.price
-                                )));
-
-                InventoryHandler.SendInventoryWeightMessage(client);
-            }
-            else
-            {
-                client.Send(new ExchangeShopStockMovementUpdatedMessage(
-                                new ObjectItemToSell((short)mItem.Template.Id, 0, false, mItem.Template.Effects.Select(x => x.GetObjectEffect()), message.objectUID, mItem.Stack, message.price
-                                )));
             }
         }
 
