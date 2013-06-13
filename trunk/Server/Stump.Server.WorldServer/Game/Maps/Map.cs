@@ -23,6 +23,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Interactives;
@@ -197,6 +198,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         private readonly Dictionary<int, MapNeighbour> m_clientMapsAround = new Dictionary<int, MapNeighbour>();
         private readonly Dictionary<Cell, List<CellTrigger>> m_cellsTriggers = new Dictionary<Cell, List<CellTrigger>>();
         private readonly List<MonsterSpawn> m_monsterSpawns = new List<MonsterSpawn>();
+        private readonly List<WorldMapMerchantRecord> m_merchantSpawns = new List<WorldMapMerchantRecord>();
 
         private Map m_bottomNeighbour;
         private Map m_leftNeighbour;
@@ -524,6 +526,33 @@ namespace Stump.Server.WorldServer.Game.Maps
             OnInteractiveUseEnded(character, interactiveObject, skill);
 
             return true;
+        }
+
+        #endregion
+
+        #region Merchants
+
+        public int MerchantSpawnsCount
+        {
+            get { return m_merchantSpawns.Count; }
+        }
+
+        public ReadOnlyCollection<WorldMapMerchantRecord> MerchantSpawns
+        {
+            get
+            {
+                return m_merchantSpawns.AsReadOnly();
+            }
+        }
+
+        public void AddMerchantSpawn(WorldMapMerchantRecord spawn)
+        {
+            m_merchantSpawns.Add(spawn);
+        }
+
+        public void RemoveMerchantSpawn(WorldMapMerchantRecord spawn)
+        {
+            m_merchantSpawns.Remove(spawn);
         }
 
         #endregion
@@ -1030,6 +1059,9 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             if (monster != null)
                 monster.FightWith(character);
+
+            if (character.Direction == DirectionsEnum.DIRECTION_SOUTH)
+                character.PlayEmote(EmotesEnum.EMOTE_POWER_AURA);
         }
 
         #endregion

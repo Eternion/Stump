@@ -24,6 +24,7 @@ using Stump.Server.WorldServer.Database.World.Triggers;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
@@ -143,6 +144,9 @@ namespace Stump.Server.WorldServer.Game
 
             logger.Info("Spawn monsters ...");
             SpawnMonsters();
+
+            logger.Info("Spawn merchants ...");
+            SpawnMerchants();
         }
 
         private void SetLinks()
@@ -306,6 +310,17 @@ namespace Stump.Server.WorldServer.Game
             {
                 if (map.Value.MonsterSpawnsCount > 0)
                     map.Value.EnableClassicalMonsterSpawns();
+            }
+        }
+
+        private void SpawnMerchants()
+        {
+            foreach (WorldMapMerchantRecord spawn in MerchantManager.Instance.GetMerchantSpawns())
+            {
+                if (spawn.Map != null)
+                {
+                    spawn.Map.AddMerchantSpawn(spawn);
+                }
             }
         }
 
