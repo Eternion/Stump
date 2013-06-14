@@ -2,11 +2,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Linq;
 using NLog;
-using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.Core.Pool;
 using Stump.Core.Threading;
@@ -14,16 +12,14 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors;
-using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Interactives;
@@ -48,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 {
     public class Map : WorldObjectsContext, ICharacterContainer
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         #region Events
 
@@ -105,7 +101,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             InteractiveHandler.SendInteractiveUsedMessage(Clients, user, interactive, skill);
 
-            Action<Map, Character, InteractiveObject, Skill> handler = InteractiveUsed;
+            var handler = InteractiveUsed;
             if (handler != null)
                 handler(this, user, interactive, skill);
         }
@@ -114,7 +110,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         protected virtual void OnInteractiveUseEnded(Character user, InteractiveObject interactive, Skill skill)
         {
-            Action<Map, Character, InteractiveObject, Skill> handler = InteractiveUseEnded;
+            var handler = InteractiveUseEnded;
             if (handler != null)
                 handler(this, user, interactive, skill);
         }
@@ -198,7 +194,6 @@ namespace Stump.Server.WorldServer.Game.Maps
         private readonly Dictionary<int, MapNeighbour> m_clientMapsAround = new Dictionary<int, MapNeighbour>();
         private readonly Dictionary<Cell, List<CellTrigger>> m_cellsTriggers = new Dictionary<Cell, List<CellTrigger>>();
         private readonly List<MonsterSpawn> m_monsterSpawns = new List<MonsterSpawn>();
-        private readonly List<WorldMapMerchantRecord> m_merchantSpawns = new List<WorldMapMerchantRecord>();
 
         private Map m_bottomNeighbour;
         private Map m_leftNeighbour;
@@ -446,7 +441,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             if (m_interactives.ContainsKey(interactiveObject.Id))
             {
-                logger.Error("Interactive object {0} already exists on map {1}", interactiveObject.Id, Id);
+                Logger.Error("Interactive object {0} already exists on map {1}", interactiveObject.Id, Id);
                 return null;
             }
 
@@ -532,12 +527,12 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         #region Merchants
 
-        public Merchant SpawnMerchant(WorldMapMerchantRecord spawn)
+        public Merchant SpawnMerchant(Character character, WorldMapMerchantRecord spawn)
         {
             if (spawn.Map != this)
                 throw new Exception("Try to spawn a merchant on the wrong map");
 
-            var merchant = new Merchant(spawn.Name, spawn.SellType);
+            var merchant = new Merchant(spawn, character.MerchantBag);
 
             Enter(merchant);
 
@@ -923,7 +918,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 OnActorEnter(actor);
             }
             else
-                logger.Error("Could not add actor '{0}' to the map", actor);
+                Logger.Error("Could not add actor '{0}' to the map", actor);
         }
 
         public void Leave(RolePlayActor actor)
@@ -933,7 +928,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 OnActorLeave(actor);
             }
             else
-                logger.Error(string.Format("Could not remove actor '{0}' of the map", actor));
+                Logger.Error(string.Format("Could not remove actor '{0}' of the map", actor));
         }
 
         public void Refresh(RolePlayActor actor)
@@ -1006,8 +1001,9 @@ namespace Stump.Server.WorldServer.Game.Maps
             actor.StartMoving -= OnActorStartMoving;
             actor.StopMoving -= OnActorStopMoving;
 
-            if (actor is Character)
-                Clients.Remove(( (Character)actor ).Client);
+            var character = actor as Character;
+            if (character != null)
+                Clients.Remove(character.Client);
 
             ContextHandler.SendGameContextRemoveElementMessage(Clients, actor);
 
@@ -1044,18 +1040,14 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (ExecuteTrigger(CellTriggerType.END_MOVE_ON, actor.Cell, character))
                 return;
 
-            var monster = GetActor<MonsterGroup>(entry => entry.Cell.Id == character.Cell.Id);
+            var monster = GetActor<MonsterGroup>(entry => character != null && entry.Cell.Id == character.Cell.Id);
 
             if (monster != null)
                 monster.FightWith(character);
 
-            /// <summary>
-            /// Auras
-            /// Note: Auras doesn't work
-            /// </summary>
-            if (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 200)
+            if (character != null && (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 200))
                 character.PlayEmote(EmotesEnum.EMOTE_BLOODY_AURA);
-            else if (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 100)
+            else if (character != null && (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 100))
                 character.PlayEmote(EmotesEnum.EMOTE_POWER_AURA);
         }
 

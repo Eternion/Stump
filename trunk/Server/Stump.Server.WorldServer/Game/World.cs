@@ -319,7 +319,7 @@ namespace Stump.Server.WorldServer.Game
             {
                 if (spawn.Map != null)
                 {
-                    spawn.Map.SpawnMerchant(spawn);
+                    //spawn.Map.SpawnMerchant(spawn);
                 }
             }
         }

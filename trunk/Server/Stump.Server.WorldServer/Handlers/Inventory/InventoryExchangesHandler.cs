@@ -129,18 +129,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                             objectValue,
                             totalTax));
 
-            WorldMapMerchantRecord merchantSpawn = new WorldMapMerchantRecord();
-            merchantSpawn.Id = 1;
-            merchantSpawn.MapId = client.Character.Map.Id;
-            merchantSpawn.Name = client.Character.Name;
-            merchantSpawn.EntityLook = client.Character.Look.TypeId;
-            merchantSpawn.CharacterId = client.Character.Id;
-            merchantSpawn.Cell = client.Character.Cell.Id;
-            merchantSpawn.SellType = 0;
-            merchantSpawn.Map = client.Character.Map;
-            merchantSpawn.Direction = (int)DirectionsEnum.DIRECTION_SOUTH_EAST;
-
-            client.Character.Map.SpawnMerchant(merchantSpawn);
+            //client.Character.Map.SpawnMerchant(client.Character, merchantSpawn);
         }
 
         [WorldHandler(ExchangeRequestOnShopStockMessage.Id)]
