@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
-using Stump.Core.Reflection;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Monsters;
 using MonsterGrade = Stump.Server.WorldServer.Database.Monsters.MonsterGrade;
 using MonsterSpawn = Stump.Server.WorldServer.Database.Monsters.MonsterSpawn;
@@ -54,10 +51,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         {
             var template = GetTemplate(monsterId);
 
-            if (template.Grades.Count <= grade - 1)
-                return null;
-
-            return template.Grades[grade - 1];
+            return template.Grades.Count <= grade - 1 ? null : template.Grades[grade - 1];
         }
 
         public List<MonsterGrade> GetMonsterGrades(int monsterId)
