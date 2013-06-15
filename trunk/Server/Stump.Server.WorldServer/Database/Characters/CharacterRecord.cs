@@ -650,6 +650,8 @@ namespace Stump.Server.WorldServer.Database.Characters
         public void BeforeSave(bool insert)
         {
             m_knownZaapsBin = SerializeZaaps(m_knownZaaps);
+            m_customEntityLookString = m_customEntityLook == null ? null : m_customEntityLook.ConvertToString();
+            m_entityLookString = m_entityLook == null ? null : m_entityLook.ConvertToString();
         }
     }
 }

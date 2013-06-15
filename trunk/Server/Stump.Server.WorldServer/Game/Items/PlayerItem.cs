@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Game.Items
         }
 
         public PlayerItem(Character owner, int guid, ItemTemplate template, CharacterInventoryPositionEnum position,
-                          int stack,
+                          uint stack,
                           List<EffectBase> effects)
         {
             m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);
@@ -147,7 +147,7 @@ namespace Stump.Server.WorldServer.Game.Items
                 false, // todo : over max
                 Effects.Where(entry => !entry.Hidden).Select(entry => entry.GetObjectEffect()),
                 Guid,
-                Stack);
+                (int)Stack);
         }
 
         public ObjectItem GetObjectItem()
@@ -189,7 +189,7 @@ namespace Stump.Server.WorldServer.Game.Items
             }
         }
 
-        public override int Stack
+        public override uint Stack
         {
             get { return base.Stack; }
             set

@@ -11,8 +11,10 @@ using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Dialogs;
@@ -118,7 +120,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        public MerchantBag MerchantBag
+        public CharacterMerchantBag MerchantBag
         {
             get;
             private set;
@@ -1494,6 +1496,31 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion
 
+        #region Merchant
+
+        private Merchant m_merchantToSpawn;
+
+        public bool CanEnableMerchantMode()
+        {
+            return MerchantBag.Count > 0 && !Map.IsMerchantLimitReached();
+        }
+
+        public bool EnableMerchantMode()
+        {
+            if (!CanEnableMerchantMode())
+                return false;
+
+            m_merchantToSpawn = new Merchant(this);
+
+            MerchantManager.Instance.AddMerchantSpawn(m_merchantToSpawn.Record);
+            MerchantManager.Instance.RegisterMerchant(m_merchantToSpawn);
+            Client.Disconnect();
+
+            return true;
+        }
+
+        #endregion
+
         #endregion
 
         #region Save & Load
@@ -1559,6 +1586,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                         if (Map != null && !IsFighting())
                             Map.Leave(this);
+
+                        if (Map != null && m_merchantToSpawn != null)
+                            Map.Enter(m_merchantToSpawn);
 
                         World.Instance.Leave(this);
 
@@ -1667,7 +1697,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Inventory.LoadInventory();
             UpdateLook(false);
 
-            MerchantBag = new MerchantBag(this);
+            MerchantBag = new CharacterMerchantBag(this);
             MerchantBag.LoadMerchantBag();
 
             Spells = new SpellInventory(this);

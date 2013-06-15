@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Database.Items
             set;
         }
 
-        int Stack
+        uint Stack
         {
             get;
             set;
@@ -84,10 +84,14 @@ namespace Stump.Server.WorldServer.Database.Items
             }
         }
 
-        public int Stack
+        public uint Stack
         {
-            get;
-            set;
+            get { return m_stack; }
+            set
+            {
+                m_stack = value;
+                IsDirty = true;
+            }
         }
 
         public byte[] SerializedEffects
@@ -112,6 +116,7 @@ namespace Stump.Server.WorldServer.Database.Items
         }
 
         private bool m_isDirty;
+        private uint m_stack;
 
         [Ignore]
         public bool IsDirty

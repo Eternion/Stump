@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Game.Accounts.Startup
             }
         }
 
-        public int Amount
+        public uint Amount
         {
             get { return m_record.Amount; }
             set { m_record.Amount = value; }
@@ -66,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Accounts.Startup
 
         public ObjectItemInformationWithQuantity GetObjectItemInformationWithQuantity()
         {
-            return new ObjectItemInformationWithQuantity((short) ItemTemplate.Id, 0, false, ItemTemplate.Effects.Select(entry => entry.GetObjectEffect()).ToArray(), Amount);
+            return new ObjectItemInformationWithQuantity((short) ItemTemplate.Id, 0, false, ItemTemplate.Effects.Select(entry => entry.GetObjectEffect()).ToArray(), (int) Amount);
         }
     }
 }

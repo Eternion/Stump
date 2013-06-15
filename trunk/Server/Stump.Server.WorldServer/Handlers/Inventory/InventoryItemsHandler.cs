@@ -102,9 +102,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ObjectMovementMessage(movedItem.Guid, (byte) movedItem.Position));
         }
 
-        public static void SendObjectQuantityMessage(IPacketReceiver client, PlayerItem modifieditem)
+        public static void SendObjectQuantityMessage(IPacketReceiver client, PlayerItem item)
         {
-            client.Send(new ObjectQuantityMessage(modifieditem.Guid, modifieditem.Stack));
+            client.Send(new ObjectQuantityMessage(item.Guid, (int) item.Stack));
         }
 
         public static void SendObjectErrorMessage(IPacketReceiver client, ObjectErrorEnum error)
@@ -117,6 +117,11 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new SetUpdateMessage((short) itemSet.Id,
                 client.Character.Inventory.GetItemSetEquipped(itemSet).Select(entry => (short)entry.Template.Id),
                 client.Character.Inventory.GetItemSetEffects(itemSet).Select(entry => entry.GetObjectEffect())));
+        }
+
+        public static void SendExchangeShopStockMovementUpdatedMessage(IPacketReceiver client, MerchantItem item)
+        {
+            client.Send(new ExchangeShopStockMovementUpdatedMessage(item.GetObjectItemToSell()));
         }
     }
 }

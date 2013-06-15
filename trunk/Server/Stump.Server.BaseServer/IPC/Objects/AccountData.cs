@@ -185,7 +185,7 @@ namespace Stump.Server.BaseServer.IPC.Objects
         }
 
         [ProtoMember(21)]
-        public int Tokens
+        public uint Tokens
         {
             get;
             set;

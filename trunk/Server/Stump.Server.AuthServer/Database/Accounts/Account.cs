@@ -147,7 +147,7 @@ namespace Stump.Server.AuthServer.Database
             set;
         }
 
-        public int Tokens
+        public uint Tokens
         {
             get;
             set;
