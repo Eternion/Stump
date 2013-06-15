@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
             var newitem =
                 new PlayerItem(owner, guid, template,
-                         CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, (int) amount,
+                         CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, amount,
                          GenerateItemEffects(template, maxEffects));
 
             return newitem;
@@ -60,7 +60,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
             var newitem =
                 new PlayerItem(owner, guid, template,
-                         CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, (int) amount, effects);
+                         CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, amount, effects);
 
             return newitem;
         }
@@ -73,6 +73,16 @@ namespace Stump.Server.WorldServer.Game.Items
         public PlayerItem CreatePlayerItem(Character owner, IItem item, uint amount)
         {
             return CreatePlayerItem(owner, item.Template, amount, item.Effects.Clone());
+        }
+
+        public MerchantItem CreateMerchantItem(PlayerItem item, uint quantity, uint price)
+        {
+            var guid = PlayerItemRecord.PopNextId();
+
+            var newitem =
+                new MerchantItem(item.Owner, guid, item.Template, item.Effects, quantity, price);
+
+            return newitem;
         }
 
         public List<EffectBase> GenerateItemEffects(ItemTemplate template, bool max = false)

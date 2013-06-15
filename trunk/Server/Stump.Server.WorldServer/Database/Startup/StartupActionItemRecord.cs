@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Database.Startup
             set;
         }
 
-        public int Amount
+        public uint Amount
         {
             get;
             set;

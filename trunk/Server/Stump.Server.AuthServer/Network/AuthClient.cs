@@ -95,7 +95,11 @@ namespace Stump.Server.AuthServer.Network
         {
             AuthServer.Instance.IOTaskPool.EnsureContext();
 
-            Account.Tokens += Account.NewTokens;
+            if (Account.Tokens + Account.NewTokens <= 0)
+                Account.Tokens = 0;
+            else
+                Account.Tokens += (uint)Account.NewTokens;
+            
             Account.NewTokens = 0;
 
             AuthServer.Instance.DBAccessor.Database.Save(Account);

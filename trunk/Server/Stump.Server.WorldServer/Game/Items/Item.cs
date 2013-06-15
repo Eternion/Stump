@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Items
             get;
         }
 
-        int Stack
+        uint Stack
         {
             get;
             set;
@@ -65,7 +65,7 @@ namespace Stump.Server.WorldServer.Game.Items
             protected set { Record.Id = value; }
         }
 
-        public virtual int Stack
+        public virtual uint Stack
         {
             get { return Record.Stack; }
             set { Record.Stack = value; }
@@ -85,7 +85,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public ObjectItemInformationWithQuantity GetObjectItemInformationWithQuantity()
         {
-            return new ObjectItemInformationWithQuantity((short) Template.Id, 0, false, Effects.Select(entry => entry.GetObjectEffect()).ToArray(), Stack);
+            return new ObjectItemInformationWithQuantity((short) Template.Id, 0, false, Effects.Select(entry => entry.GetObjectEffect()).ToArray(), (int)Stack);
         }
     }
 }

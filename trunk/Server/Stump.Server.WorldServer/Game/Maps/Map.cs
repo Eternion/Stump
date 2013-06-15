@@ -6,6 +6,7 @@ using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Linq;
 using NLog;
+using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.Core.Pool;
@@ -48,6 +49,9 @@ namespace Stump.Server.WorldServer.Game.Maps
 {
     public class Map : WorldObjectsContext, ICharacterContainer
     {
+        [Variable(true)] 
+        public static int MaxMerchantsPerMap = 5;
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         #region Events
@@ -526,22 +530,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             OnInteractiveUseEnded(character, interactiveObject, skill);
 
             return true;
-        }
-
-        #endregion
-
-        #region Merchants
-
-        public Merchant SpawnMerchant(WorldMapMerchantRecord spawn)
-        {
-            if (spawn.Map != this)
-                throw new Exception("Try to spawn a merchant on the wrong map");
-
-            var merchant = new Merchant(spawn.Name, spawn.SellType);
-
-            Enter(merchant);
-
-            return merchant;
         }
 
         #endregion
@@ -1300,8 +1288,8 @@ namespace Stump.Server.WorldServer.Game.Maps
                 Id,
                 0,
                 new HouseInformations[0],
-                m_actors.Select(entry => entry.Value.GetGameContextActorInformations() as GameRolePlayActorInformations),
-                m_interactives.Select(entry => entry.Value.GetInteractiveElement(character)),
+                m_actors.Where(entry => entry.Value.CanBeSee(character)).Select(entry => entry.Value.GetGameContextActorInformations() as GameRolePlayActorInformations),
+                m_interactives.Where(entry => entry.Value.CanBeSee(character)).Select(entry => entry.Value.GetInteractiveElement(character)),
                 new StatedElement[0],
                 new MapObstacle[0],
                 m_fights.Where(entry => entry.BladesVisible).Select(entry => entry.GetFightCommonInformations()));
@@ -1310,6 +1298,11 @@ namespace Stump.Server.WorldServer.Game.Maps
         #endregion
 
         #endregion
+
+        public bool IsMerchantLimitReached()
+        {
+            return m_actors.OfType<Merchant>().Count(x => !x.IsBagEmpty()) >= MaxMerchantsPerMap;
+        }
     }
 
     public class MapCellsInformationProvider : ICellsInformationProvider

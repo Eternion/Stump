@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         uint Kamas { get; }
         bool ReadyToApply { get; }
 
-        bool MoveItem(int guid, int amount);
+        bool MoveItem(int guid, uint amount);
         bool SetKamas(uint amount);
         void ToggleReady();
         void ToggleReady(bool status);

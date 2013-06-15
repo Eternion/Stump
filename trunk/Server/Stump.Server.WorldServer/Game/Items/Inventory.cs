@@ -270,7 +270,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
             if (!item.IsEquiped())
             {
-                StackItem(item, (int) amount);
+                StackItem(item, amount);
             }
             else
             {
@@ -383,47 +383,30 @@ namespace Stump.Server.WorldServer.Game.Items
             }
         }
 
-        public MerchantItem MoveToMerchantBag(PlayerItem item, int quantity, int price)
+        public MerchantItem MoveToMerchantBag(PlayerItem item, uint quantity, uint price)
         {
-            MerchantItem nullItem = null;
+            if (!HasItem(item))
+                return null;
 
-            if (HasItem(item))
+            if (quantity > item.Stack || quantity == 0)
+                return null;
+
+            RemoveItem(item, quantity);
+
+            MerchantItem existingItem = Owner.MerchantBag.FirstOrDefault(x => x.MustStackWith(item));
+
+            if (existingItem != null)
             {
-                if (quantity <= item.Stack)
-                {
-                    RemoveItem(item, (uint)quantity);
+                existingItem.Price = price;
+                Owner.MerchantBag.StackItem(existingItem, quantity);
 
-                    MerchantItem mItem = new MerchantItem(
-                                            Owner,
-                                            item.Guid,
-                                            item.Template,
-                                            item.Template.Effects,
-                                            quantity,
-                                            price);
-
-                    if (Owner.MerchantBag.Any(x => x.Template.Id == item.Template.Id))
-                    {
-                        MerchantItem pItem = Owner.Client.Character.MerchantBag.TryGetItem(item.Template);
-
-                        if (pItem != null)
-                        {
-                            pItem.Stack += quantity;
-
-                            pItem.setPrice(price);
-
-                            return pItem;
-                        }
-                    }
-                    else
-                    {
-                        Owner.MerchantBag.AddItem(mItem);
-                    }
-
-                    return mItem;
-                }
+                return existingItem;
             }
 
-            return nullItem;
+            var merchantItem = ItemManager.Instance.CreateMerchantItem(item, quantity, price);
+            Owner.MerchantBag.AddItem(merchantItem);
+
+            return merchantItem;
         }
 
         private bool UnEquipedDouble(PlayerItem itemToEquip)
@@ -472,7 +455,7 @@ namespace Stump.Server.WorldServer.Game.Items
             }
             else
             {
-                UnStackItem(item, (int) amount);
+                UnStackItem(item, amount);
             }
 
             var copy = ItemManager.Instance.CreatePlayerItem(newOwner, item, amount);
@@ -542,7 +525,7 @@ namespace Stump.Server.WorldServer.Game.Items
             if (amount >= item.Stack)
                 return item;
 
-            UnStackItem(item, (int)amount);
+            UnStackItem(item, amount);
 
             var newitem = ItemManager.Instance.CreatePlayerItem(Owner, item, amount);
 
@@ -685,6 +668,7 @@ namespace Stump.Server.WorldServer.Game.Items
         protected override void OnItemStackChanged(PlayerItem item, int difference)
         {
             InventoryHandler.SendObjectQuantityMessage(Owner.Client, item);
+            InventoryHandler.SendInventoryWeightMessage(Owner.Client);
 
             base.OnItemStackChanged(item, difference);
         }

@@ -82,7 +82,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                         World.Instance.Resume();
                     }
 
-                    World.Instance.SendAnnounce("[RELOAD] " + name + "reloaded ... WORLD RESUMED", Color.DodgerBlue);
+                    World.Instance.SendAnnounce("[RELOAD] " + name + " reloaded ... WORLD RESUMED", Color.DodgerBlue);
                 });
         }
     }

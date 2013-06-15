@@ -176,10 +176,5 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             return obj.CanBeSee(this);
         }
-
-        public void Update(int objUpdateDelta)
-        {
-          
-        }
     }
 }

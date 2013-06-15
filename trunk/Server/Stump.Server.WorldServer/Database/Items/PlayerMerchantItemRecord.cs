@@ -28,14 +28,14 @@ namespace Stump.Server.WorldServer.Database.Items
             }
         }
 
-        private int m_Price;
+        private uint m_price;
 
-        public int Price
+        public uint Price
         {
-            get { return m_Price; }
+            get { return m_price; }
             set
             {
-                m_Price = value;
+                m_price = value;
                 IsDirty = true;
             }
         }

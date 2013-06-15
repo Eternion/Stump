@@ -103,7 +103,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 return;
             }
 
-            var finalPrice = (int) (itemToSell.Price*amount);
+            var finalPrice = (uint) (itemToSell.Price*amount);
 
             if (!CanBuy(itemToSell, amount))
             {
@@ -123,7 +123,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             }
             else
             {
-                Character.Inventory.SubKamas(finalPrice);
+                Character.Inventory.SubKamas((int) finalPrice);
                 BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
                                                         46, finalPrice);
             }

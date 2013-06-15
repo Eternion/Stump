@@ -319,8 +319,21 @@ namespace Stump.Server.WorldServer.Game
             {
                 if (spawn.Map != null)
                 {
-                    spawn.Map.SpawnMerchant(spawn);
+                    var merchant = new Merchant(spawn);
+                    merchant.LoadRecord();
+                    MerchantManager.Instance.RegisterMerchant(merchant);
+
+                    spawn.Map.Enter(merchant);
                 }
+            }
+        }
+
+        private void UnSpawnMerchants()
+        {
+            foreach (var merchant in MerchantManager.Instance.Merchants)
+            {
+                MerchantManager.Instance.UnRegisterMerchant(merchant);
+                merchant.Map.Leave(merchant);
             }
         }
 

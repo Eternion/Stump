@@ -1,101 +1,80 @@
-﻿using System;
+﻿#region License GNU GPL
+// MerchantBagOffline.cs
+// 
+// Copyright (C) 2013 - BehaviorIsManaged
+// 
+// This program is free software; you can redistribute it and/or modify it 
+// under the terms of the GNU General Public License as published by the Free Software Foundation;
+// either version 2 of the License, or (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+// See the GNU General Public License for more details. 
+// You should have received a copy of the GNU General Public License along with this program; 
+// if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+#endregion
+
 using System.Linq;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
-    public sealed class MerchantBag : ItemsCollection<MerchantItem>
+    public class MerchantBag : ItemsCollection<MerchantItem>
     {
-        public Character Owner
-        {
-            get;
-            private set;
-        }
-
-        public MerchantBag(Character owner)
+        public MerchantBag(Merchant owner)
         {
             Owner = owner;
         }
 
-        internal void LoadMerchantBag()
+        public MerchantBag(Merchant owner, CharacterMerchantBag merchantBag)
         {
-            var records = ItemManager.Instance.FindPlayerMerchantItems(Owner.Id);
-            Items = records.Select(entry => new MerchantItem(Owner, entry)).ToDictionary(entry => entry.Guid);
+            Owner = owner;
+            Items = merchantBag.ToDictionary(entry => entry.Guid); // just to copy properly
         }
 
-        private void UnLoadMerchantBag()
+        public Merchant Owner
         {
-            Items.Clear();
+            get;
+            set;
         }
+
+        /// <summary>
+        /// Must be saved 
+        /// </summary>
+        public bool IsDirty
+        {
+            get;
+            set;
+        }
+
+        public void LoadRecord()
+        {
+            var records = ItemManager.Instance.FindPlayerMerchantItems(Owner.Id);
+            Items = records.Select(entry => new MerchantItem(entry)).ToDictionary(entry => entry.Guid);
+        }
+
+        // todo : move it in the dialog class
+        /*public bool BuyItem(Character buyer, MerchantItem item, uint quantity)
+        {
+            if (quantity == 0)
+                return false;
+
+            RemoveItem(item, quantity);
+            IsDirty = true;
+
+            PlayerItem newItem = ItemManager.Instance.CreatePlayerItem(buyer, item.Template, quantity,
+                                                            item.Effects);
+
+            buyer.Inventory.AddItem(newItem);
+            return true;
+        }*/
 
         public override void Save()
         {
-            lock (Locker)
-            {
-                var database = WorldServer.Instance.DBAccessor.Database;
-                foreach (var item in Items)
-                {
-                    if (item.Value.Record.IsNew)
-                    {
-                        database.Insert(item.Value.Record);
-                        item.Value.Record.IsNew = false;
-                    }
-                    else if (item.Value.Record.IsDirty)
-                    {
-                        database.Update(item.Value.Record);
-                    }
-                }
+            base.Save();
 
-                while (ItemsToDelete.Count > 0)
-                {
-                    var item = ItemsToDelete.Dequeue();
-
-                    database.Delete(item.Record);
-                }
-            }
-        }
-
-        public int CalcMerchantTax()
-        {
-            double resultTax = 0;
-
-            foreach(var Item in Items)
-            {
-                resultTax += (Item.Value.Price * Item.Value.Stack);
-            }
-
-            resultTax = (resultTax * 0.1);
-
-            return (int)resultTax;
-        }
-
-        public bool MoveToInventory(MerchantItem item)
-        {
-            RemoveItem(item);
-
-            var cItem = ItemManager.Instance.CreatePlayerItem(Owner, item.Template, (uint)item.Stack);
-
-            Owner.Inventory.AddItem(cItem);
-
-            return true;
-        }
-
-        public bool ModifyQuantity(MerchantItem item, int quantity)
-        {
-            if (quantity <= item.Stack)
-            {
-                int newQuantity = item.Stack - quantity;
-                RemoveItem(item, (uint)newQuantity);
-
-                var cItem = ItemManager.Instance.CreatePlayerItem(Owner, item.Template, (uint)newQuantity);
-
-                if (cItem != null)
-                    Owner.Inventory.AddItem(cItem);
-
-                return true;
-            }
-
-            return false;
+            IsDirty = false;
         }
     }
 }

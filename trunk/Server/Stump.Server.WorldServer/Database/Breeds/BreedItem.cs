@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Database.Breeds
             set;
         }
 
-        public int Amount
+        public uint Amount
         {
             get;
             set;

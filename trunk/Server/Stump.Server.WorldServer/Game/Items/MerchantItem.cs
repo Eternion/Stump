@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Stump.Core.Extensions;
+using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -10,33 +13,24 @@ namespace Stump.Server.WorldServer.Game.Items
     {
         #region Fields
 
-        public Character Owner
+        public uint Price
         {
             get;
-            private set;
-        }
-
-        public int Price
-        {
-            get;
-            private set;
+            set;
         }
 
         #endregion
 
         #region Constructors
 
-        public MerchantItem(Character owner, PlayerMerchantItemRecord record)
+        public MerchantItem(PlayerMerchantItemRecord record)
             : base(record)
         {
-
-            Owner = owner;
             Price = Record.Price;
         }
 
-        public MerchantItem(Character owner, int guid, ItemTemplate template, List<EffectBase> effects, int stack, int price)
+        public MerchantItem(Character owner, int guid, ItemTemplate template, List<EffectBase> effects, uint stack, uint price)
         {
-            Owner = owner;
             Price = price;
 
             Record = new PlayerMerchantItemRecord // create the associated record
@@ -53,17 +47,27 @@ namespace Stump.Server.WorldServer.Game.Items
         #endregion
 
         #region Functions
-
-        public void changeOwner(Character newOwner)
+        public bool MustStackWith(MerchantItem compared)
         {
-            this.Owner = newOwner;
+            return ( compared.Template.Id == Template.Id &&
+                    compared.Effects.CompareEnumerable(Effects) );
         }
 
-        public void setPrice(int newPrice)
+        public bool MustStackWith(PlayerItem compared)
         {
-            this.Price = newPrice;
+            return ( compared.Template.Id == Template.Id &&
+                    compared.Effects.CompareEnumerable(Effects) );
+        }
+
+        public ObjectItemToSell GetObjectItemToSell()
+        {
+            return new ObjectItemToSell((short) Template.Id, 0, false,
+                                 Effects.Select(x => x.GetObjectEffect()),
+                                 Guid, (int) Stack, (int) Price);
         }
 
         #endregion
+
+
     }
 }

@@ -176,7 +176,7 @@ namespace Stump.Server.WorldServer.Game.Items
                 RemoveItem(item, delete);
             else
             {
-                UnStackItem(item, (int) amount);
+                UnStackItem(item, amount);
             }
         }
 
@@ -222,16 +222,11 @@ namespace Stump.Server.WorldServer.Game.Items
         /// </summary>
         /// <param name="item"></param>
         /// <param name="amount"></param>
-        public virtual void StackItem(T item, int amount)
+        public virtual void StackItem(T item, uint amount)
         {
-            if (amount < 0)
-                UnStackItem(item, -amount);
-            else
-            {
-                item.Stack += amount;
+            item.Stack += amount;
 
-                NotifyItemStackChanged(item, amount);
-            }
+            NotifyItemStackChanged(item, (int)amount);
         }
 
         /// <summary>
@@ -239,7 +234,7 @@ namespace Stump.Server.WorldServer.Game.Items
         /// </summary>
         /// <param name="item"></param>
         /// <param name="amount"></param>
-        public virtual void UnStackItem(T item, int amount)
+        public virtual void UnStackItem(T item, uint amount)
         {
             if (item.Stack - amount <= 0)
                 RemoveItem(item);
@@ -247,7 +242,7 @@ namespace Stump.Server.WorldServer.Game.Items
             {
                 item.Stack -= amount;
 
-                NotifyItemStackChanged(item, -amount);
+                NotifyItemStackChanged(item, (int)(-amount));
             }
         }
         /*
@@ -280,12 +275,21 @@ namespace Stump.Server.WorldServer.Game.Items
                 var database = WorldServer.Instance.DBAccessor.Database;
                 foreach (var item in Items)
                 {
-                    database.Save(item.Value.Record);
+                    if (item.Value.Record.IsNew)
+                    {
+                        database.Insert(item.Value.Record);
+                        item.Value.Record.IsNew = false;
+                    }
+                    else if (item.Value.Record.IsDirty)
+                    {
+                        database.Update(item.Value.Record);
+                    }
                 }
 
                 while (ItemsToDelete.Count > 0)
                 {
                     var item = ItemsToDelete.Dequeue();
+
                     database.Delete(item.Record);
                 }
             }

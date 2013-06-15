@@ -109,7 +109,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             NotifyReadyStatusChanged(ReadyToApply);
         }
 
-        public bool MoveItem(int guid, int amount)
+        public bool MoveItem(int guid, uint amount)
         {
             var playerItem = Character.Inventory[guid];
             var tradeItem = Items.SingleOrDefault(entry => entry.Guid == guid);
@@ -130,7 +130,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
             if (tradeItem != null)
             {
-                if (playerItem.Stack < tradeItem.Stack + amount || tradeItem.Stack + amount < 0)
+                if (playerItem.Stack < tradeItem.Stack + amount)
                     return false;
 
                 var currentStack = tradeItem.Stack;
@@ -139,7 +139,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                 if (tradeItem.Stack <= 0)
                     m_items.Remove(tradeItem);
 
-                NotifyItemMoved(tradeItem, true, tradeItem.Stack - currentStack);
+                NotifyItemMoved(tradeItem, true, (int) (tradeItem.Stack - currentStack));
 
                 return true;
             }
@@ -157,7 +157,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             tradeItem = new PlayerItem(Character, dummyRecord);
             m_items.Add(tradeItem);
 
-            NotifyItemMoved(tradeItem, false, amount);
+            NotifyItemMoved(tradeItem, false, (int) amount);
 
             return true;
         }
