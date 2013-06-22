@@ -7,7 +7,9 @@ using Stump.Core.Reflection;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Spells;
 using MerchantSpawn = Stump.Server.WorldServer.Database.World.WorldMapMerchantRecord;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
@@ -16,19 +18,26 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
     {
         private Dictionary<int, MerchantSpawn> m_merchantSpawns;
         private List<Merchant> m_activeMerchants = new List<Merchant>();
-        private Stack<MerchantSpawn> m_addedSpawns = new Stack<MerchantSpawn>();
-        private Stack<MerchantSpawn> m_removedSpawns = new Stack<MerchantSpawn>();
 
 
         [Initialization(InitializationPass.Sixth)]
         public override void Initialize()
         {
-            m_merchantSpawns = Database.Query<MerchantSpawn>(WorldMapMerchantRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_merchantSpawns = Database.Query<MerchantSpawn>(WorldMapMerchantRelator.FetchQuery).ToDictionary(entry => entry.CharacterId);
         }
 
         public MerchantSpawn[] GetMerchantSpawns()
         {
             return m_merchantSpawns.Values.ToArray();
+        }
+
+        public MerchantSpawn GetMerchantSpawn(int characterId)
+        {
+            MerchantSpawn spawn;
+            if (m_merchantSpawns.TryGetValue(characterId, out spawn))
+                return spawn;
+
+            return null;
         }
 
         public ReadOnlyCollection<Merchant> Merchants
@@ -39,48 +48,49 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
         public void AddMerchantSpawn(MerchantSpawn spawn, bool lazySave = true)
         {
             if (lazySave)
-                m_addedSpawns.Push(spawn);
+                WorldServer.Instance.IOTaskPool.AddMessage(() => Database.Insert(spawn));
             else
                 Database.Insert(spawn);
-            m_merchantSpawns.Add(spawn.Id, spawn);
+            m_merchantSpawns.Add(spawn.CharacterId, spawn);
         }
 
         public void RemoveMerchantSpawn(MerchantSpawn spawn, bool lazySave = true)
         {
             if (lazySave)
-                m_removedSpawns.Push(spawn);
+                WorldServer.Instance.IOTaskPool.AddMessage(() => Database.Delete(spawn));
             else
                 Database.Delete(spawn);
-            m_merchantSpawns.Remove(spawn.Id);
+            m_merchantSpawns.Remove(spawn.CharacterId);
         }
 
-        public void RegisterMerchant(Merchant merchant)
+        public void ActiveMerchant(Merchant merchant)
         {
+            merchant.Map.Enter(merchant);
             m_activeMerchants.Add(merchant);
         }
 
-        public void UnRegisterMerchant(Merchant merchant)
+        public void UnActiveMerchant(Merchant merchant)
         {
+            merchant.Delete();
             m_activeMerchants.Remove(merchant);
+        }
+
+        public IEnumerable<Merchant> UnActiveMerchantFromAccount(WorldAccount account)
+        {
+            var merchants = m_activeMerchants.Where(x => x.IsMerchantOwner(account)).ToArray();
+
+            foreach (var merchant in merchants)
+            {
+                UnActiveMerchant(merchant);
+                yield return merchant;
+            }
         }
 
         public void Save()
         {
-            while (m_addedSpawns.Count > 0)
-            {
-                var spawn = m_addedSpawns.Pop();
-                Database.Insert(spawn);
-            }
-
-            while (m_removedSpawns.Count > 0)
-            {
-                var spawn = m_removedSpawns.Pop();
-                Database.Delete(spawn);
-            }
-
             foreach (var merchant in m_activeMerchants)
             {
-                if (merchant.Bag.IsDirty)
+                if (merchant.IsRecordDirty)
                     merchant.Save();
             }
         }

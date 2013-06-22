@@ -15,8 +15,10 @@
 #endregion
 
 using System.Linq;
+using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
+using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
@@ -48,27 +50,38 @@ namespace Stump.Server.WorldServer.Game.Items
             set;
         }
 
+        protected override void OnItemStackChanged(MerchantItem item, int difference)
+        {
+            IsDirty = true;
+            InventoryHandler.SendExchangeShopStockMovementUpdatedMessage(Owner.OpenDialogs.Select(x => x.Character).ToClients(), item);
+
+            base.OnItemStackChanged(item, difference);
+        }
+
+        protected override void OnItemAdded(MerchantItem item)
+        {
+            IsDirty = true;
+            InventoryHandler.SendExchangeShopStockMovementUpdatedMessage(Owner.OpenDialogs.Select(x => x.Character).ToClients(), item);
+
+            base.OnItemAdded(item);
+        }
+
+        protected override void OnItemRemoved(MerchantItem item)
+        {
+            IsDirty = true;
+            InventoryHandler.SendExchangeShopStockMovementRemovedMessage(Owner.OpenDialogs.Select(x => x.Character).ToClients(), item);
+
+            if (Count == 0)
+                Owner.Delete();
+
+            base.OnItemRemoved(item);
+        }
+
         public void LoadRecord()
         {
             var records = ItemManager.Instance.FindPlayerMerchantItems(Owner.Id);
             Items = records.Select(entry => new MerchantItem(entry)).ToDictionary(entry => entry.Guid);
         }
-
-        // todo : move it in the dialog class
-        /*public bool BuyItem(Character buyer, MerchantItem item, uint quantity)
-        {
-            if (quantity == 0)
-                return false;
-
-            RemoveItem(item, quantity);
-            IsDirty = true;
-
-            PlayerItem newItem = ItemManager.Instance.CreatePlayerItem(buyer, item.Template, quantity,
-                                                            item.Effects);
-
-            buyer.Inventory.AddItem(newItem);
-            return true;
-        }*/
 
         public override void Save()
         {

@@ -19,14 +19,14 @@ namespace Stump.Server.WorldServer.Database.World
         private string m_entityLookString;
         private Map m_map;
 
-        [PrimaryKey("Id")]
-        public int Id
+        [PrimaryKey("CharacterId", false)]
+        public int CharacterId
         {
             get;
             set;
         }
 
-        public int CharacterId
+        public int AccountId
         {
             get;
             set;
@@ -100,6 +100,18 @@ namespace Stump.Server.WorldServer.Database.World
         }
 
         public int SellType
+        {
+            get;
+            set;
+        }
+
+        public uint KamasEarned
+        {
+            get;
+            set;
+        }
+
+        public bool IsActive
         {
             get;
             set;

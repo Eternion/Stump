@@ -14,7 +14,7 @@ using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 {
-    public class NpcShopDialog : IDialog
+    public class NpcShopDialog : IShopDialog
     {
         public NpcShopDialog(Character character, Npc npc, IEnumerable<NpcItem> items)
         {
@@ -93,14 +93,14 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
         #endregion
 
-        public void BuyItem(int itemId, uint amount)
+        public bool BuyItem(int itemId, uint amount)
         {
-            NpcItem itemToSell = Items.Where(entry => entry.Item.Id == itemId).FirstOrDefault();
+            NpcItem itemToSell = Items.FirstOrDefault(entry => entry.Item.Id == itemId);
 
             if (itemToSell == null)
             {
                 Character.Client.Send(new ExchangeErrorMessage((int) ExchangeErrorEnum.BUY_ERROR));
-                return;
+                return false;
             }
 
             var finalPrice = (uint) (itemToSell.Price*amount);
@@ -108,7 +108,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             if (!CanBuy(itemToSell, amount))
             {
                 Character.Client.Send(new ExchangeErrorMessage((int) ExchangeErrorEnum.BUY_ERROR));
-                return;
+                return false;
             }
 
             BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
@@ -129,6 +129,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             }
 
             Character.Client.Send(new ExchangeBuyOkMessage());
+            return true;
         }
 
         public bool CanBuy(NpcItem item, uint amount)
@@ -150,12 +151,12 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             return true;
         }
 
-        public void SellItem(int guid, uint amount)
+        public bool SellItem(int guid, uint amount)
         {
             if (!CanSell)
             {
                 Character.Client.Send(new ExchangeErrorMessage((int) ExchangeErrorEnum.SELL_ERROR));
-                return;
+                return false;
             }
 
             PlayerItem item = Character.Inventory.TryGetItem(guid);
@@ -163,13 +164,13 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             if (item == null)
             {
                 Character.Client.Send(new ExchangeErrorMessage((int) ExchangeErrorEnum.SELL_ERROR));
-                return;
+                return false;
             }
 
             if (item.Stack < amount)
             {
                 Character.Client.Send(new ExchangeErrorMessage((int)ExchangeErrorEnum.SELL_ERROR));
-                return;
+                return false;
             } 
             
             NpcItem saleItem = Items.FirstOrDefault(entry => entry.Item.Id == item.Template.Id);
@@ -198,6 +199,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             }
 
             Character.Client.Send(new ExchangeSellOkMessage());
+            return true;
         }
     }
 }
