@@ -15,8 +15,8 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public uint Price
         {
-            get;
-            set;
+            get { return Record.Price; }
+            set { Record.Price = value; }
         }
 
         #endregion
@@ -26,13 +26,10 @@ namespace Stump.Server.WorldServer.Game.Items
         public MerchantItem(PlayerMerchantItemRecord record)
             : base(record)
         {
-            Price = Record.Price;
         }
 
         public MerchantItem(Character owner, int guid, ItemTemplate template, List<EffectBase> effects, uint stack, uint price)
         {
-            Price = price;
-
             Record = new PlayerMerchantItemRecord // create the associated record
                          {
                              Id = guid,
@@ -61,9 +58,16 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public ObjectItemToSell GetObjectItemToSell()
         {
-            return new ObjectItemToSell((short) Template.Id, 0, false,
+            return new ObjectItemToSell((short)Template.Id, 0, false,
                                  Effects.Select(x => x.GetObjectEffect()),
-                                 Guid, (int) Stack, (int) Price);
+                                 Guid, (int)Stack, (int)Price);
+        }
+
+        public ObjectItemToSellInHumanVendorShop GetObjectItemToSellInHumanVendorShop()
+        {
+            return new ObjectItemToSellInHumanVendorShop((short)Template.Id, 0, false,
+                                 Effects.Select(x => x.GetObjectEffect()),
+                                 Guid, (int) Stack, (int) Price, 0);
         }
 
         #endregion

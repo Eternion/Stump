@@ -19,6 +19,7 @@ using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Interactives;
+using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Fights;
@@ -126,6 +127,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
+        private int m_earnKamasInMerchant;
+
         #region Identifier
 
         public override string Name
@@ -217,6 +220,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get { return Dialog as ZaapDialog; }
         }
 
+        public MerchantShopDialog MerchantShopDialog
+        {
+            get { return Dialog as MerchantShopDialog; }
+        }
+
         public IRequestBox RequestBox
         {
             get;
@@ -230,6 +238,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void SetDialog(IDialog dialog)
         {
+            if (Dialog != null)
+                logger.Warn("Character {0} opened a dialog but was already in one !", this);
+
             Dialog = dialog;
         }
 
@@ -405,7 +416,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             
 
             var pets = Inventory.GetPetsSkins();
-            var subentities = pets.Select((t, i) => new SubEntity(1, (sbyte) i, new EntityLook(t, new short[0], new int[0], new short[] {75}, new SubEntity[0]))).ToList();
+            List<SubEntity> subentities =
+                pets.Select(
+                    (t, i) => new SubEntity((int) SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET, (sbyte) i,
+                                            new EntityLook(t, new short[0], new int[0], new short[] {75},
+                                                           new SubEntity[0]))).ToList();
 
             RealLook.subentities = subentities;
 
@@ -940,6 +955,26 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         #region Actions
 
         #region Chat
+
+        public void SendConnectionMessages()
+        {
+            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 89);
+            if (Account.LastConnection != null)
+            {
+                var date = Account.LastConnection.Value;
+
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 193,
+                                       date.Year,
+                                       date.Month,
+                                       date.Day,
+                                       date.Hour,
+                                       date.Minute.ToString("00"));
+            }
+
+            if (m_earnKamasInMerchant > 0)
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 45, m_earnKamasInMerchant);
+        }
+
         public void SendServerMessage(string message)
         {
             BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 0, message);
@@ -1500,9 +1535,37 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private Merchant m_merchantToSpawn;
 
-        public bool CanEnableMerchantMode()
+        public bool CanEnableMerchantMode(bool sendError = true)
         {
-            return MerchantBag.Count > 0 && !Map.IsMerchantLimitReached();
+            if (MerchantBag.Count == 0)
+            {
+                if (sendError)
+                    SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 23);
+                return false;
+            }
+
+            if (Map.IsMerchantLimitReached())
+            {
+                if (sendError)
+                    SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 25, Map.MaxMerchantsPerMap);
+                return false;
+            }
+
+            if (!Map.IsCellFree(Cell.Id, this))
+            {
+                if (sendError)
+                    SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 24);
+                return false;
+            }
+
+            if (Kamas <= MerchantBag.GetMerchantTax())
+            {
+                if (sendError)
+                    SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 76);
+                return false;
+            } 
+            
+            return true;
         }
 
         public bool EnableMerchantMode()
@@ -1512,11 +1575,44 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             m_merchantToSpawn = new Merchant(this);
 
+            Inventory.SubKamas(MerchantBag.GetMerchantTax());
             MerchantManager.Instance.AddMerchantSpawn(m_merchantToSpawn.Record);
-            MerchantManager.Instance.RegisterMerchant(m_merchantToSpawn);
+            MerchantManager.Instance.ActiveMerchant(m_merchantToSpawn);
             Client.Disconnect();
 
             return true;
+        }
+
+        private void CheckMerchantModeReconnection()
+        {
+            foreach (var merchant in MerchantManager.Instance.UnActiveMerchantFromAccount(Client.WorldAccount))
+            {
+                if (merchant.Record.CharacterId == Id)
+                {
+                    if (merchant.KamasEarned > 0)
+                    {
+                        Inventory.AddKamas((int) merchant.KamasEarned);
+                        m_earnKamasInMerchant = (int) merchant.KamasEarned;
+                        SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 45,
+                                               merchant.KamasEarned);
+                    }
+                    MerchantBag.LoadMerchantBag(merchant.Bag);
+
+                    MerchantManager.Instance.RemoveMerchantSpawn(merchant.Record);
+                }
+                else
+                {
+                    merchant.Bag.Save();
+                }
+            }
+
+            var record = MerchantManager.Instance.GetMerchantSpawn(Id);
+            if (record != null)
+            {
+                Inventory.AddKamas((int)record.KamasEarned);
+                m_earnKamasInMerchant = (int)record.KamasEarned;
+                MerchantManager.Instance.RemoveMerchantSpawn(record);
+            }
         }
 
         #endregion
@@ -1698,6 +1794,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             UpdateLook(false);
 
             MerchantBag = new CharacterMerchantBag(this);
+            CheckMerchantModeReconnection();
             MerchantBag.LoadMerchantBag();
 
             Spells = new SpellInventory(this);

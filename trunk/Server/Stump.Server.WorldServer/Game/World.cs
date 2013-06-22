@@ -321,7 +321,7 @@ namespace Stump.Server.WorldServer.Game
                 {
                     var merchant = new Merchant(spawn);
                     merchant.LoadRecord();
-                    MerchantManager.Instance.RegisterMerchant(merchant);
+                    MerchantManager.Instance.ActiveMerchant(merchant);
 
                     spawn.Map.Enter(merchant);
                 }
@@ -332,7 +332,7 @@ namespace Stump.Server.WorldServer.Game
         {
             foreach (var merchant in MerchantManager.Instance.Merchants)
             {
-                MerchantManager.Instance.UnRegisterMerchant(merchant);
+                MerchantManager.Instance.UnActiveMerchant(merchant);
                 merchant.Map.Leave(merchant);
             }
         }

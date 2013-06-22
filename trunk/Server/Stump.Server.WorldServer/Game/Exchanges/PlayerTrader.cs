@@ -109,7 +109,44 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             NotifyReadyStatusChanged(ReadyToApply);
         }
 
-        public bool MoveItem(int guid, uint amount)
+        public bool MoveItem(int guid, int amount)
+        {
+            if (amount == 0)
+                return false;
+
+            if (amount > 0)
+                return MoveItemToPanel(guid, (uint) amount);
+
+            return MoveItemToInventory(guid, (uint)( -amount ));
+        }
+
+        public bool MoveItemToInventory(int guid, uint amount)
+        {
+            var tradeItem = Items.SingleOrDefault(entry => entry.Guid == guid);
+
+            if (amount == 0)
+                return false;
+
+            ToggleReady(false);
+
+            if (tradeItem == null)
+                return false;
+
+            if (tradeItem.Stack <= amount)
+            {
+                m_items.Remove(tradeItem);
+                tradeItem.Stack = 0;
+            }
+            else
+            {
+                tradeItem.Stack -= amount;
+            }
+
+            NotifyItemMoved(tradeItem, tradeItem.Stack != 0, (int)-amount);
+            return true;
+        }
+
+        public bool MoveItemToPanel(int guid, uint amount)
         {
             var playerItem = Character.Inventory[guid];
             var tradeItem = Items.SingleOrDefault(entry => entry.Guid == guid);

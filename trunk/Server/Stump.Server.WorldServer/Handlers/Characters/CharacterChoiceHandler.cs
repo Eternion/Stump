@@ -12,6 +12,7 @@ using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
@@ -139,18 +140,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             FriendHandler.SendFriendWarnOnLevelGainStateMessage(client, client.Character.FriendsBook.WarnOnLevel);
             FriendHandler.SendGuildMemberWarnOnConnectionStateMessage(client, false);
 
-            BasicHandler.SendTextInformationMessage(client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 89);
-            if (client.Account.LastConnection != null)
-            {
-                var date = client.Account.LastConnection.Value;
+            client.Character.SendConnectionMessages();
 
-                BasicHandler.SendTextInformationMessage(client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 193,
-                                                        date.Year,
-                                                        date.Month,
-                                                        date.Day,
-                                                        date.Hour,
-                                                        date.Minute.ToString("00"));
-            }
 
             //InitializationHandler.SendOnConnectionEventMessage(client, 2);
 
@@ -166,6 +157,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             character.LastUsage = DateTime.Now;
             WorldServer.Instance.DBAccessor.Database.Update(character);
         }
+
 
         [WorldHandler(CharactersListRequestMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterListRequest(WorldClient client, CharactersListRequestMessage message)

@@ -166,7 +166,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public virtual bool CanBeSee(WorldObject byObj)
         {
-            return byObj != null && byObj.Map != null && byObj.Map == Map;
+            return byObj != null && !IsDeleted && !IsDisposed && byObj.Map != null && byObj.Map == Map;
         }
 
         public virtual bool CanSee(WorldObject obj)

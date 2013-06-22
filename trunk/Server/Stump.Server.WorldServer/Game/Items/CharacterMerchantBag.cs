@@ -19,10 +19,29 @@ namespace Stump.Server.WorldServer.Game.Items
             private set;
         }
 
+        public bool IsLoaded
+        {
+            get;
+            private set;
+        }
+
+        internal void LoadMerchantBag(MerchantBag bag)
+        {
+            if (IsLoaded)
+                return;
+
+            Items = bag.ToDictionary(x => x.Guid);
+            IsLoaded = true;
+        }
+
         internal void LoadMerchantBag()
         {
+            if (IsLoaded)
+                return;
+
             var records = ItemManager.Instance.FindPlayerMerchantItems(Owner.Id);
             Items = records.Select(entry => new MerchantItem(entry)).ToDictionary(entry => entry.Guid);
+            IsLoaded = true;
         }
 
         private void UnLoadMerchantBag()
@@ -75,7 +94,8 @@ namespace Stump.Server.WorldServer.Game.Items
 
         protected override void OnItemRemoved(MerchantItem item)
         {
-        
+            InventoryHandler.SendExchangeShopStockMovementRemovedMessage(Owner.Client, item);
+
             base.OnItemRemoved(item);
         }
 

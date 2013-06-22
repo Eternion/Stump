@@ -123,5 +123,10 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             client.Send(new ExchangeShopStockMovementUpdatedMessage(item.GetObjectItemToSell()));
         }
+
+        public static void SendExchangeShopStockMovementRemovedMessage(IPacketReceiver client, MerchantItem item)
+        {
+            client.Send(new ExchangeShopStockMovementRemovedMessage(item.Guid));
+        }
     }
 }

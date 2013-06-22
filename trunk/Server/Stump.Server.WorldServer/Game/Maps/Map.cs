@@ -195,7 +195,8 @@ namespace Stump.Server.WorldServer.Game.Maps
         /// </summary>
         public static MapPoint[] PointsGrid;
 
-        private readonly ConcurrentDictionary<int, RolePlayActor> m_actors = new ConcurrentDictionary<int, RolePlayActor>();
+        private readonly List<RolePlayActor> m_actors = new List<RolePlayActor>(); 
+        private readonly ConcurrentDictionary<int, RolePlayActor> m_actorsMap = new ConcurrentDictionary<int, RolePlayActor>();
         private readonly ReversedUniqueIdProvider m_contextualIds = new ReversedUniqueIdProvider(0);
         private readonly List<Fight> m_fights = new List<Fight>();
         private readonly Dictionary<int, InteractiveObject> m_interactives = new Dictionary<int, InteractiveObject>();
@@ -232,7 +233,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             get
             {
-                return m_actors.Values;
+                return m_actors;
             }
         }
 
@@ -903,25 +904,47 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Enter(RolePlayActor actor)
         {
-            if (m_actors.ContainsKey(actor.Id))
-                Leave(actor);
-
-            if (m_actors.TryAdd(actor.Id, actor))
+            if (m_actors.Contains(actor))
             {
-                OnActorEnter(actor);
+                logger.Error("Map already contains actor {0}", actor);
+                Leave(actor);
             }
-            else
-                logger.Error("Could not add actor '{0}' to the map", actor);
+
+            if (m_actorsMap.ContainsKey(actor.Id))
+            {
+                logger.Error("Map already contains actor {0}", actor.Id);
+                Leave(actor.Id);
+            }
+
+            m_actors.Add(actor);
+            m_actorsMap.TryAdd(actor.Id, actor);
+
+            OnActorEnter(actor);
         }
 
         public void Leave(RolePlayActor actor)
         {
-            if (m_actors.TryRemove(actor.Id, out actor))
+            if (m_actors.Remove(actor))
             {
+                RolePlayActor removedActor;
+                if (m_actorsMap.TryRemove(actor.Id, out removedActor))
+                {
+                    if (removedActor != actor)
+                        logger.Error("Did not removed the expected actor !!");
+                    // todo : manage this errors better ..
+                }
+
                 OnActorLeave(actor);
             }
-            else
-                logger.Error(string.Format("Could not remove actor '{0}' of the map", actor));
+        }
+
+        public void Leave(int actorId)
+        {
+            RolePlayActor removedActor;
+            if (m_actorsMap.TryRemove(actorId, out removedActor))
+            {
+                OnActorLeave(removedActor);
+            }
         }
 
         public void Refresh(RolePlayActor actor)
@@ -972,7 +995,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void SendActorsActions(Character character)
         {
-            foreach (RolePlayActor actor in m_actors.Values)
+            foreach (RolePlayActor actor in m_actors)
             {
                 if (actor.IsMoving())
                 {
@@ -1086,7 +1109,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public bool IsActor(int id)
         {
-            return m_actors.ContainsKey(id);
+            return m_actorsMap.ContainsKey(id);
         }
 
         public bool IsActor(RolePlayActor actor)
@@ -1094,11 +1117,21 @@ namespace Stump.Server.WorldServer.Game.Maps
             return IsActor(actor.Id);
         }
 
+        public bool IsCellFree(short cell)
+        {
+            return Objects.All(x => x.Cell.Id != cell);
+        }
+
+        public bool IsCellFree(short cell, WorldObject exclude)
+        {
+            return Objects.All(x => x == exclude || x.Cell.Id != cell);
+        }
+
         public T GetActor<T>(int id)
             where T : RolePlayActor
         {
             RolePlayActor actor;
-            if (m_actors.TryGetValue(id, out actor))
+            if (m_actorsMap.TryGetValue(id, out actor))
                 return actor as T;
 
             return null;
@@ -1107,17 +1140,17 @@ namespace Stump.Server.WorldServer.Game.Maps
         public T GetActor<T>(Predicate<T> predicate)
             where T : RolePlayActor
         {
-            return m_actors.Values.OfType<T>().Where(entry => predicate(entry)).FirstOrDefault();
+            return m_actors.OfType<T>().FirstOrDefault(entry => predicate(entry));
         }
 
         public IEnumerable<T> GetActors<T>()
         {
-            return m_actors.Values.OfType<T>(); // after a benchmark we conclued that it takes approximatively 10 ticks
+            return m_actors.OfType<T>(); // after a benchmark we conclued that it takes approximatively 10 ticks
         }
 
         public IEnumerable<T> GetActors<T>(Predicate<T> predicate)
         {
-            return m_actors.Values.OfType<T>().Where(entry => predicate(entry));
+            return m_actors.OfType<T>().Where(entry => predicate(entry));
         }
 
         public Cell GetCell(int id)
@@ -1288,7 +1321,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 Id,
                 0,
                 new HouseInformations[0],
-                m_actors.Where(entry => entry.Value.CanBeSee(character)).Select(entry => entry.Value.GetGameContextActorInformations() as GameRolePlayActorInformations),
+                m_actors.Where(entry => entry.CanBeSee(character)).Select(entry => entry.GetGameContextActorInformations() as GameRolePlayActorInformations),
                 m_interactives.Where(entry => entry.Value.CanBeSee(character)).Select(entry => entry.Value.GetInteractiveElement(character)),
                 new StatedElement[0],
                 new MapObstacle[0],

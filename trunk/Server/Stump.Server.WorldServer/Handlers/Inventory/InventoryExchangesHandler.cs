@@ -8,6 +8,8 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
+using Stump.Server.WorldServer.Game.Dialogs;
+using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Items;
@@ -79,12 +81,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ExchangeObjectMoveMessage.Id)]
         public static void HandleExchangeObjectMoveMessage(WorldClient client, ExchangeObjectMoveMessage message)
         {
-            if (message.quantity <= 0)
-                return;
-
             if (client.Character.IsTrading())
-                client.Character.Trader.MoveItem(message.objectUID, (uint) message.quantity);
-            else
+                client.Character.Trader.MoveItem(message.objectUID, message.quantity);
+            else if (message.quantity <= 0) // he is modifying his merchant bag and remove an item
             {
                 MerchantItem merchantItem = client.Character.MerchantBag.TryGetItem(message.objectUID);
                 bool result = client.Character.MerchantBag.MoveToInventory(merchantItem);
@@ -103,15 +102,17 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ExchangeBuyMessage.Id)]
         public static void HandleExchangeBuyMessage(WorldClient client, ExchangeBuyMessage message)
         {
-            if (client.Character.NpcShopDialog != null)
-                client.Character.NpcShopDialog.BuyItem(message.objectToBuyId, (uint)message.quantity);
+            var dialog = client.Character.Dialog as IShopDialog;
+            if (dialog != null)
+                dialog.BuyItem(message.objectToBuyId, (uint)message.quantity);
         }
 
         [WorldHandler(ExchangeSellMessage.Id)]
         public static void HandleExchangeSellMessage(WorldClient client, ExchangeSellMessage message)
         {
-            if (client.Character.NpcShopDialog != null)
-                client.Character.NpcShopDialog.SellItem(message.objectToSellId, (uint)message.quantity);
+            var dialog = client.Character.Dialog as IShopDialog;
+            if (dialog != null) 
+                dialog.SellItem(message.objectToSellId, (uint)message.quantity);
         }
 
         [WorldHandler(ExchangeShowVendorTaxMessage.Id)]
@@ -151,7 +152,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ExchangeObjectModifyPricedMessage.Id)]
         public static void HandleExchangeObjectModifyPricedMessage(WorldClient client, ExchangeObjectModifyPricedMessage message)
         {
-            if (message.price <= 0 || message.quantity <= 0)
+            if (message.price <= 0)
                 return;
 
             MerchantItem merchantItem = client.Character.MerchantBag.TryGetItem(message.objectUID);
@@ -161,7 +162,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
             merchantItem.Price = (uint)message.price;
 
-            if (message.quantity == merchantItem.Stack)
+            if (message.quantity == merchantItem.Stack || message.quantity == 0)
             {
                 SendExchangeShopStockMovementUpdatedMessage(client, merchantItem);
                 return;
@@ -184,6 +185,18 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void HandleExchangeStartAsVendorMessage(WorldClient client, ExchangeStartAsVendorMessage message)
         {
             client.Character.EnableMerchantMode();
+        }
+
+        [WorldHandler(ExchangeOnHumanVendorRequestMessage.Id)]
+        public static void HandleExchangeOnHumanVendorRequestMessage(WorldClient client, ExchangeOnHumanVendorRequestMessage message)
+        {
+            var merchant = client.Character.Map.GetActor<Merchant>(message.humanVendorId);
+
+            if (merchant == null || merchant.Cell.Id != message.humanVendorCell)
+                return;
+
+            var shop = new MerchantShopDialog(merchant, client.Character);
+            shop.Open();
         }
 
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,
@@ -247,6 +260,11 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             client.Send(new ExchangeShopStockStartedMessage(
                             merchantBag.Select(x => x.GetObjectItemToSell())));
+        }
+
+        public static void SendExchangeStartOkHumanVendorMessage(IPacketReceiver client, Merchant merchant)
+        {
+            client.Send(new ExchangeStartOkHumanVendorMessage(merchant.Id, merchant.Bag.Select(x => x.GetObjectItemToSellInHumanVendorShop())));
         }
     }
 }
