@@ -94,6 +94,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return Character.Stats; }
         }
 
+        public bool IsDisconnected
+        {
+            get;
+            private set;
+        }
+
         private void InitializeCharacterFighter()
         {
             m_damageTakenBeforeFight = Stats.Health.DamageTaken;
@@ -286,6 +292,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Stats.Health.DamageTaken = m_damageTakenBeforeFight;
             else if (Stats.Health.Total <= 0)
                 Stats.Health.DamageTaken = (short) (Stats.Health.TotalMax - 1);
+        }
+
+        public void EnterDisconnectedState()
+        {
+            IsDisconnected = true;
         }
 
         public override IFightResult GetFightResult()
