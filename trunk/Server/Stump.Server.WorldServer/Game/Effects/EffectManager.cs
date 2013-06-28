@@ -56,7 +56,7 @@ namespace Stump.Server.WorldServer.Game.Effects
                 if (type.GetCustomAttribute<DefaultEffectHandlerAttribute>() != null)
                     continue; // we don't mind about default handlers
 
-                var attributes = type.GetCustomAttributes<EffectHandlerAttribute>();
+                var attributes = type.GetCustomAttributes<EffectHandlerAttribute>().ToArray();
 
                 if (attributes.Length == 0)
                 {
@@ -145,7 +145,7 @@ namespace Stump.Server.WorldServer.Game.Effects
             if (type.GetCustomAttribute<DefaultEffectHandlerAttribute>() != null)
                 throw new Exception("Default handler cannot be added");
 
-            var attributes = type.GetCustomAttributes<EffectHandlerAttribute>();
+            var attributes = type.GetCustomAttributes<EffectHandlerAttribute>().ToArray();
 
             if (attributes.Length == 0)
             {
@@ -197,7 +197,7 @@ namespace Stump.Server.WorldServer.Game.Effects
             if (type.GetCustomAttribute<DefaultEffectHandlerAttribute>() != null)
                 throw new Exception("Default handler cannot be added");
 
-            var attributes = type.GetCustomAttributes<EffectHandlerAttribute>();
+            var attributes = type.GetCustomAttributes<EffectHandlerAttribute>().ToArray();
 
             if (attributes.Length == 0)
             {
@@ -238,7 +238,7 @@ namespace Stump.Server.WorldServer.Game.Effects
             if (type.GetCustomAttribute<DefaultEffectHandlerAttribute>() != null)
                 throw new Exception("Default handler cannot be added");
 
-            var attributes = type.GetCustomAttributes<EffectHandlerAttribute>();
+            var attributes = type.GetCustomAttributes<EffectHandlerAttribute>().ToArray();
 
             if (attributes.Length == 0)
             {
