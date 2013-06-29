@@ -314,7 +314,7 @@ namespace Stump.Core.Xml.Config
                     }
 
                     var properties = from property in type.GetProperties(BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
-                                     where ReflectionExtensions.GetCustomAttribute<VariableAttribute>(field) != null
+                                     where ReflectionExtensions.GetCustomAttribute<VariableAttribute>(property) != null
                                      select property;
 
                     foreach (var property in properties)
