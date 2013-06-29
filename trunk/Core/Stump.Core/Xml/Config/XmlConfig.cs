@@ -281,7 +281,7 @@ namespace Stump.Core.Xml.Config
                 foreach (var type in assembly.GetTypes())
                 {
                     var fields = from field in type.GetFields(BindingFlags.GetField | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
-                                 where field.GetCustomAttribute<VariableAttribute>() != null
+                                 where ReflectionExtensions.GetCustomAttribute<VariableAttribute>(field) != null
                                  select field;
 
                     object instance = null;

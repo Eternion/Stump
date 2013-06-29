@@ -104,7 +104,7 @@ namespace Stump.Server.BaseServer.Handler
                              (entry.ParameterType == typeof(TClient) || entry.ParameterType.IsSubclassOf(typeof(TClient))) )) != 2)
                         throw new ArgumentException("Incorrect delegate parameters");
 
-                    var handlerDelegate = method.CreateDelegate(typeof(TClient), typeof(Message)) as Action<object, TClient, Message>;
+                    var handlerDelegate = DynamicExtension.CreateDelegate(method, typeof(TClient), typeof(Message)) as Action<object, TClient, Message>;
                     
                     foreach (var attribute in attributes)
                     {
