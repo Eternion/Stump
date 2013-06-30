@@ -78,7 +78,7 @@ namespace Stump.Server.AuthServer.IPC
                 if (parameters.Length != 1 || !parameters[0].ParameterType.IsSubclassOf(typeof(IPCMessage)))
                     continue;
 
-                m_handlers.Add(parameters[0].ParameterType, (Action<object, IPCMessage>)method.CreateDelegate(typeof(IPCMessage)));
+                m_handlers.Add(parameters[0].ParameterType, (Action<object, IPCMessage>)DynamicExtension.CreateDelegate(method, typeof(IPCMessage)));
             }
         }
 
