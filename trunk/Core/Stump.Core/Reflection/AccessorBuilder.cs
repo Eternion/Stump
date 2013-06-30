@@ -148,7 +148,7 @@ namespace Stump.Core.Reflection
 
             getter =
                 (GetFieldValueUnboundDelegate)
-                getterDef.CreateDelegate(typeof (GetFieldValueUnboundDelegate));
+                DynamicExtension.CreateDelegate(getterDef, typeof (GetFieldValueUnboundDelegate));
 
             return getter;
         }
@@ -185,7 +185,7 @@ namespace Stump.Core.Reflection
 
             setter =
                 (SetFieldValueUnboundDelegate)
-                setterDef.CreateDelegate(typeof (SetFieldValueUnboundDelegate));
+                DynamicExtension.CreateDelegate(setterDef, typeof (SetFieldValueUnboundDelegate));
 
             return setter;
         }
