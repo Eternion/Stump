@@ -23,6 +23,7 @@ using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
 using Stump.Server.WorldServer.Game.Fights.History;
 using Stump.Server.WorldServer.Game.Fights.Results;
+using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -80,7 +81,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public event Action<FightActor, FightActor, int> DamageReflected;
 
-        protected virtual void OnDamageReflected(FightActor target, int reflected)
+        protected internal virtual void OnDamageReflected(FightActor target, int reflected)
         {
             ActionsHandler.SendGameActionFightReflectDamagesMessage(Fight.Clients, this, target, reflected);
 
@@ -724,6 +725,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public int InflictDamage(int damage, EffectSchoolEnum school, FightActor from, bool pvp = false, Spell spell = null, bool withBoost = true)
         {
+            var fractionGlyph = Fight.GetTriggers().FirstOrDefault(x => x is FractionGlyph && x.ContainsCell(Cell)) as FractionGlyph;
+            if (fractionGlyph != null)
+                return fractionGlyph.DispatchDamages(damage, school, from, pvp, spell, withBoost);
+
             if (spell != null)
                 damage += from.GetSpellBoost(spell);
 
@@ -760,7 +765,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (damage <= 0)
                 damage = 0;
-
             return InflictDirectDamage(damage, from);
         }
 

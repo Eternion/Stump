@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
@@ -10,6 +11,7 @@ using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
 using Stump.ORM;
 using Stump.Server.BaseServer.Database;
+using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
@@ -77,28 +79,28 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return Database.ExecuteScalar<bool>("SELECT EXISTS(SELECT 1 FROM characters WHERE Name=@0)", name);
         }
 
-        public CharacterCreationResultEnum CreateCharacter(WorldClient client, string name, sbyte breedId, bool sex,
-                                                           IEnumerable<int> colors, int headId)
+        public void CreateCharacter(WorldClient client, string name, sbyte breedId, bool sex,
+                                                           IEnumerable<int> colors, int headId, Action successCallback, Action<CharacterCreationResultEnum> failCallback)
         {
             if (client.Characters.Count >= MaxCharacterSlot && client.Account.Role <= RoleEnum.Player)
-                return CharacterCreationResultEnum.ERR_TOO_MANY_CHARACTERS;
+                failCallback(CharacterCreationResultEnum.ERR_TOO_MANY_CHARACTERS);
 
             if (DoesNameExist(name))
-                return CharacterCreationResultEnum.ERR_NAME_ALREADY_EXISTS;
+                failCallback(CharacterCreationResultEnum.ERR_NAME_ALREADY_EXISTS);
 
             if (!m_nameCheckerRegex.IsMatch(name))
-                return CharacterCreationResultEnum.ERR_INVALID_NAME;
+                failCallback(CharacterCreationResultEnum.ERR_INVALID_NAME);
 
             var breed = BreedManager.Instance.GetBreed(breedId);
 
             if (breed == null ||
                 !client.Account.CanUseBreed(breedId) || !BreedManager.Instance.IsBreedAvailable(breedId))
-                return CharacterCreationResultEnum.ERR_NOT_ALLOWED;
+                failCallback(CharacterCreationResultEnum.ERR_NOT_ALLOWED);
 
             var head = BreedManager.Instance.GetHead(headId);
 
             if (head.Breed != breedId || head.Gender == 1 != sex)
-                return CharacterCreationResultEnum.ERR_NO_REASON;
+                failCallback(CharacterCreationResultEnum.ERR_NO_REASON);
 
             var indexedColors = new List<int>();
             int i = 0;
@@ -178,16 +180,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 transaction.Complete();
             }
 
-            IPCAccessor.Instance.Send(new AddCharacterMessage(client.Account.Id, record.Id));;
+            IPCAccessor.Instance.SendRequest(new AddCharacterMessage(client.Account.Id, record.Id),
+                                             x => successCallback(),
+                                             x =>
+                                                 {
+                                                     // todo cascade
+                                                     Database.Delete(record);
+                                                     failCallback(CharacterCreationResultEnum.ERR_NO_REASON);
+                                                 });
+            ;
 
             logger.Debug("Character {0} created", record.Name);
-
-
-            return CharacterCreationResultEnum.OK;
         }
 
         public void DeleteCharacterOnAccount(CharacterRecord character, WorldClient client)
-        {
+        {   
             // todo cascade
             Database.Delete(character);
             client.Characters.Remove(character);

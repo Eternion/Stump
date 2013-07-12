@@ -20,6 +20,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             Dispellable = dispelable;
 
             Duration = (short)Effect.Duration;
+            Efficiency = 1.0d;
         }
 
         protected Buff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, short customActionId)
@@ -34,6 +35,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             CustomActionId = customActionId;
 
             Duration = (short)Effect.Duration;
+            Efficiency = 1.0d;
         }
 
         public int Id
@@ -91,6 +93,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             private set;
         }
 
+        /// <summary>
+        /// Efficiency factor, increase or decrease effect's efficiency. Default is 1.0
+        /// </summary>
+        public double Efficiency
+        {
+            get;
+            set;
+        }
+
+
         public virtual BuffType Type
         {
             get
@@ -126,6 +138,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
                 return CustomActionId.Value;
 
             return (short) Effect.EffectId;
+        }
+
+        public EffectInteger GenerateEffect()
+        {
+            var effect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
+
+            if (effect != null)
+                effect.Value = (short)( effect.Value * Efficiency );
+
+            return effect;
         }
 
         public FightDispellableEffectExtendedInformations GetFightDispellableEffectExtendedInformations()

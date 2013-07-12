@@ -77,6 +77,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             set;
         }
 
+
         public Cell CastCell
         {
             get { return MarkTrigger != null && MarkTrigger.Shapes.Length > 0 ? MarkTrigger.Shapes[0].Cell : Caster.Cell; }
@@ -195,6 +196,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
 
             return GetAffectedActors().Where(entry => predicate(entry)).ToArray();
+        }
+
+        public EffectInteger GenerateEffect()
+        {
+            var effect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
+
+            if (effect != null)
+                effect.Value = (short)(effect.Value*Efficiency);
+
+            return effect;
         }
 
         public void SetAffectedActors(IEnumerable<FightActor> actors)

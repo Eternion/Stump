@@ -322,8 +322,6 @@ namespace Stump.Server.WorldServer.Game
                     var merchant = new Merchant(spawn);
                     merchant.LoadRecord();
                     MerchantManager.Instance.ActiveMerchant(merchant);
-
-                    spawn.Map.Enter(merchant);
                 }
             }
         }
@@ -630,12 +628,12 @@ namespace Stump.Server.WorldServer.Game
 
         private List<Area> m_pausedAreas = new List<Area>();
         /// <summary>
-        /// Have to be called from another thread !!
+        /// Has to be called from another thread !!
         /// </summary>
         public void Pause()
         {
             logger.Info("World Paused !!");
-            foreach (var area in m_areas)
+            foreach (var area in m_areas.Where(x => x.Value.IsRunning))
             {
                 if (area.Value.IsInContext)
                     throw new Exception("Has to be called from another thread !!");

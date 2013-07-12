@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
@@ -183,6 +184,34 @@ namespace Stump.Server.WorldServer
         public WorldClient[] FindClients(Predicate<WorldClient> predicate)
         {
             return ClientManager.FindAll(predicate);
+        }
+
+        protected override void CheckScheduledShutdown()
+        {
+            var diff = TimeSpan.FromMinutes(ShutdownTimer) - UpTime;
+            if (diff < TimeSpan.FromMinutes(10))
+            {
+                World.Instance.SendAnnounce(string.Format("Automatic reboot in <b>{0}</b> minutes",
+                    (int)diff.TotalMinutes), Color.Red);
+
+                if (diff.TotalMinutes < 2)
+                {
+                    IOTaskPool.CallPeriodically(10*1000, ScheduledShutdownCountdownTick);
+                }
+            }
+
+            base.CheckScheduledShutdown();
+        }
+
+        private void ScheduledShutdownCountdownTick()
+        {
+            var diff = TimeSpan.FromMinutes(ShutdownTimer) - UpTime;
+
+            World.Instance.SendAnnounce(string.Format("Automatic reboot in <b>{0}</b> seconds",
+                (int)diff.TotalSeconds), Color.Red);
+
+            if (diff.TotalSeconds <= 0)
+                Shutdown();
         }
 
         protected override void OnShutdown()

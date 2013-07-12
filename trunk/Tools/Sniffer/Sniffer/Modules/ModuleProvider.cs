@@ -23,7 +23,7 @@ namespace Sniffer.Modules
         public void LoadModules()
         {
             if (!Directory.Exists(_folderUri))
-                throw new DirectoryNotFoundException("Le répertoire fourni pour charger les modules n'existe pas");
+                return;
 
             foreach (var file in Directory.GetFiles(_folderUri, "*.dll"))
             {

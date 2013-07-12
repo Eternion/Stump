@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         {
             foreach (var actor in GetAffectedActors())
             {
-                var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
+                var integerEffect = GenerateEffect();
 
                 if (integerEffect == null)
                     return false;

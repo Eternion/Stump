@@ -1670,7 +1670,7 @@
         /// <summary>
         /// Damage sharing
         /// </summary>
-        Effect_1061 = 1061,
+        Effect_DamageSharing = 1061,
         /// <summary>
         /// (not found)
         /// </summary>

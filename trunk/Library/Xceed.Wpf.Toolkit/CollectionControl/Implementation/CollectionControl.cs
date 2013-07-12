@@ -149,6 +149,9 @@ namespace Xceed.Wpf.Toolkit
       CommandBindings.Add( new CommandBinding( ApplicationCommands.Delete, Delete, CanDelete ) );
       CommandBindings.Add( new CommandBinding( ComponentCommands.MoveDown, MoveDown, CanMoveDown ) );
       CommandBindings.Add( new CommandBinding( ComponentCommands.MoveUp, MoveUp, CanMoveUp ) );
+
+      InputBindings.Add(new KeyBinding(ApplicationCommands.Delete, Key.Delete, ModifierKeys.None));
+      InputBindings.Add(new KeyBinding(ApplicationCommands.Delete, Key.Back, ModifierKeys.None));
     }
 
     #endregion //Constructors

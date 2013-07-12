@@ -14,6 +14,7 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -34,12 +35,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         {
             foreach (var actor in GetAffectedActors())
             {
-                var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
+                var integerEffect = GenerateEffect();
 
                 if (integerEffect == null)
                     return false;
 
-                foreach (var buff in actor.GetBuffs())
+                foreach (var buff in actor.GetBuffs().ToArray())
                 {
                     if (buff.Dispellable)
                     {

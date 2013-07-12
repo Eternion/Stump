@@ -21,6 +21,7 @@ using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Results.Data;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Basic;
 using FightResultAdditionalData = Stump.Server.WorldServer.Game.Fights.Results.Data.FightResultAdditionalData;
@@ -172,6 +173,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                                                                                               critical ==
                                                                                               FightSpellCastCriticalEnum
                                                                                                   .CRITICAL_HIT);
+                    handler.EffectZone = new Zone(weapon.Type.ZoneShape, (byte) weapon.Type.ZoneSize,
+                                                  handler.CastPoint.OrientationTo(handler.TargetedPoint));
                     handlers.Add(handler);
                 }
 

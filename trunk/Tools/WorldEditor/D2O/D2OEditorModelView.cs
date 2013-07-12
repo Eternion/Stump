@@ -280,15 +280,16 @@ namespace WorldEditor.D2O
 
         private void PerformSave(string filePath)
         {
+            D2OWriter writer = null;
             try
             {
-                var writer = new D2OWriter(filePath, true);
+                writer = new D2OWriter(filePath, true);
                 writer.StartWriting(true);
 
                 foreach (var row in Rows)
                 {
                     if (row is IIndexedData)
-                        writer.Write(row, ( (IIndexedData)row ).Id);
+                        writer.Write(row, ((IIndexedData) row).Id);
                     else
                         writer.Write(row);
                 }
@@ -304,6 +305,11 @@ namespace WorldEditor.D2O
             catch (Exception ex)
             {
                 MessageService.ShowError(m_editor, "Cannot perform save : " + ex);
+            }
+            finally
+            {
+                if (writer != null)
+                    writer.Dispose();
             }
         }
 
