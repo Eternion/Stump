@@ -63,6 +63,12 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(126, EffectsEnum.Effect_AddAP_111, (level, effect, critical) => effect.Targets = SpellTargetType.ALL);
             #endregion
 
+            #region ENUTROF
+            // living chest (60)
+            // kill effect -> removed
+            RemoveEffectOnAllLevels(60, EffectsEnum.Effect_Kill);
+            #endregion
+
         }
 
         public static void FixEffectOnAllLevels(int spellId, int effectIndex, Action<SpellLevelTemplate, EffectDice, bool> fixer)
@@ -100,6 +106,24 @@ namespace Stump.Plugins.DefaultPlugin.Spells
                 {
                     fixer(level, spellEffect, true);
                 }
+            }
+        }
+
+        public static void RemoveEffectOnAllLevels(int spellId, EffectsEnum effect)
+        {
+            var spellLevels = SpellManager.Instance.GetSpellLevels(spellId).ToArray();
+
+            if (spellLevels.Length == 0)
+            {
+                logger.Error("Cannot apply fix on spell {0} : spell do not exists", spellId);
+                return;
+            }
+
+            foreach (var level in spellLevels)
+            {
+                level.Effects.RemoveAll(entry => entry.EffectId == effect);
+                level.CriticalEffects.RemoveAll(entry => entry.EffectId == effect);
+                
             }
         }
     }

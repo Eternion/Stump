@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 {"npcs", NpcManager.Instance},
                 {"monsters", MonsterManager.Instance},
                 {"items", ItemManager.Instance},
-                {"worlds", World.Instance},
+                {"world", World.Instance},
                 {"spells", SpellManager.Instance},
                 {"effects", EffectManager.Instance},
                 {"interactives", InteractiveManager.Instance},

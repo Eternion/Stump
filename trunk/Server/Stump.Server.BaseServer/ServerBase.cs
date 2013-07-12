@@ -36,6 +36,12 @@ namespace Stump.Server.BaseServer
         [Variable]
         public static int IOTaskInterval = 50;
 
+        [Variable]
+        public static bool ScheduledShutdown = true;
+
+        [Variable]
+        public static int ShutdownTimer = 6*60;
+
         protected Dictionary<string, Assembly> LoadedAssemblies;
         protected Logger logger;
         private bool m_ignoreReload;
@@ -405,8 +411,11 @@ namespace Stump.Server.BaseServer
             Running = true;
             Initializing = false;
 
-            IOTaskPool.CallPeriodically((int) TimeSpan.FromSeconds(30).TotalMilliseconds, KeepSQLConnectionAlive);
+            IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(30).TotalMilliseconds, KeepSQLConnectionAlive);
+            if (ScheduledShutdown)
+                IOTaskPool.CallPeriodically((int)TimeSpan.FromMinutes(2).TotalMilliseconds, CheckScheduledShutdown);
         }
+
 
         /// <summary>
         /// Allow the server to ignore the next modification of the config file.
@@ -426,6 +435,14 @@ namespace Stump.Server.BaseServer
             catch (Exception ex)
             {
                 logger.Error("Cannot ping SQL connection : {0}", ex);
+            }
+        }
+
+        protected virtual void CheckScheduledShutdown()
+        {
+            if (UpTime.TotalMinutes > ShutdownTimer)
+            {
+                Shutdown();
             }
         }
 

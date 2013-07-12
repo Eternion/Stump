@@ -4,6 +4,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
     {
         NEVER,
         TURN_BEGIN,
-        MOVE
+        MOVE,
     }
 }

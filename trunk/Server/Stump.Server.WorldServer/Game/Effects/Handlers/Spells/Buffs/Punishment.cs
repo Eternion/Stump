@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             if (currentBonus >= limit)
                 return;
 
-            var bonus = (short)token;
+            var bonus = (short)(int)token;
 
             if (bonus + currentBonus > limit)
                 bonus = (short) (limit - currentBonus);

@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
         public override bool Apply()
         {
-            var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
+            var integerEffect = GenerateEffect();
 
             if (integerEffect == null)
                 return false;

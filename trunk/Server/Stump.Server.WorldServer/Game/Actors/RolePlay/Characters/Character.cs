@@ -1602,7 +1602,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 }
                 else
                 {
-                    merchant.Bag.Save();
+                    merchant.Save();
                 }
             }
 

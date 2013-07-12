@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
             foreach (FightActor actor in GetAffectedActors())
             {
-                var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
+                var integerEffect = GenerateEffect();
 
                 if (integerEffect == null)
                     return false;
@@ -70,7 +70,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         private static void DamageBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            var integerEffect = buff.Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
+            var integerEffect = buff.GenerateEffect();
 
             if (integerEffect == null)
                 return;

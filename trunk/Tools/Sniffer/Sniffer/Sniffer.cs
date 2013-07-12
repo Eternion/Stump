@@ -14,6 +14,7 @@ using PcapDotNet.Packets.Transport;
 using Sniffer.Modules;
 using Stump.DofusProtocol.Messages;
 using System.Diagnostics;
+using Stump.DofusProtocol.Types;
 using Message = Stump.DofusProtocol.Messages.Message;
 
 namespace Stump.Tools.Sniffer
@@ -62,6 +63,7 @@ namespace Stump.Tools.Sniffer
             AppDomain.CurrentDomain.GetAssemblies().ToDictionary(entry => entry.GetName().Name);
 
             MessageReceiver.Initialize();
+            ProtocolTypeManager.Initialize();
 
             Port = DefaultPortToSniff;
             form.toolStripTextBoxPort.Text = Port.ToString();

@@ -27,10 +27,28 @@ namespace Stump.Core.Pool
     {
         private readonly ConcurrentDictionary<TC, T> m_entities = new ConcurrentDictionary<TC, T>();
 
+        public event Action<T> EntityAdded;
+
+        protected virtual void OnEntityAdded(T obj)
+        {
+            Action<T> handler = EntityAdded;
+            if (handler != null) handler(obj);
+        }
+
+        public event Action<T> EntityRemoved;
+
+        protected virtual void OnEntityRemoved(T obj)
+        {
+            Action<T> handler = EntityRemoved;
+            if (handler != null) handler(obj);
+        }
+
         protected void AddEntity(TC identifier, T entity)
         {
             if (!m_entities.TryAdd(identifier, entity))
                 throw new Exception(string.Format("Cannot add entity, identifier {0} may already exist", identifier));
+
+            OnEntityAdded(entity);
         }
 
         protected T RemoveEntity(TC identifier)
@@ -38,6 +56,8 @@ namespace Stump.Core.Pool
             T entity;
             if (!m_entities.TryRemove(identifier, out entity))
                 throw new Exception(string.Format("Cannot remove entity, identifier {0} may not exist", identifier));
+
+            OnEntityRemoved(entity);
 
             return entity;
         }

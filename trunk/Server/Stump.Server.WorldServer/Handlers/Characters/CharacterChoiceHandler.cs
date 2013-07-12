@@ -113,10 +113,11 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             client.Character = new Character(character, client);
 
+            SendCharacterSelectedSuccessMessage(client);
+
             ContextRoleplayHandler.SendGameRolePlayArenaUpdatePlayerInfosMessage(client);
             ContextHandler.SendNotificationListMessage(client, new[] { 0x7FFFFFFF });
 
-            SendCharacterSelectedSuccessMessage(client);
 
             InventoryHandler.SendInventoryContentMessage(client);
 

@@ -30,15 +30,20 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 return;
             }
 
-            var result = CharacterManager.Instance.CreateCharacter(client, message.name, message.breed, message.sex, message.colors, message.cosmeticId);
-           
+            CharacterManager.Instance.CreateCharacter(client, message.name, message.breed, message.sex, message.colors, message.cosmeticId,
+                () => OnCharacterCreationSuccess(client), x => OnCharacterCreationFailed(client, x));
+        }
+
+        private static void OnCharacterCreationSuccess(WorldClient client)
+        {
+            SendCharacterCreationResultMessage(client, CharacterCreationResultEnum.OK);
+        }
+
+        private static void OnCharacterCreationFailed(WorldClient client, CharacterCreationResultEnum result)
+        {
             SendCharacterCreationResultMessage(client, result);
-            
-            if (result == CharacterCreationResultEnum.OK)
-            {
-                BasicHandler.SendBasicNoOperationMessage(client);
-                SendCharactersListMessage(client);
-            }
+            BasicHandler.SendBasicNoOperationMessage(client);
+            SendCharactersListMessage(client);
         }
 
         [WorldHandler(CharacterNameSuggestionRequestMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]

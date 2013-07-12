@@ -470,6 +470,12 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
         private void WriteFieldVector(IDataWriter writer, D2OFieldDefinition field, IList list, int vectorDimension)
         {
+            if (list == null)
+            {
+                writer.WriteInt(0);
+                return;
+            }
+
             writer.WriteInt(list.Count);
 
             for (int i = 0; i < list.Count; i++)

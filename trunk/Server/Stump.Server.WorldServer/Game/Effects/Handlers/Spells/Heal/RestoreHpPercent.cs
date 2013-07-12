@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
         {
             foreach (var actor in GetAffectedActors())
             {
-                var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
+                var integerEffect = GenerateEffect();
 
                 if (integerEffect == null)
                     return false;
@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
 
         private void OnBuffTriggered(TriggerBuff buff, BuffTriggerType trigger, object token)
         {                
-            var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
+            var integerEffect = GenerateEffect();
 
             if (integerEffect == null)
                 return;

@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
         {
             foreach (FightActor actor in GetAffectedActors())
             {
-                var integerEffect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
+                var integerEffect = GenerateEffect();
 
                 if (integerEffect == null)
                     return false;
@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
 
         private static void StealHpBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            var integerEffect = buff.Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
+            var integerEffect = buff.GenerateEffect();
 
             if (integerEffect == null)
                 return;

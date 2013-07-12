@@ -17,6 +17,9 @@ namespace ArkalysPlugin
     {
         [Variable]
         public static readonly bool Active = true;
+
+        [Variable]
+        public static readonly short OrbItemTemplate = 20000;
         
         [Variable]
         public static readonly SerializableDictionary<int, ItemTypeEnum[]> Sellers = 
@@ -45,13 +48,13 @@ namespace ArkalysPlugin
         new SerializableDictionary<int, int>()
             {
                 {60, 0},
-                {80, 15000},
-                {100, 35000},
-                {120, 90000},
-                {140, 170000},
-                {160, 240000},
-                {180, 330000},
-                {200, 470000},
+                {80, 1200},
+                {100, 2000},
+                {120, 3000},
+                {140, 4500},
+                {160, 6050},
+                {180, 7900},
+                {200, 10000},
            };
 
         [Variable]
@@ -194,6 +197,10 @@ namespace ArkalysPlugin
                 npcAction.AddPair("Type", "Shop");
                 npcAction.AddPair("NpcId", seller.Key);
 
+                AppendQuery("SET @shopid=(SELECT Id FROM `npcs_actions` WHERE " + string.Format("`NpcId`={0} AND `Type`='Shop')", seller.Key));
+                AppendQuery(SqlBuilder.BuildDelete("npcs_actions", "Id=@shopid"));
+                AppendQuery(SqlBuilder.BuildDelete("npcs_items", "NpcShopId=@shopid"));
+
                 AppendQuery(SqlBuilder.BuildInsert(npcAction));
                 AppendQuery("SET @shopid=(SELECT LAST_INSERT_ID())");
 
@@ -203,6 +210,7 @@ namespace ArkalysPlugin
                                 orderby entry.Level ascending
                                 select entry);
 
+                bool isBread = false;
 
                 foreach (var template in selector)
                 {
@@ -219,13 +227,15 @@ namespace ArkalysPlugin
                             continue;
 
                         price = (int)( Math.Max(restoreEffect.DiceFace, restoreEffect.DiceNum) * BreadHpPerKama);
+                        isBread = true;
                     }
 
                     var itemQuery = new KeyValueListBase("npcs_items");
                     itemQuery.AddPair("ItemId", template.Id);
                     itemQuery.AddPair("NpcShopId", new RawData("@shopid"));
                     itemQuery.AddPair("CustomPrice", price);
-                    itemQuery.AddPair("MaxStats", price == 0 ? "1" : "0");
+                    itemQuery.AddPair("MaxStats", "1");
+                    itemQuery.AddPair("BuyCriterion", string.Empty);
 
                     AppendQuery(SqlBuilder.BuildInsert(itemQuery));
 
@@ -236,6 +246,14 @@ namespace ArkalysPlugin
                         updatePrice.AddWherePair("Id", template.Id);
                         AppendQuery(SqlBuilder.BuildUpdate(updatePrice));
                     }
+                }
+
+                if (!isBread)
+                {
+                    var list = new UpdateKeyValueList("npcs_actions");
+                    list.AddPair("Parameter0", OrbItemTemplate);
+                    list.AddWherePair("Id", new RawData("@shopid"));
+                    AppendQuery(SqlBuilder.BuildUpdate(list));
                 }
             }
         }

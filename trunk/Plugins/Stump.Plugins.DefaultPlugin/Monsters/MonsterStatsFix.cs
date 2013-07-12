@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Spells;
@@ -13,14 +15,18 @@ namespace Stump.Plugins.DefaultPlugin.Monsters
     public class MonsterStatsFix
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        
-        [Variable]
-        public static readonly double BossBonusFactor = 1.8;
+
+        [Variable] public static readonly double BossBonusFactor = 1.8;
 
         [Variable]
-        public static readonly double StatsFactor = 6.5;
+        public static readonly double StatsFactor = 7;
 
-        [Initialization(typeof(MonsterManager), Silent = true)]
+        private static int[] m_thresholds = new[]
+            {
+                100, 350, 600
+            };
+
+    [Initialization(typeof(MonsterManager), Silent = true)]
         public static void ApplyFix()
         {
             logger.Debug("Apply monster stats fix");
@@ -46,30 +52,18 @@ namespace Stump.Plugins.DefaultPlugin.Monsters
             if (stats.Length == 0)
             {
                 if (!monster.Stats.ContainsKey(PlayerFields.DamageBonusPercent))
-                    monster.Stats.Add(PlayerFields.DamageBonusPercent, (short)points);
+                    monster.Stats.Add(PlayerFields.DamageBonusPercent, (short)GetPointsByInvest((int)points));
 
                 if (!monster.Stats.ContainsKey(PlayerFields.Initiative))
-                    monster.Stats.Add(PlayerFields.Initiative, (short)points);
+                    monster.Stats.Add(PlayerFields.Initiative, (short)GetPointsByInvest((int)points));
             }
 
-            foreach (var field in stats)
-            {
-                switch (field)
-                {
-                    case PlayerFields.Strength:
-                        monster.Strength += (short) (points/stats.Length);
-                        break;
-                    case PlayerFields.Intelligence:
-                        monster.Intelligence += (short) (points/stats.Length);
-                        break;
-                    case PlayerFields.Agility:
-                        monster.Agility += (short) (points/stats.Length);
-                        break;
-                    case PlayerFields.Chance:
-                        monster.Chance += (short) (points/stats.Length);
-                        break;
-                }
-            }
+            var total = (double)stats.Length;
+
+            monster.Strength += (short)GetPointsByInvest((int)Math.Floor(points*(stats.Count(x => x == PlayerFields.Strength)/total)));
+            monster.Agility += (short)GetPointsByInvest((int)Math.Floor(points * ( stats.Count(x => x == PlayerFields.Agility) / total )));
+            monster.Chance += (short)GetPointsByInvest((int)Math.Floor(points * ( stats.Count(x => x == PlayerFields.Chance) / total )));
+            monster.Intelligence += (short)GetPointsByInvest((int)Math.Floor(points * ( stats.Count(x => x == PlayerFields.Intelligence) / total )));
         }
 
         private static PlayerFields[] GetMonsterMainStats(MonsterGrade monster)
@@ -87,26 +81,49 @@ namespace Stump.Plugins.DefaultPlugin.Monsters
 
                 foreach (var effect in spellLevel.Effects)
                 {
-                    switch (effect.EffectId)
-                    {
-                        case EffectsEnum.Effect_DamageNeutral:
-                        case EffectsEnum.Effect_DamageEarth:
-                            stats.Add(PlayerFields.Strength);
-                            break;
-                        case EffectsEnum.Effect_DamageAir:
+                    var categories = SpellIdentifier.GetEffectCategories(effect.EffectId);
+                    if (categories.HasFlag(SpellCategory.DamagesAir))
                             stats.Add(PlayerFields.Agility);
-                            break;
-                        case EffectsEnum.Effect_DamageWater:
+                    if (categories.HasFlag(SpellCategory.DamagesEarth) || 
+                        categories.HasFlag(SpellCategory.DamagesNeutral))
+                            stats.Add(PlayerFields.Strength);
+                    if (categories.HasFlag(SpellCategory.DamagesWater))
                             stats.Add(PlayerFields.Chance);
-                            break;
-                        case EffectsEnum.Effect_DamageFire:
+                    if (categories.HasFlag(SpellCategory.DamagesFire) ||
+                        categories.HasFlag(SpellCategory.Healing))
                             stats.Add(PlayerFields.Intelligence);
-                            break;
-                    }
+                 
                 }
             }
 
             return stats.Distinct().ToArray();
+        }
+
+        private static int GetPointsByInvest(int invest)
+        {
+            int points = 0;
+            int costPerPoint = 1;
+            while (invest > 0)
+            {
+                if (costPerPoint > m_thresholds.Length)
+                {
+                    points += (int)Math.Floor(invest / (double)costPerPoint);
+                    invest = 0;
+                }
+                else if (invest/(double)costPerPoint > m_thresholds[costPerPoint - 1])
+                {
+                    points += m_thresholds[costPerPoint - 1] - (costPerPoint > 1 ? m_thresholds[costPerPoint - 2] : 0);
+                    invest -= m_thresholds[costPerPoint - 1]*costPerPoint;
+                    costPerPoint++;
+                }
+                else
+                {
+                    points += (int)Math.Floor(invest / (double)costPerPoint);
+                    invest = 0;
+                }
+            }
+
+            return points;
         }
     }
 }
