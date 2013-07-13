@@ -236,7 +236,7 @@ namespace Stump.Server.WorldServer
 
             ClientManager.Pause();
 
-            foreach (var client in ClientManager.Clients)
+            foreach (var client in ClientManager.Clients.ToArray())
             {
                 client.Disconnect();
             }

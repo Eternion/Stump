@@ -13,7 +13,7 @@
         AllowsTransparency="True" Background="Transparent" >
   <Window.Resources>
     <XmlDataProvider x:Key="News"
-                     Source="pack://application:,,,/Resources/rss.xml"
+                     Source="{x:Static Uplauncher:Constants.RSSNewsURL}"
                      XPath="/rss/channel"/>
     <Helpers:SingleLineTextConverter x:Key="SingleLineTextConverter"/>
     <Style x:Key="Arial-Rounded" TargetType="{x:Type TextBlock}">
@@ -75,7 +75,7 @@
       <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Canvas.Left="529" Canvas.Top="353" Style="{StaticResource ImageButton}" Command="{Binding VoteCommand}">
         <UI:OpaqueClickableImage Width="167" Height="30" Source="pack://application:,,,/Resources/vote_button.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
       </Button>
-      <ProgressBar Canvas.Left="233" Canvas.Top="390" Width="461" Height="26" Value="100" Maximum="100" Minimum="0" >
+      <ProgressBar Canvas.Left="233" Canvas.Top="390" Width="461" Height="26" Value="{Binding DownloadProgress}" Maximum="100" Minimum="0" >
         <ProgressBar.Template>
           <ControlTemplate TargetType="ProgressBar">
             <Border BorderThickness="1" CornerRadius="10" BorderBrush="#665527">

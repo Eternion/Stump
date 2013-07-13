@@ -24,7 +24,6 @@ namespace Stump.Core.Extensions
         {
             var req = WebRequest.Create(url);
             req.Method = "HEAD";
-            req.Headers.Add("Content-MD5");
             using (var resp = req.GetResponse())
             {
                 return resp.Headers.Get("Content-MD5");
