@@ -51,15 +51,10 @@ namespace Stump.Core.Cryptography
 
         public static string GetFileMD5HashBase64(string fileName)
         {
-            String md5Result;
-            var md5Hasher = MD5.Create();
-
-            using (var fs = File.OpenRead(fileName))
+            using (var md5Hasher = MD5.Create())
             {
-                md5Result = Convert.ToBase64String(md5Hasher.ComputeHash(fs));
+                return Convert.ToBase64String(md5Hasher.ComputeHash(File.ReadAllBytes(fileName)));
             }
-
-            return md5Result;
         }
 
         /// <summary>
