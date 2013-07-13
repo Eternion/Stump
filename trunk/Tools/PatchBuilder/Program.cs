@@ -23,6 +23,7 @@ namespace PatchBuilder
 
             var patchDir = args[0];
 
+            Debugger.Launch();
             UpdateMeta meta;
             if (File.Exists(Path.Combine(patchDir, "updates.xml")))
             {
@@ -87,7 +88,7 @@ namespace PatchBuilder
 
         static string GetRelativePath(string fullPath, string relativeTo)
         {
-            string[] foldersSplitted = fullPath.Split(new[] { relativeTo.Replace("/", "\\") }, StringSplitOptions.RemoveEmptyEntries); // cut the source path and the "rest" of the path
+            string[] foldersSplitted = fullPath.Split(new[] { relativeTo.Replace("/", "\\").Replace("\\\\", "\\") }, StringSplitOptions.RemoveEmptyEntries); // cut the source path and the "rest" of the path
 
             return foldersSplitted.Length > 0 ? foldersSplitted.Last() : ""; // return the "rest"
         }

@@ -57,7 +57,8 @@ namespace Uplauncher.Patcher
             if (File.Exists("./" + LocalURL))
             {
                 uplauncher.SetState(string.Format("Check if {0} already exists ...", RelativeURL));
-                var md5 = Cryptography.GetFileMD5Hash("./" + LocalURL);
+
+                var md5 = Cryptography.GetFileMD5HashBase64("./" + LocalURL);
                 var remoteMD5 = NetExtensions.RequestMD5(Constants.UpdateSiteURL + RelativeURL);
 
                 Debug.WriteLine(string.Format("File {0} already exists  MD5:{1} RemoteMD5:{2} ...", LocalURL, md5, remoteMD5));
