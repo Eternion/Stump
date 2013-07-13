@@ -380,7 +380,7 @@ namespace Uplauncher
 
             var possibleSequences = new List<IEnumerable<UpdateEntry>>();
 
-            foreach (var file in m_meta.Updates.Where(entry => entry.FromVersion == CurrentVersion))
+            foreach (var file in entries.Where(entry => entry.FromVersion == forRevision))
             {
                 // direct update
                 if (file.FromVersion == forRevision &&
