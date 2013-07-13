@@ -402,7 +402,7 @@ namespace Uplauncher
                 return Enumerable.Empty<UpdateEntry>();
 
             // return the sequence that have lesser patchs
-            return possibleSequences.OrderBy(entry => entry.Count()).First();
+            return possibleSequences.OrderBy(entry => entry.Count()).First().Reverse();
         }
 
         private void ProcessSequence()
@@ -429,7 +429,7 @@ namespace Uplauncher
 
         private void OnPatchDownloaded(object sender, DownloadStringCompletedEventArgs e)
         {
-
+            m_client.DownloadStringCompleted -= OnPatchDownloaded;
             Patch patch;
             try
             {

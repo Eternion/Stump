@@ -54,8 +54,6 @@ namespace ArkalysPlugin
         {
             base.Shutdown();
 
-            IsleTrigger.TearDown();
-
             if (Config != null)
                 WorldServer.Instance.StopConfigReloadOnChange(Config);
 
