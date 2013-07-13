@@ -23,7 +23,6 @@ namespace PatchBuilder
 
             var patchDir = args[0];
 
-            Debugger.Launch();
             UpdateMeta meta;
             if (File.Exists(Path.Combine(patchDir, "updates.xml")))
             {
@@ -66,7 +65,7 @@ namespace PatchBuilder
                 }
 
                 XmlUtils.Serialize(Path.Combine(directory, "patch.xml"), patch);
-                Console.WriteLine(string.Format("Create Patch from '{0}' to '{1}' : {2} !", from, to, Path.Combine(directory, "patch.xml")));
+                Console.WriteLine(string.Format("Created Patch from '{0}' to '{1}' : {2} !", from, to, Path.Combine(directory, "patch.xml")));
 
                 meta.Updates.Add(new UpdateEntry()
                 {
