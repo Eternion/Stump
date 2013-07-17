@@ -112,7 +112,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\ExploreCommand.cs" />
     <Compile Include="Commands\ShopCommand.cs" />
     <Compile Include="Commands\WelcomeCommand.cs" />
     <Compile Include="NpcRestatTrigger.cs" />
