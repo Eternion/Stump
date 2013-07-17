@@ -14,6 +14,7 @@ namespace Stump.DofusProtocol.Enums
         ALLY_3 = 0x20,
         ALLY_4 = 0x40,
         ALLY_5 = 0x80,
+        ALLY_ALL = 0x2 | 0x4 | 0x8 | 0x10 | 0x20 | 0x40 | 0x80,
         ENNEMY_1 = 0x100,
         ENNEMY_2 = 0x200,
         ENNEMY_SUMMONS = 0x400,
@@ -21,6 +22,7 @@ namespace Stump.DofusProtocol.Enums
         ENNEMY_3 = 0x1000,
         ENNEMY_4 = 0x2000,
         ENNEMY_5 = 0x4000,
+        ENEMY_ALL = 0x100 | 0x200 | 0x400 | 0x800 | 0x1000 | 0x2000 | 0x4000,
         ALL = 0x7FFF,
         ONLY_SELF = 0x8000,
     }

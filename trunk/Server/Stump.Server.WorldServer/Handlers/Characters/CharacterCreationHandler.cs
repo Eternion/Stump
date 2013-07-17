@@ -37,13 +37,13 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         private static void OnCharacterCreationSuccess(WorldClient client)
         {
             SendCharacterCreationResultMessage(client, CharacterCreationResultEnum.OK);
+            BasicHandler.SendBasicNoOperationMessage(client);
+            SendCharactersListMessage(client);
         }
 
         private static void OnCharacterCreationFailed(WorldClient client, CharacterCreationResultEnum result)
         {
             SendCharacterCreationResultMessage(client, result);
-            BasicHandler.SendBasicNoOperationMessage(client);
-            SendCharactersListMessage(client);
         }
 
         [WorldHandler(CharacterNameSuggestionRequestMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]

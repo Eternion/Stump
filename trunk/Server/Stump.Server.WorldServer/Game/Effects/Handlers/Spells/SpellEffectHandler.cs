@@ -33,6 +33,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             TargetedCell = targetedCell;
             TargetedPoint = new MapPoint(TargetedCell);
             Critical = critical;
+            Targets = effect.Targets;
         }
 
         public EffectDice Dice
@@ -105,6 +106,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             }
         }
 
+        public SpellTargetType Targets
+        {
+            get;
+            set;
+        }
+
         public Cell[] AffectedCells
         {
             get { return m_affectedCells ?? (m_affectedCells = EffectZone.GetCells(TargetedCell, Map)); }
@@ -123,44 +130,44 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public bool IsValidTarget(FightActor actor)
         {
-            if (Effect.Targets == SpellTargetType.NONE)
+            if (Targets == SpellTargetType.NONE)
                 // return false; note : wtf, why is there spells with Targets = NONE ?
                 return true;
 
-            if (Effect.Targets == SpellTargetType.ALL)
+            if (Targets == SpellTargetType.ALL)
                 return true;
 
-            if (Caster == actor && Effect.Targets.HasFlag(SpellTargetType.SELF))
+            if (Caster == actor && Targets.HasFlag(SpellTargetType.SELF))
                 return true;
 
-            if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) && actor != Caster)
+            if (Targets.HasFlag(SpellTargetType.ONLY_SELF) && actor != Caster)
                 return false;
 
             if (Caster.IsFriendlyWith(actor) && Caster != actor)
             {
-                if ((Effect.Targets.HasFlag(SpellTargetType.ALLY_1) ||
-                    Effect.Targets.HasFlag(SpellTargetType.ALLY_2) ||
-                    Effect.Targets.HasFlag(SpellTargetType.ALLY_3) ||
-                    Effect.Targets.HasFlag(SpellTargetType.ALLY_4) ||
-                    Effect.Targets.HasFlag(SpellTargetType.ALLY_5)) && !(actor is SummonedFighter))
+                if ((Targets.HasFlag(SpellTargetType.ALLY_1) ||
+                    Targets.HasFlag(SpellTargetType.ALLY_2) ||
+                    Targets.HasFlag(SpellTargetType.ALLY_3) ||
+                    Targets.HasFlag(SpellTargetType.ALLY_4) ||
+                    Targets.HasFlag(SpellTargetType.ALLY_5)) && !(actor is SummonedFighter))
                     return true;
 
-                if ((Effect.Targets.HasFlag(SpellTargetType.ALLY_SUMMONS) ||
-                    Effect.Targets.HasFlag(SpellTargetType.ALLY_STATIC_SUMMONS)) && actor is SummonedFighter)
+                if ((Targets.HasFlag(SpellTargetType.ALLY_SUMMONS) ||
+                    Targets.HasFlag(SpellTargetType.ALLY_STATIC_SUMMONS)) && actor is SummonedFighter)
                     return true;
             }
 
             if (Caster.IsEnnemyWith(actor))
             {
-                if ((Effect.Targets.HasFlag(SpellTargetType.ENNEMY_1) ||
-                    Effect.Targets.HasFlag(SpellTargetType.ENNEMY_2) ||
-                    Effect.Targets.HasFlag(SpellTargetType.ENNEMY_3) ||
-                    Effect.Targets.HasFlag(SpellTargetType.ENNEMY_4) ||
-                    Effect.Targets.HasFlag(SpellTargetType.ENNEMY_5)) && !(actor is SummonedFighter))
+                if ((Targets.HasFlag(SpellTargetType.ENNEMY_1) ||
+                    Targets.HasFlag(SpellTargetType.ENNEMY_2) ||
+                    Targets.HasFlag(SpellTargetType.ENNEMY_3) ||
+                    Targets.HasFlag(SpellTargetType.ENNEMY_4) ||
+                    Targets.HasFlag(SpellTargetType.ENNEMY_5)) && !(actor is SummonedFighter))
                     return true;
 
-                if ((Effect.Targets.HasFlag(SpellTargetType.ENNEMY_SUMMONS) ||
-                    Effect.Targets.HasFlag(SpellTargetType.ENNEMY_STATIC_SUMMONS)) && actor is SummonedFighter)
+                if ((Targets.HasFlag(SpellTargetType.ENNEMY_SUMMONS) ||
+                    Targets.HasFlag(SpellTargetType.ENNEMY_STATIC_SUMMONS)) && actor is SummonedFighter)
                     return true;
             }
 

@@ -85,6 +85,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
         {
             lock (this)
             {
+                if (!Map.CanSpawnMonsters())
+                {
+                    return;
+                }
+
                 if (AutoSpawnEnabled)
                     return;
 

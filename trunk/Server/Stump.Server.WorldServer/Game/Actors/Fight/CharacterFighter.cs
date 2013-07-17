@@ -175,6 +175,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                                                                                                   .CRITICAL_HIT);
                     handler.EffectZone = new Zone(weapon.Type.ZoneShape, (byte) weapon.Type.ZoneSize,
                                                   handler.CastPoint.OrientationTo(handler.TargetedPoint));
+                    handler.Targets = SpellTargetType.ENEMY_ALL | SpellTargetType.ALLY_ALL;
                     handlers.Add(handler);
                 }
 

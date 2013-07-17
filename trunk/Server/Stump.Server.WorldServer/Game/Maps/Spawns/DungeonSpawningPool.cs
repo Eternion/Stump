@@ -66,6 +66,12 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         protected override MonsterGroup DequeueNextGroupToSpawn()
         {
+            if (!Map.CanSpawnMonsters())
+            {
+                StopAutoSpawn();
+                return null;
+            }
+
             lock (m_locker)
             {
                 if (m_spawns.Count == 0)
