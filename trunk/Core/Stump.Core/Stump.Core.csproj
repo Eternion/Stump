@@ -235,6 +235,7 @@
     <Compile Include="IO\IDataWriter.cs" />
     <Compile Include="IO\ZipHelper.cs" />
     <Compile Include="Mathematics\FastRandom.cs" />
+    <Compile Include="Mathematics\MathExtensions.cs" />
     <Compile Include="Pool\EntityManager.cs" />
     <Compile Include="Pool\ReversedUniqueIdProvider.cs" />
     <Compile Include="Pool\Task\CyclicTaskPool.cs" />

@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Stump.Core.Attributes;
+using Stump.Core.Mathematics;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
@@ -186,32 +187,45 @@ namespace Stump.Server.WorldServer
             return ClientManager.FindAll(predicate);
         }
 
+        private TimeSpan m_lastAnnouncedTime = TimeSpan.MaxValue;
+
         protected override void CheckScheduledShutdown()
         {
             var diff = TimeSpan.FromMinutes(ShutdownTimer) - UpTime;
-            if (diff < TimeSpan.FromMinutes(10))
+            if (diff < TimeSpan.FromMinutes(30))
             {
-                World.Instance.SendAnnounce(string.Format("Automatic reboot in <b>{0}</b> minutes",
-                    (int)diff.TotalMinutes), Color.Red);
+                var announceDiff = m_lastAnnouncedTime - diff;
 
-                if (diff.TotalMinutes < 2)
+                if (diff > TimeSpan.FromMinutes(10) && announceDiff >= TimeSpan.FromMinutes(5))
                 {
-                    IOTaskPool.CallPeriodically(10*1000, ScheduledShutdownCountdownTick);
+                    AnnounceTimeBeforeShutdown(TimeSpan.FromMinutes(diff.TotalMinutes.RoundToNearest(5)));
+                }
+                if (diff > TimeSpan.FromMinutes(5) && diff <= TimeSpan.FromMinutes(10) && announceDiff >= TimeSpan.FromMinutes(1))
+                {
+                    AnnounceTimeBeforeShutdown(TimeSpan.FromMinutes(diff.TotalMinutes));
+                }
+                if (diff > TimeSpan.FromMinutes(1) && diff <= TimeSpan.FromMinutes(5) && announceDiff >= TimeSpan.FromSeconds(30))
+                {
+                    AnnounceTimeBeforeShutdown(new TimeSpan(0, 0, 0,(int) diff.TotalSeconds.RoundToNearest(30)));
+                }
+                if (diff > TimeSpan.FromSeconds(10) && diff <= TimeSpan.FromMinutes(1) && announceDiff >= TimeSpan.FromSeconds(10))
+                {
+                    AnnounceTimeBeforeShutdown(new TimeSpan(0, 0, 0, (int)diff.TotalSeconds.RoundToNearest(10)));
+                }
+                if (diff <= TimeSpan.FromSeconds(10))
+                {
+                    AnnounceTimeBeforeShutdown(TimeSpan.FromSeconds(diff.Seconds.RoundToNearest(5)));
                 }
             }
 
             base.CheckScheduledShutdown();
         }
 
-        private void ScheduledShutdownCountdownTick()
+        private void AnnounceTimeBeforeShutdown(TimeSpan time)
         {
-            var diff = TimeSpan.FromMinutes(ShutdownTimer) - UpTime;
-
-            World.Instance.SendAnnounce(string.Format("Automatic reboot in <b>{0}</b> seconds",
-                (int)diff.TotalSeconds), Color.Red);
-
-            if (diff.TotalSeconds <= 0)
-                Shutdown();
+            World.Instance.SendAnnounce(string.Format(@"Automatic reboot in <b>{0:mm\:ss}</b>",
+                time), Color.Red);
+            m_lastAnnouncedTime = time;
         }
 
         protected override void OnShutdown()

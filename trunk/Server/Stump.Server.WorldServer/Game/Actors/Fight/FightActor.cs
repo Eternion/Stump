@@ -708,7 +708,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Stats.Health.PermanentDamages += permanentDamages;
 
 
-            OnLifePointsChanged(-damage, permanentDamages, from);
+            OnLifePointsChanged(-(damage + permanentDamages), permanentDamages, from);
 
             if (IsDead())
                 OnDead(from);

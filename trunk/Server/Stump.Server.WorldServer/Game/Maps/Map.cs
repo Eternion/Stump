@@ -170,8 +170,8 @@ namespace Stump.Server.WorldServer.Game.Maps
             // todo : search for default placements
             if (Record.BlueFightCells.Length == 0 || Record.RedFightCells.Length == 0)
             {
-                m_bluePlacement = new[] { Cells[328], Cells[356], Cells[357] };
-                m_redPlacement = new[] { Cells[370], Cells[355], Cells[354] };
+                m_bluePlacement = new Cell[0];
+                m_redPlacement = new Cell[0];
             }
             else
             {
@@ -550,6 +550,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
+        public bool CanSpawnMonsters()
+        {
+            return m_bluePlacement.Length > 0 && m_redPlacement.Length > 0;
+        }
+
         public void AddSpawningPool(SpawningPoolBase spawningPool)
         {
             m_spawningPools.Add(spawningPool);
@@ -573,6 +578,9 @@ namespace Stump.Server.WorldServer.Game.Maps
         public void EnableClassicalMonsterSpawns()
         {
             if (SpawnEnabled)
+                return;
+
+            if (!CanSpawnMonsters())
                 return;
 
             var pools = SpawningPools.OfType<ClassicalSpawningPool>().ToArray();
