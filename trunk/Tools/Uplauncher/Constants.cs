@@ -27,7 +27,7 @@ namespace Uplauncher
         public static readonly Uri RSSNewsURL = new Uri("http://arkalys.com/misc/rss");
         public const string VoteURL = "http://www.rpg-paradize.com/?page=vote&vote=35907";
 
-        public const string DofusExePath = "DofusMod.exe";
+        public const string DofusExePath = "Dofus.exe";
         public const string DofusRegExePath = "reg\\Reg.exe";
         public const string RemoteMetaFile = "updates.xml";
         public const string LocalVersionFile = "version";
