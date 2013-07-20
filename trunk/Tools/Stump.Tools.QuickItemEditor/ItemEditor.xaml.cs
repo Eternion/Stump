@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -84,8 +85,25 @@ namespace Stump.Tools.QuickItemEditor
                 if (texts.Count == 0)
                     Items = new ItemTemplateModel[0];
                 else
-                    Items = m_dbAccessor.Database.Query<ItemTemplate>(string.Format("SELECT * FROM items_templates WHERE NameId IN ({0})", string.Join(",", texts.Keys)))
-                        .Select( entry => new ItemTemplateModel(entry, TextManager.Instance.GetText(texts[entry.NameId], m_language))).ToArray();
+                {
+                    IEnumerable<ItemTemplate> items =
+                        m_dbAccessor.Database.Query<ItemTemplate>(
+                            string.Format("SELECT * FROM items_templates WHERE NameId IN ({0})",
+                                          string.Join(",", texts.Keys)));
+                    items =
+                        items.Concat(
+                            m_dbAccessor.Database.Query<WeaponTemplate>(
+                                string.Format("SELECT * FROM items_templates_weapons WHERE NameId IN ({0})",
+                                              string.Join(",", texts.Keys))));
+
+                    Items =
+                        items.Select(
+                            entry =>
+                            new ItemTemplateModel(entry, TextManager.Instance.GetText(texts[entry.NameId], m_language)))
+                             .ToArray();
+
+
+                }
             }
 
             itemsList.ItemsSource = Items;
