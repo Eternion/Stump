@@ -3,8 +3,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media.Animation;
-using NHibernate.Criterion;
 using Stump.ORM;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.I18n;
@@ -16,8 +14,7 @@ using Stump.Tools.QuickItemEditor.Models;
 
 namespace Stump.Tools.QuickItemEditor
 {
-    /// <summary>
-    /// Interaction logic for ItemEditor.xaml
+    /// <summary>/// Interaction logic for ItemEditor.xaml
     /// </summary>
     public partial class ItemEditor : UserControl
     {

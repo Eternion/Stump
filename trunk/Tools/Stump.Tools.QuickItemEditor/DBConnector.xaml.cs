@@ -3,7 +3,6 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using Castle.ActiveRecord.Framework.Config;
 using Stump.Core.Attributes;
 using Stump.Core.Xml.Config;
 using Stump.ORM;

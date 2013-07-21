@@ -39,17 +39,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.ActiveRecord">
-      <HintPath>..\..\Run\Debug\Plugins\Castle.ActiveRecord.dll</HintPath>
-    </Reference>
-    <Reference Include="NHibernate, Version=3.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL" />
     <Reference Include="System" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -149,10 +141,6 @@
     <ProjectReference Include="..\..\Core\Stump.ORM\Stump.ORM.csproj">
       <Project>{E7406629-E127-4B96-8F29-287947075631}</Project>
       <Name>Stump.ORM</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DofusProtocol\D2oClasses\Stump.DofusProtocol.D2oClasses.csproj">
-      <Project>{33093793-C4BA-4B89-AC82-6E9D00437452}</Project>
-      <Name>Stump.DofusProtocol.D2oClasses</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DofusProtocol\Enums\Stump.DofusProtocol.Enums.csproj">
       <Project>{D7BFF8ED-065B-4A53-9805-595DFEA75A0A}</Project>
