@@ -23,13 +23,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
     public sealed class MonsterFighter : AIFighter
     {
         private Dictionary<DroppableItem, int> m_dropsCount = new Dictionary<DroppableItem, int>();
+        private StatsFields m_stats;
 
         public MonsterFighter(FightTeam team, Monster monster)
-            : base(team, monster.Spells)
+            : base(team, monster.Grade.Spells.ToArray())
         {
             Id = Fight.GetNextContextualId();
             Monster = monster;
             Look = monster.Look.Copy();
+
+            m_stats = new StatsFields(this);
+            m_stats.Initialize(Monster.Grade);
+            
 
             Cell cell;
             Fight.FindRandomFreeCell(this, out cell, false);
@@ -62,7 +67,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override StatsFields Stats
         {
-            get { return Monster.Stats; }
+            get { return m_stats; }
         }
 
         // monster ignore tackles ...
