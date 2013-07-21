@@ -70,7 +70,7 @@ namespace ArkalysPlugin
         private static uint GetMonsterDroppedOrbs(MonsterFighter monster)
         {
             return (uint)Math.Floor(FormulasCoefficient * Math.Pow(monster.Level, FormulasExponent)) +
-                (uint)Math.Floor(Math.Pow(5 * Math.Log(5 * monster.Level), 0.6));
+                (uint)Math.Floor(Math.Pow(2 * Math.Log(5 * monster.Level), 0.6));
         }
     }
 }

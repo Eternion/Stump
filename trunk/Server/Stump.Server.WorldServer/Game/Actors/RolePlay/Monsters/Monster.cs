@@ -12,22 +12,12 @@ using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 {
-    public class Monster : IStatsOwner
+    public class Monster
     {
         public Monster(MonsterGrade grade, MonsterGroup group)
         {
             Grade = grade;
             Group = group;
-
-            Initialize();
-        }
-
-        private void Initialize()
-        {
-            Stats = new StatsFields(this);
-            Stats.Initialize(Grade);
-            Spells = Grade.Spells.ToArray();
-            DroppableItems = Template.DroppableItems.ToArray();
         }
 
         public MonsterFighter CreateFighter(FightTeam team)
@@ -61,24 +51,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             {
                 return Template.EntityLook;
             }
-        }
-
-        public StatsFields Stats
-        {
-            get;
-            private set;
-        }
-
-        public Spell[] Spells
-        {
-            get;
-            private set;
-        }
-
-        public DroppableItem[] DroppableItems
-        {
-            get;
-            private set;
         }
 
         public MonsterInGroupInformations GetMonsterInGroupInformations()
