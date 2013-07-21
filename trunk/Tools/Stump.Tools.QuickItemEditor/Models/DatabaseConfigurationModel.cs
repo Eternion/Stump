@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using Castle.ActiveRecord.Framework.Config;
 using Stump.ORM;
 using Stump.Server.BaseServer.Database;
 
