@@ -46,7 +46,7 @@ namespace Stump.Server.BaseServer.Network
         /// Buffer size /!\ Advanced users only /!\
         /// </summary>
         [Variable]
-        public static int BufferSize = 8192; 
+        public static int BufferSize = 4096; 
         #endregion
 
         #region Events
@@ -78,6 +78,7 @@ namespace Stump.Server.BaseServer.Network
 
         private BufferManager m_bufferManager; // allocate memory dedicated to a client to avoid memory alloc on each send/recv
         private SocketAsyncEventArgsPool m_readAsyncEventArgsPool; // pool of SocketAsyncEventArgs
+        private SocketAsyncEventArgsPool m_writeAsyncEventArgsPool; // pool of SocketAsyncEventArgs
         private SocketAsyncEventArgs m_acceptArgs = new SocketAsyncEventArgs(); // async arg used on client connection
         private SemaphoreSlim m_semaphore; // limit the number of threads accessing to a ressource
 
@@ -422,12 +423,14 @@ namespace Stump.Server.BaseServer.Network
 
         public SocketAsyncEventArgs PopWriteSocketAsyncArgs()
         {
-            return new SocketAsyncEventArgs();
+            var args = new SocketAsyncEventArgs();
+            args.Completed += OnSendCompleted;
+            return args;
         }
 
         public void PushWriteSocketAsyncArgs(SocketAsyncEventArgs args)
         {
-            // not used anymore
+            args.Dispose();
         }
 
         public SocketAsyncEventArgs PopReadSocketAsyncArgs()

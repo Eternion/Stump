@@ -177,7 +177,7 @@ namespace Stump.Server.BaseServer.Network
             // if message is complete
             if (m_currentMessage.Build(m_buffer))
             {
-                var messageDataReader = new BigEndianReader(m_currentMessage.Data);
+                var messageDataReader = new FastBigEndianReader(m_currentMessage.Data);
                 Message message;
                 try
                 {
