@@ -76,31 +76,46 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public bool DoesNameExist(string name)
         {
-            return Database.ExecuteScalar<bool>("SELECT EXISTS(SELECT 1 FROM characters WHERE Name=@0)", name);
+            return Database.ExecuteScalar<object>("SELECT 1 FROM characters WHERE Name=@0", name) != null;
         }
 
         public void CreateCharacter(WorldClient client, string name, sbyte breedId, bool sex,
                                                            IEnumerable<int> colors, int headId, Action successCallback, Action<CharacterCreationResultEnum> failCallback)
         {
             if (client.Characters.Count >= MaxCharacterSlot && client.Account.Role <= RoleEnum.Player)
+            {
                 failCallback(CharacterCreationResultEnum.ERR_TOO_MANY_CHARACTERS);
+                return;
+            }
 
             if (DoesNameExist(name))
+            {
                 failCallback(CharacterCreationResultEnum.ERR_NAME_ALREADY_EXISTS);
+                return;
+            }
 
             if (!m_nameCheckerRegex.IsMatch(name))
+            {
                 failCallback(CharacterCreationResultEnum.ERR_INVALID_NAME);
+                return;
+            }
 
             var breed = BreedManager.Instance.GetBreed(breedId);
 
             if (breed == null ||
                 !client.Account.CanUseBreed(breedId) || !BreedManager.Instance.IsBreedAvailable(breedId))
+            {
                 failCallback(CharacterCreationResultEnum.ERR_NOT_ALLOWED);
+                return;
+            }
 
             var head = BreedManager.Instance.GetHead(headId);
 
             if (head.Breed != breedId || head.Gender == 1 != sex)
+            {
                 failCallback(CharacterCreationResultEnum.ERR_NO_REASON);
+                return;
+            }
 
             var indexedColors = new List<int>();
             int i = 0;
