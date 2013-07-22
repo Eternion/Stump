@@ -277,6 +277,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Steals\MPSteal.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Summon.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\DefaultUsableEffectHandler.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\SpellPoint.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\StatBonus.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\UsableEffectHandler.cs" />
     <Compile Include="Game\Dialogs\Merchants\MerchantShopDialog.cs" />
