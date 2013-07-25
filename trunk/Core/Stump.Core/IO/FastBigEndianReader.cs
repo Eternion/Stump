@@ -17,20 +17,45 @@
 using System;
 using System.IO;
 using System.Text;
+using Stump.Core.Pool.New;
 
 namespace Stump.Core.IO
 {
     /// <summary>
     /// Much faster reader that only reads memory buffer
     /// </summary>
-    public unsafe class FastBigEndianReader : IDataReader, IDisposable
+    public unsafe class FastBigEndianReader : IDataReader
     {
         private long m_position = 0;
         private readonly byte[] m_buffer;
+        private long m_maxPosition = -1;
 
         public byte[] Buffer
         {
             get { return m_buffer; }
+        }
+
+        public long Position
+        {
+            get { return m_position; }
+            set
+            {
+                if (m_maxPosition > 0 && value > m_maxPosition)
+                    throw new InvalidOperationException("Buffer overflow");
+                
+                m_position = value;
+            }
+        }
+
+        public long MaxPosition
+        {
+            get { return m_maxPosition; }
+            set { m_maxPosition = value; }
+        }
+
+        public long BytesAvailable
+        {
+            get { return (m_maxPosition > 0 ? m_maxPosition : m_buffer.Length) - Position; }
         }
 
         public FastBigEndianReader(byte[] buffer)
@@ -38,9 +63,16 @@ namespace Stump.Core.IO
             m_buffer = buffer;
         }
 
+        public FastBigEndianReader(BufferSegment segment)
+        {
+            m_buffer = segment.Buffer.Array;
+            Position = segment.Offset;
+            m_maxPosition = segment.Offset + segment.Length;
+        }
+
         public byte ReadByte()
         {
-            fixed (byte* pbyte = &m_buffer[m_position++])
+            fixed (byte* pbyte = &m_buffer[Position++])
             {
                 return *pbyte;
             }
@@ -48,26 +80,16 @@ namespace Stump.Core.IO
 
         public sbyte ReadSByte()
         {
-            fixed (byte* pbyte = &m_buffer[m_position++])
+            fixed (byte* pbyte = &m_buffer[Position++])
             {
                 return (sbyte)*pbyte;
             }
         }
 
-        public long Position
-        {
-            get { return m_position; }
-        }
-
-        public long BytesAvailable
-        {
-            get { return m_buffer.Length - m_position; }
-        }
-
         public short ReadShort()
         {
-            var position = m_position;
-            m_position += 2;
+            var position = Position;
+            Position += 2;
             fixed (byte* pbyte = &m_buffer[position])
             {
                 return (short) ((*pbyte << 8) | (*(pbyte + 1)));
@@ -76,8 +98,8 @@ namespace Stump.Core.IO
 
         public int ReadInt()
         {
-            var position = m_position;
-            m_position += 4;
+            var position = Position;
+            Position += 4;
             fixed (byte* pbyte = &m_buffer[position])
             {
                 return ( *pbyte << 24 ) | ( *( pbyte + 1 ) << 16 ) | ( *( pbyte + 2 ) << 8 ) | ( *( pbyte + 3 ) );
@@ -86,8 +108,8 @@ namespace Stump.Core.IO
 
         public long ReadLong()
         {
-            var position = m_position;
-            m_position += 8;
+            var position = Position;
+            Position += 8;
             fixed (byte* pbyte = &m_buffer[position])
             {
                 int i1 = ( *pbyte << 24 ) | ( *( pbyte + 1 ) << 16 ) | ( *( pbyte + 2 ) << 8 ) | ( *( pbyte + 3 ) );
@@ -113,8 +135,11 @@ namespace Stump.Core.IO
 
         public byte[] ReadBytes(int n)
         {
+            if (BytesAvailable < n)
+                throw new InvalidOperationException("Buffer overflow");
+
             var dst = new byte[n];
-            fixed (byte* pSrc = &m_buffer[m_position], pDst = dst)
+            fixed (byte* pSrc = &m_buffer[Position], pDst = dst)
             {
                 byte* ps = pSrc;
                 byte* pd = pDst;
@@ -136,7 +161,7 @@ namespace Stump.Core.IO
                 }
             }
 
-            m_position += n;
+            Position += n;
 
             return dst;
         }
@@ -180,16 +205,26 @@ namespace Stump.Core.IO
         public void Seek(int offset, SeekOrigin seekOrigin)
         {
             if (seekOrigin == SeekOrigin.Begin)
-                m_position = offset;
+                Position = offset;
             else if (seekOrigin == SeekOrigin.End)
-                m_position = m_buffer.Length + offset;
+                Position = m_buffer.Length + offset;
             else if (seekOrigin == SeekOrigin.Current)
-                m_position += offset;
+                Position += offset;
+        }
+
+        public void Seek(long offset, SeekOrigin seekOrigin)
+        {
+            if (seekOrigin == SeekOrigin.Begin)
+                Position = offset;
+            else if (seekOrigin == SeekOrigin.End)
+                Position = m_buffer.Length + offset;
+            else if (seekOrigin == SeekOrigin.Current)
+                Position += offset;
         }
 
         public void SkipBytes(int n)
         {
-            m_position += n;
+            Position += n;
         }
 
         public void Dispose()

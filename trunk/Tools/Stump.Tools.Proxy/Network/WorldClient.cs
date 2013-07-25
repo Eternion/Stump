@@ -194,12 +194,12 @@ namespace Stump.Tools.Proxy.Network
 
         protected override SocketAsyncEventArgs PopReadSocketAsyncArgs()
         {
-            return Proxy.Instance.WorldClientManager.PopReadSocketAsyncArgs();
+            return Proxy.Instance.WorldClientManager.PopSocketArg();
         }
 
         protected override void PushReadSocketAsyncArgs(SocketAsyncEventArgs args)
         {
-            Proxy.Instance.WorldClientManager.PushReadSocketAsyncArgs(args);
+            Proxy.Instance.WorldClientManager.PushSocketArg(args);
         }
 
         protected override bool Dispatch(Message message)
