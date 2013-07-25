@@ -29,12 +29,12 @@ namespace Stump.Tools.Proxy.Network
 
         protected override SocketAsyncEventArgs PopReadSocketAsyncArgs()
         {
-            return Proxy.Instance.AuthClientManager.PopReadSocketAsyncArgs();
+            return Proxy.Instance.AuthClientManager.PopSocketArg();
         }
 
         protected override void PushReadSocketAsyncArgs(SocketAsyncEventArgs args)
         {
-            Proxy.Instance.AuthClientManager.PushReadSocketAsyncArgs(args);
+            Proxy.Instance.AuthClientManager.PushSocketArg(args);
         }
 
         protected override bool Dispatch(Message message)

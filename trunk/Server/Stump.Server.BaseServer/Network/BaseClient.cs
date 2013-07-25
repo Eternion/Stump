@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.Core.IO;
+using Stump.Core.Pool.New;
 using Stump.Core.Pool.Task;
 using Stump.DofusProtocol.Messages;
 
 namespace Stump.Server.BaseServer.Network
 {
-    public abstract class BaseClient : IPacketReceiver
+    public abstract class BaseClient : IPacketReceiver, IDisposable
     {
         private readonly ClientManager m_clientManager;
 
@@ -28,19 +32,23 @@ namespace Stump.Server.BaseServer.Network
         private bool m_disconnecting;
 
         private bool m_onDisconnectCalled = false;
+        private int m_offset;
+        private int m_remainingLength;
+        private BufferSegment m_bufferSegment;
+        private long m_bytesReceived;
+        private long m_totalBytesReceived;
 
         protected BaseClient(Socket socket, ClientManager clientManager)
         {
             Socket = socket;
             IP = ( (IPEndPoint)socket.RemoteEndPoint ).Address.ToString();
             m_clientManager = clientManager;
+            m_bufferSegment = BufferManager.Default.CheckOut();
         }
 
         protected BaseClient(Socket socket)
+            : this (socket, ClientManager.Instance)
         {
-            Socket = socket;
-            IP = ( (IPEndPoint)socket.RemoteEndPoint ).Address.ToString();
-            m_clientManager = ClientManager.Instance;
         }
 
         public Socket Socket
@@ -84,7 +92,8 @@ namespace Stump.Server.BaseServer.Network
                 return;
             }
 
-            var args = PopWriteSocketAsyncArgs();
+            var args = ObjectPoolMgr.ObtainObject<SocketAsyncEventArgs>();
+            args.Completed += OnSendCompleted;
 
             byte[] data;
             using (var writer = new BigEndianWriter())
@@ -93,11 +102,13 @@ namespace Stump.Server.BaseServer.Network
                 data = writer.Data;
             }
 
+            Console.WriteLine("SEND : " + data.ToString(" "));
             args.SetBuffer(data, 0, data.Length);
 
             if (!Socket.SendAsync(args))
             {
-                PushWriteSocketAsyncArgs(args);
+                args.Completed -= OnSendCompleted;
+                ObjectPoolMgr.ReleaseObject(args);
             }
 
             if (LogPackets)
@@ -107,24 +118,10 @@ namespace Stump.Server.BaseServer.Network
             OnMessageSended(message);
         }
 
-        protected virtual SocketAsyncEventArgs PopWriteSocketAsyncArgs()
+        private void OnSendCompleted(object sender, SocketAsyncEventArgs args)
         {
-            return m_clientManager.PopWriteSocketAsyncArgs();
-        }
-
-        protected virtual void PushWriteSocketAsyncArgs(SocketAsyncEventArgs args)
-        {
-            m_clientManager.PushWriteSocketAsyncArgs(args);
-        }
-
-        protected virtual SocketAsyncEventArgs PopReadSocketAsyncArgs()
-        {
-            return m_clientManager.PopReadSocketAsyncArgs();
-        }
-
-        protected virtual void PushReadSocketAsyncArgs(SocketAsyncEventArgs args)
-        {
-            m_clientManager.PushReadSocketAsyncArgs(args);
+            args.Completed -= OnSendCompleted;
+            ObjectPoolMgr.ReleaseObject(args);
         }
 
         #endregion
@@ -144,18 +141,67 @@ namespace Stump.Server.BaseServer.Network
                 MessageSended(this, message);
         }
 
-        internal void ProcessReceive(byte[] data, int offset, int count)
+        public void BeginReceive()
+        {
+            if (!CanReceive)
+                throw new Exception("Cannot receive packet : CanReceive is false");
+
+            ResumeReceive();
+        }
+
+        private void ResumeReceive()
+        {
+            if (Socket != null && Socket.Connected)
+            {
+                var socketArgs = ClientManager.Instance.PopSocketArg();
+
+                socketArgs.SetBuffer(m_bufferSegment.Buffer.Array, m_bufferSegment.Offset + m_offset, ClientManager.BufferSize - m_offset);
+                socketArgs.UserToken = this;
+                socketArgs.Completed += ProcessReceive;
+
+                var willRaiseEvent = Socket.ReceiveAsync(socketArgs);
+                if (!willRaiseEvent)
+                {
+                    ProcessReceive(this, socketArgs);
+                }
+            }
+        }
+
+        private void ProcessReceive(object sender, SocketAsyncEventArgs args)
         {
             try
             {
-                if (!CanReceive)
-                    throw new Exception("Cannot receive packet : CanReceive is false");
+                var bytesReceived = args.BytesTransferred;
 
-                lock (m_lock)
+                if (bytesReceived == 0)
                 {
-                    m_buffer.Add(data, offset, count);
+                    Disconnect();
+                }
+                else
+                {
+                    // increment our counters
+                    unchecked
+                    {
+                        m_bytesReceived += (uint)bytesReceived;
+                    }
 
-                    BuildMessage();
+                    Interlocked.Add(ref m_totalBytesReceived, bytesReceived);
+
+                    m_remainingLength += bytesReceived;
+
+                    Console.WriteLine("RECV : " + m_bufferSegment.SegmentData.Take(bytesReceived).ToString(" "));
+                    if (BuildMessage(m_bufferSegment))
+                    {
+                        m_offset = 0;
+                        m_bufferSegment.DecrementUsage();
+                        m_bufferSegment = BufferManager.Default.CheckOut();
+                    }
+                    else
+                    {
+                        EnsureBuffer();
+                    }
+
+                    ResumeReceive();
                 }
             }
             catch (Exception ex)
@@ -164,42 +210,93 @@ namespace Stump.Server.BaseServer.Network
 
                 Disconnect();
             }
+            finally
+            {
+                args.Completed -= ProcessReceive;
+                ClientManager.Instance.PushSocketArg(args);
+            }
         }
 
-        protected virtual void BuildMessage()
+        protected virtual bool BuildMessage(BufferSegment buffer)
         {
-            if (m_buffer.BytesAvailable <= 0)
-                return;
-
             if (m_currentMessage == null)
-                m_currentMessage = new MessagePart();
+                m_currentMessage = new MessagePart(false);
 
+            var reader = new FastBigEndianReader(buffer)
+                {
+                    Position = buffer.Offset + m_offset,
+                    MaxPosition = buffer.Offset + m_offset + m_remainingLength,
+                };
             // if message is complete
-            if (m_currentMessage.Build(m_buffer))
+            if (m_currentMessage.Build(reader))
             {
-                var messageDataReader = new FastBigEndianReader(m_currentMessage.Data);
+                var dataPos = reader.Position;
+                if (m_currentMessage.ExceedBufferSize)
+                {
+                    reader = new FastBigEndianReader(m_currentMessage.Data);
+                }
+                else
+                {
+                    // prevent to read above
+                    reader.MaxPosition = buffer.Offset + dataPos + m_currentMessage.Length.Value;
+                }
+
                 Message message;
                 try
                 {
-                    message = MessageReceiver.BuildMessage((uint) m_currentMessage.MessageId.Value, messageDataReader);
+                    message = MessageReceiver.BuildMessage((uint)m_currentMessage.MessageId.Value, reader);
                 }
                 catch (Exception)
                 {
-                    logger.Debug("Message = {0}", m_currentMessage.Data.ToString(" "));
+                    if (m_currentMessage.ReadData)
+                        logger.Debug("Message = {0}", m_currentMessage.Data.ToString(" "));
+                    else
+                    {
+                        reader.Seek(dataPos, SeekOrigin.Begin); 
+                        logger.Debug("Message = {0}", reader.ReadBytes(m_currentMessage.Length.Value).ToString(" "));
+                    }
                     throw;
                 }
 
                 LastActivity = DateTime.Now;
 
                 if (LogPackets)
-                    Console.WriteLine(string.Format("(RECV) {0} : {1}", this, message));
+                    Console.WriteLine("(RECV) {0} : {1}", this, message);
 
                 OnMessageReceived(message);
 
+                m_remainingLength -= (int)reader.Position - buffer.Offset - m_offset;
+                m_offset = (int)reader.Position - buffer.Offset;
                 m_currentMessage = null;
 
-                BuildMessage(); // there is maybe a second message in the buffer
+                if (m_remainingLength > 0)
+                    return BuildMessage(buffer); // there is maybe a second message in the buffer
+                else
+                    return true;
             }
+            else
+            {
+                m_offset = (int) reader.Position;
+                m_remainingLength = (int) (reader.MaxPosition - m_offset);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Makes sure the underlying buffer is big enough (but will never exceed BufferSize)
+        /// </summary>
+        protected void EnsureBuffer()
+        {
+            BufferSegment newSegment = BufferManager.Default.CheckOut();
+            Array.Copy(m_bufferSegment.Buffer.Array,
+                       m_bufferSegment.Offset + m_offset,
+                       newSegment.Buffer.Array,
+                       newSegment.Offset,
+                       m_remainingLength);
+            m_bufferSegment.DecrementUsage();
+            m_bufferSegment = newSegment;
+            m_offset = 0;
         }
 
         /// <summary>
@@ -223,7 +320,8 @@ namespace Stump.Server.BaseServer.Network
             }
             finally
             {
-                Close();
+                ClientManager.Instance.OnClientDisconnected(this);
+                Dispose();
             }
         }
 
@@ -242,15 +340,30 @@ namespace Stump.Server.BaseServer.Network
         protected virtual void OnDisconnect()
         {
         }
+        
+        ~BaseClient()
+		{
+			Dispose(false);
+		}
 
-        protected void Close()
-        {
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
             if (Socket != null && Socket.Connected)
             {
                 Socket.Shutdown(SocketShutdown.Both);
                 Socket.Close();
             }
-        }
+            if (m_bufferSegment != null)
+            {
+                m_bufferSegment.DecrementUsage();
+            }
+		}
 
         public override string ToString()
         {

@@ -246,9 +246,13 @@
     <Compile Include="Mathematics\FastRandom.cs" />
     <Compile Include="Mathematics\MathExtensions.cs" />
     <Compile Include="Pool\EntityManager.cs" />
+    <Compile Include="Pool\New\ObjectPool.cs" />
+    <Compile Include="Pool\New\ObjectPoolMgr.cs" />
+    <Compile Include="Pool\New\SegmentStream.cs" />
     <Compile Include="Pool\ReversedUniqueIdProvider.cs" />
     <Compile Include="Pool\Task\CyclicTaskPool.cs" />
     <Compile Include="Pool\UniqueIdProvider.cs" />
+    <Compile Include="Pool\New\BufferManager.cs" />
     <Compile Include="Reflection\AccessorBuilder.cs" />
     <Compile Include="Reflection\DynamicSwitchExecutor.cs" />
     <Compile Include="Reflection\DynamicExtension.cs" />

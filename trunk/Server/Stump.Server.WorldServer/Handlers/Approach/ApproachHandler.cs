@@ -41,24 +41,24 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             {
                 var toRemove = new List<WorldClient>();
                 int count = 0;
-                foreach (WorldClient worldClient in ConnectionQueue)
-                {
-                    count++;
-
-                    if (!worldClient.Connected)
-                    {
-                        toRemove.Add(worldClient);
-                    }
-
-                    if (DateTime.Now - worldClient.InQueueUntil > TimeSpan.FromSeconds(3))
-                    {
-                        SendQueueStatusMessage(worldClient, (ushort)count, (ushort)ConnectionQueue.Count);
-                        worldClient.QueueShowed = true;
-                    }
-                }
-
                 lock (ConnectionQueue.SyncRoot)
                 {
+                    foreach (WorldClient worldClient in ConnectionQueue)
+                    {
+                        count++;
+
+                        if (!worldClient.Connected)
+                        {
+                            toRemove.Add(worldClient);
+                        }
+
+                        if (DateTime.Now - worldClient.InQueueUntil > TimeSpan.FromSeconds(3))
+                        {
+                            SendQueueStatusMessage(worldClient, (ushort)count, (ushort)ConnectionQueue.Count);
+                            worldClient.QueueShowed = true;
+                        }
+                    }
+
                     foreach (var worldClient in toRemove)
                     {
                         ConnectionQueue.Remove(worldClient);

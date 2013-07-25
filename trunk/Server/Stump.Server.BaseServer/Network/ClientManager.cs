@@ -9,7 +9,9 @@ using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.Core.Pool;
+using Stump.Core.Pool.New;
 using Stump.Core.Reflection;
+using BufferManager = Stump.Core.Pool.BufferManager;
 
 namespace Stump.Server.BaseServer.Network
 {
@@ -76,9 +78,6 @@ namespace Stump.Server.BaseServer.Network
 
         private readonly List<BaseClient> m_clients = new List<BaseClient>();
 
-        private BufferManager m_bufferManager; // allocate memory dedicated to a client to avoid memory alloc on each send/recv
-        private SocketAsyncEventArgsPool m_readAsyncEventArgsPool; // pool of SocketAsyncEventArgs
-        private SocketAsyncEventArgsPool m_writeAsyncEventArgsPool; // pool of SocketAsyncEventArgs
         private SocketAsyncEventArgs m_acceptArgs = new SocketAsyncEventArgs(); // async arg used on client connection
         private SemaphoreSlim m_semaphore; // limit the number of threads accessing to a ressource
 
@@ -141,26 +140,16 @@ namespace Stump.Server.BaseServer.Network
             if (IsInitialized)
                 throw new Exception("ClientManager already initialized");
 
+            if (!ObjectPoolMgr.ContainsType<SocketAsyncEventArgs>())
+            {
+                ObjectPoolMgr.RegisterType(() => new SocketAsyncEventArgs());
+                ObjectPoolMgr.SetMinimumSize<SocketAsyncEventArgs>(100);
+            }
+
             m_createClientDelegate = createClientHandler;
 
             // init semaphore
             m_semaphore = new SemaphoreSlim(MaxConcurrentConnections, MaxConcurrentConnections);
-
-            // init buffer manager
-            m_bufferManager = new BufferManager(MaxConcurrentConnections * BufferSize, BufferSize);
-            m_bufferManager.InitializeBuffer();
-
-            // initialize read pool
-            m_readAsyncEventArgsPool = new SocketAsyncEventArgsPool(MaxConcurrentConnections);
-            for (var i = 0; i < MaxConcurrentConnections; i++)
-            {
-                var args = new SocketAsyncEventArgs();
-
-                m_bufferManager.SetBuffer(args);
-                args.Completed += OnReceiveCompleted;
-                m_readAsyncEventArgsPool.Push(args);
-            }
-
             m_acceptArgs.Completed += (sender, e) => ProcessAccept(e);
 
             IsInitialized = true;
@@ -181,6 +170,7 @@ namespace Stump.Server.BaseServer.Network
             Port = port;
 
             var ipEndPoint = new IPEndPoint(Dns.GetHostAddresses(Host).First(ip => ip.AddressFamily == AddressFamily.InterNetwork), Port);
+            m_listenSocket.NoDelay = true;
             m_listenSocket.Bind(ipEndPoint);
             m_listenSocket.Listen(MaxPendingConnections);
 
@@ -217,10 +207,6 @@ namespace Stump.Server.BaseServer.Network
 
             m_listenSocket.Close();
             m_listenSocket.Dispose();
-
-            m_bufferManager.Dispose();
-
-            m_readAsyncEventArgsPool.Dispose();
         }
 
         private void StartAccept()
@@ -277,7 +263,7 @@ namespace Stump.Server.BaseServer.Network
                 }
 
                 // use a async arg from the pool avoid to re-allocate memory on each connection
-                readAsyncEventArgs = PopReadSocketAsyncArgs();
+                readAsyncEventArgs = PopSocketArg();
 
                 // create the client instance
                 var client = m_createClientDelegate(e.AcceptSocket);
@@ -288,17 +274,9 @@ namespace Stump.Server.BaseServer.Network
 
                 NotifyClientConnected(client);
 
-                // if the event is not raised we first check new connections before parsing message that can blocks the connection queue
-                if (!client.Socket.ReceiveAsync(readAsyncEventArgs))
-                {
-                    StartAccept();
-                    ProcessReceive(readAsyncEventArgs);
-                }
-                else
-                {
-                    StartAccept();
-                }
+                client.BeginReceive();
 
+                StartAccept();
             }
             catch (Exception ex)
             {
@@ -308,7 +286,7 @@ namespace Stump.Server.BaseServer.Network
                 m_semaphore.Release();
 
                 if (readAsyncEventArgs != null)
-                    PushReadSocketAsyncArgs(readAsyncEventArgs);
+                    PushSocketArg(readAsyncEventArgs);
 
                 if (e.AcceptSocket != null)
                     e.AcceptSocket.Disconnect(false);
@@ -318,132 +296,29 @@ namespace Stump.Server.BaseServer.Network
             }
         }
 
-        private void OnReceiveCompleted(object sender, SocketAsyncEventArgs e)
+        public void OnClientDisconnected(BaseClient client)
         {
-            try
+            bool removed;
+            lock (m_clients)
+                removed = m_clients.Remove(client);
+
+            if (removed)
             {
-                switch (e.LastOperation)
-                {
-                    case SocketAsyncOperation.Receive:
-                        ProcessReceive(e);
-                        break;
-                    case SocketAsyncOperation.Disconnect:
-                        CloseClientSocket(e);
-                        break;
-                    default:
-                        break;
-                }
-            }
-            catch (Exception exception)
-            {
-                // theoretically it shouldn't go up to there.
-                logger.Error("Last chance exception on receiving ! : " + exception);
+                NotifyClientDisconnected(client);
+
+                m_semaphore.Release();
             }
         }
 
-        private void ProcessReceive(SocketAsyncEventArgs e)
+        public SocketAsyncEventArgs PopSocketArg()
         {
-            if (e.BytesTransferred <= 0 || e.SocketError != SocketError.Success)
-            {
-                CloseClientSocket(e);
-            }
-            else
-            {
-                var client = e.UserToken as BaseClient;
-
-                if (client == null)
-                {
-                    CloseClientSocket(e);
-                }
-                else
-                {
-                    client.ProcessReceive(e.Buffer, e.Offset, e.BytesTransferred);
-
-                    if (client.Socket == null || !client.Socket.Connected)
-                    {
-                        CloseClientSocket(e);
-                    }
-                    else
-                    {
-                        // just continue to receive
-                        bool willRaiseEvent = client.Socket.ReceiveAsync(e);
-
-                        if (!willRaiseEvent)
-                        {
-                            ProcessReceive(e);
-                        }
-                    }
-                }
-            }
+            var arg = ObjectPoolMgr.ObtainObject<SocketAsyncEventArgs>();
+            return arg;
         }
 
-        private void CloseClientSocket(SocketAsyncEventArgs e)
+        public void PushSocketArg(SocketAsyncEventArgs args)
         {
-            var client = e.UserToken as BaseClient;
-
-            if (client != null)
-            {
-                try
-                {
-                    client.Disconnect();
-                }
-                catch (Exception ex)
-                {
-                    logger.Error("Last catch. Disconnection of {0} failed : {1}", client, ex);
-                }
-                finally
-                {
-                    bool removed;
-                    lock (m_clients)
-                        removed = m_clients.Remove(client);
-
-                    if (removed)
-                    {
-                        NotifyClientDisconnected(client);
-
-                        m_semaphore.Release();
-                    }
-
-                    // free the SocketAsyncEventArg so it can be reused by another client
-                    PushReadSocketAsyncArgs(e);
-                }
-            }
-            else
-            {
-                // free the SocketAsyncEventArg so it can be reused by another client
-                PushReadSocketAsyncArgs(e);
-            }
-        }
-
-        private void OnSendCompleted(object sender, SocketAsyncEventArgs e)
-        {
-            // free an async arg on the pool when a send is completed
-            PushWriteSocketAsyncArgs(e);
-        }
-
-        public SocketAsyncEventArgs PopWriteSocketAsyncArgs()
-        {
-            var args = new SocketAsyncEventArgs();
-            args.Completed += OnSendCompleted;
-            return args;
-        }
-
-        public void PushWriteSocketAsyncArgs(SocketAsyncEventArgs args)
-        {
-            args.Dispose();
-        }
-
-        public SocketAsyncEventArgs PopReadSocketAsyncArgs()
-        {
-            if (m_readAsyncEventArgsPool.Count <= 0)
-                throw new Exception("The reader async argument pool is empty");
-
-            return m_readAsyncEventArgsPool.Pop();
-        }
-
-        public void PushReadSocketAsyncArgs(SocketAsyncEventArgs args)
-        {
-            m_readAsyncEventArgsPool.Push(args);
+            ObjectPoolMgr.ReleaseObject(args);
         }
 
         public BaseClient[] FindAll(Predicate<BaseClient> predicate)

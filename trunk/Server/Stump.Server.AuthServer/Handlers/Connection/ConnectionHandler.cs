@@ -38,27 +38,26 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         {
             try
             {
-
-                var toRemove = new List<AuthClient>();
-                int count = 0;
-                foreach (AuthClient authClient in ConnectionQueue)
-                {
-                    count++;
-
-                    if (!authClient.Connected)
-                    {
-                        toRemove.Add(authClient);
-                    }
-
-                    if (DateTime.Now - authClient.InQueueUntil > TimeSpan.FromSeconds(3))
-                    {
-                        SendQueueStatusMessage(authClient, (ushort) count, (ushort) ConnectionQueue.Count);
-                        authClient.QueueShowed = true;
-                    }
-                }
-
                 lock (ConnectionQueue.SyncRoot)
                 {
+                    var toRemove = new List<AuthClient>();
+                    int count = 0;
+                    foreach (AuthClient authClient in ConnectionQueue)
+                    {
+                        count++;
+
+                        if (!authClient.Connected)
+                        {
+                            toRemove.Add(authClient);
+                        }
+
+                        if (DateTime.Now - authClient.InQueueUntil > TimeSpan.FromSeconds(3))
+                        {
+                            SendQueueStatusMessage(authClient, (ushort) count, (ushort) ConnectionQueue.Count);
+                            authClient.QueueShowed = true;
+                        }
+                    }
+
                     foreach (var authClient in toRemove)
                     {
                         ConnectionQueue.Remove(authClient);
