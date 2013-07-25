@@ -6,6 +6,7 @@ using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.DofusProtocol.Types.Extensions;
+using Stump.Server.WorldServer.AI.Fights.Brain;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Monsters;
@@ -26,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         private StatsFields m_stats;
 
         public MonsterFighter(FightTeam team, Monster monster)
-            : base(team, monster.Grade.Spells.ToArray())
+            : base(team, monster.Grade.Spells.ToArray(), monster.Grade.MonsterId)
         {
             Id = Fight.GetNextContextualId();
             Monster = monster;

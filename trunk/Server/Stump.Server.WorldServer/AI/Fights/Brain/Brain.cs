@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
         [Variable(true)]
         public static bool DebugMode = true;
 
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        protected static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public Brain(AIFighter fighter)
         {
@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             private set;
         }
 
-        public void Play()
+        public virtual void Play()
         {
             SpellSelector.AnalysePossibilities();
             foreach (var cast in SpellSelector.EnumerateSpellsCast())

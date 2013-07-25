@@ -70,6 +70,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 handler(this, delta, permanentDamages, from);
         }
 
+
+        public event Action<FightActor, int, EffectSchoolEnum, FightActor> DamageInflicted;
+
+        protected virtual void OnDamageInflicted(int damage, EffectSchoolEnum school, FightActor from)
+        {
+            Action<FightActor, int, EffectSchoolEnum, FightActor> handler = DamageInflicted;
+
+            if (handler != null)
+                handler(this, damage, school, from);
+        }
+
         public event Action<FightActor, FightActor, int> DamageReducted;
 
         protected virtual void OnDamageReducted(FightActor source, int reduction)
@@ -765,6 +776,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (damage <= 0)
                 damage = 0;
+
+            OnDamageInflicted(damage, school, from);
+
             return InflictDirectDamage(damage, from);
         }
 
