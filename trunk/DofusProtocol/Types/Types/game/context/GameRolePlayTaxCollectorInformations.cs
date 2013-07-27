@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:28
+
+// Generated on 07/26/2013 22:51:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +61,11 @@ namespace Stump.DofusProtocol.Types
             if (guildLevel < 0 || guildLevel > 255)
                 throw new Exception("Forbidden value on guildLevel = " + guildLevel + ", it doesn't respect the following condition : guildLevel < 0 || guildLevel > 255");
             taxCollectorAttack = reader.ReadInt();
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + guildIdentity.GetSerializationSize() + sizeof(byte) + sizeof(int);
         }
         
     }

@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:31
+
+// Generated on 07/26/2013 22:51:12
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,11 @@ namespace Stump.DofusProtocol.Types
             skillId = reader.ReadShort();
             if (skillId < 0)
                 throw new Exception("Forbidden value on skillId = " + skillId + ", it doesn't respect the following condition : skillId < 0");
+        }
+        
+        public virtual int GetSerializationSize()
+        {
+            return sizeof(short);
         }
         
     }

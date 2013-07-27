@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:24
+
+// Generated on 07/26/2013 22:51:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,6 +53,11 @@ namespace Stump.DofusProtocol.Messages
                 throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
             look = new Types.EntityLook();
             look.Deserialize(reader);
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(int) + sizeof(short) + playerName.Length + sizeof(int) + look.GetSerializationSize();
         }
         
     }

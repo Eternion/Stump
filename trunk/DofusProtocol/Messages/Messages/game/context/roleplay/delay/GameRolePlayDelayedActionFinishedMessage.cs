@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:10
+
+// Generated on 07/26/2013 22:50:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,11 @@ namespace Stump.DofusProtocol.Messages
             delayTypeId = reader.ReadSByte();
             if (delayTypeId < 0)
                 throw new Exception("Forbidden value on delayTypeId = " + delayTypeId + ", it doesn't respect the following condition : delayTypeId < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(int) + sizeof(sbyte);
         }
         
     }

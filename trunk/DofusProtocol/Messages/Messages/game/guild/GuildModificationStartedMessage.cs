@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:17
+
+// Generated on 07/26/2013 22:51:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +43,11 @@ namespace Stump.DofusProtocol.Messages
             byte flag1 = reader.ReadByte();
             canChangeName = BooleanByteWrapper.GetFlag(flag1, 0);
             canChangeEmblem = BooleanByteWrapper.GetFlag(flag1, 1);
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(bool) + 0;
         }
         
     }

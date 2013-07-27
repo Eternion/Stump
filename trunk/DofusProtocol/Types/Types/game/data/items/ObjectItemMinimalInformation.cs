@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:30
+
+// Generated on 07/26/2013 22:51:12
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,6 +62,11 @@ namespace Stump.DofusProtocol.Types
                  (effects as Types.ObjectEffect[])[i] = Types.ProtocolTypeManager.GetInstance<Types.ObjectEffect>(reader.ReadShort());
                  (effects as Types.ObjectEffect[])[i].Deserialize(reader);
             }
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(bool) + sizeof(short) + effects.Sum(x => x.GetSerializationSize());
         }
         
     }

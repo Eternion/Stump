@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:27
+
+// Generated on 07/26/2013 22:51:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,11 @@ namespace Stump.DofusProtocol.Types
             arg2 = reader.ReadInt();
             arg3 = reader.ReadInt();
             delay = reader.ReadShort();
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return base.GetSerializationSize() + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(short);
         }
         
     }

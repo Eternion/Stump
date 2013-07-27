@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:03
+
+// Generated on 07/26/2013 22:50:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,11 @@ namespace Stump.DofusProtocol.Messages
             if (timestamp < 0)
                 throw new Exception("Forbidden value on timestamp = " + timestamp + ", it doesn't respect the following condition : timestamp < 0");
             timezoneOffset = reader.ReadShort();
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(int) + sizeof(short);
         }
         
     }

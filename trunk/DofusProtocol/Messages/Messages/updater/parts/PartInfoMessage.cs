@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:25
+
+// Generated on 07/26/2013 22:51:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,11 @@ namespace Stump.DofusProtocol.Messages
             part = new Types.ContentPart();
             part.Deserialize(reader);
             installationPercent = reader.ReadFloat();
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return part.GetSerializationSize() + sizeof(float);
         }
         
     }

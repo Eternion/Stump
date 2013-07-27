@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:15
+
+// Generated on 07/26/2013 22:51:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,11 @@ namespace Stump.DofusProtocol.Messages
             spellId = reader.ReadShort();
             if (spellId < 0)
                 throw new Exception("Forbidden value on spellId = " + spellId + ", it doesn't respect the following condition : spellId < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(short);
         }
         
     }

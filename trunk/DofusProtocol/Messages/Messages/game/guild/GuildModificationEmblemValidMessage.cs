@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:17
+
+// Generated on 07/26/2013 22:51:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,11 @@ namespace Stump.DofusProtocol.Messages
         {
             guildEmblem = new Types.GuildEmblem();
             guildEmblem.Deserialize(reader);
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return guildEmblem.GetSerializationSize();
         }
         
     }

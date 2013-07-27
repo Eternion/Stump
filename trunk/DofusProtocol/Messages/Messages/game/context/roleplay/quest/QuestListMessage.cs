@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:14
+
+// Generated on 07/26/2013 22:51:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,6 +73,11 @@ namespace Stump.DofusProtocol.Messages
                  (activeQuests as Types.QuestActiveInformations[])[i] = Types.ProtocolTypeManager.GetInstance<Types.QuestActiveInformations>(reader.ReadShort());
                  (activeQuests as Types.QuestActiveInformations[])[i].Deserialize(reader);
             }
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(short) + finishedQuestsIds.Sum(x => sizeof(short)) + sizeof(short) + finishedQuestsCounts.Sum(x => sizeof(short)) + sizeof(short) + activeQuests.Sum(x => x.GetSerializationSize());
         }
         
     }

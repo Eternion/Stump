@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:29
+
+// Generated on 07/26/2013 22:51:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,11 @@ namespace Stump.DofusProtocol.Types
             if (guildId < 0)
                 throw new Exception("Forbidden value on guildId = " + guildId + ", it doesn't respect the following condition : guildId < 0");
             guildName = reader.ReadUTF();
+        }
+        
+        public virtual int GetSerializationSize()
+        {
+            return sizeof(int) + sizeof(short) + guildName.Length;
         }
         
     }

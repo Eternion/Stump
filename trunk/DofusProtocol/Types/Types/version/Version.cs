@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:31
+
+// Generated on 07/26/2013 22:51:13
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,6 +67,11 @@ namespace Stump.DofusProtocol.Types
             buildType = reader.ReadSByte();
             if (buildType < 0)
                 throw new Exception("Forbidden value on buildType = " + buildType + ", it doesn't respect the following condition : buildType < 0");
+        }
+        
+        public virtual int GetSerializationSize()
+        {
+            return sizeof(sbyte) + sizeof(sbyte) + sizeof(sbyte) + sizeof(int) + sizeof(sbyte) + sizeof(sbyte);
         }
         
     }

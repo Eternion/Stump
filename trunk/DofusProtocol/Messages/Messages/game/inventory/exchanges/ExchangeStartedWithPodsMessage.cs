@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:21
+
+// Generated on 07/26/2013 22:51:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,6 +67,11 @@ namespace Stump.DofusProtocol.Messages
             secondCharacterMaxWeight = reader.ReadInt();
             if (secondCharacterMaxWeight < 0)
                 throw new Exception("Forbidden value on secondCharacterMaxWeight = " + secondCharacterMaxWeight + ", it doesn't respect the following condition : secondCharacterMaxWeight < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return base.GetSerializationSize() + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int);
         }
         
     }

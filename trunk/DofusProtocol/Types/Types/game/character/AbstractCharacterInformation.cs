@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:27
+
+// Generated on 07/26/2013 22:51:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,11 @@ namespace Stump.DofusProtocol.Types
             id = reader.ReadInt();
             if (id < 0)
                 throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0");
+        }
+        
+        public virtual int GetSerializationSize()
+        {
+            return sizeof(int);
         }
         
     }

@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:24
+
+// Generated on 07/26/2013 22:51:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,6 +53,11 @@ namespace Stump.DofusProtocol.Messages
                  (shortcuts as Types.Shortcut[])[i] = Types.ProtocolTypeManager.GetInstance<Types.Shortcut>(reader.ReadShort());
                  (shortcuts as Types.Shortcut[])[i].Deserialize(reader);
             }
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(sbyte) + sizeof(short) + shortcuts.Sum(x => x.GetSerializationSize());
         }
         
     }

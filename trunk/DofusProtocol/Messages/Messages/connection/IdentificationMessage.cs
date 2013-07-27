@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:23:58
+
+// Generated on 07/26/2013 22:50:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,6 +73,11 @@ namespace Stump.DofusProtocol.Messages
                  (credentials as sbyte[])[i] = reader.ReadSByte();
             }
             serverId = reader.ReadShort();
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(bool) + 0 + 0 + version.GetSerializationSize() + sizeof(short) + lang.Length + sizeof(short) + credentials.Sum(x => sizeof(sbyte)) + sizeof(short);
         }
         
     }

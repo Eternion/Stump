@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:24
+
+// Generated on 07/26/2013 22:51:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,11 @@ namespace Stump.DofusProtocol.Messages
                 throw new Exception("Forbidden value on barType = " + barType + ", it doesn't respect the following condition : barType < 0");
             shortcut = Types.ProtocolTypeManager.GetInstance<Types.Shortcut>(reader.ReadShort());
             shortcut.Deserialize(reader);
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(sbyte) + shortcut.GetSerializationSize();
         }
         
     }

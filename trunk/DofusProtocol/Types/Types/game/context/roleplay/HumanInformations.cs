@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:29
+
+// Generated on 07/26/2013 22:51:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,6 +55,11 @@ namespace Stump.DofusProtocol.Types
                  (options as Types.HumanOption[])[i] = Types.ProtocolTypeManager.GetInstance<Types.HumanOption>(reader.ReadShort());
                  (options as Types.HumanOption[])[i].Deserialize(reader);
             }
+        }
+        
+        public virtual int GetSerializationSize()
+        {
+            return restrictions.GetSerializationSize() + sizeof(bool) + sizeof(short) + options.Sum(x => x.GetSerializationSize());
         }
         
     }

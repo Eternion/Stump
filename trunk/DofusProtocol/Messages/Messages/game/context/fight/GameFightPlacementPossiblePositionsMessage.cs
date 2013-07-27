@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:07
+
+// Generated on 07/26/2013 22:50:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,6 +64,11 @@ namespace Stump.DofusProtocol.Messages
             teamNumber = reader.ReadSByte();
             if (teamNumber < 0)
                 throw new Exception("Forbidden value on teamNumber = " + teamNumber + ", it doesn't respect the following condition : teamNumber < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(short) + positionsForChallengers.Sum(x => sizeof(short)) + sizeof(short) + positionsForDefenders.Sum(x => sizeof(short)) + sizeof(sbyte);
         }
         
     }

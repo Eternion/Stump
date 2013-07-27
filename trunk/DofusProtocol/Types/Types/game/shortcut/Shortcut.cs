@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:31
+
+// Generated on 07/26/2013 22:51:13
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,11 @@ namespace Stump.DofusProtocol.Types
             slot = reader.ReadInt();
             if (slot < 0 || slot > 99)
                 throw new Exception("Forbidden value on slot = " + slot + ", it doesn't respect the following condition : slot < 0 || slot > 99");
+        }
+        
+        public virtual int GetSerializationSize()
+        {
+            return sizeof(int);
         }
         
     }

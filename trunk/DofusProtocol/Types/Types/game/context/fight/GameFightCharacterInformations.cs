@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:29
+
+// Generated on 07/26/2013 22:51:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +49,11 @@ namespace Stump.DofusProtocol.Types
             alignmentInfos = new Types.ActorAlignmentInformations();
             alignmentInfos.Deserialize(reader);
             breed = reader.ReadSByte();
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return base.GetSerializationSize() + sizeof(short) + alignmentInfos.GetSerializationSize() + sizeof(sbyte);
         }
         
     }

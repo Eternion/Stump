@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:23:58
+
+// Generated on 07/26/2013 22:50:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,11 @@ namespace Stump.DofusProtocol.Messages
             banEndDate = reader.ReadDouble();
             if (banEndDate < 0)
                 throw new Exception("Forbidden value on banEndDate = " + banEndDate + ", it doesn't respect the following condition : banEndDate < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return base.GetSerializationSize() + sizeof(double);
         }
         
     }

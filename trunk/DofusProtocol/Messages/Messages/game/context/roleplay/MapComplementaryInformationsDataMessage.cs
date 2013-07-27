@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:09
+
+// Generated on 07/26/2013 22:50:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -134,6 +135,11 @@ namespace Stump.DofusProtocol.Messages
                  (fights as Types.FightCommonInformations[])[i] = new Types.FightCommonInformations();
                  (fights as Types.FightCommonInformations[])[i].Deserialize(reader);
             }
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(short) + sizeof(int) + sizeof(sbyte) + sizeof(short) + houses.Sum(x => x.GetSerializationSize()) + sizeof(short) + actors.Sum(x => x.GetSerializationSize()) + sizeof(short) + interactiveElements.Sum(x => x.GetSerializationSize()) + sizeof(short) + statedElements.Sum(x => x.GetSerializationSize()) + sizeof(short) + obstacles.Sum(x => x.GetSerializationSize()) + sizeof(short) + fights.Sum(x => x.GetSerializationSize());
         }
         
     }

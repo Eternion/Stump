@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:29
+
+// Generated on 07/26/2013 22:51:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +47,11 @@ namespace Stump.DofusProtocol.Types
                  (followingCharactersLook as Types.IndexedEntityLook[])[i] = new Types.IndexedEntityLook();
                  (followingCharactersLook as Types.IndexedEntityLook[])[i].Deserialize(reader);
             }
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return base.GetSerializationSize() + sizeof(short) + followingCharactersLook.Sum(x => x.GetSerializationSize());
         }
         
     }

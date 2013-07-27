@@ -95,24 +95,22 @@ namespace Stump.Server.BaseServer.Network
             var args = ObjectPoolMgr.ObtainObject<SocketAsyncEventArgs>();
             args.Completed += OnSendCompleted;
 
-            byte[] data;
-            using (var writer = new BigEndianWriter())
-            {
-                message.Pack(writer);
-                data = writer.Data;
-            }
+            var stream = BufferManager.Default.CheckOutStream();
+            var writer = new BigEndianWriter(stream);
+            message.Pack(writer);
 
-            Console.WriteLine("SEND : " + data.ToString(" "));
-            args.SetBuffer(data, 0, data.Length);
+            args.SetBuffer(stream.Segment.Buffer.Array, stream.Segment.Offset, (int) (stream.Position));
+            args.UserToken = writer;
 
             if (!Socket.SendAsync(args))
             {
                 args.Completed -= OnSendCompleted;
+                writer.Dispose();
                 ObjectPoolMgr.ReleaseObject(args);
             }
 
             if (LogPackets)
-                Console.WriteLine(string.Format("(SEND) {0} : {1}", this, message));
+                Console.WriteLine("(SEND) {0} : {1}", this, message);
 
             LastActivity = DateTime.Now;
             OnMessageSended(message);
@@ -121,6 +119,7 @@ namespace Stump.Server.BaseServer.Network
         private void OnSendCompleted(object sender, SocketAsyncEventArgs args)
         {
             args.Completed -= OnSendCompleted;
+            ((BigEndianWriter) args.UserToken).Dispose();
             ObjectPoolMgr.ReleaseObject(args);
         }
 
@@ -188,8 +187,6 @@ namespace Stump.Server.BaseServer.Network
                     Interlocked.Add(ref m_totalBytesReceived, bytesReceived);
 
                     m_remainingLength += bytesReceived;
-
-                    Console.WriteLine("RECV : " + m_bufferSegment.SegmentData.Take(bytesReceived).ToString(" "));
                     if (BuildMessage(m_bufferSegment))
                     {
                         m_offset = 0;

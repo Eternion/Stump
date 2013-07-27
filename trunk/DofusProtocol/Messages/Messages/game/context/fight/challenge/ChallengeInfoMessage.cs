@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:08
+
+// Generated on 07/26/2013 22:50:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,6 +66,11 @@ namespace Stump.DofusProtocol.Messages
             extraDropBonus = reader.ReadInt();
             if (extraDropBonus < 0)
                 throw new Exception("Forbidden value on extraDropBonus = " + extraDropBonus + ", it doesn't respect the following condition : extraDropBonus < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(short) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int);
         }
         
     }

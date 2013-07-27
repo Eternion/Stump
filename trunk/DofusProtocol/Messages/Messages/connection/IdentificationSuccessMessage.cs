@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:23:58
+
+// Generated on 07/26/2013 22:50:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -78,6 +79,11 @@ namespace Stump.DofusProtocol.Messages
             accountCreation = reader.ReadDouble();
             if (accountCreation < 0)
                 throw new Exception("Forbidden value on accountCreation = " + accountCreation + ", it doesn't respect the following condition : accountCreation < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(bool) + 0 + sizeof(short) + login.Length + sizeof(short) + nickname.Length + sizeof(int) + sizeof(sbyte) + sizeof(short) + secretQuestion.Length + sizeof(double) + sizeof(double);
         }
         
     }

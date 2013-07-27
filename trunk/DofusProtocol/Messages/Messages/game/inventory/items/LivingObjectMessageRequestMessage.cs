@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:22
+
+// Generated on 07/26/2013 22:51:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,6 +57,11 @@ namespace Stump.DofusProtocol.Messages
             livingObject = reader.ReadUInt();
             if (livingObject < 0 || livingObject > 4294967295)
                 throw new Exception("Forbidden value on livingObject = " + livingObject + ", it doesn't respect the following condition : livingObject < 0 || livingObject > 4294967295");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(short) + sizeof(short) + parameters.Sum(x => sizeof(short) + x.Length) + sizeof(uint);
         }
         
     }

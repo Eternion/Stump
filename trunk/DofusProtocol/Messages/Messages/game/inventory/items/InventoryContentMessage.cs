@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:21
+
+// Generated on 07/26/2013 22:51:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,6 +52,11 @@ namespace Stump.DofusProtocol.Messages
             kamas = reader.ReadInt();
             if (kamas < 0)
                 throw new Exception("Forbidden value on kamas = " + kamas + ", it doesn't respect the following condition : kamas < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(short) + objects.Sum(x => x.GetSerializationSize()) + sizeof(int);
         }
         
     }

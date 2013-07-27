@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:15
+
+// Generated on 07/26/2013 22:51:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,11 @@ namespace Stump.DofusProtocol.Messages
             spellLevel = reader.ReadSByte();
             if (spellLevel < 1 || spellLevel > 6)
                 throw new Exception("Forbidden value on spellLevel = " + spellLevel + ", it doesn't respect the following condition : spellLevel < 1 || spellLevel > 6");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(int) + sizeof(sbyte);
         }
         
     }

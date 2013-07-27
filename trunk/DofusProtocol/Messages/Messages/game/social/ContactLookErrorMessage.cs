@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:24
+
+// Generated on 07/26/2013 22:51:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,11 @@ namespace Stump.DofusProtocol.Messages
             requestId = reader.ReadInt();
             if (requestId < 0)
                 throw new Exception("Forbidden value on requestId = " + requestId + ", it doesn't respect the following condition : requestId < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(int);
         }
         
     }

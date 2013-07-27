@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:10
+
+// Generated on 07/26/2013 22:50:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +45,11 @@ namespace Stump.DofusProtocol.Messages
             {
                  (emoteIds as sbyte[])[i] = reader.ReadSByte();
             }
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(short) + emoteIds.Sum(x => sizeof(sbyte));
         }
         
     }

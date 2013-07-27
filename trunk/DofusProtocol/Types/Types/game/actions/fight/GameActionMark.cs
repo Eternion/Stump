@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:27
+
+// Generated on 07/26/2013 22:51:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,6 +63,11 @@ namespace Stump.DofusProtocol.Types
                  (cells as Types.GameActionMarkedCell[])[i] = new Types.GameActionMarkedCell();
                  (cells as Types.GameActionMarkedCell[])[i].Deserialize(reader);
             }
+        }
+        
+        public virtual int GetSerializationSize()
+        {
+            return sizeof(int) + sizeof(int) + sizeof(short) + sizeof(sbyte) + sizeof(short) + cells.Sum(x => x.GetSerializationSize());
         }
         
     }

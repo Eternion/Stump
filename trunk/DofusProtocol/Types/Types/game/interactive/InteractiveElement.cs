@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:31
+
+// Generated on 07/26/2013 22:51:12
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,6 +71,11 @@ namespace Stump.DofusProtocol.Types
                  (disabledSkills as Types.InteractiveElementSkill[])[i] = Types.ProtocolTypeManager.GetInstance<Types.InteractiveElementSkill>(reader.ReadShort());
                  (disabledSkills as Types.InteractiveElementSkill[])[i].Deserialize(reader);
             }
+        }
+        
+        public virtual int GetSerializationSize()
+        {
+            return sizeof(int) + sizeof(int) + sizeof(short) + enabledSkills.Sum(x => x.GetSerializationSize()) + sizeof(short) + disabledSkills.Sum(x => x.GetSerializationSize());
         }
         
     }

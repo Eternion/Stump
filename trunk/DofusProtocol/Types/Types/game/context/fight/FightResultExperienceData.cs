@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:28
+
+// Generated on 07/26/2013 22:51:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -101,6 +102,11 @@ namespace Stump.DofusProtocol.Types
             if (experienceForMount < 0)
                 throw new Exception("Forbidden value on experienceForMount = " + experienceForMount + ", it doesn't respect the following condition : experienceForMount < 0");
             rerollExperienceMul = reader.ReadInt();
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return base.GetSerializationSize() + sizeof(bool) + 0 + 0 + 0 + 0 + 0 + 0 + sizeof(double) + sizeof(double) + sizeof(double) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int);
         }
         
     }

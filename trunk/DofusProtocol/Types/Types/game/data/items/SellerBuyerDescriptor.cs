@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:30
+
+// Generated on 07/26/2013 22:51:12
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,6 +83,11 @@ namespace Stump.DofusProtocol.Types
             unsoldDelay = reader.ReadShort();
             if (unsoldDelay < 0)
                 throw new Exception("Forbidden value on unsoldDelay = " + unsoldDelay + ", it doesn't respect the following condition : unsoldDelay < 0");
+        }
+        
+        public virtual int GetSerializationSize()
+        {
+            return sizeof(short) + quantities.Sum(x => sizeof(int)) + sizeof(short) + types.Sum(x => sizeof(int)) + sizeof(float) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(short);
         }
         
     }

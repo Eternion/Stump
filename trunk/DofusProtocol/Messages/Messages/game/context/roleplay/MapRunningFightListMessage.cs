@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:10
+
+// Generated on 07/26/2013 22:50:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,6 +46,11 @@ namespace Stump.DofusProtocol.Messages
                  (fights as Types.FightExternalInformations[])[i] = new Types.FightExternalInformations();
                  (fights as Types.FightExternalInformations[])[i].Deserialize(reader);
             }
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(short) + fights.Sum(x => x.GetSerializationSize());
         }
         
     }

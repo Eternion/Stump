@@ -20,53 +20,22 @@ namespace Stump.DofusProtocol.Messages
 
         public void Pack(IDataWriter writer)
         {
+            var len = GetSerializationSize();
+            byte typeLen = ComputeTypeLen(len);
+            var header = (short)SubComputeStaticHeader(MessageId, typeLen);
+
+            writer.WriteShort(header);
+
+            for (int i = typeLen - 1; i >= 0; i--)
+            {
+                writer.WriteByte((byte)(len >> 8*i & 255));
+            }
             Serialize(writer);
-            WritePacket(writer);
         }
 
         public abstract void Serialize(IDataWriter writer);
         public abstract void Deserialize(IDataReader reader);
-
-        private void WritePacket(IDataWriter writer)
-        {
-            byte[] packet = writer.Data;
-
-            writer.Clear();
-
-            byte typeLen = ComputeTypeLen(packet.Length);
-            var header = (short)SubComputeStaticHeader(MessageId, typeLen);
-            writer.WriteShort(header);
-
-            switch (typeLen)
-            {
-                case 0:
-                    {
-                        break;
-                    }
-                case 1:
-                    {
-                        writer.WriteByte((byte)packet.Length);
-                        break;
-                    }
-                case 2:
-                    {
-                        writer.WriteShort((short)packet.Length);
-                        break;
-                    }
-                case 3:
-                    {
-                        writer.WriteByte((byte)( packet.Length >> 16 & 255 ));
-                        writer.WriteShort((short)( packet.Length & 65535 ));
-                        break;
-                    }
-                default:
-                    {
-                        throw new Exception("Packet's length can't be encoded on 4 or more bytes");
-                    }
-            }
-            writer.WriteBytes(packet);
-        }
-
+        public abstract int GetSerializationSize();
 
         private static byte ComputeTypeLen(int param1)
         {

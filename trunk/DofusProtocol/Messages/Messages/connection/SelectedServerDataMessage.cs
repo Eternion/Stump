@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:23:58
+
+// Generated on 07/26/2013 22:50:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,6 +54,11 @@ namespace Stump.DofusProtocol.Messages
                 throw new Exception("Forbidden value on port = " + port + ", it doesn't respect the following condition : port < 0 || port > 65535");
             canCreateNewCharacter = reader.ReadBoolean();
             ticket = reader.ReadUTF();
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(short) + sizeof(short) + address.Length + sizeof(ushort) + sizeof(bool) + sizeof(short) + ticket.Length;
         }
         
     }

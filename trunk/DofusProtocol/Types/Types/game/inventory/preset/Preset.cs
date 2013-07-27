@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:31
+
+// Generated on 07/26/2013 22:51:12
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +61,11 @@ namespace Stump.DofusProtocol.Types
                  (objects as Types.PresetItem[])[i] = new Types.PresetItem();
                  (objects as Types.PresetItem[])[i].Deserialize(reader);
             }
+        }
+        
+        public virtual int GetSerializationSize()
+        {
+            return sizeof(sbyte) + sizeof(sbyte) + sizeof(bool) + sizeof(short) + objects.Sum(x => x.GetSerializationSize());
         }
         
     }

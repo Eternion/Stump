@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:11
+
+// Generated on 07/26/2013 22:50:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,6 +62,11 @@ namespace Stump.DofusProtocol.Messages
             arenaFightcount = reader.ReadShort();
             if (arenaFightcount < 0)
                 throw new Exception("Forbidden value on arenaFightcount = " + arenaFightcount + ", it doesn't respect the following condition : arenaFightcount < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short);
         }
         
     }

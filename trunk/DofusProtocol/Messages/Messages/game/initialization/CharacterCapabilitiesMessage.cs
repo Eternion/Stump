@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:18
+
+// Generated on 07/26/2013 22:51:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,11 @@ namespace Stump.DofusProtocol.Messages
             guildEmblemSymbolCategories = reader.ReadInt();
             if (guildEmblemSymbolCategories < 0)
                 throw new Exception("Forbidden value on guildEmblemSymbolCategories = " + guildEmblemSymbolCategories + ", it doesn't respect the following condition : guildEmblemSymbolCategories < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(int);
         }
         
     }
