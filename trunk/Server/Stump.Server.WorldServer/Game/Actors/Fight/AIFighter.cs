@@ -19,14 +19,22 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             : base(team)
         {
             Spells = spells.ToDictionary(entry => entry.Id);
-            Brain = new Brain(this);
+            Brain = BrainManager.Instance.GetDefaultBrain(this);
+            Fight.TurnStarted += OnTurnStarted;
+        }
+
+        protected AIFighter(FightTeam team, IEnumerable<Spell> spells, int identifier)
+            : base(team)
+        {
+            Spells = spells.ToDictionary(entry => entry.Id);
+            Brain = BrainManager.Instance.GetBrain(identifier, this);
             Fight.TurnStarted += OnTurnStarted;
         }
 
         public Brain Brain
         {
             get;
-            private set;
+            protected set;
         }
 
         public bool Frozen
