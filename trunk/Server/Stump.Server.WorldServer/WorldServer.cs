@@ -21,6 +21,7 @@ using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.BaseServer.Plugins;
+using Stump.Server.WorldServer.AI.Fights.Brain;
 using Stump.Server.WorldServer.Core.IO;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
