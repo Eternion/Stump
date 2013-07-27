@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:23
+
+// Generated on 07/26/2013 22:51:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,11 @@ namespace Stump.DofusProtocol.Messages
             presetId = reader.ReadSByte();
             if (presetId < 0)
                 throw new Exception("Forbidden value on presetId = " + presetId + ", it doesn't respect the following condition : presetId < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(sbyte);
         }
         
     }

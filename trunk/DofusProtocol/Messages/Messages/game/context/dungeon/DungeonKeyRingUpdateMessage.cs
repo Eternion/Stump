@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:07
+
+// Generated on 07/26/2013 22:50:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,11 @@ namespace Stump.DofusProtocol.Messages
             if (dungeonId < 0)
                 throw new Exception("Forbidden value on dungeonId = " + dungeonId + ", it doesn't respect the following condition : dungeonId < 0");
             available = reader.ReadBoolean();
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(short) + sizeof(bool);
         }
         
     }

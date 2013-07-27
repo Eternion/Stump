@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:16
+
+// Generated on 07/26/2013 22:51:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,6 +56,11 @@ namespace Stump.DofusProtocol.Messages
             rights = reader.ReadUInt();
             if (rights < 0 || rights > 4294967295)
                 throw new Exception("Forbidden value on rights = " + rights + ", it doesn't respect the following condition : rights < 0 || rights > 4294967295");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(int) + sizeof(short) + sizeof(sbyte) + sizeof(uint);
         }
         
     }

@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:07
+
+// Generated on 07/26/2013 22:50:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,6 +46,11 @@ namespace Stump.DofusProtocol.Messages
             type = reader.ReadSByte();
             if (type < 0)
                 throw new Exception("Forbidden value on type = " + type + ", it doesn't respect the following condition : type < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(int) + sizeof(int) + sizeof(sbyte);
         }
         
     }

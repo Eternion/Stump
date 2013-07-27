@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:28
+
+// Generated on 07/26/2013 22:51:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,11 @@ namespace Stump.DofusProtocol.Types
             isRestrictedToPartyOnly = BooleanByteWrapper.GetFlag(flag1, 1);
             isClosed = BooleanByteWrapper.GetFlag(flag1, 2);
             isAskingForHelp = BooleanByteWrapper.GetFlag(flag1, 3);
+        }
+        
+        public virtual int GetSerializationSize()
+        {
+            return sizeof(bool) + 0 + 0 + 0;
         }
         
     }

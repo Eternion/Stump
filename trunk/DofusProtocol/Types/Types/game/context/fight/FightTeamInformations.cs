@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:29
+
+// Generated on 07/26/2013 22:51:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +49,11 @@ namespace Stump.DofusProtocol.Types
                  (teamMembers as Types.FightTeamMemberInformations[])[i] = Types.ProtocolTypeManager.GetInstance<Types.FightTeamMemberInformations>(reader.ReadShort());
                  (teamMembers as Types.FightTeamMemberInformations[])[i].Deserialize(reader);
             }
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return base.GetSerializationSize() + sizeof(short) + teamMembers.Sum(x => x.GetSerializationSize());
         }
         
     }

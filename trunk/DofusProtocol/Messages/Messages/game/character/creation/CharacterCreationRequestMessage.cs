@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:04
+
+// Generated on 07/26/2013 22:50:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,6 +63,11 @@ namespace Stump.DofusProtocol.Messages
             cosmeticId = reader.ReadInt();
             if (cosmeticId < 0)
                 throw new Exception("Forbidden value on cosmeticId = " + cosmeticId + ", it doesn't respect the following condition : cosmeticId < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(short) + name.Length + sizeof(sbyte) + sizeof(bool) + sizeof(short) + colors.Sum(x => sizeof(int)) + sizeof(int);
         }
         
     }

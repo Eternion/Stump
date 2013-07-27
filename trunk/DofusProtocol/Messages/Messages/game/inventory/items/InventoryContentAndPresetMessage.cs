@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:21
+
+// Generated on 07/26/2013 22:51:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +49,11 @@ namespace Stump.DofusProtocol.Messages
                  (presets as Types.Preset[])[i] = new Types.Preset();
                  (presets as Types.Preset[])[i].Deserialize(reader);
             }
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return base.GetSerializationSize() + sizeof(short) + presets.Sum(x => x.GetSerializationSize());
         }
         
     }

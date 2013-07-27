@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:30
+
+// Generated on 07/26/2013 22:51:12
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +47,11 @@ namespace Stump.DofusProtocol.Types
             symbolColor = reader.ReadInt();
             backgroundShape = reader.ReadShort();
             backgroundColor = reader.ReadInt();
+        }
+        
+        public virtual int GetSerializationSize()
+        {
+            return sizeof(short) + sizeof(int) + sizeof(short) + sizeof(int);
         }
         
     }

@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:07
+
+// Generated on 07/26/2013 22:50:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +49,11 @@ namespace Stump.DofusProtocol.Messages
                  (slavesInfo as Types.GameFightResumeSlaveInfo[])[i] = new Types.GameFightResumeSlaveInfo();
                  (slavesInfo as Types.GameFightResumeSlaveInfo[])[i].Deserialize(reader);
             }
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return base.GetSerializationSize() + sizeof(short) + slavesInfo.Sum(x => x.GetSerializationSize());
         }
         
     }

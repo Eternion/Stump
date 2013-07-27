@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:18
+
+// Generated on 07/26/2013 22:51:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,11 @@ namespace Stump.DofusProtocol.Messages
             timeLeft = reader.ReadInt();
             if (timeLeft < 0)
                 throw new Exception("Forbidden value on timeLeft = " + timeLeft + ", it doesn't respect the following condition : timeLeft < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(short) + sizeof(int) + sizeof(int);
         }
         
     }

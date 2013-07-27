@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:31
+
+// Generated on 07/26/2013 22:51:13
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,6 +67,11 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on alignment = " + alignment + ", it doesn't respect the following condition : alignment < 0");
             isInFight = reader.ReadBoolean();
             isFightable = reader.ReadBoolean();
+        }
+        
+        public virtual int GetSerializationSize()
+        {
+            return sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short) + sizeof(sbyte) + sizeof(bool) + sizeof(bool);
         }
         
     }

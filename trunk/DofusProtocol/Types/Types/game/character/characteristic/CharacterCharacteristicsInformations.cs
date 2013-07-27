@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:27
+
+// Generated on 07/26/2013 22:51:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -408,6 +409,11 @@ namespace Stump.DofusProtocol.Types
                  (spellModifications as Types.CharacterSpellModification[])[i] = new Types.CharacterSpellModification();
                  (spellModifications as Types.CharacterSpellModification[])[i].Deserialize(reader);
             }
+        }
+        
+        public virtual int GetSerializationSize()
+        {
+            return sizeof(double) + sizeof(double) + sizeof(double) + sizeof(int) + sizeof(int) + sizeof(int) + alignmentInfos.GetSerializationSize() + sizeof(int) + sizeof(int) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + initiative.GetSerializationSize() + prospecting.GetSerializationSize() + actionPoints.GetSerializationSize() + movementPoints.GetSerializationSize() + strength.GetSerializationSize() + vitality.GetSerializationSize() + wisdom.GetSerializationSize() + chance.GetSerializationSize() + agility.GetSerializationSize() + intelligence.GetSerializationSize() + range.GetSerializationSize() + summonableCreaturesBoost.GetSerializationSize() + reflect.GetSerializationSize() + criticalHit.GetSerializationSize() + sizeof(short) + criticalMiss.GetSerializationSize() + healBonus.GetSerializationSize() + allDamagesBonus.GetSerializationSize() + weaponDamagesBonusPercent.GetSerializationSize() + damagesBonusPercent.GetSerializationSize() + trapBonus.GetSerializationSize() + trapBonusPercent.GetSerializationSize() + permanentDamagePercent.GetSerializationSize() + tackleBlock.GetSerializationSize() + tackleEvade.GetSerializationSize() + PAAttack.GetSerializationSize() + PMAttack.GetSerializationSize() + pushDamageBonus.GetSerializationSize() + criticalDamageBonus.GetSerializationSize() + neutralDamageBonus.GetSerializationSize() + earthDamageBonus.GetSerializationSize() + waterDamageBonus.GetSerializationSize() + airDamageBonus.GetSerializationSize() + fireDamageBonus.GetSerializationSize() + dodgePALostProbability.GetSerializationSize() + dodgePMLostProbability.GetSerializationSize() + neutralElementResistPercent.GetSerializationSize() + earthElementResistPercent.GetSerializationSize() + waterElementResistPercent.GetSerializationSize() + airElementResistPercent.GetSerializationSize() + fireElementResistPercent.GetSerializationSize() + neutralElementReduction.GetSerializationSize() + earthElementReduction.GetSerializationSize() + waterElementReduction.GetSerializationSize() + airElementReduction.GetSerializationSize() + fireElementReduction.GetSerializationSize() + pushDamageReduction.GetSerializationSize() + criticalDamageReduction.GetSerializationSize() + pvpNeutralElementResistPercent.GetSerializationSize() + pvpEarthElementResistPercent.GetSerializationSize() + pvpWaterElementResistPercent.GetSerializationSize() + pvpAirElementResistPercent.GetSerializationSize() + pvpFireElementResistPercent.GetSerializationSize() + pvpNeutralElementReduction.GetSerializationSize() + pvpEarthElementReduction.GetSerializationSize() + pvpWaterElementReduction.GetSerializationSize() + pvpAirElementReduction.GetSerializationSize() + pvpFireElementReduction.GetSerializationSize() + sizeof(short) + spellModifications.Sum(x => x.GetSerializationSize());
         }
         
     }

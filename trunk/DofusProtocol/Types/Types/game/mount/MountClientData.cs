@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:31
+
+// Generated on 07/26/2013 22:51:13
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -219,6 +220,11 @@ namespace Stump.DofusProtocol.Types
                  (effectList as Types.ObjectEffectInteger[])[i] = new Types.ObjectEffectInteger();
                  (effectList as Types.ObjectEffectInteger[])[i].Deserialize(reader);
             }
+        }
+        
+        public virtual int GetSerializationSize()
+        {
+            return sizeof(bool) + 0 + 0 + 0 + sizeof(double) + sizeof(int) + sizeof(short) + ancestor.Sum(x => sizeof(int)) + sizeof(short) + behaviors.Sum(x => sizeof(int)) + sizeof(short) + name.Length + sizeof(int) + sizeof(double) + sizeof(double) + sizeof(double) + sizeof(sbyte) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(double) + sizeof(int) + sizeof(int) + sizeof(short) + effectList.Sum(x => x.GetSerializationSize());
         }
         
     }

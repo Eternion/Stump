@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:30
+
+// Generated on 07/26/2013 22:51:12
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,6 +55,11 @@ namespace Stump.DofusProtocol.Types
                  (objectives as Types.QuestObjectiveInformations[])[i] = Types.ProtocolTypeManager.GetInstance<Types.QuestObjectiveInformations>(reader.ReadShort());
                  (objectives as Types.QuestObjectiveInformations[])[i].Deserialize(reader);
             }
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + objectives.Sum(x => x.GetSerializationSize());
         }
         
     }

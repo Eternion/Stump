@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:28
+
+// Generated on 07/26/2013 22:51:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -123,6 +124,11 @@ namespace Stump.DofusProtocol.Types
             cantChangeZone = BooleanByteWrapper.GetFlag(flag3, 2);
             cantAttackMonster = BooleanByteWrapper.GetFlag(flag3, 3);
             cantWalk8Directions = BooleanByteWrapper.GetFlag(flag3, 4);
+        }
+        
+        public virtual int GetSerializationSize()
+        {
+            return sizeof(bool) + 0 + 0 + 0 + 0 + 0 + 0 + 0 + sizeof(bool) + 0 + 0 + 0 + 0 + 0 + 0 + 0 + sizeof(bool) + 0 + 0 + 0 + 0;
         }
         
     }

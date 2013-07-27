@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:08
+
+// Generated on 07/26/2013 22:50:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +40,11 @@ namespace Stump.DofusProtocol.Messages
         {
             id = reader.ReadDouble();
             time = reader.ReadDouble();
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(double) + sizeof(double);
         }
         
     }

@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:11
+
+// Generated on 07/26/2013 22:50:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +48,11 @@ namespace Stump.DofusProtocol.Messages
             realPrice = reader.ReadInt();
             if (realPrice < 0)
                 throw new Exception("Forbidden value on realPrice = " + realPrice + ", it doesn't respect the following condition : realPrice < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(int) + sizeof(bool) + sizeof(int);
         }
         
     }

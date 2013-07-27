@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:29
+
+// Generated on 07/26/2013 22:51:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,6 +46,11 @@ namespace Stump.DofusProtocol.Types
             accountId = reader.ReadInt();
             if (accountId < 0)
                 throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return base.GetSerializationSize() + humanoidInfo.GetSerializationSize() + sizeof(int);
         }
         
     }

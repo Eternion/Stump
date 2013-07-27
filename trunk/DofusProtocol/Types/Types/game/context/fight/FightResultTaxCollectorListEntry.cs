@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:28
+
+// Generated on 07/26/2013 22:51:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +49,11 @@ namespace Stump.DofusProtocol.Types
             guildInfo = new Types.BasicGuildInformations();
             guildInfo.Deserialize(reader);
             experienceForGuild = reader.ReadInt();
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return base.GetSerializationSize() + sizeof(byte) + guildInfo.GetSerializationSize() + sizeof(int);
         }
         
     }

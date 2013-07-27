@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:15
+
+// Generated on 07/26/2013 22:51:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,11 @@ namespace Stump.DofusProtocol.Messages
             boostPoint = reader.ReadShort();
             if (boostPoint < 0)
                 throw new Exception("Forbidden value on boostPoint = " + boostPoint + ", it doesn't respect the following condition : boostPoint < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(sbyte) + sizeof(short);
         }
         
     }

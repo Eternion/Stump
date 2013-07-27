@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:20
+
+// Generated on 07/26/2013 22:51:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,11 @@ namespace Stump.DofusProtocol.Messages
             humanVendorCell = reader.ReadInt();
             if (humanVendorCell < 0)
                 throw new Exception("Forbidden value on humanVendorCell = " + humanVendorCell + ", it doesn't respect the following condition : humanVendorCell < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(int) + sizeof(int);
         }
         
     }

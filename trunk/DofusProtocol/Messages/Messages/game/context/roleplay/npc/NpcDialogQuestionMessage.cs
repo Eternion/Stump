@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:12
+
+// Generated on 07/26/2013 22:50:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,6 +64,11 @@ namespace Stump.DofusProtocol.Messages
             {
                  (visibleReplies as short[])[i] = reader.ReadShort();
             }
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(short) + sizeof(short) + dialogParams.Sum(x => sizeof(short) + x.Length) + sizeof(short) + visibleReplies.Sum(x => sizeof(short));
         }
         
     }

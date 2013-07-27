@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:03
+
+// Generated on 07/26/2013 22:50:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,6 +52,11 @@ namespace Stump.DofusProtocol.Messages
             accountNickname = reader.ReadUTF();
             characterName = reader.ReadUTF();
             areaId = reader.ReadShort();
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(bool) + sizeof(sbyte) + sizeof(short) + accountNickname.Length + sizeof(short) + characterName.Length + sizeof(short);
         }
         
     }

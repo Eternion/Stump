@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:12
+
+// Generated on 07/26/2013 22:50:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,11 @@ namespace Stump.DofusProtocol.Messages
             objectGID = reader.ReadShort();
             if (objectGID < 0)
                 throw new Exception("Forbidden value on objectGID = " + objectGID + ", it doesn't respect the following condition : objectGID < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(short) + sizeof(short);
         }
         
     }

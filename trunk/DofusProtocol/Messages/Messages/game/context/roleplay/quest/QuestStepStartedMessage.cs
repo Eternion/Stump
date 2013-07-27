@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:15
+
+// Generated on 07/26/2013 22:51:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,11 @@ namespace Stump.DofusProtocol.Messages
             stepId = reader.ReadUShort();
             if (stepId < 0 || stepId > 65535)
                 throw new Exception("Forbidden value on stepId = " + stepId + ", it doesn't respect the following condition : stepId < 0 || stepId > 65535");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(ushort) + sizeof(ushort);
         }
         
     }

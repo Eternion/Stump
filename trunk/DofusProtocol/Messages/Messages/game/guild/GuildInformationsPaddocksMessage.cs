@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:16
+
+// Generated on 07/26/2013 22:51:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,6 +52,11 @@ namespace Stump.DofusProtocol.Messages
                  (paddocksInformations as Types.PaddockContentInformations[])[i] = new Types.PaddockContentInformations();
                  (paddocksInformations as Types.PaddockContentInformations[])[i].Deserialize(reader);
             }
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(sbyte) + sizeof(short) + paddocksInformations.Sum(x => x.GetSerializationSize());
         }
         
     }

@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:31
+
+// Generated on 07/26/2013 22:51:13
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +40,11 @@ namespace Stump.DofusProtocol.Types
             smileyId = reader.ReadSByte();
             if (smileyId < 0)
                 throw new Exception("Forbidden value on smileyId = " + smileyId + ", it doesn't respect the following condition : smileyId < 0");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return base.GetSerializationSize() + sizeof(sbyte);
         }
         
     }

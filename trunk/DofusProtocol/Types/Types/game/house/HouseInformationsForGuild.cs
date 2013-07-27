@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:30
+
+// Generated on 07/26/2013 22:51:12
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,6 +88,11 @@ namespace Stump.DofusProtocol.Types
             guildshareParams = reader.ReadUInt();
             if (guildshareParams < 0 || guildshareParams > 4294967295)
                 throw new Exception("Forbidden value on guildshareParams = " + guildshareParams + ", it doesn't respect the following condition : guildshareParams < 0 || guildshareParams > 4294967295");
+        }
+        
+        public virtual int GetSerializationSize()
+        {
+            return sizeof(int) + sizeof(int) + sizeof(short) + ownerName.Length + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short) + sizeof(short) + skillListIds.Sum(x => sizeof(int)) + sizeof(uint);
         }
         
     }

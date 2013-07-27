@@ -941,7 +941,6 @@
     <Compile Include="Messages\security\CheckFileMessage.cs" />
     <Compile Include="Messages\security\CheckFileRequestMessage.cs" />
     <Compile Include="Messages\security\ClientKeyMessage.cs" />
-    <Compile Include="Messages\security\RawDataMessage.cs" />
     <Compile Include="Messages\server\basic\SystemMessageDisplayMessage.cs" />
     <Compile Include="Messages\updater\parts\DownloadCurrentSpeedMessage.cs" />
     <Compile Include="Messages\updater\parts\DownloadErrorMessage.cs" />

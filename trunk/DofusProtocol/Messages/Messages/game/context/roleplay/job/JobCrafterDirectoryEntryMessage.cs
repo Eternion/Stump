@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:11
+
+// Generated on 07/26/2013 22:50:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,6 +56,11 @@ namespace Stump.DofusProtocol.Messages
             }
             playerLook = new Types.EntityLook();
             playerLook.Deserialize(reader);
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return playerInfo.GetSerializationSize() + sizeof(short) + jobInfoList.Sum(x => x.GetSerializationSize()) + playerLook.GetSerializationSize();
         }
         
     }

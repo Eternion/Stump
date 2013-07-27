@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:25
+
+// Generated on 07/26/2013 22:51:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    /*public class RawDataMessage : Message
+    public class RawDataMessage : Message
     {
         public const uint Id = 6253;
         public override uint MessageId
@@ -30,6 +31,12 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
+        public override int GetSerializationSize()
+        {
+            return 0;
+            ;
+        }
+        
     }
-    */
+    
 }

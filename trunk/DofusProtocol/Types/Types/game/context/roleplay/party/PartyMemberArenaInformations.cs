@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:30
+
+// Generated on 07/26/2013 22:51:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +40,11 @@ namespace Stump.DofusProtocol.Types
             rank = reader.ReadShort();
             if (rank < 0 || rank > 2300)
                 throw new Exception("Forbidden value on rank = " + rank + ", it doesn't respect the following condition : rank < 0 || rank > 2300");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return base.GetSerializationSize() + sizeof(short);
         }
         
     }

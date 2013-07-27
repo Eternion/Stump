@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:23:58
+
+// Generated on 07/26/2013 22:50:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,11 @@ namespace Stump.DofusProtocol.Messages
             if (level < 0)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0");
             message = reader.ReadUTF();
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(sbyte) + sizeof(short) + message.Length;
         }
         
     }

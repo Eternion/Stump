@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:27
+
+// Generated on 07/26/2013 22:51:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,11 @@ namespace Stump.DofusProtocol.Types
             if (level < 1 || level > 200)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 1 || level > 200");
             name = reader.ReadUTF();
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return base.GetSerializationSize() + sizeof(byte) + sizeof(short) + name.Length;
         }
         
     }

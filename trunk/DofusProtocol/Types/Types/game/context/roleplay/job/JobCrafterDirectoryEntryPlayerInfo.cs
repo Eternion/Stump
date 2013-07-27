@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:29
+
+// Generated on 07/26/2013 22:51:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -80,6 +81,11 @@ namespace Stump.DofusProtocol.Types
             subAreaId = reader.ReadShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
+        }
+        
+        public virtual int GetSerializationSize()
+        {
+            return sizeof(int) + sizeof(short) + playerName.Length + sizeof(sbyte) + sizeof(sbyte) + sizeof(bool) + sizeof(bool) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short);
         }
         
     }

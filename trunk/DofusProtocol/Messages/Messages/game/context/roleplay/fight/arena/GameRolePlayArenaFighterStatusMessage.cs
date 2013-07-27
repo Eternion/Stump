@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:11
+
+// Generated on 07/26/2013 22:50:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,6 +46,11 @@ namespace Stump.DofusProtocol.Messages
             if (playerId < 0)
                 throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
             accepted = reader.ReadBoolean();
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(int) + sizeof(int) + sizeof(bool);
         }
         
     }

@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:28
+
+// Generated on 07/26/2013 22:51:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,6 +46,11 @@ namespace Stump.DofusProtocol.Types
             look.Deserialize(reader);
             disposition = Types.ProtocolTypeManager.GetInstance<Types.EntityDispositionInformations>(reader.ReadShort());
             disposition.Deserialize(reader);
+        }
+        
+        public virtual int GetSerializationSize()
+        {
+            return sizeof(int) + look.GetSerializationSize() + disposition.GetSerializationSize();
         }
         
     }

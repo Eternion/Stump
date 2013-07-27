@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:16
+
+// Generated on 07/26/2013 22:51:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,6 +106,11 @@ namespace Stump.DofusProtocol.Messages
             {
                  (spellLevel as sbyte[])[i] = reader.ReadSByte();
             }
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(sbyte) + sizeof(sbyte) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + spellId.Sum(x => sizeof(short)) + sizeof(short) + spellLevel.Sum(x => sizeof(sbyte));
         }
         
     }

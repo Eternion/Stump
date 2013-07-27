@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:22
+
+// Generated on 07/26/2013 22:51:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,11 @@ namespace Stump.DofusProtocol.Messages
             livingPosition = reader.ReadByte();
             if (livingPosition < 0 || livingPosition > 255)
                 throw new Exception("Forbidden value on livingPosition = " + livingPosition + ", it doesn't respect the following condition : livingPosition < 0 || livingPosition > 255");
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return sizeof(int) + sizeof(byte);
         }
         
     }
