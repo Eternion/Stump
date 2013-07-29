@@ -14,10 +14,6 @@ obj/
 /trunk/Run/Release
 
 # Static data
-*.d2o
-*.d2i
-*.map
-*.meta
 
 #TestUnit
 TestResults/
