@@ -145,6 +145,35 @@ namespace Stump.Server.WorldServer.Game.Spells
             return true;
         }
 
+        public bool ForgetSpell(int id)
+        {
+            if (!HasSpell(id))
+                return false;
+
+            var spell = GetSpell(id);
+            Owner.SpellsPoints += (ushort)(spell.CurrentLevel - 1);
+            spell.CurrentLevel = 1;
+
+            InventoryHandler.SendSpellForgottenMessage(Owner.Client, spell, (short)Owner.SpellsPoints);
+            return true;
+        }
+
+        public int ForgetAllSpells()
+        {
+            var resetPoints = 0;
+
+            foreach (var spell in m_spells)
+            {
+                resetPoints += spell.Value.CurrentLevel - 1;
+                spell.Value.CurrentLevel = 1;
+            }
+
+            Owner.SpellsPoints += (ushort)resetPoints;
+
+            InventoryHandler.SendSpellForgottenMessage(Owner.Client, m_spells.Values, (short) Owner.SpellsPoints);
+            return resetPoints;
+        }
+
         public void MoveSpell(int id, byte position)
         {
             var spell = GetSpell(id);

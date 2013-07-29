@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -38,6 +39,16 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new SpellListMessage(previsualization,
                                              client.Character.Spells.GetSpells().Select(
                                                  entry => entry.GetSpellItem())));
+        }
+
+        public static void SendSpellForgottenMessage(IPacketReceiver client, IEnumerable<Spell> forgottenSpells, short spellPoints)
+        {
+            client.Send(new SpellForgottenMessage(forgottenSpells.Select(x => (short)x.Id), spellPoints));
+        }
+
+        public static void SendSpellForgottenMessage(IPacketReceiver client, Spell forgottenSpell, short spellPoints)
+        {
+            client.Send(new SpellForgottenMessage(new [] {(short) forgottenSpell.Id}, spellPoints));
         }
     }
 }

@@ -40,22 +40,22 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
         public NpcMessage CurrentMessage
         {
             get;
-            private set;
+            protected set;
         }
 
-        public void Open()
+        public virtual void Open()
         {
             Character.SetDialog(this);
             ContextRoleplayHandler.SendNpcDialogCreationMessage(Character.Client, Npc);
         }
 
-        public void Close()
+        public virtual void Close()
         {
             DialogHandler.SendLeaveDialogMessage(Character.Client, DialogType);
             Character.ResetDialog();
         }
 
-        public void Reply(short replyId)
+        public virtual void Reply(short replyId)
         {
             var lastMessage = CurrentMessage;
             var replies = CurrentMessage.Replies.Where(entry => entry.ReplyId == replyId).ToArray();
@@ -89,7 +89,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 ChangeMessage(message);
         }
 
-        public void ChangeMessage(NpcMessage message)
+        public virtual void ChangeMessage(NpcMessage message)
         {
             CurrentMessage = message;
 

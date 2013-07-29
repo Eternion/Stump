@@ -77,9 +77,9 @@ namespace Stump.Server.WorldServer.Database.Npcs
             }
         }
 
-        public NpcAction GenerateAction()
+        public NpcActionDatabase GenerateAction()
         {
-            return DiscriminatorManager<NpcAction>.Instance.Generate(Type, this);
+            return DiscriminatorManager<NpcActionDatabase>.Instance.Generate(Type, this);
         }
     }
 }

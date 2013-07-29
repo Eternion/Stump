@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Stump.Core.Cache;
 using Stump.DofusProtocol.Enums;
@@ -12,6 +14,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
 {
     public sealed class Npc : RolePlayActor
     {
+        private List<NpcAction> m_actions = new List<NpcAction>();
+
         public Npc(int id, NpcTemplate template, ObjectPosition position, EntityLook look)
         {
             Id = id;
@@ -21,6 +25,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
 
             m_gameContextActorInformations =
                 new ObjectValidator<GameContextActorInformations>(BuildGameContextActorInformations);
+            m_actions.AddRange(Template.Actions);
         }
 
         public Npc(int id, NpcSpawn spawn)
@@ -28,6 +33,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
         {
             Spawn = spawn;
         }
+
 
         public NpcTemplate Template
         {
@@ -58,6 +64,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             set;
         }
 
+        public List<NpcAction> Actions
+        {
+            get { return m_actions; }
+        }
+
         public event Action<Npc, NpcActionTypeEnum, NpcAction, Character> Interacted;
 
         private void OnInteracted(NpcActionTypeEnum actionType, NpcAction action, Character character)
@@ -76,13 +87,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
 
         public void InteractWith(NpcActionTypeEnum actionType, Character dialoguer)
         {
-            if (!CanInteractWith(actionType, dialoguer))
-                return;
-
-            NpcAction[] actions = Template.GetNpcActions(actionType);
-
             NpcAction action =
-                actions.First(entry => entry.Record.ConditionExpression == null || entry.Record.ConditionExpression.Eval(dialoguer));
+                Actions.First(entry => entry.ActionType == actionType && entry.CanExecute(this, dialoguer));
 
             action.Execute(this, dialoguer);
             OnInteracted(actionType, action, dialoguer);
@@ -93,10 +99,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             if (dialoguer.Map != Position.Map)
                 return false;
 
-            NpcAction[] actions = Template.GetNpcActions(action);
-
-            return actions.Length > 0 && actions.Any(entry => entry.Record.ConditionExpression == null ||
-                                                              entry.Record.ConditionExpression.Eval(dialoguer));
+            return Actions.Count > 0 && Actions.Any(entry => entry.ActionType == action && entry.CanExecute(this, dialoguer));
         }
 
         public void SpeakWith(Character dialoguer)

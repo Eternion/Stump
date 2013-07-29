@@ -17,9 +17,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Items;
@@ -28,18 +30,30 @@ namespace ArkalysPlugin
 {
     public static class OrbsManager
     {
-        [Variable] public static short OrbItemTemplate = 20000;
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        [Variable] 
+        public static short OrbItemTemplateId = 20000;
+
+        public static ItemTemplate OrbItemTemplate;
+
         [Variable]
         public static double FormulasCoefficient = 0.001;
+
         [Variable]
         public static double FormulasExponent = 2.2;
 
 
 
-        [Initialization(InitializationPass.Fourth)]
+        [Initialization(typeof(ItemManager))]
         public static void Initialize()
         {
-            FightManager.Instance.EntityAdded += OnFightCreated;
+            OrbItemTemplate = ItemManager.Instance.TryGetTemplate(OrbItemTemplateId);
+
+            if (OrbItemTemplate == null)
+                logger.Error("Orb item template {0} doesn't exist in database !", OrbItemTemplateId);
+            else
+                FightManager.Instance.EntityAdded += OnFightCreated;
         }
 
         private static void OnFightCreated(Fight fight)
@@ -63,7 +77,7 @@ namespace ArkalysPlugin
                 var orbs = (uint) (((double)player.Stats[PlayerFields.Prospecting].Total/teamPP)*totalOrbs);
 
                 if (orbs > 0)
-                    player.Loot.AddItem(new DroppedItem(OrbItemTemplate, orbs));
+                    player.Loot.AddItem(new DroppedItem(OrbItemTemplateId, orbs));
             }
         }
 
