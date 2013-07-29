@@ -200,8 +200,9 @@ namespace WorldEditor.D2O
                                                      new FrameworkPropertyMetadata(typeof (DoubleCollectionEditor)));
         }
 
-        public DoubleCollectionEditor()
+        public DoubleCollectionEditor(Type listType)
         {
+            m_listType = listType;
             Items = new ObservableCollection<IList>();
             SelectedSubList = new ObservableCollection<object>();
             CommandBindings.Add(new CommandBinding(ApplicationCommands.New, AddNew, CanAddNew));

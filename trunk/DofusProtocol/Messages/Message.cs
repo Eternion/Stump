@@ -5,6 +5,8 @@ namespace Stump.DofusProtocol.Messages
 {
     public abstract class Message
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger(); 
+
         private const byte BIT_RIGHT_SHIFT_LEN_PACKET_ID = 2;
         private const byte BIT_MASK = 3;
 
@@ -31,6 +33,14 @@ namespace Stump.DofusProtocol.Messages
                 writer.WriteByte((byte)(len >> 8*i & 255));
             }
             Serialize(writer);
+
+#if DEBUG
+            if (writer is BigEndianWriter && ((BigEndianWriter) writer).Position - (2 + typeLen) != len)
+            {
+                logger.Error("{0} message length is diffent from the estimated one (real = {1} ; estimated = {2})", this,
+                             ((BigEndianWriter) writer).Position - (2 + typeLen), len);
+            }
+#endif
         }
 
         public abstract void Serialize(IDataWriter writer);

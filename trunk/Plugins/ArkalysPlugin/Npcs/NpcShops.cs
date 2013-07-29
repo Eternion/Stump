@@ -10,7 +10,7 @@ using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
 
-namespace ArkalysPlugin
+namespace ArkalysPlugin.Npcs
 {
     public static class NpcShops
     {

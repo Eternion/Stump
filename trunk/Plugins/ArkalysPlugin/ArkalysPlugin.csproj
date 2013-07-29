@@ -114,7 +114,7 @@
   <ItemGroup>
     <Compile Include="Commands\ShopCommand.cs" />
     <Compile Include="Commands\WelcomeCommand.cs" />
-    <Compile Include="Npcs\NpcRestatTrigger.cs" />
+    <Compile Include="Npcs\NpcRestatScript.cs" />
     <Compile Include="OrbsManager.cs" />
     <Compile Include="WelcomeMessage.cs" />
     <Compile Include="Npcs\NpcShops.cs" />

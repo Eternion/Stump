@@ -201,7 +201,7 @@ namespace WorldEditor.D2O
             {
                 if (m_listType.IsPrimitive || m_listType == typeof(string))
                 {
-                    var editor =  new DoublePrimitiveCollectionEditor();
+                    var editor = new DoublePrimitiveCollectionEditor(m_listType);
                     var dialog = new EditorDialog( editor);
                     dialog.Width = 600;
                     dialog.Height = 400;
@@ -217,7 +217,7 @@ namespace WorldEditor.D2O
                 }
                 else
                 {
-                    var editor =  new DoubleCollectionEditor();
+                    var editor = new DoubleCollectionEditor(m_listType);
                     editor.NewItemTypes = NewTypes;
                     var dialog = new EditorDialog(editor);
                     dialog.Width = 800;
