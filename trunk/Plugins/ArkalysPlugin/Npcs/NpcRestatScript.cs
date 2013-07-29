@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
@@ -10,21 +9,23 @@ using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
-using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
-namespace ArkalysPlugin
+namespace ArkalysPlugin.Npcs
 {
     public static class NpcRestatScript
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         [Variable] public static double OrbFactor = 5;
 
-        [Variable] public static int NpcId = 0;
-        [Variable] public static int MessageId = 0;
-        [Variable] public static short ReplyRestatId = 0;
-        [Variable] public static short ReplySpellForgetId = 0;
-        [Variable] public static short ReplyNoOrbsId = 0;
+        [Variable] public static int NpcId = 3000;
+        [Variable] public static int MessageId = 20003;
+        [Variable]
+        public static short ReplyRestatId = 20010;
+        [Variable]
+        public static short ReplySpellForgetId = 20011;
+        [Variable]
+        public static short ReplyNoOrbsId = 20012;
 
         public static NpcMessage Message;
 

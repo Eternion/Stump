@@ -1,6 +1,6 @@
 
 
-// Generated on 07/26/2013 22:50:54
+// Generated on 07/29/2013 23:07:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +51,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + fighters.Sum(x => x.GetSerializationSize());
+            return sizeof(short) + fighters.Sum(x => sizeof(short) + x.GetSerializationSize());
         }
         
     }

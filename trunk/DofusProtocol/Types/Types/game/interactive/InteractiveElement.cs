@@ -1,6 +1,6 @@
 
 
-// Generated on 07/26/2013 22:51:12
+// Generated on 07/29/2013 23:08:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,7 +75,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(int) + sizeof(short) + enabledSkills.Sum(x => x.GetSerializationSize()) + sizeof(short) + disabledSkills.Sum(x => x.GetSerializationSize());
+            return sizeof(int) + sizeof(int) + sizeof(short) + enabledSkills.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + disabledSkills.Sum(x => sizeof(short) + x.GetSerializationSize());
         }
         
     }

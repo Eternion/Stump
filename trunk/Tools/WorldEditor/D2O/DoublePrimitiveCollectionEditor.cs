@@ -107,8 +107,9 @@ namespace WorldEditor.D2O
                                                      new FrameworkPropertyMetadata(typeof(DoublePrimitiveCollectionEditor)));
         }
 
-        public DoublePrimitiveCollectionEditor()
+        public DoublePrimitiveCollectionEditor(Type listType)
         {
+            m_listType = listType;
             Items = new ObservableCollection<IList>();
             CommandBindings.Add(new CommandBinding(ApplicationCommands.New, AddNew, CanAddNew));
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, Delete, CanDelete));
@@ -229,7 +230,24 @@ namespace WorldEditor.D2O
 
         private IList ComputeItemsSource()
         {
+            if (ItemsSource == null)
+                return ItemsSource = CreateItemsSource();
+
             return ItemsSource;
+        }
+
+
+        private IList CreateItemsSource()
+        {
+            IList list = null;
+
+            if (m_listType != null)
+            {
+                ConstructorInfo constructor = typeof(List<>).MakeGenericType(typeof(List<>).MakeGenericType(m_listType)).GetConstructor(Type.EmptyTypes);
+                list = (IList)constructor.Invoke(null);
+            }
+
+            return list;
         }
 
         #endregion //Methods

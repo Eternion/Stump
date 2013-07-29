@@ -22,7 +22,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
@@ -127,6 +126,15 @@ namespace WorldEditor.D2O
                 return;
 
             var obj = Activator.CreateInstance((Type)parameter);
+
+            foreach (var property in obj.GetType().GetProperties())
+            {
+                if (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(List<>))
+                {
+                    property.SetValue(obj, Activator.CreateInstance(property.PropertyType));
+                }
+            }
+
             m_rows.Add(obj);
 
             m_editor.ObjectsGrid.SelectedItem = obj;
