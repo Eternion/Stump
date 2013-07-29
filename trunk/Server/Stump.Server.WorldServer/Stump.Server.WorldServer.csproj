@@ -183,6 +183,7 @@
     <Compile Include="Database\Monsters\MonsterSuperRace.cs" />
     <Compile Include="Database\Monsters\MonsterTemplate.cs" />
     <Compile Include="Database\Npcs\Actions\NpcAction.cs" />
+    <Compile Include="Database\Npcs\Actions\NpcActionDatabase.cs" />
     <Compile Include="Database\Npcs\Actions\NpcBuySellAction.cs" />
     <Compile Include="Database\Npcs\Actions\NpcTalkAction.cs" />
     <Compile Include="Database\Npcs\NpcActionRecord.cs" />
@@ -195,6 +196,7 @@
     <Compile Include="Database\Npcs\Replies\LightRestatReply.cs" />
     <Compile Include="Database\Npcs\Replies\NpcReply.cs" />
     <Compile Include="Database\Npcs\Replies\RestatReply.cs" />
+    <Compile Include="Database\Npcs\Replies\SpellResetReply.cs" />
     <Compile Include="Database\Npcs\Replies\TeleportReply.cs" />
     <Compile Include="Database\Npcs\Replies\DeleteItemReply.cs" />
     <Compile Include="Database\PrimaryKeyIdProvider.cs" />

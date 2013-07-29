@@ -39,6 +39,21 @@ namespace Stump.Server.WorldServer.Game.Social
         [Variable]
         public static readonly RoleEnum AdministratorChatMinAccess = RoleEnum.Moderator;
 
+        [Variable]
+        public static int AntiFloodTimeBetweenMessages = 100;
+
+        /// <summary>
+        /// Amount of messages allowed in a given time
+        /// </summary>
+        [Variable]
+        public static int AntiFloodAllowedMessages = 5;
+
+        /// <summary>
+        /// Time in seconds
+        /// </summary>
+        [Variable]
+        public static int AntiFloodAllowedMessagesResetTime = 5;
+
         /// <summary>
         ///   Chat handler for each channel Id.
         /// </summary>
@@ -110,9 +125,13 @@ namespace Stump.Server.WorldServer.Game.Social
             else
             {
                 if (client.Character.IsMuted())
-                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 123, (int)client.Character.GetMuteRemainingTime().TotalSeconds);
+                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 123,
+                                                            (int) client.Character.GetMuteRemainingTime().TotalSeconds);
                 else
-                    ChatHandlers[channel](client, message);
+                {
+                    if (client.Character.CheckTalkingFlood(message, channel))
+                        ChatHandlers[channel](client, message);
+                }
             }
         }
 

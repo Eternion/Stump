@@ -12,8 +12,8 @@ using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Database.Npcs.Actions
 {
-    [Discriminator(Discriminator, typeof(NpcAction), typeof(NpcActionRecord))]
-    public class NpcBuySellAction : NpcAction
+    [Discriminator(Discriminator, typeof(NpcActionDatabase), typeof(NpcActionRecord))]
+    public class NpcBuySellAction : NpcActionDatabase
     {
         public const string Discriminator = "Shop";
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();

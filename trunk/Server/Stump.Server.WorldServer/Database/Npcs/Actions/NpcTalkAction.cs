@@ -6,8 +6,8 @@ using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 
 namespace Stump.Server.WorldServer.Database.Npcs.Actions
 {
-    [Discriminator("Talk", typeof(NpcAction), typeof(NpcActionRecord))]
-    public class NpcTalkAction : NpcAction
+    [Discriminator("Talk", typeof(NpcActionDatabase), typeof(NpcActionRecord))]
+    public class NpcTalkAction : NpcActionDatabase
     {
         public override NpcActionTypeEnum ActionType
         {

@@ -916,6 +916,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Chat
 
+        private List<DateTime> m_lastMessagesDate = new List<DateTime>(); 
+
         public DateTime? MuteUntil
         {
             get { return m_record.MuteUntil; }
@@ -926,7 +928,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             MuteUntil = DateTime.Now + time;
 
-            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 17, from != null ? from.Name : "(no name)", time.TotalMinutes);
+            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, (short) (@from != null ? 17 : 123), 
+                from != null ? from.Name : "(no name)", time.TotalMinutes);
         }
 
         public void UnMute()
@@ -947,6 +950,31 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return MuteUntil.Value - DateTime.Now;
         }
 
+        public bool CheckTalkingFlood(string message, ChatActivableChannelsEnum channel)
+        {
+            m_lastMessagesDate.Add(DateTime.Now);
+
+            if (m_lastMessagesDate.Count > 11)
+                m_lastMessagesDate.Remove(m_lastMessagesDate.First());
+
+            if (m_lastMessagesDate.Count > 1 &&
+                (m_lastMessagesDate[m_lastMessagesDate.Count - 1] - m_lastMessagesDate[m_lastMessagesDate.Count - 2])
+                    .TotalMilliseconds < ChatManager.AntiFloodTimeBetweenMessages)
+            {
+
+                return false;
+            }
+
+            if (m_lastMessagesDate.Count >= ChatManager.AntiFloodAllowedMessages &&
+                m_lastMessagesDate.Take(ChatManager.AntiFloodAllowedMessages)
+                                  .All(x => (DateTime.Now - x).TotalSeconds < ChatManager.AntiFloodAllowedMessagesResetTime))
+            {
+                Mute(TimeSpan.FromSeconds(5), null);
+                return false;
+            }
+
+            return true;
+        }
 
         #endregion
 

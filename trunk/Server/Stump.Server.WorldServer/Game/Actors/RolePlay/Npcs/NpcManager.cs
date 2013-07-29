@@ -89,7 +89,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             return m_npcsReplies.Where(entry => entry.Value.MessageId == id).Select(entry => entry.Value).ToList();
         }
 
-        public List<NpcAction> GetNpcActions(int id)
+        public List<NpcActionDatabase> GetNpcActions(int id)
         {
             return m_npcsActions.Where(entry => entry.Value.NpcId == id).Select(entry => entry.Value.GenerateAction()).ToList();
         }
@@ -111,13 +111,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             m_npcsSpawns.Remove(spawn.Id);
         }
 
-        public void AddNpcAction(NpcAction action)
+        public void AddNpcAction(NpcActionDatabase action)
         {
             Database.Insert(action.Record);
             m_npcsActions.Add(action.Record.Id, action.Record);
         }
 
-        public void RemoveNpcAction(NpcAction action)
+        public void RemoveNpcAction(NpcActionDatabase action)
         {
             Database.Delete(action);
             m_npcsActions.Remove(action.Record.Id);
