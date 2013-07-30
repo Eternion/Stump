@@ -969,6 +969,10 @@
       <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
       <Name>Stump.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Library\NLog\NLog.netfx40.csproj">
+      <Project>{a0bff0db-ed9a-4639-ae86-8e709a1efc66}</Project>
+      <Name>NLog.netfx40</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Types\Stump.DofusProtocol.Types.csproj">
       <Project>{10884165-D492-4895-B3EF-32429F7A7F55}</Project>
       <Name>Stump.DofusProtocol.Types</Name>
