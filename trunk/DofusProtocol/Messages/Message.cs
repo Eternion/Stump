@@ -1,5 +1,6 @@
 ﻿using System;
 using Stump.Core.IO;
+using NLog;
 
 namespace Stump.DofusProtocol.Messages
 {
