@@ -154,7 +154,8 @@ namespace Stump.Server.WorldServer.Game.Spells
             Owner.SpellsPoints += (ushort)(spell.CurrentLevel - 1);
             spell.CurrentLevel = 1;
 
-            InventoryHandler.SendSpellForgottenMessage(Owner.Client, spell, (short)Owner.SpellsPoints);
+
+            InventoryHandler.SendSpellUpgradeSuccessMessage(Owner.Client, spell); 
             return true;
         }
 
@@ -170,7 +171,8 @@ namespace Stump.Server.WorldServer.Game.Spells
 
             Owner.SpellsPoints += (ushort)resetPoints;
 
-            InventoryHandler.SendSpellForgottenMessage(Owner.Client, m_spells.Values, (short) Owner.SpellsPoints);
+            InventoryHandler.SendSpellListMessage(Owner.Client, true);
+            Owner.RefreshStats();
             return resetPoints;
         }
 
