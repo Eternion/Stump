@@ -449,7 +449,10 @@ namespace WorldEditor.Helpers.Collections
         /// </summary>
         public void CleanUpPages()
         {
-            List<int> keys = new List<int>(_pageTouchTimes.Keys);
+            if (PageTimeout < 0)
+                return;
+
+            var keys = new List<int>(_pageTouchTimes.Keys);
             foreach (int key in keys)
             {
                 // page 0 is a special case, since WPF ItemsControl access the first item frequently
