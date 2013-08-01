@@ -75,10 +75,17 @@
     <Compile Include="Helpers\Collections\AsyncVirtualizingCollection.cs" />
     <Compile Include="Helpers\Collections\IItemsProvider.cs" />
     <Compile Include="Helpers\Collections\VirtualizingCollection.cs" />
+    <Compile Include="Helpers\EnumerableItemProvider.cs" />
     <Compile Include="Helpers\ObservableCollectionRange.cs" />
     <Compile Include="Helpers\OpaqueClickableImage.cs" />
     <Compile Include="Helpers\SynchronizationCallback.cs" />
     <Compile Include="Helpers\VirtualizingWrapPanel.cs" />
+    <Compile Include="Search\CriteriaOperator.cs" />
+    <Compile Include="Search\OperatorToStringConverter.cs" />
+    <Compile Include="Search\SearchDialog.xaml.cs">
+      <DependentUpon>SearchDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Search\SearchCriteria.cs" />
     <Compile Include="Maps\BrowsableGfx.cs" />
     <Compile Include="Maps\BrowsableGfxProvider.cs" />
     <Compile Include="Maps\Elements\DisplayedCell.cs" />
@@ -97,6 +104,8 @@
     <Compile Include="Maps\MapEditorModelView.cs" />
     <Compile Include="Maps\MapModelView.cs" />
     <Compile Include="Maps\WorldGFXManager.cs" />
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Search\SearchDialogModelView.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="StartModelView.cs" />
     <Page Include="D2I\D2IEditor.xaml">
@@ -116,6 +125,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="D2P\D2PEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Search\SearchDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -256,9 +269,7 @@
   <ItemGroup>
     <Resource Include="Images\page_white.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Items\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="FodyWeavers.xml" />
   </ItemGroup>
