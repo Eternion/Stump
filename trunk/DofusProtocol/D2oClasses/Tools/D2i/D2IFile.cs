@@ -16,6 +16,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.D2oClasses.Tools.D2i
@@ -119,6 +120,11 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2i
         public Dictionary<string, string> GetAllUiText()
         {
             return m_textIndexes;
+        }
+
+        public int FindFreeId()
+        {
+            return m_indexes.Keys.Max() + 1;
         }
 
         public void Save()

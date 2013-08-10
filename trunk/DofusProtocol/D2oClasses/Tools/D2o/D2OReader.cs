@@ -352,7 +352,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
             {
                 object fieldValue = ReadField(reader, field, field.TypeId);
 
-                if (field.FieldType.IsAssignableFrom(fieldValue.GetType()))
+                if (fieldValue == null || field.FieldType.IsInstanceOfType(fieldValue))
                     values.Add(fieldValue);
                 else if (fieldValue is IConvertible &&
                          field.FieldType.GetInterface("IConvertible") != null)
@@ -412,6 +412,11 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
                                                     typeof(T).Name, m_classes[classid].ClassType.Name));
 
             return BuildObject(m_classes[classid], reader) as T;
+        }
+
+        public int FindFreeId()
+        {
+            return m_indextable.Keys.Max() + 1;
         }
 
         public Dictionary<int, D2OClassDefinition> GetObjectsClasses()

@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Reflection;
 using Stump.Core.Reflection;
 using Stump.ORM;
+using WorldEditor.Config;
 
 namespace WorldEditor.Database
 {
@@ -28,17 +29,6 @@ namespace WorldEditor.Database
 
         public DatabaseManager()
         {
-            Configuration.Host = string.Empty;
-            Configuration.User = string.Empty;
-            Configuration.Password = string.Empty;
-            Configuration.DbName = string.Empty;
-            Configuration.ProviderName = "MySql.Data.MySqlClient";
-        }
-
-        public DatabaseConfiguration Configuration
-        {
-            get { return m_dbAccessor.Configuration; }
-            set { m_dbAccessor.Configuration = value; }
         }
 
         public Stump.ORM.Database Database
@@ -59,6 +49,7 @@ namespace WorldEditor.Database
 
         public void Connect()
         {
+            m_dbAccessor.Configuration = Settings.DatabaseConfiguration;
             m_dbAccessor.OpenConnection();
 
             Connected = true;
@@ -71,9 +62,9 @@ namespace WorldEditor.Database
             Connected = false;
         }
 
-        public bool TryConnection()
+        public bool TryConnection(DatabaseConfiguration config)
         {
-            var db = new Stump.ORM.Database(Configuration.GetConnectionString(), Configuration.ProviderName)
+            var db = new Stump.ORM.Database(config.GetConnectionString(), config.ProviderName)
             {
                 KeepConnectionAlive = true,
             };

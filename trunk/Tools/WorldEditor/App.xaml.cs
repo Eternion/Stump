@@ -19,6 +19,15 @@ namespace WorldEditor
             base.OnStartup(e); 
             if (!Debugger.IsAttached)
                 AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+
+            var mainWindow = new MainWindow();
+            MainWindow = mainWindow;
+            mainWindow.Hide();
+
+            var loadingWindow = new LoadingWindow();
+            loadingWindow.ShowDialog();
+
+            mainWindow.Show();
         }
 
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)

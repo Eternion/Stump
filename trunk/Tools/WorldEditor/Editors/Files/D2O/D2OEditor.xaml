@@ -1,0 +1,93 @@
+﻿<Window x:Class="WorldEditor.Editors.Files.D2O.D2OEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        d:DataContext="{d:DesignInstance Type=D2O:D2OEditorModelView}"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:D2O="clr-namespace:WorldEditor.Editors.Files.D2O"
+        Title="D2OEditor" Height="540" Width="700" Closed="Window_Closed">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <UniformGrid Rows="1" DockPanel.Dock="Top" HorizontalAlignment="Left" Grid.Row="0">
+      <Button Margin="3" Command="{Binding AddCommand}" CommandParameter="{Binding SelectedItem, ElementName=NewItemTypeComboBox}">
+        <StackPanel Orientation="Horizontal">
+          <Image Margin="0,0,3,0" Height="16" Source="/WorldEditor;component/Images/action_add_16xLG.png" Stretch="Fill" Width="16" />
+          <TextBlock TextWrapping="Wrap" TextAlignment="Center"><Run Text="Add"/></TextBlock>
+        </StackPanel>
+      </Button>
+
+      <ComboBox Margin="3" ItemsSource="{Binding NewObjectTypes}" Name="NewItemTypeComboBox" 
+                DisplayMemberPath="Name" SelectedIndex="0"/>
+
+      <Button Margin="3" Command="{Binding RemoveCommand}" CommandParameter="{Binding SelectedItems, ElementName=ObjectsGrid}">
+        <StackPanel Orientation="Horizontal">
+          <Image Margin="0,0,3,0" Height="16" Source="/WorldEditor;component/Images/action_Cancel_16xLG.png" Stretch="Fill" Width="16" />
+          <TextBlock TextWrapping="Wrap" TextAlignment="Center"><Run Text="Remove"/></TextBlock>
+        </StackPanel>
+      </Button>
+      <Button Margin="3" Command="{Binding ConvertCommand}">
+        <TextBlock Text="Convert to .xml" TextWrapping="Wrap" TextAlignment="Center" />
+      </Button>
+      <Button Margin="3" Command="{Binding SaveCommand}">
+        <TextBlock Text="Save" TextWrapping="Wrap" TextAlignment="Center" />
+      </Button>
+      <Button Margin="3" Command="{Binding SaveAsCommand}">
+        <TextBlock Text="Save as ..." TextWrapping="Wrap" TextAlignment="Center" />
+      </Button>
+    </UniformGrid>
+    <Grid Grid.Row="1">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="2.5*"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition/>
+      </Grid.RowDefinitions>
+    <Expander DockPanel.Dock="Right" ExpandDirection="Right" Grid.Column="2">
+      <Expander.Header>
+        <TextBlock Text="Edition" RenderTransformOrigin="0.5,0.5"> 
+          <TextBlock.LayoutTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                    <SkewTransform AngleX="0" AngleY="0"/>
+                    <RotateTransform Angle="-90"/>
+                    <TranslateTransform X="0" Y="0"/>
+                </TransformGroup>
+            </TextBlock.LayoutTransform>
+            <TextBlock.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                    <SkewTransform AngleX="0" AngleY="0"/>
+                    <RotateTransform Angle="0"/>
+                    <TranslateTransform X="0" Y="0"/>
+                </TransformGroup>
+            </TextBlock.RenderTransform>
+        </TextBlock>
+      </Expander.Header>
+      <xctk:PropertyGrid Name="ObjectEditor" SelectedObject="{Binding SelectedItem, ElementName=ObjectsGrid}" Width="250" />
+    </Expander>
+    <DataGrid Name="ObjectsGrid" ItemsSource="{Binding Rows}" AutoGenerateColumns="false"
+              IsReadOnly="true" AlternatingRowBackground="#FFDCEAF8"
+              SelectionChanged="ObjectsGrid_SelectionChanged" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#6A004BC1">
+      <DataGrid.InputBindings>
+        <KeyBinding Key="Delete" Command="{Binding RemoveCommand}" CommandParameter="{Binding SelectedItems, ElementName=ObjectsGrid}" />
+        <KeyBinding Key="Back" Command="{Binding RemoveCommand}" CommandParameter="{Binding SelectedItems, ElementName=ObjectsGrid}" />
+      </DataGrid.InputBindings>
+    </DataGrid>
+  </Grid>
+  <Border Grid.Row="2" Margin="3" BorderBrush="#FFD3E1F1" CornerRadius="4" BorderThickness="2">
+      <DockPanel>
+        <TextBlock Text="Find ..." Margin="3" VerticalAlignment="Center"/>
+        <ComboBox SelectedIndex="0" DockPanel.Dock="Right" Margin="3" Width="80" SelectedValue="{Binding SearchProperty, Mode=TwoWay}" ItemsSource="{Binding SearchProperties}">
+        </ComboBox>
+        <Button Content="Next" Width="80" DockPanel.Dock="Right" Margin="3" Command="{Binding FindNextCommand}"/>
+        <Button Content="Find !" Width="80" DockPanel.Dock="Right" Margin="3" Command="{Binding FindCommand}"/>
+        <TextBox Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="3" TextChanged="TextBox_TextChanged" />
+      </DockPanel>
+    </Border>
+  </Grid>
+</Window>

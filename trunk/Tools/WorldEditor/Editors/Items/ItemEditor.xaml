@@ -1,0 +1,223 @@
+﻿<Window x:Class="WorldEditor.Editors.Items.ItemEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:items="clr-namespace:WorldEditor.Editors.Items"
+        xmlns:converters="clr-namespace:WorldEditor.Helpers.Converters" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:items2="clr-namespace:WorldEditor.Search.Items" xmlns:d2OClasses="clr-namespace:Stump.DofusProtocol.D2oClasses;assembly=Stump.DofusProtocol.D2oClasses"
+        xmlns:helpers="clr-namespace:WorldEditor.Helpers"
+        mc:Ignorable="d"
+        Icon="pack://application:,,,/Images/Hammer_Builder_32xLG.png"
+        d:DataContext="{d:DesignInstance Type=items:ItemEditorModelView}"
+        Title="{Binding Item.Name, StringFormat={}Editing \'{0}\'}" Grid.IsSharedSizeScope="True" Height="530" Width="760">
+    <Window.Resources>
+        <helpers:BindingProxy Data="{Binding}" x:Key="ModelViewProxy"/>
+        <converters:IdToIconConverter x:Key="IdToIcon"/>
+        <converters:IdToI18NTextConverter x:Key="I18NToText"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+        <items2:ItemEffectStyleSelector x:Key="EffectStyleSelector"/>
+        <items2:ColorByOperatorConverter x:Key="ColorByOperatorConverter"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.Row="0">
+            <Border>
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <StackPanel>
+                    <Button HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3" Command="{Binding ChangeIconCommand}">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+
+                                <Image Source="{Binding Item.IconId, Converter={StaticResource IdToIcon}}" />
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                    <TextBlock Text="{Binding Item.IconId}" FontSize="8" HorizontalAlignment="Center" Margin="0,0,0,3" />
+                </StackPanel>
+            </Border>
+            <TextBox Text="{Binding Item.Name}" Foreground="SteelBlue" FontSize="40" BorderThickness="0" Background="Transparent" VerticalContentAlignment="Bottom"
+                     VerticalAlignment="Top" Padding="0" Margin="3" />
+            <Label Content="{Binding Item.Id, StringFormat={}({0})}" Foreground="DimGray" FontSize="25" VerticalAlignment="Center" VerticalContentAlignment="Bottom" Margin="3"/>
+        </StackPanel>
+        <GroupBox Header="Primary Properties" Grid.Row="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.5*" SharedSizeGroup="Label"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="0.0*" SharedSizeGroup="Label"/>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="0.5*" SharedSizeGroup="Label"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Level" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3"/>
+                <xctk:IntegerUpDown Value="{Binding Item.Level}" Grid.Column="1" Minimum="1" Maximum="200" Margin="3"/>
+
+                <TextBlock Text="Type" Grid.Column="2" Margin="3"/>
+                <ComboBox Grid.Column="3" Margin="3" ItemsSource="{Binding Types}" SelectedValuePath="Id" SelectedValue="{Binding Item.TypeId}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="d2OClasses:ItemType">
+                            <TextBlock Text="{Binding NameId, Converter={StaticResource I18NToText}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <TextBlock Text="Weight" Grid.Column="4" Margin="3"/>
+                <xctk:IntegerUpDown Value="{Binding Item.Weight}" Grid.Column="5" Minimum="0" Margin="3"/>
+
+                <TextBlock Text="Price" Grid.Row="1" Grid.Column="0" Margin="3"/>
+                <xctk:IntegerUpDown Value="{Binding Item.Price}" Grid.Row="1" Grid.Column="1" Minimum="0" Margin="3"/>
+
+                <TextBlock Text="Item Set" Grid.Row="1" Grid.Column="2" Margin="3"/>
+                <DockPanel Grid.Row="1" Grid.Column="3" >
+                    <Button DockPanel.Dock="Right" Command="{Binding ResetItemSetCommand}"  Margin="-1,3,3,3" Width="22">
+                        <Image Source="/WorldEditor;component/Images/action_Cancel_16xLG.png"></Image>
+                    </Button>
+                    <ComboBox Margin="3" ItemsSource="{Binding ItemSets}" SelectedValuePath="Id" SelectedValue="{Binding Item.ItemSetId}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="d2OClasses:ItemSet">
+                                <TextBlock Text="{Binding NameId, Converter={StaticResource I18NToText}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </DockPanel>
+
+                <TextBlock Text="Appearance" Grid.Row="1" Grid.Column="4" Margin="3"/>
+                <xctk:IntegerUpDown Value="{Binding Item.AppearanceId}" Grid.Row="1" Grid.Column="5" Minimum="0" Margin="3"/>
+
+                <TextBlock Text="Criteria" Grid.Row="2" Grid.Column="0" Margin="3"/>
+                <TextBox Text="{Binding Item.Criteria}" Grid.Row="2" Grid.Column="1" Margin="3"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Row="2">
+            <GroupBox.Header>
+                <CheckBox Content="Usable item" IsChecked="{Binding Item.Usable}"/>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.5*" SharedSizeGroup="Label"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Use Animation" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3"/>
+                <xctk:IntegerUpDown Value="{Binding Item.UseAnimationId}" IsEnabled="{Binding Item.Usable}" Grid.Column="1" Minimum="0" Margin="3"/>
+
+                <CheckBox Content="Targetable" IsChecked="{Binding Item.Targetable}" IsEnabled="{Binding Item.Usable}" Grid.Column="2" Margin="3" VerticalAlignment="Center"/>
+
+                <TextBlock Text="Target Criteria" Grid.Row="0" Grid.Column="3" Margin="3"/>
+                <TextBox Text="{Binding Item.CriteriaTarget}" IsEnabled="{Binding Item.Targetable}" Grid.Row="0" Grid.Column="4" Margin="3"/>
+
+                <CheckBox Content="Non Usable On Another" IsChecked="{Binding Item.NonUsableOnAnother}" IsEnabled="{Binding Item.Usable}" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Margin="3"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Weapon Properties" Grid.Row="3" Visibility="{Binding IsWeapon, Converter={StaticResource BoolToVisibility}}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.5*" SharedSizeGroup="Label"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="0.5*" SharedSizeGroup="Label"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="0.5*" SharedSizeGroup="Label"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Ap Cost" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3"/>
+                <xctk:IntegerUpDown Value="{Binding Item.ApCost}" Grid.Column="1" Minimum="0" Margin="3"/>
+
+                <TextBlock Text="Min Range" Grid.Column="2" Margin="3"/>
+                <xctk:IntegerUpDown Value="{Binding Item.MinRange}" Grid.Column="3" Minimum="0" Margin="3"/>
+
+                <TextBlock Text="Range" Grid.Column="4" Margin="3"/>
+                <xctk:IntegerUpDown Value="{Binding Item.Range}" Grid.Column="5" Minimum="0" Margin="3"/>
+
+                <TextBlock Text="Critical Hit Probability" Grid.Row="1" Grid.Column="0" Margin="3"/>
+                <xctk:IntegerUpDown Value="{Binding Item.CriticalHitProbability}" Grid.Row="1" Grid.Column="1" Minimum="0" Margin="3"/>
+
+                <TextBlock Text="Critical Hit Bonus" Grid.Row="1" Grid.Column="2" Margin="3"/>
+                <xctk:IntegerUpDown Value="{Binding Item.CriticalHitBonus}"  Grid.Row="1" Grid.Column="3" Minimum="0" Margin="3"/>
+
+                <TextBlock Text="Critical Failure Probability" Grid.Row="1" Grid.Column="4" Margin="3"/>
+                <xctk:IntegerUpDown Value="{Binding Item.CriticialFailureProbability}" Grid.Row="1" Grid.Column="5" Minimum="0" Margin="3"/>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Grid.ColumnSpan="4" Margin="3">
+                    <CheckBox Content="Cast in Line" IsChecked="{Binding Item.CastInLine}"  Grid.Row="2" Grid.Column="0" Margin="3"/>
+                    <CheckBox Content="Cast in Diagonal" IsChecked="{Binding Item.CastInDiagonal}" Grid.Row="2" Grid.Column="1" Margin="3"/>
+                    <CheckBox Content="Cast Test Los" IsChecked="{Binding Item.CastTestLos}" Grid.Row="2" Grid.Column="2" Margin="3"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Description" Grid.Row="4">
+            <TextBox TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Item.Description}"/>
+        </GroupBox>
+        <GroupBox Header="Effects" Grid.Row="5">
+            <DockPanel>
+                <ToolBar DockPanel.Dock="Top">
+                    <ToolBar.Resources>
+                        <Style TargetType="Image">
+                            <Style.Triggers>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value="0.4"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToolBar.Resources>
+                    <Button Command="{Binding EditEffectCommand}" CommandParameter="{Binding ElementName=EffectsListBox, Path=SelectedItem}" Margin="2">
+                        <Image Height="16" Source="/WorldEditor;component/Images/pencil_003_16xMD.png"  Width="16"/>
+                    </Button>
+                    <Button Command="{Binding AddEffectCommand}" Margin="2">
+                        <Image Height="16" Source="/WorldEditor;component/Images/action_add_16xLG.png" Width="16"/>
+                    </Button>
+                    <Button Command="{Binding RemoveEffectCommand}" CommandParameter="{Binding ElementName=EffectsListBox, Path=SelectedItems}" Margin="2">
+                        <Image Height="16" Source="/WorldEditor;component/Images/action_Cancel_16xLG.png" Width="16">
+                        </Image>
+                    </Button>
+                </ToolBar>
+                <ListBox Name="EffectsListBox" Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Item.WrappedEffects}"
+				ItemContainerStyleSelector="{StaticResource EffectStyleSelector}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" SelectionChanged="EffectsListBox_SelectionChanged" SelectionMode="Extended">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type items:EffectWrapper}">
+                            <TextBlock Text="{Binding Description}" Foreground="{Binding Operator, Converter={StaticResource ColorByOperatorConverter}}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </GroupBox>
+        <Button Command="{Binding SaveCommand}" Grid.Row="6" Margin="5">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="/WorldEditor;component/Images/Save_6530.png" Width="16" Height="16" Margin="3"/>
+                <TextBlock Text="Save" Margin="3" FontSize="14"/>
+            </StackPanel>
+        </Button>
+    </Grid>
+</Window>

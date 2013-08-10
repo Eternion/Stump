@@ -1,33 +1,130 @@
-﻿<Window x:Class="WorldEditor.Search.ItemSearchDialog"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:Search="clr-namespace:WorldEditor.Search"
-        xmlns:helpers="clr-namespace:WorldEditor.Helpers"
-        mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance Type=Search:SearchDialogModelView}"
-        Title="ItemSearchDialog" Height="300" Width="300">
-    <Window.Resources>
-        <helpers:BindingProxy Data="{Binding}" x:Key="ModelView"/>
-        <Search:OperatorToStringConverter x:Key="OpToString"/>
-    </Window.Resources>
+﻿<UserControl x:Class="WorldEditor.Search.SearchDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:Search="clr-namespace:WorldEditor.Search"
+             xmlns:helpers="clr-namespace:WorldEditor.Helpers" xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:converters="clr-namespace:WorldEditor.Helpers.Converters"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=Search:SearchDialogModelView}">
+    <UserControl.Resources>
+        <helpers:BindingProxy Data="{Binding}" x:Key="ModelView" />
+        <Search:OperatorToStringConverter x:Key="OpToString" />
+    </UserControl.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="Auto" MinWidth="150"/>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="1" Orientation="Vertical">
-            <ItemsControl ItemsSource="{Binding Criterias}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="Search:SearchCriteria">
-                        <StackPanel Orientation="Horizontal">
-                            <ComboBox ItemsSource="{Binding Data.SearchProperties, Source={StaticResource ModelView}}"/>
-                            <ComboBox ItemsSource="{Binding AvailableOperators, Converter={StaticResource OpToString}}"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-            <Button Content="Add a criteria" Width="90" Margin="0,5,0,0"/>
-        </StackPanel>
+        <DockPanel Grid.Row="0" Grid.ColumnSpan="2">
+            <TextBlock Text="Quick Search" Margin="3" VerticalAlignment="Center" />
+            <Image Source="/WorldEditor;component/Images/magnifier_16xLG.png" Margin="0,0,3,0" Width="16" Height="16" VerticalAlignment="Center" />
+            <TextBox Margin="3" Text="{Binding QuickSearchText, UpdateSourceTrigger=PropertyChanged}">
+                <TextBox.InputBindings>
+                    <KeyBinding Command="{Binding UpdateResultsCommand}" Key="Enter"></KeyBinding>
+                </TextBox.InputBindings>
+            </TextBox>
+        </DockPanel>
+        <Expander Grid.Column="1" Grid.Row="1" ExpandDirection="Right" IsExpanded="False" Margin="3">
+            <Expander.Header>
+                <TextBlock Text="Criterias" RenderTransformOrigin="0.5,0.5">
+                    <TextBlock.LayoutTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="1" ScaleY="1" />
+                            <SkewTransform AngleX="0" AngleY="0" />
+                            <RotateTransform Angle="-90" />
+                            <TranslateTransform X="0" Y="0" />
+                        </TransformGroup>
+                    </TextBlock.LayoutTransform>
+                    <TextBlock.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="1" ScaleY="1" />
+                            <SkewTransform AngleX="0" AngleY="0" />
+                            <RotateTransform Angle="0" />
+                            <TranslateTransform X="0" Y="0" />
+                        </TransformGroup>
+                    </TextBlock.RenderTransform>
+                </TextBlock>
+            </Expander.Header>
+            <StackPanel Orientation="Vertical" Width="260">
+                <ItemsControl ItemsSource="{Binding Criterias}" Padding="10">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="Search:SearchCriteria">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <WrapPanel Grid.Column="0">
+                                    <ComboBox ItemsSource="{Binding Data.SearchProperties, Source={StaticResource ModelView}}" SelectedItem="{Binding ComparedProperty}"
+                                              MinWidth="70"
+                                              Margin="3" />
+                                    <ComboBox ItemsSource="{Binding AvailableOperators}" SelectedItem="{Binding Operator, Mode=TwoWay}" Margin="3">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate DataType="{x:Type Search:CriteriaOperator}">
+                                                <TextBlock Text="{Binding Converter={StaticResource OpToString}}"></TextBlock>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+
+                                    <TextBox DockPanel.Dock="Right" Margin="3" MinWidth="67">
+                                        <TextBox.Text>
+                                            <Binding Path="ComparedToValueString" Mode="TwoWay" ConverterParameter="ValueType"
+                                                     UpdateSourceTrigger="PropertyChanged" NotifyOnSourceUpdated="True">
+                                                <Binding.ValidationRules>
+                                                    <ExceptionValidationRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </WrapPanel>
+                                <Button Grid.Column="1" Command="{Binding Data.RemoveCriteriaCommand, Source={StaticResource ModelView}}" CommandParameter="{Binding}"
+                                        FontSize="14" Width="19" VerticalAlignment="Center" Height="18" Margin="3">
+                                    <Image Source="/WorldEditor;component/Images/action_Cancel_16xLG.png"></Image>
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+
+                <Button Width="150" Margin="10,5,10,0" Command="{Binding AddCriteriaCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/WorldEditor;component/Images/action_add_16xLG.png" Margin="0,0,3,0" Width="16" Height="16" VerticalAlignment="Center"></Image>
+                        <TextBlock Text="Add" VerticalAlignment="Center"></TextBlock>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Expander>
+        <DockPanel Margin="3" Grid.Row="1" LastChildFill="True">
+            <UniformGrid DockPanel.Dock="Bottom" Rows="1" Columns="2">
+                <Button Margin="0,3,0,3" Command="{Binding EditItemCommand}" CommandParameter="{Binding ElementName=ResultListBox, Path=SelectedItem}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/WorldEditor;component/Images/pencil_003_16xMD.png" Margin="0,0,3,0" Width="16" Height="16" VerticalAlignment="Center"></Image>
+                        <TextBlock Text="Edit" VerticalAlignment="Center"></TextBlock>
+                    </StackPanel>
+                </Button>
+                <Button Margin="3,3,0,3" Command="{Binding CopyItemCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/WorldEditor;component/Images/Copy_6524.png" Margin="0,0,3,0" Width="16" Height="16" VerticalAlignment="Center"></Image>
+                        <TextBlock Text="Copy" VerticalAlignment="Center"></TextBlock>
+                    </StackPanel>
+                </Button>
+            </UniformGrid>
+            <Button DockPanel.Dock="Bottom" Margin="0,3,0,3" Command="{Binding UpdateResultsCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/WorldEditor;component/Images/refresh_16xLG.png" Margin="0,0,3,0" Width="16" Height="16" VerticalAlignment="Center"></Image>
+                    <TextBlock Text="Refresh" VerticalAlignment="Center"></TextBlock>
+                </StackPanel>
+            </Button>
+            <ListBox Name="ResultListBox" ItemsSource="{Binding Results}"
+                     ItemTemplate="{Binding ResultItemTemplate, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}"
+                     VirtualizingStackPanel.IsVirtualizing="True" HorizontalContentAlignment="Stretch" SelectionChanged="ResultListBox_SelectionChanged">
+            </ListBox>
+        </DockPanel>
     </Grid>
-</Window>
+</UserControl>

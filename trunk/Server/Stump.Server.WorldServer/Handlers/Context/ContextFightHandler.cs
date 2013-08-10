@@ -390,6 +390,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                             silentCast, spellId, spellLevel));
         }
 
+        public static void SendGameActionFightNoSpellCastMessage(IPacketReceiver client, Spell spell)
+        {
+            client.Send(new GameActionFightNoSpellCastMessage(spell.Id));
+        }
+
         public static void SendGameActionFightDispellableEffectMessage(IPacketReceiver client, Buff buff)
         {
             client.Send(new GameActionFightDispellableEffectMessage(buff.GetActionId(), buff.Caster.Id, buff.GetAbstractFightDispellableEffect()));

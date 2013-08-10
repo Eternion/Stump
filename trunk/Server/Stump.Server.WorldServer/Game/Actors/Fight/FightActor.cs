@@ -153,6 +153,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 handler(this, spell, target, critical, silentCast);
         }
 
+        public event Action<FightActor, Spell, Cell> SpellCastFailed;
+
+        protected virtual void OnSpellCastFailed(Spell spell, Cell cell)
+        {
+            var handler = SpellCastFailed;
+            if (handler != null) handler(this, spell, cell);
+        }
+
         public event Action<FightActor, WeaponTemplate, Cell, FightSpellCastCriticalEnum, bool > WeaponUsed;
 
         protected virtual void OnWeaponUsed(WeaponTemplate weapon, Cell cell, FightSpellCastCriticalEnum critical, bool silentCast)
@@ -654,7 +662,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var spellLevel = spell.CurrentSpellLevel;
 
             if (CanCastSpell(spell, cell) != SpellCastResult.OK)
+            {
+                OnSpellCastFailed(spell, cell);
                 return false;
+            }
 
             Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
