@@ -9,54 +9,9 @@
     <Rectangle AllowDrop="True" Height="200" Width="250" Margin="50,0,50,10" RadiusX="5" RadiusY="5" Stroke="Black" />
     <GroupBox Header="Items">
       <UniformGrid Rows="1">
-        <Button Content="Create a new item ..." Margin="5" Height="40"/>
-        <Button Content="Search an item ..." Margin="5"/>
+        <Button Content="Create a new item ..." Margin="5" Height="40" Command="{Binding CreateItemCommand}"/>
+        <Button Content="Search an item ..." Margin="5" Command="{Binding SearchItemCommand}"/>
       </UniformGrid>
-    </GroupBox>
-    <GroupBox Header="Database">
-      <StackPanel>
-          <Grid>
-            <Grid.RowDefinitions>
-              <RowDefinition/>
-              <RowDefinition/>
-              <RowDefinition/>
-              <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition/>
-              <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="Host" HorizontalAlignment="Left" VerticalAlignment="Center" />
-          <TextBlock Grid.Row="1" Grid.Column="0" Text="User" HorizontalAlignment="Left" VerticalAlignment="Center" />
-          <TextBlock Grid.Row="2" Grid.Column="0" Text="Password" HorizontalAlignment="Left" VerticalAlignment="Center" />
-          <TextBlock Grid.Row="3" Grid.Column="0" Text="Database Name" HorizontalAlignment="Left" VerticalAlignment="Center" />
-
-           <TextBox Grid.Row="0" Margin="3" Grid.Column="1" VerticalAlignment="Top" Text="{Binding Source={x:Static Database:DatabaseManager.Instance}, Path=Configuration.Host, Mode=TwoWay}"/>
-          <TextBox Grid.Row="1" Margin="3" Grid.Column="1" VerticalAlignment="Top" Text="{Binding Source={x:Static Database:DatabaseManager.Instance}, Path=Configuration.User, Mode=TwoWay}"/>
-          <TextBox Grid.Row="2" Margin="3" Grid.Column="1" VerticalAlignment="Top" Text="{Binding Source={x:Static Database:DatabaseManager.Instance}, Path=Configuration.Password, Mode=TwoWay}"/>
-          <TextBox Grid.Row="3" Margin="3"  Grid.Column="1" VerticalAlignment="Top" Text="{Binding Source={x:Static Database:DatabaseManager.Instance}, Path=Configuration.Name, Mode=TwoWay}"/>
-          </Grid>
-        <UniformGrid Rows="1" Margin="3" >
-          <Button Grid.Column="0" Margin="3">
-            <Button.Style>
-              <Style TargetType="Button">
-                <Setter Property="Content" Value="Connect"/>
-                <Setter Property="Command" Value="{Binding ConnectDBCommand}"/>
-                <Style.Triggers>
-                  <DataTrigger Binding="{Binding Source={x:Static Database:DatabaseManager.Instance}, Path=Connected}" Value="True">
-                    <Setter Property="Content" Value="Disconnect"/>
-                    <Setter Property="Command" Value="{Binding DisconnectDBCommand}"/>
-                  </DataTrigger>
-                </Style.Triggers>
-              </Style>
-            </Button.Style>
-          </Button>
-            <Button Grid.Column="1" Margin="3" Command="{Binding TryConnectionDBCommand}">Try connection</Button>
-        </UniformGrid>
-      </StackPanel>
-    </GroupBox>
-    <GroupBox Header="Configuration">
-      
     </GroupBox>
   </StackPanel>
 </Window>

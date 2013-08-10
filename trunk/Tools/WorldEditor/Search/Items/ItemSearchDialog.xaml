@@ -1,0 +1,83 @@
+﻿<Window x:Class="WorldEditor.Search.Items.ItemSearchDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:search="clr-namespace:WorldEditor.Search"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:d2OClasses="clr-namespace:Stump.DofusProtocol.D2oClasses;assembly=Stump.DofusProtocol.D2oClasses"
+        xmlns:converters="clr-namespace:WorldEditor.Helpers.Converters"
+        xmlns:ComponentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase" xmlns:items="clr-namespace:WorldEditor.Search.Items"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" xmlns:behaviors="clr-namespace:WorldEditor.Helpers.Behaviors"
+        xmlns:items2="clr-namespace:WorldEditor.Editors.Items"
+        Icon="pack://application:,,,/Images/magnifier_16xLG.png"
+        Title="Search an item" Height="460" Width="700">
+    <Window.Resources>
+        <converters:ItemTypeIdToTypeNameConverter x:Key="TypeToI18N"/>
+        <converters:IdToIconConverter x:Key="IdToIcon"/>
+        <items:ItemEffectStyleSelector x:Key="EffectStyleSelector" LineBrush="SeaShell"/>
+        <items:ColorByOperatorConverter x:Key="ColorByOperatorConverter"/>
+        <DataTemplate x:Key="ItemDataTemplate" DataType="items2:ItemWrapper">
+            <DataTemplate.Resources>
+                <CollectionViewSource x:Key="SortedEffects" Source="{Binding WrappedEffects}">
+                    <CollectionViewSource.SortDescriptions>
+                        <ComponentModel:SortDescription PropertyName="Priority" />
+                    </CollectionViewSource.SortDescriptions>
+                </CollectionViewSource>
+            </DataTemplate.Resources>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Image Grid.Column="0" Grid.RowSpan="2" Source="{Binding IconId, Converter={StaticResource IdToIcon}}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="3"/>
+                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                    <TextBlock Text="{Binding Name}" FontSize="16" Foreground="SteelBlue" Margin="3,0,3,0" />
+                    <TextBlock Text="{Binding Id, StringFormat={}({0})}" FontSize="14" Foreground="DarkSlateGray" Margin="3,2,3,0"/>
+                </StackPanel>
+                <Grid Grid.Row="1" Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding Level, StringFormat=Level : \{0\}}" FontSize="13" Foreground="SlateGray" />
+                    <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding TypeId, Converter={StaticResource TypeToI18N}}" FontSize="13" Foreground="SlateGray" Margin="3,0" />
+                    <TextBlock Grid.Column="0" Grid.Row="1" Text="{Binding AppearanceId, StringFormat=Appearance : \{0\}}" FontSize="13" Foreground="SlateGray" />
+                </Grid>
+                <ListBox Grid.Row="2" Grid.ColumnSpan="2" Margin="3" ItemsSource="{Binding WrappedEffects}"
+                         ItemContainerStyleSelector="{StaticResource EffectStyleSelector}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <i:Interaction.Behaviors>
+                        <behaviors:IgnoreMouseWheelBehavior />
+                    </i:Interaction.Behaviors>
+                    <ListBox.Style>
+                        <Style TargetType="ListBox">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding WrappedEffects.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.Style>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type items2:EffectWrapper}">
+                            <TextBlock Text="{Binding Description}" Foreground="{Binding Operator, Converter={StaticResource ColorByOperatorConverter}}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
+    <search:SearchDialog ResultItemTemplate="{DynamicResource ItemDataTemplate}"/>
+</Window>

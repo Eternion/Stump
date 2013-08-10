@@ -27,6 +27,20 @@ namespace WorldEditor.Helpers.Collections
         /// <param name="itemsProvider">The items provider.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <param name="pageTimeout">The page timeout.</param>
+        public VirtualizingCollection(IItemsProvider<T> itemsProvider, int pageSize, int pageTimeout, bool alwaysFetchCount)
+        {
+            _itemsProvider = itemsProvider;
+            _pageSize = pageSize;
+            _pageTimeout = pageTimeout;
+            m_alwaysFetchCount = alwaysFetchCount;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VirtualizingCollection&lt;T&gt;"/> class.
+        /// </summary>
+        /// <param name="itemsProvider">The items provider.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <param name="pageTimeout">The page timeout.</param>
         public VirtualizingCollection(IItemsProvider<T> itemsProvider, int pageSize, int pageTimeout)
         {
             _itemsProvider = itemsProvider;
@@ -89,6 +103,7 @@ namespace WorldEditor.Helpers.Collections
         #region PageTimeout
 
         private readonly long _pageTimeout = 10000;
+        private readonly bool m_alwaysFetchCount;
 
         /// <summary>
         /// Gets the page timeout.
@@ -119,7 +134,7 @@ namespace WorldEditor.Helpers.Collections
         {
             get
             {
-                if (_count == -1)
+                if (_count == -1 || m_alwaysFetchCount)
                 {
                     LoadCount();
                 }

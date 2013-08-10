@@ -1,0 +1,126 @@
+﻿<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:D2I="clr-namespace:WorldEditor.Editors.Files.D2I" mc:Ignorable="d" x:Class="WorldEditor.Editors.Files.D2I.D2IEditor"
+    d:DataContext="{d:DesignInstance Type=D2I:D2IEditorModelView}" Title="{Binding Title}"
+    Height="600" Width="700" MinWidth="700">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" Name="ExpanderRow" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <UniformGrid Rows="1" DockPanel.Dock="Top" HorizontalAlignment="Left" Grid.Row="0">
+            <Button Margin="3" Command="{Binding AddRowCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Margin="0,0,3,0" Height="16" Source="/WorldEditor;component/Images/action_add_16xLG.png" Stretch="Fill" Width="16" />
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center">
+                        <Run Text="Add Text" />
+                    </TextBlock>
+                </StackPanel>
+            </Button>
+
+            <Button Margin="3" Command="{Binding AddUIRowCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Margin="0,0,3,0" Height="16" Source="/WorldEditor;component/Images/action_add_16xLG.png" Stretch="Fill" Width="16" />
+                    <TextBlock TextAlignment="Center" Text="Add UI Text" />
+                </StackPanel>
+            </Button>
+
+            <Button Margin="3" Command="{Binding RemoveRowCommand}" CommandParameter="{Binding SelectedItems, ElementName=TextsGrid}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Margin="0,0,3,0" Height="16" Source="/WorldEditor;component/Images/action_Cancel_16xLG.png" Stretch="Fill" Width="16" />
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center">
+                        <Run Text="Remove" />
+                    </TextBlock>
+                </StackPanel>
+            </Button>
+            <Button Margin="3" Command="{Binding ConvertToTxtCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Margin="0,0,3,0" Height="16" Source="/WorldEditor;component/Images/Nextrequest_10302.png" Stretch="Fill" Width="16" />
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center" Text="Convert to .txt" />
+                </StackPanel>
+            </Button>
+            <Button Margin="3" Command="{Binding SaveCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Margin="0,0,3,0" Height="16" Source="/WorldEditor;component/Images/Save_6530.png" Stretch="Fill" Width="16" />
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center" Text="Save" />
+                </StackPanel>
+            </Button>
+            <Button Margin="3" Command="{Binding SaveAsCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Margin="0,0,3,0" Height="16" Source="/WorldEditor;component/Images/Save_6530.png" Stretch="Fill" Width="16" />
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center" Text="Save as ..." />
+                </StackPanel>
+            </Button>
+        </UniformGrid>
+        <Expander DockPanel.Dock="Bottom" Header="Edit" Name="EditExpander" IsExpanded="True" ExpandDirection="Down" Grid.Row="3" Expanded="Expander_Expanded"
+                  Collapsed="Expander_Collapsed">
+            <Expander.Style>
+                <Style TargetType="Expander">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedIndex, ElementName=TextsGrid}" Value="-1">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Expander.Style>
+            <Grid Grid.IsSharedSizeScope="True" Margin="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <TextBox TextWrapping="Wrap" Text="{Binding ElementName=TextsGrid, Path=SelectedItem.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="3"
+                         Grid.Column="1" />
+                <TextBox TextWrapping="Wrap" Text="{Binding ElementName=TextsGrid, Path=SelectedItem.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="3"
+                         Grid.Column="1"
+                         Grid.Row="1" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" AcceptsTab="True" />
+
+            </Grid>
+        </Expander>
+        <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" Height="5" Background="#FFA5C0EF" ResizeDirection="Rows" Opacity="0.5">
+            <GridSplitter.Style>
+                <Style TargetType="GridSplitter">
+                    <Setter Property="IsEnabled" Value="true" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedIndex, ElementName=TextsGrid}" Value="-1">
+                            <Setter Property="IsEnabled" Value="false" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsExpanded, ElementName=EditExpander}" Value="false">
+                            <Setter Property="IsEnabled" Value="false" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </GridSplitter.Style>
+        </GridSplitter>
+        <DataGrid Name="TextsGrid" ItemsSource="{Binding Rows}" AutoGenerateColumns="False" GridLinesVisibility="None"
+                  HorizontalGridLinesBrush="#82000000" AlternatingRowBackground="#FFDCEAF8" RowDetailsVisibilityMode="Collapsed"
+                  Grid.Row="1" SelectionChanged="TextsGrid_SelectionChanged">
+            <DataGrid.InputBindings>
+                <KeyBinding Key="Delete" Command="{Binding RemoveRowCommand}" CommandParameter="{Binding ElementName=TextsGrid, Path=SelectedItems}" />
+                <KeyBinding Key="Back" Command="{Binding RemoveRowCommand}" CommandParameter="{Binding ElementName=TextsGrid, Path=SelectedItems}" />
+            </DataGrid.InputBindings>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Key" Binding="{Binding Id}" Width="100" IsReadOnly="True" />
+                <DataGridTextColumn Header="Value" Binding="{Binding Text}" Width="*" IsReadOnly="True" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <Border Grid.Row="4" Margin="3" BorderBrush="#FFD3E1F1" CornerRadius="4" BorderThickness="2">
+            <DockPanel>
+                <TextBlock Text="Find ..." Margin="3" VerticalAlignment="Center" />
+                <ComboBox SelectedIndex="0" DockPanel.Dock="Right" Margin="3" Width="80" SelectedValue="{Binding SearchType, Mode=TwoWay}" SelectedValuePath="Content">
+                    <ComboBoxItem>Text</ComboBoxItem>
+                    <ComboBoxItem>Key</ComboBoxItem>
+                </ComboBox>
+                <Button Content="Next" Width="80" DockPanel.Dock="Right" Margin="3" Command="{Binding FindNextCommand}" />
+                <Button Content="Find !" Width="80" DockPanel.Dock="Right" Margin="3" Command="{Binding FindCommand}" />
+                <TextBox Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="3" TextChanged="TextBox_TextChanged" />
+            </DockPanel>
+        </Border>
+    </Grid>
+</Window>

@@ -5,10 +5,14 @@ using System.Windows.Data;
 
 namespace WorldEditor.Search
 {
+    [ValueConversion(typeof(CriteriaOperator), typeof(string))]
     public class OperatorToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value is string)
+                return value.ToString();
+
             var op = (CriteriaOperator) value;
             switch (op)
             {

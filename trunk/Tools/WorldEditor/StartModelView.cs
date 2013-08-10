@@ -15,98 +15,58 @@
 #endregion
 
 using System;
+using WorldEditor.Config;
 using WorldEditor.Database;
 using WorldEditor.Helpers;
+using WorldEditor.Search.Items;
 
 namespace WorldEditor
 {
     public class StartModelView
     {
 
-        #region ConnectDBCommand
 
-        private DelegateCommand m_connectDBCommand;
+        #region CreateItemCommand
 
-        public DelegateCommand ConnectDBCommand
+        private DelegateCommand m_createItemCommand;
+
+        public DelegateCommand CreateItemCommand
         {
-            get { return m_connectDBCommand ?? (m_connectDBCommand = new DelegateCommand(OnConnectDB, CanConnectDB)); }
+            get { return m_createItemCommand ?? (m_createItemCommand = new DelegateCommand(OnCreateItem, CanCreateItem)); }
         }
 
-        private bool CanConnectDB(object parameter)
-        {
-            return !DatabaseManager.Instance.Connected;
-        }
-
-        private void OnConnectDB(object parameter)
-        {
-            if (!CanConnectDB(parameter))
-                return;
-
-            try
-            {
-                DatabaseManager.Instance.Connect();
-
-                DisconnectDBCommand.RaiseCanExecuteChanged();
-            }
-            catch (Exception ex)
-            {
-                MessageService.ShowError(null, string.Format("Cannot connect to the DB : {0}", ex.Message));
-            }
-        }
-
-        #endregion
-
-
-        #region TryConnectionDBCommand
-
-        private DelegateCommand m_tryConnectionDBCommand;
-
-        public DelegateCommand TryConnectionDBCommand
-        {
-            get { return m_tryConnectionDBCommand ?? (m_tryConnectionDBCommand = new DelegateCommand(OnTryConnectionDB, CanTryConnectionDB)); }
-        }
-
-        private bool CanTryConnectionDB(object parameter)
+        private bool CanCreateItem(object parameter)
         {
             return true;
         }
 
-        private void OnTryConnectionDB(object parameter)
+        private void OnCreateItem(object parameter)
         {
-            if (!CanTryConnectionDB(parameter))
+            if (parameter == null || !CanCreateItem(parameter))
                 return;
-
-            MessageService.ShowMessage(null,
-                                       DatabaseManager.Instance.TryConnection()
-                                           ? "Connection works !"
-                                           : "Cannot establish connection with the database :(");
         }
 
         #endregion
 
 
-        #region DisconnectDBCommand
+        #region SearchItemCommand
 
-        private DelegateCommand m_disconnectDBCommand;
+        private DelegateCommand m_searchItemCommand;
 
-        public DelegateCommand DisconnectDBCommand
+        public DelegateCommand SearchItemCommand
         {
-            get { return m_disconnectDBCommand ?? (m_disconnectDBCommand = new DelegateCommand(OnDisconnectDB, CanDisconnectDB)); }
+            get { return m_searchItemCommand ?? (m_searchItemCommand = new DelegateCommand(OnSearchItem, CanSearchItem)); }
         }
 
-        private bool CanDisconnectDB(object parameter)
+        private bool CanSearchItem(object parameter)
         {
-            return DatabaseManager.Instance.Connected;
+            return true;
         }
 
-        private void OnDisconnectDB(object parameter)
+        private void OnSearchItem(object parameter)
         {
-            if (!CanDisconnectDB(parameter))
-                return;
-
-            DatabaseManager.Instance.Disconnect();
-
-            ConnectDBCommand.RaiseCanExecuteChanged();
+            var window = new ItemSearchDialog();
+            window.Show();
         }
 
         #endregion

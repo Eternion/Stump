@@ -16,12 +16,14 @@ using System.Windows.Shapes;
 using Stump.DofusProtocol.D2oClasses.Tools.D2i;
 using Stump.DofusProtocol.D2oClasses.Tools.D2p;
 using Stump.DofusProtocol.D2oClasses.Tools.Dlm;
-using WorldEditor.D2I;
-using WorldEditor.D2O;
-using WorldEditor.D2P;
+using WorldEditor.Config;
+using WorldEditor.Editors.Files.D2I;
+using WorldEditor.Editors.Files.D2O;
+using WorldEditor.Editors.Files.D2P;
 using WorldEditor.Helpers;
 using WorldEditor.Maps;
 using WorldEditor.Meta;
+using WorldEditor.Search.Items;
 
 namespace WorldEditor
 {
@@ -97,7 +99,7 @@ namespace WorldEditor
             }
             else if (System.IO.Path.GetExtension(filename) == ".dlm" && File.Exists(filename))
             {
-                window = new MapEditor(new DlmReader(filename, Settings.GenericMapDecryptionKey));
+                window = new MapEditor(new DlmReader(filename, Settings.LoaderSettings.GenericMapDecryptionKey));
             }
             else
                 return;

@@ -207,9 +207,21 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
              if (result != SpellCastResult.OK)
              {
-                 // cannot cast spell msg
-                 BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 175);
-                 Character.SendServerMessage("(" + result.ToString() + ")", Color.Red);
+                 if (result == SpellCastResult.NO_LOS)
+                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 174);
+                 else if (result == SpellCastResult.HAS_NOT_SPELL)
+                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 169);
+                 else if (result == SpellCastResult.NOT_ENOUGH_AP)
+                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 170, AP, spell.CurrentSpellLevel.ApCost);
+                 else if (result == SpellCastResult.CELL_NOT_FREE || result == SpellCastResult.UNWALKABLE_CELL)
+                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 172);
+                 else
+                 {
+                     // cannot cast spell msg
+                     BasicHandler.SendTextInformationMessage(Character.Client,
+                                                             TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 175);
+                     Character.SendServerMessage("(" + result.ToString() + ")", Color.Red);
+                 }
              }
 
              return result;

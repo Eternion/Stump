@@ -22,6 +22,7 @@ using System.Windows.Media.Imaging;
 using Stump.DofusProtocol.D2oClasses.Tools.D2p;
 using Stump.DofusProtocol.D2oClasses.Tools.Ele;
 using Stump.DofusProtocol.D2oClasses.Tools.Ele.Datas;
+using WorldEditor.Config;
 
 namespace WorldEditor.Maps
 {
@@ -44,22 +45,8 @@ namespace WorldEditor.Maps
             if (m_gfxFile != null)
                 return;
 
-            if (string.IsNullOrEmpty(Settings.DofusAppPath))
-                throw new Exception("Dofus app path not found");
-
-            var path = Path.Combine(Settings.DofusAppPath, Settings.WorldGfxFile);
-
-            if (!File.Exists(path))
-                throw new Exception(string.Format("{0} file not found. Define world gfx file path.", path));
-
-            m_gfxFile = new D2pFile(path);
-
-            var elePath = Path.Combine(Settings.DofusAppPath, Settings.WorldEleFile);
-
-            if (!File.Exists(elePath))
-                throw new Exception(string.Format("{0} file not found. Define world ele file path.", path));
-
-            m_eleReader = new EleReader(elePath);
+            m_gfxFile = new D2pFile(Settings.LoaderSettings.WorldGfxFile);
+            m_eleReader = new EleReader(Settings.LoaderSettings.WorldEleFile);
             m_elements = m_eleReader.ReadElements();
         }
 

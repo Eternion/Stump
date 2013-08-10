@@ -1148,6 +1148,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                 actor.SpellCasting += OnSpellCasting;
                 actor.SpellCasted += OnSpellCasted;
+                actor.SpellCastFailed += OnSpellCastFailed;
                 actor.WeaponUsed += OnCloseCombat;
 
                 actor.BuffAdded += OnBuffAdded;
@@ -1163,6 +1164,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 fighter.Character.LoggedOut += OnPlayerLoggout;
             }
         }
+
 
         #endregion
 
@@ -1342,6 +1344,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
             CheckFightEnd();
+        }
+
+        protected virtual void OnSpellCastFailed(FightActor caster, Spell spell, Cell target)
+        {
+            ContextHandler.SendGameActionFightNoSpellCastMessage(Clients, spell);
         }
 
         #endregion

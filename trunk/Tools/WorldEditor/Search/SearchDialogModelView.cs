@@ -2,8 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using Stump.Core.Reflection;
+using Stump.ORM.SubSonic.Extensions;
+using WorldEditor.Editors.Items;
+using WorldEditor.Helpers;
+using WorldEditor.Helpers.Collections;
+using WorldEditor.Loaders.I18N;
 
 namespace WorldEditor.Search
 {
@@ -17,12 +24,18 @@ namespace WorldEditor.Search
 
         private static readonly CriteriaOperator[] ListOperators = new[] {CriteriaOperator.CONTAINS};
 
+        private static readonly Dictionary<string, string> m_I18NPropertiesName = new Dictionary<string, string>()
+            {
+                /*{"NameId", "Name"},
+                {"DescriptionId", "Description"},*/
+            };
+
         private ObservableCollection<object> m_itemsSource;
         private ObservableCollection<string> m_searchProperties = new ObservableCollection<string>();
         private ReadOnlyObservableCollection<string> m_readOnlySearchProperties;
         private Dictionary<string, Func<object, object>> m_propertiesGetters = new Dictionary<string, Func<object, object>>();
         private Dictionary<string, Type> m_propertiesType = new Dictionary<string, Type>();
-        private Dictionary<string, string> m_i18nProperties = new Dictionary<string, string>(); 
+        private Dictionary<string, string> m_i18nProperties = new Dictionary<string, string>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -32,12 +45,15 @@ namespace WorldEditor.Search
             ItemsSource = source;
             m_readOnlySearchProperties = new ReadOnlyObservableCollection<string>(m_searchProperties);
             Criterias = new ObservableCollection<SearchCriteria>();
+            Criterias.CollectionChanged += OnCriteriasCollectionChanged;
         }
 
         public ObservableCollection<object> ItemsSource
         {
             get { return m_itemsSource; }
-            set { m_itemsSource = value;
+            set
+            {
+                m_itemsSource = value;
                 OnItemsSourceChanged();
             }
         }
@@ -46,7 +62,12 @@ namespace WorldEditor.Search
         {
             get { return m_readOnlySearchProperties; }
         }
-        
+
+        public IEnumerable<object> Results
+        {
+            get;
+            set;
+        }
 
         public Type ItemType
         {
@@ -60,11 +81,153 @@ namespace WorldEditor.Search
             set;
         }
 
+        public string QuickSearchText
+        {
+            get { return m_quickSearchText; }
+            set
+            {
+                m_quickSearchText = value;
+
+                SearchCriteria idCriteria = Criterias.FirstOrDefault(x => x.ComparedProperty == "Id");
+                SearchCriteria nameCriteria = Criterias.FirstOrDefault(x => x.ComparedProperty == "Name");
+
+                if (string.IsNullOrEmpty(m_quickSearchText))
+                {
+                    OnRemoveCriteria(nameCriteria);
+                    OnRemoveCriteria(idCriteria);
+                }
+
+                if (m_quickSearchText.IsNumber() && m_searchProperties.Contains("Id"))
+                {
+                    if (idCriteria == null)
+                        Criterias.Add(idCriteria = CreateCriteria("Id"));
+
+                    idCriteria.ComparedToValue = int.Parse(m_quickSearchText);
+
+                    if (nameCriteria != null)
+                        OnRemoveCriteria(nameCriteria);
+                }
+                else if (m_searchProperties.Contains("Name"))
+                {
+                    if (nameCriteria == null)
+                    {
+                        nameCriteria = CreateCriteria("Name");
+                        nameCriteria.Operator = CriteriaOperator.CONTAINS;
+                        Criterias.Add(nameCriteria);
+                    }
+
+                    nameCriteria.ComparedToValue = m_quickSearchText;
+
+                    if (idCriteria != null)
+                        OnRemoveCriteria(idCriteria);
+                }
+            }
+        }
+
+        #region UpdateResultsCommand
+
+        private DelegateCommand m_updateResultsCommand;
+
+        public DelegateCommand UpdateResultsCommand
+        {
+            get { return m_updateResultsCommand ?? (m_updateResultsCommand = new DelegateCommand(OnUpdateResults, CanUpdateResults)); }
+        }
+
+        private bool CanUpdateResults(object parameter)
+        {
+            return true;
+        }
+
+        private void OnUpdateResults(object parameter)
+        {
+            if (!CanUpdateResults(parameter))
+                return;
+
+            Results = FindMatches();
+        }
+
+        #endregion
+
+
+        #region AddCriteriaCommand
+
+        private DelegateCommand m_addCriteriaCommand;
+
+        public DelegateCommand AddCriteriaCommand
+        {
+            get { return m_addCriteriaCommand ?? (m_addCriteriaCommand = new DelegateCommand(OnAddCriteria, CanAddCriteria)); }
+        }
+
+        private bool CanAddCriteria(object parameter)
+        {
+            return true;
+        }
+
+        private void OnAddCriteria(object parameter)
+        {
+            if (!CanAddCriteria(parameter))
+                return;
+
+            Criterias.Add(CreateCriteria(m_searchProperties[0]));
+        }
+
+        #endregion
+
+        #region RemoveCriteriaCommand
+
+        private DelegateCommand m_removeCriteriaCommand;
+        private string m_quickSearchText;
+
+        public DelegateCommand RemoveCriteriaCommand
+        {
+            get { return m_removeCriteriaCommand ?? (m_removeCriteriaCommand = new DelegateCommand(OnRemoveCriteria, CanRemoveCriteria)); }
+        }
+
+        private bool CanRemoveCriteria(object parameter)
+        {
+            return parameter is SearchCriteria;
+        }
+
+        private void OnRemoveCriteria(object parameter)
+        {
+            if (parameter == null || !CanRemoveCriteria(parameter))
+                return;
+
+            var criteria = (SearchCriteria) parameter;
+
+            Criterias.Remove(criteria);
+        }
+
+        #endregion
+
+
+        #region EditItemCommand
+
+        private DelegateCommand m_editItemCommand;
+
+        public DelegateCommand EditItemCommand
+        {
+            get { return m_editItemCommand ?? (m_editItemCommand = new DelegateCommand(OnEditItem, CanEditItem)); }
+        }
+
+        protected virtual bool CanEditItem(object parameter)
+        {
+            return true; ;
+        }
+
+        protected virtual void OnEditItem(object parameter)
+        {
+        }
+
+
+        #endregion
+
         protected virtual void OnItemsSourceChanged()
         {
             m_searchProperties.Clear();
             m_propertiesGetters.Clear();
             m_propertiesType.Clear();
+            m_i18nProperties.Clear();
 
             var properties = ItemType.GetProperties();
 
@@ -75,18 +238,21 @@ namespace WorldEditor.Search
 
                 if (property.PropertyType.IsPrimitive || property.PropertyType == typeof (string))
                 {
-                    string textPropertyName;
-                    if (IsI18NProperty(property.Name, out textPropertyName))
-                    {
-                        m_searchProperties.Add(textPropertyName);
-                        m_propertiesGetters.Add(textPropertyName, (obj) => "...");
-                        m_propertiesType.Add(textPropertyName, typeof(string));
-                    }
-
                     var del = (Func<object, object>)property.GetGetMethod().CreateFuncDelegate(typeof(object));
                     m_searchProperties.Add(property.Name);
                     m_propertiesGetters.Add(property.Name, del);
                     m_propertiesType.Add(property.Name, property.PropertyType);
+
+                    
+                    string textPropertyName;
+                    if (IsI18NProperty(property.Name, out textPropertyName))
+                    {
+                        m_searchProperties.Add(textPropertyName);
+                        m_propertiesGetters.Add(textPropertyName, (obj) => I18NDataManager.Instance.ReadText((uint)del(obj)));
+                        m_propertiesType.Add(textPropertyName, typeof(string));
+                        m_i18nProperties.Add(textPropertyName, property.Name);
+                    }
+
                 }
                 else if (property.PropertyType.HasInterface(typeof (IList)) && property.PropertyType.IsGenericType)
                 {
@@ -105,14 +271,9 @@ namespace WorldEditor.Search
 
         protected virtual bool IsI18NProperty(string propertyName, out string textPropertyName)
         {
-            if (propertyName == "NameId")
+            if (m_I18NPropertiesName.ContainsKey(propertyName))
             {
-                textPropertyName = "Name";
-                return true;
-            }
-            else if (propertyName == "DescriptionId")
-            {
-                textPropertyName = "Description";
+                textPropertyName = m_I18NPropertiesName[propertyName];
                 return true;
             }
 
@@ -122,32 +283,63 @@ namespace WorldEditor.Search
 
         public virtual SearchCriteria CreateCriteria(string propertyName)
         {
-            if (!m_searchProperties.Contains(propertyName))
-                throw new Exception(string.Format("Property {0} not handled", propertyName));
+            var criteria = new SearchCriteria()
+                {
+                    ComparedProperty = propertyName,
+                };
 
-            var type = ItemType.GetProperty(propertyName).PropertyType;
+            UpdateCriteria(criteria);
+
+            criteria.PropertyChanged += OnCriteriaPropertyChanged;
+
+            return criteria;
+        }
+
+
+        public virtual void UpdateCriteria(SearchCriteria searchCriteria)
+        {
+            if (!m_searchProperties.Contains(searchCriteria.ComparedProperty))
+                throw new Exception(string.Format("Property {0} not handled", searchCriteria.ComparedProperty));
+
+            var isI18N = m_i18nProperties.ContainsKey(searchCriteria.ComparedProperty);
+            var type =  isI18N ? typeof(string) : ItemType.GetProperty(searchCriteria.ComparedProperty).PropertyType;
             var operators = GetOperators(type);
 
             if (operators.Length == 0)
                 throw new Exception(string.Format("No operators for type {0}", type));
 
-            var criteria = new SearchCriteria()
-                {
-                    ComparedProperty = propertyName,
-                    IsList = type.HasInterface(typeof(IList)),
-                    AvailableOperators = operators,
-                    Operator = operators[0],
-                    ValueType = m_propertiesType[propertyName],
-                    ComparedToValue = (IComparable)Activator.CreateInstance(m_propertiesType[propertyName])
-                };
+            searchCriteria.IsI18NProperty = isI18N;
+            searchCriteria.IsList = type.HasInterface(typeof(IList));
+            searchCriteria.AvailableOperators = operators;
+            searchCriteria.Operator = operators[0];
+            searchCriteria.ValueType = isI18N ? typeof(string) : m_propertiesType[searchCriteria.ComparedProperty];
+            searchCriteria.ComparedToValue = isI18N || type == typeof(string) ? string.Empty : (IComparable)Activator.CreateInstance(m_propertiesType[searchCriteria.ComparedProperty]);
+        }
 
-            return criteria;
+        private void OnCriteriaPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ComparedProperty")
+            {
+                UpdateCriteria((SearchCriteria)sender);
+            }
+        }
+
+        private void OnCriteriasCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach(SearchCriteria criteria in e.OldItems)
+                    criteria.PropertyChanged -= OnCriteriaPropertyChanged;
+            }
         }
 
         public virtual IEnumerable<object> FindMatches()
         {
             if (Criterias.Count == 0)
-                yield return ItemsSource;
+                foreach (var item in ItemsSource)
+                {
+                    yield return item;
+                }
 
             foreach (var item in ItemsSource)
             {

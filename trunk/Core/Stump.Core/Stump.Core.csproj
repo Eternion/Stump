@@ -245,6 +245,9 @@
     <Compile Include="IO\ZipHelper.cs" />
     <Compile Include="Mathematics\FastRandom.cs" />
     <Compile Include="Mathematics\MathExtensions.cs" />
+    <Compile Include="Memory\SafeGCHandle.cs" />
+    <Compile Include="Memory\WeakCollection.cs" />
+    <Compile Include="Memory\WeakReference.cs" />
     <Compile Include="Pool\EntityManager.cs" />
     <Compile Include="Pool\New\ObjectPool.cs" />
     <Compile Include="Pool\New\ObjectPoolMgr.cs" />

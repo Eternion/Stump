@@ -126,7 +126,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools
                 {
                     var digit = int.Parse(str[i + 1].ToString());
 
-                    if (args.Length <= digit - 1)
+                    if (args.Length <= digit - 1 || args[digit - 1] == null)
                         return stringBuilder.ToString();
 
                     i++;
