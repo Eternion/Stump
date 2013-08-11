@@ -31,7 +31,7 @@ namespace WorldEditor.Search.Items
         {
             InitializeComponent();
             var items = ObjectDataManager.Instance.EnumerateObjects<Item>().Select(x => x is Weapon ? new WeaponWrapper((Weapon)x) : new ItemWrapper(x));
-            ModelView = new SearchDialogModelView(typeof (ItemWrapper), new ObservableCollection<object>(items));
+            ModelView = new ItemSearchDialogModelView(typeof (ItemWrapper), new ObservableCollection<object>(items));
             DataContext = ModelView;
         }
 
