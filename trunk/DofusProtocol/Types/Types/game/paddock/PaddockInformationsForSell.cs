@@ -1,9 +1,10 @@
 
 
-// Generated on 07/29/2013 23:08:51
+// Generated on 08/11/2013 11:29:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
@@ -71,7 +72,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(short) + guildOwner.Length + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(sbyte) + sizeof(sbyte) + sizeof(int);
+            return sizeof(short) + Encoding.UTF8.GetByteCount(guildOwner) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(sbyte) + sizeof(sbyte) + sizeof(int);
         }
         
     }

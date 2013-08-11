@@ -1,9 +1,10 @@
 
 
-// Generated on 07/29/2013 23:08:00
+// Generated on 08/11/2013 11:28:34
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Types;
 
@@ -68,7 +69,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + sizeof(short) + dialogParams.Sum(x => sizeof(short) + x.Length) + sizeof(short) + visibleReplies.Sum(x => sizeof(short));
+            return sizeof(short) + sizeof(short) + dialogParams.Sum(x => sizeof(short) + Encoding.UTF8.GetByteCount(x)) + sizeof(short) + visibleReplies.Sum(x => sizeof(short));
         }
         
     }
