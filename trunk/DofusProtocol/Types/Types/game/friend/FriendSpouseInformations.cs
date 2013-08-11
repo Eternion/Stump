@@ -1,9 +1,10 @@
 
 
-// Generated on 07/29/2013 23:08:49
+// Generated on 08/11/2013 11:29:18
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
@@ -79,7 +80,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(int) + sizeof(short) + spouseName.Length + sizeof(byte) + sizeof(sbyte) + sizeof(sbyte) + spouseEntityLook.GetSerializationSize() + guildInfo.GetSerializationSize() + sizeof(sbyte);
+            return sizeof(int) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(spouseName) + sizeof(byte) + sizeof(sbyte) + sizeof(sbyte) + spouseEntityLook.GetSerializationSize() + guildInfo.GetSerializationSize() + sizeof(sbyte);
         }
         
     }

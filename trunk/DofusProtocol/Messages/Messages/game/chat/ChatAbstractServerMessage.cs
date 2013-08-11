@@ -1,9 +1,10 @@
 
 
-// Generated on 07/29/2013 23:07:42
+// Generated on 08/11/2013 11:28:18
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Types;
 
@@ -56,7 +57,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(sbyte) + sizeof(short) + content.Length + sizeof(int) + sizeof(short) + fingerprint.Length;
+            return sizeof(sbyte) + sizeof(short) + Encoding.UTF8.GetByteCount(content) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(fingerprint);
         }
         
     }

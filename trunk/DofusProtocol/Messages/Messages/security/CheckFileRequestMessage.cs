@@ -1,9 +1,10 @@
 
 
-// Generated on 07/29/2013 23:08:37
+// Generated on 08/11/2013 11:29:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Types;
 
@@ -46,7 +47,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + filename.Length + sizeof(sbyte);
+            return sizeof(short) + Encoding.UTF8.GetByteCount(filename) + sizeof(sbyte);
         }
         
     }
