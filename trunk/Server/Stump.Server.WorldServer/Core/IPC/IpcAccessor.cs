@@ -179,12 +179,15 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         private void OnAccessGranted(CommonOKMessage msg)
         {
+            m_requestingAccess = false;
             AccessGranted = true;
             logger.Info("Access to auth. server granted");
         }
 
         private void OnAccessDenied(IPCErrorMessage error)
         {
+            m_requestingAccess = false;
+
             if (error is IPCErrorTimeoutMessage)
                 return;
 
@@ -225,6 +228,7 @@ namespace Stump.Server.WorldServer.Core.IPC
                 catch (Exception ex)
                 {
                     logger.Error("Connection to {0}:{1} failed. Try again in {2}s", RemoteHost, RemotePort, UpdateInterval / 1000);
+                    return;
                 }
 
                 m_requestingAccess = true;
