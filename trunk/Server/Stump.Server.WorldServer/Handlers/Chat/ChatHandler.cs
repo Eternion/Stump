@@ -17,19 +17,24 @@ namespace Stump.Server.WorldServer.Handlers.Chat
         [WorldHandler(ChatClientPrivateMessage.Id)]
         public static void HandleChatClientPrivateMessage(WorldClient client, ChatClientPrivateMessage message)
         {
-            Character chr = World.Instance.GetCharacter(message.receiver);
-
-            if (chr != null)
+            if (!String.IsNullOrEmpty(message.content))
             {
-                // send a copy to sender
-                SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content);
+                Character chr = World.Instance.GetCharacter(message.receiver);
 
-                // Send to receiver
-                SendChatServerMessage(chr.Client, client.Character, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content);
-            }
-            else
-            {
-                client.Send(new ChatErrorMessage((sbyte) ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND));
+                if (chr != null)
+                {
+                    // send a copy to sender
+                    SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
+                                              message.content);
+
+                    // Send to receiver
+                    SendChatServerMessage(chr.Client, client.Character, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
+                                          message.content);
+                }
+                else
+                {
+                    client.Send(new ChatErrorMessage((sbyte) ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND));
+                }
             }
         }
 
@@ -70,31 +75,37 @@ namespace Stump.Server.WorldServer.Handlers.Chat
         public static void SendChatServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message,
                                                  int timestamp, string fingerprint)
         {
-            if (sender.Account.Role <= RoleEnum.Moderator)
-                message = message.HtmlEntities();
+            if (!String.IsNullOrEmpty(message))
+            {
+                if (sender.Account.Role <= RoleEnum.Moderator)
+                    message = message.HtmlEntities();
 
-            client.Send(new ChatServerMessage(
-                            (sbyte) channel,
-                            message,
-                            timestamp,
-                            fingerprint,
-                            sender.Id,
-                            sender.Name,
-                            (int) sender.Account.Id));
+                client.Send(new ChatServerMessage(
+                                (sbyte) channel,
+                                message,
+                                timestamp,
+                                fingerprint,
+                                sender.Id,
+                                sender.Name,
+                                (int) sender.Account.Id));
+            }
         }
 
         public static void SendChatServerMessage(IPacketReceiver client, ChatActivableChannelsEnum channel, string message,
                                                  int timestamp, string fingerprint, int senderId, string senderName,
                                                  int accountId)
         {
-            client.Send(new ChatServerMessage(
-                            (sbyte) channel,
-                            message,
-                            timestamp,
-                            fingerprint,
-                            senderId,
-                            senderName,
-                            accountId));
+            if (!String.IsNullOrEmpty(message))
+            {
+                client.Send(new ChatServerMessage(
+                                (sbyte) channel,
+                                message,
+                                timestamp,
+                                fingerprint,
+                                senderId,
+                                senderName,
+                                accountId));
+            }
         }
 
         public static void SendChatAdminServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message)
@@ -118,13 +129,16 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                                                       int timestamp, string fingerprint, int senderId, string senderName,
                                                       int accountId)
         {
-            client.Send(new ChatAdminServerMessage((sbyte) channel,
-                                                   message,
-                                                   timestamp,
-                                                   fingerprint,
-                                                   senderId,
-                                                   senderName,
-                                                   accountId));
+            if (!String.IsNullOrEmpty(message))
+            {
+                client.Send(new ChatAdminServerMessage((sbyte) channel,
+                                                       message,
+                                                       timestamp,
+                                                       fingerprint,
+                                                       senderId,
+                                                       senderName,
+                                                       accountId));
+            }
         }
 
         public static void SendChatServerCopyMessage(IPacketReceiver client, Character sender, Character receiver, ChatActivableChannelsEnum channel,

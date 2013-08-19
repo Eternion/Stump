@@ -39,9 +39,7 @@ namespace Stump.Server.WorldServer.Core.Network
             }
             else
             {
-                List<WorldClient> tmp_underlyingList = m_underlyingList;
-
-                foreach (var worldClient in tmp_underlyingList)
+                foreach (var worldClient in m_underlyingList.ToList())
                 {
                     if (worldClient != null)
                         worldClient.Send(message);
