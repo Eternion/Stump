@@ -112,6 +112,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\NpcCommand.cs" />
     <Compile Include="Commands\ShopCommand.cs" />
     <Compile Include="Commands\WelcomeCommand.cs" />
     <Compile Include="Npcs\NpcExchange.cs" />
