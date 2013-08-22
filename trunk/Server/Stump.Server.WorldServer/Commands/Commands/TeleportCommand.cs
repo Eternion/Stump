@@ -129,4 +129,23 @@ namespace Stump.Server.WorldServer.Commands.Commands
             from.Teleport(to.Position);
         }
     }
+
+    public class NameGoCommand : TargetCommand
+    {
+        public NameGoCommand()
+        {
+            Aliases = new[] { "namego" };
+            RequiredRole = RoleEnum.Moderator;
+            Description = "Teleport target to you";
+            AddParameter("target", "target", "The character to teleport", converter: ParametersConverter.CharacterConverter);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var target = trigger.Get<Character>("target");
+            Character to = GetTarget(trigger);
+
+            target.Teleport(to.Position);
+        }
+    }
 }
