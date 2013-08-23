@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public Cell Cell
         {
-            get { return Position != null ? Position.Cell : Cell.Null; }
+            get { return Position != null ? Position.Cell : null; }
             set { Position.Cell = value; }
         }
 

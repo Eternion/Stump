@@ -348,26 +348,35 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         public void ForEach(Action<Character> action)
         {
-            foreach (var character in Members)
+            lock (m_memberLocker)
             {
-                action(character);
+                foreach (var character in Members)
+                {
+                    action(character);
+                }
             }
         }
 
         public void ForEach(Action<Character> action, Character except)
         {
-            foreach (var character in Members)
+            lock (m_memberLocker)
             {
-                if (character != except) 
-                    action(character);
+                foreach (var character in Members)
+                {
+                    if (character != except)
+                        action(character);
+                }
             }
         }
 
         public void SendToAll(Message message)
         {
-            foreach (var character in m_members)
+            lock (m_memberLocker)
             {
-                character.Client.Send(message);
+                foreach (var character in m_members)
+                {
+                    character.Client.Send(message);
+                }
             }
         }
 

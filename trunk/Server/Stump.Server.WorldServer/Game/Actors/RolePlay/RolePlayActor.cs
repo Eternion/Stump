@@ -80,12 +80,29 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
 
             Position.Map.Leave(this);
             Position = destination.Clone();
-            Position.Map.Enter(this);
 
-            NextMap = null;
-            LastMap = null;
+            // must execute this is a different thread
+            if (NextMap.Area != Area)
+            {
+                NextMap.Area.AddMessage(() =>
+                    {
+                        Position.Map.Enter(this);
 
-            OnTeleported(Position);
+                        NextMap = null;
+                        LastMap = null;
+
+                        OnTeleported(Position);
+                    });
+            }
+            else
+            {
+                Position.Map.Enter(this);
+
+                NextMap = null;
+                LastMap = null;
+
+                OnTeleported(Position);
+            }
 
             return true;
         }

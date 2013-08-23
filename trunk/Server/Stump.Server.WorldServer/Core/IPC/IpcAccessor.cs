@@ -65,6 +65,7 @@ namespace Stump.Server.WorldServer.Core.IPC
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private bool m_requestingAccess;
+        private bool m_wasConnected;
         private Dictionary<Guid, IIPCRequest> m_requests = new Dictionary<Guid, IIPCRequest>();
         private TimerEntry m_updateTimer;
 
@@ -93,6 +94,7 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         private void OnClientDisconnected()
         {
+            m_wasConnected = false;
             logger.Info("IPC connection lost");
 
             var handler = Disconnected;
@@ -102,7 +104,6 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         public IPCAccessor()
         {
-            Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             TaskPool = new SelfRunningTaskPool(TaskPoolInterval, "IPCAccessor Task Pool");
             m_updateTimer = new TimerEntry(0, UpdateInterval, Tick);
         }
@@ -171,6 +172,7 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         private void Connect()
         {
+            Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             Socket.Connect(RemoteHost, RemotePort);
             OnClientConnected();
 
@@ -198,12 +200,14 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         private void Disconnect()
         {
-            if (IsReacheable)
+            try
             {
                 Close();
             }
-
-            OnClientDisconnected();
+            finally 
+            {
+                OnClientDisconnected();
+            }
         }
 
         private void Tick(int dt)
@@ -220,6 +224,9 @@ namespace Stump.Server.WorldServer.Core.IPC
                 if (m_requestingAccess)
                     return;
 
+                if (m_wasConnected)
+                    Disconnect();
+
                 logger.Info("Attempt connection");
                 try
                 {
@@ -232,6 +239,7 @@ namespace Stump.Server.WorldServer.Core.IPC
                 }
 
                 m_requestingAccess = true;
+                m_wasConnected = true;
                 SendRequest<CommonOKMessage>(new HandshakeMessage(WorldServer.ServerInformation), OnAccessGranted, OnAccessDenied);
             }
             else

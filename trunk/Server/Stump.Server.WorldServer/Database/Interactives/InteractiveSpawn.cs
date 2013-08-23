@@ -136,7 +136,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
             MapElement[] elements = map.Record.FindMapElement(ElementId);
 
             if (elements.Length <= 0)
-                return new ObjectPosition(map, Cell.Null);
+                return new ObjectPosition(map, null);
 
             if (elements.Length > 1)
                 logger.Debug("More than 1 elements found in interactive id = {0}", Id);

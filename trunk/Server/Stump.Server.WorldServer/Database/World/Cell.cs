@@ -7,11 +7,6 @@ namespace Stump.Server.WorldServer.Database.World
     {
         public const int StructSize = 2 + 2 + 1 + 1 + 1 + 4;
 
-        public static Cell Null = new Cell
-            {
-                Id = -1
-            };
-
         public short Floor;
         public short Id;
         public byte LosMov;

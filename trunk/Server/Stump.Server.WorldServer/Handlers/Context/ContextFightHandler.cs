@@ -185,6 +185,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
             var fight = FightManager.Instance.GetFight(message.fightId);
 
+            if (fight == null)
+            {
+                SendChallengeFightJoinRefusedMessage(client, client.Character, FighterRefusedReasonEnum.TOO_LATE);
+                return;
+            }
+
             if (fight.Map != client.Character.Map)
             {
                 SendChallengeFightJoinRefusedMessage(client, client.Character, FighterRefusedReasonEnum.WRONG_MAP);
