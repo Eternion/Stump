@@ -1223,7 +1223,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
                 var pt = cells.RandomElementOrDefault();
 
-                return pt != null ? Cells[pt.CellId] : Cell.Null;
+                return pt != null ? Cells[pt.CellId] : null;
             }
             else
             {
@@ -1231,7 +1231,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
                 var pt = cells.RandomElementOrDefault();
 
-                return pt != null ? Cells[pt.CellId] : Cell.Null;
+                return pt != null ? Cells[pt.CellId] : null;
             }
         }
 

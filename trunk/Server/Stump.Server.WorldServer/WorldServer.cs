@@ -145,9 +145,6 @@ namespace Stump.Server.WorldServer
             logger.Info("Start Auto-Save Cyclic Task");
             IOTaskPool.CallPeriodically(AutoSaveInterval * 1000, World.Instance.Save);
 
-            logger.Info("Start Check Scheduled Shutdown Cyclic Task");
-            IOTaskPool.CallPeriodically(1000, CheckScheduledShutdown);
-
             logger.Info("Starting Console Handler Interface...");
             ConsoleInterface.Start();
 

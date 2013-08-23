@@ -501,7 +501,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 Cell cell = Map.GetRandomAdjacentFreeCell(RedTeam.Leader.MapPosition.Point);
 
                 // if cell not found we superpose both blades
-                if (cell.Equals(Cell.Null))
+                if (cell == null)
                 {
                     RedTeam.BladePosition = RedTeam.Leader.MapPosition.Clone();
                 }
@@ -572,7 +572,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (availableCells.Length == 0 && placement)
             {
-                cell = Cell.Null;
+                cell = null;
                 return false;
             }
 

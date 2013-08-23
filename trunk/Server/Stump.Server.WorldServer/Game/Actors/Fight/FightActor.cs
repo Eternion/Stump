@@ -1620,7 +1620,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual EntityDispositionInformations GetEntityDispositionInformations(WorldClient client = null)
         {
-            return new FightEntityDispositionInformations(client != null ? ( IsVisibleFor(client.Character) ? Cell.Id : Cell.Null.Id ) : Cell.Id, (sbyte)Direction, CarriedActor != null ? CarriedActor.Id : 0);
+            return new FightEntityDispositionInformations(client != null ? ( IsVisibleFor(client.Character) ? Cell.Id : (short)-1 ) : Cell.Id, (sbyte)Direction, CarriedActor != null ? CarriedActor.Id : 0);
         }
 
         public virtual GameFightMinimalStats GetGameFightMinimalStats()

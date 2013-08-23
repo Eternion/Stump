@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
 
             var fleeCell = Fighter.Brain.Environment.GetCellToFlee();
 
-            if (fleeCell.Equals(Cell.Null))
+            if (fleeCell == null)
                 return RunStatus.Failure;
 
             if (fleeCell.Id == Fighter.Cell.Id)

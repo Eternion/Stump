@@ -87,6 +87,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
 
         public void InteractWith(NpcActionTypeEnum actionType, Character dialoguer)
         {
+            if (!CanInteractWith(actionType, dialoguer))
+                return;
+
             NpcAction action =
                 Actions.First(entry => entry.ActionType == actionType && entry.CanExecute(this, dialoguer));
 
