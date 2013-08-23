@@ -145,6 +145,9 @@ namespace Stump.Server.WorldServer
             logger.Info("Start Auto-Save Cyclic Task");
             IOTaskPool.CallPeriodically(AutoSaveInterval * 1000, World.Instance.Save);
 
+            logger.Info("Start Check Scheduled Shutdown Cyclic Task");
+            IOTaskPool.CallPeriodically(1000, CheckScheduledShutdown);
+
             logger.Info("Starting Console Handler Interface...");
             ConsoleInterface.Start();
 
@@ -228,7 +231,8 @@ namespace Stump.Server.WorldServer
 
         private void AnnounceTimeBeforeShutdown(TimeSpan time)
         {
-            World.Instance.SendAnnounce(string.Format(@"Automatic reboot in <b>{0:mm\:ss}</b>",
+            World.Instance.SendAnnounce(string.Format(@"Automatic 
+in <b>{0:mm\:ss}</b>",
                 time), Color.Red);
             m_lastAnnouncedTime = time;
         }

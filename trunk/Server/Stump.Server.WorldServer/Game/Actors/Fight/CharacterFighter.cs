@@ -46,10 +46,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Look = Character.Look.Copy();
 
             Cell cell;
-            Fight.FindRandomFreeCell(this, out cell, false);
-            Position = new ObjectPosition(character.Map, cell, character.Direction);
+            if (Fight.FindRandomFreeCell(this, out cell, false))
+            {
+                Position = new ObjectPosition(character.Map, cell, character.Direction);
 
-            InitializeCharacterFighter();
+                InitializeCharacterFighter();
+            }
         }
 
         public Character Character
