@@ -407,9 +407,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameActionFightNoSpellCastMessage(spell.Id));
         }
 
-        public static void SendGameActionFightDispellableEffectMessage(IPacketReceiver client, Buff buff)
+        public static void SendGameActionFightDispellableEffectMessage(IPacketReceiver client, Buff buff, bool update = false)
         {
-            client.Send(new GameActionFightDispellableEffectMessage(buff.GetActionId(), buff.Caster.Id, buff.GetAbstractFightDispellableEffect()));
+            client.Send(new GameActionFightDispellableEffectMessage(update ? (short)ActionsEnum.ACTION_CHARACTER_UPDATE_BOOST : buff.GetActionId(), buff.Caster.Id, buff.GetAbstractFightDispellableEffect()));
         }
 
         public static void SendGameActionFightMarkCellsMessage(IPacketReceiver client, MarkTrigger trigger, bool visible = true)
