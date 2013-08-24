@@ -1198,6 +1198,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected virtual void OnStartMoving(ContextActor actor, Path path)
         {
             var fighter = actor as FightActor;
+            var character = actor is CharacterFighter ? (actor as CharacterFighter).Character : null;
 
             if (!fighter.IsFighterTurn())
                 return;
@@ -1218,13 +1219,14 @@ namespace Stump.Server.WorldServer.Game.Fights
                 }
             }
             Cell[] cells = path.GetPath();
-            var fighterCells = fighter.OpposedTeam.GetAllFighters(entry => entry.IsAlive() /*&& entry.IsVisible*/).Select(entry => entry.Cell.Id).ToList();
+            var fighterCells = fighter.OpposedTeam.GetAllFighters(entry => entry.IsAlive() && entry.IsVisibleFor(fighter)).Select(entry => entry.Cell.Id).ToList();
+            var obstaclesCells = GetAllFighters(entry => entry != fighter && entry.IsAlive()).Select(entry => entry.Cell.Id).ToList();
 
-            for (int i = 1; i < cells.Length - 1; i++)
+            for (int i = 0; i < cells.Length; i++)
             {
                 // if there is a trap on the way we trigger it
                 // or if there is a fighter on a adjacent cell
-                if (ShouldTriggerOnMove(cells[i]))
+                if (i > 0 && ShouldTriggerOnMove(cells[i]))
                 {
                     path.CutPath(i + 1);
                     break;
@@ -1232,11 +1234,22 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                 // fighter adjacent to this cell, ignore first cell
                 // characters only can be tackled
-                if (fighter is CharacterFighter && 
+                if (i > 0 && fighter is CharacterFighter && 
                     fighter.VisibleState == GameActionFightInvisibilityStateEnum.VISIBLE &&
                     new MapPoint(cells[i]).GetAdjacentCells(entry => true).Any(entry => fighterCells.Contains(entry.CellId)))
                 {
                     path.CutPath(i + 1);
+                    break;
+                }
+                else if (obstaclesCells.Contains(cells[i].Id)) // there is an invisible obstacle
+                {
+                    if (character != null)
+                    {
+                        // "Impossible d'emprunter ce chemin : un obstacle bloque le passage !"
+                        character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 276);
+                    }
+
+                    path.CutPath(i);
                     break;
                 }
             }
@@ -1296,7 +1309,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void SwitchFighters(FightActor fighter1, FightActor fighter2)
         {
-
+            // todo
         }
 
         #endregion

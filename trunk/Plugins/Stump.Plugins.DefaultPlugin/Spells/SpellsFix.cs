@@ -29,6 +29,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // effect #2 Target = self
             FixEffectOnAllLevels(155, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_1);
             FixEffectOnAllLevels(155, 1, (level, effect, critical) => effect.Targets = SpellTargetType.SELF);
+
+            // concentration (158)
+            // #2 effect = summons
+            FixEffectOnAllLevels(158, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL_SUMMONS);
             #endregion
 
             #region SADIDA
@@ -69,6 +73,27 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             RemoveEffectOnAllLevels(60, EffectsEnum.Effect_Kill);
             #endregion
 
+            #region OSAMODAS
+            // whip (30)
+            // kill effect target -> summons
+            FixEffectOnAllLevels(30, EffectsEnum.Effect_Kill, (level, effect, critical) =>
+                                                              effect.Targets =
+                                                              SpellTargetType.ALLY_STATIC_SUMMONS |
+                                                              SpellTargetType.ALLY_SUMMONS |
+                                                              SpellTargetType.ENNEMY_STATIC_SUMMONS |
+                                                              SpellTargetType.ENNEMY_SUMMONS);
+
+            #endregion
+
+            #region ECAFLIP
+            // heads or tails (102)
+            // #1 + #3 = enemies
+            // #2 + #4 = allies
+            FixEffectOnAllLevels(102, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(102, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(102, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+            FixEffectOnAllLevels(102, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+            #endregion
         }
 
         public static void FixEffectOnAllLevels(int spellId, int effectIndex, Action<SpellLevelTemplate, EffectDice, bool> fixer)

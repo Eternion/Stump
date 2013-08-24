@@ -162,7 +162,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             }
 
             var ipBan = AccountManager.Instance.FindMatchingIpBan(client.IP);
-            if (ipBan != null)
+            if (ipBan != null && ipBan.GetRemainingTime() > TimeSpan.Zero)
             {
                 SendIdentificationFailedBannedMessage(client, ipBan.GetEndDate());
                 client.DisconnectLater(1000);
