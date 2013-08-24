@@ -28,6 +28,7 @@ using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
+using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Context;
@@ -444,8 +445,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Fighting
 
-        public override bool StartMove(Maps.Pathfinding.Path movementPath)
+        public override bool StartMove(Path movementPath)
         {
+
+
             return base.StartMove(movementPath);
         }
 
@@ -1021,7 +1024,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public FightActor[] GetTacklers()
         {
-            return OpposedTeam.GetAllFighters(entry => entry.IsAlive() && entry.Position.Point.IsAdjacentTo(Position.Point)).ToArray();
+            return OpposedTeam.GetAllFighters(entry => entry.IsAlive() && entry.IsVisibleFor(this) && entry.Position.Point.IsAdjacentTo(Position.Point)).ToArray();
         }
 
         public virtual int GetTackledMP()

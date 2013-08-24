@@ -115,6 +115,9 @@ namespace Stump.Server.AuthServer
                 logger.Info("Start World Servers Manager");
                 WorldServerManager.Instance.Initialize();
 
+                logger.Info("Initialize Account Manager");
+                AccountManager.Instance.Initialize();
+
                 logger.Info("Initialize IPC Server..");
                 IpcHost = new IPCHost(IpcAddress, IpcPort);
 
