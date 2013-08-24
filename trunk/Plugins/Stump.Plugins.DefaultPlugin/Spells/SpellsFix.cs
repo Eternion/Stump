@@ -89,10 +89,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // heads or tails (102)
             // #1 + #3 = enemies
             // #2 + #4 = allies
-            FixEffectOnAllLevels(102, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
-            FixEffectOnAllLevels(102, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
-            FixEffectOnAllLevels(102, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
-            FixEffectOnAllLevels(102, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+            FixEffectOnAllLevels(102, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(102, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(102, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+            FixEffectOnAllLevels(102, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
             #endregion
         }
 
