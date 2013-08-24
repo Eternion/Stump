@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             get
             {
-                return Index == -1 ? null : Fighters[Index];
+                return Index == -1 || Index > Fighters.Count ? null : Fighters[Index];
             }
         }
 

@@ -71,13 +71,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                         if (path == null || path.IsEmpty())
                         {
                             Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-                            continue;
+                            break;
                         }
 
                         if (path.MPCost > Fighter.MP)
                         {
                             Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-                            continue;
+                            break;
                         }
 
                         success = Fighter.StartMove(path);
@@ -86,7 +86,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                         if (Fighter.Cell.Id == lastPos)
                         {
                             Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-                            continue;
+                            break;
                         }
 
                         lastPos = Fighter.Cell.Id;
