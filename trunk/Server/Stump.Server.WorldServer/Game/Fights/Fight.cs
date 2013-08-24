@@ -1373,6 +1373,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             return m_buffs;
         }
 
+        public void UpdateBuff(Buff buff)
+        {
+            ContextHandler.SendGameActionFightDispellableEffectMessage(Clients, buff, true);
+        }
+
         protected virtual void OnBuffAdded(FightActor target, Buff buff)
         {
             m_buffs.Add(buff);
@@ -1385,6 +1390,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (buff.Duration > 0)
                 ActionsHandler.SendGameActionFightDispellEffectMessage(Clients, target, target, buff);
+
         }
 
         #endregion
