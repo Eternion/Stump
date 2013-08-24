@@ -242,6 +242,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (target == null)
                 return;
 
+            if (!target.Character.IsFighting())
+                return;
+
+            if (client.Character.Fight != target.Character.Fight)
+                return;
+
             client.Character.Fight.KickFighter(target);
         }
 
