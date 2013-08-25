@@ -4,6 +4,8 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts
 {
@@ -27,6 +29,13 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             // 0 to 3 rounds
             CastRound = new Random().Next(0, 4);
             Handlers = Handlers.Where(entry => entry.Effect.Duration == CastRound).ToArray();
+
+            foreach (var handler in Handlers)
+            {
+                var damageHandler = handler as DirectDamage;
+                if (damageHandler != null)
+                    damageHandler.BuffTriggerType = BuffTriggerType.BUFF_ENDED;
+            }
         }
     }
 }

@@ -89,13 +89,16 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            trigger.Reply("Area {0}", trigger.Bold(area.Id));
+            trigger.Reply("Area {0} ({1})", trigger.Bold(area.Name), trigger.Bold(area.Id));
             trigger.Reply("Enabled : {0}", trigger.Bold(area.IsRunning));
             trigger.Reply("Objects : {0}", trigger.Bold(area.ObjectCount));
             trigger.Reply("Timers : {0}", trigger.Bold(area.TimersCount));
             trigger.Reply("Update interval : {0}ms", trigger.Bold(area.UpdateDelay));
             trigger.Reply("AvgUpdateTime : {0}ms", trigger.Bold((int)area.AverageUpdateTime));
             trigger.Reply("LastUpdate : {0}", trigger.Bold(area.LastUpdateTime));
+            trigger.Reply("Is Updating : {0}", trigger.Bold(area.IsUpdating));
+            trigger.Reply("Is Disposed : {0}", trigger.Bold(area.IsDisposed));
+            trigger.Reply("Current Thread : {0}", trigger.Bold(area.CurrentThreadId));
         }
     }
 

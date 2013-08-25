@@ -48,7 +48,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
                         if (buff.Duration <= 0)
                             actor.RemoveAndDispellBuff(buff);
+                        else
+                            Fight.UpdateBuff(buff);
                     }
+
                 }
             }
 

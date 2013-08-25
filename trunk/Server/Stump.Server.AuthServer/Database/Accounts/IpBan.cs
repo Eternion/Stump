@@ -43,7 +43,10 @@ namespace Stump.Server.AuthServer.Database
             set;
         }
 
-        public TimeSpan? Duration
+        /// <summary>
+        /// Duration in minutes
+        /// </summary>
+        public int? Duration
         {
             get;
             set;
@@ -79,7 +82,7 @@ namespace Stump.Server.AuthServer.Database
 
         public DateTime GetEndDate()
         {
-            return LifeBan ? DateTime.MaxValue : Date.Add(Duration.Value);
+            return LifeBan ? DateTime.MaxValue : Date.AddMinutes(Duration.Value);
         }
 
         public bool Match(IPAddress ip)
