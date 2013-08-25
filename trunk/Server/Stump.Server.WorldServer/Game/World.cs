@@ -618,11 +618,11 @@ namespace Stump.Server.WorldServer.Game
             }
         }
 
-        public void Stop()
+        public void Stop(bool wait = false)
         {
             foreach (var area in m_areas)
             {
-                area.Value.Stop();
+                area.Value.Stop(wait);
             }
         }
 

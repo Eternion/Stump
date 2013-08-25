@@ -217,7 +217,7 @@ namespace Stump.Server.WorldServer
                 {
                     AnnounceTimeBeforeShutdown(new TimeSpan(0, 0, 0, (int)diff.TotalSeconds.RoundToNearest(10)));
                 }
-                if (diff <= TimeSpan.FromSeconds(10))
+                if (diff <= TimeSpan.FromSeconds(10) && diff > TimeSpan.Zero)
                 {
                     AnnounceTimeBeforeShutdown(TimeSpan.FromSeconds(diff.Seconds.RoundToNearest(5)));
                 }
@@ -240,9 +240,9 @@ in <b>{0:mm\:ss}</b>",
             {
                 var wait = new AutoResetEvent(false);
                 IOTaskPool.ExecuteInContext(() =>
-                    {
+                {
+                        World.Instance.Stop(true);
                         World.Instance.Save();
-                        World.Instance.Stop();
                         wait.Set();
                     });
 

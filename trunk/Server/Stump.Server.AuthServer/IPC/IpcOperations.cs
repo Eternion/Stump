@@ -339,7 +339,7 @@ namespace Stump.Server.AuthServer.IPC
             {
                 ipBan.BanReason = message.BanReason;
                 ipBan.BannedBy = message.BannerAccountId;
-                ipBan.Duration = message.BanEndDate.HasValue ? message.BanEndDate - DateTime.Now : null;
+                ipBan.Duration = message.BanEndDate.HasValue ? (int?)(message.BanEndDate - DateTime.Now).Value.TotalMinutes : null;
                 ipBan.Date = DateTime.Now;
 
                 Database.Update(ipBan);
@@ -351,11 +351,12 @@ namespace Stump.Server.AuthServer.IPC
                     IP = ip,
                     BanReason = message.BanReason,
                     BannedBy = message.BannerAccountId,
-                    Duration = message.BanEndDate.HasValue ? message.BanEndDate - DateTime.Now : null,
+                    Duration = message.BanEndDate.HasValue ? (int?)( message.BanEndDate - DateTime.Now ).Value.TotalMinutes : null,
                     Date = DateTime.Now
                 };
 
                 Database.Insert(record);
+                AccountManager.Instance.AddIPBan(record);
             }
 
             Client.ReplyRequest(new CommonOKMessage(), message);

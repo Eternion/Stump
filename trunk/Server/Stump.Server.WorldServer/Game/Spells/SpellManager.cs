@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Game.Spells
         {
             foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(entry => entry.IsSubclassOf(typeof(SpellCastHandler)) && !entry.IsAbstract))
             {
-                if (type.GetCustomAttribute<DefaultSpellCastHandlerAttribute>() != null)
+                if (type.GetCustomAttribute<DefaultSpellCastHandlerAttribute>(false) != null)
                     continue; // we don't mind about default handlers
 
                 var attribute = type.GetCustomAttributes<SpellCastHandlerAttribute>().SingleOrDefault();

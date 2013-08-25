@@ -66,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 case ActionsEnum.ACTION_CHARACTER_BOOST_WISDOM:
                     return PlayerFields.Wisdom;
                 case ActionsEnum.ACTION_CHARACTER_BOOST_VITALITY:
-                case ActionsEnum.ACTION_CHARACTER_BOOST_VITALITY_407: // **** magic numbers
+                case (ActionsEnum)407: // **** magic numbers
                     return PlayerFields.Vitality;
 
                 default:

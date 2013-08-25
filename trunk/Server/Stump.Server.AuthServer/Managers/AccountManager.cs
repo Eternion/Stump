@@ -70,7 +70,7 @@ namespace Stump.Server.AuthServer.Managers
         {
             base.Initialize();
             m_timer = AuthServer.Instance.IOTaskPool.CallPeriodically(CacheTimeout * 60 / 4, TimerTick);
-            m_bansTimer = AuthServer.Instance.IOTaskPool.CallPeriodically(IpBanRefreshTime, TimerTick);
+            m_bansTimer = AuthServer.Instance.IOTaskPool.CallPeriodically(IpBanRefreshTime * 1000, RefreshIpBans);
             m_ipBans = Database.Fetch<IpBan>(IpBanRelator.FetchQuery);
         }
 
@@ -105,6 +105,14 @@ namespace Stump.Server.AuthServer.Managers
             }
         }
 
+        public void AddIPBan(IpBan ban)
+        {
+            lock (m_ipBans)
+            {
+                m_ipBans.Add(ban);
+            }
+        }
+
         public Account FindAccountById(int id)
         {
             return Database.Query<Account, WorldCharacter, Account>(new AccountRelator().Map,
@@ -120,7 +128,7 @@ namespace Stump.Server.AuthServer.Managers
         public Account FindAccountByNickname(string nickname)
         {
             return Database.Query<Account, WorldCharacter, Account>(new AccountRelator().Map,
-                AccountRelator.FindAccountByNickname, nickname).SingleOrDefault();
+                string.Format(AccountRelator.FindAccountByNickname, nickname)).SingleOrDefault();
         }
 
         public IpBan FindIpBan(string ip)
