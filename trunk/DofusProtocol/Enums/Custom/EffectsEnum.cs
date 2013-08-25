@@ -1383,11 +1383,11 @@
         /// <summary>
         /// Non-exchangeable
         /// </summary>
-        Effect_981 = 981,
+        Effect_NonExchangeable_981 = 981,
         /// <summary>
         /// Non-exchangeable
         /// </summary>
-        Effect_982 = 982,
+        Effect_NonExchangeable_982 = 982,
         /// <summary>
         /// Can be exchanged from: #1
         /// </summary>

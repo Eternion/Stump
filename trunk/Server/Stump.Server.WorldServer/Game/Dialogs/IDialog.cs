@@ -9,7 +9,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs
             get;
         }
 
-        void Open();
         void Close();
     }
 }

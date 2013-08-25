@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Tasks>
+    <Task xsi:type="Add" url="0_to_3\config.xml" local="config.xml" />
+    <Task xsi:type="Add" url="0_to_3\data\common\Items.d2o" local="data\common\Items.d2o" />
+    <Task xsi:type="Add" url="0_to_3\data\common\NpcMessages.d2o" local="data\common\NpcMessages.d2o" />
+    <Task xsi:type="Add" url="0_to_3\data\common\Npcs.d2o" local="data\common\Npcs.d2o" />
+    <Task xsi:type="Add" url="0_to_3\data\i18n\i18n_fr.d2i" local="data\i18n\i18n_fr.d2i" />
+  </Tasks>
+</Patch>

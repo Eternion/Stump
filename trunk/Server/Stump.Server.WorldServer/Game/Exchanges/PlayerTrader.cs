@@ -7,68 +7,26 @@ using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs;
+using Stump.Server.WorldServer.Game.Exchanges.Items;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Game.Exchanges
 {
-    public class PlayerTrader : ITrader, IDialoger
+    public class PlayerTrader : Trader, IDialoger
     {
-        public event ItemMovedHandler ItemMoved;
-
-        private void NotifyItemMoved(PlayerItem item, bool modified, int difference)
-        {
-            ItemMovedHandler handler = ItemMoved;
-            if (handler != null)
-                handler(this, item, modified, difference);
-        }
-
-        public event KamasChangedHandler KamasChanged;
-
-        private void NotifyKamasChanged(uint kamasAmount)
-        {
-            KamasChangedHandler handler = KamasChanged;
-            if (handler != null)
-                handler(this, kamasAmount);
-        }
-
-        public event ReadyStatusChangedHandler ReadyStatusChanged;
-
-        private void NotifyReadyStatusChanged(bool isready)
-        {
-            ReadyStatusChangedHandler handler = ReadyStatusChanged;
-            if (handler != null)
-                handler(this, isready);
-        }
-
-
-        private List<PlayerItem> m_items = new List<PlayerItem>();
-
-        public PlayerTrader(Character character, PlayerTrade trade)
+        public PlayerTrader(Character character, ITrade trade)
+             : base(trade)
         {
             Character = character;
-            Trade = trade;
         }
 
         public IDialog Dialog
         {
-            get { return Trade; }
-        }
-
-        ITrade ITrader.Trade
-        {
-            get { return Trade; }
-        }
-
-        public PlayerTrade Trade
-        {
-            get;
-            private set;
-        }
-
-        public RolePlayActor Actor
-        {
-            get { return Character; }
+            get
+            {
+                return Trade;
+            }
         }
 
         public Character Character
@@ -77,36 +35,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             private set;
         }
 
-        public ReadOnlyCollection<PlayerItem> Items
+        public override int Id
         {
-            get { return m_items.AsReadOnly(); }
-        }
-
-        public uint Kamas
-        {
-            get;
-            private set;
-        }
-
-        public bool ReadyToApply
-        {
-            get;
-            private set;
-        }
-
-        public void ToggleReady()
-        {
-            ToggleReady(!ReadyToApply);
-        }
-
-        public void ToggleReady(bool status)
-        {
-            if (status == ReadyToApply)
-                return;
-
-            ReadyToApply = status;
-
-            NotifyReadyStatusChanged(ReadyToApply);
+            get { return Character.Id; }
         }
 
         public bool MoveItem(int guid, int amount)
@@ -115,9 +46,52 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                 return false;
 
             if (amount > 0)
-                return MoveItemToPanel(guid, (uint) amount);
+                return MoveItemToPanel(guid, (uint)amount);
 
             return MoveItemToInventory(guid, (uint)( -amount ));
+        }
+
+        public bool MoveItemToPanel(int guid, uint amount)
+        {
+            var playerItem = Character.Inventory[guid];
+            var tradeItem = Items.SingleOrDefault(entry => entry.Guid == guid);
+
+            ToggleReady(false);
+
+            if (playerItem == null)
+                return false;
+
+            if (amount > playerItem.Stack || amount <= 0)
+                return false;
+
+            if (playerItem.IsLinked() && Trade is PlayerTrade)
+            {
+                BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 345, playerItem.Template.Id, playerItem.Guid);
+                return false;
+            }
+
+            if (tradeItem != null)
+            {
+                if (playerItem.Stack < tradeItem.Stack + amount)
+                    return false;
+
+                var currentStack = tradeItem.Stack;
+                tradeItem.Stack += amount;
+
+                if (tradeItem.Stack <= 0)
+                    RemoveItem(tradeItem);
+
+                OnItemMoved(tradeItem, true, (int) (tradeItem.Stack - currentStack));
+
+                return true;
+            }
+
+            tradeItem = new PlayerTradeItem(playerItem, amount);
+            AddItem(tradeItem);
+
+            OnItemMoved(tradeItem, false, (int) amount);
+
+            return true;
         }
 
         public bool MoveItemToInventory(int guid, uint amount)
@@ -134,7 +108,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
             if (tradeItem.Stack <= amount)
             {
-                m_items.Remove(tradeItem);
+                RemoveItem(tradeItem);
                 tradeItem.Stack = 0;
             }
             else
@@ -142,75 +116,16 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                 tradeItem.Stack -= amount;
             }
 
-            NotifyItemMoved(tradeItem, tradeItem.Stack != 0, (int)-amount);
+            OnItemMoved(tradeItem, tradeItem.Stack != 0, (int)-amount);
             return true;
         }
 
-        public bool MoveItemToPanel(int guid, uint amount)
+        public override bool SetKamas(uint amount)
         {
-            var playerItem = Character.Inventory[guid];
-            var tradeItem = Items.SingleOrDefault(entry => entry.Guid == guid);
-
-            ToggleReady(false);
-
-            if (playerItem == null)
-                return false;
-
-            if (amount > playerItem.Stack || amount <= 0)
-                return false;
-
-            if (playerItem.IsLinked())
-            {
-                BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 345, playerItem.Template.Id, playerItem.Guid);
-                return false;
-            }
-
-            if (tradeItem != null)
-            {
-                if (playerItem.Stack < tradeItem.Stack + amount)
-                    return false;
-
-                var currentStack = tradeItem.Stack;
-                tradeItem.Stack += amount;
-
-                if (tradeItem.Stack <= 0)
-                    m_items.Remove(tradeItem);
-
-                NotifyItemMoved(tradeItem, true, (int) (tradeItem.Stack - currentStack));
-
-                return true;
-            }
-
-            var dummyRecord = new PlayerItemRecord()
-            {
-                Id = playerItem.Record.Id,
-                Template = playerItem.Template,
-                OwnerId = Character.Id,
-                Stack = amount,
-                Effects = playerItem.Effects,
-                Position = playerItem.Position,
-            };
-
-            tradeItem = new PlayerItem(Character, dummyRecord);
-            m_items.Add(tradeItem);
-
-            NotifyItemMoved(tradeItem, false, (int) amount);
-
-            return true;
-        }
-
-        public bool SetKamas(uint amount)
-        {
-            ToggleReady(false);
-
             if (amount > Character.Inventory.Kamas)
                 return false;
 
-            Kamas = amount;
-
-            NotifyKamasChanged(Kamas);
-
-            return true;
+            return base.SetKamas(amount);
         }
     }
 }

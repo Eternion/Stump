@@ -285,6 +285,14 @@
     <Compile Include="Game\Effects\Handlers\Usables\StatBonus.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\UsableEffectHandler.cs" />
     <Compile Include="Game\Dialogs\Merchants\MerchantShopDialog.cs" />
+    <Compile Include="Game\Exchanges\Items\NpcTradeItem.cs" />
+    <Compile Include="Game\Exchanges\Items\PlayerTradeItem.cs" />
+    <Compile Include="Game\Exchanges\ITrade.cs" />
+    <Compile Include="Game\Exchanges\NpcTrade.cs" />
+    <Compile Include="Game\Exchanges\NpcTrader.cs" />
+    <Compile Include="Game\Exchanges\Trade.cs" />
+    <Compile Include="Game\Exchanges\Items\TradeItem.cs" />
+    <Compile Include="Game\Exchanges\Trader.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\DodgeBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\InvisibilityBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkinBuff.cs" />
@@ -497,8 +505,6 @@
     <Compile Include="Game\Effects\Instances\EffectMinMax.cs" />
     <Compile Include="Game\Effects\Instances\EffectMount.cs" />
     <Compile Include="Game\Effects\Instances\EffectString.cs" />
-    <Compile Include="Game\Exchanges\ITrade.cs" />
-    <Compile Include="Game\Exchanges\ITrader.cs" />
     <Compile Include="Game\Exchanges\PlayerTrade.cs" />
     <Compile Include="Game\Exchanges\PlayerTrader.cs" />
     <Compile Include="Game\Exchanges\PlayerTradeRequest.cs" />

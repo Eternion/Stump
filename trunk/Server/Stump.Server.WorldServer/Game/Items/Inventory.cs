@@ -268,7 +268,7 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             var item = TryGetItem(template);
 
-            if (!item.IsEquiped())
+            if (item != null && !item.IsEquiped())
             {
                 StackItem(item, amount);
             }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
@@ -9,6 +10,8 @@ using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
+using Stump.Server.WorldServer.Game.Exchanges;
+using Stump.Server.WorldServer.Game.Exchanges.Items;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
 namespace ArkalysPlugin.Npcs
@@ -19,12 +22,6 @@ namespace ArkalysPlugin.Npcs
 
         [Variable]
         public static int NpcId = 1419;
-        [Variable]
-        public static int MessageId = 20004;
-        [Variable]
-        public static short ReplyExchangeOrbsId = 20005;
-        [Variable]
-        public static short ReplyNoOrbsId = 20006;
 
         public static NpcMessage Message;
 
@@ -47,14 +44,6 @@ namespace ArkalysPlugin.Npcs
             }
 
             npc.NpcSpawned += OnNpcSpawned;
-
-            Message = NpcManager.Instance.GetNpcMessage(MessageId);
-
-            if (Message == null)
-            {
-                logger.Error("Message {0} not found, script is disabled", MessageId);
-                m_scriptDisabled = true;
-            }
         }
 
         [Initialization(typeof(OrbsManager), Silent = true)]
@@ -72,7 +61,7 @@ namespace ArkalysPlugin.Npcs
             if (m_scriptDisabled)
                 template.NpcSpawned -= OnNpcSpawned;
 
-            npc.Actions.RemoveAll(x => x.ActionType == NpcActionTypeEnum.ACTION_TALK);
+            npc.Actions.RemoveAll(x => x.ActionType == NpcActionTypeEnum.ACTION_EXCHANGE);
             npc.Actions.Add(new NpcExchangeActionScript());
         }
     }
@@ -81,57 +70,87 @@ namespace ArkalysPlugin.Npcs
     {
         public override NpcActionTypeEnum ActionType
         {
-            get { return NpcActionTypeEnum.ACTION_TALK; }
+            get { return NpcActionTypeEnum.ACTION_EXCHANGE; }
         }
 
         public override void Execute(Npc npc, Character character)
         {
-            var dialog = new NpcExchangeDialog(character, npc);
-            dialog.Open();
+            var dialog = new NpcExchangeDialog(OrbsManager.OrbsExchangeRate);
+            var first = new PlayerTrader(character, dialog);
+            var second = new NpcTrader(npc, dialog);
+
+            character.SetDialoger(first);
+
+            dialog.Open(first, second);
         }
     }
 
-    public class NpcExchangeDialog : NpcDialog
+    public class NpcExchangeDialog : NpcTrade
     {
-        private uint m_requieredOrbs;
-        private int m_exchangeKamas;
-
-        public NpcExchangeDialog(Character character, Npc npc)
-            : base(character, npc)
+        public NpcExchangeDialog(double rate)
         {
-            m_requieredOrbs = 10;
-            m_exchangeKamas = 10000;
-            CurrentMessage = NpcExchange.Message;
+            OrbToKamasRate = rate;
         }
 
-        public override void Open()
+        protected override void OnTraderItemMoved(Trader trader, TradeItem item, bool modified, int difference)
         {
-            base.Open();
+            base.OnTraderItemMoved(trader, item, modified, difference);
 
-            var orbs = Character.Inventory.TryGetItem(OrbsManager.OrbItemTemplate);
-
-            if (orbs != null && orbs.Stack >= m_requieredOrbs)
-                ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, new[] { NpcExchange.ReplyExchangeOrbsId }, m_requieredOrbs.ToString());
-            else
-                ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, new[] { NpcExchange.ReplyNoOrbsId }, m_requieredOrbs.ToString());
-        }
-
-        public override void Reply(short replyId)
-        {
-            var orbs = Character.Inventory.TryGetItem(OrbsManager.OrbItemTemplate);
-
-            if (replyId == NpcExchange.ReplyExchangeOrbsId)
+            if (trader is PlayerTrader)
             {
-                if (orbs == null || orbs.Stack < m_requieredOrbs)
-                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 1);
-                else
-                {
-                    Character.Inventory.RemoveItem(orbs, m_requieredOrbs);
-                    Character.Inventory.AddKamas(m_exchangeKamas);
-                }
+                AdjustLoots();
+            }
+        }
+
+        protected override void OnTraderKamasChanged(Trader trader, uint amount)
+        {
+            base.OnTraderKamasChanged(trader, amount);
+
+            if (trader is PlayerTrader)
+            {
+                AdjustLoots();
+            }
+        }
+
+        public double OrbToKamasRate
+        {
+            get;
+            set;
+        }
+
+        private void AdjustLoots()
+        {
+            foreach (var item in FirstTrader.Items.ToArray())
+            {
+                if (item.Template != OrbsManager.OrbItemTemplate)
+                    FirstTrader.MoveItemToInventory(item.Guid, item.Stack);
             }
 
-            Close();
+            var orbs = FirstTrader.Items.FirstOrDefault(x => x.Template == OrbsManager.OrbItemTemplate);
+
+            if (orbs != null)
+            {
+                SecondTrader.SetKamas((uint)(orbs.Stack*OrbToKamasRate));
+            }
+
+            if (FirstTrader.Kamas > 0)
+            {
+                var stack = (uint) (FirstTrader.Kamas/OrbToKamasRate);
+                
+                orbs = SecondTrader.Items.FirstOrDefault(x => x.Template == OrbsManager.OrbItemTemplate);
+
+                if (orbs != null)
+                {
+                    if (stack > 0)
+                        orbs.Stack = stack;
+                    else
+                        SecondTrader.RemoveItem(OrbsManager.OrbItemTemplate, orbs.Stack);
+                }
+                else
+                {
+                    SecondTrader.AddItem(OrbsManager.OrbItemTemplate, stack);
+                }
+            }
         }
     }
 }

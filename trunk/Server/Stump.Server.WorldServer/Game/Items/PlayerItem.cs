@@ -116,6 +116,10 @@ namespace Stump.Server.WorldServer.Game.Items
             if (IsTokenItem())
                 return true;
 
+            if (Effects.Any(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_981 ||
+                                 x.EffectId == EffectsEnum.Effect_NonExchangeable_982))
+                return true;
+
             return false;
         }
 

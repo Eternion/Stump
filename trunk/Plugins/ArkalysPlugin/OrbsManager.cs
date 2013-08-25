@@ -32,8 +32,11 @@ namespace ArkalysPlugin
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        [Variable] 
+        [Variable]
         public static short OrbItemTemplateId = 20000;
+
+        [Variable]
+        public static short OrbsExchangeRate = 10000;
 
         public static ItemTemplate OrbItemTemplate;
 
