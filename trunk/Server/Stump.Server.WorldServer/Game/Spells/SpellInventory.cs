@@ -165,7 +165,11 @@ namespace Stump.Server.WorldServer.Game.Spells
 
             foreach (var spell in m_spells)
             {
-                resetPoints += spell.Value.CurrentLevel - 1;
+                for (var i = 1; i < spell.Value.CurrentLevel; i++)
+                {
+                    resetPoints += i;
+                }
+
                 spell.Value.CurrentLevel = 1;
             }
 
