@@ -31,5 +31,9 @@ namespace Uplauncher
         public const string DofusRegExePath = "reg\\Reg.exe";
         public const string RemoteMetaFile = "updates.xml";
         public const string LocalVersionFile = "version";
+
+        public const string ExeReplaceTempPath = "temp_upl.exe";
+
+        public static readonly string CurrentExePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
     }
 }

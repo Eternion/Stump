@@ -1,46 +1,19 @@
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Game.Exchanges.Items;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Exchanges
 {
-    public class PlayerTrade : ITrade
+    public class PlayerTrade : Trade<PlayerTrader, PlayerTrader>
     {
         public PlayerTrade(int id)
+            : base(id)
         {
-            Id = id;
         }
 
-        public DialogTypeEnum DialogType
-        {
-            get
-            {
-                return DialogTypeEnum.DIALOG_EXCHANGE;
-            }
-        }
-
-        public PlayerTrader FirstTrader
-        {
-            get;
-            internal set;
-        }
-
-        public PlayerTrader SecondTrader
-        {
-            get;
-            internal set;
-        }
-
-        #region ITrade Members
-
-        public int Id
-        {
-            get;
-            private set;
-        }
-
-        public ExchangeTypeEnum ExchangeType
+        public override ExchangeTypeEnum ExchangeType
         {
             get
             {
@@ -48,24 +21,17 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             }
         }
 
-        public void Open()
+        public override void Open(PlayerTrader firstTrader, PlayerTrader secondTrader)
         {
-            FirstTrader.ItemMoved += OnTraderItemMoved;
-            FirstTrader.KamasChanged += OnTraderKamasChanged;
-            FirstTrader.ReadyStatusChanged += OnTraderReadyStatusChanged;
-
-            SecondTrader.ItemMoved += OnTraderItemMoved;
-            SecondTrader.KamasChanged += OnTraderKamasChanged;
-            SecondTrader.ReadyStatusChanged += OnTraderReadyStatusChanged;
+            base.Open(firstTrader, secondTrader);
 
             InventoryHandler.SendExchangeStartedWithPodsMessage(FirstTrader.Character.Client, this);
             InventoryHandler.SendExchangeStartedWithPodsMessage(SecondTrader.Character.Client, this);
         }
 
-        public void Close()
+        public override void Close()
         {
-            if (FirstTrader.ReadyToApply && SecondTrader.ReadyToApply)
-                Apply();
+            base.Close();
 
             InventoryHandler.SendExchangeLeaveMessage(FirstTrader.Character.Client, DialogTypeEnum.DIALOG_EXCHANGE, 
                                                       FirstTrader.ReadyToApply && SecondTrader.ReadyToApply);
@@ -76,9 +42,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             SecondTrader.Character.ResetDialog();
         }
 
-        #endregion
-
-        private void Apply()
+        protected override void Apply()
         {
             FirstTrader.Character.Inventory.SetKamas(
                 (int) (FirstTrader.Character.Inventory.Kamas + (SecondTrader.Kamas - FirstTrader.Kamas)));
@@ -86,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                 (int) (SecondTrader.Character.Inventory.Kamas + (FirstTrader.Kamas - SecondTrader.Kamas)));
 
             // trade items
-            foreach (PlayerItem tradeItem in FirstTrader.Items)
+            foreach (var tradeItem in FirstTrader.Items)
             {
                 var item = FirstTrader.Character.Inventory.TryGetItem(tradeItem.Guid);
 
@@ -94,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                     SecondTrader.Character, item, (uint)tradeItem.Stack);
             }
 
-            foreach (PlayerItem tradeItem in SecondTrader.Items)
+            foreach (var tradeItem in SecondTrader.Items)
             {
                 var item = SecondTrader.Character.Inventory.TryGetItem(tradeItem.Guid);
 
@@ -106,10 +70,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             InventoryHandler.SendInventoryWeightMessage(SecondTrader.Character.Client);
         }
 
-        private void OnTraderItemMoved(ITrader trader, PlayerItem item, bool modified, int difference)
+        protected override void OnTraderItemMoved(Trader trader, TradeItem item, bool modified, int difference)
         {
-            FirstTrader.ToggleReady(false);
-            SecondTrader.ToggleReady(false);
+            base.OnTraderItemMoved(trader, item, modified, difference);
 
             if (item.Stack == 0)
             {
@@ -128,10 +91,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             }
         }
 
-        private void OnTraderKamasChanged(ITrader trader, uint amount)
+        protected override void OnTraderKamasChanged(Trader trader, uint amount)
         {
-            FirstTrader.ToggleReady(false);
-            SecondTrader.ToggleReady(false);
+            base.OnTraderKamasChanged(trader, amount);
 
             InventoryHandler.SendExchangeKamaModifiedMessage(FirstTrader.Character.Client, trader != FirstTrader,
                                                              (int) amount);
@@ -139,10 +101,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                                                              (int) amount);
         }
 
-        private void OnTraderReadyStatusChanged(ITrader trader, bool status)
+        protected override void OnTraderReadyStatusChanged(Trader trader, bool status)
         {
-            if (FirstTrader.ReadyToApply && SecondTrader.ReadyToApply)
-                Close();
+            base.OnTraderReadyStatusChanged(trader, status);
 
             InventoryHandler.SendExchangeIsReadyMessage(FirstTrader.Character.Client,
                                                         trader, status);

@@ -12,6 +12,7 @@ using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges;
+using Stump.Server.WorldServer.Game.Exchanges.Items;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
@@ -221,6 +222,11 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                             ));
         }
 
+        public static void SendExchangeStartOkNpcTradeMessage(IPacketReceiver client, NpcTrade trade)
+        {
+            client.Send(new ExchangeStartOkNpcTradeMessage(trade.SecondTrader.Npc.Id));
+        }
+
         public static void SendExchangeStartOkNpcShopMessage(IPacketReceiver client, NpcShopDialog dialog)
         {
             client.Send(new ExchangeStartOkNpcShopMessage(dialog.Npc.Id, dialog.Token != null ? dialog.Token.Id : 0, dialog.Items.Select(entry => entry.GetNetworkItem() as ObjectItemToSellInNpcShop)));
@@ -231,12 +237,12 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ExchangeLeaveMessage((sbyte)dialogType, success));
         }
 
-        public static void SendExchangeObjectAddedMessage(IPacketReceiver client, bool remote, PlayerItem item)
+        public static void SendExchangeObjectAddedMessage(IPacketReceiver client, bool remote, TradeItem item)
         {
             client.Send(new ExchangeObjectAddedMessage(remote, item.GetObjectItem()));
         }
 
-        public static void SendExchangeObjectModifiedMessage(IPacketReceiver client, bool remote, PlayerItem item)
+        public static void SendExchangeObjectModifiedMessage(IPacketReceiver client, bool remote, TradeItem item)
         {
             client.Send(new ExchangeObjectModifiedMessage(remote, item.GetObjectItem()));
         }
@@ -246,9 +252,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ExchangeObjectRemovedMessage(remote, guid));
         }
 
-        public static void SendExchangeIsReadyMessage(IPacketReceiver client, ITrader trader, bool ready)
+        public static void SendExchangeIsReadyMessage(IPacketReceiver client, Trader trader, bool ready)
         {
-            client.Send(new ExchangeIsReadyMessage(trader.Actor.Id, ready));
+            client.Send(new ExchangeIsReadyMessage(trader.Id, ready));
         }
 
         public static void SendExchangeErrorMessage(IPacketReceiver client, ExchangeErrorEnum errorEnum)

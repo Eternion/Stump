@@ -50,6 +50,7 @@ namespace Uplauncher
         private UpdateEntry m_currentUpdate;
         private Stack<PatchTask> m_currentTasks;
         private Stack<UpdateEntry> m_sequence;
+        private bool m_replaceExe;
         private DateTime? m_lastUpdateCheck;
         private static readonly Color DefaultMessageColor = Colors.Black;
 
@@ -59,6 +60,7 @@ namespace Uplauncher
 
         public UplauncherModelView()
         {
+
             NotifyIcon = new NotifyIcon();
             NotifyIcon.Visible = true;
             NotifyIcon.Icon = Resources.dofus_icon_48;
@@ -223,7 +225,6 @@ namespace Uplauncher
         #endregion
 
 
-
         #region ChangeLanguageCommand
 
         private DelegateCommand m_changeLanguageCommand;
@@ -350,8 +351,14 @@ namespace Uplauncher
                 IsUpToDate = false;
                 m_playCommand.RaiseCanExecuteChanged();
                 RemoteVersion = m_meta.LastVersion;
+                RemoteVersion = 3;
                 Debug.WriteLine("RemoteVersion = {0} CurrentVersion = {1} -> UPDATE", RemoteVersion, CurrentVersion);
-
+                m_meta.Updates.Add(new UpdateEntry()
+                    {
+                        FromVersion = 2,
+                        ToVersion = 3,
+                        PatchRelativURL = "2_to_3/patch.xml"
+                    });
                 var sequence = new Stack<UpdateEntry>(GeneratePatchSequenceExecution(m_meta.Updates, CurrentVersion, RemoteVersion));
                 
                 // check validity
@@ -373,7 +380,7 @@ namespace Uplauncher
             }
         }
 
-        private IEnumerable<UpdateEntry> GeneratePatchSequenceExecution(ICollection<UpdateEntry> entries, int forRevision, int toRevision)
+        private IEnumerable<UpdateEntry> GeneratePatchSequenceExecution(ICollection<UpdateEntry> entries, int forRevision, int toRevision, bool reverse = true)
         {
             if (!entries.Any())
                 return Enumerable.Empty<UpdateEntry>();
@@ -392,7 +399,7 @@ namespace Uplauncher
                     file
                 };
 
-                patchs.AddRange(GeneratePatchSequenceExecution(entries.Where(entry => entry.FromVersion >= file.ToVersion).ToArray(), file.ToVersion, toRevision));
+                patchs.AddRange(GeneratePatchSequenceExecution(entries.Where(entry => entry.FromVersion >= file.ToVersion).ToArray(), file.ToVersion, toRevision, false));
 
                 if (patchs.Count > 1)
                     possibleSequences.Add(patchs);
@@ -402,7 +409,9 @@ namespace Uplauncher
                 return Enumerable.Empty<UpdateEntry>();
 
             // return the sequence that have lesser patchs
-            return possibleSequences.OrderBy(entry => entry.Count()).First().Reverse();
+            var sequence = possibleSequences.OrderBy(entry => entry.Count()).First();
+
+            return reverse ? sequence.Reverse() : sequence;
         }
 
         private void ProcessSequence()
@@ -412,6 +421,19 @@ namespace Uplauncher
             {
                 CurrentVersion = m_currentUpdate.ToVersion;
                 File.WriteAllText(Constants.LocalVersionFile, CurrentVersion.ToString());
+
+                // uplauncher.exe must be replace. we start another process that will replace it
+                if (m_replaceExe)
+                {
+                    var file = Path.GetTempFileName() + ".exe";
+                    File.WriteAllBytes(file, Resources.UplauncherReplacer);
+
+                    Process.Start(file, string.Format("{0} \"{1}\" \"{2}\"", Process.GetCurrentProcess().Id,
+                                                      Path.GetFullPath("./" + Constants.ExeReplaceTempPath),
+                                                      Path.GetFullPath(Constants.CurrentExePath)));
+                    NotifyIcon.Visible = false;
+                    Application.Exit();
+                }
             }
 
             if (m_sequence.Count == 0)
@@ -455,8 +477,24 @@ namespace Uplauncher
 
             var task = m_currentTasks.Pop();
 
+            CheckIfReplaceExe(task);
             task.Applied += (x) => ProcessTask();
             task.Apply(this);
+        }
+
+        private void CheckIfReplaceExe(PatchTask task)
+        {
+            if (task is AddFileTask)
+            {
+                var addFile = task as AddFileTask;
+
+                if (Path.GetFullPath("./" + addFile.LocalURL)
+                        .Equals(Path.GetFullPath(Constants.CurrentExePath), StringComparison.InvariantCultureIgnoreCase))
+                {
+                    addFile.LocalURL = Constants.ExeReplaceTempPath;
+                    m_replaceExe = true;
+                }
+            }
         }
 
         private void OnUpdateEnded(bool success)

@@ -45,10 +45,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             var secondTrader = new PlayerTrader(Target, trade);
             Target.SetDialoger(secondTrader);
 
-            trade.FirstTrader = firstTrader;
-            trade.SecondTrader = secondTrader;
-
-            trade.Open();
+            trade.Open(firstTrader, secondTrader);
 
             Close();
         }

@@ -336,8 +336,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             if ((IsDisposed || !IsRunning) ||
                 (Interlocked.CompareExchange(ref m_currentThreadId, Thread.CurrentThread.ManagedThreadId, 0) != 0))
             {
-                logger.Warn("Area {0}. Callback aborted. IsRunning={1};IsDiposed={2};Thread={3}", this, IsRunning,
-                            IsDisposed, CurrentThreadId);
                 return;
             }
 

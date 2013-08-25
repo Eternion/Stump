@@ -198,6 +198,9 @@
   <ItemGroup>
     <Resource Include="Resources\rss.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\UplauncherReplacer.exe" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterResolveReferences">
     <ItemGroup>

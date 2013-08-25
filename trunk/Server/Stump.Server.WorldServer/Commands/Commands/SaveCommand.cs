@@ -12,7 +12,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] { "save" };
             Description = "Save the player";
-            RequiredRole = RoleEnum.Player;
+            RequiredRole = RoleEnum.GameMaster;
         }
 
         public override void Execute(TriggerBase trigger)

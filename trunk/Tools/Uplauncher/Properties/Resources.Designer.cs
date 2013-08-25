@@ -196,6 +196,16 @@ namespace Uplauncher.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] UplauncherReplacer {
+            get {
+                object obj = ResourceManager.GetObject("UplauncherReplacer", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Le vote n&apos;a pas été pris en compte.
         /// </summary>
         internal static string Vote_Error {

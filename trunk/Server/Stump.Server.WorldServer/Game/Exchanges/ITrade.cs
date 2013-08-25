@@ -11,5 +11,15 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         {
             get;
         }
+
+        Trader FirstTrader
+        {
+            get;
+        }
+
+        Trader SecondTrader
+        {
+            get;
+        }
     }
 }
