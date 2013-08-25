@@ -100,7 +100,7 @@ namespace Uplauncher
             if (!CanPlay(parameter))
                 return;
 
-            if (m_lastUpdateCheck == null || DateTime.Now - m_lastUpdateCheck < TimeSpan.FromMinutes(10))
+            if (m_lastUpdateCheck == null || DateTime.Now - m_lastUpdateCheck < TimeSpan.FromMinutes(5))
                 CheckUpdates();
 
             if (!File.Exists(Constants.DofusExePath))
@@ -351,14 +351,7 @@ namespace Uplauncher
                 IsUpToDate = false;
                 m_playCommand.RaiseCanExecuteChanged();
                 RemoteVersion = m_meta.LastVersion;
-                RemoteVersion = 3;
                 Debug.WriteLine("RemoteVersion = {0} CurrentVersion = {1} -> UPDATE", RemoteVersion, CurrentVersion);
-                m_meta.Updates.Add(new UpdateEntry()
-                    {
-                        FromVersion = 2,
-                        ToVersion = 3,
-                        PatchRelativURL = "2_to_3/patch.xml"
-                    });
                 var sequence = new Stack<UpdateEntry>(GeneratePatchSequenceExecution(m_meta.Updates, CurrentVersion, RemoteVersion));
                 
                 // check validity

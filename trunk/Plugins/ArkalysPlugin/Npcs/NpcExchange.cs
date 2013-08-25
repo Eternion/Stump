@@ -133,23 +133,19 @@ namespace ArkalysPlugin.Npcs
                 SecondTrader.SetKamas((uint)(orbs.Stack*OrbToKamasRate));
             }
 
-            if (FirstTrader.Kamas > 0)
-            {
-                var stack = (uint) (FirstTrader.Kamas/OrbToKamasRate);
-                
-                orbs = SecondTrader.Items.FirstOrDefault(x => x.Template == OrbsManager.OrbItemTemplate);
+            var stack = (uint) (FirstTrader.Kamas/OrbToKamasRate);
+            orbs = SecondTrader.Items.FirstOrDefault(x => x.Template == OrbsManager.OrbItemTemplate);
 
-                if (orbs != null)
-                {
-                    if (stack > 0)
-                        orbs.Stack = stack;
-                    else
-                        SecondTrader.RemoveItem(OrbsManager.OrbItemTemplate, orbs.Stack);
-                }
+            if (orbs != null)
+            {
+                if (stack > 0)
+                    orbs.Stack = stack;
                 else
-                {
-                    SecondTrader.AddItem(OrbsManager.OrbItemTemplate, stack);
-                }
+                    SecondTrader.RemoveItem(OrbsManager.OrbItemTemplate, orbs.Stack);
+            }
+            else
+            {
+                SecondTrader.AddItem(OrbsManager.OrbItemTemplate, stack);
             }
         }
     }
