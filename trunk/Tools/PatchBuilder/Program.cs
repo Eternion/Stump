@@ -75,7 +75,7 @@ namespace PatchBuilder
                 });
             }
 
-            meta.LastVersion++;
+            meta.LastVersion = meta.Updates.Max(x => x.ToVersion);
             meta.LastChange = DateTime.Now;
 
             XmlUtils.Serialize(Path.Combine(patchDir, "updates.xml"), meta);
