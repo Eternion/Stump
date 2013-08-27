@@ -97,6 +97,9 @@ namespace Stump.Server.WorldServer
         {
             base.Initialize();
 
+            int header = 0x0b38;
+            var id = 
+
             ConsoleInterface = new WorldConsole();
             ConsoleBase.SetTitle("#Stump World Server : " + ServerInformation.Name);
 

@@ -90,16 +90,5 @@ namespace Stump.Server.WorldServer.Game.Social
 
             return true;
         }
-
-        private ChatEntry FindLastOrDefault(Predicate<ChatEntry> predicate, int startIndex)
-        {
-            for (int i = startIndex; i >= 0; i--)
-            {
-                if (predicate(m_entries[i]))
-                    return m_entries[i];
-            }
-
-            return null;
-        }
     }
 }
