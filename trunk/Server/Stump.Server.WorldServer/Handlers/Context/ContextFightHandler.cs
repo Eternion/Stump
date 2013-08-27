@@ -71,10 +71,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (!client.Character.IsFighting())
                 return;
 
-            if (client.Character.Fighter.Fight.FighterPlaying.Id == client.Character.Id)
-            {
-                client.Character.Fighter.ToggleTurnReady(message.isReady);
-            }
+            client.Character.Fighter.ToggleTurnReady(message.isReady);
         }
 
         [WorldHandler(GameFightReadyMessage.Id)]
@@ -91,6 +88,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
         {
             if (client.Character.IsFighting())
                 client.Character.Fighter.LeaveFight();
+
             else if (client.Character.IsSpectator())
                 client.Character.Spectator.Leave();
         }

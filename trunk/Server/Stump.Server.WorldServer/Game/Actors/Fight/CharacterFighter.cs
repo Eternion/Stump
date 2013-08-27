@@ -118,6 +118,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void ToggleTurnReady(bool ready)
         {
+            if (!IsFighterTurn())
+                return;
+
             if (PersonalReadyChecker != null)
                 PersonalReadyChecker.ToggleReady(this, ready);
 
@@ -127,6 +130,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override bool CastSpell(Spell spell, Cell cell)
         {
+            if (!IsFighterTurn())
+                return false;
+
             // weapon attack
             if (spell.Id == 0 &&
                 Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) != null)

@@ -415,6 +415,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void PassTurn()
         {
+            if (!IsFighterTurn())
+                return;
+
             Fight.StopTurn();
 
             OnTurnPassed();
