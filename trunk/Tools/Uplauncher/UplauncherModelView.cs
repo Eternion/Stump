@@ -32,7 +32,6 @@ using Stump.Core.Xml;
 using Uplauncher.Helpers;
 using Uplauncher.Patcher;
 using Uplauncher.Properties;
-using Application = System.Windows.Forms.Application;
 using Clipboard = System.Windows.Forms.Clipboard;
 using MessageBox = System.Windows.Forms.MessageBox;
 
@@ -100,7 +99,7 @@ namespace Uplauncher
             if (!CanPlay(parameter))
                 return;
 
-            if (m_lastUpdateCheck == null || DateTime.Now - m_lastUpdateCheck < TimeSpan.FromMinutes(5))
+            if (m_lastUpdateCheck == null || DateTime.Now - m_lastUpdateCheck > TimeSpan.FromMinutes(5))
                 CheckUpdates();
 
             if (!File.Exists(Constants.DofusExePath))
@@ -112,7 +111,7 @@ namespace Uplauncher
             if (!m_soundProxy.Started)
                 m_soundProxy.StartProxy();
 
-            if (m_regProcess == null || m_regProcess.HasExited)
+            if (m_soundProxy.Started && (m_regProcess == null || m_regProcess.HasExited))
                 StartRegApp();
 
             var process = new Process()
@@ -367,7 +366,7 @@ namespace Uplauncher
             }
             else
             {
-                SetState("Le jeu est à jour", Colors.Green);
+                SetState(string.Format("Le jeu est à jour (version {0})", CurrentVersion), Colors.Green);
                 IsUpdating = false;
                 IsUpToDate = true;
             }
@@ -425,7 +424,7 @@ namespace Uplauncher
                                                       Path.GetFullPath("./" + Constants.ExeReplaceTempPath),
                                                       Path.GetFullPath(Constants.CurrentExePath)));
                     NotifyIcon.Visible = false;
-                    Application.Exit();
+                    Environment.Exit(1);
                 }
             }
 
@@ -494,7 +493,7 @@ namespace Uplauncher
         {
             if (success)
             {
-                SetState("Le jeu est à jour", Colors.Green);
+                SetState(string.Format("Le jeu est à jour (version {0})", CurrentVersion), Colors.Green);
 
                 if (RemoteVersion > 0)
                 {

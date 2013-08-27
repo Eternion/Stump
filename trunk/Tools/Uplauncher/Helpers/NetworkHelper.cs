@@ -24,10 +24,17 @@ namespace Uplauncher.Helpers
     {
         public static int FindFreePort(int min, int max)
         {
+            var start = new Random().Next(min, max);
             var properties = IPGlobalProperties.GetIPGlobalProperties();
             var connections = properties.GetActiveTcpConnections();
 
-            for (int i = min; i < max; i++)
+            for (int i = start; i < max; i++)
+            {
+                if (connections.All(x => x.LocalEndPoint.Port != i))
+                    return i;
+            }
+
+            for (int i = min; i < start; i++)
             {
                 if (connections.All(x => x.LocalEndPoint.Port != i))
                     return i;
