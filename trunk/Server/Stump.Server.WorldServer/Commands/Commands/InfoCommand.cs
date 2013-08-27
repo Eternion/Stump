@@ -10,8 +10,7 @@ using Stump.Server.WorldServer.Game.Maps;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
-    public class 
-        InfoMapCommand : SubCommand
+    public class InfoMapCommand : SubCommand
     {
         public InfoMapCommand()
         {

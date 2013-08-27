@@ -20,8 +20,6 @@ namespace Uplauncher
 {
     public class Constants
     {
-        public const string ApplicationName = "Uplauncher Arkalys";
-
         public const string SiteURL = "http://arkalys.com/";
         public const string UpdateSiteURL = "http://arkalys.alwaysdata.net/patchs/";
         public static readonly Uri RSSNewsURL = new Uri("http://arkalys.com/misc/rss");
@@ -34,6 +32,23 @@ namespace Uplauncher
 
         public const string ExeReplaceTempPath = "temp_upl.exe";
 
-        public static readonly string CurrentExePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+        public static string CurrentExePath
+        {
+            get { return System.Reflection.Assembly.GetExecutingAssembly().Location; }
+        }
+
+        public static string ApplicationVersion
+        {
+            get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
+        }
+
+        public static string ApplicationName
+        {
+            get
+            {
+                return "Uplauncher Arkalys";
+            }
+        }
+
     }
 }

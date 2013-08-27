@@ -5,6 +5,7 @@ using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
@@ -22,6 +23,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             AddParameter<int>("time", "time", "Ban duration (in minutes)", isOptional: true);
             AddParameter("reason", "r", "Reason of ban", "No reason");
             AddParameter<bool>("life", "l", "Specify a life ban", isOptional: true);
+            AddParameter<bool>("ip", "ip", "Also ban the ip", isOptional: true);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -66,6 +68,22 @@ namespace Stump.Server.WorldServer.Commands.Commands
             IPCAccessor.Instance.SendRequest(message, 
                 ok => trigger.Reply("Account {0} banned", target.Account.Login),
                 error => trigger.ReplyError("Account {0} not banned : {1}", target.Account.Login, error.Message));
+
+
+            if (trigger.IsArgumentDefined("ip"))
+            {
+                var banIPMessage = new BanIPMessage()
+                {
+                    IPRange = target.Client.IP,
+                    BanReason = reason,
+                    BanEndDate = message.BanEndDate,
+                    BannerAccountId = message.BannerAccountId
+                };
+
+                IPCAccessor.Instance.SendRequest(message,
+                    ok => trigger.Reply("IP {0} banned", target.Client.IP),
+                    error => trigger.ReplyError("IP {0} not banned : {1}", target.Client.IP, error.Message));
+            }
         }
     }
 

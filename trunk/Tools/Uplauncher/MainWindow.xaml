@@ -12,122 +12,122 @@
         Icon="pack://application:,,,/dofus-icon-48.ico" ShowInTaskbar="True"
         Closing="OnClosing" Loaded="OnLoaded" WindowStyle="None"
         AllowsTransparency="True" Background="Transparent" >
-  <Window.Resources>
-    <XmlDataProvider x:Key="News"
+    <Window.Resources>
+        <XmlDataProvider x:Key="News"
                      Source="{x:Static Uplauncher:Constants.RSSNewsURL}"
                      XPath="/rss/channel"/>
-    <Helpers:SingleLineTextConverter x:Key="SingleLineTextConverter"/>
-    <Style x:Key="Arial-Rounded" TargetType="{x:Type TextBlock}">
-    	<Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Resources/#Arial Rounded MT" />
-    </Style>
-    <Style x:Key="GlowingImage" TargetType="UI:OpaqueClickableImage">
-      <Style.Triggers>
-        <Trigger Property="IsMouseOver" Value="True">
-          <Setter Property="Opacity" Value="0.5"/>
-        </Trigger>
-      </Style.Triggers>
-    </Style>
-  	<Style x:Key="ImageButton" TargetType="{x:Type Button}">
-  		<Setter Property="Background" Value="Transparent"/>
-  		<Setter Property="BorderBrush" Value="Transparent"/>
-  		<Setter Property="BorderThickness" Value="0"/>
-  		<Setter Property="HorizontalContentAlignment" Value="Center"/>
-      <Setter Property="VerticalContentAlignment" Value="Center"/>
-      <Setter Property="Cursor" Value="Hand"/>
-      <Setter Property="Template">
-  			<Setter.Value>
-  				<ControlTemplate TargetType="{x:Type Button}">
-  					<ContentPresenter Content="{TemplateBinding Content}"/>
-  				</ControlTemplate>
-  			</Setter.Value>
-  		</Setter>
-      <Style.Triggers>
-        <Trigger Property="IsEnabled" Value="false">
-            <Setter Property="Opacity" Value="0.5"/>
-        </Trigger>
-      </Style.Triggers>
-  		
-  	</Style>
-  </Window.Resources>
-  <Grid>
-    <Image Source="Resources/background.png" Height="619px" Width="828px" />
-    <Canvas>
-      <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent"  Canvas.Left="76" Canvas.Top="435" Style="{StaticResource ImageButton}" 
-              Command="{Binding PlayCommand}">
-        <UI:OpaqueClickableImage Width="99" Height="129" Source="pack://application:,,,/Resources/play_button.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
-      </Button>
-      <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Canvas.Left="6" Canvas.Top="172" Style="{StaticResource ImageButton}" Command="{Binding CloseCommand}">
-        <UI:OpaqueClickableImage Width="19" Height="19" Source="pack://application:,,,/Resources/close.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
-      </Button>
-      <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Canvas.Left="8" Canvas.Top="587" Style="{StaticResource ImageButton}" Command="{Binding ChangeLanguageCommand}">
-        <UI:OpaqueClickableImage Width="105" Height="24" Source="pack://application:,,,/Resources/language_button.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
-      </Button>
-      <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Style="{StaticResource ImageButton}" Canvas.Left="117" Canvas.Top="587" Command="{Binding SiteCommand}">
-        <UI:OpaqueClickableImage Width="105" Height="24" Source="pack://application:,,,/Resources/site_button.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
-      </Button>
-      <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Canvas.Left="529" Canvas.Top="353" Style="{StaticResource ImageButton}" Command="{Binding VoteCommand}">
-        <UI:OpaqueClickableImage Width="167" Height="30" Source="pack://application:,,,/Resources/vote_button.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
-      </Button>
-      <ProgressBar Canvas.Left="233" Canvas.Top="390" Width="461" Height="26" Value="{Binding DownloadProgress}" Maximum="100" Minimum="0" >
-        <ProgressBar.Template>
-          <ControlTemplate TargetType="ProgressBar">
-            <Border BorderThickness="1" CornerRadius="10" BorderBrush="#665527">
-              <Border.Background>
-                <SolidColorBrush Color="#342811"/> 
-              </Border.Background>
-              <Grid x:Name="PART_Track" >
-                <Border x:Name="PART_Indicator" HorizontalAlignment="Left" CornerRadius="9,0,0,9" >
-                  <Border.Clip>
-                    <RectangleGeometry RadiusX="9" RadiusY="9" Rect="0,0,459,24"/>
-                  </Border.Clip>
-                  <Border.Background>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                      <GradientStop Color="#7c8f00" Offset="1"/>
-                      <GradientStop Color="#d0d503"/>
-                    </LinearGradientBrush>
-                  </Border.Background>
-                </Border>
-              </Grid>
-            </Border>
-          </ControlTemplate>
-        </ProgressBar.Template>
+        <Helpers:SingleLineTextConverter x:Key="SingleLineTextConverter"/>
+        <Style x:Key="Arial-Rounded" TargetType="{x:Type TextBlock}">
+            <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Resources/#Arial Rounded MT" />
+        </Style>
+        <Style x:Key="GlowingImage" TargetType="UI:OpaqueClickableImage">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ImageButton" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <ContentPresenter Content="{TemplateBinding Content}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Opacity" Value="0.5"/>
+                </Trigger>
+            </Style.Triggers>
 
-      </ProgressBar>
-      <Grid Canvas.Left="234" Canvas.Top="418" Width="460" Height="20">
-        <Grid.Background>
-          <ImageBrush ImageSource="pack://application:,,,/Resources/status_background.png"/>
-        </Grid.Background>
-        <TextBlock Text="{Binding StateMessage}" Foreground="#a79a84" FontWeight="DemiBold" Margin="5,0,5,0"
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Image Source="Resources/background.png" Height="619px" Width="828px" />
+        <Canvas>
+            <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent"  Canvas.Left="76" Canvas.Top="435" Style="{StaticResource ImageButton}" 
+              Command="{Binding PlayCommand}">
+                <UI:OpaqueClickableImage Width="99" Height="129" Source="pack://application:,,,/Resources/play_button.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
+            </Button>
+            <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Canvas.Left="6" Canvas.Top="172" Style="{StaticResource ImageButton}" Command="{Binding CloseCommand}">
+                <UI:OpaqueClickableImage Width="19" Height="19" Source="pack://application:,,,/Resources/close.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
+            </Button>
+            <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Canvas.Left="8" Canvas.Top="587" Style="{StaticResource ImageButton}" Command="{Binding ChangeLanguageCommand}">
+                <UI:OpaqueClickableImage Width="105" Height="24" Source="pack://application:,,,/Resources/language_button.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
+            </Button>
+            <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Style="{StaticResource ImageButton}" Canvas.Left="117" Canvas.Top="587" Command="{Binding SiteCommand}">
+                <UI:OpaqueClickableImage Width="105" Height="24" Source="pack://application:,,,/Resources/site_button.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
+            </Button>
+            <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Canvas.Left="529" Canvas.Top="353" Style="{StaticResource ImageButton}" Command="{Binding VoteCommand}">
+                <UI:OpaqueClickableImage Width="167" Height="30" Source="pack://application:,,,/Resources/vote_button.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
+            </Button>
+            <ProgressBar Canvas.Left="233" Canvas.Top="390" Width="461" Height="26" Value="{Binding DownloadProgress}" Maximum="100" Minimum="0" >
+                <ProgressBar.Template>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Border BorderThickness="1" CornerRadius="10" BorderBrush="#665527">
+                            <Border.Background>
+                                <SolidColorBrush Color="#342811"/>
+                            </Border.Background>
+                            <Grid x:Name="PART_Track" >
+                                <Border x:Name="PART_Indicator" HorizontalAlignment="Left" CornerRadius="9,0,0,9" >
+                                    <Border.Clip>
+                                        <RectangleGeometry RadiusX="9" RadiusY="9" Rect="0,0,459,24"/>
+                                    </Border.Clip>
+                                    <Border.Background>
+                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                            <GradientStop Color="#7c8f00" Offset="1"/>
+                                            <GradientStop Color="#d0d503"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </ProgressBar.Template>
+
+            </ProgressBar>
+            <Grid Canvas.Left="234" Canvas.Top="418" Width="460" Height="20">
+                <Grid.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/status_background.png"/>
+                </Grid.Background>
+                <TextBlock Text="{Binding StateMessage}" Foreground="#a79a84" FontWeight="DemiBold" Margin="5,0,5,0"
                    TextAlignment="Center" VerticalAlignment="Center" Style="{StaticResource Arial-Rounded}"
                    ToolTip="{Binding StateMessage}">
-        </TextBlock>
-      </Grid>
+                </TextBlock>
+            </Grid>
 
-      <Grid Canvas.Left="234" Canvas.Top="442" Width="462" Height="170">
-        <Grid.Background>
-          <ImageBrush ImageSource="pack://application:,,,/Resources/news_background.png"/>
-        </Grid.Background>
-        <ItemsControl DataContext="{StaticResource News}" ItemsSource="{Binding XPath=item}" 
+            <Grid Canvas.Left="234" Canvas.Top="442" Width="462" Height="170">
+                <Grid.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/news_background.png"/>
+                </Grid.Background>
+                <ItemsControl DataContext="{StaticResource News}" ItemsSource="{Binding XPath=item}" 
 		       Grid.Row="1">
-          <ItemsControl.ItemTemplate>
-            <DataTemplate>
-              <Grid >
-                <Grid.RowDefinitions>
-                  <RowDefinition/>
-                  <RowDefinition/>
-                  <RowDefinition/>
-                  <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="Auto"/>
-                  <ColumnDefinition/>
-                  <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Source="pack://application:,,,/Resources/news_icon_1.png"  Height="46" Width="46" Margin="4" VerticalAlignment="Center"/>
-                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding XPath=title}" FontSize="18" Foreground="White" FontFamily="Arial" FontWeight="Regular" Margin="0,3,0,0" TextTrimming="CharacterEllipsis" />
-                <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Height="28" Text="{Binding XPath=content, Converter={StaticResource SingleLineTextConverter}}"  
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid >
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Source="pack://application:,,,/Resources/news_icon_1.png"  Height="46" Width="46" Margin="4" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding XPath=title}" FontSize="18" Foreground="White" FontFamily="Arial" FontWeight="Regular" Margin="0,3,0,0" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Height="28" Text="{Binding XPath=content, Converter={StaticResource SingleLineTextConverter}}"  
                            FontSize="12" Foreground="#2c1d00" FontFamily="Arial" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis"  />
-                <TextBlock Grid.Row="0" Grid.Column="2" Helpers:HyperlinkUtility.LaunchDefaultBrowser="True" FontSize="14" HorizontalAlignment="Right" Margin="5" FontFamily="Arial">
+                                <TextBlock Grid.Row="0" Grid.Column="2" Helpers:HyperlinkUtility.LaunchDefaultBrowser="True" FontSize="14" HorizontalAlignment="Right" Margin="5" FontFamily="Arial">
                   <Hyperlink NavigateUri="{Binding XPath=link}" TextDecorations="{x:Null}">
                     <Hyperlink.Style>
                       <Style TargetType="Hyperlink">
@@ -141,15 +141,17 @@
                     </Hyperlink.Style>
                     ► En savoir plus
                   </Hyperlink>
-                </TextBlock>
-                <Separator Grid.Row="2" Grid.ColumnSpan="3" Margin="5,0,5,0" Background="#FF7D6130" />
-                <Separator Grid.Row="3" Grid.ColumnSpan="3" Margin="5,0,5,0" Background="#433214"/>
-              </Grid>
+                                </TextBlock>
+                                <Separator Grid.Row="2" Grid.ColumnSpan="3" Margin="5,0,5,0" Background="#FF7D6130" />
+                                <Separator Grid.Row="3" Grid.ColumnSpan="3" Margin="5,0,5,0" Background="#433214"/>
+                            </Grid>
 
-            </DataTemplate>
-          </ItemsControl.ItemTemplate>
-        </ItemsControl>
-      </Grid>
-    </Canvas>
-  </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+            <TextBlock Canvas.Left="529" Canvas.Top="336" TextWrapping="Wrap" 
+                       Text="{Binding Source={x:Static Uplauncher:Constants.ApplicationVersion}}" Width="165" TextAlignment="Right"/>
+        </Canvas>
+    </Grid>
 </Window>

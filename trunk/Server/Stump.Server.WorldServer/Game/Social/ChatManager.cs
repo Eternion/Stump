@@ -39,20 +39,35 @@ namespace Stump.Server.WorldServer.Game.Social
         [Variable]
         public static readonly RoleEnum AdministratorChatMinAccess = RoleEnum.Moderator;
 
+        /// <summary>
+        /// In milliseconds
+        /// </summary>
         [Variable]
-        public static int AntiFloodTimeBetweenMessages = 100;
+        public static int AntiFloodTimeBetweenTwoMessages = 500;
+
+        /// <summary>
+        /// In seconds
+        /// </summary>
+        [Variable] 
+        public static int AntiFloodTimeBetweenTwoGlobalMessages = 60;
 
         /// <summary>
         /// Amount of messages allowed in a given time
         /// </summary>
         [Variable]
-        public static int AntiFloodAllowedMessages = 5;
+        public static int AntiFloodAllowedMessages = 4;
 
         /// <summary>
         /// Time in seconds
         /// </summary>
         [Variable]
-        public static int AntiFloodAllowedMessagesResetTime = 5;
+        public static int AntiFloodAllowedMessagesResetTime = 10;
+
+        /// <summary>
+        /// Time in seconds
+        /// </summary>
+        [Variable]
+        public static int AntiFloodMuteTime = 10;
 
         /// <summary>
         ///   Chat handler for each channel Id.
@@ -129,7 +144,7 @@ namespace Stump.Server.WorldServer.Game.Social
                                                             (int) client.Character.GetMuteRemainingTime().TotalSeconds);
                 else
                 {
-                    if (client.Character.CheckTalkingFlood(message, channel))
+                    if (client.Character.ChatHistory.RegisterAndCheckFlood(new ChatEntry(message, channel, DateTime.Now)))
                         ChatHandlers[channel](client, message);
                 }
             }
@@ -213,6 +228,12 @@ namespace Stump.Server.WorldServer.Game.Social
 
             World.Instance.ForEachCharacter(entry =>
                 SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_SALES, msg));
+        }
+
+        public static bool IsGlobalChannel(ChatActivableChannelsEnum channel)
+        {
+            return channel == ChatActivableChannelsEnum.CHANNEL_SALES ||
+                   channel == ChatActivableChannelsEnum.CHANNEL_SEEK;
         }
 
         #endregion

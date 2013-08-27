@@ -24,6 +24,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Windows.Forms;
 using Uplauncher.Helpers;
+using Uplauncher.Properties;
 
 namespace Uplauncher
 {
@@ -50,12 +51,31 @@ namespace Uplauncher
                 return;
 
             ClientPort = NetworkHelper.FindFreePort(50000, 51000);
-            m_clientListener.Bind(new IPEndPoint(IPAddress.Loopback, ClientPort));
-            m_clientListener.Listen(8);
+            try
+            {
+                m_clientListener.Bind(new IPEndPoint(IPAddress.Loopback, ClientPort));
+                m_clientListener.Listen(8);
+            }
+            catch (SocketException)
+            {
+                MessageBox.Show(string.Format("Le port {0} est déjà utilisé. Impossible de lancer le proxy du son. Le son sera coupé", ClientPort), 
+                    Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             RegPort = NetworkHelper.FindFreePort(ClientPort + 1, 51000);
-            m_regListener.Bind(new IPEndPoint(IPAddress.Loopback, RegPort));
-            m_regListener.Listen(1);
+            try
+            {
+                m_regListener.Bind(new IPEndPoint(IPAddress.Loopback, RegPort));
+                m_regListener.Listen(1);
+            }
+            catch (SocketException)
+            {
+                MessageBox.Show(string.Format("Le port {0} est déjà utilisé. Impossible de lancer le proxy du son. Le son sera coupé", RegPort),
+                    Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
 
             var args = new SocketAsyncEventArgs();
             args.Completed += (sender, e) => OnClientConnected(e);
