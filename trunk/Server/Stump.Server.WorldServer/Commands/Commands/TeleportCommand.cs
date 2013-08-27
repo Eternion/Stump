@@ -137,12 +137,12 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Aliases = new[] { "namego" };
             RequiredRole = RoleEnum.Moderator;
             Description = "Teleport target to you";
-            AddParameter("target", "target", "The character to teleport", converter: ParametersConverter.CharacterConverter);
+            AddTargetParameter(false, "The character to teleport");
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            var target = trigger.Get<Character>("target");
+            var target = GetTarget();
             var to = ((GameTrigger) trigger).Character;
 
             target.Teleport(to.Position);
