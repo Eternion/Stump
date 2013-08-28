@@ -44,7 +44,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
         {
             var cell = Fighter.Position.Point.GetAdjacentCells(CellInformationProvider.IsCellWalkable).FirstOrDefault();
 
-            return CellInformationProvider.GetCellInformation(cell.CellId).Cell;
+            if (cell != null)
+                return CellInformationProvider.GetCellInformation(cell.CellId).Cell;
+            else
+                return null;
         }
 
         public Cell GetCellToCastSpell(FightActor target, Spell spell)
