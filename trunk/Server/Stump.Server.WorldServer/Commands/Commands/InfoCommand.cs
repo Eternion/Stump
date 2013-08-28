@@ -133,7 +133,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             {
                 trigger.ReplyBold("Spells Points : {0}, Stats Points : {1}", character.SpellsPoints,
                                   character.StatsPoints);
-                trigger.ReplyBold("Health : {0}/{1}", character.Stats.Health, character.Stats.Health.TotalMax);
+                trigger.ReplyBold("Health : {0}/{1}", character.Stats.Health.Total, character.Stats.Health.TotalMax);
                 trigger.ReplyBold("AP : {0}, PM : {1}", character.Stats.AP, character.Stats.MP);
                 trigger.ReplyBold("Vitality : {0}, Wisdom : {1}", character.Stats.Vitality, character.Stats.Wisdom);
                 trigger.ReplyBold("Strength : {0}, Intelligence : {1}", character.Stats.Strength, character.Stats.Intelligence);
