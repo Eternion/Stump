@@ -406,6 +406,26 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
+        public bool Visible
+        {
+            get;
+            private set;
+        }
+
+        public bool ToggleVisible()
+        {
+            if (Visible)
+            {
+                Visible = false;
+                return false;
+            }
+            else
+            {
+                Visible = true;
+                return true;
+            }
+        }
+
         public void UpdateLook(bool send = true)
         {
             var skins = new List<short>(Breed.GetLook(Sex).skins);
@@ -1987,6 +2007,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         internal CharacterRecord Record
         {
             get { return m_record; }
+        }
+
+        public override bool CanBeSee(WorldObject byObj)
+        {
+            return base.CanBeSee(byObj) && Visible;
         }
 
         public override void Dispose()

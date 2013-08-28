@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            Character target = GetTarget(trigger);
+            var target = GetTarget(trigger);
             byte delta;
 
             var amount = trigger.Get<short>("amount");
@@ -114,8 +114,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            Character target = GetTarget(trigger);
-            int kamas = trigger.Get<int>("amount");
+            var target = GetTarget(trigger);
+            var kamas = trigger.Get<int>("amount");
 
             target.Inventory.SetKamas(kamas);
             trigger.ReplyBold("{0} has now {1} kamas", target, kamas);
@@ -135,12 +135,30 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            Character target = GetTarget(trigger);
-            ushort statsPoints = trigger.Get<ushort>("amount");
+            var target = GetTarget(trigger);
+            var statsPoints = trigger.Get<ushort>("amount");
 
             target.StatsPoints = statsPoints;
             target.RefreshStats();
             trigger.Reply("{0} has now {1} stats points", target, statsPoints);
+        }
+    }
+
+    public class InvisibleCommand : TargetCommand
+    {
+        public InvisibleCommand()
+        {
+            Aliases = new[] { "invisible", "setinv" };
+            RequiredRole = RoleEnum.Administrator;
+            Description = "Toggle invisible state";
+            AddTargetParameter(true);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var target = GetTarget(trigger);
+
+            trigger.Reply(target.ToggleVisible() ? "{0} is now visible" : "{0} is now invisible", target);
         }
     }
 }
