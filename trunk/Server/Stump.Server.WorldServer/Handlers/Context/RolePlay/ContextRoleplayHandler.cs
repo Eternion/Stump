@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 
         public static void SendMapRunningFightListMessage(IPacketReceiver client, IEnumerable<Fight> fights)
         {
-            //client.Send(new MapRunningFightListMessage(fights.Select(entry => entry.GetFightExternalInformations())));
+            client.Send(new MapRunningFightListMessage(fights.Select(entry => entry.GetFightExternalInformations())));
         }
 
         public static void SendMapRunningFightDetailsMessage(IPacketReceiver client, Fight fight)
