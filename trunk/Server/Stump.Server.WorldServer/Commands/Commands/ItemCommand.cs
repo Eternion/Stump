@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
@@ -151,6 +153,36 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
                 if (counter == 0)
                     trigger.Reply("No results");
+            }
+        }
+    }
+
+    public class ItemShowInvCommand : SubCommand
+    {
+        public ItemShowInvCommand()
+        {
+            Aliases = new[] { "showinv" };
+            RequiredRole = RoleEnum.Moderator;
+            Description = "Show items of the target into your inventory";
+            ParentCommand = typeof(ItemCommand);
+            AddParameter("target", "t", "Where items will be search", converter: ParametersConverter.CharacterConverter, isOptional: true);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            if (trigger.IsArgumentDefined("target"))
+            {
+                var target = trigger.Get<Character>("target");
+                var source = ((GameTrigger)trigger).Character.Client;
+
+                source.Send(
+                    new InventoryContentMessage(
+                        target.Inventory.Select(entry => entry.GetObjectItem()),
+                        target.Inventory.Kamas));
+            }
+            else
+            {
+                trigger.ReplyError("Please define a target");
             }
         }
     }
