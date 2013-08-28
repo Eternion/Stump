@@ -41,6 +41,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         {
             ContextualId = id;
             Position = position;
+            CreationDate = DateTime.Now;
         }
 
         public Fights.Fight Fight
@@ -69,23 +70,30 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
         public short AgeBonus
         {
-            get;
-            private set;
+            get
+            {
+                var bonus = ( DateTime.Now - CreationDate ).TotalSeconds / ((double)StarsBonusInterval / StarsBonusIncrementation);
+
+                if (bonus > StarsBonusLimit)
+                    bonus = StarsBonusLimit;
+
+                return (short) bonus;
+            }
         }
 
         public DateTime LastMoveTime
         {
             get;
-            set;
+            private set;
+        }
+
+        public DateTime CreationDate
+        {
+            get;
+            private set;
         }
 
         internal TimedTimerEntry MoveTimer
-        {
-            get;
-            set;
-        }
-
-        internal TimedTimerEntry StarsTimer
         {
             get;
             set;
@@ -113,6 +121,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
             // monsters movements are instants
             StopMove();
+            LastMoveTime = DateTime.Now;
 
             return true;
         }
@@ -194,22 +203,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
                 Leader = null;
 
             Map.Refresh(this);
-        }
-
-        public void IncrementBonus(short bonus)
-        {
-            AgeBonus += bonus;
-
-            if (AgeBonus > StarsBonusLimit)
-                AgeBonus = StarsBonusLimit;
-        }
-
-        public void DecrementBonus(short bonus)
-        {
-            AgeBonus -= bonus;
-
-            if (AgeBonus < 0)
-                AgeBonus = 0;
         }
 
         public IEnumerable<Monster> GetMonsters()

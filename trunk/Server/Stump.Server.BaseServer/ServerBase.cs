@@ -37,10 +37,13 @@ namespace Stump.Server.BaseServer
         public static int IOTaskInterval = 50;
 
         [Variable]
-        public static bool ScheduledShutdown = true;
+        public static bool ScheduledAutomaticShutdown = true;
 
+        /// <summary>
+        /// In minutes
+        /// </summary>
         [Variable]
-        public static int ShutdownTimer = 6*60;
+        public static int AutomaticShutdownTimer = 6*60;
 
         protected Dictionary<string, Assembly> LoadedAssemblies;
         protected Logger logger;
@@ -148,6 +151,24 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
+        public bool IsShutdownScheduled
+        {
+            get;
+            protected set;
+        }
+
+        public DateTime ScheduledShutdownDate
+        {
+            get;
+            protected set;
+        }
+
+        public string ScheduledShutdownReason
+        {
+            get;
+            protected set;
+        }
+
         public virtual void Initialize()
         {
             InstanceAsBase = this;
@@ -196,10 +217,6 @@ namespace Stump.Server.BaseServer
             else
                 Config.Load();
 
-
-            /* Set Config Watcher */
-            StartConfigReloadOnChange(Config);
-
             logger.Info("Initialize Task Pool");
             IOTaskPool = new SelfRunningTaskPool(IOTaskInterval, "IO Task Pool");
 
@@ -230,7 +247,7 @@ namespace Stump.Server.BaseServer
         }
 
         public virtual void UpdateConfigFiles()
-        {           
+        {
             logger.Info("Recreate server config file ...");
 
             if (File.Exists(ConfigFilePath))
@@ -240,9 +257,6 @@ namespace Stump.Server.BaseServer
                 Config = new XmlConfig(ConfigFilePath);
                 Config.AddAssemblies(LoadedAssemblies.Values.ToArray());
                 Config.Load();
-
-                // create the config file but keep the actual values, so it recreate and update
-                IgnoreNextConfigReload();
                 Config.Create(true);
             }
             else
@@ -275,8 +289,7 @@ namespace Stump.Server.BaseServer
 
                 if (update)
                 {
-                    logger.Info("Update '{0}' config file => '{1}'", plugin.Name, Path.GetFileName(plugin.GetConfigPath())); 
-                    IgnoreNextConfigReload();
+                    logger.Info("Update '{0}' config file => '{1}'", plugin.Name, Path.GetFileName(plugin.GetConfigPath()));
                     plugin.Config.Create(true);
                 }
             }
@@ -284,34 +297,6 @@ namespace Stump.Server.BaseServer
             logger.Info("All config files were correctly updated/created ! Shutdown ...");
             Thread.Sleep(TimeSpan.FromSeconds(2.0));
             Environment.Exit(0);
-        }
-
-        public void StartConfigReloadOnChange(XmlConfig config)
-        {
-            var action = new Action(() =>
-                IOTaskPool.AddMessage(
-                () =>
-                    {
-                        if (!m_ignoreReload &&
-                            ConsoleInterface.AskAndWait(
-                                string.Format(
-                                    "Config {0} has been modified, do you want to reload it ?",
-                                    Path.GetFileName(config.FilePath)), 20))
-                        {
-                            config.Reload();
-                            logger.Warn("Config has been reloaded sucessfully");
-                        }
-
-                        m_ignoreReload = false;
-                    }));
-
-
-            FileWatcherManager.Watch(config.FilePath, WatcherType.Modification, action);
-        }
-
-        public void StopConfigReloadOnChange(XmlConfig config)
-        {
-            FileWatcherManager.StopWatching(config.FilePath);
         }
 
         /// <summary>
@@ -412,8 +397,7 @@ namespace Stump.Server.BaseServer
             Initializing = false;
 
             IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(30).TotalMilliseconds, KeepSQLConnectionAlive);
-            if (ScheduledShutdown)
-                IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(5).TotalMilliseconds, CheckScheduledShutdown);
+            IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(5).TotalMilliseconds, CheckScheduledShutdown);
         }
 
 
@@ -435,14 +419,16 @@ namespace Stump.Server.BaseServer
             catch (Exception ex)
             {
                 logger.Error("Cannot ping SQL connection : {0}", ex);
-            }
-        }
-
-        protected virtual void CheckScheduledShutdown()
-        {
-            if (UpTime.TotalMinutes > ShutdownTimer)
-            {
-                Shutdown();
+                logger.Warn("Try to Re-open the connection");
+                try
+                {
+                    DBAccessor.CloseConnection();
+                    DBAccessor.OpenConnection();
+                }
+                catch (Exception ex2)
+                {
+                    logger.Error("Cannot reopen the SQL connection : {0}", ex2);
+                }
             }
         }
 
@@ -464,6 +450,34 @@ namespace Stump.Server.BaseServer
         protected virtual void OnShutdown()
         {
             IOTaskPool.Stop();
+        }
+
+        public virtual void ScheduleShutdown(TimeSpan timeBeforeShuttingDown, string reason)
+        {
+            ScheduledShutdownReason = reason;
+            ScheduleShutdown(timeBeforeShuttingDown);
+        }
+
+        public virtual void ScheduleShutdown(TimeSpan timeBeforeShuttingDown)
+        {
+            IsShutdownScheduled = true;
+            ScheduledShutdownDate = DateTime.Now + timeBeforeShuttingDown;
+        }
+
+        public virtual void CancelScheduledShutdown()
+        {
+            IsShutdownScheduled = false;
+            ScheduledShutdownDate = DateTime.MaxValue;
+            ScheduledShutdownReason = null;
+        }
+
+        protected virtual void CheckScheduledShutdown()
+        {
+            if ((ScheduledAutomaticShutdown && UpTime.TotalMinutes > AutomaticShutdownTimer) || 
+                (IsShutdownScheduled && ScheduledShutdownDate <= DateTime.Now))
+            {
+                Shutdown();
+            }
         }
 
         public void Shutdown()

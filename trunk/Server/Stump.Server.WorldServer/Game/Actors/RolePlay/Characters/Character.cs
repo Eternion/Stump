@@ -406,24 +406,25 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
-        public bool Visible
+        public bool Invisible
         {
             get;
             private set;
         }
 
-        public bool ToggleVisible()
+        public bool ToggleInvisibility(bool toggle)
         {
-            if (Visible)
-            {
-                Visible = false;
-                return false;
-            }
-            else
-            {
-                Visible = true;
-                return true;
-            }
+            Invisible = toggle;
+
+            if (!IsInFight())
+                Map.Refresh(this);
+
+            return Invisible;
+        }
+
+        public bool ToggleInvisibility()
+        {
+            return ToggleInvisibility(!Invisible);
         }
 
         public void UpdateLook(bool send = true)
@@ -2011,7 +2012,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override bool CanBeSee(WorldObject byObj)
         {
-            return base.CanBeSee(byObj) && Visible;
+            return base.CanBeSee(byObj) && (byObj == this || !Invisible);
         }
 
         public override void Dispose()
