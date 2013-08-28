@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using System.Threading;
 using Stump.DofusProtocol.Enums;
 
@@ -7,6 +8,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
     public class ShutdownCommand : CommandBase
     {
         private Timer m_shutdownTimer;
+        private int m_shutdownCountdown = 0;
 
         public ShutdownCommand()
         {
@@ -33,17 +35,29 @@ namespace Stump.Server.BaseServer.Commands.Commands
                 return;
             }
 
-            var time = trigger.Get<int>("time");
+            m_shutdownCountdown = trigger.Get<int>("time");
 
-            if (time > 0)
-                trigger.Reply("Server shutting down in {0} seconds", time);
+            if (m_shutdownCountdown > 0)
+                trigger.Reply("Server shutting down in {0} seconds", m_shutdownCountdown);
 
-            m_shutdownTimer = new Timer(Shutdown, null, time * 1000, Timeout.Infinite);
+            m_shutdownTimer = new Timer(Shutdown, null, 1000, Timeout.Infinite);
         }
 
-        private static void Shutdown(object arg)
+        private void Shutdown(object arg)
         {
-            ServerBase.InstanceAsBase.Shutdown();
+            if (m_shutdownCountdown <= 0)
+            {
+                if (m_shutdownTimer != null)
+                    m_shutdownTimer.Dispose();
+
+                ServerBase.InstanceAsBase.Shutdown();
+            }
+            else
+            {
+                //World.Instance.SendAnnounce("Server will restart in " + m_shutdownCountdown + " seconds", Color.Red);
+            }
+
+            m_shutdownCountdown -= 1;
         }
     }
 }
