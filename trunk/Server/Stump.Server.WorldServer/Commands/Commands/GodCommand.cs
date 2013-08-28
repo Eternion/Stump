@@ -161,4 +161,21 @@ namespace Stump.Server.WorldServer.Commands.Commands
             trigger.Reply(target.ToggleInvisibility() ? "{0} is now invisible" : "{0} is now visible", target);
         }
     }
+
+    public class TranquilityCommand : CommandBase
+    {
+        public TranquilityCommand()
+        {
+            Aliases = new[] { "tranquility" };
+            RequiredRole = RoleEnum.Moderator;
+            Description = "Toggle tranquility mod";
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var player = ((GameTrigger) trigger).Character;
+
+            trigger.Reply(player.ToggleTranquility() ? "Tranquility mode is now ON" : "Tranquility mode is now OFF");
+        }
+    }
 }

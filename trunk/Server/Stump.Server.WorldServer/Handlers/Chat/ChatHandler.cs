@@ -23,13 +23,21 @@ namespace Stump.Server.WorldServer.Handlers.Chat
 
                 if (chr != null)
                 {
-                    // send a copy to sender
-                    SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
-                                              message.content);
+                    if (!chr.TranquilityMode)
+                    {
+                        // send a copy to sender
+                        SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
+                                                  message.content);
 
-                    // Send to receiver
-                    SendChatServerMessage(chr.Client, client.Character, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
-                                          message.content);
+                        // Send to receiver
+                        SendChatServerMessage(chr.Client, client.Character,
+                                              ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
+                                              message.content);
+                    }
+                    else
+                    {
+                        client.Send(new ChatErrorMessage((sbyte)ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND));
+                    }
                 }
                 else
                 {

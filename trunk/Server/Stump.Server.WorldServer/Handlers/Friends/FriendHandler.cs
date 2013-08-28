@@ -32,7 +32,10 @@ namespace Stump.Server.WorldServer.Handlers.Friends
 
             if (character != null)
             {
-                client.Character.FriendsBook.AddFriend(character.Client.WorldAccount);
+                if (character.Account.Role != RoleEnum.Player)
+                    client.Character.FriendsBook.AddFriend(character.Client.WorldAccount);
+                else
+                    SendFriendAddFailureMessage(client, ListAddFailureEnum.LIST_ADD_FAILURE_NOT_FOUND);
             }
             else
             {
@@ -75,7 +78,10 @@ namespace Stump.Server.WorldServer.Handlers.Friends
 
             if (character != null)
             {
-                var result = client.Character.FriendsBook.AddIgnored(character.Client.WorldAccount, message.session);
+                if (character.Account.Role != RoleEnum.Player)
+                    client.Character.FriendsBook.AddIgnored(character.Client.WorldAccount, message.session);
+                else
+                    SendFriendAddFailureMessage(client, ListAddFailureEnum.LIST_ADD_FAILURE_NOT_FOUND);
             }
             else
             {
