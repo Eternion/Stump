@@ -158,7 +158,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             var target = GetTarget(trigger);
 
-            trigger.Reply(target.ToggleVisible() ? "{0} is now visible" : "{0} is now invisible", target);
+            trigger.Reply(target.ToggleInvisibility() ? "{0} is now invisible" : "{0} is now visible", target);
         }
     }
 }

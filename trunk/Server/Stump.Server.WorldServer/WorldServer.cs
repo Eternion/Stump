@@ -77,11 +77,6 @@ namespace Stump.Server.WorldServer
         [Variable(true)]
         public static int AutoSaveInterval  = 3 * 60;
 
-#if DEBUG
-        [DllImport("user32.dll")]
-        static extern short GetKeyState(int nVirtKey);
-#endif
-
         public WorldPacketHandler HandlerManager
         {
             get;
@@ -96,10 +91,6 @@ namespace Stump.Server.WorldServer
         public override void Initialize()
         {
             base.Initialize();
-
-            int header = 0x0b38;
-            var id = 
-
             ConsoleInterface = new WorldConsole();
             ConsoleBase.SetTitle("#Stump World Server : " + ServerInformation.Name);
 
@@ -109,10 +100,7 @@ namespace Stump.Server.WorldServer
             DBAccessor.Initialize();
 
             logger.Info("Opening Database..."); 
-            DBAccessor.OpenConnection(new DatabaseLogged(DatabaseConfiguration.GetConnectionString(), DatabaseConfiguration.ProviderName)
-            {
-                KeepConnectionAlive = true,
-            });
+            DBAccessor.OpenConnection();
             DataManager.DefaultDatabase = DBAccessor.Database;
 
             logger.Info("Register Messages...");
@@ -193,42 +181,68 @@ namespace Stump.Server.WorldServer
 
         private TimeSpan m_lastAnnouncedTime = TimeSpan.MaxValue;
 
+        public override void ScheduleShutdown(TimeSpan timeBeforeShuttingDown)
+        {
+            base.ScheduleShutdown(timeBeforeShuttingDown);
+
+            AnnounceTimeBeforeShutdown(timeBeforeShuttingDown, false);
+        }
+
+        public override void CancelScheduledShutdown()
+        {
+            base.CancelScheduledShutdown();
+
+            World.Instance.SendAnnounce("Reboot canceled !", Color.Red);
+        }
+
         protected override void CheckScheduledShutdown()
         {
-            var diff = TimeSpan.FromMinutes(ShutdownTimer) - UpTime;
+            var diff = TimeSpan.FromMinutes(AutomaticShutdownTimer) - UpTime;
+            bool automatic = true;
+
+            if (IsShutdownScheduled && diff > ScheduledShutdownDate - DateTime.Now)
+            {
+                diff = ScheduledShutdownDate - DateTime.Now;
+                automatic = false;
+            }
+
             if (diff < TimeSpan.FromMinutes(30))
             {
                 var announceDiff = m_lastAnnouncedTime - diff;
 
                 if (diff > TimeSpan.FromMinutes(10) && announceDiff >= TimeSpan.FromMinutes(5))
                 {
-                    AnnounceTimeBeforeShutdown(TimeSpan.FromMinutes(diff.TotalMinutes.RoundToNearest(5)));
+                    AnnounceTimeBeforeShutdown(TimeSpan.FromMinutes(diff.TotalMinutes.RoundToNearest(5)), automatic);
                 }
                 if (diff > TimeSpan.FromMinutes(5) && diff <= TimeSpan.FromMinutes(10) && announceDiff >= TimeSpan.FromMinutes(1))
                 {
-                    AnnounceTimeBeforeShutdown(TimeSpan.FromMinutes(diff.TotalMinutes));
+                    AnnounceTimeBeforeShutdown(TimeSpan.FromMinutes(diff.TotalMinutes), automatic);
                 }
                 if (diff > TimeSpan.FromMinutes(1) && diff <= TimeSpan.FromMinutes(5) && announceDiff >= TimeSpan.FromSeconds(30))
                 {
-                    AnnounceTimeBeforeShutdown(new TimeSpan(0, 0, 0,(int) diff.TotalSeconds.RoundToNearest(30)));
+                    AnnounceTimeBeforeShutdown(new TimeSpan(0, 0, 0, (int)diff.TotalSeconds.RoundToNearest(30)), automatic);
                 }
                 if (diff > TimeSpan.FromSeconds(10) && diff <= TimeSpan.FromMinutes(1) && announceDiff >= TimeSpan.FromSeconds(10))
                 {
-                    AnnounceTimeBeforeShutdown(new TimeSpan(0, 0, 0, (int)diff.TotalSeconds.RoundToNearest(10)));
+                    AnnounceTimeBeforeShutdown(new TimeSpan(0, 0, 0, (int)diff.TotalSeconds.RoundToNearest(10)), automatic);
                 }
                 if (diff <= TimeSpan.FromSeconds(10) && diff > TimeSpan.Zero)
                 {
-                    AnnounceTimeBeforeShutdown(TimeSpan.FromSeconds(diff.Seconds.RoundToNearest(5)));
+                    AnnounceTimeBeforeShutdown(TimeSpan.FromSeconds(diff.Seconds.RoundToNearest(5)), automatic);
                 }
             }
 
             base.CheckScheduledShutdown();
         }
 
-        private void AnnounceTimeBeforeShutdown(TimeSpan time)
+        private void AnnounceTimeBeforeShutdown(TimeSpan time, bool automatic)
         {
-            World.Instance.SendAnnounce(string.Format(@"Automatic reboot in <b>{0:mm\:ss}</b>",
-                time), Color.Red);
+            var message = automatic ? @"Automatic reboot in <b>{0:mm\:ss}</b>" : @"Reboot in <b>{0:mm\:ss}</b>";
+
+            if (!automatic && !string.IsNullOrEmpty(ScheduledShutdownReason))
+                message += " : " + ScheduledShutdownReason;
+
+            World.Instance.SendAnnounce(string.Format(message, time), Color.Red);
             m_lastAnnouncedTime = time;
         }
 

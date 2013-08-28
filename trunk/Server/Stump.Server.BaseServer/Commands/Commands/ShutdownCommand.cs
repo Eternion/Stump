@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading;
@@ -17,20 +18,16 @@ namespace Stump.Server.BaseServer.Commands.Commands
             Description = "Stop the server";
             Usage = "";
 
-            Parameters = new List<IParameterDefinition>
-                {
-                    new ParameterDefinition<int>("time", "t", "Stop after [time] seconds", 0, true),
-                    new ParameterDefinition<bool>("cancel", "c", "Cancel a shutting down procedure", true),
-                };
+            AddParameter("time", "t", "Stop after [time] seconds", 0, true);
+            AddParameter<string>("reason", "r", "Display a reason for the shutdown", isOptional: true);
+            AddParameter<bool>("cancel", "c", "Cancel a shutting down procedure", isOptional:true);
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            if (trigger.IsArgumentDefined("cancel") && trigger.Get<bool>("cancel"))
+            if (trigger.Get<bool>("cancel"))
             {
-                if (m_shutdownTimer != null)
-                    m_shutdownTimer.Dispose();
-
+                ServerBase.InstanceAsBase.CancelScheduledShutdown();
                 trigger.Reply("Shutting down procedure is canceled.");
                 return;
             }
@@ -38,26 +35,16 @@ namespace Stump.Server.BaseServer.Commands.Commands
             m_shutdownCountdown = trigger.Get<int>("time");
 
             if (m_shutdownCountdown > 0)
+            {
+                ServerBase.InstanceAsBase.ScheduleShutdown(TimeSpan.FromSeconds(m_shutdownCountdown),
+                                                           trigger.Get<string>("reason"));
                 trigger.Reply("Server shutting down in {0} seconds", m_shutdownCountdown);
 
-            m_shutdownTimer = new Timer(Shutdown, null, 1000, Timeout.Infinite);
-        }
-
-        private void Shutdown(object arg)
-        {
-            if (m_shutdownCountdown <= 0)
-            {
-                if (m_shutdownTimer != null)
-                    m_shutdownTimer.Dispose();
-
-                ServerBase.InstanceAsBase.Shutdown();
             }
             else
             {
-                //World.Instance.SendAnnounce("Server will restart in " + m_shutdownCountdown + " seconds", Color.Red);
+                ServerBase.InstanceAsBase.Shutdown();
             }
-
-            m_shutdownCountdown -= 1;
         }
     }
 }

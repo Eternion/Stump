@@ -791,16 +791,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             group.MoveTimer = Area.CallDelayed(new Random().Next(MonsterGroup.MinMoveInterval, MonsterGroup.MaxMoveInterval + 1) * 1000,
                 () => MoveRandomlyMonsterGroup(group));
         }
-
-        private void IncrementMonsterGroupBonus(MonsterGroup group)
-        {
-            group.IncrementBonus(MonsterGroup.StarsBonusIncrementation);
-            Refresh(group);
-
-            group.StarsTimer = Area.CallDelayed(MonsterGroup.StarsBonusInterval * 1000,
-                () => IncrementMonsterGroupBonus(group));
-        }
-
         #endregion
 
         #region Triggers
@@ -958,7 +948,13 @@ namespace Stump.Server.WorldServer.Game.Maps
         public void Refresh(RolePlayActor actor)
         {
             if (IsActor(actor))
-                ContextRoleplayHandler.SendGameRolePlayShowActorMessage(Clients, actor);
+                ForEach(x =>
+                {
+                    if (actor.CanBeSee(x))
+                        ContextRoleplayHandler.SendGameRolePlayShowActorMessage(x.Client, actor);
+                    else
+                        ContextHandler.SendGameContextRemoveElementMessage(x.Client, actor);
+                });
         }
 
         private void OnEnter(RolePlayActor actor)
@@ -975,7 +971,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (character != null)
                 Clients.Add(character.Client);
 
-            ContextRoleplayHandler.SendGameRolePlayShowActorMessage(Clients, actor);
+            ForEach(x =>
+                {
+                    if (actor.CanBeSee(x))
+                        ContextRoleplayHandler.SendGameRolePlayShowActorMessage(x.Client, actor);
+                });
 
             if (character != null)
             {
@@ -996,8 +996,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             {
                 monsterGroup.MoveTimer = Area.CallDelayed(new Random().Next(MonsterGroup.MinMoveInterval, MonsterGroup.MaxMoveInterval + 1) * 1000,
                     () => MoveRandomlyMonsterGroup(monsterGroup));
-                monsterGroup.StarsTimer = Area.CallDelayed(MonsterGroup.StarsBonusInterval * 1000,
-                    () => IncrementMonsterGroupBonus(monsterGroup));
             }
         }
 
@@ -1039,8 +1037,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             {
                 monsterGroup.MoveTimer.Dispose();
                 monsterGroup.MoveTimer = null;
-                monsterGroup.StarsTimer.Dispose();
-                monsterGroup.StarsTimer = null;
             }
         }
 

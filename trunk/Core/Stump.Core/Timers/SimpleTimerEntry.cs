@@ -38,8 +38,14 @@ namespace Stump.Core.Timers
 
         internal void Execute(SelfRunningTaskPool queue)
         {
-            Callback();
-            LastCallTime = queue.LastUpdateTime;
+            try
+            {
+                Callback();
+            }
+            finally
+            {
+                LastCallTime = queue.LastUpdateTime;
+            }
             if (IsOneShot)
             {
                 queue.CancelSimpleTimer(this);

@@ -9,8 +9,6 @@ namespace ArkalysPlugin
 {
     public class Plugin : PluginBase
     {
-        private bool m_configAutoReload;
-
         public Plugin(PluginContext context)
             : base(context)
         {
@@ -40,22 +38,12 @@ namespace ArkalysPlugin
         public override void Initialize()
         {
             base.Initialize();
-
-            if (!m_configAutoReload)
-            {
-                m_configAutoReload = true;
-                WorldServer.Instance.StartConfigReloadOnChange(Config);
-            }
-
             Initialized = true;
         }
 
         public override void Shutdown()
         {
             base.Shutdown();
-
-            if (Config != null)
-                WorldServer.Instance.StopConfigReloadOnChange(Config);
 
             Initialized = false;
         }
