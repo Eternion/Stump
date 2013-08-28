@@ -47,6 +47,12 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                         return;
                     }
 
+                    if (target.TranquilityMode)
+                    {
+                        SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_CHARACTER_OCCUPIED);
+                        return;
+                    }
+
                     var request = new PlayerTradeRequest(client.Character, target);
                     client.Character.OpenRequestBox(request);
                     target.OpenRequestBox(request);
