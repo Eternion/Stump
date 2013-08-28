@@ -142,7 +142,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var target = GetTarget();
+            var target = GetTarget(trigger);
             var to = ((GameTrigger) trigger).Character;
 
             target.Teleport(to.Position);

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Commands.Commands;
@@ -6,6 +7,7 @@ using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps;
 
 namespace Stump.Server.WorldServer.Commands.Commands
@@ -39,22 +41,22 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            trigger.Reply("Map {0} (relative : {1})", trigger.Bold(map.Id), trigger.Bold(map.RelativeId));
-            trigger.Reply("X:{0}, Y:{1}", trigger.Bold(map.Position.X), trigger.Bold(map.Position.Y));
-            trigger.Reply("SubArea:{0}, Area:{1}, SuperArea:{2}", trigger.Bold(map.SubArea.Id), trigger.Bold(map.Area.Id), trigger.Bold(map.SuperArea.Id));
+            trigger.ReplyBold("Map {0} (relative : {1})", map.Id, map.RelativeId);
+            trigger.ReplyBold("X:{0}, Y:{1}", map.Position.X, map.Position.Y);
+            trigger.ReplyBold("SubArea:{0}, Area:{1}, SuperArea:{2}", map.SubArea.Id, map.Area.Id, map.SuperArea.Id);
             var actors = map.GetActors<RolePlayActor>().ToArray();
-            trigger.Reply("Actors ({0}) :", trigger.Bold(actors.Length));
+            trigger.ReplyBold("Actors ({0}) :", actors.Length);
 
             foreach (var actor in actors)
             {
-                trigger.Reply("- {0} : {1}", trigger.Bold(actor.GetType().Name), actor);
+                trigger.ReplyBold("- {0} : {1}", actor.GetType().Name, actor);
             }
 
-            trigger.Reply("SpawningPools ({0}) :", trigger.Bold(map.SpawningPools.Count));
+            trigger.ReplyBold("SpawningPools ({0}) :", map.SpawningPools.Count);
 
             foreach (var pool in map.SpawningPools)
             {
-                trigger.Reply("- {0} : State : {1}, Next : {2}s", trigger.Bold(pool.GetType().Name), trigger.Bold(pool.State), trigger.Bold(pool.RemainingTime / 1000));
+                trigger.ReplyBold("- {0} : State : {1}, Next : {2}s", pool.GetType().Name, pool.State, pool.RemainingTime / 1000);
             }
         }
     }
@@ -88,16 +90,16 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            trigger.Reply("Area {0} ({1})", trigger.Bold(area.Name), trigger.Bold(area.Id));
-            trigger.Reply("Enabled : {0}", trigger.Bold(area.IsRunning));
-            trigger.Reply("Objects : {0}", trigger.Bold(area.ObjectCount));
-            trigger.Reply("Timers : {0}", trigger.Bold(area.TimersCount));
-            trigger.Reply("Update interval : {0}ms", trigger.Bold(area.UpdateDelay));
-            trigger.Reply("AvgUpdateTime : {0}ms", trigger.Bold((int)area.AverageUpdateTime));
-            trigger.Reply("LastUpdate : {0}", trigger.Bold(area.LastUpdateTime));
-            trigger.Reply("Is Updating : {0}", trigger.Bold(area.IsUpdating));
-            trigger.Reply("Is Disposed : {0}", trigger.Bold(area.IsDisposed));
-            trigger.Reply("Current Thread : {0}", trigger.Bold(area.CurrentThreadId));
+            trigger.ReplyBold("Area {0} ({1})", area.Name, area.Id);
+            trigger.ReplyBold("Enabled : {0}", area.IsRunning);
+            trigger.ReplyBold("Objects : {0}", area.ObjectCount);
+            trigger.ReplyBold("Timers : {0}", area.TimersCount);
+            trigger.ReplyBold("Update interval : {0}ms", area.UpdateDelay);
+            trigger.ReplyBold("AvgUpdateTime : {0}ms", area.AverageUpdateTime);
+            trigger.ReplyBold("LastUpdate : {0}", area.LastUpdateTime);
+            trigger.ReplyBold("Is Updating : {0}", area.IsUpdating);
+            trigger.ReplyBold("Is Disposed : {0}", area.IsDisposed);
+            trigger.ReplyBold("Current Thread : {0}", area.CurrentThreadId);
         }
     }
 
@@ -110,19 +112,77 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Description = "Give informations about a player";
             ParentCommand = typeof(InfoCommand);
             AddTargetParameter();
+            AddParameter<bool>("stats", "s", "Gives informations about his stats too", isOptional: true);
         }
 
         public override void Execute(TriggerBase trigger)
         {
             var character = GetTarget(trigger);
 
-            trigger.Reply("{0} ({1})", trigger.Bold(character.Name), trigger.Bold(character.Id));
-            trigger.Reply("Account : {0}/{1} ({2}) - {3}", trigger.Bold(character.Account.Login), trigger.Bold(character.Account.Nickname), trigger.Bold(character.Account.Id), trigger.Bold(character.Account.Role));
-            trigger.Reply("Ip : {0}", trigger.Bold(character.Client.IP));
-            trigger.Reply("Level : {0}", trigger.Bold(character.Level));
-            trigger.Reply("Map : {0}, Cell : {1}, Direction : {2}", trigger.Bold(character.Map.Id), trigger.Bold(character.Cell.Id), trigger.Bold(character.Direction));
-            trigger.Reply("Kamas : {0}", trigger.Bold(character.Inventory.Kamas));
-            trigger.Reply("Items : {0}", character.Inventory.Count);
+            trigger.ReplyBold("{0} ({1})", character.Name, character.Id);
+            trigger.ReplyBold("Account : {0}/{1} ({2}) - {3}", character.Account.Login, character.Account.Nickname, character.Account.Id, character.Account.Role);
+            trigger.ReplyBold("Ip : {0}", character.Client.IP);
+            trigger.ReplyBold("Level : {0}", character.Level);
+            trigger.ReplyBold("Map : {0}, Cell : {1}, Direction : {2}", character.Map.Id, character.Cell.Id, character.Direction);
+            trigger.ReplyBold("Kamas : {0}", character.Inventory.Kamas);
+            trigger.ReplyBold("Items : {0}", character.Inventory.Count);
+            trigger.ReplyBold("Spells : {0}", character.Spells.Count());
+            trigger.ReplyBold("Fight : {0}", character.IsFighting() ? character.Fight.Id.ToString() : "Not fighting");
+
+            if (trigger.Get<bool>("stats"))
+            {
+                trigger.ReplyBold("Spells Points : {0}, Stats Points : {1}", character.SpellsPoints,
+                                  character.StatsPoints);
+                trigger.ReplyBold("Health : {0}/{1}", character.Stats.Health, character.Stats.Health.TotalMax);
+                trigger.ReplyBold("AP : {0}, PM : {1}", character.Stats.AP, character.Stats.MP);
+                trigger.ReplyBold("Vitality : {0}, Wisdom : {1}", character.Stats.Vitality, character.Stats.Wisdom);
+                trigger.ReplyBold("Strength : {0}, Intelligence : {1}", character.Stats.Strength, character.Stats.Intelligence);
+                trigger.ReplyBold("Agility : {0}, Chance : {1}", character.Stats.Agility, character.Stats.Chance);
+            }
+        }
+    }
+
+    public class InfoFightCommand : SubCommand
+    {
+        public InfoFightCommand()
+        {
+            Aliases = new[] { "fight" };
+            RequiredRole = RoleEnum.Moderator;
+            Description = "Give informations about a fight";
+            ParentCommand = typeof(InfoCommand);
+            AddParameter("fight", "f", "Gives informations about the given fight", converter:ParametersConverter.FightConverter);
+        }
+
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var fight = trigger.Get<Fight>("fight");
+
+            trigger.ReplyBold("Fight {0}", fight.Id);
+            trigger.ReplyBold("State : {0} Started Since : {1}", fight.State,
+                              fight.IsStarted ? (DateTime.Now - fight.StartTime).ToString(@"m\mss\s") : "not");
+            trigger.ReplyBold("Blue team ({0}) :", fight.BlueTeam.Fighters.Count);
+
+            foreach (var fighter in fight.BlueTeam.Fighters)
+            {
+                trigger.ReplyBold(" - {0} : {1} Level : {2}{3}", fighter.GetType().Name, fighter, fighter.Level,
+                    fighter.IsDead() ? " DEAD" : string.Empty);
+            }
+
+            trigger.ReplyBold("Red team ({0}) :", fight.RedTeam.Fighters.Count);
+
+            foreach (var fighter in fight.RedTeam.Fighters)
+            {
+                trigger.ReplyBold(" - {0} : {1} Level : {2}{3}", fighter.GetType().Name, fighter, fighter.Level,
+                    fighter.IsDead() ? " DEAD" : string.Empty);
+            }
+
+            trigger.ReplyBold("Spectators ({0}) :", fight.Spectators.Count);
+
+            foreach (var spectator in fight.Spectators)
+            {
+                trigger.ReplyBold(" - {0}", spectator.Character);
+            }
         }
     }
 }

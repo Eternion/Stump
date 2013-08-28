@@ -1760,8 +1760,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     m_record.CellId = Cell.Id;
                     m_record.Direction = Direction;
 
-                    m_record.EntityLook = Look;
-
                     m_record.AP = Stats[PlayerFields.AP].Base;
                     m_record.MP = Stats[PlayerFields.MP].Base;
                     m_record.Strength = Stats[PlayerFields.Strength].Base;

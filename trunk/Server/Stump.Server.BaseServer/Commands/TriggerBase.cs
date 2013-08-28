@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
@@ -82,6 +83,11 @@ namespace Stump.Server.BaseServer.Commands
         public void Reply(string format, params object[] args)
         {
             Reply(string.Format(format, args));
+        }
+
+        public void ReplyBold(string format, params object[] args)
+        {
+            Reply(string.Format(format, args.Select(Bold).ToArray()));
         }
 
         public virtual void ReplyError(string message)
@@ -215,6 +221,7 @@ namespace Stump.Server.BaseServer.Commands
                 return true;
 
             string word = Args.NextWord();
+            bool definedOnly = false;
             while (!string.IsNullOrEmpty(word) && definedParam.Count < BindedCommand.Parameters.Count)
             {
                 if (word.StartsWith("\"") && word.EndsWith("\""))
@@ -241,20 +248,27 @@ namespace Stump.Server.BaseServer.Commands
                         {
                             name = matchVar.Groups[1].Value;
                             value = string.Empty;
+                            definedOnly = true;
                         }
                     }
 
                     if (!string.IsNullOrEmpty(name)) // if one of both regex success
                     {
                         IParameterDefinition definition =
-                            paramToDefine.Where(entry => CompareParameterName(entry, name, CommandBase.IgnoreCommandCase)).SingleOrDefault();
+                            paramToDefine.SingleOrDefault(entry => CompareParameterName(entry, name, CommandBase.IgnoreCommandCase));
 
                         if (definition != null)
                         {
                             IParameter parameter = definition.CreateParameter();
 
+
                             try
                             {
+                                // parameters defined like "-life" imply being true
+                                // writting "-life" is similar to "-life=true"
+                                if (definedOnly && definition.ValueType == typeof (bool))
+                                    value = "true";
+
                                 parameter.SetValue(value, this);
                             }
                             catch (ConverterException ex)

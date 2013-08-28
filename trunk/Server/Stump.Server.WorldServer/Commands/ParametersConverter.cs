@@ -12,6 +12,7 @@ using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Spells;
@@ -117,6 +118,22 @@ namespace Stump.Server.WorldServer.Commands
                 throw new ConverterException(string.Format("'{0}' is not a valid spell", entry));
 
             return spellByName;
+        };
+
+        public static ConverterHandler<Fight> FightConverter = (entry, trigger) =>
+        {
+            int outvalue;
+            if (int.TryParse(entry, out outvalue))
+            {
+                var fight = FightManager.Instance.GetFight(outvalue);
+
+                if (fight == null)
+                    throw new ConverterException(string.Format("Fight not found'{0}'", entry));
+
+                return fight;
+            }
+
+            throw new ConverterException(string.Format("'{0}' invalid fight id. Must be a number.", entry));
         };
 
         public static ConverterHandler<NpcTemplate> NpcTemplateConverter = (entry, trigger) =>

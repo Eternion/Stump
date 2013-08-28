@@ -12,7 +12,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public NpcsCommands()
         {
-            Aliases = new[] { "npc" };
+            Aliases = new[] { "npcs" };
             RequiredRole = RoleEnum.GameMaster;
             Description = "Manage npcs";
         }

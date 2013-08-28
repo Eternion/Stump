@@ -744,10 +744,9 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
             }
 
-            if (State == FightState.Fighting ||
-                State == FightState.Ended)
+            if (State == FightState.Ended)
             {
-                throw new Exception("Cannot use fight actor while fighting");
+                throw new Exception("Fight ended");
             }
 
             TimeLine.Fighters.Add(actor);
@@ -765,6 +764,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             // update blades if shown
             if (BladesVisible)
                 UpdateBlades(team);
+            
+            ContextHandler.SendGameFightTurnListMessage(Clients, this);
         }
 
         protected virtual void OnSummonAdded(SummonedFighter fighter)
@@ -786,17 +787,17 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (State == FightState.Placement || State == FightState.NotStarted)
             {
                 ContextHandler.SendGameFightPlacementPossiblePositionsMessage(character.Client, this, fighter.Team.Id);
-
-                foreach (FightActor fightMember in GetAllFighters())
-                    ContextHandler.SendGameFightShowFighterMessage(character.Client, fightMember);
-
-                ContextHandler.SendGameEntitiesDispositionMessage(character.Client, GetAllFighters());
-
-                ContextHandler.SendGameFightUpdateTeamMessage(character.Client, this, RedTeam);
-                ContextHandler.SendGameFightUpdateTeamMessage(character.Client, this, BlueTeam);
-
-                ContextHandler.SendGameFightUpdateTeamMessage(Clients, this, fighter.Team);
             }
+
+            foreach (FightActor fightMember in GetAllFighters())
+                ContextHandler.SendGameFightShowFighterMessage(character.Client, fightMember);
+
+            ContextHandler.SendGameEntitiesDispositionMessage(character.Client, GetAllFighters());
+
+            ContextHandler.SendGameFightUpdateTeamMessage(character.Client, this, RedTeam);
+            ContextHandler.SendGameFightUpdateTeamMessage(character.Client, this, BlueTeam);
+
+            ContextHandler.SendGameFightUpdateTeamMessage(Clients, this, fighter.Team);
         }
 
 

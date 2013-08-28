@@ -132,6 +132,7 @@
     <Compile Include="Commands\Commands\AlignmentCommands.cs" />
     <Compile Include="Commands\Commands\AnnounceCommand.cs" />
     <Compile Include="Commands\Commands\BanCommand.cs" />
+    <Compile Include="Commands\Commands\FightCommands.cs" />
     <Compile Include="Commands\Commands\GodCommand.cs" />
     <Compile Include="Commands\Commands\InfoCommand.cs" />
     <Compile Include="Commands\Commands\ItemCommand.cs" />
@@ -144,6 +145,7 @@
     <Compile Include="Commands\Commands\Patterns\TargetCommand.cs" />
     <Compile Include="Commands\Commands\ReloadCommands.cs" />
     <Compile Include="Commands\Commands\SaveCommand.cs" />
+    <Compile Include="Commands\Commands\SpellsCommands.cs" />
     <Compile Include="Commands\Commands\TeleportCommand.cs" />
     <Compile Include="Commands\Commands\WhoCommand.cs" />
     <Compile Include="Commands\ParametersConverter.cs" />

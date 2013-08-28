@@ -12,6 +12,7 @@ namespace Stump.Server.WorldServer.Game.Spells
         private readonly ISpellRecord m_record;
         private readonly int m_id;
         private byte m_level;
+        private SpellLevelTemplate m_currentLevel;
 
         public Spell(ISpellRecord record)
         {
@@ -64,10 +65,11 @@ namespace Stump.Server.WorldServer.Game.Spells
             {
                 return m_level;
             }
-            internal set
+            set
             {
                 m_record.Level = value;
                 m_level = value;
+                m_currentLevel = !ByLevel.ContainsKey(CurrentLevel) ? ByLevel[1] : ByLevel[CurrentLevel];
             }
         }
 
@@ -75,7 +77,7 @@ namespace Stump.Server.WorldServer.Game.Spells
         {
             get
             {
-                return !ByLevel.ContainsKey(CurrentLevel) ? ByLevel[1] : ByLevel[CurrentLevel];
+                return m_currentLevel ?? (m_currentLevel = !ByLevel.ContainsKey(CurrentLevel) ? ByLevel[1] : ByLevel[CurrentLevel]);
             }
         }
 
