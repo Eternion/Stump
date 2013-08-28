@@ -155,5 +155,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
                 (short)( s1.Given > short.MaxValue ? short.MaxValue : s1.Given ),
                 (short)( s1.Context > short.MaxValue ? short.MaxValue : s1.Context ));
         }
+
+        
+
+        public override string ToString()
+        {
+            return string.Format("{0}({1}+{2}+{3})", Total, Base, Equiped, Context);
+        }
     }
 }

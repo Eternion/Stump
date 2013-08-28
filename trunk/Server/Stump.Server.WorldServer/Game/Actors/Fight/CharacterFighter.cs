@@ -118,9 +118,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void ToggleTurnReady(bool ready)
         {
-            if (!IsFighterTurn())
-                return;
-
             if (PersonalReadyChecker != null)
                 PersonalReadyChecker.ToggleReady(this, ready);
 

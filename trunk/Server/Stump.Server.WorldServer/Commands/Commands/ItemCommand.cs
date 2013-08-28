@@ -54,10 +54,52 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
     }
 
+    public class ItemRemoveCommand : TargetSubCommand
+    {
+        public ItemRemoveCommand()
+        {
+            Aliases = new[] { "remove", "delete" };
+            RequiredRole = RoleEnum.Moderator;
+            Description = "Delete an item from the target";
+            ParentCommand = typeof(ItemCommand);
+
+            AddParameter("template", "item", "Item to remove", converter: ParametersConverter.ItemTemplateConverter);
+            AddTargetParameter(true, "Character who will lose the item");
+            AddParameter<uint>("amount", "amount", "Amount of items to remove", isOptional:true);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var itemTemplate = trigger.Get<ItemTemplate>("template");
+            var target = GetTarget(trigger);
+
+            var item = target.Inventory.TryGetItem(itemTemplate);
+
+            if (item != null)
+            {
+                if (trigger.IsArgumentDefined("amount"))
+                {
+                    target.Inventory.RemoveItem(item, trigger.Get<uint>("amount"));
+                    trigger.ReplyBold("'{0}'x{1} removed from {1}'s inventory", itemTemplate.Name,
+                                      trigger.Get<uint>("amount"), target);
+                }
+                else
+                {
+                    target.Inventory.RemoveItem(item);
+                    trigger.ReplyBold("Item {0} removed from {1}'s inventory", itemTemplate.Name, target);
+                }
+            }
+            else
+            {
+                trigger.ReplyError("{0} hasn't item {1}");
+            }
+        }
+    }
+
     public class ItemListCommand : SubCommand
     {
         [Variable]
-        public static readonly int LimitItemList = 20;
+        public static readonly int LimitItemList = 50;
 
         public ItemListCommand()
         {
@@ -67,6 +109,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             ParentCommand = typeof(ItemCommand);
             AddParameter("pattern", "p", "Search pattern (see docs)", "*");
             AddParameter("target", "t", "Where items will be search", converter:ParametersConverter.CharacterConverter, isOptional:true);
+            AddParameter("page", "p", "Page number of the list (starts at 0)", 0, isOptional:true);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -85,10 +128,17 @@ namespace Stump.Server.WorldServer.Commands.Commands
             else
             {
                 var items = ItemManager.Instance.GetItemsByPattern(trigger.Get<string>("pattern"));
+                var startIndex = trigger.Get<int>("page") * LimitItemList;
 
                 int counter = 0;
-                foreach (var item in items)
+                var enumerator = items.GetEnumerator();
+
+                for (int i = 0; enumerator.MoveNext(); i++)
                 {
+                    if (i < startIndex)
+                        continue;
+
+                    var item = enumerator.Current;
                     if (counter >= LimitItemList)
                     {
                         trigger.Reply("... (limit reached : {0})", LimitItemList);

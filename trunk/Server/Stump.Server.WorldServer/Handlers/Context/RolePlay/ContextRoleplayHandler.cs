@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         [WorldHandler(MapRunningFightListRequestMessage.Id)]
         public static void HandleMapRunningFightListRequestMessage(WorldClient client, MapRunningFightListRequestMessage message)
         {
-            SendMapRunningFightListMessage(client, client.Character.Map.GetFights());
+            SendMapRunningFightListMessage(client, client.Character.Map.Fights);
         }
 
         [WorldHandler(MapRunningFightDetailsRequestMessage.Id)]

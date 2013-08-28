@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -14,6 +14,7 @@ namespace Stump.Server.WorldServer.Game.Fights
     public class FightTeam
     {
         #region Events
+
         public event Action<FightTeam, FightActor> FighterAdded;
 
         private void OnFightAdded(FightActor fighter)
@@ -33,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         private void NotifyTeamOptionsChanged(FightOptionsEnum option)
         {
-            var handler = TeamOptionsChanged;
+            Action<FightTeam, FightOptionsEnum> handler = TeamOptionsChanged;
             if (handler != null)
                 handler(this, option);
         }
@@ -118,10 +119,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightActor Leader
         {
-            get
-            {
-                return m_fighters.Count > 0 ? m_fighters.First() : null;
-            }
+            get { return m_fighters.Count > 0 ? m_fighters.First() : null; }
         }
 
         public bool IsSecret
@@ -146,6 +144,16 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             get;
             private set;
+        }
+
+        public ReadOnlyCollection<FightActor> Fighters
+        {
+            get { return m_fighters.AsReadOnly(); }
+        }
+
+        public ReadOnlyCollection<FightActor> Leavers
+        {
+            get { return m_leavers.AsReadOnly(); }
         }
 
         public bool IsMonsterTeam()
@@ -211,6 +219,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             return m_fighters.All(entry => entry.IsReady);
         }
+
         public bool AreAllDead()
         {
             return m_fighters.Count <= 0 || m_fighters.All(entry => entry.IsDead() || entry.HasLeft());
@@ -336,6 +345,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             return GetAllFighters().Where(entry => predicate(entry));
         }
+
         public IEnumerable<FightActor> GetAllFightersWithLeavers(Predicate<FightActor> predicate)
         {
             return GetAllFightersWithLeavers().Where(entry => predicate(entry));
@@ -354,10 +364,10 @@ namespace Stump.Server.WorldServer.Game.Fights
         public FightTeamInformations GetFightTeamInformations()
         {
             return new FightTeamInformations(Id,
-                Leader != null ? Leader.Id : 0,
-                (sbyte) AlignmentSide,
-                (sbyte) TeamType,
-                m_fighters.Select(entry => entry.GetFightTeamMemberInformations())
+                                             Leader != null ? Leader.Id : 0,
+                                             (sbyte) AlignmentSide,
+                                             (sbyte) TeamType,
+                                             m_fighters.Select(entry => entry.GetFightTeamMemberInformations())
                 );
         }
 
@@ -373,7 +383,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         public FightTeamLightInformations GetFightTeamLightInformations()
         {
             return new FightTeamLightInformations(Id, Leader == null ? 0 : Leader.Id, (sbyte) AlignmentSide,
-                (sbyte)TeamType, (sbyte) m_fighters.Count);
+                                                  (sbyte) TeamType, (sbyte) m_fighters.Count);
         }
     }
 }

@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Spells
 {
-    public class SpellInventory
+    public class SpellInventory : IEnumerable<CharacterSpell>
     {
         private readonly Dictionary<int, CharacterSpell> m_spells = new Dictionary<int, CharacterSpell>();
         private readonly Queue<CharacterSpellRecord> m_spellsToDelete = new Queue<CharacterSpellRecord>();
@@ -65,6 +67,11 @@ namespace Stump.Server.WorldServer.Game.Spells
             if (template == null)
                 return null;
 
+            return LearnSpell(template);
+        }
+
+        public CharacterSpell LearnSpell(SpellTemplate template)
+        {
             var record = SpellManager.Instance.CreateSpellRecord(Owner.Record, template);
 
             var spell = new CharacterSpell(record);
@@ -75,20 +82,38 @@ namespace Stump.Server.WorldServer.Game.Spells
             return spell;
         }
 
-        public void UnLearnSpell(int id)
+        public bool UnLearnSpell(int id)
         {
             var spell = GetSpell(id);
 
             if (spell == null)
-                return;
+                return true;
 
             m_spells.Remove(id);
             m_spellsToDelete.Enqueue(spell.Record);
 
             if (spell.CurrentLevel > 1)
-                Owner.SpellsPoints += (ushort)(spell.CurrentLevel - 1);
+            {
+                var resetPoints = 0;
+                for (var i = 1; i < spell.CurrentLevel; i++)
+                {
+                    resetPoints += i;
+                }
+                Owner.SpellsPoints += (ushort)resetPoints;
+            }
 
-            InventoryHandler.SendSpellUpgradeSuccessMessage(Owner.Client, id, 0);
+            InventoryHandler.SendSpellListMessage(Owner.Client, true);
+            return true;
+        }
+
+        public bool UnLearnSpell(CharacterSpell spell)
+        {
+            return UnLearnSpell(spell.Id);
+        }
+
+        public bool UnLearnSpell(SpellTemplate spell)
+        {
+            return UnLearnSpell(spell.Id);
         }
 
         public bool CanBoostSpell(Spell spell, bool send = true)
@@ -145,17 +170,36 @@ namespace Stump.Server.WorldServer.Game.Spells
             return true;
         }
 
+        public bool ForgetSpell(SpellTemplate spell)
+        {
+            return ForgetSpell(spell.Id);
+        }
+
         public bool ForgetSpell(int id)
         {
             if (!HasSpell(id))
                 return false;
 
             var spell = GetSpell(id);
-            Owner.SpellsPoints += (ushort)(spell.CurrentLevel - 1);
+
+            return ForgetSpell(spell);
+        }
+
+        public bool ForgetSpell(CharacterSpell spell)
+        {
+            if (!HasSpell(spell.Id))
+                return false;
+
+            var resetPoints = 0;
+            for (var i = 1; i < spell.CurrentLevel; i++)
+            {
+                resetPoints += i;
+            }
+
             spell.CurrentLevel = 1;
+            Owner.SpellsPoints += (ushort)resetPoints;
 
-
-            InventoryHandler.SendSpellUpgradeSuccessMessage(Owner.Client, spell); 
+            InventoryHandler.SendSpellListMessage(Owner.Client, true); 
             return true;
         }
 
@@ -207,6 +251,16 @@ namespace Stump.Server.WorldServer.Game.Spells
                     database.Delete(record);
                 }
             }
+        }
+
+        public IEnumerator<CharacterSpell> GetEnumerator()
+        {
+            return m_spells.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

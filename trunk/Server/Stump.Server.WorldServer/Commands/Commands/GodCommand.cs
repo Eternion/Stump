@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] { "levelup" };
             RequiredRole = RoleEnum.Moderator;
- 
+            Description = "Gives some levels to the target";
             AddParameter("amount", "amount", "Amount of levels to add", (short)1);
             AddTargetParameter(true, "Character who will level up");
         }
@@ -107,7 +107,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] { "kamas" };
             RequiredRole = RoleEnum.Moderator;
-
+            Description = "Set the amount kamas of target's inventory";
             AddParameter<int>("amount", "amount", "Amount of kamas to set");
             AddTargetParameter(true);
         }
@@ -118,7 +118,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             int kamas = trigger.Get<int>("amount");
 
             target.Inventory.SetKamas(kamas);
-            trigger.Reply("{0} has now {1} kamas", target, kamas);
+            trigger.ReplyBold("{0} has now {1} kamas", target, kamas);
         }
     }
 
@@ -128,7 +128,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] { "stats" };
             RequiredRole = RoleEnum.Administrator;
-
+            Description = "Set the amount of stats point of the target";
             AddParameter<ushort>("amount", "amount", "Amount of stats points to set");
             AddTargetParameter(true);
         }

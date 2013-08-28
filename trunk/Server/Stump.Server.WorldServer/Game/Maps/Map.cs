@@ -865,9 +865,9 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         #region Fights
 
-        public IEnumerable<Fight> GetFights()
+        public ReadOnlyCollection<Fight> Fights
         {
-            return m_fights;
+            get { return m_fights.AsReadOnly(); }
         }
 
         public short GetFightCount()
