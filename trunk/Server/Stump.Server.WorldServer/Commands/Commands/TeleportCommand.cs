@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             AddTargetParameter(true);
             AddParameter<short>("cellid", "cell", "Cell destination", isOptional: true);
             AddParameter("superarea", "area", "Super area containing the map (e.g 0 is continent, 3 is incarnam)", isOptional: true, converter:ParametersConverter.SuperAreaConverter);
-            AddParameter<bool>("outdoor", "out", isOptional:true);
+            AddParameter<int>("outdoor", "out", isOptional:true);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -35,22 +35,22 @@ namespace Stump.Server.WorldServer.Commands.Commands
             var target = GetTarget(trigger);
             var reference = target.Map;
             bool outdoorDefined = trigger.IsArgumentDefined("outdoor");
-            bool outdoor = trigger.Get<bool>("outdoor");
+            int outdoor = trigger.Get<int>("outdoor");
             Map map;
 
             if (trigger.IsArgumentDefined("superarea"))
             {
                 var superArea = trigger.Get<SuperArea>("superarea");
 
-                map = outdoorDefined ? 
-                    superArea.GetMaps(point, outdoor).FirstOrDefault() :
-                    superArea.GetMaps(point).FirstOrDefault();
+                map = outdoorDefined ?
+                    superArea.GetMaps(point, outdoorDefined).FirstOrDefault() :
+                    superArea.GetMaps(point).ElementAtOrDefault(outdoor);
             }
             else
             {
                 map = outdoorDefined ?
-                    World.Instance.GetMaps(reference, point.X, point.Y, outdoor).FirstOrDefault() :
-                    World.Instance.GetMaps(reference, point.X, point.Y).FirstOrDefault();
+                    World.Instance.GetMaps(reference, point.X, point.Y, outdoorDefined).FirstOrDefault() :
+                    World.Instance.GetMaps(reference, point.X, point.Y).ElementAtOrDefault(outdoor);
             }
 
             if (map == null)

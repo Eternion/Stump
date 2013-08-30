@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 
@@ -36,9 +38,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
 
         public virtual HumanInformations GetHumanInformations()
         {
+            IEnumerable<HumanOption> hOptions = new HumanOption[] { new HumanOptionEmote(22, DateTime.Now.GetUnixTimeStamp()), new HumanOptionGuild(new GuildInformations(61001, "Staff", new GuildEmblem(104, 9864735, 15, 16777215))) };
+
             return new HumanInformations(new ActorRestrictionsInformations(),
                 Sex == SexTypeEnum.SEX_FEMALE,
-                new HumanOption[0]); // todo
+                hOptions); // todo
         }
 
         #endregion 
