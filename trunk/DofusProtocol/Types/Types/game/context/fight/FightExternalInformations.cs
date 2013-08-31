@@ -74,7 +74,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(int) + sizeof(bool) + sizeof(short) + fightTeams.Sum(x => x.GetSerializationSize()) + sizeof(short) + fightTeamsOptions.Sum(x => x.GetSerializationSize());
+            return sizeof(int) + sizeof(int) + sizeof(bool)  + fightTeams.Sum(x => x.GetSerializationSize()) + fightTeamsOptions.Sum(x => x.GetSerializationSize());
         }
         
     }
