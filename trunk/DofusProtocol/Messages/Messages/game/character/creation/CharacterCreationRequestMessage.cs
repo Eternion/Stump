@@ -68,7 +68,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + Encoding.UTF8.GetByteCount(name) + sizeof(sbyte) + sizeof(bool) + sizeof(short) + colors.Sum(x => sizeof(int)) + sizeof(int);
+            return sizeof(short) + Encoding.UTF8.GetByteCount(name) + sizeof(sbyte) + sizeof(bool) + colors.Sum(x => sizeof(int)) + sizeof(int);
         }
         
     }
