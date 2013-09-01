@@ -1,4 +1,5 @@
 ﻿#region License GNU GPL
+
 // IconsManager.cs
 // 
 // Copyright (C) 2012 - BehaviorIsManaged
@@ -12,9 +13,9 @@
 // See the GNU General Public License for more details. 
 // You should have received a copy of the GNU General Public License along with this program; 
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Reflection;
@@ -25,40 +26,64 @@ namespace WorldEditor.Loaders.Icons
     public class IconsManager : Singleton<IconsManager>
     {
         private D2pFile m_d2PFile;
-        private List<Icon> m_icons;
+
+        private Icon m_emptyIcon;
+        private Icon m_errorIcon;
+        private Dictionary<int, Icon> m_icons;
+
+        public Icon ErrorIcon
+        {
+            get { return m_errorIcon; }
+        }
+
+        public Icon EmptyIcon
+        {
+            get { return m_emptyIcon; }
+        }
 
         public void Initialize(string path)
         {
             m_d2PFile = new D2pFile(path);
-            m_icons = EnumerateIcons().ToList();
+            m_icons = EnumerateIcons().ToDictionary(x => x.Id);
+            m_errorIcon = new Icon(-1, m_d2PFile.FileName, m_d2PFile.ReadFile("error.png"));
+            m_emptyIcon = new Icon(0, m_d2PFile.FileName, m_d2PFile.ReadFile("empty.png"));
         }
 
-        public List<Icon> Icons
+        public IEnumerable<Icon> Icons
         {
-            get { return m_icons; }
-            set { m_icons = value; }
+            get { return m_icons.Values; }
         }
 
         public Icon GetIcon(int id)
         {
-            if (!m_d2PFile.Exists(id + ".png"))
-                throw new ArgumentException(string.Format("Item icon {0} not found", id));
+            if (id == 0)
+                return m_emptyIcon;
 
-            var data = m_d2PFile.ReadFile(id + ".png");
+            if (!m_icons.ContainsKey(id))
+                return m_errorIcon;
+
+            byte[] data = m_d2PFile.ReadFile(id + ".png");
 
             return new Icon(id, id + ".png", data);
         }
 
         private IEnumerable<Icon> EnumerateIcons()
         {
-            foreach (var entry in m_d2PFile.Entries)
+            foreach (D2pEntry entry in m_d2PFile.Entries)
             {
                 if (!entry.FullFileName.EndsWith(".png"))
                     continue;
 
-                var data = m_d2PFile.ReadFile(entry);
-                var name = entry.FileName.Replace(".png", "");
-                var id = name == "empty" || name == "error" ? -1 : int.Parse(name);
+                byte[] data = m_d2PFile.ReadFile(entry);
+                string name = entry.FileName.Replace(".png", "");
+
+                int id;
+                if (name == "empty")
+                    id = 0;
+                else if (name == "error")
+                    id = -1;
+                else
+                    id = int.Parse(name);
 
                 yield return new Icon(id, entry.FileName, data);
             }

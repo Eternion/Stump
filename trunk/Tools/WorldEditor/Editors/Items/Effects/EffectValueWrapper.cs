@@ -28,6 +28,7 @@ namespace WorldEditor.Editors.Items.Effects
         public EffectValueWrapper(EffectInstanceInteger wrappedEffect) : base(wrappedEffect)
         {
             m_wrappedEffect = wrappedEffect;
+            m_value = m_wrappedEffect.Value;
         }
 
         public int Value

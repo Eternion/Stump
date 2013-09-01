@@ -252,9 +252,9 @@ namespace WorldEditor.Loaders.I18N
 
         public int FindFreeId()
         {
-            var maxId = m_readers.Select(x => x.Value.FindFreeId()).Max();
+            var id = m_readers.Select(x => x.Value.FindFreeId()).Max();
 
-            return maxId < Settings.MinI18NId ? Settings.MinI18NId : maxId;
+            return id < Settings.MinI18NId ? Settings.MinI18NId : id;
         }
 
         public void ChangeLinksLanguage(Languages old, Languages @new)

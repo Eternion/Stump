@@ -8,7 +8,7 @@
             <Button Content="OK" Margin="5" IsDefault="True" Click="OnButtonOKClick" />
             <Button Content="Cancel" IsCancel="True" Margin="5" Click="OnButtonCancelClick" />
         </UniformGrid>
-        <ListBox DockPanel.Dock="Top" ItemsSource="{Binding IconsSource}" SelectedValue="{Binding SelectedIcon}" SelectedValuePath="Id"
+        <ListBox DockPanel.Dock="Top" ItemsSource="{Binding IconsSource}" SelectedValue="{Binding SelectedIcon}"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsSynchronizedWithCurrentItem="True">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}">

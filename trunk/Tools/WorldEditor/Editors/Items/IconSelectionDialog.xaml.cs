@@ -26,13 +26,13 @@ namespace WorldEditor.Editors.Items
         }
 
         public static readonly DependencyProperty SelectedIconProperty =
-            DependencyProperty.Register("SelectedIcon", typeof(int), typeof(IconSelectionDialog), new PropertyMetadata(default(int)));
+            DependencyProperty.Register("SelectedIcon", typeof(Icon), typeof(IconSelectionDialog), new PropertyMetadata(default(Icon)));
 
-        public int SelectedIcon
+        public Icon SelectedIcon
         {
             get
             {
-                return (int)GetValue(SelectedIconProperty);
+                return (Icon)GetValue(SelectedIconProperty);
             }
             set { SetValue(SelectedIconProperty, value); }
         }

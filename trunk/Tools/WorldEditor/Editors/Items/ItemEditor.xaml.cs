@@ -28,6 +28,12 @@ namespace WorldEditor.Editors.Items
             DataContext = ModelView = new ItemEditorModelView(item);
         }
 
+        public ItemEditor(ItemWrapper wrapper)
+        {
+            InitializeComponent();
+            DataContext = ModelView = new ItemEditorModelView(wrapper);
+        }
+
         public ItemEditorModelView ModelView
         {
             get;

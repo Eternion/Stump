@@ -45,6 +45,24 @@ namespace Stump.Core.Pool
             return id;
         }
 
+        public virtual int Peek()
+        {
+            int id;
+
+            if (!m_freeIds.IsEmpty)
+            {
+                if (!m_freeIds.TryPeek(out id))
+                {
+                    // if we can't dequeue, we return the next id
+                    return m_highestId + 1;
+                }
+            }
+            else
+                return m_highestId + 1;
+
+            return id;
+        }
+
         /// <summary>
         /// Indicate that the given id is free
         /// </summary>

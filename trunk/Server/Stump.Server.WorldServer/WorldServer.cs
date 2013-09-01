@@ -179,7 +179,7 @@ namespace Stump.Server.WorldServer
             return ClientManager.FindAll(predicate);
         }
 
-        private TimeSpan m_lastAnnouncedTime = TimeSpan.MaxValue;
+        private TimeSpan? m_lastAnnouncedTime = null;
 
         public override void ScheduleShutdown(TimeSpan timeBeforeShuttingDown)
         {
@@ -208,7 +208,7 @@ namespace Stump.Server.WorldServer
 
             if (diff < TimeSpan.FromMinutes(30))
             {
-                var announceDiff = m_lastAnnouncedTime - diff;
+                var announceDiff = m_lastAnnouncedTime.HasValue ? TimeSpan.MaxValue : m_lastAnnouncedTime - diff;
 
                 if (diff > TimeSpan.FromMinutes(10) && announceDiff >= TimeSpan.FromMinutes(5))
                 {

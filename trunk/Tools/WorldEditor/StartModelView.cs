@@ -15,9 +15,15 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using Stump.DofusProtocol.D2oClasses;
+using Stump.Server.WorldServer.Database.Items.Templates;
 using WorldEditor.Config;
 using WorldEditor.Database;
+using WorldEditor.Editors.Items;
 using WorldEditor.Helpers;
+using WorldEditor.Loaders.D2O;
+using WorldEditor.Loaders.I18N;
 using WorldEditor.Search.Items;
 
 namespace WorldEditor
@@ -42,8 +48,8 @@ namespace WorldEditor
 
         private void OnCreateItem(object parameter)
         {
-            if (parameter == null || !CanCreateItem(parameter))
-                return;
+            var editor = new ItemEditor(new ItemWrapper());
+            editor.Show();
         }
 
         #endregion

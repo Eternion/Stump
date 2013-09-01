@@ -20,6 +20,11 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Game.Items;
+using WorldEditor.Database;
+using WorldEditor.Loaders.D2O;
+using WorldEditor.Loaders.I18N;
 
 namespace WorldEditor.Editors.Items
 {
@@ -70,11 +75,21 @@ namespace WorldEditor.Editors.Items
             Name = item.Name;
             Description = item.Description;
 
+            DBTemplate = new WeaponTemplate();
+            DBTemplate.AppearanceId = item.AppearanceId;
+
             m_effects = new ObservableCollection<EffectWrapper>(PossibleEffects.Select(EffectWrapper.Create));
             m_effects.CollectionChanged += OnEffectsChanged;
+            WasItem = true;
         }
 
         public Weapon WrappedWeapon
+        {
+            get;
+            private set;
+        }
+
+        public bool WasItem
         {
             get;
             private set;
@@ -132,6 +147,31 @@ namespace WorldEditor.Editors.Items
         {
             get { return WrappedWeapon.criticalFailureProbability; }
             set { WrappedWeapon.criticalFailureProbability = value; }
+        }
+
+        public override void Save()
+        {
+            if (New)
+            {
+                Id = ObjectDataManager.Instance.FindFreeId<Item>();
+                NameId = (uint)I18NDataManager.Instance.FindFreeId();
+                DescriptionId = (uint)I18NDataManager.Instance.FindFreeId();
+            }
+
+            ObjectDataManager.Instance.StartEditing<Weapon>();
+            ObjectDataManager.Instance.Set(WrappedWeapon.Id, WrappedWeapon);
+            ObjectDataManager.Instance.EndEditing<Weapon>();
+
+            I18NDataManager.Instance.SetText(DescriptionId, Description);
+            I18NDataManager.Instance.SetText(NameId, Name);
+            I18NDataManager.Instance.Save();
+
+            DBTemplate.AssignFields(WrappedWeapon);
+
+            if (New)
+                DatabaseManager.Instance.Database.Insert(DBTemplate);
+            else
+                DatabaseManager.Instance.Database.Update(DBTemplate);
         }
     }
 }

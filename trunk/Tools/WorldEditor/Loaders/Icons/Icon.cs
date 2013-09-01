@@ -29,6 +29,7 @@ namespace WorldEditor.Loaders.Icons
             Image.BeginInit();
             Image.StreamSource = new MemoryStream(data);
             Image.EndInit();
+            Image.Freeze();
         }
 
         public int Id
