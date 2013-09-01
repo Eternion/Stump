@@ -361,7 +361,7 @@ namespace WorldEditor.Search
                     }
                     else if (criteria.Operator == CriteriaOperator.CONTAINS && !criteria.IsList) // is string
                     {
-                        match = ((string) value).Contains((string)criteria.ComparedToValue);
+                        match = ((string) value).IndexOf((string)criteria.ComparedToValue, StringComparison.InvariantCultureIgnoreCase) != -1;
                     }
                     else if (criteria.Operator == CriteriaOperator.CONTAINS && criteria.IsList)
                     {

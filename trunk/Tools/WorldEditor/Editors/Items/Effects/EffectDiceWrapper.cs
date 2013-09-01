@@ -30,6 +30,8 @@ namespace WorldEditor.Editors.Items.Effects
             : base(effect)
         {
             m_effect = effect;
+            m_diceNum = m_effect.DiceNum;
+            m_diceSide = m_effect.DiceSide;
         }
 
         public uint DiceSide

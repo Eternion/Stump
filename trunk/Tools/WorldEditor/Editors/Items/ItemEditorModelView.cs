@@ -44,8 +44,13 @@ namespace WorldEditor.Editors.Items
         }
 
         public ItemEditorModelView(Item item)
+            : this(item is Weapon ? new WeaponWrapper((Weapon)item) : new ItemWrapper(item))
         {
-            Item = item is Weapon ? new WeaponWrapper((Weapon)item) : new ItemWrapper(item);
+        }
+
+        public ItemEditorModelView(ItemWrapper wrapper)
+        {
+            Item = wrapper;
             Types = ObjectDataManager.Instance.EnumerateObjects<ItemType>().ToList();
             ItemSets = ObjectDataManager.Instance.EnumerateObjects<ItemSet>().ToList();
             Item.PropertyChanged += OnPropertyChanged;
@@ -65,19 +70,13 @@ namespace WorldEditor.Editors.Items
                          (string.IsNullOrEmpty(Item.Type.RawZone) || Item.Type.RawZone == "null"))
                 {
                     Item.PropertyChanged -= OnPropertyChanged;
-                    Item = new ItemWrapper(Item.WrappedItem);
+                    Item = new ItemWrapper(Item as WeaponWrapper);
                     Item.PropertyChanged += OnPropertyChanged;
                 }
             }
         }
 
         public ItemWrapper Item
-        {
-            get;
-            set;
-        }
-
-        public bool IsNew
         {
             get;
             set;
@@ -141,10 +140,10 @@ namespace WorldEditor.Editors.Items
         {
             var dialog = new IconSelectionDialog();
             dialog.IconsSource = IconsManager.Instance.Icons;
-            dialog.SelectedIcon = Item.IconId;
+            dialog.SelectedIcon = IconsManager.Instance.GetIcon(Item.IconId);
 
             if (dialog.ShowDialog() == true)
-                Item.IconId = dialog.SelectedIcon;
+                Item.IconId = dialog.SelectedIcon.Id;
         }
 
         #endregion
@@ -283,29 +282,18 @@ namespace WorldEditor.Editors.Items
 
         private void OnSave(object parameter)
         {
-            ObjectDataManager.Instance.StartEditing<Item>();
-            ObjectDataManager.Instance.Set(Item.WrappedItem.Id, Item.WrappedItem);
-            ObjectDataManager.Instance.EndEditing<Item>();
-
-            I18NDataManager.Instance.SetText(Item.DescriptionId, Item.Description);
-            I18NDataManager.Instance.SetText(Item.NameId, Item.Name);
-            I18NDataManager.Instance.Save();
-
-            if (IsNew)
-                DatabaseManager.Instance.Database.Insert(CreateRecord());
-            else
-                DatabaseManager.Instance.Database.Update(CreateRecord());
+            try
+            {
+                Item.Save();
+            }
+            catch (Exception ex)
+            {
+                MessageService.ShowError(null, "Cannot save properly : " + ex);
+                return;
+            }
 
             OnItemSaved(Item);
             MessageService.ShowMessage(null, "File saved successfully");
-        }
-
-        private ItemTemplate CreateRecord()
-        {
-            var record = IsWeapon ? new WeaponTemplate() : new ItemTemplate();
-            record.AssignFields(Item.WrappedItem);
-
-            return record;
         }
 
         #endregion

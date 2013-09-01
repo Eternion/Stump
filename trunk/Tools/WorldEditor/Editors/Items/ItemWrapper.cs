@@ -24,7 +24,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Game.Items;
 using WorldEditor.Annotations;
+using WorldEditor.Database;
 using WorldEditor.Loaders.D2O;
 using WorldEditor.Loaders.I18N;
 
@@ -33,18 +36,38 @@ namespace WorldEditor.Editors.Items
     public class ItemWrapper : INotifyPropertyChanged
     {
         private string m_name;
-        private bool m_nameChanged;
         private string m_description;
-        private bool m_descriptionChanged;
         protected ObservableCollection<EffectWrapper> m_effects;
 
-        protected ItemWrapper()
+        public ItemWrapper()
         {
+            WrappedItem = new Item();
+            DBTemplate = new ItemTemplate();
+            m_name = "New Item";
+            m_effects = new ObservableCollection<EffectWrapper>();
+            WrappedItem.recipeIds = new List<uint>();
+            WrappedItem.favoriteSubAreas = new List<uint>();
+            WrappedItem.possibleEffects = new List<EffectInstance>();
+            WrappedItem.criteria = "";
+            WrappedItem.criteriaTarget = "";
+            New = true;
+        }
+
+        public ItemWrapper(WeaponWrapper weapon)
+        {
+            WrappedItem = weapon.WrappedItem;
+            DBTemplate = weapon.DBTemplate;
+            m_effects = new ObservableCollection<EffectWrapper>(PossibleEffects.Select(EffectWrapper.Create));
+            m_effects.CollectionChanged += OnEffectsChanged;
+            m_name = weapon.Name;
+            m_description = weapon.Description;
+            New = weapon.New;
         }
 
         public ItemWrapper(Item wrappedItem)
         {
             WrappedItem = wrappedItem;
+            DBTemplate = ItemManager.Instance.TryGetTemplate(wrappedItem.id) ?? new ItemTemplate();
             m_effects = new ObservableCollection<EffectWrapper>(PossibleEffects.Select(EffectWrapper.Create));
             m_effects.CollectionChanged += OnEffectsChanged;
         }
@@ -77,11 +100,22 @@ namespace WorldEditor.Editors.Items
             protected set;
         }
 
+        public ItemTemplate DBTemplate
+        {
+            get;
+            protected set;
+        }
+
+        public bool New
+        {
+            get;
+            protected set;
+        }
+
         public string Name
         {
             get { return m_name ?? (m_name = I18NDataManager.Instance.ReadText(NameId)); }
             set { m_name = value;
-                m_nameChanged = true;
             }
         }
 
@@ -121,7 +155,6 @@ namespace WorldEditor.Editors.Items
                 return m_description ?? ( m_description = I18NDataManager.Instance.ReadText(DescriptionId) );
             }
             set { m_description = value;
-                m_descriptionChanged = true;
             }
         }
 
@@ -225,8 +258,14 @@ namespace WorldEditor.Editors.Items
 
         public uint AppearanceId
         {
-            get { return WrappedItem.appearanceId; }
-            set { WrappedItem.appearanceId = value; }
+            get
+            {
+                return DBTemplate.AppearanceId;
+            }
+            set
+            {
+                DBTemplate.AppearanceId = value;
+            }
         }
 
         public Boolean SecretRecipe
@@ -291,7 +330,27 @@ namespace WorldEditor.Editors.Items
 
         public virtual void Save()
         {
+            if (New)
+            {
+                Id = ObjectDataManager.Instance.FindFreeId<Item>();
+                NameId = (uint) I18NDataManager.Instance.FindFreeId();
+                DescriptionId = (uint)I18NDataManager.Instance.FindFreeId();
+            }
 
+            ObjectDataManager.Instance.StartEditing<Item>();
+            ObjectDataManager.Instance.Set(WrappedItem.Id, WrappedItem);
+            ObjectDataManager.Instance.EndEditing<Item>();
+
+            I18NDataManager.Instance.SetText(DescriptionId, Description);
+            I18NDataManager.Instance.SetText(NameId, Name);
+            I18NDataManager.Instance.Save();
+
+            DBTemplate.AssignFields(WrappedItem);
+
+            if (New)
+                DatabaseManager.Instance.Database.Insert(DBTemplate);
+            else
+                DatabaseManager.Instance.Database.Update(DBTemplate);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

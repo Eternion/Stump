@@ -145,9 +145,12 @@ namespace WorldEditor.Loaders.D2O
             writer.Write(value, key);
         }
 
-        public int FindFreeId()
+        public int FindFreeId<T>()
         {
-            var maxId = m_readers.Select(x => x.Value.FindFreeId()).Max();
+            if (!m_writers.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)
+                throw new ArgumentException("Cannot find data corresponding to type : " + typeof(T));
+
+            var maxId = m_readers[typeof (T)].FindFreeId();
 
             return maxId < Settings.MinDataId ? Settings.MinDataId : maxId;
         }

@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Stump.Core.IO;
+using Stump.Core.Pool;
 
 namespace Stump.DofusProtocol.D2oClasses.Tools.D2i
 {

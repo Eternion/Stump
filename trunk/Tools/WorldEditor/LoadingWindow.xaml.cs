@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Stump.Server.WorldServer.Game.Items;
 using WorldEditor.Config;
 using WorldEditor.Database;
 using WorldEditor.Helpers;
@@ -66,17 +67,19 @@ namespace WorldEditor
                              "Loading d2o files ...");
             InitializeLoader(() => IconsManager.Instance.Initialize(Settings.LoaderSettings.ItemIconsFile),
                              "Loading item icons ...");
+            InitializeLoader(() =>
+                {
+                    ItemManager.Instance.ChangeDataSource(DatabaseManager.Instance.Database);
+                    ItemManager.Instance.Initialize();
+                },
+                             "Loading database items ...");
 
             EndInitialization();
         }
 
         private void EndInitialization()
         {
-            Dispatcher.Invoke(() =>
-                {
-                    Close();
-                });
-
+            Dispatcher.Invoke(Close);
         }
     
 
