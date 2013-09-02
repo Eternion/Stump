@@ -239,7 +239,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public void SetDialog(IDialog dialog)
         {
             if (Dialog != null)
-                logger.Warn("Character {0} opened a dialog but was already in one !", this);
+            {
+                Dialog.Close();
+            }
 
             Dialog = dialog;
         }
@@ -1589,9 +1591,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public bool CanEnableMerchantMode(bool sendError = true)
         {
-            SendServerMessage("Merchant mode temporarily disabled");
-            return false;
-
             if (MerchantBag.Count == 0)
             {
                 if (sendError)
