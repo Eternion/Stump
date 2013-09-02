@@ -259,7 +259,7 @@ namespace WorldEditor.Editors.Items
 
             if (dialog.ShowDialog() == true)
             {
-                Item.WrappedEffects.Add(effect);
+                Item.WrappedEffects.Add(dialog.EffectToEdit);
             }
         }
 

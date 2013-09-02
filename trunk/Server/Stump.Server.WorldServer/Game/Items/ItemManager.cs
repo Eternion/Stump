@@ -278,6 +278,12 @@ namespace Stump.Server.WorldServer.Game.Items
         }
 
 
+        public void AddItemTemplate(ItemTemplate template)
+        {
+            m_itemTemplates.Add(template.Id, template);
+            Database.Insert(template);
+        }
+
         #endregion
     }
 }

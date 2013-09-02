@@ -23,24 +23,23 @@ namespace WorldEditor.Editors.Items.Effects
     public class EffectDiceWrapper : EffectValueWrapper
     {
         private readonly EffectInstanceDice m_effect;
-        private uint m_diceSide;
-        private uint m_diceNum;
 
         public EffectDiceWrapper(EffectInstanceDice effect)
             : base(effect)
         {
             m_effect = effect;
-            m_diceNum = m_effect.DiceNum;
-            m_diceSide = m_effect.DiceSide;
         }
 
         public uint DiceSide
         {
-            get { return m_diceSide; }
+            get
+            {
+                return m_effect.diceSide;
+            }
             set
             {
-                if (value == m_diceSide) return;
-                m_diceSide = value;
+                if (value == m_effect.diceSide) return;
+                m_effect.diceSide = value;
                 OnPropertyChanged("Description");
             }
         }
@@ -49,12 +48,12 @@ namespace WorldEditor.Editors.Items.Effects
         {
             get
             {
-                return m_diceNum;
+                return m_effect.diceNum;
             }
             set
             {
-                if (value == m_diceNum) return;
-                m_diceNum = value;
+                if (value == m_effect.diceSide) return;
+                m_effect.diceNum = value;
                 OnPropertyChanged("Description");
             }
         }
@@ -91,13 +90,6 @@ namespace WorldEditor.Editors.Items.Effects
                 if (index == 2)
                     Value = (int) value;
             }
-        }
-
-        public override void Save()
-        {
-            base.Save();
-            m_effect.DiceNum = m_diceNum;
-            m_effect.DiceSide = m_diceSide;
         }
     }
 }

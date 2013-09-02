@@ -79,7 +79,6 @@ namespace WorldEditor.Editors.Items
             DBTemplate.AppearanceId = item.AppearanceId;
 
             m_effects = new ObservableCollection<EffectWrapper>(PossibleEffects.Select(EffectWrapper.Create));
-            m_effects.CollectionChanged += OnEffectsChanged;
             WasItem = true;
         }
 
@@ -153,10 +152,12 @@ namespace WorldEditor.Editors.Items
         {
             if (New)
             {
-                Id = ObjectDataManager.Instance.FindFreeId<Item>();
+                Id = Math.Max(ObjectDataManager.Instance.FindFreeId<Item>(), ObjectDataManager.Instance.FindFreeId<Weapon>());
                 NameId = (uint)I18NDataManager.Instance.FindFreeId();
-                DescriptionId = (uint)I18NDataManager.Instance.FindFreeId();
+                DescriptionId = NameId + 1;
             }
+
+            WrappedItem.PossibleEffects = WrappedEffects.Select(x => x.WrappedEffect).ToList();
 
             ObjectDataManager.Instance.StartEditing<Weapon>();
             ObjectDataManager.Instance.Set(WrappedWeapon.Id, WrappedWeapon);
@@ -169,9 +170,11 @@ namespace WorldEditor.Editors.Items
             DBTemplate.AssignFields(WrappedWeapon);
 
             if (New)
-                DatabaseManager.Instance.Database.Insert(DBTemplate);
+                ItemManager.Instance.AddItemTemplate(DBTemplate);
             else
                 DatabaseManager.Instance.Database.Update(DBTemplate);
+
+            New = false;
         }
     }
 }
