@@ -194,7 +194,7 @@ namespace WorldEditor.Editors.Files.D2O
         {
             Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary
                 {
-                    Source = new Uri("/WorldEditor;component/D2O/Template.xaml", UriKind.Relative)
+                    Source = new Uri("/WorldEditor;component/Editors/Files/D2O/Template.xaml", UriKind.Relative)
                 });
             DefaultStyleKeyProperty.OverrideMetadata(typeof (DoubleCollectionEditor),
                                                      new FrameworkPropertyMetadata(typeof (DoubleCollectionEditor)));
@@ -219,7 +219,7 @@ namespace WorldEditor.Editors.Files.D2O
         {
             var list = (IList) ((FrameworkElement)e.OriginalSource).Tag;
 
-            var newItem = list == Items ? CreateNewItem(typeof(List<>).MakeGenericType((Type)e.Parameter)) : CreateNewItem((Type)e.Parameter);
+            var newItem = list == Items ? CreateNewItem((Type)e.Parameter) : CreateNewItem((Type)e.Parameter);
             list.Add(newItem);
 
             if (list == Items)

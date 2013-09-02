@@ -37,7 +37,6 @@ namespace WorldEditor.Editors.Items
         private string m_description;
         private Effect m_template;
 
-        private int m_effectId;
 
         protected EffectWrapper(EffectInstance wrappedEffect)
         {
@@ -57,11 +56,14 @@ namespace WorldEditor.Editors.Items
 
         public int EffectId
         {
-            get { return m_effectId; }
+            get
+            {
+                return (int)WrappedEffect.effectId;
+            }
             set
             {
-                m_effectId = value;
-                m_template = ObjectDataManager.Instance.Get<Effect>(m_effectId);
+                WrappedEffect.effectId = (uint)value;
+                m_template = ObjectDataManager.Instance.Get<Effect>(WrappedEffect.effectId);
                 OnPropertyChanged("Description");
                 OnPropertyChanged("Template");
                 OnPropertyChanged("Operator");
@@ -219,11 +221,6 @@ namespace WorldEditor.Editors.Items
                 return new EffectValueWrapper(integer);
 
             throw new NotImplementedException();
-        }
-
-        public virtual void Save()
-        {
-            WrappedEffect.effectId = (uint)m_effectId;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

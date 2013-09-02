@@ -99,7 +99,7 @@ namespace WorldEditor.Editors.Files.D2O
         {
             Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary()
             {
-                Source = new Uri("/WorldEditor;component/D2O/Template.xaml", UriKind.Relative)
+                Source = new Uri("/WorldEditor;component/Editors/Files/D2O/Template.xaml", UriKind.Relative)
             });
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DoublePrimitiveCollectionEditor),
                                                      new FrameworkPropertyMetadata(typeof(DoublePrimitiveCollectionEditor)));

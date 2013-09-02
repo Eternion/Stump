@@ -1589,6 +1589,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public bool CanEnableMerchantMode(bool sendError = true)
         {
+            SendServerMessage("Merchant mode temporarily disabled");
+            return false;
+
             if (MerchantBag.Count == 0)
             {
                 if (sendError)

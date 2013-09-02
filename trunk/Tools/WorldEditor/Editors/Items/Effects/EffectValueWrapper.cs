@@ -23,24 +23,22 @@ namespace WorldEditor.Editors.Items.Effects
     public class EffectValueWrapper : EffectWrapper
     {
         private readonly EffectInstanceInteger m_wrappedEffect;
-        private int m_value;
 
         public EffectValueWrapper(EffectInstanceInteger wrappedEffect) : base(wrappedEffect)
         {
             m_wrappedEffect = wrappedEffect;
-            m_value = m_wrappedEffect.Value;
         }
 
         public int Value
         {
             get
             {
-                return m_value;
+                return m_wrappedEffect.Value;
             }
             set
             {
-                if (value == m_value) return;
-                m_value = value;
+                if (value == m_wrappedEffect.value) return;
+                m_wrappedEffect.value = value;
                 OnPropertyChanged("Description");
             }
         }
@@ -69,12 +67,6 @@ namespace WorldEditor.Editors.Items.Effects
         public override object[] Parameters
         {
             get { return new object[] {Value}; }
-        }
-
-        public override void Save()
-        {
-            base.Save();
-            m_wrappedEffect.Value = m_value;
         }
     }
 }

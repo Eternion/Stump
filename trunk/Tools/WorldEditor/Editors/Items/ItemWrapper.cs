@@ -44,12 +44,14 @@ namespace WorldEditor.Editors.Items
             WrappedItem = new Item();
             DBTemplate = new ItemTemplate();
             m_name = "New Item";
+            m_description = "Item description";
             m_effects = new ObservableCollection<EffectWrapper>();
             WrappedItem.recipeIds = new List<uint>();
             WrappedItem.favoriteSubAreas = new List<uint>();
             WrappedItem.possibleEffects = new List<EffectInstance>();
             WrappedItem.criteria = "";
             WrappedItem.criteriaTarget = "";
+            WrappedItem.itemSetId = -1;
             New = true;
         }
 
@@ -58,7 +60,6 @@ namespace WorldEditor.Editors.Items
             WrappedItem = weapon.WrappedItem;
             DBTemplate = weapon.DBTemplate;
             m_effects = new ObservableCollection<EffectWrapper>(PossibleEffects.Select(EffectWrapper.Create));
-            m_effects.CollectionChanged += OnEffectsChanged;
             m_name = weapon.Name;
             m_description = weapon.Description;
             New = weapon.New;
@@ -69,30 +70,8 @@ namespace WorldEditor.Editors.Items
             WrappedItem = wrappedItem;
             DBTemplate = ItemManager.Instance.TryGetTemplate(wrappedItem.id) ?? new ItemTemplate();
             m_effects = new ObservableCollection<EffectWrapper>(PossibleEffects.Select(EffectWrapper.Create));
-            m_effects.CollectionChanged += OnEffectsChanged;
         }
 
-        protected void OnEffectsChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach (EffectWrapper effect in e.NewItems)
-                {
-                    WrappedItem.PossibleEffects.Add(effect.WrappedEffect);
-                }
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (EffectWrapper effect in e.OldItems)
-                {
-                    WrappedItem.PossibleEffects.Remove(effect.WrappedEffect);
-                }
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                WrappedItem.PossibleEffects.Clear();
-            }
-        }
 
         public Item WrappedItem
         {
@@ -332,10 +311,12 @@ namespace WorldEditor.Editors.Items
         {
             if (New)
             {
-                Id = ObjectDataManager.Instance.FindFreeId<Item>();
+                Id = Math.Max(ObjectDataManager.Instance.FindFreeId<Item>(), ObjectDataManager.Instance.FindFreeId<Weapon>());
                 NameId = (uint) I18NDataManager.Instance.FindFreeId();
-                DescriptionId = (uint)I18NDataManager.Instance.FindFreeId();
+                DescriptionId = NameId + 1;
             }
+
+            WrappedItem.PossibleEffects = WrappedEffects.Select(x => x.WrappedEffect).ToList();
 
             ObjectDataManager.Instance.StartEditing<Item>();
             ObjectDataManager.Instance.Set(WrappedItem.Id, WrappedItem);
@@ -348,9 +329,11 @@ namespace WorldEditor.Editors.Items
             DBTemplate.AssignFields(WrappedItem);
 
             if (New)
-                DatabaseManager.Instance.Database.Insert(DBTemplate);
+                ItemManager.Instance.AddItemTemplate(DBTemplate);
             else
                 DatabaseManager.Instance.Database.Update(DBTemplate);
+
+            New = false;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
