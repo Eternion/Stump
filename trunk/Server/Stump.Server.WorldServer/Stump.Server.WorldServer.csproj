@@ -162,6 +162,7 @@
     <Compile Include="Database\AutoAssignedRecord.cs" />
     <Compile Include="Database\Breeds\BreedItem.cs" />
     <Compile Include="Database\Breeds\Head.cs" />
+    <Compile Include="Database\Guilds\GuildRecord.cs" />
     <Compile Include="Database\Items\PlayerMerchantItemRecord.cs" />
     <Compile Include="Database\IAssignedByD2o.cs" />
     <Compile Include="Database\Interactives\InteractiveSkillTemplate.cs" />
@@ -340,6 +341,7 @@
     <Compile Include="Handlers\Actions\ActionsSequenceHandler.cs" />
     <Compile Include="Handlers\Dialogs\DialogHandler.cs" />
     <Compile Include="Handlers\Friends\FriendHandler.cs" />
+    <Compile Include="Handlers\Guilds\GuildHandler.cs" />
     <Compile Include="Handlers\Interactives\InteractiveHandler.cs" />
     <Compile Include="Handlers\Moderation\ModerationHandler.cs" />
     <Compile Include="Handlers\Prism\PrismHandler.cs" />
@@ -624,6 +626,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

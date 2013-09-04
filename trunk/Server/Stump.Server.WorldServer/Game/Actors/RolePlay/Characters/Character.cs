@@ -723,6 +723,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion
 
+        #region Guild
+
+        public int GuildId
+        {
+            get { return m_record.GuildId; }
+            private set { m_record.GuildId = value; }
+        }
+
+        #endregion
+
         #region Alignment
 
         public AlignmentSideEnum AlignmentSide
