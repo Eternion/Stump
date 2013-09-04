@@ -17,6 +17,7 @@ using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
+using Stump.Server.WorldServer.Handlers.Guilds;
 using Stump.Server.WorldServer.Handlers.Friends;
 using Stump.Server.WorldServer.Handlers.Initialization;
 using Stump.Server.WorldServer.Handlers.Inventory;
@@ -136,6 +137,9 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             InitializationHandler.SendSetCharacterRestrictionsMessage(client);
 
             InventoryHandler.SendInventoryWeightMessage(client);
+
+            //Guild
+            GuildHandler.SendGuildMembershipMessage(client);
 
             FriendHandler.SendFriendWarnOnConnectionStateMessage(client, client.Character.FriendsBook.WarnOnConnection);
             FriendHandler.SendFriendWarnOnLevelGainStateMessage(client, client.Character.FriendsBook.WarnOnLevel);

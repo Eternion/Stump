@@ -425,6 +425,12 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
+        public int GuildId
+        {
+            get;
+            set;
+        }
+
         public AlignmentSideEnum AlignmentSide
         {
             get;
