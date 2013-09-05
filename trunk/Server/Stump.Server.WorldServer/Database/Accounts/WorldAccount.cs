@@ -16,6 +16,8 @@ namespace Stump.Server.WorldServer.Database.Accounts
         /// Use parameters
         /// </summary>
         public static string FetchByNickname = "SELECT * FROM accounts WHERE Nickname=@0";
+
+        public static string FetchByCharacterId = "SELECT * FROM worlds_characters WHERE CharacterId={0}";
     }
 
     [TableName("accounts")]
