@@ -26,7 +26,39 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             var members = Database.Fetch<CharacterRecord>(string.Format(CharacterRelator.FetchByGuildId, guildId));
 
-            return members.Select(member => new GuildMember(member.Id, ExperienceManager.Instance.GetCharacterLevel(member.Experience), member.Name, (sbyte) member.Breed, member.Sex == SexTypeEnum.SEX_FEMALE, 1, 1000, 90, 262148, 1, 0, 1, 1, Database.FirstOrDefault<int>(string.Format(WorldAccountRelator.FetchByCharacterId, member.Id)), 0)).ToList();
+            var guildMembers = new List<GuildMember>();
+
+            foreach (var member in members)
+            {
+                Database.Connection.ChangeDatabase("stump_auth");
+                
+                var acctId =
+                    Database.ExecuteScalar<int>(string.Format("SELECT 1 FROM worlds_characters WHERE CharacterId={0})",
+                                                              member.Id));
+
+                Database.Connection.ChangeDatabase("stump_world");
+
+                var guildMember = new GuildMember(
+                    member.Id,
+                    ExperienceManager.Instance.GetCharacterLevel(member.Experience),
+                    member.Name,
+                    (sbyte) member.Breed,
+                    member.Sex == SexTypeEnum.SEX_FEMALE,
+                    1,
+                    1000,
+                    90,
+                    262148,
+                    1,
+                    0,
+                    1,
+                    1,
+                    acctId,
+                    0);
+
+                guildMembers.Add(guildMember);
+            }
+
+            return guildMembers;
         }
     }
 }
