@@ -1,11 +1,8 @@
-﻿using System;
-using Stump.Core.Reflection;
+﻿using System.Collections.Generic;
 using Stump.Server.BaseServer.Database;
-using Stump.Server.BaseServer.IPC.Objects;
-using Stump.Server.WorldServer.Core.IPC;
-using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database;
+using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Guilds;
+using Stump.Server.WorldServer.Database.Characters;
 
 namespace Stump.Server.WorldServer.Game.Guilds
 {
@@ -14,11 +11,16 @@ namespace Stump.Server.WorldServer.Game.Guilds
         /// <summary>
         /// Returns null if not found
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="guildId"></param>
         /// <returns></returns>
-        public GuildRecord FindById(int id)
+        public GuildRecord FindById(int guildId)
         {
-            return Database.FirstOrDefault<GuildRecord>(string.Format(GuildRelator.FetchById, id));
+            return Database.FirstOrDefault<GuildRecord>(string.Format(GuildRelator.FetchById, guildId));
+        }
+
+        public List<GuildMember> GetGuildMembers(int guildId)
+        {
+            return Database.Fetch<GuildMember>(string.Format(CharacterRelator.FetchByGuildId, guildId));
         }
     }
 }
