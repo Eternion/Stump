@@ -3,6 +3,7 @@ using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.Core.Extensions;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Guilds;
@@ -20,6 +21,16 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             var guildInfo = GuildManager.Instance.FindById(guildId);
 
             client.Send(new GuildMembershipMessage(new GuildInformations(guildId, guildInfo.Name, guildInfo.GuildEmblem), 262148, true));
+        }
+
+        public static void SendGuildInformationsGeneralMessage(WorldClient client)
+        {
+            var guildId = client.Character.GuildId;
+            if (guildId == 0) return;
+
+            var guildInfo = GuildManager.Instance.FindById(guildId);
+
+            client.Send(new GuildInformationsGeneralMessage(true, false, (byte)guildInfo.Level, 10, 1, 100, guildInfo.CreationDate.GetUnixTimeStamp()));
         }
     }
 }

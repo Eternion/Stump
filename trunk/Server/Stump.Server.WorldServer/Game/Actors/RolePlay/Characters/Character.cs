@@ -1914,7 +1914,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Look,
                 GetEntityDispositionInformations(),
                 Name,
-                GetHumanInformations(),
+                GetHumanInformations(this),
                 Account.Id,
                 GetActorAlignmentInformations());
         }
