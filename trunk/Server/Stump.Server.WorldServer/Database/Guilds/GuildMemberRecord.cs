@@ -18,6 +18,8 @@ namespace Stump.Server.WorldServer.Database.Guilds
             "SELECT * FROM guild_members WHERE GuildId={0}";
 
         public static string FindByCharacterId = "SELECT * FROM guild_members WHERE CharacterId={0}";
+
+        public static string FetchCharacterById = "SELECT * FROM characters WHERE Id={0}";
     }
 
     [TableName("guild_members")]
