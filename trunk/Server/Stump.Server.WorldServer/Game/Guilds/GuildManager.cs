@@ -40,11 +40,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             {
                 var characterRecord = Database.FirstOrDefault<CharacterRecord>(string.Format(GuildMemberRelator.FetchCharacterById, member.CharacterId));
 
-                var connectedCharacter = AccountManager.Instance.FindById(member.AccountId).ConnectedCharacter;
-                var isConnected = (sbyte) (connectedCharacter != null && (sbyte)connectedCharacter ==
-                                             member.CharacterId
-                                                 ? 1
-                                                 : 0);
+                var isConnected = World.Instance.GetCharacter(member.CharacterId) != null ? 1 : 0;
 
                 var guildMember = new GuildMember(
                     member.CharacterId,
@@ -56,7 +52,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                     member.GivenExperience,
                     member.GivenPercent,
                     262148, //Rights
-                    isConnected,
+                    (sbyte)isConnected,
                     (sbyte)characterRecord.AlignmentSide,
                     0, //Hours since last connection
                     0, //Mood SmileyId
