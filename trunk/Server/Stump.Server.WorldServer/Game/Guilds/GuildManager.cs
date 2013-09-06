@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
@@ -20,19 +21,19 @@ namespace Stump.Server.WorldServer.Game.Guilds
         /// <returns></returns>
         public GuildRecord FindById(int guildId)
         {
-            return Database.FirstOrDefault<GuildRecord>(string.Format(GuildRelator.FetchById, guildId));
+            return World.Instance.Guild.Guilds.FirstOrDefault(guild => guild.Id == guildId);
         }
 
         public int FindGuildIdByCharacter(Character character)
         {
-            var guildMember = Database.FirstOrDefault<GuildMemberRecord>(string.Format(GuildMemberRelator.FindByCharacterId,
-                                                                         character.Id));
+            var guildMember = World.Instance.Guild.GuildMembers.FirstOrDefault(members => members.CharacterId == character.Id);
+
             return guildMember == null ? 0 : guildMember.GuildId;
         }
 
         public List<GuildMember> GetGuildMembers(int guildId)
         {
-            var members = Database.Fetch<GuildMemberRecord>(string.Format(GuildMemberRelator.FetchByGuildId, guildId));
+            var members = World.Instance.Guild.GuildMembers.Where(gMembers => gMembers.GuildId == guildId);
 
             var guildMembers = new List<GuildMember>();
 
@@ -86,6 +87,36 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
 
             return guildMembers;
+        }
+
+        public GuildMemberRecord ChangeMemberParameters(int guildId, Character character, int targetId, short rank, sbyte xpPercent, uint rights)
+        {
+            if (character.GuildId != World.Instance.GetCharacter(targetId).GuildId)
+                return null;
+
+            var guildMember = World.Instance.Guild.GuildMembers.FirstOrDefault(gMembers => gMembers.CharacterId == targetId);
+
+            if (guildMember == null)
+                return null;
+
+            if (GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RANKS, guildMember.Rights))
+                guildMember.RankId = rank;
+            if (GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_XP_CONTRIBUTION, guildMember.Rights) || (character.Id == targetId && GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_MY_XP_CONTRIBUTION, guildMember.Rights)))
+                guildMember.GivenPercent = xpPercent;
+            if (GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS, guildMember.Rights))
+                guildMember.Rights = (int)rights;
+
+            var database = WorldServer.Instance.DBAccessor.Database;
+            database.Update(guildMember);
+
+            return guildMember;
+        }
+
+        public bool GuildMemberHasRight(GuildRightsBitEnum right, int rights)
+        {
+            var guildRights = Enum.GetValues(typeof(GuildRightsBitEnum)).Cast<int>().ToArray();
+
+            return guildRights.ElementAt(Array.IndexOf(guildRights, right)) <= rights;
         }
     }
 }

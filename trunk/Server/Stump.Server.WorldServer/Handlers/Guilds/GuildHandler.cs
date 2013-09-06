@@ -8,6 +8,7 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Guilds;
 using Stump.Server.WorldServer.Game.Guilds;
+using Stump.Server.WorldServer.Game;
 
 namespace Stump.Server.WorldServer.Handlers.Guilds
 {
@@ -28,6 +29,18 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                     client.Send(new GuildInformationsMembersMessage(GuildManager.Instance.GetGuildMembers(guildId)));
                     break;
             }
+        }
+
+        [WorldHandler(GuildChangeMemberParametersMessage.Id)]
+        public static void HandleGuildChangeMemberParametersMessage(WorldClient client, GuildChangeMemberParametersMessage message)
+        {
+            var guildId = client.Character.GuildId;
+            if (guildId == 0) return;
+
+            var member = GuildManager.Instance.ChangeMemberParameters(guildId, client.Character, message.memberId, message.rank, message.experienceGivenPercent, message.rights);
+
+            if (member != null)
+                client.Send(new GuildInformationsMemberUpdateMessage(member));
         }
 
         public static void SendGuildMembershipMessage(WorldClient client)
