@@ -25,42 +25,42 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public int FindGuildIdByCharacter(Character character)
         {
-            return Database.FirstOrDefault<GuildMemberRecord>(string.Format(GuildMemberRelator.FindByCharacterId,
-                                                                         character.Id)).GuildId;
+            var guildMember = Database.FirstOrDefault<GuildMemberRecord>(string.Format(GuildMemberRelator.FindByCharacterId,
+                                                                         character.Id));
+            return guildMember == null ? 0 : guildMember.GuildId;
         }
 
         public List<GuildMember> GetGuildMembers(int guildId)
         {
-            var members = Database.Fetch<CharacterRecord>(string.Format(GuildMemberRelator.FetchByGuildId, guildId));
+            var members = Database.Fetch<GuildMemberRecord>(string.Format(GuildMemberRelator.FetchByGuildId, guildId));
 
             var guildMembers = new List<GuildMember>();
 
             foreach (var member in members)
             {
-                var guildMemberRecord =
-                    Database.FirstOrDefault<GuildMemberRecord>(string.Format(GuildMemberRelator.FindByCharacterId,
-                                                                             member.Id));
-                var connectedCharacter = AccountManager.Instance.FindById(guildMemberRecord.AccountId).ConnectedCharacter;
+                var characterRecord = Database.FirstOrDefault<CharacterRecord>(string.Format(GuildMemberRelator.FetchCharacterById, member.CharacterId));
+
+                var connectedCharacter = AccountManager.Instance.FindById(member.AccountId).ConnectedCharacter;
                 var isConnected = (sbyte) (connectedCharacter != null && (sbyte)connectedCharacter ==
-                                             member.Id
+                                             member.CharacterId
                                                  ? 1
                                                  : 0);
 
                 var guildMember = new GuildMember(
-                    member.Id,
-                    ExperienceManager.Instance.GetCharacterLevel(member.Experience),
-                    member.Name,
-                    (sbyte) member.Breed,
-                    member.Sex == SexTypeEnum.SEX_FEMALE,
-                    guildMemberRecord.RankId,
-                    guildMemberRecord.GivenExperience,
-                    guildMemberRecord.GivenPercent,
+                    member.CharacterId,
+                    ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience),
+                    characterRecord.Name,
+                    (sbyte)characterRecord.Breed,
+                    characterRecord.Sex == SexTypeEnum.SEX_FEMALE,
+                    member.RankId,
+                    member.GivenExperience,
+                    member.GivenPercent,
                     262148, //Rights
                     isConnected,
-                    (sbyte) member.AlignmentSide,
+                    (sbyte)characterRecord.AlignmentSide,
                     0, //Hours since last connection
                     0, //Mood SmileyId
-                    guildMemberRecord.AccountId,
+                    member.AccountId,
                     0); //AchievementPoints
 
                 guildMembers.Add(guildMember);
