@@ -38,26 +38,49 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             foreach (var member in members)
             {
-                var characterRecord = Database.FirstOrDefault<CharacterRecord>(string.Format(GuildMemberRelator.FetchCharacterById, member.CharacterId));
+                var character = World.Instance.GetCharacter(member.CharacterId);
+                GuildMember guildMember;
 
-                var isConnected = World.Instance.GetCharacter(member.CharacterId) != null ? 1 : 0;
+                if (character != null)
+                {
+                    guildMember = new GuildMember(
+                        member.CharacterId,
+                        ExperienceManager.Instance.GetCharacterLevel(character.Experience),
+                        character.Name,
+                        (sbyte)character.Breed.Id,
+                        character.Sex == SexTypeEnum.SEX_FEMALE,
+                        member.RankId,
+                        member.GivenExperience,
+                        member.GivenPercent,
+                        (uint)GuildRightsBitEnum.GUILD_RIGHT_BOSS, //Rights
+                        1, //Connected
+                        (sbyte) character.AlignmentSide,
+                        0, //Hours since last connection
+                        0, //Mood SmileyId(None = 0)
+                        member.AccountId,
+                        0); //AchievementPoints
+                }
+                else
+                {
+                    var characterRecord = Database.FirstOrDefault<CharacterRecord>(string.Format(GuildMemberRelator.FetchCharacterById, member.CharacterId));
 
-                var guildMember = new GuildMember(
-                    member.CharacterId,
-                    ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience),
-                    characterRecord.Name,
-                    (sbyte)characterRecord.Breed,
-                    characterRecord.Sex == SexTypeEnum.SEX_FEMALE,
-                    member.RankId,
-                    member.GivenExperience,
-                    member.GivenPercent,
-                    262148, //Rights
-                    (sbyte)isConnected,
-                    (sbyte)characterRecord.AlignmentSide,
-                    0, //Hours since last connection
-                    0, //Mood SmileyId
-                    member.AccountId,
-                    0); //AchievementPoints
+                    guildMember = new GuildMember(
+                        member.CharacterId,
+                        ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience),
+                        characterRecord.Name,
+                        (sbyte)characterRecord.Breed,
+                        characterRecord.Sex == SexTypeEnum.SEX_FEMALE,
+                        member.RankId,
+                        member.GivenExperience,
+                        member.GivenPercent,
+                        262148, //Rights
+                        0, //Disconnected
+                        (sbyte)characterRecord.AlignmentSide,
+                        1, //Hours since last connection
+                        0, //Mood SmileyId
+                        member.AccountId,
+                        0); //AchievementPoints   
+                }
 
                 guildMembers.Add(guildMember);
             }
