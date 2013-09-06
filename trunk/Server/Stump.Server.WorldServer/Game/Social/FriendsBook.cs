@@ -97,7 +97,7 @@ namespace Stump.Server.WorldServer.Game.Social
                 return false;
             }
 
-            var relation = new AccountRelation()
+            var relation = new AccountRelation
             {
                 AccountId = Owner.Client.Account.Id,
                 TargetId = friendAccount.Id,

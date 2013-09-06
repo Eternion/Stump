@@ -26,6 +26,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -572,6 +573,15 @@ namespace Stump.Server.WorldServer.Game
 
         #endregion
 
+        #region Guilds
+
+        public Guild Guild
+        {
+            get;
+            private set;
+        }
+
+        #endregion
 
         public void RegisterSaveableInstance(ISaveable instance)
         {
