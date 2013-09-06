@@ -23,6 +23,7 @@ using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -727,8 +728,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public int GuildId
         {
-            get { return m_record.GuildId; }
-            private set { m_record.GuildId = value; }
+            get;
+            private set;
         }
 
         #endregion
@@ -1858,6 +1859,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             MerchantBag = new CharacterMerchantBag(this);
             CheckMerchantModeReconnection();
             MerchantBag.LoadMerchantBag();
+
+            GuildId = GuildManager.Instance.FindGuildIdByCharacter(this);
 
             Spells = new SpellInventory(this);
             Spells.LoadSpells();
