@@ -21,19 +21,19 @@ namespace Stump.Server.WorldServer.Game.Guilds
         /// <returns></returns>
         public GuildRecord FindById(int guildId)
         {
-            return World.Instance.Guild.Guilds.FirstOrDefault(guild => guild.Id == guildId);
+            return Guild.Instance.Guilds.FirstOrDefault(guild => guild.Id == guildId);
         }
 
         public int FindGuildIdByCharacter(Character character)
         {
-            var guildMember = World.Instance.Guild.GuildMembers.FirstOrDefault(members => members.CharacterId == character.Id);
+            var guildMember = Guild.Instance.GuildMembers.FirstOrDefault(members => members.CharacterId == character.Id);
 
             return guildMember == null ? 0 : guildMember.GuildId;
         }
 
         public List<GuildMember> GetGuildMembers(int guildId)
         {
-            var members = World.Instance.Guild.GuildMembers.Where(gMembers => gMembers.GuildId == guildId);
+            var members = Guild.Instance.GuildMembers.Where(gMembers => gMembers.GuildId == guildId);
 
             var guildMembers = new List<GuildMember>();
 
@@ -94,7 +94,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (character.GuildId != World.Instance.GetCharacter(targetId).GuildId)
                 return null;
 
-            var guildMember = World.Instance.Guild.GuildMembers.FirstOrDefault(gMembers => gMembers.CharacterId == targetId);
+            var guildMember = Guild.Instance.GuildMembers.FirstOrDefault(gMembers => gMembers.CharacterId == targetId);
 
             if (guildMember == null)
                 return null;
