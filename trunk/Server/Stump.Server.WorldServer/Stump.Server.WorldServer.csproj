@@ -162,6 +162,7 @@
     <Compile Include="Database\AutoAssignedRecord.cs" />
     <Compile Include="Database\Breeds\BreedItem.cs" />
     <Compile Include="Database\Breeds\Head.cs" />
+    <Compile Include="Database\Guilds\GuildMemberRecord.cs" />
     <Compile Include="Database\Guilds\GuildRecord.cs" />
     <Compile Include="Database\Items\PlayerMerchantItemRecord.cs" />
     <Compile Include="Database\IAssignedByD2o.cs" />

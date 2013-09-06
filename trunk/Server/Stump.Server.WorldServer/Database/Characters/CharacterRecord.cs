@@ -20,9 +20,6 @@ namespace Stump.Server.WorldServer.Database.Characters
         /// </summary>
         public static string FetchByMultipleId =
             "SELECT * FROM characters WHERE Id IN ({0})";
-
-        public static string FetchByGuildId =
-            "SELECT * FROM characters WHERE GuildId={0}";
     }
 
     [TableName("characters")]
@@ -423,12 +420,6 @@ namespace Stump.Server.WorldServer.Database.Characters
         }
 
         public ushort SpellsPoints
-        {
-            get;
-            set;
-        }
-
-        public int GuildId
         {
             get;
             set;

@@ -6,6 +6,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Guilds;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Accounts;
+using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Guilds
@@ -22,21 +23,28 @@ namespace Stump.Server.WorldServer.Game.Guilds
             return Database.FirstOrDefault<GuildRecord>(string.Format(GuildRelator.FetchById, guildId));
         }
 
+        public int FindGuildIdByCharacter(Character character)
+        {
+            return Database.FirstOrDefault<GuildMemberRecord>(string.Format(GuildMemberRelator.FindByCharacterId,
+                                                                         character.Id)).GuildId;
+        }
+
         public List<GuildMember> GetGuildMembers(int guildId)
         {
-            var members = Database.Fetch<CharacterRecord>(string.Format(CharacterRelator.FetchByGuildId, guildId));
+            var members = Database.Fetch<CharacterRecord>(string.Format(GuildMemberRelator.FetchByGuildId, guildId));
 
             var guildMembers = new List<GuildMember>();
 
             foreach (var member in members)
             {
-                Database.Connection.ChangeDatabase("stump_auth");
-                
-                var acctId =
-                    Database.ExecuteScalar<int>(string.Format("SELECT 1 FROM worlds_characters WHERE CharacterId={0})",
-                                                              member.Id));
-
-                Database.Connection.ChangeDatabase("stump_world");
+                var guildMemberRecord =
+                    Database.FirstOrDefault<GuildMemberRecord>(string.Format(GuildMemberRelator.FindByCharacterId,
+                                                                             member.Id));
+                var connectedCharacter = AccountManager.Instance.FindById(guildMemberRecord.AccountId).ConnectedCharacter;
+                var isConnected = (sbyte) (connectedCharacter != null && (sbyte)connectedCharacter ==
+                                             member.Id
+                                                 ? 1
+                                                 : 0);
 
                 var guildMember = new GuildMember(
                     member.Id,
@@ -44,16 +52,16 @@ namespace Stump.Server.WorldServer.Game.Guilds
                     member.Name,
                     (sbyte) member.Breed,
                     member.Sex == SexTypeEnum.SEX_FEMALE,
-                    1,
-                    1000,
-                    90,
-                    262148,
-                    1,
-                    0,
-                    1,
-                    1,
-                    acctId,
-                    0);
+                    guildMemberRecord.RankId,
+                    guildMemberRecord.GivenExperience,
+                    guildMemberRecord.GivenPercent,
+                    262148, //Rights
+                    isConnected,
+                    (sbyte) member.AlignmentSide,
+                    0, //Hours since last connection
+                    0, //Mood SmileyId
+                    guildMemberRecord.AccountId,
+                    0); //AchievementPoints
 
                 guildMembers.Add(guildMember);
             }
