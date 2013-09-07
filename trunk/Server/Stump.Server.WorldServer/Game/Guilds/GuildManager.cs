@@ -138,6 +138,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             var gRights = (GuildRightsBitEnum)rights;
 
+            if (gRights == GuildRightsBitEnum.GUILD_RIGHT_BOSS)
+                return true;
+
             return gRights.HasFlag(right);
         }
     }

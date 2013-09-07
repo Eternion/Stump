@@ -40,8 +40,14 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             var member = GuildManager.Instance.ChangeMemberParameters(guildId, client.Character, message.memberId, message.rank, message.experienceGivenPercent, message.rights);
 
             if (member != null)
+            {
                 client.Send(new GuildInformationsMembersMessage(GuildManager.Instance.GetGuildMembers(guildId)));
                 //client.Send(new GuildInformationsMemberUpdateMessage(member)); //Best to use
+
+                var character = World.Instance.GetCharacter(message.memberId);
+                if (character != null)
+                    SendGuildMembershipMessage(character.Client);
+            }
         }
 
         [WorldHandler(GuildKickRequestMessage.Id)]
