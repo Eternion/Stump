@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Database.Guilds
             set;
         }
 
-        public int Rights
+        public uint Rights
         {
             get;
             set;

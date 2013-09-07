@@ -104,7 +104,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_XP_CONTRIBUTION, clientRights) || (character.Id == targetId && GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_MY_XP_CONTRIBUTION, clientRights)))
                 guildMember.GivenPercent = xpPercent;
             if (GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS, clientRights))
-                guildMember.Rights = (int)rights;
+                guildMember.Rights = rights;
 
             var database = WorldServer.Instance.DBAccessor.Database;
             database.Save(guildMember);
@@ -134,11 +134,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
             return true;
         }
 
-        public bool GuildMemberHasRight(GuildRightsBitEnum right, int rights)
+        public bool GuildMemberHasRight(GuildRightsBitEnum right, uint rights)
         {
             var gRights = (GuildRightsBitEnum)rights;
 
-            return !gRights.HasFlag(right);
+            return gRights.HasFlag(right);
         }
     }
 }
