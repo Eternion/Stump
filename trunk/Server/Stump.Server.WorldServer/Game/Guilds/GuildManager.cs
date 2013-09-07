@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                         member.RankId,
                         member.GivenExperience,
                         member.GivenPercent,
-                        (uint)GuildRightsBitEnum.GUILD_RIGHT_BOSS, //Rights
+                        (uint)member.Rights, //Rights
                         1, //Connected
                         (sbyte) character.AlignmentSide,
                         0, //Hours since last connection
@@ -74,7 +74,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                         member.RankId,
                         member.GivenExperience,
                         member.GivenPercent,
-                        262148, //Rights
+                        (uint)member.Rights, //Rights
                         0, //Disconnected
                         (sbyte)characterRecord.AlignmentSide,
                         1, //Hours since last connection
@@ -91,12 +91,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public GuildMemberRecord ChangeMemberParameters(int guildId, Character character, int targetId, short rank, sbyte xpPercent, uint rights)
         {
-            if (character.GuildId != World.Instance.GetCharacter(targetId).GuildId)
-                return null;
-
             var guildMember = Guild.Instance.GuildMembers.FirstOrDefault(gMembers => gMembers.CharacterId == targetId);
 
             if (guildMember == null)
+                return null;
+            if (guildMember.GuildId != character.GuildId)
                 return null;
 
             if (GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RANKS, guildMember.Rights))
@@ -107,16 +106,21 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 guildMember.Rights = (int)rights;
 
             var database = WorldServer.Instance.DBAccessor.Database;
-            database.Update(guildMember);
+            database.Save(guildMember);
 
             return guildMember;
         }
 
         public bool GuildMemberHasRight(GuildRightsBitEnum right, int rights)
         {
-            var guildRights = Enum.GetValues(typeof(GuildRightsBitEnum)).Cast<int>().ToArray();
+            /*var gRights = (GuildRightsBitEnum)rights;
 
-            return guildRights.ElementAt(Array.IndexOf(guildRights, right)) <= rights;
+            return !gRights.HasFlag(right);*/
+            
+            /*var guildRights = Enum.GetValues(typeof(GuildRightsBitEnum)).Cast<int>().ToArray();
+
+            return guildRights.ElementAt(Array.IndexOf(guildRights, right)) <= rights;*/
+            return true;
         }
     }
 }
