@@ -21,12 +21,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
         /// <returns></returns>
         public GuildRecord FindById(int guildId)
         {
-            return Guild.Instance.Guilds.FirstOrDefault(guild => guild.Id == guildId);
+            return Guild.Instance.FindGuildByGuildId(guildId);
         }
 
         public int FindGuildIdByCharacter(Character character)
         {
-            var guildMember = Guild.Instance.GuildMembers.FirstOrDefault(members => members.CharacterId == character.Id);
+            var guildMember = Guild.Instance.FindGuildMemberByCharacterId(character.Id);
 
             return guildMember == null ? 0 : guildMember.GuildId;
         }
@@ -91,7 +91,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public GuildMemberRecord ChangeMemberParameters(int guildId, Character character, int targetId, short rank, sbyte xpPercent, uint rights)
         {
-            var guildMember = Guild.Instance.GuildMembers.FirstOrDefault(gMembers => gMembers.CharacterId == targetId);
+            var guildMember = Guild.Instance.FindGuildMemberByCharacterId(targetId);
 
             if (guildMember == null)
                 return null;
@@ -120,7 +120,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
             /*var guildRights = Enum.GetValues(typeof(GuildRightsBitEnum)).Cast<int>().ToArray();
 
             return guildRights.ElementAt(Array.IndexOf(guildRights, right)) <= rights;*/
-            return true;
+            var gRights = (GuildRightsBitEnum)rights;
+
+            return ((gRights & right) == right);
         }
     }
 }
