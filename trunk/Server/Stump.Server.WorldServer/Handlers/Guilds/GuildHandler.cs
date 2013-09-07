@@ -44,6 +44,21 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                 //client.Send(new GuildInformationsMemberUpdateMessage(member)); //Best to use
         }
 
+        [WorldHandler(GuildKickRequestMessage.Id)]
+        public static void HandleGuildKickRequestMessage(WorldClient client, GuildKickRequestMessage message)
+        {
+            var guildId = client.Character.GuildId;
+            if (guildId == 0) return;
+
+            if (!GuildManager.Instance.KickMember(guildId, client.Character, message.kickedId)) return;
+
+            var character = World.Instance.GetCharacter(message.kickedId);
+            if (character == null) return;
+
+            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
+            character.Client.Send(new GuildLeftMessage());
+        }
+
         public static void SendGuildMembershipMessage(WorldClient client)
         {
             var guildId = client.Character.GuildId;

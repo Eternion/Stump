@@ -92,17 +92,18 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public GuildMemberRecord ChangeMemberParameters(int guildId, Character character, int targetId, short rank, sbyte xpPercent, uint rights)
         {
             var guildMember = Guild.Instance.FindGuildMemberByCharacterId(targetId);
+            var clientRights = Guild.Instance.FindGuildMemberByCharacterId(character.Id).Rights;
 
             if (guildMember == null)
                 return null;
             if (guildMember.GuildId != character.GuildId)
                 return null;
 
-            if (GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RANKS, guildMember.Rights))
+            if (GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RANKS, clientRights))
                 guildMember.RankId = rank;
-            if (GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_XP_CONTRIBUTION, guildMember.Rights) || (character.Id == targetId && GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_MY_XP_CONTRIBUTION, guildMember.Rights)))
+            if (GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_XP_CONTRIBUTION, clientRights) || (character.Id == targetId && GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_MY_XP_CONTRIBUTION, clientRights)))
                 guildMember.GivenPercent = xpPercent;
-            if (GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS, guildMember.Rights))
+            if (GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS, clientRights))
                 guildMember.Rights = (int)rights;
 
             var database = WorldServer.Instance.DBAccessor.Database;
@@ -111,18 +112,33 @@ namespace Stump.Server.WorldServer.Game.Guilds
             return guildMember;
         }
 
+        public bool KickMember(int guildId, Character character, int targetId)
+        {
+            var guildMember = Guild.Instance.FindGuildMemberByCharacterId(targetId);
+
+            if (guildMember == null)
+                return false;
+            if (guildMember.GuildId != character.GuildId)
+                return false;
+
+            var clientRights = Guild.Instance.FindGuildMemberByCharacterId(character.Id).Rights;
+
+            if (!GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS, clientRights))
+                return false;
+
+            if (Guild.Instance.KickMember(targetId))
+                WorldServer.Instance.DBAccessor.Database.Delete(guildMember);
+            else
+                return false;
+
+            return true;
+        }
+
         public bool GuildMemberHasRight(GuildRightsBitEnum right, int rights)
         {
-            /*var gRights = (GuildRightsBitEnum)rights;
-
-            return !gRights.HasFlag(right);*/
-            
-            /*var guildRights = Enum.GetValues(typeof(GuildRightsBitEnum)).Cast<int>().ToArray();
-
-            return guildRights.ElementAt(Array.IndexOf(guildRights, right)) <= rights;*/
             var gRights = (GuildRightsBitEnum)rights;
 
-            return ((gRights & right) == right);
+            return !gRights.HasFlag(right);
         }
     }
 }

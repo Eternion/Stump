@@ -50,6 +50,13 @@ namespace Stump.Server.WorldServer.Game.Guilds
             return GuildMembers.FirstOrDefault(members => members.CharacterId == characterId);
         }
 
+        public bool KickMember(int memberId)
+        {
+            var kickMember = GuildMembers.FirstOrDefault(member => member.CharacterId == memberId);
+
+            return m_guildMember.Remove(kickMember);
+        }
+
         public void Load()
         {
             m_guilds = WorldServer.Instance.DBAccessor.Database.Fetch<GuildRecord>(string.Format(GuildRelator.FetchQuery));
