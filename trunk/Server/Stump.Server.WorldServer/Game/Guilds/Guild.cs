@@ -40,6 +40,16 @@ namespace Stump.Server.WorldServer.Game.Guilds
             get { return m_guildMember.AsReadOnly(); }
         }
 
+        public GuildRecord FindGuildByGuildId(int guildId)
+        {
+            return Guilds.FirstOrDefault(guild => guild.Id == guildId);
+        }
+
+        public GuildMemberRecord FindGuildMemberByCharacterId(int characterId)
+        {
+            return GuildMembers.FirstOrDefault(members => members.CharacterId == characterId);
+        }
+
         public void Load()
         {
             m_guilds = WorldServer.Instance.DBAccessor.Database.Fetch<GuildRecord>(string.Format(GuildRelator.FetchQuery));

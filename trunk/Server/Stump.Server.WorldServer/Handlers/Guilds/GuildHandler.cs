@@ -40,7 +40,8 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             var member = GuildManager.Instance.ChangeMemberParameters(guildId, client.Character, message.memberId, message.rank, message.experienceGivenPercent, message.rights);
 
             if (member != null)
-                client.Send(new GuildInformationsMemberUpdateMessage(member));
+                client.Send(new GuildInformationsMembersMessage(GuildManager.Instance.GetGuildMembers(guildId)));
+                //client.Send(new GuildInformationsMemberUpdateMessage(member)); //Best to use
         }
 
         public static void SendGuildMembershipMessage(WorldClient client)
@@ -49,8 +50,9 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             if (guildId == 0) return;
 
             var guildInfo = GuildManager.Instance.FindById(guildId);
+            var guildMember = Guild.Instance.FindGuildMemberByCharacterId(client.Character.Id);
 
-            client.Send(new GuildMembershipMessage(new GuildInformations(guildId, guildInfo.Name, guildInfo.GuildEmblem), 262148, true));
+            client.Send(new GuildMembershipMessage(new GuildInformations(guildId, guildInfo.Name, guildInfo.GuildEmblem), (uint)guildMember.Rights, true));
         }
 
         public static void SendGuildInformationsGeneralMessage(WorldClient client)
