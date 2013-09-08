@@ -2,19 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
-using System.Linq;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
-using Stump.Server.BaseServer.Database;
-using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Guilds;
-using Stump.Server.WorldServer.Database.Characters;
-using Stump.Server.WorldServer.Database.Accounts;
-using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using GuildMemberNetwork = Stump.DofusProtocol.Types.GuildMember;
 
@@ -25,8 +17,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
         [Variable(true)]
         public static int MaxMembersNumber = 50;
 
-        private List<GuildMember> m_members = new List<GuildMember>();
-        private WorldClientCollection m_clients = new WorldClientCollection();
+        private readonly List<GuildMember> m_members = new List<GuildMember>();
+        private readonly WorldClientCollection m_clients = new WorldClientCollection();
         private bool m_isDirty;
 
         public Guild(int id, string name)
@@ -143,11 +135,10 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             var level = ExperienceManager.Instance.GetGuildLevel(Experience);
 
-            if (level != Level)
-            {
-                Level = level;
-                OnLevelChanged();
-            }
+            if (level == Level) return;
+
+            Level = level;
+            OnLevelChanged();
         }
 
         public void SetXP(long experience)
@@ -156,19 +147,48 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             var level = ExperienceManager.Instance.GetGuildLevel(Experience);
 
-            if (level != Level)
-            {
-                Level = level;
-                OnLevelChanged();
-            }
+            if (level == Level) return;
+
+            Level = level;
+            OnLevelChanged();
+        }
+
+        public bool KickMember(Character character, Character member)
+        {
+            if (character.Guild != member.Guild)
+                return false;
+
+            if (!character.GuildMember.HasRight(character, GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS))
+                return false;
+
+            if (!member.Guild.RemoveMember(member))
+                return false;
+
+            member.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
+            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177);
+
+            return true;
+        }
+
+        public bool ChangeParameters(Character character, Character member, short rank, sbyte xpPercent, uint rights)
+        {
+            if (character.Guild != member.Guild)
+                return false;
+
+            if (character.GuildMember.HasRight(character, GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RANKS))
+                member.GuildMember.RankId = rank;
+            if (character.GuildMember.HasRight(character, GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS))
+                member.GuildMember.Rights = (GuildRightsBitEnum)rights;
+            if (character.GuildMember.HasRight(character, GuildRightsBitEnum.GUILD_RIGHT_MANAGE_XP_CONTRIBUTION) ||
+                (character == member && character.GuildMember.HasRight(character, GuildRightsBitEnum.GUILD_RIGHT_MANAGE_MY_XP_CONTRIBUTION)))
+                member.GuildMember.GivenPercent = (byte)xpPercent;
+
+            return true;
         }
 
         public bool CanAddMember()
         {
-            if (m_members.Count >= MaxMembersNumber)
-                return false;
-
-            return true;
+            return m_members.Count < MaxMembersNumber;
         }
 
         public bool TryAddMember(Character character)
