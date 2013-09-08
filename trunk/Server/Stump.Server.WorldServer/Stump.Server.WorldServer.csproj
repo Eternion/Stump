@@ -312,7 +312,9 @@
     <Compile Include="Game\Fights\Triggers\FractionGlyph.cs" />
     <Compile Include="Game\Formulas\FightFormulas.cs" />
     <Compile Include="Game\Guilds\Guild.cs" />
+    <Compile Include="Game\Guilds\GuildEmblem.cs" />
     <Compile Include="Game\Guilds\GuildManager.cs" />
+    <Compile Include="Game\Guilds\GuildMember.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapSave.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapTeleport.cs" />
     <Compile Include="Game\Items\Item.cs" />

@@ -43,38 +43,34 @@ namespace Stump.Server.WorldServer.Database.Guilds
             set;
         }
 
-        public int Level
+        public long Experience
         {
             get;
             set;
         }
 
-        public double Experience
+        public short EmblemBackgroundShape
         {
             get;
             set;
         }
 
-        [Ignore]
-        public GuildEmblem GuildEmblem
+        public int EmblemBackgroundColor
         {
-            get { return m_guildEmblem; }
-            set
-            {
-                m_guildEmblem = value;
-                m_guildEmblemString = value.ConvertToString();
-            }
+            get;
+            set;
         }
 
-        [NullString]
-        public string GuildEmblemString
+        public short EmblemForegroundShape
         {
-            get { return m_guildEmblemString; }
-            set
-            {
-                m_guildEmblemString = value;
-                m_guildEmblem = !string.IsNullOrEmpty(GuildEmblemString) ? m_guildEmblemString.ToGuildEmblem() : null;
-            }
+            get;
+            set;
+        }
+
+        public int EmblemForegroundColor
+        {
+            get;
+            set;
         }
     }
 }

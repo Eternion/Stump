@@ -9,6 +9,7 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Guilds;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game;
+using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 
 namespace Stump.Server.WorldServer.Handlers.Guilds
 {
@@ -17,21 +18,21 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         [WorldHandler(GuildGetInformationsMessage.Id)]
         public static void HandleGuildGetInformationsMessage(WorldClient client, GuildGetInformationsMessage message)
         {
-            var guildId = client.Character.GuildId;
-            if (guildId == 0) return;
+            if (client.Character.Guild == null)
+                return;
 
             switch (message.infoType)
             {
                 case (sbyte)GuildInformationsTypeEnum.INFO_GENERAL:
-                    SendGuildInformationsGeneralMessage(client);
+                    SendGuildInformationsGeneralMessage(client, client.Character.Guild);
                     break;
                 case (sbyte)GuildInformationsTypeEnum.INFO_MEMBERS:
-                    client.Send(new GuildInformationsMembersMessage(GuildManager.Instance.GetGuildMembers(guildId)));
+                    SendGuildInformationsMembersMessage(client, client.Character.Guild);
                     break;
             }
         }
 
-        [WorldHandler(GuildChangeMemberParametersMessage.Id)]
+        /*[WorldHandler(GuildChangeMemberParametersMessage.Id)]
         public static void HandleGuildChangeMemberParametersMessage(WorldClient client, GuildChangeMemberParametersMessage message)
         {
             var guildId = client.Character.GuildId;
@@ -63,27 +64,21 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
             character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
             character.Client.Send(new GuildLeftMessage());
+        }*/
+
+        public static void SendGuildMembershipMessage(IPacketReceiver client, GuildMember member)
+        {
+            client.Send(new GuildMembershipMessage(member.Guild.GetGuildInformations(), (uint)member.Rights, true));
         }
 
-        public static void SendGuildMembershipMessage(WorldClient client)
+        public static void SendGuildInformationsGeneralMessage(IPacketReceiver client, Guild guild)
         {
-            var guildId = client.Character.GuildId;
-            if (guildId == 0) return;
-
-            var guildInfo = GuildManager.Instance.FindById(guildId);
-            var guildMember = Guild.Instance.FindGuildMemberByCharacterId(client.Character.Id);
-
-            client.Send(new GuildMembershipMessage(new GuildInformations(guildId, guildInfo.Name, guildInfo.GuildEmblem), (uint)guildMember.Rights, true));
+            client.Send(new GuildInformationsGeneralMessage(true, false, guild.Level, guild.ExperienceLevelFloor, guild.Experience, guild.ExperienceNextLevelFloor, guild.CreationDate.GetUnixTimeStamp())); 
         }
 
-        public static void SendGuildInformationsGeneralMessage(WorldClient client)
+        public static void SendGuildInformationsMembersMessage(IPacketReceiver client, Guild guild)
         {
-            var guildId = client.Character.GuildId;
-            if (guildId == 0) return;
-
-            var guildInfo = GuildManager.Instance.FindById(guildId);
-
-            client.Send(new GuildInformationsGeneralMessage(true, false, (byte)guildInfo.Level, 10, guildInfo.Experience, 100, guildInfo.CreationDate.GetUnixTimeStamp()));
+            client.Send(new GuildInformationsMembersMessage(guild.Members.Select(x => x.GetNetworkGuildMember())));
         }
     }
 }

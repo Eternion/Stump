@@ -573,16 +573,6 @@ namespace Stump.Server.WorldServer.Game
 
         #endregion
 
-        #region Guilds
-
-        public Guild Guild
-        {
-            get;
-            private set;
-        }
-
-        #endregion
-
         public void RegisterSaveableInstance(ISaveable instance)
         {
             m_saveablesInstances.Add(instance);

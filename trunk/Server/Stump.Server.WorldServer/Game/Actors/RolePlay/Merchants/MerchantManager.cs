@@ -24,6 +24,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
         public override void Initialize()
         {
             m_merchantSpawns = Database.Query<MerchantSpawn>(WorldMapMerchantRelator.FetchQuery).ToDictionary(entry => entry.CharacterId);
+            World.Instance.RegisterSaveableInstance(this);
         }
 
         public MerchantSpawn[] GetMerchantSpawns()

@@ -139,7 +139,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             InventoryHandler.SendInventoryWeightMessage(client);
 
             //Guild
-            GuildHandler.SendGuildMembershipMessage(client);
+            if (client.Character.GuildMember != null)
+                GuildHandler.SendGuildMembershipMessage(client,client.Character.GuildMember);
 
             FriendHandler.SendFriendWarnOnConnectionStateMessage(client, client.Character.FriendsBook.WarnOnConnection);
             FriendHandler.SendFriendWarnOnLevelGainStateMessage(client, client.Character.FriendsBook.WarnOnLevel);
