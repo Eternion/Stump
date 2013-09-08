@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Guilds;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Accounts;
@@ -12,136 +14,132 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Guilds
 {
-    public class GuildManager : DataManager<GuildManager>
+    public class GuildManager : DataManager<GuildManager>, ISaveable
     {
-        /// <summary>
-        /// Returns null if not found
-        /// </summary>
-        /// <param name="guildId"></param>
-        /// <returns></returns>
-        public GuildRecord FindById(int guildId)
+        private UniqueIdProvider m_idProvider;
+        private Dictionary<int, Guild> m_guilds;
+        private Dictionary<int, GuildMember> m_guildsMembers;
+        private Stack<Guild> m_guildsToDelete = new Stack<Guild>();
+        private Stack<GuildMember> m_guildsMemberToDelete = new Stack<GuildMember>();
+
+        private object m_lock = new object();
+
+        public override void Initialize()
         {
-            return Guild.Instance.FindGuildByGuildId(guildId);
+            m_guilds =
+                Database.Query<GuildRecord>(GuildRelator.FetchQuery).Select(x => new Guild(x, FindGuildMembers(x.Id))).ToDictionary(x => x.Id);
+            m_guildsMembers = m_guilds.Values.SelectMany(x => x.Members).ToDictionary(x => x.Id);
+            m_idProvider = new UniqueIdProvider(m_guilds.Select(x => x.Value.Id).Max());
+
+            World.Instance.RegisterSaveableInstance(this);
         }
 
-        public int FindGuildIdByCharacter(Character character)
+        public GuildMember[] FindGuildMembers(int guildId)
         {
-            var guildMember = Guild.Instance.FindGuildMemberByCharacterId(character.Id);
-
-            return guildMember == null ? 0 : guildMember.GuildId;
+            return
+                Database.Query<GuildMemberRecord>(string.Format(GuildMemberRelator.FetchByGuildId, guildId))
+                        .Select(x => new GuildMember(x)).ToArray();
         }
 
-        public List<GuildMember> GetGuildMembers(int guildId)
+        public Guild TryGetGuild(int id)
         {
-            var members = Guild.Instance.GuildMembers.Where(gMembers => gMembers.GuildId == guildId);
-
-            var guildMembers = new List<GuildMember>();
-
-            foreach (var member in members)
+            lock (m_lock)
             {
-                var character = World.Instance.GetCharacter(member.CharacterId);
-                GuildMember guildMember;
-
-                if (character != null)
-                {
-                    guildMember = new GuildMember(
-                        member.CharacterId,
-                        ExperienceManager.Instance.GetCharacterLevel(character.Experience),
-                        character.Name,
-                        (sbyte)character.Breed.Id,
-                        character.Sex == SexTypeEnum.SEX_FEMALE,
-                        member.RankId,
-                        member.GivenExperience,
-                        member.GivenPercent,
-                        (uint)member.Rights, //Rights
-                        1, //Connected
-                        (sbyte) character.AlignmentSide,
-                        0, //Hours since last connection
-                        0, //Mood SmileyId(None = 0)
-                        member.AccountId,
-                        0); //AchievementPoints
-                }
-                else
-                {
-                    var characterRecord = Database.FirstOrDefault<CharacterRecord>(string.Format(GuildMemberRelator.FetchCharacterById, member.CharacterId));
-
-                    guildMember = new GuildMember(
-                        member.CharacterId,
-                        ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience),
-                        characterRecord.Name,
-                        (sbyte)characterRecord.Breed,
-                        characterRecord.Sex == SexTypeEnum.SEX_FEMALE,
-                        member.RankId,
-                        member.GivenExperience,
-                        member.GivenPercent,
-                        (uint)member.Rights, //Rights
-                        0, //Disconnected
-                        (sbyte)characterRecord.AlignmentSide,
-                        1, //Hours since last connection
-                        0, //Mood SmileyId
-                        member.AccountId,
-                        0); //AchievementPoints   
-                }
-
-                guildMembers.Add(guildMember);
+                Guild guild;
+                return m_guilds.TryGetValue(id, out guild) ? guild : null;
             }
-
-            return guildMembers;
         }
 
-        public GuildMemberRecord ChangeMemberParameters(int guildId, Character character, int targetId, short rank, sbyte xpPercent, uint rights)
+        public GuildMember TryGetGuildMember(int characterId)
         {
-            var guildMember = Guild.Instance.FindGuildMemberByCharacterId(targetId);
-            var clientRights = Guild.Instance.FindGuildMemberByCharacterId(character.Id).Rights;
-
-            if (guildMember == null)
-                return null;
-            if (guildMember.GuildId != character.GuildId)
-                return null;
-
-            if (GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RANKS, clientRights))
-                guildMember.RankId = rank;
-            if (GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_XP_CONTRIBUTION, clientRights) || (character.Id == targetId && GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_MY_XP_CONTRIBUTION, clientRights)))
-                guildMember.GivenPercent = xpPercent;
-            if (GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS, clientRights))
-                guildMember.Rights = rights;
-
-            var database = WorldServer.Instance.DBAccessor.Database;
-            database.Save(guildMember);
-
-            return guildMember;
+            lock (m_lock)
+            {
+                GuildMember guildMember;
+                return m_guildsMembers.TryGetValue(characterId, out guildMember) ? guildMember : null;
+            }
         }
 
-        public bool KickMember(int guildId, Character character, int targetId)
+        public Guild CreateGuild(string name)
         {
-            var guildMember = Guild.Instance.FindGuildMemberByCharacterId(targetId);
+            lock (m_lock)
+            {
+                var guild = new Guild(m_idProvider.Pop(), name);
+                m_guilds.Add(guild.Id, guild);
 
-            if (guildMember == null)
-                return false;
-            if (guildMember.GuildId != character.GuildId)
-                return false;
-
-            var clientRights = Guild.Instance.FindGuildMemberByCharacterId(character.Id).Rights;
-
-            if (!GuildMemberHasRight(GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS, clientRights))
-                return false;
-
-            if (Guild.Instance.KickMember(targetId))
-                WorldServer.Instance.DBAccessor.Database.Delete(guildMember);
-            else
-                return false;
-
-            return true;
+                return guild;
+            }
         }
 
-        public bool GuildMemberHasRight(GuildRightsBitEnum right, uint rights)
+        public bool DeleteGuild(Guild guild)
         {
-            var gRights = (GuildRightsBitEnum)rights;
+            lock (m_lock)
+            {
+                foreach (var member in guild.Members)
+                {
+                    DeleteGuildMember(member);
+                }
 
-            if (gRights == GuildRightsBitEnum.GUILD_RIGHT_BOSS)
+                m_guilds.Remove(guild.Id);
+                m_guildsToDelete.Push(guild);
+
                 return true;
+            }
+        }
 
-            return gRights.HasFlag(right);
+        public void RegisterGuildMember(GuildMember member)
+        {
+            lock (m_lock)
+            {
+                m_guildsMembers.Add(member.Id, member);
+            }
+        }
+
+        public bool DeleteGuildMember(GuildMember member)
+        {
+            lock (m_lock)
+            {
+                m_guildsMembers.Remove(member.Id);
+                m_guildsMemberToDelete.Push(member);
+                return true;
+            }
+        }
+
+        public void Save()
+        {
+            lock (m_lock)
+            {
+                foreach (var guild in m_guilds.Values)
+                {
+                    if (guild.IsDirty)
+                    {
+                        Database.Save(guild.Record);
+                        guild.IsDirty = false;
+                    }
+                }
+
+                foreach (var guildMember in m_guildsMembers.Values)
+                {
+                    if (guildMember.IsDirty)
+                    {
+                        Database.Save(guildMember.Record);
+                        guildMember.IsDirty = false;
+                    }
+                }
+
+                while (m_guildsToDelete.Count > 0)
+                {
+                    var guild = m_guildsToDelete.Pop();
+
+                    Database.Delete(guild);
+                }
+
+                while (m_guildsMemberToDelete.Count > 0)
+                {
+                    var member = m_guildsMemberToDelete.Pop();
+
+                    Database.Delete(member);
+                }
+            }
         }
     }
 }

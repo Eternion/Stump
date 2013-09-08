@@ -39,6 +39,7 @@ using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Handlers.Moderation;
+using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
@@ -66,6 +67,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnLoggedIn()
         {
+            if (GuildMember != null)
+                GuildMember.OnCharacterConnected(this);
+
             Action<Character> handler = LoggedIn;
             if (handler != null) handler(this);
         }
@@ -74,6 +78,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnLoggedOut()
         {
+            if (GuildMember != null)
+                GuildMember.OnCharacterDisconnected(this);
+
             Action<Character> handler = LoggedOut;
             if (handler != null) handler(this);
         }
@@ -139,6 +146,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 m_record.Name = value;
                 base.Name = value;
+
+                if (GuildMember != null)
+                    GuildMember.Name = value;
             }
         }
 
@@ -479,8 +489,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public byte Level
         {
-            get;
-            private set;
+            get { return m_level; }
+            private set
+            {
+                m_level = value;
+
+                if (GuildMember != null)
+                    GuildMember.Level = value;
+            }
         }
 
         public long Experience
@@ -726,10 +742,28 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Guild
 
-        public int GuildId
+        public GuildMember GuildMember
         {
             get;
-            private set;
+            set;
+        }
+
+        public Guild Guild
+        {
+            get
+            {
+                return GuildMember != null ? GuildMember.Guild : null;
+            }
+        }
+
+        public void SetGuildMemberXPPercent(int xpPercent)
+        {
+            // todo
+        }
+
+        public void QuitGuild()
+        {
+            // todo
         }
 
         #endregion
@@ -739,7 +773,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public AlignmentSideEnum AlignmentSide
         { 
             get { return m_record.AlignmentSide; }
-            private set { m_record.AlignmentSide = value; }
+            private set { m_record.AlignmentSide = value;
+
+                if (GuildMember != null)
+                    GuildMember.AlignmentSide = value;
+            }
         }
 
         private sbyte m_alignmentGrade;
@@ -1802,6 +1840,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     Shortcuts.Save();
                     FriendsBook.Save();
 
+                    if (GuildMember != null && GuildMember.IsDirty)
+                        GuildMember.Save(WorldServer.Instance.DBAccessor.Database);
+
                     m_record.MapId = Map.Id;
                     m_record.CellId = Cell.Id;
                     m_record.Direction = Direction;
@@ -1860,7 +1901,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             CheckMerchantModeReconnection();
             MerchantBag.LoadMerchantBag();
 
-            GuildId = GuildManager.Instance.FindGuildIdByCharacter(this);
+            GuildMember = GuildManager.Instance.TryGetGuildMember(Id);
 
             Spells = new SpellInventory(this);
             Spells.LoadSpells();
@@ -1898,7 +1939,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        private List<Exception> m_errors = new List<Exception>(); 
+        private List<Exception> m_errors = new List<Exception>();
+        private byte m_level;
+
         public List<Exception> Errors
         {
             get { return m_errors; }
@@ -1917,7 +1960,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Look,
                 GetEntityDispositionInformations(),
                 Name,
-                GetHumanInformations(this),
+                GetHumanInformations(),
                 Account.Id,
                 GetActorAlignmentInformations());
         }
@@ -2029,6 +2072,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion
 
+        public override HumanInformations GetHumanInformations()
+        {
+            var human = base.GetHumanInformations();
+
+            var options = new List<HumanOption>();
+
+            if (Guild != null)
+                options.Add(new HumanOptionGuild(Guild.GetGuildInformations()));
+            return human;
+        }
 
         #endregion
 

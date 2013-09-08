@@ -39,34 +39,52 @@ namespace Stump.Server.WorldServer.Core.Network
             }
             else
             {
-                foreach (var worldClient in m_underlyingList.ToList())
+                lock (this)
                 {
-                    if (worldClient != null)
-                        worldClient.Send(message);
-                } 
+                    var disconnectedClients = new List<WorldClient>();
+                    foreach (var worldClient in m_underlyingList)
+                    {
+                        if (worldClient != null)
+                            worldClient.Send(message);
+
+                        if (worldClient == null || !worldClient.Connected)
+                            disconnectedClients.Add(worldClient);
+                    }
+
+                    foreach (var client in disconnectedClients)
+                    {
+                        Remove(client);
+                    }
+                }
             }
         }
 
         public void Add(WorldClient client)
         {
-            if (m_singleClient != null)
+            lock (this)
             {
-                m_underlyingList.Add(m_singleClient);
-                m_underlyingList.Add(client);
-                m_singleClient = null;
-            }
-            else
-            {
-                m_underlyingList.Add(client);
+                if (m_singleClient != null)
+                {
+                    m_underlyingList.Add(m_singleClient);
+                    m_underlyingList.Add(client);
+                    m_singleClient = null;
+                }
+                else
+                {
+                    m_underlyingList.Add(client);
+                }
             }
         }
 
         public void Remove(WorldClient client)
         {
-            if (m_singleClient == client)
-                m_singleClient = null;
-            else
-                m_underlyingList.Remove(client);
+            lock (this)
+            {
+                if (m_singleClient == client)
+                    m_singleClient = null;
+                else
+                    m_underlyingList.Remove(client);
+            }
         }
 
         public IEnumerator<WorldClient> GetEnumerator()
