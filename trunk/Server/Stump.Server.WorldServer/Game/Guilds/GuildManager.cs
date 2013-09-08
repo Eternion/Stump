@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Pool;
-using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
-using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Guilds;
-using Stump.Server.WorldServer.Database.Characters;
-using Stump.Server.WorldServer.Database.Accounts;
-using Stump.Server.WorldServer.Game.Accounts;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Guilds
 {
@@ -19,10 +12,10 @@ namespace Stump.Server.WorldServer.Game.Guilds
         private UniqueIdProvider m_idProvider;
         private Dictionary<int, Guild> m_guilds;
         private Dictionary<int, GuildMember> m_guildsMembers;
-        private Stack<Guild> m_guildsToDelete = new Stack<Guild>();
-        private Stack<GuildMember> m_guildsMemberToDelete = new Stack<GuildMember>();
+        private readonly Stack<Guild> m_guildsToDelete = new Stack<Guild>();
+        private readonly Stack<GuildMember> m_guildsMemberToDelete = new Stack<GuildMember>();
 
-        private object m_lock = new object();
+        private readonly object m_lock = new object();
 
         public override void Initialize()
         {
@@ -108,22 +101,16 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             lock (m_lock)
             {
-                foreach (var guild in m_guilds.Values)
+                foreach (var guild in m_guilds.Values.Where(guild => guild.IsDirty))
                 {
-                    if (guild.IsDirty)
-                    {
-                        Database.Save(guild.Record);
-                        guild.IsDirty = false;
-                    }
+                    Database.Save(guild.Record);
+                    guild.IsDirty = false;
                 }
 
-                foreach (var guildMember in m_guildsMembers.Values)
+                foreach (var guildMember in m_guildsMembers.Values.Where(guildMember => guildMember.IsDirty))
                 {
-                    if (guildMember.IsDirty)
-                    {
-                        Database.Save(guildMember.Record);
-                        guildMember.IsDirty = false;
-                    }
+                    Database.Save(guildMember.Record);
+                    guildMember.IsDirty = false;
                 }
 
                 while (m_guildsToDelete.Count > 0)

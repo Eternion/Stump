@@ -180,6 +180,13 @@ namespace Stump.Server.WorldServer.Game.Guilds
                                           Record.AccountId, 0);
         }
 
+        public bool HasRight(Character character, GuildRightsBitEnum right)
+        {
+            var rights = character.GuildMember.Rights;
+
+            return rights == GuildRightsBitEnum.GUILD_RIGHT_BOSS || rights.HasFlag(right);
+        }
+
         public event Action<GuildMember> Connected;
         public event Action<GuildMember, Character> Disconnected;
 

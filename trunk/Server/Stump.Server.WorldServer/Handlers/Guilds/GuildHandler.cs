@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.DofusProtocol.Types;
 using Stump.Core.Extensions;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database.Guilds;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
@@ -32,39 +30,45 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             }
         }
 
-        /*[WorldHandler(GuildChangeMemberParametersMessage.Id)]
+        [WorldHandler(GuildChangeMemberParametersMessage.Id)]
         public static void HandleGuildChangeMemberParametersMessage(WorldClient client, GuildChangeMemberParametersMessage message)
         {
-            var guildId = client.Character.GuildId;
-            if (guildId == 0) return;
+            if (client.Character.Guild == null)
+                return;
 
-            var member = GuildManager.Instance.ChangeMemberParameters(guildId, client.Character, message.memberId, message.rank, message.experienceGivenPercent, message.rights);
+            //todo: Write a method to get offline GuildMember
+            var target = World.Instance.GetCharacter(message.memberId);
+            if (target == null)
+                return;
 
-            if (member != null)
+            if (client.Character.Guild.ChangeParameters(client.Character, target, message.rank, message.experienceGivenPercent, message.rights))
             {
-                client.Send(new GuildInformationsMembersMessage(GuildManager.Instance.GetGuildMembers(guildId)));
-                //client.Send(new GuildInformationsMemberUpdateMessage(member)); //Best to use
-
-                var character = World.Instance.GetCharacter(message.memberId);
-                if (character != null)
-                    SendGuildMembershipMessage(character.Client);
+                SendGuildInformationsMemberUpdateMessage(client, target.GuildMember);
+                SendGuildMembershipMessage(target.Client, target.GuildMember);
             }
         }
 
         [WorldHandler(GuildKickRequestMessage.Id)]
         public static void HandleGuildKickRequestMessage(WorldClient client, GuildKickRequestMessage message)
         {
-            var guildId = client.Character.GuildId;
-            if (guildId == 0) return;
+            if (client.Character.Guild == null)
+                return;
 
-            if (!GuildManager.Instance.KickMember(guildId, client.Character, message.kickedId)) return;
+            //todo: Write a method to get offline GuildMember
+            var target = World.Instance.GetCharacter(message.kickedId);
+            if (target == null)
+                return;
 
-            var character = World.Instance.GetCharacter(message.kickedId);
-            if (character == null) return;
+            if (!target.Guild.KickMember(client.Character, target))
+                return;
 
-            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
-            character.Client.Send(new GuildLeftMessage());
-        }*/
+            SendGuildLeftMessage(target.Client);
+        }
+
+        public static void SendGuildLeftMessage(IPacketReceiver client)
+        {
+            client.Send(new GuildLeftMessage());
+        }
 
         public static void SendGuildMembershipMessage(IPacketReceiver client, GuildMember member)
         {
@@ -79,6 +83,11 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         public static void SendGuildInformationsMembersMessage(IPacketReceiver client, Guild guild)
         {
             client.Send(new GuildInformationsMembersMessage(guild.Members.Select(x => x.GetNetworkGuildMember())));
+        }
+
+        public static void SendGuildInformationsMemberUpdateMessage(IPacketReceiver client, GuildMember member)
+        {
+            client.Send(new GuildInformationsMemberUpdateMessage(member.GetNetworkGuildMember()));
         }
     }
 }
