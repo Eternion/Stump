@@ -19,6 +19,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             Record = new GuildMemberRecord
                 {
+                    IsNew = true,
                     CharacterId = character.Id,
                     AccountId = character.Account.Id,
                     Name = character.Name,
@@ -29,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                     GivenExperience = 0,
                     GivenPercent = 0,
                     LastConnection = DateTime.Now,
-                    RankId = 1,
+                    RankId = 0,
                     GuildId = guild.Id,
                     Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE,
                 };

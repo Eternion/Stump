@@ -41,6 +41,13 @@ namespace Stump.Server.WorldServer.Database.Guilds
             set;
         }
 
+        [Ignore]
+        public bool IsNew
+        {
+            get;
+            set;
+        }
+
         public int AccountId
         {
             get;
