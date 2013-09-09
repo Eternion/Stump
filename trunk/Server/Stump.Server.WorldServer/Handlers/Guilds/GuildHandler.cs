@@ -4,8 +4,8 @@ using Stump.DofusProtocol.Messages;
 using Stump.Core.Extensions;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game;
+using Stump.Server.WorldServer.Game.Guilds;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 
 namespace Stump.Server.WorldServer.Handlers.Guilds
@@ -32,7 +32,21 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         [WorldHandler(GuildCreationValidMessage.Id)]
         public static void HandleGuildCreationValidMessage(WorldClient client, GuildCreationValidMessage message)
         {
-            //Send by Guild Creation Panel
+            if (client.Character.Guild == null)
+            {
+                var result = GuildManager.Instance.CreateGuild(client.Character, message.guildName, message.guildEmblem);
+                SendGuildCreationResultMessage(client, result);
+
+                if (result == GuildCreationResultEnum.GUILD_CREATE_OK)
+                {
+                    GuildManager.Instance.SetBoss(client.Character.GuildMember);
+                    SendGuildJoinedMessage(client, client.Character.GuildMember);
+                }
+            }
+            else
+            {
+                SendGuildCreationResultMessage(client, GuildCreationResultEnum.GUILD_CREATE_ERROR_ALREADY_IN_GUILD);
+            }
         }
 
         [WorldHandler(GuildChangeMemberParametersMessage.Id)]
@@ -46,11 +60,11 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             if (target == null)
                 return;
 
-            if (client.Character.Guild.ChangeParameters(client.Character, target, message.rank, message.experienceGivenPercent, message.rights))
-            {
-                SendGuildInformationsMemberUpdateMessage(client, target.GuildMember);
-                SendGuildMembershipMessage(target.Client, target.GuildMember);
-            }
+            if (!client.Character.Guild.ChangeParameters(client.Character, target, message.rank, message.experienceGivenPercent, message.rights))
+                return;
+
+            SendGuildInformationsMemberUpdateMessage(client, target.GuildMember);
+            SendGuildMembershipMessage(target.Client, target.GuildMember);
         }
 
         [WorldHandler(GuildKickRequestMessage.Id)]
@@ -75,6 +89,11 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             client.Send(new GuildLeftMessage());
         }
 
+        public static void SendGuildCreationResultMessage(IPacketReceiver client, GuildCreationResultEnum result)
+        {
+            client.Send(new GuildCreationResultMessage((sbyte)result));
+        }
+
         public static void SendGuildMembershipMessage(IPacketReceiver client, GuildMember member)
         {
             client.Send(new GuildMembershipMessage(member.Guild.GetGuildInformations(), (uint)member.Rights, true));
@@ -93,6 +112,11 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         public static void SendGuildInformationsMemberUpdateMessage(IPacketReceiver client, GuildMember member)
         {
             client.Send(new GuildInformationsMemberUpdateMessage(member.GetNetworkGuildMember()));
+        }
+
+        public static void SendGuildJoinedMessage(IPacketReceiver client, GuildMember member)
+        {
+            client.Send(new GuildJoinedMessage(member.Guild.GetGuildInformations(), (uint)member.Rights, true));
         }
     }
 }

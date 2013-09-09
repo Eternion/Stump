@@ -1,10 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Stump.Core.Pool;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Guilds;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using NetworkGuildEmblem = Stump.DofusProtocol.Types.GuildEmblem;
 
 namespace Stump.Server.WorldServer.Game.Guilds
 {
@@ -26,6 +30,16 @@ namespace Stump.Server.WorldServer.Game.Guilds
             m_idProvider = new UniqueIdProvider(m_guilds.Select(x => x.Value.Id).Max());
 
             World.Instance.RegisterSaveableInstance(this);
+        }
+
+        public bool DoesNameExist(string name)
+        {
+            return m_guilds.Count(x => x.Value.Name == name) > 0;
+        }
+
+        public bool DoesEmblemExist(GuildEmblem emblem)
+        {
+            return m_guilds.Count(x => x.Value.Emblem == emblem) > 0;
         }
 
         public GuildMember[] FindGuildMembers(int guildId)
@@ -64,6 +78,37 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
         }
 
+        public GuildCreationResultEnum CreateGuild(Character character, string name, NetworkGuildEmblem emblem)
+        {
+            if (DoesNameExist(name))
+                return GuildCreationResultEnum.GUILD_CREATE_ERROR_NAME_ALREADY_EXISTS;
+
+            var guild = CreateGuild(name);
+            if (guild == null)
+                return GuildCreationResultEnum.GUILD_CREATE_ERROR_CANCEL;
+
+            var convertedEmblem = new GuildEmblem(null)
+                {
+                    BackgroundColor = Color.FromArgb(emblem.backgroundColor),
+                    BackgroundShape = emblem.backgroundShape,
+                    IsDirty = true,
+                    Record = null,
+                    SymbolColor = Color.FromArgb(emblem.symbolColor),
+                    SymbolShape = emblem.symbolShape
+                };
+
+            if (DoesEmblemExist(convertedEmblem))
+            {
+                DeleteGuild(guild);
+                return GuildCreationResultEnum.GUILD_CREATE_ERROR_EMBLEM_ALREADY_EXISTS;
+            }
+
+            guild.Emblem.ChangeEmblem(emblem);
+            RegisterGuildMember(character.GuildMember);
+
+            return GuildCreationResultEnum.GUILD_CREATE_OK;
+        }
+
         public bool DeleteGuild(Guild guild)
         {
             lock (m_lock)
@@ -96,6 +141,18 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 m_guildsMemberToDelete.Push(member);
                 return true;
             }
+        }
+
+        public void SetBoss(GuildMember member)
+        {
+            var actualBoss = m_guildsMembers.FirstOrDefault(x => x.Value.RankId == 1);
+            actualBoss.Value.Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE;
+            actualBoss.Value.RankId = 0;
+
+            member.Rights = GuildRightsBitEnum.GUILD_RIGHT_BOSS;
+            member.RankId = 1;
+
+            //member.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 199);
         }
 
         public void Save()
