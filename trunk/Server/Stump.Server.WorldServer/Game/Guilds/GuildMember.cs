@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
@@ -183,11 +184,22 @@ namespace Stump.Server.WorldServer.Game.Guilds
                                           Record.AccountId, 0);
         }
 
-        public bool HasRight(Character character, GuildRightsBitEnum right)
+        public bool HasRight(GuildRightsBitEnum right)
         {
-            var rights = character.GuildMember.Rights;
+            return Rights == GuildRightsBitEnum.GUILD_RIGHT_BOSS || Rights.HasFlag(right);
+        }
 
-            return rights == GuildRightsBitEnum.GUILD_RIGHT_BOSS || rights.HasFlag(right);
+        public void SetBoss()
+        {
+            var actualBoss = GuildManager.Instance.FindGuildMembers(Guild.Id).FirstOrDefault(x => x.RankId == 1);
+            if (actualBoss != null)
+            {
+                actualBoss.Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE;
+                actualBoss.RankId = 0;
+            }
+
+            Rights = GuildRightsBitEnum.GUILD_RIGHT_BOSS;
+            RankId = 1;
         }
 
         public event Action<GuildMember> Connected;

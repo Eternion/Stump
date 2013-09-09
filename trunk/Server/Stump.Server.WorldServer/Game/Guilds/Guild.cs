@@ -182,20 +182,20 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             if (character != member && character.GuildMember.RankId == 1 && rank == 1)
             {
-                GuildManager.Instance.SetBoss(member.GuildMember);
+                member.GuildMember.SetBoss();
                 member.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 199, member, character);
             }
             else
             {
-                if (character.GuildMember.HasRight(character, GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RANKS))
+                if (character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RANKS))
                     member.GuildMember.RankId = rank;
 
-                if (character.GuildMember.HasRight(character, GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS))
+                if (character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS))
                     member.GuildMember.Rights = (GuildRightsBitEnum)rights;
             }
 
-            if (character.GuildMember.HasRight(character, GuildRightsBitEnum.GUILD_RIGHT_MANAGE_XP_CONTRIBUTION) ||
-                (character == member && character.GuildMember.HasRight(character, GuildRightsBitEnum.GUILD_RIGHT_MANAGE_MY_XP_CONTRIBUTION)))
+            if (character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_XP_CONTRIBUTION) ||
+                (character == member && character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_MY_XP_CONTRIBUTION)))
                 member.GuildMember.GivenPercent = (byte)xpPercent;
 
             return true;
