@@ -6,6 +6,7 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Guilds;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 
 namespace Stump.Server.WorldServer.Handlers.Guilds
@@ -41,6 +42,9 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                 {
                     GuildManager.Instance.SetBoss(client.Character.GuildMember);
                     SendGuildJoinedMessage(client, client.Character.GuildMember);
+                    SendGuildInformationsMembersMessage(client, client.Character.Guild);
+                    SendGuildInformationsGeneralMessage(client, client.Character.Guild);
+                    client.Character.Map.Refresh(client.Character);
                 }
             }
             else

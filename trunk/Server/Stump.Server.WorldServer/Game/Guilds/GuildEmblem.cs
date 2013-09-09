@@ -79,6 +79,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
             BackgroundShape = emblem.backgroundShape;
             SymbolColor = Color.FromArgb(emblem.symbolColor);
             SymbolShape = emblem.symbolShape;
+
+            Record.EmblemBackgroundColor = emblem.backgroundColor;
+            Record.EmblemBackgroundShape = emblem.backgroundShape;
+            Record.EmblemForegroundColor = emblem.symbolColor;
+            Record.EmblemForegroundShape = emblem.symbolShape;
         }
 
         public NetworkGuildEmblem GetNetworkGuildEmblem()
