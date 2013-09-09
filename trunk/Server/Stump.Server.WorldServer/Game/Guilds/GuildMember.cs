@@ -232,5 +232,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
             database.Save(Record);
             IsDirty = false;
         }
+
+        public void Insert(ORM.Database database)
+        {
+            database.Insert(Record);
+            IsDirty = false;
+            Record.IsNew = false;
+        }
     }
 }

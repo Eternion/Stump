@@ -1841,7 +1841,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     FriendsBook.Save();
 
                     if (GuildMember != null && GuildMember.IsDirty)
-                        GuildMember.Save(WorldServer.Instance.DBAccessor.Database);
+                        if (GuildMember.Record.IsNew)
+                            GuildMember.Insert(WorldServer.Instance.DBAccessor.Database);
+                        else
+                            GuildMember.Save(WorldServer.Instance.DBAccessor.Database);
 
                     m_record.MapId = Map.Id;
                     m_record.CellId = Cell.Id;

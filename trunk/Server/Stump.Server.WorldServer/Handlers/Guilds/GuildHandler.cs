@@ -88,6 +88,17 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             SendGuildLeftMessage(target.Client);
         }
 
+        [WorldHandler(GuildInvitationMessage.Id)]
+        public static void HandleGuildInvitationMessage(WorldClient client, GuildInvitationMessage message)
+        {
+            if (client.Character.Guild == null)
+                return;
+
+            var target = World.Instance.GetCharacter(message.targetId);
+            if (target == null)
+                return;
+        }
+
         public static void SendGuildLeftMessage(IPacketReceiver client)
         {
             client.Send(new GuildLeftMessage());
