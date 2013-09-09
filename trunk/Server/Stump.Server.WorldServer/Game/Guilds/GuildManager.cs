@@ -4,6 +4,7 @@ using Stump.Core.Pool;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Guilds;
+using Stump.Server.BaseServer.Initialization;
 
 namespace Stump.Server.WorldServer.Game.Guilds
 {
@@ -17,10 +18,10 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         private readonly object m_lock = new object();
 
+        [Initialization(InitializationPass.Last)]
         public override void Initialize()
         {
-            m_guilds =
-                Database.Query<GuildRecord>(GuildRelator.FetchQuery).Select(x => new Guild(x, FindGuildMembers(x.Id))).ToDictionary(x => x.Id);
+            m_guilds = Database.Query<GuildRecord>(GuildRelator.FetchQuery).ToList().Select(x => new Guild(x, FindGuildMembers(x.Id))).ToDictionary(x => x.Id);
             m_guildsMembers = m_guilds.Values.SelectMany(x => x.Members).ToDictionary(x => x.Id);
             m_idProvider = new UniqueIdProvider(m_guilds.Select(x => x.Value.Id).Max());
 

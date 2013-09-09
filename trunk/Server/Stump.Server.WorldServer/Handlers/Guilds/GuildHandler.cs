@@ -4,7 +4,6 @@ using Stump.DofusProtocol.Messages;
 using Stump.Core.Extensions;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
@@ -28,6 +27,12 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                     SendGuildInformationsMembersMessage(client, client.Character.Guild);
                     break;
             }
+        }
+
+        [WorldHandler(GuildCreationValidMessage.Id)]
+        public static void HandleGuildCreationValidMessage(WorldClient client, GuildCreationValidMessage message)
+        {
+            //Send by Guild Creation Panel
         }
 
         [WorldHandler(GuildChangeMemberParametersMessage.Id)]

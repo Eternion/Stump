@@ -84,12 +84,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public NetworkGuildEmblem GetNetworkGuildEmblem()
         {
             return new NetworkGuildEmblem()
-                {
-                    backgroundColor = BackgroundColor.ToArgb(),
-                    backgroundShape = BackgroundShape,
-                    symbolColor = SymbolColor.ToArgb(),
-                    symbolShape = SymbolShape
-                };
+            {
+                backgroundColor = Record.EmblemBackgroundColor,
+                backgroundShape = Record.EmblemBackgroundShape,
+                symbolColor = Record.EmblemForegroundColor,
+                symbolShape = Record.EmblemForegroundShape
+            };
         }
     }
 }
