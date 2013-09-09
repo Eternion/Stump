@@ -31,6 +31,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             ExperienceLevelFloor = 0;
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetGuildNextLevelExperience(Level);
             Record.CreationDate = DateTime.Now;
+            Record.IsNew = true;
             Emblem = new GuildEmblem(Record)
                 {
                     BackgroundColor = Color.White,
