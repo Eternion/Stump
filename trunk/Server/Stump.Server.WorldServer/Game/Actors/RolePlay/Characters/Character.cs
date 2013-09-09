@@ -2080,6 +2080,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (Guild != null)
                 options.Add(new HumanOptionGuild(Guild.GetGuildInformations()));
+
+            human.options = options;
             return human;
         }
 
