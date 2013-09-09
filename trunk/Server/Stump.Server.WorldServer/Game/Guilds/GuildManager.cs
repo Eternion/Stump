@@ -27,7 +27,10 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             m_guilds = Database.Query<GuildRecord>(GuildRelator.FetchQuery).ToList().Select(x => new Guild(x, FindGuildMembers(x.Id))).ToDictionary(x => x.Id);
             m_guildsMembers = m_guilds.Values.SelectMany(x => x.Members).ToDictionary(x => x.Id);
-            m_idProvider = new UniqueIdProvider(m_guilds.Select(x => x.Value.Id).Max());
+            if (m_guilds.Count() > 0)
+                m_idProvider = new UniqueIdProvider(m_guilds.Select(x => x.Value.Id).Max());
+            else
+                m_idProvider = new UniqueIdProvider(1);
 
             World.Instance.RegisterSaveableInstance(this);
         }
@@ -104,7 +107,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
 
             guild.Emblem.ChangeEmblem(emblem);
-            RegisterGuildMember(character.GuildMember);
+            guild.TryAddMember(character);
+            character.GuildMember = TryGetGuildMember(character.Id);
 
             return GuildCreationResultEnum.GUILD_CREATE_OK;
         }
@@ -175,14 +179,14 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 {
                     var guild = m_guildsToDelete.Pop();
 
-                    Database.Delete(guild);
+                    Database.Delete(guild.Record);
                 }
 
                 while (m_guildsMemberToDelete.Count > 0)
                 {
                     var member = m_guildsMemberToDelete.Pop();
 
-                    Database.Delete(member);
+                    Database.Delete(member.Record);
                 }
             }
         }

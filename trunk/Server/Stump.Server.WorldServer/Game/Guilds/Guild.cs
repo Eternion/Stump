@@ -158,14 +158,18 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (character.Guild != member.Guild)
                 return false;
 
-            if (!character.GuildMember.HasRight(character, GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS))
+            if (character != member && !character.GuildMember.HasRight(character, GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS))
                 return false;
 
             if (!member.Guild.RemoveMember(member))
                 return false;
 
+            member.GuildMember = null;
+            member.Map.Refresh(member);
+
             member.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
-            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177);
+            if (character != member)
+                character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177);
 
             return true;
         }
@@ -215,6 +219,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
 
             member = new GuildMember(this, character);
+
+            member.OnCharacterConnected(character);
+
             m_members.Add(member);
 
             OnMemberAdded(member);
