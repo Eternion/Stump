@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
                 if (result == GuildCreationResultEnum.GUILD_CREATE_OK)
                 {
-                    GuildManager.Instance.SetBoss(client.Character.GuildMember);
+                    client.Character.GuildMember.SetBoss();
                     SendGuildJoinedMessage(client, client.Character.GuildMember);
                     SendGuildInformationsMembersMessage(client, client.Character.Guild);
                     SendGuildInformationsGeneralMessage(client, client.Character.Guild);

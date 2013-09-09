@@ -148,21 +148,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
         }
 
-        public void SetBoss(GuildMember member)
-        {
-            foreach (var m_member in m_guildsMembers.Values)
-            {
-                if (m_member.RankId == 1)
-                {
-                    m_member.Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE;
-                    m_member.RankId = 0;
-                }
-            }
-
-            member.Rights = GuildRightsBitEnum.GUILD_RIGHT_BOSS;
-            member.RankId = 1;
-        }
-
         public void Save()
         {
             lock (m_lock)
