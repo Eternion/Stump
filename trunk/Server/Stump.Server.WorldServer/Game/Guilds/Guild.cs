@@ -170,7 +170,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             member.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
             if (character != member)
-                character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177);
+                character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177, member);
 
             return true;
         }
@@ -180,9 +180,10 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (character.Guild != member.Guild)
                 return false;
 
-            if (character.GuildMember.RankId == 1 && rank == 1)
+            if (character != member && character.GuildMember.RankId == 1 && rank == 1)
             {
                 GuildManager.Instance.SetBoss(member.GuildMember);
+                member.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 199, member, character);
             }
             else
             {

@@ -108,6 +108,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             guild.Emblem.ChangeEmblem(emblem);
             guild.TryAddMember(character);
+
             character.GuildMember = TryGetGuildMember(character.Id);
 
             return GuildCreationResultEnum.GUILD_CREATE_OK;
@@ -149,14 +150,17 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public void SetBoss(GuildMember member)
         {
-            var actualBoss = m_guildsMembers.FirstOrDefault(x => x.Value.RankId == 1);
-            actualBoss.Value.Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE;
-            actualBoss.Value.RankId = 0;
+            foreach (var m_member in m_guildsMembers.Values)
+            {
+                if (m_member.RankId == 1)
+                {
+                    m_member.Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE;
+                    m_member.RankId = 0;
+                }
+            }
 
             member.Rights = GuildRightsBitEnum.GUILD_RIGHT_BOSS;
             member.RankId = 1;
-
-            //member.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 199);
         }
 
         public void Save()
@@ -165,15 +169,23 @@ namespace Stump.Server.WorldServer.Game.Guilds
             {
                 foreach (var guild in m_guilds.Values.Where(guild => guild.IsDirty))
                 {
-                    Database.Save(guild.Record);
+                    if (guild.Record.IsNew)
+                        Database.Insert(guild.Record);
+                    else
+                        Database.Update(guild.Record);
+
                     guild.IsDirty = false;
                 }
 
-                foreach (var guildMember in m_guildsMembers.Values.Where(guildMember => guildMember.IsDirty))
+                /*foreach (var guildMember in m_guildsMembers.Values.Where(guildMember => guildMember.IsDirty))
                 {
-                    Database.Save(guildMember.Record);
+                    if (guildMember.Record.IsNew)
+                        Database.Insert(guildMember.Record);
+                    else
+                        Database.Update(guildMember.Record);
+
                     guildMember.IsDirty = false;
-                }
+                }*/
 
                 while (m_guildsToDelete.Count > 0)
                 {
