@@ -65,7 +65,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             if (!client.Character.Guild.ChangeParameters(client.Character, target, message.rank, message.experienceGivenPercent, message.rights))
                 return;
 
-            SendGuildInformationsMemberUpdateMessage(client, target);
+            SendGuildInformationsMembersMessageToAll(client);
 
             if (target.Character != null)
                 SendGuildMembershipMessage(target.Character.Client, target);
@@ -86,6 +86,9 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
             if (target.Character != null)
                 SendGuildLeftMessage(target.Character.Client);
+
+            if (client.Character.Guild != null)
+                SendGuildInformationsMembersMessageToAll(client);
         }
 
         [WorldHandler(GuildInvitationMessage.Id)]
@@ -110,6 +113,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                     return;
                 }
 
+                target.GuildInvitation = client.Character.Id;
                 SendGuildInvitationStateRecruterMessage(client, target, GuildInvitationStateEnum.GUILD_INVITATION_SENT);
                 SendGuildInvitedMessage(target.Client, client.Character);
             }
@@ -122,16 +126,18 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         [WorldHandler(GuildInvitationAnswerMessage.Id)]
         public static void HandleGuildInvitationAnswerMessage(WorldClient client, GuildInvitationAnswerMessage message)
         {
-            if (client.Character.Guild != null)
+            var character = client.Character;
+
+            if (character.Guild != null)
                 return;
-            if (client.Character.GuildInvitation == 0)
+            if (character.GuildInvitation == 0)
                 return;
 
-            var recruter = World.Instance.GetCharacter(client.Character.GuildInvitation);
+            var recruter = World.Instance.GetCharacter(character.GuildInvitation);
             if (recruter == null)
                 return;
 
-            SendGuildInvitationStateRecruterMessage(recruter.Client, client.Character,
+            SendGuildInvitationStateRecruterMessage(recruter.Client, character,
                                                     message.accept
                                                         ? GuildInvitationStateEnum.GUILD_INVITATION_OK
                                                         : GuildInvitationStateEnum.GUILD_INVITATION_CANCELED);
@@ -139,16 +145,18 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             if (!message.accept)
                 return;
 
-            client.Character.GuildMember.JoinGuild();
+            recruter.Guild.TryAddMember(character);
+            character.GuildMember = GuildManager.Instance.TryGetGuildMember(character.Id);
 
-            SendGuildJoinedMessage(client, client.Character.GuildMember);
-            SendGuildInformationsMembersMessage(client, client.Character.Guild);
-            SendGuildInformationsGeneralMessage(client, client.Character.Guild);
+            SendGuildJoinedMessage(client, character.GuildMember);
+
+            SendGuildInformationsMembersMessageToAll(client);
+            character.Map.Refresh(character);
         }
 
         public static void SendGuildInvitedMessage(IPacketReceiver client, Character recruter)
         {
-            client.Send(new GuildInvitedMessage(recruter.Id, recruter.Name, recruter.Guild.GetGuildInformations()));
+            client.Send(new GuildInvitedMessage(recruter.Id, recruter.Name, recruter.Guild.GetBasicGuildInformations()));
         }
 
         public static void SendGuildInvitationStateRecruterMessage(IPacketReceiver client, Character recruted, GuildInvitationStateEnum state)
@@ -179,6 +187,14 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         public static void SendGuildInformationsMembersMessage(IPacketReceiver client, Guild guild)
         {
             client.Send(new GuildInformationsMembersMessage(guild.Members.Select(x => x.GetNetworkGuildMember())));
+        }
+
+        public static void SendGuildInformationsMembersMessageToAll(WorldClient client)
+        {
+            foreach (var guildMember in GuildManager.Instance.FindConnectedGuildMembers(client.Character.Guild.Id))
+            {
+                SendGuildInformationsMembersMessage(guildMember.Character.Client, guildMember.Character.Guild);
+            }
         }
 
         public static void SendGuildInformationsMemberUpdateMessage(IPacketReceiver client, GuildMember member)

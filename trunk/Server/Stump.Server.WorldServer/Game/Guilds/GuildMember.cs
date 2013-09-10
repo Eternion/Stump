@@ -37,6 +37,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 };
 
             Guild = guild;
+            Character = character;
             IsDirty = true;
         }
 
@@ -183,31 +184,31 @@ namespace Stump.Server.WorldServer.Game.Guilds
                                           (sbyte) AlignmentSide, (ushort) (DateTime.Now - Record.LastConnection).TotalHours, 0,
                                           Record.AccountId, 0);
         }
+        
+        public bool QuitGuild()
+        {
+            if (!Guild.RemoveMember(this))
+                return false;
+
+            Guild = null;
+            return true;
+        }
 
         public bool HasRight(GuildRightsBitEnum right)
         {
             return Rights == GuildRightsBitEnum.GUILD_RIGHT_BOSS || Rights.HasFlag(right);
         }
 
-        public void SetBoss()
+        public void SetBoss(GuildMember member = null)
         {
-            var actualBoss = GuildManager.Instance.FindGuildMembers(Guild.Id).FirstOrDefault(x => x.RankId == 1);
-            if (actualBoss != null)
+            if (member != null && member.RankId == 1)
             {
-                actualBoss.Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE;
-                actualBoss.RankId = 0;
+                member.RankId = 0;
+                member.Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE;
             }
 
             Rights = GuildRightsBitEnum.GUILD_RIGHT_BOSS;
             RankId = 1;
-        }
-
-        public GuildMember JoinGuild()
-        {
-            Guild.TryAddMember(Character);
-            Character.Map.Refresh(Character);
-
-            return this;
         }
 
         public event Action<GuildMember> Connected;
