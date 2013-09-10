@@ -202,6 +202,14 @@ namespace Stump.Server.WorldServer.Game.Guilds
             RankId = 1;
         }
 
+        public GuildMember JoinGuild()
+        {
+            Guild.TryAddMember(Character);
+            Character.Map.Refresh(Character);
+
+            return this;
+        }
+
         public event Action<GuildMember> Connected;
         public event Action<GuildMember, Character> Disconnected;
 

@@ -756,6 +756,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
+        public int GuildInvitation
+        {
+            get;
+            set;
+        }
+
         public void SetGuildMemberXPPercent(int xpPercent)
         {
             // todo
