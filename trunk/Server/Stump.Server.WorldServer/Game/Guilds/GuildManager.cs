@@ -49,6 +49,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
                         .Select(x => new GuildMember(x)).ToArray();
         }
 
+        public GuildMember[] FindConnectedGuildMembers(int guildId)
+        {
+            return m_guildsMembers.Values.Where(x => x.Guild.Id == guildId && x.IsConnected).ToArray();
+        }
+
         public Guild TryGetGuild(int id)
         {
             lock (m_lock)
@@ -105,7 +110,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             guild.Emblem.ChangeEmblem(emblem);
 
-            character.GuildMember = character.GuildMember.JoinGuild();
+            guild.TryAddMember(character);
+            character.Map.Refresh(character);
+            character.GuildMember = GuildManager.Instance.TryGetGuildMember(character.Id);
 
             return GuildCreationResultEnum.GUILD_CREATE_OK;
         }
