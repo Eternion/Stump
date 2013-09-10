@@ -27,10 +27,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             m_guilds = Database.Query<GuildRecord>(GuildRelator.FetchQuery).ToList().Select(x => new Guild(x, FindGuildMembers(x.Id))).ToDictionary(x => x.Id);
             m_guildsMembers = m_guilds.Values.SelectMany(x => x.Members).ToDictionary(x => x.Id);
-            if (m_guilds.Count() > 0)
-                m_idProvider = new UniqueIdProvider(m_guilds.Select(x => x.Value.Id).Max());
-            else
-                m_idProvider = new UniqueIdProvider(1);
+            m_idProvider = m_guilds.Any() ? new UniqueIdProvider(m_guilds.Select(x => x.Value.Id).Max()) : new UniqueIdProvider(1);
 
             World.Instance.RegisterSaveableInstance(this);
         }
@@ -107,9 +104,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
 
             guild.Emblem.ChangeEmblem(emblem);
-            guild.TryAddMember(character);
 
-            character.GuildMember = TryGetGuildMember(character.Id);
+            character.GuildMember = character.GuildMember.JoinGuild();
 
             return GuildCreationResultEnum.GUILD_CREATE_OK;
         }

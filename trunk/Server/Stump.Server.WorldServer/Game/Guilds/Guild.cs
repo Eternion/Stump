@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Linq;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -154,49 +155,51 @@ namespace Stump.Server.WorldServer.Game.Guilds
             OnLevelChanged();
         }
 
-        public bool KickMember(Character character, Character member)
+        public bool KickMember(Character character, GuildMember member)
         {
             if (character.Guild != member.Guild)
                 return false;
 
-            if (character != member && !character.GuildMember.HasRight(character, GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS))
+            if (character.GuildMember != member && !character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS))
                 return false;
 
             if (!member.Guild.RemoveMember(member))
                 return false;
 
-            member.GuildMember = null;
-            member.Map.Refresh(member);
+            if (member.Character != null)
+            {
+                member.Character.Map.Refresh(member.Character);
+                member.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
+            }
 
-            member.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
-            if (character != member)
-                character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177, member);
+            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177, member.Name);
 
             return true;
         }
 
-        public bool ChangeParameters(Character character, Character member, short rank, sbyte xpPercent, uint rights)
+        public bool ChangeParameters(Character character, GuildMember member, short rank, sbyte xpPercent, uint rights)
         {
             if (character.Guild != member.Guild)
                 return false;
 
-            if (character != member && character.GuildMember.RankId == 1 && rank == 1)
+            if (character.GuildMember != member && character.GuildMember.RankId == 1 && rank == 1)
             {
-                member.GuildMember.SetBoss();
-                member.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 199, member, character);
+                member.SetBoss();
+                if (member.Character != null)
+                    member.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 199, member, character);
             }
             else
             {
                 if (character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RANKS))
-                    member.GuildMember.RankId = rank;
+                    member.RankId = rank;
 
                 if (character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS))
-                    member.GuildMember.Rights = (GuildRightsBitEnum)rights;
+                    member.Rights = (GuildRightsBitEnum)rights;
             }
 
             if (character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_XP_CONTRIBUTION) ||
-                (character == member && character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_MY_XP_CONTRIBUTION)))
-                member.GuildMember.GivenPercent = (byte)xpPercent;
+                (character.GuildMember == member && character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_MY_XP_CONTRIBUTION)))
+                member.GivenPercent = (byte)xpPercent;
 
             return true;
         }
@@ -231,27 +234,35 @@ namespace Stump.Server.WorldServer.Game.Guilds
             return true;
         }
 
-        public bool RemoveMember(Character character)
+        public bool RemoveMember(GuildMember member)
         {
-            if (character.GuildMember == null || !m_members.Contains(character.GuildMember))
+            if (member == null || !m_members.Contains(member))
                 return false;
 
-            OnMemberRemoved(character.GuildMember);
+            OnMemberRemoved(member);
             return true;
         }
 
         protected virtual void OnMemberAdded(GuildMember member)
         {
             BindMemberEvents(member);
-            // todo : sends the packet to all connected members
             GuildManager.Instance.RegisterGuildMember(member);
+
+            foreach (var guildMember in GuildManager.Instance.FindGuildMembers(member.Guild.Id).Where(guildMember => guildMember.IsConnected))
+            {
+                Handlers.Guilds.GuildHandler.SendGuildInformationsMemberUpdateMessage(guildMember.Character.Client, member);
+            }
         }
 
         protected virtual void OnMemberRemoved(GuildMember member)
         {
             UnBindMemberEvents(member);
-            // todo : sends the packet to all connected members
             GuildManager.Instance.DeleteGuildMember(member);
+
+            foreach (var guildMember in GuildManager.Instance.FindGuildMembers(member.Guild.Id).Where(guildMember => guildMember.IsConnected))
+            {
+                Handlers.Guilds.GuildHandler.SendGuildInformationsMemberUpdateMessage(guildMember.Character.Client, member);
+            }
         }
 
         protected virtual void OnLevelChanged()
@@ -263,15 +274,21 @@ namespace Stump.Server.WorldServer.Game.Guilds
         private void OnMemberConnected(GuildMember member)
         {
             m_clients.Add(member.Character.Client);
-            // todo : sends the packet to all connected members
 
+            foreach (var guildMember in GuildManager.Instance.FindGuildMembers(member.Guild.Id).Where(guildMember => guildMember.IsConnected))
+            {
+                Handlers.Guilds.GuildHandler.SendGuildInformationsMemberUpdateMessage(guildMember.Character.Client, member);
+            }
         }
 
         private void OnMemberDisconnected(GuildMember member, Character character)
         {
             m_clients.Remove(character.Client);
-            // todo : sends the packet to all connected members
 
+            foreach (var guildMember in GuildManager.Instance.FindGuildMembers(member.Guild.Id).Where(guildMember => guildMember.IsConnected))
+            {
+                Handlers.Guilds.GuildHandler.SendGuildInformationsMemberUpdateMessage(guildMember.Character.Client, member);
+            }
         }
 
         private void BindMemberEvents(GuildMember member)
