@@ -164,6 +164,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (character.GuildMember != member && !character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS))
                 return false;
 
+            GuildHandler.SendGuildMemberLeavingMessage(m_clients, member, character.GuildMember != member ? true : false);
+
             var kickCharacter = member.Character;
             var memberName = member.Name;
 
