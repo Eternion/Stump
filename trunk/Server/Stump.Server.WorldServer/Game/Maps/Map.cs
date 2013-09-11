@@ -1069,9 +1069,15 @@ namespace Stump.Server.WorldServer.Game.Maps
             /// Note: Auras doesn't work
             /// </summary>
             if (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 200)
+            {
                 character.PlayEmote(EmotesEnum.EMOTE_BLOODY_AURA);
+                Refresh(character);
+            }
             else if (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 100)
+            {
                 character.PlayEmote(EmotesEnum.EMOTE_POWER_AURA);
+                Refresh(character);
+            }
         }
 
         #endregion
