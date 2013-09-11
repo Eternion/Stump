@@ -63,6 +63,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
             get { return m_members.AsReadOnly(); }
         }
 
+        public WorldClientCollection Clients
+        {
+            get { return m_clients; }
+        }
+
         public GuildRecord Record
         {
             get;
@@ -270,7 +275,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         protected virtual void OnMemberRemoved(GuildMember member)
         {
-            GuildHandler.SendGuildInformationsMembersMessageToAll(member.Character.Client);
+            GuildHandler.SendGuildInformationsMembersMessage(Clients, this);
 
             UnBindMemberEvents(member);
             GuildManager.Instance.DeleteGuildMember(member);
@@ -286,14 +291,14 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             m_clients.Add(member.Character.Client);
 
-            GuildHandler.SendGuildInformationsMembersMessageToAll(member.Character.Client);
+            GuildHandler.SendGuildInformationsMembersMessage(Clients, this);
         }
 
         private void OnMemberDisconnected(GuildMember member, Character character)
         {
             m_clients.Remove(character.Client);
 
-            GuildHandler.SendGuildInformationsMembersMessageToAll(character.Client);
+            GuildHandler.SendGuildInformationsMembersMessage(Clients, this);
         }
 
         private void BindMemberEvents(GuildMember member)

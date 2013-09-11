@@ -65,7 +65,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             if (!client.Character.Guild.ChangeParameters(client.Character, target, message.rank, message.experienceGivenPercent, message.rights))
                 return;
 
-            SendGuildInformationsMembersMessageToAll(client);
+            SendGuildInformationsMembersMessage(client.Character.Guild.Clients, client.Character.Guild);
 
             if (target.Character != null)
                 SendGuildMembershipMessage(target.Character.Client, target);
@@ -88,7 +88,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                 SendGuildLeftMessage(target.Character.Client);
 
             if (client.Character.Guild != null)
-                SendGuildInformationsMembersMessageToAll(client);
+                SendGuildInformationsMembersMessage(client.Character.Guild.Clients, client.Character.Guild);
         }
 
         [WorldHandler(GuildInvitationMessage.Id)]
@@ -150,7 +150,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
             SendGuildJoinedMessage(client, character.GuildMember);
 
-            SendGuildInformationsMembersMessageToAll(client);
+            SendGuildInformationsMembersMessage(client.Character.Guild.Clients, client.Character.Guild);
             character.Map.Refresh(character);
         }
 
@@ -189,13 +189,13 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             client.Send(new GuildInformationsMembersMessage(guild.Members.Select(x => x.GetNetworkGuildMember())));
         }
 
-        public static void SendGuildInformationsMembersMessageToAll(WorldClient client)
+        /*public static void SendGuildInformationsMembersMessageToAll(WorldClient client)
         {
             foreach (var guildMember in GuildManager.Instance.FindConnectedGuildMembers(client.Character.Guild.Id))
             {
                 SendGuildInformationsMembersMessage(guildMember.Character.Client, guildMember.Character.Guild);
             }
-        }
+        }*/
 
         public static void SendGuildInformationsMemberUpdateMessage(IPacketReceiver client, GuildMember member)
         {
