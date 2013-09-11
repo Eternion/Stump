@@ -9,6 +9,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Core.Extensions;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.World;
@@ -757,6 +758,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         public int GuildInvitation
+        {
+            get;
+            set;
+        }
+
+        public int GuildInviter
         {
             get;
             set;
