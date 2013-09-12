@@ -1050,6 +1050,8 @@ namespace Stump.Server.WorldServer.Game.Maps
 
              ContextHandler.SendGameMapMovementMessage(Clients, movementsKey, actor);
              BasicHandler.SendBasicNoOperationMessage(Clients);
+
+             (actor as Character).UpdateLook(true);
         }
 
         private void OnActorStopMoving(ContextActor actor, Path path, bool canceled)
@@ -1066,17 +1068,14 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             /// <summary>
             /// Auras
-            /// Note: Auras doesn't work
             /// </summary>
             if (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 200)
             {
                 character.PlayEmote(EmotesEnum.EMOTE_BLOODY_AURA);
-                Refresh(character);
             }
             else if (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 100)
             {
                 character.PlayEmote(EmotesEnum.EMOTE_POWER_AURA);
-                Refresh(character);
             }
         }
 
