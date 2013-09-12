@@ -453,7 +453,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return ToggleInvisibility(!Invisible);
         }
 
-        public void UpdateLook(bool send = true)
+        public void UpdateLook(bool send = true, bool aura1 = false, bool aura2 = false)
         {
             var skins = new List<short>(Breed.GetLook(Sex).skins);
             skins.AddRange(Head.Skins);
@@ -468,6 +468,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     (t, i) => new SubEntity((int) SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET, (sbyte) i,
                                             new EntityLook(t, new short[0], new int[0], new short[] {75},
                                                            new SubEntity[0]))).ToList();
+
+            if (aura1)
+                subentities.Add(new SubEntity((int) SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND, 0, new EntityLook(170, new short[0], new int[0], new short[0], new SubEntity[0])));
+            else if (aura2)
+                subentities.Add(new SubEntity((int)SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND, 0, new EntityLook(171, new short[0], new int[0], new short[0], new SubEntity[0])));
 
             RealLook.subentities = subentities;
 
@@ -1632,6 +1637,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         #region Emotes
         public void PlayEmote(EmotesEnum emote)
         {
+            if (emote == EmotesEnum.EMOTE_POWER_AURA)
+                UpdateLook(true, true, false);
+            else if (emote == EmotesEnum.EMOTE_BLOODY_AURA)
+                UpdateLook(true, false, true);
+
             ContextRoleplayHandler.SendEmotePlayMessage(Map.Clients, this, emote);
         }
 
