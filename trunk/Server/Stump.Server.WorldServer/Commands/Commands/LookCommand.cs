@@ -1,7 +1,7 @@
 using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
+using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Context;
 
@@ -39,10 +39,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            target.CustomLook = trigger.Get<string>("look").ToEntityLook();
+            target.CustomLook = ActorLook.Parse(trigger.Get<string>("look"));
             target.CustomLookActivated = true;
 
-            target.Map.Refresh(target);
+            target.RefreshActor();
         }
     }
 }

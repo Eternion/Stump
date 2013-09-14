@@ -1682,7 +1682,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             return new GameFightFighterInformations(
                 Id,
-                Look,
+                Look.GetEntityLook(),
                 GetEntityDispositionInformations(client),
                 Team.Id,
                 IsAlive(),

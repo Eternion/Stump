@@ -80,6 +80,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Results.Data
         public override void Apply()
         {
             Character.AddExperience(ExperienceFightDelta);
+
+            if (Character.Guild != null && ExperienceForGuild > 0)
+                Character.Guild.AddXP(ExperienceForGuild);
         }
     }
 }

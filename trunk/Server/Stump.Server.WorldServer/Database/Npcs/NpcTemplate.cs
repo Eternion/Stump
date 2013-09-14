@@ -2,14 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
-using Stump.DofusProtocol.D2oClasses;
-using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Types;
-using Stump.DofusProtocol.Types.Extensions;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.Npcs.Actions;
+using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Npc = Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs.Npc;
 
@@ -34,7 +31,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
         private string m_actionsIdsCSV;
         private string m_dialogMessagesIdCSV;
         private string m_dialogRepliesIdCSV;
-        private EntityLook m_entityLook;
+        private ActorLook m_entityLook;
         private string m_lookAsString;
         private string m_name;
 
@@ -126,7 +123,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
                     return string.Empty;
 
                 if (string.IsNullOrEmpty(m_lookAsString))
-                    m_lookAsString = Look.ConvertToString();
+                    m_lookAsString = Look.ToString();
 
                 return m_lookAsString;
             }
@@ -135,12 +132,12 @@ namespace Stump.Server.WorldServer.Database.Npcs
                 m_lookAsString = value;
 
                 if (value != null)
-                    m_entityLook = m_lookAsString.ToEntityLook();
+                    m_entityLook = ActorLook.Parse(m_lookAsString);
             }
         }
 
         [Ignore]
-        public EntityLook Look
+        public ActorLook Look
         {
             get { return m_entityLook; }
             set
@@ -148,7 +145,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
                 m_entityLook = value;
 
                 if (value != null)
-                    m_lookAsString = value.ConvertToString();
+                    m_lookAsString = value.ToString();
             }
         }
 

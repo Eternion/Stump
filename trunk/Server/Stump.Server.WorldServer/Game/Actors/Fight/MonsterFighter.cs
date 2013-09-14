@@ -5,7 +5,6 @@ using System.Linq;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
-using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.AI.Fights.Brain;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database;
@@ -31,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             Id = Fight.GetNextContextualId();
             Monster = monster;
-            Look = monster.Look.Copy();
+            Look = monster.Look.Clone();
 
             m_stats = new StatsFields(this);
             m_stats.Initialize(Monster.Grade);
@@ -138,7 +137,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             return new GameFightMonsterInformations(
                 Id,
-                Look,
+                Look.GetEntityLook(),
                 GetEntityDispositionInformations(client),
                 Team.Id,
                 IsAlive(),

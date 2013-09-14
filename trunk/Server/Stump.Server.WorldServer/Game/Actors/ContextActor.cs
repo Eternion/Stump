@@ -3,6 +3,7 @@ using System.Diagnostics.Contracts;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
@@ -20,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Actors
             protected set;
         }
 
-        public virtual EntityLook Look
+        public virtual ActorLook Look
         {
             get;
             set;
@@ -64,7 +65,7 @@ namespace Stump.Server.WorldServer.Game.Actors
         {
             return new GameContextActorInformations(
                 Id,
-                Look,
+                Look.GetEntityLook(),
                 GetEntityDispositionInformations());
         }
 

@@ -1,5 +1,4 @@
 ﻿using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -23,8 +22,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
         {
             foreach (FightActor actor in GetAffectedActors())
             {
-                var look = actor.Look.Copy();
-                look.bonesId = Dice.Value;
+                var look = actor.Look.Clone();
+                look.BonesID = Dice.Value;
 
                 var buff = new SkinBuff(actor.PopNextBuffId(), actor, Caster, Dice, look, Spell, true);
                 actor.AddAndApplyBuff(buff);

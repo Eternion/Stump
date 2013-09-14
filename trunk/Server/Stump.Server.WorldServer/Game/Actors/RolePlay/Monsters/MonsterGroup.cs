@@ -223,7 +223,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         public override GameContextActorInformations GetGameContextActorInformations()
         {
             return new GameRolePlayGroupMonsterInformations(Id,
-                                                            Leader.Look,
+                                                            Leader.Look.GetEntityLook(),
                                                             GetEntityDispositionInformations(),
                                                             GetGroupMonsterStaticInformations(),
                                                             AgeBonus > ClientStarsBonusLimit ? ClientStarsBonusLimit : AgeBonus,

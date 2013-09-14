@@ -695,7 +695,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public PlayerItem TryGetItem(CharacterInventoryPositionEnum position)
         {
-            return Items.Values.Where(entry => entry.Position == position).FirstOrDefault();
+            return Items.Values.FirstOrDefault(entry => entry.Position == position);
         }
 
         public PlayerItem TryGetItem(ItemTemplate template, IEnumerable<EffectBase> effects, CharacterInventoryPositionEnum position, PlayerItem except)
@@ -707,16 +707,16 @@ namespace Stump.Server.WorldServer.Game.Items
             return entries.FirstOrDefault();
         }
 
-        public IEnumerable<PlayerItem> GetItems(CharacterInventoryPositionEnum position)
+        public PlayerItem[] GetItems(CharacterInventoryPositionEnum position)
         {
-            return Items.Values.Where(entry => entry.Position == position);
+            return Items.Values.Where(entry => entry.Position == position).ToArray();
         }
 
-        public IEnumerable<PlayerItem> GetEquipedItems()
+        public PlayerItem[] GetEquipedItems()
         {
-            return from entry in Items
+            return (from entry in Items
                    where entry.Value.IsEquiped()
-                   select entry.Value;
+                   select entry.Value).ToArray();
         }
 
         public int CountItemSetEquiped(ItemSetTemplate itemSet)
@@ -739,9 +739,14 @@ namespace Stump.Server.WorldServer.Game.Items
             return GetEquipedItems().Where(entry => entry.Position != CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS && entry.Template.AppearanceId != 0).Select(entry => (short)entry.Template.AppearanceId).ToArray();
         }
 
-        public short[] GetPetsSkins()
+        public short? GetPetSkin()
         {
-            return GetItems(CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS).Where(entry => entry.Template.AppearanceId != 0).Select(entry => (short)entry.Template.AppearanceId).ToArray();
+            var pet = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS);
+
+            if (pet == null || pet.Template.AppearanceId == 0)
+                return null;
+
+            return (short?) pet.Template.AppearanceId;
         }
     }
 }

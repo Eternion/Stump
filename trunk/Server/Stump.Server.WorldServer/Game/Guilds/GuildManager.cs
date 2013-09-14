@@ -34,12 +34,17 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool DoesNameExist(string name)
         {
-            return m_guilds.Count(x => x.Value.Name == name) > 0;
+            return m_guilds.Any(x => x.Value.Name == name);
+        }
+
+        public bool DoesEmblemExist(NetworkGuildEmblem emblem)
+        {
+            return m_guilds.Any(x => x.Value.Emblem.DoesEmblemMatch(emblem));
         }
 
         public bool DoesEmblemExist(GuildEmblem emblem)
         {
-            return m_guilds.Count(x => x.Value.Emblem == emblem) > 0;
+            return m_guilds.Any(x => x.Value.Emblem.DoesEmblemMatch(emblem));
         }
 
         public GuildMember[] FindGuildMembers(int guildId)
@@ -47,11 +52,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
             return
                 Database.Query<GuildMemberRecord>(string.Format(GuildMemberRelator.FetchByGuildId, guildId))
                         .Select(x => new GuildMember(x)).ToArray();
-        }
-
-        public GuildMember[] FindConnectedGuildMembers(int guildId)
-        {
-            return m_guildsMembers.Values.Where(x => x.Guild.Id == guildId && x.IsConnected).ToArray();
         }
 
         public Guild TryGetGuild(int id)
@@ -88,31 +88,26 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (DoesNameExist(name))
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_NAME_ALREADY_EXISTS;
 
+            if (DoesEmblemExist(emblem))
+            {
+                return GuildCreationResultEnum.GUILD_CREATE_ERROR_EMBLEM_ALREADY_EXISTS;
+            }
+
             var guild = CreateGuild(name);
             if (guild == null)
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_CANCEL;
 
-            var convertedEmblem = new GuildEmblem(null)
-                {
-                    BackgroundColor = Color.FromArgb(emblem.backgroundColor),
-                    BackgroundShape = emblem.backgroundShape,
-                    IsDirty = true,
-                    Record = null,
-                    SymbolColor = Color.FromArgb(emblem.symbolColor),
-                    SymbolShape = emblem.symbolShape
-                };
-
-            if (DoesEmblemExist(convertedEmblem))
-            {
-                DeleteGuild(guild);
-                return GuildCreationResultEnum.GUILD_CREATE_ERROR_EMBLEM_ALREADY_EXISTS;
-            }
-
             guild.Emblem.ChangeEmblem(emblem);
 
-            guild.TryAddMember(character);
-            character.Map.Refresh(character);
-            character.GuildMember = GuildManager.Instance.TryGetGuildMember(character.Id);
+            GuildMember member;
+            if (!guild.TryAddMember(character, out member))
+            {
+                DeleteGuild(guild);
+                return GuildCreationResultEnum.GUILD_CREATE_ERROR_CANCEL;
+            }
+
+            character.GuildMember = member;
+            character.RefreshActor();
 
             return GuildCreationResultEnum.GUILD_CREATE_OK;
         }

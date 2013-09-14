@@ -7,6 +7,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.Npcs.Actions;
+using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
@@ -16,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
     {
         private List<NpcAction> m_actions = new List<NpcAction>();
 
-        public Npc(int id, NpcTemplate template, ObjectPosition position, EntityLook look)
+        public Npc(int id, NpcTemplate template, ObjectPosition position, ActorLook look)
         {
             Id = id;
             Template = template;
@@ -58,7 +59,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             get { return Template.Id; }
         }
 
-        public override EntityLook Look
+        public override ActorLook Look
         {
             get;
             set;
@@ -125,7 +126,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
         private GameContextActorInformations BuildGameContextActorInformations()
         {
             return new GameRolePlayNpcInformations(Id,
-                                                   Look,
+                                                   Look.GetEntityLook(),
                                                    GetEntityDispositionInformations(),
                                                    (short) Template.Id,
                                                    Template.Gender != 0,

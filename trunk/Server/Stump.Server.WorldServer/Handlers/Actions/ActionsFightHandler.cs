@@ -10,6 +10,7 @@ using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Handlers.Actions
@@ -104,9 +105,9 @@ namespace Stump.Server.WorldServer.Handlers.Actions
             client.Send(new GameActionFightCloseCombatMessage((short)action, source.Id, target == null ? 0 : target.Id, cell.Id, (sbyte)castCritical, silentCast, weapon.Id));
         }
 
-        public static void SendGameActionFightChangeLookMessage(IPacketReceiver client, FightActor source, FightActor target, EntityLook look)
+        public static void SendGameActionFightChangeLookMessage(IPacketReceiver client, FightActor source, FightActor target, ActorLook look)
         {
-            client.Send(new GameActionFightChangeLookMessage((short)ActionsEnum.ACTION_CHARACTER_CHANGE_LOOK, source.Id, target.Id, look));
+            client.Send(new GameActionFightChangeLookMessage((short)ActionsEnum.ACTION_CHARACTER_CHANGE_LOOK, source.Id, target.Id, look.GetEntityLook()));
         }
 
         public static void SendGameActionFightExchangePositionsMessage(IPacketReceiver client, FightActor caster, FightActor target)

@@ -21,6 +21,7 @@ using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
@@ -381,7 +382,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         #region Npcs
 
-        public Npc SpawnNpc(NpcTemplate template, ObjectPosition position, EntityLook look)
+        public Npc SpawnNpc(NpcTemplate template, ObjectPosition position, ActorLook look)
         {
             if (position.Map != this)
                 throw new Exception("Try to spawn a npc on the wrong map");
@@ -1050,8 +1051,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
              ContextHandler.SendGameMapMovementMessage(Clients, movementsKey, actor);
              BasicHandler.SendBasicNoOperationMessage(Clients);
-
-             (actor as Character).UpdateLook(true);
         }
 
         private void OnActorStopMoving(ContextActor actor, Path path, bool canceled)

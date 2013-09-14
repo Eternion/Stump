@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -7,8 +8,6 @@ using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Types;
-using Stump.DofusProtocol.Types.Extensions;
 using Stump.ORM;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.IPC;
@@ -19,6 +18,7 @@ using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Shortcuts;
+using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Spells;
 
@@ -117,27 +117,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return;
             }
 
-            var indexedColors = new List<int>();
+            var look = breed.GetLook(sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE, true);
             int i = 0;
+            uint[] breedColors = !sex ? breed.MaleColors : breed.FemaleColors;
             foreach (int color in colors)
             {
-                uint[] breedColors = !sex ? breed.MaleColors : breed.FemaleColors;
                 if (breedColors.Length > i)
                 {
-                    if (color == -1)
-                        indexedColors.Add((i + 1) << 24 | (int) breedColors[i]);
-                    else
-                        indexedColors.Add((i + 1) << 24 | color);
+                    look.AddColor(i + 1, color == -1 ? Color.FromArgb((int) breedColors[i]) : Color.FromArgb(color));
                 }
 
                 i++;
             }
 
-            EntityLook look = !sex ? breed.MaleLook.Copy() : breed.FemaleLook.Copy();
-            look.indexedColors = indexedColors;
-            var skins = look.skins.ToList();
-            skins.AddRange(head.Skins);
-            look.skins = skins;
+            foreach (var skin in head.Skins)
+                look.AddSkin(skin);
 
             CharacterRecord record;
             using (Transaction transaction = Database.GetTransaction())

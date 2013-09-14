@@ -5,11 +5,10 @@ using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Types;
-using Stump.DofusProtocol.Types.Extensions;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.I18n;
+using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Database.Breeds
@@ -111,7 +110,7 @@ namespace Stump.Server.WorldServer.Database.Breeds
             set
             {
                 m_maleLookString = value;
-                m_maleLook = MaleLookString.ToEntityLook();
+                m_maleLook = ActorLook.Parse(MaleLookString);
             }
         }
 
@@ -121,7 +120,7 @@ namespace Stump.Server.WorldServer.Database.Breeds
             set
             {
                 m_femaleLookString = value;
-                m_femaleLook = FemaleLookString.ToEntityLook();
+                m_femaleLook = ActorLook.Parse(FemaleLookString);
             }
         }
 
@@ -353,10 +352,10 @@ namespace Stump.Server.WorldServer.Database.Breeds
 
         private uint[] m_breedSpellsId;
         private uint[] m_femaleColors;
-        private EntityLook m_femaleLook;
+        private ActorLook m_femaleLook;
         private string m_longName;
         private uint[] m_maleColors;
-        private EntityLook m_maleLook;
+        private ActorLook m_maleLook;
 
         private string m_shortName;
         private ObjectPosition m_startPosition;
@@ -381,24 +380,27 @@ namespace Stump.Server.WorldServer.Database.Breeds
         }
 
         [Ignore]
-        public EntityLook MaleLook
+        public ActorLook MaleLook
         {
-            get { return m_maleLook ?? (m_maleLook = MaleLookString.ToEntityLook()); }
+            get { return m_maleLook ?? (m_maleLook = ActorLook.Parse(MaleLookString)); }
             set
             {
                 m_maleLook = value;
-                MaleLookString = m_maleLook.ConvertToString();
+                MaleLookString = m_maleLook.ToString();
             }
         }
 
         [Ignore]
-        public EntityLook FemaleLook
+        public ActorLook FemaleLook
         {
-            get { return m_femaleLook ?? (m_femaleLook = FemaleLookString.ToEntityLook()); }
+            get
+            {
+                return m_femaleLook ?? ( m_femaleLook = ActorLook.Parse(FemaleLookString) );
+            }
             set
             {
                 m_femaleLook = value;
-                FemaleLookString = m_femaleLook.ConvertToString();
+                FemaleLookString = m_femaleLook.ToString();
             }
         }
 
@@ -559,8 +561,8 @@ namespace Stump.Server.WorldServer.Database.Breeds
 
         public void BeforeSave(bool insert)
         {
-            MaleLookString = m_maleLook.ConvertToString();
-            FemaleLookString = m_femaleLook.ConvertToString();
+            MaleLookString = m_maleLook.ToString();
+            FemaleLookString = m_femaleLook.ToString();
 
             StatsPointsForStrengthCSV = m_statsPointsForStrength.ToCSV("|", x => x.ToCSV(","));
             StatsPointsForIntelligenceCSV = m_statsPointsForIntelligence.ToCSV("|", x => x.ToCSV(","));
@@ -623,8 +625,11 @@ namespace Stump.Server.WorldServer.Database.Breeds
             return thresholds.Length - 1;
         }
 
-        public EntityLook GetLook(SexTypeEnum sex)
+        public ActorLook GetLook(SexTypeEnum sex, bool clone = false)
         {
+            if (clone)
+                return sex == SexTypeEnum.SEX_FEMALE ? FemaleLook.Clone() : MaleLook.Clone();
+
             return sex == SexTypeEnum.SEX_FEMALE ? FemaleLook : MaleLook;
         }
     }

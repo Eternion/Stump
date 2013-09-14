@@ -20,7 +20,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             Record = new GuildMemberRecord
                 {
-                    IsNew = true,
                     CharacterId = character.Id,
                     AccountId = character.Account.Id,
                     Name = character.Name,
@@ -39,6 +38,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             Guild = guild;
             Character = character;
             IsDirty = true;
+            IsNew = true;
         }
 
         public GuildMemberRecord Record
@@ -112,6 +112,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
         }
 
+        public bool IsBoss
+        {
+            get { return RankId == 1; }
+        }
+
         public string Name
         {
             get
@@ -174,7 +179,13 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public bool IsDirty
         {
             get;
-            set;
+            protected set;
+        }
+
+        public bool IsNew
+        {
+            get;
+            protected set;
         }
 
         public NetworkGuildMember GetNetworkGuildMember()
@@ -184,31 +195,10 @@ namespace Stump.Server.WorldServer.Game.Guilds
                                           (sbyte) AlignmentSide, (ushort) (DateTime.Now - Record.LastConnection).TotalHours, 0,
                                           Record.AccountId, 0);
         }
-        
-        public bool QuitGuild()
-        {
-            if (!Guild.RemoveMember(this))
-                return false;
-
-            Guild = null;
-            return true;
-        }
 
         public bool HasRight(GuildRightsBitEnum right)
         {
             return Rights == GuildRightsBitEnum.GUILD_RIGHT_BOSS || Rights.HasFlag(right);
-        }
-
-        public void SetBoss(GuildMember member = null)
-        {
-            if (member != null && member.RankId == 1)
-            {
-                member.RankId = 0;
-                member.Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE;
-            }
-
-            Rights = GuildRightsBitEnum.GUILD_RIGHT_BOSS;
-            RankId = 1;
         }
 
         public event Action<GuildMember> Connected;
@@ -250,15 +240,13 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public void Save(ORM.Database database)
         {
-            database.Save(Record);
-            IsDirty = false;
-        }
+            if (IsNew)
+                database.Insert(Record);
+            else
+                database.Update(Record);
 
-        public void Insert(ORM.Database database)
-        {
-            database.Insert(Record);
+            IsNew = false;
             IsDirty = false;
-            Record.IsNew = false;
         }
     }
 }

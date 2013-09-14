@@ -5,10 +5,10 @@ using System.Linq;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
-using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Items;
@@ -27,12 +27,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
 
         public Merchant(Character character)
         {
-            var look = character.Look.Copy();
-            look.subentities = new List<SubEntity>(look.subentities)
-                {
-                    new SubEntity((int) SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MERCHANT_BAG, 0,
-                                  new EntityLook(BAG_SKIN, new short[0], new int[0], new short[0], new SubEntity[0]))
-                };
+            var look = character.Look.Clone();
+
+            look.AddSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MERCHANT_BAG,
+                                             new ActorLook()
+                                                 {
+                                                     BonesID = BAG_SKIN
+                                                 }));
 
             m_record = new WorldMapMerchantRecord()
                 {
@@ -96,7 +97,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
             protected set;
         }
 
-        public override EntityLook Look
+        public override ActorLook Look
         {
             get { return m_record.EntityLook; }
             set { m_record.EntityLook = value; }
@@ -173,7 +174,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
 
         public override GameContextActorInformations GetGameContextActorInformations()
         {
-            return new GameRolePlayMerchantInformations(Id, Look, GetEntityDispositionInformations(), Name, 0);
+            return new GameRolePlayMerchantInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(), Name, 0);
         }
 
         #endregion

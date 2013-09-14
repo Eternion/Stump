@@ -1,6 +1,6 @@
 ﻿using Stump.DofusProtocol.Types;
-using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
@@ -10,25 +10,25 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
     public class SkinBuff : Buff
     {
 
-        public SkinBuff(int id, FightActor target, FightActor caster, EffectBase effect, EntityLook look, Spell spell, bool dispelable)
+        public SkinBuff(int id, FightActor target, FightActor caster, EffectBase effect, ActorLook look, Spell spell, bool dispelable)
             : base(id, target, caster, effect, spell, false, dispelable)
         {
             Look = look;
         }
 
-        public SkinBuff(int id, FightActor target, FightActor caster, EffectBase effect, EntityLook look, Spell spell, bool dispelable, short customActionId)
+        public SkinBuff(int id, FightActor target, FightActor caster, EffectBase effect, ActorLook look, Spell spell, bool dispelable, short customActionId)
             : base(id, target, caster, effect, spell, false, dispelable, customActionId)
         {
             Look = look;
         }
 
-        public EntityLook Look
+        public ActorLook Look
         {
             get;
             set;
         }
 
-        public EntityLook OriginalLook
+        public ActorLook OriginalLook
         {
             get;
             private set;
@@ -36,15 +36,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
         public override void Apply()
         {
-            OriginalLook = Target.Look.Copy();
-            Target.Look = Look.Copy();
+            OriginalLook = Target.Look.Clone();
+            Target.Look = Look.Clone();
 
             ActionsHandler.SendGameActionFightChangeLookMessage(Target.Fight.Clients, Caster, Target, Target.Look);
         }
 
         public override void Dispell()
         {
-            Target.Look = OriginalLook.Copy();
+            Target.Look = OriginalLook.Clone();
 
             ActionsHandler.SendGameActionFightChangeLookMessage(Target.Fight.Clients, Caster, Target, Target.Look);
         }
