@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Stump.Core.Extensions;
@@ -65,7 +66,10 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             }
 
             /* Set Colors */
-            character.EntityLook.indexedColors = message.indexedColor;
+            var indexes = message.indexedColor.Select(x => x >> 24).ToArray();
+            var colors = message.indexedColor.Select(x => Color.FromArgb(x | 0xFFFFFF)).ToArray();
+
+            character.EntityLook.SetColors(indexes, colors);
             WorldServer.Instance.DBAccessor.Database.Update(character);
 
             /* Common selection */
@@ -144,7 +148,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             FriendHandler.SendFriendWarnOnConnectionStateMessage(client, client.Character.FriendsBook.WarnOnConnection);
             FriendHandler.SendFriendWarnOnLevelGainStateMessage(client, client.Character.FriendsBook.WarnOnLevel);
-            FriendHandler.SendGuildMemberWarnOnConnectionStateMessage(client, false);
+            GuildHandler.SendGuildMemberWarnOnConnectionStateMessage(client, client.Character.WarnOnGuildConnection);
 
             client.Character.SendConnectionMessages();
 
@@ -194,7 +198,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     characterRecord.Id,
                     ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience),
                     characterRecord.Name,
-                    characterRecord.EntityLook,
+                    characterRecord.EntityLook.GetEntityLook(),
                     (sbyte) characterRecord.Breed,
                     characterRecord.Sex != SexTypeEnum.SEX_MALE)).ToList();
 
@@ -216,7 +220,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             {
                 characterBaseInformations.Add(new CharacterBaseInformations(characterRecord.Id,
                                                                             ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience),
-                                                                            characterRecord.Name, characterRecord.EntityLook,
+                                                                            characterRecord.Name, characterRecord.EntityLook.GetEntityLook(),
                                                                             (sbyte) characterRecord.Breed, characterRecord.Sex != SexTypeEnum.SEX_MALE));
 
                 if (characterRecord.Rename)
@@ -226,7 +230,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
                 if (characterRecord.Recolor)
                 {
-                    charactersToRecolor.Add(new CharacterToRecolorInformation(characterRecord.Id, characterRecord.EntityLook.indexedColors));
+                    charactersToRecolor.Add(new CharacterToRecolorInformation(characterRecord.Id, characterRecord.EntityLook.GetEntityLook().indexedColors));
                 }
 
                 if (characterRecord.Relook)

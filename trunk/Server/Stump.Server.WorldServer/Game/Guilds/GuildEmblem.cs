@@ -11,9 +11,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 {
     public class GuildEmblem
     {
-        private short m_backgroundShape;
         private Color m_backgroundColor;
-        private short m_foregroundShape;
         private Color m_foregroundColor;
 
         public GuildEmblem(GuildRecord record)
@@ -29,10 +27,10 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public short BackgroundShape
         {
-            get { return m_backgroundShape; }
+            get { return Record.EmblemBackgroundShape; }
             set
             {
-                m_backgroundShape = value;
+                Record.EmblemBackgroundShape = value;
                 IsDirty = true;
             }
         }
@@ -43,16 +41,17 @@ namespace Stump.Server.WorldServer.Game.Guilds
             set
             {
                 m_backgroundColor = value;
+                Record.EmblemBackgroundColor = value.ToArgb();
                 IsDirty = true;
             }
         }
 
         public short SymbolShape
         {
-            get { return m_foregroundShape; }
+            get { return Record.EmblemForegroundShape; }
             set
             {
-                m_foregroundShape = value;
+                Record.EmblemForegroundShape = value;
                 IsDirty = true;
             }
         }
@@ -63,6 +62,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             set
             {
                 m_foregroundColor = value;
+                Record.EmblemForegroundColor = value.ToArgb();
                 IsDirty = true;
             }
         }
@@ -79,11 +79,22 @@ namespace Stump.Server.WorldServer.Game.Guilds
             BackgroundShape = emblem.backgroundShape;
             SymbolColor = Color.FromArgb(emblem.symbolColor);
             SymbolShape = emblem.symbolShape;
+        }
 
-            Record.EmblemBackgroundColor = emblem.backgroundColor;
-            Record.EmblemBackgroundShape = emblem.backgroundShape;
-            Record.EmblemForegroundColor = emblem.symbolColor;
-            Record.EmblemForegroundShape = emblem.symbolShape;
+        public bool DoesEmblemMatch(NetworkGuildEmblem emblem)
+        {
+            return BackgroundColor.ToArgb() == emblem.backgroundColor &&
+                   BackgroundShape == emblem.backgroundShape &&
+                   SymbolColor.ToArgb() == emblem.symbolColor &&
+                   SymbolShape == emblem.symbolShape;
+        }
+
+        public bool DoesEmblemMatch(GuildEmblem emblem)
+        {
+            return BackgroundColor == emblem.BackgroundColor &&
+                   BackgroundShape == emblem.BackgroundShape &&
+                   SymbolColor == emblem.SymbolColor &&
+                   SymbolShape == emblem.SymbolShape;
         }
 
         public NetworkGuildEmblem GetNetworkGuildEmblem()

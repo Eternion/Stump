@@ -77,7 +77,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             return new GameFightMonsterInformations(
                 Id,
-                Look,
+                Look.GetEntityLook(),
                 GetEntityDispositionInformations(client),
                 Team.Id,
                 IsAlive(),

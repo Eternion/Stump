@@ -29,7 +29,7 @@ namespace Stump.Plugins.DefaultPlugin.Code
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         [Variable]
-        public static bool Active = true;
+        public static bool Active = false;
 
         [Variable]
         public static string Output = "Gen/SpellStatesEnum.cs";

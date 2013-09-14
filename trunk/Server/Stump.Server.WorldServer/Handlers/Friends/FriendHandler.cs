@@ -134,11 +134,6 @@ namespace Stump.Server.WorldServer.Handlers.Friends
             client.Send(new FriendWarnOnConnectionStateMessage(state));
         }
 
-        public static void SendGuildMemberWarnOnConnectionStateMessage(IPacketReceiver client, bool state)
-        {
-            client.Send(new GuildMemberWarnOnConnectionStateMessage(state));
-        }
-
         public static void SendFriendWarnOnLevelGainStateMessage(IPacketReceiver client, bool state)
         {
             client.Send(new FriendWarnOnLevelGainStateMessage(state));

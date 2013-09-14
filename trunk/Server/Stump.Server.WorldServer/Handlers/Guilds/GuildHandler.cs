@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Core.Extensions;
@@ -34,23 +35,14 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         [WorldHandler(GuildCreationValidMessage.Id)]
         public static void HandleGuildCreationValidMessage(WorldClient client, GuildCreationValidMessage message)
         {
-            if (client.Character.Guild == null)
-            {
-                var result = GuildManager.Instance.CreateGuild(client.Character, message.guildName, message.guildEmblem);
-                SendGuildCreationResultMessage(client, result);
-
-                if (result == GuildCreationResultEnum.GUILD_CREATE_OK)
-                {
-                    client.Character.GuildMember.SetBoss();
-                    SendGuildJoinedMessage(client, client.Character.GuildMember);
-                    SendGuildInformationsMembersMessage(client, client.Character.Guild);
-                    SendGuildInformationsGeneralMessage(client, client.Character.Guild);
-                }
-            }
-            else
+            if (client.Character.Guild != null)
             {
                 SendGuildCreationResultMessage(client, GuildCreationResultEnum.GUILD_CREATE_ERROR_ALREADY_IN_GUILD);
+                return;
             }
+
+            var result = Singleton<GuildManager>.Instance.CreateGuild(client.Character, message.guildName, message.guildEmblem);
+            SendGuildCreationResultMessage(client, result);
         }
 
         [WorldHandler(GuildChangeMemberParametersMessage.Id)]
@@ -59,17 +51,12 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             if (client.Character.Guild == null)
                 return;
 
-            var target = GuildManager.Instance.TryGetGuildMember(message.memberId);
-            if (target == null || target.Guild != client.Character.Guild)
+            var target = client.Character.Guild.TryGetMember(message.memberId);
+            if (target == null)
                 return;
 
-            if (!client.Character.Guild.ChangeParameters(client.Character, target, message.rank, message.experienceGivenPercent, message.rights))
-                return;
-
-            SendGuildInformationsMembersMessage(client.Character.Guild.Clients, client.Character.Guild);
-
-            if (target.Character != null)
-                SendGuildMembershipMessage(target.Character.Client, target);
+            client.Character.Guild.ChangeParameters(client.Character, target, message.rank,
+                                                    (byte) message.experienceGivenPercent, message.rights);
         }
 
         [WorldHandler(GuildKickRequestMessage.Id)]
@@ -78,18 +65,11 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             if (client.Character.Guild == null)
                 return;
 
-            var target = GuildManager.Instance.TryGetGuildMember(message.kickedId);
+            var target = client.Character.Guild.TryGetMember(message.kickedId);
             if (target == null)
                 return;
 
-            if (!target.Guild.KickMember(client.Character, target))
-                return;
-
-            if (target.Character != null)
-                SendGuildLeftMessage(target.Character.Client);
-
-            if (client.Character.Guild != null)
-                SendGuildInformationsMembersMessage(client.Character.Guild.Clients, client.Character.Guild);
+            target.Guild.KickMember(client.Character, target);
         }
 
         [WorldHandler(GuildInvitationMessage.Id)]
@@ -98,35 +78,37 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             if (client.Character.Guild == null)
                 return;
 
-            if (client.Character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_INVITE_NEW_MEMBERS))
+            if (!client.Character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_INVITE_NEW_MEMBERS))
             {
-                var target = World.Instance.GetCharacter(message.targetId);
-                if (target == null)
-                {
-                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 208);
-                    return;
-                }
-
-
-                if (target.Guild != null)
-                {
-                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 206);
-                    return;
-                }
-
-                target.GuildInviter = client.Character.Id;
-                target.GuildInvitation = 0;
-
-                client.Character.GuildInvitation = target.Id;
-                client.Character.GuildInviter = 0;
-
-                SendGuildInvitationStateRecruterMessage(client, target, GuildInvitationStateEnum.GUILD_INVITATION_SENT);
-                SendGuildInvitedMessage(target.Client, client.Character);
-            }
-            else
-            {
+                // Vous n'avez pas le droit requis pour inviter des joueurs dans votre guilde.
                 client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 207);
+                return;
             }
+
+            var target = Singleton<World>.Instance.GetCharacter(message.targetId);
+            if (target == null)
+            {
+                // Impossible d'inviter, ce joueur est inconnu ou non connecté.
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 208);
+                return;
+            }
+
+            if (target.Guild != null)
+            {
+                // Impossible, ce joueur est déjà dans une guilde
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 206);
+                return;
+            }
+
+            if (target.IsBusy())
+            {
+                // Ce joueur est occupé. Impossible de l'inviter.                    
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 209);
+                return;
+            }
+
+            var request = new GuildInvitationRequest(client.Character, target);
+            request.Open();
         }
 
         [WorldHandler(GuildInvitationByNameMessage.Id)]
@@ -135,80 +117,67 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             if (client.Character.Guild == null)
                 return;
 
-            if (client.Character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_INVITE_NEW_MEMBERS))
+            if (!client.Character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_INVITE_NEW_MEMBERS))
             {
-                var target = World.Instance.GetCharacter(message.name);
-                if (target == null)
-                {
-                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 208);
-                    return;
-                }
-
-
-                if (target.Guild != null)
-                {
-                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 206);
-                    return;
-                }
-
-                target.GuildInviter = client.Character.Id;
-                target.GuildInvitation = 0;
-
-                client.Character.GuildInvitation = target.Id;
-                client.Character.GuildInviter = 0;
-
-                SendGuildInvitationStateRecruterMessage(client, target, GuildInvitationStateEnum.GUILD_INVITATION_SENT);
-                SendGuildInvitedMessage(target.Client, client.Character);
-            }
-            else
-            {
+                // Vous n'avez pas le droit requis pour inviter des joueurs dans votre guilde.
                 client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 207);
+                return;
             }
+
+            var target = Singleton<World>.Instance.GetCharacter(message.name);
+            if (target == null)
+            {
+                // Impossible d'inviter, ce joueur est inconnu ou non connecté.
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 208);
+                return;
+            }
+
+            if (target.Guild != null)
+            {
+                // Impossible, ce joueur est déjà dans une guilde
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 206);
+                return;
+            }
+
+            if (target.IsBusy())
+            {
+                // Ce joueur est occupé. Impossible de l'inviter.                    
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 209);
+                return;
+            }
+
+            var request = new GuildInvitationRequest(client.Character, target);
+            request.Open();
         }
 
         [WorldHandler(GuildInvitationAnswerMessage.Id)]
         public static void HandleGuildInvitationAnswerMessage(WorldClient client, GuildInvitationAnswerMessage message)
         {
-            var character = client.Character;
+            var request = client.Character.RequestBox as GuildInvitationRequest;
 
-            if (character.GuildInvitation == 0 && character.GuildInviter == 0)
+            if (request == null)
                 return;
 
-            if (character.GuildInviter != 0)
+            if (client.Character == request.Source && !message.accept)
+                request.Cancel();
+            else if (client.Character == request.Target)
             {
-                if (character.Guild != null)
-                    return;
-
-                var recruter = World.Instance.GetCharacter(character.GuildInviter);
-                if (recruter == null)
-                    return;
-
-                SendGuildInvitationStateRecruterMessage(recruter.Client, character,
-                                                        message.accept
-                                                            ? GuildInvitationStateEnum.GUILD_INVITATION_OK
-                                                            : GuildInvitationStateEnum.GUILD_INVITATION_CANCELED);
-
-                if (!message.accept)
-                    return;
-
-                recruter.Guild.TryAddMember(character);
-                character.GuildMember = GuildManager.Instance.TryGetGuildMember(character.Id);
-
-                SendGuildJoinedMessage(client, character.GuildMember);
-
-                SendGuildInformationsMembersMessageToAll(client);
-                character.Map.Refresh(character);
+                if (message.accept)
+                    request.Accept();
+                else
+                    request.Deny();
             }
-            else if (character.GuildInvitation != 0)
-            {
-                var invite = World.Instance.GetCharacter(character.GuildInvitation);
-                if (invite == null)
-                    return;
+        }
 
-                invite.GuildInviter = 0;
+        [WorldHandler(GuildMemberSetWarnOnConnectionMessage.Id)]
+        public static void HandleGuildMemberSetWarnOnConnectionMessage(WorldClient client, GuildMemberSetWarnOnConnectionMessage message)
+        {
+            client.Character.WarnOnGuildConnection = message.enable;
+        }
 
-                SendGuildInvitationStateRecruterMessage(character.Client, character, GuildInvitationStateEnum.GUILD_INVITATION_CANCELED);
-            }
+        public static void SendGuildMemberWarnOnConnectionStateMessage(IPacketReceiver client, bool state)
+        {
+            client.Send(new GuildMemberWarnOnConnectionStateMessage(state));
         }
 
         public static void SendGuildInvitedMessage(IPacketReceiver client, Character recruter)
@@ -245,14 +214,6 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         {
             client.Send(new GuildInformationsMembersMessage(guild.Members.Select(x => x.GetNetworkGuildMember())));
         }
-
-        /*public static void SendGuildInformationsMembersMessageToAll(WorldClient client)
-        {
-            foreach (var guildMember in GuildManager.Instance.FindConnectedGuildMembers(client.Character.Guild.Id))
-            {
-                SendGuildInformationsMembersMessage(guildMember.Character.Client, guildMember.Character.Guild);
-            }
-        }*/
 
         public static void SendGuildInformationsMemberUpdateMessage(IPacketReceiver client, GuildMember member)
         {

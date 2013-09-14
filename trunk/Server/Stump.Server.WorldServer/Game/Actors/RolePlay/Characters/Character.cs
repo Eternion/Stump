@@ -15,6 +15,7 @@ using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
+using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Breeds;
@@ -39,6 +40,7 @@ using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
+using Stump.Server.WorldServer.Handlers.Guilds;
 using Stump.Server.WorldServer.Handlers.Moderation;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 
@@ -47,6 +49,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
     public sealed class Character : Humanoid,
                                     IStatsOwner, IInventoryOwner, ICommandsUser
     {
+        private const int AURA_1_SKIN = 170;
+        private const int AURA_2_SKIN = 171;
+
+
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly CharacterRecord m_record;
@@ -237,7 +243,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get { return Dialog as MerchantShopDialog; }
         }
 
-        public IRequestBox RequestBox
+        public RequestBox RequestBox
         {
             get;
             private set;
@@ -263,7 +269,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Dialoger = null;
         }
 
-        public void OpenRequestBox(IRequestBox request)
+        public void OpenRequestBox(RequestBox request)
         {
             RequestBox = request;
         }
@@ -371,13 +377,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             set { m_record.CustomLookActivated = value; }
         }
 
-        public EntityLook CustomLook
+        public ActorLook CustomLook
         {
             get { return m_record.CustomEntityLook; }
             set { m_record.CustomEntityLook = value; }
         }
 
-        public EntityLook RealLook
+        public ActorLook RealLook
         {
             get { return m_record.EntityLook; }
             private set
@@ -387,7 +393,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        public override EntityLook Look
+        public override ActorLook Look
         {
             get { return (CustomLookActivated && CustomLook != null ? CustomLook : RealLook); }
         }
@@ -453,30 +459,27 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return ToggleInvisibility(!Invisible);
         }
 
-        public void UpdateLook(bool send = true, bool aura1 = false, bool aura2 = false)
+        public void UpdateLook(bool send = true)
         {
-            var skins = new List<short>(Breed.GetLook(Sex).skins);
+            var skins = new List<short>(Breed.GetLook(Sex).Skins);
             skins.AddRange(Head.Skins);
             skins.AddRange(Inventory.GetItemsSkins());
 
-            RealLook.skins = skins;
-            
+            RealLook.SetSkins(skins.ToArray());
 
-            var pets = Inventory.GetPetsSkins();
-            List<SubEntity> subentities =
-                pets.Select(
-                    (t, i) => new SubEntity((int) SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET, (sbyte) i,
-                                            new EntityLook(t, new short[0], new int[0], new short[] {75},
-                                                           new SubEntity[0]))).ToList();
 
-            if (aura1)
-                subentities.Add(new SubEntity((int) SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND, 0, new EntityLook(170, new short[0], new int[0], new short[0], new SubEntity[0])));
-            else if (aura2)
-                subentities.Add(new SubEntity((int)SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND, 0, new EntityLook(171, new short[0], new int[0], new short[0], new SubEntity[0])));
+            var petSkin = Inventory.GetPetSkin();
 
-            RealLook.subentities = subentities;
+            if (petSkin.HasValue && (RealLook.PetLook == null || RealLook.PetLook.BonesID != petSkin))
+                RealLook.SetPetSkin(petSkin.Value);
 
             if (send)
+                RefreshActor();
+        }
+
+        public void RefreshActor()
+        {
+            if (Map != null)
                 Map.Refresh(this);
         }
 
@@ -762,26 +765,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        public int GuildInvitation
+        public bool WarnOnGuildConnection
         {
-            get;
-            set;
-        }
-
-        public int GuildInviter
-        {
-            get;
-            set;
-        }
-
-        public void SetGuildMemberXPPercent(int xpPercent)
-        {
-            // todo
-        }
-
-        public void QuitGuild()
-        {
-            // todo
+            get { return Record.WarnOnGuildConnection; }
+            set
+            {
+                Record.WarnOnGuildConnection = value;
+                GuildHandler.SendGuildMemberWarnOnConnectionStateMessage(Client, value);
+            }
         }
 
         #endregion
@@ -1638,9 +1629,23 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public void PlayEmote(EmotesEnum emote)
         {
             if (emote == EmotesEnum.EMOTE_POWER_AURA)
-                UpdateLook(true, true, false);
+            {
+                if (RealLook.AuraLook != null && RealLook.AuraLook.BonesID == AURA_1_SKIN)
+                    RealLook.RemoveAuras();
+                else
+                    RealLook.SetAuraSkin(AURA_1_SKIN);
+
+                RefreshActor();
+            }
             else if (emote == EmotesEnum.EMOTE_BLOODY_AURA)
-                UpdateLook(true, false, true);
+            {
+                if (RealLook.AuraLook != null && RealLook.AuraLook.BonesID == AURA_2_SKIN)
+                    RealLook.RemoveAuras();
+                else
+                    RealLook.SetAuraSkin(AURA_2_SKIN);
+                
+                RefreshActor();
+            }
 
             ContextRoleplayHandler.SendEmotePlayMessage(Map.Clients, this, emote);
         }
@@ -1864,10 +1869,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     FriendsBook.Save();
 
                     if (GuildMember != null && GuildMember.IsDirty)
-                        if (GuildMember.Record.IsNew)
-                            GuildMember.Insert(WorldServer.Instance.DBAccessor.Database);
-                        else
-                            GuildMember.Save(WorldServer.Instance.DBAccessor.Database);
+                        GuildMember.Save(WorldServer.Instance.DBAccessor.Database);
 
                     m_record.MapId = Map.Id;
                     m_record.CellId = Cell.Id;
@@ -1983,7 +1985,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             return new GameRolePlayCharacterInformations(
                 Id,
-                Look,
+                Look.GetEntityLook(),
                 GetEntityDispositionInformations(),
                 Name,
                 GetHumanInformations(),
@@ -2034,7 +2036,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Id,
                 Level,
                 Name,
-                Look,
+                Look.GetEntityLook(),
                 (sbyte) BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE);
         }
@@ -2049,7 +2051,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Id,
                 Level,
                 Name,
-                Look,
+                Look.GetEntityLook(),
                 (sbyte) BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE,
                 (short) Map.Position.X,
@@ -2064,7 +2066,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Id,
                 Level,
                 Name,
-                Look,
+                Look.GetEntityLook(),
                 (sbyte)BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE,
                 LifePoints,
@@ -2091,7 +2093,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Id,
                 invitation.Source.Id,
                 Name,
-                Look,
+                Look.GetEntityLook(),
                 (sbyte)BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE);
         }

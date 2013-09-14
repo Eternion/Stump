@@ -211,9 +211,11 @@
     <Compile Include="Database\World\WorldMapMerchant.cs" />
     <Compile Include="Game\Accounts\Startup\StartupAction.cs" />
     <Compile Include="Game\Accounts\Startup\StartupActionItem.cs" />
+    <Compile Include="Game\Actors\Look\ActorLook.cs" />
     <Compile Include="Game\Actors\Fight\SummonedFighter.cs" />
     <Compile Include="Game\Actors\Fight\SummonedMonster.cs" />
     <Compile Include="Game\Actors\Interfaces\INamedActor.cs" />
+    <Compile Include="Game\Actors\Look\SubActorLook.cs" />
     <Compile Include="Game\Actors\RolePlay\Merchants\MerchantManager.cs" />
     <Compile Include="Game\Actors\Stats\StatsInitiative.cs" />
     <Compile Include="Game\Conditions\BoolOperator.cs" />
@@ -259,6 +261,7 @@
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
     <Compile Include="Game\Dialogs\Interactives\ZaapDialog.cs" />
     <Compile Include="Game\Dialogs\IShopDialog.cs" />
+    <Compile Include="Game\Dialogs\RequestBox.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ReduceBuffDuration.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\VitalityPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePercent.cs" />
@@ -314,6 +317,7 @@
     <Compile Include="Game\Formulas\FightFormulas.cs" />
     <Compile Include="Game\Guilds\Guild.cs" />
     <Compile Include="Game\Guilds\GuildEmblem.cs" />
+    <Compile Include="Game\Guilds\GuildInvitationRequest.cs" />
     <Compile Include="Game\Guilds\GuildManager.cs" />
     <Compile Include="Game\Guilds\GuildMember.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapSave.cs" />
@@ -467,7 +471,6 @@
     <Compile Include="Game\Social\ChatManager.cs" />
     <Compile Include="Game\Dialogs\IDialog.cs" />
     <Compile Include="Game\Dialogs\IDialoger.cs" />
-    <Compile Include="Game\Dialogs\IRequestBox.cs" />
     <Compile Include="Game\Dialogs\Npcs\NpcDialog.cs" />
     <Compile Include="Game\Dialogs\Npcs\NpcShopDialog.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Armor\DamageArmor.cs" />

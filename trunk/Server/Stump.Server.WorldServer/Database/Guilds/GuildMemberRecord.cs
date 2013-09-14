@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Types;
-using Stump.DofusProtocol.Types.Extensions;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.Breeds;
@@ -36,13 +34,6 @@ namespace Stump.Server.WorldServer.Database.Guilds
     {
         [PrimaryKey("CharacterId", false)]
         public int CharacterId
-        {
-            get;
-            set;
-        }
-
-        [Ignore]
-        public bool IsNew
         {
             get;
             set;

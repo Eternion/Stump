@@ -220,6 +220,7 @@ namespace Stump.Server.WorldServer.Game.Social
 
                     if (WarnOnConnection)
                     {
+                        // %1 ({player,%2,%3}) est en ligne.
                         BasicHandler.SendTextInformationMessage(Owner.Client,
                             TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 143, character.Client.WorldAccount.Nickname, character.Name);
                     }

@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
 
         public override GameContextActorInformations GetGameContextActorInformations()
         {
-            return new GameRolePlayActorInformations(Id, Look, GetEntityDispositionInformations());
+            return new GameRolePlayActorInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations());
         }
 
         #endregion

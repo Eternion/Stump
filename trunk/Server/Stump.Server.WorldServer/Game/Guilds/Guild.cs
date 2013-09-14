@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
+using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Guilds;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Handlers.Basic;
 using GuildMemberNetwork = Stump.DofusProtocol.Types.GuildMember;
 using Stump.Server.WorldServer.Handlers.Guilds;
 
@@ -16,6 +18,20 @@ namespace Stump.Server.WorldServer.Game.Guilds
 {
     public class Guild
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        private static readonly double[][] XP_PER_GAP = new[]
+            {
+                new double[] {0, 10}, 
+                new double[] {10, 8}, 
+                new double[] {20, 6}, 
+                new double[] {30, 4},
+                new double[] {40, 3},
+                new double[] {50, 2}, 
+                new double[] {60, 1.5}, 
+                new double[] {70, 1}
+            };
+
         [Variable(true)]
         public static int MaxMembersNumber = 50;
 
@@ -49,12 +65,32 @@ namespace Stump.Server.WorldServer.Game.Guilds
             Record = record;
             m_members.AddRange(members);
             Level = ExperienceManager.Instance.GetGuildLevel(Experience);
+            ExperienceLevelFloor = ExperienceManager.Instance.GetGuildLevelExperience(Level);
+            ExperienceNextLevelFloor = ExperienceManager.Instance.GetGuildNextLevelExperience(Level);
             Emblem = new GuildEmblem(Record);
 
             foreach (var member in m_members)
             {
+                if (member.IsBoss)
+                {
+                    if (Boss != null)
+                        logger.Error("There is at least two boss in guild {0} ({1})", Id, Name);
+
+                    Boss = member;
+                }
+
                 BindMemberEvents(member);
                 member.BindGuild(this);
+            }
+
+            if (Boss == null)
+            {
+                logger.Error("There is at no boss in guild {0} ({1})", Id, Name);
+
+                if (m_members.Count == 0)
+                    logger.Error("Guild {0} ({1}) is empty", Id, Name);
+                else
+                    SetBoss(m_members.First());
             }
         }
 
@@ -78,6 +114,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             get { return Record.Id; }
             private set { Record.Id = value; }
+        }
+
+        public GuildMember Boss
+        {
+            get;
+            private set;
         }
 
         public long Experience
@@ -137,6 +179,19 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
         }
 
+        public long AdjustGivenExperience(Character giver, long amount)
+        {
+            var gap = giver.Level - Level;
+
+            for (int i = XP_PER_GAP.Length - 1; i >= 0; i--)
+            {
+                if (gap > XP_PER_GAP[i][0])
+                    return (long) (amount*XP_PER_GAP[i][1]*0.01);
+            }
+
+            return (long)( amount * XP_PER_GAP[0][1] * 0.01 );
+        }
+
         public void AddXP(long experience)
         {
             Experience += experience;
@@ -161,74 +216,167 @@ namespace Stump.Server.WorldServer.Game.Guilds
             OnLevelChanged();
         }
 
-        public bool KickMember(Character character, GuildMember member)
+        public void SetBoss(GuildMember guildMember)
         {
-            if (character.Guild != member.Guild)
-                return false;
+            if (guildMember.Guild != this)
+                return;
 
-            if (character.GuildMember != member && !character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS))
-                return false;
+            if (Boss == guildMember)
+                return;
 
-            GuildHandler.SendGuildMemberLeavingMessage(m_clients, member, character.GuildMember != member ? true : false);
-
-            var kickCharacter = member.Character;
-            var memberName = member.Name;
-
-            if (member.RankId == 1 && m_members.Count == 1)
+            if (Boss != null)
             {
-                GuildManager.Instance.DeleteGuild(member.Guild);
+                Boss.RankId = 0;
+                Boss.Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE;
+
+                if (m_members.Count > 1)
+                {
+                    // <b>%1</b> a remplacé <b>%2</b>  au poste de meneur de la guilde <b>%3</b>
+                    BasicHandler.SendTextInformationMessage(m_clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 199, 
+                                                                 guildMember.Name, Boss.Name, Name);
+                }
+
+                UpdateMember(Boss);
+            }
+            
+            Boss = guildMember;
+            Boss.RankId = 1;
+            Boss.Rights = GuildRightsBitEnum.GUILD_RIGHT_BOSS;
+
+            UpdateMember(Boss);
+        }
+
+        public bool KickMember(GuildMember kickedMember)
+        {
+            if (!RemoveMember(kickedMember))
+                return false;
+
+            GuildHandler.SendGuildMemberLeavingMessage(m_clients, kickedMember, true);
+
+            if (kickedMember.IsBoss && m_members.Count == 1)
+            {
+                GuildManager.Instance.DeleteGuild(kickedMember.Guild);
+            }
+            else if (kickedMember.IsBoss)
+            {
+                SetBoss(m_members.OrderBy(x => x.RankId).First(x => x.RankId > 0));
             }
 
-            if (!member.QuitGuild())
-                return false;
-
-            if (kickCharacter != null)
+            if (kickedMember.IsConnected)
             {
-                kickCharacter.Map.Refresh(kickCharacter);
-                kickCharacter.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
+                kickedMember.Character.RefreshActor();
+                // Vous avez quitté la guilde.
+                kickedMember.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
             }
-
-            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177, kickCharacter.Name);
 
             return true;
         }
 
-        public bool ChangeParameters(Character character, GuildMember member, short rank, sbyte xpPercent, uint rights)
+        public bool KickMember(Character kicker, GuildMember kickedMember)
         {
-            if (character.Guild != member.Guild)
+            if (kicker.Guild != kickedMember.Guild)
                 return false;
 
-            if (character.GuildMember != member && character.GuildMember.RankId == 1 && rank == 1)
-            {
-                member.SetBoss(character.GuildMember);
+            if (kicker.GuildMember != kickedMember && (!kicker.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS) || kickedMember.IsBoss))
+                return false;
 
-                foreach (var guildMember in GuildManager.Instance.FindConnectedGuildMembers(character.Guild.Id))
-                {
-                    guildMember.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 199, member.Name, character.Name, character.Guild.Name);
-                }
+            if (!RemoveMember(kickedMember))
+                return false;
+
+            GuildHandler.SendGuildMemberLeavingMessage(m_clients, kickedMember, kicker.GuildMember != kickedMember);
+
+            if (kickedMember.IsBoss)
+            {
+                if (m_members.Count > 1)
+                    return false;
+
+                GuildManager.Instance.DeleteGuild(kickedMember.Guild);
+            }
+
+            if (kickedMember.IsConnected)
+            {
+                kickedMember.Character.RefreshActor();
+                // Vous avez quitté la guilde.
+                kickedMember.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
+            }
+
+            // Vous avez banni <b>%1</b> de votre guilde.
+            kicker.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177, kickedMember.Name);
+
+            return true;
+        }
+
+        public bool ChangeParameters(GuildMember member, short rank, byte xpPercent, uint rights)
+        {
+            if (rank == 1)
+            {
+                SetBoss(member);
             }
             else
             {
-                if (member.RankId != 1)
+                member.RankId = rank;
+                member.Rights = (GuildRightsBitEnum) rights;
+            }
+
+            member.GivenPercent = (byte)xpPercent;
+
+            UpdateMember(member);
+
+            if (member.IsConnected)
+                GuildHandler.SendGuildMembershipMessage(member.Character.Client, member);
+
+            return true;
+        }
+
+        public bool ChangeParameters(Character modifier, GuildMember member, short rank, byte xpPercent, uint rights)
+        {
+            if (modifier.Guild != member.Guild)
+                return false;
+
+            if (modifier.GuildMember != member && modifier.GuildMember.IsBoss && rank == 1)
+            {
+                SetBoss(member);
+            }
+            else
+            {
+                if (modifier.GuildMember == member || !member.IsBoss)
                 {
-                    if (character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RANKS))
+                    if (modifier.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RANKS))
                         member.RankId = rank;
 
-                    if (character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS))
+                    if (modifier.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS))
                         member.Rights = (GuildRightsBitEnum)rights;
                 }
             }
 
-            if (character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_XP_CONTRIBUTION) ||
-                (character.GuildMember == member && character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_MY_XP_CONTRIBUTION)))
-                member.GivenPercent = (byte)xpPercent;
+            if (modifier.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_XP_CONTRIBUTION) ||
+                (modifier.GuildMember == member &&
+                 modifier.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_MY_XP_CONTRIBUTION)))
+            {
+                member.GivenPercent = (byte) (xpPercent < 90 ? xpPercent : 90);
+            }
+
+            UpdateMember(member);
+
+            if (member.IsConnected)
+                GuildHandler.SendGuildMembershipMessage(member.Character.Client, member);
 
             return true;
+        }
+
+        protected void UpdateMember(GuildMember member)
+        {
+            GuildHandler.SendGuildInformationsMemberUpdateMessage(m_clients, member);
         }
 
         public bool CanAddMember()
         {
             return m_members.Count < MaxMembersNumber;
+        }
+
+        public GuildMember TryGetMember(int id)
+        {
+            return m_members.FirstOrDefault(x => x.Id == id);
         }
 
         public bool TryAddMember(Character character)
@@ -246,14 +394,13 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
 
             member = new GuildMember(this, character);
-
-            member.OnCharacterConnected(character);
-
             m_members.Add(member);
+            character.GuildMember = member;
+
+            if (m_members.Count == 1)
+                SetBoss(member);
 
             OnMemberAdded(member);
-
-            //GuildHandler.SendGuildInformationsMembersMessageToAll(member.Character.Client);
 
             return true;
         }
@@ -273,34 +420,59 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             BindMemberEvents(member);
             GuildManager.Instance.RegisterGuildMember(member);
+
+            if (member.IsConnected)
+            {
+                GuildHandler.SendGuildJoinedMessage(member.Character.Client, member);
+                GuildHandler.SendGuildInformationsMembersMessage(member.Character.Client, this);
+                GuildHandler.SendGuildInformationsGeneralMessage(member.Character.Client, this);
+                member.Character.RefreshActor();
+            }
+
+            UpdateMember(member);
         }
 
         protected virtual void OnMemberRemoved(GuildMember member)
         {
-            GuildHandler.SendGuildInformationsMembersMessage(Clients, this);
-
             UnBindMemberEvents(member);
             GuildManager.Instance.DeleteGuildMember(member);
+
+            if (member.IsConnected)
+            {
+                GuildHandler.SendGuildLeftMessage(member.Character.Client);
+                member.Character.RefreshActor();
+            }
         }
 
         protected virtual void OnLevelChanged()
         {
             ExperienceLevelFloor = ExperienceManager.Instance.GetGuildLevelExperience(Level);
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetGuildNextLevelExperience(Level);
+
+            //Votre guilde passe niveau %1
+            BasicHandler.SendTextInformationMessage(m_clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 208, Level);
         }
 
         private void OnMemberConnected(GuildMember member)
         {
             m_clients.Add(member.Character.Client);
 
-            GuildHandler.SendGuildInformationsMembersMessage(Clients, this);
+            UpdateMember(member);
+
+            foreach (var connectedMember in Members.Where(x => x.IsConnected))
+            {
+                if (connectedMember != member && connectedMember.Character.WarnOnGuildConnection)
+                    // Un membre de votre guilde, {player,%1,%2}, est en ligne.
+                    connectedMember.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
+                                                                     224, member.Name);
+            }
         }
 
         private void OnMemberDisconnected(GuildMember member, Character character)
         {
             m_clients.Remove(character.Client);
 
-            GuildHandler.SendGuildInformationsMembersMessage(Clients, this);
+            UpdateMember(member);
         }
 
         private void BindMemberEvents(GuildMember member)

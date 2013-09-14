@@ -5,29 +5,16 @@ using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Exchanges
 {
-    public class PlayerTradeRequest : IRequestBox
+    public class PlayerTradeRequest : RequestBox
     {
         public PlayerTradeRequest(Character source, Character target)
+            : base(source, target)
         {
             Source = source;
             Target = target;
         }
 
-        #region IRequestBox Members
-
-        public Character Source
-        {
-            get;
-            private set;
-        }
-
-        public Character Target
-        {
-            get;
-            private set;
-        }
-
-        public void Open()
+        protected override void OnOpen()
         {
             InventoryHandler.SendExchangeRequestedTradeMessage(Source.Client, ExchangeTypeEnum.PLAYER_TRADE,
                                                                Source, Target);
@@ -35,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                                                                Source, Target);
         }
 
-        public void Accept()
+        protected override void OnAccept()
         {
             var trade = TradeManager.Instance.Create();
 
@@ -46,29 +33,17 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             Target.SetDialoger(secondTrader);
 
             trade.Open(firstTrader, secondTrader);
-
-            Close();
         }
 
-        public void Deny()
+        protected override void OnDeny()
         {
             InventoryHandler.SendExchangeLeaveMessage(Source.Client, DialogTypeEnum.DIALOG_EXCHANGE, false);
             InventoryHandler.SendExchangeLeaveMessage(Target.Client, DialogTypeEnum.DIALOG_EXCHANGE, false);
-
-            Close();
         }
 
-        public void Cancel()
+        protected override void OnCancel()
         {
             Deny();
         }
-
-        private void Close()
-        {
-            Source.ResetRequestBox();
-            Target.ResetRequestBox();
-        }
-
-        #endregion
     }
 }

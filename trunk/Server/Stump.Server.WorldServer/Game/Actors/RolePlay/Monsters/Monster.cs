@@ -5,6 +5,7 @@ using System.Linq;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
+using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Fights;
 using MonsterGrade = Stump.Server.WorldServer.Database.Monsters.MonsterGrade;
@@ -45,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             }
         }
 
-        public EntityLook Look
+        public ActorLook Look
         {
             get
             {
@@ -55,7 +56,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
         public MonsterInGroupInformations GetMonsterInGroupInformations()
         {
-            return new MonsterInGroupInformations(Template.Id, (sbyte)Grade.GradeId, Look);
+            return new MonsterInGroupInformations(Template.Id, (sbyte)Grade.GradeId, Look.GetEntityLook());
         }
 
         public MonsterInGroupLightInformations GetMonsterInGroupLightInformations()

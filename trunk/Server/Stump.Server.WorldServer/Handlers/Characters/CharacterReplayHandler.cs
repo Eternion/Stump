@@ -1,11 +1,11 @@
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -78,19 +78,10 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 return;
             }
 
-            /* Parse character colors */
-            var indexedColors = new List<int>();
-            for (int i = 0; i < 5; i++)
-            {
-                int color = message.indexedColor.ElementAt(i);
+            var breedColors = character.Sex == SexTypeEnum.SEX_MALE ? breed.MaleColors : breed.FemaleColors;
 
-                if (color == -1)
-                    color = (int)(character.Sex == SexTypeEnum.SEX_MALE ? breed.MaleColors[i] : breed.FemaleColors[i]);
-
-                indexedColors.Add((i + 1) << 24 | color);
-            }
-
-            character.EntityLook.indexedColors = indexedColors;
+            character.EntityLook.SetColors(
+                message.indexedColor.Select((x, i) => x == -1 ? Color.FromArgb((int) breedColors[i]) : Color.FromArgb(x)).ToArray());
 
             WorldServer.Instance.DBAccessor.Database.Update(character);
         }

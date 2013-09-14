@@ -5,12 +5,12 @@ using Stump.Core.Attributes;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
-using Stump.DofusProtocol.Types.Extensions;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
@@ -35,6 +35,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         private int m_damageTakenBeforeFight;
         private short m_earnedDishonor;
         private int m_earnedExp;
+        private int m_guildEarnedExp;
         private short m_earnedHonor;
         private bool m_isUsingWeapon;
 
@@ -43,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             : base(team)
         {
             Character = character;
-            Look = Character.Look.Copy();
+            Look = Character.Look.Clone();
 
             Cell cell;
             if (Fight.FindRandomFreeCell(this, out cell, false))
@@ -76,7 +77,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return Character.Name; }
         }
 
-        public override EntityLook Look
+        public override ActorLook Look
         {
             get;
             set;
@@ -292,6 +293,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void SetEarnedExperience(int experience)
         {
+            if (Character.GuildMember != null && Character.GuildMember.GivenPercent > 0)
+            {
+                var xp = (int)(experience*Character.GuildMember.GivenPercent*0.01);
+
+                experience -= xp;
+
+                m_guildEarnedExp = (int)Character.Guild.AdjustGivenExperience(Character, xp); ;
+            }
+
             m_earnedExp = experience;
         }
 
@@ -329,6 +339,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 additionalDatas.Add(new FightExperienceData(Character)
                                         {
                                             ExperienceFightDelta = m_earnedExp,
+                                            ExperienceForGuild = m_guildEarnedExp,
+                                            ShowExperienceForGuild = m_guildEarnedExp > 0,
                                             ShowExperience = true,
                                             ShowExperienceFightDelta = true,
                                             ShowExperienceLevelFloor = true,
@@ -361,7 +373,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
         {
             return new GameFightCharacterInformations(Id,
-                                                      Look,
+                                                      Look.GetEntityLook(),
                                                       GetEntityDispositionInformations(client),
                                                       Team.Id,
                                                       IsAlive(),

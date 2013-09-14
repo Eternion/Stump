@@ -6,27 +6,14 @@ using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
-    public class FightRequest : IRequestBox
+    public class FightRequest : RequestBox
     {
         public FightRequest(Character source, Character target)
+            : base(source, target)
         {
-            Source = source;
-            Target = target;
         }
 
-        public Character Source
-        {
-            get;
-            private set;
-        }
-
-        public Character Target
-        {
-            get;
-            private set;
-        }
-
-        public void Open()
+        protected override void OnOpen()
         {
             ContextRoleplayHandler.
                 SendGameRolePlayPlayerFightFriendlyRequestedMessage(Source.Client, Target, Source, Target);
@@ -34,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 SendGameRolePlayPlayerFightFriendlyRequestedMessage(Target.Client, Source, Source, Target);
         }
 
-        public void Accept()
+        protected override void OnAccept()
         {
             ContextRoleplayHandler.
                 SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Source.Client, Target, Source, Target, true);
@@ -45,30 +32,18 @@ namespace Stump.Server.WorldServer.Game.Fights
             fight.RedTeam.AddFighter(Target.CreateFighter(fight.RedTeam));
 
             fight.StartPlacement();
-
-            Close();
         }
 
-        public void Deny()
+        protected override void OnDeny()
         {
             ContextRoleplayHandler.
                 SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Source.Client, Target, Source, Target, false);
-
-            Close();
         }
 
-        public void Cancel()
+        protected override void OnCancel()
         {
             ContextRoleplayHandler.
                 SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Target.Client, Source, Source, Target, false);
-
-            Close();
-        }
-
-        private void Close()
-        {
-            Source.ResetRequestBox();
-            Target.ResetRequestBox();
         }
     }
 }
