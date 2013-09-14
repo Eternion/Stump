@@ -14,6 +14,7 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
 using Stump.Server.WorldServer.Handlers.Inventory;
@@ -50,22 +51,38 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         }
 
         protected override void Apply()
-        {
+        {                            
+            // check all items are still there
+
+            if (!FirstTrader.Items.All(x =>
+                {
+                    var item = FirstTrader.Character.Inventory.TryGetItem(x.Guid);
+                    
+                    if (item == null || item.Stack < x.Stack)
+                        return false;
+
+                    return true;
+                }))
+            {
+                return;
+            }
+
             FirstTrader.Character.Inventory.SetKamas(
                 (int)( FirstTrader.Character.Inventory.Kamas + ( SecondTrader.Kamas - FirstTrader.Kamas ) ));
+
 
             // trade items
             foreach (var tradeItem in FirstTrader.Items)
             {
                 var item = FirstTrader.Character.Inventory.TryGetItem(tradeItem.Guid);
-
-                FirstTrader.Character.Inventory.RemoveItem(item, tradeItem.Stack);
+                    FirstTrader.Character.Inventory.RemoveItem(item, tradeItem.Stack);
             }
 
             foreach (var tradeItem in SecondTrader.Items)
             {
                 FirstTrader.Character.Inventory.AddItem(tradeItem.Template, tradeItem.Stack);
             }
+
             InventoryHandler.SendInventoryWeightMessage(FirstTrader.Character.Client);
 
         }

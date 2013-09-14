@@ -323,6 +323,7 @@ namespace Stump.Server.WorldServer.Game
                     var merchant = new Merchant(spawn);
                     merchant.LoadRecord();
                     MerchantManager.Instance.ActiveMerchant(merchant);
+                    merchant.Map.Enter(merchant);
                 }
             }
         }

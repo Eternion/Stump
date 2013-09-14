@@ -66,7 +66,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
 
         public void ActiveMerchant(Merchant merchant)
         {
-            merchant.Map.Enter(merchant);
             m_activeMerchants.Add(merchant);
         }
 
