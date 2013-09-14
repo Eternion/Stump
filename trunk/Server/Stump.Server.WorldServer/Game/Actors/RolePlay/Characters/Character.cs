@@ -1718,25 +1718,22 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             foreach (var merchant in MerchantManager.Instance.UnActiveMerchantFromAccount(Client.WorldAccount))
             {
+                merchant.Save();
+
                 if (merchant.Record.CharacterId == Id)
                 {
                     if (merchant.KamasEarned > 0)
                     {
                         Inventory.AddKamas((int) merchant.KamasEarned);
                         m_earnKamasInMerchant = (int) merchant.KamasEarned;
-                        SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 45,
-                                               merchant.KamasEarned);
                     }
                     MerchantBag.LoadMerchantBag(merchant.Bag);
 
                     MerchantManager.Instance.RemoveMerchantSpawn(merchant.Record);
                 }
-                else
-                {
-                    merchant.Save();
-                }
             }
 
+            // if the merchant wasn't active
             var record = MerchantManager.Instance.GetMerchantSpawn(Id);
             if (record != null)
             {

@@ -38,6 +38,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         private readonly List<GuildMember> m_members = new List<GuildMember>();
         private readonly WorldClientCollection m_clients = new WorldClientCollection();
         private bool m_isDirty;
+        private object m_xpLock = new object();
 
         public Guild(int id, string name)
         {
@@ -194,26 +195,32 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public void AddXP(long experience)
         {
-            Experience += experience;
+            lock (m_xpLock)
+            {
+                Experience += experience;
 
-            var level = ExperienceManager.Instance.GetGuildLevel(Experience);
+                var level = ExperienceManager.Instance.GetGuildLevel(Experience);
 
-            if (level == Level) return;
+                if (level == Level) return;
 
-            Level = level;
-            OnLevelChanged();
+                Level = level;
+                OnLevelChanged();
+            }
         }
 
         public void SetXP(long experience)
         {
-            Experience = experience;
+            lock (m_xpLock)
+            {
+                Experience = experience;
 
-            var level = ExperienceManager.Instance.GetGuildLevel(Experience);
+                var level = ExperienceManager.Instance.GetGuildLevel(Experience);
 
-            if (level == Level) return;
+                if (level == Level) return;
 
-            Level = level;
-            OnLevelChanged();
+                Level = level;
+                OnLevelChanged();
+            }
         }
 
         public void SetBoss(GuildMember guildMember)

@@ -940,7 +940,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         public void Leave(int actorId)
         {
             RolePlayActor removedActor;
-            if (m_actorsMap.TryRemove(actorId, out removedActor))
+            if (m_actorsMap.TryRemove(actorId, out removedActor) && m_actors.Remove(removedActor))
             {
                 OnActorLeave(removedActor);
             }
@@ -1065,9 +1065,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (monster != null)
                 monster.FightWith(character);
 
-            /// <summary>
-            /// Auras
-            /// </summary>
             if (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 200)
             {
                 character.PlayEmote(EmotesEnum.EMOTE_BLOODY_AURA);

@@ -153,12 +153,18 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (item == null) 
                 return;
 
+            if (client.Character.IsBusy())
+                return;
+
             client.Character.Inventory.MoveToMerchantBag(item, (uint) message.quantity, (uint) message.price);
         }
 
         [WorldHandler(ExchangeObjectModifyPricedMessage.Id)]
         public static void HandleExchangeObjectModifyPricedMessage(WorldClient client, ExchangeObjectModifyPricedMessage message)
         {
+            if (client.Character.IsBusy())
+                return;
+
             if (message.price <= 0)
                 return;
 

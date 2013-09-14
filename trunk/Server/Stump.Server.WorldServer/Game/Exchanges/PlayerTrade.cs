@@ -1,3 +1,4 @@
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
 using Stump.Server.WorldServer.Game.Items;
@@ -44,6 +45,30 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
         protected override void Apply()
         {
+            if (!FirstTrader.Items.All(x =>
+            {
+                var item = FirstTrader.Character.Inventory.TryGetItem(x.Guid);
+
+                if (item == null || item.Stack < x.Stack)
+                    return false;
+
+                return true;}))
+            {
+                return;
+            }
+
+            if (!SecondTrader.Items.All(x =>
+            {
+                var item = SecondTrader.Character.Inventory.TryGetItem(x.Guid);
+
+                if (item == null || item.Stack < x.Stack)
+                    return false;
+
+                return true;}))
+            {
+                return;
+            }
+
             FirstTrader.Character.Inventory.SetKamas(
                 (int) (FirstTrader.Character.Inventory.Kamas + (SecondTrader.Kamas - FirstTrader.Kamas)));
             SecondTrader.Character.Inventory.SetKamas(
