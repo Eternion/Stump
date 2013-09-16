@@ -778,7 +778,10 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnCharacterAdded(CharacterFighter fighter)
         {
-            Character character = fighter.Character;
+            var character = fighter.Character;
+
+            character.RealLook.RemoveAuras();
+            character.RefreshActor();
 
             Clients.Add(character.Client);
 
@@ -789,7 +792,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 ContextHandler.SendGameFightPlacementPossiblePositionsMessage(character.Client, this, fighter.Team.Id);
             }
 
-            foreach (FightActor fightMember in GetAllFighters())
+            foreach (var fightMember in GetAllFighters())
                 ContextHandler.SendGameFightShowFighterMessage(character.Client, fightMember);
 
             ContextHandler.SendGameEntitiesDispositionMessage(character.Client, GetAllFighters());

@@ -467,7 +467,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             RealLook.SetSkins(skins.ToArray());
 
-
             var petSkin = Inventory.GetPetSkin();
 
             if (petSkin.HasValue && (RealLook.PetLook == null || RealLook.PetLook.BonesID != petSkin))
@@ -1628,23 +1627,22 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         #region Emotes
         public void PlayEmote(EmotesEnum emote)
         {
-            if (emote == EmotesEnum.EMOTE_POWER_AURA)
+            switch (emote)
             {
-                if (RealLook.AuraLook != null && RealLook.AuraLook.BonesID == AURA_1_SKIN)
-                    RealLook.RemoveAuras();
-                else
-                    RealLook.SetAuraSkin(AURA_1_SKIN);
-
-                RefreshActor();
-            }
-            else if (emote == EmotesEnum.EMOTE_BLOODY_AURA)
-            {
-                if (RealLook.AuraLook != null && RealLook.AuraLook.BonesID == AURA_2_SKIN)
-                    RealLook.RemoveAuras();
-                else
-                    RealLook.SetAuraSkin(AURA_2_SKIN);
-                
-                RefreshActor();
+                case EmotesEnum.EMOTE_POWER_AURA:
+                    if (RealLook.AuraLook != null && RealLook.AuraLook.BonesID == AURA_1_SKIN)
+                        RealLook.RemoveAuras();
+                    else
+                        RealLook.SetAuraSkin(AURA_1_SKIN);
+                    RefreshActor();
+                    break;
+                case EmotesEnum.EMOTE_BLOODY_AURA:
+                    if (RealLook.AuraLook != null && RealLook.AuraLook.BonesID == AURA_2_SKIN)
+                        RealLook.RemoveAuras();
+                    else
+                        RealLook.SetAuraSkin(AURA_2_SKIN);
+                    RefreshActor();
+                    break;
             }
 
             ContextRoleplayHandler.SendEmotePlayMessage(Map.Clients, this, emote);
