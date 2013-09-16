@@ -29,8 +29,7 @@ namespace ArkalysPlugin.Npcs
 
         public static NpcMessage Message;
 
-        private static ItemTemplate m_orbeTemplate;
-        private static bool m_scriptDisabled = false;
+        private static bool m_scriptDisabled;
 
         [Initialization(typeof (NpcManager), Silent = true)]
         public static void Initialize()
@@ -51,11 +50,11 @@ namespace ArkalysPlugin.Npcs
 
             Message = NpcManager.Instance.GetNpcMessage(MessageId);
 
-            if (Message == null)
-            {
-                logger.Error("Message {0} not found, script is disabled", MessageId);
-                m_scriptDisabled = true;
-            }
+            if (Message != null)
+                return;
+
+            logger.Error("Message {0} not found, script is disabled", MessageId);
+            m_scriptDisabled = true;
         }
 
         [Initialization(typeof (OrbsManager), Silent = true)]
@@ -94,7 +93,7 @@ namespace ArkalysPlugin.Npcs
 
     public class NpcRestatDialog : NpcDialog
     {
-        private uint m_requieredOrbs;
+        private readonly uint m_requieredOrbs;
         public NpcRestatDialog(Character character, Npc npc)
             : base(character, npc)
         {

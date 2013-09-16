@@ -189,10 +189,10 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
         public static DlmMap ReadFromStream(IDataReader givenReader, DlmReader dlmReader)
         {
             var reader = givenReader;
-            var map = new DlmMap();
-
-            map.Version = reader.ReadByte();
-            map.Id = reader.ReadInt();
+            var map = new DlmMap {
+                Version = reader.ReadByte(),
+                Id = reader.ReadInt()
+            };
 
             if (map.Version >= 7)
             {
