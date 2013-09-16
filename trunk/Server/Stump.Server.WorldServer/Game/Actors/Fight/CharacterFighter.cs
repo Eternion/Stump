@@ -45,14 +45,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             Character = character;
             Look = Character.Look.Clone();
+            Look.RemoveAuras();
 
             Cell cell;
-            if (Fight.FindRandomFreeCell(this, out cell, false))
-            {
-                Position = new ObjectPosition(character.Map, cell, character.Direction);
+            if (!Fight.FindRandomFreeCell(this, out cell, false))
+                return;
 
-                InitializeCharacterFighter();
-            }
+            Position = new ObjectPosition(character.Map, cell, character.Direction);
+
+            InitializeCharacterFighter();
         }
 
         public Character Character

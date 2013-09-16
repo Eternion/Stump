@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
     public class MerchantManager : DataManager<MerchantManager>, ISaveable
     {
         private Dictionary<int, MerchantSpawn> m_merchantSpawns;
-        private List<Merchant> m_activeMerchants = new List<Merchant>();
+        private readonly List<Merchant> m_activeMerchants = new List<Merchant>();
 
 
         [Initialization(InitializationPass.Sixth)]
