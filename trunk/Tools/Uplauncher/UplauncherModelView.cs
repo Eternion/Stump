@@ -23,11 +23,8 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Input;
 using System.Windows.Media;
-using Stump.Core.IO;
 using Stump.Core.Xml;
 using Uplauncher.Helpers;
 using Uplauncher.Patcher;
@@ -39,12 +36,8 @@ namespace Uplauncher
 {
     public class UplauncherModelView : INotifyPropertyChanged
     {
-        private string m_username;
-        private string m_password;
-        private bool m_validCrendentials;
-
         private WebClient m_client = new WebClient();
-        private SoundProxy m_soundProxy = new SoundProxy();
+        private readonly SoundProxy m_soundProxy = new SoundProxy();
         private UpdateMeta m_meta;
         private UpdateEntry m_currentUpdate;
         private Stack<PatchTask> m_currentTasks;
@@ -53,22 +46,23 @@ namespace Uplauncher
         private DateTime? m_lastUpdateCheck;
         private static readonly Color DefaultMessageColor = Colors.Black;
 
-        private int? RegConnectionPort;
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public UplauncherModelView()
         {
 
-            NotifyIcon = new NotifyIcon();
-            NotifyIcon.Visible = true;
-            NotifyIcon.Icon = Resources.dofus_icon_48;
-            NotifyIcon.ContextMenu = new ContextMenu(new []
+            NotifyIcon = new NotifyIcon
                 {
-                    new MenuItem("Voter", OnTrayClickVote),
-                    new MenuItem("Ouvrir", OnTrayClickShow),
-                    new MenuItem("Quitter", OnTrayClickExit)
-                });
+                    Visible = true,
+                    Icon = Resources.dofus_icon_48,
+                    ContextMenu = new ContextMenu(new[]
+                        {
+                            new MenuItem("Voter", OnTrayClickVote),
+                            new MenuItem("Ouvrir", OnTrayClickShow),
+                            new MenuItem("Quitter", OnTrayClickExit)
+                        })
+                };
+
             NotifyIcon.DoubleClick += OnTrayDoubleClick;
 
             Task.Factory.StartNew(CheckVoteTiming);
@@ -114,8 +108,8 @@ namespace Uplauncher
             if (m_soundProxy.Started && (m_regProcess == null || m_regProcess.HasExited))
                 StartRegApp();
 
-            var process = new Process()
-            {
+            var process = new Process
+                {
                 StartInfo = new ProcessStartInfo(Constants.DofusExePath, m_soundProxy.Started ? "--reg-client-port=" + m_soundProxy.ClientPort : string.Empty),
             };
 
@@ -138,8 +132,8 @@ namespace Uplauncher
                 return;
             }
 
-            m_regProcess = new Process()
-            {
+            m_regProcess = new Process
+                {
                 StartInfo = new ProcessStartInfo(Constants.DofusRegExePath, "--reg-engine-port=" + m_soundProxy.RegPort),
             };
 
@@ -272,7 +266,7 @@ namespace Uplauncher
             View.Show();
         }
 
-        private void OnTrayClickExit(object sender, EventArgs eventArgs)
+        private static void OnTrayClickExit(object sender, EventArgs eventArgs)
         {
             System.Windows.Application.Current.Shutdown();
         }
@@ -307,10 +301,7 @@ namespace Uplauncher
             if (File.Exists(Constants.LocalVersionFile))
             {
                 int version;
-                if (int.TryParse(File.ReadAllText(Constants.LocalVersionFile), out version))
-                    CurrentVersion = version;
-                else
-                    CurrentVersion = 0;
+                CurrentVersion = int.TryParse(File.ReadAllText(Constants.LocalVersionFile), out version) ? version : 0;
             }
             else
                 CurrentVersion = 0;
@@ -332,7 +323,7 @@ namespace Uplauncher
                 return;
             }
 
-            Debug.WriteLine(string.Format("Remote Version file : {0}", e.Result));
+            Debug.WriteLine("Remote Version file : {0}", e.Result);
             m_client.DownloadStringCompleted -= OnMetaFileDownloaded;
 
             try
@@ -372,7 +363,7 @@ namespace Uplauncher
             }
         }
 
-        private IEnumerable<UpdateEntry> GeneratePatchSequenceExecution(ICollection<UpdateEntry> entries, int forRevision, int toRevision, bool reverse = true)
+        private static IEnumerable<UpdateEntry> GeneratePatchSequenceExecution(ICollection<UpdateEntry> entries, int forRevision, int toRevision, bool reverse = true)
         {
             if (!entries.Any())
                 return Enumerable.Empty<UpdateEntry>();
@@ -386,8 +377,8 @@ namespace Uplauncher
                     file.ToVersion == toRevision)
                     return new[] { file };
 
-                var patchs = new List<UpdateEntry>()
-                {
+                var patchs = new List<UpdateEntry>
+                    {
                     file
                 };
 
@@ -470,7 +461,7 @@ namespace Uplauncher
             var task = m_currentTasks.Pop();
 
             CheckIfReplaceExe(task);
-            task.Applied += (x) => ProcessTask();
+            task.Applied += x => ProcessTask();
             task.Apply(this);
         }
 

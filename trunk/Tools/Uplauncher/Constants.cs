@@ -21,7 +21,7 @@ namespace Uplauncher
     public class Constants
     {
         public const string SiteURL = "http://arkalys.com/";
-        public const string UpdateSiteURL = "http://arkalys.alwaysdata.net/patchs/";
+        public const string UpdateSiteURL = "http://patchs.arkalys.com/";
         public static readonly Uri RSSNewsURL = new Uri("http://arkalys.com/misc/rss");
         public const string VoteURL = "http://www.rpg-paradize.com/?page=vote&vote=35907";
 

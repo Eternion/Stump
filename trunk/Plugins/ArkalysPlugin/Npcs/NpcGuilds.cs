@@ -20,7 +20,7 @@ namespace ArkalysPlugin.Npcs
         public static int NpcId = 3001;
         //Tu as l'âme d'un meneur? Tu pense pouvoir mener des guerriers dans la bataille? Alors créer une guilde !
         [Variable]
-        public static int MessageId = 20003;
+        public static int MessageId = 20007;
         //Je créer ma guilde !
         [Variable]
         public static short ReplyGuildSuccessId = 20010;
