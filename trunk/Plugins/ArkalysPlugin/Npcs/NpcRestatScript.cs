@@ -19,6 +19,8 @@ namespace ArkalysPlugin.Npcs
         [Variable] public static double OrbFactor = 5;
 
         [Variable] public static int NpcId = 3000;
+        //Approche jeune aventurier, je sais que tu as fait de mauvais choix, et je peux t’aider à tout oublier … contre suffisamment d’orbes bien entendu. 
+        //Donnes moi #1 orbes et tu auras une autre chance de choisir ta voie 
         [Variable] public static int MessageId = 20003;
         [Variable]
         public static short ReplyRestatId = 20010;

@@ -54,7 +54,7 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             OnItemMoved(item, lastPosition);
 
-            ItemMovedEventHandler handler = ItemMoved;
+            var handler = ItemMoved;
             if (handler != null) handler(this, item, lastPosition);
         }
 
@@ -144,7 +144,7 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             get
             {
-                int weight = Items.Values.Sum(entry => entry.Weight);
+                var weight = Items.Values.Sum(entry => entry.Weight);
 
                 if (Tokens != null)
                 {
@@ -204,7 +204,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
             if (TokenTemplate != null && ActiveTokens && Owner.Account.Tokens > 0)
             {
-                Tokens = ItemManager.Instance.CreatePlayerItem(Owner, TokenTemplate, (uint)Owner.Account.Tokens);
+                Tokens = ItemManager.Instance.CreatePlayerItem(Owner, TokenTemplate, Owner.Account.Tokens);
                 Items.Add(Tokens.Guid, Tokens); // cannot stack
             }
         }
@@ -247,11 +247,12 @@ namespace Stump.Server.WorldServer.Game.Items
                 }
 
                 // update tokens amount
-                if (Tokens == null && Owner.Account.Tokens > 0 || (Tokens != null && Owner.Account.Tokens != Tokens.Stack))
-                {
-                    Owner.Account.Tokens = Tokens == null ? 0 : Tokens.Stack;
-                    IPCAccessor.Instance.Send(new UpdateAccountMessage(Owner.Account));;
-                }
+                if ((Tokens != null || Owner.Account.Tokens <= 0) &&
+                    (Tokens == null || Owner.Account.Tokens == Tokens.Stack))
+                    return;
+
+                Owner.Account.Tokens = Tokens == null ? 0 : Tokens.Stack;
+                IPCAccessor.Instance.Send(new UpdateAccountMessage(Owner.Account));
             }
         }
 
@@ -323,10 +324,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public CharacterInventoryPositionEnum[] GetItemPossiblePositions(PlayerItem item)
         {
-            if (!m_itemsPositioningRules.ContainsKey(item.Template.Type.SuperType))
-                return new[] { CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED };
-
-            return m_itemsPositioningRules[item.Template.Type.SuperType];
+            return !m_itemsPositioningRules.ContainsKey(item.Template.Type.SuperType) ? new[] { CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED } : m_itemsPositioningRules[item.Template.Type.SuperType];
         }
 
         public void MoveItem(PlayerItem item, CharacterInventoryPositionEnum position)
@@ -340,7 +338,7 @@ namespace Stump.Server.WorldServer.Game.Items
             if (position == item.Position)
                 return;
 
-            CharacterInventoryPositionEnum oldPosition = item.Position;
+            var oldPosition = item.Position;
 
             PlayerItem equipedItem;
             if (position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED &&
@@ -360,7 +358,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
             if (item.Stack > 1) // if the item to move is stack we cut it
             {
-                CutItem(item, (uint)( item.Stack - 1 ));
+                CutItem(item, item.Stack - 1);
                 // now we have 2 stack : itemToMove, stack = 1
                 //						 newitem, stack = itemToMove.Stack - 1
             }
@@ -628,8 +626,8 @@ namespace Stump.Server.WorldServer.Game.Items
             m_itemsByPosition[lastPosition].Remove(item);
             m_itemsByPosition[item.Position].Add(item);
 
-            bool wasEquiped = lastPosition != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED;
-            bool isEquiped = item.IsEquiped();
+            var wasEquiped = lastPosition != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED;
+            var isEquiped = item.IsEquiped();
 
             if (wasEquiped && !isEquiped ||
                 !wasEquiped && isEquiped)
@@ -662,6 +660,7 @@ namespace Stump.Server.WorldServer.Game.Items
             if ((isEquiped || wasEquiped) && item.Template.AppearanceId != 0)
                 Owner.UpdateLook();
 
+            Owner.RefreshActor();
             Owner.RefreshStats();
         }
 
