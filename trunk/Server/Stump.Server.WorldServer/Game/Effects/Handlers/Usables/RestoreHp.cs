@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             // x hp restored
             Target.RefreshStats();
             BasicHandler.SendTextInformationMessage(Target.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 1, heal);
-            Target.PlayEmote(EmotesEnum.EMOTE_EAT);
+            Target.PlayEmote(EmotesEnum.EMOTE_MANGER);
 
             return true;
         }

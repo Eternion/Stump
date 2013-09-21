@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             m_skins = skins.ToList();
             m_colors = indexedColors;
             m_scales = scales.ToList();
-
+            m_subLooks = subLooks.ToList();
         }
 
         public short BonesID

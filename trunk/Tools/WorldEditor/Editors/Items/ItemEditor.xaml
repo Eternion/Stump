@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Icon="pack://application:,,,/Images/Hammer_Builder_32xLG.png"
         d:DataContext="{d:DesignInstance Type=items:ItemEditorModelView}"
-        Title="{Binding Item.Name, StringFormat={}Editing \'{0}\'}" Grid.IsSharedSizeScope="True" Height="530" Width="760">
+        Title="{Binding Item.Name, StringFormat={}Editing \'{0}\'}" Grid.IsSharedSizeScope="True" Height="670" Width="760">
     <Window.Resources>
         <helpers:BindingProxy Data="{Binding}" x:Key="ModelViewProxy"/>
         <converters:IdToIconConverter x:Key="IdToIcon"/>
