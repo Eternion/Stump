@@ -12,6 +12,7 @@ using Stump.Core.Attributes;
 using Stump.Core.Mathematics;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2i;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;

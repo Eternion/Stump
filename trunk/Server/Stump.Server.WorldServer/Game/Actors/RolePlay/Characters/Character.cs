@@ -4,6 +4,7 @@ using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Linq;
 using NLog;
+using Stump.Core.Exceptions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Commands;
@@ -1627,25 +1628,47 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         #region Emotes
         public void PlayEmote(EmotesEnum emote)
         {
-            switch (emote)
+            var auraSkin = GetAuraSkin(emote);
+
+            if (auraSkin != -1)
             {
-                case EmotesEnum.EMOTE_POWER_AURA:
-                    if (RealLook.AuraLook != null && RealLook.AuraLook.BonesID == AURA_1_SKIN)
-                        RealLook.RemoveAuras();
-                    else
-                        RealLook.SetAuraSkin(AURA_1_SKIN);
-                    RefreshActor();
-                    break;
-                case EmotesEnum.EMOTE_BLOODY_AURA:
-                    if (RealLook.AuraLook != null && RealLook.AuraLook.BonesID == AURA_2_SKIN)
-                        RealLook.RemoveAuras();
-                    else
-                        RealLook.SetAuraSkin(AURA_2_SKIN);
-                    RefreshActor();
-                    break;
+                if (RealLook.AuraLook != null && RealLook.AuraLook.BonesID == auraSkin)
+                    RealLook.RemoveAuras();
+                else
+                    RealLook.SetAuraSkin(auraSkin);
+                RefreshActor();
             }
 
             ContextRoleplayHandler.SendEmotePlayMessage(Map.Clients, this, emote);
+        }
+
+        public short GetAuraSkin(EmotesEnum auraEmote)
+        {
+            switch (auraEmote)
+            {
+                case EmotesEnum.EMOTE_AURA_VAMPYRIQUE:
+                    return AURA_1_SKIN;
+                case EmotesEnum.EMOTE_AURA_DE_PUISSANCE:
+                    return AURA_2_SKIN;
+                default:
+                    return -1;
+            }
+        }
+
+        public void ToggleAura(EmotesEnum emote, bool toggle)
+        {
+            var auraSkin = GetAuraSkin(emote);
+
+            if (auraSkin == -1)
+                return;
+
+            bool hasAura = (RealLook.AuraLook == null || RealLook.AuraLook.BonesID != GetAuraSkin(emote));
+
+            if (!hasAura && toggle)
+                PlayEmote(emote);
+
+            else if (hasAura && !toggle)
+                PlayEmote(emote);
         }
 
         #endregion

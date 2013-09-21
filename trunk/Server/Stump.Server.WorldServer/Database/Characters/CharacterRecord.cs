@@ -549,7 +549,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             set
             {
                 m_entityLook = value;
-                EntityLookString = value != null ? value.ToString() : string.Empty;
+                m_entityLookString = value != null ? value.ToString() : string.Empty;
             }
         }
 
@@ -560,7 +560,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             set
             {
                 m_customEntityLook = value;
-                CustomEntityLookString = value != null ? value.ToString() : string.Empty;
+                m_customEntityLookString = value != null ? value.ToString() : string.Empty;
             }
         }
         #region Zaaps

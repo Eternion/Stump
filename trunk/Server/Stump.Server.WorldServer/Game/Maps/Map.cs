@@ -1057,6 +1057,9 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             var character = actor as Character;
 
+            if (character == null)
+                return;
+
             if (ExecuteTrigger(CellTriggerType.END_MOVE_ON, actor.Cell, character))
                 return;
 
@@ -1067,11 +1070,11 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             if (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 200)
             {
-                character.PlayEmote(EmotesEnum.EMOTE_BLOODY_AURA);
+                character.ToggleAura(EmotesEnum.EMOTE_AURA_VAMPYRIQUE, true);
             }
             else if (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 100)
             {
-                character.PlayEmote(EmotesEnum.EMOTE_POWER_AURA);
+                character.ToggleAura(EmotesEnum.EMOTE_AURA_DE_PUISSANCE, true);
             }
         }
 
