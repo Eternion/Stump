@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Linq;
 using NLog;
 using Stump.Core.Exceptions;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Objects;
@@ -43,6 +45,7 @@ using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Handlers.Guilds;
 using Stump.Server.WorldServer.Handlers.Moderation;
+using Stump.Server.WorldServer.Handlers.Titles;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
@@ -366,6 +369,131 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public bool IsTradingWithPlayer()
         {
             return PlayerTrade != null;
+        }
+
+        #endregion
+
+        #region Titles & Ornaments
+
+        public ReadOnlyCollection<short> Titles
+        {
+            get { return Record.Titles.AsReadOnly(); }
+        }
+
+        public ReadOnlyCollection<short> Ornaments
+        {
+            get
+            {
+                return Record.Ornaments.AsReadOnly();
+            }
+        }
+
+
+        public short? SelectedTitle
+        {
+            get { return Record.TitleId; }
+            private set { Record.TitleId = value; }
+        }
+
+        public bool HasTitle(short title)
+        {
+            return Record.Titles.Contains(title);
+        }
+
+        public void AddTitle(short title)
+        {
+            if (!HasTitle(title))
+            {
+                Record.Titles.Add(title);
+                TitleHandler.SendTitleGainedMessage(Client, title);
+            }
+        }
+
+        public bool RemoveTitle(short title)
+        {
+            var result = Record.Titles.Remove(title);
+
+            if (result)
+                TitleHandler.SendTitleLostMessage(Client, title);
+
+            return result;
+        }
+
+        public bool SelectTitle(short title)
+        {
+            if (!HasTitle(title))
+                return false;
+
+            SelectedTitle = title;
+            TitleHandler.SendTitleSelectedMessage(Client, title);
+            RefreshActor();
+            return true;
+        }
+
+        public void ResetTitle()
+        {
+            SelectedTitle = null;
+            TitleHandler.SendTitleSelectedMessage(Client, 0);
+            RefreshActor();
+        }
+
+        public short? SelectedOrnament
+        {
+            get
+            {
+                return Record.Ornament;
+            }
+            private set
+            {
+                Record.Ornament = value;
+            }
+        }
+
+        public bool HasOrnament(short ornament)
+        {
+            return Record.Ornaments.Contains(ornament);
+        }
+
+        public void AddOrnament(short ornament)
+        {
+            if (!HasOrnament(ornament))
+                Record.Ornaments.Add(ornament);
+
+            TitleHandler.SendOrnamentGainedMessage(Client, ornament);
+        }
+
+        public bool RemoveOrnament(short ornament)
+        {
+            var result = Record.Ornaments.Remove(ornament);
+
+            if (result)
+                TitleHandler.SendTitlesAndOrnamentsListMessage(Client, this);
+            
+            return result;
+        }
+
+        public void RemoveAllOrnament()
+        {
+            Record.Ornaments.Clear();
+            TitleHandler.SendTitlesAndOrnamentsListMessage(Client, this);
+        }
+
+        public bool SelectOrnament(short ornament)
+        {
+            if (!HasOrnament(ornament))
+                return false;
+
+            SelectedOrnament = ornament;
+            TitleHandler.SendOrnamentSelectedMessage(Client, ornament);
+            RefreshActor();
+            return true;
+        }
+
+        public void ResetOrnament()
+        {
+            SelectedOrnament = null;
+            TitleHandler.SendOrnamentSelectedMessage(Client, 0);
+            RefreshActor();
         }
 
         #endregion
@@ -2126,6 +2254,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (Guild != null)
                 options.Add(new HumanOptionGuild(Guild.GetGuildInformations()));
+
+            if (SelectedTitle != null)
+                options.Add(new HumanOptionTitle(SelectedTitle.Value, string.Empty));
+
+            if (SelectedOrnament != null)
+                options.Add(new HumanOptionOrnament(SelectedOrnament.Value));
 
             human.options = options;
             return human;

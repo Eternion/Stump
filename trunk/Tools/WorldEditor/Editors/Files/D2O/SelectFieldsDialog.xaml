@@ -1,0 +1,19 @@
+﻿<Window x:Class="WorldEditor.Editors.Files.D2O.SelectFieldsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:system="clr-namespace:System;assembly=mscorlib"
+        Title="Select the fields to convert" Height="300" Width="300"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <DockPanel>
+        <UniformGrid DockPanel.Dock="Bottom" Rows="1">
+            <Button Content="OK" Margin="3" IsDefault="True" Click="OKClick"/>
+            <Button Content="Cancel" Margin="3" IsCancel="True" Click="CancelClick"/>
+        </UniformGrid>
+        <ItemsControl ItemsSource="{Binding FieldsSource}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="system:String">
+                    <CheckBox Content="{Binding}" Checked="OnChecked"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </DockPanel>
+</Window>

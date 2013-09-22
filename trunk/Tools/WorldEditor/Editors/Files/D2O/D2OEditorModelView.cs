@@ -21,6 +21,9 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -28,6 +31,12 @@ using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using WorldEditor.Helpers;
+using WorldEditor.Helpers.Converters;
+using Binding = System.Windows.Data.Binding;
+using CheckBox = System.Windows.Controls.CheckBox;
+using DataGrid = System.Windows.Controls.DataGrid;
+using HorizontalAlignment = System.Windows.HorizontalAlignment;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace WorldEditor.Editors.Files.D2O
 {
@@ -43,6 +52,7 @@ namespace WorldEditor.Editors.Files.D2O
         private D2OReader m_reader;
         private Type[] m_distinctTypes;
         private Stack<D2OEditedObject> m_editedObjects = new Stack<D2OEditedObject>();
+        private List<DataGridColumn> m_columns = new List<DataGridColumn>(); 
 
         public D2OEditorModelView(D2OEditor editor, string filePath)
         {
@@ -62,6 +72,11 @@ namespace WorldEditor.Editors.Files.D2O
             }
         }
 
+        public ReadOnlyCollection<DataGridColumn> Columns
+        {
+            get { return m_columns.AsReadOnly(); }
+        }
+
         private void Open()
         {
             m_reader = new D2OReader(m_filePath);
@@ -73,9 +88,14 @@ namespace WorldEditor.Editors.Files.D2O
             m_distinctTypes = m_rows.Select(x => x.GetType()).Distinct().ToArray();
 
             var properties = m_distinctTypes.SelectMany(x => x.GetProperties()).Distinct();
+            var d2oProperties = m_reader.Classes.SelectMany(x => x.Value.Fields.Values).Distinct();
 
             foreach (var property in properties)
             {
+                var d2oProperty =
+                    d2oProperties.FirstOrDefault(
+                        x => x.Name.Equals(property.Name, StringComparison.InvariantCultureIgnoreCase));
+
                 if (m_searchProperties.Contains(property.Name))
                     continue;
 
@@ -85,6 +105,46 @@ namespace WorldEditor.Editors.Files.D2O
                 var del = (Func<object, object>)property.GetGetMethod().CreateFuncDelegate(typeof(object));
                 m_searchProperties.Add(property.Name);
                 m_propertiesGetters.Add(property.Name, del);
+
+                var binding = new System.Windows.Data.Binding(property.Name);
+
+                var column = new DataGridTemplateColumn();
+                FrameworkElementFactory element;
+                if (property.PropertyType == typeof(bool))
+                {
+                    element = new FrameworkElementFactory(typeof(CheckBox));
+                    element.SetBinding(ToggleButton.IsCheckedProperty, binding);
+                    element.SetValue(CheckBox.MarginProperty, new Thickness(1));
+                    element.SetValue(CheckBox.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+                    element.SetValue(CheckBox.IsEnabledProperty, false);
+                }
+                else
+                {
+                    element = new FrameworkElementFactory(typeof(TextBlock));
+
+                    if (d2oProperty != null && d2oProperty.TypeId == D2OFieldType.I18N)
+                    {
+                        binding.Converter = new IdToI18NTextConverter();
+                        column.Width = 120;
+                    }
+
+                    element.SetBinding(TextBlock.TextProperty, binding);
+                    element.SetValue(TextBlock.MarginProperty, new Thickness(1));
+                }
+                column.CellTemplateSelector = new CellTemplateSelector()
+                {
+                    Template = new DataTemplate(property.PropertyType)
+                    {
+                        VisualTree = element
+                    },
+                    DefaultTemplate = new DataTemplate(),
+                    ExpectedType = property.ReflectedType,
+                };
+
+                column.Header = property.Name;
+
+                m_columns.Add(column);
+                m_editor.ObjectsGrid.Columns.Add(column);
             }
 
             NewObjectTypes.AddRange(m_distinctTypes.Where(x => x.GetConstructor(Type.EmptyTypes) != null));
@@ -511,6 +571,30 @@ namespace WorldEditor.Editors.Files.D2O
             {
                 MessageService.ShowMessage(m_editor, "Not found");
             }
+        }
+
+        #endregion
+
+
+        #region ReplaceIdToTextCommand
+
+        private DelegateCommand m_replaceIdToTextCommand;
+
+        public DelegateCommand ReplaceIdToTextCommand
+        {
+            get { return m_replaceIdToTextCommand ?? (m_replaceIdToTextCommand = new DelegateCommand(OnReplaceIdToText, CanReplaceIdToText)); }
+        }
+
+        private bool CanReplaceIdToText(object parameter)
+        {
+            return true;
+        }
+
+        private void OnReplaceIdToText(object parameter)
+        {
+            var dialog = new SelectFieldsDialog();
+            var properties = m_distinctTypes.SelectMany(x => x.GetProperties()).Distinct();
+            //dialog.FieldsSource = m_reader.Classes.Values.SelectMany(x => x.Fields).Where(x => x.Value
         }
 
         #endregion
