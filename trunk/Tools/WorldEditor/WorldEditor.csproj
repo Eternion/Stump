@@ -93,6 +93,10 @@
     <Compile Include="Config\LoaderSettings.cs" />
     <Compile Include="Config\PathExistsRule.cs" />
     <Compile Include="Database\DatabaseManager.cs" />
+    <Compile Include="Editors\Files\D2O\CellTemplateSelector.cs" />
+    <Compile Include="Editors\Files\D2O\SelectFieldsDialog.xaml.cs">
+      <DependentUpon>SelectFieldsDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Editors\Items\EffectEditorDialog.xaml.cs">
       <DependentUpon>EffectEditorDialog.xaml</DependentUpon>
     </Compile>
@@ -182,6 +186,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Editors\Files\D2O\EditorDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Editors\Files\D2O\SelectFieldsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

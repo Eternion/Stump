@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
@@ -112,7 +114,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        public long TitleId
+        public short? TitleId
         {
             get;
             set;
@@ -122,6 +124,68 @@ namespace Stump.Server.WorldServer.Database.Characters
         {
             get;
             set;
+        }
+
+        [Ignore]
+        public List<short> Titles
+        {
+            get
+            {
+                return m_titles;
+            }
+            set
+            {
+                m_titles = value;
+                m_titlesCSV = m_titles.ToCSV(",");
+            }
+        }
+
+        [NullString]
+        public string TitlesCSV
+        {
+            get
+            {
+                return m_titlesCSV;
+            }
+            set
+            {
+                m_titlesCSV = value;
+                m_titles = !string.IsNullOrEmpty(m_titlesCSV) ? m_titlesCSV.FromCSV<short>(",").ToList() : new List<short>();
+            }
+        }
+
+        public short? Ornament
+        {
+            get;
+            set;
+        }
+
+        [Ignore]
+        public List<short> Ornaments
+        {
+            get
+            {
+                return m_ornaments;
+            }
+            set
+            {
+                m_ornaments = value;
+                m_ornamentsCSV = m_ornaments.ToCSV(",");
+            }
+        }
+
+        [NullString]
+        public string OrnamentsCSV
+        {
+            get
+            {
+                return m_ornamentsCSV;
+            }
+            set
+            {
+                m_ornamentsCSV = value;
+                m_ornaments = !string.IsNullOrEmpty(m_ornamentsCSV) ? m_ornamentsCSV.FromCSV<short>(",").ToList() : new List<short>();
+            }
         }
 
         public bool HasRecolor
@@ -569,6 +633,10 @@ namespace Stump.Server.WorldServer.Database.Characters
         private string m_customLookAsString;
         private List<Map> m_knownZaaps = new List<Map>();
         private Map m_spawnMap;
+        private List<short> m_titles = new List<short>();
+        private string m_titlesCSV;
+        private List<short> m_ornaments = new List<short>();
+        private string m_ornamentsCSV;
 
         [Ignore]
         public List<Map> KnownZaaps

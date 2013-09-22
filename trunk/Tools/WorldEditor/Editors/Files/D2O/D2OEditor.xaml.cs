@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses;
@@ -17,7 +18,6 @@ namespace WorldEditor.Editors.Files.D2O
     /// </summary>
     public partial class D2OEditor : Window
     {
-        private List<string> m_columnsName = new List<string>(); 
         private Dictionary<Type, List<Type>> m_subTypes = new Dictionary<Type, List<Type>>();
 
         public D2OEditor(string filename)
@@ -26,7 +26,6 @@ namespace WorldEditor.Editors.Files.D2O
             ModelView = new D2OEditorModelView(this, filename);
             DataContext = ModelView;
             FindSubClasses();
-            CreateColumns();
         }
 
         public D2OEditorModelView ModelView
@@ -52,42 +51,6 @@ namespace WorldEditor.Editors.Files.D2O
                         m_subTypes.Add(baseType, new List<Type>());
 
                     m_subTypes[baseType].Add(type);
-                }
-            }
-        }
-
-        private void CreateColumns()
-        {
-            var types = ModelView.Rows.Select(x => x.GetType()).Distinct();
-
-            foreach (var type in types)
-            {
-                foreach (var property in type.GetProperties())
-                {
-                    var name = property.Name;
-
-                    if (m_columnsName.Contains(name))
-                        continue;
-
-                    var binding = new Binding(name);
-
-                    DataGridColumn column;
-
-                    if (property.PropertyType == typeof(bool))
-                        column = new DataGridCheckBoxColumn()
-                        {
-                            Binding = binding
-                        };
-                    else
-                        column = new DataGridTextColumn()
-                        {
-                            Binding = binding
-                        };
-
-                    column.Header = name;
-
-                    ObjectsGrid.Columns.Add(column);
-                    m_columnsName.Add(name);
                 }
             }
         }
@@ -205,7 +168,7 @@ namespace WorldEditor.Editors.Files.D2O
                         Source = propertyItem,
                         Mode = BindingMode.OneWay
                     };
-
+                    
                     BindingOperations.SetBinding(editor, DoublePrimitiveCollectionEditor.ItemsSourceProperty, binding);
                     dialog.ShowDialog();
                 }

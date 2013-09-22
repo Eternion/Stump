@@ -148,6 +148,7 @@
     <Compile Include="Commands\Commands\SaveCommand.cs" />
     <Compile Include="Commands\Commands\SpellsCommands.cs" />
     <Compile Include="Commands\Commands\TeleportCommand.cs" />
+    <Compile Include="Commands\Commands\TitleCommands.cs" />
     <Compile Include="Commands\Commands\WhoCommand.cs" />
     <Compile Include="Commands\ParametersConverter.cs" />
     <Compile Include="Commands\Trigger\GameTrigger.cs" />
@@ -206,6 +207,9 @@
     <Compile Include="Database\Npcs\Replies\DeleteItemReply.cs" />
     <Compile Include="Database\PrimaryKeyIdProvider.cs" />
     <Compile Include="Database\Spells\ISpellRecord.cs" />
+    <Compile Include="Database\Tinsel\OrnamentRecord.cs" />
+    <Compile Include="Database\Tinsel\TinselManager.cs" />
+    <Compile Include="Database\Tinsel\TitleRecord.cs" />
     <Compile Include="Database\World\Maps\MapElement.cs" />
     <Compile Include="Database\World\Triggers\CellTriggerRecord.cs" />
     <Compile Include="Database\World\WorldMapMerchant.cs" />
@@ -357,6 +361,7 @@
     <Compile Include="Handlers\Prism\PrismHandler.cs" />
     <Compile Include="Handlers\PvP\PvPHandler.cs" />
     <Compile Include="Handlers\Startup\StartupHandler.cs" />
+    <Compile Include="Handlers\Titles\TitleHandler.cs" />
     <Compile Include="Rates.cs" />
     <Compile Include="Database\Accounts\WorldAccount.cs" />
     <Compile Include="Database\Breeds\Breed.cs" />
