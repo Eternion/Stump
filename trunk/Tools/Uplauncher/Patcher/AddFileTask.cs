@@ -59,10 +59,10 @@ namespace Uplauncher.Patcher
                 uplauncher.SetState(string.Format("Check if {0} already exists ...", RelativeURL));
 
                 var md5 = Cryptography.GetFileMD5HashBase64("./" + LocalURL);
-                var remoteMD5 = NetExtensions.RequestMD5(Constants.UpdateSiteURL + RelativeURL);
+                var remoteMd5 = NetExtensions.RequestMD5(Constants.UpdateSiteURL + RelativeURL);
 
-                Debug.WriteLine(string.Format("File {0} already exists  MD5:{1} RemoteMD5:{2} ...", LocalURL, md5, remoteMD5));
-                if (md5 == remoteMD5)
+                Debug.WriteLine("File {0} already exists  MD5:{1} RemoteMD5:{2} ...", LocalURL, md5, remoteMd5);
+                if (md5 == remoteMd5)
                 {
                     OnApplied();
                     return;
@@ -70,7 +70,7 @@ namespace Uplauncher.Patcher
             }
 
             uplauncher.SetState(string.Format("Download {0} ...", RelativeURL));
-            Debug.WriteLine(string.Format("Download {0} ...", RelativeURL));
+            Debug.WriteLine("Download {0} ...", RelativeURL);
             uplauncher.WebClient.DownloadFileCompleted += OnFileDownloaded;
             uplauncher.WebClient.DownloadFileAsync(new Uri(Constants.UpdateSiteURL + RelativeURL), "./" + LocalURL, LocalURL);
         }

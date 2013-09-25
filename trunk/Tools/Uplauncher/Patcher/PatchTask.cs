@@ -31,7 +31,7 @@ namespace Uplauncher.Patcher
 
         protected void OnApplied()
         {
-            Action<PatchTask> handler = Applied;
+            var handler = Applied;
             if (handler != null) handler(this);
         }
     }

@@ -16,6 +16,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Uplauncher.Helpers
@@ -57,23 +58,17 @@ namespace Uplauncher.Helpers
 
             if (arrProcesses.Length > 1)
             {
-                for (var i = 0; i < arrProcesses.Length; i++)
+                foreach (var hWnd in from t in arrProcesses where t.Id != me.Id select t.MainWindowHandle)
                 {
-                    if (arrProcesses[i].Id != me.Id)
+                    // if iconic, we need to restore the window
+                    if (IsIconic(hWnd))
                     {
-                        // get the window handle
-                        IntPtr hWnd = arrProcesses[i].MainWindowHandle;
-
-                        // if iconic, we need to restore the window
-                        if (IsIconic(hWnd))
-                        {
-                            ShowWindowAsync(hWnd, swRestore);
-                        }
-
-                        // bring it to the foreground
-                        SetForegroundWindow(hWnd);
-                        break;
+                        ShowWindowAsync(hWnd, swRestore);
                     }
+
+                    // bring it to the foreground
+                    SetForegroundWindow(hWnd);
+                    break;
                 }
                 return true;
             }

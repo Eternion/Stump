@@ -43,13 +43,14 @@ namespace Uplauncher
         private Stack<PatchTask> m_currentTasks;
         private Stack<UpdateEntry> m_sequence;
         private bool m_replaceExe;
-        private DateTime? m_lastUpdateCheck;
+        private readonly DateTime? m_lastUpdateCheck;
         private static readonly Color DefaultMessageColor = Colors.Black;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public UplauncherModelView()
+        public UplauncherModelView(DateTime? lastUpdateCheck)
         {
+            m_lastUpdateCheck = lastUpdateCheck;
 
             NotifyIcon = new NotifyIcon
                 {
@@ -227,7 +228,7 @@ namespace Uplauncher
             get { return m_changeLanguageCommand ?? (m_changeLanguageCommand = new DelegateCommand(OnChangeLanguage, CanChangeLanguage)); }
         }
 
-        private bool CanChangeLanguage(object parameter)
+        private static bool CanChangeLanguage(object parameter)
         {
             return false;
         }
@@ -467,17 +468,16 @@ namespace Uplauncher
 
         private void CheckIfReplaceExe(PatchTask task)
         {
-            if (task is AddFileTask)
-            {
-                var addFile = task as AddFileTask;
+            if (!(task is AddFileTask))
+                return;
 
-                if (Path.GetFullPath("./" + addFile.LocalURL)
-                        .Equals(Path.GetFullPath(Constants.CurrentExePath), StringComparison.InvariantCultureIgnoreCase))
-                {
-                    addFile.LocalURL = Constants.ExeReplaceTempPath;
-                    m_replaceExe = true;
-                }
-            }
+            var addFile = task as AddFileTask;
+
+            if (!Path.GetFullPath("./" + addFile.LocalURL).Equals(Path.GetFullPath(Constants.CurrentExePath), StringComparison.InvariantCultureIgnoreCase))
+                return;
+
+            addFile.LocalURL = Constants.ExeReplaceTempPath;
+            m_replaceExe = true;
         }
 
         private void OnUpdateEnded(bool success)

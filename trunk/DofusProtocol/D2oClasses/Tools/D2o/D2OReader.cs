@@ -123,27 +123,51 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
         {
             lock (m_reader)
             {
-                string header = m_reader.ReadUTFBytes(3);
+                var header = m_reader.ReadUTFBytes(3);
 
                 if (header != "D2O")
                 {
-                    throw new Exception("Header doesn't equal the string \'D2O\' : Corrupted file");
+                    m_reader.Seek(0, SeekOrigin.Begin);
+                    header = m_reader.ReadUTF();
+
+                    if (header == "AKSF")
+                        ReadIndexTable(true);
+                    else
+                        throw new Exception("Header doesn't equal the string \'D2O\' OR \'AKSF\' : Corrupted file");
+                }
+                else
+                {
+                    ReadIndexTable();
                 }
 
-                ReadIndexTable();
+                
                 ReadClassesTable();
             }
         }
 
-        private void ReadIndexTable()
+        private void ReadIndexTable(bool isD2OS = false)
         {
-            m_headeroffset = m_reader.ReadInt();
-            m_reader.Seek(m_headeroffset, SeekOrigin.Begin); // place the reader at the beginning of the indextable
-            m_indextablelen = m_reader.ReadInt();
+            if (isD2OS)
+            {
+                var tmpVar = m_reader.ReadShort();
+                m_headeroffset = m_reader.ReadInt();
+                m_reader.Seek((int) m_reader.Position + m_headeroffset + 7, SeekOrigin.Begin);
+                m_indextablelen = m_reader.ReadInt();
 
+                m_reader.Seek((int)m_reader.Position - 11, SeekOrigin.Begin);
+                var header = m_reader.ReadUTFBytes(3);
+                if (header != "D2O")
+                    throw new Exception("Header doesn't equal the string \'D2O\' : Corrupted file");   
+            }
+            else
+            {
+                m_headeroffset = m_reader.ReadInt();
+                m_reader.Seek(m_headeroffset, SeekOrigin.Begin); // place the reader at the beginning of the indextable
+                m_indextablelen = m_reader.ReadInt();
+            }
             // init table index
             m_indextable = new Dictionary<int, int>(m_indextablelen/8);
-            for (int i = 0; i < m_indextablelen; i += 8)
+            for (var i = 0; i < m_indextablelen; i += 8)
             {
                 m_indextable.Add(m_reader.ReadInt(), m_reader.ReadInt());
             }
