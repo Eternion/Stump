@@ -93,6 +93,10 @@ namespace WorldEditor
             {
                 window = new D2OEditor(filename);
             }
+            else if (System.IO.Path.GetExtension(filename) == ".d2os" && File.Exists(filename))
+            {
+                window = new D2OEditor(filename);
+            }
             else if (System.IO.Path.GetExtension(filename) == ".meta" && File.Exists(filename))
             {
                 window = new MetaEditor(new MetaFile(filename));

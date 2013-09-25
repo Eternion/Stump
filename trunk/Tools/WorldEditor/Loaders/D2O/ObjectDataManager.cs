@@ -38,10 +38,8 @@ namespace WorldEditor.Loaders.D2O
 
         public void AddReaders(string directory)
         {
-            foreach (var d2oFile in Directory.EnumerateFiles(directory).Where(entry => entry.EndsWith(".d2o")))
+            foreach (var reader in Directory.EnumerateFiles(directory).Where(entry => entry.EndsWith(".d2o")).Select(d2oFile => new D2OReader(d2oFile)))
             {
-                var reader = new D2OReader(d2oFile);
-
                 AddReader(reader);
             }
         }
