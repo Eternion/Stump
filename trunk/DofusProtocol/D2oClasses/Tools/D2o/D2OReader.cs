@@ -152,19 +152,17 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
                 var tmpVar = m_reader.ReadShort();
                 m_headeroffset = m_reader.ReadInt();
                 m_reader.Seek((int) m_reader.Position + m_headeroffset + 7, SeekOrigin.Begin);
-                m_indextablelen = m_reader.ReadInt();
 
-                m_reader.Seek((int)m_reader.Position - 11, SeekOrigin.Begin);
+                m_reader.Seek((int)m_reader.Position - 7, SeekOrigin.Begin);
                 var header = m_reader.ReadUTFBytes(3);
                 if (header != "D2O")
                     throw new Exception("Header doesn't equal the string \'D2O\' : Corrupted file");   
             }
-            else
-            {
-                m_headeroffset = m_reader.ReadInt();
-                m_reader.Seek(m_headeroffset, SeekOrigin.Begin); // place the reader at the beginning of the indextable
-                m_indextablelen = m_reader.ReadInt();
-            }
+
+            m_headeroffset = m_reader.ReadInt();
+            m_reader.Seek(m_headeroffset, SeekOrigin.Begin); // place the reader at the beginning of the indextable
+            m_indextablelen = m_reader.ReadInt();
+
             // init table index
             m_indextable = new Dictionary<int, int>(m_indextablelen/8);
             for (var i = 0; i < m_indextablelen; i += 8)
@@ -223,7 +221,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
         private static Type FindType(string className)
         {
-            IEnumerable<Type> correspondantTypes = from asm in ClassesContainers
+            var correspondantTypes = from asm in ClassesContainers
                                                    let types = asm.GetTypes()
                                                    from type in types
                                                    where type.Name.Equals(className, StringComparison.InvariantCulture) && type.HasInterface(typeof(IDataObject))
