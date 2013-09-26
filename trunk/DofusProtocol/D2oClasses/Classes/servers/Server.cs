@@ -14,7 +14,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public int id;
         public uint nameId;
         public uint commentId;
-        public float openingDate;
+        public long openingDate;
         public String language;
         public int populationId;
         public uint gameTypeId;
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.D2oClasses
             set { commentId = value; }
         }
 
-        public float OpeningDate
+        public long OpeningDate
         {
             get { return openingDate; }
             set { openingDate = value; }

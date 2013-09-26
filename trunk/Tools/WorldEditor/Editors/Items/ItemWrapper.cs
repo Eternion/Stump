@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -311,7 +310,8 @@ namespace WorldEditor.Editors.Items
         {
             if (New)
             {
-                Id = Math.Max(ObjectDataManager.Instance.FindFreeId<Item>(), ObjectDataManager.Instance.FindFreeId<Weapon>());
+                if (Id == 0)
+                    Id = Math.Max(ObjectDataManager.Instance.FindFreeId<Item>(), ObjectDataManager.Instance.FindFreeId<Weapon>());
                 NameId = (uint) I18NDataManager.Instance.FindFreeId();
                 DescriptionId = NameId + 1;
             }
