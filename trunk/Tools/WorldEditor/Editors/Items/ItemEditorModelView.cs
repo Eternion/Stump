@@ -21,15 +21,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.Server.WorldServer.Database.Items.Templates;
 using WorldEditor.Annotations;
-using WorldEditor.Database;
 using WorldEditor.Editors.Items.Effects;
 using WorldEditor.Helpers;
 using WorldEditor.Loaders.D2O;
-using WorldEditor.Loaders.I18N;
 using WorldEditor.Loaders.Icons;
-using WorldEditor.Search.Items;
 
 namespace WorldEditor.Editors.Items
 {
@@ -58,21 +54,21 @@ namespace WorldEditor.Editors.Items
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Type")
+            if (e.PropertyName != "Type")
+                return;
+
+            if (!string.IsNullOrEmpty(Item.Type.RawZone) && Item.Type.RawZone != "null" && !( Item is WeaponWrapper )) // it's a weapon
             {
-                if (!string.IsNullOrEmpty(Item.Type.RawZone) && Item.Type.RawZone != "null" && !( Item is WeaponWrapper )) // it's a weapon
-                {
-                    Item.PropertyChanged -= OnPropertyChanged;
-                    Item = new WeaponWrapper(Item);
-                    Item.PropertyChanged += OnPropertyChanged;
-                }
-                else if ((Item is WeaponWrapper) &&
-                         (string.IsNullOrEmpty(Item.Type.RawZone) || Item.Type.RawZone == "null"))
-                {
-                    Item.PropertyChanged -= OnPropertyChanged;
-                    Item = new ItemWrapper(Item as WeaponWrapper);
-                    Item.PropertyChanged += OnPropertyChanged;
-                }
+                Item.PropertyChanged -= OnPropertyChanged;
+                Item = new WeaponWrapper(Item);
+                Item.PropertyChanged += OnPropertyChanged;
+            }
+            else if ((Item is WeaponWrapper) &&
+                     (string.IsNullOrEmpty(Item.Type.RawZone) || Item.Type.RawZone == "null"))
+            {
+                Item.PropertyChanged -= OnPropertyChanged;
+                Item = new ItemWrapper(Item as WeaponWrapper);
+                Item.PropertyChanged += OnPropertyChanged;
             }
         }
 
@@ -275,7 +271,7 @@ namespace WorldEditor.Editors.Items
             get { return m_saveCommand ?? (m_saveCommand = new DelegateCommand(OnSave, CanSave)); }
         }
 
-        private bool CanSave(object parameter)
+        private static bool CanSave(object parameter)
         {
             return true;
         }

@@ -54,7 +54,10 @@
             </Border>
             <TextBox Text="{Binding Item.Name}" Foreground="SteelBlue" FontSize="40" BorderThickness="0" Background="Transparent" VerticalContentAlignment="Bottom"
                      VerticalAlignment="Top" Padding="0" Margin="3" />
-            <Label Content="{Binding Item.Id, StringFormat={}({0})}" Foreground="DimGray" FontSize="25" VerticalAlignment="Center" VerticalContentAlignment="Bottom" Margin="3"/>
+            <TextBox Name="ItemIdField"  Text="{Binding Item.Id}" Foreground="DimGray" FontSize="25" VerticalAlignment="Center" VerticalContentAlignment="Bottom" Margin="3" IsEnabled="False"></TextBox>
+            <Button Click="ItemIdEdit_OnClick" Margin="2" Width="20" Height="25">
+                <Image Height="16" Source="/WorldEditor;component/Images/pencil_003_16xMD.png"  Width="16"/>
+            </Button>
         </StackPanel>
         <GroupBox Header="Primary Properties" Grid.Row="1">
             <Grid>
