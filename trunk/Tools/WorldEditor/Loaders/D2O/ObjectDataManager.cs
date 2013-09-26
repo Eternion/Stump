@@ -30,11 +30,11 @@ namespace WorldEditor.Loaders.D2O
     /// </summary>
     public class ObjectDataManager : Singleton<ObjectDataManager>
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private Dictionary<Type, D2OReader> m_readers = new Dictionary<Type, D2OReader>();
-        private Dictionary<Type, D2OWriter> m_writers = new Dictionary<Type, D2OWriter>();
-        private List<Type> m_ignoredTyes = new List<Type>();
+        private readonly Dictionary<Type, D2OReader> m_readers = new Dictionary<Type, D2OReader>();
+        private readonly Dictionary<Type, D2OWriter> m_writers = new Dictionary<Type, D2OWriter>();
+        private readonly List<Type> m_ignoredTyes = new List<Type>();
 
         public void AddReaders(string directory)
         {

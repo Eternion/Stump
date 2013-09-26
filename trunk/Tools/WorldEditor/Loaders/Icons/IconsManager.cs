@@ -27,26 +27,26 @@ namespace WorldEditor.Loaders.Icons
     {
         private D2pFile m_d2PFile;
 
-        private Icon m_emptyIcon;
-        private Icon m_errorIcon;
         private Dictionary<int, Icon> m_icons;
 
         public Icon ErrorIcon
         {
-            get { return m_errorIcon; }
+            get;
+            private set;
         }
 
         public Icon EmptyIcon
         {
-            get { return m_emptyIcon; }
+            get;
+            private set;
         }
 
         public void Initialize(string path)
         {
             m_d2PFile = new D2pFile(path);
             m_icons = EnumerateIcons().ToDictionary(x => x.Id);
-            m_errorIcon = new Icon(-1, m_d2PFile.FileName, m_d2PFile.ReadFile("error.png"));
-            m_emptyIcon = new Icon(0, m_d2PFile.FileName, m_d2PFile.ReadFile("empty.png"));
+            ErrorIcon = new Icon(-1, m_d2PFile.FileName, m_d2PFile.ReadFile("error.png"));
+            EmptyIcon = new Icon(0, m_d2PFile.FileName, m_d2PFile.ReadFile("empty.png"));
         }
 
         public IEnumerable<Icon> Icons
@@ -57,10 +57,10 @@ namespace WorldEditor.Loaders.Icons
         public Icon GetIcon(int id)
         {
             if (id == 0)
-                return m_emptyIcon;
+                return EmptyIcon;
 
             if (!m_icons.ContainsKey(id))
-                return m_errorIcon;
+                return ErrorIcon;
 
             byte[] data = m_d2PFile.ReadFile(id + ".png");
 
@@ -69,21 +69,27 @@ namespace WorldEditor.Loaders.Icons
 
         private IEnumerable<Icon> EnumerateIcons()
         {
-            foreach (D2pEntry entry in m_d2PFile.Entries)
+            foreach (var entry in m_d2PFile.Entries)
             {
                 if (!entry.FullFileName.EndsWith(".png"))
                     continue;
 
-                byte[] data = m_d2PFile.ReadFile(entry);
-                string name = entry.FileName.Replace(".png", "");
+                var data = m_d2PFile.ReadFile(entry);
+                var name = entry.FileName.Replace(".png", "");
 
                 int id;
-                if (name == "empty")
-                    id = 0;
-                else if (name == "error")
-                    id = -1;
-                else
-                    id = int.Parse(name);
+                switch (name)
+                {
+                    case "empty":
+                        id = 0;
+                        break;
+                    case "error":
+                        id = -1;
+                        break;
+                    default:
+                        id = int.Parse(name);
+                        break;
+                }
 
                 yield return new Icon(id, entry.FileName, data);
             }
