@@ -76,14 +76,18 @@ namespace Stump.Tools.QuickItemEditor
             }
             else
             {
-                var texts = m_dbAccessor.Database.Query<LangText>(string.Format("SELECT * FROM langs WHERE {0} COLLATE UTF8_GENERAL_CI LIKE '%{1}%'", m_language, s))
+
+                var SQuery = string.Format("SELECT * FROM langs WHERE {0} COLLATE UTF8_GENERAL_CI LIKE '%{1}%'",
+                                           m_language, s.Replace("'", "\\'"));
+
+                var texts = m_dbAccessor.Database.Query<LangText>(SQuery)
                     .ToDictionary(entry => entry.Id);
 
                 if (texts.Count == 0)
                     Items = new ItemTemplateModel[0];
                 else
                 {
-                    IEnumerable<ItemTemplate> items =
+                    var items =
                         m_dbAccessor.Database.Query<ItemTemplate>(
                             string.Format("SELECT * FROM items_templates WHERE NameId IN ({0})",
                                           string.Join(",", texts.Keys)));

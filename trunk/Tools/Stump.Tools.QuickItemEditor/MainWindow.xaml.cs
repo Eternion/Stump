@@ -28,7 +28,7 @@ namespace Stump.Tools.QuickItemEditor
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            if (contentControl.Content == m_connector)
+            if (Equals(contentControl.Content, m_connector))
             {
                 m_connector.SaveConfigFile();
             }

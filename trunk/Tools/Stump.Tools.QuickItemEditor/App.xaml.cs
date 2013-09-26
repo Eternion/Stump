@@ -27,7 +27,7 @@ namespace Stump.Tools.QuickItemEditor
             else
             {
                 Clipboard.SetText(ex.ToString());
-                MessageBox.Show("Unhandled exception : " + ex.ToString());
+                MessageBox.Show("Unhandled exception : " + ex);
             }
 
         }
