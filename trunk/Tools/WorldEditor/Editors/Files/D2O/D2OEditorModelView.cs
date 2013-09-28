@@ -576,29 +576,6 @@ namespace WorldEditor.Editors.Files.D2O
         #endregion
 
 
-        #region ReplaceIdToTextCommand
-
-        private DelegateCommand m_replaceIdToTextCommand;
-
-        public DelegateCommand ReplaceIdToTextCommand
-        {
-            get { return m_replaceIdToTextCommand ?? (m_replaceIdToTextCommand = new DelegateCommand(OnReplaceIdToText, CanReplaceIdToText)); }
-        }
-
-        private bool CanReplaceIdToText(object parameter)
-        {
-            return true;
-        }
-
-        private void OnReplaceIdToText(object parameter)
-        {
-            var dialog = new SelectFieldsDialog();
-            var properties = m_distinctTypes.SelectMany(x => x.GetProperties()).Distinct();
-            //dialog.FieldsSource = m_reader.Classes.Values.SelectMany(x => x.Fields).Where(x => x.Value
-        }
-
-        #endregion
-
         public void Dispose()
         {
             m_reader.Close();

@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         private readonly object m_lock = new object();
 
-        [Initialization(InitializationPass.Last)]
+        [Initialization(InitializationPass.Sixth)]
         public override void Initialize()
         {
             m_guilds = Database.Query<GuildRecord>(GuildRelator.FetchQuery).ToList().Select(x => new Guild(x, FindGuildMembers(x.Id))).ToDictionary(x => x.Id);

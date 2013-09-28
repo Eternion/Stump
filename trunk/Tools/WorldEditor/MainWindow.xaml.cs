@@ -48,7 +48,7 @@ namespace WorldEditor
                 foreach (string filename in filenames)
                 {
                     var ext = System.IO.Path.GetExtension(filename);
-                    if ((ext == ".d2p" || ext == ".d2i" || ext==".d2o" || ext==".meta" || ext==".dlm") && File.Exists(filename))
+                    if ((ext == ".d2p" || ext == ".d2i" || ext==".d2o" || ext==".d2os" || ext==".meta" || ext==".dlm") && File.Exists(filename))
                     {
                         isCorrect = true;
                         break;
@@ -80,28 +80,31 @@ namespace WorldEditor
         {
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
+            if (!File.Exists(filename))
+                return;
+
             Window window = null;
-            if (System.IO.Path.GetExtension(filename) == ".d2p" && File.Exists(filename))
+            if (System.IO.Path.GetExtension(filename) == ".d2p")
             {
                 window = new D2PEditor(new D2pFile(filename));
             }
-            else if (System.IO.Path.GetExtension(filename) == ".d2i" && File.Exists(filename))
+            else if (System.IO.Path.GetExtension(filename) == ".d2i")
             {
                 window = new D2IEditor(new D2IFile(filename));
             }
-            else if (System.IO.Path.GetExtension(filename) == ".d2o" && File.Exists(filename))
+            else if (System.IO.Path.GetExtension(filename) == ".d2o")
             {
                 window = new D2OEditor(filename);
             }
-            else if (System.IO.Path.GetExtension(filename) == ".d2os" && File.Exists(filename))
+            else if (System.IO.Path.GetExtension(filename) == ".d2os")
             {
                 window = new D2OEditor(filename);
             }
-            else if (System.IO.Path.GetExtension(filename) == ".meta" && File.Exists(filename))
+            else if (System.IO.Path.GetExtension(filename) == ".meta")
             {
                 window = new MetaEditor(new MetaFile(filename));
             }
-            else if (System.IO.Path.GetExtension(filename) == ".dlm" && File.Exists(filename))
+            else if (System.IO.Path.GetExtension(filename) == ".dlm")
             {
                 window = new MapEditor(new DlmReader(filename, Settings.LoaderSettings.GenericMapDecryptionKey));
             }
