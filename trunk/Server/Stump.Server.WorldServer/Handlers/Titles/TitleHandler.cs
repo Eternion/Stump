@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Handlers.Titles
         [WorldHandler(TitleSelectRequestMessage.Id)]
         public static void HandleTitleSelectRequestMessage(WorldClient client, TitleSelectRequestMessage message)
         {
-            if (message.titleId != -1)
+            if (message.titleId != 0)
                 client.Character.SelectTitle(message.titleId);
             else
                 client.Character.ResetTitle();
@@ -36,7 +36,7 @@ namespace Stump.Server.WorldServer.Handlers.Titles
         [WorldHandler(OrnamentSelectRequestMessage.Id)]
         public static void HandleOrnamentSelectRequestMessage(WorldClient client, OrnamentSelectRequestMessage message)
         {
-            if (message.ornamentId != -1)
+            if (message.ornamentId != 0)
                 client.Character.SelectOrnament(message.ornamentId);
             else
                 client.Character.ResetOrnament();
@@ -69,11 +69,11 @@ namespace Stump.Server.WorldServer.Handlers.Titles
                                                           (short)
                                                           (character.SelectedTitle.HasValue
                                                                ? character.SelectedTitle.Value
-                                                               : -1),
+                                                               : 0),
                                                           (short)
                                                           (character.SelectedOrnament.HasValue
                                                                ? character.SelectedOrnament.Value
-                                                               : -1)));
+                                                               : 0)));
         }
 
         public static void SendTitleGainedMessage(IPacketReceiver client, short title)

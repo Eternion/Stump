@@ -51,6 +51,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
         private Dictionary<int, int> m_indextable = new Dictionary<int, int>();
         private int m_indextablelen;
         private IDataReader m_reader;
+        private int m_contentOffset = 0;
 
         /// <summary>
         ///   Create and initialise a new D2o file
@@ -123,44 +124,48 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
         {
             lock (m_reader)
             {
-                var header = m_reader.ReadUTFBytes(3);
+                ReadHeader();
+                ReadIndexTable();
+                ReadClassesTable();
+            }
+        }
 
-                if (header != "D2O")
+        private void ReadHeader()
+        {
+            var header = m_reader.ReadUTFBytes(3);
+
+            if (header != "D2O")
+            {
+                m_reader.Seek(0, SeekOrigin.Begin);
+                try
                 {
-                    m_reader.Seek(0, SeekOrigin.Begin);
                     header = m_reader.ReadUTF();
+                }
+                catch
+                {
+                    throw new Exception("Header doesn't equal the string \'D2O\' OR \'AKSF\' : Corrupted file");
+                }
+                if (header == "AKSF")
+                {
+                    var formatVersion = m_reader.ReadShort();
+                    var len = m_reader.ReadInt();
 
-                    if (header == "AKSF")
-                        ReadIndexTable(true);
-                    else
-                        throw new Exception("Header doesn't equal the string \'D2O\' OR \'AKSF\' : Corrupted file");
+                    m_reader.Seek(len, SeekOrigin.Current);
+                    m_contentOffset = (int)m_reader.Position;
+
+                    header = m_reader.ReadUTFBytes(3);
+                    if (header != "D2O")
+                        throw new Exception("Header doesn't equal the string \'D2O\' : Corrupted file (signed file)");
                 }
                 else
-                {
-                    ReadIndexTable();
-                }
-
-                
-                ReadClassesTable();
+                    throw new Exception("Header doesn't equal the string \'D2O\' OR \'AKSF\' : Corrupted file");
             }
         }
 
         private void ReadIndexTable(bool isD2OS = false)
         {
-            if (isD2OS)
-            {
-                var tmpVar = m_reader.ReadShort();
-                m_headeroffset = m_reader.ReadInt();
-                m_reader.Seek((int) m_reader.Position + m_headeroffset + 7, SeekOrigin.Begin);
-
-                m_reader.Seek((int)m_reader.Position - 7, SeekOrigin.Begin);
-                var header = m_reader.ReadUTFBytes(3);
-                if (header != "D2O")
-                    throw new Exception("Header doesn't equal the string \'D2O\' : Corrupted file");   
-            }
-
             m_headeroffset = m_reader.ReadInt();
-            m_reader.Seek(m_headeroffset, SeekOrigin.Begin); // place the reader at the beginning of the indextable
+            m_reader.Seek(m_contentOffset + m_headeroffset, SeekOrigin.Begin); // place the reader at the beginning of the indextable
             m_indextablelen = m_reader.ReadInt();
 
             // init table index
@@ -290,7 +295,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
             foreach (var index in m_indextable)
             {
-                reader.Seek(index.Value, SeekOrigin.Begin);
+                reader.Seek(index.Value + m_contentOffset, SeekOrigin.Begin);
 
                 try
                 {
@@ -317,7 +322,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
             foreach (var index in m_indextable)
             {
-                reader.Seek(index.Value, SeekOrigin.Begin);
+                reader.Seek(index.Value + m_contentOffset, SeekOrigin.Begin);
                 yield return ReadObject(index.Key, reader);
             }
 
@@ -349,7 +354,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
         private object ReadObject(int index, IDataReader reader)
         {
             int offset = m_indextable[index];
-            reader.Seek(offset, SeekOrigin.Begin);
+            reader.Seek(offset + m_contentOffset, SeekOrigin.Begin);
 
             int classid = reader.ReadInt();
 
@@ -425,7 +430,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
             int offset = 0;
             if (!m_indextable.TryGetValue(index, out offset)) throw new Exception(string.Format("Can't find Index {0} in {1}", index, this.FileName));
 
-            reader.Seek(offset, SeekOrigin.Begin);
+            reader.Seek(offset + m_contentOffset, SeekOrigin.Begin);
 
             int classid = reader.ReadInt();
 
@@ -455,7 +460,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
             lock (m_reader)
             {
                 int offset = m_indextable[index];
-                m_reader.Seek(offset, SeekOrigin.Begin);
+                m_reader.Seek(offset + m_contentOffset, SeekOrigin.Begin);
 
                 int classid = m_reader.ReadInt();
 

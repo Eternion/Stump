@@ -17,7 +17,7 @@ namespace Stump.Server.BaseServer.Initialization
         /// </summary>
         Third,
         /// <summary>
-        /// ExperienceManager, InteractiveManager, ItemManager, CellTriggerManager
+        /// ExperienceManager, InteractiveManager, ItemManager, CellTriggerManager, TinselManager
         /// </summary>
         Fourth,
         /// <summary>
@@ -25,7 +25,7 @@ namespace Stump.Server.BaseServer.Initialization
         /// </summary>
         Fifth,
         /// <summary>
-        /// MonsterManager
+        /// MonsterManager, GuildManager
         /// </summary>
         Sixth,
         /// <summary>
