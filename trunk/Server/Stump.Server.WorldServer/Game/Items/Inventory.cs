@@ -679,6 +679,11 @@ namespace Stump.Server.WorldServer.Game.Items
             base.OnKamasAmountChanged(amount);
         }
 
+        public void RefreshItem(PlayerItem item)
+        {
+            InventoryHandler.SendObjectModifiedMessage(Owner.Client, item);
+        }
+
         public override bool IsStackable(PlayerItem item, out PlayerItem stackableWith)
         {
             PlayerItem stack;

@@ -13,10 +13,123 @@
 // You should have received a copy of the GNU General Public License along with this program; 
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
+
+using ArkalysPlugin.Npcs;
+using NLog;
+using Stump.Core.Attributes;
+using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer.Database.Npcs;
+using Stump.Server.WorldServer.Database.Npcs.Actions;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Dialogs.Npcs;
+using Stump.Server.WorldServer.Handlers.Context.RolePlay;
+
 namespace ArkalysPlugin.Prestige
 {
-    public class PrestigeNpc
+    public static class PrestigeNpc
     {
-         
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        [Variable]
+        public static int NpcId = 3001;
+        [Variable]
+        public static int MessageId = 20007;
+        [Variable]
+        public static int MessageLevelErrorId = 20007;
+        [Variable]
+        public static int MessagePrestigeMaxId = 20007;
+        [Variable]
+        public static short ReplyPrestigeSuccessId = 20010;
+
+        public static NpcMessage Message;
+        public static NpcMessage MessageError;
+        public static NpcMessage MessagePrestigeMax;
+        private static bool m_scriptDisabled;
+
+        [Initialization(typeof(NpcManager), Silent = true)]
+        public static void Initialize()
+        {
+            if (m_scriptDisabled)
+                return;
+
+            var npc = NpcManager.Instance.GetNpcTemplate(NpcId);
+
+            if (npc == null)
+            {
+                Logger.Error("Npc {0} not found, script is disabled", NpcId);
+                m_scriptDisabled = true;
+                return;
+            }
+
+            npc.NpcSpawned += OnNpcSpawned;
+
+            Message = NpcManager.Instance.GetNpcMessage(MessageId);
+            MessageError = NpcManager.Instance.GetNpcMessage(MessageLevelErrorId);
+            MessagePrestigeMax = NpcManager.Instance.GetNpcMessage(MessagePrestigeMaxId);
+
+            if (Message != null && MessageError != null && MessagePrestigeMax != null)
+                return;
+
+            Logger.Error("Messages {0},{1},{2} not found, script is disabled", MessageId, MessageLevelErrorId, MessagePrestigeMaxId);
+        }
+
+        private static void OnNpcSpawned(NpcTemplate template, Npc npc)
+        {
+            if (m_scriptDisabled)
+                template.NpcSpawned -= OnNpcSpawned;
+
+            npc.Actions.RemoveAll(x => x.ActionType == NpcActionTypeEnum.ACTION_TALK);
+            npc.Actions.Add(new PrestigeNpcScript());
+        }
     }
+
+    public class PrestigeNpcScript : NpcAction
+    {
+        public override NpcActionTypeEnum ActionType
+        {
+            get
+            {
+                return NpcActionTypeEnum.ACTION_TALK;
+            }
+        }
+
+        public override void Execute(Npc npc, Character character)
+        {
+            var dialog = new PrestigeNpcDialog(character, npc);
+            dialog.Open();
+        }
+    }
+
+    public class PrestigeNpcDialog : NpcDialog
+    {
+        public PrestigeNpcDialog(Character character, Npc npc)
+            : base(character, npc)
+        {
+            CurrentMessage = character.Level >= 200 ? PrestigeNpc.Message : PrestigeNpc.MessageError;
+        }
+
+        public override void Open()
+        {
+            base.Open();
+
+            ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage,
+                                                                Character.Level >= 200
+                                                                    ? new[] {PrestigeNpc.ReplyPrestigeSuccessId}
+                                                                    : new short[0]);
+        }
+
+        public override void Reply(short replyId)
+        {
+            if (replyId == PrestigeNpc.ReplyPrestigeSuccessId)
+            {
+                Character.Client.Send(new GuildCreationStartedMessage());
+            }
+
+            Close();
+        }
+    }
+
 }

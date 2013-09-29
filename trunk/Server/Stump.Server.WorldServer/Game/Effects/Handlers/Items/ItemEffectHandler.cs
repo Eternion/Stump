@@ -9,6 +9,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
 {
     public abstract class ItemEffectHandler : EffectHandler
     {
+        private HandlerOperation? m_operation;
+
         public enum HandlerOperation
         {
             APPLY,
@@ -66,8 +68,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
         {
             get
             {
-                return Equiped || ItemSetApply ? HandlerOperation.APPLY : HandlerOperation.UNAPPLY;
+                return m_operation != null ? m_operation.Value : 
+                    (Equiped || ItemSetApply ? HandlerOperation.APPLY : HandlerOperation.UNAPPLY);
             }
+            set { m_operation = value; }
         }
 
     }
