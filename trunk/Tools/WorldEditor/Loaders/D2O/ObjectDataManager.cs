@@ -143,6 +143,15 @@ namespace WorldEditor.Loaders.D2O
             writer.Write(value, key);
         }
 
+        public void Remove<T>(int key)
+        {
+            if (!m_writers.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)
+                throw new ArgumentException("Cannot find data corresponding to type : " + typeof(T));
+
+            var writer = m_writers[typeof(T)];
+            writer.Delete(key);
+        }
+
         public int FindFreeId<T>()
         {
             if (!m_writers.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)

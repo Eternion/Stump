@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
 
         [Variable(true)]
-        public static bool DebugMode = true;
+        public static bool DebugMode = false;
 
         protected static readonly Logger logger = LogManager.GetCurrentClassLogger();
 

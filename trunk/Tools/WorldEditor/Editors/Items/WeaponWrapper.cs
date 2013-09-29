@@ -79,6 +79,7 @@ namespace WorldEditor.Editors.Items
             DBTemplate.AppearanceId = item.AppearanceId;
 
             m_effects = new ObservableCollection<EffectWrapper>(PossibleEffects.Select(EffectWrapper.Create));
+            New = item.New;
             WasItem = true;
         }
 
@@ -163,13 +164,22 @@ namespace WorldEditor.Editors.Items
             ObjectDataManager.Instance.Set(WrappedWeapon.Id, WrappedWeapon);
             ObjectDataManager.Instance.EndEditing<Weapon>();
 
-            I18NDataManager.Instance.SetText(DescriptionId, Description);
             I18NDataManager.Instance.SetText(NameId, Name);
+            I18NDataManager.Instance.SetText(DescriptionId, Description);
             I18NDataManager.Instance.Save();
 
             DBTemplate.AssignFields(WrappedWeapon);
 
-            if (New)
+            if (WasItem && !New)
+            {
+                DatabaseManager.Instance.Database.Delete("items_templates", "Id", DBTemplate);
+                DatabaseManager.Instance.Database.Insert(DBTemplate);
+
+                ObjectDataManager.Instance.StartEditing<Item>();
+                ObjectDataManager.Instance.Remove<Item>(Id);
+                ObjectDataManager.Instance.EndEditing<Item>();
+            }
+            else if (New)
                 ItemManager.Instance.AddItemTemplate(DBTemplate);
             else
                 DatabaseManager.Instance.Database.Update(DBTemplate);

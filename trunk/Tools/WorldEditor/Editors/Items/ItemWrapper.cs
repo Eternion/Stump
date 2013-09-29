@@ -322,8 +322,8 @@ namespace WorldEditor.Editors.Items
             ObjectDataManager.Instance.Set(WrappedItem.Id, WrappedItem);
             ObjectDataManager.Instance.EndEditing<Item>();
 
-            I18NDataManager.Instance.SetText(DescriptionId, Description);
             I18NDataManager.Instance.SetText(NameId, Name);
+            I18NDataManager.Instance.SetText(DescriptionId, Description);
             I18NDataManager.Instance.Save();
 
             DBTemplate.AssignFields(WrappedItem);
