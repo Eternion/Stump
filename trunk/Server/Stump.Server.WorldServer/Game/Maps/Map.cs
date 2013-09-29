@@ -14,6 +14,7 @@ using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Interactives;
@@ -695,7 +696,9 @@ namespace Stump.Server.WorldServer.Game.Maps
                     if (roll <= l)
                     {
                         monster = MonsterManager.Instance.GetMonsterGrade(spawn.MonsterId, SubArea.RollMonsterGrade(spawn.MinGrade, spawn.MaxGrade));
-                        break;
+
+                        if (CheckMonsterAI(monster))
+                            break;
                     }
 
                 }
@@ -716,6 +719,23 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
 
             return group;
+        }
+
+        /// <summary>
+        /// Check the AI manage monster spells
+        /// </summary>
+        /// <param name="grade"></param>
+        /// <returns></returns>
+        private bool CheckMonsterAI(MonsterGrade grade)
+        {
+            var categories = grade.Spells.Select(SpellIdentifier.GetSpellCategories);
+
+            return
+                categories.Any(
+                    x =>
+                    x.HasFlag(SpellCategory.Damages) | 
+                    x.HasFlag(SpellCategory.Healing) |
+                    x.HasFlag(SpellCategory.Summoning));
         }
 
         public MonsterGroup SpawnMonsterGroup(MonsterGrade monster, ObjectPosition position)

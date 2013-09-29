@@ -32,12 +32,12 @@ namespace ArkalysPlugin.Npcs
         public static short ReplyAlreadyHaveGuild = 20010;
 
         public static NpcMessage Message;
-        private static bool _scriptDisabled;
+        private static bool m_scriptDisabled;
 
         [Initialization(typeof (NpcManager), Silent = true)]
         public static void Initialize()
         {
-            if (_scriptDisabled)
+            if (m_scriptDisabled)
                 return;
 
             var npc = NpcManager.Instance.GetNpcTemplate(NpcId);
@@ -45,7 +45,7 @@ namespace ArkalysPlugin.Npcs
             if (npc == null)
             {
                 Logger.Error("Npc {0} not found, script is disabled", NpcId);
-                _scriptDisabled = true;
+                m_scriptDisabled = true;
                 return;
             }
 
@@ -58,12 +58,12 @@ namespace ArkalysPlugin.Npcs
                 return;
 
             Logger.Error("Message {0} not found, script is disabled", MessageId);
-            _scriptDisabled = true;
+            m_scriptDisabled = true;
         }
 
         private static void OnNpcSpawned(NpcTemplate template, Npc npc)
         {
-            if (_scriptDisabled)
+            if (m_scriptDisabled)
                 template.NpcSpawned -= OnNpcSpawned;
 
             npc.Actions.RemoveAll(x => x.ActionType == NpcActionTypeEnum.ACTION_TALK);
@@ -80,7 +80,7 @@ namespace ArkalysPlugin.Npcs
 
         public override void Execute(Npc npc, Character character)
         {
-            var dialog = new NpcRestatDialog(character, npc);
+            var dialog = new NpcGuildsDialog(character, npc);
             dialog.Open();
         }
     }
