@@ -35,7 +35,7 @@ namespace WorldEditor.Editors.Items
 
         protected virtual void OnItemSaved(ItemWrapper arg2)
         {
-            Action<ItemEditorModelView, ItemWrapper> handler = ItemSaved;
+            var handler = ItemSaved;
             if (handler != null) handler(this, arg2);
         }
 
@@ -105,7 +105,7 @@ namespace WorldEditor.Editors.Items
             get { return m_resetItemSetCommand ?? (m_resetItemSetCommand = new DelegateCommand(OnResetItemSet, CanResetItemSet)); }
         }
 
-        private bool CanResetItemSet(object parameter)
+        private static bool CanResetItemSet(object parameter)
         {
             return true;
         }
@@ -127,16 +127,18 @@ namespace WorldEditor.Editors.Items
             get { return m_changeIconCommand ?? (m_changeIconCommand = new DelegateCommand(OnChangeIcon, CanChangeIcon)); }
         }
 
-        private bool CanChangeIcon(object parameter)
+        private static bool CanChangeIcon(object parameter)
         {
             return true;
         }
 
         private void OnChangeIcon(object parameter)
         {
-            var dialog = new IconSelectionDialog();
-            dialog.IconsSource = IconsManager.Instance.Icons;
-            dialog.SelectedIcon = IconsManager.Instance.GetIcon(Item.IconId);
+            var dialog = new IconSelectionDialog
+                {
+                    IconsSource = IconsManager.Instance.Icons,
+                    SelectedIcon = IconsManager.Instance.GetIcon(Item.IconId)
+                };
 
             if (dialog.ShowDialog() == true)
                 Item.IconId = dialog.SelectedIcon.Id;
@@ -167,16 +169,20 @@ namespace WorldEditor.Editors.Items
 
             var effect = (EffectWrapper) parameter;
 
-            var dialog = new EffectEditorDialog();
-            dialog.EffectToEdit = (EffectWrapper)(effect).Clone() ;
-            dialog.EffectsSource = m_effects ?? (m_effects = ObjectDataManager.Instance.EnumerateObjects<Effect>().Where(x => x.UseDice).ToList());
+            var dialog = new EffectEditorDialog
+                {
+                    EffectToEdit = (EffectWrapper) (effect).Clone(),
+                    EffectsSource =
+                        m_effects ??
+                        (m_effects = ObjectDataManager.Instance.EnumerateObjects<Effect>().ToList())
+                };
 
-            if (dialog.ShowDialog() == true)
-            {
-                var index = Item.WrappedEffects.IndexOf(effect);
-                Item.WrappedEffects.Remove(effect);
-                Item.WrappedEffects.Insert(index, dialog.EffectToEdit);
-            }
+            if (dialog.ShowDialog() != true)
+                return;
+
+            var index = Item.WrappedEffects.IndexOf(effect);
+            Item.WrappedEffects.Remove(effect);
+            Item.WrappedEffects.Insert(index, dialog.EffectToEdit);
         }
 
         #endregion
@@ -191,7 +197,7 @@ namespace WorldEditor.Editors.Items
             get { return m_removeEffectCommand ?? (m_removeEffectCommand = new DelegateCommand(OnRemoveEffect, CanRemoveEffect)); }
         }
 
-        private bool CanRemoveEffect(object parameter)
+        private static bool CanRemoveEffect(object parameter)
         {
             return parameter is EffectWrapper || parameter is ICollection;
         }
@@ -236,15 +242,19 @@ namespace WorldEditor.Editors.Items
             get { return m_addEffectCommand ?? (m_addEffectCommand = new DelegateCommand(OnAddEffect, CanAddEffect)); }
         }
 
-        private bool CanAddEffect(object parameter)
+        private static bool CanAddEffect(object parameter)
         {
             return true;
         }
 
         private void OnAddEffect(object parameter)
         {
-            var dialog = new EffectEditorDialog(); 
-            dialog.EffectsSource = m_effects ?? ( m_effects = ObjectDataManager.Instance.EnumerateObjects<Effect>().Where(x => x.UseDice).ToList() );
+            var dialog = new EffectEditorDialog
+                {
+                    EffectsSource =
+                        m_effects ??
+                        (m_effects = ObjectDataManager.Instance.EnumerateObjects<Effect>().ToList())
+                };
 
             var effect = new EffectDiceWrapper(new EffectInstanceDice()
                 {
