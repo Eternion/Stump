@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
@@ -15,7 +16,7 @@ namespace Uplauncher
     {
         public MainWindow()
         {
-            ModelView = new UplauncherModelView {View = this};
+            ModelView = new UplauncherModelView(DateTime.Now) { View = this };
 
             InitializeComponent();
 

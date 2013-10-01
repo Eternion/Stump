@@ -21,6 +21,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Windows.Forms;
 using Stump.DofusProtocol.D2oClasses.Tools.D2i;
 using WorldEditor.Helpers;
@@ -79,51 +80,53 @@ namespace WorldEditor.Editors.Files.D2I
 
         private D2IGridRow FindNext()
         {
-            int startIndex = LastFoundIndex == -1 || LastFoundIndex + 1 >= Rows.Count ? 0 : LastFoundIndex + 1;
+            var startIndex = LastFoundIndex == -1 || LastFoundIndex + 1 >= Rows.Count ? 0 : LastFoundIndex + 1;
 
             D2IGridRow row = null;
-            int index = -1;
-            if (SearchType == "Key")
+            var index = -1;
+            switch (SearchType)
             {
-                var isNumber = SearchText.All(char.IsDigit);
-                if (isNumber)
-                {
-                    int id = int.Parse(SearchText);
-                    for (int i = startIndex; i < Rows.Count; i++)
+                case "Key":
                     {
-                        if (Rows[i] is D2ITextRow && ( Rows[i] as D2ITextRow ).Id == id)
+                        var isNumber = SearchText.All(char.IsDigit);
+                        if (isNumber)
                         {
-                            row = Rows[i];
-                            index = i;
-                            break;
-                        }
-                    }
-                }
+                            var id = int.Parse(SearchText);
+                            for (var i = startIndex; i < Rows.Count; i++)
+                            {
+                                if (!(Rows[i] is D2ITextRow) || (Rows[i] as D2ITextRow).Id != id)
+                                    continue;
 
-                if (row == null)
-                {
-                    for (int i = startIndex; i < Rows.Count; i++)
-                    {
-                        if (Rows[i].GetKey().IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1)
+                                row = Rows[i];
+                                index = i;
+                                break;
+                            }
+                        }
+
+                        if (row == null)
                         {
-                            row = Rows[i];
-                            index = i;
-                            break;
+                            for (var i = startIndex; i < Rows.Count; i++)
+                            {
+                                if (Rows[i].GetKey().IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) == -1)
+                                    continue;
+                                row = Rows[i];
+                                index = i;
+                                break;
+                            }
                         }
                     }
-                }
-            }
-            else if (SearchType == "Text")
-            {
-                for (int i = startIndex; i < Rows.Count; i++)
-                {
-                    if (Rows[i].Text.IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1)
+                    break;
+                case "Text":
+                    for (var i = startIndex; i < Rows.Count; i++)
                     {
+                        if (Rows[i].Text.IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) == -1)
+                            continue;
+
                         row = Rows[i];
                         index = i;
                         break;
                     }
-                }
+                    break;
             }
 
             if (row == null)
@@ -131,11 +134,9 @@ namespace WorldEditor.Editors.Files.D2I
                 LastFoundIndex = -1;
                 return null;
             }
-            else
-            {
-                LastFoundIndex = index;
-                return row;
-            }
+
+            LastFoundIndex = index;
+            return row;
         }
 
         #region FindCommand
@@ -381,7 +382,7 @@ namespace WorldEditor.Editors.Files.D2I
             get { return m_saveCommand ?? (m_saveCommand = new DelegateCommand(OnSave, CanSave)); }
         }
 
-        private bool CanSave(object parameter)
+        private static bool CanSave(object parameter)
         {
             return true;
         }
@@ -452,29 +453,26 @@ namespace WorldEditor.Editors.Files.D2I
 
         private bool UpdateFile()
         {
-            foreach (var row in Rows)
+            foreach (var row in Rows.Where(row => row.State == RowState.Dirty || row.State == RowState.Added))
             {
-                if (row.State == RowState.Dirty || row.State == RowState.Added)
+                if (Rows.Count(x => x.GetKey() == row.GetKey()) > 1)
                 {
-                    if (Rows.Count(x => x.GetKey() == row.GetKey()) > 1)
+                    if (!MessageService.ShowYesNoQuestion(m_editor, string.Format("WARNING ! Found duplicated keys '{0}'. The file may save but a row will be deleted", row.GetKey()) +
+                                                                    "Continue saving anyway ?"))
                     {
-                        if (!MessageService.ShowYesNoQuestion(m_editor, string.Format("WARNING ! Found duplicated keys '{0}'. The file may save but a row will be deleted", row.GetKey()) +
-                            "Continue saving anyway ?"))
-                        {
-                            SearchType = "Key";
-                            SearchText = row.GetKey();
-                            OnFindNext(null);
-                            return false;
-                        }
+                        SearchType = "Key";
+                        SearchText = row.GetKey();
+                        OnFindNext(null);
+                        return false;
                     }
-
-                    if (row is D2ITextRow)
-                        m_file.SetText(( row as D2ITextRow ).Id, row.Text);
-                    if (row is D2ITextUiRow)
-                        m_file.SetText(( row as D2ITextUiRow ).Id, row.Text);
-
-                    row.State = RowState.None;
                 }
+
+                if (row is D2ITextRow)
+                    m_file.SetText(( row as D2ITextRow ).Id, row.Text);
+                if (row is D2ITextUiRow)
+                    m_file.SetText(( row as D2ITextUiRow ).Id, row.Text);
+
+                row.State = RowState.None;
             }
 
             while (m_deletedRows.Count > 0)

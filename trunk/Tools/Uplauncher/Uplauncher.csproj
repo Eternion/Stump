@@ -201,6 +201,9 @@
   <ItemGroup>
     <Resource Include="Resources\UplauncherReplacer.exe" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\repair_button.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterResolveReferences">
     <ItemGroup>

@@ -29,5 +29,16 @@ namespace Stump.Core.Extensions
                 return resp.Headers.Get("Content-MD5");
             }
         }
+
+        public static long RequestContentLenght(string url)
+        {
+            var req = WebRequest.Create(url);
+            req.Method = "HEAD";
+            using (var resp = req.GetResponse())
+            {
+                req.Abort();
+                return resp.ContentLength;
+            }
+        }
     }
 }

@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Threading;
 using System.Xml.Serialization;
 using Stump.Core.Cryptography;
 using Stump.Core.Extensions;
@@ -49,30 +50,33 @@ namespace Uplauncher.Patcher
 
         public override void Apply(UplauncherModelView uplauncher)
         {
-            var directory = Path.GetDirectoryName("./" + LocalURL);
+            var directory = Path.GetDirectoryName("./app/" + LocalURL);
 
             if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
 
-            if (File.Exists("./" + LocalURL))
+            if (File.Exists("./app/" + LocalURL))
             {
                 uplauncher.SetState(string.Format("Check if {0} already exists ...", RelativeURL));
 
-                var md5 = Cryptography.GetFileMD5HashBase64("./" + LocalURL);
-                var remoteMd5 = NetExtensions.RequestMD5(Constants.UpdateSiteURL + RelativeURL);
+                /*var md5 = Cryptography.GetFileMD5HashBase64("./app/" + LocalURL);
+                var remoteMd5 = NetExtensions.RequestMD5(Constants.UpdateSiteURL + RelativeURL);*/
+                var contentLenght = new FileInfo("./app/" + LocalURL).Length;
+                var remoteCL = NetExtensions.RequestContentLenght(Constants.UpdateSiteURL + RelativeURL);
 
-                Debug.WriteLine("File {0} already exists  MD5:{1} RemoteMD5:{2} ...", LocalURL, md5, remoteMd5);
-                if (md5 == remoteMd5)
+                //uplauncher.SetState(string.Format("File {0} already exists  MD5:{1} RemoteMD5:{2} ...", LocalURL, md5, remoteMd5));
+                //uplauncher.SetState(string.Format("File {0} already exists Lenght:{1} Remote Lenght:{2} ...", LocalURL, contentLenght, remoteCL));
+                if (contentLenght == remoteCL)
                 {
+                    Thread.Sleep(2);
                     OnApplied();
                     return;
                 }
             }
 
             uplauncher.SetState(string.Format("Download {0} ...", RelativeURL));
-            Debug.WriteLine("Download {0} ...", RelativeURL);
             uplauncher.WebClient.DownloadFileCompleted += OnFileDownloaded;
-            uplauncher.WebClient.DownloadFileAsync(new Uri(Constants.UpdateSiteURL + RelativeURL), "./" + LocalURL, LocalURL);
+            uplauncher.WebClient.DownloadFileAsync(new Uri(Constants.UpdateSiteURL + RelativeURL), "./app/" + LocalURL, LocalURL);
         }
 
         private void OnFileDownloaded(object sender, AsyncCompletedEventArgs e)
