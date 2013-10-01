@@ -23,6 +23,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Windows.Forms;
 using Stump.DofusProtocol.D2oClasses.Tools.D2p;
 using WorldEditor.Helpers;
@@ -333,7 +334,7 @@ namespace WorldEditor.Editors.Files.D2P
             get { return m_saveCommand ?? (m_saveCommand = new DelegateCommand(OnSave, CanSave)); }
         }
 
-        private bool CanSave(object parameter)
+        private static bool CanSave(object parameter)
         {
             return true;
         }

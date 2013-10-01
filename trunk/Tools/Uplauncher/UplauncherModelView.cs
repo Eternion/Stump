@@ -203,7 +203,7 @@ namespace Uplauncher
             get { return m_closeCommand ?? (m_closeCommand = new DelegateCommand(OnClose, CanClose)); }
         }
 
-        private bool CanClose(object parameter)
+        private static bool CanClose(object parameter)
         {
             return true;
         }
@@ -218,6 +218,46 @@ namespace Uplauncher
 
         #endregion
 
+        #region RepairGameCommand
+
+        private DelegateCommand m_repairGameCommand;
+
+        public DelegateCommand RepairGameCommand
+        {
+            get { return m_repairGameCommand ?? (m_repairGameCommand = new DelegateCommand(OnRepairGame, CanRepairGame)); }
+        }
+
+        private static bool CanRepairGame(object parameter)
+        {
+            return true;
+        }
+
+        private void OnRepairGame(object parameter)
+        {
+            if (!CanRepairGame(parameter))
+                return;
+
+            if (IsUpdating)
+                return;
+
+            foreach (var process in Process.GetProcesses().Where(process => process.ProcessName == "Dofus"))
+            {
+                process.Kill();
+            }
+
+            var appFolder = Environment.CurrentDirectory + @"\app";
+            if (Directory.Exists(appFolder))
+            {
+                Directory.Delete(appFolder, true);
+            }
+
+            Directory.CreateDirectory("app");
+            File.Delete("version");
+
+            CheckUpdates();
+        }
+
+        #endregion
 
         #region ChangeLanguageCommand
 
@@ -233,7 +273,7 @@ namespace Uplauncher
             return false;
         }
 
-        private void OnChangeLanguage(object parameter)
+        private static void OnChangeLanguage(object parameter)
         {
             if (parameter == null || !CanChangeLanguage(parameter))
                 return;
@@ -413,7 +453,7 @@ namespace Uplauncher
                     File.WriteAllBytes(file, Resources.UplauncherReplacer);
 
                     Process.Start(file, string.Format("{0} \"{1}\" \"{2}\"", Process.GetCurrentProcess().Id,
-                                                      Path.GetFullPath("./" + Constants.ExeReplaceTempPath),
+                                                      Path.GetFullPath("./app/" + Constants.ExeReplaceTempPath),
                                                       Path.GetFullPath(Constants.CurrentExePath)));
                     NotifyIcon.Visible = false;
                     Environment.Exit(1);
@@ -472,8 +512,9 @@ namespace Uplauncher
                 return;
 
             var addFile = task as AddFileTask;
+            var fullPath = Path.GetFullPath("./" + addFile.LocalURL);
 
-            if (!Path.GetFullPath("./" + addFile.LocalURL).Equals(Path.GetFullPath(Constants.CurrentExePath), StringComparison.InvariantCultureIgnoreCase))
+            if (!fullPath.Equals(Path.GetFullPath(Constants.CurrentExePath), StringComparison.InvariantCultureIgnoreCase))
                 return;
 
             addFile.LocalURL = Constants.ExeReplaceTempPath;

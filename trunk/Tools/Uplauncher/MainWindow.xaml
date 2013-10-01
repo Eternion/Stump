@@ -59,8 +59,8 @@
             <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Canvas.Left="6" Canvas.Top="172" Style="{StaticResource ImageButton}" Command="{Binding CloseCommand}">
                 <UI:OpaqueClickableImage Width="19" Height="19" Source="pack://application:,,,/Resources/close.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
             </Button>
-            <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Canvas.Left="8" Canvas.Top="587" Style="{StaticResource ImageButton}" Command="{Binding ChangeLanguageCommand}">
-                <UI:OpaqueClickableImage Width="105" Height="24" Source="pack://application:,,,/Resources/language_button.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
+            <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Canvas.Left="8" Canvas.Top="587" Style="{StaticResource ImageButton}" Command="{Binding RepairGameCommand}">
+                <UI:OpaqueClickableImage Width="105" Height="24" Source="pack://application:,,,/Resources/repair_button.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
             </Button>
             <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Style="{StaticResource ImageButton}" Canvas.Left="117" Canvas.Top="587" Command="{Binding SiteCommand}">
                 <UI:OpaqueClickableImage Width="105" Height="24" Source="pack://application:,,,/Resources/site_button.png" Stretch="Fill" Style="{StaticResource GlowingImage}"/>
