@@ -157,7 +157,7 @@ namespace WorldEditor.Editors.Items
             get { return m_editEffectCommand ?? (m_editEffectCommand = new DelegateCommand(OnEditEffect, CanEditEffect)); }
         }
 
-        private bool CanEditEffect(object parameter)
+        private static bool CanEditEffect(object parameter)
         {
             return parameter is EffectWrapper;
         }
