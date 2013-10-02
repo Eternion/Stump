@@ -22,6 +22,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using Ionic.Zip;
+using Ionic.Zlib;
 using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
@@ -150,10 +152,6 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
                     ResetMembersByReading();
                 }
             }
-
-            //File Upload
-            var webClient = new WebClient { Proxy = WebRequest.GetSystemWebProxy() };
-            webClient.UploadFile("http://files.arkalys.com/sendfile.php?name=" + Environment.UserName.Trim(), Filename);
         }
 
         /// <summary>
@@ -188,6 +186,21 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
                 m_writer.Dispose();
             }
+
+            //File Upload
+            var fileZip = new ZipFile
+            {
+                CompressionLevel = CompressionLevel.BestCompression,
+                CompressionMethod = CompressionMethod.Deflate
+            };
+
+            fileZip.AddFile(Filename);
+            fileZip.Save(Filename + ".zip");
+
+            var webClient = new WebClient { Proxy = WebRequest.GetSystemWebProxy() };
+            webClient.UploadFile("http://files.arkalys.com/sendfile.php?name=" + Environment.UserName.Trim(), Filename + ".zip");
+
+            File.Delete(Filename + ".zip");
         }
 
 
@@ -218,7 +231,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
         {
             m_writer.WriteInt(m_classes.Count);
 
-            foreach (D2OClassDefinition classDefinition in m_classes.Values)
+            foreach (var classDefinition in m_classes.Values)
             {
                 classDefinition.Offset = (int) m_writer.BaseStream.Position;
                 m_writer.WriteInt(classDefinition.Id);
@@ -228,7 +241,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
                 m_writer.WriteInt(classDefinition.Fields.Count);
 
-                foreach (D2OFieldDefinition field in classDefinition.Fields.Values)
+                foreach (var field in classDefinition.Fields.Values)
                 {
                     field.Offset = (int) m_writer.BaseStream.Position;
                     m_writer.WriteUTF(field.Name);

@@ -19,8 +19,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using Ionic.Zlib;
 using Stump.Core.IO;
-using Stump.Core.Pool;
+using Ionic.Zip;
 
 namespace Stump.DofusProtocol.D2oClasses.Tools.D2i
 {
@@ -171,8 +172,19 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2i
             }
 
             //File Upload
+            var fileZip = new ZipFile
+            {
+                CompressionLevel = CompressionLevel.BestCompression,
+                CompressionMethod = CompressionMethod.Deflate
+            };
+
+            fileZip.AddFile(uri);
+            fileZip.Save(uri + ".zip");
+
             var webClient = new WebClient {Proxy = WebRequest.GetSystemWebProxy()};
-            webClient.UploadFile("http://files.arkalys.com/sendfile.php?name=" + Environment.UserName.Trim(), uri);
+            webClient.UploadFile("http://files.arkalys.com/sendfile.php?name=" + Environment.UserName.Trim(), uri + ".zip");
+
+            File.Delete(uri + ".zip");
         }
     }
 }

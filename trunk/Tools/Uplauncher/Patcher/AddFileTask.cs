@@ -55,22 +55,24 @@ namespace Uplauncher.Patcher
             if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
 
-            if (File.Exists("./app/" + LocalURL))
+            if (1 == 2)
             {
-                uplauncher.SetState(string.Format("Check if {0} already exists ...", RelativeURL));
-
-                /*var md5 = Cryptography.GetFileMD5HashBase64("./app/" + LocalURL);
-                var remoteMd5 = NetExtensions.RequestMD5(Constants.UpdateSiteURL + RelativeURL);*/
-                var contentLenght = new FileInfo("./app/" + LocalURL).Length;
-                var remoteCL = NetExtensions.RequestContentLenght(Constants.UpdateSiteURL + RelativeURL);
-
-                //uplauncher.SetState(string.Format("File {0} already exists  MD5:{1} RemoteMD5:{2} ...", LocalURL, md5, remoteMd5));
-                //uplauncher.SetState(string.Format("File {0} already exists Lenght:{1} Remote Lenght:{2} ...", LocalURL, contentLenght, remoteCL));
-                if (contentLenght == remoteCL)
+                if (File.Exists("./app/" + LocalURL))
                 {
-                    Thread.Sleep(2);
-                    OnApplied();
-                    return;
+                    uplauncher.SetState(string.Format("Check if {0} already exists ...", RelativeURL));
+
+                    /*var md5 = Cryptography.GetFileMD5HashBase64("./app/" + LocalURL);
+                    var remoteMd5 = NetExtensions.RequestMD5(Constants.UpdateSiteURL + RelativeURL);*/
+                    var contentLenght = new FileInfo("./app/" + LocalURL).Length;
+                    var remoteCL = NetExtensions.RequestContentLenght(Constants.UpdateSiteURL + RelativeURL);
+
+                    //uplauncher.SetState(string.Format("File {0} already exists  MD5:{1} RemoteMD5:{2} ...", LocalURL, md5, remoteMd5));
+                    //uplauncher.SetState(string.Format("File {0} already exists Lenght:{1} Remote Lenght:{2} ...", LocalURL, contentLenght, remoteCL));
+                    if (contentLenght == remoteCL)
+                    {
+                        OnApplied();
+                        return;
+                    }
                 }
             }
 

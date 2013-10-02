@@ -238,11 +238,11 @@ namespace WorldEditor.Editors.Items
         {
             get
             {
-                return DBTemplate.AppearanceId;
+                return WrappedItem.AppearanceId;
             }
             set
             {
-                DBTemplate.AppearanceId = value;
+                WrappedItem.AppearanceId = value;
             }
         }
 

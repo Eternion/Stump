@@ -240,6 +240,11 @@ namespace Uplauncher
             if (IsUpdating)
                 return;
 
+            var dialogResult = MessageBox.Show("Êtes-vous sur de vouloir réparer le jeu? Tous les fichiers seront supprimés puis téléchargés à nouveau !", "Réparer le jeu", MessageBoxButtons.YesNo);
+
+            if (dialogResult != DialogResult.Yes)
+                return;
+
             foreach (var process in Process.GetProcesses().Where(process => process.ProcessName == "Dofus"))
             {
                 process.Kill();
