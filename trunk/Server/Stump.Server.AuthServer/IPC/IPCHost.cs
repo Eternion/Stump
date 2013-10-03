@@ -63,8 +63,8 @@ namespace Stump.Server.AuthServer.IPC
                                                     ProtocolType.Tcp);
 
         private SocketAsyncEventArgs m_acceptArgs = new SocketAsyncEventArgs(); // async arg used on client connection
-        private SemaphoreSlim m_semaphore; // limit the number of threads accessing to a ressource
-        private List<IPCClient> m_clients = new List<IPCClient>(); 
+        private readonly SemaphoreSlim m_semaphore; // limit the number of threads accessing to a ressource
+        private readonly List<IPCClient> m_clients = new List<IPCClient>(); 
 
         private bool m_paused;
 
@@ -137,8 +137,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void StartAccept()
         {
-            m_acceptArgs = new SocketAsyncEventArgs();
-            m_acceptArgs.AcceptSocket = null;
+            m_acceptArgs = new SocketAsyncEventArgs {AcceptSocket = null};
             m_acceptArgs.Completed += (sender, e) => ProcessAccept(e);
 
             if (m_semaphore.CurrentCount == 0)
@@ -232,7 +231,7 @@ namespace Stump.Server.AuthServer.IPC
                     else
                     {
                         // just continue to receive
-                        bool willRaiseEvent = client.Socket.ReceiveAsync(e);
+                        var willRaiseEvent = client.Socket.ReceiveAsync(e);
 
                         if (!willRaiseEvent)
                         {
@@ -274,8 +273,6 @@ namespace Stump.Server.AuthServer.IPC
                         break;
                     case SocketAsyncOperation.Disconnect:
                         CloseClientSocket(e);
-                        break;
-                    default:
                         break;
                 }
             }

@@ -8,8 +8,8 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 {
     public class StatsCriterion : Criterion
     {
-        private static readonly Dictionary<string, PlayerFields> CriterionsBinds = new Dictionary<string, PlayerFields>()
-        {
+        private static readonly Dictionary<string, PlayerFields> CriterionsBinds = new Dictionary<string, PlayerFields>
+            {
             {"CA", PlayerFields.Agility},
             {"CC", PlayerFields.Chance},
             {"CS", PlayerFields.Strength},
@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
             {"CT", PlayerFields.TackleBlock},
         };
 
-        private static readonly Dictionary<string, PlayerFields> CriterionsStatsBaseBinds = new Dictionary<string, PlayerFields>()
+        private static readonly Dictionary<string, PlayerFields> CriterionsStatsBaseBinds = new Dictionary<string, PlayerFields>
         {
             {"Ca", PlayerFields.Agility},
             {"Cc", PlayerFields.Chance},
@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
             "Ce",
             "CE",
             "CD",
-            "CH",
+            "CH"
         };
 
         public StatsCriterion(string identifier)
@@ -108,7 +108,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                 Field = CriterionsStatsBaseBinds[Identifier];
                 Base = true;
             }
-            else if (!ExtraCriterions.Any(entry => entry == Identifier))
+            else if (ExtraCriterions.All(entry => entry != Identifier))
                 throw new Exception(string.Format("Cannot build StatsCriterion, {0} is not a stats identifier", Identifier));
 
             int comparand;

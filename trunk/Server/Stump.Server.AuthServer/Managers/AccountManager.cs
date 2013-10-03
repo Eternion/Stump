@@ -1,23 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using NLog;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.OpenSsl;
 using Stump.Core.Attributes;
-using Stump.Core.Collections;
-using Stump.Core.Cryptography;
-using Stump.Core.Extensions;
-using Stump.Core.Reflection;
-using Stump.Core.Threading;
 using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.AuthServer.Database;
-using Stump.Server.AuthServer.Network;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.IPC.Messages;
 
@@ -82,13 +71,7 @@ namespace Stump.Server.AuthServer.Managers
 
         private void TimerTick()
         {
-            var toRemove = new List<int>();
-
-            foreach (var tuple in m_accountsCache.Values)
-            {
-                if (tuple.Item1 >= DateTime.Now)
-                    toRemove.Add(tuple.Item2.Id);
-            }
+            var toRemove = (from tuple in m_accountsCache.Values where tuple.Item1 >= DateTime.Now select tuple.Item2.Id).ToList();
 
             foreach (var id in toRemove)
             {
@@ -243,7 +226,7 @@ namespace Stump.Server.AuthServer.Managers
 
         public bool AddAccountCharacter(Account account, WorldServer world, int characterId)
         {
-            WorldCharacter character = CreateAccountCharacter(account, world, characterId);
+            var character = CreateAccountCharacter(account, world, characterId);
 
 
             return true;
@@ -276,23 +259,23 @@ namespace Stump.Server.AuthServer.Managers
         // todo : callback to know if an account has been disconnected
         public void DisconnectClientsUsingAccount(Account account)
         {
-            AuthClient[] clients = AuthServer.Instance.FindClients(entry => entry.Account != null &&
+            var clients = AuthServer.Instance.FindClients(entry => entry.Account != null &&
                                                                             entry.Account.Id == account.Id).ToArray();
 
             // disconnect clients from auth server
-            foreach (AuthClient client in clients)
+            foreach (var client in clients)
             {
                 client.Disconnect();
             }
 
-            if (account.LastConnectionWorld != null)
-            {
-                var server = WorldServerManager.Instance.GetServerById(account.LastConnectionWorld.Value);
+            if (account.LastConnectionWorld == null)
+                return;
 
-                if (server != null && server.Connected && server.IPCClient != null)
-                {
-                    server.IPCClient.Send(new DisconnectClientMessage(account.Id));
-                }
+            var server = WorldServerManager.Instance.GetServerById(account.LastConnectionWorld.Value);
+
+            if (server != null && server.Connected && server.IPCClient != null)
+            {
+                server.IPCClient.Send(new DisconnectClientMessage(account.Id));
             }
         }
     }
