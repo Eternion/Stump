@@ -493,22 +493,26 @@ namespace Uplauncher
             }
 
             m_currentTasks = new Stack<PatchTask>(patch.Tasks);
+
             ProcessTask();
         }
 
         private void ProcessTask()
         {
-            if (m_currentTasks.Count == 0)
-            {
-                ProcessSequence();
-                return;
-            }
+            ThreadPool.QueueUserWorkItem(_ =>
+                {
+                    if (m_currentTasks.Count == 0)
+                    {
+                        ProcessSequence();
+                        return;
+                    }
 
-            var task = m_currentTasks.Pop();
+                    var task = m_currentTasks.Pop();
 
-            CheckIfReplaceExe(task);
-            task.Applied += x => ProcessTask();
-            task.Apply(this);
+                    CheckIfReplaceExe(task);
+                    task.Applied += x => ProcessTask();
+                    task.Apply(this);
+                });
         }
 
         private void CheckIfReplaceExe(PatchTask task)

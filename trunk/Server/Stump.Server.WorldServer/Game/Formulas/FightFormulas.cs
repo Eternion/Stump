@@ -16,10 +16,7 @@ namespace Stump.Server.WorldServer.Game.Formulas
         public static int InvokeWinXpModifier(CharacterFighter looter, int xp)
         {
             var handler = WinXpModifier;
-            if (handler != null)
-                return handler(looter, xp);
-
-            return xp;
+            return handler != null ? handler(looter, xp) : xp;
         }
 
         public static event Func<CharacterFighter, int, int> WinKamasModifier;
@@ -27,10 +24,7 @@ namespace Stump.Server.WorldServer.Game.Formulas
         public static int InvokeWinKamasModifier(CharacterFighter looter, int kamas)
         {
             var handler = WinKamasModifier;
-            if (handler != null)
-                return handler(looter, kamas);
-
-            return kamas;
+            return handler != null ? handler(looter, kamas) : kamas;
         }
 
         public static event Func<CharacterFighter, DroppableItem, double, double> DropRateModifier;
@@ -38,10 +32,7 @@ namespace Stump.Server.WorldServer.Game.Formulas
         public static double InvokeDropRateModifier(CharacterFighter looter, DroppableItem item, double rate)
         {
             var handler = DropRateModifier;
-            if (handler != null)
-                return handler(looter, item, rate);
-
-            return rate;
+            return handler != null ? handler(looter, item, rate) : rate;
         }
 
         public static readonly double[] GroupCoefficients =
@@ -69,11 +60,11 @@ namespace Stump.Server.WorldServer.Game.Formulas
             if (!monsters.Any() || !players.Any())
                 return 0;
 
-            int sumPlayersLevel = players.Sum(entry => entry.Level);
-            byte maxPlayerLevel = players.Max(entry => entry.Level);
-            int sumMonstersLevel = monsters.Sum(entry => entry.Level);
-            byte maxMonsterLevel = monsters.Max(entry => entry.Level);
-            int sumMonsterXp = monsters.Sum(entry => entry.Monster.Grade.GradeXp);
+            var sumPlayersLevel = players.Sum(entry => entry.Level);
+            var maxPlayerLevel = players.Max(entry => entry.Level);
+            var sumMonstersLevel = monsters.Sum(entry => entry.Level);
+            var maxMonsterLevel = monsters.Max(entry => entry.Level);
+            var sumMonsterXp = monsters.Sum(entry => entry.Monster.Grade.GradeXp);
 
             double levelCoeff = 1;
             if (sumPlayersLevel - 5 > sumMonstersLevel)
@@ -81,15 +72,15 @@ namespace Stump.Server.WorldServer.Game.Formulas
             else if (sumPlayersLevel + 10 < sumMonstersLevel)
                 levelCoeff = ( sumPlayersLevel + 10 ) / (double)sumMonstersLevel;
 
-            double xpRatio = Math.Min(fighter.Level, Math.Truncate(2.5d * maxMonsterLevel)) / sumPlayersLevel * 100d;
+            var xpRatio = Math.Min(fighter.Level, Math.Truncate(2.5d * maxMonsterLevel)) / sumPlayersLevel * 100d;
 
-            int regularGroupRatio = players.Where(entry => entry.Level >= maxPlayerLevel / 3).Sum(entry => 1);
+            var regularGroupRatio = players.Where(entry => entry.Level >= maxPlayerLevel / 3).Sum(entry => 1);
 
             if (regularGroupRatio <= 0)
                 regularGroupRatio = 1;
 
-            double baseXp = Math.Truncate(xpRatio / 100 * Math.Truncate(sumMonsterXp * GroupCoefficients[regularGroupRatio - 1] * levelCoeff));
-            double multiplicator = fighter.Fight.AgeBonus <= 0 ? 1 : 1 + fighter.Fight.AgeBonus / 100d;
+            var baseXp = Math.Truncate(xpRatio / 100 * Math.Truncate(sumMonsterXp * GroupCoefficients[regularGroupRatio - 1] * levelCoeff));
+            var multiplicator = fighter.Fight.AgeBonus <= 0 ? 1 : 1 + fighter.Fight.AgeBonus / 100d;
             var xp = (int)Math.Truncate(Math.Truncate(baseXp * ( 100 + fighter.Stats[PlayerFields.Wisdom].Total ) / 100d) * multiplicator * Rates.XpRate);
 
             return InvokeWinXpModifier(fighter, xp);
@@ -97,10 +88,10 @@ namespace Stump.Server.WorldServer.Game.Formulas
 
         public static int AdjustDroppedKamas(CharacterFighter looter, int teamPP, long baseKamas)
         {
-            int looterPP = looter.Stats[PlayerFields.Prospecting].Total;
+            var looterPP = looter.Stats[PlayerFields.Prospecting].Total;
 
-            double multiplicator = looter.Fight.AgeBonus <= 0 ? 1 : 1 + looter.Fight.AgeBonus / 100d;
-            int kamas = (int)( baseKamas * ( (double)looterPP / teamPP ) * multiplicator * Rates.KamasRate );
+            var multiplicator = looter.Fight.AgeBonus <= 0 ? 1 : 1 + looter.Fight.AgeBonus / 100d;
+            var kamas = (int)( baseKamas * ( (double)looterPP / teamPP ) * multiplicator * Rates.KamasRate );
 
             return InvokeWinKamasModifier(looter, kamas);
         }

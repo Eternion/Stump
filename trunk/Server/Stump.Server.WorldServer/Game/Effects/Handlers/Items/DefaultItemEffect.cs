@@ -377,7 +377,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
 
         private static void AddMP(Character target, EffectInteger effect)
         {
-            target.Stats[PlayerFields.MP].Equiped += effect.Value;
+            if (target.Stats[PlayerFields.MP].Total + effect.Value <= 6)
+                target.Stats[PlayerFields.MP].Equiped += effect.Value;
         }
 
         private static void AddStrength(Character target, EffectInteger effect)

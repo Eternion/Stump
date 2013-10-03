@@ -33,7 +33,7 @@ namespace Stump.Server.AuthServer.IPC
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
 
-        private Dictionary<Type, Action<object, IPCMessage>> m_handlers = new Dictionary<Type, Action<object, IPCMessage>>();
+        private readonly Dictionary<Type, Action<object, IPCMessage>> m_handlers = new Dictionary<Type, Action<object, IPCMessage>>();
 
         public IPCOperations(IPCClient ipcClient)
         {
@@ -198,7 +198,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(UpdateAccountMessage message)
         {
-            Account account = AccountManager.FindAccountById(message.Account.Id);
+            var account = AccountManager.FindAccountById(message.Account.Id);
 
             if (account == null)
             {
@@ -218,7 +218,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(DeleteAccountMessage message)
         {
-            Account account = null;
+            Account account;
             if (message.AccountId != null)
                 account = AccountManager.FindAccountById((int) message.AccountId);
             else if (!string.IsNullOrEmpty(message.AccountName))
@@ -245,7 +245,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(AddCharacterMessage message)
         {
-            Account account = AccountManager.FindAccountById(message.AccountId);
+            var account = AccountManager.FindAccountById(message.AccountId);
 
             if (account == null)
             {
@@ -261,7 +261,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(DeleteCharacterMessage message)
         {
-            Account account = AccountManager.FindAccountById(message.AccountId);
+            var account = AccountManager.FindAccountById(message.AccountId);
 
             if (account == null)
             {
@@ -277,7 +277,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(BanAccountMessage message)
         {
-            Account victimAccount = null;
+            Account victimAccount;
             if (message.AccountId != null)
                 victimAccount = AccountManager.FindAccountById((int)message.AccountId);
             else if (!string.IsNullOrEmpty(message.AccountName))
@@ -305,7 +305,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(UnBanAccountMessage message)
         {
-            Account victimAccount = null;
+            Account victimAccount;
             if (message.AccountId != null)
                 victimAccount = AccountManager.FindAccountById((int)message.AccountId);
             else if (!string.IsNullOrEmpty(message.AccountName))
@@ -333,8 +333,8 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(BanIPMessage message)
         {
-            IpBan ipBan = AccountManager.FindIpBan(message.IPRange);
-            IPAddressRange ip = IPAddressRange.Parse(message.IPRange);
+            var ipBan = AccountManager.FindIpBan(message.IPRange);
+            var ip = IPAddressRange.Parse(message.IPRange);
             if (ipBan != null)
             {
                 ipBan.BanReason = message.BanReason;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Stump.Core.Attributes;
-using Stump.Core.Collections;
 using Stump.Core.IO;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
@@ -78,6 +77,7 @@ namespace Stump.Server.WorldServer.Game.Social
         public void Initialize()
         {
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_GLOBAL, SayGlobal);
+            ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_GUILD, SayGuild);
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_PARTY, SayParty);
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_SALES, SaySales);
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_SEEK, SaySeek);
@@ -94,7 +94,7 @@ namespace Stump.Server.WorldServer.Game.Social
                 case ChatActivableChannelsEnum.CHANNEL_TEAM:
                     return character.IsFighting();
                 case ChatActivableChannelsEnum.CHANNEL_GUILD:
-                    return false;
+                    return character.Guild != null;
                 case ChatActivableChannelsEnum.CHANNEL_ALIGN:
                     return false;
                 case ChatActivableChannelsEnum.CHANNEL_PARTY:
@@ -150,7 +150,7 @@ namespace Stump.Server.WorldServer.Game.Social
             }
         }
 
-        private void SendChatServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message)
+        private static void SendChatServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message)
         {
             if (sender.Account.Role >= AdministratorChatMinAccess)
                 ChatHandler.SendChatAdminServerMessage(client, sender, channel, message);
@@ -199,6 +199,14 @@ namespace Stump.Server.WorldServer.Game.Social
                 return;
 
             client.Character.Party.ForEach(entry => SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_PARTY, msg));
+        }
+
+        public void SayGuild(WorldClient client, string msg)
+        {
+            if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_GUILD))
+                return;
+
+            client.Character.Guild.Clients.ForEach(entry => SendChatServerMessage(entry, client.Character, ChatActivableChannelsEnum.CHANNEL_GUILD, msg));
         }
 
         public void SayTeam(WorldClient client, string msg)

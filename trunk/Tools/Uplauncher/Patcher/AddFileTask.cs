@@ -55,24 +55,19 @@ namespace Uplauncher.Patcher
             if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
 
-            if (1 == 2)
+            if (File.Exists("./app/" + LocalURL))
             {
-                if (File.Exists("./app/" + LocalURL))
+                uplauncher.SetState(string.Format("Check if {0} already exists ...", RelativeURL));
+
+                var md5 = Cryptography.GetFileMD5HashBase64("./app/" + LocalURL);
+                var remoteMd5 = NetExtensions.RequestMD5(Constants.UpdateSiteURL + RelativeURL);
+
+                if (md5 == remoteMd5)
                 {
-                    uplauncher.SetState(string.Format("Check if {0} already exists ...", RelativeURL));
+                    uplauncher.SetState(string.Format("File {0} already exists... Next !", RelativeURL));
 
-                    /*var md5 = Cryptography.GetFileMD5HashBase64("./app/" + LocalURL);
-                    var remoteMd5 = NetExtensions.RequestMD5(Constants.UpdateSiteURL + RelativeURL);*/
-                    var contentLenght = new FileInfo("./app/" + LocalURL).Length;
-                    var remoteCL = NetExtensions.RequestContentLenght(Constants.UpdateSiteURL + RelativeURL);
-
-                    //uplauncher.SetState(string.Format("File {0} already exists  MD5:{1} RemoteMD5:{2} ...", LocalURL, md5, remoteMd5));
-                    //uplauncher.SetState(string.Format("File {0} already exists Lenght:{1} Remote Lenght:{2} ...", LocalURL, contentLenght, remoteCL));
-                    if (contentLenght == remoteCL)
-                    {
-                        OnApplied();
-                        return;
-                    }
+                    OnApplied();
+                    return;
                 }
             }
 
