@@ -21,6 +21,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -38,15 +40,13 @@ namespace Uplauncher
     {
         private WebClient m_client = new WebClient();
         private readonly SoundProxy m_soundProxy = new SoundProxy();
-        private UpdateMeta m_meta;
-        private UpdateEntry m_currentUpdate;
         private Stack<PatchTask> m_currentTasks;
-        private Stack<UpdateEntry> m_sequence;
-        private bool m_replaceExe;
         private readonly DateTime? m_lastUpdateCheck;
         private static readonly Color DefaultMessageColor = Colors.Black;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private readonly BackgroundWorker _MD5Worker = new BackgroundWorker();
 
         public UplauncherModelView(DateTime? lastUpdateCheck)
         {
@@ -344,24 +344,92 @@ namespace Uplauncher
 
             SetState("Vérification de la mise à jour ...");
 
-            if (File.Exists(Constants.LocalVersionFile))
+            _MD5Worker.WorkerReportsProgress = true;
+            _MD5Worker.DoWork += MD5Worker_DoWork;
+            _MD5Worker.ProgressChanged += MD5Worker_ProgressChanged;
+            _MD5Worker.RunWorkerCompleted += MD5Worker_RunWorkerCompleted;
+
+            var fullPath = Directory.GetCurrentDirectory() + @"\app";
+            if (!Directory.Exists(fullPath))
             {
-                int version;
-                CurrentVersion = int.TryParse(File.ReadAllText(Constants.LocalVersionFile), out version) ? version : 0;
+                Directory.CreateDirectory("app");
+
+                m_client = new WebClient();
+                m_client.DownloadProgressChanged += OnDownloadProgressChanged;
+                m_client.DownloadStringCompleted += OnChecksumFileDownloaded;
+                m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemoteChecksumFile), Constants.UpdateSiteURL + Constants.RemoteChecksumFile);
             }
             else
-                CurrentVersion = 0;
+            {
+                /*if (File.Exists(Constants.LocalChecksumFile))
+                {
+                    LocalChecksum = File.ReadAllText(Constants.LocalChecksumFile);
+                    if (string.IsNullOrEmpty(LocalChecksum))
+                        _MD5Worker.RunWorkerAsync();
+                    else
+                    {
+                        m_client = new WebClient();
+                        m_client.DownloadProgressChanged += OnDownloadProgressChanged;
+                        m_client.DownloadStringCompleted += OnChecksumFileDownloaded;
+                        m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemoteChecksumFile), Constants.UpdateSiteURL + Constants.RemoteChecksumFile);
+                    }
+                }
+                else
+                {
+                    _MD5Worker.RunWorkerAsync();
+                }*/
+                _MD5Worker.RunWorkerAsync();
+            }
+        }
 
-            Debug.WriteLine("Current Version : {0}", CurrentVersion);
+        private void MD5Worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var path = Directory.GetCurrentDirectory() + @"\app";
+
+            var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories)
+                                 .OrderBy(p => p).ToList();
+
+            var md5 = MD5.Create();
+
+            for (var i = 0; i < files.Count; i++)
+            {
+                var file = files[i];
+
+                var relativePath = file.Substring(path.Length + 1);
+                var pathBytes = Encoding.UTF8.GetBytes(relativePath.ToLower());
+                md5.TransformBlock(pathBytes, 0, pathBytes.Length, pathBytes, 0);
+
+                var contentBytes = File.ReadAllBytes(file);
+                if (i == files.Count - 1)
+                    md5.TransformFinalBlock(contentBytes, 0, contentBytes.Length);
+                else
+                    md5.TransformBlock(contentBytes, 0, contentBytes.Length, contentBytes, 0);
+
+                var percentProgress = (i*100)/files.Count;
+                _MD5Worker.ReportProgress(percentProgress);
+            }
+
+            LocalChecksum = files.Count != 0 ? BitConverter.ToString(md5.Hash).Replace("-", "").ToLower() : "0";
+        }
+
+        private void MD5Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            DownloadProgress = e.ProgressPercentage;
+            SetState(string.Format("Vérification de l'intégrité des fichiers en cours... ({0} % accompli)", e.ProgressPercentage), Colors.Green);
+        }
+
+        private void MD5Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            DownloadProgress = 100;
+            SetState("Vérification de l'intégrité des fichiers terminé.", Colors.Green);
 
             m_client = new WebClient();
             m_client.DownloadProgressChanged += OnDownloadProgressChanged;
-            m_client.DownloadStringCompleted += OnMetaFileDownloaded;
-            m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemoteMetaFile), Constants.UpdateSiteURL + Constants.RemoteMetaFile);
+            m_client.DownloadStringCompleted += OnChecksumFileDownloaded;
+            m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemoteChecksumFile), Constants.UpdateSiteURL + Constants.RemoteChecksumFile);
         }
 
-       
-        private void OnMetaFileDownloaded(object sender, DownloadStringCompletedEventArgs e)
+        private void OnChecksumFileDownloaded(object sender, DownloadStringCompletedEventArgs e)
         {
             if (e.Cancelled || e.Error != null)
             {
@@ -369,113 +437,34 @@ namespace Uplauncher
                 return;
             }
 
-            Debug.WriteLine("Remote Version file : {0}", e.Result);
-            m_client.DownloadStringCompleted -= OnMetaFileDownloaded;
+            m_client.DownloadStringCompleted -= OnChecksumFileDownloaded;
 
             try
             {
-                m_meta = XmlUtils.Deserialize<UpdateMeta>(new StringReader(e.Result));
+                RemoteChecksum = e.Result;
+
+                if (RemoteChecksum != LocalChecksum)
+                {
+                    IsUpToDate = false;
+                    m_playCommand.RaiseCanExecuteChanged();
+
+                    // download patch xml
+                    m_client.DownloadStringCompleted += OnPatchDownloaded;
+                    m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemotePatchFile), Constants.UpdateSiteURL + Constants.RemotePatchFile);
+                }
+                else
+                {
+                    File.WriteAllText(Constants.LocalChecksumFile, LocalChecksum);
+                    SetState(string.Format("Le jeu est à jour"), Colors.Green);
+                    IsUpdating = false;
+                    IsUpToDate = true;
+                }
             }
             catch (Exception ex)
             {
                 HandleDownloadError(false, ex, (string)e.UserState);
                 return;
             }
-
-            if (m_meta.LastVersion > CurrentVersion)
-            {
-                IsUpToDate = false;
-                m_playCommand.RaiseCanExecuteChanged();
-                RemoteVersion = m_meta.LastVersion;
-                Debug.WriteLine("RemoteVersion = {0} CurrentVersion = {1} -> UPDATE", RemoteVersion, CurrentVersion);
-                var sequence = new Stack<UpdateEntry>(GeneratePatchSequenceExecution(m_meta.Updates, CurrentVersion, RemoteVersion));
-                
-                // check validity
-                if (sequence.Count == 0 || sequence.All(x => x.FromVersion != CurrentVersion) || sequence.All(x => x.ToVersion != RemoteVersion))
-                {
-                    HandleDownloadError(false, new Exception("Cannot generate the update sequence. Retry later"), (string)e.UserState);
-                    return;
-                }
-
-                m_sequence = sequence;
-
-                ProcessSequence();
-            }
-            else
-            {
-                SetState(string.Format("Le jeu est à jour (version {0})", CurrentVersion), Colors.Green);
-                IsUpdating = false;
-                IsUpToDate = true;
-            }
-        }
-
-        private static IEnumerable<UpdateEntry> GeneratePatchSequenceExecution(ICollection<UpdateEntry> entries, int forRevision, int toRevision, bool reverse = true)
-        {
-            if (!entries.Any())
-                return Enumerable.Empty<UpdateEntry>();
-
-            var possibleSequences = new List<IEnumerable<UpdateEntry>>();
-
-            foreach (var file in entries.Where(entry => entry.FromVersion == forRevision))
-            {
-                // direct update
-                if (file.FromVersion == forRevision &&
-                    file.ToVersion == toRevision)
-                    return new[] { file };
-
-                var patchs = new List<UpdateEntry>
-                    {
-                    file
-                };
-
-                patchs.AddRange(GeneratePatchSequenceExecution(entries.Where(entry => entry.FromVersion >= file.ToVersion).ToArray(), file.ToVersion, toRevision, false));
-
-                if (patchs.Count > 1)
-                    possibleSequences.Add(patchs);
-            }
-
-            if (possibleSequences.Count <= 0)
-                return Enumerable.Empty<UpdateEntry>();
-
-            // return the sequence that have lesser patchs
-            var sequence = possibleSequences.OrderBy(entry => entry.Count()).First();
-
-            return reverse ? sequence.Reverse() : sequence;
-        }
-
-        private void ProcessSequence()
-        {
-            // executed, update the version
-            if (m_currentUpdate != null)
-            {
-                CurrentVersion = m_currentUpdate.ToVersion;
-                File.WriteAllText(Constants.LocalVersionFile, CurrentVersion.ToString());
-
-                // uplauncher.exe must be replace. we start another process that will replace it
-                if (m_replaceExe)
-                {
-                    var file = Path.GetTempFileName() + ".exe";
-                    File.WriteAllBytes(file, Resources.UplauncherReplacer);
-
-                    Process.Start(file, string.Format("{0} \"{1}\" \"{2}\"", Process.GetCurrentProcess().Id,
-                                                      Path.GetFullPath("./app/" + Constants.ExeReplaceTempPath),
-                                                      Path.GetFullPath(Constants.CurrentExePath)));
-                    NotifyIcon.Visible = false;
-                    Environment.Exit(1);
-                }
-            }
-
-            if (m_sequence.Count == 0)
-            {
-                OnUpdateEnded(true);
-                return;
-            }
-
-            m_currentUpdate = m_sequence.Pop();
-
-            // download patch xml
-            m_client.DownloadStringCompleted += OnPatchDownloaded;
-            m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + m_currentUpdate.PatchRelativURL), Constants.UpdateSiteURL + m_currentUpdate.PatchRelativURL);
         }
 
         private void OnPatchDownloaded(object sender, DownloadStringCompletedEventArgs e)
@@ -503,7 +492,7 @@ namespace Uplauncher
                 {
                     if (m_currentTasks.Count == 0)
                     {
-                        ProcessSequence();
+                        OnUpdateEnded(true);
                         return;
                     }
 
@@ -527,24 +516,23 @@ namespace Uplauncher
                 return;
 
             addFile.LocalURL = Constants.ExeReplaceTempPath;
-            m_replaceExe = true;
+
+            var file = Path.GetTempFileName() + ".exe";
+            File.WriteAllBytes(file, Resources.UplauncherReplacer);
+
+            Process.Start(file, string.Format("{0} \"{1}\" \"{2}\"", Process.GetCurrentProcess().Id,
+                                              Path.GetFullPath("./app/" + Constants.ExeReplaceTempPath),
+                                              Path.GetFullPath(Constants.CurrentExePath)));
+            NotifyIcon.Visible = false;
+            Environment.Exit(1);
         }
 
         private void OnUpdateEnded(bool success)
         {
             if (success)
             {
-                SetState(string.Format("Le jeu est à jour (version {0})", CurrentVersion), Colors.Green);
-
-                if (RemoteVersion > 0)
-                {
-                    CurrentVersion = RemoteVersion;
-                    File.WriteAllText(Constants.LocalVersionFile, CurrentVersion.ToString());
-                }
-                else
-                {
-                    File.Delete(Constants.LocalVersionFile);
-                }
+                //File.WriteAllText(Constants.LocalChecksumFile, LocalChecksum);
+                SetState(string.Format("Le jeu est à jour"), Colors.Green);
             }
 
             IsUpToDate = success;
@@ -610,13 +598,13 @@ namespace Uplauncher
             set;
         }
 
-        public int CurrentVersion
+        public string LocalChecksum
         {
             get;
             private set;
         }
 
-        public int RemoteVersion
+        public string RemoteChecksum
         {
             get;
             private set;

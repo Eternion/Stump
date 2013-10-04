@@ -125,7 +125,7 @@ namespace ArkalysPlugin.Prestige
         {
             if (replyId == PrestigeNpc.ReplyPrestigeSuccessId)
             {
-                Character.Client.Send(new GuildCreationStartedMessage());
+                //To do...
             }
 
             Close();

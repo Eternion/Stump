@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using Stump.Core.Xml;
 using Uplauncher.Patcher;
-using System.Diagnostics;
 
 namespace PatchBuilder
 {
