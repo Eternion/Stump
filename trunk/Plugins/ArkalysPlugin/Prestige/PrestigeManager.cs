@@ -44,7 +44,7 @@ namespace ArkalysPlugin.Prestige
 
         };
 
-        private static EffectInteger[][] m_prestigesBonus = new []
+        private static readonly EffectInteger[][] m_prestigesBonus = new []
             {
                 new[] {new EffectInteger(120, 10, new EffectBase())}, 
             };
@@ -135,7 +135,7 @@ namespace ArkalysPlugin.Prestige
             UnApplyPrestigeBonus(character, item);
         }
 
-        private void UnApplyPrestigeBonus(Character character, PlayerItem item)
+        private static void UnApplyPrestigeBonus(Character character, PlayerItem item)
         {
             if (item == null)
                 return;
@@ -157,7 +157,7 @@ namespace ArkalysPlugin.Prestige
 
         }
 
-        private void ApplyPrestigeBonus(Character character, PlayerItem item)
+        private static void ApplyPrestigeBonus(Character character, PlayerItem item)
         {
             if (item == null)
                 return;
