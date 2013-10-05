@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DFDC2AA2-969F-43B6-814F-C0C6C908807F}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DBSynchroniser</RootNamespace>
+    <AssemblyName>DBSynchroniser</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Records\abuse\AbuseReasons.cs" />
+    <Compile Include="Records\alignments\AlignmentBalance.cs" />
+    <Compile Include="Records\alignments\AlignmentEffect.cs" />
+    <Compile Include="Records\alignments\AlignmentGift.cs" />
+    <Compile Include="Records\alignments\AlignmentOrder.cs" />
+    <Compile Include="Records\alignments\AlignmentRank.cs" />
+    <Compile Include="Records\alignments\AlignmentRankJntGift.cs" />
+    <Compile Include="Records\alignments\AlignmentSide.cs" />
+    <Compile Include="Records\alignments\AlignmentTitle.cs" />
+    <Compile Include="Records\almanax\AlmanaxCalendar.cs" />
+    <Compile Include="Records\ambientSounds\AmbientSound.cs" />
+    <Compile Include="Records\appearance\Appearance.cs" />
+    <Compile Include="Records\appearance\Ornament.cs" />
+    <Compile Include="Records\appearance\SkinMapping.cs" />
+    <Compile Include="Records\appearance\Title.cs" />
+    <Compile Include="Records\appearance\TitleCategory.cs" />
+    <Compile Include="Records\breeds\Breed.cs" />
+    <Compile Include="Records\breeds\Head.cs" />
+    <Compile Include="Records\challenges\Challenge.cs" />
+    <Compile Include="Records\communication\CensoredWord.cs" />
+    <Compile Include="Records\communication\ChatChannel.cs" />
+    <Compile Include="Records\communication\Emoticon.cs" />
+    <Compile Include="Records\communication\InfoMessage.cs" />
+    <Compile Include="Records\communication\Smiley.cs" />
+    <Compile Include="Records\documents\Document.cs" />
+    <Compile Include="Records\effects\Effect.cs" />
+    <Compile Include="Records\externalnotifications\ExternalNotification.cs" />
+    <Compile Include="Records\guild\EmblemBackground.cs" />
+    <Compile Include="Records\guild\EmblemSymbol.cs" />
+    <Compile Include="Records\guild\EmblemSymbolCategory.cs" />
+    <Compile Include="Records\guild\RankName.cs" />
+    <Compile Include="Records\houses\House.cs" />
+    <Compile Include="Records\ID2ORecord.cs" />
+    <Compile Include="Records\interactives\Interactive.cs" />
+    <Compile Include="Records\interactives\SkillName.cs" />
+    <Compile Include="Records\interactives\StealthBones.cs" />
+    <Compile Include="Records\items\Incarnation.cs" />
+    <Compile Include="Records\items\IncarnationLevel.cs" />
+    <Compile Include="Records\items\Item.cs" />
+    <Compile Include="Records\items\ItemSet.cs" />
+    <Compile Include="Records\items\ItemType.cs" />
+    <Compile Include="Records\items\PresetIcon.cs" />
+    <Compile Include="Records\jobs\Job.cs" />
+    <Compile Include="Records\jobs\Recipe.cs" />
+    <Compile Include="Records\jobs\Skill.cs" />
+    <Compile Include="Records\livingObjects\LivingObjectSkinJntMood.cs" />
+    <Compile Include="Records\livingObjects\Pet.cs" />
+    <Compile Include="Records\livingObjects\SpeakingItemsTrigger.cs" />
+    <Compile Include="Records\livingObjects\SpeakingItemText.cs" />
+    <Compile Include="Records\misc\ActionDescription.cs" />
+    <Compile Include="Records\misc\CensoredContent.cs" />
+    <Compile Include="Records\misc\Month.cs" />
+    <Compile Include="Records\misc\OptionalFeature.cs" />
+    <Compile Include="Records\misc\Pack.cs" />
+    <Compile Include="Records\misc\Tips.cs" />
+    <Compile Include="Records\misc\TypeAction.cs" />
+    <Compile Include="Records\misc\Url.cs" />
+    <Compile Include="Records\monsters\Monster.cs" />
+    <Compile Include="Records\monsters\MonsterMiniBoss.cs" />
+    <Compile Include="Records\monsters\MonsterRace.cs" />
+    <Compile Include="Records\monsters\MonsterSuperRace.cs" />
+    <Compile Include="Records\mounts\Mount.cs" />
+    <Compile Include="Records\mounts\MountBehavior.cs" />
+    <Compile Include="Records\mounts\MountBone.cs" />
+    <Compile Include="Records\mounts\RideFood.cs" />
+    <Compile Include="Records\notifications\Notification.cs" />
+    <Compile Include="Records\npcs\Npc.cs" />
+    <Compile Include="Records\npcs\NpcAction.cs" />
+    <Compile Include="Records\npcs\NpcMessage.cs" />
+    <Compile Include="Records\npcs\TaxCollectorFirstname.cs" />
+    <Compile Include="Records\npcs\TaxCollectorName.cs" />
+    <Compile Include="Records\quest\Achievement.cs" />
+    <Compile Include="Records\quest\AchievementCategory.cs" />
+    <Compile Include="Records\quest\AchievementObjective.cs" />
+    <Compile Include="Records\quest\AchievementReward.cs" />
+    <Compile Include="Records\quest\Quest.cs" />
+    <Compile Include="Records\quest\QuestCategory.cs" />
+    <Compile Include="Records\quest\QuestObjective.cs" />
+    <Compile Include="Records\quest\QuestObjectiveType.cs" />
+    <Compile Include="Records\quest\QuestStep.cs" />
+    <Compile Include="Records\quest\QuestStepRewards.cs" />
+    <Compile Include="Records\servers\Server.cs" />
+    <Compile Include="Records\servers\ServerCommunity.cs" />
+    <Compile Include="Records\servers\ServerGameType.cs" />
+    <Compile Include="Records\servers\ServerPopulation.cs" />
+    <Compile Include="Records\sounds\SoundAnimation.cs" />
+    <Compile Include="Records\sounds\SoundBones.cs" />
+    <Compile Include="Records\sounds\SoundUi.cs" />
+    <Compile Include="Records\sounds\SoundUiElement.cs" />
+    <Compile Include="Records\sounds\SoundUiHook.cs" />
+    <Compile Include="Records\spells\Spell.cs" />
+    <Compile Include="Records\spells\SpellBomb.cs" />
+    <Compile Include="Records\spells\SpellLevel.cs" />
+    <Compile Include="Records\spells\SpellState.cs" />
+    <Compile Include="Records\spells\SpellType.cs" />
+    <Compile Include="Records\world\Area.cs" />
+    <Compile Include="Records\world\Dungeon.cs" />
+    <Compile Include="Records\world\Hint.cs" />
+    <Compile Include="Records\world\HintCategory.cs" />
+    <Compile Include="Records\world\MapCoordinates.cs" />
+    <Compile Include="Records\world\MapPosition.cs" />
+    <Compile Include="Records\world\MapReference.cs" />
+    <Compile Include="Records\world\SubArea.cs" />
+    <Compile Include="Records\world\SuperArea.cs" />
+    <Compile Include="Records\world\WorldMap.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Records\effects\instances\" />
+    <Folder Include="Records\items\criterion\" />
+    <Folder Include="Records\quest\objectives\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">
+      <Project>{8ac12413-bd4f-4c35-b61a-5e5894d33afb}</Project>
+      <Name>Stump.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Stump.ORM\Stump.ORM.csproj">
+      <Project>{E7406629-E127-4B96-8F29-287947075631}</Project>
+      <Name>Stump.ORM</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DofusProtocol\D2oClasses\Stump.DofusProtocol.D2oClasses.csproj">
+      <Project>{33093793-c4ba-4b89-ac82-6e9d00437452}</Project>
+      <Name>Stump.DofusProtocol.D2oClasses</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

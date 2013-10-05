@@ -16,6 +16,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Windows;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using WorldEditor.Config;
@@ -73,6 +75,37 @@ namespace WorldEditor
         {
             var window = new ItemSearchDialog();
             window.Show();
+        }
+
+        #endregion
+
+
+        #region OpenConfigCommand
+
+        private DelegateCommand m_openConfigCommand;
+
+        public DelegateCommand OpenConfigCommand
+        {
+            get { return m_openConfigCommand ?? (m_openConfigCommand = new DelegateCommand(OnOpenConfig, CanOpenConfig)); }
+        }
+
+        private bool CanOpenConfig(object parameter)
+        {
+            return true;
+        }
+
+        private void OnOpenConfig(object parameter)
+        {
+            var dialog = new ConfigDialog();
+            if (dialog.ShowDialog() == true)
+            {
+                if (MessageService.ShowYesNoQuestion(null,
+                                                     "To take the config changes in account you have to restart the application. Do you want to restart ?"))
+                {
+                    Process.Start(Application.ResourceAssembly.Location);
+                    Application.Current.Shutdown();
+                }
+            }
         }
 
         #endregion
