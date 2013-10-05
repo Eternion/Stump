@@ -58,6 +58,7 @@ namespace WorldEditor
                 ShowConfigDialog();
 
             OpenDB();
+
             InitializeLoader(() => I18NDataManager.Instance.AddReaders(Settings.LoaderSettings.D2IDirectory),
                              "Loading d2i files ...");
             // todo

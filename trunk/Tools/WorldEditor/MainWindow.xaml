@@ -13,5 +13,10 @@
         <Button Content="Search an item ..." Margin="5" Command="{Binding SearchItemCommand}"/>
       </UniformGrid>
     </GroupBox>
+      <Button Margin="3" Command="{Binding OpenConfigCommand}">
+          <StackPanel Orientation="Horizontal">
+              <Image Source="pack://application:,,,/Images/gear_32xLG.png" /><TextBlock Text="Modify config" VerticalAlignment="Center" />
+          </StackPanel>
+      </Button>
   </StackPanel>
 </Window>

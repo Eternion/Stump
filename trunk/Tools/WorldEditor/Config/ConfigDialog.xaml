@@ -59,7 +59,7 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
                 </Grid>
-                <Button Grid.Column="1" Margin="3">
+                <Button Grid.Column="1" Margin="3" Command="{Binding TestDBCommand}">
                     <StackPanel Orientation="Horizontal"><Image Source="/WorldEditor;component/Images/Relation_8467_32x.png" Width="16" Height="16" Margin="3,0"/><TextBlock Text="Try connection"></TextBlock></StackPanel></Button>
             </StackPanel>
         </GroupBox>

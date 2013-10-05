@@ -1,0 +1,112 @@
+﻿<#@ template  debug="true" hostSpecific="true" #>
+<#@ output extension=".cs" #>
+<#@ Assembly Name="System.Core" #>
+<#@ Assembly Name="System.Windows.Forms" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #> 
+<#@ parameter name="Profile" type="DofusProtocolBuilder.Profiles.ParsingProfile" #>
+<#@ parameter name="Parser" type="DofusProtocolBuilder.Parsing.Parser"#>
+<#@ include file="./Helper.tt"#>
+// Generated on <#= DateTime.Now #>
+using System;
+using System.Collections.Generic;
+using Stump.Core.IO;
+using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
+using Stump.ORM;
+using Stump.ORM.SubSonic.SQLGeneration.Schema;
+
+namespace DBSynchroniser.Records
+{
+<# PushIndent("    "); #>
+<#
+var module = Parser.Fields.FirstOrDefault(x => x.Name == "MODULE");
+
+if (module != null)
+    WriteLine(string.Format("[D2OClass({0})]", module.Value));
+else
+    WriteLine(string.Format("[D2OClass(\"{0}\")]", Parser.Class.Name));
+#>
+public class <#=Parser.Class.Name #>Record<#=( Parser.Class.Heritage != "Object" ? " : " + Parser.Class.Heritage : " : ID2ORecord" ) #>
+{
+<# PushIndent("    "); #>
+<#
+foreach (var field in Parser.Fields)
+{
+	if (field.Modifiers != AccessModifiers.Public && field.Name != "MODULE")
+		continue;
+
+    WriteField(field);
+} 
+WriteLine("");
+var idField = Parser.Fields.FirstOrDefault(x => x.Name == "id");
+
+if (idField == null)
+{
+    idField = Parser.Fields.FirstOrDefault(x => x.Name.IndexOf("id", StringComparison.InvariantCultureIgnoreCase) != -1);
+
+    if (idField == null)
+        idField = Parser.Fields.FirstOrDefault();
+}
+
+foreach (var field in Parser.Fields)
+{
+	if (field.Modifiers != AccessModifiers.Public || field.Name == "MODULE" || field.IsConst || field.IsStatic)
+		continue;
+
+    if (field.Name == idField.Name)
+        WriteLine("[PrimaryKey(\"" + ToPascalCase(idField.Name) + "\", false)]");
+
+    WriteDBProperty(field);
+    WriteLine("");
+}
+#>
+public void AssignFields(object obj)
+{
+<# PushIndent("    "); #>
+var castedObj = (<#=Parser.Class.Name #>)obj;
+
+<#
+foreach (var field in Parser.Fields)
+{
+	if (field.Modifiers != AccessModifiers.Public || field.Name == "MODULE" || field.IsConst || field.IsStatic)
+		continue;
+
+	Write(ToPascalCase(field.Name));
+    Write(" = ");
+    Write("castedObj." + field.Name);
+    WriteLine(";");
+}
+#>
+<# PopIndent(); #>
+}
+
+public object CreateObject()
+{
+<# PushIndent("    "); #>
+var obj = new <#=Parser.Class.Name #>();
+
+<#
+foreach (var field in Parser.Fields)
+{
+	if (field.Modifiers != AccessModifiers.Public || field.Name == "MODULE" || field.IsConst || field.IsStatic)
+		continue;
+
+    Write("obj." + field.Name);
+    Write(" = ");
+	Write(ToPascalCase(field.Name));
+    WriteLine(";");
+}
+#>
+return obj;
+<# PopIndent(); #>
+
+}
+<# PopIndent(); #>
+}
+<# PopIndent(); #>
+}
