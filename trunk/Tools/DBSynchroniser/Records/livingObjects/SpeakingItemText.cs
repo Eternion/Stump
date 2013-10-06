@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:00
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("SpeakingItemsText")]
+    [TableName("SpeakingItemsText")]
+    [D2OClass("SpeakingItemText")]
     public class SpeakingItemTextRecord : ID2ORecord
     {
         private const String MODULE = "SpeakingItemsText";
@@ -23,7 +24,12 @@ namespace DBSynchroniser.Records
         public int textSound;
         public String textRestriction;
 
-        [PrimaryKey("TextId", false)]
+        [PrimaryKey("Id")]
+        public int Id
+        {
+            get;
+            set;
+        }
         public int TextId
         {
             get { return textId; }
@@ -54,13 +60,14 @@ namespace DBSynchroniser.Records
             set { textSound = value; }
         }
 
+        [NullString]
         public String TextRestriction
         {
             get { return textRestriction; }
             set { textRestriction = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (SpeakingItemText)obj;
             
@@ -72,10 +79,10 @@ namespace DBSynchroniser.Records
             TextRestriction = castedObj.textRestriction;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new SpeakingItemText();
             
+            var obj = new SpeakingItemText();
             obj.textId = TextId;
             obj.textProba = TextProba;
             obj.textStringId = TextStringId;

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:00
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Recipes")]
+    [TableName("Recipes")]
+    [D2OClass("Recipe")]
     public class RecipeRecord : ID2ORecord
     {
         private const String MODULE = "Recipes";
@@ -21,7 +22,12 @@ namespace DBSynchroniser.Records
         public List<int> ingredientIds;
         public List<uint> quantities;
 
-        [PrimaryKey("ResultId", false)]
+        [PrimaryKey("Id")]
+        public int Id
+        {
+            get;
+            set;
+        }
         public int ResultId
         {
             get { return resultId; }
@@ -78,7 +84,7 @@ namespace DBSynchroniser.Records
             }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Recipe)obj;
             
@@ -88,10 +94,10 @@ namespace DBSynchroniser.Records
             Quantities = castedObj.quantities;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Recipe();
             
+            var obj = new Recipe();
             obj.resultId = ResultId;
             obj.resultLevel = ResultLevel;
             obj.ingredientIds = IngredientIds;

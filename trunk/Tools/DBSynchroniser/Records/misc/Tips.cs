@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:00
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,6 +12,7 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
+    [TableName("Tips")]
     [D2OClass("Tips")]
     public class TipsRecord : ID2ORecord
     {
@@ -32,7 +33,7 @@ namespace DBSynchroniser.Records
             set { descId = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Tips)obj;
             
@@ -40,10 +41,10 @@ namespace DBSynchroniser.Records
             DescId = castedObj.descId;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Tips();
             
+            var obj = new Tips();
             obj.id = Id;
             obj.descId = DescId;
             return obj;

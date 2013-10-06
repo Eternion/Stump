@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:58
+// Generated on 10/06/2013 14:21:59
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,6 +12,7 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
+    [TableName("Incarnation")]
     [D2OClass("Incarnation")]
     public class IncarnationRecord : ID2ORecord
     {
@@ -27,19 +28,21 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [NullString]
         public String LookMale
         {
             get { return lookMale; }
             set { lookMale = value; }
         }
 
+        [NullString]
         public String LookFemale
         {
             get { return lookFemale; }
             set { lookFemale = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Incarnation)obj;
             
@@ -48,10 +51,10 @@ namespace DBSynchroniser.Records
             LookFemale = castedObj.lookFemale;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Incarnation();
             
+            var obj = new Incarnation();
             obj.id = Id;
             obj.lookMale = LookMale;
             obj.lookFemale = LookFemale;

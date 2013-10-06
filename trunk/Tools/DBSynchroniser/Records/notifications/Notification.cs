@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:01
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Notifications")]
+    [TableName("Notifications")]
+    [D2OClass("Notification")]
     public class NotificationRecord : ID2ORecord
     {
         private const String MODULE = "Notifications";
@@ -54,13 +55,14 @@ namespace DBSynchroniser.Records
             set { typeId = value; }
         }
 
+        [NullString]
         public String Trigger
         {
             get { return trigger; }
             set { trigger = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Notification)obj;
             
@@ -72,10 +74,10 @@ namespace DBSynchroniser.Records
             Trigger = castedObj.trigger;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Notification();
             
+            var obj = new Notification();
             obj.id = Id;
             obj.titleId = TitleId;
             obj.messageId = MessageId;

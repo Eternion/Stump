@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:01
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("AchievementCategories")]
+    [TableName("AchievementCategories")]
+    [D2OClass("AchievementCategory")]
     public class AchievementCategoryRecord : ID2ORecord
     {
         private const String MODULE = "AchievementCategories";
@@ -43,6 +44,7 @@ namespace DBSynchroniser.Records
             set { parentId = value; }
         }
 
+        [NullString]
         public String Icon
         {
             get { return icon; }
@@ -55,6 +57,7 @@ namespace DBSynchroniser.Records
             set { order = value; }
         }
 
+        [NullString]
         public String Color
         {
             get { return color; }
@@ -83,7 +86,7 @@ namespace DBSynchroniser.Records
             }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (AchievementCategory)obj;
             
@@ -96,10 +99,10 @@ namespace DBSynchroniser.Records
             AchievementIds = castedObj.achievementIds;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new AchievementCategory();
             
+            var obj = new AchievementCategory();
             obj.id = Id;
             obj.nameId = NameId;
             obj.parentId = ParentId;

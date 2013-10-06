@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:57
+// Generated on 10/06/2013 14:21:58
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Breeds")]
+    [TableName("Breeds")]
+    [D2OClass("Breed")]
     public class BreedRecord : ID2ORecord
     {
         private const String MODULE = "Breeds";
@@ -67,12 +68,14 @@ namespace DBSynchroniser.Records
             set { gameplayDescriptionId = value; }
         }
 
+        [NullString]
         public String MaleLook
         {
             get { return maleLook; }
             set { maleLook = value; }
         }
 
+        [NullString]
         public String FemaleLook
         {
             get { return femaleLook; }
@@ -295,7 +298,7 @@ namespace DBSynchroniser.Records
             }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Breed)obj;
             
@@ -320,10 +323,10 @@ namespace DBSynchroniser.Records
             FemaleColors = castedObj.femaleColors;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Breed();
             
+            var obj = new Breed();
             obj.id = Id;
             obj.shortNameId = ShortNameId;
             obj.longNameId = LongNameId;

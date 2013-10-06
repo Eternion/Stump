@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:00
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("ActionDescriptions")]
+    [TableName("ActionDescriptions")]
+    [D2OClass("ActionDescription")]
     public class ActionDescriptionRecord : ID2ORecord
     {
         public const String MODULE = "ActionDescriptions";
@@ -39,6 +40,7 @@ namespace DBSynchroniser.Records
             set { typeId = value; }
         }
 
+        [NullString]
         public String Name
         {
             get { return name; }
@@ -81,7 +83,7 @@ namespace DBSynchroniser.Records
             set { needConfirmation = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (ActionDescription)obj;
             
@@ -96,10 +98,10 @@ namespace DBSynchroniser.Records
             NeedConfirmation = castedObj.needConfirmation;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new ActionDescription();
             
+            var obj = new ActionDescription();
             obj.id = Id;
             obj.typeId = TypeId;
             obj.name = Name;

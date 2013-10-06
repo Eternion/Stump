@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:58
+// Generated on 10/06/2013 14:21:59
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("ItemTypes")]
+    [TableName("ItemTypes")]
+    [D2OClass("ItemType")]
     public class ItemTypeRecord : ID2ORecord
     {
         private const String MODULE = "ItemTypes";
@@ -55,6 +56,7 @@ namespace DBSynchroniser.Records
             set { gender = value; }
         }
 
+        [NullString]
         public String RawZone
         {
             get { return rawZone; }
@@ -67,7 +69,7 @@ namespace DBSynchroniser.Records
             set { needUseConfirm = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (ItemType)obj;
             
@@ -80,10 +82,10 @@ namespace DBSynchroniser.Records
             NeedUseConfirm = castedObj.needUseConfirm;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new ItemType();
             
+            var obj = new ItemType();
             obj.id = Id;
             obj.nameId = NameId;
             obj.superTypeId = SuperTypeId;

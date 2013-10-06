@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:11:00
+// Generated on 10/06/2013 14:22:01
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,6 +12,7 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
+    [TableName("SoundUiElement")]
     [D2OClass("SoundUiElement")]
     public class SoundUiElementRecord : ID2ORecord
     {
@@ -29,6 +30,7 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [NullString]
         public String Name
         {
             get { return name; }
@@ -41,6 +43,7 @@ namespace DBSynchroniser.Records
             set { hookId = value; }
         }
 
+        [NullString]
         public String File
         {
             get { return file; }
@@ -53,7 +56,7 @@ namespace DBSynchroniser.Records
             set { volume = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (SoundUiElement)obj;
             
@@ -64,10 +67,10 @@ namespace DBSynchroniser.Records
             Volume = castedObj.volume;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new SoundUiElement();
             
+            var obj = new SoundUiElement();
             obj.id = Id;
             obj.name = Name;
             obj.hookId = HookId;

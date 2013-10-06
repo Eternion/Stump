@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:11:00
+// Generated on 10/06/2013 14:22:02
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Hints")]
+    [TableName("Hints")]
+    [D2OClass("Hint")]
     public class HintRecord : ID2ORecord
     {
         private const String MODULE = "Hints";
@@ -88,7 +89,7 @@ namespace DBSynchroniser.Records
             set { subareaId = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Hint)obj;
             
@@ -104,10 +105,10 @@ namespace DBSynchroniser.Records
             SubareaId = castedObj.subareaId;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Hint();
             
+            var obj = new Hint();
             obj.id = Id;
             obj.categoryId = CategoryId;
             obj.gfx = Gfx;

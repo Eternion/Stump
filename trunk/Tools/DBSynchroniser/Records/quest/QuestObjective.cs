@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:01
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("QuestObjectives")]
+    [TableName("QuestObjectives")]
+    [D2OClass("QuestObjective")]
     public class QuestObjectiveRecord : ID2ORecord
     {
         private const String MODULE = "QuestObjectives";
@@ -22,7 +23,6 @@ namespace DBSynchroniser.Records
         public int dialogId;
         public List<uint> parameters;
         public Point coords;
-        public QuestObjectiveType type;
 
         [PrimaryKey("Id", false)]
         public uint Id
@@ -93,29 +93,7 @@ namespace DBSynchroniser.Records
             }
         }
 
-        [Ignore]
-        public QuestObjectiveType Type
-        {
-            get { return type; }
-            set
-            {
-                type = value;
-                m_typeBin = value == null ? null : value.ToBinary();
-            }
-        }
-
-        private byte[] m_typeBin;
-        public byte[] TypeBin
-        {
-            get { return m_typeBin; }
-            set
-            {
-                m_typeBin = value;
-                type = value == null ? null : value.ToObject<QuestObjectiveType>();
-            }
-        }
-
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (QuestObjective)obj;
             
@@ -125,20 +103,18 @@ namespace DBSynchroniser.Records
             DialogId = castedObj.dialogId;
             Parameters = castedObj.parameters;
             Coords = castedObj.coords;
-            Type = castedObj.type;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new QuestObjective();
             
+            var obj = new QuestObjective();
             obj.id = Id;
             obj.stepId = StepId;
             obj.typeId = TypeId;
             obj.dialogId = DialogId;
             obj.parameters = Parameters;
             obj.coords = Coords;
-            obj.type = Type;
             return obj;
         
         }

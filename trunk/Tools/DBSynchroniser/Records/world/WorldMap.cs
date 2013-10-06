@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:11:01
+// Generated on 10/06/2013 14:22:02
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("WorldMaps")]
+    [TableName("WorldMaps")]
+    [D2OClass("WorldMap")]
     public class WorldMapRecord : ID2ORecord
     {
         private const String MODULE = "WorldMaps";
@@ -146,7 +147,7 @@ namespace DBSynchroniser.Records
             }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (WorldMap)obj;
             
@@ -168,10 +169,10 @@ namespace DBSynchroniser.Records
             Zoom = castedObj.zoom;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new WorldMap();
             
+            var obj = new WorldMap();
             obj.id = Id;
             obj.origineX = OrigineX;
             obj.origineY = OrigineY;

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:57
+// Generated on 10/06/2013 14:21:58
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("ChatChannels")]
+    [TableName("ChatChannels")]
+    [D2OClass("ChatChannel")]
     public class ChatChannelRecord : ID2ORecord
     {
         private const String MODULE = "ChatChannels";
@@ -43,12 +44,14 @@ namespace DBSynchroniser.Records
             set { descriptionId = value; }
         }
 
+        [NullString]
         public String Shortcut
         {
             get { return shortcut; }
             set { shortcut = value; }
         }
 
+        [NullString]
         public String ShortcutKey
         {
             get { return shortcutKey; }
@@ -67,7 +70,7 @@ namespace DBSynchroniser.Records
             set { allowObjects = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (ChatChannel)obj;
             
@@ -80,10 +83,10 @@ namespace DBSynchroniser.Records
             AllowObjects = castedObj.allowObjects;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new ChatChannel();
             
+            var obj = new ChatChannel();
             obj.id = Id;
             obj.nameId = NameId;
             obj.descriptionId = DescriptionId;

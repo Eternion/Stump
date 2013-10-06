@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:01
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Mounts")]
+    [TableName("Mounts")]
+    [D2OClass("Mount")]
     public class MountRecord : ID2ORecord
     {
         public uint id;
@@ -33,13 +34,14 @@ namespace DBSynchroniser.Records
             set { nameId = value; }
         }
 
+        [NullString]
         public String Look
         {
             get { return look; }
             set { look = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Mount)obj;
             
@@ -48,10 +50,10 @@ namespace DBSynchroniser.Records
             Look = castedObj.look;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Mount();
             
+            var obj = new Mount();
             obj.id = Id;
             obj.nameId = NameId;
             obj.look = Look;

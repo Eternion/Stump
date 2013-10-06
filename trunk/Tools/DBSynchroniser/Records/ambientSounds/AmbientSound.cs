@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:57
+// Generated on 10/06/2013 14:21:58
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("AmbientSounds")]
+    [TableName("AmbientSounds")]
+    [D2OClass("AmbientSound")]
     public class AmbientSoundRecord : ID2ORecord
     {
         public const int AMBIENT_TYPE_ROLEPLAY = 1;
@@ -71,7 +72,7 @@ namespace DBSynchroniser.Records
             set { type_id = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (AmbientSound)obj;
             
@@ -84,10 +85,10 @@ namespace DBSynchroniser.Records
             Type_id = castedObj.type_id;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new AmbientSound();
             
+            var obj = new AmbientSound();
             obj.id = Id;
             obj.volume = Volume;
             obj.criterionId = CriterionId;

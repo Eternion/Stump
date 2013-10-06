@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:57
+// Generated on 10/06/2013 14:21:58
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("InfoMessages")]
+    [TableName("InfoMessages")]
+    [D2OClass("InfoMessage")]
     public class InfoMessageRecord : ID2ORecord
     {
         private const String MODULE = "InfoMessages";
@@ -20,7 +21,12 @@ namespace DBSynchroniser.Records
         public uint messageId;
         public uint textId;
 
-        [PrimaryKey("TypeId", false)]
+        [PrimaryKey("Id")]
+        public int Id
+        {
+            get;
+            set;
+        }
         public uint TypeId
         {
             get { return typeId; }
@@ -39,7 +45,7 @@ namespace DBSynchroniser.Records
             set { textId = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (InfoMessage)obj;
             
@@ -48,10 +54,10 @@ namespace DBSynchroniser.Records
             TextId = castedObj.textId;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new InfoMessage();
             
+            var obj = new InfoMessage();
             obj.typeId = TypeId;
             obj.messageId = MessageId;
             obj.textId = TextId;

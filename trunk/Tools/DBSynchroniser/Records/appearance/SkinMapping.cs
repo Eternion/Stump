@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:57
+// Generated on 10/06/2013 14:21:58
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("SkinMappings")]
+    [TableName("SkinMappings")]
+    [D2OClass("SkinMapping")]
     public class SkinMappingRecord : ID2ORecord
     {
         private const String MODULE = "SkinMappings";
@@ -32,7 +33,7 @@ namespace DBSynchroniser.Records
             set { lowDefId = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (SkinMapping)obj;
             
@@ -40,10 +41,10 @@ namespace DBSynchroniser.Records
             LowDefId = castedObj.lowDefId;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new SkinMapping();
             
+            var obj = new SkinMapping();
             obj.id = Id;
             obj.lowDefId = LowDefId;
             return obj;

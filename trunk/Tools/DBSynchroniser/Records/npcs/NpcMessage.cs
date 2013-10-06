@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:01
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("NpcMessages")]
+    [TableName("NpcMessages")]
+    [D2OClass("NpcMessage")]
     public class NpcMessageRecord : ID2ORecord
     {
         private const String MODULE = "NpcMessages";
@@ -33,13 +34,14 @@ namespace DBSynchroniser.Records
             set { messageId = value; }
         }
 
+        [NullString]
         public String MessageParams
         {
             get { return messageParams; }
             set { messageParams = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (NpcMessage)obj;
             
@@ -48,10 +50,10 @@ namespace DBSynchroniser.Records
             MessageParams = castedObj.messageParams;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new NpcMessage();
             
+            var obj = new NpcMessage();
             obj.id = Id;
             obj.messageId = MessageId;
             obj.messageParams = MessageParams;

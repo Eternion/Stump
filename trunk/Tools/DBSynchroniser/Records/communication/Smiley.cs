@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:57
+// Generated on 10/06/2013 14:21:58
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Smileys")]
+    [TableName("Smileys")]
+    [D2OClass("Smiley")]
     public class SmileyRecord : ID2ORecord
     {
         private const String MODULE = "Smileys";
@@ -35,6 +36,7 @@ namespace DBSynchroniser.Records
             set { order = value; }
         }
 
+        [NullString]
         public String GfxId
         {
             get { return gfxId; }
@@ -69,7 +71,7 @@ namespace DBSynchroniser.Records
             }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Smiley)obj;
             
@@ -80,10 +82,10 @@ namespace DBSynchroniser.Records
             Triggers = castedObj.triggers;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Smiley();
             
+            var obj = new Smiley();
             obj.id = Id;
             obj.order = Order;
             obj.gfxId = GfxId;

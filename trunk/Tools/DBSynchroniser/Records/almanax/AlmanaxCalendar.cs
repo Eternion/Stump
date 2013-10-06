@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:57
+// Generated on 10/06/2013 14:21:57
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("AlmanaxCalendars")]
+    [TableName("AlmanaxCalendars")]
+    [D2OClass("AlmanaxCalendar")]
     public class AlmanaxCalendarRecord : ID2ORecord
     {
         private const String MODULE = "AlmanaxCalendars";
@@ -46,7 +47,7 @@ namespace DBSynchroniser.Records
             set { npcId = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (AlmanaxCalendar)obj;
             
@@ -56,10 +57,10 @@ namespace DBSynchroniser.Records
             NpcId = castedObj.npcId;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new AlmanaxCalendar();
             
+            var obj = new AlmanaxCalendar();
             obj.id = Id;
             obj.nameId = NameId;
             obj.descId = DescId;

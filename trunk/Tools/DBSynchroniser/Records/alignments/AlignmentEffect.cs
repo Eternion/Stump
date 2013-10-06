@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:57
+// Generated on 10/06/2013 14:21:57
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,6 +12,7 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
+    [TableName("AlignmentEffect")]
     [D2OClass("AlignmentEffect")]
     public class AlignmentEffectRecord : ID2ORecord
     {
@@ -39,7 +40,7 @@ namespace DBSynchroniser.Records
             set { descriptionId = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (AlignmentEffect)obj;
             
@@ -48,10 +49,10 @@ namespace DBSynchroniser.Records
             DescriptionId = castedObj.descriptionId;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new AlignmentEffect();
             
+            var obj = new AlignmentEffect();
             obj.id = Id;
             obj.characteristicId = CharacteristicId;
             obj.descriptionId = DescriptionId;

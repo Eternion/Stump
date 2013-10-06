@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:01
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("TaxCollectorNames")]
+    [TableName("TaxCollectorNames")]
+    [D2OClass("TaxCollectorName")]
     public class TaxCollectorNameRecord : ID2ORecord
     {
         private const String MODULE = "TaxCollectorNames";
@@ -32,7 +33,7 @@ namespace DBSynchroniser.Records
             set { nameId = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (TaxCollectorName)obj;
             
@@ -40,10 +41,10 @@ namespace DBSynchroniser.Records
             NameId = castedObj.nameId;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new TaxCollectorName();
             
+            var obj = new TaxCollectorName();
             obj.id = Id;
             obj.nameId = NameId;
             return obj;

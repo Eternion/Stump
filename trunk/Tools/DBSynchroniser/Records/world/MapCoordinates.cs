@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:11:00
+// Generated on 10/06/2013 14:22:02
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,6 +12,7 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
+    [TableName("MapCoordinates")]
     [D2OClass("MapCoordinates")]
     public class MapCoordinatesRecord : ID2ORecord
     {
@@ -19,13 +20,18 @@ namespace DBSynchroniser.Records
         public uint compressedCoords;
         public List<int> mapIds;
 
+        [PrimaryKey("Id")]
+        public int Id
+        {
+            get;
+            set;
+        }
         public uint CompressedCoords
         {
             get { return compressedCoords; }
             set { compressedCoords = value; }
         }
 
-        [PrimaryKey("MapIds", false)]
         [Ignore]
         public List<int> MapIds
         {
@@ -48,7 +54,7 @@ namespace DBSynchroniser.Records
             }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (MapCoordinates)obj;
             
@@ -56,10 +62,10 @@ namespace DBSynchroniser.Records
             MapIds = castedObj.mapIds;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new MapCoordinates();
             
+            var obj = new MapCoordinates();
             obj.compressedCoords = CompressedCoords;
             obj.mapIds = MapIds;
             return obj;

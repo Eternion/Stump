@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:11:00
+// Generated on 10/06/2013 14:22:02
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,6 +12,7 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
+    [TableName("HintCategory")]
     [D2OClass("HintCategory")]
     public class HintCategoryRecord : ID2ORecord
     {
@@ -32,7 +33,7 @@ namespace DBSynchroniser.Records
             set { nameId = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (HintCategory)obj;
             
@@ -40,10 +41,10 @@ namespace DBSynchroniser.Records
             NameId = castedObj.nameId;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new HintCategory();
             
+            var obj = new HintCategory();
             obj.id = Id;
             obj.nameId = NameId;
             return obj;

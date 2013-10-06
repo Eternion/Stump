@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:58
+// Generated on 10/06/2013 14:21:59
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Items")]
+    [TableName("Items")]
+    [D2OClass("Item")]
     public class ItemRecord : ID2ORecord
     {
         private const String MODULE = "Items";
@@ -142,12 +143,14 @@ namespace DBSynchroniser.Records
             set { itemSetId = value; }
         }
 
+        [NullString]
         public String Criteria
         {
             get { return criteria; }
             set { criteria = value; }
         }
 
+        [NullString]
         public String CriteriaTarget
         {
             get { return criteriaTarget; }
@@ -290,7 +293,7 @@ namespace DBSynchroniser.Records
             set { weight = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Item)obj;
             
@@ -325,10 +328,10 @@ namespace DBSynchroniser.Records
             Weight = castedObj.weight;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Item();
             
+            var obj = new Item();
             obj.id = Id;
             obj.nameId = NameId;
             obj.typeId = TypeId;

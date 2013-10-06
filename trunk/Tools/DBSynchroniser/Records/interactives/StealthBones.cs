@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:58
+// Generated on 10/06/2013 14:21:59
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,6 +12,7 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
+    [TableName("StealthBones")]
     [D2OClass("StealthBones")]
     public class StealthBonesRecord : ID2ORecord
     {
@@ -25,17 +26,17 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (StealthBones)obj;
             
             Id = castedObj.id;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new StealthBones();
             
+            var obj = new StealthBones();
             obj.id = Id;
             return obj;
         

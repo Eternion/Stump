@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:01
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,6 +12,7 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
+    [TableName("QuestCategory")]
     [D2OClass("QuestCategory")]
     public class QuestCategoryRecord : ID2ORecord
     {
@@ -62,7 +63,7 @@ namespace DBSynchroniser.Records
             }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (QuestCategory)obj;
             
@@ -72,10 +73,10 @@ namespace DBSynchroniser.Records
             QuestIds = castedObj.questIds;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new QuestCategory();
             
+            var obj = new QuestCategory();
             obj.id = Id;
             obj.nameId = NameId;
             obj.order = Order;

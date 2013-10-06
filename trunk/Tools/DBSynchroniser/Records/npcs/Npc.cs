@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:01
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Npcs")]
+    [TableName("Npcs")]
+    [D2OClass("Npc")]
     public class NpcRecord : ID2ORecord
     {
         private const String MODULE = "Npcs";
@@ -111,6 +112,7 @@ namespace DBSynchroniser.Records
             set { gender = value; }
         }
 
+        [NullString]
         public String Look
         {
             get { return look; }
@@ -145,7 +147,7 @@ namespace DBSynchroniser.Records
             }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Npc)obj;
             
@@ -160,10 +162,10 @@ namespace DBSynchroniser.Records
             AnimFunList = castedObj.animFunList;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Npc();
             
+            var obj = new Npc();
             obj.id = Id;
             obj.nameId = NameId;
             obj.dialogMessages = DialogMessages;

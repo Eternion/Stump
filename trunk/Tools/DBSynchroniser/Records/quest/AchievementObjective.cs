@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:01
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("AchievementObjectives")]
+    [TableName("AchievementObjectives")]
+    [D2OClass("AchievementObjective")]
     public class AchievementObjectiveRecord : ID2ORecord
     {
         private const String MODULE = "AchievementObjectives";
@@ -40,13 +41,14 @@ namespace DBSynchroniser.Records
             set { nameId = value; }
         }
 
+        [NullString]
         public String Criterion
         {
             get { return criterion; }
             set { criterion = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (AchievementObjective)obj;
             
@@ -56,10 +58,10 @@ namespace DBSynchroniser.Records
             Criterion = castedObj.criterion;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new AchievementObjective();
             
+            var obj = new AchievementObjective();
             obj.id = Id;
             obj.achievementId = AchievementId;
             obj.nameId = NameId;

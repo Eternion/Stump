@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:01
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("MountBehaviors")]
+    [TableName("MountBehaviors")]
+    [D2OClass("MountBehavior")]
     public class MountBehaviorRecord : ID2ORecord
     {
         public const String MODULE = "MountBehaviors";
@@ -39,7 +40,7 @@ namespace DBSynchroniser.Records
             set { descriptionId = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (MountBehavior)obj;
             
@@ -48,10 +49,10 @@ namespace DBSynchroniser.Records
             DescriptionId = castedObj.descriptionId;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new MountBehavior();
             
+            var obj = new MountBehavior();
             obj.id = Id;
             obj.nameId = NameId;
             obj.descriptionId = DescriptionId;

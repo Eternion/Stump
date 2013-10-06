@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:58
+// Generated on 10/06/2013 14:21:58
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("EmblemSymbols")]
+    [TableName("EmblemSymbols")]
+    [D2OClass("EmblemSymbol")]
     public class EmblemSymbolRecord : ID2ORecord
     {
         private const String MODULE = "EmblemSymbols";
@@ -60,7 +61,7 @@ namespace DBSynchroniser.Records
             set { colorizable = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (EmblemSymbol)obj;
             
@@ -72,10 +73,10 @@ namespace DBSynchroniser.Records
             Colorizable = castedObj.colorizable;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new EmblemSymbol();
             
+            var obj = new EmblemSymbol();
             obj.id = Id;
             obj.iconId = IconId;
             obj.skinId = SkinId;

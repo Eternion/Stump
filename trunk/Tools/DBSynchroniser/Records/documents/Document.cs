@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:57
+// Generated on 10/06/2013 14:21:58
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Documents")]
+    [TableName("Documents")]
+    [D2OClass("Document")]
     public class DocumentRecord : ID2ORecord
     {
         private const String MODULE = "Documents";
@@ -61,13 +62,14 @@ namespace DBSynchroniser.Records
             set { contentId = value; }
         }
 
+        [NullString]
         public String ContentCSS
         {
             get { return contentCSS; }
             set { contentCSS = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Document)obj;
             
@@ -80,10 +82,10 @@ namespace DBSynchroniser.Records
             ContentCSS = castedObj.contentCSS;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Document();
             
+            var obj = new Document();
             obj.id = Id;
             obj.typeId = TypeId;
             obj.titleId = TitleId;

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:57
+// Generated on 10/06/2013 14:21:57
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,6 +12,7 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
+    [TableName("AbuseReasons")]
     [D2OClass("AbuseReasons")]
     public class AbuseReasonsRecord : ID2ORecord
     {
@@ -20,7 +21,12 @@ namespace DBSynchroniser.Records
         public uint _mask;
         public int _reasonTextId;
 
-        [PrimaryKey("AbuseReasonId", false)]
+        [PrimaryKey("Id")]
+        public int Id
+        {
+            get;
+            set;
+        }
         public uint AbuseReasonId
         {
             get { return _abuseReasonId; }
@@ -39,7 +45,7 @@ namespace DBSynchroniser.Records
             set { _reasonTextId = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (AbuseReasons)obj;
             
@@ -48,10 +54,10 @@ namespace DBSynchroniser.Records
             ReasonTextId = castedObj._reasonTextId;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new AbuseReasons();
             
+            var obj = new AbuseReasons();
             obj._abuseReasonId = AbuseReasonId;
             obj._mask = Mask;
             obj._reasonTextId = ReasonTextId;
