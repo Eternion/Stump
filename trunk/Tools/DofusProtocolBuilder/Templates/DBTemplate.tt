@@ -27,11 +27,12 @@ namespace DBSynchroniser.Records
 var module = Parser.Fields.FirstOrDefault(x => x.Name == "MODULE");
 
 if (module != null)
-    WriteLine(string.Format("[D2OClass({0})]", module.Value));
-else
-    WriteLine(string.Format("[D2OClass(\"{0}\")]", Parser.Class.Name));
+    WriteLine(string.Format("[TableName({0})]", module.Value));
+else if (Parser.Class.Name == "Weapon") // only exception
+    WriteLine(string.Format("[TableName(\"Weapons\")]", Parser.Class.Name));
 #>
-public class <#=Parser.Class.Name #>Record<#=( Parser.Class.Heritage != "Object" ? " : " + Parser.Class.Heritage : " : ID2ORecord" ) #>
+<# WriteLine("[D2OClass(\"" + Parser.Class.Name + "\")]"); #>
+public class <#=Parser.Class.Name #>Record<#=( Parser.Class.Heritage != "Object" ? " : " + Parser.Class.Heritage + "Record, ID2ORecord" : " : ID2ORecord" ) #>
 {
 <# PushIndent("    "); #>
 <#
@@ -45,12 +46,20 @@ foreach (var field in Parser.Fields)
 WriteLine("");
 var idField = Parser.Fields.FirstOrDefault(x => x.Name == "id");
 
-if (idField == null)
+/*if (idField == null)
 {
-    idField = Parser.Fields.FirstOrDefault(x => x.Name.IndexOf("id", StringComparison.InvariantCultureIgnoreCase) != -1);
+    idField = Parser.Fields.FirstOrDefault(x => x.Name.IndexOf("id", StringComparison.InvariantCultureIgnoreCase) != -1
+                                             && x.Name.IndexOf("ids", StringComparison.InvariantCultureIgnoreCase) == -1);
+}*/
 
-    if (idField == null)
-        idField = Parser.Fields.FirstOrDefault();
+if (idField == null && Parser.Class.Heritage == "Object")
+{
+    WriteLine("[PrimaryKey(\"Id\")]");
+    WriteLine("public int Id");
+    WriteLine("{");
+    WriteLine("    get;");
+    WriteLine("    set;");
+    WriteLine("}");
 }
 
 foreach (var field in Parser.Fields)
@@ -58,19 +67,24 @@ foreach (var field in Parser.Fields)
 	if (field.Modifiers != AccessModifiers.Public || field.Name == "MODULE" || field.IsConst || field.IsStatic)
 		continue;
 
-    if (field.Name == idField.Name)
+    if (field == idField && Parser.Class.Heritage == "Object")
         WriteLine("[PrimaryKey(\"" + ToPascalCase(idField.Name) + "\", false)]");
 
     WriteDBProperty(field);
     WriteLine("");
 }
 #>
-public void AssignFields(object obj)
+public <#= Parser.Class.Heritage != "Object" ? "override" : "virtual" #> void AssignFields(object obj)
 {
 <# PushIndent("    "); #>
 var castedObj = (<#=Parser.Class.Name #>)obj;
 
 <#
+if (Parser.Class.Heritage != "Object")
+{
+    WriteLine("base.AssignFields(obj);");
+}
+
 foreach (var field in Parser.Fields)
 {
 	if (field.Modifiers != AccessModifiers.Public || field.Name == "MODULE" || field.IsConst || field.IsStatic)
@@ -85,12 +99,20 @@ foreach (var field in Parser.Fields)
 <# PopIndent(); #>
 }
 
-public object CreateObject()
+public <#= Parser.Class.Heritage != "Object" ? "override" : "virtual" #> object CreateObject()
 {
 <# PushIndent("    "); #>
-var obj = new <#=Parser.Class.Name #>();
 
 <#
+if (Parser.Class.Heritage != "Object")
+{
+    WriteLine("var obj = (" + Parser.Class.Name + ")base.CreateObject();");
+}
+else
+{
+    WriteLine("var obj = new " + Parser.Class.Name + "();");
+}
+
 foreach (var field in Parser.Fields)
 {
 	if (field.Modifiers != AccessModifiers.Public || field.Name == "MODULE" || field.IsConst || field.IsStatic)

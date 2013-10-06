@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:58
+// Generated on 10/06/2013 14:21:59
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("PresetIcons")]
+    [TableName("PresetIcons")]
+    [D2OClass("PresetIcon")]
     public class PresetIconRecord : ID2ORecord
     {
         private const String MODULE = "PresetIcons";
@@ -32,7 +33,7 @@ namespace DBSynchroniser.Records
             set { order = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (PresetIcon)obj;
             
@@ -40,10 +41,10 @@ namespace DBSynchroniser.Records
             Order = castedObj.order;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new PresetIcon();
             
+            var obj = new PresetIcon();
             obj.id = Id;
             obj.order = Order;
             return obj;

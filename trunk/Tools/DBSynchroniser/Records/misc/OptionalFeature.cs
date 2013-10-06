@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:00
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("OptionalFeatures")]
+    [TableName("OptionalFeatures")]
+    [D2OClass("OptionalFeature")]
     public class OptionalFeatureRecord : ID2ORecord
     {
         public const String MODULE = "OptionalFeatures";
@@ -26,13 +27,14 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [NullString]
         public String Keyword
         {
             get { return keyword; }
             set { keyword = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (OptionalFeature)obj;
             
@@ -40,10 +42,10 @@ namespace DBSynchroniser.Records
             Keyword = castedObj.keyword;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new OptionalFeature();
             
+            var obj = new OptionalFeature();
             obj.id = Id;
             obj.keyword = Keyword;
             return obj;

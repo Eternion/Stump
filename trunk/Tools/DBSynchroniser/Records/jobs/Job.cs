@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:21:59
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Jobs")]
+    [TableName("Jobs")]
+    [D2OClass("Job")]
     public class JobRecord : ID2ORecord
     {
         private const String MODULE = "Jobs";
@@ -69,7 +70,7 @@ namespace DBSynchroniser.Records
             }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Job)obj;
             
@@ -80,10 +81,10 @@ namespace DBSynchroniser.Records
             ToolIds = castedObj.toolIds;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Job();
             
+            var obj = new Job();
             obj.id = Id;
             obj.nameId = NameId;
             obj.specializationOfId = SpecializationOfId;

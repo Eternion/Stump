@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:11:00
+// Generated on 10/06/2013 14:22:01
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("SpellLevels")]
+    [TableName("SpellLevels")]
+    [D2OClass("SpellLevel")]
     public class SpellLevelRecord : ID2ORecord
     {
         private const String MODULE = "SpellLevels";
@@ -285,7 +286,7 @@ namespace DBSynchroniser.Records
             }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (SpellLevel)obj;
             
@@ -320,10 +321,10 @@ namespace DBSynchroniser.Records
             CriticalEffect = castedObj.criticalEffect;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new SpellLevel();
             
+            var obj = new SpellLevel();
             obj.id = Id;
             obj.spellId = SpellId;
             obj.spellBreed = SpellBreed;

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:57
+// Generated on 10/06/2013 14:21:58
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Emoticons")]
+    [TableName("Emoticons")]
+    [D2OClass("Emoticon")]
     public class EmoticonRecord : ID2ORecord
     {
         private const String MODULE = "Emoticons";
@@ -54,6 +55,7 @@ namespace DBSynchroniser.Records
             set { order = value; }
         }
 
+        [NullString]
         public String DefaultAnim
         {
             get { return defaultAnim; }
@@ -118,7 +120,7 @@ namespace DBSynchroniser.Records
             set { weight = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Emoticon)obj;
             
@@ -136,10 +138,10 @@ namespace DBSynchroniser.Records
             Weight = castedObj.weight;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Emoticon();
             
+            var obj = new Emoticon();
             obj.id = Id;
             obj.nameId = NameId;
             obj.shortcutId = ShortcutId;

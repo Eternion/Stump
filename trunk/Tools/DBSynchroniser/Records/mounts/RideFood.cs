@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:01
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,6 +12,7 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
+    [TableName("RideFood")]
     [D2OClass("RideFood")]
     public class RideFoodRecord : ID2ORecord
     {
@@ -19,7 +20,12 @@ namespace DBSynchroniser.Records
         public uint typeId;
         public String MODULE = "RideFood";
 
-        [PrimaryKey("Gid", false)]
+        [PrimaryKey("Id")]
+        public int Id
+        {
+            get;
+            set;
+        }
         public uint Gid
         {
             get { return gid; }
@@ -32,7 +38,7 @@ namespace DBSynchroniser.Records
             set { typeId = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (RideFood)obj;
             
@@ -40,10 +46,10 @@ namespace DBSynchroniser.Records
             TypeId = castedObj.typeId;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new RideFood();
             
+            var obj = new RideFood();
             obj.gid = Gid;
             obj.typeId = TypeId;
             return obj;

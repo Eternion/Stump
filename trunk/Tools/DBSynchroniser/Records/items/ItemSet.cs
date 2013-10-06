@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:58
+// Generated on 10/06/2013 14:21:59
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("ItemSets")]
+    [TableName("ItemSets")]
+    [D2OClass("ItemSet")]
     public class ItemSetRecord : ID2ORecord
     {
         private const String MODULE = "ItemSets";
@@ -85,7 +86,7 @@ namespace DBSynchroniser.Records
             set { bonusIsSecret = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (ItemSet)obj;
             
@@ -96,10 +97,10 @@ namespace DBSynchroniser.Records
             BonusIsSecret = castedObj.bonusIsSecret;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new ItemSet();
             
+            var obj = new ItemSet();
             obj.id = Id;
             obj.items = Items;
             obj.nameId = NameId;

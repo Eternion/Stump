@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:00
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,6 +12,7 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
+    [TableName("LivingObjectSkinJntMood")]
     [D2OClass("LivingObjectSkinJntMood")]
     public class LivingObjectSkinJntMoodRecord : ID2ORecord
     {
@@ -19,7 +20,12 @@ namespace DBSynchroniser.Records
         public int skinId;
         public List<List<int>> moods;
 
-        [PrimaryKey("SkinId", false)]
+        [PrimaryKey("Id")]
+        public int Id
+        {
+            get;
+            set;
+        }
         public int SkinId
         {
             get { return skinId; }
@@ -48,7 +54,7 @@ namespace DBSynchroniser.Records
             }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (LivingObjectSkinJntMood)obj;
             
@@ -56,10 +62,10 @@ namespace DBSynchroniser.Records
             Moods = castedObj.moods;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new LivingObjectSkinJntMood();
             
+            var obj = new LivingObjectSkinJntMood();
             obj.skinId = SkinId;
             obj.moods = Moods;
             return obj;

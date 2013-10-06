@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:57
+// Generated on 10/06/2013 14:21:57
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,6 +12,7 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
+    [TableName("AlignmentGift")]
     [D2OClass("AlignmentGift")]
     public class AlignmentGiftRecord : ID2ORecord
     {
@@ -46,7 +47,7 @@ namespace DBSynchroniser.Records
             set { gfxId = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (AlignmentGift)obj;
             
@@ -56,10 +57,10 @@ namespace DBSynchroniser.Records
             GfxId = castedObj.gfxId;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new AlignmentGift();
             
+            var obj = new AlignmentGift();
             obj.id = Id;
             obj.nameId = NameId;
             obj.effectId = EffectId;

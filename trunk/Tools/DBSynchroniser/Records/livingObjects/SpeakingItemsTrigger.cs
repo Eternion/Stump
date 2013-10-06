@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:00
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("SpeakingItemsTriggers")]
+    [TableName("SpeakingItemsTriggers")]
+    [D2OClass("SpeakingItemsTrigger")]
     public class SpeakingItemsTriggerRecord : ID2ORecord
     {
         private const String MODULE = "SpeakingItemsTriggers";
@@ -20,7 +21,12 @@ namespace DBSynchroniser.Records
         public List<int> textIds;
         public List<int> states;
 
-        [PrimaryKey("TriggersId", false)]
+        [PrimaryKey("Id")]
+        public int Id
+        {
+            get;
+            set;
+        }
         public int TriggersId
         {
             get { return triggersId; }
@@ -71,7 +77,7 @@ namespace DBSynchroniser.Records
             }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (SpeakingItemsTrigger)obj;
             
@@ -80,10 +86,10 @@ namespace DBSynchroniser.Records
             States = castedObj.states;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new SpeakingItemsTrigger();
             
+            var obj = new SpeakingItemsTrigger();
             obj.triggersId = TriggersId;
             obj.textIds = TextIds;
             obj.states = States;

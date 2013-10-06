@@ -50,6 +50,12 @@ namespace DofusProtocolBuilder.Profiles
                         {@"(protected|private) var _lang", "public var lang"},
                         // ankama's devs are idiots, they attempt to assign -1 to a uint field
                         {@"public var iconId:uint", "public var iconId:int"},
+
+                        // can't handle well with float this data
+                        {@"var openingDate:(float|Number);", "var openingDate:long;"},
+
+                        // shouldn't be public
+                        {@"public var type:QuestObjectiveType", "private var type:QuestObjectiveType"},
                     };
         }
 

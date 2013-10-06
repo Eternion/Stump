@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:58
+// Generated on 10/06/2013 14:21:58
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("ExternalNotifications")]
+    [TableName("ExternalNotifications")]
+    [D2OClass("ExternalNotification")]
     public class ExternalNotificationRecord : ID2ORecord
     {
         private const String MODULE = "ExternalNotifications";
@@ -83,6 +84,7 @@ namespace DBSynchroniser.Records
             set { defaultMultiAccount = value; }
         }
 
+        [NullString]
         public String Name
         {
             get { return name; }
@@ -95,7 +97,7 @@ namespace DBSynchroniser.Records
             set { messageId = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (ExternalNotification)obj;
             
@@ -112,10 +114,10 @@ namespace DBSynchroniser.Records
             MessageId = castedObj.messageId;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new ExternalNotification();
             
+            var obj = new ExternalNotification();
             obj.id = Id;
             obj.categoryId = CategoryId;
             obj.iconId = IconId;

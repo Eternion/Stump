@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:11:00
+// Generated on 10/06/2013 14:22:01
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Areas")]
+    [TableName("Areas")]
+    [D2OClass("Area")]
     public class AreaRecord : ID2ORecord
     {
         private const String MODULE = "Areas";
@@ -76,7 +77,7 @@ namespace DBSynchroniser.Records
             }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Area)obj;
             
@@ -88,10 +89,10 @@ namespace DBSynchroniser.Records
             Bounds = castedObj.bounds;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Area();
             
+            var obj = new Area();
             obj.id = Id;
             obj.nameId = NameId;
             obj.superAreaId = SuperAreaId;

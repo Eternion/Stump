@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:00
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,6 +12,7 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
+    [TableName("Url")]
     [D2OClass("Url")]
     public class UrlRecord : ID2ORecord
     {
@@ -35,25 +36,28 @@ namespace DBSynchroniser.Records
             set { browserId = value; }
         }
 
+        [NullString]
         public String Url
         {
             get { return url; }
             set { url = value; }
         }
 
+        [NullString]
         public String Param
         {
             get { return param; }
             set { param = value; }
         }
 
+        [NullString]
         public String Method
         {
             get { return method; }
             set { method = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Url)obj;
             
@@ -64,10 +68,10 @@ namespace DBSynchroniser.Records
             Method = castedObj.method;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Url();
             
+            var obj = new Url();
             obj.id = Id;
             obj.browserId = BrowserId;
             obj.url = Url;

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:00
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("CensoredContents")]
+    [TableName("CensoredContents")]
+    [D2OClass("CensoredContent")]
     public class CensoredContentRecord : ID2ORecord
     {
         public const String MODULE = "CensoredContents";
@@ -21,6 +22,12 @@ namespace DBSynchroniser.Records
         public int newValue;
         public String lang;
 
+        [PrimaryKey("Id")]
+        public int Id
+        {
+            get;
+            set;
+        }
         public int Type
         {
             get { return type; }
@@ -39,13 +46,14 @@ namespace DBSynchroniser.Records
             set { newValue = value; }
         }
 
+        [NullString]
         public String Lang
         {
             get { return lang; }
             set { lang = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (CensoredContent)obj;
             
@@ -55,10 +63,10 @@ namespace DBSynchroniser.Records
             Lang = castedObj.lang;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new CensoredContent();
             
+            var obj = new CensoredContent();
             obj.type = Type;
             obj.oldValue = OldValue;
             obj.newValue = NewValue;

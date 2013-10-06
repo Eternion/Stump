@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:00
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("TypeActions")]
+    [TableName("TypeActions")]
+    [D2OClass("TypeAction")]
     public class TypeActionRecord : ID2ORecord
     {
         public const String MODULE = "TypeActions";
@@ -27,6 +28,7 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [NullString]
         public String ElementName
         {
             get { return elementName; }
@@ -39,7 +41,7 @@ namespace DBSynchroniser.Records
             set { elementId = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (TypeAction)obj;
             
@@ -48,10 +50,10 @@ namespace DBSynchroniser.Records
             ElementId = castedObj.elementId;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new TypeAction();
             
+            var obj = new TypeAction();
             obj.id = Id;
             obj.elementName = ElementName;
             obj.elementId = ElementId;

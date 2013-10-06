@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:57
+// Generated on 10/06/2013 14:21:58
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Effects")]
+    [TableName("Effects")]
+    [D2OClass("Effect")]
     public class EffectRecord : ID2ORecord
     {
         private const String MODULE = "Effects";
@@ -63,6 +64,7 @@ namespace DBSynchroniser.Records
             set { category = value; }
         }
 
+        [NullString]
         public String Operator
         {
             get { return @operator; }
@@ -123,7 +125,7 @@ namespace DBSynchroniser.Records
             set { effectPriority = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Effect)obj;
             
@@ -144,10 +146,10 @@ namespace DBSynchroniser.Records
             EffectPriority = castedObj.effectPriority;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Effect();
             
+            var obj = new Effect();
             obj.id = Id;
             obj.descriptionId = DescriptionId;
             obj.iconId = IconId;

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:58
+// Generated on 10/06/2013 14:21:59
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Interactives")]
+    [TableName("Interactives")]
+    [D2OClass("Interactive")]
     public class InteractiveRecord : ID2ORecord
     {
         private const String MODULE = "Interactives";
@@ -46,7 +47,7 @@ namespace DBSynchroniser.Records
             set { displayTooltip = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Interactive)obj;
             
@@ -56,10 +57,10 @@ namespace DBSynchroniser.Records
             DisplayTooltip = castedObj.displayTooltip;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Interactive();
             
+            var obj = new Interactive();
             obj.id = Id;
             obj.nameId = NameId;
             obj.actionId = ActionId;

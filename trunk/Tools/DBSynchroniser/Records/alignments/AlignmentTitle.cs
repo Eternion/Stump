@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:57
+// Generated on 10/06/2013 14:21:57
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("AlignmentTitles")]
+    [TableName("AlignmentTitles")]
+    [D2OClass("AlignmentTitle")]
     public class AlignmentTitleRecord : ID2ORecord
     {
         private const String MODULE = "AlignmentTitles";
@@ -20,7 +21,12 @@ namespace DBSynchroniser.Records
         public List<int> namesId;
         public List<int> shortsId;
 
-        [PrimaryKey("SideId", false)]
+        [PrimaryKey("Id")]
+        public int Id
+        {
+            get;
+            set;
+        }
         public int SideId
         {
             get { return sideId; }
@@ -71,7 +77,7 @@ namespace DBSynchroniser.Records
             }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (AlignmentTitle)obj;
             
@@ -80,10 +86,10 @@ namespace DBSynchroniser.Records
             ShortsId = castedObj.shortsId;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new AlignmentTitle();
             
+            var obj = new AlignmentTitle();
             obj.sideId = SideId;
             obj.namesId = NamesId;
             obj.shortsId = ShortsId;

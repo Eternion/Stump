@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:11:00
+// Generated on 10/06/2013 14:22:01
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,14 +12,15 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Servers")]
+    [TableName("Servers")]
+    [D2OClass("Server")]
     public class ServerRecord : ID2ORecord
     {
         private const String MODULE = "Servers";
         public int id;
         public uint nameId;
         public uint commentId;
-        public float openingDate;
+        public long openingDate;
         public String language;
         public int populationId;
         public uint gameTypeId;
@@ -45,12 +46,13 @@ namespace DBSynchroniser.Records
             set { commentId = value; }
         }
 
-        public float OpeningDate
+        public long OpeningDate
         {
             get { return openingDate; }
             set { openingDate = value; }
         }
 
+        [NullString]
         public String Language
         {
             get { return language; }
@@ -97,7 +99,7 @@ namespace DBSynchroniser.Records
             }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Server)obj;
             
@@ -112,14 +114,14 @@ namespace DBSynchroniser.Records
             RestrictedToLanguages = castedObj.restrictedToLanguages;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Server();
             
+            var obj = new Server();
             obj.id = Id;
             obj.nameId = NameId;
             obj.commentId = CommentId;
-            obj.openingDate = (long) OpeningDate;
+            obj.openingDate = OpeningDate;
             obj.language = Language;
             obj.populationId = PopulationId;
             obj.gameTypeId = GameTypeId;

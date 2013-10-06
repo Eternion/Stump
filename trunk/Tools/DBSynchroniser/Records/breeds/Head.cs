@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:57
+// Generated on 10/06/2013 14:21:58
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Heads")]
+    [TableName("Heads")]
+    [D2OClass("Head")]
     public class HeadRecord : ID2ORecord
     {
         private const String MODULE = "Heads";
@@ -30,12 +31,14 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [NullString]
         public String Skins
         {
             get { return skins; }
             set { skins = value; }
         }
 
+        [NullString]
         public String AssetId
         {
             get { return assetId; }
@@ -60,7 +63,7 @@ namespace DBSynchroniser.Records
             set { order = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Head)obj;
             
@@ -72,10 +75,10 @@ namespace DBSynchroniser.Records
             Order = castedObj.order;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Head();
             
+            var obj = new Head();
             obj.id = Id;
             obj.skins = Skins;
             obj.assetId = AssetId;

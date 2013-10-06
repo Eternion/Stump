@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:57
+// Generated on 10/06/2013 14:21:58
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("CensoredWords")]
+    [TableName("CensoredWords")]
+    [D2OClass("CensoredWord")]
     public class CensoredWordRecord : ID2ORecord
     {
         private const String MODULE = "CensoredWords";
@@ -35,12 +36,14 @@ namespace DBSynchroniser.Records
             set { listId = value; }
         }
 
+        [NullString]
         public String Language
         {
             get { return language; }
             set { language = value; }
         }
 
+        [NullString]
         public String Word
         {
             get { return word; }
@@ -53,7 +56,7 @@ namespace DBSynchroniser.Records
             set { deepLooking = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (CensoredWord)obj;
             
@@ -64,10 +67,10 @@ namespace DBSynchroniser.Records
             DeepLooking = castedObj.deepLooking;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new CensoredWord();
             
+            var obj = new CensoredWord();
             obj.id = Id;
             obj.listId = ListId;
             obj.language = Language;

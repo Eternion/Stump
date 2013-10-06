@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:58
+// Generated on 10/06/2013 14:21:59
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Houses")]
+    [TableName("Houses")]
+    [D2OClass("House")]
     public class HouseRecord : ID2ORecord
     {
         private const String MODULE = "Houses";
@@ -22,7 +23,12 @@ namespace DBSynchroniser.Records
         public int descriptionId;
         public int gfxId;
 
-        [PrimaryKey("TypeId", false)]
+        [PrimaryKey("Id")]
+        public int Id
+        {
+            get;
+            set;
+        }
         public int TypeId
         {
             get { return typeId; }
@@ -53,7 +59,7 @@ namespace DBSynchroniser.Records
             set { gfxId = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (House)obj;
             
@@ -64,10 +70,10 @@ namespace DBSynchroniser.Records
             GfxId = castedObj.gfxId;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new House();
             
+            var obj = new House();
             obj.typeId = TypeId;
             obj.defaultPrice = DefaultPrice;
             obj.nameId = NameId;

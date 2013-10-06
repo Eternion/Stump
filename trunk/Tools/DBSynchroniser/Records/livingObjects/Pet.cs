@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:00
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Pets")]
+    [TableName("Pets")]
+    [D2OClass("Pet")]
     public class PetRecord : ID2ORecord
     {
         private const String MODULE = "Pets";
@@ -71,7 +72,7 @@ namespace DBSynchroniser.Records
             }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Pet)obj;
             
@@ -80,10 +81,10 @@ namespace DBSynchroniser.Records
             FoodTypes = castedObj.foodTypes;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Pet();
             
+            var obj = new Pet();
             obj.id = Id;
             obj.foodItems = FoodItems;
             obj.foodTypes = FoodTypes;

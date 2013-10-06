@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:58
+// Generated on 10/06/2013 14:21:59
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("IncarnationLevels")]
+    [TableName("IncarnationLevels")]
+    [D2OClass("IncarnationLevel")]
     public class IncarnationLevelRecord : ID2ORecord
     {
         private const String MODULE = "IncarnationLevels";
@@ -46,7 +47,7 @@ namespace DBSynchroniser.Records
             set { requiredXp = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (IncarnationLevel)obj;
             
@@ -56,10 +57,10 @@ namespace DBSynchroniser.Records
             RequiredXp = castedObj.requiredXp;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new IncarnationLevel();
             
+            var obj = new IncarnationLevel();
             obj.id = Id;
             obj.incarnationId = IncarnationId;
             obj.level = Level;

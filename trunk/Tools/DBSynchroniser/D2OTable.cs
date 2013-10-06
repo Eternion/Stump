@@ -1,5 +1,5 @@
 ﻿#region License GNU GPL
-// DataRecordProfile.cs
+// D2OTable.cs
 // 
 // Copyright (C) 2013 - BehaviorIsManaged
 // 
@@ -14,18 +14,34 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
-using System.Linq;
+using System;
 
-namespace DofusProtocolBuilder.Profiles
+namespace DBSynchroniser
 {
-    public class DataRecordProfile : DatacenterProfile
+    public class D2OTable
     {
-        public override void ExecuteProfile(Parsing.Parser parser)
+        public Type Type
         {
-            if (parser.Fields.All(x => x.Name != "MODULE") && parser.Class.Heritage != "Item")
-                return;
+            get;
+            set;
+        }
 
-            base.ExecuteProfile(parser);
+        public string ClassName
+        {
+            get;
+            set;
+        }
+
+        public string TableName
+        {
+            get;
+            set;
+        }
+
+        public Delegate Constructor
+        {
+            get;
+            set;
         }
     }
 }

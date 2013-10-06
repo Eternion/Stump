@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:11:00
+// Generated on 10/06/2013 14:22:01
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("ServerCommunities")]
+    [TableName("ServerCommunities")]
+    [D2OClass("ServerCommunity")]
     public class ServerCommunityRecord : ID2ORecord
     {
         private const String MODULE = "ServerCommunities";
@@ -34,6 +35,7 @@ namespace DBSynchroniser.Records
             set { nameId = value; }
         }
 
+        [NullString]
         public String ShortId
         {
             get { return shortId; }
@@ -62,7 +64,7 @@ namespace DBSynchroniser.Records
             }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (ServerCommunity)obj;
             
@@ -72,10 +74,10 @@ namespace DBSynchroniser.Records
             DefaultCountries = castedObj.defaultCountries;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new ServerCommunity();
             
+            var obj = new ServerCommunity();
             obj.id = Id;
             obj.nameId = NameId;
             obj.shortId = ShortId;

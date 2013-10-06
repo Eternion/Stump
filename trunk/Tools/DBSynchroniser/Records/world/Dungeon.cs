@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:11:00
+// Generated on 10/06/2013 14:22:02
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Dungeons")]
+    [TableName("Dungeons")]
+    [D2OClass("Dungeon")]
     public class DungeonRecord : ID2ORecord
     {
         private const String MODULE = "Dungeons";
@@ -39,7 +40,7 @@ namespace DBSynchroniser.Records
             set { optimalPlayerLevel = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Dungeon)obj;
             
@@ -48,10 +49,10 @@ namespace DBSynchroniser.Records
             OptimalPlayerLevel = castedObj.optimalPlayerLevel;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Dungeon();
             
+            var obj = new Dungeon();
             obj.id = Id;
             obj.nameId = NameId;
             obj.optimalPlayerLevel = OptimalPlayerLevel;

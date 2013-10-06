@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:00
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Skills")]
+    [TableName("Skills")]
+    [D2OClass("Skill")]
     public class SkillRecord : ID2ORecord
     {
         private const String MODULE = "Skills";
@@ -95,6 +96,7 @@ namespace DBSynchroniser.Records
             set { interactiveId = value; }
         }
 
+        [NullString]
         public String UseAnimation
         {
             get { return useAnimation; }
@@ -125,7 +127,7 @@ namespace DBSynchroniser.Records
             set { levelMin = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Skill)obj;
             
@@ -144,10 +146,10 @@ namespace DBSynchroniser.Records
             LevelMin = castedObj.levelMin;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Skill();
             
+            var obj = new Skill();
             obj.id = Id;
             obj.nameId = NameId;
             obj.parentJobId = ParentJobId;

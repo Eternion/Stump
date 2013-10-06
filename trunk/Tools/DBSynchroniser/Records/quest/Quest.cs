@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:10:59
+// Generated on 10/06/2013 14:22:01
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("Quests")]
+    [TableName("Quests")]
+    [D2OClass("Quest")]
     public class QuestRecord : ID2ORecord
     {
         private const String MODULE = "Quests";
@@ -104,7 +105,7 @@ namespace DBSynchroniser.Records
             set { levelMax = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (Quest)obj;
             
@@ -120,10 +121,10 @@ namespace DBSynchroniser.Records
             LevelMax = castedObj.levelMax;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new Quest();
             
+            var obj = new Quest();
             obj.id = Id;
             obj.nameId = NameId;
             obj.stepIds = StepIds;

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 01:11:00
+// Generated on 10/06/2013 14:22:02
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -12,7 +12,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [D2OClass("MapReferences")]
+    [TableName("MapReferences")]
+    [D2OClass("MapReference")]
     public class MapReferenceRecord : ID2ORecord
     {
         private const String MODULE = "MapReferences";
@@ -39,7 +40,7 @@ namespace DBSynchroniser.Records
             set { cellId = value; }
         }
 
-        public void AssignFields(object obj)
+        public virtual void AssignFields(object obj)
         {
             var castedObj = (MapReference)obj;
             
@@ -48,10 +49,10 @@ namespace DBSynchroniser.Records
             CellId = castedObj.cellId;
         }
         
-        public object CreateObject()
+        public virtual object CreateObject()
         {
-            var obj = new MapReference();
             
+            var obj = new MapReference();
             obj.id = Id;
             obj.mapId = MapId;
             obj.cellId = CellId;
