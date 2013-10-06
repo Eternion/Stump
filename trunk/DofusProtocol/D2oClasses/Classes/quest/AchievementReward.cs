@@ -1,12 +1,14 @@
 
-// Generated on 03/25/2013 19:24:37
+
+// Generated on 10/06/2013 17:58:55
 using System;
 using System.Collections.Generic;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 
 namespace Stump.DofusProtocol.D2oClasses
 {
-    [D2OClass("AchievementRewards")]
+    [D2OClass("AchievementReward", "com.ankamagames.dofus.datacenter.quest")]
     [Serializable]
     public class AchievementReward : IDataObject, IIndexedData
     {
@@ -20,65 +22,63 @@ namespace Stump.DofusProtocol.D2oClasses
         public List<uint> spellsReward;
         public List<uint> titlesReward;
         public List<uint> ornamentsReward;
-
         int IIndexedData.Id
         {
             get { return (int)id; }
         }
-
+        [D2OIgnore]
         public uint Id
         {
             get { return id; }
             set { id = value; }
         }
-
+        [D2OIgnore]
         public uint AchievementId
         {
             get { return achievementId; }
             set { achievementId = value; }
         }
-
+        [D2OIgnore]
         public int LevelMin
         {
             get { return levelMin; }
             set { levelMin = value; }
         }
-
+        [D2OIgnore]
         public int LevelMax
         {
             get { return levelMax; }
             set { levelMax = value; }
         }
-
+        [D2OIgnore]
         public List<List<uint>> ItemsReward
         {
             get { return itemsReward; }
             set { itemsReward = value; }
         }
-
+        [D2OIgnore]
         public List<uint> EmotesReward
         {
             get { return emotesReward; }
             set { emotesReward = value; }
         }
-
+        [D2OIgnore]
         public List<uint> SpellsReward
         {
             get { return spellsReward; }
             set { spellsReward = value; }
         }
-
+        [D2OIgnore]
         public List<uint> TitlesReward
         {
             get { return titlesReward; }
             set { titlesReward = value; }
         }
-
+        [D2OIgnore]
         public List<uint> OrnamentsReward
         {
             get { return ornamentsReward; }
             set { ornamentsReward = value; }
         }
-
     }
 }

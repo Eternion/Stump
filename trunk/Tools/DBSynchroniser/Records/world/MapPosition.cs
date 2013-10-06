@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:02
+// Generated on 10/06/2013 18:02:19
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("MapPositions")]
-    [D2OClass("MapPosition")]
+    [D2OClass("MapPosition", "com.ankamagames.dofus.datacenter.world")]
     public class MapPositionRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "MapPositions";
         public int id;
         public int posX;
@@ -28,6 +32,7 @@ namespace DBSynchroniser.Records
         public int worldMap;
         public Boolean hasPriorityOnWorldmap;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -35,36 +40,42 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public int PosX
         {
             get { return posX; }
             set { posX = value; }
         }
 
+        [D2OIgnore]
         public int PosY
         {
             get { return posY; }
             set { posY = value; }
         }
 
+        [D2OIgnore]
         public Boolean Outdoor
         {
             get { return outdoor; }
             set { outdoor = value; }
         }
 
+        [D2OIgnore]
         public int Capabilities
         {
             get { return capabilities; }
             set { capabilities = value; }
         }
 
+        [D2OIgnore]
         public int NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<AmbientSound> Sounds
         {
@@ -77,6 +88,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_soundsBin;
+        [D2OIgnore]
         public byte[] SoundsBin
         {
             get { return m_soundsBin; }
@@ -87,18 +99,21 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         public int SubAreaId
         {
             get { return subAreaId; }
             set { subAreaId = value; }
         }
 
+        [D2OIgnore]
         public int WorldMap
         {
             get { return worldMap; }
             set { worldMap = value; }
         }
 
+        [D2OIgnore]
         public Boolean HasPriorityOnWorldmap
         {
             get { return hasPriorityOnWorldmap; }
@@ -121,10 +136,10 @@ namespace DBSynchroniser.Records
             HasPriorityOnWorldmap = castedObj.hasPriorityOnWorldmap;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new MapPosition();
+            var obj = parent != null ? (MapPosition)parent : new MapPosition();
             obj.id = Id;
             obj.posX = PosX;
             obj.posY = PosY;

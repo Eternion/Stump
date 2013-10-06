@@ -31,10 +31,14 @@ if (module != null)
 else if (Parser.Class.Name == "Weapon") // only exception
     WriteLine(string.Format("[TableName(\"Weapons\")]", Parser.Class.Name));
 #>
-<# WriteLine("[D2OClass(\"" + Parser.Class.Name + "\")]"); #>
+<# WriteLine("[D2OClass(\"" + Parser.Class.Name + "\", \"" + Parser.Class.Namespace + "\")]"); #>
 public class <#=Parser.Class.Name #>Record<#=( Parser.Class.Heritage != "Object" ? " : " + Parser.Class.Heritage + "Record, ID2ORecord" : " : ID2ORecord" ) #>
 {
 <# PushIndent("    "); #>
+int ID2ORecord.Id
+{
+    get { return (int)Id; }
+}
 <#
 foreach (var field in Parser.Fields)
 {
@@ -54,6 +58,7 @@ var idField = Parser.Fields.FirstOrDefault(x => x.Name == "id");
 
 if (idField == null && Parser.Class.Heritage == "Object")
 {
+    WriteLine("[D2OIgnore]");
     WriteLine("[PrimaryKey(\"Id\")]");
     WriteLine("public int Id");
     WriteLine("{");
@@ -67,6 +72,7 @@ foreach (var field in Parser.Fields)
 	if (field.Modifiers != AccessModifiers.Public || field.Name == "MODULE" || field.IsConst || field.IsStatic)
 		continue;
 
+    WriteLine("[D2OIgnore]");
     if (field == idField && Parser.Class.Heritage == "Object")
         WriteLine("[PrimaryKey(\"" + ToPascalCase(idField.Name) + "\", false)]");
 
@@ -99,18 +105,19 @@ foreach (var field in Parser.Fields)
 <# PopIndent(); #>
 }
 
-public <#= Parser.Class.Heritage != "Object" ? "override" : "virtual" #> object CreateObject()
+public <#= Parser.Class.Heritage != "Object" ? "override" : "virtual" #> object CreateObject(object parent = null)
 {
 <# PushIndent("    "); #>
 
 <#
 if (Parser.Class.Heritage != "Object")
 {
-    WriteLine("var obj = (" + Parser.Class.Name + ")base.CreateObject();");
+    WriteLine("var obj = new " + Parser.Class.Name + "();");
+    WriteLine("base.CreateObject(obj);");
 }
 else
 {
-    WriteLine("var obj = new " + Parser.Class.Name + "();");
+    WriteLine("var obj = parent != null ? (" + Parser.Class.Name + ")parent : new " + Parser.Class.Name + "();");
 }
 
 foreach (var field in Parser.Fields)

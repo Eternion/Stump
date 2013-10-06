@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using DBSynchroniser.Records;
+using DBSynchroniser.Records.Langs;
 using Stump.Core.Attributes;
 using Stump.Core.Reflection;
 using Stump.Core.Xml.Config;
+using Stump.DofusProtocol.D2oClasses.Tools.D2i;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
@@ -35,13 +40,17 @@ namespace DBSynchroniser
         public static string DofusCustomPath = "";
 
         [Variable(true)]
-        public static string PatchsFolder = "world_patchs";
+        public static string FilesOutput = "./generate";
+
+
 
         private static Tuple<string, Action>[] m_menus = new[]
         {
             Tuple.Create<string, Action>("Set Dofus Path (empty = default)", SetDofusPath),
             Tuple.Create<string, Action>("Set languages (empty = all)", SetLanguages),
             Tuple.Create<string, Action>("Create database", CreateDatabase),
+            Tuple.Create<string, Action>("Load langs", LoadLangsWithWarning),
+            Tuple.Create<string, Action>("Generate client files", GenerateFiles),
         };
 
         private static Dictionary<string, D2OTable> m_tables = new Dictionary<string, D2OTable>();
@@ -209,6 +218,172 @@ namespace DBSynchroniser
                 }
 
                 Console.WriteLine("");
+            }
+
+            LoadLangs();
+        }
+
+        private static void LoadLangs()
+        {
+            Database.Database.Execute("DELETE FROM langs");
+            Database.Database.Execute("DELETE FROM langs_ui");
+
+            var d2iFiles = new Dictionary<string, D2IFile>();
+            string d2iFolder = Path.Combine(FindDofusPath(), "data", "i18n");
+
+            foreach (string file in Directory.EnumerateFiles(d2iFolder, "*.d2i"))
+            {
+                Match match = Regex.Match(Path.GetFileName(file), @"i18n_(\w+)\.d2i");
+                var i18NFile = new D2IFile(file);
+
+                d2iFiles.Add(match.Groups[1].Value, i18NFile);
+            }
+
+            var records = new Dictionary<int, LangText>();
+            var uiRecords = new Dictionary<string, LangTextUi>();
+            foreach (var file in d2iFiles)
+            {
+                if (!SpecificLanguage.Contains(file.Key))
+                    continue;
+
+                Console.WriteLine("Import {0}...", Path.GetFileName(file.Value.FilePath));
+                foreach (var text in file.Value.GetAllText())
+                {
+                    LangText record;
+                    if (!records.ContainsKey(text.Key))
+                    {
+                        record = new LangText();
+                        record.Id = (uint)text.Key;
+                        records.Add(text.Key, record);
+                    }
+                    else record = records[text.Key];
+
+                    switch (file.Key)
+                    {
+                        case "fr":
+                            record.French = text.Value;
+                            break;
+                        case "en":
+                            record.English = text.Value;
+                            break;
+                        case "de":
+                            record.German = text.Value;
+                            break;
+                        case "it":
+                            record.Italian = text.Value;
+                            break;
+                        case "es":
+                            record.Spanish = text.Value;
+                            break;
+                        case "ja":
+                            record.Japanish = text.Value;
+                            break;
+                        case "nl":
+                            record.Dutsh = text.Value;
+                            break;
+                        case "pt":
+                            record.Portugese = text.Value;
+                            break;
+                        case "ru":
+                            record.Russish = text.Value;
+                            break;
+                    }
+                }
+
+                foreach (var text in file.Value.GetAllUiText())
+                {
+                    LangTextUi record;
+                    if (!uiRecords.ContainsKey(text.Key))
+                    {
+                        record = new LangTextUi();
+                        record.Name = text.Key;
+                        uiRecords.Add(text.Key, record);
+                    }
+                    else record = uiRecords[text.Key];
+
+                    switch (file.Key)
+                    {
+                        case "fr":
+                            record.French = text.Value;
+                            break;
+                        case "en":
+                            record.English = text.Value;
+                            break;
+                        case "de":
+                            record.German = text.Value;
+                            break;
+                        case "it":
+                            record.Italian = text.Value;
+                            break;
+                        case "es":
+                            record.Spanish = text.Value;
+                            break;
+                        case "ja":
+                            record.Japanish = text.Value;
+                            break;
+                        case "nl":
+                            record.Dutsh = text.Value;
+                            break;
+                        case "pt":
+                            record.Portugese = text.Value;
+                            break;
+                        case "ru":
+                            record.Russish = text.Value;
+                            break;
+                    }
+                }
+            }
+
+
+            Console.WriteLine("Save texts...");
+
+            foreach (var record in records)
+                Database.Database.Insert(record);
+
+            foreach (var record in uiRecords)
+                Database.Database.Insert(record);
+        }
+
+        private static void LoadLangsWithWarning()
+        {
+            Console.WriteLine("WARNING IT WILL ERASE TABLES 'langs' AND 'langs_ui'. ARE YOU SURE ? (y/n)");
+            if (Console.ReadLine() != "y")
+                return;
+
+            LoadLangs();
+        }
+
+        private static void GenerateFiles()
+        {
+            if (!Directory.Exists(FilesOutput))
+                Directory.CreateDirectory(FilesOutput);
+
+            foreach (var table in m_tables.Values)
+            {
+                D2OWriter writer;
+                if (table.Type.BaseType != typeof (object) &&
+                    m_tables.ContainsKey(table.Type.BaseType.Name))
+                {
+                    writer = new D2OWriter(Path.Combine(FilesOutput, m_tables[table.Type.BaseType.Name].TableName + ".d2o"));
+                }
+                else
+                    writer = new D2OWriter(Path.Combine(FilesOutput, table.TableName + ".d2o"));
+
+                Console.WriteLine("Generating {0} ...", Path.GetFileName(writer.Filename));
+
+
+                MethodInfo method = typeof(Database).GetMethodExt("Fetch", 1, new[]{ typeof(Sql)});
+                MethodInfo generic = method.MakeGenericMethod(table.Type);
+                var rows = ((IList)generic.Invoke(Database.Database, new object[] {new Sql("SELECT * FROM `" + table.TableName + "`")}));
+
+                writer.StartWriting(false);
+                foreach (ID2ORecord row in rows)
+                {
+                    var obj = row.CreateObject();
+                    writer.Write(obj, row.Id);
+                }
+
+                writer.EndWriting();
             }
         }
 

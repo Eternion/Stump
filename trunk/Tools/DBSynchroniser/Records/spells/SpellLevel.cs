@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:19
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("SpellLevels")]
-    [D2OClass("SpellLevel")]
+    [D2OClass("SpellLevel", "com.ankamagames.dofus.datacenter.spells")]
     public class SpellLevelRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "SpellLevels";
         public uint id;
         public uint spellId;
@@ -47,6 +51,7 @@ namespace DBSynchroniser.Records
         public List<EffectInstanceDice> effects;
         public List<EffectInstanceDice> criticalEffect;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -54,150 +59,175 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint SpellId
         {
             get { return spellId; }
             set { spellId = value; }
         }
 
+        [D2OIgnore]
         public uint SpellBreed
         {
             get { return spellBreed; }
             set { spellBreed = value; }
         }
 
+        [D2OIgnore]
         public uint ApCost
         {
             get { return apCost; }
             set { apCost = value; }
         }
 
+        [D2OIgnore]
         public uint MinRange
         {
             get { return minRange; }
             set { minRange = value; }
         }
 
+        [D2OIgnore]
         public uint Range
         {
             get { return range; }
             set { range = value; }
         }
 
+        [D2OIgnore]
         public Boolean CastInLine
         {
             get { return castInLine; }
             set { castInLine = value; }
         }
 
+        [D2OIgnore]
         public Boolean CastInDiagonal
         {
             get { return castInDiagonal; }
             set { castInDiagonal = value; }
         }
 
+        [D2OIgnore]
         public Boolean CastTestLos
         {
             get { return castTestLos; }
             set { castTestLos = value; }
         }
 
+        [D2OIgnore]
         public uint CriticalHitProbability
         {
             get { return criticalHitProbability; }
             set { criticalHitProbability = value; }
         }
 
+        [D2OIgnore]
         public uint CriticalFailureProbability
         {
             get { return criticalFailureProbability; }
             set { criticalFailureProbability = value; }
         }
 
+        [D2OIgnore]
         public Boolean NeedFreeCell
         {
             get { return needFreeCell; }
             set { needFreeCell = value; }
         }
 
+        [D2OIgnore]
         public Boolean NeedTakenCell
         {
             get { return needTakenCell; }
             set { needTakenCell = value; }
         }
 
+        [D2OIgnore]
         public Boolean NeedFreeTrapCell
         {
             get { return needFreeTrapCell; }
             set { needFreeTrapCell = value; }
         }
 
+        [D2OIgnore]
         public Boolean RangeCanBeBoosted
         {
             get { return rangeCanBeBoosted; }
             set { rangeCanBeBoosted = value; }
         }
 
+        [D2OIgnore]
         public int MaxStack
         {
             get { return maxStack; }
             set { maxStack = value; }
         }
 
+        [D2OIgnore]
         public uint MaxCastPerTurn
         {
             get { return maxCastPerTurn; }
             set { maxCastPerTurn = value; }
         }
 
+        [D2OIgnore]
         public uint MaxCastPerTarget
         {
             get { return maxCastPerTarget; }
             set { maxCastPerTarget = value; }
         }
 
+        [D2OIgnore]
         public uint MinCastInterval
         {
             get { return minCastInterval; }
             set { minCastInterval = value; }
         }
 
+        [D2OIgnore]
         public uint InitialCooldown
         {
             get { return initialCooldown; }
             set { initialCooldown = value; }
         }
 
+        [D2OIgnore]
         public int GlobalCooldown
         {
             get { return globalCooldown; }
             set { globalCooldown = value; }
         }
 
+        [D2OIgnore]
         public uint MinPlayerLevel
         {
             get { return minPlayerLevel; }
             set { minPlayerLevel = value; }
         }
 
+        [D2OIgnore]
         public Boolean CriticalFailureEndsTurn
         {
             get { return criticalFailureEndsTurn; }
             set { criticalFailureEndsTurn = value; }
         }
 
+        [D2OIgnore]
         public Boolean HideEffects
         {
             get { return hideEffects; }
             set { hideEffects = value; }
         }
 
+        [D2OIgnore]
         public Boolean Hidden
         {
             get { return hidden; }
             set { hidden = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<int> StatesRequired
         {
@@ -210,6 +240,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_statesRequiredBin;
+        [D2OIgnore]
         public byte[] StatesRequiredBin
         {
             get { return m_statesRequiredBin; }
@@ -220,6 +251,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<int> StatesForbidden
         {
@@ -232,6 +264,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_statesForbiddenBin;
+        [D2OIgnore]
         public byte[] StatesForbiddenBin
         {
             get { return m_statesForbiddenBin; }
@@ -242,6 +275,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<EffectInstanceDice> Effects
         {
@@ -254,6 +288,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_effectsBin;
+        [D2OIgnore]
         public byte[] EffectsBin
         {
             get { return m_effectsBin; }
@@ -264,6 +299,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<EffectInstanceDice> CriticalEffect
         {
@@ -276,6 +312,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_criticalEffectBin;
+        [D2OIgnore]
         public byte[] CriticalEffectBin
         {
             get { return m_criticalEffectBin; }
@@ -321,10 +358,10 @@ namespace DBSynchroniser.Records
             CriticalEffect = castedObj.criticalEffect;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new SpellLevel();
+            var obj = parent != null ? (SpellLevel)parent : new SpellLevel();
             obj.id = Id;
             obj.spellId = SpellId;
             obj.spellBreed = SpellBreed;

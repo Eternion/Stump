@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:58
+// Generated on 10/06/2013 18:02:16
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("AmbientSounds")]
-    [D2OClass("AmbientSound")]
+    [D2OClass("AmbientSound", "com.ankamagames.dofus.datacenter.ambientSounds")]
     public class AmbientSoundRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         public const int AMBIENT_TYPE_ROLEPLAY = 1;
         public const int AMBIENT_TYPE_AMBIENT = 2;
         public const int AMBIENT_TYPE_FIGHT = 3;
@@ -29,6 +33,7 @@ namespace DBSynchroniser.Records
         public int channel;
         public int type_id;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -36,36 +41,42 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint Volume
         {
             get { return volume; }
             set { volume = value; }
         }
 
+        [D2OIgnore]
         public int CriterionId
         {
             get { return criterionId; }
             set { criterionId = value; }
         }
 
+        [D2OIgnore]
         public uint SilenceMin
         {
             get { return silenceMin; }
             set { silenceMin = value; }
         }
 
+        [D2OIgnore]
         public uint SilenceMax
         {
             get { return silenceMax; }
             set { silenceMax = value; }
         }
 
+        [D2OIgnore]
         public int Channel
         {
             get { return channel; }
             set { channel = value; }
         }
 
+        [D2OIgnore]
         public int Type_id
         {
             get { return type_id; }
@@ -85,10 +96,10 @@ namespace DBSynchroniser.Records
             Type_id = castedObj.type_id;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new AmbientSound();
+            var obj = parent != null ? (AmbientSound)parent : new AmbientSound();
             obj.id = Id;
             obj.volume = Volume;
             obj.criterionId = CriterionId;

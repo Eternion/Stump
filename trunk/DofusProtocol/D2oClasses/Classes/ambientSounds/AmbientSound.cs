@@ -1,12 +1,14 @@
 
-// Generated on 03/25/2013 19:24:32
+
+// Generated on 10/06/2013 17:58:52
 using System;
 using System.Collections.Generic;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 
 namespace Stump.DofusProtocol.D2oClasses
 {
-    [D2OClass("AmbientSounds")]
+    [D2OClass("AmbientSound", "com.ankamagames.dofus.datacenter.ambientSounds")]
     [Serializable]
     public class AmbientSound : IDataObject, IIndexedData
     {
@@ -22,53 +24,51 @@ namespace Stump.DofusProtocol.D2oClasses
         public uint silenceMax;
         public int channel;
         public int type_id;
-
         int IIndexedData.Id
         {
             get { return (int)id; }
         }
-
+        [D2OIgnore]
         public int Id
         {
             get { return id; }
             set { id = value; }
         }
-
+        [D2OIgnore]
         public uint Volume
         {
             get { return volume; }
             set { volume = value; }
         }
-
+        [D2OIgnore]
         public int CriterionId
         {
             get { return criterionId; }
             set { criterionId = value; }
         }
-
+        [D2OIgnore]
         public uint SilenceMin
         {
             get { return silenceMin; }
             set { silenceMin = value; }
         }
-
+        [D2OIgnore]
         public uint SilenceMax
         {
             get { return silenceMax; }
             set { silenceMax = value; }
         }
-
+        [D2OIgnore]
         public int Channel
         {
             get { return channel; }
             set { channel = value; }
         }
-
-        public int Typeid
+        [D2OIgnore]
+        public int Type_id
         {
             get { return type_id; }
             set { type_id = value; }
         }
-
     }
 }

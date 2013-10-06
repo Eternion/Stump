@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:00
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,13 +13,18 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Months")]
-    [D2OClass("Month")]
+    [D2OClass("Month", "com.ankamagames.dofus.datacenter.misc")]
     public class MonthRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Months";
         public int id;
         public uint nameId;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -27,6 +32,7 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
@@ -41,10 +47,10 @@ namespace DBSynchroniser.Records
             NameId = castedObj.nameId;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Month();
+            var obj = parent != null ? (Month)parent : new Month();
             obj.id = Id;
             obj.nameId = NameId;
             return obj;

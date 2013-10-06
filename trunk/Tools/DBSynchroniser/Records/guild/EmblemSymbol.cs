@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:58
+// Generated on 10/06/2013 18:02:17
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("EmblemSymbols")]
-    [D2OClass("EmblemSymbol")]
+    [D2OClass("EmblemSymbol", "com.ankamagames.dofus.datacenter.guild")]
     public class EmblemSymbolRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "EmblemSymbols";
         public int id;
         public int iconId;
@@ -24,6 +28,7 @@ namespace DBSynchroniser.Records
         public int categoryId;
         public Boolean colorizable;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -31,30 +36,35 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public int IconId
         {
             get { return iconId; }
             set { iconId = value; }
         }
 
+        [D2OIgnore]
         public int SkinId
         {
             get { return skinId; }
             set { skinId = value; }
         }
 
+        [D2OIgnore]
         public int Order
         {
             get { return order; }
             set { order = value; }
         }
 
+        [D2OIgnore]
         public int CategoryId
         {
             get { return categoryId; }
             set { categoryId = value; }
         }
 
+        [D2OIgnore]
         public Boolean Colorizable
         {
             get { return colorizable; }
@@ -73,10 +83,10 @@ namespace DBSynchroniser.Records
             Colorizable = castedObj.colorizable;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new EmblemSymbol();
+            var obj = parent != null ? (EmblemSymbol)parent : new EmblemSymbol();
             obj.id = Id;
             obj.iconId = IconId;
             obj.skinId = SkinId;

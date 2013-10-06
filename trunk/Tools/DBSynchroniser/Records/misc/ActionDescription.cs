@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:00
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("ActionDescriptions")]
-    [D2OClass("ActionDescription")]
+    [D2OClass("ActionDescription", "com.ankamagames.dofus.datacenter.misc")]
     public class ActionDescriptionRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         public const String MODULE = "ActionDescriptions";
         public uint id;
         public uint typeId;
@@ -27,6 +31,7 @@ namespace DBSynchroniser.Records
         public uint minimalUseInterval;
         public Boolean needConfirmation;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -34,12 +39,14 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint TypeId
         {
             get { return typeId; }
             set { typeId = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String Name
         {
@@ -47,36 +54,42 @@ namespace DBSynchroniser.Records
             set { name = value; }
         }
 
+        [D2OIgnore]
         public uint DescriptionId
         {
             get { return descriptionId; }
             set { descriptionId = value; }
         }
 
+        [D2OIgnore]
         public Boolean Trusted
         {
             get { return trusted; }
             set { trusted = value; }
         }
 
+        [D2OIgnore]
         public Boolean NeedInteraction
         {
             get { return needInteraction; }
             set { needInteraction = value; }
         }
 
+        [D2OIgnore]
         public uint MaxUsePerFrame
         {
             get { return maxUsePerFrame; }
             set { maxUsePerFrame = value; }
         }
 
+        [D2OIgnore]
         public uint MinimalUseInterval
         {
             get { return minimalUseInterval; }
             set { minimalUseInterval = value; }
         }
 
+        [D2OIgnore]
         public Boolean NeedConfirmation
         {
             get { return needConfirmation; }
@@ -98,10 +111,10 @@ namespace DBSynchroniser.Records
             NeedConfirmation = castedObj.needConfirmation;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new ActionDescription();
+            var obj = parent != null ? (ActionDescription)parent : new ActionDescription();
             obj.id = Id;
             obj.typeId = TypeId;
             obj.name = Name;

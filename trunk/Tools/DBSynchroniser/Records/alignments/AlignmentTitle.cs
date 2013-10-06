@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:57
+// Generated on 10/06/2013 18:02:16
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,26 +13,33 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("AlignmentTitles")]
-    [D2OClass("AlignmentTitle")]
+    [D2OClass("AlignmentTitle", "com.ankamagames.dofus.datacenter.alignments")]
     public class AlignmentTitleRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "AlignmentTitles";
         public int sideId;
         public List<int> namesId;
         public List<int> shortsId;
 
+        [D2OIgnore]
         [PrimaryKey("Id")]
         public int Id
         {
             get;
             set;
         }
+        [D2OIgnore]
         public int SideId
         {
             get { return sideId; }
             set { sideId = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<int> NamesId
         {
@@ -45,6 +52,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_namesIdBin;
+        [D2OIgnore]
         public byte[] NamesIdBin
         {
             get { return m_namesIdBin; }
@@ -55,6 +63,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<int> ShortsId
         {
@@ -67,6 +76,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_shortsIdBin;
+        [D2OIgnore]
         public byte[] ShortsIdBin
         {
             get { return m_shortsIdBin; }
@@ -86,10 +96,10 @@ namespace DBSynchroniser.Records
             ShortsId = castedObj.shortsId;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new AlignmentTitle();
+            var obj = parent != null ? (AlignmentTitle)parent : new AlignmentTitle();
             obj.sideId = SideId;
             obj.namesId = NamesId;
             obj.shortsId = ShortsId;

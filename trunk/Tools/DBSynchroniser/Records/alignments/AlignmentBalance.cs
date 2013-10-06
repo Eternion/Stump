@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:57
+// Generated on 10/06/2013 18:02:16
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("AlignmentBalance")]
-    [D2OClass("AlignmentBalance")]
+    [D2OClass("AlignmentBalance", "com.ankamagames.dofus.datacenter.alignments")]
     public class AlignmentBalanceRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "AlignmentBalance";
         public int id;
         public int startValue;
@@ -23,6 +27,7 @@ namespace DBSynchroniser.Records
         public uint nameId;
         public uint descriptionId;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -30,24 +35,28 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public int StartValue
         {
             get { return startValue; }
             set { startValue = value; }
         }
 
+        [D2OIgnore]
         public int EndValue
         {
             get { return endValue; }
             set { endValue = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public uint DescriptionId
         {
             get { return descriptionId; }
@@ -65,10 +74,10 @@ namespace DBSynchroniser.Records
             DescriptionId = castedObj.descriptionId;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new AlignmentBalance();
+            var obj = parent != null ? (AlignmentBalance)parent : new AlignmentBalance();
             obj.id = Id;
             obj.startValue = StartValue;
             obj.endValue = EndValue;

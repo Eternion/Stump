@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:58
+// Generated on 10/06/2013 18:02:16
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Smileys")]
-    [D2OClass("Smiley")]
+    [D2OClass("Smiley", "com.ankamagames.dofus.datacenter.communication")]
     public class SmileyRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Smileys";
         public uint id;
         public uint order;
@@ -23,6 +27,7 @@ namespace DBSynchroniser.Records
         public Boolean forPlayers;
         public List<String> triggers;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -30,12 +35,14 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint Order
         {
             get { return order; }
             set { order = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String GfxId
         {
@@ -43,12 +50,14 @@ namespace DBSynchroniser.Records
             set { gfxId = value; }
         }
 
+        [D2OIgnore]
         public Boolean ForPlayers
         {
             get { return forPlayers; }
             set { forPlayers = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<String> Triggers
         {
@@ -61,6 +70,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_triggersBin;
+        [D2OIgnore]
         public byte[] TriggersBin
         {
             get { return m_triggersBin; }
@@ -82,10 +92,10 @@ namespace DBSynchroniser.Records
             Triggers = castedObj.triggers;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Smiley();
+            var obj = parent != null ? (Smiley)parent : new Smiley();
             obj.id = Id;
             obj.order = Order;
             obj.gfxId = GfxId;

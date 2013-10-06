@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,14 +13,19 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("MountBehaviors")]
-    [D2OClass("MountBehavior")]
+    [D2OClass("MountBehavior", "com.ankamagames.dofus.datacenter.mounts")]
     public class MountBehaviorRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         public const String MODULE = "MountBehaviors";
         public uint id;
         public uint nameId;
         public uint descriptionId;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -28,12 +33,14 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public uint DescriptionId
         {
             get { return descriptionId; }
@@ -49,10 +56,10 @@ namespace DBSynchroniser.Records
             DescriptionId = castedObj.descriptionId;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new MountBehavior();
+            var obj = parent != null ? (MountBehavior)parent : new MountBehavior();
             obj.id = Id;
             obj.nameId = NameId;
             obj.descriptionId = DescriptionId;

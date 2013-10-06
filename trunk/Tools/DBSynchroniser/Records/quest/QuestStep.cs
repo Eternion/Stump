@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("QuestSteps")]
-    [D2OClass("QuestStep")]
+    [D2OClass("QuestStep", "com.ankamagames.dofus.datacenter.quest")]
     public class QuestStepRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "QuestSteps";
         public uint id;
         public uint questId;
@@ -30,6 +34,7 @@ namespace DBSynchroniser.Records
         public List<uint> objectiveIds;
         public List<uint> rewardsIds;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -37,60 +42,70 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint QuestId
         {
             get { return questId; }
             set { questId = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public uint DescriptionId
         {
             get { return descriptionId; }
             set { descriptionId = value; }
         }
 
+        [D2OIgnore]
         public int DialogId
         {
             get { return dialogId; }
             set { dialogId = value; }
         }
 
+        [D2OIgnore]
         public uint OptimalLevel
         {
             get { return optimalLevel; }
             set { optimalLevel = value; }
         }
 
+        [D2OIgnore]
         public float Duration
         {
             get { return duration; }
             set { duration = value; }
         }
 
+        [D2OIgnore]
         public Boolean KamasScaleWithPlayerLevel
         {
             get { return kamasScaleWithPlayerLevel; }
             set { kamasScaleWithPlayerLevel = value; }
         }
 
+        [D2OIgnore]
         public float KamasRatio
         {
             get { return kamasRatio; }
             set { kamasRatio = value; }
         }
 
+        [D2OIgnore]
         public float XpRatio
         {
             get { return xpRatio; }
             set { xpRatio = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<uint> ObjectiveIds
         {
@@ -103,6 +118,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_objectiveIdsBin;
+        [D2OIgnore]
         public byte[] ObjectiveIdsBin
         {
             get { return m_objectiveIdsBin; }
@@ -113,6 +129,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<uint> RewardsIds
         {
@@ -125,6 +142,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_rewardsIdsBin;
+        [D2OIgnore]
         public byte[] RewardsIdsBin
         {
             get { return m_rewardsIdsBin; }
@@ -153,10 +171,10 @@ namespace DBSynchroniser.Records
             RewardsIds = castedObj.rewardsIds;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new QuestStep();
+            var obj = parent != null ? (QuestStep)parent : new QuestStep();
             obj.id = Id;
             obj.questId = QuestId;
             obj.nameId = NameId;

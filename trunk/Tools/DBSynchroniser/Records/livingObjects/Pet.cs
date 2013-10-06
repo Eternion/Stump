@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:00
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,14 +13,19 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Pets")]
-    [D2OClass("Pet")]
+    [D2OClass("Pet", "com.ankamagames.dofus.datacenter.livingObjects")]
     public class PetRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Pets";
         public int id;
         public List<int> foodItems;
         public List<int> foodTypes;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -28,6 +33,7 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<int> FoodItems
         {
@@ -40,6 +46,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_foodItemsBin;
+        [D2OIgnore]
         public byte[] FoodItemsBin
         {
             get { return m_foodItemsBin; }
@@ -50,6 +57,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<int> FoodTypes
         {
@@ -62,6 +70,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_foodTypesBin;
+        [D2OIgnore]
         public byte[] FoodTypesBin
         {
             get { return m_foodTypesBin; }
@@ -81,10 +90,10 @@ namespace DBSynchroniser.Records
             FoodTypes = castedObj.foodTypes;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Pet();
+            var obj = parent != null ? (Pet)parent : new Pet();
             obj.id = Id;
             obj.foodItems = FoodItems;
             obj.foodTypes = FoodTypes;

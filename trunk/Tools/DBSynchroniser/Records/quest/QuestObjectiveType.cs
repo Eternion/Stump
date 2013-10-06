@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,13 +13,18 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("QuestObjectiveTypes")]
-    [D2OClass("QuestObjectiveType")]
+    [D2OClass("QuestObjectiveType", "com.ankamagames.dofus.datacenter.quest")]
     public class QuestObjectiveTypeRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "QuestObjectiveTypes";
         public uint id;
         public uint nameId;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -27,6 +32,7 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
@@ -41,10 +47,10 @@ namespace DBSynchroniser.Records
             NameId = castedObj.nameId;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new QuestObjectiveType();
+            var obj = parent != null ? (QuestObjectiveType)parent : new QuestObjectiveType();
             obj.id = Id;
             obj.nameId = NameId;
             return obj;

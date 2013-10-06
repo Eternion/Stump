@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:58
+// Generated on 10/06/2013 18:02:16
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Heads")]
-    [D2OClass("Head")]
+    [D2OClass("Head", "com.ankamagames.dofus.datacenter.breeds")]
     public class HeadRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Heads";
         public int id;
         public String skins;
@@ -24,6 +28,7 @@ namespace DBSynchroniser.Records
         public uint gender;
         public uint order;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -31,6 +36,7 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String Skins
         {
@@ -38,6 +44,7 @@ namespace DBSynchroniser.Records
             set { skins = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String AssetId
         {
@@ -45,18 +52,21 @@ namespace DBSynchroniser.Records
             set { assetId = value; }
         }
 
+        [D2OIgnore]
         public uint Breed
         {
             get { return breed; }
             set { breed = value; }
         }
 
+        [D2OIgnore]
         public uint Gender
         {
             get { return gender; }
             set { gender = value; }
         }
 
+        [D2OIgnore]
         public uint Order
         {
             get { return order; }
@@ -75,10 +85,10 @@ namespace DBSynchroniser.Records
             Order = castedObj.order;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Head();
+            var obj = parent != null ? (Head)parent : new Head();
             obj.id = Id;
             obj.skins = Skins;
             obj.assetId = AssetId;

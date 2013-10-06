@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:19
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("SoundUi")]
-    [D2OClass("SoundUi")]
+    [D2OClass("SoundUi", "com.ankamagames.dofus.datacenter.sounds")]
     public class SoundUiRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         public uint id;
         public String uiName;
         public String openFile;
@@ -23,6 +27,7 @@ namespace DBSynchroniser.Records
         public List<SoundUiElement> subElements;
         public String MODULE = "SoundUi";
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -30,6 +35,7 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String UiName
         {
@@ -37,6 +43,7 @@ namespace DBSynchroniser.Records
             set { uiName = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String OpenFile
         {
@@ -44,6 +51,7 @@ namespace DBSynchroniser.Records
             set { openFile = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String CloseFile
         {
@@ -51,6 +59,7 @@ namespace DBSynchroniser.Records
             set { closeFile = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<SoundUiElement> SubElements
         {
@@ -63,6 +72,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_subElementsBin;
+        [D2OIgnore]
         public byte[] SubElementsBin
         {
             get { return m_subElementsBin; }
@@ -84,10 +94,10 @@ namespace DBSynchroniser.Records
             SubElements = castedObj.subElements;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new SoundUi();
+            var obj = parent != null ? (SoundUi)parent : new SoundUi();
             obj.id = Id;
             obj.uiName = UiName;
             obj.openFile = OpenFile;

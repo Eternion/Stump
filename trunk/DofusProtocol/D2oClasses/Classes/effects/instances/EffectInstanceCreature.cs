@@ -1,22 +1,23 @@
 
-// Generated on 03/25/2013 19:24:32
+
+// Generated on 10/06/2013 17:58:53
 using System;
 using System.Collections.Generic;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 
 namespace Stump.DofusProtocol.D2oClasses
 {
-    [D2OClass("EffectInstanceCreature")]
+    [D2OClass("EffectInstanceCreature", "com.ankamagames.dofus.datacenter.effects.instances")]
     [Serializable]
-    public class EffectInstanceCreature : EffectInstance, IIndexedData
+    public class EffectInstanceCreature : EffectInstance
     {
         public uint monsterFamilyId;
-
+        [D2OIgnore]
         public uint MonsterFamilyId
         {
             get { return monsterFamilyId; }
             set { monsterFamilyId = value; }
         }
-
     }
 }

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:59
+// Generated on 10/06/2013 18:02:17
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,13 +13,18 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("PresetIcons")]
-    [D2OClass("PresetIcon")]
+    [D2OClass("PresetIcon", "com.ankamagames.dofus.datacenter.items")]
     public class PresetIconRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "PresetIcons";
         public int id;
         public int order;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -27,6 +32,7 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public int Order
         {
             get { return order; }
@@ -41,10 +47,10 @@ namespace DBSynchroniser.Records
             Order = castedObj.order;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new PresetIcon();
+            var obj = parent != null ? (PresetIcon)parent : new PresetIcon();
             obj.id = Id;
             obj.order = Order;
             return obj;

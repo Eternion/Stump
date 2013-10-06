@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:58
+// Generated on 10/06/2013 18:02:16
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("CensoredWords")]
-    [D2OClass("CensoredWord")]
+    [D2OClass("CensoredWord", "com.ankamagames.dofus.datacenter.communication")]
     public class CensoredWordRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "CensoredWords";
         public uint id;
         public uint listId;
@@ -23,6 +27,7 @@ namespace DBSynchroniser.Records
         public String word;
         public Boolean deepLooking;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -30,12 +35,14 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint ListId
         {
             get { return listId; }
             set { listId = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String Language
         {
@@ -43,6 +50,7 @@ namespace DBSynchroniser.Records
             set { language = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String Word
         {
@@ -50,6 +58,7 @@ namespace DBSynchroniser.Records
             set { word = value; }
         }
 
+        [D2OIgnore]
         public Boolean DeepLooking
         {
             get { return deepLooking; }
@@ -67,10 +76,10 @@ namespace DBSynchroniser.Records
             DeepLooking = castedObj.deepLooking;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new CensoredWord();
+            var obj = parent != null ? (CensoredWord)parent : new CensoredWord();
             obj.id = Id;
             obj.listId = ListId;
             obj.language = Language;

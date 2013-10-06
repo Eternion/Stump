@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:19
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,14 +13,19 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("SoundBones")]
-    [D2OClass("SoundBones")]
+    [D2OClass("SoundBones", "com.ankamagames.dofus.datacenter.sounds")]
     public class SoundBonesRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         public uint id;
         public List<String> keys;
         public List<List<SoundAnimation>> values;
         public String MODULE = "SoundBones";
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -28,6 +33,7 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<String> Keys
         {
@@ -40,6 +46,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_keysBin;
+        [D2OIgnore]
         public byte[] KeysBin
         {
             get { return m_keysBin; }
@@ -50,6 +57,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<List<SoundAnimation>> Values
         {
@@ -62,6 +70,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_valuesBin;
+        [D2OIgnore]
         public byte[] ValuesBin
         {
             get { return m_valuesBin; }
@@ -81,10 +90,10 @@ namespace DBSynchroniser.Records
             Values = castedObj.values;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new SoundBones();
+            var obj = parent != null ? (SoundBones)parent : new SoundBones();
             obj.id = Id;
             obj.keys = Keys;
             obj.values = Values;

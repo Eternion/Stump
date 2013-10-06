@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:19
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,14 +13,19 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("SpellTypes")]
-    [D2OClass("SpellType")]
+    [D2OClass("SpellType", "com.ankamagames.dofus.datacenter.spells")]
     public class SpellTypeRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "SpellTypes";
         public int id;
         public uint longNameId;
         public uint shortNameId;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -28,12 +33,14 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint LongNameId
         {
             get { return longNameId; }
             set { longNameId = value; }
         }
 
+        [D2OIgnore]
         public uint ShortNameId
         {
             get { return shortNameId; }
@@ -49,10 +56,10 @@ namespace DBSynchroniser.Records
             ShortNameId = castedObj.shortNameId;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new SpellType();
+            var obj = parent != null ? (SpellType)parent : new SpellType();
             obj.id = Id;
             obj.longNameId = LongNameId;
             obj.shortNameId = ShortNameId;

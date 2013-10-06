@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:19
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Areas")]
-    [D2OClass("Area")]
+    [D2OClass("Area", "com.ankamagames.dofus.datacenter.world")]
     public class AreaRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Areas";
         public int id;
         public uint nameId;
@@ -24,6 +28,7 @@ namespace DBSynchroniser.Records
         public Boolean containPaddocks;
         public Rectangle bounds;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -31,30 +36,35 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public int SuperAreaId
         {
             get { return superAreaId; }
             set { superAreaId = value; }
         }
 
+        [D2OIgnore]
         public Boolean ContainHouses
         {
             get { return containHouses; }
             set { containHouses = value; }
         }
 
+        [D2OIgnore]
         public Boolean ContainPaddocks
         {
             get { return containPaddocks; }
             set { containPaddocks = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public Rectangle Bounds
         {
@@ -67,6 +77,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_boundsBin;
+        [D2OIgnore]
         public byte[] BoundsBin
         {
             get { return m_boundsBin; }
@@ -89,10 +100,10 @@ namespace DBSynchroniser.Records
             Bounds = castedObj.bounds;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Area();
+            var obj = parent != null ? (Area)parent : new Area();
             obj.id = Id;
             obj.nameId = NameId;
             obj.superAreaId = SuperAreaId;

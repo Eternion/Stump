@@ -10,7 +10,8 @@ namespace DofusProtocolBuilder.Parsing
 {
     [Serializable]
 	public class Parser
-	{
+    {
+        public static readonly string PackagePattern = @"package ([\w\d\.]+)";
         public static readonly string ClassPatern = @"public class (\w+)\s";
         public static readonly string ClassHeritagePattern = @"extends (?:[\w_]+\.)*(\w+)";
         public static readonly string ConstructorPattern = @"(?<acces>public|protected|private|internal)\s*function\s*(?<name>{0})\((?<argument>[^,)]+,?)*\)";
@@ -103,6 +104,7 @@ namespace DofusProtocolBuilder.Parsing
 			Class = new ClassInfo
 			{
 				Name = GetMatch(ClassPatern),
+                Namespace = GetMatch(PackagePattern),
 				Heritage = GetMatch(ClassHeritagePattern),
 				AccessModifier = AccessModifiers.Public,
 				// we don't mind about this

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:59
+// Generated on 10/06/2013 18:02:17
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("ItemTypes")]
-    [D2OClass("ItemType")]
+    [D2OClass("ItemType", "com.ankamagames.dofus.datacenter.items")]
     public class ItemTypeRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "ItemTypes";
         public int id;
         public uint nameId;
@@ -25,6 +29,7 @@ namespace DBSynchroniser.Records
         public String rawZone;
         public Boolean needUseConfirm;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -32,30 +37,35 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public uint SuperTypeId
         {
             get { return superTypeId; }
             set { superTypeId = value; }
         }
 
+        [D2OIgnore]
         public Boolean Plural
         {
             get { return plural; }
             set { plural = value; }
         }
 
+        [D2OIgnore]
         public uint Gender
         {
             get { return gender; }
             set { gender = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String RawZone
         {
@@ -63,6 +73,7 @@ namespace DBSynchroniser.Records
             set { rawZone = value; }
         }
 
+        [D2OIgnore]
         public Boolean NeedUseConfirm
         {
             get { return needUseConfirm; }
@@ -82,10 +93,10 @@ namespace DBSynchroniser.Records
             NeedUseConfirm = castedObj.needUseConfirm;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new ItemType();
+            var obj = parent != null ? (ItemType)parent : new ItemType();
             obj.id = Id;
             obj.nameId = NameId;
             obj.superTypeId = SuperTypeId;

@@ -78,7 +78,7 @@ namespace DofusProtocolBuilder
 
             // decompiled with sothink
             SourcePath = "./sources/";
-            BaseNamespace = "Stump.DofusProtocol/";
+            BaseNamespace = "Stump.DofusProtocol";
             UseIEnumerable = true;
 
             XmlMessagesProfile =
@@ -137,7 +137,7 @@ namespace DofusProtocolBuilder
                         Name = "D2O Data classes",
                         SourcePath = @"com/ankamagames/dofus/datacenter/",
                         OutPutPath = "d2oclasses/",
-                        OutPutNamespace = ".Data",
+                        OutPutNamespace = ".D2oClasses",
                         TemplatePath = "./Templates/DataCenterTemplate.tt",
                         IgnoreMethods = true,
                         EnableParsing = true,

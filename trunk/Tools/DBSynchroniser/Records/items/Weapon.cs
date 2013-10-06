@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:59
+// Generated on 10/06/2013 18:02:17
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Weapons")]
-    [D2OClass("Weapon")]
+    [D2OClass("Weapon", "com.ankamagames.dofus.datacenter.items")]
     public class WeaponRecord : ItemRecord, ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         public int apCost;
         public int minRange;
         public int range;
@@ -26,54 +30,63 @@ namespace DBSynchroniser.Records
         public int criticalHitBonus;
         public int criticalFailureProbability;
 
+        [D2OIgnore]
         public int ApCost
         {
             get { return apCost; }
             set { apCost = value; }
         }
 
+        [D2OIgnore]
         public int MinRange
         {
             get { return minRange; }
             set { minRange = value; }
         }
 
+        [D2OIgnore]
         public int Range
         {
             get { return range; }
             set { range = value; }
         }
 
+        [D2OIgnore]
         public Boolean CastInLine
         {
             get { return castInLine; }
             set { castInLine = value; }
         }
 
+        [D2OIgnore]
         public Boolean CastInDiagonal
         {
             get { return castInDiagonal; }
             set { castInDiagonal = value; }
         }
 
+        [D2OIgnore]
         public Boolean CastTestLos
         {
             get { return castTestLos; }
             set { castTestLos = value; }
         }
 
+        [D2OIgnore]
         public int CriticalHitProbability
         {
             get { return criticalHitProbability; }
             set { criticalHitProbability = value; }
         }
 
+        [D2OIgnore]
         public int CriticalHitBonus
         {
             get { return criticalHitBonus; }
             set { criticalHitBonus = value; }
         }
 
+        [D2OIgnore]
         public int CriticalFailureProbability
         {
             get { return criticalFailureProbability; }
@@ -83,7 +96,7 @@ namespace DBSynchroniser.Records
         public override void AssignFields(object obj)
         {
             var castedObj = (Weapon)obj;
-
+            
             base.AssignFields(obj);
             ApCost = castedObj.apCost;
             MinRange = castedObj.minRange;
@@ -96,10 +109,11 @@ namespace DBSynchroniser.Records
             CriticalFailureProbability = castedObj.criticalFailureProbability;
         }
         
-        public override object CreateObject()
+        public override object CreateObject(object parent = null)
         {
             
-            var obj = (Weapon)base.CreateObject();
+            var obj = new Weapon();
+            base.CreateObject(obj);
             obj.apCost = ApCost;
             obj.minRange = MinRange;
             obj.range = Range;

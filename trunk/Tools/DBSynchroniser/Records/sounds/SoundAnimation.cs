@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:19
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("SoundAnimations")]
-    [D2OClass("SoundAnimation")]
+    [D2OClass("SoundAnimation", "com.ankamagames.dofus.datacenter.sounds")]
     public class SoundAnimationRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         public uint id;
         public String name;
         public String label;
@@ -30,6 +34,7 @@ namespace DBSynchroniser.Records
         public uint startFrame;
         public String MODULE = "SoundAnimations";
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -37,6 +42,7 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String Name
         {
@@ -44,6 +50,7 @@ namespace DBSynchroniser.Records
             set { name = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String Label
         {
@@ -51,6 +58,7 @@ namespace DBSynchroniser.Records
             set { label = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String Filename
         {
@@ -58,48 +66,56 @@ namespace DBSynchroniser.Records
             set { filename = value; }
         }
 
+        [D2OIgnore]
         public int Volume
         {
             get { return volume; }
             set { volume = value; }
         }
 
+        [D2OIgnore]
         public int Rolloff
         {
             get { return rolloff; }
             set { rolloff = value; }
         }
 
+        [D2OIgnore]
         public int AutomationDuration
         {
             get { return automationDuration; }
             set { automationDuration = value; }
         }
 
+        [D2OIgnore]
         public int AutomationVolume
         {
             get { return automationVolume; }
             set { automationVolume = value; }
         }
 
+        [D2OIgnore]
         public int AutomationFadeIn
         {
             get { return automationFadeIn; }
             set { automationFadeIn = value; }
         }
 
+        [D2OIgnore]
         public int AutomationFadeOut
         {
             get { return automationFadeOut; }
             set { automationFadeOut = value; }
         }
 
+        [D2OIgnore]
         public Boolean NoCutSilence
         {
             get { return noCutSilence; }
             set { noCutSilence = value; }
         }
 
+        [D2OIgnore]
         public uint StartFrame
         {
             get { return startFrame; }
@@ -124,10 +140,10 @@ namespace DBSynchroniser.Records
             StartFrame = castedObj.startFrame;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new SoundAnimation();
+            var obj = parent != null ? (SoundAnimation)parent : new SoundAnimation();
             obj.id = Id;
             obj.name = Name;
             obj.label = Label;

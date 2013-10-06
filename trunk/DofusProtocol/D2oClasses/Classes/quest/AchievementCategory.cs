@@ -1,12 +1,14 @@
 
-// Generated on 03/25/2013 19:24:37
+
+// Generated on 10/06/2013 17:58:55
 using System;
 using System.Collections.Generic;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 
 namespace Stump.DofusProtocol.D2oClasses
 {
-    [D2OClass("AchievementCategories")]
+    [D2OClass("AchievementCategory", "com.ankamagames.dofus.datacenter.quest")]
     [Serializable]
     public class AchievementCategory : IDataObject, IIndexedData
     {
@@ -18,53 +20,51 @@ namespace Stump.DofusProtocol.D2oClasses
         public uint order;
         public String color;
         public List<uint> achievementIds;
-
         int IIndexedData.Id
         {
             get { return (int)id; }
         }
-
+        [D2OIgnore]
         public uint Id
         {
             get { return id; }
             set { id = value; }
         }
-
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
-
+        [D2OIgnore]
         public uint ParentId
         {
             get { return parentId; }
             set { parentId = value; }
         }
-
+        [D2OIgnore]
         public String Icon
         {
             get { return icon; }
             set { icon = value; }
         }
-
+        [D2OIgnore]
         public uint Order
         {
             get { return order; }
             set { order = value; }
         }
-
+        [D2OIgnore]
         public String Color
         {
             get { return color; }
             set { color = value; }
         }
-
+        [D2OIgnore]
         public List<uint> AchievementIds
         {
             get { return achievementIds; }
             set { achievementIds = value; }
         }
-
     }
 }

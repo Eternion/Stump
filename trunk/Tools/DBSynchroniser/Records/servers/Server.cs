@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:19
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,20 +13,25 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Servers")]
-    [D2OClass("Server")]
+    [D2OClass("Server", "com.ankamagames.dofus.datacenter.servers")]
     public class ServerRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Servers";
         public int id;
         public uint nameId;
         public uint commentId;
-        public long openingDate;
+        public float openingDate;
         public String language;
         public int populationId;
         public uint gameTypeId;
         public int communityId;
         public List<String> restrictedToLanguages;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -34,24 +39,28 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public uint CommentId
         {
             get { return commentId; }
             set { commentId = value; }
         }
 
-        public long OpeningDate
+        [D2OIgnore]
+        public float OpeningDate
         {
             get { return openingDate; }
             set { openingDate = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String Language
         {
@@ -59,24 +68,28 @@ namespace DBSynchroniser.Records
             set { language = value; }
         }
 
+        [D2OIgnore]
         public int PopulationId
         {
             get { return populationId; }
             set { populationId = value; }
         }
 
+        [D2OIgnore]
         public uint GameTypeId
         {
             get { return gameTypeId; }
             set { gameTypeId = value; }
         }
 
+        [D2OIgnore]
         public int CommunityId
         {
             get { return communityId; }
             set { communityId = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<String> RestrictedToLanguages
         {
@@ -89,6 +102,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_restrictedToLanguagesBin;
+        [D2OIgnore]
         public byte[] RestrictedToLanguagesBin
         {
             get { return m_restrictedToLanguagesBin; }
@@ -114,10 +128,10 @@ namespace DBSynchroniser.Records
             RestrictedToLanguages = castedObj.restrictedToLanguages;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Server();
+            var obj = parent != null ? (Server)parent : new Server();
             obj.id = Id;
             obj.nameId = NameId;
             obj.commentId = CommentId;

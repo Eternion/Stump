@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("QuestStepRewards")]
-    [D2OClass("QuestStepRewards")]
+    [D2OClass("QuestStepRewards", "com.ankamagames.dofus.datacenter.quest")]
     public class QuestStepRewardsRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "QuestStepRewards";
         public uint id;
         public uint stepId;
@@ -26,6 +30,7 @@ namespace DBSynchroniser.Records
         public List<uint> jobsReward;
         public List<uint> spellsReward;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -33,24 +38,28 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint StepId
         {
             get { return stepId; }
             set { stepId = value; }
         }
 
+        [D2OIgnore]
         public int LevelMin
         {
             get { return levelMin; }
             set { levelMin = value; }
         }
 
+        [D2OIgnore]
         public int LevelMax
         {
             get { return levelMax; }
             set { levelMax = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<List<uint>> ItemsReward
         {
@@ -63,6 +72,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_itemsRewardBin;
+        [D2OIgnore]
         public byte[] ItemsRewardBin
         {
             get { return m_itemsRewardBin; }
@@ -73,6 +83,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<uint> EmotesReward
         {
@@ -85,6 +96,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_emotesRewardBin;
+        [D2OIgnore]
         public byte[] EmotesRewardBin
         {
             get { return m_emotesRewardBin; }
@@ -95,6 +107,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<uint> JobsReward
         {
@@ -107,6 +120,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_jobsRewardBin;
+        [D2OIgnore]
         public byte[] JobsRewardBin
         {
             get { return m_jobsRewardBin; }
@@ -117,6 +131,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<uint> SpellsReward
         {
@@ -129,6 +144,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_spellsRewardBin;
+        [D2OIgnore]
         public byte[] SpellsRewardBin
         {
             get { return m_spellsRewardBin; }
@@ -153,10 +169,10 @@ namespace DBSynchroniser.Records
             SpellsReward = castedObj.spellsReward;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new QuestStepRewards();
+            var obj = parent != null ? (QuestStepRewards)parent : new QuestStepRewards();
             obj.id = Id;
             obj.stepId = StepId;
             obj.levelMin = LevelMin;

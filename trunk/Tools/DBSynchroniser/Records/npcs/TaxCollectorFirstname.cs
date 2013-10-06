@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,13 +13,18 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("TaxCollectorFirstnames")]
-    [D2OClass("TaxCollectorFirstname")]
+    [D2OClass("TaxCollectorFirstname", "com.ankamagames.dofus.datacenter.npcs")]
     public class TaxCollectorFirstnameRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "TaxCollectorFirstnames";
         public int id;
         public uint firstnameId;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -27,6 +32,7 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint FirstnameId
         {
             get { return firstnameId; }
@@ -41,10 +47,10 @@ namespace DBSynchroniser.Records
             FirstnameId = castedObj.firstnameId;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new TaxCollectorFirstname();
+            var obj = parent != null ? (TaxCollectorFirstname)parent : new TaxCollectorFirstname();
             obj.id = Id;
             obj.firstnameId = FirstnameId;
             return obj;

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:59
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Jobs")]
-    [D2OClass("Job")]
+    [D2OClass("Job", "com.ankamagames.dofus.datacenter.jobs")]
     public class JobRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Jobs";
         public int id;
         public uint nameId;
@@ -23,6 +27,7 @@ namespace DBSynchroniser.Records
         public int iconId;
         public List<int> toolIds;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -30,24 +35,28 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public int SpecializationOfId
         {
             get { return specializationOfId; }
             set { specializationOfId = value; }
         }
 
+        [D2OIgnore]
         public int IconId
         {
             get { return iconId; }
             set { iconId = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<int> ToolIds
         {
@@ -60,6 +69,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_toolIdsBin;
+        [D2OIgnore]
         public byte[] ToolIdsBin
         {
             get { return m_toolIdsBin; }
@@ -81,10 +91,10 @@ namespace DBSynchroniser.Records
             ToolIds = castedObj.toolIds;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Job();
+            var obj = parent != null ? (Job)parent : new Job();
             obj.id = Id;
             obj.nameId = NameId;
             obj.specializationOfId = SpecializationOfId;

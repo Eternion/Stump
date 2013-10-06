@@ -1,12 +1,14 @@
 
-// Generated on 03/25/2013 19:24:32
+
+// Generated on 10/06/2013 17:58:52
 using System;
 using System.Collections.Generic;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 
 namespace Stump.DofusProtocol.D2oClasses
 {
-    [D2OClass("AlignmentRankJntGift")]
+    [D2OClass("AlignmentRankJntGift", "com.ankamagames.dofus.datacenter.alignments")]
     [Serializable]
     public class AlignmentRankJntGift : IDataObject, IIndexedData
     {
@@ -15,35 +17,33 @@ namespace Stump.DofusProtocol.D2oClasses
         public List<int> gifts;
         public List<int> parameters;
         public List<int> levels;
-
         int IIndexedData.Id
         {
             get { return (int)id; }
         }
-
+        [D2OIgnore]
         public int Id
         {
             get { return id; }
             set { id = value; }
         }
-
+        [D2OIgnore]
         public List<int> Gifts
         {
             get { return gifts; }
             set { gifts = value; }
         }
-
+        [D2OIgnore]
         public List<int> Parameters
         {
             get { return parameters; }
             set { parameters = value; }
         }
-
+        [D2OIgnore]
         public List<int> Levels
         {
             get { return levels; }
             set { levels = value; }
         }
-
     }
 }

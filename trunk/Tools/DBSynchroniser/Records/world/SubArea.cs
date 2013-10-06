@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:02
+// Generated on 10/06/2013 18:02:19
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("SubAreas")]
-    [D2OClass("SubArea")]
+    [D2OClass("SubArea", "com.ankamagames.dofus.datacenter.world")]
     public class SubAreaRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "SubAreas";
         public int id;
         public uint nameId;
@@ -27,6 +31,7 @@ namespace DBSynchroniser.Records
         public List<uint> customWorldMap;
         public int packId;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -34,18 +39,21 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public int AreaId
         {
             get { return areaId; }
             set { areaId = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<AmbientSound> AmbientSounds
         {
@@ -58,6 +66,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_ambientSoundsBin;
+        [D2OIgnore]
         public byte[] AmbientSoundsBin
         {
             get { return m_ambientSoundsBin; }
@@ -68,6 +77,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<uint> MapIds
         {
@@ -80,6 +90,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_mapIdsBin;
+        [D2OIgnore]
         public byte[] MapIdsBin
         {
             get { return m_mapIdsBin; }
@@ -90,6 +101,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public Rectangle Bounds
         {
@@ -102,6 +114,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_boundsBin;
+        [D2OIgnore]
         public byte[] BoundsBin
         {
             get { return m_boundsBin; }
@@ -112,6 +125,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<int> Shape
         {
@@ -124,6 +138,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_shapeBin;
+        [D2OIgnore]
         public byte[] ShapeBin
         {
             get { return m_shapeBin; }
@@ -134,6 +149,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<uint> CustomWorldMap
         {
@@ -146,6 +162,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_customWorldMapBin;
+        [D2OIgnore]
         public byte[] CustomWorldMapBin
         {
             get { return m_customWorldMapBin; }
@@ -156,6 +173,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         public int PackId
         {
             get { return packId; }
@@ -177,10 +195,10 @@ namespace DBSynchroniser.Records
             PackId = castedObj.packId;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new SubArea();
+            var obj = parent != null ? (SubArea)parent : new SubArea();
             obj.id = Id;
             obj.nameId = NameId;
             obj.areaId = AreaId;

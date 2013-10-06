@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:02
+// Generated on 10/06/2013 18:02:19
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,14 +13,19 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("MapReferences")]
-    [D2OClass("MapReference")]
+    [D2OClass("MapReference", "com.ankamagames.dofus.datacenter.world")]
     public class MapReferenceRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "MapReferences";
         public int id;
         public uint mapId;
         public int cellId;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -28,12 +33,14 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint MapId
         {
             get { return mapId; }
             set { mapId = value; }
         }
 
+        [D2OIgnore]
         public int CellId
         {
             get { return cellId; }
@@ -49,10 +56,10 @@ namespace DBSynchroniser.Records
             CellId = castedObj.cellId;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new MapReference();
+            var obj = parent != null ? (MapReference)parent : new MapReference();
             obj.id = Id;
             obj.mapId = MapId;
             obj.cellId = CellId;

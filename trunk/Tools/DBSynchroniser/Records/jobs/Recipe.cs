@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:00
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,33 +13,41 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Recipes")]
-    [D2OClass("Recipe")]
+    [D2OClass("Recipe", "com.ankamagames.dofus.datacenter.jobs")]
     public class RecipeRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Recipes";
         public int resultId;
         public uint resultLevel;
         public List<int> ingredientIds;
         public List<uint> quantities;
 
+        [D2OIgnore]
         [PrimaryKey("Id")]
         public int Id
         {
             get;
             set;
         }
+        [D2OIgnore]
         public int ResultId
         {
             get { return resultId; }
             set { resultId = value; }
         }
 
+        [D2OIgnore]
         public uint ResultLevel
         {
             get { return resultLevel; }
             set { resultLevel = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<int> IngredientIds
         {
@@ -52,6 +60,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_ingredientIdsBin;
+        [D2OIgnore]
         public byte[] IngredientIdsBin
         {
             get { return m_ingredientIdsBin; }
@@ -62,6 +71,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<uint> Quantities
         {
@@ -74,6 +84,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_quantitiesBin;
+        [D2OIgnore]
         public byte[] QuantitiesBin
         {
             get { return m_quantitiesBin; }
@@ -94,10 +105,10 @@ namespace DBSynchroniser.Records
             Quantities = castedObj.quantities;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Recipe();
+            var obj = parent != null ? (Recipe)parent : new Recipe();
             obj.resultId = ResultId;
             obj.resultLevel = ResultLevel;
             obj.ingredientIds = IngredientIds;

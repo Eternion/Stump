@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:00
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,13 +13,18 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Tips")]
-    [D2OClass("Tips")]
+    [D2OClass("Tips", "com.ankamagames.dofus.datacenter.misc")]
     public class TipsRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Tips";
         public int id;
         public uint descId;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -27,6 +32,7 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint DescId
         {
             get { return descId; }
@@ -41,10 +47,10 @@ namespace DBSynchroniser.Records
             DescId = castedObj.descId;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Tips();
+            var obj = parent != null ? (Tips)parent : new Tips();
             obj.id = Id;
             obj.descId = DescId;
             return obj;

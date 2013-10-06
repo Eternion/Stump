@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:00
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,25 +13,32 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("LivingObjectSkinJntMood")]
-    [D2OClass("LivingObjectSkinJntMood")]
+    [D2OClass("LivingObjectSkinJntMood", "com.ankamagames.dofus.datacenter.livingObjects")]
     public class LivingObjectSkinJntMoodRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "LivingObjectSkinJntMood";
         public int skinId;
         public List<List<int>> moods;
 
+        [D2OIgnore]
         [PrimaryKey("Id")]
         public int Id
         {
             get;
             set;
         }
+        [D2OIgnore]
         public int SkinId
         {
             get { return skinId; }
             set { skinId = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<List<int>> Moods
         {
@@ -44,6 +51,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_moodsBin;
+        [D2OIgnore]
         public byte[] MoodsBin
         {
             get { return m_moodsBin; }
@@ -62,10 +70,10 @@ namespace DBSynchroniser.Records
             Moods = castedObj.moods;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new LivingObjectSkinJntMood();
+            var obj = parent != null ? (LivingObjectSkinJntMood)parent : new LivingObjectSkinJntMood();
             obj.skinId = SkinId;
             obj.moods = Moods;
             return obj;

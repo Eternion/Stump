@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,15 +13,20 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("QuestCategory")]
-    [D2OClass("QuestCategory")]
+    [D2OClass("QuestCategory", "com.ankamagames.dofus.datacenter.quest")]
     public class QuestCategoryRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "QuestCategory";
         public uint id;
         public uint nameId;
         public uint order;
         public List<uint> questIds;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -29,18 +34,21 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public uint Order
         {
             get { return order; }
             set { order = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<uint> QuestIds
         {
@@ -53,6 +61,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_questIdsBin;
+        [D2OIgnore]
         public byte[] QuestIdsBin
         {
             get { return m_questIdsBin; }
@@ -73,10 +82,10 @@ namespace DBSynchroniser.Records
             QuestIds = castedObj.questIds;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new QuestCategory();
+            var obj = parent != null ? (QuestCategory)parent : new QuestCategory();
             obj.id = Id;
             obj.nameId = NameId;
             obj.order = Order;

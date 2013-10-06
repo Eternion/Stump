@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:57
+// Generated on 10/06/2013 18:02:16
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,32 +13,40 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("AbuseReasons")]
-    [D2OClass("AbuseReasons")]
+    [D2OClass("AbuseReasons", "com.ankamagames.dofus.datacenter.abuse")]
     public class AbuseReasonsRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "AbuseReasons";
         public uint _abuseReasonId;
         public uint _mask;
         public int _reasonTextId;
 
+        [D2OIgnore]
         [PrimaryKey("Id")]
         public int Id
         {
             get;
             set;
         }
+        [D2OIgnore]
         public uint AbuseReasonId
         {
             get { return _abuseReasonId; }
             set { _abuseReasonId = value; }
         }
 
+        [D2OIgnore]
         public uint Mask
         {
             get { return _mask; }
             set { _mask = value; }
         }
 
+        [D2OIgnore]
         public int ReasonTextId
         {
             get { return _reasonTextId; }
@@ -54,10 +62,10 @@ namespace DBSynchroniser.Records
             ReasonTextId = castedObj._reasonTextId;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new AbuseReasons();
+            var obj = parent != null ? (AbuseReasons)parent : new AbuseReasons();
             obj._abuseReasonId = AbuseReasonId;
             obj._mask = Mask;
             obj._reasonTextId = ReasonTextId;

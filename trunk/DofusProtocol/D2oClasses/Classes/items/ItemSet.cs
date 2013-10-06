@@ -1,12 +1,14 @@
 
-// Generated on 03/25/2013 19:24:34
+
+// Generated on 10/06/2013 17:58:53
 using System;
 using System.Collections.Generic;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 
 namespace Stump.DofusProtocol.D2oClasses
 {
-    [D2OClass("ItemSets")]
+    [D2OClass("ItemSet", "com.ankamagames.dofus.datacenter.items")]
     [Serializable]
     public class ItemSet : IDataObject, IIndexedData
     {
@@ -16,41 +18,39 @@ namespace Stump.DofusProtocol.D2oClasses
         public uint nameId;
         public List<List<EffectInstance>> effects;
         public Boolean bonusIsSecret;
-
         int IIndexedData.Id
         {
             get { return (int)id; }
         }
-
+        [D2OIgnore]
         public uint Id
         {
             get { return id; }
             set { id = value; }
         }
-
+        [D2OIgnore]
         public List<uint> Items
         {
             get { return items; }
             set { items = value; }
         }
-
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
-
+        [D2OIgnore]
         public List<List<EffectInstance>> Effects
         {
             get { return effects; }
             set { effects = value; }
         }
-
+        [D2OIgnore]
         public Boolean BonusIsSecret
         {
             get { return bonusIsSecret; }
             set { bonusIsSecret = value; }
         }
-
     }
 }
