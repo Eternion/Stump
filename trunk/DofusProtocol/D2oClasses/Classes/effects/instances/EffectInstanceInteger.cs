@@ -1,22 +1,23 @@
 
-// Generated on 03/25/2013 19:24:33
+
+// Generated on 10/06/2013 17:58:53
 using System;
 using System.Collections.Generic;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 
 namespace Stump.DofusProtocol.D2oClasses
 {
-    [D2OClass("EffectInstanceInteger")]
+    [D2OClass("EffectInstanceInteger", "com.ankamagames.dofus.datacenter.effects.instances")]
     [Serializable]
-    public class EffectInstanceInteger : EffectInstance, IIndexedData
+    public class EffectInstanceInteger : EffectInstance
     {
         public int value;
-
+        [D2OIgnore]
         public int Value
         {
             get { return value; }
-            set { this.value = value; }
+            set { value = value; }
         }
-
     }
 }

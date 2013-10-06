@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:59
+// Generated on 10/06/2013 18:02:17
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Items")]
-    [D2OClass("Item")]
+    [D2OClass("Item", "com.ankamagames.dofus.datacenter.items")]
     public class ItemRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Items";
         public const uint EQUIPEMENT_CATEGORY = 0;
         public const uint CONSUMABLES_CATEGORY = 1;
@@ -52,6 +56,7 @@ namespace DBSynchroniser.Records
         public ItemType type;
         public uint weight;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -59,90 +64,105 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public uint TypeId
         {
             get { return typeId; }
             set { typeId = value; }
         }
 
+        [D2OIgnore]
         public uint DescriptionId
         {
             get { return descriptionId; }
             set { descriptionId = value; }
         }
 
+        [D2OIgnore]
         public int IconId
         {
             get { return iconId; }
             set { iconId = value; }
         }
 
+        [D2OIgnore]
         public uint Level
         {
             get { return level; }
             set { level = value; }
         }
 
+        [D2OIgnore]
         public uint RealWeight
         {
             get { return realWeight; }
             set { realWeight = value; }
         }
 
+        [D2OIgnore]
         public Boolean Cursed
         {
             get { return cursed; }
             set { cursed = value; }
         }
 
+        [D2OIgnore]
         public int UseAnimationId
         {
             get { return useAnimationId; }
             set { useAnimationId = value; }
         }
 
+        [D2OIgnore]
         public Boolean Usable
         {
             get { return usable; }
             set { usable = value; }
         }
 
+        [D2OIgnore]
         public Boolean Targetable
         {
             get { return targetable; }
             set { targetable = value; }
         }
 
+        [D2OIgnore]
         public float Price
         {
             get { return price; }
             set { price = value; }
         }
 
+        [D2OIgnore]
         public Boolean TwoHanded
         {
             get { return twoHanded; }
             set { twoHanded = value; }
         }
 
+        [D2OIgnore]
         public Boolean Etheral
         {
             get { return etheral; }
             set { etheral = value; }
         }
 
+        [D2OIgnore]
         public int ItemSetId
         {
             get { return itemSetId; }
             set { itemSetId = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String Criteria
         {
@@ -150,6 +170,7 @@ namespace DBSynchroniser.Records
             set { criteria = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String CriteriaTarget
         {
@@ -157,36 +178,42 @@ namespace DBSynchroniser.Records
             set { criteriaTarget = value; }
         }
 
+        [D2OIgnore]
         public Boolean HideEffects
         {
             get { return hideEffects; }
             set { hideEffects = value; }
         }
 
+        [D2OIgnore]
         public Boolean Enhanceable
         {
             get { return enhanceable; }
             set { enhanceable = value; }
         }
 
+        [D2OIgnore]
         public Boolean NonUsableOnAnother
         {
             get { return nonUsableOnAnother; }
             set { nonUsableOnAnother = value; }
         }
 
+        [D2OIgnore]
         public uint AppearanceId
         {
             get { return appearanceId; }
             set { appearanceId = value; }
         }
 
+        [D2OIgnore]
         public Boolean SecretRecipe
         {
             get { return secretRecipe; }
             set { secretRecipe = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<uint> RecipeIds
         {
@@ -199,6 +226,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_recipeIdsBin;
+        [D2OIgnore]
         public byte[] RecipeIdsBin
         {
             get { return m_recipeIdsBin; }
@@ -209,12 +237,14 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         public Boolean BonusIsSecret
         {
             get { return bonusIsSecret; }
             set { bonusIsSecret = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<EffectInstance> PossibleEffects
         {
@@ -227,6 +257,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_possibleEffectsBin;
+        [D2OIgnore]
         public byte[] PossibleEffectsBin
         {
             get { return m_possibleEffectsBin; }
@@ -237,6 +268,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<uint> FavoriteSubAreas
         {
@@ -249,6 +281,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_favoriteSubAreasBin;
+        [D2OIgnore]
         public byte[] FavoriteSubAreasBin
         {
             get { return m_favoriteSubAreasBin; }
@@ -259,12 +292,14 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         public uint FavoriteSubAreasBonus
         {
             get { return favoriteSubAreasBonus; }
             set { favoriteSubAreasBonus = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public ItemType Type
         {
@@ -277,6 +312,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_typeBin;
+        [D2OIgnore]
         public byte[] TypeBin
         {
             get { return m_typeBin; }
@@ -287,6 +323,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         public uint Weight
         {
             get { return weight; }
@@ -328,10 +365,10 @@ namespace DBSynchroniser.Records
             Weight = castedObj.weight;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Item();
+            var obj = parent != null ? (Item)parent : new Item();
             obj.id = Id;
             obj.nameId = NameId;
             obj.typeId = TypeId;

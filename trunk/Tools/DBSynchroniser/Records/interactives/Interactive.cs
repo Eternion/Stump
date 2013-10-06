@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:59
+// Generated on 10/06/2013 18:02:17
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,15 +13,20 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Interactives")]
-    [D2OClass("Interactive")]
+    [D2OClass("Interactive", "com.ankamagames.dofus.datacenter.interactives")]
     public class InteractiveRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Interactives";
         public int id;
         public uint nameId;
         public int actionId;
         public Boolean displayTooltip;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -29,18 +34,21 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public int ActionId
         {
             get { return actionId; }
             set { actionId = value; }
         }
 
+        [D2OIgnore]
         public Boolean DisplayTooltip
         {
             get { return displayTooltip; }
@@ -57,10 +65,10 @@ namespace DBSynchroniser.Records
             DisplayTooltip = castedObj.displayTooltip;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Interactive();
+            var obj = parent != null ? (Interactive)parent : new Interactive();
             obj.id = Id;
             obj.nameId = NameId;
             obj.actionId = ActionId;

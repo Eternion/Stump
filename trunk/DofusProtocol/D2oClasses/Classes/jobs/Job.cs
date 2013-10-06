@@ -1,12 +1,14 @@
 
-// Generated on 03/25/2013 19:24:36
+
+// Generated on 10/06/2013 17:58:54
 using System;
 using System.Collections.Generic;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 
 namespace Stump.DofusProtocol.D2oClasses
 {
-    [D2OClass("Jobs")]
+    [D2OClass("Job", "com.ankamagames.dofus.datacenter.jobs")]
     [Serializable]
     public class Job : IDataObject, IIndexedData
     {
@@ -16,41 +18,39 @@ namespace Stump.DofusProtocol.D2oClasses
         public int specializationOfId;
         public int iconId;
         public List<int> toolIds;
-
         int IIndexedData.Id
         {
             get { return (int)id; }
         }
-
+        [D2OIgnore]
         public int Id
         {
             get { return id; }
             set { id = value; }
         }
-
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
-
+        [D2OIgnore]
         public int SpecializationOfId
         {
             get { return specializationOfId; }
             set { specializationOfId = value; }
         }
-
+        [D2OIgnore]
         public int IconId
         {
             get { return iconId; }
             set { iconId = value; }
         }
-
+        [D2OIgnore]
         public List<int> ToolIds
         {
             get { return toolIds; }
             set { toolIds = value; }
         }
-
     }
 }

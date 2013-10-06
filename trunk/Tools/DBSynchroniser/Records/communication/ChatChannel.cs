@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:58
+// Generated on 10/06/2013 18:02:16
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("ChatChannels")]
-    [D2OClass("ChatChannel")]
+    [D2OClass("ChatChannel", "com.ankamagames.dofus.datacenter.communication")]
     public class ChatChannelRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "ChatChannels";
         public uint id;
         public uint nameId;
@@ -25,6 +29,7 @@ namespace DBSynchroniser.Records
         public Boolean isPrivate;
         public Boolean allowObjects;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -32,18 +37,21 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public uint DescriptionId
         {
             get { return descriptionId; }
             set { descriptionId = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String Shortcut
         {
@@ -51,6 +59,7 @@ namespace DBSynchroniser.Records
             set { shortcut = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String ShortcutKey
         {
@@ -58,12 +67,14 @@ namespace DBSynchroniser.Records
             set { shortcutKey = value; }
         }
 
+        [D2OIgnore]
         public Boolean IsPrivate
         {
             get { return isPrivate; }
             set { isPrivate = value; }
         }
 
+        [D2OIgnore]
         public Boolean AllowObjects
         {
             get { return allowObjects; }
@@ -83,10 +94,10 @@ namespace DBSynchroniser.Records
             AllowObjects = castedObj.allowObjects;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new ChatChannel();
+            var obj = parent != null ? (ChatChannel)parent : new ChatChannel();
             obj.id = Id;
             obj.nameId = NameId;
             obj.descriptionId = DescriptionId;

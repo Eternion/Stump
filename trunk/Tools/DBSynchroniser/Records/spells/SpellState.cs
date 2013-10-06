@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:19
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("SpellStates")]
-    [D2OClass("SpellState")]
+    [D2OClass("SpellState", "com.ankamagames.dofus.datacenter.spells")]
     public class SpellStateRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "SpellStates";
         public int id;
         public uint nameId;
@@ -23,6 +27,7 @@ namespace DBSynchroniser.Records
         public Boolean preventsFight;
         public Boolean critical;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -30,24 +35,28 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public Boolean PreventsSpellCast
         {
             get { return preventsSpellCast; }
             set { preventsSpellCast = value; }
         }
 
+        [D2OIgnore]
         public Boolean PreventsFight
         {
             get { return preventsFight; }
             set { preventsFight = value; }
         }
 
+        [D2OIgnore]
         public Boolean Critical
         {
             get { return critical; }
@@ -65,10 +74,10 @@ namespace DBSynchroniser.Records
             Critical = castedObj.critical;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new SpellState();
+            var obj = parent != null ? (SpellState)parent : new SpellState();
             obj.id = Id;
             obj.nameId = NameId;
             obj.preventsSpellCast = PreventsSpellCast;

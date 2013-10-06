@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:00
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Skills")]
-    [D2OClass("Skill")]
+    [D2OClass("Skill", "com.ankamagames.dofus.datacenter.jobs")]
     public class SkillRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Skills";
         public int id;
         public uint nameId;
@@ -31,6 +35,7 @@ namespace DBSynchroniser.Records
         public Boolean availableInHouse;
         public uint levelMin;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -38,36 +43,42 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public int ParentJobId
         {
             get { return parentJobId; }
             set { parentJobId = value; }
         }
 
+        [D2OIgnore]
         public Boolean IsForgemagus
         {
             get { return isForgemagus; }
             set { isForgemagus = value; }
         }
 
+        [D2OIgnore]
         public int ModifiableItemType
         {
             get { return modifiableItemType; }
             set { modifiableItemType = value; }
         }
 
+        [D2OIgnore]
         public int GatheredRessourceItem
         {
             get { return gatheredRessourceItem; }
             set { gatheredRessourceItem = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<int> CraftableItemIds
         {
@@ -80,6 +91,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_craftableItemIdsBin;
+        [D2OIgnore]
         public byte[] CraftableItemIdsBin
         {
             get { return m_craftableItemIdsBin; }
@@ -90,12 +102,14 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         public int InteractiveId
         {
             get { return interactiveId; }
             set { interactiveId = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String UseAnimation
         {
@@ -103,24 +117,28 @@ namespace DBSynchroniser.Records
             set { useAnimation = value; }
         }
 
+        [D2OIgnore]
         public Boolean IsRepair
         {
             get { return isRepair; }
             set { isRepair = value; }
         }
 
+        [D2OIgnore]
         public int Cursor
         {
             get { return cursor; }
             set { cursor = value; }
         }
 
+        [D2OIgnore]
         public Boolean AvailableInHouse
         {
             get { return availableInHouse; }
             set { availableInHouse = value; }
         }
 
+        [D2OIgnore]
         public uint LevelMin
         {
             get { return levelMin; }
@@ -146,10 +164,10 @@ namespace DBSynchroniser.Records
             LevelMin = castedObj.levelMin;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Skill();
+            var obj = parent != null ? (Skill)parent : new Skill();
             obj.id = Id;
             obj.nameId = NameId;
             obj.parentJobId = ParentJobId;

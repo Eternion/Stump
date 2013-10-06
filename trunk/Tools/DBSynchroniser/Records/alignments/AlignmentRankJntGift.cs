@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:57
+// Generated on 10/06/2013 18:02:16
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,15 +13,20 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("AlignmentRankJntGift")]
-    [D2OClass("AlignmentRankJntGift")]
+    [D2OClass("AlignmentRankJntGift", "com.ankamagames.dofus.datacenter.alignments")]
     public class AlignmentRankJntGiftRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "AlignmentRankJntGift";
         public int id;
         public List<int> gifts;
         public List<int> parameters;
         public List<int> levels;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -29,6 +34,7 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<int> Gifts
         {
@@ -41,6 +47,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_giftsBin;
+        [D2OIgnore]
         public byte[] GiftsBin
         {
             get { return m_giftsBin; }
@@ -51,6 +58,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<int> Parameters
         {
@@ -63,6 +71,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_parametersBin;
+        [D2OIgnore]
         public byte[] ParametersBin
         {
             get { return m_parametersBin; }
@@ -73,6 +82,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<int> Levels
         {
@@ -85,6 +95,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_levelsBin;
+        [D2OIgnore]
         public byte[] LevelsBin
         {
             get { return m_levelsBin; }
@@ -105,10 +116,10 @@ namespace DBSynchroniser.Records
             Levels = castedObj.levels;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new AlignmentRankJntGift();
+            var obj = parent != null ? (AlignmentRankJntGift)parent : new AlignmentRankJntGift();
             obj.id = Id;
             obj.gifts = Gifts;
             obj.parameters = Parameters;

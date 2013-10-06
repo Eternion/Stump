@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:58
+// Generated on 10/06/2013 18:02:16
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Ornaments")]
-    [D2OClass("Ornament")]
+    [D2OClass("Ornament", "com.ankamagames.dofus.datacenter.appearance")]
     public class OrnamentRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Ornaments";
         public int id;
         public uint nameId;
@@ -25,6 +29,7 @@ namespace DBSynchroniser.Records
         public int rarity;
         public int order;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -32,36 +37,42 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public Boolean Visible
         {
             get { return visible; }
             set { visible = value; }
         }
 
+        [D2OIgnore]
         public int AssetId
         {
             get { return assetId; }
             set { assetId = value; }
         }
 
+        [D2OIgnore]
         public int IconId
         {
             get { return iconId; }
             set { iconId = value; }
         }
 
+        [D2OIgnore]
         public int Rarity
         {
             get { return rarity; }
             set { rarity = value; }
         }
 
+        [D2OIgnore]
         public int Order
         {
             get { return order; }
@@ -81,10 +92,10 @@ namespace DBSynchroniser.Records
             Order = castedObj.order;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Ornament();
+            var obj = parent != null ? (Ornament)parent : new Ornament();
             obj.id = Id;
             obj.nameId = NameId;
             obj.visible = Visible;

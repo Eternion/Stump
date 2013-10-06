@@ -10,19 +10,18 @@
 // Generated on <#= DateTime.Now #>
 using System;
 using System.Collections.Generic;
+using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 
 namespace <#= Profile.OutPutNamespace #>
 {
 <# PushIndent("    "); #>
-<#
-var module = Parser.Fields.FirstOrDefault(x => x.Name == "MODULE");
-
-if (module != null)
-    WriteLine(string.Format("[D2OClass({0})]", module.Value));
-else
-    WriteLine(string.Format("[D2OClass(\"{0}\")]", Parser.Class.Name));
+<# 
+var idField = Parser.Fields.FirstOrDefault(x => x.Name == "id");
 #>
-public class <#=Parser.Class.Name #><#=( Parser.Class.Heritage != "Object" ? " : " + Parser.Class.Heritage : " : IDataObject" ) #>
+<# WriteLine("[D2OClass(\"" + Parser.Class.Name + "\", \"" + Parser.Class.Namespace + "\")]"); #>
+[Serializable]
+public class <#=Parser.Class.Name #><#=( Parser.Class.Heritage != "Object" ? (" : " + Parser.Class.Heritage) : (" : IDataObject" + (idField != null ? ", IIndexedData" : "")) ) #>
 {
 <# PushIndent("    "); #>
 <#
@@ -33,6 +32,35 @@ foreach (var field in Parser.Fields)
 
     WriteField(field);
 } 
+
+if (idField != null)
+{
+    WriteLine("int IIndexedData.Id");
+    WriteLine("{");
+    WriteLine("    get { return (int)id; }");
+    WriteLine("}");
+}
+
+foreach (var field in Parser.Fields)
+{
+    if (field.Modifiers != AccessModifiers.Public || field.IsConst || field.IsStatic || field.Name == "MODULE")
+        continue;
+
+    var name = ToPascalCase(field.Name);
+
+    if (name == Parser.Class.Name)
+        name += "_";
+    
+    WriteLine("[D2OIgnore]");
+    Write("public ");
+    Write(field.Type);
+    WriteLine(" " + name);
+    WriteLine("{");
+    WriteLine("    get { return " + field.Name + "; }");
+    WriteLine("    set { " + field.Name + " = value; }");
+    WriteLine("}");
+}
+
 #>
 <# PopIndent(); #>
 }

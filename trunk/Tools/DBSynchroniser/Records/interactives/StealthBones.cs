@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:59
+// Generated on 10/06/2013 18:02:17
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,12 +13,17 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("StealthBones")]
-    [D2OClass("StealthBones")]
+    [D2OClass("StealthBones", "com.ankamagames.dofus.datacenter.interactives")]
     public class StealthBonesRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "StealthBones";
         public uint id;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -33,10 +38,10 @@ namespace DBSynchroniser.Records
             Id = castedObj.id;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new StealthBones();
+            var obj = parent != null ? (StealthBones)parent : new StealthBones();
             obj.id = Id;
             return obj;
         

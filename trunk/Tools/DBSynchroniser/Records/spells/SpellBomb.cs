@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:19
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("SpellBombs")]
-    [D2OClass("SpellBomb")]
+    [D2OClass("SpellBomb", "com.ankamagames.dofus.datacenter.spells")]
     public class SpellBombRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "SpellBombs";
         public int id;
         public int chainReactionSpellId;
@@ -24,6 +28,7 @@ namespace DBSynchroniser.Records
         public int instantSpellId;
         public int comboCoeff;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -31,30 +36,35 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public int ChainReactionSpellId
         {
             get { return chainReactionSpellId; }
             set { chainReactionSpellId = value; }
         }
 
+        [D2OIgnore]
         public int ExplodSpellId
         {
             get { return explodSpellId; }
             set { explodSpellId = value; }
         }
 
+        [D2OIgnore]
         public int WallId
         {
             get { return wallId; }
             set { wallId = value; }
         }
 
+        [D2OIgnore]
         public int InstantSpellId
         {
             get { return instantSpellId; }
             set { instantSpellId = value; }
         }
 
+        [D2OIgnore]
         public int ComboCoeff
         {
             get { return comboCoeff; }
@@ -73,10 +83,10 @@ namespace DBSynchroniser.Records
             ComboCoeff = castedObj.comboCoeff;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new SpellBomb();
+            var obj = parent != null ? (SpellBomb)parent : new SpellBomb();
             obj.id = Id;
             obj.chainReactionSpellId = ChainReactionSpellId;
             obj.explodSpellId = ExplodSpellId;

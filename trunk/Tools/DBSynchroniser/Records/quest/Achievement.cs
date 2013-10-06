@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Achievements")]
-    [D2OClass("Achievement")]
+    [D2OClass("Achievement", "com.ankamagames.dofus.datacenter.quest")]
     public class AchievementRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Achievements";
         public uint id;
         public uint nameId;
@@ -31,6 +35,7 @@ namespace DBSynchroniser.Records
         public List<int> objectiveIds;
         public List<int> rewardIds;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -38,66 +43,77 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public uint CategoryId
         {
             get { return categoryId; }
             set { categoryId = value; }
         }
 
+        [D2OIgnore]
         public uint DescriptionId
         {
             get { return descriptionId; }
             set { descriptionId = value; }
         }
 
+        [D2OIgnore]
         public int IconId
         {
             get { return iconId; }
             set { iconId = value; }
         }
 
+        [D2OIgnore]
         public uint Points
         {
             get { return points; }
             set { points = value; }
         }
 
+        [D2OIgnore]
         public uint Level
         {
             get { return level; }
             set { level = value; }
         }
 
+        [D2OIgnore]
         public uint Order
         {
             get { return order; }
             set { order = value; }
         }
 
+        [D2OIgnore]
         public float KamasRatio
         {
             get { return kamasRatio; }
             set { kamasRatio = value; }
         }
 
+        [D2OIgnore]
         public float ExperienceRatio
         {
             get { return experienceRatio; }
             set { experienceRatio = value; }
         }
 
+        [D2OIgnore]
         public Boolean KamasScaleWithPlayerLevel
         {
             get { return kamasScaleWithPlayerLevel; }
             set { kamasScaleWithPlayerLevel = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<int> ObjectiveIds
         {
@@ -110,6 +126,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_objectiveIdsBin;
+        [D2OIgnore]
         public byte[] ObjectiveIdsBin
         {
             get { return m_objectiveIdsBin; }
@@ -120,6 +137,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<int> RewardIds
         {
@@ -132,6 +150,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_rewardIdsBin;
+        [D2OIgnore]
         public byte[] RewardIdsBin
         {
             get { return m_rewardIdsBin; }
@@ -161,10 +180,10 @@ namespace DBSynchroniser.Records
             RewardIds = castedObj.rewardIds;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Achievement();
+            var obj = parent != null ? (Achievement)parent : new Achievement();
             obj.id = Id;
             obj.nameId = NameId;
             obj.categoryId = CategoryId;

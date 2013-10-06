@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("QuestObjectives")]
-    [D2OClass("QuestObjective")]
+    [D2OClass("QuestObjective", "com.ankamagames.dofus.datacenter.quest")]
     public class QuestObjectiveRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "QuestObjectives";
         public uint id;
         public uint stepId;
@@ -24,6 +28,7 @@ namespace DBSynchroniser.Records
         public List<uint> parameters;
         public Point coords;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -31,24 +36,28 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint StepId
         {
             get { return stepId; }
             set { stepId = value; }
         }
 
+        [D2OIgnore]
         public uint TypeId
         {
             get { return typeId; }
             set { typeId = value; }
         }
 
+        [D2OIgnore]
         public int DialogId
         {
             get { return dialogId; }
             set { dialogId = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<uint> Parameters
         {
@@ -61,6 +70,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_parametersBin;
+        [D2OIgnore]
         public byte[] ParametersBin
         {
             get { return m_parametersBin; }
@@ -71,6 +81,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public Point Coords
         {
@@ -83,6 +94,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_coordsBin;
+        [D2OIgnore]
         public byte[] CoordsBin
         {
             get { return m_coordsBin; }
@@ -105,10 +117,10 @@ namespace DBSynchroniser.Records
             Coords = castedObj.coords;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new QuestObjective();
+            var obj = parent != null ? (QuestObjective)parent : new QuestObjective();
             obj.id = Id;
             obj.stepId = StepId;
             obj.typeId = TypeId;

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:58
+// Generated on 10/06/2013 18:02:17
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("ExternalNotifications")]
-    [D2OClass("ExternalNotification")]
+    [D2OClass("ExternalNotification", "com.ankamagames.dofus.datacenter.externalnotifications")]
     public class ExternalNotificationRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "ExternalNotifications";
         public int id;
         public int categoryId;
@@ -29,6 +33,7 @@ namespace DBSynchroniser.Records
         public String name;
         public uint messageId;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -36,54 +41,63 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public int CategoryId
         {
             get { return categoryId; }
             set { categoryId = value; }
         }
 
+        [D2OIgnore]
         public int IconId
         {
             get { return iconId; }
             set { iconId = value; }
         }
 
+        [D2OIgnore]
         public int ColorId
         {
             get { return colorId; }
             set { colorId = value; }
         }
 
+        [D2OIgnore]
         public uint DescriptionId
         {
             get { return descriptionId; }
             set { descriptionId = value; }
         }
 
+        [D2OIgnore]
         public Boolean DefaultEnable
         {
             get { return defaultEnable; }
             set { defaultEnable = value; }
         }
 
+        [D2OIgnore]
         public Boolean DefaultSound
         {
             get { return defaultSound; }
             set { defaultSound = value; }
         }
 
+        [D2OIgnore]
         public Boolean DefaultNotify
         {
             get { return defaultNotify; }
             set { defaultNotify = value; }
         }
 
+        [D2OIgnore]
         public Boolean DefaultMultiAccount
         {
             get { return defaultMultiAccount; }
             set { defaultMultiAccount = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String Name
         {
@@ -91,6 +105,7 @@ namespace DBSynchroniser.Records
             set { name = value; }
         }
 
+        [D2OIgnore]
         public uint MessageId
         {
             get { return messageId; }
@@ -114,10 +129,10 @@ namespace DBSynchroniser.Records
             MessageId = castedObj.messageId;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new ExternalNotification();
+            var obj = parent != null ? (ExternalNotification)parent : new ExternalNotification();
             obj.id = Id;
             obj.categoryId = CategoryId;
             obj.iconId = IconId;

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:58
+// Generated on 10/06/2013 18:02:16
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Breeds")]
-    [D2OClass("Breed")]
+    [D2OClass("Breed", "com.ankamagames.dofus.datacenter.breeds")]
     public class BreedRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Breeds";
         public int id;
         public uint shortNameId;
@@ -37,6 +41,7 @@ namespace DBSynchroniser.Records
         public List<uint> maleColors;
         public List<uint> femaleColors;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -44,30 +49,35 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint ShortNameId
         {
             get { return shortNameId; }
             set { shortNameId = value; }
         }
 
+        [D2OIgnore]
         public uint LongNameId
         {
             get { return longNameId; }
             set { longNameId = value; }
         }
 
+        [D2OIgnore]
         public uint DescriptionId
         {
             get { return descriptionId; }
             set { descriptionId = value; }
         }
 
+        [D2OIgnore]
         public uint GameplayDescriptionId
         {
             get { return gameplayDescriptionId; }
             set { gameplayDescriptionId = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String MaleLook
         {
@@ -75,6 +85,7 @@ namespace DBSynchroniser.Records
             set { maleLook = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String FemaleLook
         {
@@ -82,24 +93,28 @@ namespace DBSynchroniser.Records
             set { femaleLook = value; }
         }
 
+        [D2OIgnore]
         public uint CreatureBonesId
         {
             get { return creatureBonesId; }
             set { creatureBonesId = value; }
         }
 
+        [D2OIgnore]
         public int MaleArtwork
         {
             get { return maleArtwork; }
             set { maleArtwork = value; }
         }
 
+        [D2OIgnore]
         public int FemaleArtwork
         {
             get { return femaleArtwork; }
             set { femaleArtwork = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<List<uint>> StatsPointsForStrength
         {
@@ -112,6 +127,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_statsPointsForStrengthBin;
+        [D2OIgnore]
         public byte[] StatsPointsForStrengthBin
         {
             get { return m_statsPointsForStrengthBin; }
@@ -122,6 +138,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<List<uint>> StatsPointsForIntelligence
         {
@@ -134,6 +151,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_statsPointsForIntelligenceBin;
+        [D2OIgnore]
         public byte[] StatsPointsForIntelligenceBin
         {
             get { return m_statsPointsForIntelligenceBin; }
@@ -144,6 +162,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<List<uint>> StatsPointsForChance
         {
@@ -156,6 +175,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_statsPointsForChanceBin;
+        [D2OIgnore]
         public byte[] StatsPointsForChanceBin
         {
             get { return m_statsPointsForChanceBin; }
@@ -166,6 +186,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<List<uint>> StatsPointsForAgility
         {
@@ -178,6 +199,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_statsPointsForAgilityBin;
+        [D2OIgnore]
         public byte[] StatsPointsForAgilityBin
         {
             get { return m_statsPointsForAgilityBin; }
@@ -188,6 +210,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<List<uint>> StatsPointsForVitality
         {
@@ -200,6 +223,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_statsPointsForVitalityBin;
+        [D2OIgnore]
         public byte[] StatsPointsForVitalityBin
         {
             get { return m_statsPointsForVitalityBin; }
@@ -210,6 +234,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<List<uint>> StatsPointsForWisdom
         {
@@ -222,6 +247,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_statsPointsForWisdomBin;
+        [D2OIgnore]
         public byte[] StatsPointsForWisdomBin
         {
             get { return m_statsPointsForWisdomBin; }
@@ -232,6 +258,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<uint> BreedSpellsId
         {
@@ -244,6 +271,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_breedSpellsIdBin;
+        [D2OIgnore]
         public byte[] BreedSpellsIdBin
         {
             get { return m_breedSpellsIdBin; }
@@ -254,6 +282,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<uint> MaleColors
         {
@@ -266,6 +295,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_maleColorsBin;
+        [D2OIgnore]
         public byte[] MaleColorsBin
         {
             get { return m_maleColorsBin; }
@@ -276,6 +306,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<uint> FemaleColors
         {
@@ -288,6 +319,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_femaleColorsBin;
+        [D2OIgnore]
         public byte[] FemaleColorsBin
         {
             get { return m_femaleColorsBin; }
@@ -323,10 +355,10 @@ namespace DBSynchroniser.Records
             FemaleColors = castedObj.femaleColors;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Breed();
+            var obj = parent != null ? (Breed)parent : new Breed();
             obj.id = Id;
             obj.shortNameId = ShortNameId;
             obj.longNameId = LongNameId;

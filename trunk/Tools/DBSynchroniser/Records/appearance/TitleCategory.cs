@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:58
+// Generated on 10/06/2013 18:02:16
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,13 +13,18 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("TitleCategories")]
-    [D2OClass("TitleCategory")]
+    [D2OClass("TitleCategory", "com.ankamagames.dofus.datacenter.appearance")]
     public class TitleCategoryRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "TitleCategories";
         public int id;
         public uint nameId;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -27,6 +32,7 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
@@ -41,10 +47,10 @@ namespace DBSynchroniser.Records
             NameId = castedObj.nameId;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new TitleCategory();
+            var obj = parent != null ? (TitleCategory)parent : new TitleCategory();
             obj.id = Id;
             obj.nameId = NameId;
             return obj;

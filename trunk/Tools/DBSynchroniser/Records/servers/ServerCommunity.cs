@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:19
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,15 +13,20 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("ServerCommunities")]
-    [D2OClass("ServerCommunity")]
+    [D2OClass("ServerCommunity", "com.ankamagames.dofus.datacenter.servers")]
     public class ServerCommunityRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "ServerCommunities";
         public int id;
         public uint nameId;
         public String shortId;
         public List<String> defaultCountries;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -29,12 +34,14 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String ShortId
         {
@@ -42,6 +49,7 @@ namespace DBSynchroniser.Records
             set { shortId = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<String> DefaultCountries
         {
@@ -54,6 +62,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_defaultCountriesBin;
+        [D2OIgnore]
         public byte[] DefaultCountriesBin
         {
             get { return m_defaultCountriesBin; }
@@ -74,10 +83,10 @@ namespace DBSynchroniser.Records
             DefaultCountries = castedObj.defaultCountries;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new ServerCommunity();
+            var obj = parent != null ? (ServerCommunity)parent : new ServerCommunity();
             obj.id = Id;
             obj.nameId = NameId;
             obj.shortId = ShortId;

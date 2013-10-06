@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:57
+// Generated on 10/06/2013 18:02:16
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,14 +13,19 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("AlignmentSides")]
-    [D2OClass("AlignmentSide")]
+    [D2OClass("AlignmentSide", "com.ankamagames.dofus.datacenter.alignments")]
     public class AlignmentSideRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "AlignmentSides";
         public int id;
         public uint nameId;
         public Boolean canConquest;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -28,12 +33,14 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public Boolean CanConquest
         {
             get { return canConquest; }
@@ -49,10 +56,10 @@ namespace DBSynchroniser.Records
             CanConquest = castedObj.canConquest;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new AlignmentSide();
+            var obj = parent != null ? (AlignmentSide)parent : new AlignmentSide();
             obj.id = Id;
             obj.nameId = NameId;
             obj.canConquest = CanConquest;

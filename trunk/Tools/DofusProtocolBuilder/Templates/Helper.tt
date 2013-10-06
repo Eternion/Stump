@@ -101,6 +101,7 @@ void WriteDBProperty(FieldInfo field)
     {
         WriteLine("");
         WriteLine("private byte[] m_" + field.Name + "Bin;");
+        WriteLine("[D2OIgnore]");
         WriteLine("public byte[] " + ToPascalCase(field.Name) + "Bin");
         WriteLine("{");
             PushIndent("    ");

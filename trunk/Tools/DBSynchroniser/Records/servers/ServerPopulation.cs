@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:19
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,14 +13,19 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("ServerPopulations")]
-    [D2OClass("ServerPopulation")]
+    [D2OClass("ServerPopulation", "com.ankamagames.dofus.datacenter.servers")]
     public class ServerPopulationRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "ServerPopulations";
         public int id;
         public uint nameId;
         public int weight;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -28,12 +33,14 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public int Weight
         {
             get { return weight; }
@@ -49,10 +56,10 @@ namespace DBSynchroniser.Records
             Weight = castedObj.weight;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new ServerPopulation();
+            var obj = parent != null ? (ServerPopulation)parent : new ServerPopulation();
             obj.id = Id;
             obj.nameId = NameId;
             obj.weight = Weight;

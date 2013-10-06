@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:00
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Monsters")]
-    [D2OClass("Monster")]
+    [D2OClass("Monster", "com.ankamagames.dofus.datacenter.monsters")]
     public class MonsterRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Monsters";
         public int id;
         public uint nameId;
@@ -30,6 +34,7 @@ namespace DBSynchroniser.Records
         public List<AnimFunMonsterData> animFunList;
         public Boolean isBoss;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -37,24 +42,28 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public uint GfxId
         {
             get { return gfxId; }
             set { gfxId = value; }
         }
 
+        [D2OIgnore]
         public int Race
         {
             get { return race; }
             set { race = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<MonsterGrade> Grades
         {
@@ -67,6 +76,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_gradesBin;
+        [D2OIgnore]
         public byte[] GradesBin
         {
             get { return m_gradesBin; }
@@ -77,6 +87,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [NullString]
         public String Look
         {
@@ -84,30 +95,35 @@ namespace DBSynchroniser.Records
             set { look = value; }
         }
 
+        [D2OIgnore]
         public Boolean UseSummonSlot
         {
             get { return useSummonSlot; }
             set { useSummonSlot = value; }
         }
 
+        [D2OIgnore]
         public Boolean UseBombSlot
         {
             get { return useBombSlot; }
             set { useBombSlot = value; }
         }
 
+        [D2OIgnore]
         public Boolean CanPlay
         {
             get { return canPlay; }
             set { canPlay = value; }
         }
 
+        [D2OIgnore]
         public Boolean CanTackle
         {
             get { return canTackle; }
             set { canTackle = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<AnimFunMonsterData> AnimFunList
         {
@@ -120,6 +136,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_animFunListBin;
+        [D2OIgnore]
         public byte[] AnimFunListBin
         {
             get { return m_animFunListBin; }
@@ -130,6 +147,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         public Boolean IsBoss
         {
             get { return isBoss; }
@@ -154,10 +172,10 @@ namespace DBSynchroniser.Records
             IsBoss = castedObj.isBoss;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Monster();
+            var obj = parent != null ? (Monster)parent : new Monster();
             obj.id = Id;
             obj.nameId = NameId;
             obj.gfxId = GfxId;

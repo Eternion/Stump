@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("AchievementCategories")]
-    [D2OClass("AchievementCategory")]
+    [D2OClass("AchievementCategory", "com.ankamagames.dofus.datacenter.quest")]
     public class AchievementCategoryRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "AchievementCategories";
         public uint id;
         public uint nameId;
@@ -25,6 +29,7 @@ namespace DBSynchroniser.Records
         public String color;
         public List<uint> achievementIds;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -32,18 +37,21 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public uint ParentId
         {
             get { return parentId; }
             set { parentId = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String Icon
         {
@@ -51,12 +59,14 @@ namespace DBSynchroniser.Records
             set { icon = value; }
         }
 
+        [D2OIgnore]
         public uint Order
         {
             get { return order; }
             set { order = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String Color
         {
@@ -64,6 +74,7 @@ namespace DBSynchroniser.Records
             set { color = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<uint> AchievementIds
         {
@@ -76,6 +87,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_achievementIdsBin;
+        [D2OIgnore]
         public byte[] AchievementIdsBin
         {
             get { return m_achievementIdsBin; }
@@ -99,10 +111,10 @@ namespace DBSynchroniser.Records
             AchievementIds = castedObj.achievementIds;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new AchievementCategory();
+            var obj = parent != null ? (AchievementCategory)parent : new AchievementCategory();
             obj.id = Id;
             obj.nameId = NameId;
             obj.parentId = ParentId;

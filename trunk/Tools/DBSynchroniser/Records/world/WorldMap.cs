@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:02
+// Generated on 10/06/2013 18:02:19
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("WorldMaps")]
-    [D2OClass("WorldMap")]
+    [D2OClass("WorldMap", "com.ankamagames.dofus.datacenter.world")]
     public class WorldMapRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "WorldMaps";
         public int id;
         public int origineX;
@@ -34,6 +38,7 @@ namespace DBSynchroniser.Records
         public int totalHeight;
         public List<String> zoom;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -41,90 +46,105 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public int OrigineX
         {
             get { return origineX; }
             set { origineX = value; }
         }
 
+        [D2OIgnore]
         public int OrigineY
         {
             get { return origineY; }
             set { origineY = value; }
         }
 
+        [D2OIgnore]
         public float MapWidth
         {
             get { return mapWidth; }
             set { mapWidth = value; }
         }
 
+        [D2OIgnore]
         public float MapHeight
         {
             get { return mapHeight; }
             set { mapHeight = value; }
         }
 
+        [D2OIgnore]
         public uint HorizontalChunck
         {
             get { return horizontalChunck; }
             set { horizontalChunck = value; }
         }
 
+        [D2OIgnore]
         public uint VerticalChunck
         {
             get { return verticalChunck; }
             set { verticalChunck = value; }
         }
 
+        [D2OIgnore]
         public Boolean ViewableEverywhere
         {
             get { return viewableEverywhere; }
             set { viewableEverywhere = value; }
         }
 
+        [D2OIgnore]
         public float MinScale
         {
             get { return minScale; }
             set { minScale = value; }
         }
 
+        [D2OIgnore]
         public float MaxScale
         {
             get { return maxScale; }
             set { maxScale = value; }
         }
 
+        [D2OIgnore]
         public float StartScale
         {
             get { return startScale; }
             set { startScale = value; }
         }
 
+        [D2OIgnore]
         public int CenterX
         {
             get { return centerX; }
             set { centerX = value; }
         }
 
+        [D2OIgnore]
         public int CenterY
         {
             get { return centerY; }
             set { centerY = value; }
         }
 
+        [D2OIgnore]
         public int TotalWidth
         {
             get { return totalWidth; }
             set { totalWidth = value; }
         }
 
+        [D2OIgnore]
         public int TotalHeight
         {
             get { return totalHeight; }
             set { totalHeight = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<String> Zoom
         {
@@ -137,6 +157,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_zoomBin;
+        [D2OIgnore]
         public byte[] ZoomBin
         {
             get { return m_zoomBin; }
@@ -169,10 +190,10 @@ namespace DBSynchroniser.Records
             Zoom = castedObj.zoom;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new WorldMap();
+            var obj = parent != null ? (WorldMap)parent : new WorldMap();
             obj.id = Id;
             obj.origineX = OrigineX;
             obj.origineY = OrigineY;

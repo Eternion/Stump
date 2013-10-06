@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,15 +13,20 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("AchievementObjectives")]
-    [D2OClass("AchievementObjective")]
+    [D2OClass("AchievementObjective", "com.ankamagames.dofus.datacenter.quest")]
     public class AchievementObjectiveRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "AchievementObjectives";
         public uint id;
         public uint achievementId;
         public uint nameId;
         public String criterion;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -29,18 +34,21 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint AchievementId
         {
             get { return achievementId; }
             set { achievementId = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String Criterion
         {
@@ -58,10 +66,10 @@ namespace DBSynchroniser.Records
             Criterion = castedObj.criterion;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new AchievementObjective();
+            var obj = parent != null ? (AchievementObjective)parent : new AchievementObjective();
             obj.id = Id;
             obj.achievementId = AchievementId;
             obj.nameId = NameId;

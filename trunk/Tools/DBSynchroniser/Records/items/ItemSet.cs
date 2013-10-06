@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:59
+// Generated on 10/06/2013 18:02:17
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("ItemSets")]
-    [D2OClass("ItemSet")]
+    [D2OClass("ItemSet", "com.ankamagames.dofus.datacenter.items")]
     public class ItemSetRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "ItemSets";
         public uint id;
         public List<uint> items;
@@ -23,6 +27,7 @@ namespace DBSynchroniser.Records
         public List<List<EffectInstance>> effects;
         public Boolean bonusIsSecret;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -30,6 +35,7 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<uint> Items
         {
@@ -42,6 +48,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_itemsBin;
+        [D2OIgnore]
         public byte[] ItemsBin
         {
             get { return m_itemsBin; }
@@ -52,12 +59,14 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<List<EffectInstance>> Effects
         {
@@ -70,6 +79,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_effectsBin;
+        [D2OIgnore]
         public byte[] EffectsBin
         {
             get { return m_effectsBin; }
@@ -80,6 +90,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         public Boolean BonusIsSecret
         {
             get { return bonusIsSecret; }
@@ -97,10 +108,10 @@ namespace DBSynchroniser.Records
             BonusIsSecret = castedObj.bonusIsSecret;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new ItemSet();
+            var obj = parent != null ? (ItemSet)parent : new ItemSet();
             obj.id = Id;
             obj.items = Items;
             obj.nameId = NameId;

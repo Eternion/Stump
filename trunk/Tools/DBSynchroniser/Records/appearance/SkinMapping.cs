@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:58
+// Generated on 10/06/2013 18:02:16
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,13 +13,18 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("SkinMappings")]
-    [D2OClass("SkinMapping")]
+    [D2OClass("SkinMapping", "com.ankamagames.dofus.datacenter.appearance")]
     public class SkinMappingRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "SkinMappings";
         public int id;
         public int lowDefId;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -27,6 +32,7 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public int LowDefId
         {
             get { return lowDefId; }
@@ -41,10 +47,10 @@ namespace DBSynchroniser.Records
             LowDefId = castedObj.lowDefId;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new SkinMapping();
+            var obj = parent != null ? (SkinMapping)parent : new SkinMapping();
             obj.id = Id;
             obj.lowDefId = LowDefId;
             return obj;

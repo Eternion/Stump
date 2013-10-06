@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:57
+// Generated on 10/06/2013 18:02:16
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,14 +13,19 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("AlignmentEffect")]
-    [D2OClass("AlignmentEffect")]
+    [D2OClass("AlignmentEffect", "com.ankamagames.dofus.datacenter.alignments")]
     public class AlignmentEffectRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "AlignmentEffect";
         public int id;
         public uint characteristicId;
         public uint descriptionId;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -28,12 +33,14 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint CharacteristicId
         {
             get { return characteristicId; }
             set { characteristicId = value; }
         }
 
+        [D2OIgnore]
         public uint DescriptionId
         {
             get { return descriptionId; }
@@ -49,10 +56,10 @@ namespace DBSynchroniser.Records
             DescriptionId = castedObj.descriptionId;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new AlignmentEffect();
+            var obj = parent != null ? (AlignmentEffect)parent : new AlignmentEffect();
             obj.id = Id;
             obj.characteristicId = CharacteristicId;
             obj.descriptionId = DescriptionId;

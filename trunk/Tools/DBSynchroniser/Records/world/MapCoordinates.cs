@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:02
+// Generated on 10/06/2013 18:02:19
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,25 +13,32 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("MapCoordinates")]
-    [D2OClass("MapCoordinates")]
+    [D2OClass("MapCoordinates", "com.ankamagames.dofus.datacenter.world")]
     public class MapCoordinatesRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "MapCoordinates";
         public uint compressedCoords;
         public List<int> mapIds;
 
+        [D2OIgnore]
         [PrimaryKey("Id")]
         public int Id
         {
             get;
             set;
         }
+        [D2OIgnore]
         public uint CompressedCoords
         {
             get { return compressedCoords; }
             set { compressedCoords = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<int> MapIds
         {
@@ -44,6 +51,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_mapIdsBin;
+        [D2OIgnore]
         public byte[] MapIdsBin
         {
             get { return m_mapIdsBin; }
@@ -62,10 +70,10 @@ namespace DBSynchroniser.Records
             MapIds = castedObj.mapIds;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new MapCoordinates();
+            var obj = parent != null ? (MapCoordinates)parent : new MapCoordinates();
             obj.compressedCoords = CompressedCoords;
             obj.mapIds = MapIds;
             return obj;

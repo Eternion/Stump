@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Npcs")]
-    [D2OClass("Npc")]
+    [D2OClass("Npc", "com.ankamagames.dofus.datacenter.npcs")]
     public class NpcRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Npcs";
         public int id;
         public uint nameId;
@@ -27,6 +31,7 @@ namespace DBSynchroniser.Records
         public int tokenShop;
         public List<AnimFunNpcData> animFunList;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public int Id
         {
@@ -34,12 +39,14 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<List<int>> DialogMessages
         {
@@ -52,6 +59,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_dialogMessagesBin;
+        [D2OIgnore]
         public byte[] DialogMessagesBin
         {
             get { return m_dialogMessagesBin; }
@@ -62,6 +70,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<List<int>> DialogReplies
         {
@@ -74,6 +83,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_dialogRepliesBin;
+        [D2OIgnore]
         public byte[] DialogRepliesBin
         {
             get { return m_dialogRepliesBin; }
@@ -84,6 +94,7 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<uint> Actions
         {
@@ -96,6 +107,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_actionsBin;
+        [D2OIgnore]
         public byte[] ActionsBin
         {
             get { return m_actionsBin; }
@@ -106,12 +118,14 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         public uint Gender
         {
             get { return gender; }
             set { gender = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String Look
         {
@@ -119,12 +133,14 @@ namespace DBSynchroniser.Records
             set { look = value; }
         }
 
+        [D2OIgnore]
         public int TokenShop
         {
             get { return tokenShop; }
             set { tokenShop = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<AnimFunNpcData> AnimFunList
         {
@@ -137,6 +153,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_animFunListBin;
+        [D2OIgnore]
         public byte[] AnimFunListBin
         {
             get { return m_animFunListBin; }
@@ -162,10 +179,10 @@ namespace DBSynchroniser.Records
             AnimFunList = castedObj.animFunList;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Npc();
+            var obj = parent != null ? (Npc)parent : new Npc();
             obj.id = Id;
             obj.nameId = NameId;
             obj.dialogMessages = DialogMessages;

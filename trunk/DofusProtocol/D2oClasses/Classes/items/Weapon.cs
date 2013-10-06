@@ -1,14 +1,16 @@
 
-// Generated on 03/25/2013 19:24:34
+
+// Generated on 10/06/2013 17:58:53
 using System;
 using System.Collections.Generic;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 
 namespace Stump.DofusProtocol.D2oClasses
 {
-    [D2OClass("Weapon")]
+    [D2OClass("Weapon", "com.ankamagames.dofus.datacenter.items")]
     [Serializable]
-    public class Weapon : Item, IIndexedData
+    public class Weapon : Item
     {
         public int apCost;
         public int minRange;
@@ -19,60 +21,59 @@ namespace Stump.DofusProtocol.D2oClasses
         public int criticalHitProbability;
         public int criticalHitBonus;
         public int criticalFailureProbability;
-
+        [D2OIgnore]
         public int ApCost
         {
             get { return apCost; }
             set { apCost = value; }
         }
-
+        [D2OIgnore]
         public int MinRange
         {
             get { return minRange; }
             set { minRange = value; }
         }
-
+        [D2OIgnore]
         public int Range
         {
             get { return range; }
             set { range = value; }
         }
-
+        [D2OIgnore]
         public Boolean CastInLine
         {
             get { return castInLine; }
             set { castInLine = value; }
         }
-
+        [D2OIgnore]
         public Boolean CastInDiagonal
         {
             get { return castInDiagonal; }
             set { castInDiagonal = value; }
         }
-
+        [D2OIgnore]
         public Boolean CastTestLos
         {
             get { return castTestLos; }
             set { castTestLos = value; }
         }
-
+        [D2OIgnore]
         public int CriticalHitProbability
         {
             get { return criticalHitProbability; }
             set { criticalHitProbability = value; }
         }
-
+        [D2OIgnore]
         public int CriticalHitBonus
         {
             get { return criticalHitBonus; }
             set { criticalHitBonus = value; }
         }
-
+        [D2OIgnore]
         public int CriticalFailureProbability
         {
             get { return criticalFailureProbability; }
             set { criticalFailureProbability = value; }
         }
-
     }
 }

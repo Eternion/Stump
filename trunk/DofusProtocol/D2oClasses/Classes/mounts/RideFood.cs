@@ -1,35 +1,31 @@
 
-// Generated on 03/25/2013 19:24:37
+
+// Generated on 10/06/2013 17:58:55
 using System;
 using System.Collections.Generic;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 
 namespace Stump.DofusProtocol.D2oClasses
 {
-    [D2OClass("RideFood")]
+    [D2OClass("RideFood", "com.ankamagames.dofus.datacenter.mounts")]
     [Serializable]
-    public class RideFood : IDataObject, IIndexedData
+    public class RideFood : IDataObject
     {
         public uint gid;
         public uint typeId;
         public String MODULE = "RideFood";
-
-        int IIndexedData.Id
-        {
-            get { return (int)gid; }
-        }
-
+        [D2OIgnore]
         public uint Gid
         {
             get { return gid; }
             set { gid = value; }
         }
-
+        [D2OIgnore]
         public uint TypeId
         {
             get { return typeId; }
             set { typeId = value; }
         }
-
     }
 }

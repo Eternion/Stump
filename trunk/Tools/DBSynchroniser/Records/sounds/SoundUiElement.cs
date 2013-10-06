@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:19
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("SoundUiElement")]
-    [D2OClass("SoundUiElement")]
+    [D2OClass("SoundUiElement", "com.ankamagames.dofus.datacenter.sounds")]
     public class SoundUiElementRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         public uint id;
         public String name;
         public uint hookId;
@@ -23,6 +27,7 @@ namespace DBSynchroniser.Records
         public uint volume;
         public String MODULE = "SoundUiElement";
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -30,6 +35,7 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String Name
         {
@@ -37,12 +43,14 @@ namespace DBSynchroniser.Records
             set { name = value; }
         }
 
+        [D2OIgnore]
         public uint HookId
         {
             get { return hookId; }
             set { hookId = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String File
         {
@@ -50,6 +58,7 @@ namespace DBSynchroniser.Records
             set { file = value; }
         }
 
+        [D2OIgnore]
         public uint Volume
         {
             get { return volume; }
@@ -67,10 +76,10 @@ namespace DBSynchroniser.Records
             Volume = castedObj.volume;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new SoundUiElement();
+            var obj = parent != null ? (SoundUiElement)parent : new SoundUiElement();
             obj.id = Id;
             obj.name = Name;
             obj.hookId = HookId;

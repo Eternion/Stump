@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,12 +13,17 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("MountBones")]
-    [D2OClass("MountBone")]
+    [D2OClass("MountBone", "com.ankamagames.dofus.datacenter.mounts")]
     public class MountBoneRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         public uint id;
         private String MODULE = "MountBones";
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -33,10 +38,10 @@ namespace DBSynchroniser.Records
             Id = castedObj.id;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new MountBone();
+            var obj = parent != null ? (MountBone)parent : new MountBone();
             obj.id = Id;
             return obj;
         

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:22:01
+// Generated on 10/06/2013 18:02:18
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Quests")]
-    [D2OClass("Quest")]
+    [D2OClass("Quest", "com.ankamagames.dofus.datacenter.quest")]
     public class QuestRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Quests";
         public uint id;
         public uint nameId;
@@ -28,6 +32,7 @@ namespace DBSynchroniser.Records
         public uint levelMin;
         public uint levelMax;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -35,12 +40,14 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<uint> StepIds
         {
@@ -53,6 +60,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_stepIdsBin;
+        [D2OIgnore]
         public byte[] StepIdsBin
         {
             get { return m_stepIdsBin; }
@@ -63,42 +71,49 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         public uint CategoryId
         {
             get { return categoryId; }
             set { categoryId = value; }
         }
 
+        [D2OIgnore]
         public Boolean IsRepeatable
         {
             get { return isRepeatable; }
             set { isRepeatable = value; }
         }
 
+        [D2OIgnore]
         public uint RepeatType
         {
             get { return repeatType; }
             set { repeatType = value; }
         }
 
+        [D2OIgnore]
         public uint RepeatLimit
         {
             get { return repeatLimit; }
             set { repeatLimit = value; }
         }
 
+        [D2OIgnore]
         public Boolean IsDungeonQuest
         {
             get { return isDungeonQuest; }
             set { isDungeonQuest = value; }
         }
 
+        [D2OIgnore]
         public uint LevelMin
         {
             get { return levelMin; }
             set { levelMin = value; }
         }
 
+        [D2OIgnore]
         public uint LevelMax
         {
             get { return levelMax; }
@@ -121,10 +136,10 @@ namespace DBSynchroniser.Records
             LevelMax = castedObj.levelMax;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Quest();
+            var obj = parent != null ? (Quest)parent : new Quest();
             obj.id = Id;
             obj.nameId = NameId;
             obj.stepIds = StepIds;

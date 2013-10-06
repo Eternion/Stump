@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:58
+// Generated on 10/06/2013 18:02:16
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,9 +13,13 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Emoticons")]
-    [D2OClass("Emoticon")]
+    [D2OClass("Emoticon", "com.ankamagames.dofus.datacenter.communication")]
     public class EmoticonRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Emoticons";
         public uint id;
         public uint nameId;
@@ -30,6 +34,7 @@ namespace DBSynchroniser.Records
         public uint duration = 0;
         public uint weight;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -37,24 +42,28 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint NameId
         {
             get { return nameId; }
             set { nameId = value; }
         }
 
+        [D2OIgnore]
         public uint ShortcutId
         {
             get { return shortcutId; }
             set { shortcutId = value; }
         }
 
+        [D2OIgnore]
         public uint Order
         {
             get { return order; }
             set { order = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String DefaultAnim
         {
@@ -62,24 +71,28 @@ namespace DBSynchroniser.Records
             set { defaultAnim = value; }
         }
 
+        [D2OIgnore]
         public Boolean Persistancy
         {
             get { return persistancy; }
             set { persistancy = value; }
         }
 
+        [D2OIgnore]
         public Boolean Eight_directions
         {
             get { return eight_directions; }
             set { eight_directions = value; }
         }
 
+        [D2OIgnore]
         public Boolean Aura
         {
             get { return aura; }
             set { aura = value; }
         }
 
+        [D2OIgnore]
         [Ignore]
         public List<String> Anims
         {
@@ -92,6 +105,7 @@ namespace DBSynchroniser.Records
         }
 
         private byte[] m_animsBin;
+        [D2OIgnore]
         public byte[] AnimsBin
         {
             get { return m_animsBin; }
@@ -102,18 +116,21 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
         public uint Cooldown
         {
             get { return cooldown; }
             set { cooldown = value; }
         }
 
+        [D2OIgnore]
         public uint Duration
         {
             get { return duration; }
             set { duration = value; }
         }
 
+        [D2OIgnore]
         public uint Weight
         {
             get { return weight; }
@@ -138,10 +155,10 @@ namespace DBSynchroniser.Records
             Weight = castedObj.weight;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Emoticon();
+            var obj = parent != null ? (Emoticon)parent : new Emoticon();
             obj.id = Id;
             obj.nameId = NameId;
             obj.shortcutId = ShortcutId;

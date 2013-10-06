@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:59
+// Generated on 10/06/2013 18:02:17
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,14 +13,19 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Incarnation")]
-    [D2OClass("Incarnation")]
+    [D2OClass("Incarnation", "com.ankamagames.dofus.datacenter.items")]
     public class IncarnationRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         private const String MODULE = "Incarnation";
         public uint id;
         public String lookMale;
         public String lookFemale;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -28,6 +33,7 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String LookMale
         {
@@ -35,6 +41,7 @@ namespace DBSynchroniser.Records
             set { lookMale = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String LookFemale
         {
@@ -51,10 +58,10 @@ namespace DBSynchroniser.Records
             LookFemale = castedObj.lookFemale;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Incarnation();
+            var obj = parent != null ? (Incarnation)parent : new Incarnation();
             obj.id = Id;
             obj.lookMale = LookMale;
             obj.lookFemale = LookFemale;

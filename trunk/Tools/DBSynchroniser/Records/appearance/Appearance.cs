@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/06/2013 14:21:58
+// Generated on 10/06/2013 18:02:16
 using System;
 using System.Collections.Generic;
 using Stump.Core.IO;
@@ -13,14 +13,19 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 namespace DBSynchroniser.Records
 {
     [TableName("Appearances")]
-    [D2OClass("Appearance")]
+    [D2OClass("Appearance", "com.ankamagames.dofus.datacenter.appearance")]
     public class AppearanceRecord : ID2ORecord
     {
+        int ID2ORecord.Id
+        {
+            get { return (int)Id; }
+        }
         public const String MODULE = "Appearances";
         public uint id;
         public uint type;
         public String data;
 
+        [D2OIgnore]
         [PrimaryKey("Id", false)]
         public uint Id
         {
@@ -28,12 +33,14 @@ namespace DBSynchroniser.Records
             set { id = value; }
         }
 
+        [D2OIgnore]
         public uint Type
         {
             get { return type; }
             set { type = value; }
         }
 
+        [D2OIgnore]
         [NullString]
         public String Data
         {
@@ -50,10 +57,10 @@ namespace DBSynchroniser.Records
             Data = castedObj.data;
         }
         
-        public virtual object CreateObject()
+        public virtual object CreateObject(object parent = null)
         {
             
-            var obj = new Appearance();
+            var obj = parent != null ? (Appearance)parent : new Appearance();
             obj.id = Id;
             obj.type = Type;
             obj.data = Data;
