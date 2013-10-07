@@ -115,6 +115,7 @@
     <Compile Include="Commands\NpcCommand.cs" />
     <Compile Include="Commands\ShopCommand.cs" />
     <Compile Include="Commands\WelcomeCommand.cs" />
+    <Compile Include="Npcs\NpcAlignement.cs" />
     <Compile Include="Npcs\NpcExchange.cs" />
     <Compile Include="Npcs\NpcGuilds.cs" />
     <Compile Include="Npcs\NpcRestatScript.cs" />
