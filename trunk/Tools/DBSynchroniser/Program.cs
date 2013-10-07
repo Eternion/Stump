@@ -44,7 +44,7 @@ namespace DBSynchroniser
 
 
 
-        private static Tuple<string, Action>[] m_menus = new[]
+        private static readonly Tuple<string, Action>[] m_menus = new[]
         {
             Tuple.Create<string, Action>("Set Dofus Path (empty = default)", SetDofusPath),
             Tuple.Create<string, Action>("Set languages (empty = all)", SetLanguages),
@@ -53,9 +53,9 @@ namespace DBSynchroniser
             Tuple.Create<string, Action>("Generate client files", GenerateFiles),
         };
 
-        private static Dictionary<string, D2OTable> m_tables = new Dictionary<string, D2OTable>();
+        private static readonly Dictionary<string, D2OTable> m_tables = new Dictionary<string, D2OTable>();
 
-        private static void Main(string[] args)
+        private static void Main()
         {
             foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
             {

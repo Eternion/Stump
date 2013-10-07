@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
+using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
 namespace ArkalysPlugin.Npcs
@@ -21,9 +22,15 @@ namespace ArkalysPlugin.Npcs
         //Tu as l'âme d'un meneur? Tu pense pouvoir mener des guerriers dans la bataille? Alors créer une guilde !
         [Variable]
         public static int MessageId = 20007;
-        //Je créer ma guilde !
+
+        [Variable]
+        public static int RequiredItemId = 1575;
+
+        //Créer ma guilde et perdre une guildalogemme
         [Variable]
         public static short ReplyGuildSuccessId = 20010;
+        //Voulez-vous acheter une Guildalogemme pour XX orbes?
+        [Variable] public static short ReplyGuildBuyId = 20010;
         //Vous n'avez pas le niveau requis pour créer une guilde(Niveau 200)
         [Variable]
         public static short ReplyGuildFailId = 20010;
@@ -97,13 +104,14 @@ namespace ArkalysPlugin.Npcs
             base.Open();
 
             if (Character.Guild != null)
-                ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, new[] {NpcGuilds.ReplyAlreadyHaveGuild});
+                ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, new[] { NpcGuilds.ReplyAlreadyHaveGuild });
             else
             {
+                var guildalogemme = Character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(NpcGuilds.RequiredItemId));
                 ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage,
-                                                                    Character.Level == 200
-                                                                        ? new[] { NpcGuilds.ReplyGuildSuccessId }
-                                                                        : new[] { NpcGuilds.ReplyGuildFailId });  
+                                                                    guildalogemme != null
+                                                                        ? new[] {NpcGuilds.ReplyGuildSuccessId}
+                                                                        : new[] {NpcGuilds.ReplyGuildBuyId});
             }
         }
 
