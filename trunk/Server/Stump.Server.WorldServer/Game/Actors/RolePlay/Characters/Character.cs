@@ -1,21 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Linq;
 using NLog;
-using Stump.Core.Exceptions;
 using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Core.Extensions;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
-using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Look;
@@ -40,7 +35,6 @@ using Stump.Server.WorldServer.Game.Social;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Characters;
-using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Handlers.Guilds;
@@ -81,7 +75,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (GuildMember != null)
                 GuildMember.OnCharacterConnected(this);
 
-            Action<Character> handler = LoggedIn;
+            var handler = LoggedIn;
             if (handler != null) handler(this);
         }
 
@@ -92,7 +86,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (GuildMember != null)
                 GuildMember.OnCharacterDisconnected(this);
 
-            Action<Character> handler = LoggedOut;
+            var handler = LoggedOut;
             if (handler != null) handler(this);
         }
 
@@ -100,7 +94,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnLifeRegened(int regenedLife)
         {
-            Action<Character, int> handler = LifeRegened;
+            var handler = LifeRegened;
             if (handler != null) handler(this, regenedLife);
         }
 
@@ -402,11 +396,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void AddTitle(short title)
         {
-            if (!HasTitle(title))
-            {
-                Record.Titles.Add(title);
-                TitleHandler.SendTitleGainedMessage(Client, title);
-            }
+            if (HasTitle(title))
+                return;
+
+            Record.Titles.Add(title);
+            TitleHandler.SendTitleGainedMessage(Client, title);
         }
 
         public bool RemoveTitle(short title)
@@ -642,20 +636,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set
             {
                 m_record.Experience = value;
-                if (value >= UpperBoundExperience && Level < ExperienceManager.Instance.HighestCharacterLevel ||
-                    value < LowerBoundExperience)
-                {
-                    byte lastLevel = Level;
+                if ((value < UpperBoundExperience || Level >= ExperienceManager.Instance.HighestCharacterLevel) &&
+                    value >= LowerBoundExperience) return;
+                var lastLevel = Level;
 
-                    Level = ExperienceManager.Instance.GetCharacterLevel(m_record.Experience);
+                Level = ExperienceManager.Instance.GetCharacterLevel(m_record.Experience);
 
-                    LowerBoundExperience = ExperienceManager.Instance.GetCharacterLevelExperience(Level);
-                    UpperBoundExperience = ExperienceManager.Instance.GetCharacterNextLevelExperience(Level);
+                LowerBoundExperience = ExperienceManager.Instance.GetCharacterLevelExperience(Level);
+                UpperBoundExperience = ExperienceManager.Instance.GetCharacterNextLevelExperience(Level);
 
-                    int difference = Level - lastLevel;
+                var difference = Level - lastLevel;
 
-                    OnLevelChanged(Level, difference);
-                }
+                OnLevelChanged(Level, difference);
             }
         }
 
@@ -851,7 +843,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             CharacterHandler.SendCharacterLevelUpMessage(Client, currentLevel);
             CharacterHandler.SendCharacterLevelUpInformationMessage(Map.Clients, this, currentLevel);
 
-            LevelChangedHandler handler = LevelChanged;
+            var handler = LevelChanged;
 
             if (handler != null)
                 handler(this, currentLevel, difference);
@@ -917,12 +909,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        private sbyte m_alignmentGrade;
-
         public sbyte AlignmentGrade
         {
-            get { return m_alignmentGrade; }
-            private set { m_alignmentGrade = value; }
+            get;
+            private set;
         }
 
         public sbyte AlignmentValue
@@ -936,20 +926,20 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get { return m_record.Honor; }
             private set
             {
-                m_record.Honor = value; 
-                if (value >= UpperBoundHonor && AlignmentGrade < ExperienceManager.Instance.HighestGrade)
-                {
-                    sbyte lastGrade = AlignmentGrade;
+                m_record.Honor = value;
+                if (value < UpperBoundHonor || AlignmentGrade >= ExperienceManager.Instance.HighestGrade)
+                    return;
 
-                    AlignmentGrade = (sbyte) ExperienceManager.Instance.GetAlignementGrade(m_record.Honor);
+                var lastGrade = AlignmentGrade;
 
-                    LowerBoundHonor = ExperienceManager.Instance.GetAlignementGradeHonor((byte) AlignmentGrade);
-                    UpperBoundHonor = ExperienceManager.Instance.GetAlignementNextGradeHonor((byte) AlignmentGrade);
+                AlignmentGrade = (sbyte) ExperienceManager.Instance.GetAlignementGrade(m_record.Honor);
 
-                    int difference = AlignmentGrade - lastGrade;
+                LowerBoundHonor = ExperienceManager.Instance.GetAlignementGradeHonor((byte) AlignmentGrade);
+                UpperBoundHonor = ExperienceManager.Instance.GetAlignementNextGradeHonor((byte) AlignmentGrade);
 
-                    OnGradeChanged(AlignmentGrade, difference);
-                }
+                var difference = AlignmentGrade - lastGrade;
+
+                OnGradeChanged(AlignmentGrade, difference);
             }
         }
 
@@ -1059,6 +1049,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             Map.Refresh(this);
             RefreshStats();
+            TogglePvPMode(false);
+
+            Honor = 0;
+            Dishonor = 0;
 
             var handler = AligmenentSideChanged;
 
@@ -1740,15 +1734,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                     return new ObjectPosition(map, cell, direction);
                 }
-                else
-                {
-                    return new ObjectPosition(map, map.GetRandomFreeCell(), Direction);
-                }
+
+                return new ObjectPosition(map, map.GetRandomFreeCell(), Direction);
             }
-            else
-            {
-                return Breed.GetStartPosition();
-            }
+
+            return Breed.GetStartPosition();
         }
 
         #endregion
@@ -1790,7 +1780,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (auraSkin == -1)
                 return;
 
-            bool hasAura = (RealLook.AuraLook == null || RealLook.AuraLook.BonesID != GetAuraSkin(emote));
+            var hasAura = (RealLook.AuraLook == null || RealLook.AuraLook.BonesID != GetAuraSkin(emote));
 
             if (!hasAura && toggle)
                 PlayEmote(emote);
@@ -1884,12 +1874,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             // if the merchant wasn't active
             var record = MerchantManager.Instance.GetMerchantSpawn(Id);
-            if (record != null)
-            {
-                Inventory.AddKamas((int)record.KamasEarned);
-                m_earnKamasInMerchant = (int)record.KamasEarned;
-                MerchantManager.Instance.RemoveMerchantSpawn(record);
-            }
+            if (record == null)
+                return;
+
+            Inventory.AddKamas((int)record.KamasEarned);
+            m_earnKamasInMerchant = (int)record.KamasEarned;
+            MerchantManager.Instance.RemoveMerchantSpawn(record);
         }
 
         #endregion
@@ -1944,29 +1934,29 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 {
                     OnLoggedOut();
 
-                    if (IsInWorld)
-                    {
-                        DenyAllInvitations();
+                    if (!IsInWorld)
+                        return;
 
-                        if (IsInRequest())
-                            CancelRequest();
+                    DenyAllInvitations();
 
-                        if (IsDialoging())
-                            Dialog.Close();
+                    if (IsInRequest())
+                        CancelRequest();
 
-                        if (IsInParty())
-                            LeaveParty();
+                    if (IsDialoging())
+                        Dialog.Close();
 
-                        if (Map != null && !IsFighting())
-                            Map.Leave(this);
+                    if (IsInParty())
+                        LeaveParty();
 
-                        if (Map != null && m_merchantToSpawn != null)
-                            Map.Enter(m_merchantToSpawn);
+                    if (Map != null && !IsFighting())
+                        Map.Leave(this);
 
-                        World.Instance.Leave(this);
+                    if (Map != null && m_merchantToSpawn != null)
+                        Map.Enter(m_merchantToSpawn);
 
-                        m_inWorld = false;
-                    }
+                    World.Instance.Leave(this);
+
+                    m_inWorld = false;
                 }
                 catch (Exception ex)
                 {
@@ -2064,8 +2054,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             UpperBoundExperience = ExperienceManager.Instance.GetCharacterNextLevelExperience(Level);
 
             AlignmentGrade = (sbyte)ExperienceManager.Instance.GetAlignementGrade(m_record.Honor);
-            LowerBoundHonor = (ushort) ExperienceManager.Instance.GetAlignementGradeHonor((byte) AlignmentGrade);
-            UpperBoundHonor = (ushort) ExperienceManager.Instance.GetAlignementNextGradeHonor((byte) AlignmentGrade);
+            LowerBoundHonor = ExperienceManager.Instance.GetAlignementGradeHonor((byte) AlignmentGrade);
+            UpperBoundHonor = ExperienceManager.Instance.GetAlignementNextGradeHonor((byte) AlignmentGrade);
 
             Inventory = new Inventory(this);
             Inventory.LoadInventory();
@@ -2104,7 +2094,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Exceptions
 
-        private List<KeyValuePair<string, Exception>> m_commandsError = new List<KeyValuePair<string, Exception>>();
+        private readonly List<KeyValuePair<string, Exception>> m_commandsError = new List<KeyValuePair<string, Exception>>();
         public List<KeyValuePair<string, Exception>> CommandsErrors
         {
             get
@@ -2113,7 +2103,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        private List<Exception> m_errors = new List<Exception>();
+        private readonly List<Exception> m_errors = new List<Exception>();
         private byte m_level;
 
         public List<Exception> Errors

@@ -58,7 +58,6 @@ namespace ArkalysPlugin.Npcs
 
             npc.NpcSpawned += OnNpcSpawned;
 
-            //
             Message = NpcManager.Instance.GetNpcMessage(MessageId);
 
             if (Message != null)
