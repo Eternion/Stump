@@ -3,7 +3,6 @@ using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -62,11 +61,11 @@ namespace ArkalysPlugin.Npcs
         [Initialization(typeof (OrbsManager), Silent = true)]
         public static void InitializeItem()
         {
-            if (OrbsManager.OrbItemTemplate == null)
-            {
-                logger.Error("No orb item, script is disabled");
-                m_scriptDisabled = true;
-            }
+            if (OrbsManager.OrbItemTemplate != null)
+                return;
+
+            logger.Error("No orb item, script is disabled");
+            m_scriptDisabled = true;
         }
 
         private static void OnNpcSpawned(NpcTemplate template, Npc npc)

@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Guilds;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Items;
 using NetworkGuildEmblem = Stump.DofusProtocol.Types.GuildEmblem;
 
 namespace Stump.Server.WorldServer.Game.Guilds
@@ -89,9 +90,13 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_NAME_ALREADY_EXISTS;
 
             if (DoesEmblemExist(emblem))
-            {
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_EMBLEM_ALREADY_EXISTS;
-            }
+
+            var guildalogemme = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(1575));
+            if (guildalogemme == null)
+                return GuildCreationResultEnum.GUILD_CREATE_ERROR_REQUIREMENT_UNMET;
+
+            character.Inventory.RemoveItem(guildalogemme, 1);
 
             var guild = CreateGuild(name);
             if (guild == null)
