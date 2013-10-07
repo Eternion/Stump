@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using System;
+using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -67,6 +68,16 @@ namespace ArkalysPlugin.Npcs
             m_scriptDisabled = true;
         }
 
+        [Initialization(typeof(OrbsManager), Silent = true)]
+        public static void InitializeItem()
+        {
+            if (OrbsManager.OrbItemTemplate != null)
+                return;
+
+            Logger.Error("No orb item, script is disabled");
+            m_scriptDisabled = true;
+        }
+
         private static void OnNpcSpawned(NpcTemplate template, Npc npc)
         {
             if (m_scriptDisabled)
@@ -93,8 +104,11 @@ namespace ArkalysPlugin.Npcs
 
     public class NpcGuildsDialog : NpcDialog
     {
+        private readonly uint m_requieredOrbs;
+
         public NpcGuildsDialog(Character character, Npc npc) : base(character, npc)
         {
+            m_requieredOrbs = 30000;
             CurrentMessage = NpcGuilds.Message;
         }
 
@@ -110,7 +124,7 @@ namespace ArkalysPlugin.Npcs
                 ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage,
                                                                     guildalogemme != null
                                                                         ? new[] {NpcGuilds.ReplyGuildSuccessId}
-                                                                        : new[] {NpcGuilds.ReplyGuildBuyId});
+                                                                        : new[] { NpcGuilds.ReplyGuildBuyId }, m_requieredOrbs.ToString());
             }
         }
 
@@ -119,6 +133,23 @@ namespace ArkalysPlugin.Npcs
             if (replyId == NpcGuilds.ReplyGuildSuccessId)
             {
                 Character.Client.Send(new GuildCreationStartedMessage());
+            }
+            else if (replyId == NpcGuilds.ReplyGuildBuyId)
+            {
+                var orbs = Character.Inventory.TryGetItem(OrbsManager.OrbItemTemplate);
+
+                if (orbs == null || orbs.Stack <= m_requieredOrbs)
+                {
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 1);
+                }
+                else
+                {
+                    Character.Inventory.RemoveItem(orbs, m_requieredOrbs);
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, m_requieredOrbs, orbs.Template.Id);
+
+                    var guildalogemme = Character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(NpcGuilds.RequiredItemId));
+                    Character.Inventory.AddItem(guildalogemme);
+                }
             }
 
             Close();

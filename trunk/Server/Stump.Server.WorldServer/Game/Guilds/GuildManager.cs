@@ -97,6 +97,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_REQUIREMENT_UNMET;
 
             character.Inventory.RemoveItem(guildalogemme, 1);
+            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, 1, guildalogemme.Template.Id);
 
             var guild = CreateGuild(name);
             if (guild == null)
