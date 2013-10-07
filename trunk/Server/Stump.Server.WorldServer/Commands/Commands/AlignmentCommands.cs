@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            Character target = GetTarget(trigger);
+            var target = GetTarget(trigger);
 
             target.ChangeAlignementSide(trigger.Get<AlignmentSideEnum>("side"));
         }
