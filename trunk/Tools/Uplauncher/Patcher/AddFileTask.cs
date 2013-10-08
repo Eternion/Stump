@@ -46,6 +46,13 @@ namespace Uplauncher.Patcher
             set;
         }
 
+        [XmlAttribute("MD5")]
+        public string FileMD5
+        {
+            get;
+            set;
+        }
+
         public override bool CanApply()
         {
             return true;
@@ -63,9 +70,9 @@ namespace Uplauncher.Patcher
                 uplauncher.SetState(string.Format("Check if {0} already exists ...", RelativeURL));
 
                 var md5 = Cryptography.GetFileMD5HashBase64("./app/" + LocalURL);
-                var remoteMd5 = NetExtensions.RequestMD5(Constants.UpdateSiteURL + RelativeURL);
+                //var remoteMd5 = NetExtensions.RequestMD5(Constants.UpdateSiteURL + RelativeURL);
 
-                if (md5 == remoteMd5)
+                if (md5 == FileMD5)
                 {
                     uplauncher.SetState(string.Format("File {0} already exists... Next !", RelativeURL));
 

@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Security.Cryptography;
+using System.Text;
+using Stump.Core.Cryptography;
 using Stump.Core.Xml;
 using Uplauncher.Patcher;
 
@@ -12,82 +13,85 @@ namespace PatchBuilder
     {
         static void Main(string[] args)
         {
+            string patchDir;
             if (args.Length == 0)
             {
-                Console.WriteLine("Give the patch directory in argument");
-                Console.Read();
-                Environment.Exit(-1);
-            }
-
-            var patchDir = args[0];
-
-            UpdateMeta meta;
-            if (File.Exists(Path.Combine(patchDir, "updates.xml")))
-            {
-                meta = XmlUtils.Deserialize<UpdateMeta>(Path.Combine(patchDir, "updates.xml"));
+                Console.WriteLine(@"Give the patch directory in argument");
+                patchDir = Console.ReadLine();
             }
             else
             {
-                meta = new UpdateMeta();
-                meta.LastVersion = 0;
-                meta.Updates = new List<UpdateEntry>();
+                patchDir = args[0];
+            }
+
+            if (File.Exists(Path.Combine(patchDir, "patch.xml")))
+            {
+                File.Delete(Path.Combine(patchDir, "patch.xml"));
             }
 
             foreach (var directory in Directory.GetDirectories(patchDir))
             {
                 var directoryName = Path.GetFileName(directory);
-                var match = Regex.Match(directoryName, "([0-9]+)_to_([0-9]+)");
-                if (!match.Success)
+
+                if (directoryName != "app")
                     continue;
 
-                var from = int.Parse(match.Groups[1].Captures[0].Value);
-                var to = int.Parse(match.Groups[2].Captures[0].Value);
-
-                if (meta.Updates.Any(x => x.FromVersion == from && x.ToVersion == to))
-                    continue;
-
-                var tasks = Directory.EnumerateFiles(directory, "*", SearchOption.AllDirectories).Select(x => new AddFileTask()
+                var tasks = Directory.EnumerateFiles(directory, "*", SearchOption.AllDirectories).Select(x => new AddFileTask
                 {
                     LocalURL = GetRelativePath(x, directory + "\\"),
                     RelativeURL = GetRelativePath(x, patchDir + "\\"),
+                    FileMD5 = Cryptography.GetFileMD5HashBase64(x)
                 }).ToArray();
 
-                var patch = new Patch()
+                var patch = new Patch
                 {
                     Tasks = tasks,
                 };
 
                 foreach (var task in tasks)
                 {
-                    Console.WriteLine("Add " + task.RelativeURL);
+                    Console.WriteLine(@"Add " + task.RelativeURL);
                 }
 
-                XmlUtils.Serialize(Path.Combine(directory, "patch.xml"), patch);
-                Console.WriteLine(string.Format("Created Patch from '{0}' to '{1}' : {2} !", from, to, Path.Combine(directory, "patch.xml")));
+                XmlUtils.Serialize(Path.Combine(patchDir, "patch.xml"), patch);
+                Console.WriteLine(@"Created Patch in {0} !", Path.Combine(patchDir, "patch.xml"));
 
-                meta.Updates.Add(new UpdateEntry()
-                {
-                    FromVersion = from,
-                    ToVersion = to,
-                    PatchRelativURL = directoryName + "/patch.xml",
-                });
+                File.WriteAllText(Path.Combine(patchDir, "checksum.arkalys"), GetMD5Dir(directory));
             }
 
-            meta.LastVersion = meta.Updates.Max(x => x.ToVersion);
-            meta.LastChange = DateTime.Now;
-
-            XmlUtils.Serialize(Path.Combine(patchDir, "updates.xml"), meta);
-
-            Console.WriteLine(string.Format("Meta file {0} updated !", Path.Combine(patchDir, "updates.xml")));
             Console.Read();
-
         }
 
         static string GetRelativePath(string fullPath, string relativeTo)
         {
-            string[] foldersSplitted = fullPath.Split(new[] { relativeTo.Replace("/", "\\").Replace("\\\\", "\\") }, StringSplitOptions.RemoveEmptyEntries); // cut the source path and the "rest" of the path
+            var foldersSplitted = fullPath.Split(new[] { relativeTo.Replace("/", "\\").Replace("\\\\", "\\") }, StringSplitOptions.RemoveEmptyEntries); // cut the source path and the "rest" of the path
 
             return foldersSplitted.Length > 0 ? foldersSplitted.Last() : ""; // return the "rest"
+        }
+
+        static string GetMD5Dir(string path)
+        {
+            var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories)
+                                 .OrderBy(p => p).ToList();
+
+            var md5 = MD5.Create();
+
+            for (var i = 0; i < files.Count; i++)
+            {
+                var file = files[i];
+
+                var relativePath = file.Substring(path.Length + 1);
+                var pathBytes = Encoding.UTF8.GetBytes(relativePath.ToLower());
+                md5.TransformBlock(pathBytes, 0, pathBytes.Length, pathBytes, 0);
+
+                var contentBytes = File.ReadAllBytes(file);
+                if (i == files.Count - 1)
+                    md5.TransformFinalBlock(contentBytes, 0, contentBytes.Length);
+                else
+                    md5.TransformBlock(contentBytes, 0, contentBytes.Length, contentBytes, 0);
+            }
+
+            return files.Count != 0 ? BitConverter.ToString(md5.Hash).Replace("-", "").ToLower() : "0";
         }
     }
 }

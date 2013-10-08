@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
 
 namespace Uplauncher.Helpers
@@ -151,14 +152,10 @@ namespace Uplauncher.Helpers
                 return;
             }
 
-            WeakReference[] handlers = m_weakHandlers.ToArray();
-            foreach (WeakReference reference in handlers)
+            var handlers = m_weakHandlers.ToArray();
+            foreach (var handler in handlers.Select(reference => reference.Target).OfType<EventHandler>())
             {
-                var handler = reference.Target as EventHandler;
-                if (handler != null)
-                {
-                    handler(this, e);
-                }
+                handler(this, e);
             }
         }
 
