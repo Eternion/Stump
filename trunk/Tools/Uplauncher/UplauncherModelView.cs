@@ -86,7 +86,8 @@ namespace Uplauncher
 
         private bool CanPlay(object parameter)
         {
-            return !IsUpdating && IsUpToDate;
+            //return !IsUpdating && IsUpToDate;
+            return true;
         }
 
         private void OnPlay(object parameter)
@@ -454,7 +455,7 @@ namespace Uplauncher
                 }
                 else
                 {
-                    File.WriteAllText(Constants.LocalChecksumFile, LocalChecksum);
+                    //File.WriteAllText(Constants.LocalChecksumFile, LocalChecksum);
                     SetState(string.Format("Le jeu est à jour"), Colors.Green);
                     IsUpdating = false;
                     IsUpToDate = true;
@@ -538,7 +539,7 @@ namespace Uplauncher
             IsUpToDate = success;
             IsUpdating = false;
 
-            m_playCommand.RaiseCanExecuteChanged();
+            //m_playCommand.RaiseCanExecuteChanged();
         }
 
         private void HandleDownloadError(bool cancelled, Exception ex, string url)
