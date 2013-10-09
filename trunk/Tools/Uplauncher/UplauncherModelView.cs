@@ -46,7 +46,7 @@ namespace Uplauncher
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly BackgroundWorker _MD5Worker = new BackgroundWorker();
+        private readonly BackgroundWorker m_MD5Worker = new BackgroundWorker();
 
         public UplauncherModelView(DateTime? lastUpdateCheck)
         {
@@ -86,8 +86,7 @@ namespace Uplauncher
 
         private bool CanPlay(object parameter)
         {
-            //return !IsUpdating && IsUpToDate;
-            return true;
+            return !IsUpdating && IsUpToDate;
         }
 
         private void OnPlay(object parameter)
@@ -345,10 +344,10 @@ namespace Uplauncher
 
             SetState("Vérification de la mise à jour ...");
 
-            _MD5Worker.WorkerReportsProgress = true;
-            _MD5Worker.DoWork += MD5Worker_DoWork;
-            _MD5Worker.ProgressChanged += MD5Worker_ProgressChanged;
-            _MD5Worker.RunWorkerCompleted += MD5Worker_RunWorkerCompleted;
+            m_MD5Worker.WorkerReportsProgress = true;
+            m_MD5Worker.DoWork += MD5Worker_DoWork;
+            m_MD5Worker.ProgressChanged += MD5Worker_ProgressChanged;
+            m_MD5Worker.RunWorkerCompleted += MD5Worker_RunWorkerCompleted;
 
             var fullPath = Directory.GetCurrentDirectory() + @"\app";
             if (!Directory.Exists(fullPath))
@@ -366,7 +365,7 @@ namespace Uplauncher
                 {
                     LocalChecksum = File.ReadAllText(Constants.LocalChecksumFile);
                     if (string.IsNullOrEmpty(LocalChecksum))
-                        _MD5Worker.RunWorkerAsync();
+                        m_MD5Worker.RunWorkerAsync();
                     else
                     {
                         m_client = new WebClient();
@@ -377,9 +376,9 @@ namespace Uplauncher
                 }
                 else
                 {
-                    _MD5Worker.RunWorkerAsync();
+                    m_MD5Worker.RunWorkerAsync();
                 }*/
-                _MD5Worker.RunWorkerAsync();
+                m_MD5Worker.RunWorkerAsync();
             }
         }
 
@@ -407,7 +406,7 @@ namespace Uplauncher
                     md5.TransformBlock(contentBytes, 0, contentBytes.Length, contentBytes, 0);
 
                 var percentProgress = (i*100)/files.Count;
-                _MD5Worker.ReportProgress(percentProgress);
+                m_MD5Worker.ReportProgress(percentProgress);
             }
 
             LocalChecksum = files.Count != 0 ? BitConverter.ToString(md5.Hash).Replace("-", "").ToLower() : "0";
@@ -539,7 +538,7 @@ namespace Uplauncher
             IsUpToDate = success;
             IsUpdating = false;
 
-            //m_playCommand.RaiseCanExecuteChanged();
+            View.Dispatcher.BeginInvoke(new Action(() => m_playCommand.RaiseCanExecuteChanged()));
         }
 
         private void HandleDownloadError(bool cancelled, Exception ex, string url)
