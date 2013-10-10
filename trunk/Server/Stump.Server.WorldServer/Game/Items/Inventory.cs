@@ -1,22 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Stump.Core.Attributes;
-using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Core.IPC;
-using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Handlers.Basic;
-using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Items
@@ -223,11 +218,8 @@ namespace Stump.Server.WorldServer.Game.Items
             lock (Locker)
             {
                 var database = WorldServer.Instance.DBAccessor.Database;
-                foreach (var item in Items)
+                foreach (var item in Items.Where(item => Tokens == null || item.Value != Tokens))
                 {
-                    if (Tokens != null && item.Value == Tokens)
-                        continue;
-
                     if (item.Value.Record.IsNew)
                     {
                         database.Insert(item.Value.Record);
@@ -444,7 +436,7 @@ namespace Stump.Server.WorldServer.Game.Items
                 return;
 
             if (amount > item.Stack)
-                amount = (uint)item.Stack;
+                amount = item.Stack;
 
             // delete the item if there is no more stack else we unstack it
             if (amount >= item.Stack)
@@ -462,10 +454,9 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public void CheckItemsCriterias()
         {
-            foreach (var equipedItem in GetEquipedItems().ToArray())
+            foreach (var equipedItem in GetEquipedItems().ToArray().Where(equipedItem => !equipedItem.AreConditionFilled(Owner)))
             {
-                if (!equipedItem.AreConditionFilled(Owner))
-                    MoveItem(equipedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+                MoveItem(equipedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
             }
         }
 
@@ -499,7 +490,7 @@ namespace Stump.Server.WorldServer.Game.Items
             if (!CanUseItem(item))
                 return;
 
-            bool remove = false;
+            var remove = false;
             foreach (var effect in item.Effects)
             {
                 var handler = EffectManager.Instance.GetUsableEffectHandler(effect, Owner, item);
@@ -536,10 +527,8 @@ namespace Stump.Server.WorldServer.Game.Items
 
         private void ApplyItemEffects(PlayerItem item, bool send = true)
         {
-            foreach (var effect in item.Effects)
+            foreach (var handler in item.Effects.Select(effect => EffectManager.Instance.GetItemEffectHandler(effect, Owner, item)))
             {
-                var handler = EffectManager.Instance.GetItemEffectHandler(effect, Owner, item);
-
                 handler.Apply();
             }
 
@@ -551,10 +540,8 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             var effects = itemSet.GetEffects(count);
 
-            foreach (var effect in effects)
+            foreach (var handler in effects.Select(effect => EffectManager.Instance.GetItemEffectHandler(effect, Owner, itemSet, apply)))
             {
-                var handler = EffectManager.Instance.GetItemEffectHandler(effect, Owner, itemSet, apply);
-
                 handler.Apply();
             }
 
@@ -591,7 +578,7 @@ namespace Stump.Server.WorldServer.Game.Items
                 Tokens = null;
 
             // not equiped
-            bool wasEquiped = item.IsEquiped();
+            var wasEquiped = item.IsEquiped();
             item.Position = CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED;
 
             if (wasEquiped)
@@ -704,7 +691,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public PlayerItem TryGetItem(ItemTemplate template, IEnumerable<EffectBase> effects, CharacterInventoryPositionEnum position, PlayerItem except)
         {
-            IEnumerable<PlayerItem> entries = from entry in Items.Values
+            var entries = from entry in Items.Values
                                               where entry != except && entry.Template.Id == template.Id && entry.Position == position && effects.CompareEnumerable(entry.Effects)
                                               select entry;
 
