@@ -58,16 +58,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (characters.Count != client.Account.CharactersId.Count)
             {
-                foreach (
-                    int characterId in
-                        client.Account.CharactersId.Where(id => characters.All(character => character.Id != id)))
+                foreach (int id in client.Account.CharactersId.Where(id => characters.All(character => character.Id != id)).Where(id => IPCAccessor.Instance.IsConnected))
                 {
-                    // character do not exist, then we remove it from the auth database
-                    int id = characterId;
-                    if (IPCAccessor.Instance.IsConnected)
-                    {
-                        IPCAccessor.Instance.Send(new DeleteCharacterMessage(client.Account.Id, id));
-                    }
+                    IPCAccessor.Instance.Send(new DeleteCharacterMessage(client.Account.Id, id));
                 }
             }
 
@@ -118,9 +111,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
 
             var look = breed.GetLook(sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE, true);
-            int i = 0;
-            uint[] breedColors = !sex ? breed.MaleColors : breed.FemaleColors;
-            foreach (int color in colors)
+            var i = 0;
+            var breedColors = !sex ? breed.MaleColors : breed.FemaleColors;
+            foreach (var color in colors)
             {
                 if (breedColors.Length > i)
                 {
@@ -134,7 +127,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 look.AddSkin(skin);
 
             CharacterRecord record;
-            using (Transaction transaction = Database.GetTransaction())
+            using (var transaction = Database.GetTransaction())
             {
                 record = new CharacterRecord(breed)
                     {
@@ -174,9 +167,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     slot++;
                 }
 
-                foreach (BreedItem startItem in breed.Items)
+                foreach (var itemRecord in breed.Items.Select(startItem => startItem.GenerateItemRecord(record)))
                 {
-                    PlayerItemRecord itemRecord = startItem.GenerateItemRecord(record);
                     Database.Insert(itemRecord);
                 }
 
