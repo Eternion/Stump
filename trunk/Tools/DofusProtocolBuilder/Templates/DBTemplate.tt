@@ -14,6 +14,7 @@
 // Generated on <#= DateTime.Now #>
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;

@@ -16,13 +16,20 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Reflection;
 using System.Windows;
+using DBSynchroniser;
+using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
+using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using WorldEditor.Config;
 using WorldEditor.Database;
 using WorldEditor.Editors.Items;
+using WorldEditor.Editors.Tables;
 using WorldEditor.Helpers;
 using WorldEditor.Loaders.D2O;
 using WorldEditor.Loaders.I18N;
@@ -32,7 +39,66 @@ namespace WorldEditor
 {
     public class StartModelView
     {
+        private List<D2OTable> m_tables = new List<D2OTable>(); 
 
+        public StartModelView()
+        {
+            LoadTables();
+        }
+
+        private void LoadTables()
+        {
+            foreach (var type in typeof (D2OTable).Assembly.GetTypes())
+            {
+                var attr = type.GetCustomAttribute<D2OClassAttribute>();
+                if (attr != null)
+                {
+                    var tableAttr = type.GetCustomAttribute<TableNameAttribute>();
+
+                    if (tableAttr != null)
+                    {
+                        var table = new D2OTable();
+                        table.Type = type;
+                        table.ClassName = attr.Name;
+                        table.TableName = tableAttr.TableName;
+                        table.Constructor = type.GetConstructor(new Type[0]).CreateDelegate();
+
+                        m_tables.Add(table);
+                    }
+                }
+            }
+        }
+
+        public ReadOnlyCollection<D2OTable> Tables
+        {
+            get { return m_tables.AsReadOnly(); }
+        }
+
+
+        #region EditTableCommand
+
+        private DelegateCommand m_editTableCommand;
+
+        public DelegateCommand EditTableCommand
+        {
+            get { return m_editTableCommand ?? (m_editTableCommand = new DelegateCommand(OnEditTable, CanEditTable)); }
+        }
+
+        private bool CanEditTable(object parameter)
+        {
+            return parameter is D2OTable;
+        }
+
+        private void OnEditTable(object parameter)
+        {
+            if (parameter == null || !CanEditTable(parameter))
+                return;
+
+            var editor = new TableEditor((D2OTable) parameter);
+            editor.Show();
+        }
+
+        #endregion
 
         #region CreateItemCommand
 

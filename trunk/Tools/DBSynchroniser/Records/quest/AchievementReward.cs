@@ -1,9 +1,10 @@
  
 
 
-// Generated on 10/06/2013 18:02:18
+// Generated on 10/13/2013 12:21:16
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
@@ -74,6 +75,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_itemsRewardBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] ItemsRewardBin
         {
             get { return m_itemsRewardBin; }
@@ -98,6 +101,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_emotesRewardBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] EmotesRewardBin
         {
             get { return m_emotesRewardBin; }
@@ -122,6 +127,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_spellsRewardBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] SpellsRewardBin
         {
             get { return m_spellsRewardBin; }
@@ -146,6 +153,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_titlesRewardBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] TitlesRewardBin
         {
             get { return m_titlesRewardBin; }
@@ -170,6 +179,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_ornamentsRewardBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] OrnamentsRewardBin
         {
             get { return m_ornamentsRewardBin; }
