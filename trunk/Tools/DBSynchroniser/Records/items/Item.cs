@@ -1,9 +1,10 @@
  
 
 
-// Generated on 10/06/2013 18:02:17
+// Generated on 10/13/2013 12:21:15
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
@@ -227,6 +228,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_recipeIdsBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] RecipeIdsBin
         {
             get { return m_recipeIdsBin; }
@@ -258,6 +261,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_possibleEffectsBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] PossibleEffectsBin
         {
             get { return m_possibleEffectsBin; }
@@ -282,6 +287,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_favoriteSubAreasBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] FavoriteSubAreasBin
         {
             get { return m_favoriteSubAreasBin; }
@@ -313,6 +320,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_typeBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] TypeBin
         {
             get { return m_typeBin; }

@@ -1,9 +1,10 @@
  
 
 
-// Generated on 10/06/2013 18:02:16
+// Generated on 10/13/2013 12:21:14
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
@@ -71,6 +72,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_triggersBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] TriggersBin
         {
             get { return m_triggersBin; }

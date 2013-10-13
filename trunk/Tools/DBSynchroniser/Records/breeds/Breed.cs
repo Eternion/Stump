@@ -1,9 +1,10 @@
  
 
 
-// Generated on 10/06/2013 18:02:16
+// Generated on 10/13/2013 12:21:14
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
@@ -128,6 +129,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_statsPointsForStrengthBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] StatsPointsForStrengthBin
         {
             get { return m_statsPointsForStrengthBin; }
@@ -152,6 +155,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_statsPointsForIntelligenceBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] StatsPointsForIntelligenceBin
         {
             get { return m_statsPointsForIntelligenceBin; }
@@ -176,6 +181,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_statsPointsForChanceBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] StatsPointsForChanceBin
         {
             get { return m_statsPointsForChanceBin; }
@@ -200,6 +207,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_statsPointsForAgilityBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] StatsPointsForAgilityBin
         {
             get { return m_statsPointsForAgilityBin; }
@@ -224,6 +233,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_statsPointsForVitalityBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] StatsPointsForVitalityBin
         {
             get { return m_statsPointsForVitalityBin; }
@@ -248,6 +259,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_statsPointsForWisdomBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] StatsPointsForWisdomBin
         {
             get { return m_statsPointsForWisdomBin; }
@@ -272,6 +285,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_breedSpellsIdBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] BreedSpellsIdBin
         {
             get { return m_breedSpellsIdBin; }
@@ -296,6 +311,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_maleColorsBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] MaleColorsBin
         {
             get { return m_maleColorsBin; }
@@ -320,6 +337,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_femaleColorsBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] FemaleColorsBin
         {
             get { return m_femaleColorsBin; }

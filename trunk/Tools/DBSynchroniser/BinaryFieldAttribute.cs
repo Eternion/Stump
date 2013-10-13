@@ -1,5 +1,5 @@
 ﻿#region License GNU GPL
-// DocumentsManager.cs
+// BinaryFieldAttribute.cs
 // 
 // Copyright (C) 2013 - BehaviorIsManaged
 // 
@@ -14,16 +14,12 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
-using System.Windows;
-using Stump.Core.Reflection;
+using System;
 
-namespace WorldEditor
+namespace DBSynchroniser
 {
-    public class DocumentsManager : Singleton<DocumentsManager>
+    public class BinaryFieldAttribute : Attribute
     {
-        private MainWindow View
-        {
-            get { return (MainWindow)Application.Current.MainWindow; }
-        }
+         
     }
 }
