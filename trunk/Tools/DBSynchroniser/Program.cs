@@ -66,11 +66,13 @@ namespace DBSynchroniser
 
                     if (tableAttr != null)
                     {
-                        var table = new D2OTable();
-                        table.Type = type;
-                        table.ClassName = attr.Name;
-                        table.TableName = tableAttr.TableName;
-                        table.Constructor = type.GetConstructor(new Type[0]).CreateDelegate();
+                        var table = new D2OTable
+                            {
+                                Type = type,
+                                ClassName = attr.Name,
+                                TableName = tableAttr.TableName,
+                                Constructor = type.GetConstructor(new Type[0]).CreateDelegate()
+                            };
 
                         m_tables.Add(attr.Name, table);
                     }
@@ -177,7 +179,7 @@ namespace DBSynchroniser
 
         private static void CreateDatabase()
         {
-            string d2oFolder = Path.Combine(FindDofusPath(), "data", "common");
+            var d2oFolder = Path.Combine(FindDofusPath(), "data", "common");
 
             Console.WriteLine("WARNING IT WILL ERASE ALL TABLES. ARE YOU SURE ? (y/n)");
             if (Console.ReadLine() != "y")
@@ -396,7 +398,7 @@ namespace DBSynchroniser
                 return DofusCustomPath;
             }
 
-            string programFiles = Environment.GetEnvironmentVariable("programfiles(x86)");
+            var programFiles = Environment.GetEnvironmentVariable("programfiles(x86)");
 
             if (string.IsNullOrEmpty(programFiles))
                 programFiles = Environment.GetEnvironmentVariable("programfiles");
