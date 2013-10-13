@@ -229,7 +229,7 @@ namespace Uplauncher
 
         private static bool CanRepairGame(object parameter)
         {
-            return true;
+            return false;
         }
 
         private void OnRepairGame(object parameter)
@@ -257,7 +257,6 @@ namespace Uplauncher
             }
 
             Directory.CreateDirectory("app");
-            File.Delete("version");
 
             CheckUpdates();
         }
@@ -361,7 +360,7 @@ namespace Uplauncher
             }
             else
             {
-                /*if (File.Exists(Constants.LocalChecksumFile))
+                if (File.Exists(Constants.LocalChecksumFile))
                 {
                     LocalChecksum = File.ReadAllText(Constants.LocalChecksumFile);
                     if (string.IsNullOrEmpty(LocalChecksum))
@@ -377,8 +376,8 @@ namespace Uplauncher
                 else
                 {
                     m_MD5Worker.RunWorkerAsync();
-                }*/
-                m_MD5Worker.RunWorkerAsync();
+                }
+                //m_MD5Worker.RunWorkerAsync();
             }
         }
 
@@ -454,7 +453,7 @@ namespace Uplauncher
                 }
                 else
                 {
-                    //File.WriteAllText(Constants.LocalChecksumFile, LocalChecksum);
+                    File.WriteAllText(Constants.LocalChecksumFile, LocalChecksum);
                     SetState(string.Format("Le jeu est à jour"), Colors.Green);
                     IsUpdating = false;
                     IsUpToDate = true;
@@ -531,7 +530,13 @@ namespace Uplauncher
         {
             if (success)
             {
-                //File.WriteAllText(Constants.LocalChecksumFile, LocalChecksum);
+                m_MD5Worker.WorkerReportsProgress = true;
+                m_MD5Worker.DoWork += MD5Worker_DoWork;
+                m_MD5Worker.ProgressChanged += MD5Worker_ProgressChanged;
+                m_MD5Worker.RunWorkerCompleted += MD5Worker_RunWorkerCompleted;
+
+                m_MD5Worker.RunWorkerAsync();
+
                 SetState(string.Format("Le jeu est à jour"), Colors.Green);
             }
 

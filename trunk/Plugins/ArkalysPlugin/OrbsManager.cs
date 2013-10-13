@@ -36,7 +36,7 @@ namespace ArkalysPlugin
         public static short OrbItemTemplateId = 20000;
 
         [Variable]
-        public static short OrbsExchangeRate = 10000;
+        public static short OrbsExchangeRate = 1000;
 
         public static ItemTemplate OrbItemTemplate;
 
