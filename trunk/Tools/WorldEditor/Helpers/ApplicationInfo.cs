@@ -46,10 +46,10 @@ namespace WorldEditor.Helpers
             {
                 if (!m_productNameCached)
                 {
-                    Assembly entryAssembly = Assembly.GetEntryAssembly();
+                    var entryAssembly = Assembly.GetEntryAssembly();
                     if (entryAssembly != null)
                     {
-                        AssemblyProductAttribute attribute = ( (AssemblyProductAttribute)Attribute.GetCustomAttribute(
+                        var attribute = ( (AssemblyProductAttribute)Attribute.GetCustomAttribute(
                             entryAssembly, typeof(AssemblyProductAttribute)) );
                         m_productName = ( attribute != null ) ? attribute.Product : "";
                     }
@@ -72,15 +72,8 @@ namespace WorldEditor.Helpers
             {
                 if (!m_versionCached)
                 {
-                    Assembly entryAssembly = Assembly.GetEntryAssembly();
-                    if (entryAssembly != null)
-                    {
-                        m_version = entryAssembly.GetName().Version.ToString();
-                    }
-                    else
-                    {
-                        m_version = "";
-                    }
+                    var entryAssembly = Assembly.GetEntryAssembly();
+                    m_version = entryAssembly != null ? entryAssembly.GetName().Version.ToString() : "";
                     m_versionCached = true;
                 }
                 return m_version;
@@ -96,10 +89,10 @@ namespace WorldEditor.Helpers
             {
                 if (!m_companyCached)
                 {
-                    Assembly entryAssembly = Assembly.GetEntryAssembly();
+                    var entryAssembly = Assembly.GetEntryAssembly();
                     if (entryAssembly != null)
                     {
-                        AssemblyCompanyAttribute attribute = ( (AssemblyCompanyAttribute)Attribute.GetCustomAttribute(
+                        var attribute = ( (AssemblyCompanyAttribute)Attribute.GetCustomAttribute(
                             entryAssembly, typeof(AssemblyCompanyAttribute)) );
                         m_company = ( attribute != null ) ? attribute.Company : "";
                     }
@@ -122,10 +115,10 @@ namespace WorldEditor.Helpers
             {
                 if (!m_copyrightCached)
                 {
-                    Assembly entryAssembly = Assembly.GetEntryAssembly();
+                    var entryAssembly = Assembly.GetEntryAssembly();
                     if (entryAssembly != null)
                     {
-                        AssemblyCopyrightAttribute attribute = (AssemblyCopyrightAttribute)Attribute.GetCustomAttribute(
+                        var attribute = (AssemblyCopyrightAttribute)Attribute.GetCustomAttribute(
                             entryAssembly, typeof(AssemblyCopyrightAttribute));
                         m_copyright = attribute != null ? attribute.Copyright : "";
                     }
@@ -148,15 +141,8 @@ namespace WorldEditor.Helpers
             {
                 if (!m_applicationPathCached)
                 {
-                    Assembly entryAssembly = Assembly.GetEntryAssembly();
-                    if (entryAssembly != null)
-                    {
-                        m_applicationPath = Path.GetDirectoryName(entryAssembly.Location);
-                    }
-                    else
-                    {
-                        m_applicationPath = "";
-                    }
+                    var entryAssembly = Assembly.GetEntryAssembly();
+                    m_applicationPath = entryAssembly != null ? Path.GetDirectoryName(entryAssembly.Location) : "";
                     m_applicationPathCached = true;
                 }
                 return m_applicationPath;

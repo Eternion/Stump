@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
@@ -56,7 +57,7 @@ namespace WorldEditor.Helpers.Markups
             if (pvt != null)
             {
                 var evt = pvt.TargetProperty as EventInfo;
-                MethodInfo doAction = GetType().GetMethod("DoAction", BindingFlags.NonPublic | BindingFlags.Instance);
+                var doAction = GetType().GetMethod("DoAction", BindingFlags.NonPublic | BindingFlags.Instance);
                 Type dlgType = null;
                 if (evt != null)
                 {
@@ -78,25 +79,21 @@ namespace WorldEditor.Helpers.Markups
 
         private void DoAction(object sender, RoutedEventArgs e)
         {
-            object dc = (sender as FrameworkElement).DataContext;
+            var dc = (sender as FrameworkElement).DataContext;
             if (BindingCommandPath != null)
             {
                 Command = (ICommand) ParsePropertyPath(dc, BindingCommandPath);
             }
-            Type eventArgsType = typeof (EventCommandArgs<>).MakeGenericType(m_eventArgsType);
-            object cmdParams = Activator.CreateInstance(eventArgsType, sender, e);
+            var eventArgsType = typeof (EventCommandArgs<>).MakeGenericType(m_eventArgsType);
+            var cmdParams = Activator.CreateInstance(eventArgsType, sender, e);
             if (Command != null && Command.CanExecute(cmdParams))
                 Command.Execute(cmdParams);
         }
 
         private static object ParsePropertyPath(object target, string path)
         {
-            string[] props = path.Split('.');
-            foreach (string prop in props)
-            {
-                target = target.GetType().GetProperty(prop).GetValue(target);
-            }
-            return target;
+            var props = path.Split('.');
+            return props.Aggregate(target, (current, prop) => current.GetType().GetProperty(prop).GetValue(current));
         }
     }
 

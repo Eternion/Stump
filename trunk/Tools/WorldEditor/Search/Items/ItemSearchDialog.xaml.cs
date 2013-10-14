@@ -1,24 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.DofusProtocol.D2oClasses.Tools.D2i;
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using WorldEditor.Editors.Items;
 using WorldEditor.Loaders.D2O;
-using WorldEditor.Loaders.I18N;
-using WorldEditor.Loaders.Icons;
 
 namespace WorldEditor.Search.Items
 {

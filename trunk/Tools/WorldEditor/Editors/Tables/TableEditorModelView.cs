@@ -24,27 +24,25 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using DBSynchroniser;
 using Stump.Core.Reflection;
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using WorldEditor.Database;
 using System.Linq;
 using WorldEditor.Editors.Files.D2O;
 using WorldEditor.Helpers;
-using WorldEditor.Helpers.Converters;
 
 namespace WorldEditor.Editors.Tables
 {
     public class TableEditorModelView
     {
-        private D2OTable m_table;
+        private readonly D2OTable m_table;
         private ObservableCollection<object> m_rows;
         private ReadOnlyObservableCollection<object> m_readOnylRows;
-        private List<DataGridColumn> m_columns = new List<DataGridColumn>();
-        private ObservableCollection<string> m_searchProperties = new ObservableCollection<string>();
+        private readonly List<DataGridColumn> m_columns = new List<DataGridColumn>();
+        private readonly ObservableCollection<string> m_searchProperties = new ObservableCollection<string>();
         private ReadOnlyObservableCollection<string> m_readOnlySearchProperties;
-        private Dictionary<string, Func<object, object>> m_propertiesGetters = new Dictionary<string, Func<object, object>>();
+        private readonly Dictionary<string, Func<object, object>> m_propertiesGetters = new Dictionary<string, Func<object, object>>();
         private Stack<D2OEditedObject> m_editedObjects = new Stack<D2OEditedObject>(); 
-        private TableEditor m_editor;
+        private readonly TableEditor m_editor;
 
         public TableEditorModelView(TableEditor editor, D2OTable table)
         {
@@ -73,8 +71,8 @@ namespace WorldEditor.Editors.Tables
 
         private void LoadTable()
         {
-            MethodInfo method = typeof (Stump.ORM.Database).GetMethodExt("Fetch", 1, new[] {typeof (Sql)});
-            MethodInfo generic = method.MakeGenericMethod(m_table.Type);
+            var method = typeof (Stump.ORM.Database).GetMethodExt("Fetch", 1, new[] {typeof (Sql)});
+            var generic = method.MakeGenericMethod(m_table.Type);
             var rows = ((IList)generic.Invoke(DatabaseManager.Instance.Database,
                                               new object[] {new Sql("SELECT * FROM `" + m_table.TableName + "`")}));
 
@@ -107,9 +105,9 @@ namespace WorldEditor.Editors.Tables
                 {
                     element = new FrameworkElementFactory(typeof(CheckBox));
                     element.SetBinding(ToggleButton.IsCheckedProperty, binding);
-                    element.SetValue(CheckBox.MarginProperty, new Thickness(1));
-                    element.SetValue(CheckBox.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-                    element.SetValue(CheckBox.IsEnabledProperty, false);
+                    element.SetValue(FrameworkElement.MarginProperty, new Thickness(1));
+                    element.SetValue(FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+                    element.SetValue(UIElement.IsEnabledProperty, false);
                 }
                 else
                 {
@@ -122,10 +120,10 @@ namespace WorldEditor.Editors.Tables
                     }*/
 
                     element.SetBinding(TextBlock.TextProperty, binding);
-                    element.SetValue(TextBlock.MarginProperty, new Thickness(1));
+                    element.SetValue(FrameworkElement.MarginProperty, new Thickness(1));
                 }
-                column.CellTemplateSelector = new CellTemplateSelector()
-                {
+                column.CellTemplateSelector = new CellTemplateSelector
+                    {
                     Template = new DataTemplate(property.PropertyType)
                     {
                         VisualTree = element
@@ -151,12 +149,12 @@ namespace WorldEditor.Editors.Tables
             get { return m_removeCommand ?? (m_removeCommand = new DelegateCommand(OnRemove, CanRemove)); }
         }
 
-        private bool CanRemove(object parameter)
+        private static bool CanRemove(object parameter)
         {
             return true;
         }
 
-        private void OnRemove(object parameter)
+        private static void OnRemove(object parameter)
         {
             if (parameter == null || !CanRemove(parameter))
                 return;
@@ -174,12 +172,12 @@ namespace WorldEditor.Editors.Tables
             get { return m_addCommand ?? (m_addCommand = new DelegateCommand(OnAdd, CanAdd)); }
         }
 
-        private bool CanAdd(object parameter)
+        private static bool CanAdd(object parameter)
         {
             return true;
         }
 
-        private void OnAdd(object parameter)
+        private static void OnAdd(object parameter)
         {
             if (parameter == null || !CanAdd(parameter))
                 return;
