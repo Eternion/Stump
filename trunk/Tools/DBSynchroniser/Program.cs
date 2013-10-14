@@ -290,6 +290,8 @@ namespace DBSynchroniser
                             record.Russish = text.Value;
                             break;
                     }
+
+                    Database.Database.Insert(record);
                 }
 
                 foreach (var text in file.Value.GetAllUiText())
@@ -333,17 +335,13 @@ namespace DBSynchroniser
                             record.Russish = text.Value;
                             break;
                     }
+
+                    Database.Database.Insert(record);
                 }
             }
 
 
             Console.WriteLine("Save texts...");
-
-            foreach (var record in records)
-                Database.Database.Insert(record);
-
-            foreach (var record in uiRecords)
-                Database.Database.Insert(record);
         }
 
         private static void LoadLangsWithWarning()
