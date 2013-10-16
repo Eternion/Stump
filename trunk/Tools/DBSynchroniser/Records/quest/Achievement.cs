@@ -1,9 +1,10 @@
  
 
 
-// Generated on 10/06/2013 18:02:18
+// Generated on 10/13/2013 12:21:16
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
@@ -127,6 +128,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_objectiveIdsBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] ObjectiveIdsBin
         {
             get { return m_objectiveIdsBin; }
@@ -151,6 +154,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_rewardIdsBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] RewardIdsBin
         {
             get { return m_rewardIdsBin; }

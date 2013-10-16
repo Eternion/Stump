@@ -16,23 +16,76 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
 using System.Windows;
-using Stump.DofusProtocol.D2oClasses;
-using Stump.Server.WorldServer.Database.Items.Templates;
+using DBSynchroniser;
+using Stump.Core.Reflection;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
+using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using WorldEditor.Config;
-using WorldEditor.Database;
 using WorldEditor.Editors.Items;
+using WorldEditor.Editors.Tables;
 using WorldEditor.Helpers;
-using WorldEditor.Loaders.D2O;
-using WorldEditor.Loaders.I18N;
 using WorldEditor.Search.Items;
 
 namespace WorldEditor
 {
     public class StartModelView
     {
+        private readonly List<D2OTable> m_tables = new List<D2OTable>(); 
 
+        public StartModelView()
+        {
+            LoadTables();
+        }
+
+        private void LoadTables()
+        {
+            foreach (var table in from type in typeof (D2OTable).Assembly.GetTypes() let attr = type.GetCustomAttribute<D2OClassAttribute>() where attr != null let tableAttr = type.GetCustomAttribute<TableNameAttribute>() where tableAttr != null select new D2OTable
+                {
+                    Type = type,
+                    ClassName = attr.Name,
+                    TableName = tableAttr.TableName,
+                    Constructor = type.GetConstructor(new Type[0]).CreateDelegate()
+                })
+            {
+                m_tables.Add(table);
+            }
+        }
+
+        public ReadOnlyCollection<D2OTable> Tables
+        {
+            get { return m_tables.AsReadOnly(); }
+        }
+
+
+        #region EditTableCommand
+
+        private DelegateCommand m_editTableCommand;
+
+        public DelegateCommand EditTableCommand
+        {
+            get { return m_editTableCommand ?? (m_editTableCommand = new DelegateCommand(OnEditTable, CanEditTable)); }
+        }
+
+        private bool CanEditTable(object parameter)
+        {
+            return parameter is D2OTable;
+        }
+
+        private void OnEditTable(object parameter)
+        {
+            if (parameter == null || !CanEditTable(parameter))
+                return;
+
+            var editor = new TableEditor((D2OTable) parameter);
+            editor.Show();
+        }
+
+        #endregion
 
         #region CreateItemCommand
 
@@ -43,12 +96,12 @@ namespace WorldEditor
             get { return m_createItemCommand ?? (m_createItemCommand = new DelegateCommand(OnCreateItem, CanCreateItem)); }
         }
 
-        private bool CanCreateItem(object parameter)
+        private static bool CanCreateItem(object parameter)
         {
             return true;
         }
 
-        private void OnCreateItem(object parameter)
+        private static void OnCreateItem(object parameter)
         {
             var editor = new ItemEditor(new ItemWrapper());
             editor.Show();
@@ -66,12 +119,12 @@ namespace WorldEditor
             get { return m_searchItemCommand ?? (m_searchItemCommand = new DelegateCommand(OnSearchItem, CanSearchItem)); }
         }
 
-        private bool CanSearchItem(object parameter)
+        private static bool CanSearchItem(object parameter)
         {
             return true;
         }
 
-        private void OnSearchItem(object parameter)
+        private static void OnSearchItem(object parameter)
         {
             var window = new ItemSearchDialog();
             window.Show();
@@ -94,18 +147,17 @@ namespace WorldEditor
             return true;
         }
 
-        private void OnOpenConfig(object parameter)
+        private static void OnOpenConfig(object parameter)
         {
             var dialog = new ConfigDialog();
-            if (dialog.ShowDialog() == true)
-            {
-                if (MessageService.ShowYesNoQuestion(null,
-                                                     "To take the config changes in account you have to restart the application. Do you want to restart ?"))
-                {
-                    Process.Start(Application.ResourceAssembly.Location);
-                    Application.Current.Shutdown();
-                }
-            }
+            if (dialog.ShowDialog() != true)
+                return;
+
+            if (!MessageService.ShowYesNoQuestion(null, "To take the config changes in account you have to restart the application. Do you want to restart ?"))
+                return;
+
+            Process.Start(Application.ResourceAssembly.Location);
+            Application.Current.Shutdown();
         }
 
         #endregion

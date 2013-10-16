@@ -592,8 +592,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             var petSkin = Inventory.GetPetSkin();
 
-            if (petSkin.HasValue && (RealLook.PetLook == null || RealLook.PetLook.BonesID != petSkin))
+            if (petSkin.HasValue)
                 RealLook.SetPetSkin(petSkin.Value);
+            else
+                RealLook.RemovePets();
 
             if (send)
                 RefreshActor();

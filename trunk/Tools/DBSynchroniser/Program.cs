@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using DBSynchroniser.Records;
@@ -50,7 +50,7 @@ namespace DBSynchroniser
             Tuple.Create<string, Action>("Set languages (empty = all)", SetLanguages),
             Tuple.Create<string, Action>("Create database", CreateDatabase),
             Tuple.Create<string, Action>("Load langs", LoadLangsWithWarning),
-            Tuple.Create<string, Action>("Generate client files", GenerateFiles),
+            Tuple.Create<string, Action>("Generate client files", GenerateFiles)
         };
 
         private static readonly Dictionary<string, D2OTable> m_tables = new Dictionary<string, D2OTable>();
@@ -66,11 +66,13 @@ namespace DBSynchroniser
 
                     if (tableAttr != null)
                     {
-                        var table = new D2OTable();
-                        table.Type = type;
-                        table.ClassName = attr.Name;
-                        table.TableName = tableAttr.TableName;
-                        table.Constructor = type.GetConstructor(new Type[0]).CreateDelegate();
+                        var table = new D2OTable
+                            {
+                                Type = type,
+                                ClassName = attr.Name,
+                                TableName = tableAttr.TableName,
+                                Constructor = type.GetConstructor(new Type[0]).CreateDelegate()
+                            };
 
                         m_tables.Add(attr.Name, table);
                     }
@@ -177,7 +179,7 @@ namespace DBSynchroniser
 
         private static void CreateDatabase()
         {
-            string d2oFolder = Path.Combine(FindDofusPath(), "data", "common");
+            var d2oFolder = Path.Combine(FindDofusPath(), "data", "common");
 
             Console.WriteLine("WARNING IT WILL ERASE ALL TABLES. ARE YOU SURE ? (y/n)");
             if (Console.ReadLine() != "y")
@@ -196,9 +198,9 @@ namespace DBSynchroniser
 
                 Console.Write("Import {0}...", Path.GetFileName(filePath));
 
-                int cursorLeft = Console.CursorLeft;
-                int cursorTop = Console.CursorTop;
-                int i = 0;
+                var cursorLeft = Console.CursorLeft;
+                var cursorTop = Console.CursorTop;
+                var i = 0;
                 var d2oReader = new D2OReader(filePath);
                 foreach (var entry in d2oReader.GetObjectsClasses())
                 {
@@ -229,7 +231,7 @@ namespace DBSynchroniser
             Database.Database.Execute("DELETE FROM langs_ui");
 
             var d2iFiles = new Dictionary<string, D2IFile>();
-            string d2iFolder = Path.Combine(FindDofusPath(), "data", "i18n");
+            var d2iFolder = Path.Combine(FindDofusPath(), "data", "i18n");
 
             foreach (string file in Directory.EnumerateFiles(d2iFolder, "*.d2i"))
             {
@@ -241,19 +243,15 @@ namespace DBSynchroniser
 
             var records = new Dictionary<int, LangText>();
             var uiRecords = new Dictionary<string, LangTextUi>();
-            foreach (var file in d2iFiles)
+            foreach (var file in d2iFiles.Where(file => SpecificLanguage.Contains(file.Key)))
             {
-                if (!SpecificLanguage.Contains(file.Key))
-                    continue;
-
                 Console.WriteLine("Import {0}...", Path.GetFileName(file.Value.FilePath));
                 foreach (var text in file.Value.GetAllText())
                 {
                     LangText record;
                     if (!records.ContainsKey(text.Key))
                     {
-                        record = new LangText();
-                        record.Id = (uint)text.Key;
+                        record = new LangText {Id = (uint) text.Key};
                         records.Add(text.Key, record);
                     }
                     else record = records[text.Key];
@@ -288,6 +286,8 @@ namespace DBSynchroniser
                             record.Russish = text.Value;
                             break;
                     }
+
+                    Database.Database.Insert(record);
                 }
 
                 foreach (var text in file.Value.GetAllUiText())
@@ -295,8 +295,7 @@ namespace DBSynchroniser
                     LangTextUi record;
                     if (!uiRecords.ContainsKey(text.Key))
                     {
-                        record = new LangTextUi();
-                        record.Name = text.Key;
+                        record = new LangTextUi {Name = text.Key};
                         uiRecords.Add(text.Key, record);
                     }
                     else record = uiRecords[text.Key];
@@ -331,6 +330,8 @@ namespace DBSynchroniser
                             record.Russish = text.Value;
                             break;
                     }
+
+                    Database.Database.Insert(record);
                 }
             }
 
@@ -372,8 +373,8 @@ namespace DBSynchroniser
                 Console.WriteLine("Generating {0} ...", Path.GetFileName(writer.Filename));
 
 
-                MethodInfo method = typeof(Database).GetMethodExt("Fetch", 1, new[]{ typeof(Sql)});
-                MethodInfo generic = method.MakeGenericMethod(table.Type);
+                var method = typeof(Database).GetMethodExt("Fetch", 1, new[]{ typeof(Sql)});
+                var generic = method.MakeGenericMethod(table.Type);
                 var rows = ((IList)generic.Invoke(Database.Database, new object[] {new Sql("SELECT * FROM `" + table.TableName + "`")}));
 
                 writer.StartWriting(false);
@@ -396,7 +397,7 @@ namespace DBSynchroniser
                 return DofusCustomPath;
             }
 
-            string programFiles = Environment.GetEnvironmentVariable("programfiles(x86)");
+            var programFiles = Environment.GetEnvironmentVariable("programfiles(x86)");
 
             if (string.IsNullOrEmpty(programFiles))
                 programFiles = Environment.GetEnvironmentVariable("programfiles");

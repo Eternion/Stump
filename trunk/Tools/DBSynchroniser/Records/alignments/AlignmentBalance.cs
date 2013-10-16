@@ -1,9 +1,10 @@
  
 
 
-// Generated on 10/06/2013 18:02:16
+// Generated on 10/13/2013 12:21:13
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;

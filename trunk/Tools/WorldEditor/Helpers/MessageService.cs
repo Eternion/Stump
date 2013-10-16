@@ -38,7 +38,7 @@ namespace WorldEditor.Helpers
         /// <param name="message">The message.</param>
         public static void ShowMessage(object owner, string message)
         {
-            Window ownerWindow = owner as Window;
+            var ownerWindow = owner as Window;
             if (ownerWindow != null)
             {
                 MessageBox.Show(ownerWindow, message, ApplicationInfo.ProductName, MessageBoxButton.OK, MessageBoxImage.None,
@@ -58,7 +58,7 @@ namespace WorldEditor.Helpers
         /// <param name="message">The message.</param>
         public static void ShowWarning(object owner, string message)
         {
-            Window ownerWindow = owner as Window;
+            var ownerWindow = owner as Window;
             if (ownerWindow != null)
             {
                 MessageBox.Show(ownerWindow, message, ApplicationInfo.ProductName, MessageBoxButton.OK, MessageBoxImage.Warning,
@@ -78,7 +78,7 @@ namespace WorldEditor.Helpers
         /// <param name="message">The message.</param>
         public static void ShowError(object owner, string message)
         {
-            Window ownerWindow = owner as Window;
+            var ownerWindow = owner as Window;
             if (ownerWindow != null)
             {
                 MessageBox.Show(ownerWindow, message, ApplicationInfo.ProductName, MessageBoxButton.OK, MessageBoxImage.Error,
@@ -99,7 +99,7 @@ namespace WorldEditor.Helpers
         /// <returns><c>true</c> for yes, <c>false</c> for no and <c>null</c> for cancel.</returns>
         public static bool? ShowQuestion(object owner, string message)
         {
-            Window ownerWindow = owner as Window;
+            var ownerWindow = owner as Window;
             MessageBoxResult result;
             if (ownerWindow != null)
             {
@@ -112,13 +112,12 @@ namespace WorldEditor.Helpers
                                          MessageBoxImage.Question, MessageBoxResult.Cancel, MessageBoxOptions);
             }
 
-            if (result == MessageBoxResult.Yes)
+            switch (result)
             {
-                return true;
-            }
-            else if (result == MessageBoxResult.No)
-            {
-                return false;
+                case MessageBoxResult.Yes:
+                    return true;
+                case MessageBoxResult.No:
+                    return false;
             }
 
             return null;
@@ -132,7 +131,7 @@ namespace WorldEditor.Helpers
         /// <returns><c>true</c> for yes and <c>false</c> for no.</returns>
         public static bool ShowYesNoQuestion(object owner, string message)
         {
-            Window ownerWindow = owner as Window;
+            var ownerWindow = owner as Window;
             MessageBoxResult result;
             if (ownerWindow != null)
             {

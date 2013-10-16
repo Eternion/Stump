@@ -1,9 +1,10 @@
  
 
 
-// Generated on 10/06/2013 18:02:19
+// Generated on 10/13/2013 12:21:17
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
@@ -103,6 +104,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_restrictedToLanguagesBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] RestrictedToLanguagesBin
         {
             get { return m_restrictedToLanguagesBin; }

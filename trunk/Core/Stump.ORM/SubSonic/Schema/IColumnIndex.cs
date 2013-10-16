@@ -1,5 +1,5 @@
 ﻿#region License GNU GPL
-// DocumentsManager.cs
+// IColumnIndex.cs
 // 
 // Copyright (C) 2013 - BehaviorIsManaged
 // 
@@ -14,16 +14,16 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
-using System.Windows;
-using Stump.Core.Reflection;
+using System.Collections.Generic;
 
-namespace WorldEditor
+namespace Stump.ORM.SubSonic.Schema
 {
-    public class DocumentsManager : Singleton<DocumentsManager>
+    public interface IColumnIndex : IDBObject
     {
-        private MainWindow View
+        IList<IColumn> Columns
         {
-            get { return (MainWindow)Application.Current.MainWindow; }
+            get;
+            set;
         }
     }
 }
