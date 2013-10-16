@@ -1,9 +1,10 @@
  
 
 
-// Generated on 10/06/2013 18:02:18
+// Generated on 10/13/2013 12:21:16
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
@@ -60,6 +61,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_dialogMessagesBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] DialogMessagesBin
         {
             get { return m_dialogMessagesBin; }
@@ -84,6 +87,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_dialogRepliesBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] DialogRepliesBin
         {
             get { return m_dialogRepliesBin; }
@@ -108,6 +113,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_actionsBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] ActionsBin
         {
             get { return m_actionsBin; }
@@ -154,6 +161,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_animFunListBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] AnimFunListBin
         {
             get { return m_animFunListBin; }

@@ -181,14 +181,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
         {
             var petLook = PetLook;
 
-            if (petLook == null)
-            {
-                AddSubLook(
-                    new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET,
-                                     petLook = new ActorLook()));
-                petLook.SetScales(PET_SIZE);
-            }
+            AddSubLook(
+                new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET,
+                                 petLook = new ActorLook()));
 
+            petLook.SetScales(PET_SIZE);
             petLook.BonesID = skin;
         }
 
@@ -407,12 +404,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             if (string.IsNullOrEmpty(str))
                 return new T[0];
 
-            int cursorPos = 0;
-            int subseparatorPos = str.IndexOf(',', cursorPos);
+            var cursorPos = 0;
+            var subseparatorPos = str.IndexOf(',', cursorPos);
 
             // if not empty
             if (subseparatorPos == -1)
-                return new T[] { converter(str) };
+                return new[] { converter(str) };
 
             var collection = new T[str.CountOccurences(',', cursorPos, str.Length - cursorPos) + 1];
 

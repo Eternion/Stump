@@ -57,7 +57,7 @@ namespace WorldEditor
             }
         }
 
-        private void ThreadStartingPoint(string filename, Point mousePosition)
+        private static void ThreadStartingPoint(string filename, Point mousePosition)
         {
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 

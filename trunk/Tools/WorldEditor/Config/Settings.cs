@@ -33,7 +33,7 @@ namespace WorldEditor.Config
         [Variable(Priority = 10)] public static DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
             {
                 Host = "localhost",
-                DbName = "stump_world",
+                DbName = "stump_data",
                 User = "root",
                 Password = "",
                 ProviderName = "MySql.Data.MySqlClient",

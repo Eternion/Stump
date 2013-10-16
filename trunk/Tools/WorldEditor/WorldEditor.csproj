@@ -107,6 +107,10 @@
     </Compile>
     <Compile Include="Editors\Items\ItemEditorModelView.cs" />
     <Compile Include="Editors\Items\WeaponWrapper.cs" />
+    <Compile Include="Editors\Tables\TableEditor.xaml.cs">
+      <DependentUpon>TableEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Editors\Tables\TableEditorModelView.cs" />
     <Compile Include="Helpers\Behaviors\IgnoreMouseWheelBehavior.cs" />
     <Compile Include="Helpers\CanvasAutoSize.cs" />
     <Compile Include="Helpers\Collections\AsyncVirtualizingCollection.cs" />
@@ -206,6 +210,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Editors\Tables\TableEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="LoadingWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -254,7 +262,6 @@
     <Compile Include="Editors\Files\D2P\D2PFolderRow.cs" />
     <Compile Include="Editors\Files\D2P\D2PGridRow.cs" />
     <Compile Include="Editors\Files\D2P\D2PLastFolderRow.cs" />
-    <Compile Include="DocumentsManager.cs" />
     <Compile Include="Helpers\ApplicationInfo.cs" />
     <Compile Include="Helpers\BindingProxy.cs" />
     <Compile Include="Helpers\ControlExtensions.cs" />
@@ -349,6 +356,10 @@
     <ProjectReference Include="..\..\Server\Stump.Server.WorldServer\Stump.Server.WorldServer.csproj">
       <Project>{7A1BEAB5-1A69-48B6-B064-0F6F372AC23B}</Project>
       <Name>Stump.Server.WorldServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DBSynchroniser\DBSynchroniser.csproj">
+      <Project>{DFDC2AA2-969F-43B6-814F-C0C6C908807F}</Project>
+      <Name>DBSynchroniser</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

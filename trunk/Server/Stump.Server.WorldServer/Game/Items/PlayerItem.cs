@@ -69,10 +69,7 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             try
             {
-                if (Template.CriteriaExpression == null)
-                    return true;
-
-                return Template.CriteriaExpression.Eval(character);
+                return Template.CriteriaExpression == null || Template.CriteriaExpression.Eval(character);
             }
             catch
             {
@@ -116,11 +113,8 @@ namespace Stump.Server.WorldServer.Game.Items
             if (IsTokenItem())
                 return true;
 
-            if (Effects.Any(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_981 ||
-                                 x.EffectId == EffectsEnum.Effect_NonExchangeable_982))
-                return true;
-
-            return false;
+            return Effects.Any(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_981 ||
+                                    x.EffectId == EffectsEnum.Effect_NonExchangeable_982);
         }
 
         public bool IsTokenItem()

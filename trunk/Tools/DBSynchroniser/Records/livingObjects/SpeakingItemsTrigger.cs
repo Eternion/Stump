@@ -1,9 +1,10 @@
  
 
 
-// Generated on 10/06/2013 18:02:18
+// Generated on 10/13/2013 12:21:16
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
@@ -53,6 +54,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_textIdsBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] TextIdsBin
         {
             get { return m_textIdsBin; }
@@ -77,6 +80,8 @@ namespace DBSynchroniser.Records
 
         private byte[] m_statesBin;
         [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
         public byte[] StatesBin
         {
             get { return m_statesBin; }

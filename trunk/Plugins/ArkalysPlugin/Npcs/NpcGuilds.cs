@@ -20,24 +20,35 @@ namespace ArkalysPlugin.Npcs
 
         [Variable]
         public static int NpcId = 3001;
-        //Tu as l'âme d'un meneur? Tu pense pouvoir mener des guerriers dans la bataille? Alors créer une guilde !
-        [Variable]
-        public static int MessageId = 20007;
 
+        /*
+         * Bonjour jeune aventurier, si tu viens me voir c'est que tu es possédé par un désire incommensurable de créer ta propre guilde. Bien entendue, tu t'engages à diriger un certain nombre de joueur. Il faut que tu gardes en tête que quoi qu'il en soit nous sommes sur un jeu et donc en venant me voir tu as longtemps réfléchis au règles que tu comptes imposer. Garde toujours un esprit bon enfant.
+         * Il faut que tu saches que 3 choix s’offrent à toi :
+         * 1 - si tu as drop une Guildalogemme tu peux directement cliquer sur « Ouvrir le Panel de création »
+         * 2 - Faire une collecte groupé afin d’acheter une Guildalogemme disponible à 50.000 Orbes.
+         * 3 - Pour les personnes qui ne sont aucunement patient, un achat via des jetons est possible. Bien sur le prix est élevé pour vous obliger à choisir en 1er lieu les 2 premières possibilités.
+        */
+        [Variable]
+        public static int MessageId = 200505;
+
+        //Guildalogemme
         [Variable]
         public static int RequiredItemId = 1575;
 
-        //Créer ma guilde et perdre une guildalogemme
+        //Ouvrir le "Panel de création".
         [Variable]
-        public static short ReplyGuildSuccessId = 20010;
+        public static short ReplyGuildSuccessId = 20005;
+
         //Voulez-vous acheter une Guildalogemme pour XX orbes?
         [Variable] public static short ReplyGuildBuyId = 20010;
-        //Vous n'avez pas le niveau requis pour créer une guilde(Niveau 200)
+
+        //Arf, une erreur inattendu t'as poussé à annulé la création de ta guilde. Je suppose que tu n'as pas encore l'étoffe d'un héros... Enfin je veux dire par la que tu préfères te faire diriger que de diriger les autres. C’est un choix et je l'accepte à bientôt si tu changes d'avis.
         [Variable]
         public static short ReplyGuildFailId = 20010;
-        //Vous possédez déjà une guilde. Quittez la ou passez votre chemin
+
+        //Ohhh non.... toi tu vas devoir perdre 30 secondes de ton temps afin de quitter ton ancienne guilde et venir me reparler afin de pouvoir enfin créer ta propre guilde.
         [Variable]
-        public static short ReplyAlreadyHaveGuild = 20010;
+        public static short ReplyAlreadyHaveGuild = 20008;
 
         public static NpcMessage Message;
         private static bool m_scriptDisabled;
