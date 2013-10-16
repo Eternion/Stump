@@ -337,10 +337,10 @@ namespace DBSynchroniser
 
             Console.WriteLine("Save texts...");
 
-            foreach (var record in records)
+            foreach (var record in records.Values)
                 Database.Database.Insert(record);
 
-            foreach (var record in uiRecords)
+            foreach (var record in uiRecords.Values)
                 Database.Database.Insert(record);
         }
 
