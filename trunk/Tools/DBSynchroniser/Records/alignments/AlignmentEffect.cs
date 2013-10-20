@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/13/2013 12:21:13
+// Generated on 10/19/2013 17:17:42
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -42,6 +42,7 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        [I18NField]
         public uint DescriptionId
         {
             get { return descriptionId; }

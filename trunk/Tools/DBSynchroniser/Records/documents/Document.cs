@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/13/2013 12:21:14
+// Generated on 10/19/2013 17:17:42
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -46,6 +46,7 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        [I18NField]
         public uint TitleId
         {
             get { return titleId; }
@@ -53,6 +54,7 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        [I18NField]
         public uint AuthorId
         {
             get { return authorId; }
@@ -60,6 +62,7 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        [I18NField]
         public uint SubTitleId
         {
             get { return subTitleId; }
@@ -67,6 +70,7 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        [I18NField]
         public uint ContentId
         {
             get { return contentId; }

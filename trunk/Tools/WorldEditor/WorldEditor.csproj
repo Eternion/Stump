@@ -131,6 +131,7 @@
     <Compile Include="Loaders\D2O\ObjectDataManager.cs" />
     <Compile Include="Loaders\I18N\I18NDataManager.cs" />
     <Compile Include="Loaders\I18N\I18NString.cs" />
+    <Compile Include="Loaders\I18N\LangExtension.cs" />
     <Compile Include="Loaders\I18N\Languages.cs" />
     <Compile Include="Loaders\Icons\Icon.cs" />
     <Compile Include="Loaders\Icons\IconsManager.cs" />
@@ -242,7 +243,7 @@
     <Compile Include="Editors\Files\D2I\D2ITextRow.cs" />
     <Compile Include="Editors\Files\D2I\D2ITextUiRow.cs" />
     <Compile Include="Editors\Files\D2I\RowState.cs" />
-    <Compile Include="Editors\Files\D2O\D2OEditedObject.cs" />
+    <Compile Include="Editors\EditedObject.cs" />
     <Compile Include="Editors\Files\D2O\D2OEditor.xaml.cs">
       <DependentUpon>D2OEditor.xaml</DependentUpon>
     </Compile>
