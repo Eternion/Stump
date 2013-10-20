@@ -15,12 +15,13 @@
 #endregion
 
 using System.ComponentModel;
+using WorldEditor.Editors.Files.D2O;
 
-namespace WorldEditor.Editors.Files.D2O
+namespace WorldEditor.Editors
 {
-    public class D2OEditedObject : INotifyPropertyChanged
+    public class EditedObject : INotifyPropertyChanged
     {
-        public D2OEditedObject(object o, ObjectState state)
+        public EditedObject(object o, ObjectState state)
         {
             Object = o;
             State = state;

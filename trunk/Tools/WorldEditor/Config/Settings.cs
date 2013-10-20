@@ -63,7 +63,7 @@ namespace WorldEditor.Config
         [Variable] public static Languages DefaultLanguage = Languages.French;
 
         [Variable]
-        public static int MinI18NId = 200000;
+        public static uint MinI18NId = 200000;
 
         [Variable]
         public static int MinDataId = 20000;

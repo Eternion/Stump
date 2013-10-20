@@ -22,6 +22,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using DBSynchroniser.Records.Langs;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Items;
@@ -34,16 +35,18 @@ namespace WorldEditor.Editors.Items
 {
     public class ItemWrapper : INotifyPropertyChanged
     {
-        private string m_name;
-        private string m_description;
+        private LangText m_name;
+        private LangText m_description;
         protected ObservableCollection<EffectWrapper> m_effects;
 
         public ItemWrapper()
         {
             WrappedItem = new Item();
             DBTemplate = new ItemTemplate();
-            m_name = "New Item";
-            m_description = "Item description";
+            m_name = new LangText();
+            m_name.SetAllLangs("New item");
+            m_description = new LangText();
+            m_description.SetAllLangs("Item description");
             m_effects = new ObservableCollection<EffectWrapper>();
             WrappedItem.recipeIds = new List<uint>();
             WrappedItem.favoriteSubAreas = new List<uint>();
@@ -59,8 +62,8 @@ namespace WorldEditor.Editors.Items
             WrappedItem = weapon.WrappedItem;
             DBTemplate = weapon.DBTemplate;
             m_effects = new ObservableCollection<EffectWrapper>(PossibleEffects.Select(EffectWrapper.Create));
-            m_name = weapon.Name;
-            m_description = weapon.Description;
+            m_name = weapon.m_name;
+            m_description = weapon.m_description;
             New = weapon.New;
         }
 
@@ -90,11 +93,10 @@ namespace WorldEditor.Editors.Items
             protected set;
         }
 
-        public string Name
+        public LangText Name
         {
-            get { return m_name ?? (m_name = I18NDataManager.Instance.ReadText(NameId)); }
-            set { m_name = value;
-            }
+            get { return m_name ?? (m_name = I18NDataManager.Instance.GetText(NameId)); }
+            set { m_name = value; }
         }
 
         public int Id
@@ -126,11 +128,11 @@ namespace WorldEditor.Editors.Items
             set { WrappedItem.descriptionId = value; }
         }
 
-        public string Description
+        public LangText Description
         {
             get
             {
-                return m_description ?? ( m_description = I18NDataManager.Instance.ReadText(DescriptionId) );
+                return m_description ?? ( m_description = I18NDataManager.Instance.GetText(DescriptionId) );
             }
             set { m_description = value;
             }
@@ -322,9 +324,8 @@ namespace WorldEditor.Editors.Items
             ObjectDataManager.Instance.Set(WrappedItem.Id, WrappedItem);
             ObjectDataManager.Instance.EndEditing<Item>();
 
-            I18NDataManager.Instance.SetText(NameId, Name);
-            I18NDataManager.Instance.SetText(DescriptionId, Description);
-            I18NDataManager.Instance.Save();
+            I18NDataManager.Instance.SaveText(Name);
+            I18NDataManager.Instance.SaveText(Description);
 
             DBTemplate.AssignFields(WrappedItem);
 

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/13/2013 12:21:14
+// Generated on 10/19/2013 17:17:42
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -51,6 +51,7 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        [I18NField]
         public uint ShortNameId
         {
             get { return shortNameId; }
@@ -58,6 +59,7 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        [I18NField]
         public uint LongNameId
         {
             get { return longNameId; }
@@ -65,6 +67,7 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        [I18NField]
         public uint DescriptionId
         {
             get { return descriptionId; }
@@ -72,6 +75,7 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        [I18NField]
         public uint GameplayDescriptionId
         {
             get { return gameplayDescriptionId; }

@@ -15,6 +15,7 @@ namespace DBSynchroniser.Records.Langs
 
         #region ILangText Members
 
+        [PrimaryKey("Id", false)]
         public uint Id
         {
             get;

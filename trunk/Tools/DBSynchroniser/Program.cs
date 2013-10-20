@@ -286,8 +286,6 @@ namespace DBSynchroniser
                             record.Russish = text.Value;
                             break;
                     }
-
-                    Database.Database.Insert(record);
                 }
 
                 foreach (var text in file.Value.GetAllUiText())
@@ -330,13 +328,41 @@ namespace DBSynchroniser
                             record.Russish = text.Value;
                             break;
                     }
-
-                    Database.Database.Insert(record);
                 }
             }
 
 
-            Console.WriteLine("Save texts...");
+            var cursorLeft = Console.CursorLeft;
+            var cursorTop = Console.CursorTop;
+            var i = 0;
+            var count = records.Count + uiRecords.Count;
+
+            Console.WriteLine("Save texts(1/2)...");
+            foreach (var record in records.Values)
+            {
+                Database.Database.Insert(record);
+
+                i++;
+                Console.SetCursorPosition(cursorLeft, cursorTop);
+                Console.Write("{0}/{1} ({2}%)", i, count,
+                              (int)( ( i / (double)count ) * 100d ));
+
+            }
+
+            Console.WriteLine("Save texts(2/2)...");
+            cursorLeft = Console.CursorLeft;
+            cursorTop = Console.CursorTop;
+            foreach (var record in uiRecords.Values)
+            {
+                Database.Database.Insert(record);
+
+                i++;
+                Console.SetCursorPosition(cursorLeft, cursorTop);
+                Console.Write("{0}/{1} ({2}%)", i, count,
+                              (int)( ( i / (double)count ) * 100d ));
+
+            }
+            Console.WriteLine();
         }
 
         private static void LoadLangsWithWarning()

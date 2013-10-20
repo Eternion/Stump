@@ -1,5 +1,5 @@
 ﻿#region License GNU GPL
-// DataRecordProfile.cs
+// I18NFieldAttribute.cs
 // 
 // Copyright (C) 2013 - BehaviorIsManaged
 // 
@@ -14,27 +14,12 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
-using System.Collections.Generic;
-using System.Linq;
+using System;
 
-namespace DofusProtocolBuilder.Profiles
+namespace DBSynchroniser
 {
-    public class DataRecordProfile : DatacenterProfile
+    public class I18NFieldAttribute : Attribute
     {
-        public DataRecordProfile()
-        {
-            IgnoredLines = new string[]
-                {
-                    "^switch.*",
-                };
-        }
-
-        public override void ExecuteProfile(Parsing.Parser parser)
-        {
-            if (parser.Fields.All(x => x.Name != "MODULE") && parser.Class.Heritage != "Item")
-                return;
-
-            base.ExecuteProfile(parser);
-        }
+         
     }
 }

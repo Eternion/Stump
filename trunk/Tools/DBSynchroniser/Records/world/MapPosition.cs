@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/13/2013 12:21:17
+// Generated on 10/19/2013 17:17:46
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -70,6 +70,7 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        [I18NField]
         public int NameId
         {
             get { return nameId; }

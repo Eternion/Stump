@@ -58,12 +58,12 @@ namespace WorldEditor
                 ShowConfigDialog();
 
             OpenDB();
-            /*
-            InitializeLoader(() => I18NDataManager.Instance.AddReaders(Settings.LoaderSettings.D2IDirectory),
+            
+            InitializeLoader(() => I18NDataManager.Instance.Initialize(),
                              "Loading d2i files ...");
             // todo
             I18NDataManager.Instance.DefaultLanguage = Languages.French;
-
+            /*
             InitializeLoader(() => ObjectDataManager.Instance.AddReaders(Settings.LoaderSettings.D2ODirectory),
                              "Loading d2o files ...");
             InitializeLoader(() => IconsManager.Instance.Initialize(Settings.LoaderSettings.ItemIconsFile),

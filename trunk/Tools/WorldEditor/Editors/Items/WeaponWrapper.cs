@@ -164,9 +164,8 @@ namespace WorldEditor.Editors.Items
             ObjectDataManager.Instance.Set(WrappedWeapon.Id, WrappedWeapon);
             ObjectDataManager.Instance.EndEditing<Weapon>();
 
-            I18NDataManager.Instance.SetText(NameId, Name);
-            I18NDataManager.Instance.SetText(DescriptionId, Description);
-            I18NDataManager.Instance.Save();
+            I18NDataManager.Instance.SaveText(Name);
+            I18NDataManager.Instance.SaveText(Description);
 
             DBTemplate.AssignFields(WrappedWeapon);
 
