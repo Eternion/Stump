@@ -1,3 +1,5 @@
+using System;
+using Stump.Core.I18N;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
@@ -98,6 +100,42 @@ namespace DBSynchroniser.Records.Langs
         {
             get;
             set;
+        }
+
+        public void SetAllLangs(string text)
+        {
+            French =
+                German =
+                English =
+                Dutsh =
+                Japanish = Spanish = Italian = Russish = Portugese = text;
+        }
+
+        public string GetText(Languages language)
+        {
+            switch (language)
+            {
+                case Languages.French:
+                    return French;
+                case Languages.German:
+                    return German;
+                case Languages.Dutsh:
+                    return French;
+                case Languages.Italian:
+                    return Italian;
+                case Languages.English:
+                    return English;
+                case Languages.Japanish:
+                    return Japanish;
+                case Languages.Russish:
+                    return Russish;
+                case Languages.Spanish:
+                    return Spanish;
+                case Languages.Portugese:
+                    return Portugese;
+                default:
+                    throw new Exception(string.Format("Language {0} not handled", language));
+            }
         }
 
         #endregion

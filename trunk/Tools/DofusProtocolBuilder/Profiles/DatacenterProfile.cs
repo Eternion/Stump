@@ -44,7 +44,6 @@ namespace DofusProtocolBuilder.Profiles
                         {@"(protected|private) var _zoneShape = 4.29497e+009", "public var zoneShape"},
                         {@"(protected|private) var _zoneMinSize = 4.29497e+009", "public var zoneMinSize"},
                         {@"(protected|private) var _weight", "public var weight"},
-                        {@"(protected|private) var _type", "public var type"},
                         {@"(protected|private) var _oldValue", "public var oldValue"},
                         {@"(protected|private) var _newValue", "public var newValue"},
                         {@"(protected|private) var _lang", "public var lang"},

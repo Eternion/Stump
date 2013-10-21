@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.I18N;
 using Stump.Server.BaseServer.Database;
-using Stump.Server.BaseServer.I18n;
 using Stump.Server.BaseServer.Initialization;
 
 namespace Stump.Server.WorldServer.Database.I18n
