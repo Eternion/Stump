@@ -35,30 +35,8 @@ namespace WorldEditor
 {
     public class StartModelView
     {
-        private readonly List<D2OTable> m_tables = new List<D2OTable>(); 
-
         public StartModelView()
         {
-            LoadTables();
-        }
-
-        private void LoadTables()
-        {
-            foreach (var table in from type in typeof (D2OTable).Assembly.GetTypes() let attr = type.GetCustomAttribute<D2OClassAttribute>() where attr != null let tableAttr = type.GetCustomAttribute<TableNameAttribute>() where tableAttr != null select new D2OTable
-                {
-                    Type = type,
-                    ClassName = attr.Name,
-                    TableName = tableAttr.TableName,
-                    Constructor = type.GetConstructor(new Type[0]).CreateDelegate()
-                })
-            {
-                m_tables.Add(table);
-            }
-        }
-
-        public ReadOnlyCollection<D2OTable> Tables
-        {
-            get { return m_tables.AsReadOnly(); }
         }
 
 
@@ -104,6 +82,32 @@ namespace WorldEditor
         private static void OnCreateItem(object parameter)
         {
             var editor = new ItemEditor(new ItemWrapper());
+            editor.Show();
+        }
+
+        #endregion
+
+
+        #region CreateWeaponCommand
+
+        private DelegateCommand m_createWeaponCommand;
+
+        public DelegateCommand CreateWeaponCommand
+        {
+            get
+            {
+                return m_createWeaponCommand ?? (m_createWeaponCommand = new DelegateCommand(OnCreateWeapon, CanCreateWeapon));
+            }
+        }
+
+        private bool CanCreateWeapon(object parameter)
+        {
+            return true;
+        }
+
+        private void OnCreateWeapon(object parameter)
+        {
+            var editor = new ItemEditor(new WeaponWrapper());
             editor.Show();
         }
 

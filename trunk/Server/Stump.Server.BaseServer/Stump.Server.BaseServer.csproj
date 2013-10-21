@@ -233,7 +233,6 @@
     <Compile Include="Definitions.cs" />
     <Compile Include="Exceptions\ExceptionManager.cs" />
     <Compile Include="Handler\IHandlerContainer.cs" />
-    <Compile Include="I18n\Languages.cs" />
     <Compile Include="Initialization\InitializationAttribute.cs" />
     <Compile Include="Initialization\InitializationManager.cs" />
     <Compile Include="Initialization\InitializationMethod.cs" />

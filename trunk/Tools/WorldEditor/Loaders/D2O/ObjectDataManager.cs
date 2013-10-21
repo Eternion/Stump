@@ -16,12 +16,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using DBSynchroniser;
 using NLog;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
+using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using WorldEditor.Config;
+using WorldEditor.Database;
 
 namespace WorldEditor.Loaders.D2O
 {
@@ -32,42 +36,37 @@ namespace WorldEditor.Loaders.D2O
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly Dictionary<Type, D2OReader> m_readers = new Dictionary<Type, D2OReader>();
-        private readonly Dictionary<Type, D2OWriter> m_writers = new Dictionary<Type, D2OWriter>();
-        private readonly List<Type> m_ignoredTyes = new List<Type>();
+        private readonly Dictionary<Type, D2OTable> m_tables = new Dictionary<Type, D2OTable>();
 
-        public void AddReaders(string directory)
+        public void Initialize()
         {
-            foreach (var reader in Directory.EnumerateFiles(directory).Where(entry => entry.EndsWith(".d2o")).Select(d2oFile => new D2OReader(d2oFile)))
+            LoadTables();
+        }
+
+        private void LoadTables()
+        {
+            foreach (var table in from type in typeof(D2OTable).Assembly.GetTypes()
+                                  let attr = type.GetCustomAttribute<D2OClassAttribute>()
+                                  let tableAttr = type.GetCustomAttribute<TableNameAttribute>()
+                                  where tableAttr != null && attr != null
+                                  select new D2OTable
+                                  {
+                                      Type = type,
+                                      ClassName = attr.Name,
+                                      TableName = tableAttr.TableName,
+                                      Constructor = type.GetConstructor(new Type[0]).CreateDelegate()
+                                  })
             {
-                AddReader(reader);
+                m_tables.Add(table.Type, table);
             }
         }
 
-        public void AddReader(D2OReader d2oFile)
+        public IEnumerable<D2OTable> Tables
         {
-            var classes = d2oFile.Classes;
-
-            foreach (var @class in classes)
+            get
             {
-                if (m_ignoredTyes.Contains(@class.Value.ClassType))
-                    continue;
-
-                if (m_readers.ContainsKey(@class.Value.ClassType))
-                {
-                    // this classes are not bound to a single file, so we ignore them
-                    m_ignoredTyes.Add(@class.Value.ClassType);
-                    m_readers.Remove(@class.Value.ClassType);
-                }
-                else
-                {
-                    m_readers.Add(@class.Value.ClassType, d2oFile);
-                    m_writers.Add(@class.Value.ClassType, new D2OWriter(d2oFile.FilePath));
-                }
+                return m_tables.Values;
             }
-
-            logger.Info("File added : {0}", Path.GetFileName(d2oFile.FilePath));
-
         }
 
         public T Get<T>(uint key)
@@ -79,12 +78,10 @@ namespace WorldEditor.Loaders.D2O
         public T Get<T>(int key)
             where T : class
         {
-            if (!m_readers.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)
-                throw new ArgumentException("Cannot find data corresponding to type : " + typeof(T));
+            if (!m_tables.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)
+                throw new ArgumentException("Cannot find table corresponding to type : " + typeof(T));
 
-            var reader = m_readers[typeof(T)];
-
-            return reader.ReadObject<T>(key, true);
+            return DatabaseManager.Instance.Database.Single<T>(key);
         }
 
         public T GetOrDefault<T>(uint key)
@@ -106,85 +103,52 @@ namespace WorldEditor.Loaders.D2O
             }
         }
 
-        public void StartEditing<T>()
-        {
-            if (!m_writers.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)
-                throw new ArgumentException("Cannot find data corresponding to type : " + typeof(T));
-
-            var writer = m_writers[typeof(T)];
-            writer.StartWriting();
-        }
-
-        public void EndEditing<T>()
-        {
-            if (!m_writers.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)
-                throw new ArgumentException("Cannot find data corresponding to type : " + typeof(T));
-
-            var writer = m_writers[typeof(T)];
-            writer.EndWriting();
-
-            // reset reader
-            var reader = new D2OReader(writer.Filename);
-            m_readers[typeof (T)] = reader;
-        }
-
-        public void Set<T>(uint key, T value)
+        public void Insert<T>(T value)
             where T : class
-        {
-            Set((int)key, value);
+        {            
+            if (!m_tables.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)
+                throw new ArgumentException("Cannot find table corresponding to type : " + typeof(T));
+
+            DatabaseManager.Instance.Database.Insert(value);
         }
 
-        public void Set<T>(int key, T value)
-        {
-            if (!m_writers.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)
-                throw new ArgumentException("Cannot find data corresponding to type : " + typeof(T));
+        public void Update<T>(T value)
+            where T : class
+        {            
+            if (!m_tables.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)
+                throw new ArgumentException("Cannot find table corresponding to type : " + typeof(T));
 
-            var writer = m_writers[typeof(T)];
-            writer.Write(value, key);
+            DatabaseManager.Instance.Database.Update(value);
         }
 
-        public void Remove<T>(int key)
-        {
-            if (!m_writers.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)
-                throw new ArgumentException("Cannot find data corresponding to type : " + typeof(T));
+        public void Delete<T>(T value)
+        {          
+            if (!m_tables.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)
+                throw new ArgumentException("Cannot find table corresponding to type : " + typeof(T));
 
-            var writer = m_writers[typeof(T)];
-            writer.Delete(key);
+            DatabaseManager.Instance.Database.Delete(value);
         }
 
         public int FindFreeId<T>()
-        {
-            if (!m_writers.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)
-                throw new ArgumentException("Cannot find data corresponding to type : " + typeof(T));
+        {          
+            if (!m_tables.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)
+                throw new ArgumentException("Cannot find table corresponding to type : " + typeof(T));
 
-            var maxId = m_readers[typeof (T)].FindFreeId();
+            var table = m_tables[typeof (T)];
+
+            var maxId = DatabaseManager.Instance.Database.ExecuteScalar<int>("SELECT MAX(Id) FROM " + table.TableName) + 1;
 
             return maxId < Settings.MinDataId ? Settings.MinDataId : maxId;
         }
 
-        public IEnumerable<Type> GetAllTypes()
-        {
-            return m_readers.Keys;
-        }
-
-        public IEnumerable<object> EnumerateObjects(Type type)
-        {
-            if (!m_readers.ContainsKey(type))
-                throw new ArgumentException("Cannot find data corresponding to type : " + type);
-
-            var reader = m_readers[type];
-
-            return reader.Indexes.Select(index => reader.ReadObject(index.Key, true)).Where(obj=>obj.GetType().Name == type.Name);
-        }
-
         public IEnumerable<T> EnumerateObjects<T>() where T : class
         {
-            if (!m_readers.ContainsKey(typeof(T)))
-                throw new ArgumentException("Cannot find data corresponding to type : " + typeof(T));
+            if (!m_tables.ContainsKey(typeof(T))) // This exception should be called in all cases (serious)
+                throw new ArgumentException("Cannot find table corresponding to type : " + typeof(T));
 
-            var reader = m_readers[typeof(T)];
+            var table = m_tables[typeof (T)];
 
-            return reader.Indexes.Select(index => reader.ReadObject(index.Key, true)).OfType<T>().Select(obj => obj);
+            return DatabaseManager.Instance.Database.Query<T>("SELECT * FROM " + table.TableName);
         }
     }
 }

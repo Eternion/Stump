@@ -19,6 +19,7 @@
 using System;
 using System.IO;
 using Stump.Core.Attributes;
+using Stump.Core.I18N;
 using Stump.Core.Xml.Config;
 using Stump.ORM;
 using WorldEditor.Loaders.I18N;

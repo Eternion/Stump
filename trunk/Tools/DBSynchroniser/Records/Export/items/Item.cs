@@ -54,7 +54,6 @@ namespace DBSynchroniser.Records
         public List<EffectInstance> possibleEffects;
         public List<uint> favoriteSubAreas;
         public uint favoriteSubAreasBonus;
-        public ItemType type;
         public uint weight;
 
         [D2OIgnore]
@@ -309,32 +308,6 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
-        [Ignore]
-        public ItemType Type
-        {
-            get { return type; }
-            set
-            {
-                type = value;
-                m_typeBin = value == null ? null : value.ToBinary();
-            }
-        }
-
-        private byte[] m_typeBin;
-        [D2OIgnore]
-        [BinaryField]
-        [Browsable(false)]
-        public byte[] TypeBin
-        {
-            get { return m_typeBin; }
-            set
-            {
-                m_typeBin = value;
-                type = value == null ? null : value.ToObject<ItemType>();
-            }
-        }
-
-        [D2OIgnore]
         public uint Weight
         {
             get { return weight; }
@@ -372,7 +345,6 @@ namespace DBSynchroniser.Records
             PossibleEffects = castedObj.possibleEffects;
             FavoriteSubAreas = castedObj.favoriteSubAreas;
             FavoriteSubAreasBonus = castedObj.favoriteSubAreasBonus;
-            Type = castedObj.type;
             Weight = castedObj.weight;
         }
         
@@ -407,7 +379,6 @@ namespace DBSynchroniser.Records
             obj.possibleEffects = PossibleEffects;
             obj.favoriteSubAreas = FavoriteSubAreas;
             obj.favoriteSubAreasBonus = FavoriteSubAreasBonus;
-            obj.type = Type;
             obj.weight = Weight;
             return obj;
         

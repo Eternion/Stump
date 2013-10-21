@@ -1,7 +1,7 @@
 ﻿#region License GNU GPL
-// Icon.cs
+// EnumValuesExtension.cs
 // 
-// Copyright (C) 2012 - BehaviorIsManaged
+// Copyright (C) 2013 - BehaviorIsManaged
 // 
 // This program is free software; you can redistribute it and/or modify it 
 // under the terms of the GNU General Public License as published by the Free Software Foundation;
@@ -14,33 +14,28 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
-using System.IO;
-using System.Windows.Media.Imaging;
+using System;
+using System.Windows.Markup;
 
-namespace WorldEditor.Loaders.Icons
+namespace WorldEditor.Helpers.Markups
 {
-    public class Icon
+    public class EnumValuesExtension : MarkupExtension
     {
-        public Icon(int id, byte[] data)
+        private readonly Type m_enumType;
+
+        public EnumValuesExtension(Type enumType)
         {
-            Id = id;
-            Image = new BitmapImage();
-            Image.BeginInit();
-            Image.StreamSource = new MemoryStream(data);
-            Image.EndInit();
-            Image.Freeze();
+            if (enumType == null)
+                throw new ArgumentNullException("enumType");
+            if (!enumType.IsEnum)
+                throw new ArgumentException("Argument enumType must derive from type Enum.");
+
+            m_enumType = enumType;
         }
 
-        public int Id
+        public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            get;
-            private set;
-        }
-
-        public BitmapImage Image
-        {
-            get;
-            private set;
+            return Enum.GetValues(m_enumType);
         }
     }
 }

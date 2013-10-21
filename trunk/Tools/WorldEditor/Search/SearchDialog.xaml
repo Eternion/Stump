@@ -73,8 +73,7 @@
 
                                     <TextBox DockPanel.Dock="Right" Margin="3" MinWidth="67">
                                         <TextBox.Text>
-                                            <Binding Path="ComparedToValueString" Mode="TwoWay" ConverterParameter="ValueType"
-                                                     UpdateSourceTrigger="PropertyChanged" NotifyOnSourceUpdated="True">
+                                            <Binding Path="ComparedToValueString" Mode="TwoWay" ConverterParameter="ValueType">
                                                 <Binding.ValidationRules>
                                                     <ExceptionValidationRule />
                                                 </Binding.ValidationRules>

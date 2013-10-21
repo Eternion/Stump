@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="WorldEditor.Helpers.Controls.I18NTextBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:WorldEditor.Helpers.Converters"
+             mc:Ignorable="d" DataContext="{Binding RelativeSource={RelativeSource Self}}" d:DesignWidth="300" d:DesignHeight="164">
+    <UserControl.Resources>
+        <converters:LangToFlagConverter x:Key="LangToFlag"/> 
+    </UserControl.Resources>
+    <DockPanel>
+        <ComboBox DockPanel.Dock="Right" Width="20" ItemsSource="{Binding AvailableLanguages, Converter={StaticResource LangToFlag}}"/>
+        <TextBox DockPanel.Dock="Left"/>
+    </DockPanel>
+</UserControl>

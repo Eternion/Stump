@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using DBSynchroniser.Records.Langs;
 using NLog;
+using Stump.Core.I18N;
 using Stump.Core.Memory;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses.Tools.D2i;
@@ -120,13 +121,24 @@ namespace WorldEditor.Loaders.I18N
 
         public void SaveText(LangText text)
         {
-            DatabaseManager.Instance.Database.Save(text);
+            DatabaseManager.Instance.Database.Update(text);
         }
 
         public void SaveText(LangTextUi text)
         {
-            DatabaseManager.Instance.Database.Save(text);
+            DatabaseManager.Instance.Database.Update(text);
         }
+
+        public void CreateText(LangText text)
+        {
+            DatabaseManager.Instance.Database.Insert(text);
+        }
+
+        public void CreateText(LangTextUi text)
+        {
+            DatabaseManager.Instance.Database.Insert(text);
+        }
+
         public uint FindFreeId()
         {
             var id = m_langs.Keys.Max();
