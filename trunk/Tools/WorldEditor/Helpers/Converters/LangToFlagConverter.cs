@@ -16,11 +16,9 @@
 
 using System;
 using System.Globalization;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 using Stump.Core.I18N;
-using WorldEditor.Properties;
 
 namespace WorldEditor.Helpers.Converters
 {

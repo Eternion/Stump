@@ -14,16 +14,11 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using DBSynchroniser.Records.Langs;
-using NLog;
 using Stump.Core.I18N;
-using Stump.Core.Memory;
 using Stump.Core.Reflection;
-using Stump.DofusProtocol.D2oClasses.Tools.D2i;
 using WorldEditor.Config;
 using WorldEditor.Database;
 
@@ -31,31 +26,22 @@ namespace WorldEditor.Loaders.I18N
 {
     public class I18NDataManager : Singleton<I18NDataManager>
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
         private Dictionary<uint, LangText> m_langs = new Dictionary<uint, LangText>();
-        private Dictionary<string, LangTextUi> m_langsUi = new Dictionary<string, LangTextUi>();
+        private readonly Dictionary<string, LangTextUi> m_langsUi = new Dictionary<string, LangTextUi>();
 
         public void Initialize()
         {
             m_langs = DatabaseManager.Instance.Database.Query<LangText>("SELECT * FROM langs").ToDictionary(x => x.Id);
-            foreach (var record in DatabaseManager.Instance.Database.Query<LangTextUi>("SELECT * FROM langs_ui"))
+            foreach (var record in DatabaseManager.Instance.Database.Query<LangTextUi>("SELECT * FROM langs_ui").Where(record => !m_langsUi.ContainsKey(record.Name)))
             {
-                if (!m_langsUi.ContainsKey(record.Name))
-                    m_langsUi.Add(record.Name, record);
+                m_langsUi.Add(record.Name, record);
             }
         }
 
-        Languages m_defaultLanguage;
         public Languages DefaultLanguage
         {
-            get
-            {
-                return m_defaultLanguage;
-            }
-            set
-            {
-                m_defaultLanguage = value;
-            }
+            get;
+            set;
         }
 
         public LangText GetText(int id)
@@ -66,19 +52,13 @@ namespace WorldEditor.Loaders.I18N
         public LangText GetText(uint id)
         {
             LangText record;
-            if (!m_langs.TryGetValue(id, out record))
-                return null;
-
-            return record;
+            return !m_langs.TryGetValue(id, out record) ? null : record;
         }
 
         public LangTextUi GetText(string id)
         {
             LangTextUi record;
-            if (!m_langsUi.TryGetValue(id, out record))
-                return null;
-
-            return record;
+            return !m_langsUi.TryGetValue(id, out record) ? null : record;
         }
 
         public string ReadText(int id, Languages? lang)
@@ -89,19 +69,13 @@ namespace WorldEditor.Loaders.I18N
         public string ReadText(uint id, Languages? lang)
         {
             LangText record;
-            if (!m_langs.TryGetValue(id, out record))
-                return "{null}";
-
-            return record.GetText(lang ?? DefaultLanguage);
+            return !m_langs.TryGetValue(id, out record) ? "{null}" : record.GetText(lang ?? DefaultLanguage);
         }
 
         public string ReadText(string id, Languages? lang)
         {
             LangTextUi record;
-            if (!m_langsUi.TryGetValue(id, out record))
-                return "{null}";
-
-            return record.GetText(lang ?? DefaultLanguage);
+            return !m_langsUi.TryGetValue(id, out record) ? "{null}" : record.GetText(lang ?? DefaultLanguage);
         }
 
         public string ReadText(string id)
