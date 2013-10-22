@@ -116,13 +116,19 @@
     <Compile Include="Helpers\Collections\AsyncVirtualizingCollection.cs" />
     <Compile Include="Helpers\Collections\IItemsProvider.cs" />
     <Compile Include="Helpers\Collections\VirtualizingCollection.cs" />
+    <Compile Include="Helpers\Controls\I18NTextBox.xaml.cs">
+      <DependentUpon>I18NTextBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\Converters\CurrentLangConverter.cs" />
     <Compile Include="Helpers\Converters\IdToI18NTextConverter.cs" />
     <Compile Include="Helpers\Converters\IdToIconConverter.cs" />
     <Compile Include="Helpers\Converters\IsGreaterThanConverter.cs" />
     <Compile Include="Helpers\Converters\ItemTypeIdToTypeNameConverter.cs" />
+    <Compile Include="Helpers\Converters\LangToFlagConverter.cs" />
     <Compile Include="Helpers\DataResource.cs" />
     <Compile Include="Helpers\EnumerableItemProvider.cs" />
     <Compile Include="Helpers\LambdaBinding.cs" />
+    <Compile Include="Helpers\Markups\EnumValuesExtension.cs" />
     <Compile Include="Helpers\Markups\EventToCommand.cs" />
     <Compile Include="Helpers\ObservableCollectionRange.cs" />
     <Compile Include="Helpers\OpaqueClickableImage.cs" />
@@ -130,8 +136,7 @@
     <Compile Include="Helpers\VirtualizingWrapPanel.cs" />
     <Compile Include="Loaders\D2O\ObjectDataManager.cs" />
     <Compile Include="Loaders\I18N\I18NDataManager.cs" />
-    <Compile Include="Loaders\I18N\I18NString.cs" />
-    <Compile Include="Loaders\I18N\Languages.cs" />
+    <Compile Include="Loaders\I18N\LangExtension.cs" />
     <Compile Include="Loaders\Icons\Icon.cs" />
     <Compile Include="Loaders\Icons\IconsManager.cs" />
     <Compile Include="Loaders\Icons\IconType.cs" />
@@ -214,6 +219,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Helpers\Controls\I18NTextBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="LoadingWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -242,7 +251,7 @@
     <Compile Include="Editors\Files\D2I\D2ITextRow.cs" />
     <Compile Include="Editors\Files\D2I\D2ITextUiRow.cs" />
     <Compile Include="Editors\Files\D2I\RowState.cs" />
-    <Compile Include="Editors\Files\D2O\D2OEditedObject.cs" />
+    <Compile Include="Editors\EditedObject.cs" />
     <Compile Include="Editors\Files\D2O\D2OEditor.xaml.cs">
       <DependentUpon>D2OEditor.xaml</DependentUpon>
     </Compile>
@@ -435,6 +444,22 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\flags\de.png" />
+    <Resource Include="Images\flags\es.png" />
+    <Resource Include="Images\flags\fr.png" />
+    <Resource Include="Images\flags\gb.png" />
+    <Resource Include="Images\flags\it.png" />
+    <Resource Include="Images\flags\jp.png" />
+    <Resource Include="Images\flags\pt.png" />
+    <Resource Include="Images\flags\ru.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\flags\all.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\flags\nl.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="Fody.targets" />

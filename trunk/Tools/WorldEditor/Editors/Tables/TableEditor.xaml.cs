@@ -111,5 +111,11 @@ namespace WorldEditor.Editors.Tables
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
         }
+
+        private void ObjectEditor_PropertyValueChanged(object sender, PropertyValueChangedEventArgs e)
+        {
+            ModelView.OnObjectEdited(ObjectEditor.SelectedObject);
+
+        }
     }
 }

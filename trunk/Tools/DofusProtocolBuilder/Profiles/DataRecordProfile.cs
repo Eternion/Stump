@@ -14,12 +14,21 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DofusProtocolBuilder.Profiles
 {
     public class DataRecordProfile : DatacenterProfile
     {
+        public DataRecordProfile()
+        {
+            IgnoredLines = new string[]
+                {
+                    "^switch.*",
+                };
+        }
+
         public override void ExecuteProfile(Parsing.Parser parser)
         {
             if (parser.Fields.All(x => x.Name != "MODULE") && parser.Class.Heritage != "Item")

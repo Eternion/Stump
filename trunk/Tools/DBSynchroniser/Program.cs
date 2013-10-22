@@ -6,12 +6,14 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using DBSynchroniser.Records;
+using DBSynchroniser.Records.Icons;
 using DBSynchroniser.Records.Langs;
 using Stump.Core.Attributes;
 using Stump.Core.Reflection;
 using Stump.Core.Xml.Config;
 using Stump.DofusProtocol.D2oClasses.Tools.D2i;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
+using Stump.DofusProtocol.D2oClasses.Tools.D2p;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
@@ -50,6 +52,7 @@ namespace DBSynchroniser
             Tuple.Create<string, Action>("Set languages (empty = all)", SetLanguages),
             Tuple.Create<string, Action>("Create database", CreateDatabase),
             Tuple.Create<string, Action>("Load langs", LoadLangsWithWarning),
+            Tuple.Create<string, Action>("Load icons files", LoadIconsWithWarnings),
             Tuple.Create<string, Action>("Generate client files", GenerateFiles)
         };
 
@@ -223,6 +226,7 @@ namespace DBSynchroniser
             }
 
             LoadLangs();
+            LoadIcons();
         }
 
         private static void LoadLangs()
@@ -286,8 +290,6 @@ namespace DBSynchroniser
                             record.Russish = text.Value;
                             break;
                     }
-
-                    Database.Database.Insert(record);
                 }
 
                 foreach (var text in file.Value.GetAllUiText())
@@ -330,13 +332,41 @@ namespace DBSynchroniser
                             record.Russish = text.Value;
                             break;
                     }
-
-                    Database.Database.Insert(record);
                 }
             }
 
 
-            Console.WriteLine("Save texts...");
+            var cursorLeft = Console.CursorLeft;
+            var cursorTop = Console.CursorTop;
+            var i = 0;
+            var count = records.Count + uiRecords.Count;
+
+            Console.WriteLine("Save texts(1/2)...");
+            foreach (var record in records.Values)
+            {
+                Database.Database.Insert(record);
+
+                i++;
+                Console.SetCursorPosition(cursorLeft, cursorTop);
+                Console.Write("{0}/{1} ({2}%)", i, count,
+                              (int)( ( i / (double)count ) * 100d ));
+
+            }
+
+            Console.WriteLine("Save texts(2/2)...");
+            cursorLeft = Console.CursorLeft;
+            cursorTop = Console.CursorTop;
+            foreach (var record in uiRecords.Values)
+            {
+                Database.Database.Insert(record);
+
+                i++;
+                Console.SetCursorPosition(cursorLeft, cursorTop);
+                Console.Write("{0}/{1} ({2}%)", i, count,
+                              (int)( ( i / (double)count ) * 100d ));
+
+            }
+            Console.WriteLine();
         }
 
         private static void LoadLangsWithWarning()
@@ -346,6 +376,63 @@ namespace DBSynchroniser
                 return;
 
             LoadLangs();
+        }
+
+        private static void LoadIconsWithWarnings()
+        {                        
+            Console.WriteLine("WARNING IT WILL ERASE TABLE 'icons'. ARE YOU SURE ? (y/n)");
+            if (Console.ReadLine() != "y")
+                return;
+
+            LoadIcons();
+        }
+
+        private static void LoadIcons()
+        {
+            Database.Database.Execute("DELETE FROM langs");
+
+            var iconsFilePath = Path.Combine(FindDofusPath(), "content", "gfx", "items", "bitmap0.d2p");
+            var d2pFile = new D2pFile(iconsFilePath);
+
+            var cursorLeft = Console.CursorLeft;
+            var cursorTop = Console.CursorTop;
+            var i = 0;
+            var count = d2pFile.Entries.Count();
+            foreach (var entry in d2pFile.Entries)
+            {
+                var icon = new IconRecord();
+
+                if (!entry.FullFileName.EndsWith(".png"))
+                    continue;
+
+                var data = d2pFile.ReadFile(entry);
+                var name = entry.FileName.Replace(".png", "");
+
+                int id;
+                switch (name)
+                {
+                    case "empty":
+                        id = 0;
+                        break;
+                    case "error":
+                        id = -1;
+                        break;
+                    default:
+                        id = int.Parse(name);
+                        break;
+                }
+
+                icon.Id = id;
+                icon.ImageBinary = data;
+
+                Database.Database.Insert(icon);
+
+                i++;
+                Console.SetCursorPosition(cursorLeft, cursorTop);
+                Console.Write("{0}/{1} ({2}%)", i, count,
+                              (int)( ( i / (double)count ) * 100d ));
+
+            }
         }
 
         private static void GenerateFiles()
@@ -381,6 +468,7 @@ namespace DBSynchroniser
                 writer.EndWriting();
             }
         }
+
 
         #endregion
 

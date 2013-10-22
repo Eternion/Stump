@@ -13,6 +13,7 @@
     <Window.Resources>
         <converters:ItemTypeIdToTypeNameConverter x:Key="TypeToI18N"/>
         <converters:IdToIconConverter x:Key="IdToIcon"/>
+        <converters:CurrentLangConverter x:Key="CurrentLang"/>
         <items:ItemEffectStyleSelector x:Key="EffectStyleSelector" LineBrush="SeaShell"/>
         <items:ColorByOperatorConverter x:Key="ColorByOperatorConverter"/>
         <DataTemplate x:Key="ItemDataTemplate" DataType="items2:ItemWrapper">

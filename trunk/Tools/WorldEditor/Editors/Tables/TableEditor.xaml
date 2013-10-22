@@ -33,9 +33,6 @@
             <Button Margin="3" Command="{Binding SaveCommand}">
                 <TextBlock Text="Save" TextWrapping="Wrap" TextAlignment="Center" />
             </Button>
-            <Button Margin="3" Command="{Binding SaveAsCommand}">
-                <TextBlock Text="Save as ..." TextWrapping="Wrap" TextAlignment="Center" />
-            </Button>
         </UniformGrid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -66,7 +63,7 @@
                         </TextBlock.RenderTransform>
                     </TextBlock>
                 </Expander.Header>
-                <xctk:PropertyGrid Name="ObjectEditor" SelectedObject="{Binding SelectedItem, ElementName=ObjectsGrid}" Width="250" />
+                <xctk:PropertyGrid Name="ObjectEditor" SelectedObject="{Binding SelectedItem, ElementName=ObjectsGrid}" Width="250" PropertyValueChanged="ObjectEditor_PropertyValueChanged" />
             </Expander>
             <DataGrid Name="ObjectsGrid" ItemsSource="{Binding Rows}" AutoGenerateColumns="false"
               IsReadOnly="true" AlternatingRowBackground="#FFDCEAF8"

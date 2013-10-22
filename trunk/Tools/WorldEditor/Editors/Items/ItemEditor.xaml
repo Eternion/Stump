@@ -6,18 +6,24 @@
         xmlns:converters="clr-namespace:WorldEditor.Helpers.Converters" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:items2="clr-namespace:WorldEditor.Search.Items" xmlns:d2OClasses="clr-namespace:Stump.DofusProtocol.D2oClasses;assembly=Stump.DofusProtocol.D2oClasses"
         xmlns:helpers="clr-namespace:WorldEditor.Helpers"
+        xmlns:i18N="clr-namespace:Stump.Core.I18N;assembly=Stump.Core"
+        xmlns:markups="clr-namespace:WorldEditor.Helpers.Markups"
         mc:Ignorable="d"
         Icon="pack://application:,,,/Images/Hammer_Builder_32xLG.png"
-        d:DataContext="{d:DesignInstance Type=items:ItemEditorModelView}"
-        Title="{Binding Item.Name, StringFormat={}Editing \'{0}\'}" Grid.IsSharedSizeScope="True" Height="670" Width="760">
+        d:DataContext="{d:DesignInstance Type=items:ItemEditorModelView}" Grid.IsSharedSizeScope="True" Height="670" Width="760">
     <Window.Resources>
         <helpers:BindingProxy Data="{Binding}" x:Key="ModelViewProxy"/>
+        <converters:CurrentLangConverter x:Key="CurrentLang"/>
         <converters:IdToIconConverter x:Key="IdToIcon"/>
         <converters:IdToI18NTextConverter x:Key="I18NToText"/>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
         <items2:ItemEffectStyleSelector x:Key="EffectStyleSelector"/>
         <items2:ColorByOperatorConverter x:Key="ColorByOperatorConverter"/>
+        <converters:LangToFlagConverter x:Key="LangToFlag" />
     </Window.Resources>
+    <Window.Title>
+        <Binding Path="Item.Name" StringFormat="Editing '{0}'"/>
+    </Window.Title>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -28,10 +34,10 @@
             <RowDefinition Height="2*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" Grid.Row="0">
+        <DockPanel Grid.Row="0">
             <Border>
                 <Border.Style>
-                    <Style TargetType="Border">
+                    <Style TargetType="{x:Type Border}">
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
@@ -43,7 +49,7 @@
                 <StackPanel>
                     <Button HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3" Command="{Binding ChangeIconCommand}">
                         <Button.Template>
-                            <ControlTemplate TargetType="Button">
+                            <ControlTemplate TargetType="{x:Type Button}">
 
                                 <Image Source="{Binding Item.IconId, Converter={StaticResource IdToIcon}}" />
                             </ControlTemplate>
@@ -53,12 +59,23 @@
                 </StackPanel>
             </Border>
             <TextBox Text="{Binding Item.Name}" Foreground="SteelBlue" FontSize="40" BorderThickness="0" Background="Transparent" VerticalContentAlignment="Bottom"
-                     VerticalAlignment="Top" Padding="0" Margin="3" />
-            <TextBox Name="ItemIdField"  Text="{Binding Item.Id}" Foreground="DimGray" FontSize="25" VerticalAlignment="Center" VerticalContentAlignment="Bottom" Margin="3" IsEnabled="False"></TextBox>
-            <Button Click="ItemIdEdit_OnClick" Margin="2" Width="20" Height="25">
+    			VerticalAlignment="Top" Padding="0" Margin="3,3,3,0" />
+            <TextBox x:Name="ItemIdField"  Text="{Binding Item.Id}" Foreground="DimGray" FontSize="25" VerticalAlignment="Center" VerticalContentAlignment="Bottom" IsEnabled="False" Margin="3,10,3,9"/>
+            <Button Click="ItemIdEdit_OnClick" Width="20" Height="25" Margin="2,17">
                 <Image Height="16" Source="/WorldEditor;component/Images/pencil_003_16xMD.png"  Width="16"/>
             </Button>
-        </StackPanel>
+            <ComboBox SelectedValue="{Binding Item.CurrentLanguage}" ItemsSource="{Binding Source={markups:EnumValues {x:Type i18N:Languages}}}" 
+                      HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate DataType="i18N:Languages">
+                        <StackPanel Margin="3" Orientation="Horizontal">
+                            <Image Margin="3" Source="{Binding Converter={StaticResource LangToFlag}}" HorizontalAlignment="Center"/>
+                            <TextBlock Margin="3" Text="{Binding}" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </DockPanel>
         <GroupBox Header="Primary Properties" Grid.Row="1">
             <Grid>
                 <Grid.RowDefinitions>
@@ -95,7 +112,7 @@
                 <TextBlock Text="Item Set" Grid.Row="1" Grid.Column="2" Margin="3"/>
                 <DockPanel Grid.Row="1" Grid.Column="3" >
                     <Button DockPanel.Dock="Right" Command="{Binding ResetItemSetCommand}"  Margin="-1,3,3,3" Width="22">
-                        <Image Source="/WorldEditor;component/Images/action_Cancel_16xLG.png"></Image>
+                        <Image Source="/WorldEditor;component/Images/action_Cancel_16xLG.png"/>
                     </Button>
                     <ComboBox Margin="3" ItemsSource="{Binding ItemSets}" SelectedValuePath="Id" SelectedValue="{Binding Item.ItemSetId}">
                         <ComboBox.ItemTemplate>
@@ -187,7 +204,7 @@
             <DockPanel>
                 <ToolBar DockPanel.Dock="Top">
                     <ToolBar.Resources>
-                        <Style TargetType="Image">
+                        <Style TargetType="{x:Type Image}">
                             <Style.Triggers>
                                 <Trigger Property="IsEnabled" Value="False">
                                     <Setter Property="Opacity" Value="0.4"/>
@@ -195,18 +212,17 @@
                             </Style.Triggers>
                         </Style>
                     </ToolBar.Resources>
-                    <Button Command="{Binding EditEffectCommand}" CommandParameter="{Binding ElementName=EffectsListBox, Path=SelectedItem}" Margin="2">
+                    <Button Command="{Binding EditEffectCommand}" CommandParameter="{Binding SelectedItem, ElementName=EffectsListBox}" Margin="2">
                         <Image Height="16" Source="/WorldEditor;component/Images/pencil_003_16xMD.png"  Width="16"/>
                     </Button>
                     <Button Command="{Binding AddEffectCommand}" Margin="2">
                         <Image Height="16" Source="/WorldEditor;component/Images/action_add_16xLG.png" Width="16"/>
                     </Button>
-                    <Button Command="{Binding RemoveEffectCommand}" CommandParameter="{Binding ElementName=EffectsListBox, Path=SelectedItems}" Margin="2">
-                        <Image Height="16" Source="/WorldEditor;component/Images/action_Cancel_16xLG.png" Width="16">
-                        </Image>
+                    <Button Command="{Binding RemoveEffectCommand}" CommandParameter="{Binding SelectedItems, ElementName=EffectsListBox}" Margin="2">
+                        <Image Height="16" Source="/WorldEditor;component/Images/action_Cancel_16xLG.png" Width="16"/>
                     </Button>
                 </ToolBar>
-                <ListBox Name="EffectsListBox" Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Item.WrappedEffects}"
+                <ListBox x:Name="EffectsListBox" Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Item.WrappedEffects}"
 				ItemContainerStyleSelector="{StaticResource EffectStyleSelector}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" SelectionChanged="EffectsListBox_SelectionChanged" SelectionMode="Extended">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type items:EffectWrapper}">

@@ -233,6 +233,7 @@
     <Compile Include="Extensions\NetExtensions.cs" />
     <Compile Include="Extensions\TimeExtensions.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="I18N\Languages.cs" />
     <Compile Include="IO\ConsoleProgress.cs" />
     <Compile Include="IO\FastBigEndianReader.cs" />
     <Compile Include="IO\FastLittleEndianReader.cs" />

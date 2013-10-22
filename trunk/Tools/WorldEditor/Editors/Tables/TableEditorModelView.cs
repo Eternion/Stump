@@ -29,6 +29,7 @@ using WorldEditor.Database;
 using System.Linq;
 using WorldEditor.Editors.Files.D2O;
 using WorldEditor.Helpers;
+using WorldEditor.Helpers.Converters;
 
 namespace WorldEditor.Editors.Tables
 {
@@ -41,7 +42,7 @@ namespace WorldEditor.Editors.Tables
         private readonly ObservableCollection<string> m_searchProperties = new ObservableCollection<string>();
         private ReadOnlyObservableCollection<string> m_readOnlySearchProperties;
         private readonly Dictionary<string, Func<object, object>> m_propertiesGetters = new Dictionary<string, Func<object, object>>();
-        private Stack<D2OEditedObject> m_editedObjects = new Stack<D2OEditedObject>(); 
+        private Dictionary<object, EditedObject> m_editedObjects = new Dictionary<object, EditedObject>(); 
         private readonly TableEditor m_editor;
 
         public TableEditorModelView(TableEditor editor, D2OTable table)
@@ -113,11 +114,11 @@ namespace WorldEditor.Editors.Tables
                 {
                     element = new FrameworkElementFactory(typeof(TextBlock));
 
-                    /*if (d2oProperty != null && d2oProperty.TypeId == D2OFieldType.I18N)
+                    if (property.GetCustomAttribute<I18NFieldAttribute>() != null)
                     {
                         binding.Converter = new IdToI18NTextConverter();
                         column.Width = 120;
-                    }*/
+                    }
 
                     element.SetBinding(TextBlock.TextProperty, binding);
                     element.SetValue(FrameworkElement.MarginProperty, new Thickness(1));
@@ -139,6 +140,27 @@ namespace WorldEditor.Editors.Tables
             }
         }
 
+        public void OnObjectEdited(object item)
+        {
+            if (!m_editedObjects.ContainsKey(item))
+                m_editedObjects.Add(item, new EditedObject(item, ObjectState.Dirty));
+        }
+
+        public void OnObjectRemoved(object item)
+        {
+            if (m_editedObjects.ContainsKey(item))
+                m_editedObjects[item].State = ObjectState.Removed;
+            else
+                m_editedObjects.Add(item, new EditedObject(item, ObjectState.Removed));
+        }
+
+        public void OnObjectAdded(object item)
+        {
+            if (m_editedObjects.ContainsKey(item))
+                m_editedObjects[item].State = ObjectState.Added;
+            else
+                m_editedObjects.Add(item, new EditedObject(item, ObjectState.Added));
+        }
 
         #region RemoveCommand
 
@@ -149,15 +171,24 @@ namespace WorldEditor.Editors.Tables
             get { return m_removeCommand ?? (m_removeCommand = new DelegateCommand(OnRemove, CanRemove)); }
         }
 
-        private static bool CanRemove(object parameter)
+        private bool CanRemove(object parameter)
         {
-            return true;
+            return parameter is IList && ( (IList)parameter ).Count > 0;
         }
 
-        private static void OnRemove(object parameter)
+        private void OnRemove(object parameter)
         {
             if (parameter == null || !CanRemove(parameter))
-                return;
+                return;   
+            
+            // copy
+            var list = ( parameter as IList ).OfType<object>().ToArray();
+
+            foreach (var item in list)
+            {
+                m_rows.Remove(item);
+                OnObjectRemoved(item);
+            }
         }
 
         #endregion
@@ -172,15 +203,72 @@ namespace WorldEditor.Editors.Tables
             get { return m_addCommand ?? (m_addCommand = new DelegateCommand(OnAdd, CanAdd)); }
         }
 
-        private static bool CanAdd(object parameter)
+        private bool CanAdd(object parameter)
         {
             return true;
         }
 
-        private static void OnAdd(object parameter)
+        private void OnAdd(object parameter)
         {
-            if (parameter == null || !CanAdd(parameter))
-                return;
+            var obj = Activator.CreateInstance(m_table.Type);
+
+            foreach (var property in obj.GetType().GetProperties())
+            {
+                if (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(List<>))
+                {
+                    property.SetValue(obj, Activator.CreateInstance(property.PropertyType));
+                }
+            }
+
+            m_rows.Add(obj);
+
+            m_editor.ObjectsGrid.SelectedItem = obj;
+            m_editor.ObjectsGrid.ScrollIntoView(obj);
+            m_editor.ObjectsGrid.Focus();
+
+            OnObjectAdded(obj);
+        }
+
+        #endregion
+
+
+        #region SaveCommand
+
+        private DelegateCommand m_saveCommand;
+
+        public DelegateCommand SaveCommand
+        {
+            get { return m_saveCommand ?? (m_saveCommand = new DelegateCommand(OnSave, CanSave)); }
+        }
+
+        private bool CanSave(object parameter)
+        {
+            return true;
+        }
+
+        private void OnSave(object parameter)
+        {
+            foreach (var obj in m_editedObjects.Values.ToArray())
+            {
+                m_editedObjects.Remove(obj.Object);
+                SaveEditedObject(obj);
+            }
+        }
+
+        private void SaveEditedObject(EditedObject obj)
+        {
+            switch (obj.State)
+            {
+                case ObjectState.Added:
+                    DatabaseManager.Instance.Database.Insert(obj.Object);
+                    break;
+                case ObjectState.Removed:
+                    DatabaseManager.Instance.Database.Delete(obj.Object);
+                    break;
+                case ObjectState.Dirty:
+                    DatabaseManager.Instance.Database.Update(obj.Object);
+                    break;
+            }
         }
 
         #endregion

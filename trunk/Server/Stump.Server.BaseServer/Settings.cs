@@ -1,6 +1,6 @@
 ﻿
 using Stump.Core.Attributes;
-using Stump.Server.BaseServer.I18n;
+using Stump.Core.I18N;
 
 namespace Stump.Server.BaseServer
 {
