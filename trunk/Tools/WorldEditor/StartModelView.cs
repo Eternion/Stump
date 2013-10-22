@@ -14,17 +14,9 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
 using System.Windows;
 using DBSynchroniser;
-using Stump.Core.Reflection;
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
-using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using WorldEditor.Config;
 using WorldEditor.Editors.Items;
 using WorldEditor.Editors.Tables;
@@ -35,11 +27,6 @@ namespace WorldEditor
 {
     public class StartModelView
     {
-        public StartModelView()
-        {
-        }
-
-
         #region EditTableCommand
 
         private DelegateCommand m_editTableCommand;
@@ -49,7 +36,7 @@ namespace WorldEditor
             get { return m_editTableCommand ?? (m_editTableCommand = new DelegateCommand(OnEditTable, CanEditTable)); }
         }
 
-        private bool CanEditTable(object parameter)
+        private static bool CanEditTable(object parameter)
         {
             return parameter is D2OTable;
         }

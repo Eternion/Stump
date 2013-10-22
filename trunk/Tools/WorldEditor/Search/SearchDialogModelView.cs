@@ -7,9 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using Stump.Core.Reflection;
 using Stump.ORM.SubSonic.Extensions;
-using WorldEditor.Editors.Items;
 using WorldEditor.Helpers;
-using WorldEditor.Helpers.Collections;
 using WorldEditor.Loaders.I18N;
 
 namespace WorldEditor.Search
@@ -31,11 +29,11 @@ namespace WorldEditor.Search
             };
 
         private ObservableCollection<object> m_itemsSource;
-        private ObservableCollection<string> m_searchProperties = new ObservableCollection<string>();
-        private ReadOnlyObservableCollection<string> m_readOnlySearchProperties;
-        private Dictionary<string, Func<object, object>> m_propertiesGetters = new Dictionary<string, Func<object, object>>();
-        private Dictionary<string, Type> m_propertiesType = new Dictionary<string, Type>();
-        private Dictionary<string, string> m_i18nProperties = new Dictionary<string, string>();
+        private readonly ObservableCollection<string> m_searchProperties = new ObservableCollection<string>();
+        private readonly ReadOnlyObservableCollection<string> m_readOnlySearchProperties;
+        private readonly Dictionary<string, Func<object, object>> m_propertiesGetters = new Dictionary<string, Func<object, object>>();
+        private readonly Dictionary<string, Type> m_propertiesType = new Dictionary<string, Type>();
+        private readonly Dictionary<string, string> m_i18nProperties = new Dictionary<string, string>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -88,8 +86,8 @@ namespace WorldEditor.Search
             {
                 m_quickSearchText = value;
 
-                SearchCriteria idCriteria = Criterias.FirstOrDefault(x => x.ComparedProperty == "Id");
-                SearchCriteria nameCriteria = Criterias.FirstOrDefault(x => x.ComparedProperty == "Name");
+                var idCriteria = Criterias.FirstOrDefault(x => x.ComparedProperty == "Id");
+                var nameCriteria = Criterias.FirstOrDefault(x => x.ComparedProperty == "Name");
 
                 if (string.IsNullOrEmpty(m_quickSearchText))
                 {
@@ -133,7 +131,7 @@ namespace WorldEditor.Search
             get { return m_updateResultsCommand ?? (m_updateResultsCommand = new DelegateCommand(OnUpdateResults, CanUpdateResults)); }
         }
 
-        private bool CanUpdateResults(object parameter)
+        private static bool CanUpdateResults(object parameter)
         {
             return true;
         }
@@ -212,7 +210,7 @@ namespace WorldEditor.Search
 
         protected virtual bool CanEditItem(object parameter)
         {
-            return true; ;
+            return true;
         }
 
         protected virtual void OnEditItem(object parameter)
@@ -231,11 +229,8 @@ namespace WorldEditor.Search
 
             var properties = ItemType.GetProperties();
 
-            foreach (var property in properties)
+            foreach (var property in properties.Where(property => !m_searchProperties.Contains(property.Name)))
             {
-                if (m_searchProperties.Contains(property.Name))
-                    continue;
-
                 if (property.PropertyType.IsPrimitive || property.PropertyType == typeof (string))
                 {
                     var del = (Func<object, object>)property.GetGetMethod().CreateFuncDelegate(typeof(object));
@@ -248,7 +243,7 @@ namespace WorldEditor.Search
                     if (IsI18NProperty(property.Name, out textPropertyName))
                     {
                         m_searchProperties.Add(textPropertyName);
-                        m_propertiesGetters.Add(textPropertyName, (obj) => I18NDataManager.Instance.ReadText((uint)del(obj)));
+                        m_propertiesGetters.Add(textPropertyName, obj => I18NDataManager.Instance.ReadText((uint)del(obj)));
                         m_propertiesType.Add(textPropertyName, typeof(string));
                         m_i18nProperties.Add(textPropertyName, property.Name);
                     }
@@ -283,7 +278,7 @@ namespace WorldEditor.Search
 
         public virtual SearchCriteria CreateCriteria(string propertyName)
         {
-            var criteria = new SearchCriteria()
+            var criteria = new SearchCriteria
                 {
                     ComparedProperty = propertyName,
                 };
@@ -343,12 +338,9 @@ namespace WorldEditor.Search
 
             foreach (var item in ItemsSource)
             {
-                bool match = false;
-                foreach (var criteria in Criterias)
+                var match = false;
+                foreach (var criteria in Criterias.TakeWhile(criteria => m_searchProperties.Contains(criteria.ComparedProperty)))
                 {
-                    if (!m_searchProperties.Contains(criteria.ComparedProperty))
-                        break;
-
                     Func<object, object> propGetter;
                     if (!m_propertiesGetters.TryGetValue(criteria.ComparedProperty, out propGetter))
                         break;

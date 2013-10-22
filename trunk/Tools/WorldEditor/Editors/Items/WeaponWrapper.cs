@@ -24,9 +24,6 @@ using DBSynchroniser.Records;
 using DBSynchroniser.Records.Langs;
 using Stump.Core.I18N;
 using Stump.DofusProtocol.D2oClasses;
-using Stump.Server.WorldServer.Database.Items.Templates;
-using Stump.Server.WorldServer.Game.Items;
-using WorldEditor.Database;
 using WorldEditor.Loaders.D2O;
 using WorldEditor.Loaders.I18N;
 
@@ -34,8 +31,6 @@ namespace WorldEditor.Editors.Items
 {
     public class WeaponWrapper : ItemWrapper
     {
-        private WeaponRecord m_wrappedWeapon;
-
         public WeaponWrapper()
         {
             WrappedWeapon = new WeaponRecord();
@@ -124,7 +119,7 @@ namespace WorldEditor.Editors.Items
             if (New)
             {
                 Id = Math.Max(ObjectDataManager.Instance.FindFreeId<Item>(), ObjectDataManager.Instance.FindFreeId<Weapon>());
-                NameId = (uint)I18NDataManager.Instance.FindFreeId();
+                NameId = I18NDataManager.Instance.FindFreeId();
                 DescriptionId = NameId + 1;
             }
 

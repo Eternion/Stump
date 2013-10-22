@@ -29,15 +29,12 @@ namespace WorldEditor.Helpers.Converters
             if (value is LangText)
             {
                 return (value as LangText).GetText(I18NDataManager.Instance.DefaultLanguage);
-            } 
-            else if (value is LangTextUi)
+            }
+            if (value is LangTextUi)
             {
                 return ( value as LangTextUi ).GetText(I18NDataManager.Instance.DefaultLanguage);
             }
-            else
-            {
-                return "{not a valid lang record}";
-            }
+            return "{not a valid lang record}";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

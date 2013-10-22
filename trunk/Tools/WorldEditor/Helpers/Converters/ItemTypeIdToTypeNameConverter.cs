@@ -20,9 +20,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 using DBSynchroniser.Records;
-using Stump.DofusProtocol.D2oClasses;
 using WorldEditor.Database;
-using WorldEditor.Loaders.D2O;
 using WorldEditor.Loaders.I18N;
 
 namespace WorldEditor.Helpers.Converters
@@ -38,15 +36,12 @@ namespace WorldEditor.Helpers.Converters
                 Initialize();
 
             ItemTypeRecord type;
-            if (m_types.TryGetValue((int)value, out type))
-                return I18NDataManager.Instance.ReadText(type.NameId);
-
-            return value.ToString();
+            return m_types.TryGetValue((int)value, out type) ? I18NDataManager.Instance.ReadText(type.NameId) : value.ToString();
         }
 
         private static void Initialize()
         {
-            m_types = DatabaseManager.Instance.Database.Query<ItemTypeRecord>("SELECT * FROM itemtypes").ToDictionary(x => x.Id);
+            m_types = DatabaseManager.Instance.Database.Query<ItemTypeRecord>("SELECT * FROM ItemTypes").ToDictionary(x => x.Id);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -1,22 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Stump.Core.I18N;
-using Stump.Server.WorldServer.Game.Items;
 using WorldEditor.Config;
 using WorldEditor.Database;
-using WorldEditor.Helpers;
 using WorldEditor.Loaders.D2O;
 using WorldEditor.Loaders.I18N;
 using WorldEditor.Loaders.Icons;
@@ -69,6 +57,8 @@ namespace WorldEditor
 
             InitializeLoader(() => ObjectDataManager.Instance.Initialize(),
                              "Loading d2o files ...");
+
+            var test = ObjectDataManager.Instance.Tables;
             /*
             InitializeLoader(() => ObjectDataManager.Instance.AddReaders(Settings.LoaderSettings.D2ODirectory),
                              "Loading d2o files ...");
@@ -120,9 +110,7 @@ namespace WorldEditor
             }
             catch (Exception ex)
             {
-                if (MessageBox.Show(string.Format("Cannot perform initialization : {0}\r\nDo you want to modify the config ?",
-                                                  ex.Message),
-                                    "Error", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+                if (MessageBox.Show(string.Format("Cannot perform initialization : {0}\r\nDo you want to modify the config ?", ex.Message), "Error", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
                 {
                     ShowConfigDialog();
                     InitializeLoader(initializer, message);

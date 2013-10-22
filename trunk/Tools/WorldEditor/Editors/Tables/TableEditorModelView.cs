@@ -42,7 +42,7 @@ namespace WorldEditor.Editors.Tables
         private readonly ObservableCollection<string> m_searchProperties = new ObservableCollection<string>();
         private ReadOnlyObservableCollection<string> m_readOnlySearchProperties;
         private readonly Dictionary<string, Func<object, object>> m_propertiesGetters = new Dictionary<string, Func<object, object>>();
-        private Dictionary<object, EditedObject> m_editedObjects = new Dictionary<object, EditedObject>(); 
+        private readonly Dictionary<object, EditedObject> m_editedObjects = new Dictionary<object, EditedObject>(); 
         private readonly TableEditor m_editor;
 
         public TableEditorModelView(TableEditor editor, D2OTable table)
@@ -255,7 +255,7 @@ namespace WorldEditor.Editors.Tables
             }
         }
 
-        private void SaveEditedObject(EditedObject obj)
+        private static void SaveEditedObject(EditedObject obj)
         {
             switch (obj.State)
             {

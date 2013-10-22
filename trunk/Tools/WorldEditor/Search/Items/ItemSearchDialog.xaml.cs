@@ -2,10 +2,8 @@
 using System.Linq;
 using System.Windows;
 using DBSynchroniser.Records;
-using Stump.DofusProtocol.D2oClasses;
 using WorldEditor.Database;
 using WorldEditor.Editors.Items;
-using WorldEditor.Loaders.D2O;
 
 namespace WorldEditor.Search.Items
 {
@@ -17,8 +15,8 @@ namespace WorldEditor.Search.Items
         public ItemSearchDialog()
         {
             InitializeComponent();
-            var items = DatabaseManager.Instance.Database.Query<ItemRecord>("SELECT * FROM items").Select(x => new ItemWrapper(x));
-            items = items.Concat(DatabaseManager.Instance.Database.Query<WeaponRecord>("SELECT * FROM weapons").Select(x => new WeaponWrapper(x)));
+            var items = DatabaseManager.Instance.Database.Query<ItemRecord>("SELECT * FROM Items").Select(x => new ItemWrapper(x));
+            items = items.Concat(DatabaseManager.Instance.Database.Query<WeaponRecord>("SELECT * FROM Weapons").Select(x => new WeaponWrapper(x)));
 
             ModelView = new ItemSearchDialogModelView(typeof (ItemWrapper), new ObservableCollection<object>(items.ToArray()));
             DataContext = ModelView;

@@ -25,11 +25,7 @@ namespace WorldEditor.Database
 {
     public class DatabaseManager : Singleton<DatabaseManager>, INotifyPropertyChanged
     {
-        private DatabaseAccessor m_dbAccessor = new DatabaseAccessor();
-
-        public DatabaseManager()
-        {
-        }
+        private readonly DatabaseAccessor m_dbAccessor = new DatabaseAccessor();
 
         public Stump.ORM.Database Database
         {

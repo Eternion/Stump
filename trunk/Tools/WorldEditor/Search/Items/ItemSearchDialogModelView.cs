@@ -15,7 +15,6 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.Collections.ObjectModel;
 using WorldEditor.Editors.Items;
 

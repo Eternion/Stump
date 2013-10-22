@@ -28,7 +28,6 @@ using Stump.DofusProtocol.D2oClasses.Tools;
 using WorldEditor.Annotations;
 using WorldEditor.Database;
 using WorldEditor.Editors.Items.Effects;
-using WorldEditor.Loaders.D2O;
 using WorldEditor.Loaders.I18N;
 
 namespace WorldEditor.Editors.Items
@@ -54,7 +53,7 @@ namespace WorldEditor.Editors.Items
         public EffectRecord Template
         {
             get { return m_template ?? (m_template = DatabaseManager.Instance.Database.
-                SingleOrDefault<EffectRecord>(string.Format("SELECT * FROM effects WHERE Id={0}", EffectId))); }
+                SingleOrDefault<EffectRecord>(string.Format("SELECT * FROM Effects WHERE Id={0}", EffectId))); }
         }
 
         public int EffectId
@@ -67,7 +66,7 @@ namespace WorldEditor.Editors.Items
             {
                 WrappedEffect.effectId = (uint)value;
                 m_template = DatabaseManager.Instance.Database.
-                              SingleOrDefault<EffectRecord>(string.Format("SELECT * FROM effects WHERE Id={0}", EffectId));
+                              SingleOrDefault<EffectRecord>(string.Format("SELECT * FROM Effects WHERE Id={0}", EffectId));
                 OnPropertyChanged("Description");
                 OnPropertyChanged("Template");
                 OnPropertyChanged("Operator");
