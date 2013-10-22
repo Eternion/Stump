@@ -26,11 +26,12 @@ using DBSynchroniser.Records;
 using DBSynchroniser.Records.Langs;
 using Stump.Core.I18N;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.ORM;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Items;
 using WorldEditor.Annotations;
 using WorldEditor.Database;
-using WorldEditor.Loaders.D2O;
+using WorldEditor.Loaders.Data;
 using WorldEditor.Loaders.I18N;
 using ItemTypeRecord = DBSynchroniser.Records.ItemTypeRecord;
 

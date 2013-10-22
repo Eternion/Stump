@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:WorldEditor="clr-namespace:WorldEditor" xmlns:Database="clr-namespace:WorldEditor.Database"
         xmlns:dbSynchroniser="clr-namespace:DBSynchroniser;assembly=DBSynchroniser"
-        xmlns:d2O="clr-namespace:WorldEditor.Loaders.D2O"
+        xmlns:d2O="clr-namespace:WorldEditor.Loaders.Data"
         WindowStartupLocation="CenterScreen"
         d:DataContext="{d:DesignInstance Type=WorldEditor:StartModelView}" Title="Stump World Editor" SizeToContent="Height" Width="400">
     <StackPanel x:Name="MdiContainer" AllowDrop="True" PreviewDragEnter="MdiContainer_PreviewDragEnter" Drop="MdiContainer_Drop" Background="Transparent">

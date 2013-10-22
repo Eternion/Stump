@@ -34,8 +34,8 @@
             <RowDefinition Height="2*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <DockPanel Grid.Row="0">
-            <Border>
+        <DockPanel Grid.Row="0" LastChildFill="True">
+            <Border DockPanel.Dock="Left">
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
                         <Style.Triggers>
@@ -51,7 +51,7 @@
                         <Button.Template>
                             <ControlTemplate TargetType="{x:Type Button}">
 
-                                <Image Source="{Binding Item.IconId, Converter={StaticResource IdToIcon}}" />
+                                <Image Source="{Binding Item.IconId, Converter={StaticResource IdToIcon}}"  Stretch="None" />
                             </ControlTemplate>
                         </Button.Template>
                     </Button>

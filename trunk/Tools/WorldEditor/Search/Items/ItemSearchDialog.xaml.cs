@@ -15,14 +15,11 @@ namespace WorldEditor.Search.Items
         public ItemSearchDialog()
         {
             InitializeComponent();
-            var items = DatabaseManager.Instance.Database.Query<ItemRecord>("SELECT * FROM Items").Select(x => new ItemWrapper(x));
-            items = items.Concat(DatabaseManager.Instance.Database.Query<WeaponRecord>("SELECT * FROM Weapons").Select(x => new WeaponWrapper(x)));
-
-            ModelView = new ItemSearchDialogModelView(typeof (ItemWrapper), new ObservableCollection<object>(items.ToArray()));
+            ModelView = new ItemSearchDialogModelView();
             DataContext = ModelView;
         }
 
-        public SearchDialogModelView ModelView
+        public ItemSearchDialogModelView ModelView
         {
             get;
             set;

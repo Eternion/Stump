@@ -15,15 +15,19 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using DBSynchroniser.Records;
+using WorldEditor.Database;
 using WorldEditor.Editors.Items;
 
 namespace WorldEditor.Search.Items
 {
-    public class ItemSearchDialogModelView : SearchDialogModelView
+    public class ItemSearchDialogModelView : SearchDialogModelView<ItemWrapper>
     {
-        public ItemSearchDialogModelView(Type itemType, ObservableCollection<object> source)
-            : base(itemType, source)
+        public ItemSearchDialogModelView()
+            : base (typeof(ItemRecord))
         {
         }
 
@@ -39,6 +43,26 @@ namespace WorldEditor.Search.Items
 
             var editor = new ItemEditor(( (ItemWrapper)parameter ).WrappedItem);
             editor.Show();
+        }
+
+        public override IEnumerable<ItemWrapper> FindMatches()
+        {
+            var whereStatement = GetSQLWhereStatement();
+
+            var matches = new List<ItemRecord>();
+
+            if (string.IsNullOrEmpty(whereStatement))
+            {
+                matches = DatabaseManager.Instance.Database.Fetch<ItemRecord>("SELECT * FROM Items");
+                matches.AddRange(DatabaseManager.Instance.Database.Query<WeaponRecord>("SELECT * FROM Weapons"));
+            }
+            else
+            {
+                matches = DatabaseManager.Instance.Database.Fetch<ItemRecord>("SELECT * FROM Items WHERE " + whereStatement);
+                matches.AddRange(DatabaseManager.Instance.Database.Query<WeaponRecord>("SELECT * FROM Weapons WHERE " + whereStatement));
+            }
+
+            return matches.Select(x => new ItemWrapper(x));
         }
     }
 }

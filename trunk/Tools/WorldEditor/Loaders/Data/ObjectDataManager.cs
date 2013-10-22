@@ -16,8 +16,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using DBSynchroniser;
 using NLog;
@@ -27,7 +25,7 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using WorldEditor.Config;
 using WorldEditor.Database;
 
-namespace WorldEditor.Loaders.D2O
+namespace WorldEditor.Loaders.Data
 {
     /// <summary>
     /// Retrieves D2O objects. Thread safe

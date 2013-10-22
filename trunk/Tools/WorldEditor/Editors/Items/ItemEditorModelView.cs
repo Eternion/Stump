@@ -25,7 +25,7 @@ using Stump.DofusProtocol.D2oClasses;
 using WorldEditor.Annotations;
 using WorldEditor.Editors.Items.Effects;
 using WorldEditor.Helpers;
-using WorldEditor.Loaders.D2O;
+using WorldEditor.Loaders.Data;
 using WorldEditor.Loaders.Icons;
 
 namespace WorldEditor.Editors.Items
@@ -117,7 +117,7 @@ namespace WorldEditor.Editors.Items
         {
             var dialog = new IconSelectionDialog
                 {
-                    IconsSource = IconsManager.Instance.Icons.Values,
+                    IconsSource = IconsManager.Instance.Icons,
                     SelectedIcon = IconsManager.Instance.GetIcon(Item.IconId)
                 };
 

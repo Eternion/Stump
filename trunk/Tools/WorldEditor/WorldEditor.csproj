@@ -134,7 +134,7 @@
     <Compile Include="Helpers\OpaqueClickableImage.cs" />
     <Compile Include="Helpers\SynchronizationCallback.cs" />
     <Compile Include="Helpers\VirtualizingWrapPanel.cs" />
-    <Compile Include="Loaders\D2O\ObjectDataManager.cs" />
+    <Compile Include="Loaders\Data\ObjectDataManager.cs" />
     <Compile Include="Loaders\I18N\I18NDataManager.cs" />
     <Compile Include="Loaders\I18N\LangExtension.cs" />
     <Compile Include="Loaders\Icons\Icon.cs" />
