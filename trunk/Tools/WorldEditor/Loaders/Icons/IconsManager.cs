@@ -17,12 +17,9 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using DBSynchroniser.Records.Icons;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses.Tools.D2p;
-using WorldEditor.Database;
 
 namespace WorldEditor.Loaders.Icons
 {
@@ -44,19 +41,17 @@ namespace WorldEditor.Loaders.Icons
             private set;
         }
 
-        public void Initialize()
+        public void Initialize(string path)
         {
-            m_icons = DatabaseManager.Instance.Database.Query<IconRecord>("SELECT * FROM icons").ToDictionary(x => x.Id, x => new Icon(x.Id, x.ImageBinary));
-            ErrorIcon = m_icons[-1];
-            EmptyIcon = m_icons[0];
+            m_d2PFile = new D2pFile(path);
+            m_icons = EnumerateIcons().ToDictionary(x => x.Id);
+            ErrorIcon = new Icon(-1, m_d2PFile.ReadFile("error.png"));
+            EmptyIcon = new Icon(0, m_d2PFile.ReadFile("empty.png"));
         }
 
-        public ReadOnlyDictionary<int, Icon> Icons
+        public IEnumerable<Icon> Icons
         {
-            get
-            {
-                return new ReadOnlyDictionary<int, Icon>(m_icons);
-            }
+            get { return m_icons.Values; }
         }
 
         public Icon GetIcon(int id)
@@ -67,7 +62,37 @@ namespace WorldEditor.Loaders.Icons
             if (!m_icons.ContainsKey(id))
                 return ErrorIcon;
 
-            return m_icons[id];
+            byte[] data = m_d2PFile.ReadFile(id + ".png");
+
+            return new Icon(id, data);
+        }
+
+        private IEnumerable<Icon> EnumerateIcons()
+        {
+            foreach (var entry in m_d2PFile.Entries)
+            {
+                if (!entry.FullFileName.EndsWith(".png"))
+                    continue;
+
+                var data = m_d2PFile.ReadFile(entry);
+                var name = entry.FileName.Replace(".png", "");
+
+                int id;
+                switch (name)
+                {
+                    case "empty":
+                        id = 0;
+                        break;
+                    case "error":
+                        id = -1;
+                        break;
+                    default:
+                        id = int.Parse(name);
+                        break;
+                }
+
+                yield return new Icon(id, data);
+            }
         }
     }
 }

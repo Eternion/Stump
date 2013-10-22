@@ -24,7 +24,7 @@ using DBSynchroniser.Records;
 using DBSynchroniser.Records.Langs;
 using Stump.Core.I18N;
 using Stump.DofusProtocol.D2oClasses;
-using WorldEditor.Loaders.D2O;
+using WorldEditor.Loaders.Data;
 using WorldEditor.Loaders.I18N;
 
 namespace WorldEditor.Editors.Items

@@ -758,7 +758,6 @@ namespace Stump.ORM
 			{
 				using (var cmd = CreateCommand(_sharedConnection, sql, args))
 				{
-				    cmd.CommandTimeout = 120;
 					IDataReader r;
 					var pd = PocoData.ForType(typeof(T));
 					try

@@ -5,7 +5,7 @@ using System.Windows;
 using Stump.Core.I18N;
 using WorldEditor.Config;
 using WorldEditor.Database;
-using WorldEditor.Loaders.D2O;
+using WorldEditor.Loaders.Data;
 using WorldEditor.Loaders.I18N;
 using WorldEditor.Loaders.Icons;
 
@@ -50,15 +50,14 @@ namespace WorldEditor
             
             InitializeLoader(() => I18NDataManager.Instance.Initialize(),
                              "Loading d2i files ...");
-            InitializeLoader(() => IconsManager.Instance.Initialize(),
+            InitializeLoader(() => IconsManager.Instance.Initialize(Settings.LoaderSettings.ItemIconsFile),
                              "Loading item icons ...");
             // todo
             I18NDataManager.Instance.DefaultLanguage = Languages.French;
 
             InitializeLoader(() => ObjectDataManager.Instance.Initialize(),
-                             "Loading d2o files ...");
+                             "Loading tables informations ...");
 
-            var test = ObjectDataManager.Instance.Tables;
             /*
             InitializeLoader(() => ObjectDataManager.Instance.AddReaders(Settings.LoaderSettings.D2ODirectory),
                              "Loading d2o files ...");

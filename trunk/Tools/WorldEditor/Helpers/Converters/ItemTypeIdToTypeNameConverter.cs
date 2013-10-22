@@ -35,6 +35,9 @@ namespace WorldEditor.Helpers.Converters
             if (!m_initialized)
                 Initialize();
 
+            if (value is uint)
+                value = (int) (uint)value;
+
             ItemTypeRecord type;
             return m_types.TryGetValue((int)value, out type) ? I18NDataManager.Instance.ReadText(type.NameId) : value.ToString();
         }
