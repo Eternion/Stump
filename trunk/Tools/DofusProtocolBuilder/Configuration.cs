@@ -150,7 +150,7 @@ namespace DofusProtocolBuilder
                     OutPutPath = "dbclasses/",
                     OutPutNamespace = ".Data",
                     TemplatePath = "./Templates/DBTemplate.tt",
-                    IgnoreMethods = true,
+                    IgnoreMethods = false,
                     EnableParsing = true,
 
                 };

@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using DBSynchroniser.Records;
 using Stump.DofusProtocol.D2oClasses;
 using WorldEditor.Annotations;
 using WorldEditor.Editors.Items.Effects;
@@ -39,37 +40,17 @@ namespace WorldEditor.Editors.Items
             if (handler != null) handler(this, arg2);
         }
 
-        public ItemEditorModelView(Item item)
-            : this(item is Weapon ? new WeaponWrapper((Weapon)item) : new ItemWrapper(item))
+        public ItemEditorModelView(ItemRecord item)
+            : this(item is WeaponRecord ? new WeaponWrapper((WeaponRecord)item) : new ItemWrapper(item))
         {
         }
 
         public ItemEditorModelView(ItemWrapper wrapper)
         {
             Item = wrapper;
-            Types = ObjectDataManager.Instance.EnumerateObjects<ItemType>().ToList();
-            ItemSets = ObjectDataManager.Instance.EnumerateObjects<ItemSet>().ToList();
-            Item.PropertyChanged += OnPropertyChanged;
-        }
-
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName != "Type")
-                return;
-
-            if (!string.IsNullOrEmpty(Item.Type.RawZone) && Item.Type.RawZone != "null" && !( Item is WeaponWrapper )) // it's a weapon
-            {
-                Item.PropertyChanged -= OnPropertyChanged;
-                Item = new WeaponWrapper(Item);
-                Item.PropertyChanged += OnPropertyChanged;
-            }
-            else if ((Item is WeaponWrapper) &&
-                     (string.IsNullOrEmpty(Item.Type.RawZone) || Item.Type.RawZone == "null"))
-            {
-                Item.PropertyChanged -= OnPropertyChanged;
-                Item = new ItemWrapper(Item as WeaponWrapper);
-                Item.PropertyChanged += OnPropertyChanged;
-            }
+            Types = ObjectDataManager.Instance.EnumerateObjects<ItemTypeRecord>().
+                Where(x => IsWeapon ? !string.IsNullOrEmpty(x.RawZone) && x.RawZone != "null" : string.IsNullOrEmpty(x.RawZone) || x.RawZone == "null").ToList();
+            ItemSets = ObjectDataManager.Instance.EnumerateObjects<ItemSetRecord>().ToList();
         }
 
         public ItemWrapper Item
@@ -78,13 +59,13 @@ namespace WorldEditor.Editors.Items
             set;
         }
 
-        public List<ItemType> Types
+        public List<ItemTypeRecord> Types
         {
             get;
             set;
         }
 
-        public List<ItemSet> ItemSets
+        public List<ItemSetRecord> ItemSets
         {
             get;
             set;
@@ -136,7 +117,7 @@ namespace WorldEditor.Editors.Items
         {
             var dialog = new IconSelectionDialog
                 {
-                    IconsSource = IconsManager.Instance.Icons,
+                    IconsSource = IconsManager.Instance.Icons.Values,
                     SelectedIcon = IconsManager.Instance.GetIcon(Item.IconId)
                 };
 

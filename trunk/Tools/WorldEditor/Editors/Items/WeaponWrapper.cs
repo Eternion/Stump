@@ -17,8 +17,12 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using DBSynchroniser.Records;
+using DBSynchroniser.Records.Langs;
+using Stump.Core.I18N;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Items;
@@ -30,66 +34,32 @@ namespace WorldEditor.Editors.Items
 {
     public class WeaponWrapper : ItemWrapper
     {
-        private Weapon m_wrappedWeapon;
+        private WeaponRecord m_wrappedWeapon;
 
-        public WeaponWrapper(Weapon wrappedWeapon)
+        public WeaponWrapper()
+        {
+            WrappedWeapon = new WeaponRecord();
+            m_name = new LangText();
+            m_name.SetText(Languages.All, "New weapon");
+            m_description = new LangText();
+            m_description.SetText(Languages.All, "Item description");
+            m_effects = new ObservableCollection<EffectWrapper>();
+            WrappedItem.recipeIds = new List<uint>();
+            WrappedItem.favoriteSubAreas = new List<uint>();
+            WrappedItem.possibleEffects = new List<EffectInstance>();
+            WrappedItem.criteria = "";
+            WrappedItem.criteriaTarget = "";
+            WrappedItem.itemSetId = -1;
+            New = true;
+        }
+
+        public WeaponWrapper(WeaponRecord wrappedWeapon)
             : base(wrappedWeapon)
         {
             WrappedWeapon = wrappedWeapon;
         }
 
-        public WeaponWrapper(ItemWrapper item)
-        {
-            var weapon = new Weapon();
-            weapon.id = item.WrappedItem.id;
-            weapon.nameId = item.WrappedItem.nameId;
-            weapon.typeId = item.WrappedItem.typeId;
-            weapon.descriptionId = item.WrappedItem.descriptionId;
-            weapon.iconId = item.WrappedItem.iconId;
-            weapon.level = item.WrappedItem.level;
-            weapon.realWeight = item.WrappedItem.realWeight;
-            weapon.cursed = item.WrappedItem.cursed;
-            weapon.useAnimationId = item.WrappedItem.useAnimationId;
-            weapon.usable = item.WrappedItem.usable;
-            weapon.targetable = item.WrappedItem.targetable;
-            weapon.price = item.WrappedItem.price;
-            weapon.twoHanded = item.WrappedItem.twoHanded;
-            weapon.etheral = item.WrappedItem.etheral;
-            weapon.itemSetId = item.WrappedItem.itemSetId;
-            weapon.criteria = item.WrappedItem.criteria;
-            weapon.criteriaTarget = item.WrappedItem.criteriaTarget;
-            weapon.hideEffects = item.WrappedItem.hideEffects;
-            weapon.enhanceable = item.WrappedItem.enhanceable;
-            weapon.nonUsableOnAnother = item.WrappedItem.nonUsableOnAnother;
-            weapon.appearanceId = item.WrappedItem.appearanceId;
-            weapon.secretRecipe = item.WrappedItem.secretRecipe;
-            weapon.recipeIds = item.WrappedItem.recipeIds;
-            weapon.bonusIsSecret = item.WrappedItem.bonusIsSecret;
-            weapon.possibleEffects = item.WrappedItem.possibleEffects;
-            weapon.favoriteSubAreas = item.WrappedItem.favoriteSubAreas;
-            weapon.favoriteSubAreasBonus = item.WrappedItem.favoriteSubAreasBonus;
-            weapon.type = item.WrappedItem.type;
-            weapon.weight = item.WrappedItem.weight;
-            WrappedItem = WrappedWeapon = weapon;
-
-            Name = item.Name;
-            Description = item.Description;
-
-            DBTemplate = new WeaponTemplate();
-            DBTemplate.AppearanceId = item.AppearanceId;
-
-            m_effects = new ObservableCollection<EffectWrapper>(PossibleEffects.Select(EffectWrapper.Create));
-            New = item.New;
-            WasItem = true;
-        }
-
-        public Weapon WrappedWeapon
-        {
-            get;
-            private set;
-        }
-
-        public bool WasItem
+        public WeaponRecord WrappedWeapon
         {
             get;
             private set;
@@ -160,29 +130,23 @@ namespace WorldEditor.Editors.Items
 
             WrappedItem.PossibleEffects = WrappedEffects.Select(x => x.WrappedEffect).ToList();
 
-            ObjectDataManager.Instance.StartEditing<Weapon>();
-            ObjectDataManager.Instance.Set(WrappedWeapon.Id, WrappedWeapon);
-            ObjectDataManager.Instance.EndEditing<Weapon>();
-
-            I18NDataManager.Instance.SetText(NameId, Name);
-            I18NDataManager.Instance.SetText(DescriptionId, Description);
-            I18NDataManager.Instance.Save();
-
-            DBTemplate.AssignFields(WrappedWeapon);
-
-            if (WasItem && !New)
-            {
-                DatabaseManager.Instance.Database.Delete("items_templates", "Id", DBTemplate);
-                DatabaseManager.Instance.Database.Insert(DBTemplate);
-
-                ObjectDataManager.Instance.StartEditing<Item>();
-                ObjectDataManager.Instance.Remove<Item>(Id);
-                ObjectDataManager.Instance.EndEditing<Item>();
-            }
-            else if (New)
-                ItemManager.Instance.AddItemTemplate(DBTemplate);
+            if (New)
+                ObjectDataManager.Instance.Insert(WrappedWeapon);
             else
-                DatabaseManager.Instance.Database.Update(DBTemplate);
+                ObjectDataManager.Instance.Update(WrappedWeapon);
+
+            if (New)
+            {
+                m_name.Id = NameId;
+                m_description.Id = DescriptionId;
+                I18NDataManager.Instance.CreateText(m_name);
+                I18NDataManager.Instance.CreateText(m_description);
+            }
+            else
+            {
+                I18NDataManager.Instance.SaveText(m_name);
+                I18NDataManager.Instance.SaveText(m_description);
+            }
 
             New = false;
         }

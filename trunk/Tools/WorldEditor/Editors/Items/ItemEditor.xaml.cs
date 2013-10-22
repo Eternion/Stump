@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using DBSynchroniser.Records;
 using Stump.DofusProtocol.D2oClasses;
 
 namespace WorldEditor.Editors.Items
@@ -9,7 +10,7 @@ namespace WorldEditor.Editors.Items
     /// </summary>
     public partial class ItemEditor
     {
-        public ItemEditor(Item item)
+        public ItemEditor(ItemRecord item)
         {
             InitializeComponent();
             DataContext = ModelView = new ItemEditorModelView(item);

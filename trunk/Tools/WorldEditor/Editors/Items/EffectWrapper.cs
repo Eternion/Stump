@@ -22,9 +22,11 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters.Binary;
+using DBSynchroniser.Records;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools;
 using WorldEditor.Annotations;
+using WorldEditor.Database;
 using WorldEditor.Editors.Items.Effects;
 using WorldEditor.Loaders.D2O;
 using WorldEditor.Loaders.I18N;
@@ -35,7 +37,7 @@ namespace WorldEditor.Editors.Items
     public abstract class EffectWrapper : ICloneable, INotifyPropertyChanged
     {
         private string m_description;
-        private Effect m_template;
+        private EffectRecord m_template;
 
 
         protected EffectWrapper(EffectInstance wrappedEffect)
@@ -49,9 +51,10 @@ namespace WorldEditor.Editors.Items
             private set;
         }
 
-        public Effect Template
+        public EffectRecord Template
         {
-            get { return m_template ?? (m_template = ObjectDataManager.Instance.Get<Effect>(WrappedEffect.effectId)); }
+            get { return m_template ?? (m_template = DatabaseManager.Instance.Database.
+                SingleOrDefault<EffectRecord>(string.Format("SELECT * FROM effects WHERE Id={0}", EffectId))); }
         }
 
         public int EffectId
@@ -63,7 +66,8 @@ namespace WorldEditor.Editors.Items
             set
             {
                 WrappedEffect.effectId = (uint)value;
-                m_template = ObjectDataManager.Instance.Get<Effect>(WrappedEffect.effectId);
+                m_template = DatabaseManager.Instance.Database.
+                              SingleOrDefault<EffectRecord>(string.Format("SELECT * FROM effects WHERE Id={0}", EffectId));
                 OnPropertyChanged("Description");
                 OnPropertyChanged("Template");
                 OnPropertyChanged("Operator");

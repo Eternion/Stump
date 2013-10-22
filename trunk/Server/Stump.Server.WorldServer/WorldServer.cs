@@ -20,7 +20,6 @@ using Stump.DofusProtocol.Types;
 using Stump.ORM;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Database;
-using Stump.Server.BaseServer.I18n;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
