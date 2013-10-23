@@ -107,6 +107,14 @@
     </Compile>
     <Compile Include="Editors\Items\ItemEditorModelView.cs" />
     <Compile Include="Editors\Items\WeaponWrapper.cs" />
+    <Compile Include="Editors\Langs\LangEditor.xaml.cs">
+      <DependentUpon>LangEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Editors\Langs\LangEditorModelView.cs" />
+    <Compile Include="Editors\Langs\LangGridRow.cs" />
+    <Compile Include="Editors\Langs\LangTextRow.cs" />
+    <Compile Include="Editors\Langs\LangTextUiRow.cs" />
+    <Compile Include="Editors\Langs\RowState.cs" />
     <Compile Include="Editors\Tables\TableEditor.xaml.cs">
       <DependentUpon>TableEditor.xaml</DependentUpon>
     </Compile>
@@ -214,6 +222,10 @@
     <Page Include="Editors\Items\ItemEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Editors\Langs\LangEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Editors\Tables\TableEditor.xaml">
       <SubType>Designer</SubType>
@@ -461,6 +473,7 @@
   <ItemGroup>
     <Resource Include="Images\flags\nl.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="Fody.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

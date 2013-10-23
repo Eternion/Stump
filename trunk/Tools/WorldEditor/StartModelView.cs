@@ -19,6 +19,7 @@ using System.Windows;
 using DBSynchroniser;
 using WorldEditor.Config;
 using WorldEditor.Editors.Items;
+using WorldEditor.Editors.Langs;
 using WorldEditor.Editors.Tables;
 using WorldEditor.Helpers;
 using WorldEditor.Search.Items;
@@ -123,6 +124,31 @@ namespace WorldEditor
 
         #endregion
 
+
+        #region EditLangsCommand
+
+        private DelegateCommand m_editLangsCommand;
+
+        public DelegateCommand EditLangsCommand
+        {
+            get
+            {
+                return m_editLangsCommand ?? (m_editLangsCommand = new DelegateCommand(OnEditLangs, CanEditLangs));
+            }
+        }
+
+        private bool CanEditLangs(object parameter)
+        {
+            return true;
+        }
+
+        private void OnEditLangs(object parameter)
+        {
+            var editor = new LangEditor();
+            editor.Show();
+        }
+
+        #endregion
 
         #region OpenConfigCommand
 

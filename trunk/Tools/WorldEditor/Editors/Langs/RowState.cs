@@ -1,5 +1,5 @@
 ﻿#region License GNU GPL
-// D2IGridRow.cs
+// RowState.cs
 // 
 // Copyright (C) 2013 - BehaviorIsManaged
 // 
@@ -13,43 +13,13 @@
 // You should have received a copy of the GNU General Public License along with this program; 
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
-
-using WorldEditor.Loaders.I18N;
-
-namespace WorldEditor.Editors.Files.D2I
+namespace WorldEditor.Editors.Langs
 {
-    public sealed class D2ITextRow : D2IGridRow
+    public enum RowState
     {
-
-        public D2ITextRow()
-        {
-        }
-
-        public D2ITextRow(int id, string text)
-        {
-            m_id = id;
-            m_text = text;
-        }
-
-        private int m_id;
-
-        public int Id
-        {
-            get { return m_id; }
-            set { m_id = value; }
-        }
-
-        private string m_text;
-
-        public override string Text
-        {
-            get { return m_text; }
-            set { m_text = value; }
-        }
-
-        public override string GetKey()
-        {
-            return Id.ToString();
-        }
+        None,
+        Dirty,
+        Added,
+        Removed
     }
 }

@@ -190,5 +190,10 @@ namespace DBSynchroniser.Records.Langs
             }
         }
         #endregion
+
+        public LangText Copy()
+        {
+            return (LangText) MemberwiseClone();
+        }
     }
 }
