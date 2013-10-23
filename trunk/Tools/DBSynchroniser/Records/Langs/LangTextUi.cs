@@ -139,5 +139,11 @@ namespace DBSynchroniser.Records.Langs
         }
 
         #endregion
+    
+        
+        public LangTextUi Copy()
+        {
+            return (LangTextUi) MemberwiseClone();
+        }
     }
 }

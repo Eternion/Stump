@@ -272,5 +272,212 @@ namespace WorldEditor.Editors.Tables
         }
 
         #endregion
+
+
+        #region FindCommand
+
+        private DelegateCommand m_findCommand;
+
+        public int LastFoundIndex
+        {
+            get;
+            set;
+        }
+
+        public string SearchText
+        {
+            get;
+            set;
+        }
+
+        public string SearchProperty
+        {
+            get;
+            set;
+        }
+
+        public DelegateCommand FindCommand
+        {
+            get
+            {
+                return m_findCommand ?? ( m_findCommand = new DelegateCommand(OnFind, CanFind) );
+            }
+        }
+
+        private object FindNext()
+        {
+            int startIndex = LastFoundIndex == -1 || LastFoundIndex + 1 >= Rows.Count ? 0 : LastFoundIndex + 1;
+
+            object row = null;
+            int index = -1;
+
+            if (string.IsNullOrEmpty(SearchProperty))
+                return null;
+
+            if (m_rows.Count == 0)
+                return null;
+
+            var getter = m_propertiesGetters[SearchProperty];
+            var propertyType = getter(m_rows[0]).GetType();
+            var isBool = propertyType == typeof(bool);
+            var isInteger = propertyType == typeof(int) ||
+                propertyType == typeof(uint) ||
+                propertyType == typeof(short) ||
+                propertyType == typeof(ushort);
+            var isLong = propertyType == typeof(long) ||
+                propertyType == typeof(ulong);
+            var isDouble = propertyType == typeof(double) || propertyType == typeof(float);
+
+            int? searchInteger = null;
+            int dummy;
+            if (int.TryParse(SearchText, out dummy))
+                searchInteger = dummy;
+
+            long? searchLong = null;
+            long dummyL;
+            if (long.TryParse(SearchText, out dummyL))
+                searchLong = dummy;
+
+            double? searchDouble = null;
+            double dummyD;
+            if (double.TryParse(SearchText, out dummyD))
+                searchDouble = dummyD;
+
+            bool? searchBool = SearchText.ToLower() == "true" || SearchText.ToLower() == "false" ?
+                SearchText.ToLower() == "true" : (bool?)null;
+
+            for (int i = startIndex; i < m_rows.Count; i++)
+            {
+                var value = getter(m_rows[i]);
+                if (isBool)
+                {
+                    if (( searchBool.HasValue && searchBool == (bool)value ) ||
+                        ( searchInteger.HasValue && (bool)value == ( searchInteger.Value != 0 ) ))
+                    {
+                        row = m_rows[i];
+                        index = i;
+                        break;
+                    }
+                }
+                else if (isInteger)
+                {
+                    if (searchInteger.HasValue && searchInteger == Convert.ToInt32(value))
+                    {
+                        row = m_rows[i];
+                        index = i;
+                        break;
+                    }
+                }
+                else if (isLong)
+                {
+                    if (searchLong.HasValue && searchLong == Convert.ToInt64(value))
+                    {
+                        row = m_rows[i];
+                        index = i;
+                        break;
+                    }
+                }
+                else if (isDouble)
+                {
+                    if (searchDouble.HasValue && searchDouble == Convert.ToDouble(value))
+                    {
+                        row = m_rows[i];
+                        index = i;
+                        break;
+                    }
+                }
+                else
+                {
+                    if (value.ToString().IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1)
+                    {
+                        row = m_rows[i];
+                        index = i;
+                        break;
+                    }
+                }
+            }
+
+            if (row == null)
+            {
+                LastFoundIndex = -1;
+                return null;
+            }
+            else
+            {
+                LastFoundIndex = index;
+                return row;
+            }
+        }
+
+        private bool CanFind(object parameter)
+        {
+            return !string.IsNullOrEmpty(SearchText);
+        }
+
+        private void OnFind(object parameter)
+        {
+            if (!CanFind(parameter))
+                return;
+
+            LastFoundIndex = 0;
+            var row = FindNext();
+
+            FindNextCommand.RaiseCanExecuteChanged();
+
+            if (row != null)
+            {
+                m_editor.ObjectsGrid.SelectedItem = row;
+                m_editor.ObjectsGrid.ScrollIntoView(row);
+                m_editor.ObjectsGrid.Focus();
+            }
+            else
+            {
+                MessageService.ShowMessage(m_editor, "Not found");
+            }
+        }
+
+        #endregion
+
+
+
+        #region FindNextCommand
+
+        private DelegateCommand m_findNextCommand;
+
+        public DelegateCommand FindNextCommand
+        {
+            get
+            {
+                return m_findNextCommand ?? ( m_findNextCommand = new DelegateCommand(OnFindNext, CanFindNext) );
+            }
+        }
+
+        private bool CanFindNext(object parameter)
+        {
+            return true;
+        }
+
+        private void OnFindNext(object parameter)
+        {
+            var row = FindNext();
+
+            if (row == null)
+                row = FindNext();
+
+            if (row != null)
+            {
+                m_editor.ObjectsGrid.SelectedItem = row;
+                m_editor.ObjectsGrid.ScrollIntoView(row);
+                m_editor.ObjectsGrid.Focus();
+            }
+            else
+            {
+                MessageService.ShowMessage(m_editor, "Not found");
+            }
+        }
+
+        #endregion
+
+
     }
 }

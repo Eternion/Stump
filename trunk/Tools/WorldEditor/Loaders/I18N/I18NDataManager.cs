@@ -15,6 +15,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using DBSynchroniser.Records.Langs;
 using Stump.Core.I18N;
@@ -29,12 +30,29 @@ namespace WorldEditor.Loaders.I18N
         private Dictionary<uint, LangText> m_langs = new Dictionary<uint, LangText>();
         private readonly Dictionary<string, LangTextUi> m_langsUi = new Dictionary<string, LangTextUi>();
 
+
+
         public void Initialize()
         {
             m_langs = DatabaseManager.Instance.Database.Query<LangText>("SELECT * FROM langs").ToDictionary(x => x.Id);
             foreach (var record in DatabaseManager.Instance.Database.Query<LangTextUi>("SELECT * FROM langs_ui").Where(record => !m_langsUi.ContainsKey(record.Name)))
             {
                 m_langsUi.Add(record.Name, record);
+            }
+        }
+        public ReadOnlyDictionary<uint, LangText> Langs
+        {
+            get
+            {
+                return new ReadOnlyDictionary<uint, LangText>(m_langs);
+            }
+        }
+
+        public ReadOnlyDictionary<string, LangTextUi> LangsUi
+        {
+            get
+            {
+                return new ReadOnlyDictionary<string, LangTextUi>(m_langsUi);
             }
         }
 
@@ -111,6 +129,16 @@ namespace WorldEditor.Loaders.I18N
         public void CreateText(LangTextUi text)
         {
             DatabaseManager.Instance.Database.Insert(text);
+        }
+
+       public void DeleteText(LangText text)
+        {
+            DatabaseManager.Instance.Database.Delete(text);
+        }
+
+        public void DeleteText(LangTextUi text)
+        {
+            DatabaseManager.Instance.Database.Delete(text);
         }
 
         public uint FindFreeId()
