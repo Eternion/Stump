@@ -8,6 +8,7 @@ using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -89,24 +90,43 @@ namespace Stump.Server.WorldServer.Game.Items
 
         private readonly Dictionary<ItemSuperTypeEnum, CharacterInventoryPositionEnum[]> m_itemsPositioningRules
             = new Dictionary<ItemSuperTypeEnum, CharacterInventoryPositionEnum[]>
-          {
-              {ItemSuperTypeEnum.SUPERTYPE_AMULET, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_AMULET}},
-              {ItemSuperTypeEnum.SUPERTYPE_WEAPON, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON}},
-              {ItemSuperTypeEnum.SUPERTYPE_WEAPON_7, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON}},
-              {ItemSuperTypeEnum.SUPERTYPE_CAPE, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_CAPE}},
-              {ItemSuperTypeEnum.SUPERTYPE_HAT, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_HAT}},
-              {ItemSuperTypeEnum.SUPERTYPE_RING, new [] {CharacterInventoryPositionEnum.INVENTORY_POSITION_RING_LEFT, CharacterInventoryPositionEnum.INVENTORY_POSITION_RING_RIGHT}},
-              {ItemSuperTypeEnum.SUPERTYPE_BOOTS, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_BOOTS}},
-              {ItemSuperTypeEnum.SUPERTYPE_BELT, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_BELT}},
-              {ItemSuperTypeEnum.SUPERTYPE_PET, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS}},
-              {ItemSuperTypeEnum.SUPERTYPE_DOFUS, new [] {CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_1, CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_2, CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_3, CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_4, CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_5, CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_6}},
-              {ItemSuperTypeEnum.SUPERTYPE_SHIELD, new [] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD}},
-
-          };
+            {
+                {ItemSuperTypeEnum.SUPERTYPE_AMULET, new[] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_AMULET}},
+                {ItemSuperTypeEnum.SUPERTYPE_WEAPON, new[] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON}},
+                {ItemSuperTypeEnum.SUPERTYPE_WEAPON_8, new[] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON}},
+                {ItemSuperTypeEnum.SUPERTYPE_CAPE, new[] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_CAPE}},
+                {ItemSuperTypeEnum.SUPERTYPE_HAT, new[] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_HAT}},
+                {
+                    ItemSuperTypeEnum.SUPERTYPE_RING,
+                    new[]
+                    {
+                        CharacterInventoryPositionEnum.INVENTORY_POSITION_RING_LEFT,
+                        CharacterInventoryPositionEnum.INVENTORY_POSITION_RING_RIGHT
+                    }
+                },
+                {ItemSuperTypeEnum.SUPERTYPE_BOOTS, new[] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_BOOTS}},
+                {ItemSuperTypeEnum.SUPERTYPE_BELT, new[] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_BELT}},
+                {ItemSuperTypeEnum.SUPERTYPE_PET, new[] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS}},
+                {
+                    ItemSuperTypeEnum.SUPERTYPE_DOFUS,
+                    new[]
+                    {
+                        CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_1,
+                        CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_2,
+                        CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_3,
+                        CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_4,
+                        CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_5,
+                        CharacterInventoryPositionEnum.INVENTORY_POSITION_DOFUS_6
+                    }
+                },
+                {ItemSuperTypeEnum.SUPERTYPE_SHIELD, new[] {CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD}},
+                {ItemSuperTypeEnum.SUPERTYPE_BOOST, new[] {CharacterInventoryPositionEnum.INVENTORY_POSITION_BOOST_FOOD}},
+            };
 
         public Inventory(Character owner)
         {
             Owner = owner;
+            InitializeEvents();
         }
 
         public Character Owner
@@ -253,6 +273,7 @@ namespace Stump.Server.WorldServer.Game.Items
         public void Dispose()
         {
             UnLoadInventory();
+            TeardownEvents();
         }
 
         #endregion
@@ -490,16 +511,7 @@ namespace Stump.Server.WorldServer.Game.Items
             if (!CanUseItem(item))
                 return;
 
-            var remove = false;
-            foreach (var effect in item.Effects)
-            {
-                var handler = EffectManager.Instance.GetUsableEffectHandler(effect, Owner, item);
-
-                if (handler.Apply())
-                    remove = true;
-            }
-
-            if (remove)
+            if (item.Handler.UseItem(Owner, item))
                 RemoveItem(item, 1);
         }
 
@@ -620,6 +632,8 @@ namespace Stump.Server.WorldServer.Game.Items
                 !wasEquiped && isEquiped)
                 ApplyItemEffects(item, false);
 
+            item.Handler.EquipItem(Owner, item, wasEquiped);
+
             if (item.Template.ItemSet != null && !(wasEquiped && isEquiped))
             {
                 var count = CountItemSetEquiped(item.Template.ItemSet);
@@ -739,5 +753,38 @@ namespace Stump.Server.WorldServer.Game.Items
 
             return (short?) pet.Template.AppearanceId;
         }
+
+        #region Events
+
+        private void InitializeEvents()
+        {
+            Owner.FightEnded += OnFightEnded;
+        }
+        private void TeardownEvents()
+        {
+            Owner.FightEnded -= OnFightEnded;
+        }
+
+        private void OnFightEnded(Character character, CharacterFighter fighter)
+        {
+            // update boosts
+            foreach (var boost in GetItems(CharacterInventoryPositionEnum.INVENTORY_POSITION_BOOST_FOOD))
+            {
+                var effect = boost.Effects.OfType<EffectInteger>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_RemainingFights);
+
+                if (effect != null)
+                {
+                    effect.Value--;
+
+                    if (effect.Value <= 0)
+                        RemoveItem(boost);
+                    else
+                        RefreshItem(boost);
+                }
+
+            }
+        }
+
+        #endregion
     }
 }

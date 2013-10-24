@@ -27,11 +27,11 @@
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center"><Run Text="Remove"/></TextBlock>
                 </StackPanel>
             </Button>
-            <Button Margin="3" Command="{Binding ConvertCommand}">
-                <TextBlock Text="Convert to .xml" TextWrapping="Wrap" TextAlignment="Center" />
-            </Button>
             <Button Margin="3" Command="{Binding SaveCommand}">
                 <TextBlock Text="Save" TextWrapping="Wrap" TextAlignment="Center" />
+            </Button>
+            <Button Margin="3" Command="{Binding GenerateEnumCommand}">
+                <TextBlock Text="Generate Enum" TextWrapping="Wrap" TextAlignment="Center" />
             </Button>
         </UniformGrid>
         <Grid Grid.Row="1">

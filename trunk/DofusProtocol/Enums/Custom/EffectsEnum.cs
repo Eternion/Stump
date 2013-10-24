@@ -1259,7 +1259,7 @@
         /// <summary>
         /// Remaining turn(s): #3
         /// </summary>
-        Effect_811 = 811,
+        Effect_RemainingFights = 811,
         /// <summary>
         /// Durability: #2 / #3
         /// </summary>

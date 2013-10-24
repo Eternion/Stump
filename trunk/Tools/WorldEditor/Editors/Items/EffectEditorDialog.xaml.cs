@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
+using DBSynchroniser.Records;
 using Stump.DofusProtocol.D2oClasses;
 
 namespace WorldEditor.Editors.Items
@@ -14,8 +15,8 @@ namespace WorldEditor.Editors.Items
                                         new PropertyMetadata(default(EffectWrapper)));
 
         public static readonly DependencyProperty EffectsSourceProperty =
-            DependencyProperty.Register("EffectsSource", typeof(IEnumerable<Effect>), typeof(EffectEditorDialog),
-                                        new PropertyMetadata(default(IEnumerable<Effect>)));
+            DependencyProperty.Register("EffectsSource", typeof(IEnumerable<EffectRecord>), typeof(EffectEditorDialog),
+                                        new PropertyMetadata(default(IEnumerable<EffectRecord>)));
 
         public EffectEditorDialog()
         {
@@ -28,9 +29,9 @@ namespace WorldEditor.Editors.Items
             set { SetValue(EffectToEditProperty, value); }
         }
 
-        public IEnumerable<Effect> EffectsSource
+        public IEnumerable<EffectRecord> EffectsSource
         {
-            get { return (IEnumerable<Effect>) GetValue(EffectsSourceProperty); }
+            get { return (IEnumerable<EffectRecord>) GetValue(EffectsSourceProperty); }
             set { SetValue(EffectsSourceProperty, value); }
         }
 

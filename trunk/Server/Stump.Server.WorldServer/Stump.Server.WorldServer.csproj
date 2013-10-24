@@ -326,6 +326,9 @@
     <Compile Include="Game\Guilds\GuildMember.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapSave.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapTeleport.cs" />
+    <Compile Include="Game\Items\Handlers\BaseItemHandler.cs" />
+    <Compile Include="Game\Items\Handlers\CandyHandler.cs" />
+    <Compile Include="Game\Items\Handlers\ItemTypeAttribute.cs" />
     <Compile Include="Game\Items\Item.cs" />
     <Compile Include="Game\Items\MerchantBag.cs" />
     <Compile Include="Game\Items\CharacterMerchantBag.cs" />

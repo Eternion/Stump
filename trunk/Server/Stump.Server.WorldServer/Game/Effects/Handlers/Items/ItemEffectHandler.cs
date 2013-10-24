@@ -1,3 +1,4 @@
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
@@ -53,7 +54,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
         public bool ItemSetApply
         {
             get;
-            protected set;
+            set;
         }
 
         public bool Equiped
@@ -61,6 +62,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
             get
             {
                 return Item != null && Item.IsEquiped();
+            }
+        }
+
+        public bool Boost
+        {
+            get
+            {
+                return Item != null && Item.Template.Type.SuperType == ItemSuperTypeEnum.SUPERTYPE_BOOST;
             }
         }
 
