@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Items.Handlers;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
@@ -24,6 +25,8 @@ namespace Stump.Server.WorldServer.Game.Items
             private set;
         }
 
+        private BaseItemHandler m_handler;
+
         #endregion
 
         #region Constructors
@@ -35,6 +38,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
             Owner = owner;
             Position = Record.Position;
+            m_handler = ItemManager.Instance.GetItemHandler(Template);
         }
 
         public PlayerItem(Character owner, int guid, ItemTemplate template, CharacterInventoryPositionEnum position,
@@ -53,6 +57,7 @@ namespace Stump.Server.WorldServer.Game.Items
                              Position = position,
                              Effects = effects,
                          };
+            m_handler = ItemManager.Instance.GetItemHandler(Template);
         }
 
         #endregion
@@ -177,7 +182,7 @@ namespace Stump.Server.WorldServer.Game.Items
             }
         }
 
-        public override ItemTemplate Template
+        public override sealed ItemTemplate Template
         {
             get { return base.Template; }
             protected set
@@ -221,6 +226,14 @@ namespace Stump.Server.WorldServer.Game.Items
         public int Weight
         {
             get { return (int) (Template.RealWeight*Stack); }
+        }
+
+        public BaseItemHandler Handler
+        {
+            get
+            {
+                return m_handler;
+            }
         }
 
         #endregion

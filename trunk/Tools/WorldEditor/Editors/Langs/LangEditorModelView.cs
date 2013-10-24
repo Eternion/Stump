@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Windows.Forms;
 using DBSynchroniser.Records.Langs;
 using Stump.Core.I18N;
@@ -346,5 +347,6 @@ namespace WorldEditor.Editors.Langs
         }
 
         #endregion
+
     }
 }

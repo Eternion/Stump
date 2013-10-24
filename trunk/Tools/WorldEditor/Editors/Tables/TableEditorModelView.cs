@@ -18,18 +18,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using DBSynchroniser;
+using Stump.Core.I18N;
 using Stump.Core.Reflection;
 using Stump.ORM;
+using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using WorldEditor.Database;
 using System.Linq;
 using WorldEditor.Editors.Files.D2O;
 using WorldEditor.Helpers;
 using WorldEditor.Helpers.Converters;
+using WorldEditor.Loaders.I18N;
 
 namespace WorldEditor.Editors.Tables
 {
@@ -477,7 +482,59 @@ namespace WorldEditor.Editors.Tables
         }
 
         #endregion
+        
 
+        #region GenerateEnumCommand
+
+        private DelegateCommand m_generateEnumCommand;
+
+        public DelegateCommand GenerateEnumCommand
+        {
+            get
+            {
+                return m_generateEnumCommand ?? (m_generateEnumCommand = new DelegateCommand(OnGenerateEnum, CanGenerateEnum));
+            }
+        }
+
+        private bool CanGenerateEnum(object parameter)
+        {
+            return m_table.Type.GetProperties().Any(x => x.GetCustomAttribute<I18NFieldAttribute>() != null);
+        }
+
+        private void OnGenerateEnum(object parameter)
+        {
+            if (!CanGenerateEnum(parameter))
+                return;
+
+            var builder = new StringBuilder();
+            builder.AppendLine("namespace Stump.DofusProtocol.Enums");
+            builder.AppendLine("{");
+            builder.AppendLine("\t");
+            builder.AppendLine(string.Format("\tpublic enum {0}Enum", m_table.ClassName));
+            builder.AppendLine("\t{");
+
+            var nameProperty =
+                m_table.Type.GetProperties().FirstOrDefault(x => x.GetCustomAttribute<I18NFieldAttribute>() != null);
+            var idProperty = 
+                m_table.Type.GetProperties().FirstOrDefault(x => x.GetCustomAttribute<PrimaryKeyAttribute>() != null);
+
+            foreach (var row in m_rows)
+            {
+                var nameId = nameProperty.GetValue(row);
+                var id = idProperty.GetValue(row);
+                var name =
+                    I18NDataManager.Instance.GetText(nameId is uint ? (uint) nameId : (uint) (int) nameId).French;
+
+                var formattedName = name.Trim().ToUpper().Replace(" ", "_").Replace("\"", "").Replace("'", "_");
+                builder.AppendLine(string.Format("\t\t{0} = {1},", formattedName, id));
+            }
+            builder.AppendLine("\t}");
+            builder.AppendLine("}");
+
+            File.WriteAllText("./enums/" + m_table.ClassName + "Enum.cs", builder.ToString());
+        }
+
+        #endregion
 
     }
 }

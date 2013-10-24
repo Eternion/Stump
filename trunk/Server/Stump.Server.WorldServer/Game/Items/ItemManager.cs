@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using NLog;
 using Stump.Core.Extensions;
@@ -16,6 +17,7 @@ using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Items.Handlers;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
@@ -29,6 +31,11 @@ namespace Stump.Server.WorldServer.Game.Items
         private Dictionary<uint, ItemSetTemplate> m_itemsSets = new Dictionary<uint, ItemSetTemplate>();
         private Dictionary<int, ItemTypeRecord> m_itemTypes = new Dictionary<int, ItemTypeRecord>();
         private Dictionary<int, NpcItem> m_npcShopItems = new Dictionary<int, NpcItem>();
+
+        private Dictionary<ItemTypeEnum, BaseItemHandler> m_itemTypesHandlers =
+            new Dictionary<ItemTypeEnum, BaseItemHandler>();
+
+        private BaseItemHandler m_defautHandler = new BaseItemHandler();
 
         #endregion
 
@@ -115,6 +122,29 @@ namespace Stump.Server.WorldServer.Game.Items
             }
             m_itemsSets = Database.Query<ItemSetTemplate>(ItemSetTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_npcShopItems = Database.Query<NpcItem>(NpcItemRelator.FetchQuery).ToDictionary(entry => entry.Id);
+
+            InitializeHandlers();
+        }
+
+        private void InitializeHandlers()
+        {
+            foreach (var type in
+                    Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof (BaseItemHandler))))
+            {
+                var attr = type.GetCustomAttribute<ItemTypeAttribute>();
+
+                if (attr == null)
+                    continue;
+
+                if (m_itemTypesHandlers.ContainsKey(attr.ItemType))
+                {
+                    logger.Error("ItemHandler with Type {0} defined twice or more !", attr.ItemType);
+                    continue;
+                }
+
+                var handler = (BaseItemHandler)Activator.CreateInstance(type);
+                m_itemTypesHandlers.Add(attr.ItemType, handler);
+            }
         }
 
         #endregion
@@ -282,6 +312,19 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             m_itemTemplates.Add(template.Id, template);
             Database.Insert(template);
+        }
+
+        public BaseItemHandler GetItemHandler(ItemTemplate item)
+        {
+            return GetItemHandler((ItemTypeEnum)item.TypeId);
+        }
+        
+        public BaseItemHandler GetItemHandler(ItemTypeEnum type)
+        {
+            BaseItemHandler handler;
+            if (!m_itemTypesHandlers.TryGetValue(type, out handler))
+                return m_defautHandler;
+            return handler;
         }
 
         #endregion

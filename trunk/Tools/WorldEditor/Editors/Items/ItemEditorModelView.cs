@@ -131,7 +131,7 @@ namespace WorldEditor.Editors.Items
         #region EditEffectCommand
 
         private DelegateCommand m_editEffectCommand;
-        private List<Effect> m_effects;
+        private List<EffectRecord> m_effects;
 
         public DelegateCommand EditEffectCommand
         {
@@ -155,7 +155,7 @@ namespace WorldEditor.Editors.Items
                     EffectToEdit = (EffectWrapper) (effect).Clone(),
                     EffectsSource =
                         m_effects ??
-                        (m_effects = ObjectDataManager.Instance.EnumerateObjects<Effect>().ToList())
+                        (m_effects = ObjectDataManager.Instance.EnumerateObjects<EffectRecord>().ToList())
                 };
 
             if (dialog.ShowDialog() != true)
@@ -234,7 +234,7 @@ namespace WorldEditor.Editors.Items
                 {
                     EffectsSource =
                         m_effects ??
-                        (m_effects = ObjectDataManager.Instance.EnumerateObjects<Effect>().ToList())
+                        (m_effects = ObjectDataManager.Instance.EnumerateObjects<EffectRecord>().ToList())
                 };
 
             var effect = new EffectDiceWrapper(new EffectInstanceDice()
